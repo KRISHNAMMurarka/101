@@ -79,11 +79,20 @@ export class KeyboardAdapter implements InputAdapter {
         "beat.punch": this.has("ArrowUp", "KeyW", "Space"),
         "beat.raise": this.has("KeyE", "Enter"),
         "beat.duck": this.has("ArrowDown", "KeyS"),
+        "spell.cast.shield": this.has("KeyQ"),
+        "spell.cast.grab": this.has("KeyE"),
+        "spell.cast.projectile": this.has("Space", "Enter"),
+        "spell.cast.charge": this.has("KeyC"),
+        "spell.cast.blade": this.has("ShiftLeft", "ShiftRight", "KeyX"),
+        "spell.cast.vortex": this.has("KeyR"),
+        "maze.scan": this.has("KeyR", "Space"),
+        "maze.flashlight": this.has("KeyF"),
+        "maze.mark": this.has("KeyM"),
         drop: this.has("Space", "Enter"),
         pause: this.has("Escape"),
       },
       axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x, shield, power: this.has("KeyR") ? 1 : 0, placeX },
-      vectors: { move: { x, y }, aim: { x, y }, flight: { x, y }, target: { x, y }, gravity: { x: gravityX, y: gravityY }, gesture: { x, y } },
+      vectors: { move: { x, y }, "maze.move": { x, y }, "maze.scanDirection": { x, y }, aim: { x, y }, "spell.aim": { x, y }, flight: { x, y }, target: { x, y }, gravity: { x: gravityX, y: gravityY }, gesture: { x, y } },
     });
   }
 

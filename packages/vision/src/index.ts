@@ -291,3 +291,306 @@ function clamp(value: number) {
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
 }
+
+export interface HandLandmark {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface TrackedHand {
+  landmarks: HandLandmark[];
+  handedness: "left" | "right" | "unknown";
+  confidence: number;
+}
+
+export type HandGesture = "openPalm" | "fist" | "pinch" | "point" | "twoFingers" | "grab" | "swipeLeft" | "swipeRight" | "circle";
+
+export interface HandSignals {
+  timestamp: number;
+  confidence: number;
+  hand?: TrackedHand;
+  gestures: Record<HandGesture, boolean>;
+  activated: HandGesture[];
+  pointer: { x: number; y: number };
+  palm: { x: number; y: number };
+  velocity: { x: number; y: number };
+}
+
+export interface HandGestureClassifierOptions {
+  smoothing?: number;
+  stableFrames?: number;
+  gestureCooldownMs?: number;
+  historyMs?: number;
+}
+
+export const HAND_LANDMARK = {
+  wrist: 0,
+  thumbCmc: 1,
+  thumbMcp: 2,
+  thumbIp: 3,
+  thumbTip: 4,
+  indexMcp: 5,
+  indexPip: 6,
+  indexDip: 7,
+  indexTip: 8,
+  middleMcp: 9,
+  middlePip: 10,
+  middleDip: 11,
+  middleTip: 12,
+  ringMcp: 13,
+  ringPip: 14,
+  ringDip: 15,
+  ringTip: 16,
+  pinkyMcp: 17,
+  pinkyPip: 18,
+  pinkyDip: 19,
+  pinkyTip: 20,
+} as const;
+
+export const HAND_CONNECTIONS: ReadonlyArray<readonly [number, number]> = [
+  [0, 1], [1, 2], [2, 3], [3, 4],
+  [0, 5], [5, 6], [6, 7], [7, 8],
+  [5, 9], [9, 10], [10, 11], [11, 12],
+  [9, 13], [13, 14], [14, 15], [15, 16],
+  [13, 17], [17, 18], [18, 19], [19, 20], [17, 0],
+];
+
+const EMPTY_HAND_GESTURES: Record<HandGesture, boolean> = {
+  openPalm: false,
+  fist: false,
+  pinch: false,
+  point: false,
+  twoFingers: false,
+  grab: false,
+  swipeLeft: false,
+  swipeRight: false,
+  circle: false,
+};
+
+type StaticHandGesture = "openPalm" | "fist" | "pinch" | "point" | "twoFingers";
+
+export class HandGestureClassifier {
+  private readonly options: Required<HandGestureClassifierOptions>;
+  private previous?: TrackedHand;
+  private previousTimestamp?: number;
+  private lastDetectedAt?: number;
+  private candidate?: StaticHandGesture;
+  private candidateFrames = 0;
+  private active?: StaticHandGesture;
+  private readonly activatedAt = new Map<HandGesture, number>();
+  private pointerHistory: Array<{ x: number; y: number; timestamp: number }> = [];
+  private palmHistory: Array<{ x: number; y: number; timestamp: number }> = [];
+
+  constructor(options: HandGestureClassifierOptions = {}) {
+    this.options = {
+      smoothing: clamp01(options.smoothing ?? .45),
+      stableFrames: Math.max(1, Math.round(options.stableFrames ?? 3)),
+      gestureCooldownMs: Math.max(80, options.gestureCooldownMs ?? 420),
+      historyMs: Math.max(420, options.historyMs ?? 1_250),
+    };
+  }
+
+  process(hands: readonly TrackedHand[], timestamp: number): HandSignals {
+    const detected = [...hands].sort((a, b) => b.confidence - a.confidence)[0];
+    if (!detected || detected.landmarks.length < 21) {
+      this.releaseHand(timestamp);
+      return emptyHandSignals(timestamp);
+    }
+    const hand: TrackedHand = {
+      handedness: detected.handedness,
+      confidence: clamp01(detected.confidence),
+      landmarks: smoothHand(detected.landmarks, this.previous?.landmarks, this.options.smoothing),
+    };
+    this.lastDetectedAt = timestamp;
+    const wrist = hand.landmarks[HAND_LANDMARK.wrist]!;
+    const pointerLandmark = hand.landmarks[HAND_LANDMARK.indexTip]!;
+    const middleMcp = hand.landmarks[HAND_LANDMARK.middleMcp]!;
+    const pointer = { x: pointerLandmark.x, y: pointerLandmark.y };
+    const palm = { x: midpoint(wrist.x, middleMcp.x), y: midpoint(wrist.y, middleMcp.y) };
+    const deltaSeconds = this.previousTimestamp === undefined ? 0 : Math.max(1 / 120, (timestamp - this.previousTimestamp) / 1_000);
+    const previousPalm = this.previous ? palmCenter(this.previous.landmarks) : palm;
+    const velocity = deltaSeconds > 0 ? { x: (palm.x - previousPalm.x) / deltaSeconds, y: (palm.y - previousPalm.y) / deltaSeconds } : { x: 0, y: 0 };
+    const palmSize = Math.max(.035, distance(wrist, middleMcp));
+    this.pointerHistory.push({ ...pointer, timestamp });
+    this.palmHistory.push({ ...palm, timestamp });
+    this.trimHistory(timestamp);
+
+    const staticGesture = classifyStaticGesture(hand.landmarks, palmSize);
+    if (staticGesture === this.candidate) this.candidateFrames += 1;
+    else {
+      this.candidate = staticGesture;
+      this.candidateFrames = staticGesture ? 1 : 0;
+    }
+    const activated: HandGesture[] = [];
+    if (this.candidateFrames >= this.options.stableFrames && this.active !== staticGesture) {
+      this.active = staticGesture;
+      if (staticGesture && this.canActivate(staticGesture, timestamp)) activated.push(staticGesture);
+    }
+    if (!staticGesture && this.candidateFrames === 0) this.active = undefined;
+
+    const circle = this.detectCircle(palmSize, timestamp);
+    if (circle && this.canActivate("circle", timestamp)) activated.push("circle");
+    const swipe = circle ? undefined : this.detectSwipe(palmSize, timestamp);
+    if (swipe && this.canActivate(swipe, timestamp)) activated.push(swipe);
+
+    const gestures = { ...EMPTY_HAND_GESTURES };
+    if (this.active) gestures[this.active] = true;
+    gestures.grab = this.active === "fist" || this.active === "pinch";
+    for (const event of activated) gestures[event] = true;
+    this.previous = hand;
+    this.previousTimestamp = timestamp;
+    return { timestamp, confidence: hand.confidence, hand, gestures, activated, pointer, palm, velocity };
+  }
+
+  reset() {
+    this.previous = undefined;
+    this.previousTimestamp = undefined;
+    this.lastDetectedAt = undefined;
+    this.candidate = undefined;
+    this.candidateFrames = 0;
+    this.active = undefined;
+    this.activatedAt.clear();
+    this.pointerHistory = [];
+    this.palmHistory = [];
+  }
+
+  private canActivate(gesture: HandGesture, timestamp: number) {
+    const previous = this.activatedAt.get(gesture) ?? Number.NEGATIVE_INFINITY;
+    if (timestamp - previous < this.options.gestureCooldownMs) return false;
+    this.activatedAt.set(gesture, timestamp);
+    return true;
+  }
+
+  private detectSwipe(palmSize: number, timestamp: number): "swipeLeft" | "swipeRight" | undefined {
+    const recent = this.palmHistory.filter((sample) => timestamp - sample.timestamp <= 280);
+    const first = recent[0];
+    const last = recent.at(-1);
+    if (!first || !last || last.timestamp - first.timestamp < 85) return undefined;
+    const dx = last.x - first.x;
+    const dy = last.y - first.y;
+    const seconds = (last.timestamp - first.timestamp) / 1_000;
+    if (Math.abs(dx) < palmSize * 1.15 || Math.abs(dx) < Math.abs(dy) * 1.65 || Math.abs(dx) / seconds < .72) return undefined;
+    return dx < 0 ? "swipeLeft" : "swipeRight";
+  }
+
+  private detectCircle(palmSize: number, timestamp: number) {
+    const samples = this.pointerHistory.filter((sample) => timestamp - sample.timestamp <= this.options.historyMs);
+    if (samples.length < 10 || samples.at(-1)!.timestamp - samples[0]!.timestamp < 380) return false;
+    const center = {
+      x: samples.reduce((sum, sample) => sum + sample.x, 0) / samples.length,
+      y: samples.reduce((sum, sample) => sum + sample.y, 0) / samples.length,
+    };
+    const radii = samples.map((sample) => Math.hypot(sample.x - center.x, sample.y - center.y));
+    const averageRadius = radii.reduce((sum, radius) => sum + radius, 0) / radii.length;
+    if (averageRadius < palmSize * .42) return false;
+    const deviation = radii.reduce((sum, radius) => sum + Math.abs(radius - averageRadius), 0) / radii.length;
+    if (deviation / averageRadius > .42) return false;
+    let angle = 0;
+    for (let index = 1; index < samples.length; index += 1) {
+      const previous = samples[index - 1]!;
+      const current = samples[index]!;
+      angle += wrappedAngle(
+        Math.atan2(current.y - center.y, current.x - center.x)
+        - Math.atan2(previous.y - center.y, previous.x - center.x),
+      );
+    }
+    if (Math.abs(angle) < Math.PI * 1.62 || distance(samples[0]!, samples.at(-1)!) > averageRadius * 1.05) return false;
+    this.pointerHistory = [samples.at(-1)!];
+    return true;
+  }
+
+  private trimHistory(timestamp: number) {
+    this.pointerHistory = this.pointerHistory.filter((sample) => timestamp - sample.timestamp <= this.options.historyMs);
+    this.palmHistory = this.palmHistory.filter((sample) => timestamp - sample.timestamp <= Math.min(this.options.historyMs, 320));
+  }
+
+  private releaseHand(timestamp: number) {
+    if (this.lastDetectedAt !== undefined && timestamp - this.lastDetectedAt > 100) {
+      this.previous = undefined;
+      this.previousTimestamp = undefined;
+      this.lastDetectedAt = undefined;
+      this.candidate = undefined;
+      this.candidateFrames = 0;
+      this.active = undefined;
+      this.pointerHistory = [];
+      this.palmHistory = [];
+    }
+  }
+}
+
+export function flattenHand(hand: readonly HandLandmark[]) {
+  return hand.flatMap((landmark) => [landmark.x, landmark.y, landmark.z]);
+}
+
+export function unflattenHand(values: ReadonlyArray<number>): HandLandmark[] {
+  const hand: HandLandmark[] = [];
+  for (let index = 0; index + 2 < values.length; index += 3) hand.push({ x: values[index]!, y: values[index + 1]!, z: values[index + 2]! });
+  return hand;
+}
+
+export function mirrorHand(hand: readonly HandLandmark[]): HandLandmark[] {
+  return hand.map((landmark) => ({ ...landmark, x: 1 - landmark.x }));
+}
+
+function classifyStaticGesture(hand: readonly HandLandmark[], palmSize: number): StaticHandGesture | undefined {
+  const thumb = fingerExtended(hand, HAND_LANDMARK.thumbTip, HAND_LANDMARK.thumbIp, HAND_LANDMARK.thumbMcp, 1.02);
+  const index = fingerExtended(hand, HAND_LANDMARK.indexTip, HAND_LANDMARK.indexPip, HAND_LANDMARK.indexMcp);
+  const middle = fingerExtended(hand, HAND_LANDMARK.middleTip, HAND_LANDMARK.middlePip, HAND_LANDMARK.middleMcp);
+  const ring = fingerExtended(hand, HAND_LANDMARK.ringTip, HAND_LANDMARK.ringPip, HAND_LANDMARK.ringMcp);
+  const pinky = fingerExtended(hand, HAND_LANDMARK.pinkyTip, HAND_LANDMARK.pinkyPip, HAND_LANDMARK.pinkyMcp);
+  const extended = [thumb, index, middle, ring, pinky].filter(Boolean).length;
+  const pinching = distance(hand[HAND_LANDMARK.thumbTip]!, hand[HAND_LANDMARK.indexTip]!) < palmSize * .38;
+  if (pinching) return "pinch";
+  if (extended === 0) return "fist";
+  if (index && middle && !ring && !pinky) return "twoFingers";
+  if (index && !middle && !ring && !pinky) return "point";
+  if (extended >= 4 && index && middle && ring && pinky) return "openPalm";
+  return undefined;
+}
+
+function fingerExtended(hand: readonly HandLandmark[], tipIndex: number, pipIndex: number, mcpIndex: number, ratio = 1.12) {
+  const wrist = hand[HAND_LANDMARK.wrist]!;
+  const tip = hand[tipIndex]!;
+  const pip = hand[pipIndex]!;
+  const mcp = hand[mcpIndex]!;
+  return distance(tip, wrist) > distance(pip, wrist) * ratio && distance(tip, mcp) > distance(pip, mcp) * .92;
+}
+
+function smoothHand(current: readonly HandLandmark[], previous: readonly HandLandmark[] | undefined, alpha: number): HandLandmark[] {
+  if (!previous || previous.length !== current.length) return current.map((landmark) => ({ ...landmark }));
+  return current.map((landmark, index) => ({
+    x: lerp(previous[index]!.x, landmark.x, alpha),
+    y: lerp(previous[index]!.y, landmark.y, alpha),
+    z: lerp(previous[index]!.z, landmark.z, alpha),
+  }));
+}
+
+function palmCenter(hand: readonly HandLandmark[]) {
+  const wrist = hand[HAND_LANDMARK.wrist]!;
+  const middle = hand[HAND_LANDMARK.middleMcp]!;
+  return { x: midpoint(wrist.x, middle.x), y: midpoint(wrist.y, middle.y) };
+}
+
+function emptyHandSignals(timestamp: number): HandSignals {
+  return {
+    timestamp,
+    confidence: 0,
+    gestures: { ...EMPTY_HAND_GESTURES },
+    activated: [],
+    pointer: { x: .5, y: .5 },
+    palm: { x: .5, y: .5 },
+    velocity: { x: 0, y: 0 },
+  };
+}
+
+function distance(a: { x: number; y: number }, b: { x: number; y: number }) {
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function wrappedAngle(value: number) {
+  let angle = value;
+  while (angle > Math.PI) angle -= Math.PI * 2;
+  while (angle < -Math.PI) angle += Math.PI * 2;
+  return angle;
+}

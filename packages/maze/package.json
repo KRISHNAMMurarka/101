@@ -1,0 +1,7 @@
+{
+  "name": "@101/maze",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": { "@101/core": "0.1.0" },
+  "exports": "./src/index.ts"
+}

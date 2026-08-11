@@ -157,6 +157,9 @@ export default function Controller({ session }: { session: string }) {
       const tilt = frame.vectors?.tilt;
       if (!motion || !tilt) return;
       inputRef.current.actions = { ...inputRef.current.actions, ...frame.actions };
+      for (const [gesture, action] of Object.entries(motion.gestures ?? {})) {
+        if (action) inputRef.current.actions[action] = Boolean(frame.actions[gesture]);
+      }
       inputRef.current.axes = { ...inputRef.current.axes, ...frame.axes };
       setVector(motion.action, tilt.x, tilt.y, "phone-motion");
     });
@@ -310,7 +313,7 @@ function ControllerStatus({ readout }: { readout: ControllerReadout }) {
   const values = Object.entries(readout.values);
   return (
     <section className={`controller-role-status status-${readout.tone}`} aria-live="polite">
-      <div><span>SHIP FEED</span><strong>{readout.message ?? "AWAITING HOST DATA"}</strong></div>
+      <div><span>ROLE FEED</span><strong>{readout.message ?? "AWAITING HOST DATA"}</strong></div>
       {values.length > 0 && <dl>{values.slice(0, 6).map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{typeof value === "number" ? Math.round(value) : String(value)}</dd></div>)}</dl>}
     </section>
   );

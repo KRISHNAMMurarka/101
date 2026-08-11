@@ -102,6 +102,28 @@ test("serves GravityStack through the 101 physics facade and asymmetric roles", 
   assert.match(html, /CONVENTIONAL FALLBACK/);
 });
 
+test("serves Spellcaster through shared hand, motion, and conventional spell actions", async () => {
+  const response = await render("/games/spellcaster");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Spellcaster 101 — Local hand-gesture survival/);
+  assert.match(html, /Playable gesture survival/);
+  assert.match(html, /TEMPORAL GESTURE STATE MACHINE/);
+  assert.match(html, /ENABLE HAND CAMERA/);
+  assert.match(html, /Every spell also has a keyboard\/gamepad fallback/i);
+});
+
+test("serves Echo Maze with private Link clues and a conventional fallback", async () => {
+  const response = await render("/games/echomaze");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Echo Maze 101 — Local private-display exploration/);
+  assert.match(html, /Playable private-display exploration/);
+  assert.match(html, /SEEDED MAZE \/ LOCAL COMPANION CHANNEL/);
+  assert.match(html, /HOST FALLBACK CLUE/);
+  assert.match(html, /This slice makes no microphone request/i);
+});
+
 test("server-renders the local Motion Lab and permission explanation", async () => {
   const response = await render("/motion");
   const html = await response.text();
@@ -117,7 +139,8 @@ test("server-renders the local Vision Lab and simulated fallback", async () => {
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Vision Lab/);
-  assert.match(html, /Enable local camera/);
+  assert.match(html, /Enable local/);
+  assert.match(html, /HANDS · 21 LANDMARKS/);
   assert.match(html, /Use keyboard simulation/);
   assert.match(html, /never uploaded or recorded/);
   assert.match(html, /MEDIAPIPE/);
@@ -163,7 +186,9 @@ test("serves the controller surface and product metadata", async () => {
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("public/og.png", root));
   await access(new URL("public/models/pose_landmarker_lite.task", root));
+  await access(new URL("public/models/hand_landmarker.task", root));
   await access(new URL("public/mediapipe/wasm/vision_wasm_internal.wasm", root));
   await access(new URL("dist/client/models/pose_landmarker_lite.task", root));
+  await access(new URL("dist/client/models/hand_landmarker.task", root));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));
 });

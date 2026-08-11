@@ -1,0 +1,9 @@
+{
+  "game": "echomaze",
+  "actions": {
+    "maze.move": { "recommended": ["keyboard", "gamepad", "touch"], "fallback": ["keyboard"] },
+    "maze.scan": { "recommended": ["phone-motion", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "maze.flashlight": { "recommended": ["touch", "gamepad", "keyboard"], "fallback": ["keyboard"] },
+    "maze.scanDirection": { "recommended": ["phone-motion", "touch"], "fallback": ["keyboard", "gamepad"] }
+  }
+}

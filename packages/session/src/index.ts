@@ -354,7 +354,7 @@ function createAssignment(deviceId: string, gameId: string, role: SessionRole, a
 function cloneLayout(layout: ControllerLayout): ControllerLayout {
   return {
     ...layout,
-    motion: layout.motion ? { ...layout.motion } : undefined,
+    motion: layout.motion ? { ...layout.motion, gestures: layout.motion.gestures ? { ...layout.motion.gestures } : undefined } : undefined,
     layout: layout.layout.map((element) => ({ ...element })),
   };
 }

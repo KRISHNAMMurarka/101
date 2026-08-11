@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **networking, motion, local vision, rhythm, physics, and asymmetric-session foundation plus six playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, and GravityStack 101. It deliberately does not present the remaining four games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
+This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, and asymmetric-session foundation plus eight playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, and Echo Maze 101. It deliberately does not present the remaining two games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -30,7 +30,7 @@ TiltDrift 101 is a playable Three.js racing slice. Use Left/Right or A/D to stee
 
 The **Motion Lab** requests sensor permission only after an explicit click, corrects screen orientation, calibrates a neutral quaternion, filters noisy acceleration/rotation, recognizes gestures with hysteresis, and publishes normalized tilt/steer frames through `@101/adapter-motion`. A keyboard simulation makes the pipeline inspectable on desktops without sensors.
 
-The **Vision Lab** uses bundled MediaPipe code, WASM, and a local pose model—there is no runtime CDN. Camera permission follows an explicit click, raw frames remain in the browser, and the 101 classifier turns 33 landmarks into calibrated body axes and stateful actions. Keyboard simulation exercises the identical pose adapter without requesting a camera.
+The **Vision Lab** uses bundled MediaPipe code, WASM, and local pose and hand models—there is no runtime CDN. Camera permission follows an explicit click, raw frames remain in the browser, and the 101 classifiers turn 33 body landmarks or 21 hand landmarks into calibrated body actions, stable hand poses, swipes, and circles. Keyboard simulation exercises the identical pose adapter without requesting a camera.
 
 BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard and gamepad mappings are available immediately.
 
@@ -39,6 +39,10 @@ Orbital Crew 101 is a playable asymmetric co-op slice. Up to five browser Link d
 BeatForge 101 is a playable endless rhythm/movement slice. A reusable `@101/rhythm` clock grades input in time-based windows while the seeded director varies BPM, subdivisions, actions, and compatible two-action chords. Keyboard, gamepad, Link motion, and optional local body pose all reach the same semantic beat actions. Its short cues are generated locally through `@101/audio`, so no remote or licensed music asset is required.
 
 GravityStack 101 is a playable endless variable-gravity tower. Its game module sees only opaque 101 physics handles and normalized `gravity`, `placeX`, and `drop` controls; Rapier remains inside `@101/physics`. A phone can rotate gravity while a conventional player places pieces, or a second Link device can receive a dedicated builder panel.
+
+Spellcaster 101 is a playable seeded survival arena built around a reusable temporal hand classifier. Open palm, pinch, fist, two fingers, swipe, and circle become the same `spell.cast.*` events emitted by phone motion, keyboard, and gamepad adapters. The optional camera uses the bundled hand model locally; conventional controls remain immediately playable.
+
+Echo Maze 101 is a playable endless exploration slice driven by the reusable `@101/maze` perfect-maze generator. An assigned Link scanner receives role-private target bearings, path distance, signal strength, and echo proximity. Without a phone, the required clue appears on the host, so enhanced hardware never gates progress.
 
 The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
 
@@ -70,7 +74,7 @@ npm run build
    ↓
 101 Protocol    reliable control + disposable realtime frames
    ↓
-Adapters        keyboard · pointer · gamepad · motion · camera pose · future devices
+Adapters        keyboard · pointer · gamepad · motion · camera pose/hand · future devices
 ```
 
 The hard rule is simple: **game code does not import browser or hardware APIs**. A game asks for `ctx.input.vector("move")`; the runtime decides which connected source can provide it.
@@ -86,11 +90,12 @@ Key packages:
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
 | `@101/adapter-motion` | Lazy browser permission, device orientation correction, gestures and normalized frames |
-| `@101/vision` | Pose calibration, landmark serialization, smoothing and gesture state machines |
-| `@101/adapter-camera` | Lazy local capture plus replaceable bundled MediaPipe pose inference |
+| `@101/vision` | Pose calibration plus hand landmark smoothing and temporal gesture state machines |
+| `@101/adapter-camera` | Lazy local capture plus replaceable bundled MediaPipe pose/hand inference |
 | `@101/diagnostics` | Input rate, frame age and dropped-frame instrumentation |
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
 | `@101/rhythm` | Frame-rate-independent beat/time conversion, quantization and timing judgments |
+| `@101/maze` | Deterministic connected maze generation, reciprocal walls, routing and bearings |
 | `@101/render-2d` | Phaser facade with external input disabled |
 | `@101/render-3d` | Three.js facade and adaptive pixel-ratio boundary |
 | `@101/physics` | Opaque handles, world stepping, runtime gravity and narrow Rapier operations |
@@ -159,9 +164,12 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Controller Lab for validated custom layouts and live normalized-frame inspection
 - [x] Frame-rate-independent rhythm package and BeatForge endless movement slice
 - [x] Opaque Rapier handles, rotating gravity, and GravityStack two-role physics slice
+- [x] Bundled local hand landmarks, temporal gesture state machine, and switchable Vision Lab
+- [x] Spellcaster slice with identical semantic spells from camera, phone motion, keyboard, and gamepad
+- [x] Deterministic `@101/maze` generator and Echo Maze private companion-display slice
 - [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
-- [ ] Hand and face landmark adapters plus richer gesture vocabularies
+- [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters
 
 ## Privacy and offline behavior

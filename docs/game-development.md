@@ -49,6 +49,8 @@ Publish basic, enhanced and immersive presets. The launcher must always expose a
 
 Asymmetric games may additionally publish `SessionRole` definitions outside the gameplay module. Each role declares its normalized `playerId`, capability preferences, and a JSON `ControllerLayout`. The platform host owns transport, registration, identity enforcement, layout delivery, and haptics. The `Game101.define()` module continues to read only actions, axes, vectors, and poses for the role player IDs.
 
+Games that use a private companion display should keep clue calculation in deterministic game state, then let the host route a minimal `controller.state` readout to a role. Do not import a transport into the game module. Required information must remain available through a conventional host-screen fallback when no companion is assigned.
+
 ## Rhythm and physics boundaries
 
 Use `@101/rhythm` when note timing matters. Store target times in seconds, derive them from beats/BPM, and judge offsets through declared windows. Do not advance a song clock by frame count, and keep procedural difficulty independent from any subdivision that would accidentally slow its own progression.
@@ -65,3 +67,5 @@ seed → difficulty profile → grammar → content selection
 ```
 
 Difficulty should combine several bounded pressures. Every generator needs tests proving seed repeatability and validators proving required routes, reaction windows, and resources remain possible.
+
+Use `@101/maze` when a game needs a connected grid. It provides deterministic carving, reciprocal wall validation, legal travel, shortest routes, bearings, and compass labels; games add their own content and difficulty rules without duplicating traversal infrastructure.

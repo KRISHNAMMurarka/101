@@ -1,0 +1,14 @@
+{
+  "game": "spellcaster",
+  "actions": {
+    "spell.cast.shield": { "recommended": ["camera-hand", "phone-motion"], "fallback": ["keyboard", "gamepad", "touch"] },
+    "spell.cast.grab": { "recommended": ["camera-hand", "touch"], "fallback": ["keyboard", "gamepad"] },
+    "spell.cast.projectile": { "recommended": ["camera-hand", "touch"], "fallback": ["keyboard", "gamepad"] },
+    "spell.cast.charge": { "recommended": ["camera-hand", "touch"], "fallback": ["keyboard", "gamepad"] },
+    "spell.cast.blade": { "recommended": ["camera-hand", "phone-motion"], "fallback": ["keyboard", "gamepad", "touch"] },
+    "spell.cast.vortex": { "recommended": ["camera-hand", "phone-motion"], "fallback": ["keyboard", "gamepad", "touch"] }
+  },
+  "vectors": {
+    "spell.aim": { "recommended": ["camera-hand", "phone-motion", "touch"], "fallback": ["gamepad", "keyboard"] }
+  }
+}

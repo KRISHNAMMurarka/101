@@ -1,26 +1,48 @@
 "use client";
 
-import { BrowserCameraAdapter, PoseInputAdapter, type PoseAdapterDiagnostics } from "@101/adapter-camera";
+import { BrowserCameraAdapter, BrowserHandAdapter, HandInputAdapter, PoseInputAdapter, type HandAdapterDiagnostics, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { InputBus, type InputFrame } from "@101/input";
-import { POSE_CONNECTIONS, type PoseLandmark } from "@101/vision";
+import { HAND_CONNECTIONS, POSE_CONNECTIONS, type HandLandmark, type PoseLandmark } from "@101/vision";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type VisionState = "idle" | "loading" | "active" | "simulated" | "denied" | "error";
+type VisionMode = "body" | "hands";
 
-const ACTIONS = ["duck", "jump", "leanLeft", "leanRight", "stepLeft", "stepRight", "armsRaised", "punch"] as const;
+const BODY_ACTIONS = ["duck", "jump", "leanLeft", "leanRight", "stepLeft", "stepRight", "armsRaised", "punch"] as const;
+const HAND_ACTIONS = ["hand.openPalm", "hand.fist", "hand.pinch", "hand.point", "hand.twoFingers", "hand.swipeLeft", "hand.swipeRight", "hand.circle"] as const;
 
 export default function VisionLab() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const busRef = useRef<InputBus | null>(null);
-  const adapterRef = useRef<PoseInputAdapter | null>(null);
+  const adapterRef = useRef<PoseInputAdapter | HandInputAdapter | null>(null);
   const simulationRef = useRef({ x: 0, duck: false, jump: false, arms: false, punch: false });
   const [visionState, setVisionState] = useState<VisionState>("idle");
-  const [diagnostics, setDiagnostics] = useState<PoseAdapterDiagnostics | null>(null);
+  const [mode, setMode] = useState<VisionMode>("body");
+  const [poseDiagnostics, setPoseDiagnostics] = useState<PoseAdapterDiagnostics | null>(null);
+  const [handDiagnostics, setHandDiagnostics] = useState<HandAdapterDiagnostics | null>(null);
   const [frame, setFrame] = useState<InputFrame | null>(null);
   const [error, setError] = useState("");
-  const publishSimulation = useCallback(() => adapterRef.current?.ingestPose(createSimulatedPose(simulationRef.current), performance.now()), []);
+  const publishSimulation = useCallback(() => {
+    if (adapterRef.current instanceof PoseInputAdapter) adapterRef.current.ingestPose(createSimulatedPose(simulationRef.current), performance.now());
+  }, []);
+
+  const actions = mode === "body" ? BODY_ACTIONS : HAND_ACTIONS;
+  const confidence = mode === "body" ? poseDiagnostics?.signals.confidence ?? 0 : handDiagnostics?.signals.confidence ?? 0;
+  const inferenceMs = mode === "body" ? poseDiagnostics?.inferenceMs : handDiagnostics?.inferenceMs;
+
+  const selectMode = (next: VisionMode) => {
+    if (next === mode) return;
+    void adapterRef.current?.stop();
+    adapterRef.current = null;
+    setPoseDiagnostics(null);
+    setHandDiagnostics(null);
+    setFrame(null);
+    setVisionState("idle");
+    setError("");
+    setMode(next);
+  };
 
   useEffect(() => {
     const bus = new InputBus();
@@ -52,8 +74,9 @@ export default function VisionLab() {
       for (let x = 0; x < bounds.width; x += 36) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, bounds.height); context.stroke(); }
       for (let y = 0; y < bounds.height; y += 36) { context.beginPath(); context.moveTo(0, y); context.lineTo(bounds.width, y); context.stroke(); }
     }
-    drawPose(context, diagnostics?.pose ?? [], bounds.width, bounds.height, diagnostics?.signals.confidence ?? 0);
-  }, [diagnostics, visionState]);
+    if (mode === "body") drawPose(context, poseDiagnostics?.pose ?? [], bounds.width, bounds.height, confidence);
+    else drawHands(context, handDiagnostics?.hands ?? [], bounds.width, bounds.height, confidence);
+  }, [confidence, handDiagnostics, mode, poseDiagnostics, visionState]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -79,7 +102,6 @@ export default function VisionLab() {
     return () => { window.removeEventListener("keydown", onKey); window.removeEventListener("keyup", onKey); };
   }, [publishSimulation, visionState]);
 
-  const diagnosticsHandler = (next: PoseAdapterDiagnostics) => setDiagnostics(next);
   const emit = (next: InputFrame) => { busRef.current?.accept(next); };
 
   const enableCamera = async () => {
@@ -88,13 +110,9 @@ export default function VisionLab() {
     setVisionState("loading");
     setError("");
     void adapterRef.current?.stop();
-    const adapter = new BrowserCameraAdapter({
-      video,
-      mirror: true,
-      classifier: { autoCalibrationFrames: 18 },
-      onDiagnostics: diagnosticsHandler,
-      onError: (cause) => setError(cause.message),
-    });
+    const adapter = mode === "body"
+      ? new BrowserCameraAdapter({ video, mirror: true, classifier: { autoCalibrationFrames: 18 }, onDiagnostics: setPoseDiagnostics, onError: (cause) => setError(cause.message) })
+      : new BrowserHandAdapter({ video, mirror: true, classifier: { stableFrames: 3 }, onDiagnostics: setHandDiagnostics, onError: (cause) => setError(cause.message) });
     adapterRef.current = adapter;
     try {
       await adapter.start(emit);
@@ -108,7 +126,8 @@ export default function VisionLab() {
 
   const startSimulation = () => {
     void adapterRef.current?.stop();
-    const adapter = new PoseInputAdapter({ mirror: false, classifier: { autoCalibrationFrames: 1, smoothing: 1 }, onDiagnostics: diagnosticsHandler });
+    if (mode !== "body") return;
+    const adapter = new PoseInputAdapter({ mirror: false, classifier: { autoCalibrationFrames: 1, smoothing: 1 }, onDiagnostics: setPoseDiagnostics });
     adapter.start(emit);
     adapterRef.current = adapter;
     simulationRef.current = { x: 0, duck: false, jump: false, arms: false, punch: false };
@@ -131,37 +150,38 @@ export default function VisionLab() {
     }, 500);
   };
 
-  const activeActions = ACTIONS.filter((action) => frame?.actions[action]);
+  const activeActions = actions.filter((action) => frame?.actions[action]);
   return (
     <main className="vision-page">
       <header className="vision-topbar"><Link className="wordmark" href="/"><span className="mark-block">101</span><span className="mark-label">VISION LAB</span></Link><span className={`vision-state state-${visionState}`}><i />{visionState.toUpperCase()}</span></header>
-      <section className="vision-intro"><p className="eyebrow">Bundled inference · Local landmarks · No recording</p><h1>Your body.<br />One input source.</h1><p>Camera frames stay in this browser. A bundled pose model finds 33 landmarks, then 101 calibration and gesture state turn them into duck, jump, lean, step, arms, and punch events.</p></section>
+      <section className="vision-intro"><p className="eyebrow">Bundled inference · Local landmarks · No recording</p><h1>Your movement.<br />One input source.</h1><p>Switch between the bundled 33-point body model and 21-point hand model. 101 turns local landmarks into stable pose, gesture, swipe, and circle events without sending camera frames anywhere.</p></section>
+      <div className="vision-mode-switch" aria-label="Vision pipeline"><button className={mode === "body" ? "active" : ""} onClick={() => selectMode("body")}>BODY · 33 LANDMARKS</button><button className={mode === "hands" ? "active" : ""} onClick={() => selectMode("hands")}>HANDS · 21 LANDMARKS</button></div>
       <section className="vision-workbench">
         <div className="vision-stage">
-          <div className="vision-stagebar"><span>LOCAL POSE PREVIEW</span><code>{diagnostics ? `${Math.round(diagnostics.signals.confidence * 100)}% CONFIDENCE · ${diagnostics.inferenceMs.toFixed(1)} MS` : "CAMERA OFF"}</code></div>
+          <div className="vision-stagebar"><span>LOCAL {mode === "body" ? "POSE" : "HAND"} PREVIEW</span><code>{inferenceMs !== undefined ? `${Math.round(confidence * 100)}% CONFIDENCE · ${inferenceMs.toFixed(1)} MS` : "CAMERA OFF"}</code></div>
           <div className={`vision-feed ${visionState === "simulated" ? "is-simulated" : ""}`}>
             {/* Camera capture is always muted and requests no audio track. */}
             {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video ref={videoRef} aria-label="Local mirrored camera preview" />
             <canvas ref={canvasRef} aria-label="Local pose landmark overlay" />
-            {visionState === "idle" && <div className="vision-empty"><span>33</span><p>LANDMARK PIPELINE READY</p></div>}
+            {visionState === "idle" && <div className="vision-empty"><span>{mode === "body" ? 33 : 21}</span><p>{mode === "body" ? "BODY" : "HAND"} LANDMARK PIPELINE READY</p></div>}
             {visionState === "loading" && <div className="vision-empty"><span>···</span><p>LOADING LOCAL MODEL</p></div>}
           </div>
-          <div className="vision-actions">{ACTIONS.map((action) => <span className={frame?.actions[action] ? "active" : ""} key={action}>{action}</span>)}</div>
+          <div className="vision-actions">{actions.map((action) => <span className={frame?.actions[action] ? "active" : ""} key={action}>{action.replace("hand.", "")}</span>)}</div>
         </div>
         <aside className="vision-controls">
           <span className="rail-title">PERMISSION + CALIBRATION <i /></span>
-          <button className="primary-button" onClick={enableCamera}>Enable local camera</button>
-          <button className="outline-button" onClick={startSimulation}>Use keyboard simulation</button>
-          <button className="vision-neutral" disabled={!diagnostics} onClick={() => adapterRef.current?.calibrateNeutral()}>Hold normally · Set neutral</button>
-          <div className="vision-readouts"><div><span>BODY X</span><strong>{(frame?.axes?.bodyX ?? 0).toFixed(2)}</strong></div><div><span>CROUCH</span><strong>{(frame?.axes?.crouch ?? 0).toFixed(2)}</strong></div><div><span>LIFT</span><strong>{(frame?.axes?.lift ?? 0).toFixed(2)}</strong></div><div><span>ACTIVE</span><strong>{activeActions.length || "—"}</strong></div></div>
+          <button className="primary-button" onClick={enableCamera}>Enable local {mode === "body" ? "body" : "hand"} camera</button>
+          {mode === "body" && <button className="outline-button" onClick={startSimulation}>Use keyboard simulation</button>}
+          {mode === "body" && <button className="vision-neutral" disabled={!poseDiagnostics} onClick={() => { if (adapterRef.current instanceof PoseInputAdapter) adapterRef.current.calibrateNeutral(); }}>Hold normally · Set neutral</button>}
+          {mode === "body" ? <div className="vision-readouts"><div><span>BODY X</span><strong>{(frame?.axes?.bodyX ?? 0).toFixed(2)}</strong></div><div><span>CROUCH</span><strong>{(frame?.axes?.crouch ?? 0).toFixed(2)}</strong></div><div><span>LIFT</span><strong>{(frame?.axes?.lift ?? 0).toFixed(2)}</strong></div><div><span>ACTIVE</span><strong>{activeActions.length || "—"}</strong></div></div> : <div className="vision-readouts"><div><span>POINTER X</span><strong>{(frame?.vectors?.aim?.x ?? 0).toFixed(2)}</strong></div><div><span>POINTER Y</span><strong>{(frame?.vectors?.aim?.y ?? 0).toFixed(2)}</strong></div><div><span>HANDS</span><strong>{handDiagnostics?.hands.length ?? 0}</strong></div><div><span>ACTIVE</span><strong>{activeActions.length || "—"}</strong></div></div>}
           {visionState === "simulated" && <div className="vision-sim-buttons"><button onClick={() => simulate("left")}>LEAN L</button><button onClick={() => simulate("right")}>LEAN R</button><button onClick={() => simulate("duck")}>DUCK</button><button onClick={() => simulate("jump")}>JUMP</button><button onClick={() => simulate("arms")}>ARMS</button></div>}
           {error && <p className="vision-error">{error}</p>}
-          <p className="vision-permission-copy"><strong>Camera:</strong> control games using your body. Frames are processed here and are never uploaded or recorded. Denial leaves keyboard and gamepad controls available.</p>
+          <p className="vision-permission-copy"><strong>Camera:</strong> control games using your {mode === "body" ? "body" : "hands"}. Frames are processed here and are never uploaded or recorded. Denial leaves keyboard and gamepad controls available.</p>
         </aside>
       </section>
-      <section className="vision-pipeline"><span>CAMERA FRAME <b>LOCAL</b></span><i>→</i><span>MEDIAPIPE <b>33 POINTS</b></span><i>→</i><span>101 CLASSIFIER <b>HYSTERESIS</b></span><i>→</i><span>INPUT FRAME <b>{frame?.sequence ?? 0}</b></span></section>
-      <p className="vision-keyboard-hint">Simulation: arrows move, Down ducks, Up or Space jumps, and A raises both arms. This path uses the same pose adapter without opening a camera.</p>
+      <section className="vision-pipeline"><span>CAMERA FRAME <b>LOCAL</b></span><i>→</i><span>MEDIAPIPE <b>{mode === "body" ? "33 BODY" : "21 HAND"} POINTS</b></span><i>→</i><span>101 CLASSIFIER <b>{mode === "body" ? "HYSTERESIS" : "TEMPORAL"}</b></span><i>→</i><span>INPUT FRAME <b>{frame?.sequence ?? 0}</b></span></section>
+      <p className="vision-keyboard-hint">{mode === "body" ? "Simulation: arrows move, Down ducks, Up or Space jumps, and A raises both arms. This path uses the same pose adapter without opening a camera." : "Hand mode stabilizes static poses across frames and recognizes directional swipes and closed circles over time. Spellcaster consumes the same normalized events as phone motion and keyboard input."}</p>
     </main>
   );
 }
@@ -179,6 +199,23 @@ function drawPose(context: CanvasRenderingContext2D, pose: readonly PoseLandmark
     if (landmark.visibility < 0.35) continue;
     context.fillStyle = landmark.visibility > .8 ? "#b5ff66" : "#ff5c35";
     context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
+  }
+}
+
+function drawHands(context: CanvasRenderingContext2D, hands: readonly { landmarks: HandLandmark[]; handedness: string; confidence: number }[], width: number, height: number, confidence: number) {
+  for (const hand of hands) {
+    if (hand.landmarks.length < 21) continue;
+    context.lineWidth = 3;
+    context.strokeStyle = `rgba(128,168,255,${0.35 + confidence * 0.65})`;
+    for (const [from, to] of HAND_CONNECTIONS) {
+      const a = hand.landmarks[from]; const b = hand.landmarks[to];
+      if (!a || !b) continue;
+      context.beginPath(); context.moveTo(a.x * width, a.y * height); context.lineTo(b.x * width, b.y * height); context.stroke();
+    }
+    for (const landmark of hand.landmarks) {
+      context.fillStyle = hand.handedness === "left" ? "#80a8ff" : "#b5ff66";
+      context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
+    }
   }
 }
 

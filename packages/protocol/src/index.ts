@@ -75,6 +75,7 @@ export interface ControllerLayout {
     action: string;
     mode: "tilt" | "wand";
     label?: string;
+    gestures?: Partial<Record<"shake" | "swing" | "spin", string>>;
   };
   layout: readonly ControllerElement[];
 }
@@ -119,7 +120,17 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
       throw new Error("Invalid controller motion mapping");
     }
     const motionLabel = optionalText(input.motion.label, "motion label", 64);
-    motion = { action: input.motion.action, mode: input.motion.mode, ...(motionLabel ? { label: motionLabel } : {}) };
+    let gestures: Partial<Record<"shake" | "swing" | "spin", string>> | undefined;
+    if (input.motion.gestures !== undefined) {
+      if (!isRecord(input.motion.gestures)) throw new Error("Invalid controller gesture mappings");
+      gestures = {};
+      for (const name of ["shake", "swing", "spin"] as const) {
+        const action = input.motion.gestures[name];
+        if (action !== undefined && !isActionName(action)) throw new Error(`Invalid ${name} gesture action`);
+        if (typeof action === "string") gestures[name] = action;
+      }
+    }
+    motion = { action: input.motion.action, mode: input.motion.mode, ...(motionLabel ? { label: motionLabel } : {}), ...(gestures ? { gestures } : {}) };
   }
   return { ...(title ? { title } : {}), ...(accent ? { accent } : {}), ...(motion ? { motion } : {}), layout };
 }

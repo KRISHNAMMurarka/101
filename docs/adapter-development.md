@@ -32,7 +32,7 @@ Send raw samples through `@101/motion`: timestamp normalization, screen-orientat
 
 Run inference locally. Convert camera frames into landmarks, then gestures, then `InputFrame`. Raw video stays on the source device unless an explicit, separately consented mode truly requires video transport.
 
-`@101/adapter-camera` is the browser reference. The MediaPipe-specific class implements `PoseVisionBackend`; `PoseInputAdapter` owns the stable 101 frame mapping and can consume any backend or simulated pose. This split is intentional: games and classification tests do not depend on camera access or a particular inference engine. See [vision foundation](vision.md).
+`@101/adapter-camera` is the browser reference. MediaPipe-specific classes implement `PoseVisionBackend` and `HandVisionBackend`; `PoseInputAdapter` and `HandInputAdapter` own the stable 101 frame mappings and can consume other backends or synthetic landmarks. Static hand poses require stable frames, while swipes/circles use timestamped histories and cooldowns. This split is intentional: games and classification tests do not depend on camera access or a particular inference engine. See [vision foundation](vision.md).
 
 ## Specialist hardware
 

@@ -41,6 +41,7 @@ test("round-trips targeted dynamic controller configuration", () => {
     layout: {
       title: "Reactor",
       accent: "#f8d96a",
+      motion: { action: "aim", mode: "wand", gestures: { swing: "spell.cast.blade", spin: "spell.cast.vortex" } },
       layout: [
         { type: "slider", action: "power", label: "POWER", min: 0, max: 1, step: .01 },
         { type: "button", action: "vent", label: "VENT", emphasis: "danger" },
@@ -48,6 +49,7 @@ test("round-trips targeted dynamic controller configuration", () => {
     },
   } as const;
   assert.deepEqual(deserializeControlMessage(serializeControlMessage(message)), message);
+  assert.throws(() => parseControllerLayout({ motion: { action: "aim", mode: "wand", gestures: { swing: "bad action" } }, layout: [{ type: "button", action: "fire", label: "FIRE" }] }));
 });
 
 test("packs motion into a fixed 48-byte realtime packet", () => {

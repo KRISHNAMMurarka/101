@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { InputFrame } from "@101/input";
-import type { PoseLandmark } from "@101/vision";
-import { PoseInputAdapter } from "./index.ts";
+import type { HandLandmark, PoseLandmark } from "@101/vision";
+import { HandInputAdapter, PoseInputAdapter } from "./index.ts";
 
 function pose(): PoseLandmark[] {
   const points = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 1 }));
@@ -30,3 +30,33 @@ test("camera-independent pose adapter emits normalized semantic frames", () => {
   assert.ok((frames[1]?.axes?.bodyX ?? 0) < -0.5);
   assert.equal(frames[1]?.poses?.body.length, 132);
 });
+
+test("camera-independent hand adapter maps gestures to shared spell actions", () => {
+  const frames: InputFrame[] = [];
+  const adapter = new HandInputAdapter({ mirror: false, classifier: { smoothing: 1, stableFrames: 2 } });
+  adapter.start((frame) => frames.push(frame));
+  const hand = twoFingerHand();
+  adapter.ingestHands([{ landmarks: hand, handedness: "right", confidence: .98 }], 0);
+  const frame = adapter.ingestHands([{ landmarks: hand, handedness: "right", confidence: .98 }], 20);
+  assert.equal(frame.source, "camera-hand");
+  assert.equal(frame.actions["hand.twoFingers"], true);
+  assert.equal(frame.actions["spell.cast.projectile"], true);
+  assert.equal(frame.poses?.hand?.length, 63);
+  assert.equal(frames.length, 2);
+});
+
+function twoFingerHand(): HandLandmark[] {
+  const hand = Array.from({ length: 21 }, () => ({ x: .5, y: .65, z: 0 }));
+  hand[0] = { x: .5, y: .85, z: 0 };
+  hand[1] = { x: .46, y: .76, z: 0 }; hand[2] = { x: .43, y: .7, z: 0 }; hand[3] = { x: .55, y: .66, z: 0 }; hand[4] = { x: .62, y: .69, z: 0 };
+  setFinger(hand, [5, 6, 7, 8], .41, true);
+  setFinger(hand, [9, 10, 11, 12], .48, true);
+  setFinger(hand, [13, 14, 15, 16], .55, false);
+  setFinger(hand, [17, 18, 19, 20], .62, false);
+  return hand;
+}
+
+function setFinger(hand: HandLandmark[], indices: number[], x: number, extended: boolean) {
+  const ys = extended ? [.65, .49, .35, .21] : [.65, .57, .62, .67];
+  indices.forEach((index, position) => { hand[index] = { x, y: ys[position]!, z: 0 }; });
+}

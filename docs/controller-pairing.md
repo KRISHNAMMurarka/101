@@ -9,9 +9,9 @@
 5. The host targets that device with `player.assign` and a JSON `controller.configure` panel.
 6. Touch and optional motion events appear as normalized actions, axes, and vectors.
 
-This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching games: its repeated capability hello lets the active host replace the panel without manual reconnection. Orbital Crew assigns separate pilot, weapons, shield, reactor, and emergency panels to up to five tabs. BeatForge replaces that panel with a motion performer; GravityStack assigns gravity first and then a separate builder panel.
+This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching games: its repeated capability hello lets the active host replace the panel without manual reconnection. Orbital Crew assigns separate pilot, weapons, shield, reactor, and emergency panels to up to five tabs. BeatForge replaces that panel with a motion performer; GravityStack assigns gravity first and then a separate builder panel; Spellcaster maps physical motion gestures to the same semantic spells as its camera/keyboard controls; Echo Maze sends precise clues only to the assigned scanner.
 
-Controller configuration is device-targeted. A phone ignores assignments, layouts, state readouts, and haptic commands addressed to another device. The host also replaces the device/player identity claimed by incoming realtime frames with the authoritative session assignment.
+Controller configuration is device-targeted. A phone ignores assignments, layouts, state readouts, and haptic commands addressed to another device. Echo Maze uses this boundary for role-private companion information: the host sends bearing, distance, signal, and echo proximity only to the assigned scanner. The host also replaces the device/player identity claimed by incoming realtime frames with the authoritative session assignment.
 
 Motion permission is requested only when **Enable motion** is pressed. If permission is denied or unavailable, the sword touch surface and steering buttons/pedals remain usable.
 
