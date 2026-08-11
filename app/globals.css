@@ -365,6 +365,81 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .controller-footnote { margin: 13px auto 0; color: #545c57; font: 600 8px/1.5 ui-monospace, monospace; text-align: center; }
 .controller-footnote code { color: #7d867f; }
 
+.steering-deck { flex: 1; display: grid; grid-template-columns: auto minmax(180px, 360px) auto; place-content: center; align-items: center; gap: clamp(12px, 4vw, 48px); }
+.steering-wheel { position: relative; width: min(42vw, 350px); aspect-ratio: 1; display: grid; place-items: center; border: clamp(13px, 2.4vw, 25px) solid #202725; border-radius: 50%; box-shadow: inset 0 0 0 2px #4a5550, 0 0 0 1px #050606; transition: transform .09s linear; }
+.steering-wheel::before, .steering-wheel::after { content: ""; position: absolute; width: 42%; height: 11px; background: #343d3a; }
+.steering-wheel::before { left: 5%; transform: rotate(23deg); }.steering-wheel::after { right: 5%; transform: rotate(-23deg); }
+.steering-wheel span { position: relative; z-index: 2; width: 28%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--orange); color: #1a0d09; font: 900 clamp(12px, 3vw, 24px) ui-monospace, monospace; }
+.steering-wheel i { position: absolute; top: 4%; width: 4px; height: 18%; background: var(--acid); }.steering-wheel b { position: absolute; inset: 14%; border: 1px solid #3a4440; border-radius: 50%; }
+.steer-touch { width: clamp(58px, 10vw, 100px); height: clamp(90px, 16vw, 150px); border: 1px solid var(--line-strong); background: #141918; color: var(--cyan); font-size: 28px; cursor: pointer; }
+.steer-touch:active { border-color: var(--cyan); background: rgba(80,227,255,.08); }
+.pedal-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(80px, 145px)); justify-content: center; gap: 10px; }
+.pedal-row button { min-height: 54px; border: 1px solid var(--line-strong); background: #141918; color: #aeb6b0; font: 800 9px ui-monospace, monospace; letter-spacing: .11em; cursor: pointer; }
+.pedal-row .boost-pedal { border-color: var(--orange); color: var(--orange); }.pedal-row button:active { background: var(--paper); color: var(--ink); }
+.sword-deck { position: relative; overflow: hidden; flex: 1; min-height: 300px; display: grid; place-items: center; border: 1px solid var(--line); background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 28px 28px; touch-action: none; }
+.sword-deck::before { content: ""; position: absolute; width: 76%; height: 2px; transform: rotate(-35deg); background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 22px rgba(80,227,255,.5); }
+.sword-deck > span { position: absolute; top: 18px; color: #667069; font: 750 8px ui-monospace, monospace; letter-spacing: .14em; }
+.sword-reticle { position: absolute; width: 24px; height: 24px; transform: translate(-50%,-50%); border: 2px solid var(--acid); border-radius: 50%; transition: left .05s linear, top .05s linear; }
+.sword-reticle i { position: absolute; inset: 6px; border-radius: 50%; background: var(--acid); }
+.sword-trigger { position: absolute; right: 22px; bottom: 22px; width: 92px; aspect-ratio: 1; border: 2px solid var(--orange); border-radius: 50%; background: rgba(9,11,11,.84); color: var(--orange); font: 850 10px ui-monospace, monospace; cursor: pointer; }
+.motion-permission { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 14px; margin: 12px 0; }
+.motion-permission button { min-height: 36px; padding: 0 13px; border: 1px solid rgba(181,255,102,.4); background: rgba(181,255,102,.06); color: var(--acid); font: 800 8px ui-monospace, monospace; letter-spacing: .1em; cursor: pointer; }
+.motion-permission p { margin: 0; color: #657069; font: 600 8px/1.45 ui-monospace, monospace; }
+
+.motion-page { min-height: 100vh; padding: 0 clamp(20px, 5vw, 76px) 100px; background: var(--ink); }
+.motion-topbar { min-height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+.motion-state { display: flex; align-items: center; gap: 9px; color: #707a73; font: 800 9px ui-monospace, monospace; letter-spacing: .12em; }
+.motion-state i { width: 8px; height: 8px; border-radius: 50%; background: #59635d; }
+.motion-state.state-active, .motion-state.state-simulated { color: var(--acid); }.motion-state.state-active i, .motion-state.state-simulated i { background: var(--acid); box-shadow: 0 0 14px rgba(181,255,102,.65); }
+.motion-state.state-denied, .motion-state.state-unsupported { color: var(--orange); }.motion-state.state-denied i, .motion-state.state-unsupported i { background: var(--orange); }
+.motion-intro { max-width: 1120px; padding: 85px 0 54px; }
+.motion-intro h1 { margin: 0; font-size: clamp(56px, 8vw, 116px); line-height: .84; letter-spacing: -.07em; }
+.motion-intro > p:last-child { max-width: 720px; margin: 34px 0 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
+.motion-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 330px; border: 1px solid var(--line); background: #0d1010; }
+.motion-stage { min-width: 0; border-right: 1px solid var(--line); }
+.motion-stagebar { min-height: 48px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: #667069; font: 750 8px ui-monospace, monospace; letter-spacing: .1em; }
+.motion-stagebar code { color: var(--cyan); }
+.motion-stage canvas { display: block; width: 100%; height: clamp(460px, 56vw, 680px); }
+.motion-angle-strip { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+.motion-angle-strip span { min-height: 65px; padding: 12px; display: grid; gap: 7px; border-right: 1px solid var(--line); color: #606963; font: 700 8px ui-monospace, monospace; }
+.motion-angle-strip span:last-child { border-right: 0; }.motion-angle-strip b { color: var(--paper); font-size: 13px; }
+.motion-controls { padding: 23px; }
+.motion-controls .primary-button, .motion-controls .outline-button { width: 100%; margin-top: 18px; }
+.motion-controls .outline-button { margin-top: 9px; }
+.motion-neutral { width: 100%; min-height: 44px; margin-top: 22px; border: 1px solid var(--line); background: #151a19; color: #a2aaa4; font: 750 9px ui-monospace, monospace; cursor: pointer; }
+.motion-neutral:disabled { opacity: .35; cursor: not-allowed; }
+.sensitivity-control { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--line); }
+.sensitivity-control > span { color: #667069; font: 750 8px ui-monospace, monospace; letter-spacing: .1em; }
+.sensitivity-control > div { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+.sensitivity-control button { min-height: 38px; border: 1px solid var(--line); background: transparent; color: #6a736d; font: 800 8px ui-monospace, monospace; cursor: pointer; }
+.sensitivity-control button.active { border-color: var(--acid); background: rgba(181,255,102,.07); color: var(--acid); }
+.motion-permission-copy, .motion-keyboard-hint { color: #616a64; font: 600 8px/1.65 ui-monospace, monospace; }
+.motion-permission-copy { margin: 28px 0 0; }.motion-keyboard-hint { margin: 18px 0 0; }
+.sensor-table { border-left: 1px solid var(--line); }
+.sensor-table article { display: grid; grid-template-columns: minmax(160px,.7fr) 1fr 1fr auto; align-items: center; border-bottom: 1px solid var(--line); background: #111515; }
+.sensor-table article > span, .sensor-table article > div, .sensor-table article > b { min-height: 74px; padding: 16px; display: grid; align-content: center; border-right: 1px solid var(--line); }
+.sensor-table article > span { color: #7b847e; font: 800 9px ui-monospace, monospace; letter-spacing: .1em; }
+.sensor-table small { color: #606963; font: 700 7px ui-monospace, monospace; }.sensor-table code { margin-top: 9px; color: var(--cyan); font: 750 11px ui-monospace, monospace; }
+.sensor-table article > b { color: #5d6660; font: 700 8px ui-monospace, monospace; }
+
+.drift-page { max-width: 1540px; min-height: calc(100vh - 76px); margin: 0 auto; padding: 42px clamp(20px, 4vw, 64px) 100px; }
+.drift-heading { display: flex; align-items: end; justify-content: space-between; gap: 36px; margin-bottom: 24px; }
+.drift-heading h1 { margin: 0; font-size: clamp(50px, 7vw, 98px); line-height: .82; letter-spacing: -.07em; text-transform: uppercase; }
+.drift-heading h1 span { color: var(--cyan); font-family: ui-monospace, monospace; letter-spacing: -.12em; }
+.drift-stats { min-width: 500px; display: grid; grid-template-columns: 1fr 1.4fr 1fr; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.drift-stats div { min-height: 82px; padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.drift-stats span { color: #68716b; font: 750 8px ui-monospace, monospace; letter-spacing: .1em; }.drift-stats strong { display: inline-block; margin-top: 13px; font: 800 20px ui-monospace, monospace; }.drift-stats small { margin-left: 5px; color: #68716b; font: 700 7px ui-monospace, monospace; }
+.drift-arena { position: relative; overflow: hidden; border: 1px solid var(--line); background: #071013; }
+.drift-statusbar { min-height: 44px; padding: 0 15px; display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 20px; border-bottom: 1px solid var(--line); color: #667069; font: 750 8px ui-monospace, monospace; letter-spacing: .09em; }
+.drift-statusbar span { display: flex; align-items: center; gap: 9px; }.drift-statusbar span:nth-child(2) { justify-self: center; }.drift-statusbar b { color: var(--cyan); }
+.drift-arena canvas { display: block; width: 100%; height: clamp(520px, 63vw, 780px); }
+.drift-overlay { position: absolute; z-index: 4; top: 62px; right: 18px; left: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; }
+.drift-overlay button { padding: 10px 12px; border: 1px solid rgba(239,241,232,.22); background: rgba(9,11,11,.75); color: var(--paper); font: 750 8px ui-monospace, monospace; letter-spacing: .08em; pointer-events: auto; cursor: pointer; }
+.drift-meter { min-width: 190px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; padding: 10px; background: rgba(9,11,11,.74); color: #778079; font: 750 8px ui-monospace, monospace; }
+.drift-meter > i, .boost-meter > i { overflow: hidden; height: 4px; background: #29302d; }.drift-meter > i b, .boost-meter > i b { display: block; height: 100%; background: var(--acid); transition: width .15s linear; }.drift-meter strong { color: var(--paper); }
+.drift-event { color: var(--cyan); font: 850 10px ui-monospace, monospace; letter-spacing: .12em; text-shadow: 0 2px 8px #000; }
+.boost-meter { position: absolute; z-index: 4; right: 18px; bottom: 18px; width: min(270px, 50%); display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 12px; padding: 10px; background: rgba(9,11,11,.76); color: #778079; font: 750 8px ui-monospace, monospace; }.boost-meter > i b { background: var(--orange); }
+
 .slash-page { max-width: 1540px; min-height: calc(100vh - 76px); margin: 0 auto; padding: 42px clamp(20px, 4vw, 64px) 100px; }
 .slash-heading { display: flex; align-items: end; justify-content: space-between; gap: 36px; margin-bottom: 24px; }
 .slash-heading h1 { margin: 0; font-size: clamp(50px, 7vw, 98px); line-height: .82; letter-spacing: -.07em; text-transform: uppercase; }
@@ -434,6 +509,10 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .network-privacy { max-width: 1000px; margin: 28px 0 0; color: #626b65; font: 600 9px/1.65 ui-monospace, monospace; }
 .network-privacy b { color: #8e988f; }
 
+@media (max-width: 1400px) {
+  .nav button, .nav a { padding-inline: 10px; font-size: 11px; }
+}
+
 @media (max-width: 1050px) {
   .hero { grid-template-columns: 1fr; }
   .hero-copy { max-width: 850px; }
@@ -449,6 +528,10 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   .network-metrics, .connection-readout { grid-template-columns: repeat(2, 1fr); }
   .slash-heading { align-items: start; flex-direction: column; }
   .slash-stats { width: 100%; min-width: 0; }
+  .drift-heading { align-items: start; flex-direction: column; }
+  .drift-stats { width: 100%; min-width: 0; }
+  .motion-workbench { grid-template-columns: 1fr; }
+  .motion-stage { border-right: 0; border-bottom: 1px solid var(--line); }
 }
 
 @media (max-width: 760px) {
@@ -491,6 +574,19 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   .controller-top .mark-label { display: inline; }
   .controller-deck { gap: 12px; }
   .controller-session small { display: none; }
+  .steering-deck { grid-template-columns: auto minmax(150px, 260px) auto; }
+  .motion-permission { grid-template-columns: 1fr; }
+  .motion-intro { padding-top: 65px; }
+  .motion-intro h1 { font-size: clamp(50px, 15vw, 78px); }
+  .motion-stage canvas { height: 58vh; min-height: 420px; }
+  .motion-angle-strip { grid-template-columns: 1fr 1fr; }
+  .motion-angle-strip span { border-bottom: 1px solid var(--line); }
+  .sensor-table article { grid-template-columns: 1fr 1fr; }
+  .sensor-table article > span, .sensor-table article > b { min-height: 44px; }
+  .drift-page { padding-top: 30px; }
+  .drift-arena canvas { height: 64vh; min-height: 480px; }
+  .drift-statusbar { grid-template-columns: 1fr auto; }.drift-statusbar span:nth-child(2) { display: none; }
+  .drift-event { display: none; }
   .network-intro { padding-top: 65px; }
   .network-intro h1 { font-size: clamp(48px, 15vw, 76px); }
   .role-choice, .pair-workbench { grid-template-columns: 1fr; }
@@ -511,6 +607,13 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   .game-card { padding: 18px; }
   .controller-deck { grid-template-columns: 1fr 1fr; }
   .action-cluster { gap: 10px; }
+  .steering-deck { grid-template-columns: 46px 1fr 46px; gap: 7px; }
+  .steer-touch { width: 46px; }
+  .pedal-row { grid-template-columns: repeat(3, 1fr); }
+  .motion-page { padding-inline: 14px; }
+  .motion-stagebar code { display: none; }
+  .drift-stats { grid-template-columns: 1fr 1fr; }.drift-stats div:last-child { display: none; }
+  .drift-meter { min-width: 165px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

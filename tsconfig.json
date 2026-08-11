@@ -28,6 +28,7 @@
       "@101/adapter-keyboard": ["./packages/adapter-keyboard/src/index.ts"],
       "@101/adapter-pointer": ["./packages/adapter-pointer/src/index.ts"],
       "@101/adapter-gamepad": ["./packages/adapter-gamepad/src/index.ts"],
+      "@101/adapter-motion": ["./packages/adapter-motion/src/index.ts"],
       "@101/render-2d": ["./packages/render-2d/src/index.ts"],
       "@101/render-3d": ["./packages/render-3d/src/index.ts"],
       "@101/audio": ["./packages/audio/src/index.ts"],

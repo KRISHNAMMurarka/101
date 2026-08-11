@@ -26,6 +26,8 @@ interface InputAdapter {
 
 Send raw samples through `@101/motion`: timestamp normalization, screen-orientation correction, quaternion calibration, smoothing, dead zone and gesture recognition. Do not recognize a swing from a single noisy sample; use hysteresis and a state machine.
 
+`@101/adapter-motion` is the browser reference. `requestMotionPermission()` must be called from an explicit user gesture before `BrowserMotionAdapter.start()`. The adapter publishes `steer`, `tiltX`, `tiltY`, quaternion/diagnostic axes, the `tilt` vector, and state-machine `shake`, `swing`, `slash`, and `spin` actions. Games consume only the semantic subset they bind.
+
 ## Vision adapters
 
 Run inference locally. Convert camera frames into landmarks, then gestures, then `InputFrame`. Raw video stays on the source device unless an explicit, separately consented mode truly requires video transport.

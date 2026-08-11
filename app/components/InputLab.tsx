@@ -51,6 +51,14 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
         const device = message.payload;
         setLinkedDevices((current) => current.includes(device.deviceId) ? current : [...current, device.deviceId]);
         transport.sendReliable({ type: "player.assign", deviceId: device.deviceId, playerId: "player-1" });
+        transport.sendReliable({
+          type: "controller.configure",
+          role: "classic",
+          layout: { layout: [
+            { type: "joystick", action: "move", label: "MOVE" },
+            { type: "button", action: "trigger", label: "TRIGGER" },
+          ] },
+        });
       }
     });
 

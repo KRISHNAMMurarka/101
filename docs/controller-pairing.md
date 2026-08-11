@@ -6,9 +6,12 @@
 2. Choose **Connect device**.
 3. Open the provided controller link in another tab in the same browser profile.
 4. The controller sends a capability hello; the host assigns Player 1.
-5. D-pad and A-button events appear as normalized `move` and `trigger` frames.
+5. The host selects a classic, sword, or steering panel with `controller.configure`.
+6. Touch and optional motion events appear as normalized actions, axes, and vectors.
 
-This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices.
+This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching from Slashstorm to TiltDrift: its repeated capability hello lets the new host role replace the old panel without reconnection.
+
+Motion permission is requested only when **Enable motion** is pressed. If permission is denied or unavailable, the sword touch surface and steering buttons/pedals remain usable.
 
 ## Manual offline WebRTC
 

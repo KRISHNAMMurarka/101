@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import InputLab from "./components/InputLab";
 import SlashstormGame from "./components/SlashstormGame";
+import TiltDriftGame from "./components/TiltDriftGame";
 
-type View = "library" | "lab" | "slashstorm" | "system";
+type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "system";
 
 const INPUT_LABELS: Record<string, string> = {
   keyboard: "Keyboard",
@@ -48,6 +49,8 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <button className={view === "library" ? "active" : ""} onClick={() => navigate("library")}>Games</button>
           <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input Lab</button>
           <button className={view === "slashstorm" ? "active" : ""} onClick={() => navigate("slashstorm")}>Slashstorm</button>
+          <button className={view === "tiltdrift" ? "active" : ""} onClick={() => navigate("tiltdrift")}>TiltDrift</button>
+          <Link href="/motion">Motion Lab</Link>
           <Link href="/network">Network Lab</Link>
           <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>The system</button>
         </nav>
@@ -113,7 +116,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <section className="library-section" id="games">
             <div className="section-heading">
               <div><p className="eyebrow">Game library</p><h2>Ten games. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. Input Lab, Network Lab, and the first Slashstorm vertical slice are playable now; the remaining game worlds validate the same engine.</p>
+              <p>The catalog is manifest-driven. Input, Motion, and Network Labs now support two playable games using the same engine and controller link.</p>
             </div>
             <div className="game-grid">
               <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
@@ -144,7 +147,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
                       {game.controllers?.immersive?.length ? <span>Immersive available</span> : null}
                     </div>
                   </div>
-                  {game.id === "slashstorm" ? <button className="game-card-launch" onClick={() => navigate("slashstorm")}>Launch game <span>↗</span></button> : <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>}
+                  {game.id === "slashstorm" || game.id === "tiltdrift" ? <button className="game-card-launch" onClick={() => navigate(game.id === "slashstorm" ? "slashstorm" : "tiltdrift")}>Launch game <span>↗</span></button> : <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>}
                 </article>
               ))}
             </div>
@@ -160,12 +163,13 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
 
       {view === "lab" && <InputLab sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "slashstorm" && <SlashstormGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "tiltdrift" && <TiltDriftGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Networking + first game</span></div>
+        <div><span>MIT core</span><span>Offline by design</span><span>Motion + two games</span></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
@@ -205,7 +209,7 @@ function SystemView({ onLaunch }: { onLaunch: () => void }) {
     ["02", "Game SDK", "A narrow, versioned contract for lifecycle, assets and input."],
     ["03", "Input Bus", "Normalizes sources, rejects stale frames and assigns players."],
     ["04", "Protocol", "Reliable control and disposable realtime channels behind transports."],
-    ["05", "Adapters", "Keyboard, pointer and gamepad now; motion, vision and hardware next."],
+    ["05", "Adapters", "Keyboard, pointer, gamepad and calibrated motion now; vision and hardware next."],
   ];
   return (
     <section className="system-page">

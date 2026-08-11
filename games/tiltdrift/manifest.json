@@ -1,8 +1,8 @@
 {
   "id": "tiltdrift", "name": "TiltDrift 101", "tagline": "Every corner is a new decision.", "order": 2,
-  "version": "0.1.0", "engine": "^1", "renderer": "3d",
+  "version": "0.2.0", "engine": "^1", "renderer": "3d",
   "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "touch", "gamepad", "phone-motion", "watch-motion"],
-  "offline": true, "procedural": true, "status": "planned", "accent": "#50e3ff",
+  "offline": true, "procedural": true, "status": "playable", "accent": "#50e3ff",
   "controllers": { "basic": ["keyboard", "touch", "gamepad"], "enhanced": ["phone-motion"], "immersive": ["watch-motion"] }
 }

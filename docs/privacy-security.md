@@ -20,6 +20,8 @@ Permission screens should name the capability and the immediate purpose:
 
 Denial must return the user to a conventional fallback mapping.
 
+The browser Motion Lab and Link implementation follow this rule today: sensor listeners live in `@101/adapter-motion`, permission follows a user gesture, calibration/filtering occurs locally, and only compact normalized frames are offered to a connected host. The Motion Lab does not connect or transmit samples.
+
 ## Local network security
 
 Pairing codes are discovery aids, not long-term authentication secrets. WebRTC sessions should use ephemeral keys, display both devices during confirmation, expire offers, and reject protocol-version mismatches. The Hub must bind only to intended interfaces and clearly show which network transport is active.

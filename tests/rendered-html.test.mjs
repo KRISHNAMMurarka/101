@@ -47,6 +47,25 @@ test("serves Slashstorm as an independently playable game route", async () => {
   assert.match(html, /INPUT BUS \/ SWORD ACTIVE/);
 });
 
+test("serves TiltDrift as an independently playable 3D game route", async () => {
+  const response = await render("/games/tiltdrift");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /TiltDrift 101 — Infinite local racing/);
+  assert.match(html, /Playable 3D vertical slice/);
+  assert.match(html, /INPUT BUS \/ STEER ACTIVE/);
+});
+
+test("server-renders the local Motion Lab and permission explanation", async () => {
+  const response = await render("/motion");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /101 Motion Lab/);
+  assert.match(html, /Enable device motion/);
+  assert.match(html, /Permission is requested only by the button/);
+  assert.match(html, /Use keyboard simulation/);
+});
+
 test("server-renders the offline WebRTC Network Lab", async () => {
   const response = await render("/network");
   const html = await response.text();
@@ -62,7 +81,7 @@ test("serves the controller surface and product metadata", async () => {
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Link — Browser controller/);
-  assert.match(html, /LINK \/ CLASSIC/);
+  assert.match(html, /LINK \/ (?:<!-- -->)?CLASSIC/);
 
   const [layout, manifest, packageJson] = await Promise.all([
     readFile(new URL("app/layout.tsx", root), "utf8"),
