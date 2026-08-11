@@ -1,0 +1,7 @@
+{
+  "id": "spellcaster", "name": "Spellcaster 101", "tagline": "The gesture is the spell.",
+  "version": "0.1.0", "engine": "^1", "renderer": "3d",
+  "players": { "min": 1, "max": 2 },
+  "inputs": ["keyboard", "gamepad", "phone-motion", "camera-hand"],
+  "offline": true, "procedural": true, "status": "planned", "accent": "#7dfbd7"
+}

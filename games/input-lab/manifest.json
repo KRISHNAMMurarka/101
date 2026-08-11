@@ -1,0 +1,14 @@
+{
+  "id": "input-lab",
+  "name": "101 Input Lab",
+  "tagline": "One arena. Every input. Visible in real time.",
+  "version": "0.1.0",
+  "engine": "^1",
+  "renderer": "2d",
+  "players": { "min": 1, "max": 4 },
+  "inputs": ["keyboard", "mouse", "touch", "gamepad", "custom"],
+  "offline": true,
+  "procedural": false,
+  "status": "playable",
+  "accent": "#ff5c35"
+}

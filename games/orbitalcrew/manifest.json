@@ -1,0 +1,7 @@
+{
+  "id": "orbitalcrew", "name": "Orbital Crew 101", "tagline": "One ship. Different screens. Shared fate.",
+  "version": "0.1.0", "engine": "^1", "renderer": "2d",
+  "players": { "min": 1, "max": 6 },
+  "inputs": ["keyboard", "touch", "gamepad", "phone-motion", "watch-motion"],
+  "offline": true, "procedural": true, "status": "planned", "accent": "#f8d96a"
+}

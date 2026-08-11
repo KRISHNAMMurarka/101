@@ -1,0 +1,69 @@
+import type { InputAdapter, InputFrameListener } from "@101/input";
+
+export class KeyboardAdapter implements InputAdapter {
+  readonly id = "keyboard-primary";
+  readonly source = "keyboard" as const;
+  private emit?: InputFrameListener;
+  private sequence = 0;
+  private readonly pressed = new Set<string>();
+
+  constructor(private readonly playerId = "player-1") {}
+
+  start(emit: InputFrameListener) {
+    this.emit = emit;
+    window.addEventListener("keydown", this.onKeyDown);
+    window.addEventListener("keyup", this.onKeyUp);
+    window.addEventListener("blur", this.onBlur);
+    this.publish();
+  }
+
+  stop() {
+    window.removeEventListener("keydown", this.onKeyDown);
+    window.removeEventListener("keyup", this.onKeyUp);
+    window.removeEventListener("blur", this.onBlur);
+    this.emit = undefined;
+    this.pressed.clear();
+  }
+
+  private onKeyDown = (event: KeyboardEvent) => {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) {
+      event.preventDefault();
+    }
+    this.pressed.add(event.code);
+    this.publish();
+  };
+
+  private onKeyUp = (event: KeyboardEvent) => {
+    this.pressed.delete(event.code);
+    this.publish();
+  };
+
+  private onBlur = () => {
+    this.pressed.clear();
+    this.publish();
+  };
+
+  private publish() {
+    const x = Number(this.has("ArrowRight", "KeyD")) - Number(this.has("ArrowLeft", "KeyA"));
+    const y = Number(this.has("ArrowDown", "KeyS")) - Number(this.has("ArrowUp", "KeyW"));
+    this.emit?.({
+      deviceId: this.id,
+      playerId: this.playerId,
+      sequence: ++this.sequence,
+      timestamp: performance.now(),
+      source: this.source,
+      actions: {
+        trigger: this.has("Space", "Enter"),
+        buttonA: this.has("Space"),
+        buttonB: this.has("ShiftLeft", "ShiftRight"),
+        pause: this.has("Escape"),
+      },
+      axes: { moveX: x, moveY: y, steer: x },
+      vectors: { move: { x, y } },
+    });
+  }
+
+  private has(...codes: string[]) {
+    return codes.some((code) => this.pressed.has(code));
+  }
+}

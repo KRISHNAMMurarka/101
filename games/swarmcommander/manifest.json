@@ -1,0 +1,7 @@
+{
+  "id": "swarmcommander", "name": "Swarm Commander 101", "tagline": "Hundreds of agents. One shared intent.",
+  "version": "0.1.0", "engine": "^1", "renderer": "3d",
+  "players": { "min": 1, "max": 4 },
+  "inputs": ["keyboard", "mouse", "touch", "gamepad", "phone-motion", "watch-motion", "camera-hand"],
+  "offline": true, "procedural": true, "status": "planned", "accent": "#f6c15c"
+}

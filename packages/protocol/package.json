@@ -1,0 +1,7 @@
+{
+  "name": "@101/protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": { "@101/input": "0.1.0" },
+  "exports": "./src/index.ts"
+}

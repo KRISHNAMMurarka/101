@@ -1,0 +1,7 @@
+{
+  "id": "beatforge", "name": "BeatForge 101", "tagline": "Forge rhythm from movement.",
+  "version": "0.1.0", "engine": "^1", "renderer": "3d",
+  "players": { "min": 1, "max": 4 },
+  "inputs": ["keyboard", "gamepad", "phone-motion", "watch-motion", "camera-hand"],
+  "offline": true, "procedural": true, "status": "planned", "accent": "#ff73c9"
+}

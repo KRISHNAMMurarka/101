@@ -1,0 +1,7 @@
+{
+  "name": "@101/physics",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": { "@dimforge/rapier2d-compat": "0.19.3" },
+  "exports": "./src/index.ts"
+}

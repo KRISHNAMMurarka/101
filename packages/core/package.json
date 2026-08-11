@@ -1,0 +1,10 @@
+{
+  "name": "@101/core",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@101/input": "0.1.0",
+    "@101/sdk": "0.1.0"
+  },
+  "exports": "./src/index.ts"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "101 — Local Gaming System",
+  "short_name": "101",
+  "description": "Anything can be a controller.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090b0b",
+  "theme_color": "#090b0b"
+}

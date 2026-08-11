@@ -1,0 +1,7 @@
+{
+  "name": "@101/session",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": { "@101/protocol": "0.1.0" },
+  "exports": "./src/index.ts"
+}

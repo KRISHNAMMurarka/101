@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "incremental": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@101/core": ["./packages/core/src/index.ts"],
+      "@101/sdk": ["./packages/sdk/src/index.ts"],
+      "@101/input": ["./packages/input/src/index.ts"],
+      "@101/protocol": ["./packages/protocol/src/index.ts"],
+      "@101/session": ["./packages/session/src/index.ts"],
+      "@101/motion": ["./packages/motion/src/index.ts"],
+      "@101/replay": ["./packages/replay/src/index.ts"],
+      "@101/diagnostics": ["./packages/diagnostics/src/index.ts"],
+      "@101/adapter-keyboard": ["./packages/adapter-keyboard/src/index.ts"],
+      "@101/adapter-pointer": ["./packages/adapter-pointer/src/index.ts"],
+      "@101/adapter-gamepad": ["./packages/adapter-gamepad/src/index.ts"],
+      "@101/render-2d": ["./packages/render-2d/src/index.ts"],
+      "@101/render-3d": ["./packages/render-3d/src/index.ts"],
+      "@101/audio": ["./packages/audio/src/index.ts"],
+      "@101/physics": ["./packages/physics/src/index.ts"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
