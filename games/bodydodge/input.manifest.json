@@ -1,0 +1,15 @@
+{
+  "game": "bodydodge",
+  "actions": {
+    "duck": { "recommended": ["camera-pose"], "fallback": ["keyboard", "gamepad"], "description": "Lower the tracked body or press Down/S." },
+    "jump": { "recommended": ["camera-pose"], "fallback": ["keyboard", "gamepad"], "description": "Lift the tracked body or press Up/Space." },
+    "armsRaised": { "recommended": ["camera-pose"], "fallback": ["keyboard", "gamepad"], "description": "Raise both wrists or press E/gamepad Y." }
+  },
+  "axes": {
+    "dodgeX": { "recommended": ["camera-pose"], "fallback": ["keyboard", "gamepad"], "description": "Normalized lateral body movement." },
+    "lean": { "recommended": ["camera-pose"], "fallback": ["keyboard", "gamepad"], "description": "Normalized shoulder-to-hip lean." }
+  },
+  "poses": {
+    "body": { "recommended": ["camera-pose"], "fallback": [], "description": "Optional flattened 33-point body pose." }
+  }
+}

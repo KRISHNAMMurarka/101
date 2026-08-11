@@ -60,9 +60,14 @@ export class KeyboardAdapter implements InputAdapter {
         boost: this.has("Space", "Enter"),
         brake: this.has("ArrowDown", "KeyS"),
         drift: this.has("ShiftLeft", "ShiftRight", "KeyX"),
+        duck: this.has("ArrowDown", "KeyS"),
+        jump: this.has("ArrowUp", "KeyW", "Space"),
+        armsRaised: this.has("KeyE", "Enter"),
+        leanLeft: this.has("ArrowLeft", "KeyA"),
+        leanRight: this.has("ArrowRight", "KeyD"),
         pause: this.has("Escape"),
       },
-      axes: { moveX: x, moveY: y, steer: x },
+      axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x },
       vectors: { move: { x, y }, aim: { x, y } },
     });
   }

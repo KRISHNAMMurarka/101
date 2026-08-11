@@ -12,12 +12,28 @@ test("normalizes invalid and out-of-range input values", () => {
     actions: { jump: true },
     axes: { steer: 4 },
     vectors: { aim: { x: -3, y: 0.4, z: Number.NaN } },
+    poses: { body: [2, -2, Number.NaN, 0.8] },
   }, 100);
 
   assert.equal(frame.sequence, 1);
   assert.equal(frame.timestamp, 100);
   assert.equal(frame.axes?.steer, 1);
   assert.deepEqual(frame.vectors?.aim, { x: -1, y: 0.4, z: 0 });
+  assert.deepEqual(frame.poses?.body, [1, -1, 0, 0.8]);
+});
+
+test("reads normalized pose landmarks through the same player/device ordering", () => {
+  const bus = new InputBus();
+  bus.accept({
+    deviceId: "camera-1",
+    playerId: "player-1",
+    sequence: 1,
+    timestamp: 10,
+    source: "camera-pose",
+    actions: { duck: false },
+    poses: { body: [0.2, 0.4, -0.1, 0.95] },
+  });
+  assert.deepEqual(bus.pose("body"), [0.2, 0.4, -0.1, 0.95]);
 });
 
 test("drops stale realtime frames and reads the newest device value", () => {

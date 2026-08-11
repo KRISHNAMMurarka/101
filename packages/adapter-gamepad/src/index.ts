@@ -40,9 +40,14 @@ export class GamepadAdapter implements InputAdapter {
           boost: gamepad.buttons[0]?.pressed ?? false,
           brake: gamepad.buttons[6]?.pressed ?? false,
           drift: gamepad.buttons[1]?.pressed ?? false,
+          duck: (gamepad.axes[1] ?? 0) > .55 || (gamepad.buttons[1]?.pressed ?? false),
+          jump: gamepad.buttons[0]?.pressed ?? false,
+          armsRaised: gamepad.buttons[3]?.pressed ?? false,
+          leanLeft: x < -.45,
+          leanRight: x > .45,
           pause: gamepad.buttons[9]?.pressed ?? false,
         },
-        axes: { moveX: x, moveY: y, steer: x },
+        axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x },
         vectors: { move: { x, y }, aim: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) } },
       });
     }

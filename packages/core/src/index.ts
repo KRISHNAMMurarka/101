@@ -20,7 +20,7 @@ export class Engine101<State> {
       action: (name, playerId) => inputBus.action(name, playerId),
       axis: (name, playerId) => inputBus.axis(name, playerId),
       vector: (name, playerId) => inputBus.vector(name, playerId),
-      pose: () => undefined,
+      pose: (name, playerId) => inputBus.pose(name, playerId),
     };
     this.context = {
       input,

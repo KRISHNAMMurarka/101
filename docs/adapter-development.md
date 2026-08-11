@@ -32,6 +32,8 @@ Send raw samples through `@101/motion`: timestamp normalization, screen-orientat
 
 Run inference locally. Convert camera frames into landmarks, then gestures, then `InputFrame`. Raw video stays on the source device unless an explicit, separately consented mode truly requires video transport.
 
+`@101/adapter-camera` is the browser reference. The MediaPipe-specific class implements `PoseVisionBackend`; `PoseInputAdapter` owns the stable 101 frame mapping and can consume any backend or simulated pose. This split is intentional: games and classification tests do not depend on camera access or a particular inference engine. See [vision foundation](vision.md).
+
 ## Specialist hardware
 
 WebHID, Web Bluetooth and Web Serial adapters are optional capability enhancements. Browser support and permission state must be surfaced. No game may require one of these adapters just to start.

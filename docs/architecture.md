@@ -38,7 +38,7 @@ Game definition
 
 ## Input resolution
 
-Frames are stored per player and device. Reads choose the newest device that contains the requested control. This allows a keyboard to provide movement while a phone supplies aim, or two phones to provide independent role-specific controls. Hosts now send reliable `controller.configure` messages so the browser Link changes between classic, sword, and steering panels without reconnecting. Full manifest-to-capability role assignment remains a later session-layer milestone.
+Frames are stored per player and device. Reads choose the newest device that contains the requested control. Actions, axes, vectors, and compact pose arrays share the same sequencing and stale-frame rejection path. This allows a keyboard to provide movement while a phone supplies aim, or a camera pose adapter to provide `dodgeX` and `duck`. Hosts send reliable `controller.configure` messages so browser Link changes roles without reconnecting. Full manifest-to-capability role assignment remains a later session-layer milestone.
 
 ## Rendering and physics
 
@@ -50,4 +50,4 @@ Phaser, Three.js, Rapier and Howler are imported only by facade packages. Phaser
 
 ## Phase boundaries
 
-The same-browser controller remains a fast diagnostic transport and now streams calibrated phone motion when the user grants permission. WebRTC provides a reliable ordered control channel and an unordered zero-retransmit realtime channel behind the same `LinkTransport` interface, with a fully offline manual offer/answer flow in Network Lab. Automatic LAN discovery, reconnect, vision, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.
+The same-browser controller remains a fast diagnostic transport and streams calibrated phone motion when the user grants permission. Vision Lab and BodyDodge use a bundled single-person pose model locally; hand/face tasks and worker-based inference remain later vision phases. WebRTC provides reliable control and disposable realtime channels behind `LinkTransport`, including a fully offline manual pairing flow. Automatic LAN discovery, reconnect, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.

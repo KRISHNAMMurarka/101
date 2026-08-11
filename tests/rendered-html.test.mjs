@@ -56,6 +56,17 @@ test("serves TiltDrift as an independently playable 3D game route", async () => 
   assert.match(html, /INPUT BUS \/ STEER ACTIVE/);
 });
 
+test("serves BodyDodge with optional local camera and conventional controls", async () => {
+  const response = await render("/games/bodydodge");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /BodyDodge 101 — Local camera survival/);
+  assert.match(html, /Playable local vision slice/);
+  assert.match(html, /ENABLE BODY CAMERA/);
+  assert.match(html, /KEYBOARD · GAMEPAD/);
+  assert.match(html, /video is neither uploaded nor recorded/i);
+});
+
 test("server-renders the local Motion Lab and permission explanation", async () => {
   const response = await render("/motion");
   const html = await response.text();
@@ -64,6 +75,17 @@ test("server-renders the local Motion Lab and permission explanation", async () 
   assert.match(html, /Enable device motion/);
   assert.match(html, /Permission is requested only by the button/);
   assert.match(html, /Use keyboard simulation/);
+});
+
+test("server-renders the local Vision Lab and simulated fallback", async () => {
+  const response = await render("/vision");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /101 Vision Lab/);
+  assert.match(html, /Enable local camera/);
+  assert.match(html, /Use keyboard simulation/);
+  assert.match(html, /never uploaded or recorded/);
+  assert.match(html, /MEDIAPIPE/);
 });
 
 test("server-renders the offline WebRTC Network Lab", async () => {
@@ -93,5 +115,8 @@ test("serves the controller surface and product metadata", async () => {
   assert.match(manifest, /"display": "standalone"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("public/og.png", root));
+  await access(new URL("public/models/pose_landmarker_lite.task", root));
+  await access(new URL("public/mediapipe/wasm/vision_wasm_internal.wasm", root));
+  await access(new URL("dist/client/models/pose_landmarker_lite.task", root));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));
 });

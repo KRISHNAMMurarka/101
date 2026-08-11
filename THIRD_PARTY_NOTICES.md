@@ -12,7 +12,9 @@
 | Vite | 8.0.13 | MIT | Build tooling |
 | vinext | 1.0.0-beta.2 | MIT | Browser application runtime/build integration |
 | Cloudflare Vite plugin | 1.37.1 | MIT | Hosted preview adapter |
+| MediaPipe Tasks Vision | 1.0.1 | Apache-2.0 | Bundled browser pose inference and WebAssembly runtime |
+| BlazePose GHUM Pose Landmarker Lite model | float16 bundle, revision 1 | Apache-2.0 | Bundled single-person 33-landmark pose model |
 
 The generated `THIRD_PARTY_LICENSES.json` file records licenses declared by every installed production and development dependency at the exact locked version. Redistributions must include the full license texts required by those packages; this summary is not a substitute for their licenses.
 
-No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included in the Phase 1 build.
+The committed MediaPipe model and WebAssembly files remain under their Apache-2.0 terms; a full copy is included at `third_party/APACHE-2.0.txt`. Their exact integrity hashes and limitations are recorded in `docs/vision.md`. No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included.

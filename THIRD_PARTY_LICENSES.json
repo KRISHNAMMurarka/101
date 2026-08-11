@@ -533,6 +533,11 @@
       "license": "MIT"
     },
     {
+      "name": "@mediapipe/tasks-vision",
+      "version": "1.0.1",
+      "license": "Apache-2.0"
+    },
+    {
       "name": "@napi-rs/wasm-runtime",
       "version": "1.1.1",
       "license": "MIT"

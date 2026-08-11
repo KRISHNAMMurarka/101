@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **networking and motion foundation plus two playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, renderer/physics/audio facades, deterministic generation utilities, Input Lab, Motion Lab, offline WebRTC Network Lab, Slashstorm 101, and TiltDrift 101. It deliberately does not present the remaining eight games, native Link app, vision, watches, automatic LAN discovery, or production reconnect as finished.
+This repository currently contains the **networking, motion, and local vision foundation plus three playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, renderer/physics/audio facades, deterministic generation utilities, Input Lab, Motion Lab, Vision Lab, offline WebRTC Network Lab, Slashstorm 101, TiltDrift 101, and BodyDodge 101. It deliberately does not present the remaining seven games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -29,6 +29,10 @@ Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamep
 TiltDrift 101 is a playable Three.js racing slice. Use Left/Right or A/D to steer, Space to boost, Down/S to brake, and Shift/X to drift. Its tested road grammar produces continuous, seed-repeatable spline-like segments, bounded widths, changing environments, and traffic combinations.
 
 The **Motion Lab** requests sensor permission only after an explicit click, corrects screen orientation, calibrates a neutral quaternion, filters noisy acceleration/rotation, recognizes gestures with hysteresis, and publishes normalized tilt/steer frames through `@101/adapter-motion`. A keyboard simulation makes the pipeline inspectable on desktops without sensors.
+
+The **Vision Lab** uses bundled MediaPipe code, WASM, and a local pose model—there is no runtime CDN. Camera permission follows an explicit click, raw frames remain in the browser, and the 101 classifier turns 33 landmarks into calibrated body axes and stateful actions. Keyboard simulation exercises the identical pose adapter without requesting a camera.
+
+BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard and gamepad mappings are available immediately.
 
 The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
 
@@ -58,7 +62,7 @@ npm run build
    ↓
 101 Protocol    reliable control + disposable realtime frames
    ↓
-Adapters        keyboard · pointer · gamepad · calibrated motion · future devices
+Adapters        keyboard · pointer · gamepad · motion · camera pose · future devices
 ```
 
 The hard rule is simple: **game code does not import browser or hardware APIs**. A game asks for `ctx.input.vector("move")`; the runtime decides which connected source can provide it.
@@ -73,6 +77,8 @@ Key packages:
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
 | `@101/adapter-motion` | Lazy browser permission, device orientation correction, gestures and normalized frames |
+| `@101/vision` | Pose calibration, landmark serialization, smoothing and gesture state machines |
+| `@101/adapter-camera` | Lazy local capture plus replaceable bundled MediaPipe pose inference |
 | `@101/diagnostics` | Input rate, frame age and dropped-frame instrumentation |
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
 | `@101/render-2d` | Phaser facade with external input disabled |
@@ -134,10 +140,12 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Calibrated Motion Lab with raw/filtered diagnostics and keyboard simulation
 - [x] Dynamic browser Link roles that switch sword/classic/steering panels without reconnecting
 - [x] TiltDrift playable 3D slice with a continuous seeded road director
+- [x] Bundled local MediaPipe pose adapter and Vision Lab with simulated fallback
+- [x] Pose landmarks available through `ctx.input.pose()` and semantic body actions
+- [x] BodyDodge playable 3D slice with a validated seeded gate grammar
 - [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
-- [ ] Vision playground and local MediaPipe adapters
-- [ ] BodyDodge vertical slice
+- [ ] Hand and face landmark adapters plus richer gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters
 
 ## Privacy and offline behavior

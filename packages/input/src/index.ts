@@ -29,6 +29,7 @@ export interface InputFrame {
   actions: Record<string, boolean | number>;
   axes?: Record<string, number>;
   vectors?: Record<string, InputVector>;
+  poses?: Record<string, ReadonlyArray<number>>;
 }
 
 export interface InputManifestControl {
@@ -42,6 +43,7 @@ export interface InputManifest {
   actions?: Record<string, InputManifestControl>;
   axes?: Record<string, InputManifestControl>;
   vectors?: Record<string, InputManifestControl>;
+  poses?: Record<string, InputManifestControl>;
 }
 
 export interface ResolvedInputManifest {
@@ -56,7 +58,7 @@ export function resolveInputManifest(
   const sources = new Set(available);
   const mappings: Record<string, InputSource> = {};
   const missing: string[] = [];
-  const groups = [manifest.actions, manifest.axes, manifest.vectors];
+  const groups = [manifest.actions, manifest.axes, manifest.vectors, manifest.poses];
   for (const group of groups) {
     for (const [control, requirement] of Object.entries(group ?? {})) {
       const source = [...requirement.recommended, ...(requirement.fallback ?? [])]
@@ -102,6 +104,14 @@ export function normalizeInputFrame(
         ]),
       )
     : undefined;
+  const poses = frame.poses
+    ? Object.fromEntries(
+        Object.entries(frame.poses).map(([name, values]) => [
+          name,
+          values.map((value) => clamp(value)),
+        ]),
+      )
+    : undefined;
 
   return {
     ...frame,
@@ -111,6 +121,7 @@ export function normalizeInputFrame(
     actions: { ...frame.actions },
     axes,
     vectors,
+    poses,
   };
 }
 
@@ -179,6 +190,10 @@ export class InputBus {
         y: 0,
       }
     );
+  }
+
+  pose(name: string, playerId = "player-1"): ReadonlyArray<number> | undefined {
+    return this.readNewest(playerId, (frame) => frame.poses?.[name]);
   }
 
   connectedDevices(playerId?: string): ReadonlyArray<InputFrame> {
