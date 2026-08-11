@@ -78,6 +78,30 @@ test("serves Orbital Crew with asymmetric roles and conventional fallback", asyn
   assert.match(html, /CONNECT CREW/);
 });
 
+test("serves BeatForge with offline rhythm, Link motion, and local pose choices", async () => {
+  const response = await render("/games/beatforge");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /BeatForge 101 — Infinite local rhythm movement/);
+  assert.match(html, /Playable rhythm \+ movement/);
+  assert.match(html, /RHYTHM CLOCK \/ INPUT BUS ACTIVE/);
+  assert.match(html, /ENABLE AUDIO/);
+  assert.match(html, /ENABLE BODY CAMERA/);
+  assert.match(html, /Video is not uploaded or recorded/i);
+});
+
+test("serves GravityStack through the 101 physics facade and asymmetric roles", async () => {
+  const response = await render("/games/gravitystack");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /GravityStack 101 — Variable-gravity physics tower/);
+  assert.match(html, /Playable Rapier physics/);
+  assert.match(html, /RAPIER \/ VARIABLE GRAVITY ACTIVE/);
+  assert.match(html, /Gravity Controller/);
+  assert.match(html, /Shape Builder/);
+  assert.match(html, /CONVENTIONAL FALLBACK/);
+});
+
 test("server-renders the local Motion Lab and permission explanation", async () => {
   const response = await render("/motion");
   const html = await response.text();

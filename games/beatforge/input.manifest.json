@@ -1,0 +1,13 @@
+{
+  "game": "beatforge",
+  "actions": {
+    "beat.left": { "recommended": ["phone-motion", "camera-pose"], "fallback": ["keyboard", "gamepad", "touch"] },
+    "beat.right": { "recommended": ["phone-motion", "camera-pose"], "fallback": ["keyboard", "gamepad", "touch"] },
+    "beat.punch": { "recommended": ["camera-pose", "phone-motion"], "fallback": ["keyboard", "gamepad", "touch"] },
+    "beat.raise": { "recommended": ["camera-pose", "touch"], "fallback": ["keyboard", "gamepad"] },
+    "beat.duck": { "recommended": ["camera-pose", "touch"], "fallback": ["keyboard", "gamepad"] }
+  },
+  "vectors": {
+    "gesture": { "recommended": ["phone-motion", "touch"], "fallback": ["gamepad", "keyboard"] }
+  }
+}

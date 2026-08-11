@@ -49,6 +49,12 @@ Publish basic, enhanced and immersive presets. The launcher must always expose a
 
 Asymmetric games may additionally publish `SessionRole` definitions outside the gameplay module. Each role declares its normalized `playerId`, capability preferences, and a JSON `ControllerLayout`. The platform host owns transport, registration, identity enforcement, layout delivery, and haptics. The `Game101.define()` module continues to read only actions, axes, vectors, and poses for the role player IDs.
 
+## Rhythm and physics boundaries
+
+Use `@101/rhythm` when note timing matters. Store target times in seconds, derive them from beats/BPM, and judge offsets through declared windows. Do not advance a song clock by frame count, and keep procedural difficulty independent from any subdivision that would accidentally slow its own progression.
+
+Use `@101/physics` for bodies, colliders, impulses, velocities, transforms, raycasts, and runtime gravity. Game state may retain `PhysicsBody101` handles and plain `BodyState101` snapshots; it must not retain or import Rapier classes. The renderer should consume the plain snapshots, keeping simulation and display replaceable.
+
 ## Infinite directors
 
 Use this pipeline:

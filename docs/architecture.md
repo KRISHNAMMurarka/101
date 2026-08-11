@@ -15,6 +15,7 @@ Game definition
           ├─ renderer facade
           ├─ physics facade
           ├─ audio facade
+          ├─ rhythm clock
           ├─ replay
           └─ diagnostics
 
@@ -44,14 +45,18 @@ Frames are stored per player and device. Reads choose the newest device that con
 
 `@101/session` owns capability-aware asymmetric assignment. A host publishes ordered role definitions with required/preferred capabilities and JSON controller layouts. The session preserves stable matches when possible, selects stronger capability matches when a new device joins, targets configuration to one device, expires missing heartbeats, and overwrites the `deviceId` and `playerId` claimed by every accepted realtime frame. Game code still sees only normalized player input.
 
-## Rendering and physics
+## Rendering, physics, audio, and rhythm
 
 Phaser, Three.js, Rapier and Howler are imported only by facade packages. Phaser's own input and audio modules are disabled in the facade configuration so games cannot accidentally bypass 101 Input or 101 Audio. These wrappers are intentionally small and replaceable.
 
+`@101/physics` returns opaque numeric body/collider handles, not Rapier objects. It owns initialization, bounded substeps, runtime gravity, state snapshots, impulses, transforms, raycasts, and cleanup. GravityStack therefore demonstrates a real physics game without importing the implementation engine into its game code.
+
+`@101/audio` owns Howler instances, category/master volumes, panning, pooling, background mute state, and cleanup. It can generate short PCM tone assets locally for diagnostics and included game cues. `@101/rhythm` is engine-independent: beat conversion, quantization, and symmetric timing judgments use seconds rather than rendered frames.
+
 ## Procedural play
 
-`SeededRandom` guarantees that the same seed produces the same random sequence. `difficultyAt()` combines density, speed, reaction time, simultaneous threats, and modifier chance with explicit safety caps. Each game should add a validator that rejects impossible generated segments before they enter play.
+`SeededRandom` guarantees that the same seed produces the same random sequence. `difficultyAt()` combines density, speed, reaction time, simultaneous threats, and modifier chance with explicit safety caps. Each game adds a validator that rejects impossible generated segments before they enter play. BeatForge advances pressure by generated phrase count so denser subdivisions cannot slow their own progression; GravityStack generates bounded shapes/materials before creating physics bodies.
 
 ## Phase boundaries
 
-The same-browser controller remains a fast diagnostic transport and streams calibrated phone motion when the user grants permission. Its UI is now rendered from the targeted `ControllerLayout`, which Orbital Crew uses for pilot, weapons, shields, reactor, and emergency stations. Vision Lab and BodyDodge use a bundled single-person pose model locally; hand/face tasks and worker-based inference remain later vision phases. WebRTC provides reliable control and disposable realtime channels behind `LinkTransport`, including a fully offline manual pairing flow. Automatic LAN discovery, reconnect, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.
+The same-browser controller remains a fast diagnostic transport and streams calibrated phone motion when the user grants permission. Its UI is rendered from the targeted `ControllerLayout`: Orbital Crew uses five ship stations, BeatForge uses one motion performer, and GravityStack can split gravity and building across two devices without reconnecting or adding game-specific controller code. Vision Lab and camera-enabled games use a bundled single-person pose model locally; hand/face tasks and worker-based inference remain later vision phases. WebRTC provides reliable control and disposable realtime channels behind `LinkTransport`, including a fully offline manual pairing flow. Automatic LAN discovery, reconnect, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.

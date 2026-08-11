@@ -34,7 +34,8 @@
       "@101/render-2d": ["./packages/render-2d/src/index.ts"],
       "@101/render-3d": ["./packages/render-3d/src/index.ts"],
       "@101/audio": ["./packages/audio/src/index.ts"],
-      "@101/physics": ["./packages/physics/src/index.ts"]
+      "@101/physics": ["./packages/physics/src/index.ts"],
+      "@101/rhythm": ["./packages/rhythm/src/index.ts"]
     }
   },
   "include": [

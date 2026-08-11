@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **networking, motion, local vision, and asymmetric-session foundation plus four playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, and Orbital Crew 101. It deliberately does not present the remaining six games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
+This repository currently contains the **networking, motion, local vision, rhythm, physics, and asymmetric-session foundation plus six playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, and GravityStack 101. It deliberately does not present the remaining four games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -35,6 +35,10 @@ The **Vision Lab** uses bundled MediaPipe code, WASM, and a local pose model—t
 BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard and gamepad mappings are available immediately.
 
 Orbital Crew 101 is a playable asymmetric co-op slice. Up to five browser Link devices are assigned pilot, weapons, shields, reactor, and emergency roles, each with a different host-defined panel and live ship readout. A keyboard or gamepad captain can operate every station without any connected device. Its seeded sector director overlaps multi-role threats and schedules deterministic boss encounters.
+
+BeatForge 101 is a playable endless rhythm/movement slice. A reusable `@101/rhythm` clock grades input in time-based windows while the seeded director varies BPM, subdivisions, actions, and compatible two-action chords. Keyboard, gamepad, Link motion, and optional local body pose all reach the same semantic beat actions. Its short cues are generated locally through `@101/audio`, so no remote or licensed music asset is required.
+
+GravityStack 101 is a playable endless variable-gravity tower. Its game module sees only opaque 101 physics handles and normalized `gravity`, `placeX`, and `drop` controls; Rapier remains inside `@101/physics`. A phone can rotate gravity while a conventional player places pieces, or a second Link device can receive a dedicated builder panel.
 
 The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
 
@@ -86,10 +90,11 @@ Key packages:
 | `@101/adapter-camera` | Lazy local capture plus replaceable bundled MediaPipe pose inference |
 | `@101/diagnostics` | Input rate, frame age and dropped-frame instrumentation |
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
+| `@101/rhythm` | Frame-rate-independent beat/time conversion, quantization and timing judgments |
 | `@101/render-2d` | Phaser facade with external input disabled |
 | `@101/render-3d` | Three.js facade and adaptive pixel-ratio boundary |
-| `@101/physics` | Narrow Rapier facade |
-| `@101/audio` | Howler-based music/SFX facade |
+| `@101/physics` | Opaque handles, world stepping, runtime gravity and narrow Rapier operations |
+| `@101/audio` | Howler-based music/SFX facade plus generated offline tone cues |
 
 Read [the architecture guide](docs/architecture.md) for invariants and package boundaries.
 
@@ -152,6 +157,8 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Capability-aware session roles with stable assignment and host-verified frame identity
 - [x] Orbital Crew asymmetric slice with five Link roles and a seeded infinite sector director
 - [x] Controller Lab for validated custom layouts and live normalized-frame inspection
+- [x] Frame-rate-independent rhythm package and BeatForge endless movement slice
+- [x] Opaque Rapier handles, rotating gravity, and GravityStack two-role physics slice
 - [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Hand and face landmark adapters plus richer gesture vocabularies

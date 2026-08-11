@@ -1,11 +1,11 @@
-import Phaser from "phaser";
+import * as Phaser from "phaser";
 
 export interface Renderer2DOptions {
   parent: HTMLElement | string;
   width?: number;
   height?: number;
   background?: string;
-  scenes: Phaser.Types.Scenes.SettingsConfig[] | Phaser.Scene[];
+  scenes: Phaser.Types.Scenes.SceneType | Phaser.Types.Scenes.SceneType[];
   pixelArt?: boolean;
 }
 

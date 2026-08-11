@@ -1,0 +1,12 @@
+{
+  "game": "gravitystack",
+  "actions": {
+    "drop": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] }
+  },
+  "axes": {
+    "placeX": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] }
+  },
+  "vectors": {
+    "gravity": { "recommended": ["phone-motion", "touch"], "fallback": ["gamepad", "keyboard"] }
+  }
+}

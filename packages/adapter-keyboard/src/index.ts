@@ -46,6 +46,9 @@ export class KeyboardAdapter implements InputAdapter {
   private publish() {
     const x = Number(this.has("ArrowRight", "KeyD")) - Number(this.has("ArrowLeft", "KeyA"));
     const y = Number(this.has("ArrowDown", "KeyS")) - Number(this.has("ArrowUp", "KeyW"));
+    const gravityX = Number(this.has("ArrowRight")) - Number(this.has("ArrowLeft"));
+    const gravityY = Number(this.has("ArrowDown")) - Number(this.has("ArrowUp"));
+    const placeX = Number(this.has("KeyD")) - Number(this.has("KeyA"));
     const shield = Number(this.has("KeyE")) - Number(this.has("KeyQ"));
     this.emit?.({
       deviceId: this.id,
@@ -71,10 +74,16 @@ export class KeyboardAdapter implements InputAdapter {
         vent: this.has("KeyV"),
         overdrive: this.has("KeyF"),
         emergency: this.has("KeyR"),
+        "beat.left": this.has("ArrowLeft", "KeyA"),
+        "beat.right": this.has("ArrowRight", "KeyD"),
+        "beat.punch": this.has("ArrowUp", "KeyW", "Space"),
+        "beat.raise": this.has("KeyE", "Enter"),
+        "beat.duck": this.has("ArrowDown", "KeyS"),
+        drop: this.has("Space", "Enter"),
         pause: this.has("Escape"),
       },
-      axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x, shield, power: this.has("KeyR") ? 1 : 0 },
-      vectors: { move: { x, y }, aim: { x, y }, flight: { x, y }, target: { x, y } },
+      axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x, shield, power: this.has("KeyR") ? 1 : 0, placeX },
+      vectors: { move: { x, y }, aim: { x, y }, flight: { x, y }, target: { x, y }, gravity: { x: gravityX, y: gravityY }, gesture: { x, y } },
     });
   }
 

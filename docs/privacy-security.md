@@ -24,6 +24,8 @@ The browser Motion Lab and Link implementation follow this rule today: sensor li
 
 Vision Lab and BodyDodge follow the same boundary. `@101/adapter-camera` requests video only after the user selects the camera mode, explicitly requests no audio, runs the bundled pose model in the browser, and stops media tracks on teardown. Raw frames are neither recorded nor sent to the Input Bus; only landmarks and derived actions are accepted. Camera denial leaves the conventional controls active.
 
+BeatForge reuses that exact optional camera boundary for movement controls. It does not request microphone access, and its included rhythm cues are generated offline by `@101/audio`. GravityStack requests no media capability; phone tilt arrives only as a normalized gravity vector after the controller user explicitly enables motion.
+
 ## Local network security
 
 Pairing codes are discovery aids, not long-term authentication secrets. WebRTC sessions should use ephemeral keys, display both devices during confirmation, expire offers, and reject protocol-version mismatches. The Hub must bind only to intended interfaces and clearly show which network transport is active.

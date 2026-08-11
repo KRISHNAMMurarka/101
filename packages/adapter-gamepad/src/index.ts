@@ -50,6 +50,12 @@ export class GamepadAdapter implements InputAdapter {
           vent: gamepad.buttons[1]?.pressed ?? false,
           overdrive: gamepad.buttons[3]?.pressed ?? false,
           emergency: gamepad.buttons[8]?.pressed ?? false,
+          "beat.left": x < -.45 || (gamepad.buttons[14]?.pressed ?? false),
+          "beat.right": x > .45 || (gamepad.buttons[15]?.pressed ?? false),
+          "beat.punch": gamepad.buttons[0]?.pressed ?? false,
+          "beat.raise": gamepad.buttons[3]?.pressed ?? false,
+          "beat.duck": gamepad.buttons[1]?.pressed ?? false,
+          drop: gamepad.buttons[0]?.pressed ?? false,
           pause: gamepad.buttons[9]?.pressed ?? false,
         },
         axes: {
@@ -60,12 +66,15 @@ export class GamepadAdapter implements InputAdapter {
           lean: x,
           shield: (gamepad.buttons[5]?.value ?? 0) - (gamepad.buttons[4]?.value ?? 0),
           power: gamepad.buttons[7]?.value ?? 0,
+          placeX: x,
         },
         vectors: {
           move: { x, y },
           flight: { x, y },
           aim: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) },
           target: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) },
+          gravity: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) },
+          gesture: { x, y },
         },
       });
     }

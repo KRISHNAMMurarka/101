@@ -4,12 +4,14 @@ import type { GameManifest } from "@101/sdk";
 import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import InputLab from "./components/InputLab";
+import BeatForgeGame from "./components/BeatForgeGame";
 import BodyDodgeGame from "./components/BodyDodgeGame";
+import GravityStackGame from "./components/GravityStackGame";
 import OrbitalCrewGame from "./components/OrbitalCrewGame";
 import SlashstormGame from "./components/SlashstormGame";
 import TiltDriftGame from "./components/TiltDriftGame";
 
-type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "system";
+type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "system";
 
 const INPUT_LABELS: Record<string, string> = {
   keyboard: "Keyboard",
@@ -57,6 +59,8 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <button className={view === "slashstorm" ? "active" : ""} onClick={() => navigate("slashstorm")}>Slashstorm</button>
           <button className={view === "tiltdrift" ? "active" : ""} onClick={() => navigate("tiltdrift")}>TiltDrift</button>
           <button className={view === "orbitalcrew" ? "active" : ""} onClick={() => navigate("orbitalcrew")}>Orbital Crew</button>
+          <button className={view === "beatforge" ? "active" : ""} onClick={() => navigate("beatforge")}>BeatForge</button>
+          <button className={view === "gravitystack" ? "active" : ""} onClick={() => navigate("gravitystack")}>GravityStack</button>
           <Link href="/motion">Motion Lab</Link>
           <Link href="/vision">Vision Lab</Link>
           <Link href="/network">Network Lab</Link>
@@ -125,7 +129,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <section className="library-section" id="games">
             <div className="section-heading">
               <div><p className="eyebrow">Game library</p><h2>Ten games. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. Four playable games now share the same engine, role-aware session host, and normalized controls.</p>
+              <p>The catalog is manifest-driven. Six playable games now share the same engine, role-aware session host, procedural systems, and normalized controls.</p>
             </div>
             <div className="game-grid">
               <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
@@ -175,12 +179,14 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
       {view === "tiltdrift" && <TiltDriftGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "bodydodge" && <BodyDodgeGame onExit={() => navigate("library")} />}
       {view === "orbitalcrew" && <OrbitalCrewGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "beatforge" && <BeatForgeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "gravitystack" && <GravityStackGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Asymmetric + four games</span></div>
+        <div><span>MIT core</span><span>Offline by design</span><span>Motion · physics · six games</span></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
@@ -244,6 +250,6 @@ function SystemView({ onLaunch }: { onLaunch: () => void }) {
   );
 }
 
-function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew"> {
-  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew";
+function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack"> {
+  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew" || id === "beatforge" || id === "gravitystack";
 }
