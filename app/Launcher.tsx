@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import InputLab from "./components/InputLab";
 import BodyDodgeGame from "./components/BodyDodgeGame";
+import OrbitalCrewGame from "./components/OrbitalCrewGame";
 import SlashstormGame from "./components/SlashstormGame";
 import TiltDriftGame from "./components/TiltDriftGame";
 
-type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "system";
+type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "system";
 
 const INPUT_LABELS: Record<string, string> = {
   keyboard: "Keyboard",
@@ -39,6 +40,10 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const launchGame = (id: string) => {
+    if (isPlayableView(id)) navigate(id);
+  };
+
   return (
     <main className="site-shell">
       <header className="topbar">
@@ -51,9 +56,11 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input Lab</button>
           <button className={view === "slashstorm" ? "active" : ""} onClick={() => navigate("slashstorm")}>Slashstorm</button>
           <button className={view === "tiltdrift" ? "active" : ""} onClick={() => navigate("tiltdrift")}>TiltDrift</button>
+          <button className={view === "orbitalcrew" ? "active" : ""} onClick={() => navigate("orbitalcrew")}>Orbital Crew</button>
           <Link href="/motion">Motion Lab</Link>
           <Link href="/vision">Vision Lab</Link>
           <Link href="/network">Network Lab</Link>
+          <Link href="/controller-lab">Controller Lab</Link>
           <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>The system</button>
         </nav>
         <button className="connect-button" onClick={() => setPairingOpen(true)}>
@@ -118,7 +125,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <section className="library-section" id="games">
             <div className="section-heading">
               <div><p className="eyebrow">Game library</p><h2>Ten games. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. Input, Motion, Vision, and Network Labs now support three playable games using the same engine and normalized controls.</p>
+              <p>The catalog is manifest-driven. Four playable games now share the same engine, role-aware session host, and normalized controls.</p>
             </div>
             <div className="game-grid">
               <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
@@ -149,7 +156,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
                       {game.controllers?.immersive?.length ? <span>Immersive available</span> : null}
                     </div>
                   </div>
-                  {game.id === "slashstorm" || game.id === "tiltdrift" || game.id === "bodydodge" ? <button className="game-card-launch" onClick={() => navigate(game.id === "slashstorm" ? "slashstorm" : game.id === "tiltdrift" ? "tiltdrift" : "bodydodge")}>Launch game <span>↗</span></button> : <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>}
+                  {isPlayableView(game.id) ? <button className="game-card-launch" onClick={() => launchGame(game.id)}>Launch game <span>↗</span></button> : <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>}
                 </article>
               ))}
             </div>
@@ -167,12 +174,13 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
       {view === "slashstorm" && <SlashstormGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "tiltdrift" && <TiltDriftGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "bodydodge" && <BodyDodgeGame onExit={() => navigate("library")} />}
+      {view === "orbitalcrew" && <OrbitalCrewGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Vision + three games</span></div>
+        <div><span>MIT core</span><span>Offline by design</span><span>Asymmetric + four games</span></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
@@ -196,7 +204,7 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
         <button className="close-button" onClick={onClose} aria-label="Close">×</button>
         <p className="eyebrow">Local browser test path</p>
         <h2 id="pairing-title">Make this browser a controller.</h2>
-        <p className="panel-intro">Open the link in another tab in this browser profile. It connects directly to the Input Lab through the transport layer—no account and no database.</p>
+        <p className="panel-intro">Open the link in another tab in this browser profile. The active host assigns a game-specific role and controller panel automatically—no account and no database.</p>
         <div className="session-code"><span>SESSION</span><strong>{sessionId}</strong><i>LOCAL</i></div>
         <div className="pair-link"><code>{controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
         <a className="primary-button full-button" href={controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open controller in a new tab ↗</a>
@@ -234,4 +242,8 @@ function SystemView({ onLaunch }: { onLaunch: () => void }) {
       </div>
     </section>
   );
+}
+
+function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew"> {
+  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew";
 }

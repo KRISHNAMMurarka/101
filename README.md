@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **networking, motion, and local vision foundation plus three playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, renderer/physics/audio facades, deterministic generation utilities, Input Lab, Motion Lab, Vision Lab, offline WebRTC Network Lab, Slashstorm 101, TiltDrift 101, and BodyDodge 101. It deliberately does not present the remaining seven games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
+This repository currently contains the **networking, motion, local vision, and asymmetric-session foundation plus four playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, and Orbital Crew 101. It deliberately does not present the remaining six games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -34,7 +34,11 @@ The **Vision Lab** uses bundled MediaPipe code, WASM, and a local pose model—t
 
 BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard and gamepad mappings are available immediately.
 
+Orbital Crew 101 is a playable asymmetric co-op slice. Up to five browser Link devices are assigned pilot, weapons, shields, reactor, and emergency roles, each with a different host-defined panel and live ship readout. A keyboard or gamepad captain can operate every station without any connected device. Its seeded sector director overlaps multi-role threats and schedules deterministic boss encounters.
+
 The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
+
+The **Controller Lab** validates editable controller-layout JSON, applies it live to 101 Link, and inspects the normalized actions, axes, and vectors returned by buttons, D-pads, sticks, touch surfaces, sliders, and optional motion mappings.
 
 ## Verify it
 
@@ -73,6 +77,7 @@ Key packages:
 | --- | --- |
 | `@101/input` | Frames, normalization, stale-frame rejection, players and adapters |
 | `@101/protocol` | Versioned messages, BroadcastChannel and WebRTC transports, offline pairing, compact motion packets |
+| `@101/session` | Capability-aware role assignment, targeted controller layouts, heartbeats and host-side frame identity enforcement |
 | `@101/sdk` | Public game lifecycle and manifest types |
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
@@ -143,6 +148,10 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Bundled local MediaPipe pose adapter and Vision Lab with simulated fallback
 - [x] Pose landmarks available through `ctx.input.pose()` and semantic body actions
 - [x] BodyDodge playable 3D slice with a validated seeded gate grammar
+- [x] Protocol v2 with targeted JSON controller layouts and live role state
+- [x] Capability-aware session roles with stable assignment and host-verified frame identity
+- [x] Orbital Crew asymmetric slice with five Link roles and a seeded infinite sector director
+- [x] Controller Lab for validated custom layouts and live normalized-frame inspection
 - [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Hand and face landmark adapters plus richer gesture vocabularies

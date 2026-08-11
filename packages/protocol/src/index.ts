@@ -1,6 +1,6 @@
 import type { InputFrame } from "@101/input";
 
-export const PROTOCOL_VERSION = 1 as const;
+export const PROTOCOL_VERSION = 2 as const;
 
 export interface DeviceCapabilities {
   touch?: boolean;
@@ -21,20 +21,170 @@ export type ControlMessage =
       device: string;
       capabilities: DeviceCapabilities;
     }
-  | { type: "player.assign"; deviceId: string; playerId: string }
-  | { type: "controller.configure"; role: string; layout: ControllerLayout }
+  | {
+      type: "player.assign";
+      deviceId: string;
+      playerId: string;
+      role: string;
+      gameId: string;
+    }
+  | {
+      type: "controller.configure";
+      deviceId: string;
+      gameId: string;
+      role: string;
+      revision: number;
+      layout: ControllerLayout;
+    }
+  | {
+      type: "controller.state";
+      deviceId: string;
+      values: Record<string, string | number | boolean>;
+      message?: string;
+      tone?: "normal" | "warning" | "critical";
+    }
   | { type: "calibration.request"; mode: string }
-  | { type: "haptic"; pattern: "tap" | "impact" | "warning" }
+  | { type: "haptic"; deviceId: string; pattern: "tap" | "impact" | "warning" }
   | { type: "pause"; paused: boolean }
   | { type: "ping"; sentAt: number }
   | { type: "pong"; sentAt: number; receivedAt: number };
 
+export type ControllerElement =
+  | { type: "joystick"; action: string; label?: string }
+  | { type: "dpad"; action: string; label?: string }
+  | {
+      type: "button";
+      action: string;
+      label: string;
+      emphasis?: "normal" | "primary" | "danger";
+    }
+  | { type: "touch-surface"; action: string; label?: string }
+  | {
+      type: "slider";
+      action: string;
+      label: string;
+      min?: number;
+      max?: number;
+      step?: number;
+    };
+
 export interface ControllerLayout {
-  layout: Array<
-    | { type: "joystick"; action: string; label?: string }
-    | { type: "button"; action: string; label: string }
-    | { type: "touch-surface"; action: string; label?: string }
-  >;
+  title?: string;
+  accent?: string;
+  motion?: {
+    action: string;
+    mode: "tilt" | "wand";
+    label?: string;
+  };
+  layout: readonly ControllerElement[];
+}
+
+export function parseControllerLayout(input: unknown): ControllerLayout {
+  if (!isRecord(input) || !Array.isArray(input.layout) || input.layout.length === 0 || input.layout.length > 16) {
+    throw new Error("Controller layout requires between 1 and 16 elements");
+  }
+  const layout = input.layout.map((value, index): ControllerElement => {
+    if (!isRecord(value) || !isActionName(value.action) || typeof value.type !== "string") {
+      throw new Error(`Invalid controller element at index ${index}`);
+    }
+    const label = optionalLabel(value.label, index);
+    if (value.type === "joystick" || value.type === "dpad" || value.type === "touch-surface") {
+      return { type: value.type, action: value.action, ...(label ? { label } : {}) };
+    }
+    if (value.type === "button") {
+      if (!label) throw new Error(`Button at index ${index} requires a label`);
+      const emphasis = value.emphasis;
+      if (emphasis !== undefined && emphasis !== "normal" && emphasis !== "primary" && emphasis !== "danger") {
+        throw new Error(`Invalid button emphasis at index ${index}`);
+      }
+      return { type: "button", action: value.action, label, ...(emphasis ? { emphasis } : {}) };
+    }
+    if (value.type === "slider") {
+      if (!label) throw new Error(`Slider at index ${index} requires a label`);
+      const min = finiteNumber(value.min, -1);
+      const max = finiteNumber(value.max, 1);
+      const step = finiteNumber(value.step, .01);
+      if (min < -1 || max > 1 || min >= max || step <= 0 || step > max - min) {
+        throw new Error(`Invalid slider range at index ${index}`);
+      }
+      return { type: "slider", action: value.action, label, min, max, step };
+    }
+    throw new Error(`Unsupported controller element type at index ${index}`);
+  });
+  const title = optionalText(input.title, "title", 64);
+  const accent = input.accent === undefined ? undefined : typeof input.accent === "string" && /^#[0-9a-f]{6}$/i.test(input.accent) ? input.accent : (() => { throw new Error("Controller accent must be a six-digit hex color"); })();
+  let motion: ControllerLayout["motion"];
+  if (input.motion !== undefined) {
+    if (!isRecord(input.motion) || !isActionName(input.motion.action) || (input.motion.mode !== "tilt" && input.motion.mode !== "wand")) {
+      throw new Error("Invalid controller motion mapping");
+    }
+    const motionLabel = optionalText(input.motion.label, "motion label", 64);
+    motion = { action: input.motion.action, mode: input.motion.mode, ...(motionLabel ? { label: motionLabel } : {}) };
+  }
+  return { ...(title ? { title } : {}), ...(accent ? { accent } : {}), ...(motion ? { motion } : {}), layout };
+}
+
+export function parseControlMessage(input: unknown): ControlMessage {
+  if (!isRecord(input) || typeof input.type !== "string") throw new Error("Malformed 101 control message");
+  if (input.type === "hello") {
+    if (input.version !== PROTOCOL_VERSION || !isRecord(input.capabilities)) throw new Error("Unsupported 101 hello");
+    return {
+      type: "hello",
+      version: PROTOCOL_VERSION,
+      deviceId: requiredText(input.deviceId, "deviceId", 128),
+      device: requiredText(input.device, "device", 128),
+      capabilities: parseCapabilities(input.capabilities),
+    };
+  }
+  if (input.type === "player.assign") return {
+    type: "player.assign",
+    deviceId: requiredText(input.deviceId, "deviceId", 128),
+    playerId: requiredText(input.playerId, "playerId", 128),
+    role: requiredText(input.role, "role", 64),
+    gameId: requiredText(input.gameId, "gameId", 128),
+  };
+  if (input.type === "controller.configure") {
+    if (!Number.isInteger(input.revision) || Number(input.revision) < 0) throw new Error("Invalid controller revision");
+    return {
+      type: "controller.configure",
+      deviceId: requiredText(input.deviceId, "deviceId", 128),
+      gameId: requiredText(input.gameId, "gameId", 128),
+      role: requiredText(input.role, "role", 64),
+      revision: Number(input.revision),
+      layout: parseControllerLayout(input.layout),
+    };
+  }
+  if (input.type === "controller.state") {
+    if (!isRecord(input.values) || Object.keys(input.values).length > 32) throw new Error("Invalid controller state");
+    const values: Record<string, string | number | boolean> = {};
+    for (const [name, value] of Object.entries(input.values)) {
+      if (!isActionName(name) || (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean") || (typeof value === "number" && !Number.isFinite(value))) {
+        throw new Error("Invalid controller state value");
+      }
+      values[name] = value;
+    }
+    const tone = input.tone;
+    if (tone !== undefined && tone !== "normal" && tone !== "warning" && tone !== "critical") throw new Error("Invalid controller state tone");
+    return {
+      type: "controller.state",
+      deviceId: requiredText(input.deviceId, "deviceId", 128),
+      values,
+      ...(input.message === undefined ? {} : { message: requiredText(input.message, "message", 160) }),
+      ...(tone ? { tone } : {}),
+    };
+  }
+  if (input.type === "calibration.request") return { type: "calibration.request", mode: requiredText(input.mode, "mode", 64) };
+  if (input.type === "haptic") {
+    if (input.pattern !== "tap" && input.pattern !== "impact" && input.pattern !== "warning") throw new Error("Invalid haptic pattern");
+    return { type: "haptic", deviceId: requiredText(input.deviceId, "deviceId", 128), pattern: input.pattern };
+  }
+  if (input.type === "pause") {
+    if (typeof input.paused !== "boolean") throw new Error("Invalid pause message");
+    return { type: "pause", paused: input.paused };
+  }
+  if (input.type === "ping") return { type: "ping", sentAt: requiredFinite(input.sentAt, "sentAt") };
+  if (input.type === "pong") return { type: "pong", sentAt: requiredFinite(input.sentAt, "sentAt"), receivedAt: requiredFinite(input.receivedAt, "receivedAt") };
+  throw new Error("Unsupported 101 control message");
 }
 
 export type LinkMessage =
@@ -63,12 +213,12 @@ export function serializeControlMessage(message: ControlMessage): string {
 export function deserializeControlMessage(data: string): ControlMessage {
   const packet = JSON.parse(data) as {
     version?: number;
-    message?: ControlMessage;
+    message?: unknown;
   };
-  if (packet.version !== PROTOCOL_VERSION || !packet.message?.type) {
+  if (packet.version !== PROTOCOL_VERSION) {
     throw new Error("Unsupported or malformed 101 control packet");
   }
-  return packet.message;
+  return parseControlMessage(packet.message);
 }
 
 export interface MotionPacket {
@@ -334,20 +484,20 @@ export async function encodePairingDescription(
   const bytes = new TextEncoder().encode(JSON.stringify(envelope));
   if (compress && typeof CompressionStream !== "undefined") {
     const compressed = await transformBytes(bytes, new CompressionStream("deflate"));
-    return `101C1.${toBase64Url(compressed)}`;
+    return `101C2.${toBase64Url(compressed)}`;
   }
-  return `101J1.${toBase64Url(bytes)}`;
+  return `101J2.${toBase64Url(bytes)}`;
 }
 
 export async function decodePairingDescription(code: string): Promise<RTCSessionDescriptionInit> {
   const normalized = code.trim();
   if (normalized.length > 400_000) throw new Error("Pairing code is too large");
   const [prefix, encoded, extra] = normalized.split(".");
-  if (extra !== undefined || !encoded || !["101C1", "101J1"].includes(prefix)) {
+  if (extra !== undefined || !encoded || !["101C2", "101J2"].includes(prefix)) {
     throw new Error("Invalid 101 pairing code");
   }
   let bytes = fromBase64Url(encoded);
-  if (prefix === "101C1") {
+  if (prefix === "101C2") {
     if (typeof DecompressionStream === "undefined") {
       throw new Error("Compressed pairing codes are unavailable in this browser");
     }
@@ -439,4 +589,55 @@ function checksum(value: string) {
     hash = Math.imul(hash, 16777619);
   }
   return (hash >>> 0).toString(36);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isActionName(value: unknown): value is string {
+  return typeof value === "string" && /^[a-z0-9._-]{1,64}$/i.test(value);
+}
+
+function optionalLabel(value: unknown, index: number) {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || value.length === 0 || value.length > 40) {
+    throw new Error(`Invalid controller label at index ${index}`);
+  }
+  return value;
+}
+
+function optionalText(value: unknown, name: string, maxLength: number) {
+  if (value === undefined) return undefined;
+  if (typeof value !== "string" || value.length === 0 || value.length > maxLength) {
+    throw new Error(`Invalid controller ${name}`);
+  }
+  return value;
+}
+
+function finiteNumber(value: unknown, fallback: number) {
+  if (value === undefined) return fallback;
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error("Controller values must be finite numbers");
+  return value;
+}
+
+function requiredText(value: unknown, name: string, maxLength: number) {
+  if (typeof value !== "string" || value.length === 0 || value.length > maxLength) throw new Error(`Invalid ${name}`);
+  return value;
+}
+
+function requiredFinite(value: unknown, name: string) {
+  if (typeof value !== "number" || !Number.isFinite(value)) throw new Error(`Invalid ${name}`);
+  return value;
+}
+
+function parseCapabilities(input: Record<string, unknown>): DeviceCapabilities {
+  const capabilities: DeviceCapabilities = {};
+  const names = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad"] as const;
+  for (const name of names) {
+    const value = input[name];
+    if (value !== undefined && typeof value !== "boolean") throw new Error(`Invalid capability: ${name}`);
+    if (value !== undefined) capabilities[name] = value;
+  }
+  return capabilities;
 }

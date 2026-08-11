@@ -35,6 +35,7 @@ export class GamepadAdapter implements InputAdapter {
         source: this.source,
         actions: {
           trigger: gamepad.buttons[0]?.pressed ?? false,
+          fire: gamepad.buttons[0]?.pressed ?? false,
           buttonA: gamepad.buttons[0]?.pressed ?? false,
           buttonB: gamepad.buttons[1]?.pressed ?? false,
           boost: gamepad.buttons[0]?.pressed ?? false,
@@ -45,10 +46,27 @@ export class GamepadAdapter implements InputAdapter {
           armsRaised: gamepad.buttons[3]?.pressed ?? false,
           leanLeft: x < -.45,
           leanRight: x > .45,
+          fortify: gamepad.buttons[2]?.pressed ?? false,
+          vent: gamepad.buttons[1]?.pressed ?? false,
+          overdrive: gamepad.buttons[3]?.pressed ?? false,
+          emergency: gamepad.buttons[8]?.pressed ?? false,
           pause: gamepad.buttons[9]?.pressed ?? false,
         },
-        axes: { moveX: x, moveY: y, steer: x, dodgeX: x, lean: x },
-        vectors: { move: { x, y }, aim: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) } },
+        axes: {
+          moveX: x,
+          moveY: y,
+          steer: x,
+          dodgeX: x,
+          lean: x,
+          shield: (gamepad.buttons[5]?.value ?? 0) - (gamepad.buttons[4]?.value ?? 0),
+          power: gamepad.buttons[7]?.value ?? 0,
+        },
+        vectors: {
+          move: { x, y },
+          flight: { x, y },
+          aim: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) },
+          target: { x: deadZone(gamepad.axes[2]), y: deadZone(gamepad.axes[3]) },
+        },
       });
     }
     this.frameHandle = requestAnimationFrame(this.poll);

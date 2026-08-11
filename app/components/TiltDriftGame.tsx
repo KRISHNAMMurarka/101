@@ -3,8 +3,9 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport, PROTOCOL_VERSION } from "@101/protocol";
+import { BroadcastChannelTransport } from "@101/protocol";
 import { Renderer3D101, THREE } from "@101/render-3d";
+import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createTiltDriftGame, type TiltDriftState } from "@/games/tiltdrift/src/game";
 import { roadCenterAt, type RoadEnvironment, type RoadSegment } from "@/games/tiltdrift/src/director";
@@ -35,28 +36,33 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     const keyboard = new KeyboardAdapter();
     const gamepad = new GamepadAdapter();
     const transport = new BroadcastChannelTransport(sessionId);
-    const linkedDevices = new Set<string>();
-    const view = createDriftView(canvas);
-    let renderHandle = 0;
-
-    const removeLink = transport.onMessage((message) => {
-      if (message.channel === "realtime") engine.inputBus.accept(message.payload);
-      if (message.channel === "control" && message.payload.type === "hello" && message.payload.deviceId !== "tiltdrift-host") {
-        linkedDevices.add(message.payload.deviceId);
-        setLinked(linkedDevices.size);
-        transport.sendReliable({ type: "player.assign", deviceId: message.payload.deviceId, playerId: "player-1" });
-        transport.sendReliable({
-          type: "controller.configure",
-          role: "steering",
-          layout: { layout: [
+    const host = new SessionHost({
+      gameId: "tiltdrift",
+      roles: [{
+        id: "driver",
+        label: "Driver",
+        playerId: "player-1",
+        requiredCapabilities: ["touch"],
+        preferredCapabilities: ["gyroscope"],
+        layout: {
+          title: "Steering Wheel",
+          accent: "#50e3ff",
+          motion: { action: "steer", mode: "tilt", label: "Phone tilt" },
+          layout: [
             { type: "joystick", action: "steer", label: "WHEEL" },
-            { type: "button", action: "boost", label: "BOOST" },
             { type: "button", action: "brake", label: "BRAKE" },
             { type: "button", action: "drift", label: "DRIFT" },
-          ] },
-        });
-      }
+            { type: "button", action: "boost", label: "BOOST", emphasis: "primary" },
+          ],
+        },
+      }],
+      transport,
+      session: new LocalSession(sessionId),
+      onFrame: (frame) => engine.inputBus.accept(frame),
+      onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
+    const view = createDriftView(canvas);
+    let renderHandle = 0;
 
     const render = () => {
       view.sync(engine.context.state);
@@ -64,13 +70,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     };
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
-    void transport.connect().then(() => transport.sendReliable({
-      type: "hello",
-      version: PROTOCOL_VERSION,
-      deviceId: "tiltdrift-host",
-      device: "browser-host",
-      capabilities: { gamepad: true },
-    }));
+    void host.start();
     void engine.start();
     canvas.focus();
     renderHandle = requestAnimationFrame(render);
@@ -82,8 +82,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     return () => {
       window.clearInterval(hudTimer);
       cancelAnimationFrame(renderHandle);
-      removeLink();
-      void transport.disconnect();
+      void host.stop();
       engine.stop();
       void engine.inputBus.destroy();
       view.dispose();

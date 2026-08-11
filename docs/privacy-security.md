@@ -30,6 +30,8 @@ Pairing codes are discovery aids, not long-term authentication secrets. WebRTC s
 
 Manual offline pairing data can be transferred by QR or code, but must be size-limited and strictly validated before use.
 
+Browser Link role messages are addressed to a concrete device. The controller ignores layouts, live state, and haptics meant for other devices. The session host rejects realtime frames from unassigned device IDs and replaces client-claimed player identity with the authoritative role assignment before forwarding input. This is an isolation boundary for local party play, not a substitute for future authenticated Hub pairing.
+
 ## Untrusted game packages
 
 Downloaded games will eventually require signed manifests, declared capabilities, version compatibility checks, content security boundaries, and user confirmation for new permissions. A game manifest cannot grant itself sensor or filesystem access.

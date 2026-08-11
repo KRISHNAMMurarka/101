@@ -5,13 +5,17 @@
 1. Launch 101 and open **Input Lab**.
 2. Choose **Connect device**.
 3. Open the provided controller link in another tab in the same browser profile.
-4. The controller sends a capability hello; the host assigns Player 1.
-5. The host selects a classic, sword, or steering panel with `controller.configure`.
+4. The controller sends a capability hello; `@101/session` selects a compatible open role.
+5. The host targets that device with `player.assign` and a JSON `controller.configure` panel.
 6. Touch and optional motion events appear as normalized actions, axes, and vectors.
 
-This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching from Slashstorm to TiltDrift: its repeated capability hello lets the new host role replace the old panel without reconnection.
+This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching games: its repeated capability hello lets the active host replace the panel without manual reconnection. Orbital Crew assigns separate pilot, weapons, shield, reactor, and emergency panels to up to five tabs.
+
+Controller configuration is device-targeted. A phone ignores assignments, layouts, state readouts, and haptic commands addressed to another device. The host also replaces the device/player identity claimed by incoming realtime frames with the authoritative session assignment.
 
 Motion permission is requested only when **Enable motion** is pressed. If permission is denied or unavailable, the sword touch surface and steering buttons/pedals remain usable.
+
+Open `/controller-lab` to edit and validate a controller layout directly. The Lab applies the schema to session `CTRL01` and shows the actions, axes, and vectors emitted by the connected controller.
 
 ## Manual offline WebRTC
 

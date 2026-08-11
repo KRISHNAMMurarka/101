@@ -6,7 +6,8 @@ import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
 import { InputDiagnostics, type LatencySnapshot } from "@101/diagnostics";
 import type { InputFrame, InputSource } from "@101/input";
-import { BroadcastChannelTransport, PROTOCOL_VERSION } from "@101/protocol";
+import { BroadcastChannelTransport } from "@101/protocol";
+import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import inputLabGame from "@/games/input-lab/src/game";
 
@@ -29,6 +30,27 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     const gamepad = new GamepadAdapter();
     const diagnostics = new InputDiagnostics();
     const transport = new BroadcastChannelTransport(sessionId);
+    const host = new SessionHost({
+      gameId: "input-lab",
+      roles: [{
+        id: "classic",
+        label: "Classic Controller",
+        playerId: "player-1",
+        requiredCapabilities: ["touch"],
+        layout: {
+          title: "Input Lab",
+          accent: "#b5ff66",
+          layout: [
+            { type: "dpad", action: "move", label: "MOVE" },
+            { type: "button", action: "trigger", label: "TRIGGER", emphasis: "primary" },
+          ],
+        },
+      }],
+      transport,
+      session: new LocalSession(sessionId),
+      onFrame: (frame) => engine.inputBus.accept(frame),
+      onChange: (snapshot) => setLinkedDevices(snapshot.assignments.map((assignment) => assignment.deviceId)),
+    });
     let drawHandle = 0;
     let pulse = 0;
     let previousTrigger = false;
@@ -43,23 +65,6 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
         window.setTimeout(() => setFlash(false), 90);
       }
       previousTrigger = Boolean(frame.actions.trigger);
-    });
-
-    const unsubscribeLink = transport.onMessage((message) => {
-      if (message.channel === "realtime") engine.inputBus.accept(message.payload);
-      if (message.channel === "control" && message.payload.type === "hello") {
-        const device = message.payload;
-        setLinkedDevices((current) => current.includes(device.deviceId) ? current : [...current, device.deviceId]);
-        transport.sendReliable({ type: "player.assign", deviceId: device.deviceId, playerId: "player-1" });
-        transport.sendReliable({
-          type: "controller.configure",
-          role: "classic",
-          layout: { layout: [
-            { type: "joystick", action: "move", label: "MOVE" },
-            { type: "button", action: "trigger", label: "TRIGGER" },
-          ] },
-        });
-      }
     });
 
     const draw = () => {
@@ -128,13 +133,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(pointer);
     void engine.inputBus.register(gamepad);
-    void transport.connect().then(() => transport.sendReliable({
-      type: "hello",
-      version: PROTOCOL_VERSION,
-      deviceId: "host-browser",
-      device: "browser-host",
-      capabilities: { touch: true, gamepad: true },
-    }));
+    void host.start();
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(draw);
@@ -148,8 +147,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       window.clearInterval(metricTimer);
       cancelAnimationFrame(drawHandle);
       unsubscribeInput();
-      unsubscribeLink();
-      void transport.disconnect();
+      void host.stop();
       engine.stop();
       void engine.inputBus.destroy();
     };

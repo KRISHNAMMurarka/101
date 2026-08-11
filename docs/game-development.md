@@ -47,6 +47,8 @@ The launcher discovers `games/*/manifest.json` during its build. Adding a manife
 
 Publish basic, enhanced and immersive presets. The launcher must always expose a playable conventional preset. Enhanced hardware improves the experience; it does not gate entry.
 
+Asymmetric games may additionally publish `SessionRole` definitions outside the gameplay module. Each role declares its normalized `playerId`, capability preferences, and a JSON `ControllerLayout`. The platform host owns transport, registration, identity enforcement, layout delivery, and haptics. The `Game101.define()` module continues to read only actions, axes, vectors, and poses for the role player IDs.
+
 ## Infinite directors
 
 Use this pipeline:

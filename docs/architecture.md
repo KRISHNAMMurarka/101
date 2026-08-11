@@ -10,6 +10,8 @@ Game definition
       └─ @101/core
           ├─ @101/input
           │   └─ adapters
+          ├─ @101/session
+          │   └─ capability roles + controller layouts
           ├─ renderer facade
           ├─ physics facade
           ├─ audio facade
@@ -38,7 +40,9 @@ Game definition
 
 ## Input resolution
 
-Frames are stored per player and device. Reads choose the newest device that contains the requested control. Actions, axes, vectors, and compact pose arrays share the same sequencing and stale-frame rejection path. This allows a keyboard to provide movement while a phone supplies aim, or a camera pose adapter to provide `dodgeX` and `duck`. Hosts send reliable `controller.configure` messages so browser Link changes roles without reconnecting. Full manifest-to-capability role assignment remains a later session-layer milestone.
+Frames are stored per player and device. Reads choose the newest device that contains the requested control. Actions, axes, vectors, and compact pose arrays share the same sequencing and stale-frame rejection path. This allows a keyboard to provide movement while a phone supplies aim, or a camera pose adapter to provide `dodgeX` and `duck`.
+
+`@101/session` owns capability-aware asymmetric assignment. A host publishes ordered role definitions with required/preferred capabilities and JSON controller layouts. The session preserves stable matches when possible, selects stronger capability matches when a new device joins, targets configuration to one device, expires missing heartbeats, and overwrites the `deviceId` and `playerId` claimed by every accepted realtime frame. Game code still sees only normalized player input.
 
 ## Rendering and physics
 
@@ -50,4 +54,4 @@ Phaser, Three.js, Rapier and Howler are imported only by facade packages. Phaser
 
 ## Phase boundaries
 
-The same-browser controller remains a fast diagnostic transport and streams calibrated phone motion when the user grants permission. Vision Lab and BodyDodge use a bundled single-person pose model locally; hand/face tasks and worker-based inference remain later vision phases. WebRTC provides reliable control and disposable realtime channels behind `LinkTransport`, including a fully offline manual pairing flow. Automatic LAN discovery, reconnect, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.
+The same-browser controller remains a fast diagnostic transport and streams calibrated phone motion when the user grants permission. Its UI is now rendered from the targeted `ControllerLayout`, which Orbital Crew uses for pilot, weapons, shields, reactor, and emergency stations. Vision Lab and BodyDodge use a bundled single-person pose model locally; hand/face tasks and worker-based inference remain later vision phases. WebRTC provides reliable control and disposable realtime channels behind `LinkTransport`, including a fully offline manual pairing flow. Automatic LAN discovery, reconnect, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.

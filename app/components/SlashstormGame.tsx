@@ -4,7 +4,8 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport, PROTOCOL_VERSION } from "@101/protocol";
+import { BroadcastChannelTransport } from "@101/protocol";
+import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
@@ -34,23 +35,30 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     const pointer = new PointerAdapter(canvas);
     const gamepad = new GamepadAdapter();
     const transport = new BroadcastChannelTransport(sessionId);
-    let drawHandle = 0;
-
-    const removeLink = transport.onMessage((message) => {
-      if (message.channel === "realtime") engine.inputBus.accept(message.payload);
-      if (message.channel === "control" && message.payload.type === "hello" && message.payload.deviceId !== "slashstorm-host") {
-        setLinked((current) => current + (current === 0 ? 1 : 0));
-        transport.sendReliable({ type: "player.assign", deviceId: message.payload.deviceId, playerId: "player-1" });
-        transport.sendReliable({
-          type: "controller.configure",
-          role: "sword",
-          layout: { layout: [
+    const host = new SessionHost({
+      gameId: "slashstorm",
+      roles: [{
+        id: "sword",
+        label: "Sword",
+        playerId: "player-1",
+        requiredCapabilities: ["touch"],
+        preferredCapabilities: ["gyroscope"],
+        layout: {
+          title: "Motion Sword",
+          accent: "#ff5c35",
+          motion: { action: "aim", mode: "wand", label: "Phone orientation" },
+          layout: [
             { type: "touch-surface", action: "aim", label: "BLADE" },
-            { type: "button", action: "trigger", label: "SLASH" },
-          ] },
-        });
-      }
+            { type: "button", action: "trigger", label: "SLASH", emphasis: "danger" },
+          ],
+        },
+      }],
+      transport,
+      session: new LocalSession(sessionId),
+      onFrame: (frame) => engine.inputBus.accept(frame),
+      onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
+    let drawHandle = 0;
 
     const draw = () => {
       const context = canvas.getContext("2d");
@@ -68,13 +76,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(pointer);
     void engine.inputBus.register(gamepad);
-    void transport.connect().then(() => transport.sendReliable({
-      type: "hello",
-      version: PROTOCOL_VERSION,
-      deviceId: "slashstorm-host",
-      device: "browser-host",
-      capabilities: { touch: true, gamepad: true },
-    }));
+    void host.start();
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(draw);
@@ -87,8 +89,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     return () => {
       window.clearInterval(hudTimer);
       cancelAnimationFrame(drawHandle);
-      removeLink();
-      void transport.disconnect();
+      void host.stop();
       engine.stop();
       void engine.inputBus.destroy();
     };

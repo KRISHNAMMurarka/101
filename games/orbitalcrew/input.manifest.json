@@ -1,0 +1,18 @@
+{
+  "game": "orbitalcrew",
+  "actions": {
+    "fire": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "fortify": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
+    "vent": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
+    "overdrive": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
+    "emergency": { "recommended": ["watch-motion", "touch"], "fallback": ["gamepad", "keyboard"] }
+  },
+  "axes": {
+    "shield": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
+    "power": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] }
+  },
+  "vectors": {
+    "flight": { "recommended": ["phone-motion", "touch"], "fallback": ["gamepad", "keyboard"] },
+    "target": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] }
+  }
+}

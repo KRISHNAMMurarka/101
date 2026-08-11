@@ -67,6 +67,17 @@ test("serves BodyDodge with optional local camera and conventional controls", as
   assert.match(html, /video is neither uploaded nor recorded/i);
 });
 
+test("serves Orbital Crew with asymmetric roles and conventional fallback", async () => {
+  const response = await render("/games/orbitalcrew");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Orbital Crew 101 — Asymmetric local co-op/);
+  assert.match(html, /Playable asymmetric co-op/);
+  assert.match(html, /SESSION HOST \/ ROLE ROUTING ACTIVE/);
+  assert.match(html, /Keyboard captain fallback/);
+  assert.match(html, /CONNECT CREW/);
+});
+
 test("server-renders the local Motion Lab and permission explanation", async () => {
   const response = await render("/motion");
   const html = await response.text();
@@ -98,12 +109,24 @@ test("server-renders the offline WebRTC Network Lab", async () => {
   assert.match(html, /STRICT LOCAL/);
 });
 
+test("server-renders the dynamic Controller Lab", async () => {
+  const response = await render("/controller-lab");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /101 Controller Lab/);
+  assert.match(html, /Design the panel/);
+  assert.match(html, /Validate \+ apply layout/);
+  assert.match(html, /LATEST NORMALIZED FRAME/);
+});
+
 test("serves the controller surface and product metadata", async () => {
   const response = await render("/controller?session=TEST01");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Link — Browser controller/);
   assert.match(html, /LINK \/ (?:<!-- -->)?CLASSIC/);
+  assert.match(html, /Classic Controller/);
+  assert.match(html, /JSON-defined panel/);
 
   const [layout, manifest, packageJson] = await Promise.all([
     readFile(new URL("app/layout.tsx", root), "utf8"),
