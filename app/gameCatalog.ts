@@ -10,4 +10,4 @@ export const gameCatalog = Object.values(manifestModules)
     const candidate = manifest as Partial<GameManifest>;
     return Boolean(candidate.id && candidate.name && candidate.version);
   })
-  .sort((a, b) => a.name.localeCompare(b.name));
+  .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.name.localeCompare(b.name));

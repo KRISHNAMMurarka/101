@@ -15,7 +15,7 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the 101 launcher and all ten roadmap games", async () => {
+test("server-renders the 101 launcher and all ten catalog games", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -25,6 +25,7 @@ test("server-renders the 101 launcher and all ten roadmap games", async () => {
   assert.match(html, /Anything can be/);
   assert.match(html, /101 Input Lab/);
   assert.match(html, /Slashstorm 101/);
+  assert.match(html, /Launch game/);
   assert.match(html, /TiltDrift 101/);
   assert.match(html, /BodyDodge 101/);
   assert.match(html, /Orbital Crew 101/);
@@ -35,6 +36,25 @@ test("server-renders the 101 launcher and all ten roadmap games", async () => {
   assert.match(html, /Shadow Arena 101/);
   assert.match(html, /Swarm Commander 101/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+});
+
+test("serves Slashstorm as an independently playable game route", async () => {
+  const response = await render("/games/slashstorm");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Slashstorm 101 — Play locally/);
+  assert.match(html, /Playable vertical slice/);
+  assert.match(html, /INPUT BUS \/ SWORD ACTIVE/);
+});
+
+test("server-renders the offline WebRTC Network Lab", async () => {
+  const response = await render("/network");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /101 Network Lab/);
+  assert.match(html, /Connect two browsers/);
+  assert.match(html, /No signaling server/);
+  assert.match(html, /STRICT LOCAL/);
 });
 
 test("serves the controller surface and product metadata", async () => {

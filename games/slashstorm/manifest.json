@@ -1,7 +1,8 @@
 {
-  "id": "slashstorm", "name": "Slashstorm 101", "tagline": "Turn motion into a blade.",
-  "version": "0.1.0", "engine": "^1", "renderer": "2d",
+  "id": "slashstorm", "name": "Slashstorm 101", "tagline": "Turn motion into a blade.", "order": 1,
+  "version": "0.2.0", "engine": "^1", "renderer": "2d",
   "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "mouse", "touch", "gamepad", "phone-motion", "camera-hand", "watch-motion"],
-  "offline": true, "procedural": true, "status": "planned", "accent": "#ff6846"
+  "offline": true, "procedural": true, "status": "playable", "accent": "#ff6846",
+  "controllers": { "basic": ["keyboard", "mouse", "touch", "gamepad"], "enhanced": ["phone-motion"], "immersive": ["camera-hand", "watch-motion"] }
 }

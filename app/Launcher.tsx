@@ -1,10 +1,12 @@
 "use client";
 
 import type { GameManifest } from "@101/sdk";
+import Link from "next/link";
 import { useId, useMemo, useState } from "react";
 import InputLab from "./components/InputLab";
+import SlashstormGame from "./components/SlashstormGame";
 
-type View = "library" | "lab" | "system";
+type View = "library" | "lab" | "slashstorm" | "system";
 
 const INPUT_LABELS: Record<string, string> = {
   keyboard: "Keyboard",
@@ -45,6 +47,8 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
         <nav className="nav" aria-label="Primary navigation">
           <button className={view === "library" ? "active" : ""} onClick={() => navigate("library")}>Games</button>
           <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input Lab</button>
+          <button className={view === "slashstorm" ? "active" : ""} onClick={() => navigate("slashstorm")}>Slashstorm</button>
+          <Link href="/network">Network Lab</Link>
           <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>The system</button>
         </nav>
         <button className="connect-button" onClick={() => setPairingOpen(true)}>
@@ -62,8 +66,8 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
                 101 turns keyboards, phones, watches, cameras and custom hardware into one shared input language—then lets every game speak it.
               </p>
               <div className="hero-actions">
-                <button className="primary-button" onClick={() => navigate("lab")}>
-                  Play Input Lab <span aria-hidden="true">↗</span>
+                <button className="primary-button" onClick={() => navigate("slashstorm")}>
+                  Play Slashstorm <span aria-hidden="true">↗</span>
                 </button>
                 <button className="text-button" onClick={() => setPairingOpen(true)}>
                   Try a second-screen controller
@@ -109,7 +113,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <section className="library-section" id="games">
             <div className="section-heading">
               <div><p className="eyebrow">Game library</p><h2>Ten games. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. The Phase 1 Input Lab is playable now; the ten game worlds are the roadmap that validates the same engine.</p>
+              <p>The catalog is manifest-driven. Input Lab, Network Lab, and the first Slashstorm vertical slice are playable now; the remaining game worlds validate the same engine.</p>
             </div>
             <div className="game-grid">
               <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
@@ -125,7 +129,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
 
               {catalog.map((game, index) => (
                 <article className={`game-card game-${game.id}`} key={game.id} style={{ "--accent": game.accent ?? "#b5ff66" } as React.CSSProperties}>
-                  <div className="card-top"><span className="game-number">{String(index + 1).padStart(2, "0")}</span><span className="roadmap-badge">ROADMAP</span></div>
+                  <div className="card-top"><span className="game-number">{String(index + 1).padStart(2, "0")}</span>{game.status === "playable" ? <span className="ready-badge">PLAYABLE</span> : <span className="roadmap-badge">ROADMAP</span>}</div>
                   <div className="game-motif" aria-hidden="true"><span /><i /><b /></div>
                   <div className="game-card-copy">
                     <h3>{game.name}</h3>
@@ -134,8 +138,13 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
                       {game.inputs.slice(0, 3).map((input) => <span key={input}>{INPUT_LABELS[input] ?? input}</span>)}
                       {game.inputs.length > 3 && <span>+{game.inputs.length - 3}</span>}
                     </div>
+                    <div className="preset-status">
+                      <span>Playable</span>
+                      {game.controllers?.enhanced?.length ? <span>Enhanced available</span> : null}
+                      {game.controllers?.immersive?.length ? <span>Immersive available</span> : null}
+                    </div>
                   </div>
-                  <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>
+                  {game.id === "slashstorm" ? <button className="game-card-launch" onClick={() => navigate("slashstorm")}>Launch game <span>↗</span></button> : <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>}
                 </article>
               ))}
             </div>
@@ -150,20 +159,21 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
       )}
 
       {view === "lab" && <InputLab sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "slashstorm" && <SlashstormGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Phase 1 foundation</span></div>
+        <div><span>MIT core</span><span>Offline by design</span><span>Networking + first game</span></div>
       </footer>
 
-      {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenLab={() => { setPairingOpen(false); navigate("lab"); }} />}
+      {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
     </main>
   );
 }
 
-function PairingPanel({ sessionId, onClose, onOpenLab }: { sessionId: string; onClose: () => void; onOpenLab: () => void }) {
+function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: string; onClose: () => void; onOpenController: () => void }) {
   const [copied, setCopied] = useState(false);
   const controllerUrl = `/controller?session=${sessionId}`;
 
@@ -182,8 +192,8 @@ function PairingPanel({ sessionId, onClose, onOpenLab }: { sessionId: string; on
         <p className="panel-intro">Open the link in another tab in this browser profile. It connects directly to the Input Lab through the transport layer—no account and no database.</p>
         <div className="session-code"><span>SESSION</span><strong>{sessionId}</strong><i>LOCAL</i></div>
         <div className="pair-link"><code>{controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
-        <a className="primary-button full-button" href={controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenLab}>Open controller in a new tab ↗</a>
-        <div className="pairing-scope"><span>✓ Working now: same-browser controller</span><span>Next: WebRTC LAN + offline QR exchange</span></div>
+        <a className="primary-button full-button" href={controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open controller in a new tab ↗</a>
+        <div className="pairing-scope"><span>✓ Working now: same-browser game controller</span><Link href="/network">Open manual offline WebRTC pairing →</Link></div>
       </section>
     </div>
   );

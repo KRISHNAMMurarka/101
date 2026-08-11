@@ -49,6 +49,13 @@ export interface LinkTransport {
   onMessage(callback: (message: LinkMessage) => void): () => void;
 }
 
+export type LinkState = "idle" | "connecting" | "connected" | "disconnected" | "failed";
+
+export interface StatefulLinkTransport extends LinkTransport {
+  readonly state: LinkState;
+  onStateChange(callback: (state: LinkState) => void): () => void;
+}
+
 export function serializeControlMessage(message: ControlMessage): string {
   return JSON.stringify({ version: PROTOCOL_VERSION, message });
 }
@@ -148,4 +155,288 @@ export class BroadcastChannelTransport implements LinkTransport {
     this.listeners.add(callback);
     return () => this.listeners.delete(callback);
   }
+}
+
+export interface WebRTCTransportOptions {
+  initiator: boolean;
+  iceServers?: RTCIceServer[];
+  realtimeBufferLimit?: number;
+}
+
+export class WebRTCTransport implements StatefulLinkTransport {
+  private peer?: RTCPeerConnection;
+  private control?: RTCDataChannel;
+  private realtime?: RTCDataChannel;
+  private readonly listeners = new Set<(message: LinkMessage) => void>();
+  private readonly stateListeners = new Set<(state: LinkState) => void>();
+  private readonly options: WebRTCTransportOptions;
+  private currentState: LinkState = "idle";
+
+  constructor(options: WebRTCTransportOptions) {
+    this.options = options;
+  }
+
+  get state() {
+    return this.currentState;
+  }
+
+  async connect() {
+    if (this.peer) return;
+    if (typeof RTCPeerConnection === "undefined") {
+      throw new Error("WebRTC DataChannel is unavailable in this browser");
+    }
+
+    this.setState("connecting");
+    this.peer = new RTCPeerConnection({
+      iceServers: this.options.iceServers ?? [],
+    });
+    this.peer.onconnectionstatechange = () => {
+      const state = this.peer?.connectionState;
+      if (state === "connected") this.setState("connected");
+      else if (state === "failed") this.setState("failed");
+      else if (state === "disconnected" || state === "closed") this.setState("disconnected");
+    };
+    this.peer.ondatachannel = (event) => {
+      if (event.channel.label === "101-control") this.attachControl(event.channel);
+      if (event.channel.label === "101-realtime") this.attachRealtime(event.channel);
+    };
+
+    if (this.options.initiator) {
+      this.attachControl(this.peer.createDataChannel("101-control", { ordered: true }));
+      this.attachRealtime(this.peer.createDataChannel("101-realtime", {
+        ordered: false,
+        maxRetransmits: 0,
+      }));
+    }
+  }
+
+  async disconnect() {
+    this.control?.close();
+    this.realtime?.close();
+    this.peer?.close();
+    this.control = undefined;
+    this.realtime = undefined;
+    this.peer = undefined;
+    this.setState("disconnected");
+  }
+
+  async createOfferCode() {
+    await this.connect();
+    const peer = this.requirePeer();
+    await peer.setLocalDescription(await peer.createOffer());
+    await waitForIceGathering(peer);
+    return encodePairingDescription(requireLocalDescription(peer));
+  }
+
+  async acceptOfferCode(code: string) {
+    await this.connect();
+    const peer = this.requirePeer();
+    const offer = await decodePairingDescription(code);
+    if (offer.type !== "offer") throw new Error("Expected a 101 WebRTC offer");
+    await peer.setRemoteDescription(offer);
+    await peer.setLocalDescription(await peer.createAnswer());
+    await waitForIceGathering(peer);
+    return encodePairingDescription(requireLocalDescription(peer));
+  }
+
+  async acceptAnswerCode(code: string) {
+    const peer = this.requirePeer();
+    const answer = await decodePairingDescription(code);
+    if (answer.type !== "answer") throw new Error("Expected a 101 WebRTC answer");
+    await peer.setRemoteDescription(answer);
+  }
+
+  sendReliable(message: ControlMessage) {
+    if (this.control?.readyState !== "open") return;
+    this.control.send(serializeControlMessage(message));
+  }
+
+  sendRealtime(frame: InputFrame) {
+    if (this.realtime?.readyState !== "open") return;
+    if (this.realtime.bufferedAmount > (this.options.realtimeBufferLimit ?? 64 * 1024)) return;
+    this.realtime.send(JSON.stringify(frame));
+  }
+
+  onMessage(callback: (message: LinkMessage) => void) {
+    this.listeners.add(callback);
+    return () => this.listeners.delete(callback);
+  }
+
+  onStateChange(callback: (state: LinkState) => void) {
+    this.stateListeners.add(callback);
+    callback(this.currentState);
+    return () => this.stateListeners.delete(callback);
+  }
+
+  async stats(): Promise<RTCStatsReport | undefined> {
+    return this.peer?.getStats();
+  }
+
+  private attachControl(channel: RTCDataChannel) {
+    this.control = channel;
+    channel.onmessage = (event: MessageEvent<string>) => {
+      try {
+        this.emit({ channel: "control", payload: deserializeControlMessage(event.data) });
+      } catch {
+        // Invalid remote packets are ignored rather than reaching a game.
+      }
+    };
+  }
+
+  private attachRealtime(channel: RTCDataChannel) {
+    this.realtime = channel;
+    channel.bufferedAmountLowThreshold = 16 * 1024;
+    channel.onmessage = (event: MessageEvent<string>) => {
+      try {
+        this.emit({ channel: "realtime", payload: JSON.parse(event.data) as InputFrame });
+      } catch {
+        // Invalid or partial disposable frames are safe to drop.
+      }
+    };
+  }
+
+  private emit(message: LinkMessage) {
+    this.listeners.forEach((listener) => listener(message));
+  }
+
+  private setState(state: LinkState) {
+    if (state === this.currentState) return;
+    this.currentState = state;
+    this.stateListeners.forEach((listener) => listener(state));
+  }
+
+  private requirePeer() {
+    if (!this.peer) throw new Error("Call connect() before exchanging pairing data");
+    return this.peer;
+  }
+}
+
+interface PairingEnvelope {
+  v: typeof PROTOCOL_VERSION;
+  type: RTCSdpType;
+  sdp: string;
+  checksum: string;
+}
+
+export async function encodePairingDescription(
+  description: RTCSessionDescriptionInit,
+  compress = true,
+): Promise<string> {
+  if (!description.type || !description.sdp) throw new Error("Incomplete WebRTC description");
+  if (description.sdp.length > 256_000) throw new Error("Pairing description is too large");
+  const payload = `${description.type}\n${description.sdp}`;
+  const envelope: PairingEnvelope = {
+    v: PROTOCOL_VERSION,
+    type: description.type,
+    sdp: description.sdp,
+    checksum: checksum(payload),
+  };
+  const bytes = new TextEncoder().encode(JSON.stringify(envelope));
+  if (compress && typeof CompressionStream !== "undefined") {
+    const compressed = await transformBytes(bytes, new CompressionStream("deflate"));
+    return `101C1.${toBase64Url(compressed)}`;
+  }
+  return `101J1.${toBase64Url(bytes)}`;
+}
+
+export async function decodePairingDescription(code: string): Promise<RTCSessionDescriptionInit> {
+  const normalized = code.trim();
+  if (normalized.length > 400_000) throw new Error("Pairing code is too large");
+  const [prefix, encoded, extra] = normalized.split(".");
+  if (extra !== undefined || !encoded || !["101C1", "101J1"].includes(prefix)) {
+    throw new Error("Invalid 101 pairing code");
+  }
+  let bytes = fromBase64Url(encoded);
+  if (prefix === "101C1") {
+    if (typeof DecompressionStream === "undefined") {
+      throw new Error("Compressed pairing codes are unavailable in this browser");
+    }
+    bytes = await transformBytes(bytes, new DecompressionStream("deflate"), 300_000);
+  }
+  if (bytes.byteLength > 300_000) throw new Error("Pairing code is too large");
+  const envelope = JSON.parse(new TextDecoder().decode(bytes)) as Partial<PairingEnvelope>;
+  if (envelope.v !== PROTOCOL_VERSION || !envelope.type || !envelope.sdp) {
+    throw new Error("Unsupported or malformed 101 pairing code");
+  }
+  if (!(["offer", "answer"] as string[]).includes(envelope.type)) {
+    throw new Error("Unsupported pairing description type");
+  }
+  if (envelope.checksum !== checksum(`${envelope.type}\n${envelope.sdp}`)) {
+    throw new Error("Pairing code failed integrity validation");
+  }
+  return { type: envelope.type, sdp: envelope.sdp };
+}
+
+async function waitForIceGathering(peer: RTCPeerConnection, timeoutMs = 5000) {
+  if (peer.iceGatheringState === "complete") return;
+  await new Promise<void>((resolve) => {
+    const timeout = setTimeout(finish, timeoutMs);
+    peer.addEventListener("icegatheringstatechange", onChange);
+    function onChange() {
+      if (peer.iceGatheringState === "complete") finish();
+    }
+    function finish() {
+      clearTimeout(timeout);
+      peer.removeEventListener("icegatheringstatechange", onChange);
+      resolve();
+    }
+  });
+}
+
+function requireLocalDescription(peer: RTCPeerConnection): RTCSessionDescriptionInit {
+  if (!peer.localDescription) throw new Error("WebRTC did not produce pairing data");
+  return { type: peer.localDescription.type, sdp: peer.localDescription.sdp };
+}
+
+async function transformBytes(
+  bytes: Uint8Array,
+  stream: CompressionStream | DecompressionStream,
+  maxOutput = Number.POSITIVE_INFINITY,
+) {
+  const copied = new Uint8Array(bytes.byteLength);
+  copied.set(bytes);
+  const reader = new Blob([copied.buffer]).stream().pipeThrough(stream).getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > maxOutput) {
+      await reader.cancel();
+      throw new Error("Pairing code expands beyond the allowed size");
+    }
+    chunks.push(value);
+  }
+  const output = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    output.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return output;
+}
+
+function toBase64Url(bytes: Uint8Array) {
+  let binary = "";
+  for (let index = 0; index < bytes.length; index += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(index, index + 0x8000));
+  }
+  return btoa(binary).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+}
+
+function fromBase64Url(value: string) {
+  if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error("Invalid pairing encoding");
+  const base64 = value.replaceAll("-", "+").replaceAll("_", "/").padEnd(Math.ceil(value.length / 4) * 4, "=");
+  const binary = atob(base64);
+  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+}
+
+function checksum(value: string) {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
 }

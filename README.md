@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **Phase 1 foundation**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, protocol codecs, renderer/physics/audio facades, deterministic generation utilities, diagnostics, and a playable Input Lab. It deliberately does not present the ten planned games, native Link app, vision, watches, or WebRTC LAN pairing as finished.
+This repository currently contains the **networking foundation and first playable game slice**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, renderer/physics/audio facades, deterministic generation utilities, Input Lab, an offline WebRTC Network Lab, and Slashstorm 101. It deliberately does not present the remaining nine games, native Link app, vision, watches, automatic LAN discovery, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -24,7 +24,9 @@ Open the local address printed by the development server. The Input Lab supports
 - click, Space, or gamepad A to trigger
 - a same-browser 101 Link controller opened from **Connect device**
 
-The controller preview uses a `BroadcastChannel` transport so the protocol boundary can be tested without a server. Cross-device LAN and offline QR pairing belong to the networking phase and are not claimed by this preview.
+Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or the browser Link controller. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
+
+The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
 
 ## Verify it
 
@@ -62,7 +64,7 @@ Key packages:
 | Package | Responsibility |
 | --- | --- |
 | `@101/input` | Frames, normalization, stale-frame rejection, players and adapters |
-| `@101/protocol` | Versioned messages, transport contract, compact motion packets |
+| `@101/protocol` | Versioned messages, BroadcastChannel and WebRTC transports, offline pairing, compact motion packets |
 | `@101/sdk` | Public game lifecycle and manifest types |
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
@@ -121,15 +123,18 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] 2D, 3D, physics and audio facades
 - [x] Seeded randomness, replay contract and input diagnostics
 - [x] Playable Input Lab and same-browser Link controller
-- [ ] WebRTC control/realtime channels, reconnect and LAN pairing
+- [x] Strict-local WebRTC control/realtime channels and manual offline pairing
+- [x] Network Lab with latency, jitter, loss and connection-path diagnostics
+- [x] Slashstorm playable vertical slice with seeded infinite director
+- [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Motion Lab and vision playgrounds
-- [ ] Slashstorm, TiltDrift and BodyDodge vertical slices
+- [ ] TiltDrift and BodyDodge vertical slices
 - [ ] Tauri Hub, watches and optional hardware adapters
 
 ## Privacy and offline behavior
 
-The Phase 1 launcher and game runtime require no account, analytics, database, or cloud gameplay service. Runtime dependencies are bundled. The architecture requires camera, motion, and microphone processing to stay local by default, with clear permission copy and no recording. See [privacy and security](docs/privacy-security.md).
+The launcher and game runtime require no account, analytics, database, or cloud gameplay service. Runtime dependencies are bundled. The architecture requires camera, motion, and microphone processing to stay local by default, with clear permission copy and no recording. See [privacy and security](docs/privacy-security.md).
 
 ## License
 

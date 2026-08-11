@@ -5,13 +5,15 @@ export * from "./random.ts";
 export class Engine101<State> {
   readonly inputBus: InputBus;
   readonly context: GameContext<State>;
+  readonly game: GameDefinition<State>;
   private frameHandle?: number;
   private previousTime = 0;
 
   constructor(
-    readonly game: GameDefinition<State>,
+    game: GameDefinition<State>,
     inputBus = new InputBus(),
   ) {
+    this.game = game;
     this.inputBus = inputBus;
     const input: GameInput = {
       bind: (name) => inputBus.bind(name),

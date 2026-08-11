@@ -23,7 +23,12 @@ Each game needs:
   "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "mouse", "gamepad", "phone-motion", "camera-hand"],
   "offline": true,
-  "procedural": true
+  "procedural": true,
+  "controllers": {
+    "basic": ["keyboard", "mouse", "gamepad"],
+    "enhanced": ["phone-motion"],
+    "immersive": ["camera-hand"]
+  }
 }
 ```
 

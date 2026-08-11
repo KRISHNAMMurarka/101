@@ -50,4 +50,4 @@ Phaser, Three.js, Rapier and Howler are imported only by facade packages. Phaser
 
 ## Phase boundaries
 
-The current same-browser controller is a diagnostic transport. WebRTC will add a reliable ordered control channel and an unordered/limited-retransmit realtime channel behind the same `LinkTransport` interface. Vision, motion sensor collection, native Link, Tauri Hub and specialist hardware adapters remain separate phases so the engine contract is proven before platform complexity arrives.
+The same-browser controller remains a fast diagnostic transport. WebRTC now provides a reliable ordered control channel and an unordered zero-retransmit realtime channel behind the same `LinkTransport` interface, with a fully offline manual offer/answer flow in Network Lab. Automatic LAN discovery, reconnect, vision, native sensor collection, Tauri Hub and specialist hardware adapters remain separate phases.

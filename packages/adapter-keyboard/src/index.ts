@@ -54,12 +54,13 @@ export class KeyboardAdapter implements InputAdapter {
       source: this.source,
       actions: {
         trigger: this.has("Space", "Enter"),
+        slash: this.has("Space", "Enter"),
         buttonA: this.has("Space"),
         buttonB: this.has("ShiftLeft", "ShiftRight"),
         pause: this.has("Escape"),
       },
       axes: { moveX: x, moveY: y, steer: x },
-      vectors: { move: { x, y } },
+      vectors: { move: { x, y }, aim: { x, y } },
     });
   }
 

@@ -1,7 +1,8 @@
 {
-  "id": "echomaze", "name": "Echo Maze 101", "tagline": "The second screen knows what the dark hides.",
+  "id": "echomaze", "name": "Echo Maze 101", "tagline": "The second screen knows what the dark hides.", "order": 8,
   "version": "0.1.0", "engine": "^1", "renderer": "3d",
   "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "gamepad", "phone-motion", "watch-motion"],
-  "offline": true, "procedural": true, "status": "planned", "accent": "#80a8ff"
+  "offline": true, "procedural": true, "status": "planned", "accent": "#80a8ff",
+  "controllers": { "basic": ["keyboard", "gamepad"], "enhanced": ["phone-motion"], "immersive": ["watch-motion"] }
 }

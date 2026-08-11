@@ -24,7 +24,7 @@ interface LinkTransport {
 }
 ```
 
-The Phase 1 `BroadcastChannelTransport` is a local test implementation. WebRTC, offline manual offer/answer exchange, native bridges, and test-loopback transports implement the same contract.
+`BroadcastChannelTransport` supports the same-browser controller test. `WebRTCTransport` implements real peer DataChannels with no hard-coded signaling dependency: the current Network Lab exchanges compressed, versioned, integrity-checked offers and answers manually. Native bridges and automated LAN signaling will implement the same contract.
 
 ## Capability hello
 
@@ -61,9 +61,9 @@ The initial binary motion packet is 48 bytes:
 
 All multibyte fields use little-endian encoding. Future changes require a new version or packet type; do not silently reinterpret fields.
 
-## WebRTC target configuration
+## WebRTC configuration
 
 - Control: ordered, reliable DataChannel.
 - Realtime: unordered with zero or very limited retransmits where supported.
-- Signaling: LAN helper when available; entirely offline offer/answer QR or manual transfer remains supported.
+- Signaling: manual offline text transfer is implemented; LAN discovery and QR encoding remain follow-up layers.
 - Reconnect: preserve stable device identity, renegotiate transport, then request fresh calibration if sensor orientation may have changed.

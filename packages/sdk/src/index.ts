@@ -15,6 +15,12 @@ export interface GameManifest {
   procedural: boolean;
   status?: "playable" | "foundation" | "planned";
   accent?: string;
+  order?: number;
+  controllers?: {
+    basic: string[];
+    enhanced?: string[];
+    immersive?: string[];
+  };
 }
 
 export interface GameInput {

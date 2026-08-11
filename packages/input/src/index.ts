@@ -44,6 +44,30 @@ export interface InputManifest {
   vectors?: Record<string, InputManifestControl>;
 }
 
+export interface ResolvedInputManifest {
+  mappings: Record<string, InputSource>;
+  missing: string[];
+}
+
+export function resolveInputManifest(
+  manifest: InputManifest,
+  available: Iterable<InputSource>,
+): ResolvedInputManifest {
+  const sources = new Set(available);
+  const mappings: Record<string, InputSource> = {};
+  const missing: string[] = [];
+  const groups = [manifest.actions, manifest.axes, manifest.vectors];
+  for (const group of groups) {
+    for (const [control, requirement] of Object.entries(group ?? {})) {
+      const source = [...requirement.recommended, ...(requirement.fallback ?? [])]
+        .find((candidate) => sources.has(candidate));
+      if (source) mappings[control] = source;
+      else missing.push(control);
+    }
+  }
+  return { mappings, missing };
+}
+
 export type InputFrameListener = (frame: Readonly<InputFrame>) => void;
 
 export interface InputAdapter {
