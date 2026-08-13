@@ -189,6 +189,18 @@ test("server-renders the dynamic Controller Lab", async () => {
   assert.match(html, /LATEST NORMALIZED FRAME/);
 });
 
+test("server-renders optional specialist hardware with honest capability state", async () => {
+  const response = await render("/hardware");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /101 Hardware Lab/);
+  assert.match(html, /Wire bytes into/);
+  assert.match(html, /WebHID/);
+  assert.match(html, /Web Bluetooth/);
+  assert.match(html, /Web Serial/);
+  assert.match(html, /FALLBACK GUARANTEE/);
+});
+
 test("serves the controller surface and product metadata", async () => {
   const response = await render("/controller?session=TEST01");
   const html = await response.text();

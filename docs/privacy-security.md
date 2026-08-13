@@ -38,6 +38,16 @@ Vision Lab, BodyDodge, Spellcaster, Shadow Arena, and Swarm Commander follow the
 
 BeatForge reuses that exact optional camera boundary for movement controls. It does not request microphone access, and its included rhythm cues are generated offline by `@101/audio`. GravityStack requests no media capability; phone tilt arrives only as a normalized gravity vector after the controller user explicitly enables motion. Echo Maze also makes no microphone request: its assigned companion receives only tiny, targeted clue/status messages and normalized controls.
 
+Specialist hardware follows the same lazy, explicit boundary. `@101/adapter-hid`, `@101/adapter-bluetooth`, and `@101/adapter-serial` never enumerate or scan for devices in the background: the browser's own chooser, opened from a click, is the permission boundary, and each adapter constrains that chooser with its declared filters. Web Bluetooth connects to exactly one declared service and characteristic rather than requesting broad GATT access. Devices already granted in a previous visit are matched through `getDevices()`/`getPorts()` so reconnect needs no new prompt and grants no new access. Only decoded numeric actions, axes, and vectors enter the Input Bus — never device serial numbers or raw descriptors — and the Hardware Lab reports unsupported APIs plainly instead of presenting controls that silently do nothing.
+
+## Dependency security
+
+`npm run audit:production` is the release gate. A plain `npm audit --omit=dev` cannot tell code that ships to a player from build tooling that only runs on a developer machine, because Expo declares its CLI, Metro bundler and Xcode project tooling as production dependencies of the native app. Deleting the check would hide real risk; leaving it permanently red would train everyone to ignore it.
+
+The gate therefore separates root-cause advisories from the "depends on a vulnerable package" entries that resolve with them, and requires every root cause to be individually reviewed in [`security/build-tooling-advisories.json`](../security/build-tooling-advisories.json) with its dependency path, a justification, whether the vulnerable code path is actually reachable, and an expiry date. It fails on anything unreviewed, any review past its date, and any allowlist entry that no longer matches a reported advisory. A new advisory can never be absorbed silently, and an accepted one cannot be forgotten.
+
+Only `surface: "build-tooling"` may be accepted. Anything reaching the web runtime or the shipped iOS/Android bundle must be fixed, not reviewed. The player-facing runtime dependencies — Phaser, Three.js, Rapier, Howler, React, MediaPipe tasks-vision and the QR encoder — currently carry no advisories.
+
 ## Local network security
 
 Pairing codes are discovery aids, not long-term authentication secrets. WebRTC sessions should use ephemeral keys, display both devices during confirmation, expire offers, and reject protocol-version mismatches. The Hub must bind only to intended interfaces and clearly show which network transport is active.

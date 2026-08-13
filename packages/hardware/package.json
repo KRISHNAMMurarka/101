@@ -1,0 +1,9 @@
+{
+  "name": "@101/hardware",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@101/input": "0.1.0"
+  }
+}

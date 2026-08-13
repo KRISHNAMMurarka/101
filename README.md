@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped adapters handle keyboards, pointers, gamepads, phone motion, local cameras, and the native iOS/Android 101 Link app through the same public boundary.
 
-This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, browser and native Link controllers, native Tauri Hub, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Watches and specialist hardware adapters remain active implementation milestones; they are not represented as shipped until their source and tests land.
+This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, browser and native Link controllers, native Tauri Hub, specialist hardware adapters, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, WebHID/Bluetooth/Serial device mapping, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Watch companions remain an active implementation milestone; they are not represented as shipped until their source and tests land.
 
 ![101 social card](public/og.png)
 
@@ -66,6 +66,8 @@ The **Network Lab** creates compressed manual WebRTC offers and answers without 
 
 The **Controller Lab** validates editable controller-layout JSON, applies it live to 101 Link, and inspects the normalized actions, axes, and vectors returned by buttons, D-pads, sticks, touch surfaces, sliders, and optional motion mappings.
 
+The **Hardware Lab** connects optional WebHID, Web Bluetooth, and Web Serial devices through one declarative byte mapping. It reports real per-API support, secure-context, and permission state honestly, opens each browser chooser only on an explicit click, and prints the resulting normalized 101 frame. Because all three transports share `@101/hardware`, a mapping authored for a serial prototype keeps working when the same board later enumerates as HID. See [specialist hardware](docs/hardware.md).
+
 ## Verify it
 
 ```bash
@@ -73,6 +75,7 @@ npm run typecheck
 npm test
 npm run lint
 npm run license:inventory
+npm run audit:production
 npm run native:test
 npm run native:typecheck
 npm run native:doctor
@@ -89,6 +92,8 @@ npm run build
 ```
 
 The unit suite includes seeded full-loop simulations for all ten games, controller-role/input-manifest contract checks, session failover tests, and focused engine/adapter tests. `npm test` then creates a production build and server-renders the launcher, every standalone game, the Link surface, and all engineering Labs.
+
+`npm run audit:production` gates production dependencies. It separates root-cause advisories from propagated ones and requires each root cause to be reviewed in [`security/build-tooling-advisories.json`](security/build-tooling-advisories.json) with a dependency path, justification and expiry date, so a new advisory can never pass unnoticed and an accepted one cannot be forgotten. Only developer build tooling may be accepted; anything reaching the web runtime or a shipped mobile bundle must be fixed. See [privacy and security](docs/privacy-security.md).
 
 ## Architecture
 
@@ -125,6 +130,10 @@ Key packages:
 | `@101/adapter-motion` | Lazy browser permission, device orientation correction, gestures and normalized frames |
 | `@101/vision` | Pose calibration plus hand landmark smoothing and temporal gesture state machines |
 | `@101/adapter-camera` | Lazy local capture plus replaceable bundled MediaPipe pose/hand inference |
+| `@101/hardware` | Declarative byte-to-frame mapping, serial framers and shared specialist-device frame emission |
+| `@101/adapter-hid` | Filtered WebHID chooser, already-granted reconnect, mapped input reports and output reports |
+| `@101/adapter-bluetooth` | Single-service BLE GATT notifications, optional writes and range-loss release |
+| `@101/adapter-serial` | Framed serial reads with bounded buffering, host writes and unplug release |
 | `@101/diagnostics` | Input rate, frame age and dropped-frame instrumentation |
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
 | `@101/rhythm` | Frame-rate-independent beat/time conversion, quantization and timing judgments |
@@ -219,8 +228,9 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Installable offline 101 Link PWA with transport selection and secret-safe caching
 - [x] Native iOS/Android 101 Link with QR, dynamic layouts, motion calibration, gestures, haptics and native WebRTC
 - [x] Native Tauri 101 Hub with authenticated signaling, mDNS discovery, local settings/replays/packages and a packaged desktop dashboard
+- [x] Declarative WebHID/Web Bluetooth/Web Serial adapters, Hardware Lab and surprise-disconnect input release
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
-- [ ] Watches and optional hardware adapters
+- [ ] Apple Watch and Wear OS companions
 
 ## Privacy and offline behavior
 

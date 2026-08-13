@@ -80,6 +80,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <Link href="/vision">Vision Lab</Link>
           <Link href="/network">Network Lab</Link>
           <Link href="/controller-lab">Controller Lab</Link>
+          <Link href="/hardware">Hardware Lab</Link>
           <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>The system</button>
         </nav>
         <button className="connect-button" onClick={() => setPairingOpen(true)}>

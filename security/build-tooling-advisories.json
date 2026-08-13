@@ -1,0 +1,31 @@
+{
+  "$comment": "Explicitly reviewed advisories that are reachable only from developer build tooling, never from code shipped to a player. Every entry must name the dependency path, state whether the vulnerable code path is reachable, and carry a reviewBy date. Anything not listed here fails the gate, so a new advisory can never be absorbed silently. See docs/privacy-security.md.",
+  "reviewed": [
+    {
+      "package": "image-size",
+      "advisory": "image-size ICNS/JXL/HEIF parsers allow denial of service through infinite loops",
+      "severity": "high",
+      "path": "@101/controller-native > expo > @expo/metro > metro > image-size",
+      "surface": "build-tooling",
+      "justification": "Metro measures image assets while bundling the native app on a developer machine. It never runs on a player device and is not part of the web runtime or the shipped iOS/Android bundle. The parser only sees asset files committed to this repository, so there is no untrusted input path.",
+      "vulnerableCodePathReachable": true,
+      "fixAvailable": false,
+      "fixNotes": "Every published image-size version is in the vulnerable range, so no upgrade resolves this. npm proposes downgrading expo 57 to 53, a semver-major downgrade that would break the verified native Link build. Re-check for a patched image-size release at the review date.",
+      "reviewed": "2026-08-13",
+      "reviewBy": "2026-11-13"
+    },
+    {
+      "package": "uuid",
+      "advisory": "uuid missing buffer bounds check in v3/v5/v6 when buf is provided",
+      "severity": "moderate",
+      "path": "@101/controller-native > expo > @expo/config-plugins > xcode > uuid",
+      "surface": "build-tooling",
+      "justification": "The xcode package rewrites Xcode project files during iOS prebuild on a developer machine. It calls only uuid.v4(); the advisory concerns v3/v5/v6 called with an explicit buf argument, so the vulnerable code path is not reached.",
+      "vulnerableCodePathReachable": false,
+      "fixAvailable": true,
+      "fixNotes": "Patched in uuid >= 11.1.1, but the fix lives inside a transitive dependency of Expo's own tooling. Forcing an override into xcode's internals risks breaking iOS project generation for an unreachable code path. Adopt it when Expo updates xcode upstream.",
+      "reviewed": "2026-08-13",
+      "reviewBy": "2026-11-13"
+    }
+  ]
+}

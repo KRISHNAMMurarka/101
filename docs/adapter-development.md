@@ -37,3 +37,5 @@ Run inference locally. Convert camera frames into landmarks, then gestures, then
 ## Specialist hardware
 
 WebHID, Web Bluetooth and Web Serial adapters are optional capability enhancements. Browser support and permission state must be surfaced. No game may require one of these adapters just to start.
+
+All three transports deliver bytes, so `@101/hardware` owns the byte-to-game-language conversion once: a declarative `HardwareReportMapping` of offsets, value types, ranges, dead zones and thresholds, plus serial framers and a shared frame emitter. `@101/adapter-hid`, `@101/adapter-bluetooth` and `@101/adapter-serial` differ only in how they obtain bytes, so one authored mapping survives a device moving between transports. Pass a `decoder` instead of a `mapping` for bit-packed or text protocols. Every adapter emits a neutral release frame on surprise disconnect as well as deliberate teardown. See [specialist hardware](hardware.md).
