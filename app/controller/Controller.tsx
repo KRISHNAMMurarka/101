@@ -3,11 +3,15 @@
 import { BrowserMotionAdapter, isMotionSupported, requestMotionPermission } from "@101/adapter-motion";
 import type { InputFrame, InputVector } from "@101/input";
 import { ControllerInputModel, type ControllerInputSnapshot } from "@101/link-controller";
+import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
   BroadcastChannelTransport,
   PROTOCOL_VERSION,
+  decodePairingTicket,
   type ControllerElement,
   type ControllerLayout,
+  type LinkTransport,
+  type StatefulLinkTransport,
 } from "@101/protocol";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -35,7 +39,7 @@ const DEFAULT_LAYOUT: ControllerLayout = {
 
 const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", accent: "#8d9791", layout: [] };
 
-export default function Controller({ session }: { session: string }) {
+export default function Controller({ session, pairCode }: { session: string; pairCode?: string }) {
   const [connected, setConnected] = useState(false);
   const [assigned, setAssigned] = useState(false);
   const [deviceId] = useState(() => {
@@ -53,7 +57,7 @@ export default function Controller({ session }: { session: string }) {
   const [layoutRevision, setLayoutRevision] = useState(0);
   const [readout, setReadout] = useState<ControllerReadout>({ values: {}, tone: "normal" });
   const [motionState, setMotionState] = useState<"idle" | "active" | "denied" | "unsupported">("idle");
-  const transportRef = useRef<BroadcastChannelTransport | null>(null);
+  const transportRef = useRef<LinkTransport | null>(null);
   const motionAdapterRef = useRef<BrowserMotionAdapter | null>(null);
   const playerIdRef = useRef("player-1");
   const layoutRef = useRef(layout);
@@ -80,7 +84,24 @@ export default function Controller({ session }: { session: string }) {
 
   useEffect(() => {
     if (!deviceId) return;
-    const transport = new BroadcastChannelTransport(session);
+    const capabilities = {
+      touch: true,
+      haptics: "vibrate" in navigator,
+      accelerometer: isMotionSupported(),
+      gyroscope: isMotionSupported(),
+    };
+    let transport: LinkTransport;
+    try {
+      transport = pairCode
+        ? new SignaledLinkTransport({
+            signaling: new HttpControllerSignalingClient(decodePairingTicket(pairCode)),
+            device: { deviceId, label: "101 Link browser controller", capabilities },
+          })
+        : new BroadcastChannelTransport(session);
+    } catch (error) {
+      queueMicrotask(() => setReadout({ values: {}, tone: "critical", message: error instanceof Error ? error.message.toUpperCase() : "INVALID PAIRING TICKET" }));
+      return;
+    }
     transportRef.current = transport;
     const removeListener = transport.onMessage((message) => {
       if (message.channel !== "control") return;
@@ -144,13 +165,15 @@ export default function Controller({ session }: { session: string }) {
       version: PROTOCOL_VERSION,
       deviceId,
       device: "101 Link browser controller",
-      capabilities: {
-        touch: true,
-        haptics: "vibrate" in navigator,
-        accelerometer: isMotionSupported(),
-        gyroscope: isMotionSupported(),
-      },
+      capabilities,
     });
+    const removeState = isStateful(transport) ? transport.onStateChange((state) => {
+      if (state === "connected") hello();
+      if (state === "failed" || state === "disconnected") {
+        setConnected(false);
+        setReadout({ values: {}, tone: "warning", message: "LINK INTERRUPTED · RECONNECTING" });
+      }
+    }) : () => undefined;
     void transport.connect().then(hello).catch(() => {
       setConnected(false);
       setReadout({ values: {}, tone: "critical", message: "LINK TRANSPORT UNAVAILABLE" });
@@ -172,12 +195,13 @@ export default function Controller({ session }: { session: string }) {
       window.clearInterval(watchdogTimer);
       publishSnapshot(inputRef.current!.releaseAll());
       removeListener();
+      removeState();
       void transport.disconnect();
       void motionAdapterRef.current?.stop();
       motionAdapterRef.current = null;
       transportRef.current = null;
     };
-  }, [deviceId, publishSnapshot, session]);
+  }, [deviceId, pairCode, publishSnapshot, session]);
 
   const setAction = (action: string, active: boolean | number) => {
     publishSnapshot(inputRef.current!.setAction(action, active));
@@ -275,6 +299,10 @@ export default function Controller({ session }: { session: string }) {
       <p className="controller-footnote">The host can replace this JSON-defined panel without reconnecting. Games receive normalized 101 input only.</p>
     </main>
   );
+}
+
+function isStateful(transport: LinkTransport): transport is StatefulLinkTransport {
+  return "onStateChange" in transport && typeof transport.onStateChange === "function";
 }
 
 function DynamicControllerDeck({

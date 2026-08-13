@@ -3,7 +3,7 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createGravityStackGame, type GravityStackState } from "@/games/gravitystack/src/game";
@@ -64,7 +64,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       const engine = new Engine101(createGravityStackGame(`gravitystack-${run}`));
       const keyboard = new KeyboardAdapter();
       const gamepad = new GamepadAdapter();
-      const transport = new BroadcastChannelTransport(sessionId);
+      const transport = getBrowserHostTransport(sessionId);
       const host = new SessionHost({
         gameId: "gravitystack",
         roles: GRAVITYSTACK_ROLES,

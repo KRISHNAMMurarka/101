@@ -263,10 +263,12 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .footer > div:last-child { display: flex; gap: 20px; color: #59615c; font: 650 9px ui-monospace, monospace; text-transform: uppercase; }
 
 .modal-backdrop { position: fixed; z-index: 80; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.75); backdrop-filter: blur(10px); }
-.pairing-panel { position: relative; width: min(570px, 100%); padding: clamp(28px, 5vw, 54px); border: 1px solid var(--line-strong); background: #111514; box-shadow: 18px 18px 0 rgba(0,0,0,.28); }
+.pairing-panel { position: relative; overflow-y: auto; width: min(570px, 100%); max-height: calc(100vh - 40px); padding: clamp(28px, 5vw, 54px); border: 1px solid var(--line-strong); background: #111514; box-shadow: 18px 18px 0 rgba(0,0,0,.28); }
 .close-button { position: absolute; top: 16px; right: 16px; width: 35px; height: 35px; border: 1px solid var(--line); background: transparent; color: #929b94; font-size: 20px; cursor: pointer; }
 .pairing-panel h2 { max-width: 450px; margin: 0; font-size: clamp(36px, 6vw, 56px); line-height: .96; letter-spacing: -.055em; }
 .panel-intro { margin: 22px 0 28px; color: var(--muted); font-size: 13px; line-height: 1.65; }
+.pairing-qr { display: block; width: min(220px, 62vw); aspect-ratio: 1; margin: 0 auto 18px; border: 8px solid var(--paper); background: var(--paper); image-rendering: pixelated; }
+.pairing-qr.pending { display: grid; place-items: center; border: 1px dashed var(--line-strong); background: #0b0e0d; color: #69716c; font: 750 9px ui-monospace, monospace; letter-spacing: .12em; }
 .session-code, .session-readout { display: flex; align-items: center; gap: 14px; border: 1px solid rgba(181,255,102,.3); background: rgba(181,255,102,.045); }
 .session-code { padding: 17px; }
 .session-code span, .session-readout span { color: #69716c; font: 750 8px ui-monospace, monospace; letter-spacing: .13em; }
@@ -276,8 +278,10 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .pair-link code { overflow: hidden; flex: 1; padding: 14px; color: #7b847e; font: 9px ui-monospace, monospace; text-overflow: ellipsis; white-space: nowrap; }
 .pair-link button { width: 78px; border: 0; border-left: 1px solid var(--line); background: #1b201f; font-size: 10px; font-weight: 750; cursor: pointer; }
 .full-button { width: 100%; }
+.pairing-error, .pairing-ready { margin: 11px 0; padding: 10px 12px; border: 1px solid rgba(255,92,53,.3); color: #cc836f; font: 650 9px/1.5 ui-monospace, monospace; }
+.pairing-error code { color: var(--paper); }.pairing-ready { border-color: rgba(181,255,102,.3); color: #98c97b; }
 .pairing-scope { display: grid; gap: 8px; margin-top: 19px; color: #6f7872; font: 650 9px ui-monospace, monospace; }
-.pairing-scope span:first-child { color: #98c97b; }
+.pairing-scope span { color: #98c97b; }
 .pairing-scope a { color: #9fa7a1; text-decoration: none; }.pairing-scope a:hover { color: var(--acid); }
 
 .lab-page, .system-page { max-width: 1540px; min-height: calc(100vh - 76px); margin: 0 auto; padding: 62px clamp(20px, 4vw, 64px) 100px; }

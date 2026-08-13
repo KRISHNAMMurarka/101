@@ -3,7 +3,7 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
@@ -36,7 +36,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     const engine = new Engine101(createTiltDriftGame(`tiltdrift-${run}`));
     const keyboard = new KeyboardAdapter();
     const gamepad = new GamepadAdapter();
-    const transport = new BroadcastChannelTransport(sessionId);
+    const transport = getBrowserHostTransport(sessionId);
     const host = new SessionHost({
       gameId: "tiltdrift",
       roles: TILTDRIFT_ROLES,

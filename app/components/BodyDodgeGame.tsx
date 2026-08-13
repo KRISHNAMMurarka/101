@@ -4,7 +4,7 @@ import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
@@ -49,7 +49,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
     const host = new SessionHost({
       gameId: "bodydodge",
       roles: BODYDODGE_ROLES,
-      transport: new BroadcastChannelTransport(sessionId),
+      transport: getBrowserHostTransport(sessionId),
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),

@@ -24,6 +24,14 @@ Open the local address printed by the development server. The Input Lab supports
 - click, Space, or gamepad A to trigger
 - a same-browser 101 Link controller opened from **Connect device**
 
+For automatic phone/LAN QR pairing, run the local Hub in another terminal:
+
+```bash
+npm run hub
+```
+
+Start the web runtime with `npm run dev -- --host 0.0.0.0`, open its LAN address, and choose **Connect device**. The Hub performs authenticated, expiring offer/answer exchange locally; gameplay uses direct WebRTC DataChannels and reconnects without another scan.
+
 Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
 
 TiltDrift 101 is a playable Three.js racing slice. Use Left/Right or A/D to steer, Space to boost, Down/S to brake, and Shift/X to drift. Its tested road grammar produces continuous, seed-repeatable spline-like segments, bounded widths, changing environments, and traffic combinations.
@@ -48,7 +56,7 @@ Shadow Arena 101 is a playable endless silhouette-combat slice. The reusable pos
 
 Swarm Commander 101 is a playable real-time strategy/action slice powered by `@101/swarm`. Spatial-hash separation and instanced rendering keep hundreds of agents responsive across cluster, line, wedge, ring, and grid formations. Mouse or hand pointing sets precise command targets, while separate Link navigator and tactician roles can steer and reshape the same collective.
 
-The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
+The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. Normal **Connect device** pairing uses the local Hub, expiring QR tickets, per-peer secrets, multi-controller WebRTC, and generation-based reconnect. BroadcastChannel remains the fastest same-browser test path.
 
 The **Controller Lab** validates editable controller-layout JSON, applies it live to 101 Link, and inspects the normalized actions, axes, and vectors returned by buttons, D-pads, sticks, touch surfaces, sliders, and optional motion mappings.
 
@@ -91,6 +99,8 @@ Key packages:
 | --- | --- |
 | `@101/input` | Frames, normalization, stale-frame rejection, players and adapters |
 | `@101/protocol` | Versioned messages, BroadcastChannel and WebRTC transports, offline pairing, compact motion packets |
+| `@101/pairing` | Expiring LAN tickets, authenticated signaling, multi-peer WebRTC negotiation and reconnect |
+| `@101/hub-server` | Real local HTTP signaling service shared by development and the desktop Hub contract |
 | `@101/session` | Capability-aware role assignment, targeted controller layouts, heartbeats and host-side frame identity enforcement |
 | `@101/link-controller` | Atomic Link input state, neutral role transitions, and stale-control prevention |
 | `@101/sdk` | Public game lifecycle and manifest types |
@@ -192,7 +202,7 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Seeded full-loop simulations and manifest/controller contracts for all ten games
 - [x] Browser Link watchdog, automatic role failover, standby state, and neutral cross-game transitions
 - [x] Graceful 3D fallback when WebGL is unavailable while gameplay/input keep running
-- [ ] Automatic LAN discovery, WebRTC transport reconnect and QR encoding
+- [x] Automatic LAN QR signaling, multi-peer WebRTC, targeted private routing and transport reconnect
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters

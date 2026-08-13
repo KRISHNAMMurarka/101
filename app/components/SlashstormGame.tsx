@@ -4,7 +4,7 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
@@ -35,7 +35,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     const keyboard = new KeyboardAdapter();
     const pointer = new PointerAdapter(canvas);
     const gamepad = new GamepadAdapter();
-    const transport = new BroadcastChannelTransport(sessionId);
+    const transport = getBrowserHostTransport(sessionId);
     const host = new SessionHost({
       gameId: "slashstorm",
       roles: SLASHSTORM_ROLES,

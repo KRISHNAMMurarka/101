@@ -2,7 +2,9 @@
 
 import type { GameManifest } from "@101/sdk";
 import Link from "next/link";
-import { useId, useMemo, useState } from "react";
+import QRCode from "qrcode";
+import { useEffect, useId, useMemo, useState } from "react";
+import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-link";
 import InputLab from "./components/InputLab";
 import BeatForgeGame from "./components/BeatForgeGame";
 import BodyDodgeGame from "./components/BodyDodgeGame";
@@ -208,10 +210,27 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
 
 function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: string; onClose: () => void; onOpenController: () => void }) {
   const [copied, setCopied] = useState(false);
+  const [pairing, setPairing] = useState<BrowserPairingInfo>();
+  const [qrCode, setQrCode] = useState("");
+  const [hubError, setHubError] = useState("");
   const controllerUrl = `/controller?session=${sessionId}`;
 
+  useEffect(() => {
+    let current = true;
+    getBrowserHostTransport(sessionId).preparePairing().then(async (info) => {
+      const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", color: { dark: "#0b0e0d", light: "#f0f2ec" } });
+      if (!current) return;
+      setPairing(info);
+      setQrCode(image);
+      setHubError("");
+    }).catch((error) => {
+      if (current) setHubError(error instanceof Error ? error.message : "Local Hub unavailable");
+    });
+    return () => { current = false; };
+  }, [sessionId]);
+
   const copy = async () => {
-    await navigator.clipboard?.writeText(new URL(controllerUrl, window.location.origin).toString());
+    await navigator.clipboard?.writeText(pairing?.controllerUrl ?? new URL(controllerUrl, window.location.origin).toString());
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1400);
   };
@@ -220,13 +239,18 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <section className="pairing-panel" role="dialog" aria-modal="true" aria-labelledby="pairing-title">
         <button className="close-button" onClick={onClose} aria-label="Close">×</button>
-        <p className="eyebrow">Local browser test path</p>
-        <h2 id="pairing-title">Make this browser a controller.</h2>
-        <p className="panel-intro">Open the link in another tab in this browser profile. The active host assigns a game-specific role and controller panel automatically—no account and no database.</p>
+        <p className="eyebrow">Strict-local pairing</p>
+        <h2 id="pairing-title">Scan once. Control every game.</h2>
+        <p className="panel-intro">101 Hub exchanges a short-lived WebRTC offer on your LAN. The controller stays paired while games replace its role and JSON-defined panel—no account or cloud signaling.</p>
+        {/* A generated data URL is intentionally rendered directly; it never leaves the local browser. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {qrCode ? <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} /> : <div className="pairing-qr pending"><span>{hubError ? "HUB OFFLINE" : "PREPARING QR"}</span></div>}
         <div className="session-code"><span>SESSION</span><strong>{sessionId}</strong><i>LOCAL</i></div>
-        <div className="pair-link"><code>{controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
-        <a className="primary-button full-button" href={controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open controller in a new tab ↗</a>
-        <div className="pairing-scope"><span>✓ Working now: same-browser game controller</span><Link href="/network">Open manual offline WebRTC pairing →</Link></div>
+        <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
+        {hubError && <p className="pairing-error">Start <code>npm run hub</code>, then reopen this panel. {hubError}</p>}
+        {pairing && <p className="pairing-ready">LAN WEBRTC READY · {pairing.hubEndpoint}</p>}
+        <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
+        <div className="pairing-scope"><span>✓ Working now: same-browser game controller</span><span>✓ Automatic LAN WebRTC + reconnect</span><Link href="/network">Manual serverless pairing →</Link></div>
       </section>
     </div>
   );

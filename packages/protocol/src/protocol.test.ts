@@ -7,7 +7,13 @@ import {
   decodePairingDescription,
   encodePairingDescription,
   parseControllerLayout,
+  MultiplexLinkTransport,
+  createControllerPairingUrl,
+  decodePairingTicket,
+  encodePairingTicket,
   serializeControlMessage,
+  type LinkMessage,
+  type LinkTransport,
 } from "./index.ts";
 
 test("round-trips reliable control messages", () => {
@@ -94,3 +100,55 @@ test("rejects corrupted pairing descriptions", async () => {
   const code = await encodePairingDescription({ type: "answer", sdp: "v=0\r\n" }, false);
   await assert.rejects(() => decodePairingDescription(`${code.slice(0, -1)}x`));
 });
+
+test("round-trips bounded expiring LAN pairing tickets and controller URLs", () => {
+  const ticket = {
+    version: 2, sessionId: "ABC101", endpoint: "http://192.168.1.20:10101",
+    joinToken: "abcdefghijklmnopqrstuvwxyzABCDEF", expiresAt: 2_000,
+    hostName: "Living Room", transport: "webrtc",
+  } as const;
+  const code = encodePairingTicket(ticket);
+  assert.match(code, /^101L2\./);
+  assert.deepEqual(decodePairingTicket(code, 1_000), ticket);
+  const url = createControllerPairingUrl("https://controller.101.local/controller", ticket);
+  assert.equal(new URL(url).searchParams.get("pair"), code);
+  assert.throws(() => decodePairingTicket(code, 2_001), /expired/);
+  assert.throws(() => decodePairingTicket(`${code.slice(0, -1)}x`, 1_000), /integrity|encoding|JSON/);
+});
+
+test("multiplexes any number of Link transports and removes peers cleanly", async () => {
+  const first = new MemoryTransport();
+  const second = new MemoryTransport();
+  const multiplex = new MultiplexLinkTransport();
+  const received: LinkMessage[] = [];
+  multiplex.onMessage((message) => received.push(message));
+  await multiplex.add("browser", first);
+  await multiplex.connect();
+  await multiplex.add("phone", second);
+  multiplex.sendReliable({ type: "ping", sentAt: 1 });
+  assert.equal(first.reliable, 1);
+  assert.equal(second.reliable, 1);
+  second.emit({ channel: "control", payload: { type: "pong", sentAt: 1, receivedAt: 2 } });
+  assert.equal(received.length, 1);
+  second.emit({ channel: "control", payload: { type: "hello", version: 2, deviceId: "phone-2", device: "Phone", capabilities: { touch: true } } });
+  multiplex.sendReliable({ type: "haptic", deviceId: "phone-2", pattern: "tap" });
+  assert.equal(first.reliable, 1, "targeted private control must not be broadcast to other peers");
+  assert.equal(second.reliable, 2);
+  assert.equal(await multiplex.remove("phone"), true);
+  assert.equal(second.connected, false);
+  multiplex.sendReliable({ type: "ping", sentAt: 3 });
+  assert.equal(first.reliable, 2);
+  assert.equal(second.reliable, 2);
+});
+
+class MemoryTransport implements LinkTransport {
+  connected = false;
+  reliable = 0;
+  private listener?: (message: LinkMessage) => void;
+  async connect() { this.connected = true; }
+  async disconnect() { this.connected = false; }
+  sendReliable() { this.reliable += 1; }
+  sendRealtime() {}
+  onMessage(callback: (message: LinkMessage) => void) { this.listener = callback; return () => { this.listener = undefined; }; }
+  emit(message: LinkMessage) { this.listener?.(message); }
+}

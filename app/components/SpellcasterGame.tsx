@@ -5,7 +5,7 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
@@ -58,7 +58,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     const host = new SessionHost({
       gameId: "spellcaster",
       roles: SPELLCASTER_ROLES,
-      transport: new BroadcastChannelTransport(sessionId),
+      transport: getBrowserHostTransport(sessionId),
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),

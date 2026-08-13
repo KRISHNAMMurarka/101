@@ -6,7 +6,7 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { Audio101 } from "@101/audio";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
@@ -39,7 +39,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     const engine = new Engine101(createSwarmCommanderGame(`swarmcommander-${run}`));
     const keyboard = new KeyboardAdapter(); const gamepad = new GamepadAdapter(); const pointer = new PointerAdapter(canvas);
     const audio = createSwarmAudio();
-    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: new BroadcastChannelTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length) });
+    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length) });
     const view = createSwarmView(canvas);
     let drawHandle = 0; let previousAction = 0; let previousImpact = 0;
     engineRef.current = engine;

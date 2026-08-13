@@ -5,7 +5,7 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
 import { Engine101 } from "@101/core";
 import { canTravel, type MazeDirection } from "@101/maze";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
@@ -49,7 +49,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
     const host = new SessionHost({
       gameId: "echomaze",
       roles: ECHO_MAZE_ROLES,
-      transport: new BroadcastChannelTransport(sessionId),
+      transport: getBrowserHostTransport(sessionId),
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),

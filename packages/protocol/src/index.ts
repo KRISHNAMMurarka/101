@@ -232,6 +232,129 @@ export interface StatefulLinkTransport extends LinkTransport {
   onStateChange(callback: (state: LinkState) => void): () => void;
 }
 
+export class MultiplexLinkTransport implements LinkTransport {
+  private readonly transports = new Map<string, { transport: LinkTransport; removeListener: () => void }>();
+  private readonly deviceRoutes = new Map<string, string>();
+  private readonly listeners = new Set<(message: LinkMessage) => void>();
+  private connected = false;
+
+  async add(id: string, transport: LinkTransport) {
+    if (!/^[a-z0-9._-]{1,128}$/i.test(id)) throw new Error("Invalid multiplex transport id");
+    if (this.transports.has(id)) await this.remove(id);
+    const removeListener = transport.onMessage((message) => {
+      if (message.channel === "control" && message.payload.type === "hello") this.deviceRoutes.set(message.payload.deviceId, id);
+      this.listeners.forEach((listener) => listener(message));
+    });
+    this.transports.set(id, { transport, removeListener });
+    if (this.connected) {
+      try {
+        await transport.connect();
+      } catch (error) {
+        removeListener();
+        this.transports.delete(id);
+        throw error;
+      }
+    }
+  }
+
+  async remove(id: string) {
+    const entry = this.transports.get(id);
+    if (!entry) return false;
+    this.transports.delete(id);
+    for (const [deviceId, routeId] of this.deviceRoutes) if (routeId === id) this.deviceRoutes.delete(deviceId);
+    entry.removeListener();
+    await entry.transport.disconnect();
+    return true;
+  }
+
+  has(id: string) {
+    return this.transports.has(id);
+  }
+
+  ids() {
+    return [...this.transports.keys()];
+  }
+
+  async connect() {
+    if (this.connected) return;
+    const connected: LinkTransport[] = [];
+    try {
+      for (const { transport } of this.transports.values()) {
+        await transport.connect();
+        connected.push(transport);
+      }
+      this.connected = true;
+    } catch (error) {
+      await Promise.allSettled(connected.map((transport) => transport.disconnect()));
+      throw error;
+    }
+  }
+
+  async disconnect() {
+    this.connected = false;
+    await Promise.allSettled([...this.transports.values()].map(({ transport }) => transport.disconnect()));
+  }
+
+  sendReliable(message: ControlMessage) {
+    const deviceId = "deviceId" in message ? message.deviceId : undefined;
+    const route = deviceId ? this.deviceRoutes.get(deviceId) : undefined;
+    if (route) {
+      this.transports.get(route)?.transport.sendReliable(message);
+      return;
+    }
+    for (const { transport } of this.transports.values()) transport.sendReliable(message);
+  }
+
+  sendRealtime(frame: InputFrame) {
+    for (const { transport } of this.transports.values()) transport.sendRealtime(frame);
+  }
+
+  onMessage(callback: (message: LinkMessage) => void) {
+    this.listeners.add(callback);
+    return () => this.listeners.delete(callback);
+  }
+}
+
+export interface PairingTicket {
+  version: typeof PROTOCOL_VERSION;
+  sessionId: string;
+  endpoint: string;
+  joinToken: string;
+  expiresAt: number;
+  hostName?: string;
+  transport: "webrtc";
+}
+
+interface PairingTicketEnvelope extends PairingTicket {
+  checksum: string;
+}
+
+export function encodePairingTicket(ticket: PairingTicket) {
+  const parsed = parsePairingTicket(ticket);
+  const payload = JSON.stringify(parsed);
+  const envelope: PairingTicketEnvelope = { ...parsed, checksum: checksum(payload) };
+  return `101L2.${toBase64Url(new TextEncoder().encode(JSON.stringify(envelope)))}`;
+}
+
+export function decodePairingTicket(code: string, now = Date.now()) {
+  const normalized = code.trim();
+  if (normalized.length > 4096 || !normalized.startsWith("101L2.")) throw new Error("Invalid 101 LAN pairing ticket");
+  const encoded = normalized.slice(6);
+  const envelope = JSON.parse(new TextDecoder().decode(fromBase64Url(encoded))) as Partial<PairingTicketEnvelope>;
+  const { checksum: receivedChecksum, ...candidate } = envelope;
+  const parsed = parsePairingTicket(candidate);
+  if (receivedChecksum !== checksum(JSON.stringify(parsed))) throw new Error("Pairing ticket failed integrity validation");
+  if (parsed.expiresAt <= now) throw new Error("Pairing ticket has expired");
+  return parsed;
+}
+
+export function createControllerPairingUrl(controllerBaseUrl: string, ticket: PairingTicket) {
+  const url = new URL(controllerBaseUrl);
+  if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("Controller URL must use HTTP or HTTPS");
+  url.searchParams.set("pair", encodePairingTicket(ticket));
+  return url.toString();
+}
+
 export function serializeControlMessage(message: ControlMessage): string {
   return JSON.stringify({ version: PROTOCOL_VERSION, message });
 }
@@ -615,6 +738,21 @@ function checksum(value: string) {
     hash = Math.imul(hash, 16777619);
   }
   return (hash >>> 0).toString(36);
+}
+
+function parsePairingTicket(input: unknown): PairingTicket {
+  if (!isRecord(input) || input.version !== PROTOCOL_VERSION || input.transport !== "webrtc") throw new Error("Unsupported 101 LAN pairing ticket");
+  const sessionId = requiredText(input.sessionId, "sessionId", 128);
+  if (!/^[A-Z0-9-]{4,128}$/i.test(sessionId)) throw new Error("Invalid pairing session id");
+  const joinToken = requiredText(input.joinToken, "joinToken", 256);
+  if (!/^[A-Za-z0-9_-]{32,256}$/.test(joinToken)) throw new Error("Invalid pairing join token");
+  const endpoint = requiredText(input.endpoint, "endpoint", 2048);
+  const url = new URL(endpoint);
+  if ((url.protocol !== "http:" && url.protocol !== "https:") || url.username || url.password || url.hash) throw new Error("Invalid pairing endpoint");
+  const expiresAt = requiredFinite(input.expiresAt, "expiresAt");
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= 0) throw new Error("Invalid pairing expiration");
+  const hostName = input.hostName === undefined ? undefined : requiredText(input.hostName, "hostName", 128);
+  return { version: PROTOCOL_VERSION, sessionId, endpoint: url.toString().replace(/\/$/, ""), joinToken, expiresAt, ...(hostName ? { hostName } : {}), transport: "webrtc" };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

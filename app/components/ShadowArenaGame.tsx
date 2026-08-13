@@ -5,7 +5,7 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
 import type { PoseLandmark } from "@101/vision";
@@ -47,7 +47,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     const gamepad = new GamepadAdapter();
     const audio = createShadowAudio();
     const host = new SessionHost({
-      gameId: "shadowarena", roles: SHADOW_ARENA_ROLES, transport: new BroadcastChannelTransport(sessionId), session: new LocalSession(sessionId),
+      gameId: "shadowarena", roles: SHADOW_ARENA_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     const view = createShadowView(canvas);

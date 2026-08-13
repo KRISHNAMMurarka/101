@@ -24,6 +24,8 @@
       "@101/devkit": ["./packages/devkit/src/index.ts"],
       "@101/input": ["./packages/input/src/index.ts"],
       "@101/protocol": ["./packages/protocol/src/index.ts"],
+      "@101/pairing": ["./packages/pairing/src/index.ts"],
+      "@101/hub-server": ["./packages/hub-server/src/index.ts"],
       "@101/session": ["./packages/session/src/index.ts"],
       "@101/motion": ["./packages/motion/src/index.ts"],
       "@101/vision": ["./packages/vision/src/index.ts"],

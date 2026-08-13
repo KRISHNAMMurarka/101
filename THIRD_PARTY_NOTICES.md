@@ -9,6 +9,7 @@
 | Rapier JavaScript 2D compatibility build | 0.19.3 | Apache-2.0 | Physics facade |
 | Howler.js | 2.2.4 | MIT | Audio facade |
 | React / React DOM | 19.2.6 | MIT | Launcher and controller UI |
+| QRCode | 1.5.4 | MIT | Local pairing-ticket QR generation |
 | Vite | 8.0.13 | MIT | Build tooling |
 | vinext | 1.0.0-beta.2 | MIT | Browser application runtime/build integration |
 | Cloudflare Vite plugin | 1.37.1 | MIT | Hosted preview adapter |

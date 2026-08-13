@@ -3,7 +3,7 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createOrbitalCrewGame, type OrbitalCrewState } from "@/games/orbitalcrew/src/game";
@@ -53,7 +53,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
     const engine = new Engine101(createOrbitalCrewGame(`orbitalcrew-${run}`));
     const keyboard = new KeyboardAdapter();
     const gamepad = new GamepadAdapter();
-    const transport = new BroadcastChannelTransport(sessionId);
+    const transport = getBrowserHostTransport(sessionId);
     const host = new SessionHost({
       gameId: "orbitalcrew",
       roles: ORBITAL_CREW_ROLES,

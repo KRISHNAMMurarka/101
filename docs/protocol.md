@@ -24,7 +24,27 @@ interface LinkTransport {
 }
 ```
 
-`BroadcastChannelTransport` supports the same-browser controller test. `WebRTCTransport` implements real peer DataChannels with no hard-coded signaling dependency: the current Network Lab exchanges compressed, versioned, integrity-checked offers and answers manually. Native bridges and automated LAN signaling will implement the same contract.
+`BroadcastChannelTransport` supports the same-browser controller test. `WebRTCTransport` implements real peer DataChannels with no hard-coded signaling dependency. The Network Lab exchanges compressed, versioned, integrity-checked offers and answers manually; `@101/pairing` automates the same exchange through a local Hub.
+
+`MultiplexLinkTransport` lets one host accept BroadcastChannel plus any number of WebRTC peers. It learns the source route from each `hello`, so device-targeted configuration, haptic, and private role-state messages go only to that peer. Untargeted session controls may be broadcast.
+
+## Automatic LAN signaling
+
+The Hub creates an expiring `101L2` ticket containing the protocol version, session ID, LAN endpoint, one join secret, expiry, and transport. The QR contains the ticket—not an SDP blob or account identifier. Host administration uses a different secret, and each joined controller receives its own peer secret.
+
+```text
+POST /v1/sessions
+POST /v1/sessions/:session/peers
+GET  /v1/sessions/:session/peers/:peer/offer
+PUT  /v1/sessions/:session/peers/:peer/answer
+POST /v1/sessions/:session/peers/:peer/reconnect
+
+GET  /v1/sessions/:session/host/peers
+PUT  /v1/sessions/:session/host/peers/:peer/offer
+POST /v1/sessions/:session/host/peers/:peer/reconnect
+```
+
+`AutomaticPairingHost` creates one WebRTC transport per peer. `SignaledLinkTransport` monitors it and sends gameplay over the peer DataChannels. A failed connection increments a signaling generation, disposes stale SDP, creates a fresh peer connection, and re-registers without requiring another scan. Old generations cannot overwrite new offers or answers.
 
 ## Capability hello
 
@@ -71,5 +91,5 @@ All multibyte fields use little-endian encoding. Future changes require a new ve
 
 - Control: ordered, reliable DataChannel.
 - Realtime: unordered with zero or very limited retransmits where supported.
-- Signaling: manual offline text transfer is implemented; LAN discovery and QR encoding remain follow-up layers.
-- Reconnect: capability heartbeats, stale-host detection, neutral input release, standby promotion, and role resynchronization are implemented for the browser test path; WebRTC renegotiation and durable native-device identity remain follow-up work.
+- Signaling: authenticated automatic LAN QR exchange and manual serverless text transfer are both implemented.
+- Reconnect: capability heartbeats, neutral release, standby promotion, role resynchronization, and fresh-generation WebRTC renegotiation are implemented.

@@ -6,7 +6,7 @@ import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
 import { InputDiagnostics, type LatencySnapshot } from "@101/diagnostics";
 import type { InputFrame, InputSource } from "@101/input";
-import { BroadcastChannelTransport } from "@101/protocol";
+import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import inputLabGame from "@/games/input-lab/src/game";
@@ -29,7 +29,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     const pointer = new PointerAdapter(canvas);
     const gamepad = new GamepadAdapter();
     const diagnostics = new InputDiagnostics();
-    const transport = new BroadcastChannelTransport(sessionId);
+    const transport = getBrowserHostTransport(sessionId);
     const host = new SessionHost({
       gameId: "input-lab",
       roles: [{
@@ -193,7 +193,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
             {linkedDevices.length ? linkedDevices.map((device) => <p key={device}><i className="status-dot" />{device}</p>) : <p className="muted">No browser controller yet</p>}
             <button className="outline-button" onClick={onConnect}>{linkedDevices.length ? "Add another" : "Connect controller"} →</button>
           </div>
-          <p className="privacy-note"><strong>PRIVATE PATH</strong> Input data stays inside this browser session. The test controller does not use a backend.</p>
+          <p className="privacy-note"><strong>PRIVATE PATH</strong> Input stays on BroadcastChannel or a direct LAN WebRTC channel. The local Hub only exchanges short-lived pairing descriptions.</p>
         </aside>
       </div>
     </section>

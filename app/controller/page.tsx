@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   description: "A local browser controller for the 101 Input Lab.",
 };
 
-export default async function ControllerPage({ searchParams }: { searchParams: Promise<{ session?: string }> }) {
+export default async function ControllerPage({ searchParams }: { searchParams: Promise<{ session?: string; pair?: string }> }) {
   const params = await searchParams;
   const session = params.session?.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 12) || "101LAB";
-  return <Controller session={session} />;
+  return <Controller session={session} pairCode={params.pair} />;
 }

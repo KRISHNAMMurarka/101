@@ -1,5 +1,11 @@
 # Privacy and security
 
+## Pairing data
+
+Automatic pairing uses the local `101 Hub` only to exchange short-lived WebRTC offers and answers. Gameplay input is not intentionally relayed through the Hub. QR tickets contain a LAN endpoint, random join secret, session ID, protocol version, and expiry; they contain no account or player identity. Host, join, and peer authorization secrets are distinct, and targeted controller state is routed only to its registered peer transport.
+
+Treat a pairing QR like a temporary invitation to the room: show it only to intended local players and close/recreate the session if it is exposed. Tickets expire automatically.
+
 ## Defaults
 
 - No account is required.

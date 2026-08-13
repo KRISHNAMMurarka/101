@@ -1,6 +1,21 @@
 # Controller pairing
 
-## Phase 1 browser test
+## Automatic LAN QR
+
+Start the web runtime and local Hub in two terminals:
+
+```bash
+npm run dev -- --host 0.0.0.0
+npm run hub
+```
+
+Open the launcher using the printed LAN address, choose **Connect device**, and scan the QR. The browser controller receives a short-lived ticket, joins the local signaling service, and establishes direct WebRTC control/realtime DataChannels. The Hub does not relay gameplay frames.
+
+The host keeps a multiplexed session transport alive across game transitions. Slashstorm can assign a sword, TiltDrift can replace it with a steering panel, and Orbital Crew can replace it with an asymmetric station without rescanning. WebRTC failure or controller reload negotiates a fresh generation automatically.
+
+If the Hub runs on a non-default address, add `?hub=http://HOST:PORT` to the launcher once. The browser stores that local endpoint. On HTTPS pages, configure a trusted HTTPS Hub endpoint; browsers block mixed active content.
+
+## Same-browser diagnostic
 
 1. Launch 101 and open **Input Lab**.
 2. Choose **Connect device**.
@@ -9,7 +24,7 @@
 5. The host targets that device with `player.assign` and a JSON `controller.configure` panel.
 6. Touch and optional motion events appear as normalized actions, axes, and vectors.
 
-This test intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary but does not cross devices. Keep the controller open while switching games: its repeated capability hello lets the active host replace the panel without manual reconnection. Slashstorm assigns two independent sword tabs, TiltDrift assigns one driver, BodyDodge assigns one movement panel, Orbital Crew assigns separate pilot, weapons, shield, reactor, and emergency panels to up to five tabs, BeatForge replaces that panel with a motion performer, GravityStack assigns gravity first and then a separate builder panel, Spellcaster maps physical motion gestures to the same semantic spells as its camera/keyboard controls, and Echo Maze sends precise clues only to the assigned scanner.
+This path intentionally uses `BroadcastChannel`. It proves the game/input/protocol boundary without a Hub. Keep the controller open while switching games: the active host replaces its panel without manual reconnection. Slashstorm assigns two independent sword tabs, TiltDrift assigns one driver, BodyDodge assigns one movement panel, Orbital Crew assigns separate pilot, weapons, shield, reactor, and emergency panels to up to five tabs, BeatForge replaces that panel with a motion performer, GravityStack assigns gravity first and then a separate builder panel, Spellcaster maps physical motion gestures to the same semantic spells as its camera/keyboard controls, and Echo Maze sends precise clues only to the assigned scanner.
 
 Every controller tab has an independent session identity. Before a new panel is installed, Link publishes a neutral frame for the old role so a held button or stick cannot leak into the next game. When more devices are connected than the current game can use, surplus devices display **Standby** instead of pretending to be assigned. If an active tab closes or stops heartbeating, the host expires it and promotes a compatible standby controller automatically.
 
@@ -30,8 +45,11 @@ Open `/controller-lab` to edit and validate a controller layout directly. The La
 
 The lab supplies no STUN, TURN, signaling, account, or relay service. That preserves strict locality but means some network/browser combinations will not connect.
 
-## LAN WebRTC target
+## Security properties
 
-The Hub creates a session and advertises it locally. A native or PWA Link client discovers the Hub or scans a session code, confirms the host, exchanges capabilities, and opens control plus realtime DataChannels. The connection screen reports LAN, relay, or manual-offline mode rather than implying every path is strictly local.
-
-The next convenience layer advertises a Hub on the LAN and transfers the same versioned pairing descriptions automatically. QR encoding will wrap the implemented bounded text code; it does not change the transport contract.
+- Join, host administration, and each peer use different high-entropy bearer secrets.
+- Tickets expire and contain no account identity.
+- Offer/answer generations reject stale reconnect data.
+- Games never see signaling or transport APIs.
+- Targeted role state is routed only to the peer that registered that `deviceId`.
+- The Hub exchanges pairing descriptions; it is not a gameplay relay.
