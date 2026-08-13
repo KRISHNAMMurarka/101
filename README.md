@@ -239,6 +239,8 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Apple Watch and Wear OS companions with a shared wire format and honest transport-locality reporting
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [x] Phone-side watch bridge as a local Expo module, compiled into both native builds, with health permissions blocked
+- [x] Emulator verification: Android Link, Wear OS Link, Hub signaling and LAN WebRTC pairing all run and connect
+- [ ] **iOS 101 Link fails to start** — builds and links, but throws `Cannot find native module 'ExpoAsset'` before first render ([details](docs/native-link.md#known-issue-ios-fails-to-start-on-the-simulator))
 - [ ] On-wrist hardware testing and a signed watchOS app target
 
 ## Packaging
@@ -266,6 +268,7 @@ Apple installables are deliberately absent. An iOS or watchOS build needs a prov
 | [Specialist hardware](docs/hardware.md) | WebHID, Web Bluetooth and Web Serial mapping |
 | [Vision](docs/vision.md) | Local pose and hand landmark pipelines |
 | [Privacy and security](docs/privacy-security.md) | Local-first guarantees and the dependency gate |
+| [Emulator QA](docs/emulator-qa.md) | What has actually been *run*, per target, and what has not |
 
 ## Privacy and offline behavior
 

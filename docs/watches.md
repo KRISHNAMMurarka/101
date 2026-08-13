@@ -144,6 +144,7 @@ On Android the phone advertises the `one01_link` capability from the module's ow
 
 Stated plainly, because the brief asks for honesty over polish:
 
-- **Neither watch app has been run on physical watch hardware in this repository.** What is verified is that the watchOS sources compile against the real watchOS SDK, the Wear OS app builds a real APK declaring zero permissions, the phone-side module autolinks and compiles into the Android app, and all three implementations of the wire format agree byte for byte.
+- **Neither watch app has been run on physical watch hardware in this repository.** The Wear OS app *has* been run on a Wear OS 3 emulator: it launches, reports `UNKNOWN` locality with "No paired phone." because no companion exists there, correctly disables **Start**, and `dumpsys` confirms it declares zero permissions on-device. That exercises the honest-locality contract but not a real watch-to-phone relay, which needs two paired devices.
+- The watchOS app has not been run at all. Its sources compile against the real watchOS SDK, but no watchOS simulator runtime is installed here and the app target still needs to be created and signed in Xcode.
 - The watchOS app target still has to be added in Xcode and signed with your own team, as described above. That is an Apple requirement, not a gap this repository can close.
 - watchOS relaying is foreground-only. Background wrist input would need an extended runtime session, which costs battery and is not justified for a controller the player is actively using.

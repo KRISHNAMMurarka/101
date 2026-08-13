@@ -18,6 +18,30 @@
 
 Games never import React Native, Expo, WebRTC, camera, or sensor APIs. A third-party game declares a controller role and layout through the public SDK. The existing 101 host sends that layout and native Link returns ordinary `InputFrame` actions, axes and vectors.
 
+## Known issue: iOS fails to start on the simulator
+
+**Android runs; iOS builds but does not start.** Running the app on emulators surfaced this — earlier milestones only verified that iOS *compiled*.
+
+On launch the app throws before the first render:
+
+```text
+[runtime not ready]: Error: Cannot find native module 'ExpoAsset'
+```
+
+What has been established:
+
+- **It is not the watch bridge.** `ExpoAsset` is unrelated to `modules/one01-watch`, and `One01WatchModule` links correctly (6 symbols in the built binary).
+- **It is not a stale build.** It reproduces after `expo prebuild --clean`, a fresh `pod install`, and `xcodebuild clean build`.
+- **It is not missing linkage.** `nm` on the Release binary finds `AssetModule` (4 symbols), `One01WatchModule` (6), and the sensors modules (123). `ExpoModulesProvider.swift` lists all 50 modules including `ExpoAsset`, and the provider is compiled into the app target.
+- **It is not the JS bundle.** Android runs the identical bundle correctly through Metro.
+- **It is not a missing dependency.** Adding `expo-asset` as an explicit dependency changed nothing, so that change was reverted rather than left as noise.
+
+So the module classes are present and linked but are not *registered* with the Expo module registry at runtime, on iOS only. The remaining suspects are the Expo modules registry initialization order in this SDK 57 + React Native 0.86 configuration, or the dynamic-framework/static-library split visible in the built app (`ExpoModulesCore` ships as a dynamic framework while the module classes are statically linked into the main binary).
+
+The Debug build fails differently and consistently: `unsanitizedScriptURLString = (null)`, meaning the dev launcher never receives a Metro URL even when the packager is reachable and the `oneohone://expo-development-client` deep link is delivered. Both symptoms point at the same iOS-side initialization problem.
+
+This is tracked as open. Do not describe iOS 101 Link as working until it launches to its own UI on a device or simulator.
+
 ## Privacy and permissions
 
 The native application has no account, analytics, cloud relay, microphone feature, or recording path. QR scanning asks for Camera permission only when opened. Motion sensing asks for Motion permission only after **Enable Motion**. Generated Android manifests explicitly remove `RECORD_AUDIO`; generated iOS configuration has Camera, Local Network and Motion descriptions but no Microphone description.
