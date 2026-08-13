@@ -1,0 +1,79 @@
+{
+  "expo": {
+    "name": "101 Link",
+    "slug": "101-link",
+    "version": "0.1.0",
+    "icon": "./assets/icon.png",
+    "scheme": "oneohone",
+    "platforms": ["ios", "android"],
+    "orientation": "default",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.oneohone.link",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Connect directly to a 101 Hub on your local network.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
+    },
+    "android": {
+      "package": "com.oneohone.link",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#070C15"
+      },
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [
+            {
+              "scheme": "oneohone",
+              "host": "pair"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Scan a local 101 pairing QR code.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Use phone motion as a private local 101 game controller."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ]
+    ],
+    "extra": {
+      "privacy": "local-first-no-telemetry"
+    }
+  }
+}

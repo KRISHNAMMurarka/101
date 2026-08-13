@@ -2,9 +2,9 @@
 
 **One local gaming runtime where almost anything can become a controller.**
 
-101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped browser adapters handle keyboards, pointers, gamepads, phone motion, and local cameras, while the same boundary is designed for watches and future hardware.
+101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped adapters handle keyboards, pointers, gamepads, phone motion, local cameras, and the native iOS/Android 101 Link app through the same public boundary.
 
-This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Native Link, watches, automatic LAN discovery, hardware adapters, the desktop Hub, and production cross-device reconnect are active implementation milestones in this repository; they are not represented as shipped until their source and tests land.
+This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, browser and native Link controllers, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Watches, the Tauri desktop wrapper, LAN service advertisement, and specialist hardware adapters remain active implementation milestones; they are not represented as shipped until their source and tests land.
 
 ![101 social card](public/og.png)
 
@@ -33,6 +33,8 @@ npm run hub
 Start the web runtime with `npm run dev -- --host 0.0.0.0`, open its LAN address, and choose **Connect device**. The Hub performs authenticated, expiring offer/answer exchange locally; gameplay uses direct WebRTC DataChannels and reconnects without another scan.
 
 The `/controller` surface is an installable **101 Link PWA** with its own manifest, maskable icon, persistent standalone device identity, connection-status UI, pasteable pairing tickets, dynamic controller layouts, and an offline service-worker shell. Pairing URLs are explicitly excluded from caching so temporary join secrets are never persisted there.
+
+`apps/controller-native` is the independently buildable **101 Link native app** for iOS and Android. It scans local pairing QR codes, reconnects with a durable device identity, uses two native WebRTC DataChannels, renders any validated host-supplied controller layout, includes classic/wand/steering/tilt/touch/trigger/motion/sensor-lab presets, performs quaternion calibration and gesture recognition locally, and supports host haptics. It declares no microphone use. See [native Link development](docs/native-link.md).
 
 Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
 
@@ -69,6 +71,10 @@ npm run typecheck
 npm test
 npm run lint
 npm run license:inventory
+npm run native:test
+npm run native:typecheck
+npm run native:doctor
+npm run native:export
 ```
 
 Production build:
@@ -104,7 +110,7 @@ Key packages:
 | `@101/pairing` | Expiring LAN tickets, authenticated signaling, multi-peer WebRTC negotiation and reconnect |
 | `@101/hub-server` | Real local HTTP signaling service shared by development and the desktop Hub contract |
 | `@101/session` | Capability-aware role assignment, targeted controller layouts, heartbeats and host-side frame identity enforcement |
-| `@101/link-controller` | Atomic Link input state, neutral role transitions, and stale-control prevention |
+| `@101/link-controller` | Shared browser/native Link input state, neutral role transitions, and stale-control prevention |
 | `@101/sdk` | Public game lifecycle and manifest types |
 | `@101/game-registry` | Version-aware installation state and launcher catalog for bundled, local and downloaded packages |
 | `@101/game-host` | Turnkey Input Bus, adapter, session, transport, controller-role and game lifecycle composition |
@@ -206,7 +212,7 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Graceful 3D fallback when WebGL is unavailable while gameplay/input keep running
 - [x] Automatic LAN QR signaling, multi-peer WebRTC, targeted private routing and transport reconnect
 - [x] Installable offline 101 Link PWA with transport selection and secret-safe caching
-- [ ] Native 101 Link sensor and haptic controller
+- [x] Native iOS/Android 101 Link with QR, dynamic layouts, motion calibration, gestures, haptics and native WebRTC
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters
 

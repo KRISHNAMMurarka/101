@@ -4,7 +4,7 @@ The web launcher and installable 101 Link PWA live in the root `app/` directory 
 
 Native application targets build on that public protocol rather than forking it:
 
-- `controller-native` — Expo / React Native iOS and Android 101 Link
+- `controller-native` — implemented Expo / React Native iOS and Android 101 Link with QR pairing, native WebRTC DataChannels, dynamic JSON controls, motion processing, haptics and Sensor Lab
 - `desktop-hub` — Tauri local session coordinator and packaged launcher
 - `watch-ios` — lightweight watchOS companion relayed through iPhone
 - `watch-wear` — lightweight Wear OS companion with explicit transport reporting

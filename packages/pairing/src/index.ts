@@ -309,7 +309,11 @@ export class AutomaticPairingHost {
 
   constructor(options: AutomaticPairingHostOptions) {
     this.options = options;
-    this.factory = options.transportFactory ?? ((initiator) => new WebRTCTransport({ initiator, iceServers: [] }));
+    this.factory = options.transportFactory ?? ((initiator) => new WebRTCTransport({
+      initiator,
+      iceServers: [],
+      pairingCompression: false,
+    }));
     this.pollIntervalMs = options.pollIntervalMs ?? 750;
   }
 
@@ -401,7 +405,11 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
 
   constructor(options: SignaledLinkTransportOptions) {
     this.options = options;
-    this.factory = options.transportFactory ?? ((initiator) => new WebRTCTransport({ initiator, iceServers: [] }));
+    this.factory = options.transportFactory ?? ((initiator) => new WebRTCTransport({
+      initiator,
+      iceServers: [],
+      pairingCompression: false,
+    }));
     this.pollIntervalMs = options.pollIntervalMs ?? 750;
   }
 

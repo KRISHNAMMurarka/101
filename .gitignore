@@ -39,3 +39,7 @@ yarn-error.log*
 /.wrangler/
 /outputs/
 /work/
+/apps/controller-native/.expo/
+/apps/controller-native/dist/
+/apps/controller-native/ios/
+/apps/controller-native/android/

@@ -8,6 +8,8 @@ Treat a pairing QR like a temporary invitation to the room: show it only to inte
 
 The 101 Link service worker never caches requests whose URL contains a pairing ticket. It caches only the neutral controller shell and runtime assets. Installed standalone mode stores a random local device ID; it does not store an account identity.
 
+Native 101 Link stores only its random device ID and optional last local pairing ticket in the platform secure store. QR camera access is requested only when **Scan QR** is selected. Motion permission is requested only when a motion layout is active and the user selects **Enable Motion**. The native configuration removes Android audio recording permission and contains no iOS microphone usage description. The app does not record camera, audio, or sensor history and has no telemetry SDK.
+
 ## Defaults
 
 - No account is required.

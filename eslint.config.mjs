@@ -14,6 +14,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "public/mediapipe/**",
+    "apps/controller-native/metro.config.cjs",
     "next-env.d.ts",
   ]),
   eslint.configs.recommended,

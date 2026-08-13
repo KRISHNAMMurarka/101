@@ -1,0 +1,18 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
+    "lib": ["ES2022", "DOM"],
+    "types": ["node"],
+    "paths": {
+      "@101/input": ["../../packages/input/src/index.ts"],
+      "@101/link-controller": ["../../packages/link-controller/src/index.ts"],
+      "@101/motion": ["../../packages/motion/src/index.ts"],
+      "@101/pairing": ["../../packages/pairing/src/index.ts"],
+      "@101/protocol": ["../../packages/protocol/src/index.ts"]
+    }
+  },
+  "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx"]
+}

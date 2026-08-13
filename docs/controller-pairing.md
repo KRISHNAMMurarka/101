@@ -19,6 +19,24 @@ If the Hub runs on a non-default address, add `?hub=http://HOST:PORT` to the lau
 
 Open `/controller` in a PWA-capable browser and use **Install 101 Link** when the browser offers it. The standalone app keeps a durable local device ID, accepts a full pairing URL or `101L2` ticket, and renders every host-provided controller layout.
 
+## Native 101 Link
+
+The Expo/React Native app in `apps/controller-native` uses the same `101L2` ticket, HTTP signaling contract, control messages, realtime `InputFrame` schema, and host-defined controller layout as the PWA. Scan the host QR or paste its ticket. The native app joins the local Hub and then moves gameplay traffic onto a direct WebRTC connection with reliable control and unordered zero-retransmit realtime channels.
+
+The app is not game-specific. `controller.configure` replaces its current surface atomically, releases controls held by the previous role, and renders buttons, D-pads, sticks, touch surfaces, sliders, and motion mappings from validated JSON. Switching games does not require another scan.
+
+For strict offline manual pairing, paste or scan the host's `101C2`/`101J2` offer instead of a LAN ticket. Native Link produces an answer that can be copied back to the host. No signaling service is used in this mode.
+
+Native development requires a development build because DataChannels use a native WebRTC module:
+
+```bash
+npm run native:ios
+# or
+npm run native:android
+```
+
+See [native Link development](native-link.md) for verification and signing details.
+
 The service worker caches the controller shell, manifest, icon, and same-origin runtime assets for installed/offline startup. Requests containing a `pair` query are always network-only: the temporary join secret and its server-rendered response are never stored in Cache Storage. An offline shell can open without a host, but live gameplay naturally requires the LAN host to be reachable.
 
 ## Same-browser diagnostic

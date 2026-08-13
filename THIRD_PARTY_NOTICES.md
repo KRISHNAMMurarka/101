@@ -8,7 +8,13 @@
 | Three.js | 0.179.1 | MIT | 3D rendering facade |
 | Rapier JavaScript 2D compatibility build | 0.19.3 | Apache-2.0 | Physics facade |
 | Howler.js | 2.2.4 | MIT | Audio facade |
-| React / React DOM | 19.2.6 | MIT | Launcher and controller UI |
+| React / React DOM | 19.2.8 | MIT | Launcher and controller UI |
+| React Native | 0.86.2 | MIT | Native iOS/Android 101 Link UI runtime |
+| Expo | 57.0.12 | MIT | Native app build/runtime and device-module foundation |
+| React Native WebRTC | 124.0.8 | MIT | Native peer-to-peer controller DataChannels |
+| Expo Camera / Sensors / Haptics / Secure Store | 57.0.x | MIT | QR scan, local motion, haptic feedback and device identity storage |
+| pako | 3.0.1 | MIT | Native decoding of compact manual pairing descriptions |
+| base64-js | 1.5.1 | MIT | Native pairing-ticket binary encoding |
 | QRCode | 1.5.4 | MIT | Local pairing-ticket QR generation |
 | Vite | 8.0.13 | MIT | Build tooling |
 | vinext | 1.0.0-beta.2 | MIT | Browser application runtime/build integration |

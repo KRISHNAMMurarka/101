@@ -5,6 +5,7 @@
   "description": "A local-first gaming runtime where almost anything can become a controller.",
   "license": "MIT",
   "workspaces": [
+    "apps/*",
     "packages/*",
     "games/*"
   ],
@@ -16,10 +17,17 @@
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
-    "test:unit": "node --experimental-strip-types --test packages/input/src/input.test.ts packages/protocol/src/protocol.test.ts packages/pairing/src/pairing.test.ts packages/hub-server/src/server.test.ts packages/sdk/src/sdk.test.ts packages/game-registry/src/registry.test.ts packages/game-host/src/host.test.ts packages/devkit/src/devkit.test.ts packages/session/src/session.test.ts packages/link-controller/src/controller.test.ts packages/core/src/random.test.ts packages/diagnostics/src/network.test.ts packages/motion/src/motion.test.ts packages/vision/src/vision.test.ts packages/adapter-camera/src/adapter.test.ts packages/rhythm/src/rhythm.test.ts packages/maze/src/maze.test.ts packages/swarm/src/swarm.test.ts packages/physics/src/physics.test.ts packages/audio/src/audio.test.ts packages/render-3d/src/render.test.ts games/slashstorm/src/director.test.ts games/tiltdrift/src/director.test.ts games/bodydodge/src/director.test.ts games/orbitalcrew/src/director.test.ts games/beatforge/src/director.test.ts games/gravitystack/src/director.test.ts games/spellcaster/src/director.test.ts games/echomaze/src/director.test.ts games/shadowarena/src/director.test.ts games/swarmcommander/src/director.test.ts tests/gameplay-simulation.test.ts tests/platform-contracts.test.ts tests/pwa-contract.test.ts",
+    "test:unit": "node --experimental-strip-types --test packages/input/src/input.test.ts packages/protocol/src/protocol.test.ts packages/pairing/src/pairing.test.ts packages/hub-server/src/server.test.ts packages/sdk/src/sdk.test.ts packages/game-registry/src/registry.test.ts packages/game-host/src/host.test.ts packages/devkit/src/devkit.test.ts packages/session/src/session.test.ts packages/link-controller/src/controller.test.ts packages/core/src/random.test.ts packages/diagnostics/src/network.test.ts packages/motion/src/motion.test.ts packages/vision/src/vision.test.ts packages/adapter-camera/src/adapter.test.ts packages/rhythm/src/rhythm.test.ts packages/maze/src/maze.test.ts packages/swarm/src/swarm.test.ts packages/physics/src/physics.test.ts packages/audio/src/audio.test.ts packages/render-3d/src/render.test.ts games/slashstorm/src/director.test.ts games/tiltdrift/src/director.test.ts games/bodydodge/src/director.test.ts games/orbitalcrew/src/director.test.ts games/beatforge/src/director.test.ts games/gravitystack/src/director.test.ts games/spellcaster/src/director.test.ts games/echomaze/src/director.test.ts games/shadowarena/src/director.test.ts games/swarmcommander/src/director.test.ts tests/gameplay-simulation.test.ts tests/platform-contracts.test.ts tests/pwa-contract.test.ts tests/native-controller-contract.test.ts",
     "typecheck": "tsc --noEmit",
     "create:game": "node --experimental-strip-types tools/create-101-game.mjs",
     "hub": "node --experimental-strip-types tools/hub-server.mjs",
+    "native:start": "npm --workspace @101/controller-native run start",
+    "native:android": "npm --workspace @101/controller-native run android",
+    "native:ios": "npm --workspace @101/controller-native run ios",
+    "native:typecheck": "npm --workspace @101/controller-native run typecheck",
+    "native:test": "npm --workspace @101/controller-native test",
+    "native:doctor": "npm --workspace @101/controller-native run doctor",
+    "native:export": "npm --workspace @101/controller-native run export",
     "license:inventory": "node tools/generate-license-inventory.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
@@ -29,8 +37,8 @@
     "howler": "2.2.4",
     "phaser": "3.90.0",
     "qrcode": "1.5.4",
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "three": "0.179.1"
   },
   "devDependencies": {
@@ -51,13 +59,23 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "16.4.0",
-    "react-server-dom-webpack": "19.2.6",
+    "react-server-dom-webpack": "19.2.8",
+    "react-native": "0.86.2",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "typescript-eslint": "8.59.3",
     "vinext": "1.0.0-beta.2",
     "vite": "8.0.13",
     "wrangler": "4.92.0"
+  },
+  "overrides": {
+    "@babel/core": "7.29.7",
+    "fast-uri": "3.1.5",
+    "js-yaml": "4.3.1",
+    "nanoid": "3.3.18",
+    "postcss": "8.5.26",
+    "react-native": "0.86.2",
+    "ws": "8.21.0"
   },
   "type": "module"
 }

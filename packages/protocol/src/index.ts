@@ -460,6 +460,12 @@ export interface WebRTCTransportOptions {
   initiator: boolean;
   iceServers?: RTCIceServer[];
   realtimeBufferLimit?: number;
+  /**
+   * Compressed descriptions are useful for manual QR exchange. Automatic LAN
+   * signaling should disable this so native peers do not need browser-only
+   * CompressionStream support.
+   */
+  pairingCompression?: boolean;
 }
 
 export class WebRTCTransport implements StatefulLinkTransport {
@@ -524,7 +530,10 @@ export class WebRTCTransport implements StatefulLinkTransport {
     const peer = this.requirePeer();
     await peer.setLocalDescription(await peer.createOffer());
     await waitForIceGathering(peer);
-    return encodePairingDescription(requireLocalDescription(peer));
+    return encodePairingDescription(
+      requireLocalDescription(peer),
+      this.options.pairingCompression ?? true,
+    );
   }
 
   async acceptOfferCode(code: string) {
@@ -535,7 +544,10 @@ export class WebRTCTransport implements StatefulLinkTransport {
     await peer.setRemoteDescription(offer);
     await peer.setLocalDescription(await peer.createAnswer());
     await waitForIceGathering(peer);
-    return encodePairingDescription(requireLocalDescription(peer));
+    return encodePairingDescription(
+      requireLocalDescription(peer),
+      this.options.pairingCompression ?? true,
+    );
   }
 
   async acceptAnswerCode(code: string) {
@@ -642,7 +654,7 @@ export async function decodePairingDescription(code: string): Promise<RTCSession
   const normalized = code.trim();
   if (normalized.length > 400_000) throw new Error("Pairing code is too large");
   const [prefix, encoded, extra] = normalized.split(".");
-  if (extra !== undefined || !encoded || !["101C2", "101J2"].includes(prefix)) {
+  if (extra !== undefined || !encoded || (prefix !== "101C2" && prefix !== "101J2")) {
     throw new Error("Invalid 101 pairing code");
   }
   let bytes = fromBase64Url(encoded);
