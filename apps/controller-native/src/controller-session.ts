@@ -33,6 +33,7 @@ export class ControllerSession {
   private transport?: StatefulLinkTransport;
   private removeMessage?: () => void;
   private removeState?: () => void;
+  private removeError?: () => void;
   private heartbeat?: ReturnType<typeof setInterval>;
   private model = new ControllerInputModel();
   private currentLayout?: ControllerLayout;
@@ -97,8 +98,10 @@ export class ControllerSession {
     this.heartbeat = undefined;
     this.removeMessage?.();
     this.removeState?.();
+    this.removeError?.();
     this.removeMessage = undefined;
     this.removeState = undefined;
+    this.removeError = undefined;
     await this.transport?.disconnect();
     this.transport = undefined;
     this.assignment = undefined;
@@ -167,6 +170,11 @@ export class ControllerSession {
       this.events.state(state);
       if (state === "connected") this.onConnected();
     });
+    // Signaling failures the transport recovers from. Without this the outage was invisible until
+    // it surfaced as an unhandled-rejection toast; now the controller can explain itself.
+    this.removeError = withErrorChannel(transport)?.onError((error) => {
+      this.events.error(`Hub unreachable — retrying. ${error.message}`);
+    });
   }
 
   private sendHello() {
@@ -231,4 +239,13 @@ export class ControllerSession {
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "101 Link could not connect";
+}
+
+/**
+ * Not every transport reports recoverable signaling failures. The same-browser and manual-offer
+ * transports have no Hub to lose, so the channel is optional rather than part of the interface.
+ */
+function withErrorChannel(transport: StatefulLinkTransport) {
+  const candidate = transport as StatefulLinkTransport & { onError?(listener: (error: Error) => void): () => void };
+  return typeof candidate.onError === "function" ? { onError: candidate.onError.bind(candidate) } : undefined;
 }

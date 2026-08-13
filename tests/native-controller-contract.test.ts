@@ -37,6 +37,22 @@ test("native Link blocks the health permissions its sensor library would otherwi
   }
 });
 
+test("iOS builds Expo modules from source so they actually register at runtime", async () => {
+  // Expo's precompiled modules are enabled by default for iOS in SDK 57. With them on, this app
+  // shipped ExpoModulesCore as a dynamic XCFramework while the module classes linked statically
+  // into the main binary, and every module failed to register: the app died on launch with
+  // "Cannot find native module 'ExpoAsset'" before rendering a single frame, in both Debug and
+  // Release. Autolinking was correct throughout — `expo-modules-autolinking verify` passed — so
+  // nothing upstream of the linker was at fault.
+  //
+  // Turning precompilation off makes the linkage consistent and the app starts. It costs slower
+  // clean builds, which is a fair price for an app that runs. See docs/native-link.md.
+  const config = JSON.parse(await readFile(new URL("../apps/controller-native/app.json", import.meta.url), "utf8"));
+  const buildProperties = config.expo.plugins.find((entry: unknown) => Array.isArray(entry) && entry[0] === "expo-build-properties");
+  assert.ok(buildProperties, "expo-build-properties must stay configured");
+  assert.equal(buildProperties[1].ios?.usePrecompiledModules, false, "iOS Expo modules must build from source");
+});
+
 test("Android motion is not gated on a permission the app deliberately blocks", async () => {
   // expo-sensors' DeviceMotion asks for ACTIVITY_RECOGNITION on Android API 29+, because that
   // module also fronts pedometer data. 101 blocks that permission, so requesting it can only ever

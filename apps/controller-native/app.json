@@ -49,6 +49,9 @@
         {
           "android": {
             "usesCleartextTraffic": true
+          },
+          "ios": {
+            "usePrecompiledModules": false
           }
         }
       ],

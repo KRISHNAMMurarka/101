@@ -11,6 +11,9 @@ import {
 } from "@101/protocol";
 import type { InputFrame } from "@101/input";
 
+/** Ceiling for signaling retry backoff. Long enough to stop hammering, short enough to recover. */
+const MAX_RETRY_BACKOFF_MS = 10_000;
+
 export interface PairingDevice {
   deviceId: string;
   label: string;
@@ -400,6 +403,9 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   private syncing?: Promise<void>;
   private active = false;
   private reconnecting = false;
+  private consecutiveFailures = 0;
+  private retryAfter = 0;
+  private readonly errorListeners = new Set<(error: Error) => void>();
   private currentState: LinkState = "idle";
   private readonly options: SignaledLinkTransportOptions;
 
@@ -432,6 +438,9 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
     this.removeState?.();
     await this.transport?.disconnect();
     this.transport = undefined;
+    // A deliberate disconnect must not leave a backoff that delays the next connect.
+    this.consecutiveFailures = 0;
+    this.retryAfter = 0;
     this.setState("disconnected");
   }
 
@@ -445,10 +454,23 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   sendRealtime(frame: InputFrame) { this.transport?.sendRealtime(frame); }
   onMessage(callback: (message: LinkMessage) => void) { this.listeners.add(callback); return () => this.listeners.delete(callback); }
   onStateChange(callback: (state: LinkState) => void) { this.stateListeners.add(callback); callback(this.currentState); return () => this.stateListeners.delete(callback); }
+  /** Signaling failures the transport recovered from, so a UI can explain itself instead of crashing. */
+  onError(callback: (error: Error) => void) { this.errorListeners.add(callback); return () => this.errorListeners.delete(callback); }
+  /** Milliseconds until the next poll is allowed; 0 once the Hub is answering again. */
+  get retryDelayMs() { return Math.max(0, this.retryAfter - Date.now()); }
 
   private async performSync() {
     if (!this.active || !this.lease) return;
-    const signal = await this.options.signaling.getOffer(this.lease);
+    if (Date.now() < this.retryAfter) return;
+    let signal: { offer?: string; generation: number };
+    try {
+      signal = await this.options.signaling.getOffer(this.lease);
+      this.noteReachable();
+    } catch (cause) {
+      // The poll runs on a timer, so this rejection has nowhere to go but the global handler.
+      this.noteUnreachable(cause);
+      return;
+    }
     if (!signal.offer || signal.generation === this.generation) return;
     this.removeMessage?.();
     this.removeState?.();
@@ -471,9 +493,44 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
     try {
       this.lease = await this.options.signaling.requestReconnect(this.lease);
       this.generation = 0;
+      this.noteReachable();
       this.setState("connecting");
+    } catch (cause) {
+      // A Hub that has gone away is an ordinary connection state, not a crash. Losing this
+      // rejection into the void previously surfaced as an unhandled-promise error on the device.
+      this.noteUnreachable(cause);
     } finally {
       this.reconnecting = false;
+    }
+  }
+
+  /**
+   * Records that the Hub answered, clearing any backoff.
+   */
+  private noteReachable() {
+    if (this.consecutiveFailures === 0) return;
+    this.consecutiveFailures = 0;
+    this.retryAfter = 0;
+  }
+
+  /**
+   * Records that the Hub could not be reached.
+   *
+   * The polling loop runs several times a second, so an unreachable Hub used to raise an unhandled
+   * rejection on every tick — roughly eighty per minute, each surfacing as an error toast. Failures
+   * are now reported once through the error channel and the poll backs off, because hammering a Hub
+   * that is not there helps nobody and hides the one message that matters.
+   */
+  private noteUnreachable(cause: unknown) {
+    const first = this.consecutiveFailures === 0;
+    this.consecutiveFailures += 1;
+    const backoff = Math.min(MAX_RETRY_BACKOFF_MS, this.pollIntervalMs * 2 ** Math.min(this.consecutiveFailures, 6));
+    this.retryAfter = Date.now() + backoff;
+    if (this.currentState === "connected" || this.currentState === "connecting") this.setState("disconnected");
+    // Report the first failure of a run only; the rest are the same fact repeated.
+    if (first) {
+      const error = cause instanceof Error ? cause : new Error(String(cause));
+      this.errorListeners.forEach((listener) => listener(error));
     }
   }
 

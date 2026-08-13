@@ -15,7 +15,7 @@ Recorded 2026-08-13 on macOS 15 (Apple silicon), Xcode 26.5, Android SDK 36, JDK
 | Sensors / gyroscope | ✅ | Injected accel, gyro and orientation flow through filtering and calibration |
 | Engineering Labs | ✅ | Motion, Vision, Hardware, Network, Controller all render and respond |
 | Wear OS 101 Link | ✅ | Launches, honest locality state, zero permissions on-device |
-| iOS 101 Link | ❌ | Builds and links, throws before first render — see [known issue](native-link.md#known-issue-ios-fails-to-start-on-the-simulator) |
+| iOS 101 Link | ⚠️ | Launches, renders, switches modes, motion active — but deep links and Connect do not reach JS, so pairing is unproven ([details](native-link.md#remaining-ios-gaps)) |
 | watchOS 101 Link | — | Compiles for watchOS; not run (no simulator runtime, app target needs signing) |
 
 ## End-to-end pairing

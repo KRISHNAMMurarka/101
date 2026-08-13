@@ -240,7 +240,9 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [x] Phone-side watch bridge as a local Expo module, compiled into both native builds, with health permissions blocked
 - [x] Emulator verification: Android Link, Wear OS Link, Hub signaling and LAN WebRTC pairing all run and connect
-- [ ] **iOS 101 Link fails to start** — builds and links, but throws `Cannot find native module 'ExpoAsset'` before first render ([details](docs/native-link.md#known-issue-ios-fails-to-start-on-the-simulator))
+- [x] iOS 101 Link launches and runs — Expo precompiled modules broke module registration; the app now builds them from source ([details](docs/native-link.md#ios-expo-modules-must-build-from-source))
+- [x] Signaling failures report connection state instead of raising unhandled promise rejections
+- [ ] iOS deep links and the Connect button do not reach JavaScript, so pairing is unproven on iOS ([details](docs/native-link.md#remaining-ios-gaps))
 - [ ] On-wrist hardware testing and a signed watchOS app target
 
 ## Packaging

@@ -18,29 +18,49 @@
 
 Games never import React Native, Expo, WebRTC, camera, or sensor APIs. A third-party game declares a controller role and layout through the public SDK. The existing 101 host sends that layout and native Link returns ordinary `InputFrame` actions, axes and vectors.
 
-## Known issue: iOS fails to start on the simulator
+## iOS: Expo modules must build from source
 
-**Android runs; iOS builds but does not start.** Running the app on emulators surfaced this — earlier milestones only verified that iOS *compiled*.
-
-On launch the app throws before the first render:
+iOS 101 Link used to die on launch, before rendering a frame, in both Debug and Release:
 
 ```text
 [runtime not ready]: Error: Cannot find native module 'ExpoAsset'
 ```
 
-What has been established:
+**Cause: Expo's precompiled modules.** They are enabled by default for iOS in SDK 57. With them on, `ExpoModulesCore` shipped as a *dynamic* XCFramework while the module classes were linked *statically* into the app binary, and no module registered with the runtime registry. The very first `requireNativeModule` — `expo-asset`, imported during startup — threw, and the app was dead before its own code ran.
 
-- **It is not the watch bridge.** `ExpoAsset` is unrelated to `modules/one01-watch`, and `One01WatchModule` links correctly (6 symbols in the built binary).
-- **It is not a stale build.** It reproduces after `expo prebuild --clean`, a fresh `pod install`, and `xcodebuild clean build`.
-- **It is not missing linkage.** `nm` on the Release binary finds `AssetModule` (4 symbols), `One01WatchModule` (6), and the sensors modules (123). `ExpoModulesProvider.swift` lists all 50 modules including `ExpoAsset`, and the provider is compiled into the app target.
-- **It is not the JS bundle.** Android runs the identical bundle correctly through Metro.
-- **It is not a missing dependency.** Adding `expo-asset` as an explicit dependency changed nothing, so that change was reverted rather than left as noise.
+The fix is one declarative line in `app.json`:
 
-So the module classes are present and linked but are not *registered* with the Expo module registry at runtime, on iOS only. The remaining suspects are the Expo modules registry initialization order in this SDK 57 + React Native 0.86 configuration, or the dynamic-framework/static-library split visible in the built app (`ExpoModulesCore` ships as a dynamic framework while the module classes are statically linked into the main binary).
+```json
+["expo-build-properties", { "ios": { "usePrecompiledModules": false } }]
+```
 
-The Debug build fails differently and consistently: `unsanitizedScriptURLString = (null)`, meaning the dev launcher never receives a Metro URL even when the packager is reachable and the `oneohone://expo-development-client` deep link is delivered. Both symptoms point at the same iOS-side initialization problem.
+That writes `EXPO_USE_PRECOMPILED_MODULES: "false"` into `Podfile.properties.json` during prebuild, so it survives regeneration. Everything Expo then links consistently — `ExpoModulesCore.framework` disappears from the app bundle because it is statically linked with the rest — and the app starts. A contract test keeps the setting in place.
 
-This is tracked as open. Do not describe iOS 101 Link as working until it launches to its own UI on a device or simulator.
+The cost is slower clean iOS builds, which is the correct trade for an app that runs.
+
+### What this cost to find, so nobody repeats it
+
+Every cheap explanation was wrong, and each was ruled out with evidence rather than assumption:
+
+- **Not autolinking.** `npx expo-modules-autolinking verify -v` reported *"Everything is fine"* and listed all 25 modules plus the local watch module.
+- **Not a stale build.** It reproduced after `expo prebuild --clean`, fresh `pod install`, and `xcodebuild clean build`.
+- **Not missing linkage.** `nm` found `AssetModule`, `One01WatchModule` and the sensors modules in the Release binary, and `ExpoModulesProvider.swift` listed all 50 modules.
+- **Not a duplicate registry.** `ModuleRegistry` was defined only inside `ExpoModulesCore.framework`; the apparent duplicate symbols were just the two architectures of a fat simulator binary.
+- **Not the JS bundle.** Android ran the identical bundle.
+- **Not a missing dependency.** Adding `expo-asset` explicitly changed nothing, so that change was reverted rather than left as noise.
+
+The signal that mattered was in the built artifact: the app bundle embedded some Expo modules as prebuilt XCFrameworks from `PODS_XCFRAMEWORKS_BUILD_DIR` while others were static. Mixed linkage, one broken registry.
+
+## Remaining iOS gaps
+
+Verified working on the simulator: the app launches, renders its full UI, switches controller modes, and reports `PHONE MOTION ACTIVE`.
+
+Not yet working, and not to be described as working:
+
+- **Deep links do not reach JavaScript.** `simctl openurl oneohone://pair?ticket=…` is accepted by the system — the log shows the scene receiving `UIOpenURLAction`, and `CFBundleURLSchemes` contains `oneohone` — but neither the `Linking` `url` event nor `getInitialURL()` populates the pairing field. The same deep link works on Android.
+- **The Connect button does not fire.** Entering a valid ticket and tapping **Connect** leaves the state at `IDLE` with no error. Touch handling itself is fine: tapping a controller-mode card switches the mode and reveals its calibration actions.
+
+Both are open. Pairing has therefore been proven on Android and in the browser, but not yet on iOS.
 
 ## Privacy and permissions
 

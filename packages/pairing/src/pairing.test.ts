@@ -127,3 +127,46 @@ class FakeNegotiatedTransport implements NegotiatedLinkTransport {
   fail() { this.setState("failed"); }
   private setState(state: LinkState) { this.state = state; this.stateListeners.forEach((listener) => listener(state)); }
 }
+
+test("an unreachable Hub reports a connection state instead of an unhandled rejection", async () => {
+  // A controller polls signaling several times a second. When the Hub goes away, every one of
+  // those rejections used to escape into the global handler and surface on the device as
+  // "Uncaught (in promise): fetch failed" — roughly eighty error toasts a minute.
+  const rejections: unknown[] = [];
+  const onRejection = (reason: unknown) => rejections.push(reason);
+  process.on("unhandledRejection", onRejection);
+
+  let joined = false;
+  const failing = {
+    async join() { joined = true; return { peerId: "peer-1", peerToken: "t".repeat(32), sessionId: "DEAD01", endpoint: "http://127.0.0.1:1" }; },
+    async getOffer() { throw new Error("fetch failed: ConnectException"); },
+    async publishAnswer() { throw new Error("fetch failed: ConnectException"); },
+    async requestReconnect() { throw new Error("fetch failed: ConnectException"); },
+  };
+
+  const transport = new SignaledLinkTransport({
+    signaling: failing as never,
+    device: { deviceId: "phone-1", label: "Phone 1", capabilities: { touch: true } },
+    transportFactory: () => new FakeRtcNetwork().create(false),
+    pollIntervalMs: 5,
+  });
+
+  const errors: Error[] = [];
+  transport.onError((error) => errors.push(error));
+  await transport.connect();
+  assert.ok(joined, "the controller still joins before polling begins");
+
+  // Poll repeatedly while the Hub stays down.
+  for (let attempt = 0; attempt < 6; attempt += 1) await transport.sync();
+  await new Promise((resolve) => setImmediate(resolve));
+  process.off("unhandledRejection", onRejection);
+
+  assert.deepEqual(rejections, [], "an unreachable Hub must never raise an unhandled rejection");
+  assert.equal(errors.length, 1, "the failure is reported once, not once per poll");
+  assert.match(errors[0]!.message, /fetch failed/);
+  assert.equal(transport.state, "disconnected", "the state explains the outage");
+  assert.ok(transport.retryDelayMs > 0, "polling backs off instead of hammering a Hub that is not there");
+
+  await transport.disconnect();
+  assert.equal(transport.retryDelayMs, 0, "a deliberate disconnect clears the backoff");
+});
