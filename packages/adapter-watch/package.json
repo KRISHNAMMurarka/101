@@ -1,0 +1,12 @@
+{
+  "name": "@101/adapter-watch",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@101/input": "0.1.0",
+    "@101/motion": "0.1.0"
+  }
+}

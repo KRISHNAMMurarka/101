@@ -38,4 +38,10 @@ Run inference locally. Convert camera frames into landmarks, then gestures, then
 
 WebHID, Web Bluetooth and Web Serial adapters are optional capability enhancements. Browser support and permission state must be surfaced. No game may require one of these adapters just to start.
 
+## Watches
+
+A watch is an extension of 101 Link, not a separate peer. The native watch app relays a compact binary sample to its own paired phone, and `@101/adapter-watch` turns it into ordinary `watch-motion` frames. Wrist gestures are edge-triggered with hysteresis because a forearm pivot is not a shoulder swing, and transport locality is reported rather than assumed: Wear OS is only `verified-local` when the OS confirms a nearby node. See [watch companions](watches.md).
+
+## Specialist hardware detail
+
 All three transports deliver bytes, so `@101/hardware` owns the byte-to-game-language conversion once: a declarative `HardwareReportMapping` of offsets, value types, ranges, dead zones and thresholds, plus serial framers and a shared frame emitter. `@101/adapter-hid`, `@101/adapter-bluetooth` and `@101/adapter-serial` differ only in how they obtain bytes, so one authored mapping survives a device moving between transports. Pass a `decoder` instead of a `mapping` for bit-packed or text protocols. Every adapter emits a neutral release frame on surprise disconnect as well as deliberate teardown. See [specialist hardware](hardware.md).

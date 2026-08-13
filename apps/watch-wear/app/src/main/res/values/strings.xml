@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">101 Link</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="sent_format">%1$d sent · %2$d dropped</string>
+    <string name="no_motion_sensor">This watch reports no motion sensor.</string>
+    <string name="waiting">Looking for 101 Link on a paired phone…</string>
+</resources>

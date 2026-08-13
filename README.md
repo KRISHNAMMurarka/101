@@ -36,6 +36,8 @@ The `/controller` surface is an installable **101 Link PWA** with its own manife
 
 `apps/controller-native` is the independently buildable **101 Link native app** for iOS and Android. It scans local pairing QR codes, reconnects with a durable device identity, uses two native WebRTC DataChannels, renders any validated host-supplied controller layout, includes classic/wand/steering/tilt/touch/trigger/motion/sensor-lab presets, performs quaternion calibration and gesture recognition locally, and supports host haptics. It declares no microphone use. See [native Link development](docs/native-link.md).
 
+`apps/watch-ios` and `apps/watch-wear` are the **watch companions**. Each relays wrist motion to 101 Link on its own paired phone, which forwards it through the existing session, so a watch never speaks the 101 protocol or learns which game is running. Both encode the same 53-byte payload that `@101/adapter-watch` decodes into `watch.flick`, `watch.twist`, `watch.strike`, wrist axes, and a bounded crown dial. Because the Wear OS Data Layer may route over the network rather than Bluetooth, locality is reported as `verified-local` only when the OS confirms the node is nearby, and `cloud-possible` otherwise. Neither app requests health data. See [watch companions](docs/watches.md).
+
 `apps/desktop-hub` is the packaged **101 Hub** for macOS, Windows, and Linux. Its native Rust coordinator starts without Node, exposes the same authenticated signaling API, advertises itself through mDNS, shows live sessions/controllers/LAN addresses, and stores settings, replay data, and validated downloaded game packages in the OS application-data directory. See [desktop Hub development](docs/desktop-hub.md).
 
 Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
@@ -83,6 +85,10 @@ npm run native:export
 npm run desktop:check
 npm run desktop:test
 npm run desktop:app
+npm run watch:ios:test
+npm run watch:ios:check
+npm run watch:wear:test
+npm run watch:wear:build
 ```
 
 Production build:
@@ -134,6 +140,7 @@ Key packages:
 | `@101/adapter-hid` | Filtered WebHID chooser, already-granted reconnect, mapped input reports and output reports |
 | `@101/adapter-bluetooth` | Single-service BLE GATT notifications, optional writes and range-loss release |
 | `@101/adapter-serial` | Framed serial reads with bounded buffering, host writes and unplug release |
+| `@101/adapter-watch` | Wrist gestures, crown dial, shared watch wire format and honest transport locality |
 | `@101/diagnostics` | Input rate, frame age and dropped-frame instrumentation |
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
 | `@101/rhythm` | Frame-rate-independent beat/time conversion, quantization and timing judgments |
@@ -229,8 +236,9 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Native iOS/Android 101 Link with QR, dynamic layouts, motion calibration, gestures, haptics and native WebRTC
 - [x] Native Tauri 101 Hub with authenticated signaling, mDNS discovery, local settings/replays/packages and a packaged desktop dashboard
 - [x] Declarative WebHID/Web Bluetooth/Web Serial adapters, Hardware Lab and surprise-disconnect input release
+- [x] Apple Watch and Wear OS companions with a shared wire format and honest transport-locality reporting
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
-- [ ] Apple Watch and Wear OS companions
+- [ ] Watch payload relay inside the Expo app's native modules, and on-wrist hardware testing
 
 ## Privacy and offline behavior
 

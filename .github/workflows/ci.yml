@@ -20,3 +20,32 @@ jobs:
       - run: npm run license:inventory
       - run: git diff --exit-code THIRD_PARTY_LICENSES.json
       - run: npm run audit:production
+
+  # The watch companions need platform toolchains the main job does not have, so they get their
+  # own runners rather than being silently skipped inside it.
+  watch-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Unit-tests the shared core on the host, then typechecks the watchOS-only shell against the
+      # real watchOS SDK so a WatchConnectivity or CoreMotion mistake fails here, not on a wrist.
+      - run: npm run watch:ios:test
+      - run: npm run watch:ios:check
+
+  watch-wear:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # The Android Gradle Plugin's toolchain rejects newer JDKs, so 21 is pinned deliberately.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm run watch:wear:test
+      - run: npm run watch:wear:build

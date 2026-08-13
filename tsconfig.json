@@ -40,6 +40,7 @@
       "@101/adapter-hid": ["./packages/adapter-hid/src/index.ts"],
       "@101/adapter-bluetooth": ["./packages/adapter-bluetooth/src/index.ts"],
       "@101/adapter-serial": ["./packages/adapter-serial/src/index.ts"],
+      "@101/adapter-watch": ["./packages/adapter-watch/src/index.ts"],
       "@101/link-controller": ["./packages/link-controller/src/index.ts"],
       "@101/render-2d": ["./packages/render-2d/src/index.ts"],
       "@101/render-3d": ["./packages/render-3d/src/index.ts"],
