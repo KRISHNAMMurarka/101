@@ -9,12 +9,13 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
-    "test": "node --experimental-strip-types --test src/pairing-code.test.ts",
+    "test": "node --experimental-strip-types --test src/pairing-code.test.ts src/watch-controller.test.ts",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor",
     "export": "expo export --platform all --output-dir dist"
   },
   "dependencies": {
+    "@101/adapter-watch": "0.1.0",
     "@101/input": "0.1.0",
     "@101/link-controller": "0.1.0",
     "@101/motion": "0.1.0",
@@ -22,9 +23,9 @@
     "@101/protocol": "0.1.0",
     "base64-js": "1.5.1",
     "expo": "57.0.12",
+    "expo-build-properties": "57.0.10",
     "expo-camera": "57.0.3",
     "expo-clipboard": "57.0.1",
-    "expo-build-properties": "57.0.10",
     "expo-crypto": "57.0.1",
     "expo-dev-client": "57.0.11",
     "expo-haptics": "57.0.1",
@@ -45,11 +46,15 @@
   },
   "expo": {
     "install": {
-      "exclude": ["react"]
+      "exclude": [
+        "react"
+      ]
     },
     "doctor": {
       "reactNativeDirectoryCheck": {
-        "exclude": ["react-native-webrtc"]
+        "exclude": [
+          "react-native-webrtc"
+        ]
       }
     }
   }

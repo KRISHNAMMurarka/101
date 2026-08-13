@@ -238,7 +238,8 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Declarative WebHID/Web Bluetooth/Web Serial adapters, Hardware Lab and surprise-disconnect input release
 - [x] Apple Watch and Wear OS companions with a shared wire format and honest transport-locality reporting
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
-- [ ] Watch payload relay inside the Expo app's native modules, and on-wrist hardware testing
+- [x] Phone-side watch bridge as a local Expo module, compiled into both native builds, with health permissions blocked
+- [ ] On-wrist hardware testing and a signed watchOS app target
 
 ## Privacy and offline behavior
 

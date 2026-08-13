@@ -14,12 +14,15 @@
 - local quaternion correction, neutral calibration, sensitivity, dead zone, smoothing and swing/shake/spin recognition
 - host assignments, live private state, latency heartbeat and tap/impact/warning haptics
 - durable random device identity and optional last-session reconnect through platform secure storage
+- a paired Apple Watch or Wear OS watch as an extra input source on the same player, through `modules/one01-watch`
 
 Games never import React Native, Expo, WebRTC, camera, or sensor APIs. A third-party game declares a controller role and layout through the public SDK. The existing 101 host sends that layout and native Link returns ordinary `InputFrame` actions, axes and vectors.
 
 ## Privacy and permissions
 
 The native application has no account, analytics, cloud relay, microphone feature, or recording path. QR scanning asks for Camera permission only when opened. Motion sensing asks for Motion permission only after **Enable Motion**. Generated Android manifests explicitly remove `RECORD_AUDIO`; generated iOS configuration has Camera, Local Network and Motion descriptions but no Microphone description.
+
+`ACTIVITY_RECOGNITION` and `BODY_SENSORS` are blocked too. `expo-sensors` bundles a pedometer, so the former arrives through manifest merging even though 101 reads only accelerometer, gyroscope, magnetometer and device motion; the brief keeps health data out of normal game operation, so both are removed and the built APK was verified to declare neither. The watch bridge adds no permission of its own — Watch Connectivity and the Wearable Data Layer need none.
 
 Cleartext HTTP is permitted only because a strict-local Hub is commonly addressed as `http://192.168.x.x`. Gameplay leaves signaling for encrypted peer-to-peer WebRTC DataChannels after pairing. Pairing tickets expire and should be treated as temporary secrets.
 

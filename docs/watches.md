@@ -120,10 +120,30 @@ The release build deliberately configures **no** signing key. Publishing needs y
 
 The phone half must advertise the `one01_link` capability for the watch to find it without hardcoding a node ID.
 
+## The phone side
+
+`apps/controller-native/modules/one01-watch` is a local Expo module that receives the payload on the phone. The two platforms use entirely different frameworks — Watch Connectivity on iOS, the Wearable Data Layer on Android — but both deliver the same bytes, so the module exposes one JavaScript interface and reports companion state without deciding what it means:
+
+```ts
+const controller = new WatchController(bridge, { onFrame: (frame) => session.send(frame) });
+await controller.start(playerId);
+controller.strictlyLocal; // false until the OS actually proves a direct route
+```
+
+`WatchController` in `apps/controller-native/src/watch-controller.ts` owns the glue. Three behaviors matter:
+
+- **Wrist input joins the phone's own player.** The phone already has a session, a device identity and a transport, so the watch adds a *source*, not a second peer. That is what makes "phone tracks orientation while the watch detects rapid wrist movement" work with no game code.
+- **A malformed payload is dropped, never fatal.** The count is exposed as `rejectedSamples` and the operator is told once — not once per packet — so a version mismatch is diagnosable instead of looking like a dead watch.
+- **Losing the route releases held controls.** A watch walking out of range mid-game cannot leave `watch.flick` applied, the same guarantee the HID, Bluetooth and Serial adapters make.
+
+Bytes cross the native bridge base64-encoded. It costs about a third more size on a link that is already local and buys a single code path, because that is the only binary representation both Expo platforms pass reliably.
+
+On Android the phone advertises the `one01_link` capability from the module's own resources, so the watch finds it through `CapabilityClient` instead of hardcoding a node ID that breaks the moment the user pairs a different phone.
+
 ## Current limits
 
 Stated plainly, because the brief asks for honesty over polish:
 
-- Neither watch app has been run on physical watch hardware in this repository. What is verified is that the watchOS sources compile against the watchOS SDK, the Wear OS app builds a real APK with zero permissions, and all three implementations of the wire format agree byte for byte.
-- The phone-side bridge that hands relayed payloads to the native Link session is implemented in `@101/adapter-watch`; the platform-native receiving modules inside the Expo app are the remaining integration step.
+- **Neither watch app has been run on physical watch hardware in this repository.** What is verified is that the watchOS sources compile against the real watchOS SDK, the Wear OS app builds a real APK declaring zero permissions, the phone-side module autolinks and compiles into the Android app, and all three implementations of the wire format agree byte for byte.
+- The watchOS app target still has to be added in Xcode and signed with your own team, as described above. That is an Apple requirement, not a gap this repository can close.
 - watchOS relaying is foreground-only. Background wrist input would need an extended runtime session, which costs battery and is not justified for a controller the player is actively using.

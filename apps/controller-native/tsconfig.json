@@ -7,6 +7,7 @@
     "lib": ["ES2022", "DOM"],
     "types": ["node"],
     "paths": {
+      "@101/adapter-watch": ["../../packages/adapter-watch/src/index.ts"],
       "@101/input": ["../../packages/input/src/index.ts"],
       "@101/link-controller": ["../../packages/link-controller/src/index.ts"],
       "@101/motion": ["../../packages/motion/src/index.ts"],
@@ -14,5 +15,5 @@
       "@101/protocol": ["../../packages/protocol/src/index.ts"]
     }
   },
-  "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["App.tsx", "src/**/*.ts", "src/**/*.tsx", "modules/**/*.ts"]
 }

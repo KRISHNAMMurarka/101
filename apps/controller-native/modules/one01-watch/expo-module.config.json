@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["One01WatchModule"]
+  },
+  "android": {
+    "modules": ["com.oneohone.link.watch.One01WatchModule"]
+  }
+}
