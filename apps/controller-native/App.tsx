@@ -7,6 +7,7 @@ import {
   Pressable,
   SafeAreaView,
   ScrollView,
+  StatusBar as RNStatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -25,11 +26,23 @@ import { ControllerPanel, type ControllerActions } from "./src/controls";
 import { ControllerSession, type ControllerAssignment } from "./src/controller-session";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
+import { radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
+import { Button, Label, StateDot } from "./src/ui";
 
 const DEVICE_ID_KEY = "101-link-device-id-v1";
 const LAST_PAIRING_KEY = "101-link-last-pairing-v1";
 
+/**
+ * 101 Link has exactly two screens, because it has exactly two situations: you are not connected
+ * and need to be, or you are connected and want to play. Everything that is neither — presets,
+ * calibration, diagnostics, disconnect — lives in a sheet you pull up, so it costs nothing until
+ * it is wanted.
+ *
+ * The previous layout put all of it on one scrolling page, which meant the controls (the only
+ * reason the app exists) sat below a fold of chrome that stayed on screen even after connecting.
+ */
 export default function App() {
+  const t = useTheme();
   const [deviceId, setDeviceId] = useState("");
   const [pairingInput, setPairingInput] = useState("");
   const [manualAnswer, setManualAnswer] = useState("");
@@ -44,6 +57,8 @@ export default function App() {
   const [error, setError] = useState<string>();
   const [latency, setLatency] = useState<number>();
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [codeEntryOpen, setCodeEntryOpen] = useState(false);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const [motionEnabled, setMotionEnabled] = useState(false);
   const [motionReadout, setMotionReadout] = useState<MotionReadout>();
@@ -63,7 +78,7 @@ export default function App() {
     // Returning silently here made Connect look like a dead button: nothing moved, nothing
     // explained itself, and the only way to tell an empty field from a broken app was a debugger.
     if (!input) {
-      setError("Paste a 101 pairing ticket or scan the host's QR code first.");
+      setError("Paste a pairing code, or scan the code on your game screen.");
       return;
     }
     if (!sessionRef.current) {
@@ -83,8 +98,9 @@ export default function App() {
         await SecureStore.setItemAsync(LAST_PAIRING_KEY, input);
       }
       setPairingInput(input);
+      setCodeEntryOpen(false);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Unable to connect to 101 Hub");
+      setError(reason instanceof Error ? reason.message : "Could not reach that 101 Hub.");
       setLinkState("failed");
     }
   }, []);
@@ -201,7 +217,7 @@ export default function App() {
       if (motionRef.current) setCalibration(motionRef.current.calibration);
       void haptic("impact");
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Start motion sensing before calibration");
+      setError(reason instanceof Error ? reason.message : "Turn on motion before setting neutral");
     }
   };
 
@@ -210,12 +226,13 @@ export default function App() {
     layoutRef.current = preset.layout;
     setLayout(preset.layout);
     sessionRef.current?.useLocalLayout(preset.layout);
+    void haptic("tap");
   };
 
   const openScanner = async () => {
     const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
     if (permission.granted) setScannerOpen(true);
-    else setError("Camera permission is needed only to scan the local pairing QR");
+    else setError("101 Link needs the camera only to read the pairing code on your game screen.");
   };
 
   const disconnect = async () => {
@@ -225,137 +242,96 @@ export default function App() {
     setManualAnswer("");
     setLinkState("disconnected");
     setAssignment(undefined);
+    setSheetOpen(false);
   };
 
   const activePreset = CONTROLLER_PRESETS.find((preset) => preset.layout.title === layout.title);
+  const playing = linkState === "connected";
+  const dotState = playing ? "connected" : linkState === "connecting" ? "connecting" : linkState === "failed" ? "failed" : "idle";
+
   return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar style="light" />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.eyebrow}>LOCAL CONTROLLER</Text>
-            <Text style={styles.brand}>101 <Text style={styles.brandAccent}>LINK</Text></Text>
-          </View>
-          <StatePill state={linkState} />
-        </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: t.bg, paddingTop: Platform.OS === "android" ? RNStatusBar.currentHeight : 0 }}>
+      <StatusBar style={t.scheme === "light" ? "dark" : "light"} />
 
-        <View style={styles.privacyBar}>
-          <Text style={styles.privacyTitle}>PRIVATE BY DEFAULT</Text>
-          <Text style={styles.privacyCopy}>No account, telemetry, cloud relay, microphone, or camera recording.</Text>
-        </View>
+      <TopBar
+        theme={t}
+        state={dotState}
+        title={playing ? (assignment?.role ?? layout.title ?? "Controller") : "101 Link"}
+        detail={playing ? assignment?.gameId : undefined}
+        latency={playing ? latency : undefined}
+        onMenu={playing ? () => setSheetOpen(true) : undefined}
+      />
 
-        <View style={styles.card}>
-          <View style={styles.cardTitleRow}>
-            <Text style={styles.cardTitle}>Connect to 101 Hub</Text>
-            {latency !== undefined ? <Text style={styles.latency}>{latency} ms</Text> : null}
-          </View>
-          <TextInput
-            accessibilityLabel="101 pairing code or URL"
-            autoCapitalize="none"
-            autoCorrect={false}
-            multiline
-            onChangeText={setPairingInput}
-            placeholder="Scan QR, paste 101L2 ticket, or paste a manual 101C2/101J2 offer"
-            placeholderTextColor="#63708A"
-            style={styles.input}
-            value={pairingInput}
-          />
-          <View style={styles.actionRow}>
-            <ActionButton label="SCAN QR" onPress={() => void openScanner()} primary />
-            <ActionButton label="CONNECT" onPress={() => void connect(pairingInput)} />
-            {linkState === "connected" || linkState === "connecting" ? (
-              <ActionButton label="DISCONNECT" onPress={() => void disconnect()} danger />
-            ) : null}
-          </View>
-          {manualAnswer ? (
-            <View style={styles.manualAnswer}>
-              <Text style={styles.manualAnswerTitle}>RETURN THIS ANSWER TO THE HOST</Text>
-              <TextInput
-                accessibilityLabel="Manual WebRTC answer"
-                editable={false}
-                multiline
-                selectTextOnFocus
-                style={styles.answerInput}
-                value={manualAnswer}
-              />
-              <ActionButton
-                label="COPY ANSWER"
-                onPress={() => {
-                  void Clipboard.setStringAsync(manualAnswer);
-                  void haptic("tap");
-                }}
-                primary
-              />
-            </View>
-          ) : null}
-          {assignment ? (
-            <View style={styles.assignment}>
-              <Text style={styles.assignmentGame}>{assignment.gameId.toUpperCase()}</Text>
-              <Text style={styles.assignmentRole}>{assignment.role} · {assignment.playerId}</Text>
-            </View>
-          ) : null}
-          {error ? <Text style={styles.error}>{error}</Text> : null}
-        </View>
+      {playing ? (
+        <PlaySurface
+          theme={t}
+          layout={layout}
+          controls={controls}
+          message={hostMessage}
+          tone={hostTone}
+          values={hostValues}
+        />
+      ) : (
+        <ConnectScreen
+          theme={t}
+          state={linkState}
+          error={error}
+          codeEntryOpen={codeEntryOpen}
+          pairingInput={pairingInput}
+          manualAnswer={manualAnswer}
+          onScan={() => void openScanner()}
+          onOpenCodeEntry={() => { setCodeEntryOpen(true); setError(undefined); }}
+          onCancelCodeEntry={() => setCodeEntryOpen(false)}
+          onChangeCode={setPairingInput}
+          onConnect={() => void connect(pairingInput)}
+          onCopyAnswer={() => { void Clipboard.setStringAsync(manualAnswer); void haptic("tap"); }}
+        />
+      )}
 
-        {!hostControlled || linkState !== "connected" ? (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>CONTROLLER MODES</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.presetRow}>
-              {CONTROLLER_PRESETS.map((preset) => (
-                <Pressable
-                  key={preset.id}
-                  onPress={() => choosePreset(preset)}
-                  style={[styles.preset, activePreset?.id === preset.id && styles.presetActive]}
-                >
-                  <Text style={styles.presetName}>{preset.name}</Text>
-                  <Text style={styles.presetDescription}>{preset.description}</Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
+      <Sheet visible={sheetOpen} theme={t} onClose={() => setSheetOpen(false)}>
+        {hostControlled ? (
+          <Text style={[type.body, { color: t.muted }]}>
+            {assignment?.gameId ?? "The game"} is choosing this panel. It changes on its own when the game does.
+          </Text>
         ) : (
-          <View style={styles.hostLayoutNotice}>
-            <Text style={styles.sectionTitle}>HOST-ASSIGNED CONTROLLER</Text>
-            <Text style={styles.hostLayoutCopy}>This reusable panel was sent by {assignment?.gameId ?? "the game"}. It will change automatically when the host changes games.</Text>
-          </View>
+          <Section theme={t} label="Controller">
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.sm }}>
+              {CONTROLLER_PRESETS.map((preset) => (
+                <Chip
+                  key={preset.id}
+                  theme={t}
+                  label={preset.name}
+                  selected={activePreset?.id === preset.id}
+                  onPress={() => choosePreset(preset)}
+                />
+              ))}
+            </View>
+          </Section>
         )}
 
         {layout.motion ? (
-          <View style={styles.motionActions}>
-            <ActionButton label={motionEnabled ? "MOTION ON" : "ENABLE MOTION"} onPress={() => void enableMotion()} primary={!motionEnabled} />
-            <ActionButton label="SET NEUTRAL" onPress={calibrate} />
-          </View>
+          <Section theme={t} label="Motion">
+            <View style={{ flexDirection: "row", gap: space.sm }}>
+              <Button label={motionEnabled ? "Motion on" : "Turn on motion"} tone={motionEnabled ? "quiet" : "strong"} onPress={() => void enableMotion()} />
+              <Button label="Set neutral" onPress={calibrate} disabled={!motionEnabled} />
+            </View>
+          </Section>
         ) : null}
 
-        <View style={styles.controllerHeader}>
-          <Text style={styles.controllerTitle}>{layout.title ?? "101 Controller"}</Text>
-          <Text style={styles.controllerSub}>{hostControlled ? "DYNAMIC JSON LAYOUT" : "LOCAL PRESET"}</Text>
-        </View>
-        <ControllerPanel layout={layout} controls={controls} />
-
-        {hostMessage || Object.keys(hostValues).length ? (
-          <HostState values={hostValues} message={hostMessage} tone={hostTone} />
+        {activePreset?.sensorLab && motionReadout ? (
+          <Section theme={t} label="Sensor">
+            <Readout theme={t} readout={motionReadout} calibration={calibration} />
+          </Section>
         ) : null}
 
-        {activePreset?.sensorLab ? (
-          <SensorLab
-            readout={motionReadout}
-            calibration={calibration}
-            update={(field, value) => {
-              if (field === "sensitivity") motionRef.current?.setSensitivity(value);
-              if (field === "deadZone") motionRef.current?.setDeadZone(value);
-              if (field === "smoothing") motionRef.current?.setSmoothing(value);
-              if (motionRef.current) setCalibration(motionRef.current.calibration);
-            }}
-          />
-        ) : null}
+        {error ? <Text style={[type.body, { color: t.text }]}>{error}</Text> : null}
 
-        <Text style={styles.deviceId}>DEVICE {deviceId || "INITIALIZING"}</Text>
-      </ScrollView>
+        <Button label="Disconnect" wide onPress={() => void disconnect()} />
+        <Text style={[type.label, { color: t.faint, textAlign: "center" }]}>{deviceId || "…"}</Text>
+      </Sheet>
 
-      <Modal animationType="slide" visible={scannerOpen} onRequestClose={() => setScannerOpen(false)}>
-        <View style={styles.scanner}>
+      <Modal animationType="fade" visible={scannerOpen} onRequestClose={() => setScannerOpen(false)}>
+        <View style={{ flex: 1, backgroundColor: "#000" }}>
           <CameraView
             barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
             facing="back"
@@ -366,180 +342,291 @@ export default function App() {
             }}
             style={StyleSheet.absoluteFill}
           />
-          <View style={styles.scanFrame} />
-          <Text style={styles.scanText}>Point at the QR shown by your private 101 Hub</Text>
-          <Pressable onPress={() => setScannerOpen(false)} style={styles.scanClose}>
-            <Text style={styles.scanCloseText}>CANCEL</Text>
-          </Pressable>
+          <SafeAreaView style={{ flex: 1, justifyContent: "space-between", padding: space.lg }}>
+            <View />
+            <View style={{ alignSelf: "center", width: 232, height: 232, borderRadius: radius.card, borderWidth: 2, borderColor: "rgba(255,255,255,0.9)" }} />
+            <View style={{ gap: space.md }}>
+              <Text style={[type.body, { color: "rgba(255,255,255,0.8)", textAlign: "center" }]}>
+                Point at the code on your game screen
+              </Text>
+              <Button label="Cancel" wide onPress={() => setScannerOpen(false)} />
+            </View>
+          </SafeAreaView>
         </View>
       </Modal>
     </SafeAreaView>
   );
 }
 
-function StatePill({ state }: { state: LinkState }) {
-  const connected = state === "connected";
+/**
+ * One 44pt rule across the top, in both states. It is the only chrome that survives into play,
+ * so it carries only what a player glances at mid-game: whether the link is up, what they are,
+ * and how to reach everything else.
+ */
+function TopBar({ theme, state, title, detail, latency, onMenu }: {
+  theme: Theme;
+  state: "idle" | "connecting" | "connected" | "failed";
+  title: string;
+  detail?: string;
+  latency?: number;
+  onMenu?: () => void;
+}) {
   return (
-    <View style={[styles.statePill, connected && styles.statePillConnected]}>
-      <View style={[styles.stateDot, connected && styles.stateDotConnected]} />
-      <Text style={[styles.stateText, connected && styles.stateTextConnected]}>{state.toUpperCase()}</Text>
+    <View style={{
+      height: 48,
+      paddingHorizontal: space.md,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: space.sm,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.line,
+    }}>
+      <StateDot state={state} theme={theme} />
+      <Text numberOfLines={1} style={[type.label, { color: theme.text, flexShrink: 1 }]}>
+        {title.toUpperCase()}
+      </Text>
+      {detail ? <Text numberOfLines={1} style={[type.label, { color: theme.faint, flexShrink: 1 }]}>{detail.toUpperCase()}</Text> : null}
+      <View style={{ flex: 1 }} />
+      {latency !== undefined ? <Text style={[type.label, { color: theme.faint }]}>{latency}MS</Text> : null}
+      {onMenu ? (
+        <Pressable accessibilityLabel="Controller settings" accessibilityRole="button" hitSlop={12} onPress={onMenu} style={{ padding: space.xs, gap: 3 }}>
+          {[0, 1, 2].map((line) => (
+            <View key={line} style={{ width: 17, height: 1.5, borderRadius: 1, backgroundColor: theme.text }} />
+          ))}
+        </Pressable>
+      ) : null}
     </View>
   );
 }
 
-function ActionButton({ label, onPress, primary, danger }: { label: string; onPress(): void; primary?: boolean; danger?: boolean }) {
+/**
+ * The whole screen when nothing is connected. One statement, one action, and a second way in for
+ * people who cannot point a camera at the screen they are already looking at.
+ */
+function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manualAnswer, onScan, onOpenCodeEntry, onCancelCodeEntry, onChangeCode, onConnect, onCopyAnswer }: {
+  theme: Theme;
+  state: LinkState;
+  error?: string;
+  codeEntryOpen: boolean;
+  pairingInput: string;
+  manualAnswer: string;
+  onScan(): void;
+  onOpenCodeEntry(): void;
+  onCancelCodeEntry(): void;
+  onChangeCode(value: string): void;
+  onConnect(): void;
+  onCopyAnswer(): void;
+}) {
+  const connecting = state === "connecting";
+  const { maxWidth, displayScale, compact } = useLayout();
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.actionButton, primary && styles.actionButtonPrimary, danger && styles.actionButtonDanger, pressed && styles.actionPressed]}>
-      <Text style={[styles.actionButtonText, primary && styles.actionButtonTextPrimary]}>{label}</Text>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, padding: space.lg, gap: space.lg, alignItems: "center" }}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View style={{ flex: 1, justifyContent: "center", gap: space.sm, width: "100%", maxWidth, paddingVertical: compact ? 0 : space.xl }}>
+        <Text style={[type.display, {
+          color: theme.text,
+          fontSize: type.display.fontSize * displayScale,
+          lineHeight: type.display.lineHeight * displayScale,
+        }]}>
+          {connecting ? "Connecting…" : "This phone is\nthe controller."}
+        </Text>
+        <Text style={[type.body, { color: theme.muted }]}>
+          {connecting
+            ? "Keep both devices on the same network."
+            : "Scan the code on your game screen to pair. Nothing to install on the game side."}
+        </Text>
+      </View>
+
+      {manualAnswer ? (
+        <View style={{ gap: space.sm, width: "100%", maxWidth }}>
+          <Label tone="muted">Send this back to the game</Label>
+          <TextInput
+            accessibilityLabel="Pairing answer to return to the host"
+            editable={false}
+            multiline
+            selectTextOnFocus
+            style={{
+              color: theme.muted,
+              backgroundColor: theme.surface,
+              borderColor: theme.line,
+              borderWidth: StyleSheet.hairlineWidth * 2,
+              borderRadius: radius.control,
+              padding: space.md,
+              maxHeight: 120,
+              fontSize: 12,
+            }}
+            value={manualAnswer}
+          />
+          <Button label="Copy" wide tone="strong" onPress={onCopyAnswer} />
+        </View>
+      ) : codeEntryOpen ? (
+        <View style={{ gap: space.sm, width: "100%", maxWidth }}>
+          <TextInput
+            accessibilityLabel="Pairing code"
+            autoCapitalize="none"
+            autoCorrect={false}
+            // The field only exists because the player just tapped "Enter code instead", so focus
+            // follows their own action rather than stealing it on arrival — the case this rule
+            // exists to prevent. Without it they must tap twice to do the thing they just asked for.
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+            multiline
+            onChangeText={onChangeCode}
+            placeholder="Paste the pairing code"
+            placeholderTextColor={theme.faint}
+            style={{
+              color: theme.text,
+              backgroundColor: theme.surface,
+              borderColor: theme.line,
+              borderWidth: StyleSheet.hairlineWidth * 2,
+              borderRadius: radius.control,
+              padding: space.md,
+              minHeight: 96,
+              maxHeight: 160,
+              fontSize: 13,
+            }}
+            value={pairingInput}
+          />
+          <Button label="Connect" wide tone="strong" onPress={onConnect} />
+          <Button label="Back" wide tone="bare" onPress={onCancelCodeEntry} />
+        </View>
+      ) : (
+        <View style={{ gap: space.sm, width: "100%", maxWidth }}>
+          <Button label="Scan code" wide tone="strong" onPress={onScan} />
+          <Button label="Enter code instead" wide onPress={onOpenCodeEntry} />
+        </View>
+      )}
+
+      {error ? <Text style={[type.body, { color: theme.text, width: "100%", maxWidth }]}>{error}</Text> : null}
+
+      <Text style={[type.body, { color: theme.faint, fontSize: 13, width: "100%", maxWidth }]}>
+        No account, no telemetry, no cloud. Your inputs stay on your network.
+      </Text>
+    </ScrollView>
+  );
+}
+
+/**
+ * Once the link is up the controls get the entire screen. They lay out from the game's own JSON,
+ * so this stays a container and nothing more — and because it simply fills whatever space exists,
+ * it works upright, rotated, on a small phone and on a tablet without a special case for any.
+ */
+function PlaySurface({ theme, layout, controls, message, tone, values }: {
+  theme: Theme;
+  layout: ControllerLayout;
+  controls: ControllerActions;
+  message?: string;
+  tone: "normal" | "warning" | "critical";
+  values: Record<string, string | number | boolean>;
+}) {
+  const entries = Object.entries(values).slice(0, 4);
+  return (
+    <View style={{ flex: 1, backgroundColor: theme.bgLift }}>
+      {message || entries.length ? (
+        <View style={{
+          paddingHorizontal: space.md,
+          paddingVertical: space.sm,
+          gap: 4,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: theme.line,
+        }}>
+          {message ? (
+            <Text numberOfLines={2} style={[type.body, { color: tone === "normal" ? theme.muted : theme.text, fontSize: 13 }]}>
+              {message}
+            </Text>
+          ) : null}
+          {entries.length ? (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.md }}>
+              {entries.map(([key, value]) => (
+                <Text key={key} style={[type.label, { color: theme.faint }]}>
+                  {key.toUpperCase()} <Text style={{ color: theme.text }}>{String(value)}</Text>
+                </Text>
+              ))}
+            </View>
+          ) : null}
+        </View>
+      ) : null}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: space.md }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <ControllerPanel layout={layout} controls={controls} />
+      </ScrollView>
+    </View>
+  );
+}
+
+/** Everything that is not playing. Present only while it is being used. */
+function Sheet({ visible, theme, onClose, children }: { visible: boolean; theme: Theme; onClose(): void; children: React.ReactNode }) {
+  return (
+    <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
+      <Pressable accessibilityLabel="Close settings" onPress={onClose} style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.55)" }} />
+      <SafeAreaView style={{ backgroundColor: theme.bg, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: theme.line }}>
+        <View style={{ padding: space.lg, gap: space.lg }}>
+          <View style={{ alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: theme.line }} />
+          {children}
+        </View>
+      </SafeAreaView>
+    </Modal>
+  );
+}
+
+function Section({ theme, label, children }: { theme: Theme; label: string; children: React.ReactNode }) {
+  return (
+    <View style={{ gap: space.sm }}>
+      <Text style={[type.label, { color: theme.faint }]}>{label.toUpperCase()}</Text>
+      {children}
+    </View>
+  );
+}
+
+function Chip({ theme, label, selected, onPress }: { theme: Theme; label: string; selected: boolean; onPress(): void }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ selected }}
+      onPress={onPress}
+      style={({ pressed }) => ({
+        paddingHorizontal: space.md,
+        paddingVertical: space.sm,
+        borderRadius: radius.pill,
+        borderWidth: StyleSheet.hairlineWidth * 2,
+        borderColor: selected ? theme.solid : theme.line,
+        backgroundColor: selected ? theme.solid : pressed ? theme.surfacePressed : theme.surface,
+      })}
+    >
+      <Text style={[type.action, { fontSize: 14, color: selected ? theme.onSolid : theme.text }]}>{label}</Text>
     </Pressable>
   );
 }
 
-function HostState({ values, message, tone }: { values: Record<string, string | number | boolean>; message?: string; tone: "normal" | "warning" | "critical" }) {
-  return (
-    <View style={[styles.hostState, tone === "warning" && styles.hostStateWarning, tone === "critical" && styles.hostStateCritical]}>
-      <Text style={styles.hostStateLabel}>HOST STATE</Text>
-      {message ? <Text style={styles.hostStateMessage}>{message}</Text> : null}
-      <View style={styles.valueGrid}>
-        {Object.entries(values).map(([name, value]) => (
-          <View key={name} style={styles.valueItem}>
-            <Text style={styles.valueName}>{name}</Text>
-            <Text style={styles.valueText}>{String(value)}</Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-}
-
-function SensorLab({
-  readout,
-  calibration,
-  update,
-}: {
-  readout?: MotionReadout;
-  calibration?: { sensitivity: number; deadZone: number; smoothing: number };
-  update(field: "sensitivity" | "deadZone" | "smoothing", value: number): void;
+/** Raw numbers for tuning motion. Values only — the labels are already the units. */
+function Readout({ theme, readout, calibration }: {
+  theme: Theme;
+  readout: MotionReadout;
+  calibration: { sensitivity: number; deadZone: number; smoothing: number };
 }) {
+  const degrees = (value: number) => `${Math.round((value * 180) / Math.PI)}°`;
+  const rows: Array<[string, string]> = [
+    ["Rate", `${Math.round(readout.sampleRate)} Hz`],
+    ["Pitch", degrees(readout.angles.pitch)],
+    ["Roll", degrees(readout.angles.roll)],
+    ["Sensitivity", calibration.sensitivity.toFixed(2)],
+  ];
   return (
-    <View style={styles.lab}>
-      <Text style={styles.sectionTitle}>101 MOTION LAB</Text>
-      <View style={styles.labGrid}>
-        <Metric label="SAMPLE" value={`${Math.round(readout?.sampleRate ?? 0)} Hz`} />
-        <Metric label="PITCH" value={formatDegrees(readout?.angles.pitch)} />
-        <Metric label="ROLL" value={formatDegrees(readout?.angles.roll)} />
-        <Metric label="YAW" value={formatDegrees(readout?.angles.yaw)} />
-        <Metric label="ACCEL" value={formatVector(readout?.filtered.acceleration)} />
-        <Metric label="GYRO" value={formatVector(readout?.filtered.angularVelocity)} />
-      </View>
-      {(["sensitivity", "deadZone", "smoothing"] as const).map((field) => {
-        const value = calibration?.[field] ?? 0;
-        const step = field === "sensitivity" ? 0.1 : 0.02;
-        return (
-          <View key={field} style={styles.tuneRow}>
-            <Text style={styles.tuneName}>{field.toUpperCase()}</Text>
-            <ActionButton label="−" onPress={() => update(field, value - step)} />
-            <Text style={styles.tuneValue}>{value.toFixed(2)}</Text>
-            <ActionButton label="+" onPress={() => update(field, value + step)} />
-          </View>
-        );
-      })}
-      <Text style={styles.labPrivacy}>Filtering, calibration and gesture recognition run on this device. Only normalized numbers and actions are sent to the paired game.</Text>
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.md }}>
+      {rows.map(([key, value]) => (
+        <View key={key} style={{ minWidth: 76, gap: 2 }}>
+          <Text style={[type.label, { color: theme.faint }]}>{key.toUpperCase()}</Text>
+          <Text style={[type.title, { color: theme.text }]}>{value}</Text>
+        </View>
+      ))}
     </View>
   );
-}
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <View style={styles.metric}>
-      <Text style={styles.metricLabel}>{label}</Text>
-      <Text style={styles.metricValue}>{value}</Text>
-    </View>
-  );
-}
-
-function formatDegrees(value?: number) {
-  return `${((value ?? 0) * 180 / Math.PI).toFixed(1)}°`;
-}
-
-function formatVector(value?: readonly number[]) {
-  return (value ?? [0, 0, 0]).map((component) => component.toFixed(1)).join("  ");
 }
 
 function clamp(value: number) {
   return Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#070C15" },
-  content: { padding: 18, paddingBottom: 52, gap: 18, maxWidth: 920, width: "100%", alignSelf: "center" },
-  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 6 },
-  eyebrow: { color: "#7E8BA2", fontSize: 10, fontWeight: "900", letterSpacing: 2 },
-  brand: { color: "#F2F6FF", fontSize: 34, fontWeight: "900", letterSpacing: -1.5 },
-  brandAccent: { color: "#54F0C3" },
-  statePill: { flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 11, paddingVertical: 8, borderRadius: 99, backgroundColor: "#161F31", borderWidth: 1, borderColor: "#2A354A" },
-  statePillConnected: { backgroundColor: "#0F2B25", borderColor: "#1E6A55" },
-  stateDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: "#758198" },
-  stateDotConnected: { backgroundColor: "#54F0C3" },
-  stateText: { color: "#A9B4C6", fontSize: 10, fontWeight: "900" },
-  stateTextConnected: { color: "#7EF5D2" },
-  privacyBar: { backgroundColor: "#0D211E", borderColor: "#1A4B40", borderWidth: 1, borderRadius: 14, padding: 13 },
-  privacyTitle: { color: "#54F0C3", fontSize: 10, fontWeight: "900", letterSpacing: 1.4 },
-  privacyCopy: { color: "#9AC3B7", marginTop: 3, fontSize: 12, lineHeight: 17 },
-  card: { backgroundColor: "#0E1625", borderRadius: 18, borderWidth: 1, borderColor: "#202B3F", padding: 15, gap: 12 },
-  cardTitleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  cardTitle: { color: "#F0F5FF", fontSize: 17, fontWeight: "800" },
-  latency: { color: "#54F0C3", fontSize: 12, fontWeight: "800" },
-  input: { minHeight: 70, borderRadius: 12, backgroundColor: "#09111F", borderWidth: 1, borderColor: "#28344B", color: "#DDE7F8", padding: 12, fontSize: 12, textAlignVertical: "top" },
-  actionRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  actionButton: { minHeight: 42, paddingHorizontal: 14, borderRadius: 10, alignItems: "center", justifyContent: "center", backgroundColor: "#1B2840", borderWidth: 1, borderColor: "#31405B" },
-  actionButtonPrimary: { backgroundColor: "#54F0C3", borderColor: "#54F0C3" },
-  actionButtonDanger: { backgroundColor: "#351822", borderColor: "#6B283B" },
-  actionButtonText: { color: "#D8E2F2", fontSize: 11, fontWeight: "900", letterSpacing: 0.7 },
-  actionButtonTextPrimary: { color: "#061510" },
-  actionPressed: { opacity: 0.72, transform: [{ scale: 0.97 }] },
-  assignment: { backgroundColor: "#101E33", borderRadius: 10, padding: 11 },
-  manualAnswer: { gap: 8, backgroundColor: "#141D2D", borderRadius: 11, padding: 10 },
-  manualAnswerTitle: { color: "#FFD166", fontSize: 9, fontWeight: "900", letterSpacing: 1 },
-  answerInput: { maxHeight: 90, borderRadius: 8, backgroundColor: "#070E19", color: "#AAB8CE", padding: 9, fontSize: 9 },
-  assignmentGame: { color: "#62A8FF", fontSize: 10, fontWeight: "900", letterSpacing: 1.2 },
-  assignmentRole: { color: "#E7EEFA", fontSize: 14, fontWeight: "700", marginTop: 2 },
-  error: { color: "#FF8094", lineHeight: 18, fontSize: 12 },
-  section: { gap: 10 },
-  sectionTitle: { color: "#8290A8", fontSize: 11, fontWeight: "900", letterSpacing: 1.4 },
-  presetRow: { gap: 10, paddingRight: 18 },
-  preset: { width: 190, minHeight: 112, padding: 13, borderRadius: 14, borderWidth: 1, borderColor: "#28344A", backgroundColor: "#0E1727" },
-  presetActive: { borderColor: "#54F0C3", backgroundColor: "#112822" },
-  presetName: { color: "#EDF3FF", fontSize: 14, fontWeight: "800" },
-  presetDescription: { color: "#8D9AB0", fontSize: 11, lineHeight: 16, marginTop: 6 },
-  hostLayoutNotice: { borderLeftWidth: 3, borderLeftColor: "#62A8FF", paddingLeft: 12, gap: 5 },
-  hostLayoutCopy: { color: "#9BA8BC", lineHeight: 18, fontSize: 12 },
-  motionActions: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  controllerHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", borderBottomWidth: 1, borderBottomColor: "#1F2A3C", paddingBottom: 10 },
-  controllerTitle: { color: "#F0F5FF", fontSize: 24, fontWeight: "900" },
-  controllerSub: { color: "#6F7D94", fontSize: 9, fontWeight: "900", letterSpacing: 1 },
-  hostState: { backgroundColor: "#111D2F", borderWidth: 1, borderColor: "#2E405B", borderRadius: 15, padding: 14 },
-  hostStateWarning: { backgroundColor: "#2B2411", borderColor: "#66531D" },
-  hostStateCritical: { backgroundColor: "#32131C", borderColor: "#7A293E" },
-  hostStateLabel: { color: "#7F8FA9", fontSize: 9, fontWeight: "900", letterSpacing: 1.3 },
-  hostStateMessage: { color: "#F1F5FC", fontSize: 15, fontWeight: "700", marginTop: 5 },
-  valueGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 10 },
-  valueItem: { minWidth: 100, backgroundColor: "#0C1422", borderRadius: 9, padding: 9 },
-  valueName: { color: "#7A899F", fontSize: 9, textTransform: "uppercase" },
-  valueText: { color: "#DCE6F6", fontWeight: "800", marginTop: 2 },
-  lab: { backgroundColor: "#0D1726", borderRadius: 16, borderWidth: 1, borderColor: "#233047", padding: 14, gap: 12 },
-  labGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  metric: { minWidth: "31%", flexGrow: 1, backgroundColor: "#09111E", borderRadius: 10, padding: 10 },
-  metricLabel: { color: "#6F7D92", fontSize: 8, fontWeight: "900", letterSpacing: 1 },
-  metricValue: { color: "#54F0C3", fontSize: 13, fontWeight: "800", marginTop: 4 },
-  tuneRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  tuneName: { color: "#9DA9BA", flex: 1, fontSize: 10, fontWeight: "800" },
-  tuneValue: { color: "#EDF4FF", width: 46, textAlign: "center", fontVariant: ["tabular-nums"] },
-  labPrivacy: { color: "#74839A", fontSize: 10, lineHeight: 15 },
-  deviceId: { color: "#46536A", textAlign: "center", fontSize: 8, fontWeight: "800", letterSpacing: 1 },
-  scanner: { flex: 1, backgroundColor: "#000", alignItems: "center", justifyContent: "center" },
-  scanFrame: { width: 260, height: 260, borderRadius: 24, borderWidth: 3, borderColor: "#54F0C3" },
-  scanText: { position: "absolute", bottom: 120, left: 30, right: 30, textAlign: "center", color: "white", fontSize: 15, fontWeight: "700" },
-  scanClose: { position: "absolute", top: 58, right: 22, backgroundColor: "#101927CC", paddingHorizontal: 16, paddingVertical: 11, borderRadius: 99 },
-  scanCloseText: { color: "white", fontWeight: "900", fontSize: 11 },
-});

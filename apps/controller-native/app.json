@@ -5,9 +5,12 @@
     "version": "0.1.0",
     "icon": "./assets/icon.png",
     "scheme": "oneohone",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "orientation": "default",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.oneohone.link",
@@ -22,7 +25,7 @@
       "package": "com.oneohone.link",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#070C15"
+        "backgroundColor": "#0A0A0A"
       },
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
@@ -39,7 +42,10 @@
               "host": "pair"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -79,6 +85,7 @@
     ],
     "extra": {
       "privacy": "local-first-no-telemetry"
-    }
+    },
+    "backgroundColor": "#0A0A0A"
   }
 }
