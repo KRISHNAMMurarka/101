@@ -11,7 +11,9 @@ Recorded 2026-08-13 on macOS 15 (Apple silicon), Xcode 26.5, Android SDK 36, JDK
 | Web launcher + Slashstorm | ✅ | Renders, plays, pairing panel issues real tickets |
 | 101 Hub signaling | ✅ | `/v1/health` responds; reachable from the Android emulator |
 | Browser 101 Link controller | ✅ | Reaches **LINKED · LAN WEBRTC · ONLINE**, role auto-synced |
-| Android 101 Link | ✅ | Full UI, mode switching, deep-link pairing, protocol handshake |
+| Android 101 Link | ✅ | Full UI, all 8 presets, deep-link pairing, protocol handshake |
+| Sensors / gyroscope | ✅ | Injected accel, gyro and orientation flow through filtering and calibration |
+| Engineering Labs | ✅ | Motion, Vision, Hardware, Network, Controller all render and respond |
 | Wear OS 101 Link | ✅ | Launches, honest locality state, zero permissions on-device |
 | iOS 101 Link | ❌ | Builds and links, throws before first render — see [known issue](native-link.md#known-issue-ios-fails-to-start-on-the-simulator) |
 | watchOS 101 Link | — | Compiles for watchOS; not run (no simulator runtime, app target needs signing) |
@@ -26,6 +28,45 @@ The core promise — a controller pairing to a running game over the LAN with no
 4. The host updated its own status from `POINTER · TOUCH · GAMEPAD · KEYBOARD` to **`1 LINK CONTROLLER`**, and the button changed from *Connect sword* to *Add sword*.
 
 That covers session creation, ticket issuing, join, WebRTC connection, capability-based role assignment, and JSON controller-layout delivery.
+
+## Sensors, gyroscope and the motion pipeline
+
+The Android emulator can inject real sensor values, which exercises the whole pipeline rather than a mock. `adb emu sensor status` confirms acceleration, gyroscope, magnetic field and orientation are all injectable.
+
+With **Sensor Lab** selected and motion enabled, injected values arrived correctly end to end:
+
+| Injected | Reported in Sensor Lab |
+| --- | --- |
+| `acceleration 0:9.81:0` | `ACCEL 0.0 -9.8 -0.0` |
+| `gyroscope 1.5:0:0` (rad/s) | `GYRO 0.0 0.0 85.9` (deg/s) — the exact conversion |
+| `acceleration 4:8:1` | `ACCEL -0.2 -11.1 0.7`, `ROLL 169.1° → -62.6°`, `YAW 169.1° → -50.1°` |
+
+Sensitivity, dead zone and smoothing controls are present and live (1.00 / 0.04 / 0.22), and the panel states the boundary plainly: *"Filtering, calibration and gesture recognition run on this device. Only normalized numbers and actions are sent to the paired game."*
+
+All eight controller presets are reachable and switch the panel: Classic Controller, Motion Wand, Steering Wheel, Tilt Board, Touch Surface, Trigger Controller, Motion Detector, Sensor Lab. Selecting a motion preset reveals **Enable motion** and **Set neutral**; enabling it flips the control to **Motion on** and the wand reports **PHONE MOTION ACTIVE**.
+
+### Two defects this found
+
+**Android motion was completely dead, and the previous milestone caused it.** Blocking `ACTIVITY_RECOGNITION` for privacy also blocked the permission `expo-sensors` requests inside `DeviceMotion.requestPermissionsAsync()` on API 29+, so every motion mode failed with *"Motion permission was not granted"*. Android sensors need no runtime permission at all, so the request is now skipped there and still made on iOS, which genuinely requires it. Both the privacy property and the feature are kept.
+
+**Sensor Lab reported `1000000 Hz`.** Two readings sharing a timestamp hit a 1 ms floor and `1000/0.001` was printed as fact. Repeated and backwards timestamps are now skipped rather than clamped, long stalls no longer masquerade as slow sampling, the interval is smoothed, and the result is capped. It now reads a steady 19–20 Hz.
+
+Both carry regression tests.
+
+## Engineering Labs
+
+All six render and respond:
+
+| Lab | Verified |
+| --- | --- |
+| Motion Lab | Keyboard simulation drives the real pipeline — `ROLL -74.1°`, live quaternion, raw vs filtered acceleration |
+| Vision Lab | Body simulation produced `BODY X -0.58`, `CROUCH 0.36`, 2 active actions, 19 input frames |
+| Hardware Lab | WebHID, Web Bluetooth and Web Serial all report **AVAILABLE**, secure context yes, permission **prompt** — nothing auto-granted |
+| Network Lab | Manual offline WebRTC UI with latency, jitter, loss, path and the honest no-STUN/TURN locality note |
+| Controller Lab | Layout presets, schema-boundary note, live normalized frame inspector |
+| Input Lab | Covered by the rendered-route suite |
+
+Note when testing these by script: both simulation labs update through React state, so a value read in the same tick as a dispatched key event still shows the previous render. Read after a tick, or the lab looks broken when it is not.
 
 ## Android 101 Link
 
