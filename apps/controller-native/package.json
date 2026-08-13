@@ -9,7 +9,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
-    "test": "node --experimental-strip-types --test src/pairing-code.test.ts src/watch-controller.test.ts",
+    "test": "node --experimental-strip-types --test src/pairing-code.test.ts src/watch-controller.test.ts src/motion-controller.test.ts",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor",
     "export": "expo export --platform all --output-dir dist"

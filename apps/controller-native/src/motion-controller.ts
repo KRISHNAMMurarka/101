@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { DeviceMotion, type DeviceMotionMeasurement } from "expo-sensors";
 
 import {
@@ -24,6 +25,8 @@ export class NativeMotionController {
   private subscription?: { remove(): void };
   private latestRaw?: MotionSample;
   private lastTimestamp?: number;
+  private smoothedIntervalMs?: number;
+  private sampleRate = 0;
 
   constructor(private readonly emit: (readout: MotionReadout) => void) {}
 
@@ -38,8 +41,10 @@ export class NativeMotionController {
   async start() {
     if (this.subscription) return true;
     if (!(await DeviceMotion.isAvailableAsync())) throw new Error("Motion sensors are unavailable on this device");
-    const permission = await DeviceMotion.requestPermissionsAsync();
-    if (!permission.granted) throw new Error("Motion permission was not granted");
+    if (motionPermissionRequired()) {
+      const permission = await DeviceMotion.requestPermissionsAsync();
+      if (!permission.granted) throw new Error("Motion permission was not granted");
+    }
     DeviceMotion.setUpdateInterval(16);
     this.subscription = DeviceMotion.addListener((measurement) => this.process(measurement));
     return true;
@@ -49,6 +54,8 @@ export class NativeMotionController {
     this.subscription?.remove();
     this.subscription = undefined;
     this.lastTimestamp = undefined;
+    this.smoothedIntervalMs = undefined;
+    this.sampleRate = 0;
     this.recognizer.reset();
     this.pipeline.reset();
   }
@@ -91,16 +98,65 @@ export class NativeMotionController {
     this.latestRaw = raw;
     const filtered = this.pipeline.process(raw);
     const gestures = this.recognizer.update(filtered);
-    const delta = this.lastTimestamp === undefined ? 0 : Math.max(0.001, timestamp - this.lastTimestamp);
-    this.lastTimestamp = timestamp;
+    this.trackSampleRate(timestamp);
     this.emit({
       raw,
       filtered,
       angles: quaternionToAngles(filtered.orientation),
       gestures,
-      sampleRate: delta ? 1_000 / delta : 0,
+      sampleRate: this.sampleRate,
     });
   }
+
+  /**
+   * Sample rate for the Sensor Lab readout.
+   *
+   * This is a diagnostic people calibrate against, so it must never state a number it cannot
+   * support. Two readings sharing a timestamp previously produced a 1 ms floor and a reported
+   * 1,000,000 Hz; a rate nobody can achieve is worse than admitting the interval is unknown.
+   *
+   * Repeated timestamps are therefore skipped rather than clamped, and the interval is smoothed,
+   * because the instantaneous gap between two sensor callbacks is far too jittery to read.
+   */
+  private trackSampleRate(timestamp: number) {
+    const previous = this.lastTimestamp;
+    this.lastTimestamp = timestamp;
+    if (previous === undefined) return;
+
+    const delta = timestamp - previous;
+    // A non-advancing or absurd clock says nothing about the real rate; keep the last good value.
+    if (!(delta > 0) || delta > MAX_SAMPLE_INTERVAL_MS) return;
+
+    this.smoothedIntervalMs = this.smoothedIntervalMs === undefined
+      ? delta
+      : this.smoothedIntervalMs + (delta - this.smoothedIntervalMs) * SAMPLE_RATE_SMOOTHING;
+    this.sampleRate = Math.min(MAX_REPORTED_HZ, 1_000 / this.smoothedIntervalMs);
+  }
+}
+
+/** Beyond this the device stopped delivering rather than sampling slowly. */
+const MAX_SAMPLE_INTERVAL_MS = 1_000;
+/** No consumer sensor exceeds this; a higher figure means the clock, not the sensor. */
+const MAX_REPORTED_HZ = 1_000;
+const SAMPLE_RATE_SMOOTHING = 0.2;
+
+/**
+ * Whether this platform actually gates device motion behind a runtime permission.
+ *
+ * iOS does: reading `CMDeviceMotion` requires the motion usage description the app declares.
+ *
+ * Android does not. Accelerometer, gyroscope and magnetometer need no runtime permission there;
+ * `expo-sensors` asks for `ACTIVITY_RECOGNITION` on API 29+ only because its DeviceMotion module
+ * also fronts pedometer-style data. 101 reads orientation, acceleration and rotation rate and
+ * nothing else, and deliberately blocks `ACTIVITY_RECOGNITION` so it cannot collect activity or
+ * health signals — see docs/privacy-security.md.
+ *
+ * Requesting a permission the app has blocked can only ever be denied, which previously left
+ * Android motion controls permanently dead. Skipping the request is both the working and the
+ * privacy-preserving answer; it grants nothing extra, because the sensors were never gated.
+ */
+function motionPermissionRequired() {
+  return Platform.OS === "ios";
 }
 
 function radiansToDegrees(value: number) {

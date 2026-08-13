@@ -37,6 +37,22 @@ test("native Link blocks the health permissions its sensor library would otherwi
   }
 });
 
+test("Android motion is not gated on a permission the app deliberately blocks", async () => {
+  // expo-sensors' DeviceMotion asks for ACTIVITY_RECOGNITION on Android API 29+, because that
+  // module also fronts pedometer data. 101 blocks that permission, so requesting it can only ever
+  // be denied — which left Android motion controls permanently dead until an emulator run caught
+  // it. Android sensors need no runtime permission at all, so the request is skipped there.
+  const source = await readFile(new URL("../apps/controller-native/src/motion-controller.ts", import.meta.url), "utf8");
+  const config = JSON.parse(await readFile(new URL("../apps/controller-native/app.json", import.meta.url), "utf8"));
+
+  assert.ok(config.expo.android.blockedPermissions.includes("android.permission.ACTIVITY_RECOGNITION"));
+  assert.match(source, /requestPermissionsAsync/, "iOS still requests motion permission");
+  assert.match(source, /Platform\.OS === "ios"/, "the request must be gated to the platform that needs it");
+  // The request has to sit behind that gate, not run unconditionally.
+  const gated = /if \(motionPermissionRequired\(\)\) \{[\s\S]*?requestPermissionsAsync[\s\S]*?\}/.test(source);
+  assert.ok(gated, "the permission request must be inside the platform gate");
+});
+
 test("the watch bridge is declared for both platforms and requests no extra capability", async () => {
   const bridge = JSON.parse(await readFile(new URL("../apps/controller-native/modules/one01-watch/expo-module.config.json", import.meta.url), "utf8"));
   assert.deepEqual(bridge.platforms, ["ios", "android"]);
