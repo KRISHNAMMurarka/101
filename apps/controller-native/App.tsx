@@ -33,6 +33,15 @@ const DEVICE_ID_KEY = "101-link-device-id-v1";
 const LAST_PAIRING_KEY = "101-link-last-pairing-v1";
 
 /**
+ * Room for the system gesture bar under the bottom-anchored controls.
+ *
+ * `SafeAreaView` covers the notch but not this, and in landscape the lowest row of controls sat
+ * directly on the bar — so the edge of a stick doubled as "go home", which is the worst possible
+ * place to lose a thumb mid-game.
+ */
+const GESTURE_INSET = 34;
+
+/**
  * 101 Link has exactly two screens, because it has exactly two situations: you are not connected
  * and need to be, or you are connected and want to play. Everything that is neither — presets,
  * calibration, diagnostics, disconnect — lives in a sheet you pull up, so it costs nothing until
@@ -521,6 +530,7 @@ function PlaySurface({ theme, layout, controls, message, tone, values }: {
   tone: "normal" | "warning" | "critical";
   values: Record<string, string | number | boolean>;
 }) {
+  const { landscape } = useLayout();
   const entries = Object.entries(values).slice(0, 4);
   return (
     <View style={{ flex: 1, backgroundColor: theme.bgLift }}>
@@ -548,12 +558,21 @@ function PlaySurface({ theme, layout, controls, message, tone, values }: {
           ) : null}
         </View>
       ) : null}
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: space.md }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <ControllerPanel layout={layout} controls={controls} />
-      </ScrollView>
+      {landscape ? (
+        // Held in two hands, thumbs rest in the bottom corners — so the controls live there
+        // rather than in the middle of the screen. Nothing scrolls in this orientation: a control
+        // you have to find is a control you have already missed.
+        <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: space.lg, paddingBottom: GESTURE_INSET }}>
+          <ControllerPanel layout={layout} controls={controls} />
+        </View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end", padding: space.md, paddingBottom: GESTURE_INSET }}
+          keyboardShouldPersistTaps="handled"
+        >
+          <ControllerPanel layout={layout} controls={controls} />
+        </ScrollView>
+      )}
     </View>
   );
 }

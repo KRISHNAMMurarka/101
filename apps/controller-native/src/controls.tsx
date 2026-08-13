@@ -73,8 +73,8 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
         </Text>
       ) : null}
       <View style={wide ? styles.split : undefined}>
-        {pads.length ? <View style={[styles.padGroup, wide && styles.splitSide]}>{pads.map(render)}</View> : null}
-        {rest.length ? <View style={[styles.grid, wide && styles.splitSide]}>{rest.map(render)}</View> : null}
+        {pads.length ? <View style={[styles.padGroup, wide && styles.splitSide, wide && styles.splitLeft]}>{pads.map(render)}</View> : null}
+        {rest.length ? <View style={[styles.grid, wide && styles.splitSide, wide && styles.splitRight]}>{rest.map(render)}</View> : null}
       </View>
     </View>
   );
@@ -257,9 +257,14 @@ function SliderControl({
 
 const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, alignContent: "center" },
-  /** Pads left, everything pressable right, when the screen is wide enough to hold both. */
-  split: { flexDirection: "row", gap: space.lg, alignItems: "center" },
+  /**
+   * Pads left, pressables right, both hugging the outside edges where thumbs actually rest.
+   * Centring each group in its half looked tidier and put every control further from the hand.
+   */
+  split: { flexDirection: "row", gap: space.lg, alignItems: "flex-end" },
   splitSide: { flex: 1 },
+  splitLeft: { justifyContent: "flex-start" },
+  splitRight: { justifyContent: "flex-end" },
   padGroup: { flexDirection: "row", flexWrap: "wrap", gap: space.md, justifyContent: "center", alignItems: "center" },
   button: {
     // Two per row, then grow to share whatever is left. `minWidth` alone let a single button
