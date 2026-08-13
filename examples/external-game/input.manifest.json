@@ -1,0 +1,6 @@
+{
+  "$schema": "../../schemas/input-manifest.schema.json",
+  "game": "meteor-dash",
+  "actions": { "boost": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] } },
+  "vectors": { "move": { "recommended": ["gamepad", "touch"], "fallback": ["keyboard"] } }
+}

@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped browser adapters handle keyboards, pointers, gamepads, phone motion, and local cameras, while the same boundary is designed for watches and future hardware.
 
-This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. It deliberately does not present the native Link app, watches, automatic LAN discovery, hardware adapters, desktop Hub, or production cross-device reconnect as finished.
+This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Native Link, watches, automatic LAN discovery, hardware adapters, the desktop Hub, and production cross-device reconnect are active implementation milestones in this repository; they are not represented as shipped until their source and tests land.
 
 ![101 social card](public/og.png)
 
@@ -94,6 +94,9 @@ Key packages:
 | `@101/session` | Capability-aware role assignment, targeted controller layouts, heartbeats and host-side frame identity enforcement |
 | `@101/link-controller` | Atomic Link input state, neutral role transitions, and stale-control prevention |
 | `@101/sdk` | Public game lifecycle and manifest types |
+| `@101/game-registry` | Version-aware installation state and launcher catalog for bundled, local and downloaded packages |
+| `@101/game-host` | Turnkey Input Bus, adapter, session, transport, controller-role and game lifecycle composition |
+| `@101/devkit` | Safe external-game scaffold generator and templates |
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
 | `@101/adapter-motion` | Lazy browser permission, device orientation correction, gestures and normalized frames |
@@ -113,7 +116,11 @@ Read [the architecture guide](docs/architecture.md) for invariants and package b
 
 ## Add a game
 
-Every game owns a `manifest.json`. The launcher discovers manifests at build time; it does not contain a hand-maintained list.
+Generate a complete independent package. The launcher discovers manifests at build time; it does not contain a hand-maintained list.
+
+```bash
+npm run create:game -- my-game "My Game" 2d
+```
 
 ```ts
 import { Game101 } from "@101/sdk";
@@ -135,12 +142,16 @@ export default Game101.define({
 
 See [game development](docs/game-development.md) and [adapter development](docs/adapter-development.md).
 
+The public package boundary also has machine-readable [game manifest](schemas/game-manifest.schema.json), [input manifest](schemas/input-manifest.schema.json), and [controller layout](schemas/controller-layout.schema.json) schemas. [Meteor Dash](examples/external-game/README.md) demonstrates a game authored as if it lived in another repository. `Game101.package()` validates the complete contract, `GameRegistry` installs it, and `GameHost101` runs it without game-specific controller or networking code.
+
 ## Repository map
 
 ```text
 app/                 launcher and browser-controller surfaces
 packages/            versioned 101 runtime boundaries
 games/               manifests plus independently playable game code
+examples/            external-developer package examples
+schemas/             public JSON contracts for games and Link layouts
 docs/                architecture, protocol, privacy and contributor guides
 tools/               release and license tooling
 tests/               production-render smoke tests
@@ -152,6 +163,7 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 
 - [x] Strict TypeScript workspace and browser launcher
 - [x] SDK, core runtime and manifest-driven catalog
+- [x] Independent game package contract, registry, generic host, JSON Schemas and scaffolding CLI
 - [x] Input Bus with keyboard, pointer/touch and Gamepad adapters
 - [x] Transport-independent protocol plus fixed-size motion codec
 - [x] 2D, 3D, physics and audio facades

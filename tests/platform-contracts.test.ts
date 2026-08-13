@@ -2,11 +2,11 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
-import { resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
+import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import { ControllerInputModel } from "@101/link-controller";
 import { parseControllerLayout } from "@101/protocol";
 import type { SessionRole } from "@101/session";
-import type { GameManifest } from "@101/sdk";
+import { parseGameManifest, type GameManifest } from "@101/sdk";
 import { BEATFORGE_ROLES } from "../games/beatforge/src/roles.ts";
 import { BODYDODGE_ROLES } from "../games/bodydodge/src/roles.ts";
 import { ECHO_MAZE_ROLES } from "../games/echomaze/src/roles.ts";
@@ -36,8 +36,8 @@ const rolesByGame: Record<GameId, readonly SessionRole[]> = {
 
 test("all ten games publish honest playable, local, procedural manifests and fallback inputs", () => {
   for (const gameId of GAME_IDS) {
-    const manifest = json<GameManifest>(gameId, "manifest.json");
-    const input = json<InputManifest>(gameId, "input.manifest.json");
+    const manifest = parseGameManifest(json<GameManifest>(gameId, "manifest.json"));
+    const input = parseInputManifest(json<InputManifest>(gameId, "input.manifest.json"));
     assert.equal(manifest.id, gameId);
     assert.equal(input.game, gameId);
     assert.equal(manifest.status, "playable", `${gameId} must be marked playable`);

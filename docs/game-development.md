@@ -4,12 +4,23 @@
 
 Define actions in game language: `slash`, `steer`, `spell.cast`, `reactor.route`, `formation`, not hardware language such as `gyroscopeY` or `gamepadButton0`.
 
-Each game needs:
+Each game package needs:
 
 1. `manifest.json` for launcher discovery and capability matching.
-2. A `Game101.define()` export.
-3. Conventional fallback mappings.
-4. A seeded generator and validation strategy when procedural play is enabled.
+2. `input.manifest.json` for semantic actions, axes, vectors, and poses.
+3. A `Game101.define()` gameplay lifecycle.
+4. Optional universal Link roles expressed as JSON layouts.
+5. One `Game101.package()` export that validates all of the above together.
+6. Conventional fallback mappings.
+7. A seeded generator and validation strategy when procedural play is enabled.
+
+Create that structure with:
+
+```bash
+npm run create:game -- meteor-dash "Meteor Dash" 2d
+```
+
+The generator refuses to overwrite an existing directory. The result contains a package export, manifests, controller role, lifecycle, test, and README. `schemas/` contains JSON Schemas for editor completion and non-TypeScript tooling.
 
 ## Manifest
 
@@ -34,6 +45,27 @@ Each game needs:
 
 The launcher discovers `games/*/manifest.json` during its build. Adding a manifest does not require editing the launcher catalog.
 
+## Package export
+
+```ts
+import { Game101 } from "@101/sdk";
+import manifest from "../manifest.json" with { type: "json" };
+import input from "../input.manifest.json" with { type: "json" };
+import game from "./game.ts";
+import { controllerRoles } from "./roles.ts";
+
+export default Game101.package({
+  manifest,
+  input,
+  controllers: controllerRoles,
+  game,
+});
+```
+
+`Game101.package()` is the trust boundary. It rejects incompatible engine versions, mismatched IDs, invalid sources, missing conventional presets, duplicate roles/player channels, unsupported capabilities, malformed controller JSON, and controller elements that target undeclared inputs. The result is deeply frozen before a registry or host accepts it.
+
+Use `@101/game-registry` to install bundled, local, or downloaded packages and generate a launcher catalog. Use `@101/game-host` to launch one: it owns the Input Bus, adapters, session, role assignment, controller reconfiguration, frame identity enforcement, and game runtime. A developer game does not construct a transport or handle permissions.
+
 ## Runtime rules
 
 - Bind semantic controls in `start()`.
@@ -47,7 +79,7 @@ The launcher discovers `games/*/manifest.json` during its build. Adding a manife
 
 Publish basic, enhanced and immersive presets. The launcher must always expose a playable conventional preset. Enhanced hardware improves the experience; it does not gate entry.
 
-Asymmetric games may additionally publish `SessionRole` definitions outside the gameplay module. Each role declares its normalized `playerId`, capability preferences, and a JSON `ControllerLayout`. The platform host owns transport, registration, identity enforcement, layout delivery, and haptics. The `Game101.define()` module continues to read only actions, axes, vectors, and poses for the role player IDs.
+Asymmetric games publish `GameControllerRole` definitions outside the gameplay module. Each role declares its normalized `playerId`, capability preferences, and a JSON `ControllerLayout`. The platform host owns transport, registration, identity enforcement, layout delivery, and haptics. The `Game101.define()` module continues to read only actions, axes, vectors, and poses for the role player IDs.
 
 Games that use a private companion display should keep clue calculation in deterministic game state, then let the host route a minimal `controller.state` readout to a role. Do not import a transport into the game module. Required information must remain available through a conventional host-screen fallback when no companion is assigned.
 

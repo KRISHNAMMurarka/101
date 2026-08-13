@@ -2,6 +2,9 @@
   "name": "@101/sdk",
   "version": "0.1.0",
   "type": "module",
-  "dependencies": { "@101/input": "0.1.0" },
+  "dependencies": {
+    "@101/input": "0.1.0",
+    "@101/protocol": "0.1.0"
+  },
   "exports": "./src/index.ts"
 }

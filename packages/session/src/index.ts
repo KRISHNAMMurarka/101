@@ -1,4 +1,5 @@
 import type { InputFrame } from "@101/input";
+import type { GameControllerRole } from "@101/sdk";
 import {
   PROTOCOL_VERSION,
   type ControllerLayout,
@@ -15,14 +16,7 @@ export interface ConnectedDevice {
   lastSeenAt: number;
 }
 
-export interface SessionRole {
-  id: string;
-  label: string;
-  playerId: string;
-  layout: ControllerLayout;
-  requiredCapabilities?: readonly (keyof DeviceCapabilities)[];
-  preferredCapabilities?: readonly (keyof DeviceCapabilities)[];
-}
+export type SessionRole = GameControllerRole;
 
 export interface RoleAssignment {
   deviceId: string;

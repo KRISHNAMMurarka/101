@@ -1,0 +1,16 @@
+{
+  "$schema": "../../schemas/game-manifest.schema.json",
+  "id": "meteor-dash",
+  "name": "Meteor Dash",
+  "tagline": "A third-party 101 package example.",
+  "version": "0.1.0",
+  "engine": "^1",
+  "renderer": "2d",
+  "players": { "min": 1, "max": 1 },
+  "inputs": ["keyboard", "touch", "gamepad"],
+  "offline": true,
+  "procedural": true,
+  "status": "playable",
+  "accent": "#50e3ff",
+  "controllers": { "basic": ["keyboard", "touch", "gamepad"] }
+}

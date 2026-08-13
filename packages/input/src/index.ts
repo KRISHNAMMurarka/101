@@ -1,17 +1,20 @@
-export type InputSource =
-  | "keyboard"
-  | "mouse"
-  | "touch"
-  | "gamepad"
-  | "phone-motion"
-  | "watch-motion"
-  | "camera-hand"
-  | "camera-pose"
-  | "camera-face"
-  | "hid"
-  | "bluetooth"
-  | "serial"
-  | "custom";
+export const INPUT_SOURCES = [
+  "keyboard",
+  "mouse",
+  "touch",
+  "gamepad",
+  "phone-motion",
+  "watch-motion",
+  "camera-hand",
+  "camera-pose",
+  "camera-face",
+  "hid",
+  "bluetooth",
+  "serial",
+  "custom",
+] as const;
+
+export type InputSource = typeof INPUT_SOURCES[number];
 
 export interface InputVector {
   x: number;
@@ -49,6 +52,45 @@ export interface InputManifest {
 export interface ResolvedInputManifest {
   mappings: Record<string, InputSource>;
   missing: string[];
+}
+
+export function parseInputManifest(input: unknown): InputManifest {
+  if (!isRecord(input)) throw new Error("Input manifest must be an object");
+  const game = parseIdentifier(input.game, "game");
+  let controlCount = 0;
+  const parseGroup = (value: unknown, group: string) => {
+    if (value === undefined) return undefined;
+    if (!isRecord(value)) throw new Error(`Input manifest ${group} must be an object`);
+    const parsed: Record<string, InputManifestControl> = {};
+    for (const [name, requirement] of Object.entries(value)) {
+      controlCount += 1;
+      if (controlCount > 128) throw new Error("Input manifest cannot declare more than 128 controls");
+      parseControlName(name, group);
+      if (!isRecord(requirement)) throw new Error(`Invalid ${group} control ${name}`);
+      const recommended = parseSources(requirement.recommended, `${group}.${name}.recommended`, false);
+      const fallback = requirement.fallback === undefined
+        ? undefined
+        : parseSources(requirement.fallback, `${group}.${name}.fallback`, true);
+      const description = requirement.description === undefined
+        ? undefined
+        : parseText(requirement.description, `${group}.${name}.description`, 240);
+      parsed[name] = {
+        recommended,
+        ...(fallback ? { fallback } : {}),
+        ...(description ? { description } : {}),
+      };
+    }
+    return parsed;
+  };
+  const manifest: InputManifest = {
+    game,
+    actions: parseGroup(input.actions, "actions"),
+    axes: parseGroup(input.axes, "axes"),
+    vectors: parseGroup(input.vectors, "vectors"),
+    poses: parseGroup(input.poses, "poses"),
+  };
+  if (controlCount === 0) throw new Error("Input manifest must declare at least one control");
+  return manifest;
 }
 
 export function resolveInputManifest(
@@ -243,4 +285,43 @@ export class InputBus {
 
 function vectorMagnitude(vector: InputVector) {
   return vector.x * vector.x + vector.y * vector.y + (vector.z ?? 0) * (vector.z ?? 0);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseIdentifier(value: unknown, label: string) {
+  if (typeof value !== "string" || value.length < 1 || value.length > 128 || !/^[a-z0-9]+(?:[.-][a-z0-9]+)*$/.test(value)) {
+    throw new Error(`Invalid input manifest ${label}`);
+  }
+  return value;
+}
+
+function parseControlName(value: string, group: string) {
+  if (value.length > 128 || !/^[a-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*$/.test(value)) {
+    throw new Error(`Invalid ${group} control name ${value}`);
+  }
+  return value;
+}
+
+function parseSources(value: unknown, label: string, allowEmpty: boolean): InputSource[] {
+  if (!Array.isArray(value) || (!allowEmpty && value.length === 0) || value.length > INPUT_SOURCES.length) {
+    throw new Error(`${label} must be a valid source list`);
+  }
+  const sources = value.map((source) => {
+    if (typeof source !== "string" || !INPUT_SOURCES.includes(source as InputSource)) {
+      throw new Error(`${label} contains unsupported source ${String(source)}`);
+    }
+    return source as InputSource;
+  });
+  if (new Set(sources).size !== sources.length) throw new Error(`${label} contains duplicate sources`);
+  return sources;
+}
+
+function parseText(value: unknown, label: string, maxLength: number) {
+  if (typeof value !== "string" || value.trim().length === 0 || value.length > maxLength) {
+    throw new Error(`${label} must be non-empty text up to ${maxLength} characters`);
+  }
+  return value.trim();
 }

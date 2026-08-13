@@ -40,6 +40,8 @@ Game definition
 
 `Engine101` constructs a game-owned state object and exposes the narrow SDK context. It caps large delta values so timing is not tied to frame count. The host owns adapters and supplies an `InputBus`; the game can bind and read controls but cannot register hardware.
 
+`@101/sdk` is the public developer boundary. `Game101.package()` combines and validates the game lifecycle, launcher manifest, semantic input contract, and universal controller roles. `@101/game-registry` owns installation/catalog state, while `@101/game-host` composes the runtime, adapters, session and transport so a third-party game never needs infrastructure imports. JSON Schemas under `schemas/` support editors and other languages; runtime parsers remain authoritative at the trust boundary.
+
 ## Input resolution
 
 Frames are stored per player and device. Reads combine simultaneous devices: active actions win over neutral actions, while the strongest live axis/vector intent wins with deterministic recency tie-breaking. Actions, axes, vectors, and compact pose arrays share the same sequencing and stale-frame rejection path. This prevents a newly polled neutral gamepad from masking a held keyboard key while still allowing a keyboard to provide movement and a phone to provide aim.
