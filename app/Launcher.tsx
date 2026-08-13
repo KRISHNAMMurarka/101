@@ -64,24 +64,26 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <span className="mark-block">101</span>
           <span className="mark-label">Local gaming system</span>
         </button>
+        {/*
+          A navigation bar carries destinations, not an inventory. Listing all ten games here
+          duplicated the grid directly below it and pushed the row to seventeen items, so the one
+          control that matters — Connect device — competed with sixteen others. Games live in the
+          grid, the six diagnostics collapse into one menu, and the bar is three items again.
+        */}
         <nav className="nav" aria-label="Primary navigation">
           <button className={view === "library" ? "active" : ""} onClick={() => navigate("library")}>Games</button>
-          <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input Lab</button>
-          <button className={view === "slashstorm" ? "active" : ""} onClick={() => navigate("slashstorm")}>Slashstorm</button>
-          <button className={view === "tiltdrift" ? "active" : ""} onClick={() => navigate("tiltdrift")}>TiltDrift</button>
-          <button className={view === "orbitalcrew" ? "active" : ""} onClick={() => navigate("orbitalcrew")}>Orbital Crew</button>
-          <button className={view === "beatforge" ? "active" : ""} onClick={() => navigate("beatforge")}>BeatForge</button>
-          <button className={view === "gravitystack" ? "active" : ""} onClick={() => navigate("gravitystack")}>GravityStack</button>
-          <button className={view === "spellcaster" ? "active" : ""} onClick={() => navigate("spellcaster")}>Spellcaster</button>
-          <button className={view === "echomaze" ? "active" : ""} onClick={() => navigate("echomaze")}>Echo Maze</button>
-          <button className={view === "shadowarena" ? "active" : ""} onClick={() => navigate("shadowarena")}>Shadow Arena</button>
-          <button className={view === "swarmcommander" ? "active" : ""} onClick={() => navigate("swarmcommander")}>Swarm Commander</button>
-          <Link href="/motion">Motion Lab</Link>
-          <Link href="/vision">Vision Lab</Link>
-          <Link href="/network">Network Lab</Link>
-          <Link href="/controller-lab">Controller Lab</Link>
-          <Link href="/hardware">Hardware Lab</Link>
-          <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>The system</button>
+          <details className="nav-menu">
+            <summary>Labs</summary>
+            <div className="nav-menu-items">
+              <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input</button>
+              <Link href="/motion">Motion</Link>
+              <Link href="/vision">Vision</Link>
+              <Link href="/network">Network</Link>
+              <Link href="/controller-lab">Controller</Link>
+              <Link href="/hardware">Hardware</Link>
+            </div>
+          </details>
+          <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>System</button>
         </nav>
         <button className="connect-button" onClick={() => setPairingOpen(true)}>
           <span className="status-dot" /> Connect device

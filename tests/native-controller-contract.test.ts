@@ -80,3 +80,50 @@ test("the watch bridge is declared for both platforms and requests no extra capa
   const gradle = await readFile(new URL("../apps/controller-native/modules/one01-watch/android/build.gradle", import.meta.url), "utf8");
   assert.equal(/uses-permission|BODY_SENSORS|RECORD_AUDIO/.test(gradle), false);
 });
+
+test("a keychain failure cannot silently disable the whole controller", async () => {
+  // Device identity gates the session, deep links, Connect and motion. It used to be three
+  // unguarded awaits inside a `void`, so one keychain error left the app inert with nothing on
+  // screen: buttons did nothing and "Motion on" reported success against a controller that was
+  // never constructed. Identity must degrade to an in-memory id rather than take the app down.
+  const source = await readFile(new URL("../apps/controller-native/App.tsx", import.meta.url), "utf8");
+  const start = source.indexOf("let cancelled = false;");
+  assert.ok(start > 0, "the identity effect must still exist");
+  const effect = source.slice(start, source.indexOf("}, []);", start));
+
+  assert.match(effect, /try\s*{[\s\S]*getItemAsync/, "reading the stored id must be guarded");
+  assert.match(effect, /catch/, "a keychain failure must be caught rather than rejecting into void");
+  assert.match(effect, /setDeviceId\(id\)/, "an id is always set, so the app still runs");
+  // The fallback id must be generated outside the storage call, or a throw skips it entirely.
+  assert.match(effect, /id = `link-\$\{Crypto\.randomUUID\(\)\}`/);
+});
+
+test("expo-dev-client stays out of production dependencies", async () => {
+  // It is a development tool. On iOS it also registers an AppDelegate subscriber that claims
+  // incoming URLs before React Native sees them, so shipping it is both bloat and a hazard.
+  const pkg = JSON.parse(await readFile(new URL("../apps/controller-native/package.json", import.meta.url), "utf8"));
+  assert.equal("expo-dev-client" in (pkg.dependencies ?? {}), false, "dev-client must not be a production dependency");
+  assert.ok("expo-dev-client" in (pkg.devDependencies ?? {}), "dev builds still need it");
+});
+
+test("secure storage can never fail a pairing or drop a deep link", async () => {
+  // expo-secure-store is keychain-backed on iOS and throws "KeyChainException: A required
+  // entitlement isn't present" wherever the app has no keychain entitlement — including any build
+  // made with signing disabled. Three unguarded calls turned that into: the launch URL being
+  // dropped one line after it was read, a successful connection being reported as failed, and
+  // disconnect throwing. Persistence is a convenience and must never gate the link.
+  const source = await readFile(new URL("../apps/controller-native/App.tsx", import.meta.url), "utf8");
+
+  for (const helper of ["rememberPairing", "forgetPairing", "readSavedPairing"]) {
+    assert.match(source, new RegExp(`async function ${helper}`), `${helper} must exist`);
+  }
+  // Outside those helpers and the identity effect, nothing may touch SecureStore directly.
+  const body = source.slice(source.indexOf("export default function App"), source.indexOf("async function rememberPairing"));
+  const direct = [...body.matchAll(/SecureStore\.\w+/g)].map((match) => match[0]);
+  assert.deepEqual(direct, ["SecureStore.getItemAsync", "SecureStore.setItemAsync"],
+    "only the guarded identity effect may call SecureStore directly");
+
+  const config = JSON.parse(await readFile(new URL("../apps/controller-native/app.json", import.meta.url), "utf8"));
+  assert.ok(config.expo.ios.entitlements?.["keychain-access-groups"]?.length,
+    "signed builds need a keychain entitlement for secure storage to work at all");
+});

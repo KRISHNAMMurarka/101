@@ -101,10 +101,13 @@ export default function App() {
       if (input.startsWith("101C2.") || input.startsWith("101J2.")) {
         const answer = await sessionRef.current.connectManual(input);
         setManualAnswer(answer);
-        await SecureStore.deleteItemAsync(LAST_PAIRING_KEY);
+        await forgetPairing();
       } else {
         await sessionRef.current.connect(input);
-        await SecureStore.setItemAsync(LAST_PAIRING_KEY, input);
+        // Remembering the pairing is a convenience for next launch. It used to sit inside this
+        // try block, so a keychain write failing *after* a successful connection reported the
+        // whole pairing as failed — the player was connected and being told they were not.
+        await rememberPairing(input);
       }
       setPairingInput(input);
       setCodeEntryOpen(false);
@@ -117,10 +120,31 @@ export default function App() {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const existing = await SecureStore.getItemAsync(DEVICE_ID_KEY);
-      const id = existing ?? `link-${Crypto.randomUUID()}`;
-      if (!existing) await SecureStore.setItemAsync(DEVICE_ID_KEY, id);
-      if (!cancelled) setDeviceId(id);
+      // Everything downstream — the session, deep links, Connect, motion — is gated on having a
+      // device id. This used to be three unguarded awaits inside a `void`, so a single keychain
+      // failure left the whole app inert with nothing on screen to say why: buttons did nothing,
+      // links were ignored, and "Motion on" reported success against a controller that was never
+      // constructed. A stable id is worth having, but it is not worth being the thing that can
+      // silently brick the app.
+      let id: string | undefined;
+      let warning: string | undefined;
+      try {
+        id = (await SecureStore.getItemAsync(DEVICE_ID_KEY)) ?? undefined;
+      } catch {
+        warning = "This device could not be remembered, so pairing will not persist between launches.";
+      }
+      if (!id) {
+        id = `link-${Crypto.randomUUID()}`;
+        try {
+          await SecureStore.setItemAsync(DEVICE_ID_KEY, id);
+        } catch {
+          warning ??= "This device could not be remembered, so pairing will not persist between launches.";
+        }
+      }
+      if (cancelled) return;
+      // Fall through with an in-memory identity: a controller that forgets itself still plays.
+      setDeviceId(id);
+      if (warning) setError(warning);
     })();
     return () => { cancelled = true; };
   }, []);
@@ -178,7 +202,11 @@ export default function App() {
     let active = true;
     void (async () => {
       const initialUrl = await Linking.getInitialURL();
-      const saved = await SecureStore.getItemAsync(LAST_PAIRING_KEY);
+      // This line used to be an unguarded keychain read directly after the launch URL was
+      // retrieved. Where the keychain is unavailable it threw, the surrounding `void`-ed async
+      // function rejected, and `connect` below never ran — so a deep link that had arrived
+      // perfectly well was dropped one line after it was read, on iOS only.
+      const saved = await readSavedPairing();
       const candidate = initialUrl?.includes("pair") ? initialUrl : saved;
       if (active && candidate) {
         setPairingInput(candidate);
@@ -246,7 +274,7 @@ export default function App() {
 
   const disconnect = async () => {
     await sessionRef.current?.disconnect();
-    await SecureStore.deleteItemAsync(LAST_PAIRING_KEY);
+    await forgetPairing();
     setHostControlled(false);
     setManualAnswer("");
     setLinkState("disconnected");
@@ -644,6 +672,38 @@ function Readout({ theme, readout, calibration }: {
       ))}
     </View>
   );
+}
+
+/**
+ * Pairing persistence, which must never be able to fail a connection.
+ *
+ * `expo-secure-store` is keychain-backed on iOS and throws `KeyChainException: A required
+ * entitlement isn't present` wherever the app has no keychain entitlement — including any build
+ * made with signing disabled, which is how simulator builds are produced here. Convenience is not
+ * worth a working link, so both writes swallow their failure.
+ */
+async function rememberPairing(ticket: string) {
+  try {
+    await SecureStore.setItemAsync(LAST_PAIRING_KEY, ticket);
+  } catch {
+    // Nothing to do: the session is already up, and the next launch simply starts fresh.
+  }
+}
+
+async function forgetPairing() {
+  try {
+    await SecureStore.deleteItemAsync(LAST_PAIRING_KEY);
+  } catch {
+    // Same reasoning: failing to forget must not fail the thing the player asked for.
+  }
+}
+
+async function readSavedPairing() {
+  try {
+    return await SecureStore.getItemAsync(LAST_PAIRING_KEY);
+  } catch {
+    return null;
+  }
 }
 
 function clamp(value: number) {

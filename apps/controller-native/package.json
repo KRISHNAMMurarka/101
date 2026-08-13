@@ -27,7 +27,6 @@
     "expo-camera": "57.0.3",
     "expo-clipboard": "57.0.1",
     "expo-crypto": "57.0.1",
-    "expo-dev-client": "57.0.11",
     "expo-haptics": "57.0.1",
     "expo-secure-store": "57.0.1",
     "expo-sensors": "57.0.2",
@@ -41,6 +40,7 @@
   "devDependencies": {
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
+    "expo-dev-client": "57.0.11",
     "expo-doctor": "1.20.1",
     "typescript": "6.0.3"
   },

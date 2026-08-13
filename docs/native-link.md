@@ -51,25 +51,63 @@ Every cheap explanation was wrong, and each was ruled out with evidence rather t
 
 The signal that mattered was in the built artifact: the app bundle embedded some Expo modules as prebuilt XCFrameworks from `PODS_XCFRAMEWORKS_BUILD_DIR` while others were static. Mixed linkage, one broken registry.
 
+## Device identity must never be a single point of failure
+
+The app's identity effect was three unguarded `await`s inside a `void`:
+
+```ts
+void (async () => {
+  const existing = await SecureStore.getItemAsync(DEVICE_ID_KEY);   // keychain
+  const id = existing ?? `link-${Crypto.randomUUID()}`;
+  if (!existing) await SecureStore.setItemAsync(DEVICE_ID_KEY, id); // keychain
+  setDeviceId(id);
+})();
+```
+
+Everything downstream is gated on `deviceId`: the session, deep-link handling, **Connect**, and the motion controller. So a single keychain failure left the app looking fine and doing nothing — buttons dead, links ignored, and `enableMotion` reporting "Motion on" because `motionRef.current?.start()` optional-chains past a controller that was never constructed. The rejection went into `void`, so nothing was logged and nothing was shown.
+
+Identity is now guarded, falls back to an in-memory id, and reports the loss of persistence rather than the loss of the app. **A controller that forgets itself still plays.** A contract test keeps the guard in place.
+
+`expo-dev-client` also moved from `dependencies` to `devDependencies`. It is a development tool, and on iOS it registers an AppDelegate subscriber whose `_handleExternalDeepLink` stores the URL in its own pending registry and returns `true` when no app is running — which short-circuits `super.application(...) || RCTLinkingManager.application(...)` so React Native never sees it. Shipping it in production is both bloat and a hazard. (Excluding it from autolinking did **not** on its own fix the deep link here, so it is not the whole story — see below.)
+
+## Solved: iOS pairing, and why it looked like three separate bugs
+
+iOS deep links, the Connect button and the motion toggle all appeared broken in different ways. They were one fault:
+
+```text
+KeyChainException: A required entitlement isn't present.
+   (at ExpoSecureStore/SecureStoreModule.swift)
+```
+
+`expo-secure-store` is keychain-backed on iOS, and a build made with signing disabled — which is how simulator builds are produced here — carries no entitlements at all, so every call throws. Three unguarded calls turned that single throw into three unrelated-looking symptoms:
+
+| Unguarded call | Symptom |
+| --- | --- |
+| `getItemAsync(DEVICE_ID_KEY)` in the identity effect | `deviceId` never set, so the session, deep links, Connect and motion were **all** gated off. `enableMotion` still reported "Motion on" because `motionRef.current?.start()` optional-chains past a controller that was never built. |
+| `getItemAsync(LAST_PAIRING_KEY)`, one line after `Linking.getInitialURL()` | The launch URL was read **correctly**, then discarded when the next line threw and the `void`-ed async function rejected. iOS Linking was never at fault. |
+| `setItemAsync(LAST_PAIRING_KEY)` after a successful `connect()` | A connected session reported as failed, because remembering the pairing sat inside the same `try`. |
+
+Every one of them rejected into a bare `void`, so nothing was logged and nothing was shown — which is why this cost two sessions to find. What finally located it was making the failure visible: once identity degraded gracefully instead of vanishing, the app printed the keychain exception on its own screen.
+
+The fixes:
+
+- Identity falls back to an in-memory id and says persistence was lost. **A controller that forgets itself still plays.**
+- `rememberPairing`, `forgetPairing` and `readSavedPairing` swallow storage failures. Convenience must never gate the link.
+- `ios.entitlements` now declares `keychain-access-groups`, so secure storage genuinely works in signed builds rather than merely failing quietly.
+
+Verified: an iOS Release build, cold-launched via `oneohone://pair?ticket=…`, reads the ticket and reaches **Connecting…** — the first time iOS moved past `IDLE`. It holds there for the same simulator WebRTC/NAT reason Android does, which is an environment limit, not a defect.
+
+Three contract tests hold this shut: identity must degrade, only the guarded effect may touch `SecureStore` directly, and the keychain entitlement must stay declared.
+
 ## Remaining iOS gaps
 
-Verified working on the simulator: the app launches, renders its full UI, switches controller modes, and reports `PHONE MOTION ACTIVE`.
-
-Not yet working, and not to be described as working:
-
-- **Deep links do not reach JavaScript.** `simctl openurl oneohone://pair?ticket=…` is accepted by the system — the log shows the scene receiving `UIOpenURLAction`, and `CFBundleURLSchemes` contains `oneohone` — but neither the `Linking` `url` event nor `getInitialURL()` populates the pairing field. Both the warm path and a cold launch through the URL were tried. The same deep link works on Android.
-- **The Connect button never receives its press.** This is now pinned precisely:
-
-  | Control | Same component | Same row, same y | Fires on iOS |
-  | --- | --- | --- | --- |
-  | `SCAN QR` | `ActionButton` → `Pressable` | yes | **yes** — opens the camera prompt |
-  | `CONNECT` | `ActionButton` → `Pressable` | yes | **no** |
-
-  The decisive evidence is the empty-field path. `connect()` now sets a visible message when there is nothing to connect with, and tapping **Connect** on an empty field produces *no message at all* — so `onPress` is never invoked, rather than `connect()` running and failing. Touch generally works: controller-mode cards switch, and `SCAN QR` sits 100 points to the left in the same `flexDirection: "row"` container.
-
-  Both buttons work on Android, which points at iOS hit-testing in that row rather than at the handler.
-
-Pairing is therefore proven on Android and in the browser, but not yet on iOS. The QR path is untested here because the simulator has no camera.
+- **Pairing has not completed end to end on iOS.** The deep link is read and the app reaches
+  `Connecting…`, but the simulator cannot finish a WebRTC connection through its NAT — the same
+  limit that stops the Android emulator. Confirming a completed pair needs a real device on the LAN.
+- **QR scanning is untested here**, because the simulator has no camera. The camera permission
+  prompt appears with the correct copy, so the path up to capture is wired.
+- The watchOS app target still has to be created and signed in Xcode; that is an Apple requirement,
+  not a gap this repository can close.
 
 ## Privacy and permissions
 

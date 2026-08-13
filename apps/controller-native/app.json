@@ -19,6 +19,11 @@
         "NSAppTransportSecurity": {
           "NSAllowsLocalNetworking": true
         }
+      },
+      "entitlements": {
+        "keychain-access-groups": [
+          "$(AppIdentifierPrefix)com.oneohone.link"
+        ]
       }
     },
     "android": {

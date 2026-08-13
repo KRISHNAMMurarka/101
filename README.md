@@ -242,7 +242,8 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Emulator verification: Android Link, Wear OS Link, Hub signaling and LAN WebRTC pairing all run and connect
 - [x] iOS 101 Link launches and runs — Expo precompiled modules broke module registration; the app now builds them from source ([details](docs/native-link.md#ios-expo-modules-must-build-from-source))
 - [x] Signaling failures report connection state instead of raising unhandled promise rejections
-- [ ] iOS deep links and the Connect button do not reach JavaScript, so pairing is unproven on iOS ([details](docs/native-link.md#remaining-ios-gaps))
+- [x] iOS pairing works — a keychain exception was silently disabling identity, the launch URL and Connect ([details](docs/native-link.md#solved-ios-pairing-and-why-it-looked-like-three-separate-bugs))
+- [x] Monochrome, scheme-aware design system across native, browser controller and launcher
 - [ ] On-wrist hardware testing and a signed watchOS app target
 
 ## Packaging

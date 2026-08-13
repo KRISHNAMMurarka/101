@@ -142,6 +142,41 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   text-decoration: none;
 }
 .nav button:hover, .nav button.active, .nav a:hover { color: var(--paper); }
+
+/*
+ * The diagnostics menu. A native <details> keeps it keyboard-operable and closable with Escape
+ * without a line of state, and it collapses six destinations that are useful occasionally into one
+ * that is quiet always.
+ */
+.nav-menu { position: relative; }
+.nav-menu summary {
+  padding: 15px 18px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.nav-menu summary::-webkit-details-marker { display: none; }
+.nav-menu summary::after { content: " ↓"; opacity: .5; }
+.nav-menu[open] summary, .nav-menu summary:hover { color: var(--paper); }
+.nav-menu[open] summary::after { content: " ↑"; }
+.nav-menu-items {
+  position: absolute;
+  z-index: 40;
+  top: 100%;
+  left: 8px;
+  min-width: 168px;
+  display: grid;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .5);
+}
+.nav-menu-items button, .nav-menu-items a { padding: 10px 12px; border-radius: 9px; text-align: left; }
+.nav-menu-items button:hover, .nav-menu-items a:hover { background: var(--surface); }
 .nav button.active::after {
   content: "";
   position: absolute;
