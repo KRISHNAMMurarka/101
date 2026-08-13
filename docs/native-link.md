@@ -57,10 +57,19 @@ Verified working on the simulator: the app launches, renders its full UI, switch
 
 Not yet working, and not to be described as working:
 
-- **Deep links do not reach JavaScript.** `simctl openurl oneohone://pair?ticket=…` is accepted by the system — the log shows the scene receiving `UIOpenURLAction`, and `CFBundleURLSchemes` contains `oneohone` — but neither the `Linking` `url` event nor `getInitialURL()` populates the pairing field. The same deep link works on Android.
-- **The Connect button does not fire.** Entering a valid ticket and tapping **Connect** leaves the state at `IDLE` with no error. Touch handling itself is fine: tapping a controller-mode card switches the mode and reveals its calibration actions.
+- **Deep links do not reach JavaScript.** `simctl openurl oneohone://pair?ticket=…` is accepted by the system — the log shows the scene receiving `UIOpenURLAction`, and `CFBundleURLSchemes` contains `oneohone` — but neither the `Linking` `url` event nor `getInitialURL()` populates the pairing field. Both the warm path and a cold launch through the URL were tried. The same deep link works on Android.
+- **The Connect button never receives its press.** This is now pinned precisely:
 
-Both are open. Pairing has therefore been proven on Android and in the browser, but not yet on iOS.
+  | Control | Same component | Same row, same y | Fires on iOS |
+  | --- | --- | --- | --- |
+  | `SCAN QR` | `ActionButton` → `Pressable` | yes | **yes** — opens the camera prompt |
+  | `CONNECT` | `ActionButton` → `Pressable` | yes | **no** |
+
+  The decisive evidence is the empty-field path. `connect()` now sets a visible message when there is nothing to connect with, and tapping **Connect** on an empty field produces *no message at all* — so `onPress` is never invoked, rather than `connect()` running and failing. Touch generally works: controller-mode cards switch, and `SCAN QR` sits 100 points to the left in the same `flexDirection: "row"` container.
+
+  Both buttons work on Android, which points at iOS hit-testing in that row rather than at the handler.
+
+Pairing is therefore proven on Android and in the browser, but not yet on iOS. The QR path is untested here because the simulator has no camera.
 
 ## Privacy and permissions
 

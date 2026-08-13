@@ -60,7 +60,16 @@ export default function App() {
 
   const connect = useCallback(async (value: string) => {
     const input = value.trim();
-    if (!input || !sessionRef.current) return;
+    // Returning silently here made Connect look like a dead button: nothing moved, nothing
+    // explained itself, and the only way to tell an empty field from a broken app was a debugger.
+    if (!input) {
+      setError("Paste a 101 pairing ticket or scan the host's QR code first.");
+      return;
+    }
+    if (!sessionRef.current) {
+      setError("101 Link is still starting up. Try again in a moment.");
+      return;
+    }
     setError(undefined);
     setManualAnswer("");
     setLinkState("connecting");
