@@ -313,7 +313,10 @@ export default function Controller({ session, pairCode }: { session: string; pai
 
   const roleClass = assignment.role.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
   return (
-    <main className={`controller-page role-${roleClass}`} style={{ "--controller-accent": layout.accent ?? "#b5ff66" } as React.CSSProperties}>
+    // A layout may carry `accent`, and 101 Link deliberately ignores it. Ten games each choosing a
+    // hue turns one controller into ten unrelated ones, and a saturated fill under the player's
+    // thumb is the last place attention belongs. Emphasis comes from weight instead.
+    <main className={`controller-page role-${roleClass}`}>
       <header className="controller-top">
         <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">LINK / {assignment.role.toUpperCase()}</span></div>
         <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? assigned ? "LINKED" : "STANDBY" : "WAITING"}</div>

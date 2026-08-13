@@ -148,7 +148,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
               <p>The catalog is manifest-driven. All ten playable games now share the same engine, role-aware session host, procedural systems, and normalized controls.</p>
             </div>
             <div className="game-grid">
-              <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
+              <article className="game-card featured-game">
                 <div className="card-top"><span className="game-number">LAB</span><span className="ready-badge">PLAYABLE</span></div>
                 <div className="mini-arena" aria-hidden="true"><span /><i /><b /></div>
                 <div className="game-card-copy">
@@ -160,7 +160,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
               </article>
 
               {catalog.map((game, index) => (
-                <article className={`game-card game-${game.id}`} key={game.id} style={{ "--accent": game.accent ?? "#b5ff66" } as React.CSSProperties}>
+                <article className={`game-card game-${game.id}`} key={game.id}>
                   <div className="card-top"><span className="game-number">{String(index + 1).padStart(2, "0")}</span>{game.status === "playable" ? <span className="ready-badge">PLAYABLE</span> : <span className="roadmap-badge">ROADMAP</span>}</div>
                   <div className="game-motif" aria-hidden="true"><span /><i /><b /></div>
                   <div className="game-card-copy">
