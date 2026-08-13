@@ -10,10 +10,12 @@ import EchoMazeGame from "./components/EchoMazeGame";
 import GravityStackGame from "./components/GravityStackGame";
 import OrbitalCrewGame from "./components/OrbitalCrewGame";
 import SlashstormGame from "./components/SlashstormGame";
+import ShadowArenaGame from "./components/ShadowArenaGame";
 import SpellcasterGame from "./components/SpellcasterGame";
+import SwarmCommanderGame from "./components/SwarmCommanderGame";
 import TiltDriftGame from "./components/TiltDriftGame";
 
-type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "system";
+type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "shadowarena" | "swarmcommander" | "system";
 
 const INPUT_LABELS: Record<string, string> = {
   keyboard: "Keyboard",
@@ -65,6 +67,8 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <button className={view === "gravitystack" ? "active" : ""} onClick={() => navigate("gravitystack")}>GravityStack</button>
           <button className={view === "spellcaster" ? "active" : ""} onClick={() => navigate("spellcaster")}>Spellcaster</button>
           <button className={view === "echomaze" ? "active" : ""} onClick={() => navigate("echomaze")}>Echo Maze</button>
+          <button className={view === "shadowarena" ? "active" : ""} onClick={() => navigate("shadowarena")}>Shadow Arena</button>
+          <button className={view === "swarmcommander" ? "active" : ""} onClick={() => navigate("swarmcommander")}>Swarm Commander</button>
           <Link href="/motion">Motion Lab</Link>
           <Link href="/vision">Vision Lab</Link>
           <Link href="/network">Network Lab</Link>
@@ -133,7 +137,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
           <section className="library-section" id="games">
             <div className="section-heading">
               <div><p className="eyebrow">Game library</p><h2>Ten games. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. Eight playable games now share the same engine, role-aware session host, procedural systems, and normalized controls.</p>
+              <p>The catalog is manifest-driven. All ten playable games now share the same engine, role-aware session host, procedural systems, and normalized controls.</p>
             </div>
             <div className="game-grid">
               <article className="game-card featured-game" style={{ "--accent": "#ff5c35" } as React.CSSProperties}>
@@ -187,12 +191,14 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
       {view === "gravitystack" && <GravityStackGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "spellcaster" && <SpellcasterGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "echomaze" && <EchoMazeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "shadowarena" && <ShadowArenaGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {view === "swarmcommander" && <SwarmCommanderGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Motion · vision · eight games</span></div>
+        <div><span>MIT core</span><span>Offline by design</span><span>Motion · vision · ten games</span></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
@@ -256,6 +262,6 @@ function SystemView({ onLaunch }: { onLaunch: () => void }) {
   );
 }
 
-function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze"> {
-  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew" || id === "beatforge" || id === "gravitystack" || id === "spellcaster" || id === "echomaze";
+function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "shadowarena" | "swarmcommander"> {
+  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew" || id === "beatforge" || id === "gravitystack" || id === "spellcaster" || id === "echomaze" || id === "shadowarena" || id === "swarmcommander";
 }

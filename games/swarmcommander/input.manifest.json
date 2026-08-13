@@ -1,0 +1,18 @@
+{
+  "game": "swarmcommander",
+  "actions": {
+    "swarm.select": { "recommended": ["mouse", "touch", "camera-hand"], "fallback": ["gamepad", "keyboard"] },
+    "swarm.formation.cluster": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.formation.line": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.formation.wedge": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.formation.ring": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.formation.grid": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.ability.pulse": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.ability.shield": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard"] },
+    "swarm.ability.recall": { "recommended": ["touch", "phone-motion"], "fallback": ["keyboard", "gamepad"] }
+  },
+  "vectors": {
+    "swarm.direction": { "recommended": ["phone-motion", "gamepad", "touch"], "fallback": ["keyboard"] },
+    "swarm.command": { "recommended": ["mouse", "touch", "camera-hand"], "fallback": ["gamepad", "keyboard"] }
+  }
+}

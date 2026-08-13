@@ -22,7 +22,7 @@ Denial must return the user to a conventional fallback mapping.
 
 The browser Motion Lab and Link implementation follow this rule today: sensor listeners live in `@101/adapter-motion`, permission follows a user gesture, calibration/filtering occurs locally, and only compact normalized frames are offered to a connected host. The Motion Lab does not connect or transmit samples.
 
-Vision Lab, BodyDodge, and Spellcaster follow the same boundary. `@101/adapter-camera` requests video only after the user selects a camera mode, explicitly requests no audio, runs the bundled pose or hand model in the browser, and stops media tracks on teardown. Raw frames are neither recorded nor sent to the Input Bus; only landmarks and derived actions are accepted. Camera denial leaves the conventional controls active.
+Vision Lab, BodyDodge, Spellcaster, Shadow Arena, and Swarm Commander follow the same boundary. `@101/adapter-camera` requests video only after the user selects a camera mode, explicitly requests no audio, runs the bundled pose or hand model in the browser, and stops media tracks on teardown. Raw frames are neither recorded nor sent to the Input Bus; only landmarks and derived actions are accepted. Camera denial leaves the conventional controls active.
 
 BeatForge reuses that exact optional camera boundary for movement controls. It does not request microphone access, and its included rhythm cues are generated offline by `@101/audio`. GravityStack requests no media capability; phone tilt arrives only as a normalized gravity vector after the controller user explicitly enables motion. Echo Maze also makes no microphone request: its assigned companion receives only tiny, targeted clue/status messages and normalized controls.
 

@@ -55,8 +55,8 @@ export class PointerAdapter implements InputAdapter {
       sequence: ++this.sequence,
       timestamp: performance.now(),
       source: pointerType === "touch" ? "touch" : "mouse",
-      actions: { trigger: this.pressed, touch: this.pressed },
-      vectors: { aim: { x: this.x, y: this.y } },
+      actions: { trigger: this.pressed, touch: this.pressed, "swarm.select": this.pressed },
+      vectors: { aim: { x: this.x, y: this.y }, "swarm.command": { x: this.x, y: this.y } },
     });
   }
 }

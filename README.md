@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
 
-This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, and asymmetric-session foundation plus eight playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, and Echo Maze 101. It deliberately does not present the remaining two games, native Link app, watches, automatic LAN discovery, or production reconnect as finished.
+This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. It deliberately does not present the native Link app, watches, automatic LAN discovery, hardware adapters, desktop Hub, or production reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -43,6 +43,10 @@ GravityStack 101 is a playable endless variable-gravity tower. Its game module s
 Spellcaster 101 is a playable seeded survival arena built around a reusable temporal hand classifier. Open palm, pinch, fist, two fingers, swipe, and circle become the same `spell.cast.*` events emitted by phone motion, keyboard, and gamepad adapters. The optional camera uses the bundled hand model locally; conventional controls remain immediately playable.
 
 Echo Maze 101 is a playable endless exploration slice driven by the reusable `@101/maze` perfect-maze generator. An assigned Link scanner receives role-private target bearings, path distance, signal strength, and echo proximity. Without a phone, the required clue appears on the host, so enhanced hardware never gates progress.
+
+Shadow Arena 101 is a playable endless silhouette-combat slice. The reusable pose classifier distinguishes left and right punches, guard, duck, jump, and deliberate two-arm specials, and the camera adapter emits the same `combat.*` vocabulary as Link, keyboard, and gamepad mappings. The body camera remains optional and local.
+
+Swarm Commander 101 is a playable real-time strategy/action slice powered by `@101/swarm`. Spatial-hash separation and instanced rendering keep hundreds of agents responsive across cluster, line, wedge, ring, and grid formations. Mouse or hand pointing sets precise command targets, while separate Link navigator and tactician roles can steer and reshape the same collective.
 
 The **Network Lab** creates compressed manual WebRTC offers and answers without a signaling server. It opens a reliable control channel plus an unordered zero-retransmit realtime channel and reports round-trip latency, jitter, loss, candidate path, and bytes transferred. The same-browser controller still uses `BroadcastChannel` as the fastest local test path.
 
@@ -96,6 +100,7 @@ Key packages:
 | `@101/replay` | Seed, input-frame and deterministic-event recording |
 | `@101/rhythm` | Frame-rate-independent beat/time conversion, quantization and timing judgments |
 | `@101/maze` | Deterministic connected maze generation, reciprocal walls, routing and bearings |
+| `@101/swarm` | Centered formation grammars, spatial-hash separation, bounded steering and precision selection |
 | `@101/render-2d` | Phaser facade with external input disabled |
 | `@101/render-3d` | Three.js facade and adaptive pixel-ratio boundary |
 | `@101/physics` | Opaque handles, world stepping, runtime gravity and narrow Rapier operations |
@@ -167,6 +172,8 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Bundled local hand landmarks, temporal gesture state machine, and switchable Vision Lab
 - [x] Spellcaster slice with identical semantic spells from camera, phone motion, keyboard, and gamepad
 - [x] Deterministic `@101/maze` generator and Echo Maze private companion-display slice
+- [x] Reusable combat-pose vocabulary and Shadow Arena camera/Link/conventional-control slice
+- [x] Scalable `@101/swarm` formations, spatial steering, and Swarm Commander specialist-role slice
 - [ ] Automatic LAN discovery, reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies

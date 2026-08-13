@@ -69,3 +69,5 @@ seed → difficulty profile → grammar → content selection
 Difficulty should combine several bounded pressures. Every generator needs tests proving seed repeatability and validators proving required routes, reaction windows, and resources remain possible.
 
 Use `@101/maze` when a game needs a connected grid. It provides deterministic carving, reciprocal wall validation, legal travel, shortest routes, bearings, and compass labels; games add their own content and difficulty rules without duplicating traversal infrastructure.
+
+Use `@101/swarm` when many 2D agents need one command intent. It provides deterministic centered slots for cluster, line, wedge, ring, and grid formations; bounded acceleration/speed; spatial-hash neighbor separation; selection by radius; and centroid queries. The package mutates agent state in place to avoid hundreds of per-frame allocations. Games still own combat, economy, terrain, rendering, and seeded encounter direction.

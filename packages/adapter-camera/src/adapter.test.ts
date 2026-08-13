@@ -31,7 +31,19 @@ test("camera-independent pose adapter emits normalized semantic frames", () => {
   assert.equal(frames[1]?.poses?.body.length, 132);
 });
 
-test("camera-independent hand adapter maps gestures to shared spell actions", () => {
+test("pose adapter publishes reusable combat actions without changing the camera boundary", () => {
+  const adapter = new PoseInputAdapter({ mirror: false, classifier: { autoCalibrationFrames: 1, smoothing: 1, gestureCooldownMs: 80 } });
+  adapter.start(() => undefined);
+  adapter.ingestPose(pose(), 0);
+  const guard = pose();
+  guard[15] = { ...guard[15]!, x: .47, y: .35 };
+  guard[16] = { ...guard[16]!, x: .53, y: .35 };
+  const frame = adapter.ingestPose(guard, 100);
+  assert.equal(frame.actions["combat.block"], true);
+  assert.deepEqual(frame.vectors?.["combat.move"], { x: 0, y: 0 });
+});
+
+test("camera-independent hand adapter maps gestures to shared spell and swarm actions", () => {
   const frames: InputFrame[] = [];
   const adapter = new HandInputAdapter({ mirror: false, classifier: { smoothing: 1, stableFrames: 2 } });
   adapter.start((frame) => frames.push(frame));
@@ -41,6 +53,7 @@ test("camera-independent hand adapter maps gestures to shared spell actions", ()
   assert.equal(frame.source, "camera-hand");
   assert.equal(frame.actions["hand.twoFingers"], true);
   assert.equal(frame.actions["spell.cast.projectile"], true);
+  assert.deepEqual(frame.vectors?.["swarm.command"], frame.vectors?.aim);
   assert.equal(frame.poses?.hand?.length, 63);
   assert.equal(frames.length, 2);
 });

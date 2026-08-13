@@ -12,9 +12,9 @@ local camera frame
   → 101 game
 ```
 
-`@101/vision` owns 101-specific interpretation. The body path computes neutral-relative position, shoulder-to-hip lean, crouch and lift amounts, then derives stateful `duck`, `jump`, `leanLeft`, `leanRight`, `stepLeft`, `stepRight`, `armsRaised`, and temporal `punch` actions.
+`@101/vision` owns 101-specific interpretation. The body path computes neutral-relative position, shoulder-to-hip lean, crouch and lift amounts, then derives stateful `duck`, `jump`, `leanLeft`, `leanRight`, `stepLeft`, `stepRight`, `armsRaised`, and temporal punch actions. Its reusable combat interpretation distinguishes left/right punches, a two-hand guard, and a deliberate arms-raised activation edge; `PoseInputAdapter` publishes these as `combat.*` actions for Shadow Arena without exposing camera details to game code.
 
-The hand path smooths a 21-landmark hand, requires static poses to remain stable across frames, and keeps timestamped palm/pointer histories for gestures that cannot be recognized safely from one frame. It derives `openPalm`, `fist`, `pinch`, `point`, `twoFingers`, `grab`, directional swipes, and closed circles. `HandInputAdapter` maps them to generic `hand.*` events and the shared `spell.cast.*` vocabulary demonstrated by Spellcaster. Phone motion, keyboard, and gamepad adapters can emit those same spell events.
+The hand path smooths a 21-landmark hand, requires static poses to remain stable across frames, and keeps timestamped palm/pointer histories for gestures that cannot be recognized safely from one frame. It derives `openPalm`, `fist`, `pinch`, `point`, `twoFingers`, `grab`, directional swipes, and closed circles. `HandInputAdapter` maps them to generic `hand.*` events, the shared `spell.cast.*` vocabulary demonstrated by Spellcaster, and compact command/select aliases demonstrated by Swarm Commander. Phone motion, keyboard, pointer, and gamepad adapters can emit those same semantic controls.
 
 `@101/adapter-camera` owns browser capture and replaceable inference backends. `BrowserCameraAdapter.start()` and `BrowserHandAdapter.start()` are called only after an explicit user action. They request video with `audio: false`, process at a bounded rate, publish compact numerical input, and stop every media track in `stop()`. Games do not import MediaPipe or camera APIs.
 
@@ -25,7 +25,7 @@ Vision Lab exposes both production paths:
 
 The current MediaPipe Web API runs video detection synchronously. The adapters cap inference frequency to protect rendering responsiveness. Moving inference to a worker is a later performance-hardening task; this limitation is not hidden.
 
-These models must not be used for identity recognition, surveillance, medical decisions, or metric-accurate depth. Tracking quality varies with lighting, framing, occlusion, skin/background contrast, and device performance. BodyDodge and Spellcaster always provide keyboard and gamepad alternatives.
+These models must not be used for identity recognition, surveillance, medical decisions, or metric-accurate depth. Tracking quality varies with lighting, framing, occlusion, skin/background contrast, and device performance. BodyDodge, Spellcaster, Shadow Arena, and Swarm Commander always provide conventional alternatives.
 
 ## Bundled asset integrity
 

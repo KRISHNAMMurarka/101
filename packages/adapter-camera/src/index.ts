@@ -69,7 +69,15 @@ export class PoseInputAdapter implements InputAdapter {
       sequence: ++this.sequence,
       timestamp,
       source: this.source,
-      actions: { ...signals.actions },
+      actions: {
+        ...signals.actions,
+        "combat.punchLeft": signals.combat.punchLeft,
+        "combat.punchRight": signals.combat.punchRight,
+        "combat.block": signals.combat.block,
+        "combat.duck": signals.actions.duck,
+        "combat.jump": signals.actions.jump,
+        "combat.special": signals.combat.special,
+      },
       axes: {
         bodyX: signals.axes.bodyX,
         dodgeX: signals.axes.bodyX,
@@ -80,6 +88,7 @@ export class PoseInputAdapter implements InputAdapter {
       vectors: {
         body: { x: signals.axes.bodyX, y: signals.actions.jump ? -1 : signals.actions.duck ? 1 : 0 },
         bodyLean: { x: signals.axes.lean, y: signals.axes.crouch - signals.axes.lift },
+        "combat.move": { x: signals.axes.bodyX, y: signals.actions.jump ? -1 : signals.actions.duck ? 1 : 0 },
       },
       poses: { body: flattenPose(pose) },
     };
@@ -173,11 +182,15 @@ export class HandInputAdapter implements InputAdapter {
         "spell.cast.charge": activated.has("fist"),
         "spell.cast.blade": activated.has("swipeLeft") || activated.has("swipeRight"),
         "spell.cast.vortex": activated.has("circle"),
+        "swarm.select": signals.gestures.point || activated.has("pinch"),
+        "swarm.ability.pulse": activated.has("openPalm"),
+        "swarm.ability.recall": activated.has("fist"),
       },
       axes: { handConfidence: signals.confidence, swipeDirection },
       vectors: {
         hand: { x: signals.palm.x * 2 - 1, y: signals.palm.y * 2 - 1 },
         aim: { x: signals.pointer.x * 2 - 1, y: signals.pointer.y * 2 - 1 },
+        "swarm.command": { x: signals.pointer.x * 2 - 1, y: signals.pointer.y * 2 - 1 },
         gesture: { x: swipeDirection, y: 0 },
       },
       poses,

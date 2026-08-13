@@ -7,6 +7,7 @@ export interface PoseLandmark {
 }
 
 export type BodyAction = "standing" | "duck" | "jump" | "leanLeft" | "leanRight" | "stepLeft" | "stepRight" | "armsRaised" | "punch";
+export type CombatPoseAction = "punchLeft" | "punchRight" | "block" | "special";
 
 export interface PoseCalibration {
   bodyX: number;
@@ -23,6 +24,7 @@ export interface PoseSignals {
   calibrated: boolean;
   confidence: number;
   actions: Record<BodyAction, boolean>;
+  combat: Record<CombatPoseAction, boolean>;
   axes: {
     bodyX: number;
     lean: number;
@@ -73,13 +75,22 @@ const EMPTY_ACTIONS: Record<BodyAction, boolean> = {
   punch: false,
 };
 
+const EMPTY_COMBAT_ACTIONS: Record<CombatPoseAction, boolean> = {
+  punchLeft: false,
+  punchRight: false,
+  block: false,
+  special: false,
+};
+
 export class PoseClassifier {
   private readonly options: Required<PoseClassifierOptions>;
   private calibration?: PoseCalibration;
   private samples: PoseCalibration[] = [];
   private previousPose?: PoseLandmark[];
   private previousTimestamp?: number;
-  private lastPunchAt = Number.NEGATIVE_INFINITY;
+  private lastPunchAt: Record<"left" | "right", number> = { left: Number.NEGATIVE_INFINITY, right: Number.NEGATIVE_INFINITY };
+  private lastSpecialAt = Number.NEGATIVE_INFINITY;
+  private previousArmsRaised = false;
   private states = { duck: false, jump: false, leanLeft: false, leanRight: false, stepLeft: false, stepRight: false };
 
   constructor(options: PoseClassifierOptions = {}) {
@@ -104,6 +115,9 @@ export class PoseClassifier {
     if (!calibration) return false;
     this.calibration = calibration;
     this.samples = [];
+    this.previousPose = pose.map((landmark) => ({ ...landmark }));
+    this.previousTimestamp = undefined;
+    this.previousArmsRaised = false;
     this.states = { duck: false, jump: false, leanLeft: false, leanRight: false, stepLeft: false, stepRight: false };
     return true;
   }
@@ -148,7 +162,13 @@ export class PoseClassifier {
     const shoulders = [landmarks[POSE_LANDMARK.leftShoulder]!, landmarks[POSE_LANDMARK.rightShoulder]!];
     const wrists = [landmarks[POSE_LANDMARK.leftWrist]!, landmarks[POSE_LANDMARK.rightWrist]!];
     const armsRaised = wrists.every((wrist, index) => wrist.visibility >= this.options.visibilityThreshold && wrist.y < shoulders[index]!.y - torso * 0.12);
-    const punch = this.detectPunch(landmarks, timestamp, scale);
+    const punches = this.detectPunch(landmarks, timestamp, scale);
+    const block = wrists.every((wrist) => wrist.visibility >= this.options.visibilityThreshold && wrist.y < metrics.shoulderY + torso * .22)
+      && Math.abs(wrists[0]!.x - wrists[1]!.x) < scale * 1.35;
+    const special = armsRaised && !this.previousArmsRaised && timestamp - this.lastSpecialAt >= this.options.gestureCooldownMs * 1.8;
+    if (special) this.lastSpecialAt = timestamp;
+    this.previousArmsRaised = armsRaised;
+    const punch = punches.left || punches.right;
     const actions: Record<BodyAction, boolean> = {
       standing: !this.states.duck && !this.states.jump,
       duck: this.states.duck,
@@ -162,7 +182,7 @@ export class PoseClassifier {
     };
     this.previousPose = landmarks;
     this.previousTimestamp = timestamp;
-    return { timestamp, calibrated: true, confidence, actions, axes: { bodyX, lean, crouch, lift }, landmarks };
+    return { timestamp, calibrated: true, confidence, actions, combat: { punchLeft: punches.left, punchRight: punches.right, block, special }, axes: { bodyX, lean, crouch, lift }, landmarks };
   }
 
   reset() {
@@ -170,27 +190,32 @@ export class PoseClassifier {
     this.samples = [];
     this.previousPose = undefined;
     this.previousTimestamp = undefined;
-    this.lastPunchAt = Number.NEGATIVE_INFINITY;
+    this.lastPunchAt = { left: Number.NEGATIVE_INFINITY, right: Number.NEGATIVE_INFINITY };
+    this.lastSpecialAt = Number.NEGATIVE_INFINITY;
+    this.previousArmsRaised = false;
     this.states = { duck: false, jump: false, leanLeft: false, leanRight: false, stepLeft: false, stepRight: false };
   }
 
   private detectPunch(pose: readonly PoseLandmark[], timestamp: number, scale: number) {
-    if (!this.previousPose || this.previousTimestamp === undefined) return false;
+    const result = { left: false, right: false };
+    if (!this.previousPose || this.previousTimestamp === undefined) return result;
     const deltaSeconds = Math.max(1 / 120, (timestamp - this.previousTimestamp) / 1000);
     const candidates = [POSE_LANDMARK.leftWrist, POSE_LANDMARK.rightWrist] as const;
     const shoulders = [POSE_LANDMARK.leftShoulder, POSE_LANDMARK.rightShoulder] as const;
-    const isPunch = candidates.some((index, side) => {
+    candidates.forEach((index, side) => {
       const wrist = pose[index]!;
       const previous = this.previousPose?.[index];
       const shoulder = pose[shoulders[side]!]!;
-      if (!previous || wrist.visibility < this.options.visibilityThreshold) return false;
+      if (!previous || wrist.visibility < this.options.visibilityThreshold) return;
       const velocity = Math.hypot(wrist.x - previous.x, wrist.y - previous.y) / deltaSeconds;
       const extension = Math.hypot(wrist.x - shoulder.x, wrist.y - shoulder.y) / scale;
-      return velocity > 1.15 && extension > 1.05;
+      const hand = side === 0 ? "left" : "right";
+      if (velocity > 1.15 && extension > 1.05 && timestamp - this.lastPunchAt[hand] >= this.options.gestureCooldownMs) {
+        result[hand] = true;
+        this.lastPunchAt[hand] = timestamp;
+      }
     });
-    if (!isPunch || timestamp - this.lastPunchAt < this.options.gestureCooldownMs) return false;
-    this.lastPunchAt = timestamp;
-    return true;
+    return result;
   }
 
   private empty(timestamp: number, landmarks: PoseLandmark[], confidence: number): PoseSignals {
@@ -199,6 +224,7 @@ export class PoseClassifier {
       calibrated: Boolean(this.calibration),
       confidence,
       actions: { ...EMPTY_ACTIONS },
+      combat: { ...EMPTY_COMBAT_ACTIONS },
       axes: { bodyX: 0, lean: 0, crouch: 0, lift: 0 },
       landmarks,
     };

@@ -124,6 +124,28 @@ test("serves Echo Maze with private Link clues and a conventional fallback", asy
   assert.match(html, /This slice makes no microphone request/i);
 });
 
+test("serves Shadow Arena through reusable combat-pose semantics and conventional controls", async () => {
+  const response = await render("/games/shadowarena");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Shadow Arena 101 — Local camera combat/);
+  assert.match(html, /Playable silhouette combat/);
+  assert.match(html, /COMBAT POSE \/ INPUT BUS ACTIVE/);
+  assert.match(html, /ENABLE BODY CAMERA/);
+  assert.match(html, /every action has a keyboard\/gamepad fallback/i);
+});
+
+test("serves Swarm Commander with scalable simulation and asymmetric specialist roles", async () => {
+  const response = await render("/games/swarmcommander");
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Swarm Commander 101 — Multi-device spatial strategy/);
+  assert.match(html, /Playable spatial command/);
+  assert.match(html, /SPATIAL HASH · INSTANCED RENDERING/);
+  assert.match(html, /ENABLE HAND COMMAND/);
+  assert.match(html, /navigator can tilt the shared direction while a tactician sets targets and formations/i);
+});
+
 test("server-renders the local Motion Lab and permission explanation", async () => {
   const response = await render("/motion");
   const html = await response.text();

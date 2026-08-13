@@ -1,0 +1,12 @@
+{
+  "game": "shadowarena",
+  "actions": {
+    "combat.punchLeft": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "combat.punchRight": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "combat.block": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "combat.duck": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "combat.jump": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] },
+    "combat.special": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] }
+  },
+  "vectors": { "combat.move": { "recommended": ["camera-pose", "touch", "gamepad"], "fallback": ["keyboard"] } }
+}

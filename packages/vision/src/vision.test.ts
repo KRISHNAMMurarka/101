@@ -51,6 +51,28 @@ test("raised arms and punch are classified from a temporal pose sequence", () =>
   assert.equal(classifier.process(punch, 150).actions.punch, true);
 });
 
+test("combat pose semantics distinguish hands, guard state, and deliberate special activation", () => {
+  const classifier = new PoseClassifier({ autoCalibrationFrames: 1, smoothing: 1, gestureCooldownMs: 100 });
+  classifier.process(neutralPose(), 0);
+
+  const leftPunch = neutralPose();
+  leftPunch[15] = { ...leftPunch[15]!, x: .12, y: .31 };
+  const attack = classifier.process(leftPunch, 80);
+  assert.equal(attack.combat.punchLeft, true);
+  assert.equal(attack.combat.punchRight, false);
+
+  const guard = neutralPose();
+  guard[15] = { ...guard[15]!, x: .47, y: .36 };
+  guard[16] = { ...guard[16]!, x: .53, y: .36 };
+  assert.equal(classifier.process(guard, 200).combat.block, true);
+
+  const special = neutralPose();
+  special[15] = { ...special[15]!, y: .16 };
+  special[16] = { ...special[16]!, y: .16 };
+  assert.equal(classifier.process(special, 400).combat.special, true);
+  assert.equal(classifier.process(special, 420).combat.special, false);
+});
+
 test("pose serialization and mirroring preserve compact landmarks", () => {
   const pose = neutralPose();
   assert.equal(flattenPose(pose).length, 132);
