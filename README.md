@@ -32,6 +32,8 @@ npm run hub
 
 Start the web runtime with `npm run dev -- --host 0.0.0.0`, open its LAN address, and choose **Connect device**. The Hub performs authenticated, expiring offer/answer exchange locally; gameplay uses direct WebRTC DataChannels and reconnects without another scan.
 
+The `/controller` surface is an installable **101 Link PWA** with its own manifest, maskable icon, persistent standalone device identity, connection-status UI, pasteable pairing tickets, dynamic controller layouts, and an offline service-worker shell. Pairing URLs are explicitly excluded from caching so temporary join secrets are never persisted there.
+
 Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
 
 TiltDrift 101 is a playable Three.js racing slice. Use Left/Right or A/D to steer, Space to boost, Down/S to brake, and Shift/X to drift. Its tested road grammar produces continuous, seed-repeatable spline-like segments, bounded widths, changing environments, and traffic combinations.
@@ -167,7 +169,7 @@ tools/               release and license tooling
 tests/               production-render smoke tests
 ```
 
-The root web surface stays at `app/` because the browser-hosting runtime expects it there. Native and desktop application targets will live under `apps/` as they enter their implementation phases.
+The root web surface stays at `app/` because the browser runtime expects it there. Native and desktop targets live under `apps/`. OpenAI Sites metadata and its build-packaging plugin have been removed; this repository is not configured to publish there.
 
 ## Foundation milestones
 
@@ -203,6 +205,7 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Browser Link watchdog, automatic role failover, standby state, and neutral cross-game transitions
 - [x] Graceful 3D fallback when WebGL is unavailable while gameplay/input keep running
 - [x] Automatic LAN QR signaling, multi-peer WebRTC, targeted private routing and transport reconnect
+- [x] Installable offline 101 Link PWA with transport selection and secret-safe caching
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters

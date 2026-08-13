@@ -1,0 +1,29 @@
+{
+  "id": "/controller",
+  "name": "101 Link — Universal Controller",
+  "short_name": "101 Link",
+  "description": "One local controller for every 101 game.",
+  "start_url": "/controller?session=101LAB",
+  "scope": "/controller",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090b0b",
+  "theme_color": "#090b0b",
+  "categories": ["games", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/101-link.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open controller",
+      "short_name": "Controller",
+      "url": "/controller?session=101LAB",
+      "icons": [{ "src": "/icons/101-link.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

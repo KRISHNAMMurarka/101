@@ -6,6 +6,8 @@ Automatic pairing uses the local `101 Hub` only to exchange short-lived WebRTC o
 
 Treat a pairing QR like a temporary invitation to the room: show it only to intended local players and close/recreate the session if it is exposed. Tickets expire automatically.
 
+The 101 Link service worker never caches requests whose URL contains a pairing ticket. It caches only the neutral controller shell and runtime assets. Installed standalone mode stores a random local device ID; it does not store an account identity.
+
 ## Defaults
 
 - No account is required.
@@ -37,6 +39,8 @@ BeatForge reuses that exact optional camera boundary for movement controls. It d
 Pairing codes are discovery aids, not long-term authentication secrets. WebRTC sessions should use ephemeral keys, display both devices during confirmation, expire offers, and reject protocol-version mismatches. The Hub must bind only to intended interfaces and clearly show which network transport is active.
 
 Manual offline pairing data can be transferred by QR or code, but must be size-limited and strictly validated before use.
+
+This repository contains no active OpenAI Sites project metadata or packaging plugin. Publishing/deployment requires a separate explicit user action and configuration.
 
 Browser Link role messages are addressed to a concrete device. The controller ignores layouts, live state, and haptics meant for other devices. The session host rejects realtime frames from unassigned device IDs and replaces client-claimed player identity with the authoritative role assignment before forwarding input. This is an isolation boundary for local party play, not a substitute for future authenticated Hub pairing.
 

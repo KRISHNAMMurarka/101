@@ -27,6 +27,11 @@ interface ControllerReadout {
   tone: "normal" | "warning" | "critical";
 }
 
+interface InstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 const DEFAULT_LAYOUT: ControllerLayout = {
   title: "Classic Controller",
   accent: "#b5ff66",
@@ -42,12 +47,17 @@ const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", accent: "#8d97
 export default function Controller({ session, pairCode }: { session: string; pairCode?: string }) {
   const [connected, setConnected] = useState(false);
   const [assigned, setAssigned] = useState(false);
+  const [online, setOnline] = useState(() => typeof navigator === "undefined" ? true : navigator.onLine);
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent>();
+  const [pairEntry, setPairEntry] = useState("");
   const [deviceId] = useState(() => {
     if (typeof window === "undefined") return "";
+    const standalone = window.matchMedia("(display-mode: standalone)").matches;
+    const storage = standalone ? localStorage : sessionStorage;
     const storageKey = "101-link-device-id";
-    const existing = sessionStorage.getItem(storageKey);
+    const existing = storage.getItem(storageKey);
     const id = existing ?? `link-${globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}`;
-    sessionStorage.setItem(storageKey, id);
+    storage.setItem(storageKey, id);
     return id;
   });
   const [assignment, setAssignment] = useState<Assignment>({ gameId: "launcher", role: "classic", playerId: "player-1" });
@@ -68,6 +78,23 @@ export default function Controller({ session, pairCode }: { session: string; pai
   const sequence = useRef(0);
 
   useEffect(() => { layoutRef.current = layout; }, [layout]);
+
+  useEffect(() => {
+    const updateOnline = () => setOnline(navigator.onLine);
+    const captureInstall = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as InstallPromptEvent);
+    };
+    window.addEventListener("online", updateOnline);
+    window.addEventListener("offline", updateOnline);
+    window.addEventListener("beforeinstallprompt", captureInstall);
+    if ("serviceWorker" in navigator) void navigator.serviceWorker.register("/sw.js", { scope: "/controller" });
+    return () => {
+      window.removeEventListener("online", updateOnline);
+      window.removeEventListener("offline", updateOnline);
+      window.removeEventListener("beforeinstallprompt", captureInstall);
+    };
+  }, []);
 
   const publishSnapshot = useCallback((current: ControllerInputSnapshot, source: InputFrame["source"] = "custom") => {
     transportRef.current?.sendRealtime({
@@ -260,6 +287,30 @@ export default function Controller({ session, pairCode }: { session: string; pai
     haptic();
   };
 
+  const install = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(undefined);
+  };
+
+  const connectPairing = () => {
+    try {
+      const value = pairEntry.trim();
+      const code = value.startsWith("http://") || value.startsWith("https://")
+        ? new URL(value).searchParams.get("pair")
+        : value;
+      if (!code) throw new Error("Paste a 101 pairing ticket or URL");
+      const ticket = decodePairingTicket(code);
+      const target = new URL("/controller", window.location.origin);
+      target.searchParams.set("pair", code);
+      target.searchParams.set("session", ticket.sessionId);
+      window.location.assign(target);
+    } catch (error) {
+      setReadout({ values: {}, tone: "critical", message: error instanceof Error ? error.message.toUpperCase() : "INVALID PAIRING TICKET" });
+    }
+  };
+
   const roleClass = assignment.role.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
   return (
     <main className={`controller-page role-${roleClass}`} style={{ "--controller-accent": layout.accent ?? "#b5ff66" } as React.CSSProperties}>
@@ -271,6 +322,19 @@ export default function Controller({ session, pairCode }: { session: string; pai
         <span>SESSION</span><strong>{session}</strong>
         <small>{connected ? assigned ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : `${assignment.gameId.toUpperCase()} · WAITING FOR ROLE` : "Open a 101 game on the host"}</small>
       </section>
+
+      <details className="link-runtime">
+        <summary><span className={online ? "runtime-dot online" : "runtime-dot"} />{pairCode ? "LAN WEBRTC" : "SAME-BROWSER"} · {online ? "ONLINE" : "OFFLINE SHELL"}</summary>
+        <div className="link-runtime-actions">
+          {installPrompt && <button onClick={install}>INSTALL 101 LINK</button>}
+          <label>
+            <span>PAIRING URL / 101L2 TICKET</span>
+            <input value={pairEntry} onChange={(event) => setPairEntry(event.target.value)} placeholder="Paste local pairing link" autoCapitalize="off" autoCorrect="off" />
+          </label>
+          <button onClick={connectPairing} disabled={!pairEntry.trim()}>CONNECT TO HOST</button>
+          <p>Installable assets and controller layouts are cached locally. Pairing secrets are never written to the service-worker cache.</p>
+        </div>
+      </details>
 
       <section className="dynamic-controller-heading">
         <span>ROLE AUTO-SYNCED</span>

@@ -4,6 +4,9 @@ import Controller from "./Controller";
 export const metadata: Metadata = {
   title: "101 Link — Browser controller",
   description: "A local browser controller for the 101 Input Lab.",
+  applicationName: "101 Link",
+  manifest: "/link.webmanifest",
+  appleWebApp: { capable: true, title: "101 Link", statusBarStyle: "black-translucent" },
 };
 
 export default async function ControllerPage({ searchParams }: { searchParams: Promise<{ session?: string; pair?: string }> }) {

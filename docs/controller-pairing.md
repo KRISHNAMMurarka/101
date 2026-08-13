@@ -15,6 +15,12 @@ The host keeps a multiplexed session transport alive across game transitions. Sl
 
 If the Hub runs on a non-default address, add `?hub=http://HOST:PORT` to the launcher once. The browser stores that local endpoint. On HTTPS pages, configure a trusted HTTPS Hub endpoint; browsers block mixed active content.
 
+## Installable 101 Link PWA
+
+Open `/controller` in a PWA-capable browser and use **Install 101 Link** when the browser offers it. The standalone app keeps a durable local device ID, accepts a full pairing URL or `101L2` ticket, and renders every host-provided controller layout.
+
+The service worker caches the controller shell, manifest, icon, and same-origin runtime assets for installed/offline startup. Requests containing a `pair` query are always network-only: the temporary join secret and its server-rendered response are never stored in Cache Storage. An offline shell can open without a host, but live gameplay naturally requires the LAN host to be reachable.
+
 ## Same-browser diagnostic
 
 1. Launch 101 and open **Input Lab**.

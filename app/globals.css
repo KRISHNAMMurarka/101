@@ -349,6 +349,16 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .controller-session { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin: 20px 0; padding: 10px 12px; border-block: 1px solid var(--line); }
 .controller-session span, .controller-session small { color: #646d67; font: 700 8px ui-monospace, monospace; letter-spacing: .1em; }
 .controller-session strong { color: var(--acid); font: 850 17px ui-monospace, monospace; letter-spacing: .15em; }
+.link-runtime { margin: -10px 0 20px; border: 1px solid var(--line); background: rgba(255,255,255,.018); }
+.link-runtime summary { display: flex; align-items: center; gap: 9px; padding: 12px 14px; color: #7e8882; cursor: pointer; list-style: none; font: 750 8px ui-monospace, monospace; letter-spacing: .1em; }
+.link-runtime summary::-webkit-details-marker { display: none; }
+.runtime-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff5c35; }.runtime-dot.online { background: var(--acid); box-shadow: 0 0 10px rgba(181,255,102,.45); }
+.link-runtime-actions { display: grid; gap: 10px; padding: 0 14px 14px; }
+.link-runtime-actions label span { display: block; margin-bottom: 7px; color: #65706a; font: 700 7px ui-monospace, monospace; letter-spacing: .1em; }
+.link-runtime-actions input { width: 100%; min-height: 42px; padding: 0 11px; border: 1px solid var(--line); border-radius: 0; background: #090c0b; color: var(--paper); font: 10px ui-monospace, monospace; }
+.link-runtime-actions button { min-height: 40px; border: 1px solid color-mix(in srgb, var(--controller-accent) 45%, transparent); background: transparent; color: var(--controller-accent); font: 800 9px ui-monospace, monospace; letter-spacing: .08em; cursor: pointer; }
+.link-runtime-actions button:disabled { opacity: .35; cursor: not-allowed; }
+.link-runtime-actions p { margin: 0; color: #626c66; font: 650 8px/1.5 ui-monospace, monospace; }
 .controller-deck { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 24px; }
 .dpad { position: relative; justify-self: center; width: min(42vw, 260px); aspect-ratio: 1; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
 .dpad::before, .dpad::after { content: ""; position: absolute; z-index: 0; background: #171c1b; border: 1px solid var(--line-strong); }

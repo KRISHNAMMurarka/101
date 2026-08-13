@@ -1,8 +1,8 @@
 # Application targets
 
-The Phase 1 web launcher and controller route live in the root `app/` directory because that is the hosting runtime's application boundary.
+The web launcher and installable 101 Link PWA live in the root `app/` directory because that is the browser runtime's application boundary. The PWA already selects same-browser or signaled WebRTC transport and renders host-defined controller JSON.
 
-Planned application targets enter only when their supporting engine phase is ready:
+Native application targets build on that public protocol rather than forking it:
 
 - `controller-native` — Expo / React Native iOS and Android 101 Link
 - `desktop-hub` — Tauri local session coordinator and packaged launcher
