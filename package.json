@@ -28,7 +28,12 @@
     "native:test": "npm --workspace @101/controller-native test",
     "native:doctor": "npm --workspace @101/controller-native run doctor",
     "native:export": "npm --workspace @101/controller-native run export",
-    "license:inventory": "node tools/generate-license-inventory.mjs",
+    "desktop:dev": "npm --workspace @101/desktop-hub run tauri:dev",
+    "desktop:build": "npm --workspace @101/desktop-hub run tauri:build",
+    "desktop:app": "npm --workspace @101/desktop-hub run tauri:app",
+    "desktop:check": "npm --workspace @101/desktop-hub run check",
+    "desktop:test": "npm --workspace @101/desktop-hub run test",
+    "license:inventory": "node tools/generate-license-inventory.mjs && node tools/generate-rust-license-inventory.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {

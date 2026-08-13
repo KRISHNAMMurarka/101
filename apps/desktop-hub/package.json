@@ -1,0 +1,27 @@
+{
+  "name": "@101/desktop-hub",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 1420",
+    "build": "tsc --noEmit && vite build",
+    "check": "tsc --noEmit && cargo check --manifest-path src-tauri/Cargo.toml",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "tauri:app": "tauri build --bundles app"
+  },
+  "dependencies": {
+    "@101/protocol": "0.1.0",
+    "@tauri-apps/api": "2.11.1",
+    "qrcode": "1.5.4"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.11.4",
+    "@types/qrcode": "1.5.6",
+    "typescript": "5.9.3",
+    "vite": "8.0.13"
+  }
+}

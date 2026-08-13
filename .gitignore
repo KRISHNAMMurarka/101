@@ -43,3 +43,9 @@ yarn-error.log*
 /apps/controller-native/dist/
 /apps/controller-native/ios/
 /apps/controller-native/android/
+/apps/desktop-hub/node_modules/
+/apps/desktop-hub/dist/
+/apps/desktop-hub/src-tauri/target/
+/apps/desktop-hub/src-tauri/gen/
+/apps/desktop-hub/src-tauri/icons/android/
+/apps/desktop-hub/src-tauri/icons/ios/

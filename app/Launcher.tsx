@@ -36,7 +36,12 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
   const [view, setView] = useState<View>("library");
   const [pairingOpen, setPairingOpen] = useState(false);
   const instanceId = useId();
-  const sessionId = `101${instanceId.replace(/[^a-z0-9]/gi, "").toUpperCase()}LAB`.slice(0, 6).padEnd(6, "X");
+  const generatedSessionId = `101${instanceId.replace(/[^a-z0-9]/gi, "").toUpperCase()}LAB`.slice(0, 6).padEnd(6, "X");
+  const [sessionId] = useState(() => {
+    if (typeof window === "undefined") return generatedSessionId;
+    const requested = new URLSearchParams(window.location.search).get("session")?.trim();
+    return requested && /^[A-Z0-9-]{4,128}$/i.test(requested) ? requested : generatedSessionId;
+  });
 
   const catalog = useMemo(
     () => games.filter((game) => game.id !== "input-lab"),

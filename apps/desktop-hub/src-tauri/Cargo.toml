@@ -1,0 +1,36 @@
+[package]
+name = "oneohone-hub"
+version = "0.1.0"
+description = "Private local session coordinator for the 101 gaming platform"
+authors = ["101 contributors"]
+license = "MIT"
+edition = "2021"
+rust-version = "1.85"
+
+[lib]
+name = "oneohone_hub_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+axum = { version = "0.8.7", features = ["json"] }
+base64 = "0.22.1"
+if-addrs = "0.15.0"
+mdns-sd = "0.21.0"
+mime_guess = "2.0.5"
+open = "5.3.3"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+subtle = "2.6.1"
+tauri = { version = "2.11.5", features = [] }
+thiserror = "2.0.17"
+tokio = { version = "1.48.0", features = ["macros", "net", "rt-multi-thread", "signal", "sync", "time"] }
+tower-http = { version = "0.6.6", features = ["cors", "limit"] }
+url = "2.5.7"
+uuid = { version = "1.18.1", features = ["v4", "fast-rng"] }
+walkdir = "2.5.0"
+
+[dev-dependencies]
+tempfile = "3.23.0"

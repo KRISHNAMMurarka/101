@@ -16,6 +16,9 @@
 | pako | 3.0.1 | MIT | Native decoding of compact manual pairing descriptions |
 | base64-js | 1.5.1 | MIT | Native pairing-ticket binary encoding |
 | QRCode | 1.5.4 | MIT | Local pairing-ticket QR generation |
+| Tauri | 2.11.5 | MIT OR Apache-2.0 | Desktop 101 Hub application shell |
+| Axum | 0.8.9 | MIT | Native local Hub HTTP signaling service |
+| mdns-sd | 0.21.0 | MIT OR Apache-2.0 | Strict-local DNS-SD service advertisement |
 | Vite | 8.0.13 | MIT | Build tooling |
 | vinext | 1.0.0-beta.2 | MIT | Browser application runtime/build integration |
 | Cloudflare Vite plugin | 1.37.1 | MIT | Hosted preview adapter |
@@ -23,6 +26,6 @@
 | BlazePose GHUM Pose Landmarker Lite model | float16 bundle, revision 1 | Apache-2.0 | Bundled single-person 33-landmark pose model |
 | MediaPipe Hand Landmarker model | float16 bundle, revision 1 | Apache-2.0 | Bundled 21-landmark hand model |
 
-The generated `THIRD_PARTY_LICENSES.json` file records licenses declared by every installed production and development dependency at the exact locked version. Redistributions must include the full license texts required by those packages; this summary is not a substitute for their licenses.
+The generated `THIRD_PARTY_LICENSES.json` and `THIRD_PARTY_RUST_LICENSES.json` files record licenses declared by every installed JavaScript and Rust dependency at the exact locked version. Redistributions must include the full license texts required by those packages; this summary is not a substitute for their licenses.
 
 The committed MediaPipe models and WebAssembly files remain under their Apache-2.0 terms; a full copy is included at `third_party/APACHE-2.0.txt`. Their exact integrity hashes and limitations are recorded in `docs/vision.md`. No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included.

@@ -4,7 +4,7 @@
 
 101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped adapters handle keyboards, pointers, gamepads, phone motion, local cameras, and the native iOS/Android 101 Link app through the same public boundary.
 
-This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, browser and native Link controllers, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Watches, the Tauri desktop wrapper, LAN service advertisement, and specialist hardware adapters remain active implementation milestones; they are not represented as shipped until their source and tests land.
+This repository currently contains the **independent Game SDK/package format, registry, universal host, networking, browser and native Link controllers, native Tauri Hub, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. Watches and specialist hardware adapters remain active implementation milestones; they are not represented as shipped until their source and tests land.
 
 ![101 social card](public/og.png)
 
@@ -35,6 +35,8 @@ Start the web runtime with `npm run dev -- --host 0.0.0.0`, open its LAN address
 The `/controller` surface is an installable **101 Link PWA** with its own manifest, maskable icon, persistent standalone device identity, connection-status UI, pasteable pairing tickets, dynamic controller layouts, and an offline service-worker shell. Pairing URLs are explicitly excluded from caching so temporary join secrets are never persisted there.
 
 `apps/controller-native` is the independently buildable **101 Link native app** for iOS and Android. It scans local pairing QR codes, reconnects with a durable device identity, uses two native WebRTC DataChannels, renders any validated host-supplied controller layout, includes classic/wand/steering/tilt/touch/trigger/motion/sensor-lab presets, performs quaternion calibration and gesture recognition locally, and supports host haptics. It declares no microphone use. See [native Link development](docs/native-link.md).
+
+`apps/desktop-hub` is the packaged **101 Hub** for macOS, Windows, and Linux. Its native Rust coordinator starts without Node, exposes the same authenticated signaling API, advertises itself through mDNS, shows live sessions/controllers/LAN addresses, and stores settings, replay data, and validated downloaded game packages in the OS application-data directory. See [desktop Hub development](docs/desktop-hub.md).
 
 Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
 
@@ -75,6 +77,9 @@ npm run native:test
 npm run native:typecheck
 npm run native:doctor
 npm run native:export
+npm run desktop:check
+npm run desktop:test
+npm run desktop:app
 ```
 
 Production build:
@@ -213,8 +218,9 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Automatic LAN QR signaling, multi-peer WebRTC, targeted private routing and transport reconnect
 - [x] Installable offline 101 Link PWA with transport selection and secret-safe caching
 - [x] Native iOS/Android 101 Link with QR, dynamic layouts, motion calibration, gestures, haptics and native WebRTC
+- [x] Native Tauri 101 Hub with authenticated signaling, mDNS discovery, local settings/replays/packages and a packaged desktop dashboard
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
-- [ ] Tauri Hub, watches and optional hardware adapters
+- [ ] Watches and optional hardware adapters
 
 ## Privacy and offline behavior
 
@@ -222,4 +228,4 @@ The launcher and game runtime require no account, analytics, database, or cloud 
 
 ## License
 
-101-authored source is available under the [MIT License](LICENSE). Dependencies retain their own licenses and copyright. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the generated `THIRD_PARTY_LICENSES.json` inventory.
+101-authored source is available under the [MIT License](LICENSE). Dependencies retain their own licenses and copyright. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the generated `THIRD_PARTY_LICENSES.json` and `THIRD_PARTY_RUST_LICENSES.json` inventories.

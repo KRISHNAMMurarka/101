@@ -10,6 +10,8 @@ The 101 Link service worker never caches requests whose URL contains a pairing t
 
 Native 101 Link stores only its random device ID and optional last local pairing ticket in the platform secure store. QR camera access is requested only when **Scan QR** is selected. Motion permission is requested only when a motion layout is active and the user selects **Enable Motion**. The native configuration removes Android audio recording permission and contains no iOS microphone usage description. The app does not record camera, audio, or sensor history and has no telemetry SDK.
 
+Desktop 101 Hub stores settings, explicitly saved replay data, and imported game packages only in its OS application-data directory. It has no account or telemetry client. LAN advertisement can be disabled. Signaling state and its bearer secrets remain in memory; the Hub does not persist offers, answers, pairing invitations, or controller sensor frames.
+
 ## Defaults
 
 - No account is required.
@@ -48,7 +50,7 @@ Browser Link role messages are addressed to a concrete device. The controller ig
 
 ## Untrusted game packages
 
-Downloaded games will eventually require signed manifests, declared capabilities, version compatibility checks, content security boundaries, and user confirmation for new permissions. A game manifest cannot grant itself sensor or filesystem access.
+The desktop package importer requires a valid offline/procedural 101 manifest, rejects symbolic links and traversal, bounds file count and total size, and copies content into a dedicated package directory before serving it. Imported content receives no native filesystem or sensor authority. Cryptographic publisher signatures and a sandboxed downloaded-code execution policy are still required before the launcher may execute untrusted packages automatically; storage/serving alone is not execution approval. A game manifest cannot grant itself sensor or filesystem access.
 
 ## Reporting
 
