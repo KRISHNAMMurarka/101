@@ -13,6 +13,12 @@ const eslintConfig = defineConfig([
     "dist/**",
     "out/**",
     "build/**",
+    // Packaged output from `npm run package:release`, plus generated native projects. These are
+    // build products, not sources; linting them reports on bundlers rather than on this codebase.
+    "release/**",
+    "apps/controller-native/android/**",
+    "apps/controller-native/ios/**",
+    "apps/watch-wear/**/build/**",
     "public/mediapipe/**",
     "apps/controller-native/metro.config.cjs",
     "apps/desktop-hub/dist/**",

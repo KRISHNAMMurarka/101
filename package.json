@@ -39,7 +39,8 @@
     "watch:wear:build": "node tools/wear-gradle.mjs assembleDebug",
     "license:inventory": "node tools/generate-license-inventory.mjs && node tools/generate-rust-license-inventory.mjs",
     "audit:production": "node tools/audit-production.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "package:release": "node tools/package-release.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",

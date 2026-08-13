@@ -49,3 +49,4 @@ yarn-error.log*
 /apps/desktop-hub/src-tauri/gen/
 /apps/desktop-hub/src-tauri/icons/android/
 /apps/desktop-hub/src-tauri/icons/ios/
+release/

@@ -241,6 +241,32 @@ The root web surface stays at `app/` because the browser runtime expects it ther
 - [x] Phone-side watch bridge as a local Expo module, compiled into both native builds, with health permissions blocked
 - [ ] On-wrist hardware testing and a signed watchOS app target
 
+## Packaging
+
+```bash
+npm run package:release
+```
+
+Collects the distributable artifacts under `release/` and writes `release/manifest.json`. The targets need genuinely different toolchains — Node for the web build, Rust and Tauri for the desktop Hub, the Android SDK and JDK 21 for the Wear OS watch — so each is attempted independently and anything skipped is named along with the reason. A skipped target is never silently omitted, because "we shipped everything" and "we shipped what this machine could build" are different claims. Pass target names (`web`, `hub`, `link`, `wear`) to build a subset.
+
+Apple installables are deliberately absent. An iOS or watchOS build needs a provisioning profile tied to a registered Apple Developer account, so no repository can produce one on your behalf; [native Link](docs/native-link.md) and [watch companions](docs/watches.md) give the signing steps instead.
+
+## Documentation
+
+| Document | Covers |
+| --- | --- |
+| [Architecture](docs/architecture.md) | Package boundaries and why game code never touches a device API |
+| [Game development](docs/game-development.md) | Writing a game against the SDK, in this repository or your own |
+| [Adapter development](docs/adapter-development.md) | Turning a new input source into `InputFrame` |
+| [Protocol](docs/protocol.md) | Versioned message contract, control and realtime channels |
+| [Controller pairing](docs/controller-pairing.md) | Every pairing mode, from same-browser to offline manual WebRTC |
+| [Native Link](docs/native-link.md) | The iOS and Android controller app |
+| [Desktop Hub](docs/desktop-hub.md) | The packaged Tauri session coordinator |
+| [Watch companions](docs/watches.md) | Apple Watch and Wear OS, and honest transport locality |
+| [Specialist hardware](docs/hardware.md) | WebHID, Web Bluetooth and Web Serial mapping |
+| [Vision](docs/vision.md) | Local pose and hand landmark pipelines |
+| [Privacy and security](docs/privacy-security.md) | Local-first guarantees and the dependency gate |
+
 ## Privacy and offline behavior
 
 The launcher and game runtime require no account, analytics, database, or cloud gameplay service. Runtime dependencies are bundled. The architecture requires camera, motion, and microphone processing to stay local by default, with clear permission copy and no recording. See [privacy and security](docs/privacy-security.md).
