@@ -1,0 +1,11 @@
+{
+  "game": "tiltdrift",
+  "actions": {
+    "boost": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard", "custom"], "description": "Spend boost energy for a temporary speed increase." },
+    "brake": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard", "custom"], "description": "Reduce vehicle speed." },
+    "drift": { "recommended": ["touch", "gamepad"], "fallback": ["keyboard", "custom"], "description": "Enter the drift handling mode." }
+  },
+  "axes": {
+    "steer": { "recommended": ["phone-motion", "gamepad"], "fallback": ["keyboard", "touch", "custom"], "description": "Normalized steering intent." }
+  }
+}

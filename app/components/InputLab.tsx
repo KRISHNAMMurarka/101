@@ -49,6 +49,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       transport,
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => setLinkedDevices(snapshot.assignments.map((assignment) => assignment.deviceId)),
     });
     let drawHandle = 0;

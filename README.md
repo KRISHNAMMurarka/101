@@ -2,9 +2,9 @@
 
 **One local gaming runtime where almost anything can become a controller.**
 
-101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; adapters handle keyboards, pointers, gamepads, phones, cameras, watches, and future hardware.
+101 is an open-source-first, local-first, browser-first gaming platform. Games consume normalized actions such as `move`, `aim`, `slash`, and `pose`; the shipped browser adapters handle keyboards, pointers, gamepads, phone motion, and local cameras, while the same boundary is designed for watches and future hardware.
 
-This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. It deliberately does not present the native Link app, watches, automatic LAN discovery, hardware adapters, desktop Hub, or production reconnect as finished.
+This repository currently contains the **networking, motion, local vision, rhythm, physics, deterministic-maze, scalable-swarm, and asymmetric-session foundation plus all ten playable game slices**: the launcher, manifest-driven catalog, core contracts, 101 Input Bus, role-aware session host, JSON-defined controller surfaces, renderer/physics/audio facades, deterministic generation utilities, engineering Labs, Slashstorm 101, TiltDrift 101, BodyDodge 101, Orbital Crew 101, BeatForge 101, GravityStack 101, Spellcaster 101, Echo Maze 101, Shadow Arena 101, and Swarm Commander 101. It deliberately does not present the native Link app, watches, automatic LAN discovery, hardware adapters, desktop Hub, or production cross-device reconnect as finished.
 
 ![101 social card](public/og.png)
 
@@ -24,7 +24,7 @@ Open the local address printed by the development server. The Input Lab supports
 - click, Space, or gamepad A to trigger
 - a same-browser 101 Link controller opened from **Connect device**
 
-Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or the browser Link controller. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
+Slashstorm 101 is playable from the launcher with pointer/touch, keyboard, gamepad, or up to two independent browser Link swords. Its infinite spawn director uses seeded randomness and combines target groups, hazards, armor, bonuses, pacing, and escalating difficulty.
 
 TiltDrift 101 is a playable Three.js racing slice. Use Left/Right or A/D to steer, Space to boost, Down/S to brake, and Shift/X to drift. Its tested road grammar produces continuous, seed-repeatable spline-like segments, bounded widths, changing environments, and traffic combinations.
 
@@ -32,7 +32,7 @@ The **Motion Lab** requests sensor permission only after an explicit click, corr
 
 The **Vision Lab** uses bundled MediaPipe code, WASM, and local pose and hand models—there is no runtime CDN. Camera permission follows an explicit click, raw frames remain in the browser, and the 101 classifiers turn 33 body landmarks or 21 hand landmarks into calibrated body actions, stable hand poses, swipes, and circles. Keyboard simulation exercises the identical pose adapter without requesting a camera.
 
-BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard and gamepad mappings are available immediately.
+BodyDodge 101 is a playable Three.js survival slice. Move or lean left/right, duck, jump, or raise both arms to pass an infinite deterministic gate grammar. Camera pose is optional; keyboard, gamepad, and a dynamically assigned Link movement panel are available immediately.
 
 Orbital Crew 101 is a playable asymmetric co-op slice. Up to five browser Link devices are assigned pilot, weapons, shields, reactor, and emergency roles, each with a different host-defined panel and live ship readout. A keyboard or gamepad captain can operate every station without any connected device. Its seeded sector director overlaps multi-role threats and schedules deterministic boss encounters.
 
@@ -67,6 +67,8 @@ Production build:
 npm run build
 ```
 
+The unit suite includes seeded full-loop simulations for all ten games, controller-role/input-manifest contract checks, session failover tests, and focused engine/adapter tests. `npm test` then creates a production build and server-renders the launcher, every standalone game, the Link surface, and all engineering Labs.
+
 ## Architecture
 
 ```text
@@ -90,6 +92,7 @@ Key packages:
 | `@101/input` | Frames, normalization, stale-frame rejection, players and adapters |
 | `@101/protocol` | Versioned messages, BroadcastChannel and WebRTC transports, offline pairing, compact motion packets |
 | `@101/session` | Capability-aware role assignment, targeted controller layouts, heartbeats and host-side frame identity enforcement |
+| `@101/link-controller` | Atomic Link input state, neutral role transitions, and stale-control prevention |
 | `@101/sdk` | Public game lifecycle and manifest types |
 | `@101/core` | Runtime lifecycle and seeded procedural utilities |
 | `@101/motion` | Quaternion-based smoothing/calibration pipeline |
@@ -174,7 +177,10 @@ The root web surface stays at `app/` because the browser-hosting runtime expects
 - [x] Deterministic `@101/maze` generator and Echo Maze private companion-display slice
 - [x] Reusable combat-pose vocabulary and Shadow Arena camera/Link/conventional-control slice
 - [x] Scalable `@101/swarm` formations, spatial steering, and Swarm Commander specialist-role slice
-- [ ] Automatic LAN discovery, reconnect and QR encoding
+- [x] Seeded full-loop simulations and manifest/controller contracts for all ten games
+- [x] Browser Link watchdog, automatic role failover, standby state, and neutral cross-game transitions
+- [x] Graceful 3D fallback when WebGL is unavailable while gameplay/input keep running
+- [ ] Automatic LAN discovery, WebRTC transport reconnect and QR encoding
 - [ ] Native 101 Link sensor and haptic controller
 - [ ] Face/head landmark adapter plus richer multi-hand gesture vocabularies
 - [ ] Tauri Hub, watches and optional hardware adapters

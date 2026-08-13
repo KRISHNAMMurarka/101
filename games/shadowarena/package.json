@@ -3,6 +3,6 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "dependencies": { "@101/core": "0.1.0", "@101/sdk": "0.1.0" },
+  "dependencies": { "@101/core": "0.1.0", "@101/sdk": "0.1.0", "@101/session": "0.1.0" },
   "exports": "./src/game.ts"
 }

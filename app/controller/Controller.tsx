@@ -2,19 +2,14 @@
 
 import { BrowserMotionAdapter, isMotionSupported, requestMotionPermission } from "@101/adapter-motion";
 import type { InputFrame, InputVector } from "@101/input";
+import { ControllerInputModel, type ControllerInputSnapshot } from "@101/link-controller";
 import {
   BroadcastChannelTransport,
   PROTOCOL_VERSION,
   type ControllerElement,
   type ControllerLayout,
 } from "@101/protocol";
-import { useEffect, useId, useRef, useState } from "react";
-
-interface ControllerState {
-  actions: Record<string, boolean | number>;
-  axes: Record<string, number>;
-  vectors: Record<string, InputVector>;
-}
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Assignment {
   gameId: string;
@@ -38,43 +33,109 @@ const DEFAULT_LAYOUT: ControllerLayout = {
   ],
 };
 
+const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", accent: "#8d9791", layout: [] };
+
 export default function Controller({ session }: { session: string }) {
   const [connected, setConnected] = useState(false);
+  const [assigned, setAssigned] = useState(false);
+  const [deviceId] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const storageKey = "101-link-device-id";
+    const existing = sessionStorage.getItem(storageKey);
+    const id = existing ?? `link-${globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}`;
+    sessionStorage.setItem(storageKey, id);
+    return id;
+  });
   const [assignment, setAssignment] = useState<Assignment>({ gameId: "launcher", role: "classic", playerId: "player-1" });
   const [layout, setLayout] = useState<ControllerLayout>(DEFAULT_LAYOUT);
   const [vectors, setVectors] = useState<Record<string, InputVector>>({ move: { x: 0, y: 0 } });
+  const [axes, setAxes] = useState<Record<string, number>>({});
+  const [layoutRevision, setLayoutRevision] = useState(0);
   const [readout, setReadout] = useState<ControllerReadout>({ values: {}, tone: "normal" });
   const [motionState, setMotionState] = useState<"idle" | "active" | "denied" | "unsupported">("idle");
   const transportRef = useRef<BroadcastChannelTransport | null>(null);
   const motionAdapterRef = useRef<BrowserMotionAdapter | null>(null);
   const playerIdRef = useRef("player-1");
   const layoutRef = useRef(layout);
-  const inputRef = useRef<ControllerState>({ actions: {}, axes: {}, vectors: {} });
+  const inputRef = useRef<ControllerInputModel | null>(null);
+  if (inputRef.current == null) inputRef.current = new ControllerInputModel(DEFAULT_LAYOUT);
+  const configurationRef = useRef("");
+  const lastHostMessageAt = useRef(0);
   const sequence = useRef(0);
-  const reactId = useId();
-  const deviceId = `link-${reactId.replace(/[^a-z0-9]/gi, "").toLowerCase() || "controller"}`;
 
   useEffect(() => { layoutRef.current = layout; }, [layout]);
 
+  const publishSnapshot = useCallback((current: ControllerInputSnapshot, source: InputFrame["source"] = "custom") => {
+    transportRef.current?.sendRealtime({
+      deviceId,
+      playerId: playerIdRef.current,
+      sequence: ++sequence.current,
+      timestamp: performance.now(),
+      source,
+      actions: current.actions,
+      axes: current.axes,
+      vectors: current.vectors,
+    });
+  }, [deviceId]);
+
   useEffect(() => {
+    if (!deviceId) return;
     const transport = new BroadcastChannelTransport(session);
     transportRef.current = transport;
     const removeListener = transport.onMessage((message) => {
       if (message.channel !== "control") return;
       const payload = message.payload;
       if (payload.type === "player.assign" && payload.deviceId === deviceId) {
+        lastHostMessageAt.current = performance.now();
         playerIdRef.current = payload.playerId;
         setAssignment({ gameId: payload.gameId, role: payload.role, playerId: payload.playerId });
         setConnected(true);
+        setAssigned(true);
+      }
+      if (payload.type === "player.wait" && payload.deviceId === deviceId) {
+        lastHostMessageAt.current = performance.now();
+        publishSnapshot(inputRef.current!.releaseAll());
+        configurationRef.current = "";
+        layoutRef.current = STANDBY_LAYOUT;
+        setLayout(STANDBY_LAYOUT);
+        setVectors({});
+        setAxes({});
+        setAssignment({ gameId: payload.gameId, role: "standby", playerId: "unassigned" });
+        setConnected(true);
+        setAssigned(false);
+        if (motionAdapterRef.current) void motionAdapterRef.current.stop();
+        motionAdapterRef.current = null;
+        setMotionState("idle");
+        setReadout({ values: {}, tone: "normal", message: "CONNECTED · WAITING FOR AN OPEN ROLE" });
       }
       if (payload.type === "controller.configure" && payload.deviceId === deviceId) {
+        lastHostMessageAt.current = performance.now();
+        setConnected(true);
+        setAssigned(true);
+        const configuration = `${payload.gameId}:${payload.role}:${payload.revision}`;
+        if (configurationRef.current === configuration) return;
+        configurationRef.current = configuration;
+        const transition = inputRef.current!.transition(payload.layout);
+        publishSnapshot(transition.release);
+        publishSnapshot(transition.current);
+        layoutRef.current = payload.layout;
         setLayout(payload.layout);
+        setVectors(transition.current.vectors);
+        setAxes(transition.current.axes);
+        setLayoutRevision(payload.revision);
+        if (!payload.layout.motion && motionAdapterRef.current) {
+          void motionAdapterRef.current.stop();
+          motionAdapterRef.current = null;
+          setMotionState("idle");
+        }
         setReadout({ values: {}, tone: "normal", message: `${payload.role.toUpperCase()} PANEL READY` });
       }
       if (payload.type === "controller.state" && payload.deviceId === deviceId) {
+        lastHostMessageAt.current = performance.now();
         setReadout({ values: payload.values, message: payload.message, tone: payload.tone ?? "normal" });
       }
       if (payload.type === "haptic" && payload.deviceId === deviceId) {
+        lastHostMessageAt.current = performance.now();
         navigator.vibrate?.(payload.pattern === "warning" ? [50, 35, 50] : payload.pattern === "impact" ? 35 : 15);
       }
     });
@@ -90,81 +151,84 @@ export default function Controller({ session }: { session: string }) {
         gyroscope: isMotionSupported(),
       },
     });
-    void transport.connect().then(hello);
+    void transport.connect().then(hello).catch(() => {
+      setConnected(false);
+      setReadout({ values: {}, tone: "critical", message: "LINK TRANSPORT UNAVAILABLE" });
+    });
     const helloTimer = window.setInterval(hello, 1_600);
+    const watchdogTimer = window.setInterval(() => {
+      if (!lastHostMessageAt.current || performance.now() - lastHostMessageAt.current <= 4_800) return;
+      setConnected((wasConnected) => {
+        if (!wasConnected) return false;
+        publishSnapshot(inputRef.current!.releaseAll());
+        configurationRef.current = "";
+        setAssigned(false);
+        setReadout({ values: {}, tone: "warning", message: "HOST SIGNAL LOST · RECONNECTING" });
+        return false;
+      });
+    }, 800);
     return () => {
       window.clearInterval(helloTimer);
+      window.clearInterval(watchdogTimer);
+      publishSnapshot(inputRef.current!.releaseAll());
       removeListener();
       void transport.disconnect();
+      void motionAdapterRef.current?.stop();
+      motionAdapterRef.current = null;
       transportRef.current = null;
     };
-  }, [deviceId, session]);
-
-  useEffect(() => () => { void motionAdapterRef.current?.stop(); }, []);
-
-  const publish = (source: InputFrame["source"] = "custom") => {
-    const current = inputRef.current;
-    transportRef.current?.sendRealtime({
-      deviceId,
-      playerId: playerIdRef.current,
-      sequence: ++sequence.current,
-      timestamp: performance.now(),
-      source,
-      actions: { ...current.actions },
-      axes: { ...current.axes },
-      vectors: Object.fromEntries(Object.entries(current.vectors).map(([name, vector]) => [name, { ...vector }])),
-    });
-  };
+  }, [deviceId, publishSnapshot, session]);
 
   const setAction = (action: string, active: boolean | number) => {
-    inputRef.current.actions[action] = active;
-    publish();
+    publishSnapshot(inputRef.current!.setAction(action, active));
   };
 
   const setAxis = (action: string, value: number) => {
-    inputRef.current.axes[action] = clamp(value);
-    publish();
+    const snapshot = inputRef.current!.setAxis(action, value);
+    setAxes(snapshot.axes);
+    publishSnapshot(snapshot);
   };
 
   const setVector = (action: string, x: number, y: number, source: InputFrame["source"] = "custom") => {
-    const vector = { x: clamp(x), y: clamp(y) };
-    inputRef.current.vectors[action] = vector;
-    inputRef.current.axes[action] = vector.x;
-    inputRef.current.axes[`${action}X`] = vector.x;
-    inputRef.current.axes[`${action}Y`] = vector.y;
-    if (action === "move") {
-      inputRef.current.axes.moveX = vector.x;
-      inputRef.current.axes.moveY = vector.y;
-    }
-    if (action === "steer") inputRef.current.axes.steer = vector.x;
-    setVectors((current) => ({ ...current, [action]: vector }));
-    publish(source);
+    const snapshot = inputRef.current!.setVector(action, x, y);
+    setVectors(snapshot.vectors);
+    setAxes(snapshot.axes);
+    publishSnapshot(snapshot, source);
   };
 
   const haptic = () => navigator.vibrate?.(20);
 
   const enableMotion = async () => {
-    const permission = await requestMotionPermission();
-    if (permission !== "granted") {
-      setMotionState(permission);
-      return;
-    }
-    await motionAdapterRef.current?.stop();
-    const adapter = new BrowserMotionAdapter({ deviceId, playerId: playerIdRef.current });
-    motionAdapterRef.current = adapter;
-    adapter.start((frame) => {
-      const motion = layoutRef.current.motion;
-      const tilt = frame.vectors?.tilt;
-      if (!motion || !tilt) return;
-      inputRef.current.actions = { ...inputRef.current.actions, ...frame.actions };
-      for (const [gesture, action] of Object.entries(motion.gestures ?? {})) {
-        if (action) inputRef.current.actions[action] = Boolean(frame.actions[gesture]);
+    try {
+      const permission = await requestMotionPermission();
+      if (permission !== "granted") {
+        setMotionState(permission);
+        return;
       }
-      inputRef.current.axes = { ...inputRef.current.axes, ...frame.axes };
-      setVector(motion.action, tilt.x, tilt.y, "phone-motion");
-    });
-    adapter.calibrateNeutral();
-    setMotionState("active");
+      await motionAdapterRef.current?.stop();
+      let awaitingNeutralSample = true;
+      const adapter = new BrowserMotionAdapter({ deviceId, playerId: playerIdRef.current });
+      motionAdapterRef.current = adapter;
+      adapter.start((frame) => {
+        if (awaitingNeutralSample) {
+          adapter.calibrateNeutral();
+          awaitingNeutralSample = false;
+          return;
+        }
+        const motion = layoutRef.current.motion;
+        const tilt = frame.vectors?.tilt;
+        if (!motion || !tilt) return;
+        const actions = { ...frame.actions };
+        for (const [gesture, action] of Object.entries(motion.gestures ?? {})) {
+          if (action) actions[action] = Boolean(frame.actions[gesture]);
+        }
+        inputRef.current!.mergeMotion(actions, frame.axes);
+        setVector(motion.action, tilt.x, tilt.y, "phone-motion");
+      });
+      setMotionState("active");
+    } catch {
+      setMotionState("denied");
+    }
   };
 
   const calibrate = () => {
@@ -177,11 +241,11 @@ export default function Controller({ session }: { session: string }) {
     <main className={`controller-page role-${roleClass}`} style={{ "--controller-accent": layout.accent ?? "#b5ff66" } as React.CSSProperties}>
       <header className="controller-top">
         <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">LINK / {assignment.role.toUpperCase()}</span></div>
-        <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? "LINKED" : "WAITING"}</div>
+        <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? assigned ? "LINKED" : "STANDBY" : "WAITING"}</div>
       </header>
       <section className="controller-session">
         <span>SESSION</span><strong>{session}</strong>
-        <small>{connected ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : "Open a 101 game on the host"}</small>
+        <small>{connected ? assigned ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : `${assignment.gameId.toUpperCase()} · WAITING FOR ROLE` : "Open a 101 game on the host"}</small>
       </section>
 
       <section className="dynamic-controller-heading">
@@ -190,8 +254,10 @@ export default function Controller({ session }: { session: string }) {
       </section>
 
       <DynamicControllerDeck
+        key={`${assignment.gameId}:${assignment.role}:${layoutRevision}`}
         elements={layout.layout}
         vectors={vectors}
+        axes={axes}
         setAction={setAction}
         setAxis={setAxis}
         setVector={setVector}
@@ -214,6 +280,7 @@ export default function Controller({ session }: { session: string }) {
 function DynamicControllerDeck({
   elements,
   vectors,
+  axes,
   setAction,
   setAxis,
   setVector,
@@ -221,6 +288,7 @@ function DynamicControllerDeck({
 }: {
   elements: readonly ControllerElement[];
   vectors: Record<string, InputVector>;
+  axes: Record<string, number>;
   setAction(action: string, active: boolean | number): void;
   setAxis(action: string, value: number): void;
   setVector(action: string, x: number, y: number): void;
@@ -238,6 +306,7 @@ function DynamicControllerDeck({
               onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); haptic(); setAction(element.action, true); }}
               onPointerUp={() => setAction(element.action, false)}
               onPointerCancel={() => setAction(element.action, false)}
+              onLostPointerCapture={() => setAction(element.action, false)}
             >
               <span>{element.label}</span><small>{element.action}</small>
             </button>
@@ -249,7 +318,7 @@ function DynamicControllerDeck({
           return (
             <label className="dynamic-slider" key={key}>
               <span>{element.label}</span>
-              <input type="range" min={min} max={max} step={element.step ?? .01} defaultValue={(min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
+              <input type="range" min={min} max={max} step={element.step ?? .01} value={axes[element.action] ?? (min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
               <small>{element.action}</small>
             </label>
           );
@@ -268,11 +337,11 @@ function DynamicDpad({ element, setVector }: { element: Extract<ControllerElemen
   return (
     <div className="dynamic-dpad" aria-label={element.label ?? element.action}>
       <span>{element.label ?? element.action}</span>
-      <button className="up" aria-label="Up" onPointerDown={() => setVector(element.action, 0, -1)} onPointerUp={release} onPointerLeave={release}>▲</button>
-      <button className="left" aria-label="Left" onPointerDown={() => setVector(element.action, -1, 0)} onPointerUp={release} onPointerLeave={release}>◀</button>
+      <button className="up" aria-label="Up" onPointerDown={() => setVector(element.action, 0, -1)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▲</button>
+      <button className="left" aria-label="Left" onPointerDown={() => setVector(element.action, -1, 0)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>◀</button>
       <i />
-      <button className="right" aria-label="Right" onPointerDown={() => setVector(element.action, 1, 0)} onPointerUp={release} onPointerLeave={release}>▶</button>
-      <button className="down" aria-label="Down" onPointerDown={() => setVector(element.action, 0, 1)} onPointerUp={release} onPointerLeave={release}>▼</button>
+      <button className="right" aria-label="Right" onPointerDown={() => setVector(element.action, 1, 0)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▶</button>
+      <button className="down" aria-label="Down" onPointerDown={() => setVector(element.action, 0, 1)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▼</button>
     </div>
   );
 }
@@ -300,6 +369,7 @@ function DynamicSurface({ element, vector, setVector }: {
       onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) update(event); }}
       onPointerUp={release}
       onPointerCancel={release}
+      onLostPointerCapture={release}
     >
       <span>{element.label ?? element.action}</span>
       <i className="surface-crosshair" />
@@ -317,8 +387,4 @@ function ControllerStatus({ readout }: { readout: ControllerReadout }) {
       {values.length > 0 && <dl>{values.slice(0, 6).map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{typeof value === "number" ? Math.round(value) : String(value)}</dd></div>)}</dl>}
     </section>
   );
-}
-
-function clamp(value: number) {
-  return Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
 }

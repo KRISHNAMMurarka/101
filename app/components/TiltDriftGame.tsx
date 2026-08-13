@@ -9,6 +9,7 @@ import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createTiltDriftGame, type TiltDriftState } from "@/games/tiltdrift/src/game";
 import { roadCenterAt, type RoadEnvironment, type RoadSegment } from "@/games/tiltdrift/src/director";
+import { TILTDRIFT_ROLES } from "@/games/tiltdrift/src/roles";
 
 interface DriftHud {
   speed: number;
@@ -38,27 +39,11 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     const transport = new BroadcastChannelTransport(sessionId);
     const host = new SessionHost({
       gameId: "tiltdrift",
-      roles: [{
-        id: "driver",
-        label: "Driver",
-        playerId: "player-1",
-        requiredCapabilities: ["touch"],
-        preferredCapabilities: ["gyroscope"],
-        layout: {
-          title: "Steering Wheel",
-          accent: "#50e3ff",
-          motion: { action: "steer", mode: "tilt", label: "Phone tilt" },
-          layout: [
-            { type: "joystick", action: "steer", label: "WHEEL" },
-            { type: "button", action: "brake", label: "BRAKE" },
-            { type: "button", action: "drift", label: "DRIFT" },
-            { type: "button", action: "boost", label: "BOOST", emphasis: "primary" },
-          ],
-        },
-      }],
+      roles: TILTDRIFT_ROLES,
       transport,
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     const view = createDriftView(canvas);

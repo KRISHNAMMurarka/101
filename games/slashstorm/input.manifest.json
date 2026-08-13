@@ -6,6 +6,11 @@
       "fallback": ["touch", "gamepad", "keyboard"],
       "description": "Slice through a target using a blade gesture."
     },
+    "trigger": {
+      "recommended": ["touch", "gamepad"],
+      "fallback": ["mouse", "keyboard", "custom"],
+      "description": "Hold to activate the current blade path."
+    },
     "pause": {
       "recommended": ["keyboard", "touch", "gamepad"],
       "fallback": ["custom"]
@@ -15,6 +20,11 @@
     "aim": {
       "recommended": ["phone-motion", "camera-hand", "mouse"],
       "fallback": ["touch", "gamepad", "keyboard"]
+    },
+    "move": {
+      "recommended": ["keyboard", "gamepad"],
+      "fallback": ["touch", "custom"],
+      "description": "Incremental blade motion for conventional controls."
     }
   }
 }

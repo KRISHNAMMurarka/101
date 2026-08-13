@@ -71,6 +71,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
         transport,
         session: new LocalSession(sessionId),
         onFrame: (frame) => engine.inputBus.accept(frame),
+        onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
         onChange: setSession,
       });
       const view = createStackView(stage, () => engine.context.state, Phaser, Renderer2D101);

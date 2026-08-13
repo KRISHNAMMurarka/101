@@ -61,6 +61,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
       transport: new BroadcastChannelTransport(sessionId),
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     const view = createSpellView(canvas);

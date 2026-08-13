@@ -48,7 +48,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     const audio = createShadowAudio();
     const host = new SessionHost({
       gameId: "shadowarena", roles: SHADOW_ARENA_ROLES, transport: new BroadcastChannelTransport(sessionId), session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame), onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     const view = createShadowView(canvas);
     let drawHandle = 0;

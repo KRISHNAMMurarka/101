@@ -6,6 +6,7 @@ export class GamepadAdapter implements InputAdapter {
   private emit?: InputFrameListener;
   private frameHandle?: number;
   private sequence = 0;
+  private activeDeviceId?: string;
 
   constructor(private readonly playerId = "player-1") {}
 
@@ -17,6 +18,7 @@ export class GamepadAdapter implements InputAdapter {
   stop() {
     if (this.frameHandle !== undefined) cancelAnimationFrame(this.frameHandle);
     this.frameHandle = undefined;
+    this.releaseActiveGamepad();
     this.emit = undefined;
   }
 
@@ -24,11 +26,12 @@ export class GamepadAdapter implements InputAdapter {
     const pads = navigator.getGamepads?.() ?? [];
     const gamepad = [...pads].find(Boolean);
     if (gamepad) {
+      this.activeDeviceId = `gamepad-${gamepad.index}`;
       const deadZone = (value = 0) => (Math.abs(value) < 0.12 ? 0 : value);
       const x = deadZone(gamepad.axes[0]);
       const y = deadZone(gamepad.axes[1]);
       this.emit?.({
-        deviceId: `gamepad-${gamepad.index}`,
+        deviceId: this.activeDeviceId,
         playerId: this.playerId,
         sequence: ++this.sequence,
         timestamp: performance.now(),
@@ -107,7 +110,22 @@ export class GamepadAdapter implements InputAdapter {
           gesture: { x, y },
         },
       });
-    }
+    } else this.releaseActiveGamepad();
     this.frameHandle = requestAnimationFrame(this.poll);
   };
+
+  private releaseActiveGamepad() {
+    if (!this.activeDeviceId) return;
+    this.emit?.({
+      deviceId: this.activeDeviceId,
+      playerId: this.playerId,
+      sequence: ++this.sequence,
+      timestamp: performance.now(),
+      source: this.source,
+      actions: {},
+      axes: {},
+      vectors: {},
+    });
+    this.activeDeviceId = undefined;
+  }
 }

@@ -47,7 +47,7 @@ Capabilities describe what a device can provide, not what permissions have alrea
 
 ## Targeted role configuration
 
-Protocol v2 makes asymmetric configuration explicit. `player.assign`, `controller.configure`, `controller.state`, and `haptic` all carry a target `deviceId`. A controller ignores messages for other devices. `controller.configure` also carries the active game, role, revision, theme, optional motion mapping, and a JSON element list containing buttons, sticks, D-pads, touch surfaces, or sliders.
+Protocol v2 makes asymmetric configuration explicit. `player.assign`, `player.wait`, `controller.configure`, `controller.state`, and `haptic` all carry a target `deviceId`. A controller ignores messages for other devices. `player.wait` explicitly places a connected surplus device on standby. `controller.configure` carries the active game, role, revision, theme, optional motion mapping, and a JSON element list containing buttons, sticks, D-pads, touch surfaces, or sliders.
 
 The session host treats the identity inside realtime packets as untrusted. It accepts frames only from registered devices with an assignment and replaces the packet's `deviceId` and `playerId` with the authoritative values before the Input Bus sees it.
 
@@ -72,4 +72,4 @@ All multibyte fields use little-endian encoding. Future changes require a new ve
 - Control: ordered, reliable DataChannel.
 - Realtime: unordered with zero or very limited retransmits where supported.
 - Signaling: manual offline text transfer is implemented; LAN discovery and QR encoding remain follow-up layers.
-- Reconnect: capability heartbeats and role resynchronization are implemented for the browser test path; transport renegotiation and stable cross-reload device identity remain follow-up work.
+- Reconnect: capability heartbeats, stale-host detection, neutral input release, standby promotion, and role resynchronization are implemented for the browser test path; WebRTC renegotiation and durable native-device identity remain follow-up work.

@@ -51,6 +51,61 @@ test("drops stale realtime frames and reads the newest device value", () => {
   assert.equal(bus.axis("steer"), 0.7);
 });
 
+test("combines simultaneous devices without allowing newer neutral frames to mask active input", () => {
+  const bus = new InputBus();
+  bus.accept({
+    deviceId: "keyboard",
+    playerId: "player-1",
+    sequence: 1,
+    timestamp: 1,
+    source: "keyboard",
+    actions: { jump: true },
+    axes: { steer: -.8 },
+    vectors: { aim: { x: -.7, y: .1 } },
+  });
+  bus.accept({
+    deviceId: "gamepad",
+    playerId: "player-1",
+    sequence: 1,
+    timestamp: 2,
+    source: "gamepad",
+    actions: { jump: false },
+    axes: { steer: 0 },
+    vectors: { aim: { x: 0, y: 0 } },
+  });
+
+  assert.equal(bus.action("jump"), true);
+  assert.equal(bus.axis("steer"), -.8);
+  assert.deepEqual(bus.vector("aim"), { x: -.7, y: .1 });
+});
+
+test("uses the strongest live analog intent and newest value for equal magnitude", () => {
+  const bus = new InputBus();
+  bus.accept({ deviceId: "first", playerId: "player-1", sequence: 1, timestamp: 1, source: "custom", actions: {}, axes: { steer: -.4 } });
+  bus.accept({ deviceId: "second", playerId: "player-1", sequence: 1, timestamp: 2, source: "custom", actions: {}, axes: { steer: .9 } });
+  assert.equal(bus.axis("steer"), .9);
+  bus.accept({ deviceId: "first", playerId: "player-1", sequence: 2, timestamp: 3, source: "custom", actions: {}, axes: { steer: -.9 } });
+  assert.equal(bus.axis("steer"), -.9);
+});
+
+test("evicts every frame owned by a disconnected device", () => {
+  const bus = new InputBus();
+  for (const playerId of ["player-1", "role-pilot"]) bus.accept({
+    deviceId: "phone",
+    playerId,
+    sequence: 1,
+    timestamp: 1,
+    source: "custom",
+    actions: { trigger: true },
+    axes: { steer: 1 },
+  });
+  assert.equal(bus.removeDevice("phone"), true);
+  assert.equal(bus.action("trigger"), false);
+  assert.equal(bus.axis("steer", "role-pilot"), 0);
+  assert.deepEqual(bus.connectedDevices(), []);
+  assert.equal(bus.removeDevice("phone"), false);
+});
+
 test("maps a game manifest to the best available input fallback", () => {
   const resolution = resolveInputManifest({
     game: "slashstorm",

@@ -4,10 +4,13 @@ import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
+import { BroadcastChannelTransport } from "@101/protocol";
 import { Renderer3D101, THREE } from "@101/render-3d";
+import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createBodyDodgeGame, type BodyDodgeState } from "@/games/bodydodge/src/game";
 import type { DodgeGate, DodgeRequirement } from "@/games/bodydodge/src/director";
+import { BODYDODGE_ROLES } from "@/games/bodydodge/src/roles";
 
 type CameraState = "idle" | "loading" | "active" | "denied" | "error";
 
@@ -25,7 +28,7 @@ interface BodyHud {
 
 const INITIAL_HUD: BodyHud = { score: 0, combo: 0, integrity: 100, wave: 1, distance: 0, next: "center", nextDistance: 0, lastEvent: "CALIBRATE OR USE KEYS", gameOver: false };
 
-export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
+export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const engineRef = useRef<Engine101<BodyDodgeState> | null>(null);
@@ -35,6 +38,7 @@ export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
   const [cameraError, setCameraError] = useState("");
+  const [linked, setLinked] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -42,6 +46,15 @@ export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
     const engine = new Engine101(createBodyDodgeGame(`bodydodge-${run}`));
     const keyboard = new KeyboardAdapter();
     const gamepad = new GamepadAdapter();
+    const host = new SessionHost({
+      gameId: "bodydodge",
+      roles: BODYDODGE_ROLES,
+      transport: new BroadcastChannelTransport(sessionId),
+      session: new LocalSession(sessionId),
+      onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
+      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+    });
     const view = createBodyView(canvas);
     engineRef.current = engine;
     let renderHandle = 0;
@@ -52,6 +65,7 @@ export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
     };
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
+    void host.start();
     void engine.start();
     canvas.focus();
     renderHandle = requestAnimationFrame(render);
@@ -63,13 +77,14 @@ export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
     return () => {
       window.clearInterval(hudTimer);
       cancelAnimationFrame(renderHandle);
+      void host.stop();
       engine.stop();
       void engine.inputBus.destroy();
       engineRef.current = null;
       cameraRef.current = null;
       view.dispose();
     };
-  }, [run]);
+  }, [run, sessionId]);
 
   const enableCamera = async () => {
     const engine = engineRef.current;
@@ -112,13 +127,13 @@ export default function BodyDodgeGame({ onExit }: { onExit: () => void }) {
         <div className="body-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
       <div className="body-arena">
-        <div className="body-statusbar"><span><i className="status-dot" /> INPUT BUS / BODY ACTIVE</span><span>{cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>RAW VIDEO LOCAL</b></div>
+        <div className="body-statusbar"><span><i className="status-dot" /> INPUT BUS / BODY ACTIVE</span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>RAW VIDEO LOCAL</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BodyDodge play field. Move with Left and Right, duck with Down, jump with Up or Space, and raise arms with E." />
         {/* Camera capture is always muted and requests no audio track. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video className={cameraState === "active" ? "body-camera-preview active" : "body-camera-preview"} ref={videoRef} aria-label="Local mirrored camera preview" />
         <div className="body-next"><span>NEXT SHAPE</span><strong>{nextLabel}</strong><small>{hud.nextDistance.toFixed(0)} M</small></div>
-        <div className="body-overlay"><div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div><div className="body-event">{hud.lastEvent}</div><div className="body-camera-actions">{cameraState === "active" ? <button onClick={() => cameraRef.current?.calibrateNeutral()}>SET NEUTRAL</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING MODEL…" : "ENABLE BODY CAMERA"}</button>}</div></div>
+        <div className="body-overlay"><div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div><div className="body-event">{hud.lastEvent}</div><div className="body-camera-actions">{cameraState === "active" ? <button onClick={() => cameraRef.current?.calibrateNeutral()}>SET NEUTRAL</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING MODEL…" : "ENABLE BODY CAMERA"}</button>}<button onClick={onConnect}>{linked ? "LINKED" : "CONNECT PANEL"}</button></div></div>
         {(cameraState === "denied" || cameraState === "error") && <p className="body-camera-error">{cameraError}</p>}
         {hud.gameOver && <div className="game-over-panel"><p>SESSION COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Run another course ↗</button></div>}
       </div>

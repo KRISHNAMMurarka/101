@@ -63,6 +63,7 @@ test("serves BodyDodge with optional local camera and conventional controls", as
   assert.match(html, /BodyDodge 101 — Local camera survival/);
   assert.match(html, /Playable local vision slice/);
   assert.match(html, /ENABLE BODY CAMERA/);
+  assert.match(html, /CONNECT PANEL/);
   assert.match(html, /KEYBOARD · GAMEPAD/);
   assert.match(html, /video is neither uploaded nor recorded/i);
 });

@@ -2,7 +2,7 @@
   "id": "orbitalcrew", "name": "Orbital Crew 101", "tagline": "One ship. Different screens. Shared fate.", "order": 4,
   "version": "0.2.0", "engine": "^1", "renderer": "2d",
   "players": { "min": 1, "max": 6 },
-  "inputs": ["keyboard", "touch", "gamepad", "phone-motion", "watch-motion"],
+  "inputs": ["keyboard", "touch", "gamepad", "phone-motion"],
   "offline": true, "procedural": true, "status": "playable", "accent": "#f8d96a",
-  "controllers": { "basic": ["keyboard", "touch", "gamepad"], "enhanced": ["phone-motion"], "immersive": ["watch-motion"] }
+  "controllers": { "basic": ["keyboard", "touch", "gamepad"], "enhanced": ["phone-motion"] }
 }

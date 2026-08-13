@@ -9,6 +9,7 @@ import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
+import { SLASHSTORM_ROLES } from "@/games/slashstorm/src/roles";
 
 interface SlashHud {
   score: number;
@@ -37,25 +38,11 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     const transport = new BroadcastChannelTransport(sessionId);
     const host = new SessionHost({
       gameId: "slashstorm",
-      roles: [{
-        id: "sword",
-        label: "Sword",
-        playerId: "player-1",
-        requiredCapabilities: ["touch"],
-        preferredCapabilities: ["gyroscope"],
-        layout: {
-          title: "Motion Sword",
-          accent: "#ff5c35",
-          motion: { action: "aim", mode: "wand", label: "Phone orientation" },
-          layout: [
-            { type: "touch-surface", action: "aim", label: "BLADE" },
-            { type: "button", action: "trigger", label: "SLASH", emphasis: "danger" },
-          ],
-        },
-      }],
+      roles: SLASHSTORM_ROLES,
       transport,
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     let drawHandle = 0;
@@ -143,15 +130,20 @@ function renderSlashstorm(context: CanvasRenderingContext2D, width: number, heig
   context.globalAlpha = 1;
   for (const target of state.targets) drawTarget(context, target, width, height);
 
-  const previous = toScreen(state.previousBlade.x, state.previousBlade.y, width, height);
-  const blade = toScreen(state.blade.x, state.blade.y, width, height);
-  context.strokeStyle = "rgba(255,92,53,.25)";
+  drawBlade(context, state.previousBlade, state.blade, width, height, "#ff5c35", "rgba(255,92,53,.25)");
+  if (state.playerTwoActive) drawBlade(context, state.previousBladeTwo, state.bladeTwo, width, height, "#50e3ff", "rgba(80,227,255,.25)");
+}
+
+function drawBlade(context: CanvasRenderingContext2D, previousBlade: { x: number; y: number }, currentBlade: { x: number; y: number }, width: number, height: number, color: string, glow: string) {
+  const previous = toScreen(previousBlade.x, previousBlade.y, width, height);
+  const blade = toScreen(currentBlade.x, currentBlade.y, width, height);
+  context.strokeStyle = glow;
   context.lineWidth = 14;
   context.beginPath(); context.moveTo(previous.x, previous.y); context.lineTo(blade.x, blade.y); context.stroke();
   context.strokeStyle = "#eff1e8";
   context.lineWidth = 3;
   context.beginPath(); context.moveTo(previous.x, previous.y); context.lineTo(blade.x, blade.y); context.stroke();
-  context.fillStyle = "#ff5c35";
+  context.fillStyle = color;
   context.beginPath(); context.arc(blade.x, blade.y, 7, 0, Math.PI * 2); context.fill();
 }
 

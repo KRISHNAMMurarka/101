@@ -52,6 +52,7 @@ export default function ControllerLab() {
       transport,
       session: new LocalSession(SESSION),
       onFrame: setLatest,
+      onDeviceReset: () => setLatest(undefined),
       onChange: setSnapshot,
     });
     hostRef.current = host;

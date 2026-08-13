@@ -1,7 +1,7 @@
 {
   "id": "swarmcommander", "name": "Swarm Commander 101", "tagline": "Hundreds of agents. One shared intent.", "order": 10,
   "version": "0.2.0", "engine": "^1", "renderer": "3d",
-  "players": { "min": 1, "max": 4 },
+  "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "mouse", "touch", "gamepad", "phone-motion", "camera-hand"],
   "offline": true, "procedural": true, "status": "playable", "accent": "#f6c15c",
   "controllers": { "basic": ["keyboard", "mouse", "touch", "gamepad"], "enhanced": ["phone-motion"], "immersive": ["camera-hand"] }

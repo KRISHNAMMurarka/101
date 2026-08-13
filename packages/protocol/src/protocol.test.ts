@@ -52,6 +52,11 @@ test("round-trips targeted dynamic controller configuration", () => {
   assert.throws(() => parseControllerLayout({ motion: { action: "aim", mode: "wand", gestures: { swing: "bad action" } }, layout: [{ type: "button", action: "fire", label: "FIRE" }] }));
 });
 
+test("round-trips explicit controller standby state", () => {
+  const message = { type: "player.wait", deviceId: "phone-2", gameId: "tiltdrift", reason: "no-open-role" } as const;
+  assert.deepEqual(deserializeControlMessage(serializeControlMessage(message)), message);
+});
+
 test("packs motion into a fixed 48-byte realtime packet", () => {
   const encoded = encodeMotionPacket({
     sequence: 504,

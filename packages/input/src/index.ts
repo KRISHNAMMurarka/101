@@ -148,6 +148,18 @@ export class InputBus {
   async unregister(adapter: InputAdapter) {
     if (!this.adapters.delete(adapter)) return;
     await adapter.stop();
+    this.removeDevice(adapter.id);
+  }
+
+  removeDevice(deviceId: string, playerId?: string) {
+    let removed = false;
+    const players = playerId ? [[playerId, this.frames.get(playerId)] as const] : [...this.frames.entries()];
+    for (const [id, frames] of players) {
+      if (!frames?.delete(deviceId)) continue;
+      removed = true;
+      if (frames.size === 0) this.frames.delete(id);
+    }
+    return removed;
   }
 
   async destroy() {
@@ -176,20 +188,22 @@ export class InputBus {
   }
 
   action(name: string, playerId = "player-1"): boolean | number {
-    return this.readNewest(playerId, (frame) => frame.actions[name]) ?? false;
+    const values = this.readValues(playerId, (frame) => frame.actions[name]);
+    return values.find((value) => value === true || (typeof value === "number" && value !== 0))
+      ?? values[0]
+      ?? false;
   }
 
   axis(name: string, playerId = "player-1"): number {
-    return this.readNewest(playerId, (frame) => frame.axes?.[name]) ?? 0;
+    return this.readValues(playerId, (frame) => frame.axes?.[name])
+      .sort((a, b) => Math.abs(b) - Math.abs(a))[0]
+      ?? 0;
   }
 
   vector(name: string, playerId = "player-1"): InputVector {
-    return (
-      this.readNewest(playerId, (frame) => frame.vectors?.[name]) ?? {
-        x: 0,
-        y: 0,
-      }
-    );
+    return this.readValues(playerId, (frame) => frame.vectors?.[name])
+      .sort((a, b) => vectorMagnitude(b) - vectorMagnitude(a))[0]
+      ?? { x: 0, y: 0 };
   }
 
   pose(name: string, playerId = "player-1"): ReadonlyArray<number> | undefined {
@@ -207,12 +221,26 @@ export class InputBus {
     playerId: string,
     read: (frame: InputFrame) => T | undefined,
   ): T | undefined {
+    return this.readValues(playerId, read)[0];
+  }
+
+  private readValues<T>(
+    playerId: string,
+    read: (frame: InputFrame) => T | undefined,
+  ): T[] {
     const playerFrames = this.frames.get(playerId);
-    if (!playerFrames) return undefined;
+    if (!playerFrames) return [];
 
     return [...playerFrames.values()]
-      .sort((a, b) => (b.receivedAt ?? 0) - (a.receivedAt ?? 0))
+      .sort((a, b) => (b.receivedAt ?? 0) - (a.receivedAt ?? 0)
+        || b.timestamp - a.timestamp
+        || b.sequence - a.sequence
+        || b.deviceId.localeCompare(a.deviceId))
       .map(read)
-      .find((value) => value !== undefined);
+      .filter((value): value is T => value !== undefined);
   }
+}
+
+function vectorMagnitude(vector: InputVector) {
+  return vector.x * vector.x + vector.y * vector.y + (vector.z ?? 0) * (vector.z ?? 0);
 }

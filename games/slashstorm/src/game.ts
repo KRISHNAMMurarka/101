@@ -1,4 +1,4 @@
-import { Game101 } from "@101/sdk";
+import { Game101, type GameInput } from "@101/sdk";
 import { SlashstormDirector, type SlashTarget } from "./director.ts";
 
 export interface SlashParticle {
@@ -17,6 +17,9 @@ export interface SlashstormState {
   particles: SlashParticle[];
   blade: { x: number; y: number };
   previousBlade: { x: number; y: number };
+  bladeTwo: { x: number; y: number };
+  previousBladeTwo: { x: number; y: number };
+  playerTwoActive: boolean;
   score: number;
   combo: number;
   bestCombo: number;
@@ -37,6 +40,9 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       particles: [],
       blade: { x: 0, y: 0.45 },
       previousBlade: { x: 0, y: 0.45 },
+      bladeTwo: { x: .25, y: .45 },
+      previousBladeTwo: { x: .25, y: .45 },
+      playerTwoActive: false,
       score: 0,
       combo: 0,
       bestCombo: 0,
@@ -58,16 +64,13 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       state.elapsed += delta;
       state.wave = 1 + Math.floor(state.elapsed / 20);
 
-      state.previousBlade = { ...state.blade };
-      const aim = ctx.input.vector("aim");
-      const move = ctx.input.vector("move");
-      if (Math.abs(aim.x) + Math.abs(aim.y) > 0.015) {
-        state.blade.x = clamp(aim.x);
-        state.blade.y = clamp(aim.y);
-      } else {
-        state.blade.x = clamp(state.blade.x + move.x * delta * 1.7);
-        state.blade.y = clamp(state.blade.y + move.y * delta * 1.7);
-      }
+      const bladeOne = advanceBlade(ctx.input, state.blade, delta, "player-1");
+      const bladeTwo = advanceBlade(ctx.input, state.bladeTwo, delta, "player-2");
+      state.previousBlade = bladeOne.previous;
+      state.blade = bladeOne.current;
+      state.previousBladeTwo = bladeTwo.previous;
+      state.bladeTwo = bladeTwo.current;
+      state.playerTwoActive ||= bladeTwo.active;
 
       state.director.update(delta, state.elapsed, (target) => state.targets.push(target));
       const gravity = 0.82;
@@ -78,20 +81,16 @@ export function createSlashstormGame(seed = "slashstorm-101") {
         target.rotation += target.spin * delta;
       }
 
-      const bladeDistance = Math.hypot(
-        state.blade.x - state.previousBlade.x,
-        state.blade.y - state.previousBlade.y,
-      );
-      const isSlashing = Boolean(ctx.input.action("slash")) || Boolean(ctx.input.action("trigger"));
-      if (isSlashing && (bladeDistance > 0.006 || Math.abs(move.x) + Math.abs(move.y) > 0)) {
-        const slashStart = bladeDistance > 0.006
-          ? state.previousBlade
+      for (const blade of [bladeOne, ...(state.playerTwoActive ? [bladeTwo] : [])]) {
+        if (!blade.slashing || (blade.distance <= 0.006 && Math.abs(blade.move.x) + Math.abs(blade.move.y) === 0)) continue;
+        const slashStart = blade.distance > 0.006
+          ? blade.previous
           : {
-              x: clamp(state.blade.x - move.x * 1.8),
-              y: clamp(state.blade.y - move.y * 1.8),
+              x: clamp(blade.current.x - blade.move.x * 1.8),
+              y: clamp(blade.current.y - blade.move.y * 1.8),
             };
         for (const target of state.targets) {
-          if (distanceToSegment(target.x, target.y, slashStart.x, slashStart.y, state.blade.x, state.blade.y) > target.radius + 0.035) continue;
+          if (target.health <= 0 || distanceToSegment(target.x, target.y, slashStart.x, slashStart.y, blade.current.x, blade.current.y) > target.radius + 0.035) continue;
           target.health -= 1;
           if (target.health > 0) {
             state.score += 4;
@@ -138,6 +137,23 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       if (state.lives <= 0) state.gameOver = true;
     },
   });
+}
+
+function advanceBlade(input: GameInput, currentBlade: { x: number; y: number }, delta: number, playerId: string) {
+  const previous = { ...currentBlade };
+  const current = { ...currentBlade };
+  const aim = input.vector("aim", playerId);
+  const move = input.vector("move", playerId);
+  if (Math.abs(aim.x) + Math.abs(aim.y) > 0.015) {
+    current.x = clamp(aim.x);
+    current.y = clamp(aim.y);
+  } else {
+    current.x = clamp(current.x + move.x * delta * 1.7);
+    current.y = clamp(current.y + move.y * delta * 1.7);
+  }
+  const distance = Math.hypot(current.x - previous.x, current.y - previous.y);
+  const slashing = Boolean(input.action("slash", playerId)) || Boolean(input.action("trigger", playerId));
+  return { previous, current, move, distance, slashing, active: slashing || Math.abs(aim.x) + Math.abs(aim.y) > .015 || Math.abs(move.x) + Math.abs(move.y) > .015 };
 }
 
 function burst(state: SlashstormState, target: SlashTarget) {

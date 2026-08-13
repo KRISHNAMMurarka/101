@@ -50,20 +50,21 @@ export function createBodyDodgeGame(seed = "bodydodge-101") {
       };
     },
     start(ctx) {
-      ["dodgeX", "duck", "jump", "armsRaised", "leanLeft", "leanRight"].forEach((control) => ctx.input.bind(control));
+      ["body.move", "dodgeX", "duck", "jump", "armsRaised", "leanLeft", "leanRight"].forEach((control) => ctx.input.bind(control));
     },
     update(ctx, delta) {
       const state = ctx.state;
       if (state.gameOver) return;
       state.elapsed += delta;
       state.wave = 1 + Math.floor(state.elapsed / 25);
+      const linkedMove = ctx.input.vector("body.move");
       const cameraX = ctx.input.axis("dodgeX");
       const conventionalX = ctx.input.axis("moveX");
-      const targetX = Math.abs(cameraX) > .02 ? cameraX : conventionalX;
-      const ducking = Boolean(ctx.input.action("duck"));
-      const jumping = Boolean(ctx.input.action("jump"));
+      const targetX = Math.abs(linkedMove.x) > .02 ? linkedMove.x : Math.abs(cameraX) > .02 ? cameraX : conventionalX;
+      const ducking = Boolean(ctx.input.action("duck")) || linkedMove.y > .55;
+      const jumping = Boolean(ctx.input.action("jump")) || linkedMove.y < -.55;
       const armsRaised = Boolean(ctx.input.action("armsRaised"));
-      const leaning = ctx.input.axis("lean") || (ctx.input.action("leanLeft") ? -1 : ctx.input.action("leanRight") ? 1 : 0);
+      const leaning = ctx.input.axis("lean") || linkedMove.x || (ctx.input.action("leanLeft") ? -1 : ctx.input.action("leanRight") ? 1 : 0);
       state.playerX += (clamp(targetX) - state.playerX) * Math.min(1, delta * 9);
       state.crouch += (Number(ducking) - state.crouch) * Math.min(1, delta * 12);
       state.lift += (Number(jumping) - state.lift) * Math.min(1, delta * 13);

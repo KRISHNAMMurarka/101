@@ -5,7 +5,7 @@
     "fortify": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
     "vent": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
     "overdrive": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },
-    "emergency": { "recommended": ["watch-motion", "touch"], "fallback": ["gamepad", "keyboard"] }
+    "emergency": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] }
   },
   "axes": {
     "shield": { "recommended": ["touch"], "fallback": ["gamepad", "keyboard"] },

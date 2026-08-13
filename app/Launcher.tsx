@@ -185,7 +185,7 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
       {view === "lab" && <InputLab sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "slashstorm" && <SlashstormGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "tiltdrift" && <TiltDriftGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "bodydodge" && <BodyDodgeGame onExit={() => navigate("library")} />}
+      {view === "bodydodge" && <BodyDodgeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "orbitalcrew" && <OrbitalCrewGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "beatforge" && <BeatForgeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
       {view === "gravitystack" && <GravityStackGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}

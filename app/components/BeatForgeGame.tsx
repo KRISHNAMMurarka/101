@@ -58,6 +58,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       transport,
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => setLinked(snapshot.assignments.length),
     });
     const view = createBeatView(canvas);

@@ -39,7 +39,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     const engine = new Engine101(createSwarmCommanderGame(`swarmcommander-${run}`));
     const keyboard = new KeyboardAdapter(); const gamepad = new GamepadAdapter(); const pointer = new PointerAdapter(canvas);
     const audio = createSwarmAudio();
-    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: new BroadcastChannelTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onChange: (snapshot) => setLinked(snapshot.assignments.length) });
+    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: new BroadcastChannelTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length) });
     const view = createSwarmView(canvas);
     let drawHandle = 0; let previousAction = 0; let previousImpact = 0;
     engineRef.current = engine;

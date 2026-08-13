@@ -29,6 +29,12 @@ export type ControlMessage =
       gameId: string;
     }
   | {
+      type: "player.wait";
+      deviceId: string;
+      gameId: string;
+      reason: "no-open-role";
+    }
+  | {
       type: "controller.configure";
       deviceId: string;
       gameId: string;
@@ -154,6 +160,15 @@ export function parseControlMessage(input: unknown): ControlMessage {
     role: requiredText(input.role, "role", 64),
     gameId: requiredText(input.gameId, "gameId", 128),
   };
+  if (input.type === "player.wait") {
+    if (input.reason !== "no-open-role") throw new Error("Invalid controller wait reason");
+    return {
+      type: "player.wait",
+      deviceId: requiredText(input.deviceId, "deviceId", 128),
+      gameId: requiredText(input.gameId, "gameId", 128),
+      reason: input.reason,
+    };
+  }
   if (input.type === "controller.configure") {
     if (!Number.isInteger(input.revision) || Number(input.revision) < 0) throw new Error("Invalid controller revision");
     return {

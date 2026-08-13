@@ -196,6 +196,7 @@ export interface SessionHostOptions {
   session?: LocalSession;
   onFrame(frame: InputFrame): void;
   onChange?(snapshot: SessionSnapshot): void;
+  onDeviceReset?(deviceId: string): void;
   now?: () => number;
   deviceTimeoutMs?: number;
 }
@@ -205,6 +206,7 @@ export class SessionHost {
   private readonly transport: LinkTransport;
   private readonly onFrame: (frame: InputFrame) => void;
   private readonly onChange?: (snapshot: SessionSnapshot) => void;
+  private readonly onDeviceReset?: (deviceId: string) => void;
   private readonly now: () => number;
   private readonly deviceTimeoutMs: number;
   private removeListener?: () => void;
@@ -216,6 +218,7 @@ export class SessionHost {
     this.session = options.session ?? new LocalSession();
     this.onFrame = options.onFrame;
     this.onChange = options.onChange;
+    this.onDeviceReset = options.onDeviceReset;
     this.now = options.now ?? (() => Date.now());
     this.deviceTimeoutMs = options.deviceTimeoutMs ?? 6_000;
     this.session.configureGame(options.gameId, options.roles);
@@ -228,7 +231,10 @@ export class SessionHost {
     await this.transport.connect();
     this.expiryTimer = setInterval(() => {
       const expired = this.session.expire(this.now() - this.deviceTimeoutMs);
-      if (expired.length) this.notifyChange();
+      if (expired.length) {
+        expired.forEach((deviceId) => this.onDeviceReset?.(deviceId));
+        this.notifyChange();
+      }
     }, Math.min(2_000, this.deviceTimeoutMs));
     this.notifyChange();
   }
@@ -243,6 +249,7 @@ export class SessionHost {
   }
 
   setGame(gameId: string, roles: readonly SessionRole[]) {
+    this.session.devices.forEach((device) => this.onDeviceReset?.(device.id));
     this.session.configureGame(gameId, roles);
     this.syncAssignments();
     this.notifyChange();
@@ -313,6 +320,15 @@ export class SessionHost {
         role: assignment.roleId,
         revision: this.session.revision,
         layout: cloneLayout(role.layout),
+      });
+    }
+    for (const device of this.session.devices.values()) {
+      if (this.session.assignmentForDevice(device.id)) continue;
+      this.transport.sendReliable({
+        type: "player.wait",
+        deviceId: device.id,
+        gameId: this.session.gameId,
+        reason: "no-open-role",
       });
     }
   }

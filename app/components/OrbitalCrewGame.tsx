@@ -60,6 +60,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       transport,
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
+      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
       onChange: setSession,
     });
     const announcedThreats = new Set<number>();
