@@ -6,6 +6,8 @@ import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
@@ -27,6 +29,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SlashHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -43,7 +46,11 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        // Recomputed on every device change, so pairing a phone updates the notice immediately.
+        setReadiness(resolveGameInput(SLASHSTORM_INPUT, engine.inputBus, snapshot));
+      },
     });
     let drawHandle = 0;
 
@@ -65,6 +72,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     void engine.inputBus.register(gamepad);
     void host.start();
     void engine.start();
+    setReadiness(resolveGameInput(SLASHSTORM_INPUT, engine.inputBus));
     canvas.focus();
     drawHandle = requestAnimationFrame(draw);
 
@@ -82,6 +90,8 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     };
   }, [run, sessionId]);
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(INITIAL_HUD);
     setRun((current) => current + 1);
@@ -94,8 +104,15 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
         <div className="slash-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
+      {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
+          inside it is drawn under the lives meter. */}
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="slash-arena">
-        <div className="slash-statusbar"><span><i className="status-dot" /> INPUT BUS / SWORD ACTIVE</span><span>{linked ? `${linked} LINK CONTROLLER` : "POINTER · TOUCH · GAMEPAD · KEYBOARD"}</span></div>
+        {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",
+            which claimed a gamepad whether or not one was plugged in. It now reports what the input
+            manifest actually resolved against the hardware present. */}
+        <div className="slash-statusbar"><span><i className="status-dot" /> INPUT BUS / SWORD ACTIVE</span><span>{linked ? `${linked} LINK CONTROLLER` : (readiness?.available.join(" · ").toUpperCase() || "NO INPUT")}</span></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
         {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play another seed ↗</button></div>}

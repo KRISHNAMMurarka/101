@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { InputBus, normalizeInputFrame, resolveInputManifest } from "./index.ts";
+import { InputBus, normalizeInputFrame, resolveInputManifest, type InputManifest } from "./index.ts";
 
 test("normalizes invalid and out-of-range input values", () => {
   const frame = normalizeInputFrame({
@@ -114,5 +114,41 @@ test("maps a game manifest to the best available input fallback", () => {
       pause: { recommended: ["gamepad"], fallback: ["keyboard"] },
     },
   }, ["mouse", "keyboard"]);
-  assert.deepEqual(resolution, { mappings: { slash: "mouse", pause: "keyboard" }, missing: [] });
+  assert.deepEqual(resolution, {
+    mappings: { slash: "mouse", pause: "keyboard" },
+    missing: [],
+    blocking: [],
+    // Both controls fell through to `fallback`, so the game runs but is not being played the way
+    // it was designed. A host that cannot tell the difference cannot offer to improve it.
+    degraded: ["slash", "pause"],
+    playable: true,
+  });
+});
+
+test("a game is blocked only by the controls it says it needs", () => {
+  const manifest: InputManifest = {
+    game: "tiltdrift",
+    axes: { steer: { recommended: ["phone-motion"], fallback: ["keyboard"] } },
+    actions: {
+      boost: { recommended: ["touch"] },
+      celebrate: { recommended: ["camera-pose"], optional: true },
+    },
+  };
+
+  // Nothing but a keyboard: steering degrades to it, the optional flourish is simply absent, and
+  // `boost` has nothing at all — which is what stops the game, not the missing camera.
+  const bare = resolveInputManifest(manifest, ["keyboard"]);
+  assert.deepEqual(bare.mappings, { steer: "keyboard" });
+  assert.deepEqual(bare.degraded, ["steer"]);
+  assert.deepEqual(bare.missing, ["boost", "celebrate"]);
+  assert.deepEqual(bare.blocking, ["boost"], "an optional control must never block a launch");
+  assert.equal(bare.playable, false);
+
+  // Pair a phone and the game is playable and undegraded, still without a camera.
+  const paired = resolveInputManifest(manifest, ["keyboard", "touch", "phone-motion"]);
+  assert.deepEqual(paired.mappings, { steer: "phone-motion", boost: "touch" });
+  assert.deepEqual(paired.degraded, []);
+  assert.deepEqual(paired.blocking, []);
+  assert.equal(paired.playable, true);
+  assert.deepEqual(paired.missing, ["celebrate"], "an unserved optional control is still reported");
 });

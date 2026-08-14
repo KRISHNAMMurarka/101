@@ -343,6 +343,10 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
    usually arrives in a frame or two reads as slower than no spinner at all. */
 .surface-loading { min-height: 40vh; display: grid; place-items: center; color: var(--faint); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 
+/* One actionable line under the status bar, shown only when input is missing or degraded. Styled as
+   a quiet note rather than a warning: the game is usually still playable. */
+.input-readiness { margin: 0 clamp(24px, 5vw, 80px) 12px; padding: 10px 14px; color: var(--muted); font-size: 12px; letter-spacing: .04em; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+
 .footer { min-height: 150px; padding: 42px clamp(24px, 5vw, 80px); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; border-top: 1px solid var(--line); background: var(--ink); }
 .footer p { color: var(--faint); font-size: 12px; }
 .footer > div:last-child { display: flex; gap: 20px; color: var(--faint); font: 650 9px ui-monospace, monospace; text-transform: uppercase; }

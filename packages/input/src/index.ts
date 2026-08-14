@@ -38,6 +38,14 @@ export interface InputFrame {
 export interface InputManifestControl {
   recommended: InputSource[];
   fallback?: InputSource[];
+  /**
+   * Whether the game is still playable when nothing can serve this control.
+   *
+   * Defaults to required, because that is the safe reading of a control an author bothered to
+   * declare. Marking a control optional is how a game says "this is an enhancement" — a pose
+   * shortcut, a motion flourish — so the host can start it on a keyboard instead of refusing.
+   */
+  optional?: boolean;
   description?: string;
 }
 
@@ -50,8 +58,16 @@ export interface InputManifest {
 }
 
 export interface ResolvedInputManifest {
+  /** Control name to the source that will actually serve it, in author preference order. */
   mappings: Record<string, InputSource>;
+  /** Every declared control nothing available can serve, required or not. */
   missing: string[];
+  /** The subset of `missing` the game declared it needs. Non-empty means "do not start yet". */
+  blocking: string[];
+  /** Controls that fell through to a fallback, so the host can say the game is degraded. */
+  degraded: string[];
+  /** True when every required control has a source. Optional gaps do not block. */
+  playable: boolean;
 }
 
 export function parseInputManifest(input: unknown): InputManifest {
@@ -74,9 +90,13 @@ export function parseInputManifest(input: unknown): InputManifest {
       const description = requirement.description === undefined
         ? undefined
         : parseText(requirement.description, `${group}.${name}.description`, 240);
+      if (requirement.optional !== undefined && typeof requirement.optional !== "boolean") {
+        throw new Error(`Invalid ${group}.${name}.optional`);
+      }
       parsed[name] = {
         recommended,
         ...(fallback ? { fallback } : {}),
+        ...(requirement.optional ? { optional: true } : {}),
         ...(description ? { description } : {}),
       };
     }
@@ -100,16 +120,31 @@ export function resolveInputManifest(
   const sources = new Set(available);
   const mappings: Record<string, InputSource> = {};
   const missing: string[] = [];
+  const blocking: string[] = [];
+  const degraded: string[] = [];
   const groups = [manifest.actions, manifest.axes, manifest.vectors, manifest.poses];
   for (const group of groups) {
     for (const [control, requirement] of Object.entries(group ?? {})) {
-      const source = [...requirement.recommended, ...(requirement.fallback ?? [])]
-        .find((candidate) => sources.has(candidate));
-      if (source) mappings[control] = source;
-      else missing.push(control);
+      // Author order is the preference order. `recommended` is what the game was designed around;
+      // `fallback` is what it will accept. Nothing here scores devices behind the author's back —
+      // a game that lists `camera-hand` first means it, and a surprise reordering would be a worse
+      // outcome than a predictable one.
+      const source = requirement.recommended.find((candidate) => sources.has(candidate));
+      const substitute = source
+        ? undefined
+        : requirement.fallback?.find((candidate) => sources.has(candidate));
+      if (source) {
+        mappings[control] = source;
+      } else if (substitute) {
+        mappings[control] = substitute;
+        degraded.push(control);
+      } else {
+        missing.push(control);
+        if (!requirement.optional) blocking.push(control);
+      }
     }
   }
-  return { mappings, missing };
+  return { mappings, missing, blocking, degraded, playable: blocking.length === 0 };
 }
 
 export type InputFrameListener = (frame: Readonly<InputFrame>) => void;
@@ -117,6 +152,15 @@ export type InputFrameListener = (frame: Readonly<InputFrame>) => void;
 export interface InputAdapter {
   readonly id: string;
   readonly source: InputSource;
+  /**
+   * Whether this adapter can serve input *right now*.
+   *
+   * Registration is not availability. A gamepad adapter is registered the moment a game starts and
+   * polls happily with no controller plugged in, so counting it as an available source would tell a
+   * game its `gamepad` requirement is satisfied when nothing is connected. Adapters that are always
+   * there — keyboard, pointer — leave this undefined, which reads as available.
+   */
+  readonly available?: boolean;
   start(emit: InputFrameListener): void | Promise<void>;
   stop(): void | Promise<void>;
 }
@@ -179,6 +223,26 @@ export class InputBus {
 
   isBound(control: string) {
     return this.bindings.has(control);
+  }
+
+  /**
+   * Every input source currently able to produce frames.
+   *
+   * Locally registered adapters are the sources this machine owns. `extra` carries sources that
+   * arrive over the link — a paired phone's touch and motion — which the bus cannot discover by
+   * itself because a remote controller registers no adapter here.
+   *
+   * Without this, `resolveInputManifest` had no honest way to be told what was available, which is
+   * why nothing outside the tests ever called it.
+   */
+  availableSources(extra: Iterable<InputSource> = []): InputSource[] {
+    const sources = new Set<InputSource>();
+    for (const adapter of this.adapters) {
+      if (adapter.available === false) continue;
+      sources.add(adapter.source);
+    }
+    for (const source of extra) sources.add(source);
+    return [...sources];
   }
 
   async register(adapter: InputAdapter) {

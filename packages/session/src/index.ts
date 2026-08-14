@@ -1,4 +1,4 @@
-import type { InputFrame } from "@101/input";
+import type { InputFrame, InputSource } from "@101/input";
 import type { GameControllerRole } from "@101/sdk";
 import {
   PROTOCOL_VERSION,
@@ -17,6 +17,34 @@ export interface ConnectedDevice {
 }
 
 export type SessionRole = GameControllerRole;
+
+/**
+ * What a paired device can actually contribute to the input bus.
+ *
+ * A remote controller registers no adapter on the host, so nothing local can discover that a phone
+ * on the LAN is offering touch and gyroscope. This is the bridge between what a device announced in
+ * its `hello` and the source vocabulary a game's input manifest is written against.
+ *
+ * Motion needs a gyroscope specifically: an accelerometer alone gives tilt but cannot track a turn,
+ * and reporting `phone-motion` for it would satisfy a manifest the device cannot really serve.
+ */
+export function capabilitySources(capabilities: DeviceCapabilities): InputSource[] {
+  const sources: InputSource[] = [];
+  if (capabilities.touch) sources.push("touch");
+  if (capabilities.gyroscope) sources.push("phone-motion");
+  if (capabilities.gamepad) sources.push("gamepad");
+  if (capabilities.camera) sources.push("camera-hand", "camera-pose", "camera-face");
+  return sources;
+}
+
+/** Every source offered by the devices currently connected to a session. */
+export function sessionSources(devices: readonly ConnectedDevice[]): InputSource[] {
+  const sources = new Set<InputSource>();
+  for (const device of devices) {
+    for (const source of capabilitySources(device.capabilities)) sources.add(source);
+  }
+  return [...sources];
+}
 
 export interface RoleAssignment {
   deviceId: string;

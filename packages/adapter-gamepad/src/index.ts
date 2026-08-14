@@ -8,6 +8,11 @@ export class GamepadAdapter implements InputAdapter {
   private sequence = 0;
   private activeDeviceId?: string;
 
+  /** A registered gamepad adapter with nothing plugged in is not an available input source. */
+  get available() {
+    return this.activeDeviceId !== undefined;
+  }
+
   constructor(private readonly playerId = "player-1") {}
 
   start(emit: InputFrameListener) {

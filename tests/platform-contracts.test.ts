@@ -119,3 +119,34 @@ test("the launcher never statically imports a playable surface", () => {
     assert.ok(surfaces.has(view), `view "${view}" has no lazy surface registered`);
   }
 });
+
+test("game input manifests are resolved at runtime, not just validated in tests", () => {
+  // `resolveInputManifest` existed for a long time with exactly two call sites, both of them test
+  // files. Every game declared what it needed in input.manifest.json, the suite checked those
+  // declarations were well formed, and the running app never read them — so a control nothing could
+  // serve produced a game that started and quietly ignored the player. This asserts the wiring is
+  // real, because a resolver with no production caller passes every other test in this repo.
+  const helper = readFileSync(resolve(import.meta.dirname, "../app/lib/input-readiness.ts"), "utf8");
+  assert.match(helper, /resolveInputManifest\(/, "the helper must call the resolver");
+  assert.match(helper, /availableSources\(/, "local adapters must be counted");
+  assert.match(helper, /sessionSources\(/, "paired devices must be counted too, or a phone is invisible");
+
+  const game = readFileSync(resolve(import.meta.dirname, "../app/components/SlashstormGame.tsx"), "utf8");
+  assert.match(game, /resolveGameInput\(/, "at least one shipping game must resolve its manifest");
+  assert.match(game, /input\.manifest\.json/, "and it must read the real manifest, not a copy");
+  // Readiness has to be recomputed when devices change, or pairing a phone never clears the notice.
+  assert.match(game, /onChange:[\s\S]{0,220}resolveGameInput\(/);
+});
+
+test("a registered adapter is not the same claim as an available one", () => {
+  // GamepadAdapter is registered on every game start and polls happily with nothing plugged in.
+  // Counting registration as availability told games their `gamepad` requirement was satisfied on
+  // machines with no controller, which is exactly the kind of confident wrong answer that makes
+  // capability matching worthless.
+  const adapter = readFileSync(resolve(import.meta.dirname, "../packages/adapter-gamepad/src/index.ts"), "utf8");
+  assert.match(adapter, /get available\(\)/, "the gamepad adapter must report real availability");
+  assert.match(adapter, /this\.activeDeviceId !== undefined/);
+
+  const bus = readFileSync(resolve(import.meta.dirname, "../packages/input/src/index.ts"), "utf8");
+  assert.match(bus, /adapter\.available === false/, "availableSources must honour that report");
+});
