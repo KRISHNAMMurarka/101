@@ -99,6 +99,47 @@ Verified: an iOS Release build, cold-launched via `oneohone://pair?ticket=…`, 
 
 Three contract tests hold this shut: identity must degrade, only the guarded effect may touch `SecureStore` directly, and the keychain entitlement must stay declared.
 
+## Solved: two thumbs at once
+
+Holding a stick and pressing a button dropped the stick to neutral, so no layout combining a pad
+with a button was actually playable — which is every gamepad preset, and the whole premise of the
+landscape two-thumb layout.
+
+React Native has exactly **one responder for the entire app**, and `PanResponder`'s default answer
+when another view asks for it is *yes*:
+
+```js
+// react-native/Libraries/Interaction/PanResponder.js
+onResponderTerminationRequest(event) {
+  return config.onPanResponderTerminationRequest == null ? true : /* … */;
+}
+```
+
+Every pad and slider used that default. A `Pressable` button claiming the responder therefore
+terminated the stick, `onPanResponderTerminate` fired, and `release()` sent `(0, 0)` mid-movement.
+The controller looked perfectly correct in code review and in any single-finger test.
+
+The fix has two halves and needs both:
+
+- **Pads and sliders refuse to hand over the responder** — `onPanResponderTerminationRequest: () => false`.
+  On its own this would only invert the bug, leaving buttons dead while a stick is held.
+- **Buttons stop competing for it.** They are plain views using `onTouchStart`/`onTouchEnd`/
+  `onTouchCancel`, which are delivered to the view under the finger without any responder
+  negotiation. `accessibilityRole="button"` keeps them buttons to a screen reader.
+
+`onTouchCancel` matters as much as the other two: a cancelled touch that never released would latch
+its action on forever.
+
+While fixing this, `PanResponder.create()` also moved out of the render body. It was allocating a
+new responder on every touch move, because each move sets state and re-renders.
+
+A contract test asserts both halves stay in place, since the failure is invisible to review.
+
+**Not yet verified on hardware.** The reasoning is confirmed against the React Native source in this
+repo, and the logic is locked by a test, but genuine simultaneous multi-touch cannot be exercised on
+a simulator — both iOS and Android emulators synthesise only mirrored two-finger pinch gestures, not
+two independent touch points. This needs one pass on a real phone.
+
 ## Remaining iOS gaps
 
 - **Pairing has not completed end to end on iOS.** The deep link is read and the app reaches

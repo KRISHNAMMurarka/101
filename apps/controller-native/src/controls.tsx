@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   PanResponder,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -82,33 +81,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
 
 function Control({ element, theme, controls }: { element: ControllerElement; theme: Theme; controls: ControllerActions }) {
   if (element.type === "button") {
-    const primary = element.emphasis === "primary";
-    const danger = element.emphasis === "danger";
-    return (
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={element.label}
-        onPressIn={() => {
-          controls.localHaptic();
-          controls.action(element.action, true);
-        }}
-        onPressOut={() => controls.action(element.action, false)}
-        style={({ pressed }) => [
-          styles.button,
-          {
-            // Emphasis is carried by the edge, never by an inverted fill. A, B, X and Y are peers
-            // on a gamepad, so a solid white A would shout over its own siblings; the one inverted
-            // block in the app stays reserved for the single app action worth taking next.
-            backgroundColor: pressed ? theme.surfacePressed : theme.surface,
-            borderColor: primary || danger ? theme.lineStrong : theme.line,
-            borderWidth: primary || danger ? 2 : StyleSheet.hairlineWidth * 2,
-          },
-          pressed && styles.pressed,
-        ]}
-      >
-        <Text style={[styles.buttonText, { color: theme.text }]}>{element.label}</Text>
-      </Pressable>
-    );
+    return <ButtonControl element={element} theme={theme} controls={controls} />;
   }
   if (element.type === "slider") {
     return <SliderControl element={element} theme={theme} update={controls.axis} />;
@@ -121,6 +94,60 @@ function Control({ element, theme, controls }: { element: ControllerElement; the
       theme={theme}
       update={controls.vector}
     />
+  );
+}
+
+// Buttons deliberately avoid Pressable. Pressable joins React Native's responder system, and there
+// is only ever one responder: pressing a button while a stick was held made the stick's
+// PanResponder receive onPanResponderTerminate, which snapped the vector to neutral. Two-thumb play
+// — the entire point of the landscape layout — was impossible. Raw touch events are delivered to
+// the view under the finger without any responder negotiation, so a button press now cannot
+// disturb a stick that another thumb is holding.
+function ButtonControl({
+  element,
+  theme,
+  controls,
+}: {
+  element: Extract<ControllerElement, { type: "button" }>;
+  theme: Theme;
+  controls: ControllerActions;
+}) {
+  const [pressed, setPressed] = useState(false);
+  const primary = element.emphasis === "primary";
+  const danger = element.emphasis === "danger";
+  const press = () => {
+    setPressed(true);
+    controls.localHaptic();
+    controls.action(element.action, true);
+  };
+  const lift = () => {
+    setPressed(false);
+    controls.action(element.action, false);
+  };
+  return (
+    <View
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={element.label}
+      accessibilityState={{ selected: pressed }}
+      onTouchStart={press}
+      onTouchEnd={lift}
+      onTouchCancel={lift}
+      style={[
+        styles.button,
+        {
+          // Emphasis is carried by the edge, never by an inverted fill. A, B, X and Y are peers
+          // on a gamepad, so a solid white A would shout over its own siblings; the one inverted
+          // block in the app stays reserved for the single app action worth taking next.
+          backgroundColor: pressed ? theme.surfacePressed : theme.surface,
+          borderColor: primary || danger ? theme.lineStrong : theme.line,
+          borderWidth: primary || danger ? 2 : StyleSheet.hairlineWidth * 2,
+        },
+        pressed && styles.pressed,
+      ]}
+    >
+      <Text style={[styles.buttonText, { color: theme.text }]}>{element.label}</Text>
+    </View>
   );
 }
 
@@ -158,17 +185,29 @@ function VectorControl({
     setPosition({ x: 0, y: 0 });
     update(action, 0, 0);
   };
-  const responder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: (event) => {
-      setHeld(true);
-      move(event.nativeEvent.locationX, event.nativeEvent.locationY);
-    },
-    onPanResponderMove: (event) => move(event.nativeEvent.locationX, event.nativeEvent.locationY),
-    onPanResponderRelease: release,
-    onPanResponderTerminate: release,
-  });
+  // `move` and `release` close over the current size, so the handlers are held in a ref and
+  // refreshed each render rather than rebuilt — PanResponder.create() on every render allocated a
+  // fresh responder for every touch move.
+  const handlers = useRef({ move, release });
+  handlers.current = { move, release };
+  const responder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      // A stick keeps the responder until the thumb holding it lifts. Without this, React Native's
+      // default answer is "yes, take it", so any other control claiming the single global responder
+      // terminated this one and dropped the vector to neutral mid-movement.
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: (event) => {
+        setHeld(true);
+        handlers.current.move(event.nativeEvent.locationX, event.nativeEvent.locationY);
+      },
+      onPanResponderMove: (event) =>
+        handlers.current.move(event.nativeEvent.locationX, event.nativeEvent.locationY),
+      onPanResponderRelease: () => handlers.current.release(),
+      onPanResponderTerminate: () => handlers.current.release(),
+    }),
+  ).current;
   const onLayout = (event: LayoutChangeEvent) => setSize(event.nativeEvent.layout);
   return (
     <View style={[styles.vectorWrap, mode === "touch-surface" && styles.touchWrap]}>
@@ -228,12 +267,18 @@ function SliderControl({
     setValue(next);
     update(element.action, next);
   };
-  const responder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onMoveShouldSetPanResponder: () => true,
-    onPanResponderGrant: (event) => setFromX(event.nativeEvent.locationX),
-    onPanResponderMove: (event) => setFromX(event.nativeEvent.locationX),
-  });
+  const handlers = useRef({ setFromX });
+  handlers.current = { setFromX };
+  const responder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      // Same rule as a stick: a slider under a thumb is not surrendered to another control.
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: (event) => handlers.current.setFromX(event.nativeEvent.locationX),
+      onPanResponderMove: (event) => handlers.current.setFromX(event.nativeEvent.locationX),
+    }),
+  ).current;
   const ratio = (value - min) / (max - min);
   return (
     <View style={styles.sliderWrap}>

@@ -98,6 +98,34 @@ test("a keychain failure cannot silently disable the whole controller", async ()
   assert.match(effect, /id = `link-\$\{Crypto\.randomUUID\(\)\}`/);
 });
 
+test("two thumbs can hold a stick and press a button at the same time", async () => {
+  // React Native has exactly one responder for the whole app, and PanResponder's default answer to
+  // `onResponderTerminationRequest` is `true` — see
+  // node_modules/react-native/Libraries/Interaction/PanResponder.js, which returns `true` whenever
+  // `config.onPanResponderTerminationRequest == null`. Every pad here used that default, so a
+  // Pressable button claiming the responder terminated the stick and `onPanResponderTerminate`
+  // snapped its vector to neutral. Holding a stick and pressing a button — the entire premise of
+  // the landscape two-thumb layout — was impossible.
+  //
+  // The fix is two-sided and both halves are required: pads refuse to hand over the responder, and
+  // buttons stop asking for it by using raw touch events, which are delivered to the view under
+  // the finger without any responder negotiation.
+  const source = await readFile(new URL("../apps/controller-native/src/controls.tsx", import.meta.url), "utf8");
+
+  const refusals = source.match(/onPanResponderTerminationRequest: \(\) => false/g) ?? [];
+  assert.equal(refusals.length, 2, "both the vector pad and the slider must refuse termination");
+
+  assert.equal(/<Pressable/.test(source), false,
+    "a control that joins the responder system steals it from a held stick");
+  assert.match(source, /onTouchStart=\{press\}/, "buttons press on raw touch");
+  assert.match(source, /onTouchEnd=\{lift\}/, "buttons must release");
+  assert.match(source, /onTouchCancel=\{lift\}/,
+    "a cancelled touch must release too, or the action latches on forever");
+
+  // A button is still a button to a screen reader even though it is no longer a Pressable.
+  assert.match(source, /accessibilityRole="button"/);
+});
+
 test("expo-dev-client stays out of production dependencies", async () => {
   // It is a development tool. On iOS it also registers an AppDelegate subscriber that claims
   // incoming URLs before React Native sees them, so shipping it is both bloat and a hazard.
