@@ -140,6 +140,35 @@ repo, and the logic is locked by a test, but genuine simultaneous multi-touch ca
 a simulator — both iOS and Android emulators synthesise only mirrored two-finger pinch gestures, not
 two independent touch points. This needs one pass on a real phone.
 
+## Solved: the host used to expire a controller that was still being played
+
+The host reclaimed any device it had not heard a `hello` from within `deviceTimeoutMs` (6 s).
+Liveness was refreshed **only** by the handshake — not by input, not by the heartbeat:
+
+```ts
+if (message.channel === "control" && message.payload.type === "hello") { /* … lastSeenAt … */ }
+if (message.channel !== "realtime") return;   // a `ping` fell through here and was discarded
+```
+
+The browser client survived this by accident: it re-sends `hello` on a 1.6 s timer. The native app
+sends `ping` instead, so its device record went stale while the player was actively holding the
+controller, and the role was reclaimed six seconds after connecting.
+
+Nothing caught it because no test advanced a clock past the timeout with a live device, and no
+emulator run ever completed a WebRTC connection — pairing stops at `Connecting…` behind the
+emulator NAT, which is well short of six seconds of play.
+
+Now:
+
+- **Input refreshes liveness.** Sending a frame is proof the controller is there.
+- **`ping` refreshes liveness and is answered with `pong`.** The reply is what makes the round trip
+  measurable at the controller; without it the native latency readout could never populate.
+- **`ping` carries an optional `deviceId`**, because the host otherwise cannot tell whose beat it
+  is on a multiplexed transport. Optional, so a client predating the field still validates.
+
+A regression test drives a device past the timeout while it plays and then pings, and asserts a
+genuinely silent device is still reclaimed. Removing either half of the fix fails it.
+
 ## Remaining iOS gaps
 
 - **Pairing has not completed end to end on iOS.** The deep link is read and the app reaches

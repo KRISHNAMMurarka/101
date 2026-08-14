@@ -52,7 +52,7 @@ export type ControlMessage =
   | { type: "calibration.request"; mode: string }
   | { type: "haptic"; deviceId: string; pattern: "tap" | "impact" | "warning" }
   | { type: "pause"; paused: boolean }
-  | { type: "ping"; sentAt: number }
+  | { type: "ping"; sentAt: number; deviceId?: string }
   | { type: "pong"; sentAt: number; receivedAt: number };
 
 export type ControllerElement =
@@ -208,7 +208,12 @@ export function parseControlMessage(input: unknown): ControlMessage {
     if (typeof input.paused !== "boolean") throw new Error("Invalid pause message");
     return { type: "pause", paused: input.paused };
   }
-  if (input.type === "ping") return { type: "ping", sentAt: requiredFinite(input.sentAt, "sentAt") };
+  if (input.type === "ping") {
+    // `deviceId` is optional so a client predating it still parses; the host then simply cannot
+    // refresh that device's liveness from a ping alone.
+    const deviceId = optionalText(input.deviceId, "deviceId", 128);
+    return { type: "ping", sentAt: requiredFinite(input.sentAt, "sentAt"), ...(deviceId ? { deviceId } : {}) };
+  }
   if (input.type === "pong") return { type: "pong", sentAt: requiredFinite(input.sentAt, "sentAt"), receivedAt: requiredFinite(input.receivedAt, "receivedAt") };
   throw new Error("Unsupported 101 control message");
 }

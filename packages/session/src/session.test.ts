@@ -152,6 +152,51 @@ test("session host requests input eviction on role reset and heartbeat expiry", 
   await host.stop();
 });
 
+test("a controller that plays or pings is not expired out from under the player", async () => {
+  // Liveness used to be refreshed only by `hello`. The browser client re-sends its handshake every
+  // 1.6 s, so it survived by accident and every test passed; the native app sends `ping` instead
+  // and was therefore expired six seconds after connecting, mid-game. Emulators never completed a
+  // WebRTC connection, so no run ever reached the six-second mark to catch it.
+  const transport = new MemoryTransport();
+  const resets: string[] = [];
+  let now = 100;
+  const host = new SessionHost({
+    gameId: "first",
+    roles,
+    transport,
+    onFrame: () => {},
+    onDeviceReset: (deviceId) => resets.push(deviceId),
+    deviceTimeoutMs: 20,
+    now: () => now,
+  });
+  await host.start();
+  transport.emit({ channel: "control", payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } } });
+
+  // Sending input is proof of life.
+  now = 115;
+  transport.emit({ channel: "realtime", payload: frame("phone", "player-1") });
+  now = 130;
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  assert.deepEqual(resets, [], "a device that just sent input must not be expired");
+
+  // So is a ping — which is also answered, so the controller can measure the round trip.
+  now = 140;
+  transport.emit({ channel: "control", payload: { type: "ping", sentAt: 5, deviceId: "phone" } });
+  const pong = transport.reliable.find((message) => message.type === "pong");
+  assert.ok(pong, "the host must answer a ping or controller latency stays unmeasurable");
+  assert.equal(pong.sentAt, 5, "the pong echoes the original send time");
+
+  now = 155;
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  assert.deepEqual(resets, [], "a device that just pinged must not be expired");
+
+  // Silence still expires it.
+  now = 400;
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  assert.deepEqual(resets, ["phone"], "a genuinely gone device is still reclaimed");
+  await host.stop();
+});
+
 function frame(deviceId: string, playerId: string): InputFrame {
   return {
     deviceId,

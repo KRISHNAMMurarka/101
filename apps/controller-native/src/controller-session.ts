@@ -156,7 +156,9 @@ export class ControllerSession {
     if (this.heartbeat) clearInterval(this.heartbeat);
     this.heartbeat = setInterval(() => {
       const sentAt = Date.now();
-      this.transport?.sendReliable({ type: "ping", sentAt });
+      // The device has to name itself, or the host cannot tell whose liveness this beat refreshes
+      // and expires a perfectly healthy controller mid-game.
+      this.transport?.sendReliable({ type: "ping", sentAt, deviceId: this.deviceId });
     }, 2_000);
     if (this.currentLayout) this.sendSnapshot(this.model.snapshot(), "touch");
   }

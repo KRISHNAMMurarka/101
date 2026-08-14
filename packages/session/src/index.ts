@@ -84,6 +84,21 @@ export class LocalSession {
     return this.assignments.get(device.id);
   }
 
+  /**
+   * Records that a device is still there.
+   *
+   * Liveness used to be refreshed only by `register`, so a controller stayed connected purely
+   * because the browser client happened to re-send `hello` every 1.6 seconds. Anything that spoke
+   * the protocol correctly but did not repeat its handshake — the native app, which sends `ping` —
+   * was expired mid-game. Sending input is proof of life, and so is a ping.
+   */
+  touch(deviceId: string, at: number) {
+    const device = this.devices.get(deviceId);
+    if (!device || device.lastSeenAt >= at) return false;
+    device.lastSeenAt = at;
+    return true;
+  }
+
   remove(deviceId: string) {
     const removed = this.devices.delete(deviceId);
     this.assignments.delete(deviceId);
@@ -286,9 +301,23 @@ export class SessionHost {
       this.notifyChange();
       return;
     }
+    // A ping is both a liveness beat and a latency probe. Answering it is what makes the round trip
+    // measurable at the controller; without a reply the native app's latency readout stays blank
+    // forever. `deviceId` is optional because older clients did not send one — those simply cannot
+    // have their liveness refreshed this way.
+    if (message.channel === "control" && message.payload.type === "ping") {
+      const { sentAt, deviceId } = message.payload;
+      if (deviceId && this.session.touch(deviceId, this.now())) this.notifyChange();
+      this.transport.sendReliable({ type: "pong", sentAt, receivedAt: this.now() });
+      return;
+    }
     if (message.channel !== "realtime") return;
     const assignment = this.session.assignmentForDevice(message.payload.deviceId);
     if (!assignment) return;
+    // Input is proof of life. Without this, a controller that pairs and then plays without ever
+    // repeating its handshake is expired after `deviceTimeoutMs` while the player is still holding
+    // it, dropping their role mid-game.
+    this.session.touch(message.payload.deviceId, this.now());
     this.onFrame({
       ...message.payload,
       deviceId: assignment.deviceId,
