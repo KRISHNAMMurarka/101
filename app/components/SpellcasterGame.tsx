@@ -8,6 +8,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import SPELLCASTER_INPUT from "@/games/spellcaster/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSpellcasterGame, type ArcaneEnemy, type SpellcasterState } from "@/games/spellcaster/src/game";
 import type { SpellId } from "@/games/spellcaster/src/director";
@@ -38,6 +40,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
   const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<SpellHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -62,7 +65,10 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(SPELLCASTER_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createSpellView(canvas);
     let drawHandle = 0;
@@ -88,6 +94,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(SPELLCASTER_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(render);
@@ -163,6 +170,8 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     }
   };
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(INITIAL_HUD);
     setCameraState("idle");
@@ -177,8 +186,10 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable gesture survival · Seed spellcaster-{run}</p><h1>Spellcaster <span>101</span></h1></div>
         <div className="spell-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="spell-arena">
-        <div className="spell-statusbar"><span><i className="status-dot" /> TEMPORAL GESTURE STATE MACHINE</span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>{cameraState === "active" ? gesture : "CAMERA OPTIONAL"}</b></div>
+        <div className="spell-statusbar"><span><i className="status-dot" /> TEMPORAL GESTURE STATE MACHINE</span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "CAMERA OPTIONAL"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

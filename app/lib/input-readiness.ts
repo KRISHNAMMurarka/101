@@ -16,6 +16,14 @@ import { sessionSources, type SessionSnapshot } from "@101/session";
 export interface GameInputReadiness extends ResolvedInputManifest {
   /** Everything able to produce frames right now, for showing the player what they are playing on. */
   available: InputSource[];
+  /**
+   * Sources this game asked for that are not present, in author preference order.
+   *
+   * This is what turns a generic nudge into a useful one. A camera game and a steering game are
+   * both "degraded" on a bare laptop, but telling a camera game's player to pair a phone is simply
+   * wrong advice.
+   */
+  wanted: InputSource[];
 }
 
 export function resolveGameInput(
@@ -24,7 +32,43 @@ export function resolveGameInput(
   snapshot?: Pick<SessionSnapshot, "devices">,
 ): GameInputReadiness {
   const available = bus.availableSources(sessionSources(snapshot?.devices ?? []));
-  return { available, ...resolveInputManifest(parseInputManifest(manifest), available) };
+  const parsed = parseInputManifest(manifest);
+  const resolved = resolveInputManifest(parsed, available);
+
+  const present = new Set(available);
+  const wanted: InputSource[] = [];
+  const unresolved = new Set([...resolved.degraded, ...resolved.missing]);
+  for (const group of [parsed.actions, parsed.axes, parsed.vectors, parsed.poses]) {
+    for (const [control, requirement] of Object.entries(group ?? {})) {
+      if (!unresolved.has(control)) continue;
+      for (const source of requirement.recommended) {
+        if (!present.has(source) && !wanted.includes(source)) wanted.push(source);
+      }
+    }
+  }
+  return { available, wanted, ...resolved };
+}
+
+/** The device a player would actually go and get, for a source they are missing. */
+const DEVICE_FOR: Partial<Record<InputSource, string>> = {
+  "camera-pose": "Enable the camera",
+  "camera-hand": "Enable the camera",
+  "camera-face": "Enable the camera",
+  "phone-motion": "Pair a phone",
+  touch: "Pair a phone",
+  "watch-motion": "Pair a watch",
+  gamepad: "Connect a gamepad",
+  hid: "Connect your hardware",
+  bluetooth: "Connect your hardware",
+  serial: "Connect your hardware",
+};
+
+function suggestion(wanted: readonly InputSource[]): string | null {
+  for (const source of wanted) {
+    const device = DEVICE_FOR[source];
+    if (device) return device;
+  }
+  return null;
 }
 
 /**
@@ -33,12 +77,27 @@ export function resolveGameInput(
  * Deliberately not a list of control names: "aim, slash, trigger" tells a player nothing they can
  * do about it. What they can act on is the device.
  */
-export function describeReadiness(readiness: ResolvedInputManifest): string | null {
+export function describeReadiness(readiness: GameInputReadiness): string | null {
+  const advice = suggestion(readiness.wanted);
   if (!readiness.playable) {
-    const needed = new Set<string>();
-    for (const control of readiness.blocking) needed.add(control);
-    return `Connect a controller to play — ${[...needed].join(", ")} ${needed.size === 1 ? "has" : "have"} no input yet.`;
+    return advice
+      ? `${advice} to play — ${readiness.blocking.join(", ")} ${readiness.blocking.length === 1 ? "has" : "have"} no input yet.`
+      : `Connect a controller to play — ${readiness.blocking.join(", ")} ${readiness.blocking.length === 1 ? "has" : "have"} no input yet.`;
   }
-  if (readiness.degraded.length > 0) return "Playable now. Pair a phone for the controls this game was designed around.";
+  if (readiness.degraded.length > 0 && advice) return `Playable now. ${advice} for the controls this game was designed around.`;
   return null;
+}
+
+/**
+ * What to print in a status bar's input slot.
+ *
+ * Three states, deliberately distinct. Before the effect has run — server render, first paint —
+ * nothing has been measured, and printing "NO INPUT" there would replace one false claim with
+ * another. Measured-and-empty is a real state worth naming. Anything else lists what is actually
+ * connected.
+ */
+export function describeSources(readiness?: GameInputReadiness): string {
+  if (!readiness) return "DETECTING INPUT";
+  if (readiness.available.length === 0) return "NO INPUT";
+  return readiness.available.join(" · ").toUpperCase();
 }

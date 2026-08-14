@@ -64,7 +64,13 @@ test("serves BodyDodge with optional local camera and conventional controls", as
   assert.match(html, /Playable local vision slice/);
   assert.match(html, /ENABLE BODY CAMERA/);
   assert.match(html, /CONNECT PANEL/);
-  assert.match(html, /KEYBOARD · GAMEPAD/);
+  // This used to assert the literal "KEYBOARD · GAMEPAD", which the page printed whether or not a
+  // gamepad existed. The slot now reports what the game's input manifest actually resolved against
+  // the hardware present, and a server render has measured nothing yet — so the honest server-side
+  // value is neither a device list nor "NO INPUT", both of which would be claims we cannot support.
+  assert.match(html, /DETECTING INPUT/);
+  assert.doesNotMatch(html, /KEYBOARD · GAMEPAD/,
+    "the status bar must not claim hardware it has not detected");
   assert.match(html, /video is neither uploaded nor recorded/i);
 });
 

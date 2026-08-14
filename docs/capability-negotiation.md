@@ -91,20 +91,44 @@ Recomputing on `onChange` is what makes pairing a phone clear the notice immedia
 
 ## What the player sees
 
-Slashstorm's status bar used to read a fixed `POINTER · TOUCH · GAMEPAD · KEYBOARD`, which claimed a
-gamepad whether or not one existed. It now reports the resolved sources — `KEYBOARD · MOUSE` on a
-plain laptop — and adds one actionable line when it is worth saying something:
+Seven of the ten games printed a fixed `KEYBOARD · GAMEPAD` (Slashstorm printed
+`POINTER · TOUCH · GAMEPAD · KEYBOARD`, SwarmCommander added `MOUSE`), claiming a gamepad whether or
+not one existed. Every status bar now reports the sources that actually resolved — `KEYBOARD` on a
+plain laptop — and adds one actionable line when there is something worth saying.
 
-> Playable now. Pair a phone for the controls this game was designed around.
+The line names a **device**, not control names. "aim, slash, trigger have no input" is accurate and
+useless; a player can act on "pair a phone". The device is derived from the `recommended` sources of
+the controls that did not resolve, so the advice fits the game:
 
-The line names devices rather than control names. "aim, slash, trigger have no input" is accurate
-and useless; a player can act on "pair a phone".
+| Game | Notice on a bare laptop |
+| --- | --- |
+| BodyDodge, ShadowArena, Spellcaster | Playable now. **Enable the camera** for the controls this game was designed around. |
+| Slashstorm, TiltDrift, BeatForge, GravityStack, EchoMaze, OrbitalCrew, SwarmCommander | Playable now. **Pair a phone** for the controls this game was designed around. |
+
+Telling a camera game's player to pair a phone would be confidently wrong, which is worse than
+saying nothing.
+
+There are three display states for the source list, deliberately distinct. A server render has
+measured nothing, so it prints `DETECTING INPUT` — printing `NO INPUT` there would swap one false
+claim for another. `NO INPUT` is reserved for measured-and-genuinely-empty.
+
+## What this found in the shipped manifests
+
+BodyDodge declared its body pose as `"fallback": []` with the description *"Optional flattened
+33-point body pose"*. The prose said optional; the schema had no way to express it. Resolution
+therefore did the correct thing with the information available — treated it as required and reported
+the game unplayable on a laptop, which it plainly is not.
+
+The manifest now declares `optional: true` and says why. A test resolves every shipped game against
+a keyboard-only setup and fails if any is blocked, so the next manifest that says one thing in prose
+and another in schema is caught immediately.
 
 ## Known gaps
 
-- Only Slashstorm consumes this so far. The other nine games still hand-roll their host wiring and
-  do not read their own manifests.
-- `GameHost101` now computes readiness and exposes `onInputReadiness`, but nothing in the app uses
-  `GameHost101` yet, so that path is still unexercised outside tests.
+- `GameHost101` computes readiness and exposes `onInputReadiness`, but nothing in the app uses
+  `GameHost101` — each game component wires its own `Engine101` and `SessionHost` — so that path is
+  still unexercised outside tests. The duplication across ten components is the real thing to fix.
 - Camera capability maps to all three camera sources at once. A device that can see a hand is
   assumed able to see a pose, which is true of the current adapters but is an assumption.
+- The notice is advisory only. Nothing yet refuses to start a genuinely blocked game, because no
+  shipped game is blocked on a keyboard; the `playable` flag exists for when one is.

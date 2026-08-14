@@ -8,6 +8,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import type { PoseLandmark } from "@101/vision";
 import { useEffect, useRef, useState } from "react";
 import { createShadowArenaGame, type ShadowArenaState, type ShadowEnemy } from "@/games/shadowarena/src/game";
@@ -30,6 +32,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
   const poseRef = useRef<PoseLandmark[] | undefined>(undefined);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<ShadowHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -48,7 +51,10 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     const audio = createShadowAudio();
     const host = new SessionHost({
       gameId: "shadowarena", roles: SHADOW_ARENA_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(SHADOWARENA_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createShadowView(canvas);
     let drawHandle = 0;
@@ -73,6 +79,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(SHADOWARENA_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(draw);
@@ -109,6 +116,8 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     }
   };
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); poseRef.current = undefined; setRun((value) => value + 1); };
 
   return (
@@ -117,8 +126,10 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable silhouette combat · Seed shadowarena-{run}</p><h1>Shadow Arena <span>101</span></h1></div>
         <div className="shadow-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="shadow-arena">
-        <div className="shadow-statusbar"><span><i className="status-dot" /> COMBAT POSE / INPUT BUS ACTIVE</span><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="shadow-statusbar"><span><i className="status-dot" /> COMBAT POSE / INPUT BUS ACTIVE</span><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Shadow Arena. Move with A/D or arrows, punch with J and K, block with L, jump with W or Space, duck with S, and use Shadow Burst with I." />
         {/* Local camera capture is muted, requests no audio, and is not recorded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

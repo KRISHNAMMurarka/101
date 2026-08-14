@@ -5,6 +5,8 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import GRAVITYSTACK_INPUT from "@/games/gravitystack/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createGravityStackGame, type GravityStackState } from "@/games/gravitystack/src/game";
 import type { StackShapeSpec } from "@/games/gravitystack/src/director";
@@ -47,6 +49,7 @@ function initialHud(preview: StackShapeSpec): StackHud {
 export default function GravityStackGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<StackHud>(() => initialHud(INITIAL_PREVIEW));
   const [session, setSession] = useState<SessionSnapshot>({ code: sessionId, gameId: "gravitystack", revision: 0, devices: [], assignments: [], openRoles: [] });
 
@@ -72,7 +75,10 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
         session: new LocalSession(sessionId),
         onFrame: (frame) => engine.inputBus.accept(frame),
         onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-        onChange: setSession,
+        onChange: (snapshot) => {
+          setSession(snapshot);
+          setReadiness(resolveGameInput(GRAVITYSTACK_INPUT, engine.inputBus, snapshot));
+        },
       });
       const view = createStackView(stage, () => engine.context.state, Phaser, Renderer2D101);
       let previousLost = 0;
@@ -80,6 +86,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       void engine.inputBus.register(keyboard);
       void engine.inputBus.register(gamepad);
       void host.start();
+      setReadiness(resolveGameInput(GRAVITYSTACK_INPUT, engine.inputBus));
       void engine.start();
       const hudTimer = window.setInterval(() => {
         const state = engine.context.state;
@@ -131,6 +138,8 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
     };
   }, [run, sessionId]);
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(initialHud(INITIAL_PREVIEW));
     setRun((value) => value + 1);
@@ -146,7 +155,9 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
 
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
-          <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{session.assignments.length ? `${session.assignments.length} LINK ROLE${session.assignments.length > 1 ? "S" : ""}` : "KEYBOARD · GAMEPAD"}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
+          <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{session.assignments.length ? `${session.assignments.length} LINK ROLE${session.assignments.length > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
+          {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>
           <div className="gravity-drop-guide" style={{ left: `${50 + hud.placementX / 10 * 100}%` }}><i /><span>DROP</span></div>

@@ -9,6 +9,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import SWARMCOMMANDER_INPUT from "@/games/swarmcommander/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSwarmCommanderGame, type CommanderEnemy, type SwarmCommanderState } from "@/games/swarmcommander/src/game";
 import { SWARM_COMMANDER_ROLES } from "@/games/swarmcommander/src/roles";
@@ -24,6 +26,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
   const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<SwarmHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -39,7 +42,10 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     const engine = new Engine101(createSwarmCommanderGame(`swarmcommander-${run}`));
     const keyboard = new KeyboardAdapter(); const gamepad = new GamepadAdapter(); const pointer = new PointerAdapter(canvas);
     const audio = createSwarmAudio();
-    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => setLinked(snapshot.assignments.length) });
+    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(SWARMCOMMANDER_INPUT, engine.inputBus, snapshot));
+      } });
     const view = createSwarmView(canvas);
     let drawHandle = 0; let previousAction = 0; let previousImpact = 0;
     engineRef.current = engine;
@@ -49,7 +55,8 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
       if (state.impactSequence !== previousImpact) { previousImpact = state.impactSequence; if (audioEnabledRef.current) audio.play("impact", { volume: .42 }); }
       drawHandle = requestAnimationFrame(draw);
     };
-    void engine.inputBus.register(keyboard); void engine.inputBus.register(gamepad); void engine.inputBus.register(pointer); void host.start(); void engine.start(); canvas.focus(); drawHandle = requestAnimationFrame(draw);
+    void engine.inputBus.register(keyboard); void engine.inputBus.register(gamepad); void engine.inputBus.register(pointer); void host.start();
+    setReadiness(resolveGameInput(SWARMCOMMANDER_INPUT, engine.inputBus)); void engine.start(); canvas.focus(); drawHandle = requestAnimationFrame(draw);
     const timer = window.setInterval(() => {
       const state = engine.context.state; const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
       setHud({ score: state.score, wave: state.wave, agents: state.agents.length, selected: state.selected, enemies, energy: state.energy, formation: state.formation, modifier: state.modifier, event: state.lastEvent, shield: state.shieldUntil > state.elapsed, gameOver: state.gameOver });
@@ -71,13 +78,17 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     try { await engine.inputBus.register(adapter); setCameraState("active"); }
     catch (cause) { await engine.inputBus.unregister(adapter); cameraRef.current = null; const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError"); setCameraState(denied ? "denied" : "error"); setCameraError(denied ? "Camera permission was not granted. Mouse, keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand command could not start."); }
   };
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); setRun((value) => value + 1); };
 
   return (
     <section className="swarm-page">
       <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable spatial command · Seed swarmcommander-{run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="swarm-arena">
-        <div className="swarm-statusbar"><span><i className="status-dot" /> SPATIAL HASH · INSTANCED RENDERING</span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : "MOUSE · KEYBOARD · GAMEPAD"}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="swarm-statusbar"><span><i className="status-dot" /> SPATIAL HASH · INSTANCED RENDERING</span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />
         {/* Local camera capture requests no audio and is never recorded or uploaded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

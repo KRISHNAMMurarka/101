@@ -6,7 +6,7 @@ import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
@@ -112,7 +112,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",
             which claimed a gamepad whether or not one was plugged in. It now reports what the input
             manifest actually resolved against the hardware present. */}
-        <div className="slash-statusbar"><span><i className="status-dot" /> INPUT BUS / SWORD ACTIVE</span><span>{linked ? `${linked} LINK CONTROLLER` : (readiness?.available.join(" · ").toUpperCase() || "NO INPUT")}</span></div>
+        <div className="slash-statusbar"><span><i className="status-dot" /> INPUT BUS / SWORD ACTIVE</span><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
         {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play another seed ↗</button></div>}

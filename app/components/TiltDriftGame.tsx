@@ -6,6 +6,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import TILTDRIFT_INPUT from "@/games/tiltdrift/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createTiltDriftGame, type TiltDriftState } from "@/games/tiltdrift/src/game";
 import { roadCenterAt, type RoadEnvironment, type RoadSegment } from "@/games/tiltdrift/src/director";
@@ -27,6 +29,7 @@ const INITIAL_HUD: DriftHud = { speed: 27, score: 0, integrity: 100, boost: 100,
 export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [linked, setLinked] = useState(0);
   const [hud, setHud] = useState<DriftHud>(INITIAL_HUD);
 
@@ -44,7 +47,10 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(TILTDRIFT_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createDriftView(canvas);
     let renderHandle = 0;
@@ -56,6 +62,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(TILTDRIFT_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     renderHandle = requestAnimationFrame(render);
@@ -74,6 +81,8 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     };
   }, [run, sessionId]);
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(INITIAL_HUD);
     setRun((value) => value + 1);
@@ -85,8 +94,10 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable 3D vertical slice · Seed tiltdrift-{run}</p><h1>TiltDrift <span>101</span></h1></div>
         <div className="drift-stats"><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="drift-arena">
-        <div className="drift-statusbar"><span><i className="status-dot" /> INPUT BUS / STEER ACTIVE</span><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : "KEYBOARD · GAMEPAD"}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
+        <div className="drift-statusbar"><span><i className="status-dot" /> INPUT BUS / STEER ACTIVE</span><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="TiltDrift play field. Steer with left and right arrows, boost with Space, brake with Down, and drift with Shift." />
         <div className="drift-overlay">
           <div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div>

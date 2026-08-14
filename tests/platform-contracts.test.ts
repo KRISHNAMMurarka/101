@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
@@ -149,4 +149,75 @@ test("a registered adapter is not the same claim as an available one", () => {
 
   const bus = readFileSync(resolve(import.meta.dirname, "../packages/input/src/index.ts"), "utf8");
   assert.match(bus, /adapter\.available === false/, "availableSources must honour that report");
+});
+
+test("every shipped game is playable on a plain keyboard, and says so honestly", () => {
+  // 101's promise is that anything can be a controller, not that you need something exotic to
+  // start. A game whose required controls cannot be served by a bare laptop is either mis-declared
+  // or genuinely unplayable for most people, and both are worth failing over.
+  //
+  // This caught a real one: bodydodge's `body` pose had `"fallback": []` and a description reading
+  // "Optional flattened 33-point body pose". The prose said optional, the schema had no way to say
+  // it, so resolution correctly called it required and reported the game blocked on a laptop. The
+  // manifest now declares `optional: true` and states why.
+  const keyboardOnly: InputSource[] = ["keyboard", "mouse"];
+  const games = readdirSync(resolve(import.meta.dirname, "../games"));
+  let checked = 0;
+
+  for (const id of games) {
+    let manifest: InputManifest;
+    try {
+      manifest = parseInputManifest(JSON.parse(
+        readFileSync(resolve(import.meta.dirname, `../games/${id}/input.manifest.json`), "utf8"),
+      ));
+    } catch {
+      continue;
+    }
+    checked += 1;
+    const bare = resolveInputManifest(manifest, keyboardOnly);
+    assert.equal(bare.playable, true,
+      `${id} cannot be played on a keyboard: ${bare.blocking.join(", ")}`);
+
+    // Pairing a phone must never make a game worse, and for these games it should remove every
+    // fallback substitution — that is what makes "pair a phone" worth telling the player.
+    const paired = resolveInputManifest(manifest, [...keyboardOnly, "touch", "phone-motion"]);
+    assert.equal(paired.playable, true, `${id} regressed when a phone joined`);
+    assert.ok(paired.degraded.length <= bare.degraded.length,
+      `${id} reports more degraded controls with a phone than without`);
+  }
+
+  assert.equal(checked, 10, "all ten games must ship an input manifest");
+});
+
+test("the readiness notice names the device that would actually help", async () => {
+  // A camera game and a steering game are both "degraded" on a bare laptop, but telling a camera
+  // game's player to pair a phone is confidently wrong advice — worse than saying nothing. The
+  // suggestion is derived from the recommended sources of the controls that did not resolve.
+  const { describeReadiness } = await import("../app/lib/input-readiness.ts");
+
+  const camera = describeReadiness({
+    mappings: {}, missing: [], blocking: [], degraded: ["lean"], playable: true,
+    available: ["keyboard"], wanted: ["camera-pose"],
+  });
+  assert.match(camera ?? "", /Enable the camera/);
+
+  const motion = describeReadiness({
+    mappings: {}, missing: [], blocking: [], degraded: ["steer"], playable: true,
+    available: ["keyboard"], wanted: ["phone-motion"],
+  });
+  assert.match(motion ?? "", /Pair a phone/);
+
+  // Nothing to improve means nothing to say. A permanent nudge is noise.
+  const happy = describeReadiness({
+    mappings: {}, missing: [], blocking: [], degraded: [], playable: true,
+    available: ["keyboard", "phone-motion"], wanted: [],
+  });
+  assert.equal(happy, null);
+
+  // A blocked game still says what is wrong even when no device maps to the missing source.
+  const blocked = describeReadiness({
+    mappings: {}, missing: ["draw"], blocking: ["draw"], degraded: [], playable: false,
+    available: [], wanted: ["custom"],
+  });
+  assert.match(blocked ?? "", /draw/);
 });

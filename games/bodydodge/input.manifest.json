@@ -13,6 +13,6 @@
     "body.move": { "recommended": ["touch", "custom"], "fallback": ["keyboard", "gamepad", "camera-pose"], "description": "Normalized step and lean intent from 101 Link or conventional controls." }
   },
   "poses": {
-    "body": { "recommended": ["camera-pose"], "fallback": [], "description": "Optional flattened 33-point body pose." }
+    "body": { "recommended": ["camera-pose"], "fallback": [], "optional": true, "description": "Flattened 33-point body pose. The game plays without it; every control it feeds has a conventional fallback." }
   }
 }

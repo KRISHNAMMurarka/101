@@ -8,6 +8,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import BEATFORGE_INPUT from "@/games/beatforge/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { beatActionLabel, createBeatForgeGame, type BeatForgeState, type BeatTarget } from "@/games/beatforge/src/game";
 import type { BeatAction } from "@/games/beatforge/src/director";
@@ -35,6 +37,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<BeatHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -59,7 +62,10 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(BEATFORGE_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createBeatView(canvas);
     const soundedGroups = new Set<number>();
@@ -86,6 +92,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(BEATFORGE_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(render);
@@ -152,6 +159,8 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
     }
   };
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const enableAudio = () => {
     setAudioEnabled(true);
     audioEnabledRef.current = true;
@@ -170,8 +179,10 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable rhythm + movement · Seed beatforge-{run}</p><h1>BeatForge <span>101</span></h1></div>
         <div className="beat-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
       </header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="beat-arena">
-        <div className="beat-statusbar"><span><i className="status-dot" /> RHYTHM CLOCK / INPUT BUS ACTIVE</span><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>GENERATED AUDIO · OFFLINE</b></div>
+        <div className="beat-statusbar"><span><i className="status-dot" /> RHYTHM CLOCK / INPUT BUS ACTIVE</span><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>GENERATED AUDIO · OFFLINE</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

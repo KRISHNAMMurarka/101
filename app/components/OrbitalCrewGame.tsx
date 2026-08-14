@@ -5,6 +5,8 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
+import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import ORBITALCREW_INPUT from "@/games/orbitalcrew/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createOrbitalCrewGame, type OrbitalCrewState } from "@/games/orbitalcrew/src/game";
 import { ORBITAL_CREW_ROLES } from "@/games/orbitalcrew/src/roles";
@@ -44,6 +46,7 @@ const INITIAL_HUD: OrbitalHud = {
 export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<OrbitalHud>(INITIAL_HUD);
   const [session, setSession] = useState<SessionSnapshot>(() => emptySession(sessionId));
 
@@ -61,7 +64,10 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: setSession,
+      onChange: (snapshot) => {
+        setSession(snapshot);
+        setReadiness(resolveGameInput(ORBITALCREW_INPUT, engine.inputBus, snapshot));
+      },
     });
     const announcedThreats = new Set<number>();
     let drawHandle = 0;
@@ -75,6 +81,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(ORBITALCREW_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(draw);
@@ -131,6 +138,8 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
     };
   }, [run, sessionId]);
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(INITIAL_HUD);
     setRun((value) => value + 1);
@@ -145,6 +154,8 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       </header>
 
       <div className="orbital-layout">
+        {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
         <div className="orbital-stage">
           <div className="orbital-statusbar"><span><i className="status-dot" /> SESSION HOST / ROLE ROUTING ACTIVE</span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "LOCAL SPACE CLEAR"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />

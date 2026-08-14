@@ -7,6 +7,8 @@ import { Engine101 } from "@101/core";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import BODYDODGE_INPUT from "@/games/bodydodge/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createBodyDodgeGame, type BodyDodgeState } from "@/games/bodydodge/src/game";
 import type { DodgeGate, DodgeRequirement } from "@/games/bodydodge/src/director";
@@ -34,6 +36,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
   const engineRef = useRef<Engine101<BodyDodgeState> | null>(null);
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<BodyHud>(INITIAL_HUD);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
@@ -53,7 +56,10 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(BODYDODGE_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createBodyView(canvas);
     engineRef.current = engine;
@@ -66,6 +72,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(BODYDODGE_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     renderHandle = requestAnimationFrame(render);
@@ -112,6 +119,8 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
     }
   };
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => {
     setHud(INITIAL_HUD);
     setCameraState("idle");
@@ -126,8 +135,10 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable local vision slice · Seed bodydodge-{run}</p><h1>BodyDodge <span>101</span></h1></div>
         <div className="body-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
+      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
       <div className="body-arena">
-        <div className="body-statusbar"><span><i className="status-dot" /> INPUT BUS / BODY ACTIVE</span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : "KEYBOARD · GAMEPAD"}</span><b>RAW VIDEO LOCAL</b></div>
+        <div className="body-statusbar"><span><i className="status-dot" /> INPUT BUS / BODY ACTIVE</span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>RAW VIDEO LOCAL</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BodyDodge play field. Move with Left and Right, duck with Down, jump with Up or Space, and raise arms with E." />
         {/* Camera capture is always muted and requests no audio track. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

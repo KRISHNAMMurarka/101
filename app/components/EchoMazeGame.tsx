@@ -8,6 +8,8 @@ import { canTravel, type MazeDirection } from "@101/maze";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { LocalSession, SessionHost } from "@101/session";
+import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import ECHOMAZE_INPUT from "@/games/echomaze/input.manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createEchoMazeGame, type EchoMazeState } from "@/games/echomaze/src/game";
 import { ECHO_MAZE_ROLES } from "@/games/echomaze/src/roles";
@@ -33,6 +35,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
+  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<EchoHud>(INITIAL_HUD);
   const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
@@ -53,7 +56,10 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
       session: new LocalSession(sessionId),
       onFrame: (frame) => engine.inputBus.accept(frame),
       onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => setLinked(snapshot.assignments.length),
+      onChange: (snapshot) => {
+        setLinked(snapshot.assignments.length);
+        setReadiness(resolveGameInput(ECHOMAZE_INPUT, engine.inputBus, snapshot));
+      },
     });
     const view = createEchoView(canvas);
     let drawHandle = 0;
@@ -85,6 +91,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
     void engine.inputBus.register(keyboard);
     void engine.inputBus.register(gamepad);
     void host.start();
+    setReadiness(resolveGameInput(ECHOMAZE_INPUT, engine.inputBus));
     void engine.start();
     canvas.focus();
     drawHandle = requestAnimationFrame(render);
@@ -128,6 +135,8 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
     };
   }, [run, sessionId]);
 
+  const readinessNotice = readiness ? describeReadiness(readiness) : null;
+
   const restart = () => { setHud(INITIAL_HUD); setRun((value) => value + 1); };
 
   return (
@@ -137,6 +146,8 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
       <div className="echo-layout">
+        {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+
         <div className="echo-stage">
           <div className="echo-statusbar"><span><i className="status-dot" /> SEEDED MAZE / LOCAL COMPANION CHANNEL</span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "PRIVATE CLUE ROUTED TO LINK" : "FALLBACK CLUE VISIBLE"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
