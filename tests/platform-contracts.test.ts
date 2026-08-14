@@ -120,22 +120,39 @@ test("the launcher never statically imports a playable surface", () => {
   }
 });
 
-test("game input manifests are resolved at runtime, not just validated in tests", () => {
-  // `resolveInputManifest` existed for a long time with exactly two call sites, both of them test
-  // files. Every game declared what it needed in input.manifest.json, the suite checked those
-  // declarations were well formed, and the running app never read them — so a control nothing could
-  // serve produced a game that started and quietly ignored the player. This asserts the wiring is
-  // real, because a resolver with no production caller passes every other test in this repo.
-  const helper = readFileSync(resolve(import.meta.dirname, "../app/lib/input-readiness.ts"), "utf8");
-  assert.match(helper, /resolveInputManifest\(/, "the helper must call the resolver");
-  assert.match(helper, /availableSources\(/, "local adapters must be counted");
-  assert.match(helper, /sessionSources\(/, "paired devices must be counted too, or a phone is invisible");
+test("every game runs through the SDK, and the SDK resolves its input manifest", () => {
+  // Three layers shipped with no callers at all: `resolveInputManifest` was reachable only from
+  // tests, `defineGamePackage` from nothing, and `GameHost101` from nothing — while all ten game
+  // components hand-assembled an Engine101, a LocalSession and a SessionHost themselves. Ten copies
+  // of the same twenty lines, free to drift, and they had: seven status bars claimed a gamepad that
+  // was not plugged in.
+  //
+  // The path a third-party developer is told to build on must be the path this app uses, or it is
+  // documentation rather than a product.
+  const hook = readFileSync(resolve(import.meta.dirname, "../app/lib/use-game-host.ts"), "utf8");
+  assert.match(hook, /new GameHost101\(/, "the hook must run games through the real host");
+  assert.match(hook, /onInputReadiness/, "readiness must come from the host, not a parallel copy");
 
-  const game = readFileSync(resolve(import.meta.dirname, "../app/components/SlashstormGame.tsx"), "utf8");
-  assert.match(game, /resolveGameInput\(/, "at least one shipping game must resolve its manifest");
-  assert.match(game, /input\.manifest\.json/, "and it must read the real manifest, not a copy");
-  // Readiness has to be recomputed when devices change, or pairing a phone never clears the notice.
-  assert.match(game, /onChange:[\s\S]{0,220}resolveGameInput\(/);
+  const host = readFileSync(resolve(import.meta.dirname, "../packages/game-host/src/index.ts"), "utf8");
+  assert.match(host, /resolveInputManifest\(/, "the host is what resolves a game's declared needs");
+  assert.match(host, /sessionSources\(/, "paired devices must count, or a phone is invisible");
+
+  const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
+    .filter((file) => file.endsWith("Game.tsx"));
+  assert.equal(components.length, 10, "all ten games must be present");
+
+  for (const file of components) {
+    const source = readFileSync(resolve(import.meta.dirname, `../app/components/${file}`), "utf8");
+    assert.match(source, /useGameHost</, `${file} must run through the shared host`);
+    assert.match(source, /defineGamePackage\(/, `${file} must build a validated game package`);
+    assert.match(source, /input\.manifest\.json/, `${file} must declare its real input manifest`);
+
+    // The duplication this replaced. Any of these coming back means a component is wiring its own
+    // host again, which is how the copies drifted apart the first time.
+    for (const banned of ["new SessionHost(", "new Engine101(", "new LocalSession("]) {
+      assert.ok(!source.includes(banned), `${file} must not hand-roll ${banned}…) any more`);
+    }
+  }
 });
 
 test("a registered adapter is not the same claim as an available one", () => {
@@ -197,27 +214,68 @@ test("the readiness notice names the device that would actually help", async () 
 
   const camera = describeReadiness({
     mappings: {}, missing: [], blocking: [], degraded: ["lean"], playable: true,
-    available: ["keyboard"], wanted: ["camera-pose"],
+    wanted: ["camera-pose"],
   });
   assert.match(camera ?? "", /Enable the camera/);
 
   const motion = describeReadiness({
     mappings: {}, missing: [], blocking: [], degraded: ["steer"], playable: true,
-    available: ["keyboard"], wanted: ["phone-motion"],
+    wanted: ["phone-motion"],
   });
   assert.match(motion ?? "", /Pair a phone/);
 
   // Nothing to improve means nothing to say. A permanent nudge is noise.
   const happy = describeReadiness({
     mappings: {}, missing: [], blocking: [], degraded: [], playable: true,
-    available: ["keyboard", "phone-motion"], wanted: [],
+    wanted: [],
   });
   assert.equal(happy, null);
 
   // A blocked game still says what is wrong even when no device maps to the missing source.
   const blocked = describeReadiness({
     mappings: {}, missing: ["draw"], blocking: ["draw"], degraded: [], playable: false,
-    available: [], wanted: ["custom"],
+    wanted: ["custom"],
   });
   assert.match(blocked ?? "", /draw/);
+});
+
+test("defineGamePackage accepts every game it is the gate for", async () => {
+  // This validation is what every third-party package passes through, so an over-strict rule here
+  // refuses correct games rather than catching broken ones — a failure mode that only shows up
+  // once something actually calls it.
+  //
+  // It did. Routing the app through its own SDK made TiltDrift throw "Controller role driver uses
+  // undeclared steer". The game was right: it renders a `steer` wheel and reads
+  // `input.axis("steer")`, and `ControllerInputModel.setVector` writes `axes[action] = vector.x`
+  // beside `axes[actionX]`/`axes[actionY]`. The validator simply did not know a pad aliases to its
+  // axis name, so it demanded a vector declaration the runtime never required.
+  const { defineGamePackage } = await import("@101/sdk");
+  const games = readdirSync(resolve(import.meta.dirname, "../games"));
+  let checked = 0;
+
+  for (const id of games) {
+    const dir = resolve(import.meta.dirname, `../games/${id}`);
+    // input-lab ships a manifest but no input manifest — it is a diagnostic surface, not a game.
+    let manifest: unknown;
+    let input: unknown;
+    try {
+      manifest = JSON.parse(readFileSync(resolve(dir, "manifest.json"), "utf8"));
+      input = JSON.parse(readFileSync(resolve(dir, "input.manifest.json"), "utf8"));
+    } catch {
+      continue;
+    }
+    const roles = rolesByGame[id as keyof typeof rolesByGame] ?? [];
+    checked += 1;
+
+    // A stub definition rather than the real one: importing ten game modules would drag three.js,
+    // Phaser and Rapier into a unit test, and only `game.id` takes part in this validation. What is
+    // under test is the agreement between manifest, input manifest and controller roles.
+    const game = { id, initialState: () => ({}), update: () => {} };
+
+    assert.doesNotThrow(
+      () => defineGamePackage({ manifest, input, controllers: roles, game }),
+      `${id} must survive the validation its own launcher performs`,
+    );
+  }
+  assert.equal(checked, 10, "all ten games must be validated");
 });

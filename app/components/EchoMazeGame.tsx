@@ -3,13 +3,13 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
-import { Engine101 } from "@101/core";
 import { canTravel, type MazeDirection } from "@101/maze";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import ECHOMAZE_INPUT from "@/games/echomaze/input.manifest.json";
+import ECHOMAZE_MANIFEST from "@/games/echomaze/manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createEchoMazeGame, type EchoMazeState } from "@/games/echomaze/src/game";
 import { ECHO_MAZE_ROLES } from "@/games/echomaze/src/roles";
@@ -35,105 +35,91 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<EchoHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createEchoMazeGame(`echomaze-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const audio = createEchoAudio();
-    const host = new SessionHost({
-      gameId: "echomaze",
-      roles: ECHO_MAZE_ROLES,
-      transport: getBrowserHostTransport(sessionId),
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(ECHOMAZE_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createEchoView(canvas);
-    let drawHandle = 0;
-    let previousScan = 0;
-    let previousImpact = 0;
-    let previousFloor = 0;
+  const { linked, readiness } = useGameHost<EchoMazeState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: ECHOMAZE_MANIFEST,
+      input: ECHOMAZE_INPUT,
+      controllers: ECHO_MAZE_ROLES,
+      game: createEchoMazeGame(`echomaze-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const audio = createEchoAudio();
+      const view = createEchoView(canvas);
+      let drawHandle = 0;
+      let previousScan = 0;
+      let previousImpact = 0;
+      let previousFloor = 0;
 
-    const render = () => {
-      const state = engine.context.state;
-      view.sync(state);
-      if (state.scanSequence !== previousScan) {
-        previousScan = state.scanSequence;
-        if (audioEnabledRef.current) audio.play("ping", { volume: .55, pan: Math.sin(state.clue.bearing) * .7 });
-        host.haptic("scanner", state.clue.echoDistance <= 2 ? "warning" : "tap");
-      }
-      if (state.impactSequence !== previousImpact) {
-        previousImpact = state.impactSequence;
-        if (audioEnabledRef.current) audio.play("echo", { volume: .75 });
-        host.haptic("scanner", "impact");
-      }
-      if (state.floorSequence !== previousFloor) {
-        previousFloor = state.floorSequence;
-        if (audioEnabledRef.current) audio.play("threshold", { volume: .64 });
-        host.haptic("scanner", "warning");
-      }
+      const render = () => {
+        const state = context.state;
+        view.sync(state);
+        if (state.scanSequence !== previousScan) {
+          previousScan = state.scanSequence;
+          if (audioEnabledRef.current) audio.play("ping", { volume: .55, pan: Math.sin(state.clue.bearing) * .7 });
+          host.haptic("scanner", state.clue.echoDistance <= 2 ? "warning" : "tap");
+        }
+        if (state.impactSequence !== previousImpact) {
+          previousImpact = state.impactSequence;
+          if (audioEnabledRef.current) audio.play("echo", { volume: .75 });
+          host.haptic("scanner", "impact");
+        }
+        if (state.floorSequence !== previousFloor) {
+          previousFloor = state.floorSequence;
+          if (audioEnabledRef.current) audio.play("threshold", { volume: .64 });
+          host.haptic("scanner", "warning");
+        }
+        drawHandle = requestAnimationFrame(render);
+      };
+
+      canvas.focus();
       drawHandle = requestAnimationFrame(render);
-    };
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        setHud({
+          score: state.score,
+          floor: state.floorNumber,
+          theme: state.floor.theme,
+          modifier: state.floor.modifier,
+          fragments: state.collected.length,
+          fragmentTotal: state.floor.fragments.length,
+          health: state.health,
+          battery: state.battery,
+          flashlight: state.flashlight,
+          event: state.lastEvent,
+          clue: { ...state.clue },
+          gameOver: state.gameOver,
+        });
+        host.sendControllerState("scanner", {
+          TARGET: state.clue.target.toUpperCase(),
+          BEARING: state.clue.compass,
+          DISTANCE: `${state.clue.distance} CELLS`,
+          SIGNAL: `${state.clue.signal}%`,
+          ECHO: state.clue.echoDistance > 8 ? "DISTANT" : `${state.clue.echoDistance} CELLS`,
+          BATTERY: `${Math.round(state.battery)}%`,
+        }, {
+          message: state.clue.echoDistance <= 2 ? "ECHO PROXIMITY" : state.clue.exitLocked ? "RECOVER ALL FRAGMENTS" : "EXIT SIGNATURE OPEN",
+          tone: state.clue.echoDistance <= 2 ? "critical" : state.battery < 20 ? "warning" : "normal",
+        });
+      }, 110);
 
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(ECHOMAZE_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    drawHandle = requestAnimationFrame(render);
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      setHud({
-        score: state.score,
-        floor: state.floorNumber,
-        theme: state.floor.theme,
-        modifier: state.floor.modifier,
-        fragments: state.collected.length,
-        fragmentTotal: state.floor.fragments.length,
-        health: state.health,
-        battery: state.battery,
-        flashlight: state.flashlight,
-        event: state.lastEvent,
-        clue: { ...state.clue },
-        gameOver: state.gameOver,
-      });
-      host.sendControllerState("scanner", {
-        TARGET: state.clue.target.toUpperCase(),
-        BEARING: state.clue.compass,
-        DISTANCE: `${state.clue.distance} CELLS`,
-        SIGNAL: `${state.clue.signal}%`,
-        ECHO: state.clue.echoDistance > 8 ? "DISTANT" : `${state.clue.echoDistance} CELLS`,
-        BATTERY: `${Math.round(state.battery)}%`,
-      }, {
-        message: state.clue.echoDistance <= 2 ? "ECHO PROXIMITY" : state.clue.exitLocked ? "RECOVER ALL FRAGMENTS" : "EXIT SIGNATURE OPEN",
-        tone: state.clue.echoDistance <= 2 ? "critical" : state.battery < 20 ? "warning" : "normal",
-      });
-    }, 110);
-
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(drawHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-      audio.unload();
-      view.dispose();
-    };
-  }, [run, sessionId]);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(drawHandle);
+        audio.unload();
+        view.dispose();
+      };
+    },
+  });
 
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 

@@ -16,14 +16,6 @@ import { sessionSources, type SessionSnapshot } from "@101/session";
 export interface GameInputReadiness extends ResolvedInputManifest {
   /** Everything able to produce frames right now, for showing the player what they are playing on. */
   available: InputSource[];
-  /**
-   * Sources this game asked for that are not present, in author preference order.
-   *
-   * This is what turns a generic nudge into a useful one. A camera game and a steering game are
-   * both "degraded" on a bare laptop, but telling a camera game's player to pair a phone is simply
-   * wrong advice.
-   */
-  wanted: InputSource[];
 }
 
 export function resolveGameInput(
@@ -32,21 +24,7 @@ export function resolveGameInput(
   snapshot?: Pick<SessionSnapshot, "devices">,
 ): GameInputReadiness {
   const available = bus.availableSources(sessionSources(snapshot?.devices ?? []));
-  const parsed = parseInputManifest(manifest);
-  const resolved = resolveInputManifest(parsed, available);
-
-  const present = new Set(available);
-  const wanted: InputSource[] = [];
-  const unresolved = new Set([...resolved.degraded, ...resolved.missing]);
-  for (const group of [parsed.actions, parsed.axes, parsed.vectors, parsed.poses]) {
-    for (const [control, requirement] of Object.entries(group ?? {})) {
-      if (!unresolved.has(control)) continue;
-      for (const source of requirement.recommended) {
-        if (!present.has(source) && !wanted.includes(source)) wanted.push(source);
-      }
-    }
-  }
-  return { available, wanted, ...resolved };
+  return { available, ...resolveInputManifest(parseInputManifest(manifest), available) };
 }
 
 /** The device a player would actually go and get, for a source they are missing. */
@@ -77,7 +55,7 @@ function suggestion(wanted: readonly InputSource[]): string | null {
  * Deliberately not a list of control names: "aim, slash, trigger" tells a player nothing they can
  * do about it. What they can act on is the device.
  */
-export function describeReadiness(readiness: GameInputReadiness): string | null {
+export function describeReadiness(readiness: ResolvedInputManifest): string | null {
   const advice = suggestion(readiness.wanted);
   if (!readiness.playable) {
     return advice

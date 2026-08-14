@@ -8,7 +8,7 @@ import {
 } from "@101/input";
 import type { LinkTransport } from "@101/protocol";
 import type { GamePackage } from "@101/sdk";
-import { SessionHost, sessionSources, type SessionSnapshot } from "@101/session";
+import { LocalSession, SessionHost, sessionSources, type SessionSnapshot } from "@101/session";
 
 /**
  * What the running game needs, matched against what is actually plugged in or paired.
@@ -27,6 +27,14 @@ export interface GameHostOptions {
   transport: LinkTransport;
   adapters?: readonly InputAdapter[];
   inputBus?: InputBus;
+  /**
+   * The session to host under.
+   *
+   * Pairing tickets carry the session code, so a host that invents its own cannot be joined by a
+   * controller holding a link for a known one. Anything rendering a QR code must pass the session
+   * whose code it printed.
+   */
+  session?: LocalSession;
   onSessionChange?(snapshot: SessionSnapshot): void;
   /**
    * Called whenever the match between a game's declared needs and the connected hardware changes —
@@ -53,6 +61,7 @@ export class GameHost101 {
       gameId: "launcher",
       roles: [],
       transport: options.transport,
+      ...(options.session ? { session: options.session } : {}),
       onFrame: (frame) => this.inputBus.accept(frame),
       onDeviceReset: (deviceId) => this.inputBus.removeDevice(deviceId),
       onChange: (snapshot) => {
@@ -96,6 +105,26 @@ export class GameHost101 {
     this.refreshReadiness();
     await engine.start();
     return engine.context;
+  }
+
+  /**
+   * Buzz the device holding a role.
+   *
+   * Delegated rather than left to `host.session.haptic(...)`. Every converted game reached through
+   * the session for exactly these two calls, which makes the host a half-façade: it owns the engine,
+   * the bus and the session, but games still had to know which of those a feedback call lives on.
+   */
+  haptic(roleId: string, pattern: "tap" | "impact" | "warning") {
+    return this.session.haptic(roleId, pattern);
+  }
+
+  /** Push private per-role state to the controller holding it — a clue, a readout, a warning. */
+  sendControllerState(
+    roleId: string,
+    values: Record<string, string | number | boolean>,
+    options: { message?: string; tone?: "normal" | "warning" | "critical" } = {},
+  ) {
+    return this.session.sendControllerState(roleId, values, options);
   }
 
   private refreshReadiness(snapshot = this.session.session.snapshot()) {

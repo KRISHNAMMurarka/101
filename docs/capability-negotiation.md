@@ -123,12 +123,56 @@ The manifest now declares `optional: true` and says why. A test resolves every s
 a keyboard-only setup and fails if any is blocked, so the next manifest that says one thing in prose
 and another in schema is caught immediately.
 
+## The app runs on its own SDK
+
+Three layers used to ship with no callers at all. `resolveInputManifest` was reachable only from
+tests, `defineGamePackage` from nothing, and `GameHost101` from nothing — while all ten game
+components hand-assembled an `Engine101`, a `LocalSession` and a `SessionHost` themselves. The path a
+third-party developer is told to build on was the one path nothing exercised.
+
+Every game now goes through `useGameHost`, which owns transport, session, adapters, engine, readiness
+and teardown:
+
+```tsx
+const { linked, readiness } = useGameHost<SlashstormState>({
+  sessionId,
+  deps: [run],
+  build: () => defineGamePackage({ manifest, input, controllers: ROLES, game: createGame(seed) }),
+  adapters: () => [new KeyboardAdapter(), new PointerAdapter(canvas), new GamepadAdapter()],
+  onReady: ({ context }) => { /* views, draw loop, HUD timers */ return () => { /* teardown */ }; },
+});
+```
+
+Ten copies of the same twenty lines became one, and the net change was **737 lines deleted against
+662 added**. `GameHost101` also delegates `haptic` and `sendControllerState` rather than making games
+reach through `host.session` for them — a half-façade is its own kind of duplication.
+
+## What dogfooding the SDK immediately caught
+
+`defineGamePackage` validates that a controller role only references controls the input manifest
+declares. The moment a real game ran through it, TiltDrift threw:
+
+```text
+Error: Controller role driver uses undeclared steer
+```
+
+**The game was right and the validator was wrong.** TiltDrift renders a `steer` wheel and reads
+`input.axis("steer")`; `ControllerInputModel.setVector` writes `axes[action] = vector.x` alongside
+`axes[actionX]` and `axes[actionY]`, so a pad legitimately satisfies an axis declaration. The
+validator did not know about that aliasing and demanded a vector declaration the runtime never
+required. The repository's own contract test had always treated axes and vectors as interchangeable
+here, so the two disagreed and only the lax one ever ran.
+
+This is the expensive kind of bug: the validation is the gate every third-party package passes
+through, so an over-strict rule there refuses correct games rather than catching broken ones — and
+nothing would have revealed it until an outside developer hit it. A test now runs all ten games
+through `defineGamePackage`; reverting the fix fails it with the exact error above.
+
 ## Known gaps
 
-- `GameHost101` computes readiness and exposes `onInputReadiness`, but nothing in the app uses
-  `GameHost101` — each game component wires its own `Engine101` and `SessionHost` — so that path is
-  still unexercised outside tests. The duplication across ten components is the real thing to fix.
 - Camera capability maps to all three camera sources at once. A device that can see a hand is
   assumed able to see a pose, which is true of the current adapters but is an assumption.
 - The notice is advisory only. Nothing yet refuses to start a genuinely blocked game, because no
   shipped game is blocked on a keyboard; the `playable` flag exists for when one is.
+- Readiness is reported after launch rather than before first paint, so a status bar shows
+  `DETECTING INPUT` for one tick.

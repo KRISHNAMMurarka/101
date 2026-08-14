@@ -5,12 +5,13 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { Audio101 } from "@101/audio";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
+import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import SWARMCOMMANDER_INPUT from "@/games/swarmcommander/input.manifest.json";
+import SWARMCOMMANDER_MANIFEST from "@/games/swarmcommander/manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSwarmCommanderGame, type CommanderEnemy, type SwarmCommanderState } from "@/games/swarmcommander/src/game";
 import { SWARM_COMMANDER_ROLES } from "@/games/swarmcommander/src/roles";
@@ -22,13 +23,11 @@ const INITIAL_HUD: SwarmHud = { score: 0, wave: 1, agents: 168, selected: 0, ene
 export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const engineRef = useRef<Engine101<SwarmCommanderState> | null>(null);
+  const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<SwarmHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
@@ -36,38 +35,47 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
   const [cameraError, setCameraError] = useState("");
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createSwarmCommanderGame(`swarmcommander-${run}`));
-    const keyboard = new KeyboardAdapter(); const gamepad = new GamepadAdapter(); const pointer = new PointerAdapter(canvas);
-    const audio = createSwarmAudio();
-    const host = new SessionHost({ gameId: "swarmcommander", roles: SWARM_COMMANDER_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId), onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(SWARMCOMMANDER_INPUT, engine.inputBus, snapshot));
-      } });
-    const view = createSwarmView(canvas);
-    let drawHandle = 0; let previousAction = 0; let previousImpact = 0;
-    engineRef.current = engine;
-    const draw = () => {
-      const state = engine.context.state; view.sync(state);
-      if (state.actionSequence !== previousAction) { previousAction = state.actionSequence; if (audioEnabledRef.current) audio.play("command", { volume: .5 }); host.haptic("navigator", "tap"); host.haptic("tactician", state.lastEvent.includes("PULSE") ? "impact" : "tap"); }
-      if (state.impactSequence !== previousImpact) { previousImpact = state.impactSequence; if (audioEnabledRef.current) audio.play("impact", { volume: .42 }); }
-      drawHandle = requestAnimationFrame(draw);
-    };
-    void engine.inputBus.register(keyboard); void engine.inputBus.register(gamepad); void engine.inputBus.register(pointer); void host.start();
-    setReadiness(resolveGameInput(SWARMCOMMANDER_INPUT, engine.inputBus)); void engine.start(); canvas.focus(); drawHandle = requestAnimationFrame(draw);
-    const timer = window.setInterval(() => {
-      const state = engine.context.state; const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
-      setHud({ score: state.score, wave: state.wave, agents: state.agents.length, selected: state.selected, enemies, energy: state.energy, formation: state.formation, modifier: state.modifier, event: state.lastEvent, shield: state.shieldUntil > state.elapsed, gameOver: state.gameOver });
-      host.sendControllerState("navigator", { WAVE: state.wave, AGENTS: state.agents.length, ENERGY: state.energy }, { message: state.lastEvent, tone: state.agents.length < 45 ? "critical" : enemies > 10 ? "warning" : "normal" });
-      host.sendControllerState("tactician", { FORM: state.formation.toUpperCase(), SELECTED: state.selected || "ALL", ENERGY: state.energy, HOSTILES: enemies }, { message: state.lastEvent, tone: enemies > 10 ? "warning" : "normal" });
-    }, 100);
-    return () => { window.clearInterval(timer); cancelAnimationFrame(drawHandle); void host.stop(); engine.stop(); void engine.inputBus.destroy(); audio.unload(); view.dispose(); engineRef.current = null; cameraRef.current = null; };
-  }, [run, sessionId]);
+  const { linked, readiness } = useGameHost<SwarmCommanderState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: SWARMCOMMANDER_MANIFEST,
+      input: SWARMCOMMANDER_INPUT,
+      controllers: SWARM_COMMANDER_ROLES,
+      game: createSwarmCommanderGame(`swarmcommander-${run}`),
+    }),
+    adapters: () => {
+      const canvas = canvasRef.current;
+      return canvas
+        ? [new KeyboardAdapter(), new GamepadAdapter(), new PointerAdapter(canvas)]
+        : [new KeyboardAdapter(), new GamepadAdapter()];
+    },
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const audio = createSwarmAudio();
+      const view = createSwarmView(canvas);
+      let drawHandle = 0; let previousAction = 0; let previousImpact = 0;
+      hostRef.current = host;
+      const draw = () => {
+        const state = context.state; view.sync(state);
+        if (state.actionSequence !== previousAction) { previousAction = state.actionSequence; if (audioEnabledRef.current) audio.play("command", { volume: .5 }); host.haptic("navigator", "tap"); host.haptic("tactician", state.lastEvent.includes("PULSE") ? "impact" : "tap"); }
+        if (state.impactSequence !== previousImpact) { previousImpact = state.impactSequence; if (audioEnabledRef.current) audio.play("impact", { volume: .42 }); }
+        drawHandle = requestAnimationFrame(draw);
+      };
+      canvas.focus(); drawHandle = requestAnimationFrame(draw);
+      const timer = window.setInterval(() => {
+        const state = context.state; const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
+        setHud({ score: state.score, wave: state.wave, agents: state.agents.length, selected: state.selected, enemies, energy: state.energy, formation: state.formation, modifier: state.modifier, event: state.lastEvent, shield: state.shieldUntil > state.elapsed, gameOver: state.gameOver });
+        host.sendControllerState("navigator", { WAVE: state.wave, AGENTS: state.agents.length, ENERGY: state.energy }, { message: state.lastEvent, tone: state.agents.length < 45 ? "critical" : enemies > 10 ? "warning" : "normal" });
+        host.sendControllerState("tactician", { FORM: state.formation.toUpperCase(), SELECTED: state.selected || "ALL", ENERGY: state.energy, HOSTILES: enemies }, { message: state.lastEvent, tone: enemies > 10 ? "warning" : "normal" });
+      }, 100);
+      return () => { window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose(); hostRef.current = null; cameraRef.current = null; };
+    },
+  });
 
   const enableCamera = async () => {
-    const engine = engineRef.current; const video = videoRef.current; if (!engine || !video) return;
+    const host = hostRef.current; const video = videoRef.current; if (!host || !video) return;
     setCameraState("loading"); setCameraError("");
     const adapter = new BrowserHandAdapter({
       video, mirror: true, classifier: { stableFrames: 3, gestureCooldownMs: 420 },
@@ -75,8 +83,8 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
       onError: (error) => setCameraError(error.message),
     });
     cameraRef.current = adapter;
-    try { await engine.inputBus.register(adapter); setCameraState("active"); }
-    catch (cause) { await engine.inputBus.unregister(adapter); cameraRef.current = null; const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError"); setCameraState(denied ? "denied" : "error"); setCameraError(denied ? "Camera permission was not granted. Mouse, keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand command could not start."); }
+    try { await host.inputBus.register(adapter); setCameraState("active"); }
+    catch (cause) { await host.inputBus.unregister(adapter); cameraRef.current = null; const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError"); setCameraState(denied ? "denied" : "error"); setCameraError(denied ? "Camera permission was not granted. Mouse, keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand command could not start."); }
   };
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 

@@ -171,11 +171,19 @@ function validateRole(role: GameControllerRole, controls: ReturnType<typeof inpu
   const label = text(role.label, "controller role label", 80);
   const layout = parseControllerLayout(role.layout);
   for (const element of layout.layout) {
+    // A pad may be declared as either a vector or an axis, because the controller publishes both:
+    // `ControllerInputModel.setVector` writes `axes[action] = vector.x` alongside `axes[actionX]`
+    // and `axes[actionY]`. TiltDrift relies on exactly that — it renders a `steer` wheel and reads
+    // `input.axis("steer")` — and requiring a vector declaration rejected a game that works.
+    //
+    // Getting this wrong is expensive in a way a first-party game only reveals by accident: this
+    // validation is the gate every third-party package passes through, so an over-strict rule here
+    // refuses correct games rather than catching broken ones.
     const valid = element.type === "button"
       ? controls.actions.has(element.action)
       : element.type === "slider"
         ? controls.axes.has(element.action)
-        : controls.vectors.has(element.action);
+        : controls.vectors.has(element.action) || controls.axes.has(element.action);
     if (!valid) throw new Error(`Controller role ${id} uses undeclared ${element.action}`);
   }
   if (layout.motion) {

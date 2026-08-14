@@ -121,6 +121,9 @@ test("maps a game manifest to the best available input fallback", () => {
     // Both controls fell through to `fallback`, so the game runs but is not being played the way
     // it was designed. A host that cannot tell the difference cannot offer to improve it.
     degraded: ["slash", "pause"],
+    // Both controls wanted something better than the mouse and keyboard that served them, and the
+    // list is what a host turns into "pair a phone" rather than a list of control names.
+    wanted: ["phone-motion", "camera-hand", "gamepad"],
     playable: true,
   });
 });

@@ -4,12 +4,13 @@ import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
+import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import BEATFORGE_INPUT from "@/games/beatforge/input.manifest.json";
+import BEATFORGE_MANIFEST from "@/games/beatforge/manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { beatActionLabel, createBeatForgeGame, type BeatForgeState, type BeatTarget } from "@/games/beatforge/src/game";
 import type { BeatAction } from "@/games/beatforge/src/director";
@@ -33,13 +34,11 @@ const INITIAL_HUD: BeatHud = { bpm: 112, score: 0, combo: 0, health: 100, accura
 export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const engineRef = useRef<Engine101<BeatForgeState> | null>(null);
+  const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<BeatHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
@@ -47,96 +46,83 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createBeatForgeGame(`beatforge-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const transport = getBrowserHostTransport(sessionId);
-    const audio = createBeatAudio();
-    const host = new SessionHost({
-      gameId: "beatforge",
-      roles: BEATFORGE_ROLES,
-      transport,
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(BEATFORGE_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createBeatView(canvas);
-    const soundedGroups = new Set<number>();
-    let drawHandle = 0;
-    let previousCue = 0;
-    engineRef.current = engine;
+  const { linked, readiness } = useGameHost<BeatForgeState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: BEATFORGE_MANIFEST,
+      input: BEATFORGE_INPUT,
+      controllers: BEATFORGE_ROLES,
+      game: createBeatForgeGame(`beatforge-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const audio = createBeatAudio();
+      const view = createBeatView(canvas);
+      const soundedGroups = new Set<number>();
+      let drawHandle = 0;
+      let previousCue = 0;
+      hostRef.current = host;
 
-    const render = () => {
-      const state = engine.context.state;
-      view.sync(state);
-      for (const target of state.targets) {
-        if (target.targetSeconds > state.elapsed || soundedGroups.has(target.groupId)) continue;
-        soundedGroups.add(target.groupId);
-        if (audioEnabledRef.current) audio.play(target.accent ? "accent" : "beat", { volume: target.accent ? .75 : .42 });
-        host.haptic("performer", target.accent ? "impact" : "tap");
-      }
-      if (state.cueSequence !== previousCue) {
-        previousCue = state.cueSequence;
-        if (audioEnabledRef.current) audio.play(state.cue === "miss" ? "miss" : state.cue === "perfect" ? "perfect" : "hit", { volume: .72 });
-      }
+      const render = () => {
+        const state = context.state;
+        view.sync(state);
+        for (const target of state.targets) {
+          if (target.targetSeconds > state.elapsed || soundedGroups.has(target.groupId)) continue;
+          soundedGroups.add(target.groupId);
+          if (audioEnabledRef.current) audio.play(target.accent ? "accent" : "beat", { volume: target.accent ? .75 : .42 });
+          host.haptic("performer", target.accent ? "impact" : "tap");
+        }
+        if (state.cueSequence !== previousCue) {
+          previousCue = state.cueSequence;
+          if (audioEnabledRef.current) audio.play(state.cue === "miss" ? "miss" : state.cue === "perfect" ? "perfect" : "hit", { volume: .72 });
+        }
+        drawHandle = requestAnimationFrame(render);
+      };
+
+      canvas.focus();
       drawHandle = requestAnimationFrame(render);
-    };
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        const next = state.targets.filter((target) => target.status === "pending").sort((a, b) => a.targetSeconds - b.targetSeconds)[0];
+        setHud({
+          bpm: state.bpm,
+          score: state.score,
+          combo: state.combo,
+          health: state.health,
+          accuracy: state.accuracy,
+          lastJudge: state.lastJudge,
+          gameOver: state.gameOver,
+          next: next ? { action: next.action, remaining: Math.max(0, next.targetSeconds - state.elapsed) } : undefined,
+        });
+        host.sendControllerState("performer", {
+          BPM: state.bpm,
+          COMBO: state.combo,
+          ACCURACY: state.accuracy,
+          HEALTH: state.health,
+        }, {
+          message: next ? `NEXT · ${beatActionLabel(next.action)}` : "CHART CLEAR",
+          tone: state.health < 30 ? "critical" : state.combo >= 10 ? "warning" : "normal",
+        });
+      }, 90);
 
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(BEATFORGE_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    drawHandle = requestAnimationFrame(render);
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      const next = state.targets.filter((target) => target.status === "pending").sort((a, b) => a.targetSeconds - b.targetSeconds)[0];
-      setHud({
-        bpm: state.bpm,
-        score: state.score,
-        combo: state.combo,
-        health: state.health,
-        accuracy: state.accuracy,
-        lastJudge: state.lastJudge,
-        gameOver: state.gameOver,
-        next: next ? { action: next.action, remaining: Math.max(0, next.targetSeconds - state.elapsed) } : undefined,
-      });
-      host.sendControllerState("performer", {
-        BPM: state.bpm,
-        COMBO: state.combo,
-        ACCURACY: state.accuracy,
-        HEALTH: state.health,
-      }, {
-        message: next ? `NEXT · ${beatActionLabel(next.action)}` : "CHART CLEAR",
-        tone: state.health < 30 ? "critical" : state.combo >= 10 ? "warning" : "normal",
-      });
-    }, 90);
-
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(drawHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-      audio.unload();
-      view.dispose();
-      engineRef.current = null;
-      cameraRef.current = null;
-    };
-  }, [run, sessionId]);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(drawHandle);
+        audio.unload();
+        view.dispose();
+        hostRef.current = null;
+        cameraRef.current = null;
+      };
+    },
+  });
 
   const enableCamera = async () => {
-    const engine = engineRef.current;
+    const host = hostRef.current;
     const video = videoRef.current;
-    if (!engine || !video) return;
+    if (!host || !video) return;
     setCameraState("loading");
     setCameraError("");
     const adapter = new BrowserCameraAdapter({
@@ -148,10 +134,10 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
     });
     cameraRef.current = adapter;
     try {
-      await engine.inputBus.register(adapter);
+      await host.inputBus.register(adapter);
       setCameraState("active");
     } catch (cause) {
-      await engine.inputBus.unregister(adapter);
+      await host.inputBus.unregister(adapter);
       cameraRef.current = null;
       const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
       setCameraState(denied ? "denied" : "error");

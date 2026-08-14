@@ -4,12 +4,13 @@ import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
+import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
+import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
 import type { PoseLandmark } from "@101/vision";
 import { useEffect, useRef, useState } from "react";
 import { createShadowArenaGame, type ShadowArenaState, type ShadowEnemy } from "@/games/shadowarena/src/game";
@@ -27,14 +28,12 @@ const INITIAL_HUD: ShadowHud = { score: 0, round: 1, combo: 0, health: 100, focu
 export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const engineRef = useRef<Engine101<ShadowArenaState> | null>(null);
+  const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const poseRef = useRef<PoseLandmark[] | undefined>(undefined);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<ShadowHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
@@ -42,64 +41,60 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createShadowArenaGame(`shadowarena-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const audio = createShadowAudio();
-    const host = new SessionHost({
-      gameId: "shadowarena", roles: SHADOW_ARENA_ROLES, transport: getBrowserHostTransport(sessionId), session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame), onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId), onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(SHADOWARENA_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createShadowView(canvas);
-    let drawHandle = 0;
-    let previousAction = 0;
-    let previousImpact = 0;
-    engineRef.current = engine;
-    const draw = () => {
-      const state = engine.context.state;
-      view.sync(state, poseRef.current);
-      if (state.actionSequence !== previousAction) {
-        previousAction = state.actionSequence;
-        if (audioEnabledRef.current) audio.play(state.lastAction === "SHADOW BURST" ? "special" : "strike", { volume: .65, pan: state.facing * .35 });
-        host.haptic("fighter", state.lastAction === "SHADOW BURST" ? "impact" : "tap");
-      }
-      if (state.impactSequence !== previousImpact) {
-        previousImpact = state.impactSequence;
-        if (audioEnabledRef.current) audio.play("impact", { volume: .7 });
-        host.haptic("fighter", "impact");
-      }
+  const { linked, readiness } = useGameHost<ShadowArenaState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: SHADOWARENA_MANIFEST,
+      input: SHADOWARENA_INPUT,
+      controllers: SHADOW_ARENA_ROLES,
+      game: createShadowArenaGame(`shadowarena-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const audio = createShadowAudio();
+      const view = createShadowView(canvas);
+      let drawHandle = 0;
+      let previousAction = 0;
+      let previousImpact = 0;
+      hostRef.current = host;
+      const draw = () => {
+        const state = context.state;
+        view.sync(state, poseRef.current);
+        if (state.actionSequence !== previousAction) {
+          previousAction = state.actionSequence;
+          if (audioEnabledRef.current) audio.play(state.lastAction === "SHADOW BURST" ? "special" : "strike", { volume: .65, pan: state.facing * .35 });
+          host.haptic("fighter", state.lastAction === "SHADOW BURST" ? "impact" : "tap");
+        }
+        if (state.impactSequence !== previousImpact) {
+          previousImpact = state.impactSequence;
+          if (audioEnabledRef.current) audio.play("impact", { volume: .7 });
+          host.haptic("fighter", "impact");
+        }
+        drawHandle = requestAnimationFrame(draw);
+      };
+      canvas.focus();
       drawHandle = requestAnimationFrame(draw);
-    };
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(SHADOWARENA_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    drawHandle = requestAnimationFrame(draw);
-    const timer = window.setInterval(() => {
-      const state = engine.context.state;
-      const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
-      setHud({ score: state.score, round: state.round, combo: state.combo, health: state.health, focus: state.focus, enemies, modifier: state.modifier, event: state.lastEvent, action: state.lastAction, gameOver: state.gameOver });
-      host.sendControllerState("fighter", { ROUND: state.round, HEALTH: state.health, FOCUS: state.focus, CHAIN: state.combo }, {
-        message: state.lastEvent, tone: state.health < 30 ? "critical" : enemies > 2 ? "warning" : "normal",
-      });
-    }, 100);
-    return () => {
-      window.clearInterval(timer); cancelAnimationFrame(drawHandle); void host.stop(); engine.stop(); void engine.inputBus.destroy(); audio.unload(); view.dispose();
-      engineRef.current = null; cameraRef.current = null; poseRef.current = undefined;
-    };
-  }, [run, sessionId]);
+      const timer = window.setInterval(() => {
+        const state = context.state;
+        const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
+        setHud({ score: state.score, round: state.round, combo: state.combo, health: state.health, focus: state.focus, enemies, modifier: state.modifier, event: state.lastEvent, action: state.lastAction, gameOver: state.gameOver });
+        host.sendControllerState("fighter", { ROUND: state.round, HEALTH: state.health, FOCUS: state.focus, CHAIN: state.combo }, {
+          message: state.lastEvent, tone: state.health < 30 ? "critical" : enemies > 2 ? "warning" : "normal",
+        });
+      }, 100);
+      return () => {
+        window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose();
+        hostRef.current = null; cameraRef.current = null; poseRef.current = undefined;
+      };
+    },
+  });
 
   const enableCamera = async () => {
-    const engine = engineRef.current; const video = videoRef.current;
-    if (!engine || !video) return;
+    const host = hostRef.current; const video = videoRef.current;
+    if (!host || !video) return;
     setCameraState("loading"); setCameraError("");
     const adapter = new BrowserCameraAdapter({
       video, mirror: true, classifier: { autoCalibrationFrames: 18, gestureCooldownMs: 300 },
@@ -107,9 +102,9 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       onError: (error) => setCameraError(error.message),
     });
     cameraRef.current = adapter;
-    try { await engine.inputBus.register(adapter); setCameraState("active"); }
+    try { await host.inputBus.register(adapter); setCameraState("active"); }
     catch (cause) {
-      await engine.inputBus.unregister(adapter); cameraRef.current = null;
+      await host.inputBus.unregister(adapter); cameraRef.current = null;
       const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
       setCameraState(denied ? "denied" : "error");
       setCameraError(denied ? "Camera permission was not granted. Keyboard, gamepad, and Link controls remain active." : cause instanceof Error ? cause.message : "Local pose combat could not start.");

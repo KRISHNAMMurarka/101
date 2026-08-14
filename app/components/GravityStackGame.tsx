@@ -2,12 +2,12 @@
 
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
-import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import GRAVITYSTACK_INPUT from "@/games/gravitystack/input.manifest.json";
-import { useEffect, useRef, useState } from "react";
+import GRAVITYSTACK_MANIFEST from "@/games/gravitystack/manifest.json";
+import { useRef, useState } from "react";
 import { createGravityStackGame, type GravityStackState } from "@/games/gravitystack/src/game";
 import type { StackShapeSpec } from "@/games/gravitystack/src/director";
 import { GRAVITYSTACK_ROLES } from "@/games/gravitystack/src/roles";
@@ -49,47 +49,35 @@ function initialHud(preview: StackShapeSpec): StackHud {
 export default function GravityStackGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<StackHud>(() => initialHud(INITIAL_PREVIEW));
-  const [session, setSession] = useState<SessionSnapshot>({ code: sessionId, gameId: "gravitystack", revision: 0, devices: [], assignments: [], openRoles: [] });
 
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    let teardown: (() => void) | undefined;
-    let cancelled = false;
-
-    void (async () => {
-      // Phaser touches browser globals while its module loads, so the facade is
-      // resolved only after hydration. Game and physics code remain unchanged.
-      const { Phaser, Renderer2D101 } = await import("@101/render-2d");
-      if (cancelled) return;
-      const engine = new Engine101(createGravityStackGame(`gravitystack-${run}`));
-      const keyboard = new KeyboardAdapter();
-      const gamepad = new GamepadAdapter();
-      const transport = getBrowserHostTransport(sessionId);
-      const host = new SessionHost({
-        gameId: "gravitystack",
-        roles: GRAVITYSTACK_ROLES,
-        transport,
-        session: new LocalSession(sessionId),
-        onFrame: (frame) => engine.inputBus.accept(frame),
-        onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-        onChange: (snapshot) => {
-          setSession(snapshot);
-          setReadiness(resolveGameInput(GRAVITYSTACK_INPUT, engine.inputBus, snapshot));
-        },
-      });
-      const view = createStackView(stage, () => engine.context.state, Phaser, Renderer2D101);
+  const { linked, session, readiness } = useGameHost<GravityStackState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: GRAVITYSTACK_MANIFEST,
+      input: GRAVITYSTACK_INPUT,
+      controllers: GRAVITYSTACK_ROLES,
+      game: createGravityStackGame(`gravitystack-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      let cancelled = false;
+      let view: { destroy: () => void } | undefined;
       let previousLost = 0;
 
-      void engine.inputBus.register(keyboard);
-      void engine.inputBus.register(gamepad);
-      void host.start();
-      setReadiness(resolveGameInput(GRAVITYSTACK_INPUT, engine.inputBus));
-      void engine.start();
+      // Phaser touches browser globals while its module loads, so the facade is
+      // resolved only after hydration. Game and physics code remain unchanged.
+      void (async () => {
+        const { Phaser, Renderer2D101 } = await import("@101/render-2d");
+        if (cancelled) return;
+        view = createStackView(stage, () => context.state, Phaser, Renderer2D101);
+      })();
+
       const hudTimer = window.setInterval(() => {
-        const state = engine.context.state;
+        const state = context.state;
         setHud({
           ready: state.ready,
           score: state.score,
@@ -122,21 +110,13 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
         }
       }, 100);
 
-      teardown = () => {
+      return () => {
+        cancelled = true;
         window.clearInterval(hudTimer);
-        void host.stop();
-        engine.stop();
-        void engine.inputBus.destroy();
-        view.destroy();
+        view?.destroy();
       };
-      if (cancelled) teardown();
-    })();
-
-    return () => {
-      cancelled = true;
-      teardown?.();
-    };
-  }, [run, sessionId]);
+    },
+  });
 
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 
@@ -155,7 +135,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
 
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
-          <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{session.assignments.length ? `${session.assignments.length} LINK ROLE${session.assignments.length > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
+          <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
           {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
 
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
@@ -178,9 +158,9 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
             <dl><div><dt>WIDTH</dt><dd>{hud.preview.width.toFixed(2)}</dd></div><div><dt>WEIGHT</dt><dd>{hud.preview.density.toFixed(1)}</dd></div><div><dt>GRIP</dt><dd>{hud.preview.friction.toFixed(2)}</dd></div></dl>
           </section>
           <section className="gravity-role-card">
-            <div><span>ROLE ROUTER</span><button onClick={onConnect}>{session.assignments.length ? "ADD DEVICE" : "CONNECT DEVICES"} ↗</button></div>
+            <div><span>ROLE ROUTER</span><button onClick={onConnect}>{linked ? "ADD DEVICE" : "CONNECT DEVICES"} ↗</button></div>
             {GRAVITYSTACK_ROLES.map((role) => {
-              const assignment = session.assignments.find((item) => item.roleId === role.id);
+              const assignment = session?.assignments.find((item) => item.roleId === role.id);
               return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? assignment.deviceId : "CONVENTIONAL FALLBACK"}</span></p>;
             })}
           </section>

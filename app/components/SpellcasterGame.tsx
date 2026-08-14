@@ -4,12 +4,13 @@ import { BrowserHandAdapter, type HandAdapterDiagnostics } from "@101/adapter-ca
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
+import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import SPELLCASTER_INPUT from "@/games/spellcaster/input.manifest.json";
+import SPELLCASTER_MANIFEST from "@/games/spellcaster/manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { createSpellcasterGame, type ArcaneEnemy, type SpellcasterState } from "@/games/spellcaster/src/game";
 import type { SpellId } from "@/games/spellcaster/src/director";
@@ -36,13 +37,11 @@ const INITIAL_HUD: SpellHud = { score: 0, combo: 0, health: 100, mana: 100, char
 export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const engineRef = useRef<Engine101<SpellcasterState> | null>(null);
+  const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<SpellHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
@@ -51,98 +50,86 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createSpellcasterGame(`spellcaster-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const audio = createSpellAudio();
-    const host = new SessionHost({
-      gameId: "spellcaster",
-      roles: SPELLCASTER_ROLES,
-      transport: getBrowserHostTransport(sessionId),
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(SPELLCASTER_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createSpellView(canvas);
-    let drawHandle = 0;
-    let previousCast = 0;
-    let previousImpact = 0;
-    engineRef.current = engine;
+  const { linked, readiness } = useGameHost<SpellcasterState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: SPELLCASTER_MANIFEST,
+      input: SPELLCASTER_INPUT,
+      controllers: SPELLCASTER_ROLES,
+      game: createSpellcasterGame(`spellcaster-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const audio = createSpellAudio();
+      const view = createSpellView(canvas);
+      let drawHandle = 0;
+      let previousCast = 0;
+      let previousImpact = 0;
+      hostRef.current = host;
 
-    const render = () => {
-      const state = engine.context.state;
-      view.sync(state);
-      if (state.castSequence !== previousCast) {
-        previousCast = state.castSequence;
-        if (audioEnabledRef.current) audio.play(state.lastCast, { volume: .62, pan: state.aim.x * .5 });
-        host.haptic("sorcerer", state.lastCast === "vortex" || state.lastCast === "blade" ? "impact" : "tap");
-      }
-      if (state.impactSequence !== previousImpact) {
-        previousImpact = state.impactSequence;
-        if (audioEnabledRef.current) audio.play("impact", { volume: .58 });
-      }
-      drawHandle = requestAnimationFrame(render);
-    };
-
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(SPELLCASTER_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    drawHandle = requestAnimationFrame(render);
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      const activeEnemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
-      const nextHud: SpellHud = {
-        score: state.score,
-        combo: state.combo,
-        health: state.health,
-        mana: state.mana,
-        charge: state.charge,
-        wave: state.wave,
-        enemies: activeEnemies,
-        shield: state.shieldUntil > state.elapsed,
-        event: state.lastEvent,
-        lastCast: state.lastCast,
-        gameOver: state.gameOver,
+      const render = () => {
+        const state = context.state;
+        view.sync(state);
+        if (state.castSequence !== previousCast) {
+          previousCast = state.castSequence;
+          if (audioEnabledRef.current) audio.play(state.lastCast, { volume: .62, pan: state.aim.x * .5 });
+          host.haptic("sorcerer", state.lastCast === "vortex" || state.lastCast === "blade" ? "impact" : "tap");
+        }
+        if (state.impactSequence !== previousImpact) {
+          previousImpact = state.impactSequence;
+          if (audioEnabledRef.current) audio.play("impact", { volume: .58 });
+        }
+        drawHandle = requestAnimationFrame(render);
       };
-      setHud(nextHud);
-      host.sendControllerState("sorcerer", {
-        WAVE: state.wave,
-        MANA: state.mana,
-        HEALTH: state.health,
-        COMBO: state.combo,
-      }, {
-        message: state.lastEvent,
-        tone: state.health < 30 ? "critical" : state.mana < 20 ? "warning" : "normal",
-      });
-    }, 100);
 
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(drawHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-      audio.unload();
-      view.dispose();
-      engineRef.current = null;
-      cameraRef.current = null;
-    };
-  }, [run, sessionId]);
+      canvas.focus();
+      drawHandle = requestAnimationFrame(render);
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        const activeEnemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
+        const nextHud: SpellHud = {
+          score: state.score,
+          combo: state.combo,
+          health: state.health,
+          mana: state.mana,
+          charge: state.charge,
+          wave: state.wave,
+          enemies: activeEnemies,
+          shield: state.shieldUntil > state.elapsed,
+          event: state.lastEvent,
+          lastCast: state.lastCast,
+          gameOver: state.gameOver,
+        };
+        setHud(nextHud);
+        host.sendControllerState("sorcerer", {
+          WAVE: state.wave,
+          MANA: state.mana,
+          HEALTH: state.health,
+          COMBO: state.combo,
+        }, {
+          message: state.lastEvent,
+          tone: state.health < 30 ? "critical" : state.mana < 20 ? "warning" : "normal",
+        });
+      }, 100);
+
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(drawHandle);
+        audio.unload();
+        view.dispose();
+        hostRef.current = null;
+        cameraRef.current = null;
+      };
+    },
+  });
 
   const enableCamera = async () => {
-    const engine = engineRef.current;
+    const host = hostRef.current;
     const video = videoRef.current;
-    if (!engine || !video) return;
+    if (!host || !video) return;
     setCameraState("loading");
     setCameraError("");
     const adapter = new BrowserHandAdapter({
@@ -159,10 +146,10 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     });
     cameraRef.current = adapter;
     try {
-      await engine.inputBus.register(adapter);
+      await host.inputBus.register(adapter);
       setCameraState("active");
     } catch (cause) {
-      await engine.inputBus.unregister(adapter);
+      await host.inputBus.unregister(adapter);
       cameraRef.current = null;
       const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
       setCameraState(denied ? "denied" : "error");

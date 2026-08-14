@@ -68,6 +68,14 @@ export interface ResolvedInputManifest {
   degraded: string[];
   /** True when every required control has a source. Optional gaps do not block. */
   playable: boolean;
+  /**
+   * Sources this game asked for that are not present, in author preference order.
+   *
+   * This is what turns a generic nudge into a useful one. A camera game and a steering game are
+   * both degraded on a bare laptop, but telling a camera game's player to pair a phone is simply
+   * wrong advice.
+   */
+  wanted: InputSource[];
 }
 
 export function parseInputManifest(input: unknown): InputManifest {
@@ -144,7 +152,18 @@ export function resolveInputManifest(
       }
     }
   }
-  return { mappings, missing, blocking, degraded, playable: blocking.length === 0 };
+  const unresolved = new Set([...degraded, ...missing]);
+  const wanted: InputSource[] = [];
+  for (const group of groups) {
+    for (const [control, requirement] of Object.entries(group ?? {})) {
+      if (!unresolved.has(control)) continue;
+      for (const candidate of requirement.recommended) {
+        if (!sources.has(candidate) && !wanted.includes(candidate)) wanted.push(candidate);
+      }
+    }
+  }
+
+  return { mappings, missing, blocking, degraded, wanted, playable: blocking.length === 0 };
 }
 
 export type InputFrameListener = (frame: Readonly<InputFrame>) => void;

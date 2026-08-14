@@ -3,12 +3,12 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
-import { useEffect, useRef, useState } from "react";
+import SLASHSTORM_MANIFEST from "@/games/slashstorm/manifest.json";
+import { useRef, useState } from "react";
 import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
 import { SLASHSTORM_ROLES } from "@/games/slashstorm/src/roles";
@@ -28,67 +28,54 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SlashHud>(INITIAL_HUD);
-  const [linked, setLinked] = useState(0);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createSlashstormGame(`slashstorm-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const pointer = new PointerAdapter(canvas);
-    const gamepad = new GamepadAdapter();
-    const transport = getBrowserHostTransport(sessionId);
-    const host = new SessionHost({
-      gameId: "slashstorm",
-      roles: SLASHSTORM_ROLES,
-      transport,
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        // Recomputed on every device change, so pairing a phone updates the notice immediately.
-        setReadiness(resolveGameInput(SLASHSTORM_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    let drawHandle = 0;
+  const { linked, readiness } = useGameHost<SlashstormState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: SLASHSTORM_MANIFEST,
+      input: SLASHSTORM_INPUT,
+      controllers: SLASHSTORM_ROLES,
+      game: createSlashstormGame(`slashstorm-${run}`),
+    }),
+    adapters: () => {
+      const canvas = canvasRef.current;
+      return canvas
+        ? [new KeyboardAdapter(), new PointerAdapter(canvas), new GamepadAdapter()]
+        : [new KeyboardAdapter(), new GamepadAdapter()];
+    },
+    onReady: ({ context }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      let drawHandle = 0;
 
-    const draw = () => {
-      const context = canvas.getContext("2d");
-      if (!context) return;
-      const bounds = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(1, Math.round(bounds.width * ratio));
-      const height = Math.max(1, Math.round(bounds.height * ratio));
-      if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      renderSlashstorm(context, bounds.width, bounds.height, engine.context.state);
+      const draw = () => {
+        const surface = canvas.getContext("2d");
+        if (!surface) return;
+        const bounds = canvas.getBoundingClientRect();
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        const width = Math.max(1, Math.round(bounds.width * ratio));
+        const height = Math.max(1, Math.round(bounds.height * ratio));
+        if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+        surface.setTransform(ratio, 0, 0, ratio, 0, 0);
+        renderSlashstorm(surface, bounds.width, bounds.height, context.state);
+        drawHandle = requestAnimationFrame(draw);
+      };
+
+      canvas.focus();
       drawHandle = requestAnimationFrame(draw);
-    };
 
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(pointer);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    void engine.start();
-    setReadiness(resolveGameInput(SLASHSTORM_INPUT, engine.inputBus));
-    canvas.focus();
-    drawHandle = requestAnimationFrame(draw);
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        setHud({ score: state.score, combo: state.combo, lives: state.lives, wave: state.wave, gameOver: state.gameOver, lastHit: state.lastHit });
+      }, 100);
 
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      setHud({ score: state.score, combo: state.combo, lives: state.lives, wave: state.wave, gameOver: state.gameOver, lastHit: state.lastHit });
-    }, 100);
-
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(drawHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-    };
-  }, [run, sessionId]);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(drawHandle);
+      };
+    },
+  });
 
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 

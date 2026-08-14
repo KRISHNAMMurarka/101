@@ -2,12 +2,13 @@
 
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
-import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
-import { describeReadiness, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import type { SessionSnapshot } from "@101/session";
+import { describeReadiness } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import ORBITALCREW_INPUT from "@/games/orbitalcrew/input.manifest.json";
-import { useEffect, useRef, useState } from "react";
+import ORBITALCREW_MANIFEST from "@/games/orbitalcrew/manifest.json";
+import { useRef, useState } from "react";
 import { createOrbitalCrewGame, type OrbitalCrewState } from "@/games/orbitalcrew/src/game";
 import { ORBITAL_CREW_ROLES } from "@/games/orbitalcrew/src/roles";
 
@@ -46,99 +47,85 @@ const INITIAL_HUD: OrbitalHud = {
 export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<OrbitalHud>(INITIAL_HUD);
-  const [session, setSession] = useState<SessionSnapshot>(() => emptySession(sessionId));
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createOrbitalCrewGame(`orbitalcrew-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const transport = getBrowserHostTransport(sessionId);
-    const host = new SessionHost({
-      gameId: "orbitalcrew",
-      roles: ORBITAL_CREW_ROLES,
-      transport,
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setSession(snapshot);
-        setReadiness(resolveGameInput(ORBITALCREW_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const announcedThreats = new Set<number>();
-    let drawHandle = 0;
+  const { session: liveSession, readiness } = useGameHost<OrbitalCrewState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: ORBITALCREW_MANIFEST,
+      input: ORBITALCREW_INPUT,
+      controllers: ORBITAL_CREW_ROLES,
+      game: createOrbitalCrewGame(`orbitalcrew-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context: engineContext, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const announcedThreats = new Set<number>();
+      let drawHandle = 0;
 
-    const draw = () => {
-      const context = canvas.getContext("2d");
-      if (context) renderShip(context, canvas, engine.context.state);
+      const draw = () => {
+        const context = canvas.getContext("2d");
+        if (context) renderShip(context, canvas, engineContext.state);
+        drawHandle = requestAnimationFrame(draw);
+      };
+
+      canvas.focus();
       drawHandle = requestAnimationFrame(draw);
-    };
 
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(ORBITALCREW_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    drawHandle = requestAnimationFrame(draw);
+      const hudTimer = window.setInterval(() => {
+        const state = engineContext.state;
+        const active = state.events.filter((event) => !event.resolved && event.startAt <= state.elapsed);
+        setHud({
+          elapsed: state.elapsed,
+          sector: state.sector,
+          energy: state.energy,
+          heat: state.heat,
+          shields: state.shields,
+          hull: state.hull,
+          score: state.score,
+          combo: state.combo,
+          activeThreats: state.activeThreats,
+          emergencyCooldown: state.emergencyCooldown,
+          lastEvent: state.lastEvent,
+          gameOver: state.gameOver,
+          events: active.map((event) => ({
+            id: event.id,
+            label: event.label,
+            progress: event.progress,
+            remaining: Math.max(0, event.startAt + event.duration - state.elapsed),
+            roles: event.requiredRoles,
+            bearing: event.bearing,
+          })),
+        });
 
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      const active = state.events.filter((event) => !event.resolved && event.startAt <= state.elapsed);
-      setHud({
-        elapsed: state.elapsed,
-        sector: state.sector,
-        energy: state.energy,
-        heat: state.heat,
-        shields: state.shields,
-        hull: state.hull,
-        score: state.score,
-        combo: state.combo,
-        activeThreats: state.activeThreats,
-        emergencyCooldown: state.emergencyCooldown,
-        lastEvent: state.lastEvent,
-        gameOver: state.gameOver,
-        events: active.map((event) => ({
-          id: event.id,
-          label: event.label,
-          progress: event.progress,
-          remaining: Math.max(0, event.startAt + event.duration - state.elapsed),
-          roles: event.requiredRoles,
-          bearing: event.bearing,
-        })),
-      });
+        const primary = active[0];
+        const bearing = primary ? bearingLabel(primary.bearing) : "CLEAR";
+        const tone = state.hull < 30 ? "critical" as const : state.activeThreats > 1 ? "warning" as const : "normal" as const;
+        host.sendControllerState("pilot", { SECTOR: state.sector, HULL: state.hull, BEARING: bearing }, { message: primary?.label ?? "FLIGHT PATH CLEAR", tone });
+        host.sendControllerState("weapons", { ENERGY: state.energy, HEAT: state.heat, TARGET: bearing }, { message: primary?.label ?? "NO TARGET", tone });
+        host.sendControllerState("shields", { SHIELDS: state.shields, HULL: state.hull, THREATS: state.activeThreats }, { message: primary?.label ?? "SHIELDS NOMINAL", tone });
+        host.sendControllerState("reactor", { ENERGY: state.energy, HEAT: state.heat, OUTPUT: state.reactorPower * 100 }, { message: state.heat > 75 ? "VENT RECOMMENDED" : "REACTOR STABLE", tone: state.heat > 75 ? "warning" : tone });
+        host.sendControllerState("emergency", { HULL: state.hull, SHIELDS: state.shields, COOLDOWN: state.emergencyCooldown }, { message: state.emergencyCooldown > 0 ? "RECHARGING" : "EMERGENCY READY", tone });
 
-      const primary = active[0];
-      const bearing = primary ? bearingLabel(primary.bearing) : "CLEAR";
-      const tone = state.hull < 30 ? "critical" as const : state.activeThreats > 1 ? "warning" as const : "normal" as const;
-      host.sendControllerState("pilot", { SECTOR: state.sector, HULL: state.hull, BEARING: bearing }, { message: primary?.label ?? "FLIGHT PATH CLEAR", tone });
-      host.sendControllerState("weapons", { ENERGY: state.energy, HEAT: state.heat, TARGET: bearing }, { message: primary?.label ?? "NO TARGET", tone });
-      host.sendControllerState("shields", { SHIELDS: state.shields, HULL: state.hull, THREATS: state.activeThreats }, { message: primary?.label ?? "SHIELDS NOMINAL", tone });
-      host.sendControllerState("reactor", { ENERGY: state.energy, HEAT: state.heat, OUTPUT: state.reactorPower * 100 }, { message: state.heat > 75 ? "VENT RECOMMENDED" : "REACTOR STABLE", tone: state.heat > 75 ? "warning" : tone });
-      host.sendControllerState("emergency", { HULL: state.hull, SHIELDS: state.shields, COOLDOWN: state.emergencyCooldown }, { message: state.emergencyCooldown > 0 ? "RECHARGING" : "EMERGENCY READY", tone });
+        for (const event of active) {
+          if (announcedThreats.has(event.id)) continue;
+          announcedThreats.add(event.id);
+          event.requiredRoles.forEach((role) => host.haptic(role, "warning"));
+          host.haptic("emergency", "warning");
+        }
+      }, 120);
 
-      for (const event of active) {
-        if (announcedThreats.has(event.id)) continue;
-        announcedThreats.add(event.id);
-        event.requiredRoles.forEach((role) => host.haptic(role, "warning"));
-        host.haptic("emergency", "warning");
-      }
-    }, 120);
-
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(drawHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-    };
-  }, [run, sessionId]);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(drawHandle);
+      };
+    },
+  });
 
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
+  const session = liveSession ?? emptySession(sessionId);
 
   const restart = () => {
     setHud(INITIAL_HUD);

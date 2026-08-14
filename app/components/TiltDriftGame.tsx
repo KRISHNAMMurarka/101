@@ -2,13 +2,13 @@
 
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import TILTDRIFT_INPUT from "@/games/tiltdrift/input.manifest.json";
-import { useEffect, useRef, useState } from "react";
+import TILTDRIFT_MANIFEST from "@/games/tiltdrift/manifest.json";
+import { useRef, useState } from "react";
 import { createTiltDriftGame, type TiltDriftState } from "@/games/tiltdrift/src/game";
 import { roadCenterAt, type RoadEnvironment, type RoadSegment } from "@/games/tiltdrift/src/director";
 import { TILTDRIFT_ROLES } from "@/games/tiltdrift/src/roles";
@@ -29,57 +29,42 @@ const INITIAL_HUD: DriftHud = { speed: 27, score: 0, integrity: 100, boost: 100,
 export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
-  const [linked, setLinked] = useState(0);
   const [hud, setHud] = useState<DriftHud>(INITIAL_HUD);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createTiltDriftGame(`tiltdrift-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const transport = getBrowserHostTransport(sessionId);
-    const host = new SessionHost({
-      gameId: "tiltdrift",
-      roles: TILTDRIFT_ROLES,
-      transport,
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(TILTDRIFT_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createDriftView(canvas);
-    let renderHandle = 0;
+  const { linked, readiness } = useGameHost<TiltDriftState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: TILTDRIFT_MANIFEST,
+      input: TILTDRIFT_INPUT,
+      controllers: TILTDRIFT_ROLES,
+      game: createTiltDriftGame(`tiltdrift-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const view = createDriftView(canvas);
+      let renderHandle = 0;
 
-    const render = () => {
-      view.sync(engine.context.state);
+      const render = () => {
+        view.sync(context.state);
+        renderHandle = requestAnimationFrame(render);
+      };
+      canvas.focus();
       renderHandle = requestAnimationFrame(render);
-    };
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(TILTDRIFT_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    renderHandle = requestAnimationFrame(render);
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      setHud({ speed: state.speed, score: state.score, integrity: state.integrity, boost: state.boost, combo: state.combo, environment: state.environment, lastEvent: state.lastEvent, gameOver: state.gameOver });
-    }, 90);
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        setHud({ speed: state.speed, score: state.score, integrity: state.integrity, boost: state.boost, combo: state.combo, environment: state.environment, lastEvent: state.lastEvent, gameOver: state.gameOver });
+      }, 90);
 
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(renderHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-      view.dispose();
-    };
-  }, [run, sessionId]);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(renderHandle);
+        view.dispose();
+      };
+    },
+  });
 
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 

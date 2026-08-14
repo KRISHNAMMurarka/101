@@ -3,13 +3,14 @@
 import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Engine101 } from "@101/core";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
+import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
-import { LocalSession, SessionHost } from "@101/session";
-import { describeReadiness, describeSources, resolveGameInput, type GameInputReadiness } from "@/app/lib/input-readiness";
+import { defineGamePackage } from "@101/sdk";
+import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { useGameHost } from "@/app/lib/use-game-host";
 import BODYDODGE_INPUT from "@/games/bodydodge/input.manifest.json";
-import { useEffect, useRef, useState } from "react";
+import BODYDODGE_MANIFEST from "@/games/bodydodge/manifest.json";
+import { useRef, useState } from "react";
 import { createBodyDodgeGame, type BodyDodgeState } from "@/games/bodydodge/src/game";
 import type { DodgeGate, DodgeRequirement } from "@/games/bodydodge/src/director";
 import { BODYDODGE_ROLES } from "@/games/bodydodge/src/roles";
@@ -33,70 +34,56 @@ const INITIAL_HUD: BodyHud = { score: 0, combo: 0, integrity: 100, wave: 1, dist
 export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const engineRef = useRef<Engine101<BodyDodgeState> | null>(null);
+  const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const [run, setRun] = useState(1);
-  const [readiness, setReadiness] = useState<GameInputReadiness>();
   const [hud, setHud] = useState<BodyHud>(INITIAL_HUD);
   const [cameraState, setCameraState] = useState<CameraState>("idle");
   const [cameraConfidence, setCameraConfidence] = useState(0);
   const [cameraError, setCameraError] = useState("");
-  const [linked, setLinked] = useState(0);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const engine = new Engine101(createBodyDodgeGame(`bodydodge-${run}`));
-    const keyboard = new KeyboardAdapter();
-    const gamepad = new GamepadAdapter();
-    const host = new SessionHost({
-      gameId: "bodydodge",
-      roles: BODYDODGE_ROLES,
-      transport: getBrowserHostTransport(sessionId),
-      session: new LocalSession(sessionId),
-      onFrame: (frame) => engine.inputBus.accept(frame),
-      onDeviceReset: (deviceId) => engine.inputBus.removeDevice(deviceId),
-      onChange: (snapshot) => {
-        setLinked(snapshot.assignments.length);
-        setReadiness(resolveGameInput(BODYDODGE_INPUT, engine.inputBus, snapshot));
-      },
-    });
-    const view = createBodyView(canvas);
-    engineRef.current = engine;
-    let renderHandle = 0;
+  const { linked, readiness } = useGameHost<BodyDodgeState>({
+    sessionId,
+    deps: [run],
+    build: () => defineGamePackage({
+      manifest: BODYDODGE_MANIFEST,
+      input: BODYDODGE_INPUT,
+      controllers: BODYDODGE_ROLES,
+      game: createBodyDodgeGame(`bodydodge-${run}`),
+    }),
+    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+    onReady: ({ context, host }) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const view = createBodyView(canvas);
+      hostRef.current = host;
+      let renderHandle = 0;
 
-    const render = () => {
-      view.sync(engine.context.state);
+      const render = () => {
+        view.sync(context.state);
+        renderHandle = requestAnimationFrame(render);
+      };
+      canvas.focus();
       renderHandle = requestAnimationFrame(render);
-    };
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(gamepad);
-    void host.start();
-    setReadiness(resolveGameInput(BODYDODGE_INPUT, engine.inputBus));
-    void engine.start();
-    canvas.focus();
-    renderHandle = requestAnimationFrame(render);
-    const hudTimer = window.setInterval(() => {
-      const state = engine.context.state;
-      const next = state.gates.find((gate) => !gate.resolved) ?? state.gates[0];
-      setHud({ score: state.score, combo: state.combo, integrity: state.integrity, wave: state.wave, distance: state.distance, next: next?.requirement ?? "center", nextDistance: Math.max(0, (next?.distance ?? state.distance) - state.distance), lastEvent: state.lastEvent, gameOver: state.gameOver });
-    }, 80);
-    return () => {
-      window.clearInterval(hudTimer);
-      cancelAnimationFrame(renderHandle);
-      void host.stop();
-      engine.stop();
-      void engine.inputBus.destroy();
-      engineRef.current = null;
-      cameraRef.current = null;
-      view.dispose();
-    };
-  }, [run, sessionId]);
+      const hudTimer = window.setInterval(() => {
+        const state = context.state;
+        const next = state.gates.find((gate) => !gate.resolved) ?? state.gates[0];
+        setHud({ score: state.score, combo: state.combo, integrity: state.integrity, wave: state.wave, distance: state.distance, next: next?.requirement ?? "center", nextDistance: Math.max(0, (next?.distance ?? state.distance) - state.distance), lastEvent: state.lastEvent, gameOver: state.gameOver });
+      }, 80);
+      return () => {
+        window.clearInterval(hudTimer);
+        cancelAnimationFrame(renderHandle);
+        hostRef.current = null;
+        cameraRef.current = null;
+        view.dispose();
+      };
+    },
+  });
 
   const enableCamera = async () => {
-    const engine = engineRef.current;
+    const host = hostRef.current;
     const video = videoRef.current;
-    if (!engine || !video) return;
+    if (!host || !video) return;
     setCameraState("loading");
     setCameraError("");
     const adapter = new BrowserCameraAdapter({
@@ -108,10 +95,10 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
     });
     cameraRef.current = adapter;
     try {
-      await engine.inputBus.register(adapter);
+      await host.inputBus.register(adapter);
       setCameraState("active");
     } catch (cause) {
-      await engine.inputBus.unregister(adapter);
+      await host.inputBus.unregister(adapter);
       cameraRef.current = null;
       const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
       setCameraState(denied ? "denied" : "error");
