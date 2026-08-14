@@ -3,19 +3,32 @@
 import type { GameManifest } from "@101/sdk";
 import Link from "next/link";
 import QRCode from "qrcode";
-import { useEffect, useId, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useId, useMemo, useState } from "react";
 import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-link";
-import InputLab from "./components/InputLab";
-import BeatForgeGame from "./components/BeatForgeGame";
-import BodyDodgeGame from "./components/BodyDodgeGame";
-import EchoMazeGame from "./components/EchoMazeGame";
-import GravityStackGame from "./components/GravityStackGame";
-import OrbitalCrewGame from "./components/OrbitalCrewGame";
-import SlashstormGame from "./components/SlashstormGame";
-import ShadowArenaGame from "./components/ShadowArenaGame";
-import SpellcasterGame from "./components/SpellcasterGame";
-import SwarmCommanderGame from "./components/SwarmCommanderGame";
-import TiltDriftGame from "./components/TiltDriftGame";
+/**
+ * Playable surfaces load on demand, one entry each.
+ *
+ * These used to be static imports. A static import makes every game a hard dependency of the
+ * launcher's own chunk, so opening the library downloaded all ten games — 2.8 MB across 36
+ * preloaded chunks, including a 1.6 MB physics engine — before rendering a single card. That cost
+ * grows with the catalog, which is the one thing a library of a thousand games cannot afford.
+ *
+ * This map is also the single place a new surface is registered. Adding one no longer means
+ * editing an import list, a union type, and a render chain separately.
+ */
+const SURFACES = {
+  lab: lazy(() => import("./components/InputLab")),
+  beatforge: lazy(() => import("./components/BeatForgeGame")),
+  bodydodge: lazy(() => import("./components/BodyDodgeGame")),
+  echomaze: lazy(() => import("./components/EchoMazeGame")),
+  gravitystack: lazy(() => import("./components/GravityStackGame")),
+  orbitalcrew: lazy(() => import("./components/OrbitalCrewGame")),
+  shadowarena: lazy(() => import("./components/ShadowArenaGame")),
+  slashstorm: lazy(() => import("./components/SlashstormGame")),
+  spellcaster: lazy(() => import("./components/SpellcasterGame")),
+  swarmcommander: lazy(() => import("./components/SwarmCommanderGame")),
+  tiltdrift: lazy(() => import("./components/TiltDriftGame")),
+} as const;
 
 type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "shadowarena" | "swarmcommander" | "system";
 
@@ -42,6 +55,9 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
     const requested = new URLSearchParams(window.location.search).get("session")?.trim();
     return requested && /^[A-Z0-9-]{4,128}$/i.test(requested) ? requested : generatedSessionId;
   });
+
+  // `library` and `system` render inline; every other view is a code-split surface.
+  const Surface = view in SURFACES ? SURFACES[view as keyof typeof SURFACES] : undefined;
 
   const catalog = useMemo(
     () => games.filter((game) => game.id !== "input-lab"),
@@ -192,17 +208,11 @@ export default function Launcher({ games }: { games: GameManifest[] }) {
         </>
       )}
 
-      {view === "lab" && <InputLab sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "slashstorm" && <SlashstormGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "tiltdrift" && <TiltDriftGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "bodydodge" && <BodyDodgeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "orbitalcrew" && <OrbitalCrewGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "beatforge" && <BeatForgeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "gravitystack" && <GravityStackGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "spellcaster" && <SpellcasterGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "echomaze" && <EchoMazeGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "shadowarena" && <ShadowArenaGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
-      {view === "swarmcommander" && <SwarmCommanderGame sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />}
+      {Surface ? (
+        <Suspense fallback={<p className="surface-loading">Loading…</p>}>
+          <Surface sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />
+        </Suspense>
+      ) : null}
       {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">

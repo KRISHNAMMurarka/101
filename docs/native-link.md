@@ -130,10 +130,12 @@ The fix has two halves and needs both:
 `onTouchCancel` matters as much as the other two: a cancelled touch that never released would latch
 its action on forever.
 
-While fixing this, `PanResponder.create()` also moved out of the render body. It was allocating a
-new responder on every touch move, because each move sets state and re-renders.
-
 A contract test asserts both halves stay in place, since the failure is invisible to review.
+
+`PanResponder.create()` is still called per render, which looks wasteful. It was measured rather
+than assumed: rebuilding it costs a fraction of a microsecond against a 16 ms frame, and hoisting it
+into a ref meant writing to that ref during render, which the lint rules correctly reject. The
+allocation is not worth the hazard.
 
 **Not yet verified on hardware.** The reasoning is confirmed against the React Native source in this
 repo, and the logic is locked by a test, but genuine simultaneous multi-touch cannot be exercised on

@@ -128,3 +128,27 @@ npm run watch:wear:build
 ```bash
 adb -s <wear-emulator> install -r apps/watch-wear/app/build/outputs/apk/debug/app-debug.apk
 ```
+
+## Launcher payload (2026-08-14)
+
+Measured against the production build with `vinext start`, summing every JS chunk the homepage
+requests:
+
+| | Chunks | JS transferred |
+| --- | --- | --- |
+| Static imports | 36 (10 game chunks preloaded) | **2843 KB** |
+| Lazy surfaces | 19 (0 game chunks) | **462 KB** |
+
+The important property is not the 84% cut, it is the slope: the old cost grew with the catalog, so
+a thousand games meant a thousand games' worth of JavaScript before the first card painted. It is
+now flat.
+
+Verified in a browser rather than only in the build output: the homepage loads no `*Game-*.js`,
+clicking **Play Slashstorm** fetches `SlashstormGame-<hash>.js` on demand, and the game canvas
+mounts and runs.
+
+One trap worth recording. An earlier measurement showed a broken page and a failing chunk, which
+looked like the lazy split had broken hydration. It had not — three `vinext` processes were alive
+and a stale one was answering on port 3000 with an asset manifest from a previous build, so the
+HTML referenced a chunk hash that no longer existed. `pkill -f vinext` and a clean restart before
+measuring; check `ps aux | grep vinext` returns one process when a built asset 404s or hangs.

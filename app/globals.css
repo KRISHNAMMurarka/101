@@ -339,6 +339,10 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .promise-section { max-width: 1540px; margin: 0 auto 120px; padding: 50px clamp(24px, 5vw, 80px); display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 50px; border-block: 1px solid var(--line); }
 .promise-index { align-self: start; color: var(--orange); font: 900 clamp(64px, 9vw, 130px)/.8 ui-monospace, monospace; letter-spacing: -.11em; }
 
+/* Shown only while a code-split surface is fetched. Deliberately quiet: a spinner for a chunk that
+   usually arrives in a frame or two reads as slower than no spinner at all. */
+.surface-loading { min-height: 40vh; display: grid; place-items: center; color: var(--faint); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+
 .footer { min-height: 150px; padding: 42px clamp(24px, 5vw, 80px); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; border-top: 1px solid var(--line); background: var(--ink); }
 .footer p { color: var(--faint); font-size: 12px; }
 .footer > div:last-child { display: flex; gap: 20px; color: var(--faint); font: 650 9px ui-monospace, monospace; text-transform: uppercase; }

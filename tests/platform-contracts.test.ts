@@ -96,3 +96,26 @@ function assertNeutral(snapshot: ReturnType<ControllerInputModel["snapshot"]>) {
   for (const value of Object.values(snapshot.axes)) assert.equal(value, 0);
   for (const value of Object.values(snapshot.vectors)) assert.deepEqual(value, { x: 0, y: 0 });
 }
+
+test("the launcher never statically imports a playable surface", () => {
+  // Static imports made every game a hard dependency of the launcher's own chunk, so opening the
+  // library downloaded all ten — 2.8 MB across 36 preloaded chunks, including a 1.6 MB physics
+  // engine — before a single card rendered. Measured after this became lazy: 462 KB and zero game
+  // chunks, and the cost stops growing with the catalog, which is the whole point at a thousand
+  // games. One accidental `import GameX from "./components/GameX"` silently restores the old cost,
+  // and nothing else in the suite would notice.
+  const source = readFileSync(resolve(import.meta.dirname, "../app/Launcher.tsx"), "utf8");
+
+  const staticSurface = /^import\s+\w+\s+from\s+"\.\/components\/(\w*Game|InputLab)"/m.exec(source);
+  assert.equal(staticSurface, null,
+    `playable surfaces must load with lazy(), found: ${staticSurface?.[0] ?? ""}`);
+
+  // Every surface the view union can reach must have a lazy entry, or navigating renders nothing.
+  const views = /type View =([^;]+);/.exec(source)?.[1] ?? "";
+  const inline = new Set(["library", "system"]);
+  const surfaces = new Set([...source.matchAll(/^\s{2}(\w+): lazy\(/gm)].map((match) => match[1]));
+  for (const view of [...views.matchAll(/"([a-z]+)"/g)].map((match) => match[1]!)) {
+    if (inline.has(view)) continue;
+    assert.ok(surfaces.has(view), `view "${view}" has no lazy surface registered`);
+  }
+});
