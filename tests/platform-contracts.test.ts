@@ -279,3 +279,42 @@ test("defineGamePackage accepts every game it is the gate for", async () => {
   }
   assert.equal(checked, 10, "all ten games must be validated");
 });
+
+test("pairing a phone does not claim vision a phone never sends", async () => {
+  // 101 Link declares `camera: true` in its hello, honestly — it has a camera and scans pairing QR
+  // codes with it. But it runs no pose, hand or face model and emits no `camera-*` frame; the vision
+  // adapters live in @101/adapter-camera and only ever register host-side.
+  //
+  // Mapping that capability to camera-hand/camera-pose/camera-face meant pairing any phone told a
+  // camera game its vision controls were served. BodyDodge would report itself fully playable, drop
+  // its "Enable the camera" advice, and then ignore the player — a capability check that answers
+  // confidently and wrongly is worse than no check, and this is the same defect as the phantom
+  // gamepad in a different costume.
+  const { capabilitySources, sessionSources } = await import("@101/session");
+
+  const phone = { touch: true, accelerometer: true, gyroscope: true, magnetometer: true, camera: true, microphone: false, haptics: true };
+  const sources = capabilitySources(phone);
+  assert.deepEqual(sources, ["touch", "phone-motion"],
+    "a phone offers what it sends, not what hardware it owns");
+  for (const vision of ["camera-hand", "camera-pose", "camera-face"]) {
+    assert.equal(sources.includes(vision as never), false, `${vision} must not come from a lens`);
+  }
+
+  // An accelerometer without a gyroscope gives tilt but cannot track a turn.
+  assert.deepEqual(capabilitySources({ touch: true, accelerometer: true }), ["touch"]);
+
+  // The player-facing consequence, end to end: BodyDodge needs camera-pose for its body controls,
+  // and a paired phone must not silence the advice that would get them working.
+  const manifest = parseInputManifest(JSON.parse(
+    readFileSync(resolve(import.meta.dirname, "../games/bodydodge/input.manifest.json"), "utf8"),
+  ));
+  const available = ["keyboard", "mouse", ...sessionSources([
+    { id: "phone", label: "Phone", capabilities: phone, connectedAt: 0, lastSeenAt: 0 },
+  ])] as InputSource[];
+
+  const resolved = resolveInputManifest(manifest, available);
+  assert.ok(resolved.wanted.includes("camera-pose"),
+    "with a phone paired, the camera is still the thing worth asking for");
+  assert.ok(resolved.degraded.length > 0,
+    "body controls served by a keyboard are degraded, not satisfied");
+});

@@ -184,8 +184,6 @@ through `defineGamePackage`; reverting the fix fails it with the exact error abo
 
 ## Known gaps
 
-- Camera capability maps to all three camera sources at once. A device that can see a hand is
-  assumed able to see a pose, which is true of the current adapters but is an assumption.
 - The notice is advisory only. Nothing yet refuses to start a genuinely blocked game, because no
   shipped game is blocked on a keyboard; the `playable` flag exists for when one is.
 - Readiness for a *paired* device still cannot be known before that device joins, which is inherent:

@@ -30,12 +30,10 @@ async function* walk(dir) {
  * Per-build manifest directories are excluded: they are uniquely named, so they can never be served
  * stale, and they carry no information about whether anything a client caches actually changed.
  *
- * This does not currently make the id stable. Measured on this bundler, two builds of identical
- * source emit different chunk *filenames* — `BeatForgeGame-COqKi4BL.js` becomes
- * `BeatForgeGame-Dzfd_Vkr.js` — so the output is not byte-reproducible and the id changes every
- * release regardless. That is the correct outcome while it holds: if every chunk name changed, every
- * cached chunk is already dead and evicting them is right, not wasteful. The exclusion is here so
- * the id tracks real change if the build ever becomes reproducible.
+ * With the build id and RSC compatibility id pinned to the source (see next.config.ts), the output
+ * is byte-reproducible and this id is therefore stable across builds of identical source — so a
+ * release that changes nothing no longer evicts every user's cache, while one that changes anything
+ * still does.
  */
 const PER_BUILD = /\/_next\/static\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\//;
 

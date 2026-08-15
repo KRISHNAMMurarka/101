@@ -25,15 +25,26 @@ export type SessionRole = GameControllerRole;
  * on the LAN is offering touch and gyroscope. This is the bridge between what a device announced in
  * its `hello` and the source vocabulary a game's input manifest is written against.
  *
- * Motion needs a gyroscope specifically: an accelerometer alone gives tilt but cannot track a turn,
- * and reporting `phone-motion` for it would satisfy a manifest the device cannot really serve.
+ * The mapping is deliberately narrower than the capability list, because a capability describes
+ * hardware the device *has* and a source describes frames it actually *sends*:
+ *
+ * - **Motion requires a gyroscope**, not merely an accelerometer. Tilt without rotation cannot serve
+ *   a manifest written for motion, and claiming otherwise produces a control that never responds.
+ * - **`camera` is not a vision source.** 101 Link reports `camera: true` because it has one — it
+ *   scans pairing QR codes with it — but it runs no pose, hand or face model and emits no
+ *   `camera-*` frame. Vision adapters live in `@101/adapter-camera` and only ever register on the
+ *   host. Mapping the capability to `camera-hand`/`camera-pose`/`camera-face` told a game its vision
+ *   controls were served the moment any phone paired, so a camera game reported itself fully
+ *   playable and then ignored the player — the exact failure this resolution exists to prevent.
+ *
+ * A device that genuinely runs vision on-board would announce it by sending those frames, which
+ * needs a capability that means "serves vision", not one that means "owns a lens".
  */
 export function capabilitySources(capabilities: DeviceCapabilities): InputSource[] {
   const sources: InputSource[] = [];
   if (capabilities.touch) sources.push("touch");
   if (capabilities.gyroscope) sources.push("phone-motion");
   if (capabilities.gamepad) sources.push("gamepad");
-  if (capabilities.camera) sources.push("camera-hand", "camera-pose", "camera-face");
   return sources;
 }
 
