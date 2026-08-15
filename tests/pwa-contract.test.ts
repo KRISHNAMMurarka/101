@@ -61,3 +61,41 @@ test("only content-hashed assets may be answered from cache without checking the
   assert.match(worker, /searchParams\.has\("pair"\)/);
   assert.match(worker, /Never persist that URL or response/);
 });
+
+test("the build is pinned to its source, so two builds of it are identical", async () => {
+  // vinext mints a fresh randomUUID() per build for both the build id and the RSC compatibility id:
+  //
+  //     function createRscCompatibilityId(nextConfig) {
+  //       if (nextConfig.deploymentId) return nextConfig.deploymentId;
+  //       return randomUUID();
+  //     }
+  //
+  // That UUID is baked into a chunk, so its content hash changed every build, and the 22 chunks
+  // importing it changed with it — 24 of 59 chunk filenames churned on a build of identical source.
+  // Two consequences: no build could be verified against its source, and the service worker's cache
+  // id (a hash of the output) changed on every release, evicting every user's cache for nothing.
+  //
+  // Pinning both to a hash of the source keeps the property the ids exist for — they must differ
+  // when the deployed app differs, so a stale client hard-navigates instead of accepting a
+  // mismatched RSC payload — while dropping the part that was pure noise.
+  const config = readFileSync("next.config.ts", "utf8");
+  assert.match(config, /deploymentId:/, "the RSC compatibility id must not be random per build");
+  assert.match(config, /generateBuildId:/, "nor the build id");
+  assert.match(config, /sourceId\(\)/, "both must come from the source, not a constant to bump");
+
+  // A constant would pin the build but never change, so a real release would not invalidate
+  // anything. The id has to track the source in both directions.
+  const { sourceId } = await import("../tools/source-id.mjs");
+  const first = await sourceId();
+  const second = await sourceId();
+  assert.equal(first, second, "the same tree must hash the same way twice");
+  assert.match(first, /^[0-9a-f]{32}$/);
+
+  const helper = readFileSync("tools/source-id.mjs", "utf8");
+  assert.match(helper, /package-lock\.json/,
+    "a dependency bump changes the output without touching this repo's source");
+  for (const derived of ["dist", "node_modules"]) {
+    assert.match(helper, new RegExp(`"${derived}"`),
+      `${derived} is build output, and hashing it into the id would be circular`);
+  }
+});

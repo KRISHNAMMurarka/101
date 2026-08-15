@@ -45,34 +45,44 @@ from the build is the only one nobody can forget to bump. `public/sw.js` keeps t
 placeholder; the stamper exits non-zero if it is missing, so an unstamped worker fails the build
 instead of silently shipping one shared cache again.
 
-## This build is not byte-reproducible
+## The build is reproducible, and that took finding one UUID
 
-Worth knowing, because it is why the id changes on every release:
+For a while it was not, and the cache id changed on every release as a result. Two builds of
+identical source emitted different chunk filenames — 24 of 59 churned. The trail:
 
+1. `index-*.js` embeds `__vite__mapDeps`, an array of 49 chunk filenames, and those chunks import it
+   back. That looked like a cyclic content hash with no stable fixed point. **It was not the cause** —
+   disabling `build.modulePreload` removed `__vite__mapDeps` entirely and all 24 still churned.
+2. Normalising every `name-hash.js` specifier to `name.js` before comparing separated chunks that
+   really changed from chunks that only *named* a changed chunk. Exactly **one** was a real change:
+   `app-rsc-cache-busting`.
+3. Its single differing token:
+
+```js
+build 1:  function w(){ return C(`e8a50267-745d-4e15-869d-29395e600f62`) }
+build 2:  function w(){ return C(`97d6651a-273b-4c29-b582-4bf7ed1df160`) }
 ```
-build 1: _next/static/chunks/BeatForgeGame-COqKi4BL.js
-build 2: _next/static/chunks/BeatForgeGame-Dzfd_Vkr.js
+
+That is `getVinextRscCompatibilityId()`. From vinext's own source:
+
+```js
+function createRscCompatibilityId(nextConfig) {
+  if (nextConfig.deploymentId) return nextConfig.deploymentId;
+  return randomUUID();
+}
 ```
 
-Same source, same machine, different chunk names. The cause is a cyclic content hash, traced to the
-byte:
+One random string, baked into one chunk, cascading to 22 more through their import specifiers.
+`generateBuildId` defaults the same way, which is where the per-build UUID directory came from.
 
-- `index-*.js` embeds `__vite__mapDeps`, a literal array of 49 chunk **filenames**.
-- Those chunks import `index-*.js` back.
+Both are now derived from a hash of the source tree (`tools/source-id.mjs`), which keeps precisely
+the property they exist for. The RSC compatibility id must differ when the deployed app differs, so a
+browser holding an old client rejects a mismatched payload and hard-navigates. A source hash does
+that faithfully; a fresh UUID did it only by accident, and also differed when nothing had changed.
 
-So each chunk's hash depends on the other's, and a build settles on whichever fixed point it reaches
-first. 24 of 59 chunks churn; the 35 outside the cycle are byte-identical every time, and the
-churning ones differ *only* in the import specifiers they name — same length, same content
-otherwise. The bundler also emits a fresh UUID directory of build manifests per run.
-
-This is inside rolldown/Vite's chunking, not something application code can pin, so it is recorded
-rather than worked around.
-
-While that holds, evicting on every release is the correct outcome rather than a wasteful one: if
-every chunk name changed, every cached chunk is already unreachable. The stamper excludes the
-per-build manifest directories so the id will track real change if the build ever becomes
-reproducible — which is worth doing on its own, since an unreproducible build cannot be verified
-against its source.
+Verified: two consecutive builds are byte-for-byte identical, the service worker cache id is stable
+across them, and a one-line source edit still changes it. A release that changes nothing no longer
+evicts every user's cache; a release that changes something still does.
 
 ## A correction
 
