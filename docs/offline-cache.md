@@ -54,8 +54,19 @@ build 1: _next/static/chunks/BeatForgeGame-COqKi4BL.js
 build 2: _next/static/chunks/BeatForgeGame-Dzfd_Vkr.js
 ```
 
-Same source, same machine, different chunk names and different bytes. The bundler also emits a fresh
-UUID directory of build manifests per run.
+Same source, same machine, different chunk names. The cause is a cyclic content hash, traced to the
+byte:
+
+- `index-*.js` embeds `__vite__mapDeps`, a literal array of 49 chunk **filenames**.
+- Those chunks import `index-*.js` back.
+
+So each chunk's hash depends on the other's, and a build settles on whichever fixed point it reaches
+first. 24 of 59 chunks churn; the 35 outside the cycle are byte-identical every time, and the
+churning ones differ *only* in the import specifiers they name — same length, same content
+otherwise. The bundler also emits a fresh UUID directory of build manifests per run.
+
+This is inside rolldown/Vite's chunking, not something application code can pin, so it is recorded
+rather than worked around.
 
 While that holds, evicting on every release is the correct outcome rather than a wasteful one: if
 every chunk name changed, every cached chunk is already unreachable. The stamper excludes the

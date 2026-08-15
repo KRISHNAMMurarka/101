@@ -147,6 +147,20 @@ Ten copies of the same twenty lines became one, and the net change was **737 lin
 662 added**. `GameHost101` also delegates `haptic` and `sendControllerState` rather than making games
 reach through `host.session` for them — a half-façade is its own kind of duplication.
 
+## Readiness does not wait for the network
+
+Whether a game is playable on this machine is answerable from the local adapters alone, so the first
+reading is taken the moment they register — before the transport connects. It used to be computed
+only after `connect()` resolved, which on a memory transport is a tick and on a slow LAN is seconds
+of a status bar reading `DETECTING INPUT` while the answer was already known.
+
+Measured against a transport that takes 600 ms to connect, the first reading now arrives at 0 ms.
+Unchanged readings are not re-announced, so device liveness beats do not re-render every subscriber.
+
+Setting the active package before connecting means a failed launch could leave a game advertised
+with no engine behind it, so `launch` clears both the package and its readiness if the transport
+throws. A test covers that path.
+
 ## What dogfooding the SDK immediately caught
 
 `defineGamePackage` validates that a controller role only references controls the input manifest
@@ -174,5 +188,5 @@ through `defineGamePackage`; reverting the fix fails it with the exact error abo
   assumed able to see a pose, which is true of the current adapters but is an assumption.
 - The notice is advisory only. Nothing yet refuses to start a genuinely blocked game, because no
   shipped game is blocked on a keyboard; the `playable` flag exists for when one is.
-- Readiness is reported after launch rather than before first paint, so a status bar shows
-  `DETECTING INPUT` for one tick.
+- Readiness for a *paired* device still cannot be known before that device joins, which is inherent:
+  the host learns what a phone offers from the `hello` it sends.

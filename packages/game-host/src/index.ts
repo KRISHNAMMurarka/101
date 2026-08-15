@@ -86,6 +86,10 @@ export class GameHost101 {
   async connect() {
     if (this.connected) return;
     await Promise.all(this.adapters.map((adapter) => this.inputBus.register(adapter)));
+    // Local hardware alone answers "can this game be played on this machine?", and that answer does
+    // not improve by waiting for a transport. Reporting here keeps a status bar from sitting on
+    // "detecting" for the length of a LAN negotiation, which on a slow link is seconds, not a tick.
+    this.refreshReadiness();
     try {
       await this.session.start();
       this.connected = true;
@@ -96,12 +100,20 @@ export class GameHost101 {
   }
 
   async launch<State>(gamePackage: GamePackage<State>) {
-    await this.connect();
     this.engine?.stop();
+    // Set before connecting so the reading taken once adapters are up has a game to resolve
+    // against. A failed launch clears it again rather than leaving a package with no engine.
+    this.active = gamePackage as GamePackage<unknown>;
+    try {
+      await this.connect();
+    } catch (error) {
+      this.active = undefined;
+      this.readiness = undefined;
+      throw error;
+    }
     this.session.setGame(gamePackage.manifest.id, gamePackage.controllers);
     const engine = new Engine101(gamePackage.game, this.inputBus);
     this.engine = engine as Engine101<unknown>;
-    this.active = gamePackage as GamePackage<unknown>;
     this.refreshReadiness();
     await engine.start();
     return engine.context;
