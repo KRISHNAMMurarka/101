@@ -263,6 +263,7 @@ Apple installables are deliberately absent. An iOS or watchOS build needs a prov
 | [Architecture](docs/architecture.md) | Package boundaries and why game code never touches a device API |
 | [Game development](docs/game-development.md) | Writing a game against the SDK, in this repository or your own |
 | [Adapter development](docs/adapter-development.md) | Turning a new input source into `InputFrame` |
+| [Capability negotiation](docs/capability-negotiation.md) | How a game's declared input needs are matched against the hardware actually present |
 | [Protocol](docs/protocol.md) | Versioned message contract, control and realtime channels |
 | [Controller pairing](docs/controller-pairing.md) | Every pairing mode, from same-browser to offline manual WebRTC |
 | [Native Link](docs/native-link.md) | The iOS and Android controller app |
@@ -271,6 +272,7 @@ Apple installables are deliberately absent. An iOS or watchOS build needs a prov
 | [Specialist hardware](docs/hardware.md) | WebHID, Web Bluetooth and Web Serial mapping |
 | [Vision](docs/vision.md) | Local pose and hand landmark pipelines |
 | [Privacy and security](docs/privacy-security.md) | Local-first guarantees and the dependency gate |
+| [Offline cache](docs/offline-cache.md) | What the installed controller stores, and why the build is pinned to its source |
 | [Emulator QA](docs/emulator-qa.md) | What has actually been *run*, per target, and what has not |
 
 ## Privacy and offline behavior
