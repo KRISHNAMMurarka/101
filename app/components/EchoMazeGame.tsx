@@ -132,7 +132,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
       <div className="echo-layout">
-        {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+        {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
         <div className="echo-stage">
           <div className="echo-statusbar"><span><i className="status-dot" /> SEEDED MAZE / LOCAL COMPANION CHANNEL</span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "PRIVATE CLUE ROUTED TO LINK" : "FALLBACK CLUE VISIBLE"}</b></div>

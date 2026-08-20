@@ -121,7 +121,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable silhouette combat · Seed shadowarena-{run}</p><h1>Shadow Arena <span>101</span></h1></div>
         <div className="shadow-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
-      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="shadow-arena">
         <div className="shadow-statusbar"><span><i className="status-dot" /> COMBAT POSE / INPUT BUS ACTIVE</span><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>

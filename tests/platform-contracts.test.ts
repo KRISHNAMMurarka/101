@@ -318,3 +318,29 @@ test("pairing a phone does not claim vision a phone never sends", async () => {
   assert.ok(resolved.degraded.length > 0,
     "body controls served by a keyboard are degraded, not satisfied");
 });
+
+test("a blocked game reads differently from a merely degraded one", () => {
+  // `playable: false` means a required control has nothing to serve it: the game starts and then
+  // ignores the player until they act. It deliberately does not refuse to launch — graceful
+  // degradation is the platform's premise, and a launcher that refuses is worse than one that
+  // explains — but it must not look identical to "playable now, and better with a phone".
+  //
+  // No shipped game can reach this state; a test above asserts all ten run on a bare keyboard. It
+  // exists for third-party games, which is precisely why it needs a test rather than a look.
+  const style = readFileSync(resolve(import.meta.dirname, "../app/globals.css"), "utf8");
+  const blocked = /\.input-readiness\.blocked \{([^}]*)\}/.exec(style);
+  assert.ok(blocked, "the blocked state must have its own style");
+
+  // State is carried by weight and edge, never by hue: the scheme is monochrome, and a colour-only
+  // signal is invisible to a colour-blind player anyway.
+  assert.match(blocked[1]!, /border-width|font-weight/, "it must differ in weight");
+  assert.doesNotMatch(blocked[1]!, /#[0-9a-f]{3,6}|rgb|hsl/i, "and must not introduce a colour");
+
+  const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
+    .filter((file) => file.endsWith("Game.tsx"));
+  for (const file of components) {
+    const source = readFileSync(resolve(import.meta.dirname, `../app/components/${file}`), "utf8");
+    assert.match(source, /playable === false \? " blocked" : ""/,
+      `${file} must mark a blocked notice as blocked`);
+  }
+});

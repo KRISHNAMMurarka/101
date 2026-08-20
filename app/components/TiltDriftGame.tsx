@@ -79,7 +79,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable 3D vertical slice · Seed tiltdrift-{run}</p><h1>TiltDrift <span>101</span></h1></div>
         <div className="drift-stats"><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
-      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="drift-arena">
         <div className="drift-statusbar"><span><i className="status-dot" /> INPUT BUS / STEER ACTIVE</span><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>

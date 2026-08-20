@@ -122,7 +122,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable local vision slice · Seed bodydodge-{run}</p><h1>BodyDodge <span>101</span></h1></div>
         <div className="body-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
-      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="body-arena">
         <div className="body-statusbar"><span><i className="status-dot" /> INPUT BUS / BODY ACTIVE</span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>RAW VIDEO LOCAL</b></div>

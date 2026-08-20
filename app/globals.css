@@ -344,8 +344,13 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .surface-loading { min-height: 40vh; display: grid; place-items: center; color: var(--faint); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* One actionable line under the status bar, shown only when input is missing or degraded. Styled as
-   a quiet note rather than a warning: the game is usually still playable. */
+   a quiet note rather than a warning: the game is usually still playable.
+
+   `.blocked` is the exception — a required control has nothing to serve it, so the game will start
+   and then ignore the player until they act. It reads heavier through fill and edge weight rather
+   than colour, so it still carries in a monochrome scheme and to a colour-blind player. */
 .input-readiness { margin: 0 clamp(24px, 5vw, 80px) 12px; padding: 10px 14px; color: var(--muted); font-size: 12px; letter-spacing: .04em; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.input-readiness.blocked { color: var(--paper); border-color: var(--line-strong); border-width: 2px; background: var(--surface-strong); font-weight: 600; }
 
 .footer { min-height: 150px; padding: 42px clamp(24px, 5vw, 80px); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 32px; border-top: 1px solid var(--line); background: var(--ink); }
 .footer p { color: var(--faint); font-size: 12px; }

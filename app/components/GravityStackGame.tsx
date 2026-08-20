@@ -136,7 +136,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
           <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
-          {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+          {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>

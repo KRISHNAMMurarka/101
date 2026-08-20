@@ -93,7 +93,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
 
       {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
           inside it is drawn under the lives meter. */}
-      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="slash-arena">
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",

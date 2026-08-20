@@ -141,7 +141,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       </header>
 
       <div className="orbital-layout">
-        {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+        {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
         <div className="orbital-stage">
           <div className="orbital-statusbar"><span><i className="status-dot" /> SESSION HOST / ROLE ROUTING ACTIVE</span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "LOCAL SPACE CLEAR"}</b></div>

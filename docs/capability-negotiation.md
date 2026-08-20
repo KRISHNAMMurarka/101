@@ -68,7 +68,8 @@ otherwise produces a game that starts and then does not respond.
 `resolveInputManifest` shipped a long time ago and had exactly two call sites, both test files.
 Every game declared its needs, the suite validated the declarations, and the runtime ignored them.
 `GameHost101` — the one component that would have consumed them — had no callers either, because
-each game component wires its own `Engine101` and `SessionHost` directly.
+every game component wired its own `Engine101` and `SessionHost` directly. That is no longer true;
+see *The app runs on its own SDK* below.
 
 So the manifests were documentation that the tests kept honest and the product never read. Two
 contract tests now fail if that regresses, since a resolver with no production caller passes every
@@ -76,18 +77,24 @@ other test in this repository.
 
 ## Using it in a game
 
-```tsx
-import { describeReadiness, resolveGameInput } from "@/app/lib/input-readiness";
-import GAME_INPUT from "@/games/<id>/input.manifest.json";
+Nothing to wire. `useGameHost` runs the game through `GameHost101`, which resolves the package's
+input manifest on launch and again whenever a device joins or leaves, and hands back the result:
 
-const host = new SessionHost({
-  // …
-  onChange: (snapshot) => setReadiness(resolveGameInput(GAME_INPUT, engine.inputBus, snapshot)),
+```tsx
+const { linked, readiness } = useGameHost<GameState>({
+  sessionId,
+  deps: [run],
+  build: () => defineGamePackage({ manifest, input, controllers: ROLES, game: createGame(seed) }),
+  adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
+  onReady: ({ context }) => { /* views, draw loop */ return () => { /* teardown */ }; },
 });
-setReadiness(resolveGameInput(GAME_INPUT, engine.inputBus));
+
+const notice = readiness ? describeReadiness(readiness) : null;
 ```
 
-Recomputing on `onChange` is what makes pairing a phone clear the notice immediately.
+Render `describeSources(readiness)` where the status bar lists inputs, and `notice` where advice
+belongs. An earlier revision of this guide showed a hand-built `SessionHost` here; a contract test
+now fails any component that does that, because ten copies of it had already drifted apart.
 
 ## What the player sees
 
@@ -184,7 +191,12 @@ through `defineGamePackage`; reverting the fix fails it with the exact error abo
 
 ## Known gaps
 
-- The notice is advisory only. Nothing yet refuses to start a genuinely blocked game, because no
-  shipped game is blocked on a keyboard; the `playable` flag exists for when one is.
+- A blocked game is explained, not refused. `playable: false` means a required control has nothing
+  to serve it, so the game starts and then ignores the player until they act. Refusing to launch was
+  considered and rejected: graceful degradation is the platform's premise, and a launcher that
+  refuses is worse than one that explains. The notice reads heavier in that state — through edge and
+  weight, never hue, so it survives a monochrome scheme and a colour-blind player. No shipped game
+  can reach it; a test asserts all ten run on a bare keyboard, and the state exists for third-party
+  games, which is exactly why it is covered by a test rather than by looking at it.
 - Readiness for a *paired* device still cannot be known before that device joins, which is inherent:
   the host learns what a phone offers from the `hello` it sends.

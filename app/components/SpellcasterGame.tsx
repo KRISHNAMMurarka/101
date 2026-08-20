@@ -173,7 +173,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable gesture survival · Seed spellcaster-{run}</p><h1>Spellcaster <span>101</span></h1></div>
         <div className="spell-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
-      {readinessNotice && <p className="input-readiness">{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="spell-arena">
         <div className="spell-statusbar"><span><i className="status-dot" /> TEMPORAL GESTURE STATE MACHINE</span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "CAMERA OPTIONAL"}</b></div>
