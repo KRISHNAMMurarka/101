@@ -68,7 +68,7 @@ export default function VisionLab() {
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, bounds.width, bounds.height);
     if (visionState === "simulated") {
-      context.fillStyle = "#090b0b";
+      context.fillStyle = "#0a0a0a";
       context.fillRect(0, 0, bounds.width, bounds.height);
       context.strokeStyle = "rgba(255,255,255,.04)";
       for (let x = 0; x < bounds.width; x += 36) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, bounds.height); context.stroke(); }
@@ -189,7 +189,8 @@ export default function VisionLab() {
 function drawPose(context: CanvasRenderingContext2D, pose: readonly PoseLandmark[], width: number, height: number, confidence: number) {
   if (pose.length < 29) return;
   context.lineWidth = 3;
-  context.strokeStyle = `rgba(80,227,255,${0.35 + confidence * 0.65})`;
+  // Confidence already rides the alpha channel, so the hue carried nothing the greyscale cannot.
+  context.strokeStyle = `rgba(242,242,242,${0.35 + confidence * 0.65})`;
   for (const [from, to] of POSE_CONNECTIONS) {
     const a = pose[from]; const b = pose[to];
     if (!a || !b || a.visibility < 0.35 || b.visibility < 0.35) continue;
@@ -197,7 +198,9 @@ function drawPose(context: CanvasRenderingContext2D, pose: readonly PoseLandmark
   }
   for (const landmark of pose) {
     if (landmark.visibility < 0.35) continue;
-    context.fillStyle = landmark.visibility > .8 ? "#b5ff66" : "#ff5c35";
+    // Visibility was green-vs-orange; it is now solid-vs-dim, which survives a monochrome scheme and
+    // a colour-blind reader alike.
+    context.fillStyle = landmark.visibility > .8 ? "#f2f2f2" : "rgba(242,242,242,.42)";
     context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
   }
 }
@@ -206,14 +209,15 @@ function drawHands(context: CanvasRenderingContext2D, hands: readonly { landmark
   for (const hand of hands) {
     if (hand.landmarks.length < 21) continue;
     context.lineWidth = 3;
-    context.strokeStyle = `rgba(128,168,255,${0.35 + confidence * 0.65})`;
+    context.strokeStyle = `rgba(242,242,242,${0.35 + confidence * 0.65})`;
     for (const [from, to] of HAND_CONNECTIONS) {
       const a = hand.landmarks[from]; const b = hand.landmarks[to];
       if (!a || !b) continue;
       context.beginPath(); context.moveTo(a.x * width, a.y * height); context.lineTo(b.x * width, b.y * height); context.stroke();
     }
     for (const landmark of hand.landmarks) {
-      context.fillStyle = hand.handedness === "left" ? "#80a8ff" : "#b5ff66";
+      // Handedness stays legible as white against mid grey rather than blue against green.
+    context.fillStyle = hand.handedness === "left" ? "#f2f2f2" : "#8f8f8f";
       context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
     }
   }

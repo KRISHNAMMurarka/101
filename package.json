@@ -40,7 +40,9 @@
     "license:inventory": "node tools/generate-license-inventory.mjs && node tools/generate-rust-license-inventory.mjs",
     "audit:production": "node tools/audit-production.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "package:release": "node tools/package-release.mjs"
+    "package:release": "node tools/package-release.mjs",
+    "predev": "node tools/check-port.mjs",
+    "prestart": "node tools/check-port.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",

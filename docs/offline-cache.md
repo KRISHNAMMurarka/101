@@ -84,12 +84,35 @@ Verified: two consecutive builds are byte-for-byte identical, the service worker
 across them, and a one-line source edit still changes it. A release that changes nothing no longer
 evicts every user's cache; a release that changes something still does.
 
-## A correction
+## Solved: the stale-JavaScript symptom
 
-An earlier note in this repository suspected this cache of serving stale JavaScript during
-development — instrumentation that had been deleted still appeared to run after a rebuild. That was
-never confirmed and the service worker is not the cause: registration is refused outside a secure
-context in the harness used to test it, so no worker was ever active during those runs. The cache
-bug documented above is real and was found by reading the file, not by reproducing that symptom. The
-original symptom remains unexplained; the likeliest candidate is ordinary HTTP caching or a stale
-`vinext start` still holding the previous build's manifest, which has been observed here separately.
+An earlier note here suspected this cache of serving stale JavaScript during development —
+instrumentation that had been deleted still appeared to run after a rebuild. **The service worker was
+innocent**, and so was every build artefact. The cause was a port collision:
+
+```
+pid 76445  node  [::1]:3000   ~/Desktop/edilec mail  → vinext dev
+pid 78096  node  *:3000       ~/Desktop/games/101    → vinext start
+```
+
+A different project was serving on IPv6 localhost; 101 binds the IPv4 wildcard. Both bind
+successfully — they are different sockets, so there is no `EADDRINUSE` — and macOS resolves
+`localhost` to `::1` first. Every `http://localhost:3000` request went to the other application.
+
+Proof, on one build:
+
+| Request | Result |
+| --- | --- |
+| `http://localhost:3000/sw.js` | **404** — the other project has no such route |
+| `http://127.0.0.1:3000/sw.js` | **200**, build `78b48e4971414de9` — exactly what was just built |
+
+Nothing was stale. We were reading a different program, which is why every explanation involving
+caches, hashes and manifests failed to fit.
+
+`tools/check-port.mjs` now runs before `dev` and `start` and refuses to launch when anything is
+already listening, printing the owning pid and its full command line, plus `PORT=3001 npm start` as
+the way through. A check that cannot run — no `lsof`, another platform — never blocks the build.
+
+The general lesson is worth keeping: when a symptom implicates caching, verify *which server
+answered* before investigating what it served.
+

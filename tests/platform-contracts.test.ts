@@ -392,3 +392,50 @@ test("the documented path is the path that runs", () => {
       + "validation survives review");
   }
 });
+
+test("the site is monochrome; the games are not", () => {
+  // The owner's rule, verbatim: "my website and stuff must be monochrome etc not the game etc".
+  //
+  // So this checks the surfaces that frame the product — the stylesheet, the launcher, the
+  // controller, the labs — and deliberately does NOT check what a game paints inside its own play
+  // field. Game art is meant to be colourful and an earlier pass left it alone on purpose.
+  //
+  // The Input Lab and Vision Lab draw to a canvas but are diagnostics of the site rather than games,
+  // so they are held to the site's rule. Where their colour carried meaning it was re-expressed:
+  // landmark visibility became solid-versus-dim instead of green-versus-orange, and handedness became
+  // white against mid grey. State by weight, never by hue — which also survives a colour-blind reader.
+  const chrome = [
+    "app/globals.css",
+    "app/Launcher.tsx",
+    "app/layout.tsx",
+    "app/controller/Controller.tsx",
+    "app/controller-lab/ControllerLab.tsx",
+    "app/components/InputLab.tsx",
+    "app/vision/VisionLab.tsx",
+  ];
+
+  const tinted: string[] = [];
+  for (const file of chrome) {
+    const source = readFileSync(resolve(import.meta.dirname, `../${file}`), "utf8");
+
+    for (const match of source.matchAll(/#([0-9a-fA-F]{6})\b/g)) {
+      const [r, g, b] = [0, 2, 4].map((i) => parseInt(match[1]!.slice(i, i + 2), 16));
+      if (!(r === g && g === b)) tinted.push(`${file}: ${match[0]}`);
+    }
+    for (const match of source.matchAll(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/g)) {
+      const [r, g, b] = [1, 2, 3].map((i) => Number(match[i]));
+      if (!(r === g && g === b)) tinted.push(`${file}: ${match[0]})`);
+    }
+  }
+
+  assert.deepEqual(tinted, [], `site chrome must be black, white and greys between:\n  ${tinted.join("\n  ")}`);
+
+  // The other half of the rule: the games must still have their colour. A monochrome sweep that
+  // flattened the play field would satisfy the check above and break what the owner asked for.
+  const art = readFileSync(resolve(import.meta.dirname, "../app/components/SlashstormGame.tsx"), "utf8");
+  const artHues = [...art.matchAll(/#([0-9a-fA-F]{6})\b/g)].filter((m) => {
+    const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1]!.slice(i, i + 2), 16));
+    return !(r === g && g === b);
+  });
+  assert.ok(artHues.length > 0, "game art must keep its colour — the rule stops at the play field");
+});

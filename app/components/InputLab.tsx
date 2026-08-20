@@ -39,7 +39,6 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
         requiredCapabilities: ["touch"],
         layout: {
           title: "Input Lab",
-          accent: "#b5ff66",
           layout: [
             { type: "dpad", action: "move", label: "MOVE" },
             { type: "button", action: "trigger", label: "TRIGGER", emphasis: "primary" },
@@ -83,9 +82,12 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       const w = bounds.width;
       const h = bounds.height;
 
-      context.fillStyle = "#090c0c";
+      // The Input Lab is a diagnostic surface of the site, not a game, so it follows the site's
+      // monochrome rule. Aim and pointer stay distinguishable by form — an outlined reticle against
+      // a filled disc with an inverted core — rather than by hue.
+      context.fillStyle = "#0a0a0a";
       context.fillRect(0, 0, w, h);
-      context.strokeStyle = "rgba(222, 235, 224, 0.075)";
+      context.strokeStyle = "rgba(255, 255, 255, 0.075)";
       context.lineWidth = 1;
       const grid = Math.max(36, Math.round(w / 16));
       for (let x = grid; x < w; x += grid) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, h); context.stroke(); }
@@ -98,33 +100,33 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       const ax = w / 2 + aim.x * w / 2;
       const ay = h / 2 + aim.y * h / 2;
 
-      context.strokeStyle = "rgba(181, 255, 102, 0.5)";
+      context.strokeStyle = "rgba(242, 242, 242, 0.5)";
       context.setLineDash([5, 7]);
       context.beginPath(); context.moveTo(px, py); context.lineTo(ax, ay); context.stroke();
       context.setLineDash([]);
 
-      context.strokeStyle = "#b5ff66";
+      context.strokeStyle = "#f2f2f2";
       context.lineWidth = 1.5;
       context.beginPath(); context.arc(ax, ay, 13, 0, Math.PI * 2); context.stroke();
       context.beginPath(); context.moveTo(ax - 20, ay); context.lineTo(ax + 20, ay); context.moveTo(ax, ay - 20); context.lineTo(ax, ay + 20); context.stroke();
 
       pulse *= 0.925;
       if (pulse > 0.02) {
-        context.strokeStyle = `rgba(255, 92, 53, ${pulse * 0.7})`;
+        context.strokeStyle = `rgba(242, 242, 242, ${pulse * 0.7})`;
         context.lineWidth = 3;
         context.beginPath(); context.arc(px, py, 32 + (1 - pulse) * 90, 0, Math.PI * 2); context.stroke();
       }
 
-      context.fillStyle = "#f1f2e8";
+      context.fillStyle = "#f2f2f2";
       context.beginPath(); context.arc(px, py, 28, 0, Math.PI * 2); context.fill();
-      context.fillStyle = "#ff5c35";
+      context.fillStyle = "#0a0a0a";
       context.beginPath(); context.arc(px, py, 10, 0, Math.PI * 2); context.fill();
-      context.fillStyle = "rgba(9, 12, 12, 0.9)";
+      context.fillStyle = "rgba(10, 10, 10, 0.9)";
       context.font = "700 9px ui-monospace, monospace";
       context.textAlign = "center";
       context.fillText("101", px, py + 3);
 
-      context.fillStyle = "rgba(241, 242, 232, 0.5)";
+      context.fillStyle = "rgba(242, 242, 242, 0.5)";
       context.textAlign = "left";
       context.font = "600 10px ui-monospace, monospace";
       context.fillText("LOGICAL SPACE 1280×720", 18, h - 18);

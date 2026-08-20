@@ -99,3 +99,22 @@ test("the build is pinned to its source, so two builds of it are identical", asy
       `${derived} is build output, and hashing it into the id would be circular`);
   }
 });
+
+test("starting a server refuses a port something else already holds", () => {
+  // A different project on this machine ran its own dev server on [::1]:3000 while this one bound
+  // *:3000 on IPv4. Both bind without error — they are different sockets — and macOS resolves
+  // "localhost" to ::1 first, so every localhost:3000 request was answered by the other
+  // application. Deleted code appeared to still run and a rebuild appeared to change nothing.
+  // Nothing was stale; we were reading a different program.
+  const guard = readFileSync("tools/check-port.mjs", "utf8");
+  assert.match(guard, /LISTEN/, "it must look for an existing listener");
+  assert.match(guard, /process\.exit\(1\)/, "and refuse to start, not merely warn");
+  assert.match(guard, /PORT=/, "and offer a way through, or it is just an obstacle");
+  // A check that cannot run must never block a build — lsof is absent on plenty of machines.
+  assert.match(guard, /return \[\];/);
+
+  const scripts = JSON.parse(readFileSync("package.json", "utf8")).scripts;
+  for (const hook of ["predev", "prestart"]) {
+    assert.match(scripts[hook] ?? "", /check-port/, `${hook} must run the guard`);
+  }
+});

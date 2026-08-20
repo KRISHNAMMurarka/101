@@ -236,7 +236,8 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
   useEffect(() => {
     let current = true;
     getBrowserHostTransport(sessionId).preparePairing().then(async (info) => {
-      const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", color: { dark: "#0b0e0d", light: "#f0f2ec" } });
+      const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", // The QR library needs literal hex, not a CSS variable, so these mirror --ink and --paper.
+        color: { dark: "#0a0a0a", light: "#f2f2f2" } });
       if (!current) return;
       setPairing(info);
       setQrCode(image);

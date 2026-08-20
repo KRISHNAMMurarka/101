@@ -10,7 +10,6 @@ const SESSION = "CTRL01";
 const PRESETS: Record<string, ControllerLayout> = {
   classic: {
     title: "Classic Controller",
-    accent: "#b5ff66",
     layout: [
       { type: "dpad", action: "move", label: "MOVE" },
       { type: "button", action: "trigger", label: "TRIGGER", emphasis: "primary" },
@@ -18,7 +17,6 @@ const PRESETS: Record<string, ControllerLayout> = {
   },
   flight: {
     title: "Flight Console",
-    accent: "#50e3ff",
     motion: { action: "flight", mode: "tilt", label: "Phone tilt" },
     layout: [
       { type: "joystick", action: "flight", label: "FLIGHT VECTOR" },
@@ -27,7 +25,6 @@ const PRESETS: Record<string, ControllerLayout> = {
   },
   reactor: {
     title: "Reactor Console",
-    accent: "#f8d96a",
     layout: [
       { type: "slider", action: "power", label: "OUTPUT", min: .2, max: 1, step: .01 },
       { type: "button", action: "vent", label: "VENT" },

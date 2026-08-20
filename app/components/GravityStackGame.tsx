@@ -176,10 +176,16 @@ function StackMeter({ label, value, tone }: { label: string; value: number; tone
   return <div className={`stack-meter meter-${tone}`}><span>{label}</span><i><b style={{ width: `${Math.max(0, Math.min(100, value))}%` }} /></i><strong>{Math.round(value)}%</strong></div>;
 }
 
+/**
+ * The next-shape preview is HTML in the page frame, not something drawn into the play field, so it
+ * follows the site's monochrome rule rather than the game's palette. Nothing is lost: the preview
+ * already reproduces the shape's silhouette exactly — an orb is a circle, everything else is sized
+ * from its own width and height — and the silhouette is what tells the player what is coming.
+ */
 function ShapePreview({ shape }: { shape: StackShapeSpec }) {
   const style = shape.kind === "orb"
-    ? { width: 74, height: 74, borderRadius: "50%", background: shape.color }
-    : { width: Math.min(115, 34 + shape.width * 22), height: Math.min(100, 24 + shape.height * 24), background: shape.color };
+    ? { width: 74, height: 74, borderRadius: "50%", background: "var(--surface-strong)" }
+    : { width: Math.min(115, 34 + shape.width * 22), height: Math.min(100, 24 + shape.height * 24), background: "var(--surface-strong)" };
   return <div className="shape-preview"><i style={style} /></div>;
 }
 

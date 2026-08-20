@@ -34,7 +34,6 @@ interface InstallPromptEvent extends Event {
 
 const DEFAULT_LAYOUT: ControllerLayout = {
   title: "Classic Controller",
-  accent: "#b5ff66",
   layout: [
     { type: "dpad", action: "move", label: "MOVE" },
     { type: "button", action: "buttonB", label: "B", emphasis: "normal" },
@@ -42,7 +41,7 @@ const DEFAULT_LAYOUT: ControllerLayout = {
   ],
 };
 
-const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", accent: "#8d9791", layout: [] };
+const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", layout: [] };
 
 export default function Controller({ session, pairCode }: { session: string; pairCode?: string }) {
   const [connected, setConnected] = useState(false);
