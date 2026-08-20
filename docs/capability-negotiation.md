@@ -189,6 +189,24 @@ through, so an over-strict rule there refuses correct games rather than catching
 nothing would have revealed it until an outside developer hit it. A test now runs all ten games
 through `defineGamePackage`; reverting the fix fails it with the exact error above.
 
+## The guard that keeps this honest
+
+Three layers of this platform shipped with no production caller: `resolveInputManifest` reachable
+only from tests, `defineGamePackage` from nothing, `GameHost101` from nothing. Each looked supported
+and each was documented. The cost was concrete — `defineGamePackage`'s role validation was wrong in a
+way that would have rejected correct third-party games, and nothing could reveal it while nothing
+ran it.
+
+Fixing that reproduced it. `resolveGameInput` in `app/lib` went dead the moment every game moved onto
+the SDK, and only a deliberate check found it.
+
+So `tests/platform-contracts.test.ts` now counts callers: for each name the platform tells developers
+to build on, at least one non-test file outside the defining package must reference it. Every other
+test in this repository passes happily for code nothing calls, which is the whole point of this one.
+It earned its place on its first run by failing — `capabilitySources` has no caller outside its own
+package, which is correct for a building block and would be damning for a promise, so the assertion
+names `sessionSources`, which is what the host actually consumes.
+
 ## Known gaps
 
 - A blocked game is explained, not refused. `playable: false` means a required control has nothing

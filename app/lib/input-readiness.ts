@@ -1,32 +1,14 @@
-import { parseInputManifest, resolveInputManifest, type InputBus, type InputSource, type ResolvedInputManifest } from "@101/input";
-import { sessionSources, type SessionSnapshot } from "@101/session";
+import type { InputSource, ResolvedInputManifest } from "@101/input";
 
 /**
- * Matches what a game says it needs against what is actually connected.
+ * How a game's resolved input needs are put into words.
  *
- * Every game ships an `input.manifest.json` declaring, per control, the sources it was designed
- * around and the ones it will accept instead. Until this existed, nothing read those files at
- * runtime: they were validated by the test suite and then ignored, so a game with an unservable
- * control started anyway and simply did nothing when the player pressed for it.
- *
- * The two halves of "what is connected" have to come from different places. Local adapters live on
- * the bus; a paired phone registers no adapter here at all, and is only known through the
- * capabilities it announced when it joined the session.
+ * Resolution itself lives in `GameHost101`, which every game reaches through `useGameHost`. This
+ * file used to own a second copy — `resolveGameInput`, written before the games ran on the SDK — and
+ * it went dead the moment they did. Leaving it would have recreated exactly the problem this session
+ * removed everywhere else: exported code with no caller, which reads as supported and drifts from
+ * the path that actually runs.
  */
-export interface GameInputReadiness extends ResolvedInputManifest {
-  /** Everything able to produce frames right now, for showing the player what they are playing on. */
-  available: InputSource[];
-}
-
-export function resolveGameInput(
-  manifest: unknown,
-  bus: InputBus,
-  snapshot?: Pick<SessionSnapshot, "devices">,
-): GameInputReadiness {
-  const available = bus.availableSources(sessionSources(snapshot?.devices ?? []));
-  return { available, ...resolveInputManifest(parseInputManifest(manifest), available) };
-}
-
 /** The device a player would actually go and get, for a source they are missing. */
 const DEVICE_FOR: Partial<Record<InputSource, string>> = {
   "camera-pose": "Enable the camera",
@@ -74,7 +56,7 @@ export function describeReadiness(readiness: ResolvedInputManifest): string | nu
  * another. Measured-and-empty is a real state worth naming. Anything else lists what is actually
  * connected.
  */
-export function describeSources(readiness?: GameInputReadiness): string {
+export function describeSources(readiness?: { available: InputSource[] }): string {
   if (!readiness) return "DETECTING INPUT";
   if (readiness.available.length === 0) return "NO INPUT";
   return readiness.available.join(" · ").toUpperCase();

@@ -344,3 +344,51 @@ test("a blocked game reads differently from a merely degraded one", () => {
       `${file} must mark a blocked notice as blocked`);
   }
 });
+
+test("the documented path is the path that runs", () => {
+  // Three layers shipped with no production caller at all: resolveInputManifest was reachable only
+  // from tests, defineGamePackage from nothing, GameHost101 from nothing. Each looked supported,
+  // each was documented, and none of them ran — so the validation in defineGamePackage was wrong in
+  // a way that would have rejected correct third-party games, and nobody could know.
+  //
+  // Writing the fix reproduced the mistake: `resolveGameInput` in app/lib went dead the moment every
+  // game moved onto the SDK, and only a deliberate check found it. Every test in this suite passes
+  // for code nothing calls, which is exactly why this one counts callers instead.
+  const roots = ["app", "packages", "games", "tools", "worker"];
+  const files: string[] = [];
+  const collect = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === "node_modules" || entry.name === "dist") continue;
+      const path = resolve(dir, entry.name);
+      if (entry.isDirectory()) collect(path);
+      else if (/\.(ts|tsx|mjs)$/.test(entry.name) && !/\.test\.(ts|tsx|mjs)$/.test(entry.name)) files.push(path);
+    }
+  };
+  for (const root of roots) collect(resolve(import.meta.dirname, `../${root}`));
+
+  // Each entry is a promise the platform makes to whoever builds on it. `definedIn` is excluded so
+  // an export cannot count as its own caller.
+  const promises = [
+    { name: "GameHost101", definedIn: "packages/game-host/" },
+    { name: "defineGamePackage", definedIn: "packages/sdk/" },
+    { name: "resolveInputManifest", definedIn: "packages/input/" },
+    // `sessionSources`, not `capabilitySources`: the host asks what a whole session offers, and the
+    // per-device helper is the building block it is made from. That distinction is not cosmetic —
+    // this test failed on its first run because `capabilitySources` has no caller outside its own
+    // package, which is true and fine for a building block and would be damning for a promise.
+    { name: "sessionSources", definedIn: "packages/session/" },
+    { name: "useGameHost", definedIn: "app/lib/use-game-host" },
+    { name: "describeReadiness", definedIn: "app/lib/input-readiness" },
+    { name: "describeSources", definedIn: "app/lib/input-readiness" },
+  ];
+
+  for (const { name, definedIn } of promises) {
+    const callers = files.filter((path) => {
+      if (path.split("/Desktop/games/101/")[1]?.startsWith(definedIn)) return false;
+      return new RegExp(`\\b${name}\\b`).test(readFileSync(path, "utf8"));
+    });
+    assert.ok(callers.length > 0,
+      `${name} has no production caller — it is documented but dead, which is how a wrong `
+      + "validation survives review");
+  }
+});
