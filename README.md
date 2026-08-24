@@ -274,6 +274,7 @@ Apple installables are deliberately absent. An iOS or watchOS build needs a prov
 | [Privacy and security](docs/privacy-security.md) | Local-first guarantees and the dependency gate |
 | [Offline cache](docs/offline-cache.md) | What the installed controller stores, and why the build is pinned to its source |
 | [Emulator QA](docs/emulator-qa.md) | What has actually been *run*, per target, and what has not |
+| [Handoff](HANDOFF.md) | What is left to build, verified against the source, with priorities |
 
 ## Privacy and offline behavior
 
