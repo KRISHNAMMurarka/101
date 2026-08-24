@@ -31,6 +31,19 @@ const PRESETS: Record<string, ControllerLayout> = {
       { type: "button", action: "scram", label: "SCRAM", emphasis: "danger" },
     ],
   },
+  gamepad: {
+    title: "Full Gamepad",
+    handedness: "right",
+    layout: [
+      { type: "joystick", action: "move", label: "MOVE", side: "left", zone: "thumb", size: "large", span: 2, priority: 100, deadZone: .14, responseCurve: 1.4 },
+      { type: "shoulder", action: "guard", label: "LB · HOLD", side: "left", zone: "shoulder", interaction: { type: "hold", thresholdMs: 450 } },
+      { type: "trigger", action: "throttle", label: "RT", side: "right", zone: "index", size: "large", priority: 100 },
+      { type: "analog-button", action: "brake", label: "PRESSURE", side: "right", zone: "thumb", size: "large", priority: 90 },
+      { type: "button", action: "dash", label: "DOUBLE DASH", side: "right", zone: "thumb", interaction: { type: "double-tap", intervalMs: 300 } },
+      { type: "button", action: "lock", label: "LOCK", side: "center", zone: "edge", size: "small", interaction: { type: "toggle" } },
+      { type: "button", action: "special", label: "CHORD", side: "right", zone: "thumb", interaction: { type: "chord", actions: ["guard", "focus"] } },
+    ],
+  },
 };
 
 export default function ControllerLab() {
@@ -108,7 +121,7 @@ export default function ControllerLab() {
             <a href={`/controller?session=${SESSION}`} target="_blank" rel="noreferrer">OPEN LINK ↗</a>
           </div>
           <div className="controller-lab-link-card">
-            <span>02</span><div><strong>Interact with it</strong><p>Buttons, sliders, surfaces, D-pads, and optional motion publish the same frame contract.</p></div>
+            <span>02</span><div><strong>Interact with it</strong><p>Buttons, analog triggers, shoulders, sticks, sliders, surfaces, D-pads, and optional motion publish the same frame contract.</p></div>
             <b>{connected ? snapshot.assignments[0]?.deviceId : "NO DEVICE"}</b>
           </div>
           <div className="frame-inspector">
@@ -121,7 +134,7 @@ export default function ControllerLab() {
           </div>
         </div>
       </section>
-      <p className="controller-lab-note"><b>SCHEMA BOUNDARY</b> Layouts are size-limited and validate element types, action names, labels, ranges, colors, and optional motion mappings before the host sends them.</p>
+      <p className="controller-lab-note"><b>SCHEMA BOUNDARY</b> Layouts validate element types, action names, analog ranges, gesture semantics, placement hints, stick tuning, handedness, colors, and optional motion mappings before the host sends them.</p>
     </main>
   );
 }

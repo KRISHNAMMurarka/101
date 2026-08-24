@@ -68,14 +68,38 @@ test("every Link role has a valid JSON controller layout backed by its game's se
       const transition = model.transition(layout);
       assertNeutral(transition.release);
       for (const element of layout.layout) {
-        const declared = element.type === "button" ? actions.has(element.action) : analog.has(element.action);
+        const actionElement = element.type === "button"
+          || element.type === "shoulder"
+          || element.type === "trigger"
+          || element.type === "analog-button";
+        const declared = actionElement ? actions.has(element.action) : analog.has(element.action);
         assert.equal(declared, true, `${gameId}/${role.id} uses undeclared ${element.type} control ${element.action}`);
+        if ((element.type === "button" || element.type === "shoulder") && element.interaction?.type === "chord") {
+          for (const action of element.interaction.actions) {
+            assert.equal(actions.has(action), true, `${gameId}/${role.id} chord uses undeclared action ${action}`);
+          }
+        }
       }
       if (layout.motion) {
         assert.equal(analog.has(layout.motion.action), true, `${gameId}/${role.id} uses undeclared motion control ${layout.motion.action}`);
         for (const action of Object.values(layout.motion.gestures ?? {})) assert.equal(action ? actions.has(action) : true, true, `${gameId}/${role.id} maps an undeclared motion gesture`);
       }
     }
+  }
+});
+
+test("a shipped role exercises the real-gamepad controller contract", () => {
+  const driver = rolesByGame.tiltdrift[0]!;
+  const layout = parseControllerLayout(driver.layout);
+  assert.equal(layout.handedness, "right");
+  assert.deepEqual(layout.layout.map((element) => element.type), ["joystick", "trigger", "analog-button", "shoulder"]);
+  const stick = layout.layout[0];
+  assert.equal(stick?.type, "joystick");
+  if (stick?.type === "joystick") {
+    assert.equal(stick.deadZone, .14);
+    assert.equal(stick.responseCurve, 1.35);
+    assert.equal(stick.side, "left");
+    assert.equal(stick.zone, "thumb");
   }
 });
 
@@ -440,4 +464,34 @@ test("the site is monochrome; the games are not", () => {
     return !(r === g && g === b);
   });
   assert.ok(artHues.length > 0, "game art must keep its colour — the rule stops at the play field");
+});
+
+test("browser Link consumes the complete real-gamepad controller contract", () => {
+  // Protocol support is not product support until the shipped browser controller calls it. This
+  // guard exists because 101 has previously carried complete, tested SDK layers with no caller.
+  const source = readFileSync(resolve(import.meta.dirname, "../app/controller/Controller.tsx"), "utf8");
+
+  for (const elementType of ["shoulder", "trigger", "analog-button"] as const) {
+    assert.match(source, new RegExp(`element\\.type === ["']${elementType}["']`),
+      `browser Link must render ${elementType} controls`);
+  }
+  for (const behavior of [
+    "ControllerActionGesture",
+    "normalizeJoystick",
+    "resolveControllerSide",
+    "setActions",
+  ] as const) {
+    assert.match(source, new RegExp(`\\b${behavior}\\b`),
+      `browser Link must call ${behavior} rather than leaving the shared behavior unused`);
+  }
+  for (const hint of ["side", "zone", "size", "span", "priority"] as const) {
+    assert.match(source, new RegExp(`element\\.${hint}\\b`),
+      `browser Link must consume the ${hint} placement hint`);
+  }
+  assert.match(source, /layout\.handedness/, "the author's handedness preference must reach the renderer");
+  assert.match(source, /101-link-handedness/, "the player's handedness override must persist locally");
+  assert.match(source, /setActions\(values, owner\)/,
+    "digital controls need stable owners so releasing a chord cannot clear another held control");
+  assert.match(source, /element\.side \?\? defaultControlSide\(element\)/,
+    "legacy hint-less layouts must receive the same left/right inference as native Link");
 });

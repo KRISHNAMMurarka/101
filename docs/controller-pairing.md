@@ -23,7 +23,7 @@ Open `/controller` in a PWA-capable browser and use **Install 101 Link** when th
 
 The Expo/React Native app in `apps/controller-native` uses the same `101L2` ticket, HTTP signaling contract, control messages, realtime `InputFrame` schema, and host-defined controller layout as the PWA. Scan the host QR or paste its ticket. The native app joins the local Hub and then moves gameplay traffic onto a direct WebRTC connection with reliable control and unordered zero-retransmit realtime channels.
 
-The app is not game-specific. `controller.configure` replaces its current surface atomically, releases controls held by the previous role, and renders buttons, D-pads, sticks, touch surfaces, sliders, and motion mappings from validated JSON. Switching games does not require another scan.
+The app is not game-specific. `controller.configure` replaces its current surface atomically, releases controls held by the previous role, and renders buttons, shoulders, analog triggers/buttons, D-pads, tuned sticks, touch surfaces, sliders, and motion mappings from validated JSON. Placement and handedness are advisory, with a player-facing side swap. Switching games does not require another scan.
 
 For strict offline manual pairing, paste or scan the host's `101C2`/`101J2` offer instead of a LAN ticket. Native Link produces an answer that can be copied back to the host. No signaling service is used in this mode.
 

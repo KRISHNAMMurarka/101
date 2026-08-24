@@ -9,22 +9,195 @@
     "$schema": { "type": "string" },
     "title": { "type": "string", "minLength": 1, "maxLength": 64 },
     "accent": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+    "handedness": {
+      "enum": ["left", "right"],
+      "description": "Author-preferred hand; controller players may override it."
+    },
     "motion": {
-      "type": "object", "additionalProperties": false, "required": ["action", "mode"],
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "mode"],
       "properties": {
-        "action": { "$ref": "#/$defs/action" }, "mode": { "enum": ["tilt", "wand"] }, "label": { "type": "string", "minLength": 1, "maxLength": 64 },
-        "gestures": { "type": "object", "additionalProperties": false, "properties": { "shake": { "$ref": "#/$defs/action" }, "swing": { "$ref": "#/$defs/action" }, "spin": { "$ref": "#/$defs/action" } } }
+        "action": { "$ref": "#/$defs/action" },
+        "mode": { "enum": ["tilt", "wand"] },
+        "label": { "$ref": "#/$defs/motionLabel" },
+        "gestures": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "shake": { "$ref": "#/$defs/action" },
+            "swing": { "$ref": "#/$defs/action" },
+            "spin": { "$ref": "#/$defs/action" }
+          }
+        }
       }
     },
-    "layout": { "type": "array", "minItems": 1, "maxItems": 16, "items": { "$ref": "#/$defs/element" } }
+    "layout": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": { "$ref": "#/$defs/element" }
+    }
   },
   "$defs": {
-    "action": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*$" },
+    "action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*$"
+    },
+    "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "motionLabel": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "side": { "enum": ["left", "right", "center"] },
+    "zone": { "enum": ["thumb", "shoulder", "index", "edge"] },
+    "size": { "enum": ["small", "medium", "large"] },
+    "span": { "type": "integer", "minimum": 1, "maximum": 4 },
+    "priority": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "interaction": {
+      "description": "Local digital-button semantics. Chord actions must be unique and must not repeat the element's primary action.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "hold" },
+            "thresholdMs": { "type": "number", "minimum": 150, "maximum": 2000, "default": 450 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": {
+            "type": { "const": "double-tap" },
+            "intervalMs": { "type": "number", "minimum": 150, "maximum": 750, "default": 300 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "toggle" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "actions"],
+          "properties": {
+            "type": { "const": "chord" },
+            "actions": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 4,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/action" }
+            }
+          }
+        }
+      ]
+    },
     "element": {
       "oneOf": [
-        { "type": "object", "additionalProperties": false, "required": ["type", "action"], "properties": { "type": { "enum": ["joystick", "dpad", "touch-surface"] }, "action": { "$ref": "#/$defs/action" }, "label": { "type": "string", "minLength": 1, "maxLength": 64 } } },
-        { "type": "object", "additionalProperties": false, "required": ["type", "action", "label"], "properties": { "type": { "const": "button" }, "action": { "$ref": "#/$defs/action" }, "label": { "type": "string", "minLength": 1, "maxLength": 64 }, "emphasis": { "enum": ["normal", "primary", "danger"] } } },
-        { "type": "object", "additionalProperties": false, "required": ["type", "action", "label"], "properties": { "type": { "const": "slider" }, "action": { "$ref": "#/$defs/action" }, "label": { "type": "string", "minLength": 1, "maxLength": 64 }, "min": { "type": "number", "minimum": -1, "maximum": 1 }, "max": { "type": "number", "minimum": -1, "maximum": 1 }, "step": { "type": "number", "exclusiveMinimum": 0, "maximum": 2 } } }
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action"],
+          "properties": {
+            "type": { "const": "joystick" },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "deadZone": { "type": "number", "minimum": 0, "maximum": 0.95, "default": 0.12 },
+            "responseCurve": { "type": "number", "minimum": 0.25, "maximum": 4, "default": 1 },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action"],
+          "properties": {
+            "type": { "enum": ["dpad", "touch-surface"] },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "label"],
+          "properties": {
+            "type": { "const": "button" },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "emphasis": { "enum": ["normal", "primary", "danger"] },
+            "interaction": { "$ref": "#/$defs/interaction" },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "label"],
+          "properties": {
+            "type": { "const": "shoulder" },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "interaction": { "$ref": "#/$defs/interaction" },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Triggers and analog buttons publish their action as a normalized number from 0 through 1.",
+          "additionalProperties": false,
+          "required": ["type", "action", "label"],
+          "properties": {
+            "type": { "enum": ["trigger", "analog-button"] },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "label"],
+          "properties": {
+            "type": { "const": "slider" },
+            "action": { "$ref": "#/$defs/action" },
+            "label": { "$ref": "#/$defs/label" },
+            "min": { "type": "number", "minimum": -1, "maximum": 1 },
+            "max": { "type": "number", "minimum": -1, "maximum": 1 },
+            "step": { "type": "number", "exclusiveMinimum": 0, "maximum": 2 },
+            "side": { "$ref": "#/$defs/side" },
+            "zone": { "$ref": "#/$defs/zone" },
+            "size": { "$ref": "#/$defs/size" },
+            "span": { "$ref": "#/$defs/span" },
+            "priority": { "$ref": "#/$defs/priority" }
+          }
+        }
       ]
     }
   }

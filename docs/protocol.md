@@ -67,9 +67,17 @@ Capabilities describe what a device can provide, not what permissions have alrea
 
 ## Targeted role configuration
 
-Protocol v2 makes asymmetric configuration explicit. `player.assign`, `player.wait`, `controller.configure`, `controller.state`, and `haptic` all carry a target `deviceId`. A controller ignores messages for other devices. `player.wait` explicitly places a connected surplus device on standby. `controller.configure` carries the active game, role, revision, theme, optional motion mapping, and a JSON element list containing buttons, sticks, D-pads, touch surfaces, or sliders.
+Protocol v2 makes asymmetric configuration explicit. `player.assign`, `player.wait`, `controller.configure`, `controller.state`, and `haptic` all carry a target `deviceId`. A controller ignores messages for other devices. `player.wait` explicitly places a connected surplus device on standby. `controller.configure` carries the active game, role, revision, theme, optional motion mapping, and a JSON element list containing buttons, shoulders, triggers, analog buttons, sticks, D-pads, touch surfaces, or sliders.
 
 The session host treats the identity inside realtime packets as untrusted. It accepts frames only from registered devices with an assignment and replaces the packet's `deviceId` and `playerId` with the authoritative values before the Input Bus sees it.
+
+### Controller layout contract
+
+Every element can carry advisory, flattened placement hints. `side` is `left`, `right`, or `center`; `zone` is `thumb`, `shoulder`, `index`, or `edge`; `size` is `small`, `medium`, or `large`; `span` is an integer from 1 through 4; and `priority` is an integer from 0 through 100. A renderer may reflow these hints for its screen and accessibility settings. Top-level `handedness` (`left` or `right`) is the game author's preferred default, not a lock: the player may override it.
+
+`button` and `shoulder` are digital controls. They may declare a local `interaction`: `hold` (default threshold 450 ms, valid range 150–2000), `double-tap` (default interval 300 ms, valid range 150–750), `toggle`, or `chord`. A chord names one to four unique secondary actions and cannot repeat the element's primary action. Handling these semantics on Link keeps games from reimplementing timing and state machines.
+
+`trigger` and `analog-button` publish their action as a normalized value from 0 through 1. A joystick applies a radial `deadZone` (default `0.12`, range `0`–`0.95`) and a `responseCurve` exponent (default `1`, range `0.25`–`4`) before publishing its vector. Radial normalization keeps a diagonal from exceeding the magnitude of a cardinal direction.
 
 ## Compact motion packet
 

@@ -37,6 +37,29 @@ simulate("TiltDrift advances an infinite road under normalized steering", () => 
   return pick(state, "distance", "score", "integrity", "boost", "environment", "gameOver");
 });
 
+test("TiltDrift scales acceleration, braking, and boost drain with analog pressure", () => {
+  const step = (boost: number, brake: number) => {
+    const game = createTiltDriftGame("analog-pressure");
+    const input = new ScriptedInput();
+    const state = game.initialState();
+    const context: GameContext<typeof state> = { input, state, assets: { load: async () => {} } };
+    game.start?.(context);
+    input.action("boost", boost);
+    input.action("brake", brake);
+    game.update(context, .1);
+    return { speed: state.speed, boost: state.boost };
+  };
+
+  const lightBoost = step(.1, 0);
+  const fullBoost = step(1, 0);
+  assert.ok(lightBoost.speed < fullBoost.speed, "a lightly squeezed trigger must accelerate less than a full squeeze");
+  assert.ok(lightBoost.boost > fullBoost.boost, "boost energy drain must scale with trigger travel");
+
+  const lightBrake = step(0, .1);
+  const fullBrake = step(0, 1);
+  assert.ok(lightBrake.speed > fullBrake.speed, "a light analog brake press must slow less than a full press");
+});
+
 simulate("BodyDodge accepts its Link movement panel and pose-equivalent actions", () => createBodyDodgeGame("sim-body"), (input, state) => {
   const next = state.gates.find((gate) => !gate.resolved)?.requirement ?? "center";
   const x = next === "left" || next === "lean-left" ? -1 : next === "right" || next === "lean-right" ? 1 : 0;

@@ -9,7 +9,7 @@
 - expiring authenticated local-Hub signaling and generation-based reconnect
 - direct native WebRTC reliable control plus disposable realtime DataChannels
 - automatic host-provided JSON controller layouts for third-party games
-- classic controller, motion wand, steering wheel, tilt board, touch surface, trigger controller, motion detector and Sensor Lab presets
+- classic controller, Pro Gamepad, motion wand, steering wheel, tilt board, touch surface, trigger controller, motion detector and Sensor Lab presets
 - buttons, D-pad, joysticks, normalized touch surface and sliders
 - local quaternion correction, neutral calibration, sensitivity, dead zone, smoothing and swing/shake/spin recognition
 - host assignments, live private state, latency heartbeat and tap/impact/warning haptics

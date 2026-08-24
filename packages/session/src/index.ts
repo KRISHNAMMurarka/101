@@ -353,6 +353,8 @@ export class SessionHost {
     if (message.channel !== "realtime" || "type" in message.payload) return;
     const assignment = this.session.assignmentForDevice(message.payload.deviceId);
     if (!assignment) return;
+    const role = this.session.role(assignment.roleId);
+    if (!role) return;
     // Input is proof of life. Without this, a controller that pairs and then plays without ever
     // repeating its handshake is expired after `deviceTimeoutMs` while the player is still holding
     // it, dropping their role mid-game.
@@ -361,6 +363,7 @@ export class SessionHost {
       ...message.payload,
       deviceId: assignment.deviceId,
       playerId: assignment.playerId,
+      actions: normalizeControllerActions(message.payload.actions, role.layout),
     });
   }
 
@@ -433,8 +436,28 @@ function cloneLayout(layout: ControllerLayout): ControllerLayout {
   return {
     ...layout,
     motion: layout.motion ? { ...layout.motion, gestures: layout.motion.gestures ? { ...layout.motion.gestures } : undefined } : undefined,
-    layout: layout.layout.map((element) => ({ ...element })),
+    layout: layout.layout.map((element) => {
+      if ((element.type !== "button" && element.type !== "shoulder") || !element.interaction) return { ...element };
+      return {
+        ...element,
+        interaction: element.interaction.type === "chord"
+          ? { ...element.interaction, actions: [...element.interaction.actions] }
+          : { ...element.interaction },
+      };
+    }),
   };
+}
+
+function normalizeControllerActions(actions: InputFrame["actions"], layout: ControllerLayout) {
+  const normalized = { ...actions };
+  for (const element of layout.layout) {
+    if (element.type !== "trigger" && element.type !== "analog-button") continue;
+    const value = normalized[element.action];
+    if (value === undefined) continue;
+    const numeric = typeof value === "boolean" ? Number(value) : value;
+    normalized[element.action] = Math.max(0, Math.min(1, Number.isFinite(numeric) ? numeric : 0));
+  }
+  return normalized;
 }
 
 function validateRoles(roles: readonly SessionRole[]) {

@@ -65,13 +65,16 @@ export function createTiltDriftGame(seed = "tiltdrift-101") {
       const state = ctx.state;
       if (state.gameOver) return;
       const steer = clamp(ctx.input.axis("steer"));
-      const boosting = Boolean(ctx.input.action("boost")) || Boolean(ctx.input.action("buttonA"));
-      const braking = Boolean(ctx.input.action("brake"));
+      const boostPressure = Math.max(actionPressure(ctx.input.action("boost")), actionPressure(ctx.input.action("buttonA")));
+      const brakePressure = actionPressure(ctx.input.action("brake"));
       const drifting = Boolean(ctx.input.action("drift")) || Boolean(ctx.input.action("buttonB"));
-      const desiredSpeed = braking ? 18 : boosting && state.boost > 0 ? 64 : 43 + Math.min(17, state.distance / 900);
-      state.speed += (desiredSpeed - state.speed) * Math.min(1, delta * (braking ? 5 : 1.7));
-      if (boosting && state.boost > 0) {
-        state.boost = Math.max(0, state.boost - delta * 24);
+      const cruiseSpeed = 43 + Math.min(17, state.distance / 900);
+      const poweredBoost = state.boost > 0 ? boostPressure : 0;
+      const boostedSpeed = cruiseSpeed + (64 - cruiseSpeed) * poweredBoost;
+      const desiredSpeed = boostedSpeed + (18 - boostedSpeed) * brakePressure;
+      state.speed += (desiredSpeed - state.speed) * Math.min(1, delta * (1.7 + brakePressure * 3.3));
+      if (boostPressure > 0 && state.boost > 0) {
+        state.boost = Math.max(0, state.boost - delta * 24 * boostPressure);
         state.lastEvent = "BOOST BURN";
       } else {
         state.boost = Math.min(100, state.boost + delta * 7);
@@ -140,6 +143,11 @@ function segmentAt(segments: RoadSegment[], distance: number) {
 
 function clamp(value: number) {
   return Math.max(-1, Math.min(1, Number.isFinite(value) ? value : 0));
+}
+
+function actionPressure(value: boolean | number) {
+  if (typeof value === "boolean") return Number(value);
+  return Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
 }
 
 export default createTiltDriftGame();

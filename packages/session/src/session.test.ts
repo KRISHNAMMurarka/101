@@ -56,6 +56,68 @@ test("keeps devices connected while changing games and reconfigures roles", () =
   assert.equal(session.assignmentForDevice("phone")?.roleId, "reactor");
 });
 
+test("session layout clones isolate nested interactions from sources, snapshots, and sent configurations", async () => {
+  const chordActions = ["guard"];
+  const chordRole: SessionRole = {
+    id: "combo",
+    label: "Combo",
+    playerId: "role-combo",
+    requiredCapabilities: ["touch"],
+    layout: {
+      layout: [{
+        type: "button",
+        action: "special",
+        label: "SPECIAL",
+        interaction: { type: "chord", actions: chordActions },
+      }],
+    },
+  };
+
+  const session = new LocalSession("CLONE1", 1);
+  session.configureGame("clone-test", [chordRole]);
+  chordActions[0] = "source-corruption";
+  const firstSnapshot = session.snapshot();
+  const firstElement = firstSnapshot.openRoles[0]?.layout.layout[0];
+  assert.equal(firstElement?.type, "button");
+  assert.deepEqual(firstElement?.type === "button" && firstElement.interaction?.type === "chord"
+    ? firstElement.interaction.actions : [], ["guard"]);
+  if (firstElement?.type === "button" && firstElement.interaction?.type === "chord") {
+    (firstElement.interaction.actions as string[])[0] = "snapshot-corruption";
+  }
+  const secondElement = session.snapshot().openRoles[0]?.layout.layout[0];
+  assert.deepEqual(secondElement?.type === "button" && secondElement.interaction?.type === "chord"
+    ? secondElement.interaction.actions : [], ["guard"]);
+
+  chordActions[0] = "guard";
+  const transport = new MemoryTransport();
+  const host = new SessionHost({ gameId: "clone-test", roles: [chordRole], transport, onFrame: () => {}, deviceTimeoutMs: 60_000 });
+  chordActions[0] = "host-source-corruption";
+  await host.start();
+  try {
+    transport.emit({
+      channel: "control",
+      payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } },
+    });
+    const firstConfiguration = transport.reliable.find((message) => message.type === "controller.configure");
+    assert.equal(firstConfiguration?.type, "controller.configure");
+    const sentElement = firstConfiguration?.type === "controller.configure" ? firstConfiguration.layout.layout[0] : undefined;
+    if (sentElement?.type === "button" && sentElement.interaction?.type === "chord") {
+      (sentElement.interaction.actions as string[])[0] = "message-corruption";
+    }
+    transport.reliable.length = 0;
+    transport.emit({
+      channel: "control",
+      payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } },
+    });
+    const nextConfiguration = transport.reliable.find((message) => message.type === "controller.configure");
+    const nextElement = nextConfiguration?.type === "controller.configure" ? nextConfiguration.layout.layout[0] : undefined;
+    assert.deepEqual(nextElement?.type === "button" && nextElement.interaction?.type === "chord"
+      ? nextElement.interaction.actions : [], ["guard"]);
+  } finally {
+    await host.stop();
+  }
+});
+
 test("session host targets layouts and overrides untrusted realtime identity", async () => {
   const transport = new MemoryTransport();
   const frames: InputFrame[] = [];
@@ -89,6 +151,44 @@ test("session host targets layouts and overrides untrusted realtime identity", a
   assert.equal(frames[0]?.deviceId, "phone-1");
   assert.equal(frames[0]?.playerId, "role-pilot");
   await host.stop();
+});
+
+test("session host clamps untrusted Link analog controls to their declared 0..1 range", async () => {
+  const transport = new MemoryTransport();
+  const frames: InputFrame[] = [];
+  const host = new SessionHost({
+    gameId: "racer",
+    roles: [{
+      id: "driver",
+      label: "Driver",
+      playerId: "role-driver",
+      requiredCapabilities: ["touch"],
+      layout: { layout: [
+        { type: "trigger", action: "throttle", label: "RT" },
+        { type: "analog-button", action: "brake", label: "BRAKE" },
+      ] },
+    }],
+    transport,
+    onFrame: (input) => frames.push(input),
+    deviceTimeoutMs: 60_000,
+  });
+  await host.start();
+  try {
+    transport.emit({
+      channel: "control",
+      payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } },
+    });
+    transport.emit({
+      channel: "realtime",
+      payload: {
+        deviceId: "phone", playerId: "forged", sequence: 1, timestamp: 1, source: "custom",
+        actions: { throttle: 4, brake: -.5, unrelated: 3 },
+      },
+    });
+    assert.deepEqual(frames[0]?.actions, { throttle: 1, brake: 0, unrelated: 3 });
+  } finally {
+    await host.stop();
+  }
 });
 
 test("session host sends haptics as disposable realtime feedback", async () => {

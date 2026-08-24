@@ -23,6 +23,51 @@ test("rejects inconsistent identity and undeclared controller controls", () => {
   assert.throws(() => Game101.package({ manifest, input, controllers: [{ id: "bad", label: "Bad", playerId: "player-1", layout: { layout: [{ type: "button", action: "missing", label: "BAD" }] } }], game: definition }), /undeclared missing/);
 });
 
+test("validates gamepad controls and every action in a controller-side chord", () => {
+  const gamepadInput = {
+    ...input,
+    actions: {
+      ...input.actions,
+      shoulder: { recommended: ["touch"] },
+      throttle: { recommended: ["touch"] },
+      pressure: { recommended: ["touch"] },
+      guard: { recommended: ["touch"] },
+      focus: { recommended: ["touch"] },
+    },
+  };
+  const gamePackage = Game101.package({
+    manifest,
+    input: gamepadInput,
+    controllers: [{
+      id: "pilot",
+      label: "Pilot",
+      playerId: "player-1",
+      layout: {
+        handedness: "right",
+        layout: [
+          { type: "shoulder", action: "shoulder", label: "LB", interaction: { type: "hold" } },
+          { type: "trigger", action: "throttle", label: "RT" },
+          { type: "analog-button", action: "pressure", label: "A" },
+          { type: "button", action: "trigger", label: "SPECIAL", interaction: { type: "chord", actions: ["guard", "focus"] } },
+        ],
+      },
+    }],
+    game: definition,
+  });
+  const special = gamePackage.controllers[0]?.layout.layout[3];
+  assert.equal(special?.type, "button");
+  assert.equal(special?.interaction?.type, "chord");
+  assert.equal(Object.isFrozen(special?.interaction?.actions), true);
+
+  const withoutFocus = Object.fromEntries(Object.entries(gamepadInput.actions).filter(([name]) => name !== "focus"));
+  assert.throws(() => Game101.package({
+    manifest,
+    input: { ...gamepadInput, actions: withoutFocus },
+    controllers: gamePackage.controllers,
+    game: definition,
+  }), /undeclared focus/);
+});
+
 test("rejects invalid manifests before they enter a registry", () => {
   assert.throws(() => parseGameManifest({ ...manifest, inputs: ["keyboard", "future-glove"] }), /unsupported source/);
   assert.throws(() => parseGameManifest({ ...manifest, controllers: { basic: ["gamepad"] } }), /not listed/);

@@ -29,6 +29,58 @@ export const CONTROLLER_PRESETS: readonly ControllerPreset[] = [
       { type: "button", action: "buttonY", label: "Y" }
     ]
   }),
+  preset("gamepad", "Pro Gamepad", "Analog triggers, shoulders, tuned sticks and advanced button gestures.", {
+    title: "Pro Gamepad",
+    handedness: "right",
+    layout: [
+      {
+        type: "shoulder", action: "bumperL", label: "LB",
+        side: "left", zone: "shoulder", size: "small", span: 2, priority: 90,
+        interaction: { type: "hold", thresholdMs: 450 }
+      },
+      {
+        type: "trigger", action: "triggerL", label: "LT",
+        side: "left", zone: "index", size: "medium", span: 2, priority: 85
+      },
+      {
+        type: "joystick", action: "move", label: "MOVE",
+        side: "left", zone: "thumb", size: "small", span: 4, priority: 100,
+        deadZone: 0.14, responseCurve: 1.35
+      },
+      {
+        type: "shoulder", action: "bumperR", label: "RB",
+        side: "right", zone: "shoulder", size: "small", span: 2, priority: 90,
+        interaction: { type: "double-tap", intervalMs: 300 }
+      },
+      {
+        type: "trigger", action: "triggerR", label: "RT",
+        side: "right", zone: "index", size: "medium", span: 2, priority: 85
+      },
+      {
+        type: "joystick", action: "aim", label: "AIM",
+        side: "right", zone: "thumb", size: "small", span: 4, priority: 100,
+        deadZone: 0.1, responseCurve: 1.2
+      },
+      {
+        type: "analog-button", action: "buttonA", label: "A",
+        side: "right", zone: "thumb", size: "medium", span: 2, priority: 95
+      },
+      {
+        type: "button", action: "buttonB", label: "B",
+        side: "right", zone: "thumb", size: "small", span: 2, priority: 80,
+        interaction: { type: "toggle" }
+      },
+      {
+        type: "button", action: "buttonX", label: "X",
+        side: "right", zone: "thumb", size: "small", span: 2, priority: 75,
+        interaction: { type: "chord", actions: ["bumperL", "bumperR"] }
+      },
+      {
+        type: "button", action: "buttonY", label: "Y",
+        side: "right", zone: "thumb", size: "small", span: 2, priority: 60
+      }
+    ]
+  }),
   preset("wand", "Motion Wand", "Orientation, swing, shake and trigger controls.", {
     title: "Motion Wand",
     accent: "#FF6B8B",

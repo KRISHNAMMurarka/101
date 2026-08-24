@@ -2,7 +2,13 @@
 
 import { BrowserMotionAdapter, isMotionSupported, requestMotionPermission } from "@101/adapter-motion";
 import type { InputFrame, InputVector } from "@101/input";
-import { ControllerInputModel, type ControllerInputSnapshot } from "@101/link-controller";
+import {
+  ControllerActionGesture,
+  ControllerInputModel,
+  normalizeJoystick,
+  resolveControllerSide,
+  type ControllerInputSnapshot,
+} from "@101/link-controller";
 import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
   BroadcastChannelTransport,
@@ -34,14 +40,17 @@ interface InstallPromptEvent extends Event {
 
 const DEFAULT_LAYOUT: ControllerLayout = {
   title: "Classic Controller",
+  handedness: "right",
   layout: [
-    { type: "dpad", action: "move", label: "MOVE" },
-    { type: "button", action: "buttonB", label: "B", emphasis: "normal" },
-    { type: "button", action: "trigger", label: "A", emphasis: "primary" },
+    { type: "dpad", action: "move", label: "MOVE", side: "left", zone: "thumb", size: "large", span: 2, priority: 100 },
+    { type: "button", action: "buttonB", label: "B", emphasis: "normal", side: "right", zone: "thumb", size: "small", span: 1, priority: 80 },
+    { type: "button", action: "trigger", label: "A", emphasis: "primary", side: "right", zone: "thumb", size: "small", span: 1, priority: 90 },
   ],
 };
 
 const STANDBY_LAYOUT: ControllerLayout = { title: "Role Standby", layout: [] };
+const HANDEDNESS_STORAGE_KEY = "101-link-handedness";
+type Handedness = NonNullable<ControllerLayout["handedness"]>;
 
 export default function Controller({ session, pairCode }: { session: string; pairCode?: string }) {
   const [connected, setConnected] = useState(false);
@@ -61,8 +70,10 @@ export default function Controller({ session, pairCode }: { session: string; pai
   });
   const [assignment, setAssignment] = useState<Assignment>({ gameId: "launcher", role: "classic", playerId: "player-1" });
   const [layout, setLayout] = useState<ControllerLayout>(DEFAULT_LAYOUT);
+  const [actions, setActionsState] = useState<Record<string, boolean | number>>({ buttonB: false, trigger: false });
   const [vectors, setVectors] = useState<Record<string, InputVector>>({ move: { x: 0, y: 0 } });
   const [axes, setAxes] = useState<Record<string, number>>({});
+  const [handednessOverride, setHandednessOverride] = useState<Handedness>();
   const [layoutRevision, setLayoutRevision] = useState(0);
   const [readout, setReadout] = useState<ControllerReadout>({ values: {}, tone: "normal" });
   const [motionState, setMotionState] = useState<"idle" | "active" | "denied" | "unsupported">("idle");
@@ -77,6 +88,15 @@ export default function Controller({ session, pairCode }: { session: string; pai
   const sequence = useRef(0);
 
   useEffect(() => { layoutRef.current = layout; }, [layout]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(HANDEDNESS_STORAGE_KEY);
+      if (saved === "left" || saved === "right") setHandednessOverride(saved);
+    } catch {
+      // Private browsing can deny storage. The author preference remains a complete fallback.
+    }
+  }, []);
 
   useEffect(() => {
     const updateOnline = () => setOnline(navigator.onLine);
@@ -152,6 +172,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
         configurationRef.current = "";
         layoutRef.current = STANDBY_LAYOUT;
         setLayout(STANDBY_LAYOUT);
+        setActionsState({});
         setVectors({});
         setAxes({});
         setAssignment({ gameId: payload.gameId, role: "standby", playerId: "unassigned" });
@@ -174,6 +195,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
         publishSnapshot(transition.current);
         layoutRef.current = payload.layout;
         setLayout(payload.layout);
+        setActionsState(transition.current.actions);
         setVectors(transition.current.vectors);
         setAxes(transition.current.axes);
         setLayoutRevision(payload.revision);
@@ -236,24 +258,44 @@ export default function Controller({ session, pairCode }: { session: string; pai
     };
   }, [deviceId, pairCode, publishSnapshot, session]);
 
-  const setAction = (action: string, active: boolean | number) => {
-    publishSnapshot(inputRef.current!.setAction(action, active));
-  };
+  const setActions = useCallback((values: Record<string, boolean | number>, owner?: string) => {
+    const snapshot = inputRef.current!.setActions(values, owner);
+    setActionsState(snapshot.actions);
+    publishSnapshot(snapshot);
+  }, [publishSnapshot]);
 
-  const setAxis = (action: string, value: number) => {
+  const setAction = useCallback((action: string, active: boolean | number) => {
+    setActions({ [action]: active });
+  }, [setActions]);
+
+  const setAxis = useCallback((action: string, value: number) => {
     const snapshot = inputRef.current!.setAxis(action, value);
     setAxes(snapshot.axes);
     publishSnapshot(snapshot);
-  };
+  }, [publishSnapshot]);
 
-  const setVector = (action: string, x: number, y: number, source: InputFrame["source"] = "custom") => {
+  const setVector = useCallback((action: string, x: number, y: number, source: InputFrame["source"] = "custom") => {
     const snapshot = inputRef.current!.setVector(action, x, y);
     setVectors(snapshot.vectors);
     setAxes(snapshot.axes);
     publishSnapshot(snapshot, source);
-  };
+  }, [publishSnapshot]);
 
-  const haptic = () => navigator.vibrate?.(20);
+  const haptic = useCallback(() => navigator.vibrate?.(20), []);
+
+  const authoredHandedness = layout.handedness ?? "right";
+  const playerHandedness = handednessOverride ?? authoredHandedness;
+  const canFlipHandedness = layout.layout.some((element) => (element.side ?? defaultControlSide(element)) !== "center");
+  const flipHandedness = () => {
+    const next = playerHandedness === "right" ? "left" : "right";
+    setHandednessOverride(next);
+    try {
+      localStorage.setItem(HANDEDNESS_STORAGE_KEY, next);
+    } catch {
+      // The in-memory preference still works for this session.
+    }
+    haptic();
+  };
 
   const enableMotion = async () => {
     try {
@@ -346,15 +388,26 @@ export default function Controller({ session, pairCode }: { session: string; pai
       </details>
 
       <section className="dynamic-controller-heading">
-        <span>ROLE AUTO-SYNCED</span>
-        <h1>{layout.title ?? assignment.role}</h1>
+        <div>
+          <span>ROLE AUTO-SYNCED</span>
+          <h1>{layout.title ?? assignment.role}</h1>
+        </div>
+        {canFlipHandedness && (
+          <button className="handedness-toggle" onClick={flipHandedness} aria-label={`Switch to ${playerHandedness === "right" ? "left" : "right"}-handed layout`}>
+            <span>HAND</span><strong>{playerHandedness.toUpperCase()}</strong><i aria-hidden="true">↔</i>
+          </button>
+        )}
       </section>
 
       <DynamicControllerDeck
         key={`${assignment.gameId}:${assignment.role}:${layoutRevision}`}
         elements={layout.layout}
+        actions={actions}
         vectors={vectors}
         axes={axes}
+        authoredHandedness={authoredHandedness}
+        playerHandedness={playerHandedness}
+        setActions={setActions}
         setAction={setAction}
         setAxis={setAxis}
         setVector={setVector}
@@ -380,57 +433,259 @@ function isStateful(transport: LinkTransport): transport is StatefulLinkTranspor
 
 function DynamicControllerDeck({
   elements,
+  actions,
   vectors,
   axes,
+  authoredHandedness,
+  playerHandedness,
+  setActions,
   setAction,
   setAxis,
   setVector,
   haptic,
 }: {
   elements: readonly ControllerElement[];
+  actions: Record<string, boolean | number>;
   vectors: Record<string, InputVector>;
   axes: Record<string, number>;
+  authoredHandedness: Handedness;
+  playerHandedness: Handedness;
+  setActions(values: Record<string, boolean | number>, owner?: string): void;
   setAction(action: string, active: boolean | number): void;
   setAxis(action: string, value: number): void;
   setVector(action: string, x: number, y: number): void;
   haptic(): void;
 }) {
+  const ordered = elements
+    .map((element, index) => ({ element, index }))
+    .sort((a, b) => {
+      const byPriority = (b.element.priority ?? 50) - (a.element.priority ?? 50);
+      return byPriority || a.index - b.index;
+    });
+
   return (
     <section className="dynamic-controller-deck" aria-label="Role controller">
-      {elements.map((element, index) => {
+      {ordered.map(({ element, index }) => {
         const key = `${element.type}-${element.action}-${index}`;
-        if (element.type === "button") {
-          return (
-            <button
-              key={key}
-              className={`dynamic-action action-${element.emphasis ?? "normal"}`}
-              onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); haptic(); setAction(element.action, true); }}
-              onPointerUp={() => setAction(element.action, false)}
-              onPointerCancel={() => setAction(element.action, false)}
-              onLostPointerCapture={() => setAction(element.action, false)}
-            >
-              <span>{element.label}</span><small>{element.action}</small>
-            </button>
-          );
-        }
-        if (element.type === "slider") {
-          const min = element.min ?? -1;
-          const max = element.max ?? 1;
-          return (
-            <label className="dynamic-slider" key={key}>
-              <span>{element.label}</span>
-              <input type="range" min={min} max={max} step={element.step ?? .01} value={axes[element.action] ?? (min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
-              <small>{element.action}</small>
-            </label>
-          );
-        }
-        if (element.type === "dpad") {
-          return <DynamicDpad key={key} element={element} setVector={setVector} />;
-        }
-        return <DynamicSurface key={key} element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} />;
+        const side = resolveControllerSide(element.side ?? defaultControlSide(element), authoredHandedness, playerHandedness);
+        const size = element.size ?? defaultControlSize(element);
+        const span = element.span ?? defaultControlSpan(element, size);
+        const zone = element.zone ?? defaultControlZone(element);
+        const gridColumn = side === "left" ? `1 / span ${span}` : side === "right" ? `span ${span} / -1` : `span ${span}`;
+        return (
+          <div
+            className="dynamic-control"
+            data-control={element.type}
+            data-side={side}
+            data-zone={zone}
+            data-size={size}
+            data-priority={element.priority ?? 50}
+            key={key}
+            style={{ gridColumn }}
+          >
+            {(element.type === "button" || element.type === "shoulder") && (
+              <DynamicDigitalAction element={element} owner={key} setActions={setActions} haptic={haptic} />
+            )}
+            {(element.type === "trigger" || element.type === "analog-button") && (
+              <DynamicAnalogAction
+                element={element}
+                value={typeof actions[element.action] === "number" ? Number(actions[element.action]) : 0}
+                setAction={setAction}
+                haptic={haptic}
+              />
+            )}
+            {element.type === "slider" && (() => {
+              const min = element.min ?? -1;
+              const max = element.max ?? 1;
+              return (
+                <label className="dynamic-slider">
+                  <span>{element.label}</span>
+                  <input type="range" min={min} max={max} step={element.step ?? .01} value={axes[element.action] ?? (min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
+                  <small>{element.action}</small>
+                </label>
+              );
+            })()}
+            {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} />}
+            {(element.type === "joystick" || element.type === "touch-surface") && (
+              <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} />
+            )}
+          </div>
+        );
       })}
     </section>
   );
+}
+
+type DigitalControllerElement = Extract<ControllerElement, { type: "button" | "shoulder" }>;
+type AnalogControllerElement = Extract<ControllerElement, { type: "trigger" | "analog-button" }>;
+
+function DynamicDigitalAction({ element, owner, setActions, haptic }: {
+  element: DigitalControllerElement;
+  owner: string;
+  setActions(values: Record<string, boolean | number>, owner?: string): void;
+  haptic(): void;
+}) {
+  const [active, setActive] = useState(false);
+  const gestureRef = useRef<ControllerActionGesture | null>(null);
+  const pointerIdRef = useRef<number | undefined>(undefined);
+  const keyboardActiveRef = useRef(false);
+  const suppressClickRef = useRef(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const gesture = new ControllerActionGesture(element, {
+      emit: (values) => { if (mounted) setActions(values, owner); },
+      onActiveChange: (next) => { if (mounted) setActive(next); },
+    });
+    gestureRef.current = gesture;
+    return () => {
+      mounted = false;
+      gesture.cancel();
+      if (gestureRef.current === gesture) gestureRef.current = null;
+    };
+  }, [element, owner, setActions]);
+
+  const press = () => {
+    haptic();
+    gestureRef.current?.press();
+  };
+  const release = () => gestureRef.current?.release();
+  const cancel = () => gestureRef.current?.cancel();
+  const interaction = element.interaction?.type;
+
+  return (
+    <button
+      className={`dynamic-action ${element.type === "shoulder" ? "dynamic-shoulder" : ""} action-${element.type === "button" ? element.emphasis ?? "normal" : "normal"} interaction-${interaction ?? "press"}`}
+      data-active={active ? "true" : "false"}
+      aria-pressed={interaction === "toggle" ? active : undefined}
+      onPointerDown={(event) => {
+        if (pointerIdRef.current !== undefined) return;
+        pointerIdRef.current = event.pointerId;
+        suppressClickRef.current = true;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        press();
+      }}
+      onPointerUp={(event) => {
+        if (pointerIdRef.current !== event.pointerId) return;
+        pointerIdRef.current = undefined;
+        release();
+      }}
+      onPointerCancel={(event) => {
+        if (pointerIdRef.current !== event.pointerId) return;
+        pointerIdRef.current = undefined;
+        suppressClickRef.current = false;
+        cancel();
+      }}
+      onLostPointerCapture={(event) => {
+        if (pointerIdRef.current !== event.pointerId) return;
+        pointerIdRef.current = undefined;
+        suppressClickRef.current = false;
+        cancel();
+      }}
+      onKeyDown={(event) => {
+        if ((event.key !== "Enter" && event.key !== " ") || event.repeat || keyboardActiveRef.current) return;
+        event.preventDefault();
+        keyboardActiveRef.current = true;
+        suppressClickRef.current = true;
+        press();
+      }}
+      onKeyUp={(event) => {
+        if ((event.key !== "Enter" && event.key !== " ") || !keyboardActiveRef.current) return;
+        event.preventDefault();
+        keyboardActiveRef.current = false;
+        release();
+      }}
+      onBlur={() => {
+        if (!keyboardActiveRef.current) return;
+        keyboardActiveRef.current = false;
+        suppressClickRef.current = false;
+        cancel();
+      }}
+      onClick={() => {
+        if (suppressClickRef.current) {
+          suppressClickRef.current = false;
+          return;
+        }
+        press();
+        const delay = interaction === "hold" ? (element.interaction?.thresholdMs ?? 450) + 30 : 0;
+        window.setTimeout(release, delay);
+      }}
+    >
+      <span>{element.label}</span>
+      <small>{interactionLabel(element)} · {element.action}</small>
+    </button>
+  );
+}
+
+function DynamicAnalogAction({ element, value, setAction, haptic }: {
+  element: AnalogControllerElement;
+  value: number;
+  setAction(action: string, value: number): void;
+  haptic(): void;
+}) {
+  const current = Math.max(0, Math.min(1, value));
+  const release = () => setAction(element.action, 0);
+  return (
+    <label className={`dynamic-analog dynamic-${element.type}`} data-active={current > 0 ? "true" : "false"}>
+      <span>{element.label}</span>
+      <output>{Math.round(current * 100)}%</output>
+      <input
+        type="range"
+        min={0}
+        max={1}
+        step={.01}
+        value={current}
+        aria-label={`${element.label} analog action`}
+        onChange={(event) => setAction(element.action, Number(event.currentTarget.value))}
+        onPointerDown={haptic}
+        onPointerUp={release}
+        onPointerCancel={release}
+        onLostPointerCapture={release}
+        onBlur={release}
+        onKeyUp={(event) => {
+          if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) release();
+        }}
+      />
+      <small>{element.type === "trigger" ? "SPRING TRIGGER" : "ANALOG PRESS"} · {element.action}</small>
+    </label>
+  );
+}
+
+function interactionLabel(element: DigitalControllerElement) {
+  const interaction = element.interaction;
+  if (!interaction) return "PRESS";
+  if (interaction.type === "hold") return `HOLD ${interaction.thresholdMs ?? 450}MS`;
+  if (interaction.type === "double-tap") return "DOUBLE TAP";
+  if (interaction.type === "toggle") return "TOGGLE";
+  return `CHORD ×${interaction.actions.length + 1}`;
+}
+
+function defaultControlSide(element: ControllerElement): NonNullable<ControllerElement["side"]> {
+  if (element.type === "joystick" || element.type === "dpad" || element.type === "touch-surface") return "left";
+  if (element.type === "slider") return "center";
+  return "right";
+}
+
+function defaultControlZone(element: ControllerElement): NonNullable<ControllerElement["zone"]> {
+  if (element.type === "shoulder") return "shoulder";
+  if (element.type === "trigger") return "index";
+  if (element.type === "slider") return "edge";
+  return "thumb";
+}
+
+function defaultControlSize(element: ControllerElement): NonNullable<ControllerElement["size"]> {
+  if (element.type === "joystick" || element.type === "touch-surface" || element.type === "dpad") return "large";
+  if (element.type === "shoulder" || element.type === "trigger") return "small";
+  return "medium";
+}
+
+function defaultControlSpan(element: ControllerElement, size: NonNullable<ControllerElement["size"]>) {
+  // Width is primarily the span hint; size changes the target's depth. These fallbacks keep old
+  // two-column layouts ergonomic without letting `large` silently become full-width.
+  if (element.type === "joystick" || element.type === "touch-surface" || element.type === "dpad") return 2;
+  if (element.type === "shoulder" || element.type === "trigger" || element.type === "analog-button") return 2;
+  if (size === "small") return 1;
+  return 2;
 }
 
 function DynamicDpad({ element, setVector }: { element: Extract<ControllerElement, { type: "dpad" }>; setVector(action: string, x: number, y: number): void }) {
@@ -452,31 +707,50 @@ function DynamicSurface({ element, vector, setVector }: {
   vector: InputVector;
   setVector(action: string, x: number, y: number): void;
 }) {
-  const update = (event: React.PointerEvent<HTMLDivElement>) => {
+  const update = (event: React.PointerEvent<HTMLButtonElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
+    const rawX = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
+    const rawY = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
+    const next = element.type === "joystick"
+      ? normalizeJoystick(rawX, rawY, element.deadZone ?? .12, element.responseCurve ?? 1)
+      : { x: rawX, y: rawY };
     setVector(
       element.action,
-      ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
-      ((event.clientY - bounds.top) / bounds.height) * 2 - 1,
+      next.x,
+      next.y,
     );
   };
   const release = () => setVector(element.action, 0, 0);
+  const keyboardVector = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const next = event.key === "ArrowLeft" ? { x: -1, y: 0 }
+      : event.key === "ArrowRight" ? { x: 1, y: 0 }
+        : event.key === "ArrowUp" ? { x: 0, y: -1 }
+          : event.key === "ArrowDown" ? { x: 0, y: 1 }
+            : undefined;
+    if (!next) return;
+    event.preventDefault();
+    setVector(element.action, next.x, next.y);
+  };
   return (
-    <div
+    <button
+      type="button"
       className={`dynamic-surface surface-${element.type}`}
-      role="group"
-      aria-label={element.label ?? element.action}
+      aria-label={`${element.label ?? element.action}. Drag or use arrow keys.`}
       onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); update(event); }}
       onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) update(event); }}
       onPointerUp={release}
       onPointerCancel={release}
       onLostPointerCapture={release}
+      onKeyDown={keyboardVector}
+      onKeyUp={(event) => { if (event.key.startsWith("Arrow")) release(); }}
+      onBlur={release}
     >
       <span>{element.label ?? element.action}</span>
       <i className="surface-crosshair" />
+      {element.type === "joystick" && <i className="surface-dead-zone" style={{ width: `${(element.deadZone ?? .12) * 100}%` }} />}
       <b style={{ left: `${(vector.x + 1) * 50}%`, top: `${(vector.y + 1) * 50}%` }}>101</b>
       <small>{element.action}</small>
-    </div>
+    </button>
   );
 }
 

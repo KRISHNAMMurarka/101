@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   decodeMotionPacket,
@@ -30,6 +31,115 @@ test("validates custom controller layout JSON", () => {
   assert.equal(layout.layout[0]?.type, "slider");
   assert.throws(() => parseControllerLayout({ layout: [{ type: "button", action: "bad action", label: "FIRE" }] }));
   assert.throws(() => parseControllerLayout({ layout: [] }));
+});
+
+test("canonicalizes gamepad controls, placement hints, interactions, and stick tuning", () => {
+  const chordActions = ["guard", "dash"];
+  const source = {
+    title: "Arcade pad",
+    handedness: "right",
+    layout: [
+      {
+        type: "joystick", action: "move", label: "MOVE",
+        side: "left", zone: "thumb", size: "large", span: 2, priority: 100,
+      },
+      { type: "shoulder", action: "focus", label: "L1", side: "left", zone: "shoulder", interaction: { type: "hold" } },
+      { type: "button", action: "special", label: "SPECIAL", interaction: { type: "chord", actions: chordActions } },
+      { type: "trigger", action: "brake", label: "L2", side: "left", zone: "index" },
+      { type: "analog-button", action: "accelerate", label: "R2", side: "right", zone: "index" },
+    ],
+  };
+
+  const parsed = parseControllerLayout(source);
+  assert.deepEqual(parsed, {
+    title: "Arcade pad",
+    handedness: "right",
+    layout: [
+      {
+        type: "joystick", action: "move", label: "MOVE", deadZone: .12, responseCurve: 1,
+        side: "left", zone: "thumb", size: "large", span: 2, priority: 100,
+      },
+      { type: "shoulder", action: "focus", label: "L1", interaction: { type: "hold", thresholdMs: 450 }, side: "left", zone: "shoulder" },
+      { type: "button", action: "special", label: "SPECIAL", interaction: { type: "chord", actions: ["guard", "dash"] } },
+      { type: "trigger", action: "brake", label: "L2", side: "left", zone: "index" },
+      { type: "analog-button", action: "accelerate", label: "R2", side: "right", zone: "index" },
+    ],
+  });
+  assert.notStrictEqual(parsed.layout[2], source.layout[2]);
+  if (parsed.layout[2]?.type !== "button" || parsed.layout[2].interaction?.type !== "chord") {
+    assert.fail("Expected a canonical chord interaction");
+  }
+  assert.notStrictEqual(parsed.layout[2].interaction.actions, chordActions);
+  chordActions.push("pause");
+  assert.deepEqual(parsed.layout[2].interaction.actions, ["guard", "dash"]);
+});
+
+test("applies configurable interaction and joystick defaults without invalidating old layouts", () => {
+  assert.deepEqual(parseControllerLayout({ layout: [{ type: "joystick", action: "move" }] }), {
+    layout: [{ type: "joystick", action: "move", deadZone: .12, responseCurve: 1 }],
+  });
+  assert.deepEqual(parseControllerLayout({
+    layout: [
+      { type: "joystick", action: "aim", deadZone: 0, responseCurve: 4 },
+      { type: "button", action: "dash", label: "DASH", interaction: { type: "double-tap" } },
+      { type: "shoulder", action: "guard", label: "GUARD", interaction: { type: "toggle" } },
+    ],
+  }), {
+    layout: [
+      { type: "joystick", action: "aim", deadZone: 0, responseCurve: 4 },
+      { type: "button", action: "dash", label: "DASH", interaction: { type: "double-tap", intervalMs: 300 } },
+      { type: "shoulder", action: "guard", label: "GUARD", interaction: { type: "toggle" } },
+    ],
+  });
+});
+
+test("rejects invalid controller placement, tuning, and interaction contracts", () => {
+  const button = { type: "button", action: "fire", label: "FIRE" };
+  const invalidLayouts = [
+    { handedness: "ambidextrous", layout: [button] },
+    { layout: [{ ...button, action: "1fire" }] },
+    { layout: [{ ...button, action: ".fire" }] },
+    { layout: [{ ...button, action: "fire." }] },
+    { layout: [{ ...button, side: "top" }] },
+    { layout: [{ ...button, zone: "palm" }] },
+    { layout: [{ ...button, size: "huge" }] },
+    { layout: [{ ...button, span: 0 }] },
+    { layout: [{ ...button, span: 1.5 }] },
+    { layout: [{ ...button, priority: -1 }] },
+    { layout: [{ type: "joystick", action: "move", deadZone: .951 }] },
+    { layout: [{ type: "joystick", action: "move", responseCurve: .249 }] },
+    { layout: [{ ...button, interaction: { type: "hold", thresholdMs: 149 } }] },
+    { layout: [{ ...button, interaction: { type: "double-tap", intervalMs: 751 } }] },
+    { layout: [{ ...button, interaction: { type: "chord", actions: [] } }] },
+    { layout: [{ ...button, interaction: { type: "chord", actions: ["guard", "guard"] } }] },
+    { layout: [{ ...button, interaction: { type: "chord", actions: ["fire"] } }] },
+    { layout: [{ type: "analog-button", action: "throttle" }] },
+    { layout: [{ type: "trigger", action: "brake" }] },
+    { layout: [{ type: "trigger", action: "brake", label: "RT", interaction: { type: "toggle" } }] },
+    { layout: [{ type: "shoulder", action: "guard" }] },
+    { layout: [{ ...button, priorty: 90 }] },
+    { layout: [{ ...button, interaction: { type: "toggle", extra: true } }] },
+    { future: true, layout: [button] },
+    { $schema: 101, layout: [button] },
+    { motion: { action: "aim", mode: "wand", extra: true }, layout: [button] },
+    { motion: { action: "aim", mode: "wand", gestures: { swing: "fire", extra: "dash" } }, layout: [button] },
+  ];
+  for (const layout of invalidLayouts) assert.throws(() => parseControllerLayout(layout));
+});
+
+test("publishes the expanded controller contract in JSON Schema", () => {
+  const schema = JSON.parse(readFileSync(new URL("../../../schemas/controller-layout.schema.json", import.meta.url), "utf8")) as Record<string, unknown>;
+  const serialized = JSON.stringify(schema);
+  for (const field of ["handedness", "side", "zone", "size", "span", "priority", "interaction", "deadZone", "responseCurve"]) {
+    assert.match(serialized, new RegExp(`\\"${field}\\"`));
+  }
+  for (const type of ["shoulder", "trigger", "analog-button", "hold", "double-tap", "toggle", "chord"]) {
+    assert.match(serialized, new RegExp(`\\"${type}\\"`));
+  }
+  const definitions = schema.$defs as Record<string, Record<string, unknown>>;
+  assert.equal(definitions.action?.maxLength, 64, "schema action names must match the runtime parser");
+  assert.equal(definitions.label?.maxLength, 40, "schema labels must match the runtime parser");
+  assert.equal(definitions.motionLabel?.maxLength, 64, "motion labels retain their runtime 64-character limit");
 });
 
 test("rejects malformed reliable control payloads", () => {

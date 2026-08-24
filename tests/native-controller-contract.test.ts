@@ -8,11 +8,28 @@ import { CONTROLLER_PRESETS } from "../apps/controller-native/src/presets.ts";
 test("native Link ships every universal local controller preset", () => {
   assert.deepEqual(
     CONTROLLER_PRESETS.map((preset) => preset.id),
-    ["classic", "wand", "steering", "tilt", "touch", "trigger", "detector", "sensor-lab"],
+    ["classic", "gamepad", "wand", "steering", "tilt", "touch", "trigger", "detector", "sensor-lab"],
   );
   for (const preset of CONTROLLER_PRESETS) {
     assert.deepEqual(parseControllerLayout(preset.layout), preset.layout);
   }
+});
+
+test("native Link dogfoods the complete gamepad layout contract", () => {
+  const gamepad = CONTROLLER_PRESETS.find((preset) => preset.id === "gamepad");
+  assert.ok(gamepad, "the rich contract needs a shipped native panel, not only parser tests");
+  assert.equal(gamepad.layout.handedness, "right");
+  assert.deepEqual(
+    new Set(gamepad.layout.layout.map((element) => element.type)),
+    new Set(["joystick", "shoulder", "trigger", "analog-button", "button"]),
+  );
+  assert.ok(gamepad.layout.layout.every((element) => element.side && element.zone && element.size && element.span));
+  assert.ok(gamepad.layout.layout.some((element) => element.type === "joystick" && element.responseCurve !== 1));
+  const interactions = gamepad.layout.layout.flatMap((element) =>
+    (element.type === "button" || element.type === "shoulder") && element.interaction
+      ? [element.interaction.type]
+      : []);
+  assert.deepEqual(new Set(interactions), new Set(["hold", "double-tap", "toggle", "chord"]));
 });
 
 test("native Link configuration is local-first and declares no microphone use", async () => {
@@ -118,12 +135,45 @@ test("two thumbs can hold a stick and press a button at the same time", async ()
   assert.equal(/<Pressable/.test(source), false,
     "a control that joins the responder system steals it from a held stick");
   assert.match(source, /onTouchStart=\{press\}/, "buttons press on raw touch");
-  assert.match(source, /onTouchEnd=\{lift\}/, "buttons must release");
-  assert.match(source, /onTouchCancel=\{lift\}/,
+  assert.match(source, /onTouchEnd=\{\(\) => gesture\.release\(\)\}/, "buttons must release");
+  assert.match(source, /onTouchCancel=\{\(\) => gesture\.cancel\(\)\}/,
     "a cancelled touch must release too, or the action latches on forever");
 
   // A button is still a button to a screen reader even though it is no longer a Pressable.
   assert.match(source, /accessibilityRole="button"/);
+});
+
+test("native Link renders the complete gamepad contract through shared behavior", async () => {
+  const controls = await readFile(new URL("../apps/controller-native/src/controls.tsx", import.meta.url), "utf8");
+  const app = await readFile(new URL("../apps/controller-native/App.tsx", import.meta.url), "utf8");
+  const session = await readFile(new URL("../apps/controller-native/src/controller-session.ts", import.meta.url), "utf8");
+
+  // The native renderer must execute the same semantics as the browser renderer, not carry a
+  // second almost-identical implementation that can drift. These imports are production callers
+  // of the behavior covered by @101/link-controller's executable tests.
+  for (const behavior of ["ControllerActionGesture", "normalizeJoystick", "resolveControllerSide"]) {
+    assert.match(controls, new RegExp(`\\b${behavior}\\b`), `${behavior} must run in the native renderer`);
+  }
+
+  for (const kind of ["shoulder", "trigger", "analog-button"] as const) {
+    assert.match(controls, new RegExp(`element\\.type === ["']${kind}["']`), `${kind} needs a native render path`);
+  }
+  assert.match(controls, /onTouchMove=/, "analog actions must publish continuous 0..1 touch travel");
+  assert.match(controls, /SWAP SIDES/, "players must be able to override the authored handedness");
+
+  // Chords have to cross the session boundary in one snapshot. Sending each member with action()
+  // produces intermediate frames in which only part of the chord is active.
+  assert.match(controls, /actions\(values:/, "the renderer needs an atomic multi-action boundary");
+  assert.match(controls, /useId\(\)/, "each physical control needs stable ownership of its contribution");
+  assert.match(app, /setActions\(values, owner\)/, "App must delegate owned chord updates to the session");
+  assert.match(session, /setActions\(values:/, "the native session must publish one chord snapshot");
+  assert.match(session, /setActions\(accepted, owner\)/,
+    "the native session must preserve physical ownership through the input model");
+
+  // New action controls stay on raw touch events. A Pressable or third PanResponder would bring
+  // back the single-responder bug this file guards above.
+  assert.equal(/<Pressable/.test(controls), false);
+  assert.match(controls, /onTouchCancel=/, "every raw-touch action must neutralize on cancellation");
 });
 
 test("expo-dev-client stays out of production dependencies", async () => {

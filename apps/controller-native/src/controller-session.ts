@@ -115,8 +115,18 @@ export class ControllerSession {
     this.events.layout(layout, false);
   }
 
-  setAction(action: string, value: boolean | number, source: InputSource = "touch") {
-    this.sendSnapshot(this.model.setAction(action, value), source);
+  setAction(action: string, value: boolean | number, owner = "direct", source: InputSource = "touch") {
+    this.setActions({ [action]: value }, owner, source);
+  }
+
+  setActions(values: Record<string, boolean | number>, owner = "direct", source: InputSource = "touch") {
+    // A role change releases and replaces the model before React unmounts the old controls. Their
+    // gesture cleanup may therefore arrive a moment later. Ignore names that no longer belong to
+    // the current model so cleanup cannot re-introduce a stale action into the new game panel.
+    const current = this.model.snapshot().actions;
+    const accepted = Object.fromEntries(Object.entries(values).filter(([name]) => name in current));
+    if (Object.keys(accepted).length === 0) return;
+    this.sendSnapshot(this.model.setActions(accepted, owner), source);
   }
 
   setAxis(action: string, value: number, source: InputSource = "touch") {

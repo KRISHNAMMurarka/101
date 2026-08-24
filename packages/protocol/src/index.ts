@@ -63,15 +63,33 @@ export type ControlMessage =
   | { type: "ping"; sentAt: number; deviceId?: string }
   | { type: "pong"; sentAt: number; receivedAt: number };
 
-export type ControllerElement =
-  | { type: "joystick"; action: string; label?: string }
+export interface ControllerPlacementHints {
+  side?: "left" | "right" | "center";
+  zone?: "thumb" | "shoulder" | "index" | "edge";
+  size?: "small" | "medium" | "large";
+  span?: number;
+  priority?: number;
+}
+
+export type ControllerInteraction =
+  | { type: "hold"; thresholdMs?: number }
+  | { type: "double-tap"; intervalMs?: number }
+  | { type: "toggle" }
+  | { type: "chord"; actions: readonly string[] };
+
+export type ControllerElement = ControllerPlacementHints & (
+  | { type: "joystick"; action: string; label?: string; deadZone?: number; responseCurve?: number }
   | { type: "dpad"; action: string; label?: string }
   | {
       type: "button";
       action: string;
       label: string;
       emphasis?: "normal" | "primary" | "danger";
+      interaction?: ControllerInteraction;
     }
+  | { type: "shoulder"; action: string; label: string; interaction?: ControllerInteraction }
+  | { type: "trigger"; action: string; label: string }
+  | { type: "analog-button"; action: string; label: string }
   | { type: "touch-surface"; action: string; label?: string }
   | {
       type: "slider";
@@ -80,11 +98,14 @@ export type ControllerElement =
       min?: number;
       max?: number;
       step?: number;
-    };
+    }
+);
 
 export interface ControllerLayout {
   title?: string;
   accent?: string;
+  /** Author preference only; a player may override it on their controller. */
+  handedness?: "left" | "right";
   motion?: {
     action: string;
     mode: "tilt" | "wand";
@@ -98,23 +119,52 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
   if (!isRecord(input) || !Array.isArray(input.layout) || input.layout.length === 0 || input.layout.length > 16) {
     throw new Error("Controller layout requires between 1 and 16 elements");
   }
+  rejectUnknownProperties(input, ["$schema", "title", "accent", "handedness", "motion", "layout"], "controller layout");
+  if (input.$schema !== undefined && typeof input.$schema !== "string") {
+    throw new Error("Controller layout $schema must be a string");
+  }
   const layout = input.layout.map((value, index): ControllerElement => {
     if (!isRecord(value) || !isActionName(value.action) || typeof value.type !== "string") {
       throw new Error(`Invalid controller element at index ${index}`);
     }
     const label = optionalLabel(value.label, index);
-    if (value.type === "joystick" || value.type === "dpad" || value.type === "touch-surface") {
-      return { type: value.type, action: value.action, ...(label ? { label } : {}) };
+    const placement = parsePlacementHints(value, index);
+    if (value.type === "joystick") {
+      rejectUnknownElementProperties(value, index, ["deadZone", "responseCurve"]);
+      const deadZone = finiteNumber(value.deadZone, .12);
+      const responseCurve = finiteNumber(value.responseCurve, 1);
+      if (deadZone < 0 || deadZone > .95 || responseCurve < .25 || responseCurve > 4) {
+        throw new Error(`Invalid joystick tuning at index ${index}`);
+      }
+      return { type: "joystick", action: value.action, ...(label ? { label } : {}), deadZone, responseCurve, ...placement };
+    }
+    if (value.type === "dpad" || value.type === "touch-surface") {
+      rejectUnknownElementProperties(value, index);
+      return { type: value.type, action: value.action, ...(label ? { label } : {}), ...placement };
     }
     if (value.type === "button") {
+      rejectUnknownElementProperties(value, index, ["emphasis", "interaction"]);
       if (!label) throw new Error(`Button at index ${index} requires a label`);
       const emphasis = value.emphasis;
       if (emphasis !== undefined && emphasis !== "normal" && emphasis !== "primary" && emphasis !== "danger") {
         throw new Error(`Invalid button emphasis at index ${index}`);
       }
-      return { type: "button", action: value.action, label, ...(emphasis ? { emphasis } : {}) };
+      const interaction = parseControllerInteraction(value.interaction, value.action, index);
+      return { type: "button", action: value.action, label, ...(emphasis ? { emphasis } : {}), ...(interaction ? { interaction } : {}), ...placement };
+    }
+    if (value.type === "shoulder") {
+      rejectUnknownElementProperties(value, index, ["interaction"]);
+      if (!label) throw new Error(`Shoulder at index ${index} requires a label`);
+      const interaction = parseControllerInteraction(value.interaction, value.action, index);
+      return { type: "shoulder", action: value.action, label, ...(interaction ? { interaction } : {}), ...placement };
+    }
+    if (value.type === "trigger" || value.type === "analog-button") {
+      rejectUnknownElementProperties(value, index);
+      if (!label) throw new Error(`${value.type === "trigger" ? "Trigger" : "Analog button"} at index ${index} requires a label`);
+      return { type: value.type, action: value.action, label, ...placement };
     }
     if (value.type === "slider") {
+      rejectUnknownElementProperties(value, index, ["min", "max", "step"]);
       if (!label) throw new Error(`Slider at index ${index} requires a label`);
       const min = finiteNumber(value.min, -1);
       const max = finiteNumber(value.max, 1);
@@ -122,21 +172,27 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
       if (min < -1 || max > 1 || min >= max || step <= 0 || step > max - min) {
         throw new Error(`Invalid slider range at index ${index}`);
       }
-      return { type: "slider", action: value.action, label, min, max, step };
+      return { type: "slider", action: value.action, label, min, max, step, ...placement };
     }
     throw new Error(`Unsupported controller element type at index ${index}`);
   });
   const title = optionalText(input.title, "title", 64);
   const accent = input.accent === undefined ? undefined : typeof input.accent === "string" && /^#[0-9a-f]{6}$/i.test(input.accent) ? input.accent : (() => { throw new Error("Controller accent must be a six-digit hex color"); })();
+  const handedness = input.handedness;
+  if (handedness !== undefined && handedness !== "left" && handedness !== "right") {
+    throw new Error("Controller handedness must be left or right");
+  }
   let motion: ControllerLayout["motion"];
   if (input.motion !== undefined) {
     if (!isRecord(input.motion) || !isActionName(input.motion.action) || (input.motion.mode !== "tilt" && input.motion.mode !== "wand")) {
       throw new Error("Invalid controller motion mapping");
     }
+    rejectUnknownProperties(input.motion, ["action", "mode", "label", "gestures"], "controller motion mapping");
     const motionLabel = optionalText(input.motion.label, "motion label", 64);
     let gestures: Partial<Record<"shake" | "swing" | "spin", string>> | undefined;
     if (input.motion.gestures !== undefined) {
       if (!isRecord(input.motion.gestures)) throw new Error("Invalid controller gesture mappings");
+      rejectUnknownProperties(input.motion.gestures, ["shake", "swing", "spin"], "controller gesture mapping");
       gestures = {};
       for (const name of ["shake", "swing", "spin"] as const) {
         const action = input.motion.gestures[name];
@@ -146,7 +202,7 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
     }
     motion = { action: input.motion.action, mode: input.motion.mode, ...(motionLabel ? { label: motionLabel } : {}), ...(gestures ? { gestures } : {}) };
   }
-  return { ...(title ? { title } : {}), ...(accent ? { accent } : {}), ...(motion ? { motion } : {}), layout };
+  return { ...(title ? { title } : {}), ...(accent ? { accent } : {}), ...(handedness ? { handedness } : {}), ...(motion ? { motion } : {}), layout };
 }
 
 export function parseControlMessage(input: unknown): ControlMessage {
@@ -794,7 +850,89 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isActionName(value: unknown): value is string {
-  return typeof value === "string" && /^[a-z0-9._-]{1,64}$/i.test(value);
+  return typeof value === "string"
+    && value.length <= 64
+    && /^[a-z][A-Za-z0-9]*(?:[._-][A-Za-z0-9]+)*$/.test(value);
+}
+
+const ELEMENT_PROPERTY_NAMES = ["type", "action", "label", "side", "zone", "size", "span", "priority"] as const;
+
+function rejectUnknownElementProperties(value: Record<string, unknown>, index: number, extra: readonly string[] = []) {
+  rejectUnknownProperties(value, [...ELEMENT_PROPERTY_NAMES, ...extra], `controller element at index ${index}`);
+}
+
+function rejectUnknownProperties(value: Record<string, unknown>, allowed: readonly string[], name: string) {
+  const allowedNames = new Set(allowed);
+  const unknown = Object.keys(value).find((key) => !allowedNames.has(key));
+  if (unknown) throw new Error(`Unsupported ${name} property ${unknown}`);
+}
+
+function parsePlacementHints(value: Record<string, unknown>, index: number): ControllerPlacementHints {
+  const side = value.side;
+  if (side !== undefined && side !== "left" && side !== "right" && side !== "center") {
+    throw new Error(`Invalid controller side at index ${index}`);
+  }
+  const zone = value.zone;
+  if (zone !== undefined && zone !== "thumb" && zone !== "shoulder" && zone !== "index" && zone !== "edge") {
+    throw new Error(`Invalid controller zone at index ${index}`);
+  }
+  const size = value.size;
+  if (size !== undefined && size !== "small" && size !== "medium" && size !== "large") {
+    throw new Error(`Invalid controller size at index ${index}`);
+  }
+  const span = optionalIntegerInRange(value.span, 1, 4, `controller span at index ${index}`);
+  const priority = optionalIntegerInRange(value.priority, 0, 100, `controller priority at index ${index}`);
+  return {
+    ...(side ? { side } : {}),
+    ...(zone ? { zone } : {}),
+    ...(size ? { size } : {}),
+    ...(span === undefined ? {} : { span }),
+    ...(priority === undefined ? {} : { priority }),
+  };
+}
+
+function parseControllerInteraction(input: unknown, primaryAction: string, index: number): ControllerInteraction | undefined {
+  if (input === undefined) return undefined;
+  if (!isRecord(input) || typeof input.type !== "string") {
+    throw new Error(`Invalid controller interaction at index ${index}`);
+  }
+  if (input.type === "hold") {
+    rejectUnknownProperties(input, ["type", "thresholdMs"], `hold interaction at index ${index}`);
+    const thresholdMs = finiteNumber(input.thresholdMs, 450);
+    if (thresholdMs < 150 || thresholdMs > 2_000) throw new Error(`Invalid hold threshold at index ${index}`);
+    return { type: "hold", thresholdMs };
+  }
+  if (input.type === "double-tap") {
+    rejectUnknownProperties(input, ["type", "intervalMs"], `double-tap interaction at index ${index}`);
+    const intervalMs = finiteNumber(input.intervalMs, 300);
+    if (intervalMs < 150 || intervalMs > 750) throw new Error(`Invalid double-tap interval at index ${index}`);
+    return { type: "double-tap", intervalMs };
+  }
+  if (input.type === "toggle") {
+    rejectUnknownProperties(input, ["type"], `toggle interaction at index ${index}`);
+    return { type: "toggle" };
+  }
+  if (input.type === "chord") {
+    rejectUnknownProperties(input, ["type", "actions"], `chord interaction at index ${index}`);
+    if (!Array.isArray(input.actions) || input.actions.length === 0 || input.actions.length > 4) {
+      throw new Error(`Invalid chord actions at index ${index}`);
+    }
+    const actions = input.actions.map((action) => {
+      if (!isActionName(action)) throw new Error(`Invalid chord action at index ${index}`);
+      return action;
+    });
+    if (new Set(actions).size !== actions.length || actions.includes(primaryAction)) {
+      throw new Error(`Chord actions must be unique and exclude the primary action at index ${index}`);
+    }
+    return { type: "chord", actions };
+  }
+  throw new Error(`Unsupported controller interaction at index ${index}`);
+}
+
+function optionalIntegerInRange(value: unknown, min: number, max: number, name: string) {
+  if (value === undefined) return undefined;
+  if (!Number.isInteger(value) || Number(value) < min || Number(value) > max) throw new Error(`Invalid ${name}`);
+  return Number(value);
 }
 
 function optionalLabel(value: unknown, index: number) {

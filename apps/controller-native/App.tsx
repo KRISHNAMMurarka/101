@@ -232,7 +232,8 @@ export default function App() {
   }, [connect, deviceId, haptic]);
 
   const controls = useMemo<ControllerActions>(() => ({
-    action: (name, value) => sessionRef.current?.setAction(name, value),
+    action: (name, value, owner) => sessionRef.current?.setAction(name, value, owner),
+    actions: (values, owner) => sessionRef.current?.setActions(values, owner),
     axis: (name, value) => sessionRef.current?.setAxis(name, value),
     vector: (name, x, y) => sessionRef.current?.setVector(name, x, y),
     localHaptic: () => void haptic("tap"),

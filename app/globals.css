@@ -435,7 +435,7 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .principles-grid h3 { margin: 55px 0 12px; font-size: 26px; letter-spacing: -.04em; }
 .principles-grid p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
 
-.controller-page { min-height: 100svh; display: flex; flex-direction: column; padding: 20px; overflow: auto; background: var(--ink); touch-action: none; user-select: none; }
+.controller-page { min-height: 100svh; display: flex; flex-direction: column; padding: 20px; overflow: auto; background: var(--ink); touch-action: pan-y; user-select: none; }
 .controller-top { display: flex; align-items: center; justify-content: space-between; }
 .controller-status { display: flex; align-items: center; gap: 8px; color: var(--faint); font: 800 9px ui-monospace, monospace; letter-spacing: .12em; }
 .controller-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
@@ -495,28 +495,55 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
 .motion-permission p { margin: 0; color: var(--faint); font: 600 8px/1.45 ui-monospace, monospace; }
 
 .dynamic-controller-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 14px; }
-.dynamic-controller-heading span { color: var(--controller-accent); font: 800 8px ui-monospace, monospace; letter-spacing: .12em; }
-.dynamic-controller-heading h1 { margin: 0; font-size: clamp(24px, 4vw, 44px); line-height: .9; letter-spacing: -.045em; text-transform: uppercase; }
-.dynamic-controller-deck { flex: 1; min-height: 310px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); grid-auto-rows: minmax(120px, 1fr); gap: 10px; }
-.dynamic-action { min-height: 120px; display: grid; place-items: center; align-content: center; gap: 10px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
+.dynamic-controller-heading > div { min-width: 0; }
+.dynamic-controller-heading > div > span { color: var(--controller-accent); font: 800 8px ui-monospace, monospace; letter-spacing: .12em; }
+.dynamic-controller-heading h1 { margin: 7px 0 0; font-size: clamp(24px, 4vw, 44px); line-height: .9; letter-spacing: -.045em; text-transform: uppercase; }
+.handedness-toggle { flex: 0 0 auto; min-width: 116px; min-height: 48px; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--paper); cursor: pointer; }
+.handedness-toggle span { color: var(--faint); font: 750 7px ui-monospace, monospace; letter-spacing: .12em; }
+.handedness-toggle strong { font: 850 10px ui-monospace, monospace; letter-spacing: .08em; }
+.handedness-toggle i { color: var(--muted); font-style: normal; }
+.handedness-toggle:active { border-width: 2px; background: var(--paper); color: var(--ink); }
+.dynamic-controller-deck { flex: 1; min-height: 310px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: row dense; grid-auto-rows: minmax(88px, auto); align-content: stretch; gap: 10px; }
+.dynamic-control { min-width: 0; min-height: 88px; display: grid; }
+.dynamic-control[data-size="medium"] { min-height: 120px; }
+.dynamic-control[data-size="large"] { min-height: 180px; }
+.dynamic-control[data-control="joystick"], .dynamic-control[data-control="touch-surface"], .dynamic-control[data-control="dpad"] { min-height: 280px; grid-row: span 2; }
+.dynamic-control[data-zone="shoulder"] { align-self: start; }
+.dynamic-control > .dynamic-action, .dynamic-control > .dynamic-analog, .dynamic-control > .dynamic-slider, .dynamic-control > .dynamic-surface, .dynamic-control > .dynamic-dpad { width: 100%; height: 100%; }
+.dynamic-action { min-height: 88px; display: grid; place-items: center; align-content: center; gap: 10px; padding: 12px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
 .dynamic-action span { font: 900 clamp(18px, 4vw, 38px) ui-monospace, monospace; letter-spacing: -.04em; }
-.dynamic-action small, .dynamic-slider small, .dynamic-surface small { color: var(--faint); font: 750 7px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
+.dynamic-action small, .dynamic-analog small, .dynamic-slider small, .dynamic-surface small { color: var(--faint); font: 750 7px ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; }
 .dynamic-action.action-primary { border-color: var(--controller-accent); color: var(--controller-accent); background: color-mix(in srgb, var(--controller-accent) 7%, var(--ink)); }
 .dynamic-action.action-danger { border-color: var(--orange); color: var(--orange); background: var(--surface); }
-.dynamic-action:active { transform: scale(.975); background: var(--paper); color: var(--ink); }
-.dynamic-surface { position: relative; min-height: 280px; grid-row: span 2; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink); background-image: linear-gradient(var(--surface) 1px, transparent 1px), linear-gradient(90deg, var(--surface) 1px, transparent 1px); background-size: 28px 28px; touch-action: none; }
+.dynamic-action:active, .dynamic-action[data-active="true"] { transform: scale(.975); border-width: 2px; background: var(--paper); color: var(--ink); }
+.dynamic-action[data-active="true"] small { color: color-mix(in srgb, var(--ink) 62%, transparent); }
+.dynamic-shoulder { min-height: 64px; grid-template-columns: 1fr auto; place-items: center start; align-content: center; column-gap: 12px; }
+.dynamic-shoulder span { font-size: clamp(14px, 2.4vw, 22px); }
+.dynamic-shoulder small { justify-self: end; text-align: right; }
+.dynamic-analog { min-height: 88px; padding: 13px 15px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: center; gap: 10px 14px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); }
+.dynamic-analog > span { font: 900 clamp(15px, 3vw, 26px) ui-monospace, monospace; letter-spacing: -.035em; }
+.dynamic-analog > output { align-self: center; color: var(--paper); font: 850 11px ui-monospace, monospace; }
+.dynamic-analog input { grid-column: 1 / -1; width: 100%; min-height: 44px; margin: -8px 0; accent-color: var(--paper); cursor: ew-resize; touch-action: none; }
+.dynamic-analog input:focus-visible, .dynamic-slider input:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+.dynamic-analog small { grid-column: 1 / -1; }
+.dynamic-analog[data-active="true"] { border-width: 2px; background: var(--surface-strong); color: var(--paper); }
+.dynamic-trigger { border-top-width: 3px; }
+.dynamic-analog-button { border-radius: 18px; }
+.dynamic-surface { position: relative; min-height: 280px; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink); background-image: linear-gradient(var(--surface) 1px, transparent 1px), linear-gradient(90deg, var(--surface) 1px, transparent 1px); background-size: 28px 28px; touch-action: none; }
+.dynamic-surface:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .dynamic-surface > span { position: absolute; left: 14px; top: 13px; color: var(--controller-accent); font: 800 8px ui-monospace, monospace; letter-spacing: .12em; }
 .dynamic-surface > small { position: absolute; right: 14px; bottom: 12px; }
-.dynamic-surface > b { position: absolute; width: 54px; aspect-ratio: 1; display: grid; place-items: center; transform: translate(-50%,-50%); border: 2px solid var(--controller-accent); border-radius: 50%; background: var(--ink); color: var(--controller-accent); font: 900 9px ui-monospace, monospace; box-shadow: 0 0 24px color-mix(in srgb, var(--controller-accent) 24%, transparent); }
+.dynamic-surface > b { position: absolute; width: 54px; aspect-ratio: 1; display: grid; place-items: center; transform: translate(-50%,-50%); border: 2px solid var(--controller-accent); border-radius: 50%; background: var(--ink); color: var(--controller-accent); font: 900 9px ui-monospace, monospace; box-shadow: 0 0 24px color-mix(in srgb, var(--controller-accent) 24%, transparent); pointer-events: none; }
 .surface-crosshair { position: absolute; inset: 50% auto auto 50%; width: 84%; height: 84%; transform: translate(-50%,-50%); border: 1px solid var(--surface); border-radius: 50%; }
 .surface-crosshair::before, .surface-crosshair::after { content: ""; position: absolute; background: var(--surface); }
 .surface-crosshair::before { left: 50%; top: -10%; width: 1px; height: 120%; }.surface-crosshair::after { top: 50%; left: -10%; height: 1px; width: 120%; }
+.surface-dead-zone { position: absolute; left: 50%; top: 50%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 1px dashed var(--line-strong); border-radius: 50%; pointer-events: none; }
 .dynamic-slider { min-height: 150px; padding: 18px; display: grid; align-content: center; gap: 24px; border: 1px solid var(--line-strong); background: var(--ink); }
 .dynamic-slider > span { color: var(--controller-accent); font: 850 11px ui-monospace, monospace; letter-spacing: .1em; }
-.dynamic-slider input { width: 100%; accent-color: var(--controller-accent); }
-.dynamic-dpad { position: relative; min-height: 280px; grid-row: span 2; display: grid; grid-template: 38px repeat(3, 1fr) / repeat(3, 1fr); border: 1px solid var(--line-strong); background: var(--ink); }
+.dynamic-slider input { width: 100%; min-height: 44px; accent-color: var(--controller-accent); }
+.dynamic-dpad { position: relative; min-height: 280px; display: grid; grid-template: 38px repeat(3, 1fr) / repeat(3, 1fr); border: 1px solid var(--line-strong); background: var(--ink); touch-action: none; }
 .dynamic-dpad > span { grid-area: 1 / 1 / 2 / 4; padding: 13px; color: var(--controller-accent); font: 800 8px ui-monospace, monospace; letter-spacing: .12em; }
-.dynamic-dpad button { border: 1px solid var(--surface); background: var(--panel); color: var(--muted); cursor: pointer; }
+.dynamic-dpad button { min-width: 44px; min-height: 44px; border: 1px solid var(--surface); background: var(--panel); color: var(--muted); cursor: pointer; touch-action: none; }
 .dynamic-dpad button:active { background: color-mix(in srgb, var(--controller-accent) 12%, var(--panel)); color: var(--controller-accent); }
 .dynamic-dpad .up { grid-area: 2 / 2; }.dynamic-dpad .left { grid-area: 3 / 1; }.dynamic-dpad > i { grid-area: 3 / 2; margin: 22%; border-radius: 50%; background: var(--ink); }.dynamic-dpad .right { grid-area: 3 / 3; }.dynamic-dpad .down { grid-area: 4 / 2; }
 .controller-role-status { margin-top: 12px; padding: 12px; border: 1px solid var(--line); background: var(--ink); }
@@ -890,8 +917,8 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   .controller-top .mark-label { display: inline; }
   .controller-deck { gap: 12px; }
   .controller-session small { display: none; }
-  .dynamic-controller-heading { align-items: start; flex-direction: column; }
-  .dynamic-controller-deck { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dynamic-controller-heading { align-items: stretch; }
+  .dynamic-controller-deck { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .steering-deck { grid-template-columns: auto minmax(150px, 260px) auto; }
   .motion-permission { grid-template-columns: 1fr; }
   .motion-intro { padding-top: 65px; }
@@ -986,8 +1013,12 @@ button:focus-visible, a:focus-visible, canvas:focus-visible { outline: 2px solid
   .body-stats { grid-template-columns: 1fr 1fr; }.body-stats div:last-child { display: none; }
   .drift-meter { min-width: 165px; }
   .body-next { top: 115px; min-width: 160px; }
-  .dynamic-controller-deck { grid-template-columns: 1fr 1fr; grid-auto-rows: minmax(105px, auto); }
-  .dynamic-surface, .dynamic-dpad { grid-column: 1 / -1; min-height: 250px; }
+  .dynamic-controller-heading { align-items: stretch; flex-direction: column; }
+  .handedness-toggle { width: 100%; }
+  .dynamic-controller-deck { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(88px, auto); gap: 7px; }
+  .dynamic-control[data-control="joystick"] { min-height: 0; grid-row: span 1; align-self: start; aspect-ratio: 1; }
+  .dynamic-control[data-control="joystick"] .dynamic-surface { min-height: 0; aspect-ratio: 1; }
+  .dynamic-control[data-control="touch-surface"], .dynamic-control[data-control="dpad"] { min-height: 250px; }
   .dynamic-action { min-height: 105px; }.dynamic-action span { font-size: 17px; }
   .controller-role-status dl { grid-template-columns: repeat(3, 1fr); }
   .orbital-heading h1 { font-size: 50px; }

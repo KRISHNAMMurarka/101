@@ -179,12 +179,21 @@ function validateRole(role: GameControllerRole, controls: ReturnType<typeof inpu
     // Getting this wrong is expensive in a way a first-party game only reveals by accident: this
     // validation is the gate every third-party package passes through, so an over-strict rule here
     // refuses correct games rather than catching broken ones.
-    const valid = element.type === "button"
+    const actionElement = element.type === "button"
+      || element.type === "shoulder"
+      || element.type === "trigger"
+      || element.type === "analog-button";
+    const valid = actionElement
       ? controls.actions.has(element.action)
       : element.type === "slider"
         ? controls.axes.has(element.action)
         : controls.vectors.has(element.action) || controls.axes.has(element.action);
     if (!valid) throw new Error(`Controller role ${id} uses undeclared ${element.action}`);
+    if ((element.type === "button" || element.type === "shoulder") && element.interaction?.type === "chord") {
+      for (const action of element.interaction.actions) {
+        if (!controls.actions.has(action)) throw new Error(`Controller role ${id} uses undeclared ${action}`);
+      }
+    }
   }
   if (layout.motion) {
     if (!controls.axes.has(layout.motion.action) && !controls.vectors.has(layout.motion.action)) {
