@@ -167,6 +167,9 @@ export class ControllerSession {
     this.transport = transport;
     this.removeMessage = transport.onMessage((message) => {
       if (message.channel === "control") this.handleControl(message.payload);
+      if (message.channel === "realtime" && "type" in message.payload && message.payload.type === "haptic" && message.payload.deviceId === this.deviceId) {
+        this.events.haptic(message.payload.pattern);
+      }
     });
     this.removeState = transport.onStateChange((state) => {
       this.events.state(state);

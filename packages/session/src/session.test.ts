@@ -6,6 +6,7 @@ import {
   type ControlMessage,
   type LinkMessage,
   type LinkTransport,
+  type RealtimeMessage,
 } from "@101/protocol";
 import { LocalSession, SessionHost, type SessionRole } from "./index.ts";
 
@@ -88,6 +89,37 @@ test("session host targets layouts and overrides untrusted realtime identity", a
   assert.equal(frames[0]?.deviceId, "phone-1");
   assert.equal(frames[0]?.playerId, "role-pilot");
   await host.stop();
+});
+
+test("session host sends haptics as disposable realtime feedback", async () => {
+  const transport = new MemoryTransport();
+  const host = new SessionHost({
+    gameId: "orbitalcrew",
+    roles,
+    transport,
+    onFrame: () => {},
+    deviceTimeoutMs: 60_000,
+  });
+  await host.start();
+  try {
+    transport.emit({
+      channel: "control",
+      payload: {
+        type: "hello",
+        version: PROTOCOL_VERSION,
+        deviceId: "phone-1",
+        device: "Phone",
+        capabilities: { touch: true, haptics: true },
+      },
+    });
+    transport.reliable.length = 0;
+
+    assert.equal(host.haptic("pilot", "impact"), true);
+    assert.deepEqual(transport.realtime, [{ type: "haptic", deviceId: "phone-1", pattern: "impact" }]);
+    assert.deepEqual(transport.reliable, [], "late haptics must never queue on the reliable channel");
+  } finally {
+    await host.stop();
+  }
 });
 
 test("session host retargets a connected controller when the game changes without another hello", async () => {
@@ -210,12 +242,13 @@ function frame(deviceId: string, playerId: string): InputFrame {
 
 class MemoryTransport implements LinkTransport {
   readonly reliable: ControlMessage[] = [];
+  readonly realtime: RealtimeMessage[] = [];
   private readonly listeners = new Set<(message: LinkMessage) => void>();
 
   async connect() {}
   async disconnect() {}
   sendReliable(message: ControlMessage) { this.reliable.push(message); }
-  sendRealtime() {}
+  sendRealtime(message: RealtimeMessage) { this.realtime.push(message); }
   onMessage(callback: (message: LinkMessage) => void) {
     this.listeners.add(callback);
     return () => this.listeners.delete(callback);

@@ -3,13 +3,13 @@ import {
   RTCSessionDescription,
 } from "react-native-webrtc";
 
-import type { InputFrame } from "@101/input";
 import {
   deserializeControlMessage,
   serializeControlMessage,
   type ControlMessage,
   type LinkMessage,
   type LinkState,
+  type RealtimeMessage,
 } from "@101/protocol";
 import type { NegotiatedLinkTransport } from "@101/pairing";
 import { decodeDescription, encodeDescription } from "./pairing-code";
@@ -85,9 +85,9 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
     }
   }
 
-  sendRealtime(frame: InputFrame) {
+  sendRealtime(message: RealtimeMessage) {
     if (this.realtime?.readyState !== "open" || this.realtime.bufferedAmount > 64 * 1024) return;
-    this.realtime.send(JSON.stringify(frame));
+    this.realtime.send(JSON.stringify(message));
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -120,7 +120,7 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
         const data = (event as { data?: unknown }).data;
         if (typeof data !== "string") return;
         try {
-          this.emit({ channel: "realtime", payload: JSON.parse(data) as InputFrame });
+          this.emit({ channel: "realtime", payload: JSON.parse(data) as RealtimeMessage });
         } catch {
           // Realtime packets are disposable.
         }

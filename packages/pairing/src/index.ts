@@ -7,9 +7,9 @@ import {
   type LinkMessage,
   type LinkState,
   type PairingTicket,
+  type RealtimeMessage,
   type StatefulLinkTransport,
 } from "@101/protocol";
-import type { InputFrame } from "@101/input";
 
 /** Ceiling for signaling retry backoff. Long enough to stop hammering, short enough to recover. */
 const MAX_RETRY_BACKOFF_MS = 10_000;
@@ -451,7 +451,7 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   }
 
   sendReliable(message: ControlMessage) { this.transport?.sendReliable(message); }
-  sendRealtime(frame: InputFrame) { this.transport?.sendRealtime(frame); }
+  sendRealtime(message: RealtimeMessage) { this.transport?.sendRealtime(message); }
   onMessage(callback: (message: LinkMessage) => void) { this.listeners.add(callback); return () => this.listeners.delete(callback); }
   onStateChange(callback: (state: LinkState) => void) { this.stateListeners.add(callback); callback(this.currentState); return () => this.stateListeners.delete(callback); }
   /** Signaling failures the transport recovered from, so a UI can explain itself instead of crashing. */

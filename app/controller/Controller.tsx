@@ -130,7 +130,14 @@ export default function Controller({ session, pairCode }: { session: string; pai
     }
     transportRef.current = transport;
     const removeListener = transport.onMessage((message) => {
-      if (message.channel !== "control") return;
+      if (message.channel === "realtime") {
+        const payload = message.payload;
+        if ("type" in payload && payload.type === "haptic" && payload.deviceId === deviceId) {
+          lastHostMessageAt.current = performance.now();
+          navigator.vibrate?.(payload.pattern === "warning" ? [50, 35, 50] : payload.pattern === "impact" ? 35 : 15);
+        }
+        return;
+      }
       const payload = message.payload;
       if (payload.type === "player.assign" && payload.deviceId === deviceId) {
         lastHostMessageAt.current = performance.now();

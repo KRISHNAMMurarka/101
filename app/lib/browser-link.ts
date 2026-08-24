@@ -11,8 +11,8 @@ import {
   type LinkMessage,
   type LinkTransport,
   type PairingTicket,
+  type RealtimeMessage,
 } from "@101/protocol";
-import type { InputFrame } from "@101/input";
 
 export interface BrowserPairingInfo {
   ticket: PairingTicket;
@@ -64,7 +64,7 @@ export class BrowserHostTransport implements LinkTransport {
   }
 
   sendReliable(message: ControlMessage) { this.multiplex.sendReliable(message); }
-  sendRealtime(frame: InputFrame) { this.multiplex.sendRealtime(frame); }
+  sendRealtime(message: RealtimeMessage) { this.multiplex.sendRealtime(message); }
   onMessage(callback: (message: LinkMessage) => void) { return this.multiplex.onMessage(callback); }
 
   async preparePairing() {

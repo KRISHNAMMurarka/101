@@ -380,6 +380,8 @@ test("the documented path is the path that runs", () => {
     { name: "useGameHost", definedIn: "app/lib/use-game-host" },
     { name: "describeReadiness", definedIn: "app/lib/input-readiness" },
     { name: "describeSources", definedIn: "app/lib/input-readiness" },
+    { name: "AudioTimeline101", definedIn: "packages/audio/" },
+    { name: "BeatCueLookahead", definedIn: "games/beatforge/src/cue-scheduler" },
   ];
 
   for (const { name, definedIn } of promises) {

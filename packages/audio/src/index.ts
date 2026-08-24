@@ -39,7 +39,11 @@ export class Audio101 {
   register(id: string, options: SoundOptions) {
     this.sounds.get(id)?.unload();
     this.baseVolumes.set(id, clamp(options.volume ?? 1));
-    this.sounds.set(id, new Howl({ ...options, preload: options.preload ?? true }));
+    this.sounds.set(id, new Howl({
+      ...options,
+      preload: options.preload ?? true,
+      mute: this.shouldMute(),
+    }));
   }
 
   registerTone(id: string, options: ToneOptions) {
@@ -94,7 +98,12 @@ export class Audio101 {
   }
 
   private applyMuteState() {
-    Howler.mute(this.manuallyMuted || (typeof document !== "undefined" && document.hidden));
+    const muted = this.shouldMute();
+    this.sounds.forEach((sound) => sound.mute(muted));
+  }
+
+  private shouldMute() {
+    return this.manuallyMuted || (typeof document !== "undefined" && document.hidden);
   }
 
   private requireSound(id: string) {
@@ -149,3 +158,6 @@ function writeText(bytes: Uint8Array, offset: number, value: string) {
 function clamp(value: number, min = 0, max = 1) {
   return Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
 }
+
+export { AudioTimeline101 } from "./timeline.ts";
+export type { AudioTimelineOptions, ScheduledTone, TimelinePlayOptions } from "./timeline.ts";

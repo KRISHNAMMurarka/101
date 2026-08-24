@@ -6,11 +6,11 @@ Protocol version: `2`
 
 ### Control
 
-Reliable and ordered. It carries device hello/capabilities, player assignment, controller layout, calibration, pause, haptic commands, and latency pings.
+Reliable and ordered. It carries device hello/capabilities, player assignment, controller layout, calibration, pause, and latency pings. Controllers still accept haptic commands here for compatibility with older hosts, but current hosts do not send them on this channel.
 
 ### Realtime
 
-Optimized for frequency and freshness. It carries normalized `InputFrame` values or compact sensor packets. Receivers discard frames whose sequence is not newer than the last accepted frame for that device.
+Optimized for frequency and freshness. It carries normalized `InputFrame` values, compact sensor packets, and instant haptic feedback. Receivers discard frames whose sequence is not newer than the last accepted frame for that device; haptics are intentionally disposable because a late buzz is worse than a missed one.
 
 ## Transport contract
 
@@ -19,14 +19,14 @@ interface LinkTransport {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   sendReliable(message: ControlMessage): void;
-  sendRealtime(frame: InputFrame): void;
+  sendRealtime(message: RealtimeMessage): void;
   onMessage(callback: (message: LinkMessage) => void): () => void;
 }
 ```
 
 `BroadcastChannelTransport` supports the same-browser controller test. `WebRTCTransport` implements real peer DataChannels with no hard-coded signaling dependency. The Network Lab exchanges compressed, versioned, integrity-checked offers and answers manually; `@101/pairing` automates the same exchange through a local Hub.
 
-`MultiplexLinkTransport` lets one host accept BroadcastChannel plus any number of WebRTC peers. It learns the source route from each `hello`, so device-targeted configuration, haptic, and private role-state messages go only to that peer. Untargeted session controls may be broadcast.
+`MultiplexLinkTransport` lets one host accept BroadcastChannel plus any number of WebRTC peers. It learns the source route from each `hello`, so device-targeted configuration, disposable haptic feedback, and private role-state messages go only to that peer. Untargeted session controls may be broadcast.
 
 ## Automatic LAN signaling
 

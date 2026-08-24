@@ -51,7 +51,7 @@ export default function NetworkLab() {
     transportRef.current = transport;
     cleanups.current.push(transport.onStateChange(setState));
     cleanups.current.push(transport.onMessage((message) => {
-      if (message.channel === "realtime") diagnosticsRef.current.observeFrame(message.payload);
+      if (message.channel === "realtime" && !("type" in message.payload)) diagnosticsRef.current.observeFrame(message.payload);
       if (message.channel === "control" && message.payload.type === "ping") {
         transport.sendReliable({ type: "pong", sentAt: message.payload.sentAt, receivedAt: performance.now() });
       }

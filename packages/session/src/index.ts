@@ -322,7 +322,7 @@ export class SessionHost {
   haptic(roleId: string, pattern: "tap" | "impact" | "warning") {
     const assignment = this.session.assignmentForRole(roleId);
     if (!assignment) return false;
-    this.transport.sendReliable({ type: "haptic", deviceId: assignment.deviceId, pattern });
+    this.transport.sendRealtime({ type: "haptic", deviceId: assignment.deviceId, pattern });
     return true;
   }
 
@@ -350,7 +350,7 @@ export class SessionHost {
       this.transport.sendReliable({ type: "pong", sentAt, receivedAt: this.now() });
       return;
     }
-    if (message.channel !== "realtime") return;
+    if (message.channel !== "realtime" || "type" in message.payload) return;
     const assignment = this.session.assignmentForDevice(message.payload.deviceId);
     if (!assignment) return;
     // Input is proof of life. Without this, a controller that pairs and then plays without ever

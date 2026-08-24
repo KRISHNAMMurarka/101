@@ -3,7 +3,7 @@
 import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Audio101 } from "@101/audio";
+import { Audio101, AudioTimeline101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
@@ -14,6 +14,7 @@ import BEATFORGE_MANIFEST from "@/games/beatforge/manifest.json";
 import { useEffect, useRef, useState } from "react";
 import { beatActionLabel, createBeatForgeGame, type BeatForgeState, type BeatTarget } from "@/games/beatforge/src/game";
 import type { BeatAction } from "@/games/beatforge/src/director";
+import { BeatCueLookahead } from "@/games/beatforge/src/cue-scheduler";
 import { BEATFORGE_ROLES } from "@/games/beatforge/src/roles";
 
 type CameraState = "idle" | "loading" | "active" | "denied" | "error";
@@ -36,6 +37,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
   const cameraRef = useRef<BrowserCameraAdapter | null>(null);
+  const beatTimelineRef = useRef<AudioTimeline101 | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<BeatHud>(INITIAL_HUD);
@@ -60,19 +62,31 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       const canvas = canvasRef.current;
       if (!canvas) return;
       const audio = createBeatAudio();
+      const beatTimeline = createBeatTimeline();
+      const beatCues = new BeatCueLookahead(beatTimeline);
       const view = createBeatView(canvas);
-      const soundedGroups = new Set<number>();
+      const hapticGroups = new Set<number>();
       let drawHandle = 0;
       let previousCue = 0;
       hostRef.current = host;
+      beatTimelineRef.current = beatTimeline;
+
+      const cueTimer = window.setInterval(() => {
+        const enabled = audioEnabledRef.current;
+        if (enabled && !beatTimeline.running) void beatTimeline.resume();
+        if (context.state.gameOver) {
+          beatTimeline.cancelAll();
+          return;
+        }
+        beatCues.tick(context.state, enabled);
+      }, 25);
 
       const render = () => {
         const state = context.state;
         view.sync(state);
         for (const target of state.targets) {
-          if (target.targetSeconds > state.elapsed || soundedGroups.has(target.groupId)) continue;
-          soundedGroups.add(target.groupId);
-          if (audioEnabledRef.current) audio.play(target.accent ? "accent" : "beat", { volume: target.accent ? .75 : .42 });
+          if (target.targetSeconds > state.elapsed || hapticGroups.has(target.groupId)) continue;
+          hapticGroups.add(target.groupId);
           host.haptic("performer", target.accent ? "impact" : "tap");
         }
         if (state.cueSequence !== previousCue) {
@@ -109,12 +123,15 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       }, 90);
 
       return () => {
+        window.clearInterval(cueTimer);
         window.clearInterval(hudTimer);
         cancelAnimationFrame(drawHandle);
+        beatTimeline.dispose();
         audio.unload();
         view.dispose();
         hostRef.current = null;
         cameraRef.current = null;
+        if (beatTimelineRef.current === beatTimeline) beatTimelineRef.current = null;
       };
     },
   });
@@ -148,6 +165,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   const readinessNotice = readiness ? describeReadiness(readiness) : null;
 
   const enableAudio = () => {
+    void beatTimelineRef.current?.resume();
     setAudioEnabled(true);
     audioEnabledRef.current = true;
   };
@@ -194,12 +212,17 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
 
 function createBeatAudio() {
   const audio = new Audio101();
-  audio.registerTone("beat", { frequency: 130, duration: .055, wave: "square", release: .025, volume: .4 });
-  audio.registerTone("accent", { frequency: 210, duration: .07, wave: "square", release: .035, volume: .55 });
   audio.registerTone("hit", { frequency: 520, duration: .08, wave: "triangle", release: .055 });
   audio.registerTone("perfect", { frequency: 820, duration: .11, wave: "sine", release: .08 });
   audio.registerTone("miss", { frequency: 72, duration: .14, wave: "square", release: .1 });
   return audio;
+}
+
+function createBeatTimeline() {
+  const timeline = new AudioTimeline101();
+  timeline.registerTone("beat", { frequency: 130, duration: .055, wave: "square", release: .025, volume: .4 });
+  timeline.registerTone("accent", { frequency: 210, duration: .07, wave: "square", release: .035, volume: .55 });
+  return timeline;
 }
 
 const LANE_X: Record<BeatAction, number> = { left: -3.2, right: 3.2, punch: 0, raise: -1.6, duck: 1.6 };

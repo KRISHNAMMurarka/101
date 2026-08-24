@@ -13,6 +13,12 @@ export interface DeviceCapabilities {
   gamepad?: boolean;
 }
 
+export type HapticMessage = {
+  type: "haptic";
+  deviceId: string;
+  pattern: "tap" | "impact" | "warning";
+};
+
 export type ControlMessage =
   | {
       type: "hello";
@@ -50,7 +56,9 @@ export type ControlMessage =
       tone?: "normal" | "warning" | "critical";
     }
   | { type: "calibration.request"; mode: string }
-  | { type: "haptic"; deviceId: string; pattern: "tap" | "impact" | "warning" }
+  // Kept parseable on the control channel so a newly updated controller remains compatible with
+  // an older host. Current hosts send this disposable feedback over realtime instead.
+  | HapticMessage
   | { type: "pause"; paused: boolean }
   | { type: "ping"; sentAt: number; deviceId?: string }
   | { type: "pong"; sentAt: number; receivedAt: number };
@@ -218,15 +226,17 @@ export function parseControlMessage(input: unknown): ControlMessage {
   throw new Error("Unsupported 101 control message");
 }
 
+export type RealtimeMessage = InputFrame | HapticMessage;
+
 export type LinkMessage =
   | { channel: "control"; payload: ControlMessage }
-  | { channel: "realtime"; payload: InputFrame };
+  | { channel: "realtime"; payload: RealtimeMessage };
 
 export interface LinkTransport {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
   sendReliable(message: ControlMessage): void;
-  sendRealtime(frame: InputFrame): void;
+  sendRealtime(message: RealtimeMessage): void;
   onMessage(callback: (message: LinkMessage) => void): () => void;
 }
 
@@ -310,8 +320,15 @@ export class MultiplexLinkTransport implements LinkTransport {
     for (const { transport } of this.transports.values()) transport.sendReliable(message);
   }
 
-  sendRealtime(frame: InputFrame) {
-    for (const { transport } of this.transports.values()) transport.sendRealtime(frame);
+  sendRealtime(message: RealtimeMessage) {
+    const route = "type" in message && message.type === "haptic"
+      ? this.deviceRoutes.get(message.deviceId)
+      : undefined;
+    if (route) {
+      this.transports.get(route)?.transport.sendRealtime(message);
+      return;
+    }
+    for (const { transport } of this.transports.values()) transport.sendRealtime(message);
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -451,8 +468,8 @@ export class BroadcastChannelTransport implements LinkTransport {
     this.channel?.postMessage({ channel: "control", payload: message } satisfies LinkMessage);
   }
 
-  sendRealtime(frame: InputFrame) {
-    this.channel?.postMessage({ channel: "realtime", payload: frame } satisfies LinkMessage);
+  sendRealtime(message: RealtimeMessage) {
+    this.channel?.postMessage({ channel: "realtime", payload: message } satisfies LinkMessage);
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -567,10 +584,10 @@ export class WebRTCTransport implements StatefulLinkTransport {
     this.control.send(serializeControlMessage(message));
   }
 
-  sendRealtime(frame: InputFrame) {
+  sendRealtime(message: RealtimeMessage) {
     if (this.realtime?.readyState !== "open") return;
     if (this.realtime.bufferedAmount > (this.options.realtimeBufferLimit ?? 64 * 1024)) return;
-    this.realtime.send(JSON.stringify(frame));
+    this.realtime.send(JSON.stringify(message));
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -604,7 +621,7 @@ export class WebRTCTransport implements StatefulLinkTransport {
     channel.bufferedAmountLowThreshold = 16 * 1024;
     channel.onmessage = (event: MessageEvent<string>) => {
       try {
-        this.emit({ channel: "realtime", payload: JSON.parse(event.data) as InputFrame });
+        this.emit({ channel: "realtime", payload: JSON.parse(event.data) as RealtimeMessage });
       } catch {
         // Invalid or partial disposable frames are safe to drop.
       }
