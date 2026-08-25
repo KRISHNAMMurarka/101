@@ -1,16 +1,19 @@
 import { ControllerInputModel, type ControllerInputSnapshot } from "@101/link-controller";
 import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
+  INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
   type ControllerLayout,
   type ControlMessage,
   type LinkState,
+  type SpeakerCueMessage,
   type StatefulLinkTransport,
 } from "@101/protocol";
 import type { InputSource } from "@101/input";
 
 import { NativeWebRTCTransport } from "./native-webrtc";
 import { ticketFromInput } from "./pairing-code";
+import { ControllerConfigurationGate, ControllerSpeakerGate } from "./controller-runtime-gates";
 
 export interface ControllerAssignment {
   playerId: string;
@@ -24,6 +27,10 @@ export interface ControllerSessionEvents {
   assignment(assignment?: ControllerAssignment): void;
   hostState(values: Record<string, string | number | boolean>, message?: string, tone?: "normal" | "warning" | "critical"): void;
   haptic(pattern: "tap" | "impact" | "warning"): void;
+  speakerCue(message: SpeakerCueMessage): void;
+  speakerDiscard(message: SpeakerCueMessage): void;
+  speakerCancel(): void;
+  speakerReset(): void;
   calibration(mode: string): void;
   latency(milliseconds: number): void;
   error(message: string): void;
@@ -39,6 +46,8 @@ export class ControllerSession {
   private currentLayout?: ControllerLayout;
   private assignment?: ControllerAssignment;
   private sequence = 0;
+  private readonly configurationGate = new ControllerConfigurationGate();
+  private readonly speakerGate = new ControllerSpeakerGate();
 
   constructor(
     readonly deviceId: string,
@@ -63,6 +72,7 @@ export class ControllerSession {
           camera: true,
           microphone: false,
           haptics: true,
+          speaker: true,
         },
       },
       transportFactory: () => new NativeWebRTCTransport(),
@@ -105,10 +115,18 @@ export class ControllerSession {
     await this.transport?.disconnect();
     this.transport = undefined;
     this.assignment = undefined;
+    this.configurationGate.reset();
+    this.events.speakerReset();
     this.events.assignment(undefined);
   }
 
+  setSpeakerReady(ready: boolean) {
+    if (!this.speakerGate.setReady(ready, () => this.events.speakerCancel())) return;
+    if (this.transport?.state === "connected") this.sendHello();
+  }
+
   useLocalLayout(layout: ControllerLayout) {
+    this.configurationGate.reset();
     this.currentLayout = layout;
     const transition = this.model.transition(layout);
     this.sendSnapshot(transition.release, "touch");
@@ -166,6 +184,9 @@ export class ControllerSession {
     if (this.heartbeat) clearInterval(this.heartbeat);
     this.heartbeat = setInterval(() => {
       const sentAt = Date.now();
+      // A React game host may remount while this WebRTC peer stays connected. Re-announcing lets
+      // the fresh SessionHost recover capabilities, binary configuration, and private audio.
+      this.sendHello();
       // The device has to name itself, or the host cannot tell whose liveness this beat refreshes
       // and expires a perfectly healthy controller mid-game.
       this.transport?.sendReliable({ type: "ping", sentAt, deviceId: this.deviceId });
@@ -177,8 +198,11 @@ export class ControllerSession {
     this.transport = transport;
     this.removeMessage = transport.onMessage((message) => {
       if (message.channel === "control") this.handleControl(message.payload);
-      if (message.channel === "realtime" && "type" in message.payload && message.payload.type === "haptic" && message.payload.deviceId === this.deviceId) {
-        this.events.haptic(message.payload.pattern);
+      if (message.channel === "realtime" && "type" in message.payload && message.payload.deviceId === this.deviceId) {
+        if (message.payload.type === "haptic") this.events.haptic(message.payload.pattern);
+        if (message.payload.type === "speaker.cue") {
+          this.speakerGate.deliver(message.payload, this.events.speakerCue, this.events.speakerDiscard);
+        }
       }
     });
     this.removeState = transport.onStateChange((state) => {
@@ -206,6 +230,11 @@ export class ControllerSession {
         camera: true,
         microphone: false,
         haptics: true,
+        speaker: true,
+      },
+      features: {
+        inputFormats: [INPUT_Q1_FORMAT],
+        speakerAudio: this.speakerGate.ready ? "ready" : "locked",
       },
     });
   }
@@ -213,13 +242,22 @@ export class ControllerSession {
   private handleControl(message: ControlMessage) {
     if ("deviceId" in message && message.deviceId !== this.deviceId) return;
     if (message.type === "player.assign") {
+      if (!this.assignment
+        || this.assignment.playerId !== message.playerId
+        || this.assignment.role !== message.role
+        || this.assignment.gameId !== message.gameId) this.configurationGate.reset();
       this.assignment = { playerId: message.playerId, role: message.role, gameId: message.gameId };
       this.events.assignment(this.assignment);
     } else if (message.type === "player.wait") {
       this.assignment = undefined;
+      this.configurationGate.reset();
       this.events.assignment(undefined);
       this.events.hostState({}, "Waiting for an open controller role", "warning");
     } else if (message.type === "controller.configure") {
+      if (!this.configurationGate.accept(message)) {
+        this.sendSnapshot(this.model.snapshot(), "touch");
+        return;
+      }
       this.currentLayout = message.layout;
       const transition = this.model.transition(message.layout);
       this.sendSnapshot(transition.release, "touch");

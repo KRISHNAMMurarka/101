@@ -58,9 +58,16 @@ export class LocalHubServer {
     await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
   }
 
-  createSession(sessionId: string, options: { hostName?: string; ttlMs?: number; endpoint?: string } = {}) {
+  createSession(sessionId: string, options: { hostName?: string; ttlMs?: number; endpoint?: string } = {}, resumeHostToken?: string) {
+    const now = Date.now();
+    for (const [cachedId, cached] of this.sessions) if (cached.ticket.expiresAt <= now) this.sessions.delete(cachedId);
     const existing = this.sessions.get(sessionId);
-    if (existing && existing.ticket.expiresAt > Date.now()) return existing;
+    if (existing && existing.ticket.expiresAt > now) {
+      if (!resumeHostToken) throw new HttpError(409, "Signaling session already exists");
+      const resumed = this.broker.resumeSession(sessionId, resumeHostToken, options);
+      this.sessions.set(sessionId, resumed);
+      return resumed;
+    }
     const created = this.broker.createSession({ sessionId, endpoint: options.endpoint ?? this.url, hostName: options.hostName, ttlMs: options.ttlMs });
     this.sessions.set(sessionId, created);
     return created;
@@ -76,7 +83,7 @@ export class LocalHubServer {
       if (request.method === "POST" && url.pathname === "/v1/sessions") {
         const body = await readJson<{ sessionId?: string; hostName?: string; ttlMs?: number; endpoint?: string }>(request);
         if (!body.sessionId) throw new HttpError(400, "sessionId is required");
-        return json(response, 201, this.createSession(body.sessionId, body));
+        return json(response, 201, this.createSession(body.sessionId, body, optionalBearer(request)));
       }
       if (parts[0] !== "v1" || parts[1] !== "sessions" || !parts[2]) throw new HttpError(404, "Not found");
       const sessionId = parts[2];
@@ -103,6 +110,10 @@ export class LocalHubServer {
       }
       if (parts[3] === "peers" && parts[4]) {
         const peerId = parts[4];
+        if (request.method === "DELETE" && parts.length === 5) {
+          this.broker.leave(sessionId, peerId, token);
+          return send(response, 204);
+        }
         if (request.method === "GET" && parts[5] === "offer") return json(response, 200, this.broker.getOffer(sessionId, peerId, token));
         if (request.method === "PUT" && parts[5] === "answer") {
           const body = await readJson<{ generation?: number; answer?: string }>(request);
@@ -114,7 +125,14 @@ export class LocalHubServer {
       }
       throw new HttpError(404, "Not found");
     } catch (error) {
-      const status = error instanceof HttpError ? error.status : error instanceof SyntaxError ? 400 : error instanceof Error && /authorization/i.test(error.message) ? 401 : 400;
+      const status = error instanceof HttpError ? error.status
+        : error instanceof SyntaxError ? 400
+          : error instanceof Error && /authorization/i.test(error.message) ? 401
+            : error instanceof Error && /Unknown signaling (?:session|peer)/.test(error.message) ? 404
+              : error instanceof Error && /expired/i.test(error.message) ? 410
+                : error instanceof Error && /already exists|Stale signaling generation/i.test(error.message) ? 409
+                  : error instanceof Error && /session is full|too many live sessions/i.test(error.message) ? 429
+                    : 400;
       json(response, status, { error: error instanceof Error ? error.message : "Invalid request" });
     }
   }
@@ -137,6 +155,10 @@ function bearer(request: IncomingMessage) {
   const value = request.headers.authorization;
   if (!value?.startsWith("Bearer ") || value.length > 300) throw new HttpError(401, "Pairing authorization failed");
   return value.slice(7);
+}
+
+function optionalBearer(request: IncomingMessage) {
+  return request.headers.authorization === undefined ? undefined : bearer(request);
 }
 
 async function readJson<Value>(request: IncomingMessage): Promise<Value> {

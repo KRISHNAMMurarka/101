@@ -103,6 +103,79 @@ test("a shipped role exercises the real-gamepad controller contract", () => {
   }
 });
 
+test("browser controller speaker requires opt-in and never replays a late cue", async () => {
+  const { BrowserControllerSpeaker } = await import("../app/controller/controller-speaker.ts");
+  const registered: Array<{ id: string; options: unknown }> = [];
+  const played: Array<{ id: string; options: unknown }> = [];
+  let resumes = 0;
+  let unloaded = false;
+  const audio = {
+    registerTone(id: string, options: unknown) { registered.push({ id, options }); },
+    async resume() { resumes += 1; },
+    play(id: string, options: unknown) { played.push({ id, options }); return 1; },
+    unload() { unloaded = true; },
+  };
+  let visible = true;
+  const speaker = new BrowserControllerSpeaker(audio, () => visible);
+  const cue = (sequence: number, pitch = 1.4, volume = .35) => ({
+    type: "speaker.cue" as const,
+    deviceId: "phone",
+    sequence,
+    cue: "pulse-v1" as const,
+    pitch,
+    volume,
+  });
+
+  assert.equal(registered.length, 1, "the private cue must be synthesized locally, not fetched");
+  assert.equal(speaker.state, "locked");
+  assert.equal(speaker.receive(cue(2)), false, "autoplay policy must not be bypassed before a gesture");
+  assert.deepEqual(played, []);
+
+  assert.equal(await speaker.enable(), true);
+  assert.equal(resumes, 1);
+  assert.equal(speaker.state, "ready");
+  assert.equal(speaker.receive(cue(1)), false, "a cue older than one discarded while locked must stay discarded");
+  assert.equal(speaker.receive(cue(3)), true);
+  assert.deepEqual(played, [{ id: "private-cue", options: { category: "sfx", rate: 1.4, volume: .35 } }]);
+  assert.equal(speaker.receive(cue(3)), false, "duplicates must not turn packet jitter into a second sound");
+
+  visible = false;
+  assert.equal(speaker.state, "locked", "a hidden, visibility-muted controller must restore host fallback");
+  assert.equal(speaker.receive(cue(4)), false, "hidden cues are disposable, not queued for a late replay");
+  visible = true;
+  assert.equal(speaker.state, "ready");
+  assert.equal(speaker.receive(cue(5, .8, .2)), true);
+  assert.deepEqual(played.at(-1), { id: "private-cue", options: { category: "sfx", rate: .8, volume: .2 } });
+
+  speaker.dispose();
+  assert.equal(unloaded, true);
+});
+
+test("the browser advertises opted-in speaker audio and Echo Maze keeps a host fallback", () => {
+  const controller = readFileSync(resolve(import.meta.dirname, "../app/controller/Controller.tsx"), "utf8");
+  const echoMaze = readFileSync(resolve(import.meta.dirname, "../app/components/EchoMazeGame.tsx"), "utf8");
+
+  assert.match(controller, /speaker:\s*true/, "101 Link must advertise its physical speaker");
+  assert.match(controller, /speakerAudio:\s*speakerAudioRef\.current/, "the handshake must distinguish locked audio from ready audio");
+  assert.match(controller, /payload\.type === "speaker\.cue"/, "realtime controller cues need a browser caller");
+  assert.match(controller, /ENABLE PRIVATE AUDIO/, "a visible user gesture must unlock private audio");
+  assert.match(controller, /configurationRef\.current\s*===\s*configuration\)\s*\{[\s\S]*?publishSnapshot\(inputRef\.current!\.snapshot\(\)\)[\s\S]*?return/,
+    "a repeated hello must refresh held browser input for a newly mounted host without releasing it");
+  assert.match(echoMaze, /host\.playControllerCue\("scanner"/, "the private clue must call the host speaker API");
+  assert.match(echoMaze, /if \(!controllerCue[^)]*&& audioEnabledRef\.current\) audio\.play\("ping"/, "the TV cue is the fallback, not an echo beside the phone");
+  assert.ok(rolesByGame.echomaze[0]?.preferredCapabilities?.includes("speaker"),
+    "when two phones are eligible, Echo Maze should prefer the one that can actually play its private cue");
+});
+
+test("browser Link retries a transient initial Hub join without requiring a reload", () => {
+  const controller = readFileSync(resolve(import.meta.dirname, "../app/controller/Controller.tsx"), "utf8");
+
+  assert.match(controller, /const connectTransport = async \(\) => \{[\s\S]*?await transport\.connect\(\)[\s\S]*?window\.setTimeout\(\(\) => void connectTransport\(\)/,
+    "the mounted controller must call connect again after an initial signaling failure");
+  assert.match(controller, /return \(\) => \{[\s\S]*?connectCancelled = true[\s\S]*?window\.clearTimeout\(connectRetryTimer\)/,
+    "unmount must cancel the browser-owned retry before disconnecting its transport");
+});
+
 test("game modules remain isolated from browser devices, transports, and permission APIs", () => {
   const forbidden = /navigator\.|getGamepads|DeviceMotionEvent|DeviceOrientationEvent|BroadcastChannel|WebSocket|RTCPeerConnection|getUserMedia|requestPermission/;
   for (const gameId of GAME_IDS) {

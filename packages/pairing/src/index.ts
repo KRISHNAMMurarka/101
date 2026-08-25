@@ -13,6 +13,9 @@ import {
 
 /** Ceiling for signaling retry backoff. Long enough to stop hammering, short enough to recover. */
 const MAX_RETRY_BACKOFF_MS = 10_000;
+export const SIGNALING_PEER_IDLE_MS = 30_000;
+export const MAX_SIGNALING_PEERS = 64;
+export const MAX_SIGNALING_SESSIONS = 128;
 
 export interface PairingDevice {
   deviceId: string;
@@ -57,6 +60,7 @@ export interface ControllerSignalingClient {
   getOffer(lease: ControllerLease): Promise<ControllerOfferSignal>;
   publishAnswer(lease: ControllerLease, generation: number, answer: string): Promise<void>;
   requestReconnect(lease: ControllerLease): Promise<ControllerLease>;
+  leave(lease: ControllerLease): Promise<void>;
 }
 
 export interface NegotiatedLinkTransport extends StatefulLinkTransport {
@@ -102,20 +106,36 @@ export class LocalSignalingBroker {
   }
 
   createSession(options: SignalingSessionOptions) {
-    if (this.sessions.has(options.sessionId)) throw new Error(`Signaling session ${options.sessionId} already exists`);
     const now = options.now ?? this.now();
+    this.expireAt(now);
+    validateSessionId(options.sessionId);
+    if (this.sessions.has(options.sessionId)) throw new Error(`Signaling session ${options.sessionId} already exists`);
+    if (this.sessions.size >= MAX_SIGNALING_SESSIONS) throw new Error("Signaling Hub has too many live sessions");
     const ticket: PairingTicket = {
       version: PROTOCOL_VERSION,
       sessionId: options.sessionId,
       endpoint: options.endpoint,
       joinToken: this.randomToken(),
-      expiresAt: now + (options.ttlMs ?? 4 * 60 * 60 * 1_000),
+      expiresAt: now + signalingSessionTtl(options.ttlMs),
       ...(options.hostName ? { hostName: options.hostName } : {}),
       transport: "webrtc",
     };
     const hostToken = this.randomToken();
     this.sessions.set(options.sessionId, { ticket, hostToken, peers: new Map() });
     return { ticket, hostToken };
+  }
+
+  resumeSession(sessionId: string, hostToken: string, options: { endpoint?: string; hostName?: string } = {}) {
+    const session = this.hostSession(sessionId, hostToken);
+    const ticket: PairingTicket = {
+      ...session.ticket,
+      ...(options.endpoint ? { endpoint: options.endpoint } : {}),
+      ...(options.hostName ? { hostName: options.hostName } : {}),
+    };
+    const nextHostToken = this.randomToken();
+    session.ticket = ticket;
+    session.hostToken = nextHostToken;
+    return { ticket, hostToken: nextHostToken };
   }
 
   removeSession(sessionId: string, hostToken: string) {
@@ -127,14 +147,14 @@ export class LocalSignalingBroker {
     const session = this.liveSession(ticket.sessionId);
     if (!constantEqual(session.ticket.joinToken, joinToken) || !constantEqual(ticket.joinToken, joinToken)) throw new Error("Pairing authorization failed");
     validateDevice(device);
-    const previous = [...session.peers.values()].find((peer) => peer.device.deviceId === device.deviceId);
-    if (previous) session.peers.delete(previous.peerId);
+    this.prunePeers(session);
+    if (session.peers.size >= MAX_SIGNALING_PEERS) throw new Error("Signaling session is full");
     const peerId = `peer-${this.randomToken().slice(0, 16)}`;
     const peer: SignalingPeer = {
       peerId,
       peerToken: this.randomToken(),
       device: { ...device, capabilities: { ...device.capabilities } },
-      generation: (previous?.generation ?? 0) + 1,
+      generation: 1,
       lastSeenAt: this.now(),
     };
     session.peers.set(peerId, peer);
@@ -143,6 +163,7 @@ export class LocalSignalingBroker {
 
   listPeers(sessionId: string, hostToken: string): HostPeerSignal[] {
     const session = this.hostSession(sessionId, hostToken);
+    this.prunePeers(session);
     return [...session.peers.values()].map((peer) => ({
       peerId: peer.peerId,
       deviceId: peer.device.deviceId,
@@ -174,17 +195,27 @@ export class LocalSignalingBroker {
 
   requestReconnect(sessionId: string, peerId: string, token: string, asHost = false): ControllerLease {
     const session = this.liveSession(sessionId);
+    this.prunePeers(session);
     const peer = session.peers.get(peerId);
     if (!peer || !(asHost ? constantEqual(session.hostToken, token) : constantEqual(peer.peerToken, token))) throw new Error("Pairing authorization failed");
     peer.generation += 1;
     peer.offer = undefined;
     peer.answer = undefined;
-    peer.lastSeenAt = this.now();
+    if (!asHost) peer.lastSeenAt = this.now();
     return lease(peer, session.ticket.expiresAt);
+  }
+
+  leave(sessionId: string, peerId: string, peerToken: string) {
+    const { session } = this.controllerPeer(sessionId, peerId, peerToken);
+    session.peers.delete(peerId);
   }
 
   expire() {
     const now = this.now();
+    return this.expireAt(now);
+  }
+
+  private expireAt(now: number) {
     const expired: string[] = [];
     for (const [sessionId, session] of this.sessions) {
       if (session.ticket.expiresAt > now) continue;
@@ -211,16 +242,25 @@ export class LocalSignalingBroker {
   }
 
   private hostPeer(sessionId: string, hostToken: string, peerId: string) {
-    const peer = this.hostSession(sessionId, hostToken).peers.get(peerId);
+    const session = this.hostSession(sessionId, hostToken);
+    this.prunePeers(session);
+    const peer = session.peers.get(peerId);
     if (!peer) throw new Error("Unknown signaling peer");
     return peer;
   }
 
   private controllerPeer(sessionId: string, peerId: string, peerToken: string) {
     const session = this.liveSession(sessionId);
+    this.prunePeers(session);
     const peer = session.peers.get(peerId);
-    if (!peer || !constantEqual(peer.peerToken, peerToken)) throw new Error("Pairing authorization failed");
+    if (!peer) throw new Error("Unknown signaling peer");
+    if (!constantEqual(peer.peerToken, peerToken)) throw new Error("Pairing authorization failed");
     return { session, peer };
+  }
+
+  private prunePeers(session: SignalingSession) {
+    const cutoff = this.now() - SIGNALING_PEER_IDLE_MS;
+    for (const [peerId, peer] of session.peers) if (peer.lastSeenAt <= cutoff) session.peers.delete(peerId);
   }
 }
 
@@ -249,6 +289,7 @@ export class BrokerControllerSignalingClient implements ControllerSignalingClien
   async getOffer(value: ControllerLease) { return this.broker.getOffer(this.ticket.sessionId, value.peerId, value.peerToken); }
   async publishAnswer(value: ControllerLease, generation: number, answer: string) { this.broker.publishAnswer(this.ticket.sessionId, value.peerId, value.peerToken, generation, answer); }
   async requestReconnect(value: ControllerLease) { return this.broker.requestReconnect(this.ticket.sessionId, value.peerId, value.peerToken); }
+  async leave(value: ControllerLease) { this.broker.leave(this.ticket.sessionId, value.peerId, value.peerToken); }
 }
 
 export class HttpHostSignalingClient implements HostSignalingClient {
@@ -279,15 +320,19 @@ export class HttpControllerSignalingClient implements ControllerSignalingClient 
   async getOffer(value: ControllerLease) { return requestJson<ControllerOfferSignal>(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/offer`), value.peerToken); }
   async publishAnswer(value: ControllerLease, generation: number, answer: string) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/answer`), value.peerToken, "PUT", { generation, answer }); }
   async requestReconnect(value: ControllerLease) { return requestJson<ControllerLease>(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/reconnect`), value.peerToken, "POST"); }
+  async leave(value: ControllerLease) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}`), value.peerToken, "DELETE"); }
   private url(path: string) { return `${this.ticket.endpoint}/v1/sessions/${encodeURIComponent(this.ticket.sessionId)}/${path}`; }
 }
 
-export async function createHttpSignalingSession(endpoint: string, sessionId: string, options: { hostName?: string; ttlMs?: number; advertisedEndpoint?: string; fetcher?: typeof fetch } = {}) {
+export async function createHttpSignalingSession(endpoint: string, sessionId: string, options: { hostName?: string; ttlMs?: number; advertisedEndpoint?: string; hostToken?: string; fetcher?: typeof fetch } = {}) {
   const normalized = endpoint.replace(/\/$/, "");
   const fetcher = options.fetcher ?? fetch;
   const response = await fetcher(`${normalized}/v1/sessions`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.hostToken ? { Authorization: `Bearer ${options.hostToken}` } : {}),
+    },
     body: JSON.stringify({ sessionId, hostName: options.hostName, ttlMs: options.ttlMs, endpoint: options.advertisedEndpoint ?? normalized }),
   });
   if (!response.ok) throw new Error(`101 Hub session creation failed (${response.status})`);
@@ -303,11 +348,18 @@ export interface AutomaticPairingHostOptions {
 
 export class AutomaticPairingHost {
   private readonly connections = new Map<string, { generation: number; transport: NegotiatedLinkTransport; accepted: boolean; removeState: () => void }>();
+  private readonly pendingResets = new Set<string>();
+  private readonly resetting = new Map<string, Promise<void>>();
+  private readonly reconnects = new Set<Promise<void>>();
   private readonly factory: NegotiatedTransportFactory;
   private readonly pollIntervalMs: number;
   private timer?: ReturnType<typeof setInterval>;
   private syncing?: Promise<void>;
   private active = false;
+  private lifecycleRevision = 0;
+  private consecutiveFailures = 0;
+  private retryAfter = 0;
+  private readonly errorListeners = new Set<(error: Error) => void>();
   private readonly options: AutomaticPairingHostOptions;
 
   constructor(options: AutomaticPairingHostOptions) {
@@ -323,54 +375,219 @@ export class AutomaticPairingHost {
   async start() {
     if (this.active) return;
     this.active = true;
-    await this.sync();
-    this.timer = setInterval(() => void this.sync(), this.pollIntervalMs);
+    const revision = ++this.lifecycleRevision;
+    try {
+      await this.sync();
+    } catch (error) {
+      if (this.isCurrent(revision)) {
+        this.active = false;
+        this.lifecycleRevision += 1;
+        await Promise.all([...this.connections.keys()].map((peerId) => this.drop(peerId).catch(() => undefined)));
+        this.pendingResets.clear();
+        this.consecutiveFailures = 0;
+        this.retryAfter = 0;
+      }
+      throw error;
+    }
+    if (!this.isCurrent(revision)) return;
+    this.timer = setInterval(() => void this.poll(), this.pollIntervalMs);
   }
 
   async stop() {
     this.active = false;
+    this.lifecycleRevision += 1;
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
+    await this.syncing?.catch(() => undefined);
+    await Promise.allSettled([...this.reconnects]);
+    await Promise.allSettled([...this.resetting.values()]);
     await Promise.all([...this.connections.keys()].map((peerId) => this.drop(peerId)));
+    this.pendingResets.clear();
+    this.consecutiveFailures = 0;
+    this.retryAfter = 0;
   }
 
   async sync() {
     if (this.syncing) return this.syncing;
-    this.syncing = this.performSync().finally(() => { this.syncing = undefined; });
-    return this.syncing;
-  }
-
-  private async performSync() {
-    const peers = await this.options.signaling.listPeers();
-    const live = new Set(peers.map((peer) => peer.peerId));
-    for (const peerId of this.connections.keys()) if (!live.has(peerId)) await this.drop(peerId);
-    for (const peer of peers) {
-      let connection = this.connections.get(peer.peerId);
-      if (!connection || connection.generation !== peer.generation) {
-        if (connection) await this.drop(peer.peerId);
-        const transport = this.factory(true);
-        await transport.connect();
-        const offer = await transport.createOfferCode();
-        const removeState = transport.onStateChange((state) => {
-          if ((state === "failed" || state === "disconnected") && this.connections.get(peer.peerId)?.transport === transport && this.active) {
-            void this.reconnect(peer.peerId);
-          }
-        });
-        connection = { generation: peer.generation, transport, accepted: false, removeState };
-        this.connections.set(peer.peerId, connection);
-        await this.options.transport.add(`webrtc-${peer.peerId}`, transport);
-        await this.options.signaling.publishOffer(peer.peerId, peer.generation, offer);
-      }
-      if (peer.answer && !connection.accepted) {
-        await connection.transport.acceptAnswerCode(peer.answer);
-        connection.accepted = true;
-      }
+    if (Date.now() < this.retryAfter) return;
+    const pending = this.performSync();
+    this.syncing = pending;
+    try {
+      await pending;
+      if (this.active) this.noteReachable();
+    } finally {
+      if (this.syncing === pending) this.syncing = undefined;
     }
   }
 
+  /** Signaling failures recovered by the host poller. */
+  onError(callback: (error: Error) => void) { this.errorListeners.add(callback); return () => this.errorListeners.delete(callback); }
+  /** Milliseconds until a failed host poll is allowed to retry. */
+  get retryDelayMs() { return Math.max(0, this.retryAfter - Date.now()); }
+
+  private async poll() {
+    try {
+      await this.sync();
+    } catch (cause) {
+      if (this.active) this.noteUnreachable(cause);
+    }
+  }
+
+  private async performSync() {
+    const revision = this.lifecycleRevision;
+    if (!this.isCurrent(revision)) return;
+    const peers = await this.options.signaling.listPeers();
+    if (!this.isCurrent(revision)) return;
+    const live = new Set(peers.map((peer) => peer.peerId));
+    for (const peerId of this.pendingResets) if (!live.has(peerId)) this.pendingResets.delete(peerId);
+    for (const peerId of this.connections.keys()) {
+      if (!live.has(peerId)) await this.drop(peerId);
+      if (!this.isCurrent(revision)) return;
+    }
+    let deferredError: unknown;
+    for (const peer of peers) {
+      if (!this.isCurrent(revision)) return;
+      if (this.pendingResets.has(peer.peerId)) {
+        try {
+          await this.resetPeerGeneration(peer.peerId, revision);
+        } catch (cause) {
+          deferredError ??= cause;
+        }
+        continue;
+      }
+      let connection = this.connections.get(peer.peerId);
+      if (!connection || connection.generation !== peer.generation) {
+        if (connection) await this.drop(peer.peerId);
+        if (!this.isCurrent(revision)) return;
+        const transport = this.factory(true);
+        let removeState: (() => void) | undefined;
+        try {
+          await transport.connect();
+          if (!this.isCurrent(revision)) {
+            await transport.disconnect();
+            return;
+          }
+          const offer = await transport.createOfferCode();
+          if (!this.isCurrent(revision)) {
+            await transport.disconnect();
+            return;
+          }
+          removeState = transport.onStateChange((state) => {
+            if ((state === "failed" || state === "disconnected") && this.connections.get(peer.peerId)?.transport === transport && this.active) {
+              this.startReconnect(peer.peerId);
+            }
+          });
+          connection = { generation: peer.generation, transport, accepted: false, removeState };
+          this.connections.set(peer.peerId, connection);
+          await this.options.transport.add(`webrtc-${peer.peerId}`, transport, {
+            wireDeviceId: peer.deviceId,
+            routeDeviceId: `webrtc-${peer.peerId}`,
+          });
+          if (!this.isCurrent(revision)) {
+            await this.drop(peer.peerId);
+            return;
+          }
+          await this.options.signaling.publishOffer(peer.peerId, peer.generation, offer);
+          if (!this.isCurrent(revision)) {
+            await this.drop(peer.peerId);
+            return;
+          }
+        } catch (error) {
+          if (this.connections.get(peer.peerId)?.transport === transport) {
+            await this.drop(peer.peerId).catch(() => undefined);
+          } else {
+            removeState?.();
+            await transport.disconnect().catch(() => undefined);
+          }
+          throw error;
+        }
+      }
+      if (peer.answer && !connection.accepted) {
+        try {
+          await connection.transport.acceptAnswerCode(peer.answer);
+        } catch {
+          await this.drop(peer.peerId).catch(() => undefined);
+          if (!this.isCurrent(revision)) return;
+          this.pendingResets.add(peer.peerId);
+          try {
+            await this.resetPeerGeneration(peer.peerId, revision);
+          } catch (cause) {
+            deferredError ??= cause;
+          }
+          continue;
+        }
+        if (!this.isCurrent(revision)) return;
+        connection.accepted = true;
+      }
+    }
+    if (deferredError) throw deferredError;
+  }
+
+  private isCurrent(revision: number) {
+    return this.active && this.lifecycleRevision === revision;
+  }
+
+  private noteReachable() {
+    this.consecutiveFailures = 0;
+    this.retryAfter = 0;
+  }
+
+  private noteUnreachable(cause: unknown) {
+    const first = this.consecutiveFailures === 0;
+    this.consecutiveFailures += 1;
+    const backoff = Math.min(MAX_RETRY_BACKOFF_MS, this.pollIntervalMs * 2 ** Math.min(this.consecutiveFailures, 6));
+    this.retryAfter = Date.now() + backoff;
+    if (!first) return;
+    const error = toError(cause);
+    this.errorListeners.forEach((listener) => {
+      try { listener(error); } catch { /* Diagnostics must not break the recovery poller. */ }
+    });
+  }
+
   private async reconnect(peerId: string) {
-    await this.drop(peerId);
-    try { await this.options.signaling.resetPeer(peerId); } catch { /* The peer may already have left. */ }
+    const revision = this.lifecycleRevision;
+    this.pendingResets.add(peerId);
+    try {
+      await this.drop(peerId);
+      if (!this.isCurrent(revision)) return;
+      await this.resetPeerGeneration(peerId, revision);
+    } catch {
+      // Keep the reset intent. The normal poll retries it before publishing another offer.
+    }
+  }
+
+  private startReconnect(peerId: string) {
+    const operation = this.reconnect(peerId);
+    this.reconnects.add(operation);
+    void operation.then(
+      () => { this.reconnects.delete(operation); },
+      () => { this.reconnects.delete(operation); },
+    );
+  }
+
+  private resetPeerGeneration(peerId: string, revision: number) {
+    const existing = this.resetting.get(peerId);
+    if (existing) return existing;
+    const operation = this.performPeerReset(peerId, revision);
+    this.resetting.set(peerId, operation);
+    void operation.then(
+      () => { if (this.resetting.get(peerId) === operation) this.resetting.delete(peerId); },
+      () => { if (this.resetting.get(peerId) === operation) this.resetting.delete(peerId); },
+    );
+    return operation;
+  }
+
+  private async performPeerReset(peerId: string, revision: number) {
+    try {
+      await this.options.signaling.resetPeer(peerId);
+    } catch (cause) {
+      if (isMissingPeerError(cause)) {
+        this.pendingResets.delete(peerId);
+        return;
+      }
+      throw cause;
+    }
+    if (this.isCurrent(revision)) this.pendingResets.delete(peerId);
   }
 
   private async drop(peerId: string) {
@@ -378,7 +595,8 @@ export class AutomaticPairingHost {
     if (!connection) return;
     this.connections.delete(peerId);
     connection.removeState();
-    await this.options.transport.remove(`webrtc-${peerId}`);
+    const removed = await this.options.transport.remove(`webrtc-${peerId}`);
+    if (!removed) await connection.transport.disconnect();
   }
 }
 
@@ -400,9 +618,12 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   private removeMessage?: () => void;
   private removeState?: () => void;
   private timer?: ReturnType<typeof setInterval>;
-  private syncing?: Promise<void>;
+  private syncing?: Promise<Error | undefined>;
   private active = false;
+  private lifecycleRevision = 0;
   private reconnecting = false;
+  private reconnectPending = false;
+  private rejoining = false;
   private consecutiveFailures = 0;
   private retryAfter = 0;
   private readonly errorListeners = new Set<(error: Error) => void>();
@@ -424,20 +645,53 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   async connect() {
     if (this.active) return;
     this.active = true;
+    const revision = ++this.lifecycleRevision;
     this.setState("connecting");
-    this.lease = await this.options.signaling.join(this.options.device);
-    await this.sync();
+    let lease: ControllerLease;
+    try {
+      lease = await this.options.signaling.join(this.options.device);
+    } catch (error) {
+      // A failed first join owns no lease or transport. Release its lifecycle claim so a caller can
+      // retry instead of hitting the `active` early return forever. Do not overwrite a deliberate
+      // disconnect that may have won while the request was in flight.
+      if (this.isCurrent(revision)) {
+        this.active = false;
+        this.lifecycleRevision += 1;
+        this.setState("disconnected");
+      }
+      throw error;
+    }
+    if (!this.isCurrent(revision)) {
+      await this.safeLeave(lease);
+      return;
+    }
+    this.lease = lease;
+    const syncError = await this.syncResult();
+    if (syncError && this.isCurrent(revision) && this.lease === lease) {
+      await this.rollbackInitialConnection(revision, lease);
+      throw syncError;
+    }
+    if (!this.isCurrent(revision)) return;
     this.timer = setInterval(() => void this.sync(), this.pollIntervalMs);
   }
 
   async disconnect() {
     this.active = false;
+    this.lifecycleRevision += 1;
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
+    await this.syncing?.catch(() => undefined);
     this.removeMessage?.();
+    this.removeMessage = undefined;
     this.removeState?.();
+    this.removeState = undefined;
     await this.transport?.disconnect();
     this.transport = undefined;
+    const lease = this.lease;
+    this.lease = undefined;
+    if (lease) await this.safeLeave(lease);
+    this.generation = 0;
+    this.reconnectPending = false;
     // A deliberate disconnect must not leave a backoff that delays the next connect.
     this.consecutiveFailures = 0;
     this.retryAfter = 0;
@@ -445,9 +699,25 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   }
 
   async sync() {
+    await this.syncResult();
+  }
+
+  private syncResult() {
     if (this.syncing) return this.syncing;
-    this.syncing = this.performSync().finally(() => { this.syncing = undefined; });
-    return this.syncing;
+    const revision = this.lifecycleRevision;
+    const lease = this.lease;
+    const pending = this.performSync().catch((cause: unknown) => {
+      if (!this.isCurrent(revision) || this.lease !== lease) return undefined;
+      const error = toError(cause);
+      this.noteUnreachable(error);
+      return error;
+    });
+    this.syncing = pending;
+    void pending.then(
+      () => { if (this.syncing === pending) this.syncing = undefined; },
+      () => { if (this.syncing === pending) this.syncing = undefined; },
+    );
+    return pending;
   }
 
   sendReliable(message: ControlMessage) { this.transport?.sendReliable(message); }
@@ -459,49 +729,161 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   /** Milliseconds until the next poll is allowed; 0 once the Hub is answering again. */
   get retryDelayMs() { return Math.max(0, this.retryAfter - Date.now()); }
 
-  private async performSync() {
-    if (!this.active || !this.lease) return;
+  private async performSync(): Promise<Error | undefined> {
+    const revision = this.lifecycleRevision;
+    const lease = this.lease;
+    if (!this.isCurrent(revision) || !lease) return;
     if (Date.now() < this.retryAfter) return;
     let signal: { offer?: string; generation: number };
     try {
-      signal = await this.options.signaling.getOffer(this.lease);
+      signal = await this.options.signaling.getOffer(lease);
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      if (this.reconnectPending) {
+        await this.requestReconnect();
+        return;
+      }
       this.noteReachable();
     } catch (cause) {
+      if (isMissingPeerError(cause)) {
+        await this.rejoinMissingLease(revision, lease);
+        return;
+      }
       // The poll runs on a timer, so this rejection has nowhere to go but the global handler.
-      this.noteUnreachable(cause);
+      if (this.isCurrent(revision)) this.noteUnreachable(cause);
       return;
     }
     if (!signal.offer || signal.generation === this.generation) return;
+    let transactionTransport: NegotiatedLinkTransport | undefined;
+    try {
+      this.removeMessage?.();
+      this.removeMessage = undefined;
+      this.removeState?.();
+      this.removeState = undefined;
+      const previous = this.transport;
+      this.transport = undefined;
+      await previous?.disconnect();
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      const transport = this.factory(false);
+      transactionTransport = transport;
+      this.transport = transport;
+      this.removeMessage = transport.onMessage((message) => this.listeners.forEach((listener) => listener(message)));
+      this.removeState = transport.onStateChange((state) => {
+        this.setState(state);
+        if ((state === "failed" || state === "disconnected") && this.active && this.transport === transport) {
+          this.reconnectPending = true;
+          void this.requestReconnect();
+        }
+      });
+      const answer = await transport.acceptOfferCode(signal.offer);
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      await this.options.signaling.publishAnswer(lease, signal.generation, answer);
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      this.generation = signal.generation;
+      return;
+    } catch (cause) {
+      if (transactionTransport) await this.discardTransport(transactionTransport);
+      // A disconnect or a newer connection invalidates the work instead of turning cancellation
+      // into a user-visible signaling failure.
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      const error = toError(cause);
+      this.noteUnreachable(error);
+      return error;
+    }
+  }
+
+  private async rollbackInitialConnection(revision: number, lease: ControllerLease) {
+    if (!this.isCurrent(revision) || this.lease !== lease) return;
+    this.active = false;
+    this.lifecycleRevision += 1;
+    if (this.timer) clearInterval(this.timer);
+    this.timer = undefined;
     this.removeMessage?.();
+    this.removeMessage = undefined;
     this.removeState?.();
-    await this.transport?.disconnect();
-    const transport = this.factory(false);
-    this.transport = transport;
-    this.removeMessage = transport.onMessage((message) => this.listeners.forEach((listener) => listener(message)));
-    this.removeState = transport.onStateChange((state) => {
-      this.setState(state);
-      if ((state === "failed" || state === "disconnected") && this.active && this.transport === transport) void this.requestReconnect();
-    });
-    const answer = await transport.acceptOfferCode(signal.offer);
-    await this.options.signaling.publishAnswer(this.lease, signal.generation, answer);
-    this.generation = signal.generation;
+    this.removeState = undefined;
+    const transport = this.transport;
+    this.transport = undefined;
+    await transport?.disconnect().catch(() => undefined);
+    this.lease = undefined;
+    await this.safeLeave(lease);
+    this.generation = 0;
+    this.reconnectPending = false;
+    this.consecutiveFailures = 0;
+    this.retryAfter = 0;
+    this.setState("disconnected");
+  }
+
+  private async discardTransport(transport: NegotiatedLinkTransport) {
+    if (this.transport === transport) {
+      this.removeMessage?.();
+      this.removeMessage = undefined;
+      this.removeState?.();
+      this.removeState = undefined;
+      this.transport = undefined;
+    }
+    await transport.disconnect().catch(() => undefined);
   }
 
   private async requestReconnect() {
-    if (this.reconnecting || !this.lease) return;
+    const revision = this.lifecycleRevision;
+    const lease = this.lease;
+    if (this.reconnecting || !lease || !this.isCurrent(revision)) return;
     this.reconnecting = true;
     try {
-      this.lease = await this.options.signaling.requestReconnect(this.lease);
+      const replacement = await this.options.signaling.requestReconnect(lease);
+      if (!this.isCurrent(revision) || this.lease !== lease) return;
+      this.lease = replacement;
       this.generation = 0;
+      this.reconnectPending = false;
       this.noteReachable();
       this.setState("connecting");
     } catch (cause) {
+      if (isMissingPeerError(cause)) {
+        await this.rejoinMissingLease(revision, lease);
+        return;
+      }
       // A Hub that has gone away is an ordinary connection state, not a crash. Losing this
       // rejection into the void previously surfaced as an unhandled-promise error on the device.
       this.noteUnreachable(cause);
     } finally {
       this.reconnecting = false;
     }
+  }
+
+  private async rejoinMissingLease(revision: number, staleLease: ControllerLease) {
+    if (this.rejoining || !this.isCurrent(revision) || this.lease !== staleLease) return;
+    this.rejoining = true;
+    try {
+      const replacement = await this.options.signaling.join(this.options.device);
+      if (!this.isCurrent(revision) || this.lease !== staleLease) {
+        await this.safeLeave(replacement);
+        return;
+      }
+      this.removeMessage?.();
+      this.removeMessage = undefined;
+      this.removeState?.();
+      this.removeState = undefined;
+      const previous = this.transport;
+      this.transport = undefined;
+      await previous?.disconnect();
+      if (!this.isCurrent(revision) || this.lease !== staleLease) {
+        await this.safeLeave(replacement);
+        return;
+      }
+      this.lease = replacement;
+      this.generation = 0;
+      this.reconnectPending = false;
+      this.noteReachable();
+      this.setState("connecting");
+    } catch (cause) {
+      if (this.isCurrent(revision)) this.noteUnreachable(cause);
+    } finally {
+      this.rejoining = false;
+    }
+  }
+
+  private async safeLeave(lease: ControllerLease) {
+    try { await this.options.signaling.leave(lease); } catch { /* Expiry and network loss already remove the lease. */ }
   }
 
   /**
@@ -530,7 +912,9 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
     // Report the first failure of a run only; the rest are the same fact repeated.
     if (first) {
       const error = cause instanceof Error ? cause : new Error(String(cause));
-      this.errorListeners.forEach((listener) => listener(error));
+      this.errorListeners.forEach((listener) => {
+        try { listener(error); } catch { /* Diagnostics must not interrupt signaling recovery. */ }
+      });
     }
   }
 
@@ -539,6 +923,14 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
     this.currentState = state;
     this.stateListeners.forEach((listener) => listener(state));
   }
+
+  private isCurrent(revision: number) {
+    return this.active && this.lifecycleRevision === revision;
+  }
+}
+
+function toError(cause: unknown) {
+  return cause instanceof Error ? cause : new Error(String(cause));
 }
 
 async function requestJson<Value = unknown>(fetcher: typeof fetch, url: string, token: string, method = "GET", body?: unknown): Promise<Value> {
@@ -547,13 +939,37 @@ async function requestJson<Value = unknown>(fetcher: typeof fetch, url: string, 
     headers: { Authorization: `Bearer ${token}`, ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
-  if (!response.ok) throw new Error(`101 signaling request failed (${response.status})`);
+  if (!response.ok) throw new SignalingRequestError(response.status);
   if (response.status === 204) return undefined as Value;
   return response.json() as Promise<Value>;
 }
 
+class SignalingRequestError extends Error {
+  readonly status: number;
+  constructor(status: number) {
+    super(`101 signaling request failed (${status})`);
+    this.status = status;
+  }
+}
+
+function isMissingPeerError(cause: unknown) {
+  return cause instanceof SignalingRequestError
+    ? cause.status === 404 || cause.status === 410
+    : cause instanceof Error && /Unknown signaling peer|signaling request failed \((?:404|410)\)/.test(cause.message);
+}
+
 function validateDevice(device: PairingDevice) {
   if (!/^[A-Za-z0-9._-]{1,128}$/.test(device.deviceId) || !device.label.trim() || device.label.length > 128) throw new Error("Invalid pairing device");
+}
+
+function validateSessionId(sessionId: unknown): asserts sessionId is string {
+  if (typeof sessionId !== "string" || !/^[A-Z0-9-]{4,128}$/i.test(sessionId)) throw new Error("Invalid signaling session id");
+}
+
+function signalingSessionTtl(value: number | undefined) {
+  if (value === undefined) return 4 * 60 * 60 * 1_000;
+  if (!Number.isSafeInteger(value) || value < 0) throw new Error("Invalid signaling session lifetime");
+  return Math.min(24 * 60 * 60 * 1_000, Math.max(60_000, value));
 }
 
 function lease(peer: SignalingPeer, expiresAt: number): ControllerLease {

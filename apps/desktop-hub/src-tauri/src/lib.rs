@@ -213,6 +213,7 @@ async fn update_settings(
 #[tauri::command]
 fn open_launcher(
     session_id: Option<String>,
+    host_token: Option<String>,
     manager: State<'_, Arc<HubManager>>,
 ) -> Result<(), String> {
     let settings = manager
@@ -220,17 +221,51 @@ fn open_launcher(
         .read()
         .map_err(|_| "Hub settings lock failed")?;
     validate_settings(&settings).map_err(display_error)?;
+    let launcher = launcher_url(&settings, session_id.as_deref(), host_token.as_deref())?;
+    open::that(launcher.as_str()).map_err(|error| format!("Unable to open launcher: {error}"))
+}
+
+fn launcher_url(
+    settings: &HubSettings,
+    session_id: Option<&str>,
+    host_token: Option<&str>,
+) -> Result<url::Url, String> {
     let mut launcher = url::Url::parse(&settings.launcher_url)
         .map_err(|_| "Launcher URL is invalid".to_owned())?;
-    if let Some(session_id) = session_id {
-        signaling::validate_identifier(&session_id, 128).map_err(display_error)?;
-        let endpoint = format!("http://127.0.0.1:{}", settings.port);
-        launcher
-            .query_pairs_mut()
-            .append_pair("session", &session_id)
-            .append_pair("hub", &endpoint);
+    match (session_id, host_token) {
+        (None, None) => Ok(launcher),
+        (Some(session_id), Some(host_token)) => {
+            if session_id.len() < 4
+                || session_id.len() > 128
+                || !session_id
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || byte == b'-')
+            {
+                return Err("Invalid launcher session id".into());
+            }
+            if host_token.len() < 32
+                || host_token.len() > 256
+                || !host_token
+                    .bytes()
+                    .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-'))
+            {
+                return Err("Invalid launcher session authority".into());
+            }
+            let endpoint = format!("http://127.0.0.1:{}", settings.port);
+            launcher
+                .query_pairs_mut()
+                .append_pair("session", session_id)
+                .append_pair("hub", &endpoint);
+            let fragment = url::form_urlencoded::Serializer::new(String::new())
+                .append_pair("101-host-session", session_id)
+                .append_pair("101-host-token", host_token)
+                .append_pair("101-host-hub", &endpoint)
+                .finish();
+            launcher.set_fragment(Some(&fragment));
+            Ok(launcher)
+        }
+        _ => Err("Launcher session and authority must be provided together".into()),
     }
-    open::that(launcher.as_str()).map_err(|error| format!("Unable to open launcher: {error}"))
 }
 
 #[tauri::command]
@@ -350,6 +385,31 @@ impl<T> Pipe for T {}
 
 fn display_error(error: ApiError) -> String {
     error.to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn desktop_session_authority_is_fragment_only_and_bound_to_its_session() {
+        let settings = HubSettings::default();
+        let token = "h".repeat(43);
+        let launcher = launcher_url(&settings, Some("PLAY101"), Some(&token)).unwrap();
+        let query = launcher.query().unwrap();
+        assert!(query.contains("session=PLAY101"));
+        assert!(query.contains("hub=http%3A%2F%2F127.0.0.1%3A10101"));
+        assert!(!query.contains(&token));
+        let fragment = launcher.fragment().unwrap();
+        assert!(fragment.contains("101-host-session=PLAY101"));
+        assert!(fragment.contains(&format!("101-host-token={token}")));
+        assert!(fragment.contains("101-host-hub=http%3A%2F%2F127.0.0.1%3A10101"));
+        assert!(!settings.launcher_url.contains(&token));
+
+        assert!(launcher_url(&settings, Some("PLAY101"), None).is_err());
+        assert!(launcher_url(&settings, Some("OTHER101"), Some("short")).is_err());
+        assert!(launcher_url(&settings, Some("../PLAY101"), Some(&token)).is_err());
+    }
 }
 
 pub fn run() {

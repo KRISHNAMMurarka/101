@@ -18,6 +18,20 @@ test("validates and freezes a complete game/controller package", () => {
   assert.throws(() => Object.assign(gamePackage.manifest, { name: "Changed" }), TypeError);
 });
 
+test("accepts controller speaker roles exposed by the protocol capability contract", () => {
+  const gamePackage = Game101.package({
+    manifest,
+    input,
+    controllers: [{
+      id: "listener", label: "Listener", playerId: "player-1",
+      requiredCapabilities: ["touch", "speaker"],
+      layout: { layout: [{ type: "button", action: "trigger", label: "PING" }] },
+    }],
+    game: definition,
+  });
+  assert.deepEqual(gamePackage.controllers[0]?.requiredCapabilities, ["touch", "speaker"]);
+});
+
 test("rejects inconsistent identity and undeclared controller controls", () => {
   assert.throws(() => Game101.package({ manifest, input: { ...input, game: "other" }, game: definition }), /IDs must match/);
   assert.throws(() => Game101.package({ manifest, input, controllers: [{ id: "bad", label: "Bad", playerId: "player-1", layout: { layout: [{ type: "button", action: "missing", label: "BAD" }] } }], game: definition }), /undeclared missing/);

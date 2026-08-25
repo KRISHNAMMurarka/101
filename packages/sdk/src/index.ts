@@ -222,7 +222,7 @@ function inputControls(input: InputManifest) {
   };
 }
 
-const CAPABILITIES = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad"] as const;
+const CAPABILITIES = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad", "speaker"] as const;
 
 function uniqueCapabilities(input: readonly (keyof DeviceCapabilities)[], label: string) {
   if (!Array.isArray(input) || input.some((value) => !CAPABILITIES.includes(value))) throw new Error(`Invalid ${label}`);

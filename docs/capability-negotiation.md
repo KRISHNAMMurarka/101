@@ -63,6 +63,99 @@ Capability mapping is conservative on purpose: `phone-motion` requires a **gyros
 an accelerometer. Tilt without rotation cannot serve a manifest written for motion, and claiming
 otherwise produces a game that starts and then does not respond.
 
+## Hardware capabilities and negotiated features are different
+
+A Link controller's reliable `hello` names both:
+
+```json
+{
+  "capabilities": { "touch": true, "speaker": true, "haptics": true },
+  "features": { "inputFormats": ["input-q1"], "speakerAudio": "locked" }
+}
+```
+
+Capabilities describe hardware a role may require or prefer. Features describe optional protocol
+behaviour that this controller instance is ready to use. Keeping the two separate prevents a phone
+with a physical speaker from claiming that browser audio can play before an explicit user gesture
+has unlocked it.
+
+The host selects an offered input format per assignment in `controller.configure`. It selects
+`input-q1` only when both peers support it and the validated layout has a complete, safely
+representable profile; omitting
+`inputFormat` means JSON. A controller may re-send `hello` when readiness changes. Browser Link does
+that after **Enable private audio** moves `speakerAudio` from `locked` to `ready`; native Link does it
+when its bundled cue has loaded.
+
+## What a controller layout can express
+
+The layout contract now covers the controls expected on a conventional gamepad as well as phone-
+native surfaces:
+
+- digital buttons and shoulders;
+- analog triggers and analog buttons;
+- D-pads, sliders, touch surfaces and two-axis joysticks;
+- controller-side hold, double-tap, toggle and atomic chord interactions;
+- advisory side, zone, size, span, priority and authored handedness, with a player handedness
+  override; and
+- per-stick radial dead zone and response curve, with radial magnitude clamping so a diagonal cannot
+  move about 1.41 times faster than a cardinal direction.
+
+The browser and native renderers consume the same parsed contract and shared controller semantics.
+The hints remain advisory: a narrow screen may reflow them, and no authored handedness choice can
+override the player's choice. Browser Link saves that preference locally; native Link applies it to
+the current layout.
+
+## Negotiated binary input
+
+`input-q1` is a fixed 24-byte, bandwidth-oriented representation of a configured `InputFrame`:
+
+| Bytes | Value |
+| --- | --- |
+| 0–1 | protocol version, source and packet-kind tags |
+| 2–3 | controller-layout revision |
+| 4–7 | input sequence |
+| 8–11 | timestamp modulo 2³² |
+| 12–23 | twelve layout-derived quantized lanes |
+
+The profile is deterministic from layout order. Buttons, shoulders and chord members use digital
+lanes; triggers and analog buttons use unsigned 8-bit lanes; sliders use signed axis lanes; D-pads,
+sticks, touch surfaces and motion vectors use two signed lanes. The assignment supplies `deviceId`
+and `playerId`, so neither identity nor action names repeat in every packet.
+
+There is deliberately no best-effort packing. A layout needing more than twelve lanes, reusing one
+name with incompatible value shapes, or carrying pose landmarks falls back to JSON. Frames sent
+before configuration do too, as does any frame containing values outside its negotiated profile.
+That last rule preserves the mandatory old-layout release during a panel/game transition instead of
+silently dropping controls the new profile does not name. Browser and native WebRTC transports
+accept JSON throughout, switch to binary only after assignment/configuration, and drop malformed
+packets, packets for stale revisions, or binary received before negotiation.
+
+Each authenticated signaling peer is also bound to a host-canonical device route. The multiplex
+boundary verifies inbound device identity and rewrites targeted outbound messages back to that
+peer's local device id. Two ticket holders may therefore choose the same local id without either
+overwriting or impersonating the other's input, assignment, haptics, or private audio route.
+
+The measured representative frame shrank from 336 bytes of JSON to 24 bytes quantized. At 60 Hz
+across four controllers that is roughly 645 kbit/s versus 46 kbit/s. This is for bandwidth, battery
+and weak Wi-Fi; it is not presented as a latency improvement. Serialization took about 0.002 ms and
+the full input path about 0.002–0.005 ms against a 16.7 ms frame budget before this format existed.
+
+## Targeted controller-speaker cues
+
+Games do not stream host audio to phones. `GameHost101.playControllerCue(roleId, …)` resolves the
+current role assignment and sends a tiny `speaker.cue` only when that device reports both a speaker
+and `speakerAudio: "ready"`. The message names a bundled/local `pulse-v1` plus bounded pitch and
+volume; it shares the disposable realtime channel with haptics, because a missed cue is safer than
+one that describes an event after it has passed. Controllers ignore stale cue sequences; native Link
+also prevents an older asynchronous seek from overtaking a newer cue.
+
+Echo Maze uses the feature as a private scanner pulse. It plays the host cue only when targeted
+delivery returns false, so a ready controller and the television never intentionally echo the same
+scan. Browser Link requires an explicit audio opt-in and synthesizes the pulse locally. Native Link
+plays a bundled WAV through Expo Audio and requests no recording or background-audio permission.
+The protocol and production builds cover both clients; audible playback over a real-phone WebRTC
+session remains part of the hardware pass described in `HANDOFF.md`.
+
 ## Why this needed building at all
 
 `resolveInputManifest` shipped a long time ago and had exactly two call sites, both test files.

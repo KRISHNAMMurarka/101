@@ -10,7 +10,7 @@ The 101 Link service worker never caches requests whose URL contains a pairing t
 
 Native 101 Link stores only its random device ID and optional last local pairing ticket in the platform secure store. QR camera access is requested only when **Scan QR** is selected. Motion permission is requested only when a motion layout is active and the user selects **Enable Motion**. The native configuration removes Android audio recording permission and contains no iOS microphone usage description. The app does not record camera, audio, or sensor history and has no telemetry SDK.
 
-Desktop 101 Hub stores settings, explicitly saved replay data, and imported game packages only in its OS application-data directory. It has no account or telemetry client. LAN advertisement can be disabled. Signaling state and its bearer secrets remain in memory; the Hub does not persist offers, answers, pairing invitations, or controller sensor frames.
+Desktop 101 Hub stores settings, explicitly saved replay data, and imported game packages only in its OS application-data directory. It has no account or telemetry client. LAN advertisement can be disabled. The Hub itself keeps signaling state and bearer secrets in memory; it does not persist offers, answers, pairing invitations, or controller sensor frames. A browser host stores only its current host-administration bearer and expiry in that launcher's same-origin local storage so a page reload can resume the invitation. The Hub requires that bearer, rotates it on every authenticated resume, and never places it in the controller QR; after the invitation expires, the browser ignores and removes the record on its next load. When Desktop opens that session in a browser, its one-time host bearer is bound to the session and loopback Hub in the URL fragment, erased immediately, and rotated before ordinary launcher work; it never enters the query, persisted Desktop settings, or controller invitation.
 
 ## Defaults
 
@@ -54,13 +54,17 @@ Only `surface: "build-tooling"` may be accepted. Anything reaching the web runti
 
 ## Local network security
 
+Automatic Hub pairing assumes a trusted private LAN. The current Hub endpoints use plain HTTP so browsers and phones can reach a zero-setup local service; bearer separation prevents one ordinary session client from using another client's route, but it does **not** hide those bearers or SDP from a device that can observe or modify LAN traffic. Do not use automatic pairing on public or otherwise untrusted Wi-Fi. Use an isolated hotspot/private network, same-browser Link, or the manual offline offer/answer flow when other LAN participants are not trusted.
+
+New invitation creation is intentionally account-free and therefore unauthenticated. Session and peer caps bound Hub memory, but they are not denial-of-service protection: a malicious LAN client could consume the finite invitation pool until entries expire or the Hub restarts. This is another reason automatic pairing is supported only on a trusted private LAN.
+
 Pairing codes are discovery aids, not long-term authentication secrets. WebRTC sessions should use ephemeral keys, display both devices during confirmation, expire offers, and reject protocol-version mismatches. The Hub must bind only to intended interfaces and clearly show which network transport is active.
 
 Manual offline pairing data can be transferred by QR or code, but must be size-limited and strictly validated before use.
 
 This repository contains no active OpenAI Sites project metadata or packaging plugin. Publishing/deployment requires a separate explicit user action and configuration.
 
-Browser Link role messages are addressed to a concrete device. The controller ignores layouts, live state, and haptics meant for other devices. The session host rejects realtime frames from unassigned device IDs and replaces client-claimed player identity with the authoritative role assignment before forwarding input. This is an isolation boundary for local party play, not a substitute for future authenticated Hub pairing.
+Browser Link role messages are addressed to a concrete device. The controller ignores layouts, live state, haptics, and speaker cues meant for other devices. Each authenticated signaling peer is bound to a separate host-side route, even when two installations present the same copied local device ID. The session host rejects realtime frames from unassigned routes and replaces client-claimed player identity with the authoritative role assignment before forwarding input. This is an isolation boundary for local party play behind the authenticated Hub; it is not authorization for downloaded game code.
 
 ## Untrusted game packages
 

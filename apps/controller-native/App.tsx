@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import * as Clipboard from "expo-clipboard";
 import * as Crypto from "expo-crypto";
 import * as Haptics from "expo-haptics";
@@ -24,10 +25,12 @@ import type { ControllerLayout, LinkState } from "@101/protocol";
 
 import { ControllerPanel, type ControllerActions } from "./src/controls";
 import { ControllerSession, type ControllerAssignment } from "./src/controller-session";
+import { ControllerSpeaker } from "./src/controller-speaker";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
 import { radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
+import privateCue from "./assets/private-cue.wav";
 
 const DEVICE_ID_KEY = "101-link-device-id-v1";
 const LAST_PAIRING_KEY = "101-link-last-pairing-v1";
@@ -52,6 +55,9 @@ const GESTURE_INSET = 34;
  */
 export default function App() {
   const t = useTheme();
+  const privateAudioPlayer = useAudioPlayer(privateCue, { downloadFirst: true });
+  const privateAudioStatus = useAudioPlayerStatus(privateAudioPlayer);
+  const speaker = useMemo(() => new ControllerSpeaker(privateAudioPlayer), [privateAudioPlayer]);
   const [deviceId, setDeviceId] = useState("");
   const [pairingInput, setPairingInput] = useState("");
   const [manualAnswer, setManualAnswer] = useState("");
@@ -64,6 +70,9 @@ export default function App() {
   const [hostMessage, setHostMessage] = useState<string>();
   const [hostTone, setHostTone] = useState<"normal" | "warning" | "critical">("normal");
   const [error, setError] = useState<string>();
+  const [audioModeReady, setAudioModeReady] = useState(false);
+  const [appActive, setAppActive] = useState(AppState.currentState === "active");
+  const [speakerPlaybackFailed, setSpeakerPlaybackFailed] = useState(false);
   const [latency, setLatency] = useState<number>();
   const [scannerOpen, setScannerOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -80,6 +89,21 @@ export default function App() {
     if (pattern === "tap") await Haptics.selectionAsync();
     else if (pattern === "impact") await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     else await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    void setAudioModeAsync({
+      playsInSilentMode: true,
+      allowsRecording: false,
+      shouldPlayInBackground: false,
+      interruptionMode: "mixWithOthers",
+    }).then(() => {
+      if (active) setAudioModeReady(true);
+    }).catch(() => {
+      if (active) setError("This phone could not prepare private game audio; host audio will be used.");
+    });
+    return () => { active = false; };
   }, []);
 
   const connect = useCallback(async (value: string) => {
@@ -185,6 +209,16 @@ export default function App() {
         setHostTone(tone ?? "normal");
       },
       haptic: (pattern) => void haptic(pattern),
+      speakerCue: (cue) => {
+        void speaker.play(cue).catch(() => {
+          setSpeakerPlaybackFailed(true);
+          sessionRef.current?.setSpeakerReady(false);
+          setError("This phone could not play its private game audio; host audio will be used.");
+        });
+      },
+      speakerDiscard: (cue) => { speaker.discard(cue); },
+      speakerCancel: () => speaker.cancel(),
+      speakerReset: () => speaker.reset(),
       calibration: () => {
         try {
           motion.calibrateNeutral();
@@ -218,7 +252,13 @@ export default function App() {
       void connect(url);
     });
     const appState = AppState.addEventListener("change", (state) => {
-      if (state !== "active") session.releaseAll();
+      setAppActive(state === "active");
+      if (state !== "active") {
+        // React effects run later; revoke the host's ready belief before an in-flight cue can use
+        // the background player during that gap.
+        session.setSpeakerReady(false);
+        session.releaseAll();
+      }
     });
     return () => {
       active = false;
@@ -229,7 +269,17 @@ export default function App() {
       sessionRef.current = undefined;
       motionRef.current = undefined;
     };
-  }, [connect, deviceId, haptic]);
+  }, [connect, deviceId, haptic, speaker]);
+
+  useEffect(() => {
+    sessionRef.current?.setSpeakerReady(
+      privateAudioStatus.isLoaded
+      && !privateAudioStatus.error
+      && audioModeReady
+      && appActive
+      && !speakerPlaybackFailed,
+    );
+  }, [appActive, audioModeReady, deviceId, privateAudioStatus.error, privateAudioStatus.isLoaded, speakerPlaybackFailed]);
 
   const controls = useMemo<ControllerActions>(() => ({
     action: (name, value, owner) => sessionRef.current?.setAction(name, value, owner),

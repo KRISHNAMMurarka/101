@@ -483,6 +483,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .link-runtime-actions button { min-height: 40px; border: 1px solid color-mix(in srgb, var(--controller-accent) 45%, transparent); background: transparent; color: var(--controller-accent); font: 800 9px ui-monospace, monospace; letter-spacing: .08em; cursor: pointer; }
 .link-runtime-actions button:disabled { opacity: .35; cursor: not-allowed; }
 .link-runtime-actions p { margin: 0; color: var(--faint); font: 650 8px/1.5 ui-monospace, monospace; }
+.controller-speaker { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; margin: -10px 0 20px; padding: 11px 13px; border: 1px solid var(--line); background: var(--ink); }
+.controller-speaker.ready { border-width: 2px; border-color: var(--line-strong); }
+.controller-speaker div { display: grid; gap: 4px; }
+.controller-speaker span { color: var(--faint); font: 700 7px ui-monospace, monospace; letter-spacing: .12em; }
+.controller-speaker strong { color: var(--muted); font: 750 9px ui-monospace, monospace; letter-spacing: .06em; }
+.controller-speaker.ready strong { color: var(--paper); font-weight: 900; }
+.controller-speaker button { min-height: 42px; padding: 0 13px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--paper); font: 850 8px ui-monospace, monospace; letter-spacing: .08em; cursor: pointer; }
+.controller-speaker button:disabled { border-width: 2px; background: transparent; color: var(--muted); cursor: default; }
 .controller-deck { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 24px; }
 .dpad { position: relative; justify-self: center; width: min(42vw, 260px); aspect-ratio: 1; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
 .dpad::before, .dpad::after { content: ""; position: absolute; z-index: 0; background: var(--panel); border: 1px solid var(--line-strong); }

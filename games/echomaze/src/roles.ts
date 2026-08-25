@@ -6,7 +6,7 @@ export const ECHO_MAZE_ROLES: readonly SessionRole[] = [
     label: "Echo Scanner",
     playerId: "role-scanner",
     requiredCapabilities: ["touch"],
-    preferredCapabilities: ["gyroscope", "haptics"],
+    preferredCapabilities: ["gyroscope", "haptics", "speaker"],
     layout: {
       title: "Echo Scanner",
       accent: "#80a8ff",

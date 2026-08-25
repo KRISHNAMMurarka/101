@@ -90,6 +90,11 @@ export class Audio101 {
     this.applyMuteState();
   }
 
+  async resume() {
+    if (!Howler.usingWebAudio || !Howler.ctx || Howler.ctx.state === "running") return;
+    await Howler.ctx.resume();
+  }
+
   unload() {
     this.sounds.forEach((sound) => sound.unload());
     this.sounds.clear();

@@ -236,6 +236,10 @@ test("serves the controller surface and product metadata", async () => {
   assert.match(html, /LINK \/ (?:<!-- -->)?CLASSIC/);
   assert.match(html, /Classic Controller/);
   assert.match(html, /JSON-defined panel/);
+  assert.match(html.replaceAll("<!-- -->", ""), /SAME-BROWSER · ONLINE/,
+    "server and first client render need the same connectivity text so the controller hydrates cleanly");
+  assert.doesNotMatch(html, /OFFLINE SHELL/,
+    "the browser updates real connectivity after hydration; the server must not guess from its worker navigator");
 
   const [layout, manifest, packageJson] = await Promise.all([
     readFile(new URL("app/layout.tsx", root), "utf8"),

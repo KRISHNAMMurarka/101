@@ -42,6 +42,42 @@ test("native Link configuration is local-first and declares no microphone use", 
   assert.equal(config.expo.extra.privacy, "local-first-no-telemetry");
 });
 
+test("native WebRTC negotiates the same 24-byte input path as the browser", async () => {
+  const transport = await readFile(new URL("../apps/controller-native/src/native-webrtc.ts", import.meta.url), "utf8");
+  const codec = await readFile(new URL("../apps/controller-native/src/native-webrtc-codec.ts", import.meta.url), "utf8");
+  const session = await readFile(new URL("../apps/controller-native/src/controller-session.ts", import.meta.url), "utf8");
+
+  for (const symbol of ["createInputPacketProfile", "deserializeRealtimeMessage", "serializeRealtimeMessage", "INPUT_Q1_FORMAT"]) {
+    assert.match(codec, new RegExp(`\\b${symbol}\\b`), `${symbol} must run in the executable native codec`);
+  }
+  assert.match(transport, /new NativeWebRTCCodec\(\)/,
+    "the native DataChannels must use the direction-tested codec rather than a parallel implementation");
+  assert.match(transport, /binaryType\s*=\s*["']arraybuffer["']/,
+    "react-native-webrtc must deliver binary frames as ArrayBuffer instead of Blob");
+  assert.match(session, /inputFormats:\s*\[INPUT_Q1_FORMAT\]/,
+    "the native controller must advertise the format before a host selects it");
+});
+
+test("native private audio is advertised only while configured, loaded, and foreground-audible", async () => {
+  const app = await readFile(new URL("../apps/controller-native/App.tsx", import.meta.url), "utf8");
+  const session = await readFile(new URL("../apps/controller-native/src/controller-session.ts", import.meta.url), "utf8");
+
+  assert.match(app, /setAudioModeAsync\(\{[\s\S]*?playsInSilentMode:\s*true[\s\S]*?allowsRecording:\s*false[\s\S]*?shouldPlayInBackground:\s*false[\s\S]*?\}\)/,
+    "short controller cues must be audible in silent mode without enabling recording/background audio");
+  assert.match(app, /setSpeakerReady\(\s*privateAudioStatus\.isLoaded\s*&&\s*!privateAudioStatus\.error\s*&&\s*audioModeReady\s*&&\s*appActive\s*&&\s*!speakerPlaybackFailed/,
+    "the host fallback must return whenever the app cannot actually play its local cue");
+  assert.match(app, /AppState\.addEventListener\("change",[\s\S]*?state\s*!==\s*"active"[\s\S]*?setSpeakerReady\(false\)[\s\S]*?releaseAll\(\)/,
+    "backgrounding must revoke private audio synchronously, before React can run another effect");
+  assert.match(app, /!privateAudioStatus\.error[\s\S]*?!speakerPlaybackFailed/,
+    "a loaded player that has errored must stay locked instead of suppressing host fallback");
+  assert.match(app, /speaker\.play\(cue\)\.catch\([\s\S]*?setSpeakerReady\(false\)/,
+    "a real playback rejection must immediately re-announce locked audio");
+  assert.match(session, /setInterval\(\(\) => \{[\s\S]*?this\.sendHello\(\)[\s\S]*?type:\s*"ping"/,
+    "a native controller must re-announce after a React game host remounts around the live peer");
+  assert.match(session, /!this\.configurationGate\.accept\(message\)\)\s*\{[\s\S]*?this\.sendSnapshot\(this\.model\.snapshot\(\),\s*"touch"\)[\s\S]*?return/,
+    "duplicate native configuration must refresh held input into the fresh host without transitioning the model");
+});
+
 test("native Link blocks the health permissions its sensor library would otherwise pull in", async () => {
   // expo-sensors bundles a pedometer, so ACTIVITY_RECOGNITION arrives through manifest merging
   // even though 101 only ever reads accelerometer, gyroscope, magnetometer and device motion.

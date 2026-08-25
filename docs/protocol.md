@@ -30,11 +30,12 @@ interface LinkTransport {
 
 ## Automatic LAN signaling
 
-The Hub creates an expiring `101L2` ticket containing the protocol version, session ID, LAN endpoint, one join secret, expiry, and transport. The QR contains the ticket—not an SDP blob or account identifier. Host administration uses a different secret, and each joined controller receives its own peer secret.
+The Hub creates an expiring `101L2` ticket containing the protocol version, session ID, LAN endpoint, one join secret, expiry, and transport. The QR contains the ticket—not an SDP blob or account identifier. Host administration uses a different secret, and each joined controller receives its own peer secret. Re-creating a live session without its host bearer returns `409` and no credentials. An authenticated browser reload keeps the join ticket, rotates the host bearer, and invalidates the previous bearer. Desktop-to-browser authority is carried only in a session- and loopback-Hub-bound URL fragment, which the launcher removes immediately and rotates before use; it is never part of the controller ticket or URL query.
 
 ```text
 POST /v1/sessions
 POST /v1/sessions/:session/peers
+DELETE /v1/sessions/:session/peers/:peer
 GET  /v1/sessions/:session/peers/:peer/offer
 PUT  /v1/sessions/:session/peers/:peer/answer
 POST /v1/sessions/:session/peers/:peer/reconnect
@@ -44,7 +45,9 @@ PUT  /v1/sessions/:session/host/peers/:peer/offer
 POST /v1/sessions/:session/host/peers/:peer/reconnect
 ```
 
-`AutomaticPairingHost` creates one WebRTC transport per peer. `SignaledLinkTransport` monitors it and sends gameplay over the peer DataChannels. A failed connection increments a signaling generation, disposes stale SDP, creates a fresh peer connection, and re-registers without requiring another scan. Old generations cannot overwrite new offers or answers.
+`AutomaticPairingHost` creates one WebRTC transport per peer. `SignaledLinkTransport` monitors it and sends gameplay over the peer DataChannels. A failed connection increments a signaling generation, disposes stale SDP, creates a fresh peer connection, and re-registers without requiring another scan. The host and controller retain that reset intent if the Hub is briefly unreachable, so neither side publishes or accepts another offer at the obsolete generation; host teardown also waits for a reset already in flight. If a crashed peer lease has already been reaped, the still-valid ticket joins again; a graceful close deletes its lease immediately. Old generations cannot overwrite new offers or answers. If one peer publishes a semantically invalid answer, the host drops and resets that peer and continues the current list, so one broken or hostile controller cannot starve later peers.
+
+Both Hub implementations accept only validated session IDs, clamp invitation lifetimes to 60 seconds–24 hours, and bound live state to 128 sessions and 64 peers per session. A peer with no controller signaling activity for 30 seconds is removed. These bounds are availability safeguards for a LAN service, not a replacement for keeping pairing tickets private.
 
 ## Capability hello
 

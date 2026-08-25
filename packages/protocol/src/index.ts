@@ -1,6 +1,15 @@
-import type { InputFrame } from "@101/input";
+import { INPUT_SOURCES, type InputFrame } from "@101/input";
 
 export const PROTOCOL_VERSION = 2 as const;
+export const INPUT_Q1_FORMAT = "input-q1" as const;
+export const INPUT_Q1_BYTES = 24 as const;
+export type InputFormat = typeof INPUT_Q1_FORMAT;
+
+export interface LinkFeatures {
+  inputFormats?: readonly InputFormat[];
+  /** Browser audio begins locked until a player gesture resumes it. */
+  speakerAudio?: "locked" | "ready";
+}
 
 export interface DeviceCapabilities {
   touch?: boolean;
@@ -11,12 +20,23 @@ export interface DeviceCapabilities {
   microphone?: boolean;
   haptics?: boolean;
   gamepad?: boolean;
+  speaker?: boolean;
 }
 
 export type HapticMessage = {
   type: "haptic";
   deviceId: string;
   pattern: "tap" | "impact" | "warning";
+};
+
+export type SpeakerCueMessage = {
+  type: "speaker.cue";
+  deviceId: string;
+  sequence: number;
+  cue: "pulse-v1";
+  /** Playback-rate multiplier. The cue is intentionally tiny and synthesized locally. */
+  pitch: number;
+  volume: number;
 };
 
 export type ControlMessage =
@@ -26,6 +46,7 @@ export type ControlMessage =
       deviceId: string;
       device: string;
       capabilities: DeviceCapabilities;
+      features?: LinkFeatures;
     }
   | {
       type: "player.assign";
@@ -47,6 +68,7 @@ export type ControlMessage =
       role: string;
       revision: number;
       layout: ControllerLayout;
+      inputFormat?: InputFormat;
     }
   | {
       type: "controller.state";
@@ -215,6 +237,7 @@ export function parseControlMessage(input: unknown): ControlMessage {
       deviceId: requiredText(input.deviceId, "deviceId", 128),
       device: requiredText(input.device, "device", 128),
       capabilities: parseCapabilities(input.capabilities),
+      ...(input.features === undefined ? {} : { features: parseLinkFeatures(input.features) }),
     };
   }
   if (input.type === "player.assign") return {
@@ -242,6 +265,7 @@ export function parseControlMessage(input: unknown): ControlMessage {
       role: requiredText(input.role, "role", 64),
       revision: Number(input.revision),
       layout: parseControllerLayout(input.layout),
+      ...(input.inputFormat === undefined ? {} : { inputFormat: parseInputFormat(input.inputFormat) }),
     };
   }
   if (input.type === "controller.state") {
@@ -282,7 +306,7 @@ export function parseControlMessage(input: unknown): ControlMessage {
   throw new Error("Unsupported 101 control message");
 }
 
-export type RealtimeMessage = InputFrame | HapticMessage;
+export type RealtimeMessage = InputFrame | HapticMessage | SpeakerCueMessage;
 
 export type LinkMessage =
   | { channel: "control"; payload: ControlMessage }
@@ -303,20 +327,41 @@ export interface StatefulLinkTransport extends LinkTransport {
   onStateChange(callback: (state: LinkState) => void): () => void;
 }
 
+export interface MultiplexPeerBinding {
+  /** Device id the authenticated peer is allowed to put on its wire messages. */
+  wireDeviceId: string;
+  /** Host-only id that keeps two signaling peers with the same local id distinct. */
+  routeDeviceId?: string;
+}
+
 export class MultiplexLinkTransport implements LinkTransport {
-  private readonly transports = new Map<string, { transport: LinkTransport; removeListener: () => void }>();
+  private readonly transports = new Map<string, {
+    transport: LinkTransport;
+    removeListener: () => void;
+    binding?: MultiplexPeerBinding;
+  }>();
   private readonly deviceRoutes = new Map<string, string>();
   private readonly listeners = new Set<(message: LinkMessage) => void>();
   private connected = false;
 
-  async add(id: string, transport: LinkTransport) {
+  async add(id: string, transport: LinkTransport, binding?: MultiplexPeerBinding) {
     if (!/^[a-z0-9._-]{1,128}$/i.test(id)) throw new Error("Invalid multiplex transport id");
+    if (binding && (!binding.wireDeviceId || binding.wireDeviceId.length > 128
+      || (binding.routeDeviceId !== undefined && (!binding.routeDeviceId || binding.routeDeviceId.length > 128)))) {
+      throw new Error("Invalid multiplex peer binding");
+    }
     if (this.transports.has(id)) await this.remove(id);
     const removeListener = transport.onMessage((message) => {
-      if (message.channel === "control" && message.payload.type === "hello") this.deviceRoutes.set(message.payload.deviceId, id);
-      this.listeners.forEach((listener) => listener(message));
+      const inbound = binding ? bindInboundPeerMessage(message, binding) : message;
+      if (!inbound) return;
+      if (inbound.channel === "control" && inbound.payload.type === "hello") {
+        const currentRoute = this.deviceRoutes.get(inbound.payload.deviceId);
+        if (currentRoute && currentRoute !== id) return;
+        this.deviceRoutes.set(inbound.payload.deviceId, id);
+      }
+      this.listeners.forEach((listener) => listener(inbound));
     });
-    this.transports.set(id, { transport, removeListener });
+    this.transports.set(id, { transport, removeListener, ...(binding ? { binding } : {}) });
     if (this.connected) {
       try {
         await transport.connect();
@@ -369,19 +414,21 @@ export class MultiplexLinkTransport implements LinkTransport {
   sendReliable(message: ControlMessage) {
     const deviceId = "deviceId" in message ? message.deviceId : undefined;
     const route = deviceId ? this.deviceRoutes.get(deviceId) : undefined;
-    if (route) {
-      this.transports.get(route)?.transport.sendReliable(message);
+    if (deviceId) {
+      const entry = route ? this.transports.get(route) : undefined;
+      if (entry) entry.transport.sendReliable(bindOutboundControlMessage(message, entry.binding));
       return;
     }
     for (const { transport } of this.transports.values()) transport.sendReliable(message);
   }
 
   sendRealtime(message: RealtimeMessage) {
-    const route = "type" in message && message.type === "haptic"
+    const route = "type" in message
       ? this.deviceRoutes.get(message.deviceId)
       : undefined;
-    if (route) {
-      this.transports.get(route)?.transport.sendRealtime(message);
+    if ("type" in message) {
+      const entry = route ? this.transports.get(route) : undefined;
+      if (entry) entry.transport.sendRealtime(bindOutboundRealtimeMessage(message, entry.binding));
       return;
     }
     for (const { transport } of this.transports.values()) transport.sendRealtime(message);
@@ -391,6 +438,25 @@ export class MultiplexLinkTransport implements LinkTransport {
     this.listeners.add(callback);
     return () => this.listeners.delete(callback);
   }
+}
+
+function bindInboundPeerMessage(message: LinkMessage, binding: MultiplexPeerBinding): LinkMessage | undefined {
+  if (!("deviceId" in message.payload)) return message;
+  if (message.payload.deviceId !== binding.wireDeviceId) return undefined;
+  return {
+    channel: message.channel,
+    payload: { ...message.payload, deviceId: binding.routeDeviceId ?? binding.wireDeviceId },
+  } as LinkMessage;
+}
+
+function bindOutboundControlMessage(message: ControlMessage, binding?: MultiplexPeerBinding): ControlMessage {
+  if (!binding || !("deviceId" in message)) return message;
+  return { ...message, deviceId: binding.wireDeviceId } as ControlMessage;
+}
+
+function bindOutboundRealtimeMessage(message: RealtimeMessage, binding?: MultiplexPeerBinding): RealtimeMessage {
+  if (!binding || !("type" in message)) return message;
+  return { ...message, deviceId: binding.wireDeviceId };
 }
 
 export interface PairingTicket {
@@ -446,6 +512,253 @@ export function deserializeControlMessage(data: string): ControlMessage {
     throw new Error("Unsupported or malformed 101 control packet");
   }
   return parseControlMessage(packet.message);
+}
+
+export type InputPacketLane =
+  | { kind: "digital-action"; name: string }
+  | { kind: "analog-action"; name: string }
+  | { kind: "axis"; name: string }
+  | { kind: "vector"; name: string; component: "x" | "y" };
+
+export interface InputPacketProfile {
+  readonly format: typeof INPUT_Q1_FORMAT;
+  readonly revision: number;
+  readonly deviceId: string;
+  readonly playerId: string;
+  readonly lanes: readonly InputPacketLane[];
+}
+
+export interface InputPacketProfileIdentity {
+  revision: number;
+  deviceId: string;
+  playerId: string;
+}
+
+/**
+ * Builds the deterministic twelve-lane map shared by a configured controller and its host.
+ *
+ * A layout that needs more lanes, or reuses one name with incompatible value shapes, returns
+ * `undefined`. That is an intentional JSON fallback: losing a control to make a packet fit would be
+ * a worse compatibility failure than sending the larger representation.
+ */
+export function createInputPacketProfile(
+  layout: ControllerLayout,
+  identity: InputPacketProfileIdentity,
+): InputPacketProfile | undefined {
+  if (!Number.isInteger(identity.revision) || identity.revision < 0 || identity.revision > 0xffff) return undefined;
+  if (!identity.deviceId || !identity.playerId) return undefined;
+
+  const lanes: InputPacketLane[] = [];
+  const shapes = new Map<string, "digital" | "analog" | "axis" | "vector">();
+  const axisOwners = new Map<string, string>();
+  const claimAxis = (name: string, owner: string) => {
+    const existing = axisOwners.get(name);
+    if (existing && existing !== owner) return false;
+    axisOwners.set(name, owner);
+    return true;
+  };
+  const add = (name: string, shape: "digital" | "analog" | "axis" | "vector") => {
+    const existing = shapes.get(name);
+    if (existing) return existing === shape;
+    const owner = `${shape}:${name}`;
+    if (shape === "axis" && !claimAxis(name, owner)) return false;
+    if (shape === "vector") {
+      for (const alias of new Set([name, `${name}X`, `${name}Y`])) {
+        if (!claimAxis(alias, owner)) return false;
+      }
+    }
+    shapes.set(name, shape);
+    if (shape === "digital") lanes.push({ kind: "digital-action", name });
+    else if (shape === "analog") lanes.push({ kind: "analog-action", name });
+    else if (shape === "axis") lanes.push({ kind: "axis", name });
+    else lanes.push(
+      { kind: "vector", name, component: "x" },
+      { kind: "vector", name, component: "y" },
+    );
+    return lanes.length <= 12;
+  };
+
+  for (const element of layout.layout) {
+    if (element.type === "button" || element.type === "shoulder") {
+      if (!add(element.action, "digital")) return undefined;
+      if (element.interaction?.type === "chord") {
+        for (const action of element.interaction.actions) if (!add(action, "digital")) return undefined;
+      }
+    } else if (element.type === "trigger" || element.type === "analog-button") {
+      if (!add(element.action, "analog")) return undefined;
+    } else if (element.type === "slider") {
+      if (!add(element.action, "axis")) return undefined;
+    } else if (!add(element.action, "vector")) {
+      return undefined;
+    }
+  }
+  if (layout.motion) {
+    if (!add(layout.motion.action, "vector")) return undefined;
+    for (const action of Object.values(layout.motion.gestures ?? {})) {
+      if (action && !add(action, "digital")) return undefined;
+    }
+  }
+  if (lanes.length === 0 || lanes.length > 12) return undefined;
+  return {
+    format: INPUT_Q1_FORMAT,
+    revision: identity.revision,
+    deviceId: identity.deviceId,
+    playerId: identity.playerId,
+    lanes,
+  };
+}
+
+/** Encodes bandwidth-oriented, layout-derived input. It does not claim to reduce input latency. */
+export function encodeInputPacket(frame: InputFrame, profile: InputPacketProfile): Uint8Array {
+  if (!canEncodeInputPacket(frame, profile)) throw new Error("Input frame requires JSON fallback");
+  return encodeRepresentableInputPacket(frame, profile);
+}
+
+function encodeRepresentableInputPacket(frame: InputFrame, profile: InputPacketProfile) {
+  const sourceIndex = INPUT_SOURCES.indexOf(frame.source);
+  if (sourceIndex < 0 || sourceIndex > 0x0f) throw new Error("Unsupported input packet source");
+  const bytes = new Uint8Array(INPUT_Q1_BYTES);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  view.setUint8(0, PROTOCOL_VERSION);
+  view.setUint8(1, (sourceIndex << 4) | 2);
+  view.setUint16(2, profile.revision, true);
+  view.setUint32(4, Math.max(0, Math.trunc(frame.sequence)) >>> 0, true);
+  view.setUint32(8, Math.trunc(Number.isFinite(frame.timestamp) ? frame.timestamp : 0) >>> 0, true);
+  profile.lanes.forEach((lane, index) => {
+    const offset = 12 + index;
+    if (lane.kind === "digital-action") {
+      view.setUint8(offset, frame.actions[lane.name] ? 1 : 0);
+    } else if (lane.kind === "analog-action") {
+      view.setUint8(offset, Math.round(clampPacketNumber(Number(frame.actions[lane.name] ?? 0), 0, 1) * 255));
+    } else if (lane.kind === "axis") {
+      view.setInt8(offset, Math.round(clampPacketNumber(frame.axes?.[lane.name] ?? 0, -1, 1) * 127));
+    } else {
+      view.setInt8(offset, Math.round(clampPacketNumber(frame.vectors?.[lane.name]?.[lane.component] ?? 0, -1, 1) * 127));
+    }
+  });
+  return bytes;
+}
+
+export function decodeInputPacket(bytes: Uint8Array, profile: InputPacketProfile): InputFrame {
+  if (bytes.byteLength !== INPUT_Q1_BYTES) throw new Error(`Expected ${INPUT_Q1_BYTES} input bytes`);
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (view.getUint8(0) !== PROTOCOL_VERSION || (view.getUint8(1) & 0x0f) !== 2) {
+    throw new Error("Unsupported 101 input packet");
+  }
+  if (view.getUint16(2, true) !== profile.revision) throw new Error("Stale input packet revision");
+  const source = INPUT_SOURCES[view.getUint8(1) >> 4];
+  if (!source) throw new Error("Invalid input packet source");
+  const actions: InputFrame["actions"] = {};
+  const axes: NonNullable<InputFrame["axes"]> = {};
+  const vectors: NonNullable<InputFrame["vectors"]> = {};
+  profile.lanes.forEach((lane, index) => {
+    const offset = 12 + index;
+    if (lane.kind === "digital-action") {
+      const value = view.getUint8(offset);
+      if (value > 1) throw new Error("Invalid digital input lane");
+      actions[lane.name] = value === 1;
+    } else if (lane.kind === "analog-action") {
+      actions[lane.name] = view.getUint8(offset) / 255;
+    } else {
+      const value = view.getInt8(offset);
+      if (value === -128) throw new Error("Invalid signed input lane");
+      const normalized = value / 127;
+      if (lane.kind === "axis") axes[lane.name] = normalized;
+      else {
+        const vector = vectors[lane.name] ?? { x: 0, y: 0 };
+        vector[lane.component] = normalized;
+        vectors[lane.name] = vector;
+      }
+    }
+  });
+  for (const [name, vector] of Object.entries(vectors)) addVectorAxes(axes, name, vector);
+  return {
+    deviceId: profile.deviceId,
+    playerId: profile.playerId,
+    sequence: view.getUint32(4, true),
+    timestamp: view.getUint32(8, true),
+    source,
+    actions,
+    ...(Object.keys(axes).length ? { axes } : {}),
+    ...(Object.keys(vectors).length ? { vectors } : {}),
+  };
+}
+
+export function serializeRealtimeMessage(
+  message: RealtimeMessage,
+  profile?: InputPacketProfile,
+): string | Uint8Array {
+  if (profile && !("type" in message) && canEncodeInputPacket(message, profile)) {
+    return encodeRepresentableInputPacket(message, profile);
+  }
+  return JSON.stringify(message);
+}
+
+export function deserializeRealtimeMessage(
+  data: string | ArrayBuffer | ArrayBufferView,
+  profile?: InputPacketProfile,
+): RealtimeMessage {
+  if (typeof data === "string") {
+    const candidate = JSON.parse(data) as unknown;
+    if (isRecord(candidate) && candidate.type === "speaker.cue") return parseSpeakerCue(candidate);
+    if (isRecord(candidate) && candidate.type === "haptic") {
+      const parsed = parseControlMessage(candidate);
+      if (parsed.type === "haptic") return parsed;
+    }
+    return candidate as InputFrame;
+  }
+  if (!profile) throw new Error("Binary input arrived before format negotiation");
+  const bytes = data instanceof ArrayBuffer
+    ? new Uint8Array(data)
+    : new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+  return decodeInputPacket(bytes, profile);
+}
+
+function addVectorAxes(axes: Record<string, number>, name: string, vector: { x: number; y: number }) {
+  axes[name] = vector.x;
+  axes[`${name}X`] = vector.x;
+  axes[`${name}Y`] = vector.y;
+  if (name === "move") {
+    axes.moveX = vector.x;
+    axes.moveY = vector.y;
+  }
+  if (name === "steer") axes.steer = vector.x;
+}
+
+function canEncodeInputPacket(frame: InputFrame, profile: InputPacketProfile) {
+  // Identity is deliberately supplied by the authenticated assignment/profile rather than trusted
+  // from every frame. Only the layout-derived values need to be representable here.
+  if (frame.poses && Object.keys(frame.poses).length > 0) return false;
+
+  const actionNames = new Set<string>();
+  const axisNames = new Set<string>();
+  const vectorNames = new Set<string>();
+  const derivedAxes = new Map<string, { vector: string; component: "x" | "y" }>();
+  for (const lane of profile.lanes) {
+    if (lane.kind === "digital-action" || lane.kind === "analog-action") actionNames.add(lane.name);
+    else if (lane.kind === "axis") axisNames.add(lane.name);
+    else {
+      vectorNames.add(lane.name);
+      derivedAxes.set(lane.name, { vector: lane.name, component: "x" });
+      derivedAxes.set(`${lane.name}X`, { vector: lane.name, component: "x" });
+      derivedAxes.set(`${lane.name}Y`, { vector: lane.name, component: "y" });
+    }
+  }
+  if (Object.keys(frame.actions).some((name) => !actionNames.has(name))) return false;
+  if (Object.entries(frame.vectors ?? {}).some(([name, vector]) => (
+    !vectorNames.has(name) || vector.z !== undefined
+  ))) return false;
+  for (const [name, value] of Object.entries(frame.axes ?? {})) {
+    if (axisNames.has(name)) continue;
+    const derived = derivedAxes.get(name);
+    const vector = derived ? frame.vectors?.[derived.vector] : undefined;
+    if (!derived || !vector || value !== vector[derived.component]) return false;
+  }
+  return true;
+}
+
+function clampPacketNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, Number.isFinite(value) ? value : 0));
 }
 
 export interface MotionPacket {
@@ -554,6 +867,10 @@ export class WebRTCTransport implements StatefulLinkTransport {
   private readonly stateListeners = new Set<(state: LinkState) => void>();
   private readonly options: WebRTCTransportOptions;
   private currentState: LinkState = "idle";
+  private outgoingAssignment?: Extract<ControlMessage, { type: "player.assign" }>;
+  private outgoingProfile?: InputPacketProfile;
+  private incomingAssignment?: Extract<ControlMessage, { type: "player.assign" }>;
+  private incomingProfile?: InputPacketProfile;
 
   constructor(options: WebRTCTransportOptions) {
     this.options = options;
@@ -600,6 +917,10 @@ export class WebRTCTransport implements StatefulLinkTransport {
     this.control = undefined;
     this.realtime = undefined;
     this.peer = undefined;
+    this.outgoingAssignment = undefined;
+    this.outgoingProfile = undefined;
+    this.incomingAssignment = undefined;
+    this.incomingProfile = undefined;
     this.setState("disconnected");
   }
 
@@ -637,13 +958,16 @@ export class WebRTCTransport implements StatefulLinkTransport {
 
   sendReliable(message: ControlMessage) {
     if (this.control?.readyState !== "open") return;
+    this.observeControl(message, "incoming");
     this.control.send(serializeControlMessage(message));
   }
 
   sendRealtime(message: RealtimeMessage) {
     if (this.realtime?.readyState !== "open") return;
     if (this.realtime.bufferedAmount > (this.options.realtimeBufferLimit ?? 64 * 1024)) return;
-    this.realtime.send(JSON.stringify(message));
+    const serialized = serializeRealtimeMessage(message, this.outgoingProfile);
+    if (typeof serialized === "string") this.realtime.send(serialized);
+    else this.realtime.send(serialized as Uint8Array<ArrayBuffer>);
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -665,7 +989,9 @@ export class WebRTCTransport implements StatefulLinkTransport {
     this.control = channel;
     channel.onmessage = (event: MessageEvent<string>) => {
       try {
-        this.emit({ channel: "control", payload: deserializeControlMessage(event.data) });
+        const payload = deserializeControlMessage(event.data);
+        this.observeControl(payload, "outgoing");
+        this.emit({ channel: "control", payload });
       } catch {
         // Invalid remote packets are ignored rather than reaching a game.
       }
@@ -674,10 +1000,11 @@ export class WebRTCTransport implements StatefulLinkTransport {
 
   private attachRealtime(channel: RTCDataChannel) {
     this.realtime = channel;
+    channel.binaryType = "arraybuffer";
     channel.bufferedAmountLowThreshold = 16 * 1024;
-    channel.onmessage = (event: MessageEvent<string>) => {
+    channel.onmessage = (event: MessageEvent<string | ArrayBuffer>) => {
       try {
-        this.emit({ channel: "realtime", payload: JSON.parse(event.data) as RealtimeMessage });
+        this.emit({ channel: "realtime", payload: deserializeRealtimeMessage(event.data, this.incomingProfile) });
       } catch {
         // Invalid or partial disposable frames are safe to drop.
       }
@@ -686,6 +1013,41 @@ export class WebRTCTransport implements StatefulLinkTransport {
 
   private emit(message: LinkMessage) {
     this.listeners.forEach((listener) => listener(message));
+  }
+
+  /**
+   * A configuration describes input flowing in the opposite direction to the control message:
+   * the host sends it to select what it will decode, while the controller receives it to select
+   * what it will encode. Keeping both directions here makes the transport usable at either end.
+   */
+  private observeControl(message: ControlMessage, direction: "incoming" | "outgoing") {
+    const assignmentKey = direction === "incoming" ? "incomingAssignment" : "outgoingAssignment";
+    const profileKey = direction === "incoming" ? "incomingProfile" : "outgoingProfile";
+    if (message.type === "player.assign") {
+      const previous = this[assignmentKey];
+      this[assignmentKey] = message;
+      if (!previous || previous.deviceId !== message.deviceId || previous.playerId !== message.playerId) {
+        this[profileKey] = undefined;
+      }
+      return;
+    }
+    if (message.type === "player.wait") {
+      if (!this[assignmentKey] || this[assignmentKey]?.deviceId === message.deviceId) {
+        this[assignmentKey] = undefined;
+        this[profileKey] = undefined;
+      }
+      return;
+    }
+    if (message.type !== "controller.configure") return;
+    const assignment = this[assignmentKey];
+    this[profileKey] = message.inputFormat === INPUT_Q1_FORMAT
+      && assignment?.deviceId === message.deviceId
+      ? createInputPacketProfile(message.layout, {
+          revision: message.revision,
+          deviceId: message.deviceId,
+          playerId: assignment.playerId,
+        })
+      : undefined;
   }
 
   private setState(state: LinkState) {
@@ -967,9 +1329,62 @@ function requiredFinite(value: unknown, name: string) {
   return value;
 }
 
+function parseInputFormat(value: unknown): InputFormat {
+  if (value !== INPUT_Q1_FORMAT) throw new Error("Unsupported controller input format");
+  return value;
+}
+
+function parseLinkFeatures(input: unknown): LinkFeatures {
+  if (!isRecord(input)) throw new Error("Invalid 101 Link features");
+  let inputFormats: InputFormat[] | undefined;
+  if (input.inputFormats !== undefined) {
+    if (!Array.isArray(input.inputFormats) || input.inputFormats.length > 8) {
+      throw new Error("Invalid controller input formats");
+    }
+    inputFormats = [];
+    for (const format of input.inputFormats) {
+      if (typeof format !== "string" || format.length === 0 || format.length > 64) {
+        throw new Error("Invalid controller input format");
+      }
+      if (format === INPUT_Q1_FORMAT) {
+        if (inputFormats.includes(format)) throw new Error("Duplicate controller input format");
+        inputFormats.push(format);
+      }
+    }
+  }
+  if (input.speakerAudio !== undefined && typeof input.speakerAudio !== "string") {
+    throw new Error("Invalid controller speaker audio state");
+  }
+  const speakerAudio = input.speakerAudio === "locked" || input.speakerAudio === "ready"
+    ? input.speakerAudio
+    : undefined;
+  return {
+    ...(inputFormats ? { inputFormats } : {}),
+    ...(speakerAudio ? { speakerAudio } : {}),
+  };
+}
+
+function parseSpeakerCue(input: Record<string, unknown>): SpeakerCueMessage {
+  rejectUnknownProperties(input, ["type", "deviceId", "sequence", "cue", "pitch", "volume"], "speaker cue");
+  if (input.cue !== "pulse-v1") throw new Error("Unsupported controller speaker cue");
+  if (!Number.isSafeInteger(input.sequence) || Number(input.sequence) < 0) throw new Error("Invalid speaker cue sequence");
+  const pitch = requiredFinite(input.pitch, "speaker cue pitch");
+  const volume = requiredFinite(input.volume, "speaker cue volume");
+  if (pitch < .5 || pitch > 2) throw new Error("Invalid speaker cue pitch");
+  if (volume < 0 || volume > 1) throw new Error("Invalid speaker cue volume");
+  return {
+    type: "speaker.cue",
+    deviceId: requiredText(input.deviceId, "deviceId", 128),
+    sequence: Number(input.sequence),
+    cue: "pulse-v1",
+    pitch,
+    volume,
+  };
+}
+
 function parseCapabilities(input: Record<string, unknown>): DeviceCapabilities {
   const capabilities: DeviceCapabilities = {};
-  const names = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad"] as const;
+  const names = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad", "speaker"] as const;
   for (const name of names) {
     const value = input[name];
     if (value !== undefined && typeof value !== "boolean") throw new Error(`Invalid capability: ${name}`);

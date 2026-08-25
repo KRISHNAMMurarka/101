@@ -98,6 +98,26 @@ test("scopes mute state to each audio instance and leaves the next game audible"
   }
 });
 
+test("explicitly resumes a suspended browser audio context", async () => {
+  const originalContext = Howler.ctx;
+  const originalUsingWebAudio = Howler.usingWebAudio;
+  let resumes = 0;
+  try {
+    Howler.usingWebAudio = true;
+    Howler.ctx = {
+      state: "suspended",
+      async resume() { resumes += 1; },
+    } as AudioContext;
+    const audio = new Audio101();
+    await audio.resume();
+    assert.equal(resumes, 1);
+    audio.unload();
+  } finally {
+    Howler.ctx = originalContext;
+    Howler.usingWebAudio = originalUsingWebAudio;
+  }
+});
+
 function readGlobalMute() {
   return (Howler as unknown as { _muted: boolean })._muted;
 }

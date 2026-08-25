@@ -1,9 +1,12 @@
 import type { InputFrame, InputSource } from "@101/input";
 import type { GameControllerRole } from "@101/sdk";
 import {
+  createInputPacketProfile,
+  INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
   type ControllerLayout,
   type DeviceCapabilities,
+  type LinkFeatures,
   type LinkMessage,
   type LinkTransport,
 } from "@101/protocol";
@@ -12,6 +15,7 @@ export interface ConnectedDevice {
   id: string;
   label: string;
   capabilities: DeviceCapabilities;
+  features?: LinkFeatures;
   connectedAt: number;
   lastSeenAt: number;
 }
@@ -116,6 +120,7 @@ export class LocalSession {
       id: device.id,
       label: device.label,
       capabilities: { ...device.capabilities },
+      ...(device.features ? { features: cloneFeatures(device.features) } : {}),
       connectedAt: previous?.connectedAt ?? device.connectedAt ?? device.lastSeenAt,
       lastSeenAt: device.lastSeenAt,
     });
@@ -196,7 +201,11 @@ export class LocalSession {
       code: this.code,
       gameId: this.currentGameId,
       revision: this.currentRevision,
-      devices: [...this.devices.values()].map((device) => ({ ...device, capabilities: { ...device.capabilities } })),
+      devices: [...this.devices.values()].map((device) => ({
+        ...device,
+        capabilities: { ...device.capabilities },
+        ...(device.features ? { features: cloneFeatures(device.features) } : {}),
+      })),
       assignments: [...this.assignments.values()].map((assignment) => ({ ...assignment })),
       openRoles: this.roles.filter((role) => !occupied.has(role.id)).map((role) => ({ ...role, layout: cloneLayout(role.layout) })),
     };
@@ -260,6 +269,7 @@ export class SessionHost {
   private removeListener?: () => void;
   private expiryTimer?: ReturnType<typeof setInterval>;
   private started = false;
+  private lifecycleRevision = 0;
 
   constructor(options: SessionHostOptions) {
     this.transport = options.transport;
@@ -274,9 +284,26 @@ export class SessionHost {
 
   async start() {
     if (this.started) return;
+    const revision = ++this.lifecycleRevision;
     this.started = true;
-    this.removeListener = this.transport.onMessage((message) => this.receive(message));
-    await this.transport.connect();
+    const removeListener = this.transport.onMessage((message) => this.receive(message));
+    this.removeListener = removeListener;
+    try {
+      await this.transport.connect();
+    } catch (error) {
+      // `started` is an ownership flag, not merely a record that start() was called. Keeping it or
+      // the listener after a rejected connection turns every retry into a no-op while the dead
+      // receive path remains installed.
+      removeListener();
+      if (this.removeListener === removeListener) this.removeListener = undefined;
+      if (this.lifecycleRevision === revision) this.started = false;
+      if (!this.started) await this.transport.disconnect().catch(() => undefined);
+      throw error;
+    }
+    if (this.lifecycleRevision !== revision || !this.started) {
+      if (!this.started) await this.transport.disconnect().catch(() => undefined);
+      return;
+    }
     this.expiryTimer = setInterval(() => {
       const expired = this.session.expire(this.now() - this.deviceTimeoutMs);
       if (expired.length) {
@@ -288,11 +315,12 @@ export class SessionHost {
   }
 
   async stop() {
+    this.lifecycleRevision += 1;
+    this.started = false;
     if (this.expiryTimer) clearInterval(this.expiryTimer);
     this.expiryTimer = undefined;
     this.removeListener?.();
     this.removeListener = undefined;
-    this.started = false;
     await this.transport.disconnect();
   }
 
@@ -326,6 +354,28 @@ export class SessionHost {
     return true;
   }
 
+  /**
+   * Play a tiny, locally bundled cue on one assigned controller. `false` tells the game to use its
+   * host-audio fallback; most notably this prevents autoplay-locked browsers from swallowing a
+   * private clue. Cues are disposable and intentionally share the realtime channel with haptics.
+   */
+  speakerCue(roleId: string, options: { pitch: number; volume: number }) {
+    const assignment = this.session.assignmentForRole(roleId);
+    if (!assignment) return false;
+    const device = this.session.devices.get(assignment.deviceId);
+    if (!device?.capabilities.speaker || device.features?.speakerAudio !== "ready") return false;
+    const sequence = nextSpeakerCueSequence(this.now());
+    this.transport.sendRealtime({
+      type: "speaker.cue",
+      deviceId: device.id,
+      sequence,
+      cue: "pulse-v1",
+      pitch: clamp(options.pitch, .5, 2, 1),
+      volume: clamp(options.volume, 0, 1, .5),
+    });
+    return true;
+  }
+
   private receive(message: LinkMessage) {
     if (message.channel === "control" && message.payload.type === "hello") {
       const hello = message.payload;
@@ -334,6 +384,7 @@ export class SessionHost {
         id: hello.deviceId,
         label: hello.device,
         capabilities: hello.capabilities,
+        features: hello.features,
         lastSeenAt: this.now(),
       });
       this.syncAssignments();
@@ -385,6 +436,9 @@ export class SessionHost {
         role: assignment.roleId,
         revision: this.session.revision,
         layout: cloneLayout(role.layout),
+        ...(this.supportsBinaryInput(assignment.deviceId, assignment.playerId, role.layout)
+          ? { inputFormat: INPUT_Q1_FORMAT }
+          : {}),
       });
     }
     for (const device of this.session.devices.values()) {
@@ -400,6 +454,16 @@ export class SessionHost {
 
   private notifyChange() {
     this.onChange?.(this.session.snapshot());
+  }
+
+  private supportsBinaryInput(deviceId: string, playerId: string, layout: ControllerLayout) {
+    const device = this.session.devices.get(deviceId);
+    return device?.features?.inputFormats?.includes(INPUT_Q1_FORMAT) === true
+      && createInputPacketProfile(layout, {
+        revision: this.session.revision,
+        deviceId,
+        playerId,
+      }) !== undefined;
   }
 }
 
@@ -446,6 +510,27 @@ function cloneLayout(layout: ControllerLayout): ControllerLayout {
       };
     }),
   };
+}
+
+function cloneFeatures(features: LinkFeatures): LinkFeatures {
+  return {
+    ...(features.inputFormats ? { inputFormats: [...features.inputFormats] } : {}),
+    ...(features.speakerAudio ? { speakerAudio: features.speakerAudio } : {}),
+  };
+}
+
+function clamp(value: number, min: number, max: number, fallback: number) {
+  return Math.max(min, Math.min(max, Number.isFinite(value) ? value : fallback));
+}
+
+// Reliable configuration and disposable feedback use separate DataChannels, so an old cue can
+// arrive after a new game has configured the controller. A process-wide, wall-clock-scaled value
+// stays monotonic across React game-host remounts without resetting the controller's stale guard.
+let lastSpeakerCueSequence = 0;
+function nextSpeakerCueSequence(now: number) {
+  const wallClockBase = Math.min(Number.MAX_SAFE_INTEGER - 1, Math.max(0, Math.trunc(now)) * 1_000);
+  lastSpeakerCueSequence = Math.max(lastSpeakerCueSequence + 1, wallClockBase);
+  return lastSpeakerCueSequence;
 }
 
 function normalizeControllerActions(actions: InputFrame["actions"], layout: ControllerLayout) {

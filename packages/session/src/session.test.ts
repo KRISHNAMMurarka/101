@@ -7,6 +7,7 @@ import {
   type LinkMessage,
   type LinkTransport,
   type RealtimeMessage,
+  type SpeakerCueMessage,
 } from "@101/protocol";
 import { LocalSession, SessionHost, type SessionRole } from "./index.ts";
 
@@ -153,6 +154,113 @@ test("session host targets layouts and overrides untrusted realtime identity", a
   await host.stop();
 });
 
+test("session host rolls back a failed start so a retry reconnects cleanly", async () => {
+  let connectAttempts = 0;
+  let activeListeners = 0;
+  const reliable: ControlMessage[] = [];
+  const listeners = new Set<(message: LinkMessage) => void>();
+  const transport: LinkTransport = {
+    async connect() {
+      connectAttempts += 1;
+      if (connectAttempts === 1) throw new Error("temporary signaling failure");
+    },
+    async disconnect() {},
+    sendReliable(message) { reliable.push(message); },
+    sendRealtime() {},
+    onMessage(callback) {
+      activeListeners += 1;
+      listeners.add(callback);
+      return () => {
+        activeListeners -= 1;
+        listeners.delete(callback);
+      };
+    },
+  };
+  const host = new SessionHost({
+    gameId: "retry",
+    roles: [roles[1]!],
+    transport,
+    onFrame: () => {},
+    deviceTimeoutMs: 60_000,
+  });
+
+  await assert.rejects(() => host.start(), /temporary signaling failure/);
+  assert.equal(activeListeners, 0, "a rejected connection must not retain its receive listener");
+
+  await host.start();
+  assert.equal(connectAttempts, 2, "retry must call the transport again instead of trusting stale started state");
+  assert.equal(activeListeners, 1);
+  for (const listener of listeners) listener({
+    channel: "control",
+    payload: {
+      type: "hello",
+      version: PROTOCOL_VERSION,
+      deviceId: "retry-phone",
+      device: "Phone",
+      capabilities: { touch: true },
+    },
+  });
+  assert.ok(reliable.some((message) => message.type === "player.assign"),
+    "the retry must install one working receive listener");
+  await host.stop();
+  assert.equal(activeListeners, 0);
+});
+
+test("session host stop prevents a pending successful start from resurrecting its timer", async () => {
+  const originalSetInterval = globalThis.setInterval;
+  const originalClearInterval = globalThis.clearInterval;
+  let intervalInstalls = 0;
+  globalThis.setInterval = (() => {
+    intervalInstalls += 1;
+    return 1 as unknown as ReturnType<typeof setInterval>;
+  }) as unknown as typeof setInterval;
+  globalThis.clearInterval = (() => undefined) as typeof clearInterval;
+
+  let releaseConnect!: () => void;
+  let signalConnectStarted!: () => void;
+  const connectStarted = new Promise<void>((resolve) => { signalConnectStarted = resolve; });
+  const connectPending = new Promise<void>((resolve) => { releaseConnect = resolve; });
+  let activeListeners = 0;
+  let disconnects = 0;
+  const transport: LinkTransport = {
+    async connect() {
+      signalConnectStarted();
+      await connectPending;
+    },
+    async disconnect() { disconnects += 1; },
+    sendReliable() {},
+    sendRealtime() {},
+    onMessage() {
+      activeListeners += 1;
+      return () => { activeListeners -= 1; };
+    },
+  };
+  const host = new SessionHost({
+    gameId: "pending-start",
+    roles: [],
+    transport,
+    onFrame: () => {},
+    deviceTimeoutMs: 60_000,
+  });
+
+  try {
+    const start = host.start();
+    await connectStarted;
+    await host.stop();
+    releaseConnect();
+    await start;
+
+    assert.equal(activeListeners, 0, "cleanup must retain no receive path after the late connection");
+    assert.equal(intervalInstalls, 0, "a stopped host must not install expiry work after connect resolves");
+    assert.ok(disconnects >= 1);
+  } finally {
+    releaseConnect();
+    await host.stop();
+    globalThis.setInterval = originalSetInterval;
+    globalThis.clearInterval = originalClearInterval;
+  }
+});
+
 test("session host clamps untrusted Link analog controls to their declared 0..1 range", async () => {
   const transport = new MemoryTransport();
   const frames: InputFrame[] = [];
@@ -220,6 +328,106 @@ test("session host sends haptics as disposable realtime feedback", async () => {
   } finally {
     await host.stop();
   }
+});
+
+test("session host negotiates binary input and sends speaker cues only to an audio-ready role", async () => {
+  const transport = new MemoryTransport();
+  const host = new SessionHost({
+    gameId: "echomaze",
+    roles: [{
+      id: "scanner",
+      label: "Scanner",
+      playerId: "role-scanner",
+      requiredCapabilities: ["touch"],
+      layout: { layout: [
+        { type: "joystick", action: "bearing" },
+        { type: "button", action: "scan", label: "SCAN" },
+      ] },
+    }],
+    transport,
+    onFrame: () => {},
+    deviceTimeoutMs: 60_000,
+  });
+  await host.start();
+  try {
+    transport.emit({
+      channel: "control",
+      payload: {
+        type: "hello",
+        version: PROTOCOL_VERSION,
+        deviceId: "phone-audio",
+        device: "Phone",
+        capabilities: { touch: true, speaker: true },
+        features: { inputFormats: ["input-q1"], speakerAudio: "locked" },
+      },
+    });
+    const configuration = transport.reliable.find((message) => message.type === "controller.configure");
+    assert.equal(configuration?.type === "controller.configure" && configuration.inputFormat, "input-q1",
+      "a supported bounded layout should opt into the 24-byte input format");
+    transport.realtime.length = 0;
+    assert.equal(host.speakerCue("scanner", { pitch: 1.25, volume: .4 }), false,
+      "autoplay-locked audio must fall back at the host instead of disappearing");
+    assert.deepEqual(transport.realtime, []);
+
+    transport.emit({
+      channel: "control",
+      payload: {
+        type: "hello",
+        version: PROTOCOL_VERSION,
+        deviceId: "phone-audio",
+        device: "Phone",
+        capabilities: { touch: true, speaker: true },
+        features: { inputFormats: ["input-q1"], speakerAudio: "ready" },
+      },
+    });
+    transport.realtime.length = 0;
+    assert.equal(host.speakerCue("scanner", { pitch: 1.25, volume: .4 }), true);
+    assert.equal(host.speakerCue("scanner", { pitch: .8, volume: .2 }), true);
+    assert.equal(transport.realtime.length, 2);
+    const firstCue = requireSpeakerCue(transport.realtime[0]);
+    const secondCue = requireSpeakerCue(transport.realtime[1]);
+    assert.deepEqual({ ...firstCue, sequence: 0 },
+      { type: "speaker.cue", deviceId: "phone-audio", sequence: 0, cue: "pulse-v1", pitch: 1.25, volume: .4 });
+    assert.deepEqual({ ...secondCue, sequence: 0 },
+      { type: "speaker.cue", deviceId: "phone-audio", sequence: 0, cue: "pulse-v1", pitch: .8, volume: .2 });
+    assert.equal(secondCue.sequence, firstCue.sequence + 1,
+    "cue sequences must remain monotonic so late realtime cannot replay after a role change");
+  } finally {
+    await host.stop();
+  }
+});
+
+test("speaker cue sequences survive a game host remount", async () => {
+  const emitOneCue = async () => {
+    const transport = new MemoryTransport();
+    const host = new SessionHost({
+      gameId: "echomaze",
+      roles: [{
+        id: "scanner", label: "Scanner", playerId: "role-scanner", requiredCapabilities: ["touch"],
+        layout: { layout: [{ type: "button", action: "scan", label: "SCAN" }] },
+      }],
+      transport,
+      onFrame: () => {},
+      now: () => 1_234,
+      deviceTimeoutMs: 60_000,
+    });
+    await host.start();
+    try {
+      transport.emit({ channel: "control", payload: {
+        type: "hello", version: PROTOCOL_VERSION, deviceId: "persistent-phone", device: "Phone",
+        capabilities: { touch: true, speaker: true }, features: { speakerAudio: "ready" },
+      } });
+      assert.equal(host.speakerCue("scanner", { pitch: 1, volume: .5 }), true);
+      return requireSpeakerCue(transport.realtime.at(-1)).sequence;
+    } finally {
+      await host.stop();
+    }
+  };
+
+  const beforeRemount = await emitOneCue();
+  const afterRemount = await emitOneCue();
+  assert.ok(afterRemount > beforeRemount,
+    "a controller page outlives React game hosts and must not reject every cue after restart as stale");
 });
 
 test("session host retargets a connected controller when the game changes without another hello", async () => {
@@ -354,4 +562,9 @@ class MemoryTransport implements LinkTransport {
     return () => this.listeners.delete(callback);
   }
   emit(message: LinkMessage) { this.listeners.forEach((listener) => listener(message)); }
+}
+
+function requireSpeakerCue(message: RealtimeMessage | undefined): SpeakerCueMessage {
+  assert.ok(message && "type" in message && message.type === "speaker.cue");
+  return message;
 }

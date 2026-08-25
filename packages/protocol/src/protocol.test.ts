@@ -2,8 +2,14 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
+  INPUT_Q1_BYTES,
+  INPUT_Q1_FORMAT,
+  createInputPacketProfile,
+  decodeInputPacket,
   decodeMotionPacket,
+  deserializeRealtimeMessage,
   deserializeControlMessage,
+  encodeInputPacket,
   encodeMotionPacket,
   decodePairingDescription,
   encodePairingDescription,
@@ -13,13 +19,81 @@ import {
   decodePairingTicket,
   encodePairingTicket,
   serializeControlMessage,
+  serializeRealtimeMessage,
+  WebRTCTransport,
+  type ControllerLayout,
+  type ControlMessage,
+  type InputPacketProfile,
   type LinkMessage,
   type LinkTransport,
+  type RealtimeMessage,
 } from "./index.ts";
 
 test("round-trips reliable control messages", () => {
   const message = { type: "ping", sentAt: 101 } as const;
   assert.deepEqual(deserializeControlMessage(serializeControlMessage(message)), message);
+});
+
+test("negotiates binary input and private speaker readiness without a protocol-version bump", () => {
+  const hello = {
+    type: "hello",
+    version: 2,
+    deviceId: "phone-speaker",
+    device: "Phone",
+    capabilities: { touch: true, speaker: true },
+    features: { inputFormats: [INPUT_Q1_FORMAT], speakerAudio: "ready" },
+  } as const;
+  assert.deepEqual(deserializeControlMessage(serializeControlMessage(hello)), hello);
+
+  const configure = {
+    type: "controller.configure",
+    deviceId: "phone-speaker",
+    gameId: "echomaze",
+    role: "scanner",
+    revision: 4,
+    inputFormat: INPUT_Q1_FORMAT,
+    layout: { layout: [{ type: "button", action: "scan", label: "SCAN" }] },
+  } as const;
+  assert.deepEqual(deserializeControlMessage(serializeControlMessage(configure)), configure);
+
+  const cue = {
+    type: "speaker.cue",
+    deviceId: "phone-speaker",
+    sequence: 8,
+    cue: "pulse-v1",
+    pitch: 1.4,
+    volume: .35,
+  } as const;
+  assert.deepEqual(deserializeRealtimeMessage(serializeRealtimeMessage(cue)), cue);
+  assert.throws(() => deserializeRealtimeMessage(JSON.stringify({ ...cue, pitch: 4 })));
+});
+
+test("optional feature negotiation ignores future offers while preserving known intersections", () => {
+  const hello = {
+    type: "hello",
+    version: 2,
+    deviceId: "future-phone",
+    device: "Future Phone",
+    capabilities: { touch: true },
+    features: { inputFormats: [INPUT_Q1_FORMAT], speakerAudio: "ready" },
+  } as const;
+  const futurePacket = JSON.parse(serializeControlMessage(hello)) as {
+    message: { features: { inputFormats: string[]; futureBatteryMode?: string } };
+  };
+  futurePacket.message.features.inputFormats.push("input-q2");
+  futurePacket.message.features.futureBatteryMode = "eco";
+
+  const parsed = deserializeControlMessage(JSON.stringify(futurePacket));
+  assert.equal(parsed.type, "hello");
+  assert.deepEqual(parsed.type === "hello" && parsed.features, {
+    inputFormats: [INPUT_Q1_FORMAT],
+    speakerAudio: "ready",
+  });
+
+  futurePacket.message.features.inputFormats = ["input-q2"];
+  const jsonOnly = deserializeControlMessage(JSON.stringify(futurePacket));
+  assert.deepEqual(jsonOnly.type === "hello" && jsonOnly.features?.inputFormats, [],
+    "an old host falls back to JSON when it recognizes none of a future controller's formats");
 });
 
 test("validates custom controller layout JSON", () => {
@@ -188,6 +262,183 @@ test("packs motion into a fixed 48-byte realtime packet", () => {
   assert.ok(Math.abs(decoded.quaternion[1] - 0.5) < 0.0001);
 });
 
+test("packs a complete gamepad snapshot into a fixed 24-byte negotiated packet", () => {
+  const layout = parseControllerLayout({
+    title: "Pro Gamepad",
+    layout: [
+      { type: "shoulder", action: "bumperL", label: "LB" },
+      { type: "trigger", action: "triggerL", label: "LT" },
+      { type: "joystick", action: "move", label: "MOVE" },
+      { type: "shoulder", action: "bumperR", label: "RB" },
+      { type: "trigger", action: "triggerR", label: "RT" },
+      { type: "joystick", action: "aim", label: "AIM" },
+      { type: "analog-button", action: "buttonA", label: "A" },
+      { type: "button", action: "buttonB", label: "B", interaction: { type: "toggle" } },
+      { type: "button", action: "buttonX", label: "X", interaction: { type: "chord", actions: ["bumperL", "bumperR"] } },
+      { type: "button", action: "buttonY", label: "Y" },
+    ],
+  });
+  const profile = requireProfile(layout, 7);
+  assert.equal(profile.lanes.length, 12, "the shipped Pro Gamepad must fit every control exactly");
+
+  const frame = {
+    deviceId: "phone",
+    playerId: "forged",
+    sequence: 0x10203040,
+    timestamp: 0x1_0000_0005,
+    source: "touch" as const,
+    actions: {
+      bumperL: true,
+      triggerL: .51,
+      bumperR: false,
+      triggerR: 1,
+      buttonA: .25,
+      buttonB: true,
+      buttonX: false,
+      buttonY: true,
+    },
+    vectors: { move: { x: -.75, y: .5 }, aim: { x: 1, y: -1 } },
+  };
+  const encoded = encodeInputPacket(frame, profile);
+  assert.equal(encoded.byteLength, INPUT_Q1_BYTES);
+  assert.equal(serializeRealtimeMessage(frame, profile) instanceof Uint8Array, true);
+
+  const padded = new Uint8Array(INPUT_Q1_BYTES + 6);
+  padded.set(encoded, 3);
+  const decoded = decodeInputPacket(padded.subarray(3, 3 + INPUT_Q1_BYTES), profile);
+  assert.equal(decoded.deviceId, "phone");
+  assert.equal(decoded.playerId, "role-player");
+  assert.equal(decoded.sequence, frame.sequence);
+  assert.equal(decoded.timestamp, 5, "timestamps are intentionally transmitted modulo 2^32");
+  assert.equal(decoded.source, "touch");
+  assert.equal(decoded.actions.bumperL, true);
+  assert.equal(decoded.actions.bumperR, false);
+  assert.ok(Math.abs(Number(decoded.actions.triggerL) - .51) <= 1 / 255);
+  assert.ok(Math.abs(decoded.vectors!.move!.x - -.75) <= 1 / 127);
+  assert.ok(Math.abs(decoded.vectors!.move!.y - .5) <= 1 / 127);
+  assert.deepEqual(deserializeRealtimeMessage(encoded, profile), decoded);
+
+  const stale = encoded.slice();
+  new DataView(stale.buffer).setUint16(2, 8, true);
+  assert.throws(() => decodeInputPacket(stale, profile), /revision/i);
+});
+
+test("keeps JSON realtime fallback for layouts that cannot be represented safely", () => {
+  const oversized: ControllerLayout = {
+    layout: Array.from({ length: 13 }, (_, index) => ({
+      type: "button" as const,
+      action: `button${index}`,
+      label: `B${index}`,
+    })),
+  };
+  assert.equal(createInputPacketProfile(oversized, {
+    revision: 1,
+    deviceId: "phone",
+    playerId: "role-player",
+  }), undefined);
+  assert.equal(createInputPacketProfile({ layout: [
+    { type: "button", action: "same", label: "SAME" },
+    { type: "joystick", action: "same" },
+  ] }, { revision: 1, deviceId: "phone", playerId: "role-player" }), undefined);
+  assert.equal(createInputPacketProfile({ layout: [
+    { type: "joystick", action: "move" },
+    { type: "slider", action: "moveX", label: "STRAFE", min: -1, max: 1 },
+  ] }, { revision: 1, deviceId: "phone", playerId: "role-player" }), undefined,
+  "derived vector-axis aliases must not overwrite an independently encoded control");
+
+  const frame = { deviceId: "phone", playerId: "player", sequence: 1, timestamp: 2, source: "touch" as const, actions: { fire: true } };
+  assert.equal(typeof serializeRealtimeMessage(frame), "string");
+});
+
+test("keeps a layout-transition release complete when the new binary profile cannot encode it", () => {
+  const profile = createInputPacketProfile({ layout: [
+    { type: "button", action: "newAction", label: "NEW" },
+  ] }, { revision: 2, deviceId: "phone", playerId: "role-player" });
+  assert.ok(profile);
+  const release = {
+    deviceId: "phone",
+    playerId: "role-player",
+    sequence: 4,
+    timestamp: 8,
+    source: "touch" as const,
+    actions: { oldHeldAction: false },
+  };
+
+  assert.equal(typeof serializeRealtimeMessage(release, profile), "string",
+    "the old action name must survive the transition instead of disappearing from a new-profile packet");
+  assert.throws(() => encodeInputPacket(release, profile), /JSON fallback/,
+    "direct codec callers must not silently discard an unprofiled release either");
+});
+
+test("WebRTC switches to binary only after both peers negotiate the configured profile", async () => {
+  const originalPeer = globalThis.RTCPeerConnection;
+  FakePeerConnection.instances.length = 0;
+  globalThis.RTCPeerConnection = FakePeerConnection as unknown as typeof RTCPeerConnection;
+
+  const layout = parseControllerLayout({ layout: [
+    { type: "joystick", action: "move" },
+    { type: "button", action: "fire", label: "FIRE" },
+  ] });
+  const controller = new WebRTCTransport({ initiator: true });
+  const host = new WebRTCTransport({ initiator: true });
+  try {
+    const frame = {
+      deviceId: "phone",
+      playerId: "role-player",
+      sequence: 9,
+      timestamp: 12,
+      source: "touch" as const,
+      actions: { fire: true },
+      vectors: { move: { x: .25, y: -.5 } },
+    };
+    const assignment = { type: "player.assign", deviceId: "phone", playerId: "role-player", role: "pilot", gameId: "game" } as const;
+    const configuration = {
+      type: "controller.configure", deviceId: "phone", gameId: "game", role: "pilot", revision: 7,
+      layout, inputFormat: INPUT_Q1_FORMAT,
+    } as const;
+
+    // Controller side: only control messages received from the host may select its encoder.
+    await controller.connect();
+    const controllerPeer = FakePeerConnection.instances.at(-1);
+    const controllerControl = controllerPeer?.channel("101-control");
+    const controllerRealtime = controllerPeer?.channel("101-realtime");
+    assert.ok(controllerControl && controllerRealtime);
+    assert.equal(controllerRealtime.binaryType, "arraybuffer");
+    controller.sendRealtime(frame);
+    assert.equal(typeof controllerRealtime.sent.at(-1), "string", "input stays JSON until configuration arrives");
+    controllerControl.receive(serializeControlMessage(assignment));
+    controllerControl.receive(serializeControlMessage(configuration));
+    controller.sendRealtime(frame);
+    const binary = controllerRealtime.sent.at(-1);
+    assert.ok(binary instanceof Uint8Array);
+    assert.equal(binary.byteLength, INPUT_Q1_BYTES);
+
+    // Host side: only the configuration it sent may select its decoder. Keeping this endpoint
+    // separate makes a swapped incoming/outgoing profile fail instead of cancelling itself out.
+    const received: LinkMessage[] = [];
+    host.onMessage((message) => received.push(message));
+    await host.connect();
+    const hostPeer = FakePeerConnection.instances.at(-1);
+    const hostControl = hostPeer?.channel("101-control");
+    const hostRealtime = hostPeer?.channel("101-realtime");
+    assert.ok(hostControl && hostRealtime);
+    host.sendReliable(assignment);
+    host.sendReliable(configuration);
+    hostRealtime.receive(binary);
+    const decoded = received.at(-1);
+    assert.equal(decoded?.channel, "realtime");
+    assert.equal(decoded?.channel === "realtime" && !("type" in decoded.payload) && decoded.payload.deviceId, "phone");
+
+    const receivedBeforeMalformed = received.length;
+    hostRealtime.receive(new Uint8Array(3));
+    assert.equal(received.length, receivedBeforeMalformed, "partial disposable input packets are dropped");
+  } finally {
+    await Promise.all([controller.disconnect(), host.disconnect()]);
+    if (originalPeer) globalThis.RTCPeerConnection = originalPeer;
+    else Reflect.deleteProperty(globalThis, "RTCPeerConnection");
+  }
+});
+
 test("round-trips validated offline pairing descriptions", async () => {
   const description = {
     type: "offer" as const,
@@ -244,21 +495,134 @@ test("multiplexes any number of Link transports and removes peers cleanly", asyn
   multiplex.sendReliable({ type: "haptic", deviceId: "phone-2", pattern: "tap" });
   assert.equal(first.reliable, 1, "targeted private control must not be broadcast to other peers");
   assert.equal(second.reliable, 2);
+  multiplex.sendRealtime({ type: "speaker.cue", deviceId: "phone-2", sequence: 1, cue: "pulse-v1", pitch: 1, volume: .5 });
+  assert.equal(first.realtime, 0, "private speaker audio must not leak to another controller");
+  assert.equal(second.realtime, 1);
   assert.equal(await multiplex.remove("phone"), true);
   assert.equal(second.connected, false);
+  multiplex.sendRealtime({ type: "speaker.cue", deviceId: "phone-2", sequence: 2, cue: "pulse-v1", pitch: 1, volume: .5 });
+  assert.equal(first.realtime, 0, "a private cue for a missing route must be dropped, never broadcast");
+  multiplex.sendReliable({ type: "controller.state", deviceId: "phone-2", values: { clue: "private" } });
+  assert.equal(first.reliable, 1, "targeted reliable state must also be dropped when its peer is gone");
   multiplex.sendReliable({ type: "ping", sentAt: 3 });
   assert.equal(first.reliable, 2);
   assert.equal(second.reliable, 2);
 });
 
+test("multiplex binds each authenticated peer to its own device route", async () => {
+  const first = new MemoryTransport();
+  const second = new MemoryTransport();
+  const multiplex = new MultiplexLinkTransport();
+  const received: LinkMessage[] = [];
+  multiplex.onMessage((message) => received.push(message));
+  await multiplex.add("peer-a", first, { wireDeviceId: "device-a", routeDeviceId: "peer-a" });
+  await multiplex.add("peer-b", second, { wireDeviceId: "device-b", routeDeviceId: "peer-b" });
+  await multiplex.connect();
+
+  first.emit({ channel: "control", payload: {
+    type: "hello", version: 2, deviceId: "device-a", device: "A", capabilities: { touch: true },
+  } });
+  second.emit({ channel: "control", payload: {
+    type: "hello", version: 2, deviceId: "device-b", device: "B", capabilities: { touch: true },
+  } });
+  second.emit({ channel: "control", payload: {
+    type: "hello", version: 2, deviceId: "device-a", device: "B spoofing A", capabilities: { touch: true },
+  } });
+  second.emit({ channel: "realtime", payload: {
+    deviceId: "device-a", playerId: "forged", sequence: 1, timestamp: 1, source: "touch", actions: { fire: true },
+  } });
+
+  assert.deepEqual(received.map((message) => (
+    "deviceId" in message.payload ? message.payload.deviceId : undefined
+  )), ["peer-a", "peer-b"],
+    "a peer cannot overwrite another route or inject input under its wire identity");
+  multiplex.sendRealtime({
+    type: "speaker.cue", deviceId: "peer-a", sequence: 1, cue: "pulse-v1", pitch: 1, volume: .5,
+  });
+  assert.equal(first.realtime, 1);
+  assert.equal(second.realtime, 0, "a private cue stays on the authenticated peer route");
+  assert.equal("type" in first.realtimeMessages[0]! && first.realtimeMessages[0].deviceId, "device-a",
+    "the bound transport restores the controller's local id on the wire");
+});
+
+test("two authenticated peers with the same local id remain distinct host devices", async () => {
+  const first = new MemoryTransport();
+  const second = new MemoryTransport();
+  const multiplex = new MultiplexLinkTransport();
+  const received: LinkMessage[] = [];
+  multiplex.onMessage((message) => received.push(message));
+  await multiplex.add("peer-a", first, { wireDeviceId: "phone", routeDeviceId: "peer-a" });
+  await multiplex.add("peer-b", second, { wireDeviceId: "phone", routeDeviceId: "peer-b" });
+  await multiplex.connect();
+  first.emit({ channel: "control", payload: { type: "hello", version: 2, deviceId: "phone", device: "A", capabilities: { touch: true } } });
+  second.emit({ channel: "control", payload: { type: "hello", version: 2, deviceId: "phone", device: "B", capabilities: { touch: true } } });
+
+  assert.deepEqual(received.map((message) => (
+    "deviceId" in message.payload ? message.payload.deviceId : undefined
+  )), ["peer-a", "peer-b"]);
+  multiplex.sendReliable({ type: "controller.state", deviceId: "peer-a", values: { clue: "private" } });
+  assert.equal(first.reliable, 1);
+  assert.equal(second.reliable, 0);
+  assert.equal(first.reliableMessages[0]?.type === "controller.state" && first.reliableMessages[0].deviceId, "phone");
+});
+
 class MemoryTransport implements LinkTransport {
   connected = false;
   reliable = 0;
+  realtime = 0;
+  readonly reliableMessages: ControlMessage[] = [];
+  readonly realtimeMessages: RealtimeMessage[] = [];
   private listener?: (message: LinkMessage) => void;
   async connect() { this.connected = true; }
   async disconnect() { this.connected = false; }
-  sendReliable() { this.reliable += 1; }
-  sendRealtime() {}
+  sendReliable(message: ControlMessage) { this.reliable += 1; this.reliableMessages.push(message); }
+  sendRealtime(message: RealtimeMessage) { this.realtime += 1; this.realtimeMessages.push(message); }
   onMessage(callback: (message: LinkMessage) => void) { this.listener = callback; return () => { this.listener = undefined; }; }
   emit(message: LinkMessage) { this.listener?.(message); }
+}
+
+function requireProfile(layout: ControllerLayout, revision: number): InputPacketProfile {
+  const profile = createInputPacketProfile(layout, {
+    revision,
+    deviceId: "phone",
+    playerId: "role-player",
+  });
+  assert.ok(profile);
+  return profile;
+}
+
+class FakeDataChannel {
+  readonly label: string;
+  readonly sent: (string | ArrayBuffer | ArrayBufferView)[] = [];
+  readyState = "open" as const;
+  bufferedAmount = 0;
+  bufferedAmountLowThreshold = 0;
+  binaryType: BinaryType = "blob";
+  onmessage: ((event: MessageEvent) => void) | null = null;
+
+  constructor(label: string) { this.label = label; }
+
+  send(data: string | ArrayBuffer | ArrayBufferView) { this.sent.push(data); }
+  close() {}
+  receive(data: string | ArrayBuffer | ArrayBufferView) { this.onmessage?.({ data } as MessageEvent); }
+}
+
+class FakePeerConnection {
+  static readonly instances: FakePeerConnection[] = [];
+  readonly channels = new Map<string, FakeDataChannel>();
+  connectionState: RTCPeerConnectionState = "new";
+  onconnectionstatechange: (() => void) | null = null;
+  ondatachannel: ((event: RTCDataChannelEvent) => void) | null = null;
+
+  constructor() { FakePeerConnection.instances.push(this); }
+
+  createDataChannel(label: string) {
+    const channel = new FakeDataChannel(label);
+    this.channels.set(label, channel);
+    return channel as unknown as RTCDataChannel;
+  }
+
+  channel(label: string) { return this.channels.get(label); }
+  close() { this.connectionState = "closed"; }
+  getStats() { return Promise.resolve(new Map() as unknown as RTCStatsReport); }
 }

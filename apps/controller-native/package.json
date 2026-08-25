@@ -9,7 +9,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "prebuild": "expo prebuild",
-    "test": "node --experimental-strip-types --test src/pairing-code.test.ts src/watch-controller.test.ts src/motion-controller.test.ts",
+    "test": "node --experimental-strip-types --test src/pairing-code.test.ts src/watch-controller.test.ts src/motion-controller.test.ts src/controller-speaker.test.ts src/controller-runtime-gates.test.ts src/native-webrtc-codec.test.ts",
     "typecheck": "tsc --noEmit",
     "doctor": "expo-doctor",
     "export": "expo export --platform all --output-dir dist"
@@ -23,6 +23,7 @@
     "@101/protocol": "0.1.0",
     "base64-js": "1.5.1",
     "expo": "57.0.12",
+    "expo-audio": "~57.0.4",
     "expo-build-properties": "57.0.10",
     "expo-camera": "57.0.3",
     "expo-clipboard": "57.0.1",

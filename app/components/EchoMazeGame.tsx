@@ -65,7 +65,11 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         view.sync(state);
         if (state.scanSequence !== previousScan) {
           previousScan = state.scanSequence;
-          if (audioEnabledRef.current) audio.play("ping", { volume: .55, pan: Math.sin(state.clue.bearing) * .7 });
+          const controllerCue = host.playControllerCue("scanner", {
+            pitch: .65 + state.clue.signal / 100 * 1.2,
+            volume: .35 + state.clue.signal / 100 * .35,
+          });
+          if (!controllerCue && audioEnabledRef.current) audio.play("ping", { volume: .55, pan: Math.sin(state.clue.bearing) * .7 });
           host.haptic("scanner", state.clue.echoDistance <= 2 ? "warning" : "tap");
         }
         if (state.impactSequence !== previousImpact) {

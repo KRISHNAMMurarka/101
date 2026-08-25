@@ -11,7 +11,7 @@ use axum::{
     extract::{DefaultBodyLimit, Path, State},
     http::{header, HeaderMap, Response, StatusCode},
     response::IntoResponse,
-    routing::{get, post, put},
+    routing::{delete, get, post, put},
     Json, Router,
 };
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
@@ -25,6 +25,9 @@ use crate::storage::{list_game_packages_at, AppPaths};
 
 pub const PROTOCOL_VERSION: u8 = 2;
 const DEFAULT_TTL_MS: u64 = 4 * 60 * 60 * 1_000;
+const PEER_IDLE_MS: u64 = 30_000;
+const MAX_SESSION_PEERS: usize = 64;
+const MAX_LIVE_SESSIONS: usize = 128;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "camelCase")]
@@ -122,14 +125,44 @@ impl SignalingBroker {
         &mut self,
         request: CreateSessionRequest,
         default_endpoint: &str,
+        resume_host_token: Option<&str>,
     ) -> ApiResult<CreatedSession> {
         validate_session_id(&request.session_id)?;
         self.expire();
-        if let Some(existing) = self.sessions.get(&request.session_id) {
+        if self.sessions.contains_key(&request.session_id) {
+            let token = resume_host_token
+                .ok_or_else(|| ApiError::conflict("Signaling session already exists"))?;
+            let session = self.sessions.get(&request.session_id).unwrap();
+            authorize(&session.host_token, token)?;
+            let endpoint = request
+                .endpoint
+                .map(|endpoint| {
+                    validate_http_url(&endpoint)?;
+                    Ok(endpoint.trim_end_matches('/').to_owned())
+                })
+                .transpose()?;
+            let host_name = match request.host_name {
+                Some(host_name) => clean_optional_text(Some(host_name), 128)?,
+                None => None,
+            };
+            let next_host_token = secure_token();
+            let session = self.sessions.get_mut(&request.session_id).unwrap();
+            if let Some(endpoint) = endpoint {
+                session.ticket.endpoint = endpoint;
+            }
+            if let Some(host_name) = host_name {
+                session.ticket.host_name = Some(host_name);
+            }
+            session.host_token = next_host_token;
             return Ok(CreatedSession {
-                ticket: existing.ticket.clone(),
-                host_token: existing.host_token.clone(),
+                ticket: session.ticket.clone(),
+                host_token: session.host_token.clone(),
             });
+        }
+        if self.sessions.len() >= MAX_LIVE_SESSIONS {
+            return Err(ApiError::too_many_requests(
+                "Signaling Hub has too many live sessions",
+            ));
         }
         let endpoint = request
             .endpoint
@@ -171,22 +204,22 @@ impl SignalingBroker {
         validate_device(&device)?;
         let session = self.live_session_mut(session_id)?;
         authorize(&session.ticket.join_token, token)?;
-        let previous = session
-            .peers
-            .values()
-            .find(|peer| peer.device.device_id == device.device_id)
-            .cloned();
-        if let Some(previous) = &previous {
-            session.peers.remove(&previous.peer_id);
+        let now = now_ms();
+        prune_peers(session, now);
+        if session.peers.len() >= MAX_SESSION_PEERS {
+            return Err(ApiError::too_many_requests("Signaling session is full"));
         }
         let peer = Peer {
             peer_id: format!("peer-{}", &secure_token()[..16]),
             peer_token: secure_token(),
             device,
-            generation: previous.map_or(1, |value| value.generation.saturating_add(1)),
+            // A controller-provided device id is a local label, not signaling authority. Two
+            // ticket holders may legitimately restore the same copied app data; more importantly,
+            // one must never evict the other's authenticated peer by claiming that label.
+            generation: 1,
             offer: None,
             answer: None,
-            last_seen_at: now_ms(),
+            last_seen_at: now,
         };
         let lease = lease(&peer, session.ticket.expires_at);
         session.peers.insert(peer.peer_id.clone(), peer);
@@ -196,6 +229,7 @@ impl SignalingBroker {
     fn list_peers(&mut self, session_id: &str, token: &str) -> ApiResult<Vec<HostPeerSignal>> {
         let session = self.live_session_mut(session_id)?;
         authorize(&session.host_token, token)?;
+        prune_peers(session, now_ms());
         Ok(session
             .peers
             .values()
@@ -223,6 +257,7 @@ impl SignalingBroker {
         )?;
         let session = self.live_session_mut(session_id)?;
         authorize(&session.host_token, token)?;
+        prune_peers(session, now_ms());
         let peer = session
             .peers
             .get_mut(peer_id)
@@ -232,7 +267,6 @@ impl SignalingBroker {
         }
         peer.offer = signal.offer;
         peer.answer = None;
-        peer.last_seen_at = now_ms();
         Ok(())
     }
 
@@ -243,6 +277,7 @@ impl SignalingBroker {
         token: &str,
     ) -> ApiResult<ControllerOfferSignal> {
         let session = self.live_session_mut(session_id)?;
+        prune_peers(session, now_ms());
         let expires_at = session.ticket.expires_at;
         let peer = session
             .peers
@@ -267,6 +302,7 @@ impl SignalingBroker {
         let answer = signal.answer.clone().unwrap_or_default();
         validate_pairing_code("answer", &answer)?;
         let session = self.live_session_mut(session_id)?;
+        prune_peers(session, now_ms());
         let peer = session
             .peers
             .get_mut(peer_id)
@@ -291,6 +327,7 @@ impl SignalingBroker {
         if host {
             authorize(&session.host_token, token)?;
         }
+        prune_peers(session, now_ms());
         let expires_at = session.ticket.expires_at;
         let peer = session
             .peers
@@ -302,8 +339,22 @@ impl SignalingBroker {
         peer.generation = peer.generation.saturating_add(1);
         peer.offer = None;
         peer.answer = None;
-        peer.last_seen_at = now_ms();
+        if !host {
+            peer.last_seen_at = now_ms();
+        }
         Ok(lease(peer, expires_at))
+    }
+
+    fn leave(&mut self, session_id: &str, peer_id: &str, token: &str) -> ApiResult<()> {
+        let session = self.live_session_mut(session_id)?;
+        prune_peers(session, now_ms());
+        let peer = session
+            .peers
+            .get(peer_id)
+            .ok_or_else(|| ApiError::not_found("Unknown signaling peer"))?;
+        authorize(&peer.peer_token, token)?;
+        session.peers.remove(peer_id);
+        Ok(())
     }
 
     fn live_session_mut(&mut self, session_id: &str) -> ApiResult<&mut Session> {
@@ -324,7 +375,16 @@ impl SignalingBroker {
         let now = now_ms();
         self.sessions
             .retain(|_, session| session.ticket.expires_at > now);
+        for session in self.sessions.values_mut() {
+            prune_peers(session, now);
+        }
     }
+}
+
+fn prune_peers(session: &mut Session, now: u64) {
+    session
+        .peers
+        .retain(|_, peer| peer.last_seen_at.saturating_add(PEER_IDLE_MS) > now);
 }
 
 #[derive(Clone)]
@@ -350,6 +410,10 @@ pub fn router(state: HttpState) -> Router {
             post(host_reconnect),
         )
         .route("/v1/sessions/{session_id}/peers", post(join))
+        .route(
+            "/v1/sessions/{session_id}/peers/{peer_id}",
+            delete(controller_leave),
+        )
         .route(
             "/v1/sessions/{session_id}/peers/{peer_id}/offer",
             get(controller_offer),
@@ -414,13 +478,15 @@ struct CreateSessionRequest {
 
 async fn create_session(
     State(state): State<HttpState>,
+    headers: HeaderMap,
     Json(request): Json<CreateSessionRequest>,
 ) -> ApiResult<(StatusCode, Json<CreatedSession>)> {
+    let resume_host_token = optional_bearer(&headers)?;
     let created = state
         .broker
         .lock()
         .map_err(|_| ApiError::internal("Hub state lock failed"))?
-        .create_session(request, &state.endpoint)?;
+        .create_session(request, &state.endpoint, resume_host_token)?;
     Ok((StatusCode::CREATED, Json(created)))
 }
 
@@ -534,6 +600,19 @@ async fn controller_reconnect(
         .map_err(|_| ApiError::internal("Hub state lock failed"))?
         .reconnect(&session_id, &peer_id, bearer(&headers)?, false)?;
     Ok(Json(lease))
+}
+
+async fn controller_leave(
+    State(state): State<HttpState>,
+    Path((session_id, peer_id)): Path<(String, String)>,
+    headers: HeaderMap,
+) -> ApiResult<StatusCode> {
+    state
+        .broker
+        .lock()
+        .map_err(|_| ApiError::internal("Hub state lock failed"))?
+        .leave(&session_id, &peer_id, bearer(&headers)?)?;
+    Ok(StatusCode::NO_CONTENT)
 }
 
 async fn games(
@@ -666,6 +745,14 @@ fn bearer(headers: &HeaderMap) -> ApiResult<&str> {
         .ok_or_else(|| ApiError::unauthorized("Pairing authorization failed"))
 }
 
+fn optional_bearer(headers: &HeaderMap) -> ApiResult<Option<&str>> {
+    if headers.contains_key(header::AUTHORIZATION) {
+        bearer(headers).map(Some)
+    } else {
+        Ok(None)
+    }
+}
+
 fn authorize(expected: &str, received: &str) -> ApiResult<()> {
     if expected.as_bytes().ct_eq(received.as_bytes()).into() {
         Ok(())
@@ -736,6 +823,12 @@ impl ApiError {
             message: message.into(),
         }
     }
+    fn too_many_requests(message: impl Into<String>) -> Self {
+        Self {
+            status: StatusCode::TOO_MANY_REQUESTS,
+            message: message.into(),
+        }
+    }
     fn gone(message: impl Into<String>) -> Self {
         Self {
             status: StatusCode::GONE,
@@ -776,7 +869,7 @@ mod tests {
     fn broker_enforces_distinct_host_join_and_peer_authority() {
         let mut broker = SignalingBroker::default();
         let created = broker
-            .create_session(request(), "http://127.0.0.1:10101")
+            .create_session(request(), "http://127.0.0.1:10101", None)
             .unwrap();
         let device = PairingDevice {
             device_id: "phone-1".into(),
@@ -838,13 +931,251 @@ mod tests {
         assert!(broker
             .get_offer("TEST101", &lease.peer_id, &created.host_token)
             .is_err());
+        broker
+            .leave("TEST101", &lease.peer_id, &lease.peer_token)
+            .unwrap();
+        assert!(broker
+            .list_peers("TEST101", &created.host_token)
+            .unwrap()
+            .is_empty());
+    }
+
+    #[test]
+    fn duplicate_device_ids_keep_distinct_authenticated_peer_routes() {
+        let mut broker = SignalingBroker::default();
+        let created = broker
+            .create_session(request(), "http://127.0.0.1:10101", None)
+            .unwrap();
+        let first = broker
+            .join(
+                "TEST101",
+                &created.ticket.join_token,
+                PairingDevice {
+                    device_id: "copied-phone".into(),
+                    label: "Original".into(),
+                    capabilities: serde_json::json!({"touch": true}),
+                },
+            )
+            .unwrap();
+        let second = broker
+            .join(
+                "TEST101",
+                &created.ticket.join_token,
+                PairingDevice {
+                    device_id: "copied-phone".into(),
+                    label: "Second ticket holder".into(),
+                    capabilities: serde_json::json!({"touch": true}),
+                },
+            )
+            .unwrap();
+
+        assert_ne!(first.peer_id, second.peer_id);
+        assert_ne!(first.peer_token, second.peer_token);
+        assert_eq!(first.generation, 1);
+        assert_eq!(second.generation, 1);
+        let peers = broker.list_peers("TEST101", &created.host_token).unwrap();
+        assert_eq!(
+            peers.len(),
+            2,
+            "copying a local device id must not evict a live peer"
+        );
+        assert!(peers.iter().all(|peer| peer.device_id == "copied-phone"));
+
+        // Both original leases still address only their own route. Sharing the device label must
+        // not make either peer token valid for the other peer.
+        assert!(broker
+            .get_offer("TEST101", &first.peer_id, &first.peer_token)
+            .is_ok());
+        assert!(broker
+            .get_offer("TEST101", &second.peer_id, &second.peer_token)
+            .is_ok());
+        assert!(broker
+            .get_offer("TEST101", &first.peer_id, &second.peer_token)
+            .is_err());
+    }
+
+    #[tokio::test]
+    async fn repeated_session_create_does_not_return_existing_authority() {
+        let directory = tempfile::tempdir().unwrap();
+        let state = HttpState {
+            broker: Arc::new(Mutex::new(SignalingBroker::default())),
+            endpoint: "http://127.0.0.1:10101".into(),
+            addresses: vec![],
+            mdns: false,
+            paths: AppPaths::new(directory.path().to_path_buf()).unwrap(),
+        };
+        let (_, Json(initial)) =
+            create_session(State(state.clone()), HeaderMap::new(), Json(request()))
+                .await
+                .unwrap();
+
+        let repeated = create_session(State(state.clone()), HeaderMap::new(), Json(request()))
+            .await
+            .expect_err("a repeated unauthenticated create must be rejected");
+
+        assert_eq!(repeated.status, StatusCode::CONFLICT);
+        assert!(!repeated.message.contains(&initial.host_token));
+        assert!(!repeated.message.contains(&initial.ticket.join_token));
+
+        let mut authorization = HeaderMap::new();
+        authorization.insert(
+            header::AUTHORIZATION,
+            format!("Bearer {}", initial.host_token).parse().unwrap(),
+        );
+        let (_, Json(resumed)) =
+            create_session(State(state.clone()), authorization, Json(request()))
+                .await
+                .unwrap();
+        assert_ne!(resumed.host_token, initial.host_token);
+        assert_eq!(resumed.ticket.join_token, initial.ticket.join_token);
+        let mut broker = state.broker.lock().unwrap();
+        assert!(broker.list_peers("TEST101", &initial.host_token).is_err());
+        assert!(broker.list_peers("TEST101", &resumed.host_token).is_ok());
+    }
+
+    #[test]
+    fn expired_session_id_can_be_created_again_without_old_authority() {
+        let mut broker = SignalingBroker::default();
+        let first = broker
+            .create_session(request(), "http://127.0.0.1:10101", None)
+            .unwrap();
+        broker
+            .sessions
+            .get_mut("TEST101")
+            .unwrap()
+            .ticket
+            .expires_at = now_ms() - 1;
+
+        let replacement = broker
+            .create_session(request(), "http://127.0.0.1:10101", None)
+            .unwrap();
+
+        assert_ne!(replacement.host_token, first.host_token);
+        assert_ne!(replacement.ticket.join_token, first.ticket.join_token);
+    }
+
+    #[test]
+    fn crashed_peer_is_pruned_and_its_controller_can_join_again() {
+        let mut broker = SignalingBroker::default();
+        let created = broker
+            .create_session(request(), "http://127.0.0.1:10101", None)
+            .unwrap();
+        let device = PairingDevice {
+            device_id: "sleepy-phone".into(),
+            label: "Phone".into(),
+            capabilities: serde_json::json!({"touch": true}),
+        };
+        let first = broker
+            .join("TEST101", &created.ticket.join_token, device.clone())
+            .unwrap();
+        broker
+            .sessions
+            .get_mut("TEST101")
+            .unwrap()
+            .peers
+            .get_mut(&first.peer_id)
+            .unwrap()
+            .last_seen_at = now_ms().saturating_sub(PEER_IDLE_MS + 1);
+
+        assert!(broker
+            .list_peers("TEST101", &created.host_token)
+            .unwrap()
+            .is_empty());
+        let missing = broker
+            .get_offer("TEST101", &first.peer_id, &first.peer_token)
+            .unwrap_err();
+        assert_eq!(missing.status, StatusCode::NOT_FOUND);
+
+        let replacement = broker
+            .join("TEST101", &created.ticket.join_token, device)
+            .unwrap();
+        assert_ne!(replacement.peer_id, first.peer_id);
+        broker
+            .leave("TEST101", &replacement.peer_id, &replacement.peer_token)
+            .unwrap();
+        assert!(broker
+            .list_peers("TEST101", &created.host_token)
+            .unwrap()
+            .is_empty());
+    }
+
+    #[test]
+    fn signaling_session_caps_live_peers() {
+        let mut broker = SignalingBroker::default();
+        let created = broker
+            .create_session(request(), "http://127.0.0.1:10101", None)
+            .unwrap();
+        for index in 0..MAX_SESSION_PEERS {
+            broker
+                .join(
+                    "TEST101",
+                    &created.ticket.join_token,
+                    PairingDevice {
+                        device_id: format!("phone-{index}"),
+                        label: "Phone".into(),
+                        capabilities: serde_json::json!({"touch": true}),
+                    },
+                )
+                .unwrap();
+        }
+        let overflow = broker
+            .join(
+                "TEST101",
+                &created.ticket.join_token,
+                PairingDevice {
+                    device_id: "phone-overflow".into(),
+                    label: "Phone".into(),
+                    capabilities: serde_json::json!({"touch": true}),
+                },
+            )
+            .unwrap_err();
+        assert_eq!(overflow.status, StatusCode::TOO_MANY_REQUESTS);
+    }
+
+    #[test]
+    fn signaling_hub_validates_ids_and_caps_live_sessions() {
+        let mut broker = SignalingBroker::default();
+        let mut invalid = request();
+        invalid.session_id = "../invalid".into();
+        assert_eq!(
+            broker
+                .create_session(invalid, "http://127.0.0.1:10101", None)
+                .unwrap_err()
+                .status,
+            StatusCode::BAD_REQUEST
+        );
+        for index in 0..MAX_LIVE_SESSIONS {
+            let mut next = request();
+            next.session_id = format!("SESSION-{index}");
+            broker
+                .create_session(next, "http://127.0.0.1:10101", None)
+                .unwrap();
+        }
+        let mut overflow = request();
+        overflow.session_id = "SESSION-OVERFLOW".into();
+        assert_eq!(
+            broker
+                .create_session(overflow, "http://127.0.0.1:10101", None)
+                .unwrap_err()
+                .status,
+            StatusCode::TOO_MANY_REQUESTS
+        );
+
+        for session in broker.sessions.values_mut() {
+            session.ticket.expires_at = 0;
+        }
+        let mut replacement = request();
+        replacement.session_id = "SESSION-REUSED".into();
+        assert!(broker
+            .create_session(replacement, "http://127.0.0.1:10101", None)
+            .is_ok());
     }
 
     #[test]
     fn reconnect_discards_old_realtime_negotiation() {
         let mut broker = SignalingBroker::default();
         let created = broker
-            .create_session(request(), "http://127.0.0.1:10101")
+            .create_session(request(), "http://127.0.0.1:10101", None)
             .unwrap();
         let lease = broker
             .join(

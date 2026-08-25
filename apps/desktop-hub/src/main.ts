@@ -72,7 +72,7 @@ const byId = <T extends HTMLElement>(id: string) => {
 
 let status: HubStatus | undefined;
 let settings: HubSettings | undefined;
-let activeSession = "";
+let activeSession: { sessionId: string; hostToken: string } | undefined;
 
 async function refresh() {
   try {
@@ -140,7 +140,7 @@ async function createSession() {
     await QRCode.toCanvas(byId<HTMLCanvasElement>("pair-qr"), code, { width: 220, margin: 2, color: { dark: "#061018", light: "#f2fffd" } });
     byId("pair-code").textContent = code;
     byId("pair-expiry").textContent = `Expires ${new Date(created.ticket.expiresAt).toLocaleTimeString()}`;
-    activeSession = created.ticket.sessionId;
+    activeSession = { sessionId: created.ticket.sessionId, hostToken: created.hostToken };
     byId("pairing").classList.remove("hidden");
     notify("Pairing invitation created locally");
     await refresh();
@@ -190,7 +190,7 @@ byId("save-settings").addEventListener("click", () => void saveSettings());
 byId("import-package").addEventListener("click", () => void importPackage());
 byId("open-launcher").addEventListener("click", () => void invoke("open_launcher").catch((error) => notify(error, true)));
 byId("open-paired-session").addEventListener("click", () => {
-  if (activeSession) void invoke("open_launcher", { sessionId: activeSession }).catch((error) => notify(error, true));
+  if (activeSession) void invoke("open_launcher", activeSession).catch((error) => notify(error, true));
 });
 
 void refresh();

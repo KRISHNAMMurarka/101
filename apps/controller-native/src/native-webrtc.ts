@@ -4,14 +4,13 @@ import {
 } from "react-native-webrtc";
 
 import {
-  deserializeControlMessage,
-  serializeControlMessage,
   type ControlMessage,
   type LinkMessage,
   type LinkState,
   type RealtimeMessage,
 } from "@101/protocol";
 import type { NegotiatedLinkTransport } from "@101/pairing";
+import { NativeWebRTCCodec } from "./native-webrtc-codec";
 import { decodeDescription, encodeDescription } from "./pairing-code";
 
 type NativeDataChannel = ReturnType<RTCPeerConnection["createDataChannel"]>;
@@ -23,6 +22,7 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
   private readonly listeners = new Set<(message: LinkMessage) => void>();
   private readonly stateListeners = new Set<(state: LinkState) => void>();
   private currentState: LinkState = "idle";
+  private readonly codec = new NativeWebRTCCodec();
 
   get state() {
     return this.currentState;
@@ -49,6 +49,7 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
     this.control = undefined;
     this.realtime = undefined;
     this.peer = undefined;
+    this.codec.reset();
     this.setState("disconnected");
   }
 
@@ -81,13 +82,15 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
 
   sendReliable(message: ControlMessage) {
     if (this.control?.readyState === "open") {
-      this.control.send(serializeControlMessage(message));
+      this.control.send(this.codec.serializeControl(message));
     }
   }
 
   sendRealtime(message: RealtimeMessage) {
     if (this.realtime?.readyState !== "open" || this.realtime.bufferedAmount > 64 * 1024) return;
-    this.realtime.send(JSON.stringify(message));
+    const serialized = this.codec.serializeRealtime(message);
+    if (typeof serialized === "string") this.realtime.send(serialized);
+    else this.realtime.send(serialized as Uint8Array<ArrayBuffer>);
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -108,7 +111,8 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
         const data = (event as { data?: unknown }).data;
         if (typeof data !== "string") return;
         try {
-          this.emit({ channel: "control", payload: deserializeControlMessage(data) });
+          const payload = this.codec.deserializeControl(data);
+          this.emit({ channel: "control", payload });
         } catch {
           // Ignore malformed remote control messages.
         }
@@ -116,11 +120,12 @@ export class NativeWebRTCTransport implements NegotiatedLinkTransport {
     }
     if (channel.label === "101-realtime") {
       this.realtime = channel;
+      channel.binaryType = "arraybuffer";
       channel.onmessage = (event: unknown) => {
         const data = (event as { data?: unknown }).data;
-        if (typeof data !== "string") return;
+        if (typeof data !== "string" && !(data instanceof ArrayBuffer) && !ArrayBuffer.isView(data)) return;
         try {
-          this.emit({ channel: "realtime", payload: JSON.parse(data) as RealtimeMessage });
+          this.emit({ channel: "realtime", payload: this.codec.deserializeRealtime(data) });
         } catch {
           // Realtime packets are disposable.
         }

@@ -71,9 +71,16 @@ The lab supplies no STUN, TURN, signaling, account, or relay service. That prese
 
 ## Security properties
 
+- Automatic Hub pairing is for a trusted private LAN. Its zero-setup HTTP signaling does not protect bearer tokens or SDP from a hostile network observer; use an isolated network or manual offline pairing on untrusted Wi-Fi.
 - Join, host administration, and each peer use different high-entropy bearer secrets.
+- An authenticated host reload rotates its origin-local host bearer; an unauthenticated duplicate session request receives no ticket or bearer.
+- Desktop-to-browser host authority is session- and loopback-Hub-bound, fragment-only, erased immediately, and rotated before use; it never enters a controller invitation.
 - Tickets expire and contain no account identity.
+- Live sessions and peers are bounded, crashed peer leases expire, and graceful controllers delete their lease.
 - Offer/answer generations reject stale reconnect data.
+- A generation-reset request survives a temporary Hub outage on either peer, and host teardown waits for resets already in flight.
+- An invalid answer drops and resets only its authenticated peer, so it cannot starve later controllers in the host poll.
 - Games never see signaling or transport APIs.
-- Targeted role state is routed only to the peer that registered that `deviceId`.
+- Targeted role state is routed through the authenticated peer's canonical route, so copied local device IDs remain distinct.
 - The Hub exchanges pairing descriptions; it is not a gameplay relay.
+- The global session cap bounds memory but, because invitation creation is account-free, is not protection from a malicious LAN client exhausting admission slots.

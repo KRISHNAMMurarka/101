@@ -8,6 +8,7 @@ export class Engine101<State> {
   readonly game: GameDefinition<State>;
   private frameHandle?: number;
   private previousTime = 0;
+  private lifecycleRevision = 0;
 
   constructor(
     game: GameDefinition<State>,
@@ -34,13 +35,18 @@ export class Engine101<State> {
   }
 
   async start() {
+    const revision = ++this.lifecycleRevision;
     await this.game.preload?.(this.context);
+    // `stop()` may run while arbitrary asynchronous preload code is pending. A stale start must
+    // not resurrect the game hook or schedule one frame after its host has begun teardown.
+    if (revision !== this.lifecycleRevision) return;
     this.game.start?.(this.context);
     this.previousTime = performance.now();
     this.frameHandle = requestAnimationFrame(this.tick);
   }
 
   stop() {
+    this.lifecycleRevision += 1;
     if (this.frameHandle !== undefined) cancelAnimationFrame(this.frameHandle);
     this.game.stop?.(this.context);
     this.frameHandle = undefined;

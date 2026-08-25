@@ -12,6 +12,7 @@ import {
 import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
   BroadcastChannelTransport,
+  INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
   decodePairingTicket,
   type ControllerElement,
@@ -20,6 +21,7 @@ import {
   type StatefulLinkTransport,
 } from "@101/protocol";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BrowserControllerSpeaker } from "./controller-speaker";
 
 interface Assignment {
   gameId: string;
@@ -55,7 +57,9 @@ type Handedness = NonNullable<ControllerLayout["handedness"]>;
 export default function Controller({ session, pairCode }: { session: string; pairCode?: string }) {
   const [connected, setConnected] = useState(false);
   const [assigned, setAssigned] = useState(false);
-  const [online, setOnline] = useState(() => typeof navigator === "undefined" ? true : navigator.onLine);
+  // The worker runtime also exposes `navigator`, but not a meaningful `onLine`. Keep the server and
+  // first browser render identical, then measure real connectivity after hydration.
+  const [online, setOnline] = useState(true);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent>();
   const [pairEntry, setPairEntry] = useState("");
   const [deviceId] = useState(() => {
@@ -77,8 +81,14 @@ export default function Controller({ session, pairCode }: { session: string; pai
   const [layoutRevision, setLayoutRevision] = useState(0);
   const [readout, setReadout] = useState<ControllerReadout>({ values: {}, tone: "normal" });
   const [motionState, setMotionState] = useState<"idle" | "active" | "denied" | "unsupported">("idle");
+  const [speakerAudio, setSpeakerAudio] = useState<"locked" | "ready">("locked");
+  const [speakerEnableFailed, setSpeakerEnableFailed] = useState(false);
+  const [lastSpeakerCue, setLastSpeakerCue] = useState<number>();
   const transportRef = useRef<LinkTransport | null>(null);
   const motionAdapterRef = useRef<BrowserMotionAdapter | null>(null);
+  const speakerRef = useRef<BrowserControllerSpeaker | null>(null);
+  const speakerAudioRef = useRef<"locked" | "ready">("locked");
+  const announceRef = useRef<() => void>(() => undefined);
   const playerIdRef = useRef("player-1");
   const layoutRef = useRef(layout);
   const inputRef = useRef<ControllerInputModel | null>(null);
@@ -88,6 +98,27 @@ export default function Controller({ session, pairCode }: { session: string; pai
   const sequence = useRef(0);
 
   useEffect(() => { layoutRef.current = layout; }, [layout]);
+
+  useEffect(() => {
+    const speaker = new BrowserControllerSpeaker();
+    speakerRef.current = speaker;
+    return () => {
+      speaker.dispose();
+      speakerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateAvailability = () => {
+      const next = speakerRef.current?.state ?? "locked";
+      speakerAudioRef.current = next;
+      setSpeakerAudio(next);
+      announceRef.current();
+    };
+    document.addEventListener("visibilitychange", updateAvailability);
+    updateAvailability();
+    return () => document.removeEventListener("visibilitychange", updateAvailability);
+  }, []);
 
   useEffect(() => {
     try {
@@ -107,6 +138,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
     window.addEventListener("online", updateOnline);
     window.addEventListener("offline", updateOnline);
     window.addEventListener("beforeinstallprompt", captureInstall);
+    updateOnline();
     if ("serviceWorker" in navigator) void navigator.serviceWorker.register("/sw.js", { scope: "/controller" });
     return () => {
       window.removeEventListener("online", updateOnline);
@@ -135,6 +167,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
       haptics: "vibrate" in navigator,
       accelerometer: isMotionSupported(),
       gyroscope: isMotionSupported(),
+      speaker: true,
     };
     let transport: LinkTransport;
     try {
@@ -155,6 +188,10 @@ export default function Controller({ session, pairCode }: { session: string; pai
         if ("type" in payload && payload.type === "haptic" && payload.deviceId === deviceId) {
           lastHostMessageAt.current = performance.now();
           navigator.vibrate?.(payload.pattern === "warning" ? [50, 35, 50] : payload.pattern === "impact" ? 35 : 15);
+        }
+        if ("type" in payload && payload.type === "speaker.cue" && payload.deviceId === deviceId) {
+          lastHostMessageAt.current = performance.now();
+          if (speakerRef.current?.receive(payload)) setLastSpeakerCue(payload.sequence);
         }
         return;
       }
@@ -188,7 +225,10 @@ export default function Controller({ session, pairCode }: { session: string; pai
         setConnected(true);
         setAssigned(true);
         const configuration = `${payload.gameId}:${payload.role}:${payload.revision}`;
-        if (configurationRef.current === configuration) return;
+        if (configurationRef.current === configuration) {
+          publishSnapshot(inputRef.current!.snapshot());
+          return;
+        }
         configurationRef.current = configuration;
         const transition = inputRef.current!.transition(payload.layout);
         publishSnapshot(transition.release);
@@ -221,7 +261,12 @@ export default function Controller({ session, pairCode }: { session: string; pai
       deviceId,
       device: "101 Link browser controller",
       capabilities,
+      features: {
+        inputFormats: [INPUT_Q1_FORMAT],
+        speakerAudio: speakerAudioRef.current,
+      },
     });
+    announceRef.current = hello;
     const removeState = isStateful(transport) ? transport.onStateChange((state) => {
       if (state === "connected") hello();
       if (state === "failed" || state === "disconnected") {
@@ -229,10 +274,26 @@ export default function Controller({ session, pairCode }: { session: string; pai
         setReadout({ values: {}, tone: "warning", message: "LINK INTERRUPTED · RECONNECTING" });
       }
     }) : () => undefined;
-    void transport.connect().then(hello).catch(() => {
-      setConnected(false);
-      setReadout({ values: {}, tone: "critical", message: "LINK TRANSPORT UNAVAILABLE" });
-    });
+    let connectCancelled = false;
+    let connectRetryTimer: number | undefined;
+    let connectFailures = 0;
+    const connectTransport = async () => {
+      connectRetryTimer = undefined;
+      try {
+        await transport.connect();
+        if (connectCancelled) return;
+        connectFailures = 0;
+        hello();
+      } catch {
+        if (connectCancelled) return;
+        setConnected(false);
+        setReadout({ values: {}, tone: "critical", message: "LINK TRANSPORT UNAVAILABLE · RETRYING" });
+        const delay = Math.min(10_000, 600 * 2 ** Math.min(connectFailures, 4));
+        connectFailures += 1;
+        connectRetryTimer = window.setTimeout(() => void connectTransport(), delay);
+      }
+    };
+    void connectTransport();
     const helloTimer = window.setInterval(hello, 1_600);
     const watchdogTimer = window.setInterval(() => {
       if (!lastHostMessageAt.current || performance.now() - lastHostMessageAt.current <= 4_800) return;
@@ -246,6 +307,8 @@ export default function Controller({ session, pairCode }: { session: string; pai
       });
     }, 800);
     return () => {
+      connectCancelled = true;
+      if (connectRetryTimer !== undefined) window.clearTimeout(connectRetryTimer);
       window.clearInterval(helloTimer);
       window.clearInterval(watchdogTimer);
       publishSnapshot(inputRef.current!.releaseAll());
@@ -255,6 +318,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
       void motionAdapterRef.current?.stop();
       motionAdapterRef.current = null;
       transportRef.current = null;
+      announceRef.current = () => undefined;
     };
   }, [deviceId, pairCode, publishSnapshot, session]);
 
@@ -342,6 +406,19 @@ export default function Controller({ session, pairCode }: { session: string; pai
     setInstallPrompt(undefined);
   };
 
+  const enableSpeaker = async () => {
+    const ready = await speakerRef.current?.enable();
+    if (!ready) {
+      setSpeakerEnableFailed(true);
+      return;
+    }
+    const availability = speakerRef.current?.state ?? "locked";
+    speakerAudioRef.current = availability;
+    setSpeakerAudio(availability);
+    setSpeakerEnableFailed(false);
+    announceRef.current();
+  };
+
   const connectPairing = () => {
     try {
       const value = pairEntry.trim();
@@ -386,6 +463,14 @@ export default function Controller({ session, pairCode }: { session: string; pai
           <p>Installable assets and controller layouts are cached locally. Pairing secrets are never written to the service-worker cache.</p>
         </div>
       </details>
+
+      <section className={`controller-speaker${speakerAudio === "ready" ? " ready" : ""}`}>
+        <div>
+          <span>PRIVATE AUDIO</span>
+          <strong aria-live="polite">{speakerAudio === "ready" ? lastSpeakerCue === undefined ? "READY · WAITING FOR CUE" : `PRIVATE CUE ${lastSpeakerCue}` : speakerEnableFailed ? "LOCKED · TRY AGAIN" : "LOCKED UNTIL YOU OPT IN"}</strong>
+        </div>
+        <button onClick={enableSpeaker} disabled={speakerAudio === "ready"}>{speakerAudio === "ready" ? "PRIVATE AUDIO READY" : "ENABLE PRIVATE AUDIO"}</button>
+      </section>
 
       <section className="dynamic-controller-heading">
         <div>

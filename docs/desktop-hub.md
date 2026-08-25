@@ -14,7 +14,7 @@
 - serve installed package assets from `/games/{gameId}/...` with path-containment and size checks;
 - open the separately running browser launcher at the user-configured local URL.
 
-When the dashboard creates an invitation, **Open this session** adds the selected session and loopback Hub endpoint to the launcher URL. The browser host then claims the same signaling session and begins WebRTC offer generation, so a controller may scan before or after the game screen opens.
+When the dashboard creates an invitation, **Open this session** adds the selected session and loopback Hub endpoint to the launcher query. Its one-time host authority travels separately in a session- and Hub-bound URL fragment. The browser removes that fragment immediately, claims and rotates the authority into same-origin storage, then begins WebRTC offer generation. The bearer never enters the query, controller QR, saved Desktop settings, or browser history, and a controller may scan before or after the game screen opens.
 
 The desktop dashboard calls the same `@101/protocol` ticket encoder as the web and native clients. There is no desktop-only pairing format.
 
@@ -44,11 +44,13 @@ The Rust server matches `@101/hub-server`:
 - `GET /v1/health`
 - `POST /v1/sessions`
 - authenticated host peer list, offer, and reconnect routes;
-- authenticated controller join, offer, answer, and reconnect routes;
+- authenticated controller join, leave, offer, answer, and reconnect routes;
 - `GET /v1/games`
 - `GET /games/{gameId}/{asset}`
 
-Request bodies are capped, session and device identifiers are validated, pairing descriptions are bounded, expired sessions are reaped, and authorization tokens are compared in constant time. The Hub permits CORS because browser launchers on the same LAN use a different local origin; all state-changing signaling routes require an ephemeral bearer secret.
+Request bodies are capped, session and device identifiers are validated, pairing descriptions are bounded, invitation lifetimes are clamped, live session/peer counts are capped, inactive peers and expired sessions are reaped, and authorization tokens are compared in constant time. Repeating session creation without the current host bearer returns no authority; authenticated reload rotates that bearer while preserving the controller invitation. A malformed answer is isolated to its peer and cannot prevent later peers from receiving offers. The Hub permits CORS because browser launchers on the same LAN use a different local origin; all state-changing signaling routes after initial invitation creation require an ephemeral bearer secret.
+
+The zero-configuration listener is a trusted-private-LAN feature, not a hostile-network protocol. It uses HTTP, so another device able to observe or modify LAN traffic can capture signaling bearers or SDP despite the route-level authorization checks. Account-free session creation can also consume the bounded global pool. Use an isolated/private network (or manual offline pairing) rather than public Wi-Fi, and bind/advertise the Hub only on interfaces intended for play.
 
 ## Local storage
 
