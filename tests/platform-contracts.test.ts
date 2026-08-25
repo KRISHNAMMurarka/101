@@ -495,3 +495,103 @@ test("browser Link consumes the complete real-gamepad controller contract", () =
   assert.match(source, /element\.side \?\? defaultControlSide\(element\)/,
     "legacy hint-less layouts must receive the same left/right inference as native Link");
 });
+
+test("the launcher calls catalog discovery and windows complete rows", () => {
+  // A fast catalog helper with no production caller is still an eager thousand-card page. This
+  // protects the shipped boundary: defer the player's query, filter through the resolved input
+  // profiles, and render only the complete rows that intersect the viewport.
+  const source = readFileSync(resolve(import.meta.dirname, "../app/Launcher.tsx"), "utf8");
+
+  for (const helper of [
+    "CATALOG_INPUT_PROFILES",
+    "filterCatalog",
+    "planCatalogWindow",
+  ] as const) {
+    assert.match(source, new RegExp(`\\b${helper}\\b`),
+      `Launcher must call ${helper} rather than leaving catalog scaling in a test-only layer`);
+  }
+
+  assert.match(source, /useDeferredValue\(/,
+    "typing in catalog search must not synchronously rebuild the visible grid");
+  assert.match(source, /new ResizeObserver\(/,
+    "the window must recompute complete rows when the responsive grid changes columns");
+  assert.match(source, /addEventListener\(["']scroll["'][^;]+passive:\s*true/s,
+    "catalog scroll measurement must use a passive listener");
+  assert.match(source, /requestAnimationFrame\(/,
+    "scroll updates must be coalesced to one render per animation frame");
+  assert.match(source, /aria-live=["']polite["']/,
+    "search result changes need a polite live-region announcement");
+  assert.match(source, /aria-setsize=/,
+    "windowed cards must expose the full result-set size");
+  assert.match(source, /aria-posinset=/,
+    "windowed cards must expose their position within the full result set");
+});
+
+test("the catalog benchmark URL reaches the launcher's server render", () => {
+  // Launcher must receive the synthetic count before its server render; client-only URL expansion
+  // would keep hydration safe but could not measure a thousand-entry first paint honestly.
+  const page = readFileSync(resolve(import.meta.dirname, "../app/page.tsx"), "utf8");
+
+  assert.match(page, /searchParams/,
+    "the home route must inspect its server-side query parameters");
+  assert.match(page, /catalog[^;]+1000/s,
+    "the local benchmark route must recognize ?catalog=1000");
+  assert.match(page, /createSyntheticCatalog\(gameCatalog,\s*1_000\)/,
+    "the server must generate the complete benchmark catalog before the client boundary");
+  assert.match(page, /<Launcher[^>]+games=\{benchmarkCatalog\}[^>]+benchmarkMode/s,
+    "all benchmark manifests must reach Launcher before SSR and hydration");
+});
+
+test("windowed catalog results remain reachable without scroll geometry guesses", () => {
+  const launcher = readFileSync(resolve(import.meta.dirname, "../app/Launcher.tsx"), "utf8");
+  const styles = readFileSync(resolve(import.meta.dirname, "../app/globals.css"), "utf8");
+
+  assert.match(launcher, /planCatalogPage\(/,
+    "keyboard paging must mount a deterministic result slice independent of scroll position");
+  assert.match(launcher, /const renderWindow = requestedPage \?\? windowPlan/,
+    "a requested keyboard page must override, then hand back to, the scroll-driven window");
+  assert.match(launcher, /filteredCatalog\.slice\(renderWindow\.startIndex, renderWindow\.endIndex\)/,
+    "the requested page boundaries must determine which production cards mount");
+  assert.match(launcher, /aria-label=["']Previous result page["']/,
+    "the previous-page control needs an explicit accessible name");
+  assert.match(launcher, /aria-label=["']Next result page["']/,
+    "the next-page control needs an explicit accessible name");
+  assert.match(launcher, /pageFocusTargetRef\.current\?\.focus\(\{\s*preventScroll:\s*true\s*\}\)/,
+    "paging must preserve a useful keyboard focus target after mounting the requested slice");
+  assert.match(launcher, /addEventListener\(["']scroll["'],\s*releasePageFromScroll/,
+    "scrollbar, assistive, and programmatic scrolling must release a locked keyboard page");
+  assert.match(launcher, /const focusScrollTop = pageFocusScrollTopRef\.current;\s*if \([^;]+\) return;\s*pageFocusScrollTopRef\.current = null;/s,
+    "duplicate scroll events at the focus target must not collapse the requested page");
+  assert.match(launcher, /if \(!pageFocusScrollSettledRef\.current\) return;/,
+    "layout scrolls caused by relocating the focused pager must settle before scroll handoff");
+  assert.match(launcher, /pageFocusSettleFrameRef\.current = window\.requestAnimationFrame/,
+    "the focus-scroll guard must be bounded by rendered frames rather than a guessed timeout");
+  assert.match(launcher, /requestAnimationFrame\(\(\) => \{[\s\S]*requestAnimationFrame\(\(\) => \{\s*pageFocusScrollTopRef\.current = window\.scrollY;\s*pageFocusScrollSettledRef\.current = true;/,
+    "the expected scroll position must be sampled after the browser applies scrollIntoView");
+  assert.match(launcher, /scrollIntoView\(\{\s*behavior:\s*["']instant["']/,
+    "the one focus-induced scroll must finish synchronously before scroll handoff is armed");
+  const catalogMap = launcher.indexOf("{visibleCatalog.map");
+  const pagerRenders = [...launcher.matchAll(/\{catalogPager\}/g)].map((match) => match.index);
+  assert.deepEqual(pagerRenders.length, 1,
+    "one pager should serve both pointer and keyboard navigation without duplicate controls");
+  assert.ok((pagerRenders[0] ?? Number.MAX_SAFE_INTEGER) < catalogMap,
+    "the pager must stay before the moving virtual window so pointer scrolling cannot chase it");
+  const keyboardPagerRender = launcher.indexOf("{catalogKeyboardPager}");
+  assert.ok(keyboardPagerRender > catalogMap,
+    "a keyboard-only continuation must follow the mounted slice in DOM order");
+  assert.match(launcher, /className=["']catalog-pager-forward["']/,
+    "forward Tab must expose an actionable page control without moving the pointer pager");
+  assert.match(launcher, /--catalog-spacer-height-1/);
+  assert.match(launcher, /--catalog-spacer-height-2/);
+  assert.match(launcher, /--catalog-spacer-height-3/);
+  assert.match(styles, /height:\s*var\(--catalog-spacer-height\)/,
+    "SSR spacer geometry must use a server-rendered height rather than client-only measurement");
+  assert.match(styles, /\.catalog-spacer\s*\{[^}]*--catalog-spacer-height:\s*var\(--catalog-spacer-height-3\)/s,
+    "the spacer must resolve its default height against variables declared on that same element");
+  assert.match(styles, /\.catalog-spacer\s*\{[^}]*--catalog-spacer-height:\s*var\(--catalog-spacer-height-2\)/s,
+    "the two-column breakpoint must select its server-rendered height");
+  assert.match(styles, /\.catalog-spacer\s*\{[^}]*--catalog-spacer-height:\s*var\(--catalog-spacer-height-1\)/s,
+    "the one-column breakpoint must select its server-rendered height");
+  assert.match(styles, /\.catalog-game-card:focus-visible/,
+    "the programmatically focused result needs a visible keyboard focus edge");
+});

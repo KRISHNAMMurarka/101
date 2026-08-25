@@ -38,6 +38,27 @@ test("server-renders the 101 launcher and all ten catalog games", async () => {
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 });
 
+test("server-renders a bounded first window for the 1000-entry catalog benchmark", async () => {
+  const response = await render("/?catalog=1000");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const renderedText = html.replaceAll("<!-- -->", "");
+  const cards = html.match(/class="[^"]*\bcatalog-game-card\b[^"]*"/g) ?? [];
+  const cardHeadings = [...html.matchAll(
+    /<article\b[^>]*\bcatalog-game-card\b[^>]*>[\s\S]*?<h3>([^<]+)<\/h3>[\s\S]*?<\/article>/g,
+  )].map((match) => match[1]);
+
+  assert.equal(cards.length, 12, "SSR must emit one bounded twelve-card window");
+  assert.equal(cardHeadings.length, 12, "only twelve manifest cards belong in the rendered DOM");
+  assert.equal((html.match(/aria-setsize="1000"/g) ?? []).length, 12);
+  assert.match(renderedText, /1000 benchmark entries\. One nervous system\./i);
+  assert.match(cardHeadings.at(-1) ?? "", /Catalog Fixture 0012/);
+  assert.doesNotMatch(cardHeadings.join("\n"), /Catalog Fixture 0013|Catalog Fixture 1000/,
+    "the server must not eagerly mount the rest of the synthetic catalog");
+  assert.match(html, /Catalog Fixture 1000/,
+    "all one thousand manifest records must cross the production server-to-client boundary");
+});
+
 test("serves Slashstorm as an independently playable game route", async () => {
   const response = await render("/games/slashstorm");
   const html = await response.text();
