@@ -225,6 +225,46 @@ versus 24 quantized, not a latency claim.
 
 ---
 
+## Still open, after the 2026-08-16 verification pass
+
+Every P1-P4 item above was built and independently verified as genuinely wired — traced to a real
+production caller, and for the catalog and speaker, exercised in a running browser. Three defects
+found in that work are fixed (permanent cue desync, a flaky speaker-sequence test, a security gate
+that crashed instead of failing). These remain:
+
+### Weak tests where it matters most
+Several tests that bind a tested class to the React component that must call it are `readFileSync` +
+regex over source text. They pass on a file that merely *mentions* the right string, which is exactly
+the failure mode this codebase keeps hitting. Affected: the browser/native gamepad contract tests,
+the speaker wiring tests, and three catalog tests in `tests/platform-contracts.test.ts`. Replace with
+tests that mount and assert behaviour, or drive the real page.
+
+### The native speaker's staleness guard is asserted by nothing
+`apps/controller-native/src/controller-speaker.ts` drops a cue older than 120 ms — the thing that
+makes it "disposable" rather than late. Every test constructs `new ControllerSpeaker(player)` with
+the default clock, and deleting both deadline checks leaves all seven tests green. The constructor
+already takes an injectable `now`; use it.
+
+### The browser speaker cannot fall back after a silent failure
+Native Link demotes itself to `locked` when playback rejects, restoring host audio. The browser's
+`Audio101.play()` is fire-and-forget with no error channel, so once it reports `ready` the host
+suppresses the TV fallback permanently even if every cue is silent. `enable()` also reports ready
+without evidence anything can play.
+
+### Catalog: only the DOM is windowed, not the data
+1000 entries still cross the RSC boundary — 864 KB of HTML to mount 12 cards. Windowing is also
+inert for the real 10-game catalog (initial window is 12), so it is exercised only by the
+`?catalog=1000` benchmark route.
+
+### The two renderers disagree about `zone`
+Native sorts by zone rank and splits shoulder/index controls into their own row; web sorts by
+priority only and uses `data-zone` in a single CSS rule. The same layout therefore puts a shoulder
+button in different places on the two clients.
+
+### BeatForge haptics still fire from the render loop
+1.3 moved haptics to the realtime channel, but `app/components/BeatForgeGame.tsx` still triggers them
+at the moment the note reaches the strike line, so there is no lead time before the WebRTC hop.
+
 ## Known limits — do not treat these as bugs
 
 - **Emulators cannot complete WebRTC.** Android and iOS simulators cannot finish ICE through their
