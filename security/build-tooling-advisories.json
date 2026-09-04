@@ -26,6 +26,32 @@
       "fixNotes": "Patched in uuid >= 11.1.1, but the fix lives inside a transitive dependency of Expo's own tooling. Forcing an override into xcode's internals risks breaking iOS project generation for an unreachable code path. Adopt it when Expo updates xcode upstream.",
       "reviewed": "2026-08-13",
       "reviewBy": "2026-11-13"
+    },
+    {
+      "package": "@xmldom/xmldom",
+      "advisory": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
+      "severity": "moderate",
+      "path": "@101/controller-native > expo > @expo/cli > @expo/plist > @xmldom/xmldom, and @101/controller-native > expo > @expo/cli > @expo/config-plugins > xcode > simple-plist > plist > @xmldom/xmldom",
+      "surface": "build-tooling",
+      "justification": "Both paths are Expo prebuild tooling that runs on a developer machine: @expo/plist and simple-plist read and rewrite Info.plist and entitlements while generating the iOS project. Neither ships in the web runtime or in the built iOS/Android bundle. The only XML they serialize is this repository's own generated app configuration, so no attacker-controlled document reaches the vulnerable path.",
+      "vulnerableCodePathReachable": false,
+      "fixAvailable": true,
+      "fixNotes": "Patched above 0.9.11, but both copies are pinned inside Expo's own CLI dependency tree. Forcing an override into plist generation risks breaking iOS prebuild for a path that only ever sees our own files. Adopt when Expo updates @expo/plist and xcode upstream.",
+      "reviewed": "2026-08-16",
+      "reviewBy": "2026-11-16"
+    },
+    {
+      "package": "fast-uri",
+      "advisory": "fast-uri host confusion and SSRF via IDN canonicalization, IPv6 normalization and percent-decoding",
+      "severity": "high",
+      "path": "@101/controller-native > expo > @expo/cli > @expo/router-server > react-server-dom-webpack > webpack > schema-utils > ajv-formats > ajv > fast-uri",
+      "surface": "build-tooling",
+      "justification": "ajv uses fast-uri to resolve $ref URIs while validating webpack loader and plugin option schemas during bundling on a developer machine. The URIs it parses come from webpack's own schema files, not from the network or from user input, and none of this runs on a player device or in the shipped bundle. The SSRF and host-confusion classes require attacker-controlled URIs, which this path does not have.",
+      "vulnerableCodePathReachable": false,
+      "fixAvailable": true,
+      "fixNotes": "Patched above 3.1.5. It sits four levels inside Expo's router-server tooling; an override would pin a transitive dependency of webpack's schema validator. Adopt when ajv or webpack updates upstream, and re-check at the review date.",
+      "reviewed": "2026-08-16",
+      "reviewBy": "2026-11-16"
     }
   ]
 }

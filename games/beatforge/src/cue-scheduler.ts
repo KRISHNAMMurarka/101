@@ -17,16 +17,27 @@ export interface BeatCueTimeline {
 }
 
 /**
- * Maps the chart clock to the Web Audio clock once, then keeps that mapping stable while rendered
- * frames arrive early, late, or not at all. A short timer calls `tick`; Web Audio owns the precise
- * future start after each cue enters the lookahead window.
+ * Schedules chart cues on the Web Audio clock, re-deriving the chart-to-audio mapping on every tick.
+ *
+ * The mapping used to be pinned once, at the first enabled tick, and every later cue was placed at
+ * `audioOrigin + targetSeconds - gameOrigin`. That is only sound if the chart clock and the audio
+ * clock advance together, and they do not: `Engine101` advances `state.elapsed` by
+ * `Math.min(deltaSeconds, 0.1)`, so any frame longer than 100 ms — a tab restored from the
+ * background, a GC pause, a lazy chunk landing — silently drops real time from the chart clock while
+ * the audio clock keeps all of it. With a pinned origin that loss is permanent: every remaining beat
+ * sounds early by the accumulated gap, for the rest of the run.
+ *
+ * Anchoring to the present instead — "this cue is N seconds ahead in chart time, so play it N
+ * seconds ahead in audio time" — absorbs each stall as it happens. A cue is still placed once, and
+ * Web Audio still owns its precise start, so the lookahead behaviour is unchanged; what changes is
+ * that error can no longer accumulate. It also fixes a second symptom of the same cause: while a tab
+ * is hidden the chart clock is frozen, so cues no longer race past an advancing absolute deadline
+ * and get marked as sounded without ever being heard.
  */
 export class BeatCueLookahead {
   private readonly scheduledGroups = new Set<number>();
   private readonly timeline: BeatCueTimeline;
   private readonly lookaheadSeconds: number;
-  private audioOrigin?: number;
-  private gameOrigin?: number;
 
   constructor(timeline: BeatCueTimeline, lookaheadSeconds = BEAT_CUE_LOOKAHEAD_SECONDS) {
     if (!(lookaheadSeconds > 0)) throw new Error("Beat cue lookahead must be positive");
@@ -55,18 +66,16 @@ export class BeatCueLookahead {
       return;
     }
 
-    if (this.audioOrigin === undefined || this.gameOrigin === undefined) {
-      this.audioOrigin = this.timeline.currentTime;
-      this.gameOrigin = state.elapsed;
-    }
-
     const now = this.timeline.currentTime;
     const horizon = now + this.lookaheadSeconds;
     const upcoming = [...groups.values()].sort((a, b) => a.targetSeconds - b.targetSeconds);
     for (const target of upcoming) {
       if (this.scheduledGroups.has(target.groupId)) continue;
-      const at = this.audioOrigin + target.targetSeconds - this.gameOrigin;
-      if (at < now) {
+      // Measured from the present on every tick, so a stalled frame shifts this cue and every cue
+      // after it by the same amount rather than leaving them all early forever.
+      const secondsAhead = target.targetSeconds - state.elapsed;
+      const at = now + secondsAhead;
+      if (secondsAhead < 0) {
         this.scheduledGroups.add(target.groupId);
         continue;
       }

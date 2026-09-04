@@ -347,6 +347,12 @@ test("session host negotiates binary input and sends speaker cues only to an aud
     transport,
     onFrame: () => {},
     deviceTimeoutMs: 60_000,
+    // Pinned, because the cue sequence is anchored to the wall clock: it is
+    // `max(previous + 1, trunc(now) * 1000)`. Two cues inside one millisecond differ by 1, but if the
+    // millisecond ticks between them the base jumps by 1000 and the strict assertion below fails.
+    // This test flaked exactly that way. A fixed clock makes the +1 a property of the code rather
+    // than of how fast the machine ran.
+    now: () => 1_700_000_000_000,
   });
   await host.start();
   try {

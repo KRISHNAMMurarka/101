@@ -71,14 +71,29 @@ if (unreviewed.length || expired.length || stale.length) {
 console.log(`\nPASS: no unreviewed advisories. ${accepted.length} build-tooling exception(s) in force.`);
 
 async function runAudit() {
+  let report;
   try {
     const { stdout } = await run("npm", ["audit", "--omit=dev", "--json"], { maxBuffer: 64 * 1024 * 1024 });
-    return JSON.parse(stdout);
+    report = JSON.parse(stdout);
   } catch (error) {
     // npm audit exits non-zero whenever it finds anything; the JSON report is still on stdout.
-    if (typeof error.stdout === "string" && error.stdout.trim()) return JSON.parse(error.stdout);
-    throw error;
+    if (typeof error.stdout === "string" && error.stdout.trim()) report = JSON.parse(error.stdout);
+    else throw error;
   }
+
+  // A failed *lookup* also exits non-zero and also prints valid JSON — but an error payload with no
+  // `metadata`, which used to crash this script on `audit.metadata.vulnerabilities` and read as a
+  // bug in the gate rather than a gate that could not run. The two outcomes must never look alike:
+  // "no advisories found" and "could not check for advisories" are different facts, and only one of
+  // them means the dependencies are clean.
+  if (!report || !report.metadata) {
+    const reason = report?.message ?? "npm audit returned no report";
+    console.error(`101 production dependency audit could not run: ${reason}`);
+    console.error("\nThis is not a pass. The advisory database was not reached, so nothing was checked.");
+    console.error("Retry when the network is available; npm's bulk advisory endpoint times out intermittently.");
+    process.exit(2);
+  }
+  return report;
 }
 
 async function readReviewed() {
