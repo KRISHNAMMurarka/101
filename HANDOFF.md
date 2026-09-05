@@ -239,17 +239,20 @@ the failure mode this codebase keeps hitting. Affected: the browser/native gamep
 the speaker wiring tests, and three catalog tests in `tests/platform-contracts.test.ts`. Replace with
 tests that mount and assert behaviour, or drive the real page.
 
-### The native speaker's staleness guard is asserted by nothing
-`apps/controller-native/src/controller-speaker.ts` drops a cue older than 120 ms — the thing that
-makes it "disposable" rather than late. Every test constructs `new ControllerSpeaker(player)` with
-the default clock, and deleting both deadline checks leaves all seven tests green. The constructor
-already takes an injectable `now`; use it.
+### ~~The native speaker's staleness guard is asserted by nothing~~ — fixed 2026-08-16
+Three tests now drive an injected clock: one for the deadline check before the seek, one for the
+check after it, and one proving a live cue still sounds. Removing either check now fails two of them
+with a clear assertion rather than passing or hanging.
 
-### The browser speaker cannot fall back after a silent failure
-Native Link demotes itself to `locked` when playback rejects, restoring host audio. The browser's
-`Audio101.play()` is fire-and-forget with no error channel, so once it reports `ready` the host
-suppresses the TV fallback permanently even if every cue is silent. `enable()` also reports ready
-without evidence anything can play.
+### ~~The browser speaker cannot fall back after a silent failure~~ — fixed 2026-08-16
+`Audio101` gained `onPlaybackError`, wired to Howler's `playerror`, which fires after `play()` has
+already returned an id. `BrowserControllerSpeaker` demotes to `locked` on it and re-announces, so the
+host takes the role's audio back onto the television — the browser equivalent of what native Link
+already did on a rejected play. Demotion reports once, not per failure.
+
+Still open in this area: `enable()` reports ready without evidence anything can play, because
+`Audio101.resume()` returns immediately when Howler is not using WebAudio. That is now recoverable
+rather than permanent, but it would be better not to over-claim in the first place.
 
 ### Catalog: only the DOM is windowed, not the data
 1000 entries still cross the RSC boundary — 864 KB of HTML to mount 12 cards. Windowing is also

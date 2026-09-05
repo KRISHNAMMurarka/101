@@ -668,3 +668,49 @@ test("windowed catalog results remain reachable without scroll geometry guesses"
   assert.match(styles, /\.catalog-game-card:focus-visible/,
     "the programmatically focused result needs a visible keyboard focus edge");
 });
+
+test("a browser cue that fails to sound hands the role's audio back to the television", async () => {
+  // Advertising `speakerAudio: "ready"` makes the host stop playing this role's cues through the TV.
+  // Audio101.play() is synchronous and returns an id long before the browser decides whether it can
+  // actually sound, so a silent failure used to be unrecoverable: the player heard nothing from the
+  // controller and nothing from the television, permanently. Native Link already demoted itself on a
+  // rejected play; this is the browser's equivalent.
+  const { BrowserControllerSpeaker } = await import("../app/controller/controller-speaker.ts");
+
+  let failPlayback: ((id: string) => void) | undefined;
+  const played: string[] = [];
+  const audio = {
+    registerTone() {},
+    async resume() {},
+    play(id: string) { played.push(id); return 1; },
+    unload() {},
+    onPlaybackError(listener: (id: string) => void) {
+      failPlayback = listener;
+      return () => { failPlayback = undefined; };
+    },
+  };
+
+  let announcements = 0;
+  const speaker = new BrowserControllerSpeaker(audio, () => true, () => { announcements += 1; });
+  const cue = (sequence: number) => ({
+    type: "speaker.cue" as const, deviceId: "phone", sequence,
+    cue: "pulse-v1" as const, pitch: 1, volume: .5,
+  });
+
+  assert.equal(await speaker.enable(), true);
+  assert.equal(speaker.receive(cue(1)), true, "a live speaker plays the cue");
+  assert.equal(played.length, 1);
+
+  // The browser reports, after the fact, that the sound never started.
+  assert.ok(failPlayback, "the speaker must subscribe to playback failures");
+  failPlayback("private-cue");
+
+  assert.equal(speaker.state, "locked", "a failed cue must demote the speaker");
+  assert.equal(announcements, 1, "and re-announce, so the host resumes television audio");
+  assert.equal(speaker.receive(cue(2)), false, "no further cue is claimed while locked");
+  assert.equal(played.length, 1, "and none reaches the audio engine");
+
+  // Demotion is reported once, not on every subsequent failure, so the host is not spammed.
+  failPlayback("private-cue");
+  assert.equal(announcements, 1);
+});

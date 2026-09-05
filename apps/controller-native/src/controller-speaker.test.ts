@@ -32,6 +32,31 @@ class DeferredPlayer extends FakePlayer {
   }
 }
 
+/**
+ * Yields until a condition holds, for the tests that drive an injected clock.
+ *
+ * `ControllerSpeaker.play` queues its work on a promise chain, so the player has not been asked to
+ * seek yet at the moment `play()` returns. Resolving the deferred seek before that point leaves it
+ * pending forever and hangs the run — which is exactly what happened while writing these.
+ */
+async function settle(until: () => boolean, ticks = 20) {
+  for (let i = 0; i < ticks && !until(); i += 1) await Promise.resolve();
+}
+
+/**
+ * Yields repeatedly, resolving any seek the speaker asks for.
+ *
+ * The deadline tests must fail rather than hang when the guard is removed: leaving a deferred seek
+ * unresolved wedges the run instead of reporting anything, which is a worse signal than the bug.
+ * Draining lets an unguarded cue run all the way to `play()`, so the assertion catches it.
+ */
+async function drain(player: DeferredPlayer, ticks = 40) {
+  for (let i = 0; i < ticks; i += 1) {
+    player.pending.shift()?.();
+    await Promise.resolve();
+  }
+}
+
 function cue(sequence: number, pitch = 1, volume = 1): SpeakerCueMessage {
   return {
     type: "speaker.cue",
@@ -135,4 +160,71 @@ test("a cue discarded while locked cannot replay after native audio becomes read
   assert.equal(speaker.discard(cue(8)), true);
   assert.equal(await speaker.play(cue(8)), false);
   assert.equal(player.plays, 0);
+});
+
+test("a cue whose seek outlives the deadline is dropped before it can sound", () => {
+  // The 120 ms deadline is why a speaker cue rides the disposable realtime lane at all: a private
+  // clue arriving after the moment it described is worse than one that never arrives. Every other
+  // test here builds the speaker on the real clock, where elapsed time is ~0 ms, so the deadline
+  // never fires — deleting both checks left all seven of them green. These two drive the clock.
+  //
+  // This one covers the check *after* the seek resolves, which is the subtle one: the cue was live
+  // when it started and expired while the audio engine was still seeking.
+  return (async () => {
+    let clock = 1_000;
+    const player = new DeferredPlayer();
+    const speaker = new ControllerSpeaker(player, () => clock);
+
+    const sounding = speaker.play(cue(1, 1.4, 0.8));
+    await settle(() => player.pending.length > 0);
+    clock += 500;
+    await drain(player);
+
+    assert.equal(await sounding, false, "a cue that expired mid-seek must not reach the speaker");
+    assert.equal(player.seeks.length, 1, "it had already started seeking when the deadline passed");
+    assert.equal(player.plays, 0, "but it must never play");
+  })();
+});
+
+test("a cue that waits out its deadline in the queue never touches the player", () => {
+  // And this one covers the check *before* the seek: a cue queued behind a slow one, still waiting
+  // when its own moment has passed.
+  return (async () => {
+    let clock = 1_000;
+    const player = new DeferredPlayer();
+    const speaker = new ControllerSpeaker(player, () => clock);
+
+    const blocking = speaker.play(cue(1));
+    const queued = speaker.play(cue(2, 1.9, 0.05));
+    clock += 500;
+    await drain(player);
+    await blocking;
+
+    assert.equal(await queued, false, "a cue that waited out its deadline must not sound");
+    assert.equal(player.plays, 0);
+    // The distinctive settings of the queued cue must never have been written to the player, which
+    // is what distinguishes "dropped before configuring" from "configured then cancelled".
+    assert.notEqual(player.playbackRate, 1.9, "an expired cue must not configure the player");
+    assert.notEqual(player.volume, 0.05);
+  })();
+});
+
+test("a cue still inside its deadline sounds normally on the same driven clock", () => {
+  // The companion to both: the deadline must reject late cues without rejecting live ones, or it
+  // would be indistinguishable from the speaker simply being broken.
+  return (async () => {
+    let clock = 5_000;
+    const player = new DeferredPlayer();
+    const speaker = new ControllerSpeaker(player, () => clock);
+
+    const sounding = speaker.play(cue(9, 1.5, 0.6));
+    await settle(() => player.pending.length > 0);
+    clock += 30;
+    player.pending.shift()?.();
+
+    assert.equal(await sounding, true, "30 ms is well inside the 120 ms budget");
+    assert.equal(player.plays, 1);
+    assert.equal(player.volume, 0.6);
+    assert.equal(player.playbackRate, 1.5);
+  })();
 });

@@ -31,6 +31,7 @@ export class Audio101 {
   private sfxVolume = 1;
   private manuallyMuted = false;
   private readonly onVisibilityChange = () => this.applyMuteState();
+  private readonly playbackErrorListeners = new Set<(id: string) => void>();
 
   constructor() {
     if (typeof document !== "undefined") document.addEventListener("visibilitychange", this.onVisibilityChange);
@@ -39,11 +40,31 @@ export class Audio101 {
   register(id: string, options: SoundOptions) {
     this.sounds.get(id)?.unload();
     this.baseVolumes.set(id, clamp(options.volume ?? 1));
-    this.sounds.set(id, new Howl({
+    const sound = new Howl({
       ...options,
       preload: options.preload ?? true,
       mute: this.shouldMute(),
-    }));
+    });
+    // `play()` is synchronous and returns an id long before the browser decides whether it can
+    // actually sound. Without this, a caller that has told a host "audio is ready" has no way to
+    // learn it was wrong, and keeps that claim forever.
+    sound.on("playerror", () => {
+      for (const listener of this.playbackErrorListeners) listener(id);
+    });
+    this.sounds.set(id, sound);
+  }
+
+  /**
+   * Notifies when a sound failed to start after `play()` already returned.
+   *
+   * The browser controller advertises `speakerAudio: "ready"` to the host, which then stops playing
+   * that role's cues through the television. If playback silently fails there is otherwise no path
+   * back: the player hears nothing from either source, permanently. Native Link already demotes
+   * itself on a rejected play; this is the browser's equivalent.
+   */
+  onPlaybackError(listener: (id: string) => void) {
+    this.playbackErrorListeners.add(listener);
+    return () => this.playbackErrorListeners.delete(listener);
   }
 
   registerTone(id: string, options: ToneOptions) {

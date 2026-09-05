@@ -100,7 +100,13 @@ export default function Controller({ session, pairCode }: { session: string; pai
   useEffect(() => { layoutRef.current = layout; }, [layout]);
 
   useEffect(() => {
-    const speaker = new BrowserControllerSpeaker();
+    // A cue that fails to sound demotes the speaker and re-announces, so the host takes this role's
+    // audio back onto the television instead of leaving the player in silence.
+    const speaker = new BrowserControllerSpeaker(undefined, undefined, () => {
+      speakerAudioRef.current = "locked";
+      setSpeakerAudio("locked");
+      announceRef.current();
+    });
     speakerRef.current = speaker;
     return () => {
       speaker.dispose();
