@@ -45,13 +45,35 @@ export type LauncherCatalogEntry = Pick<
   GameManifest,
   "id" | "name" | "tagline" | "order" | "renderer" | "players" | "inputs" | "status" | "controllers"
 > & {
-  readonly searchText: string;
+  /**
+   * Whether the game offers anything beyond its basic controls. The launcher only asks these two
+   * yes/no questions, so shipping the full `controllers` arrays sent 120 bytes per entry to answer
+   * them.
+   */
+  readonly enhanced: boolean;
+  readonly immersive: boolean;
   readonly playableWith: Readonly<Record<CatalogInputProfileId, boolean>>;
 };
+
+/**
+ * Search text for one entry, built where it is used rather than shipped.
+ *
+ * It is derived entirely from `id`, `name`, `tagline` and `inputs`, all of which the entry already
+ * carries, so sending it too made it 28% of every entry for nothing. Build it once per catalog with
+ * `buildCatalogSearchIndex` — recomputing per keystroke would be wasteful, but recomputing once on
+ * the client costs a fraction of what transferring it costs.
+ */
+export function buildCatalogSearchIndex(
+  entries: readonly LauncherCatalogEntry[],
+): ReadonlyMap<string, string> {
+  return new Map(entries.map((entry) => [entry.id, catalogSearchText(entry)]));
+}
 
 export interface CatalogFilterOptions {
   query?: string;
   input?: CatalogInputFilter;
+  /** Built once per catalog by `buildCatalogSearchIndex`; recomputed per entry when absent. */
+  searchIndex?: ReadonlyMap<string, string>;
 }
 
 export interface CatalogWindowOptions {
@@ -100,8 +122,8 @@ export function createLauncherCatalogEntry(
     players: manifest.players,
     inputs: manifest.inputs,
     status: manifest.status,
-    controllers: manifest.controllers,
-    searchText: catalogSearchText(manifest),
+    enhanced: Boolean(manifest.controllers?.enhanced?.length),
+    immersive: Boolean(manifest.controllers?.immersive?.length),
     playableWith: Object.freeze(playableWith),
   };
 }
@@ -115,9 +137,14 @@ export function filterCatalog(
     throw new Error(`Unknown catalog input filter ${String(input)}`);
   }
   const tokens = normalizeCatalogText(options.query ?? "").split(" ").filter(Boolean);
-  return entries.filter((entry) =>
-    (input === "all" || entry.playableWith[input])
-    && tokens.every((token) => entry.searchText.includes(token)));
+  // The index is optional so a caller filtering by input alone need not build one.
+  const index = options.searchIndex;
+  return entries.filter((entry) => {
+    if (input !== "all" && !entry.playableWith[input]) return false;
+    if (tokens.length === 0) return true;
+    const text = index?.get(entry.id) ?? catalogSearchText(entry);
+    return tokens.every((token) => text.includes(token));
+  });
 }
 
 export function createSyntheticCatalog(
@@ -155,7 +182,6 @@ export function createSyntheticCatalog(
     return {
       ...fixture,
       playableWith: Object.freeze({ ...source.playableWith }),
-      searchText: catalogSearchText(fixture),
     };
   });
 }

@@ -260,12 +260,33 @@ Two honest ways forward, in order of preference:
 Still regex-bound today: the speaker wiring tests and the gamepad element contract tests. They
 assert a component *mentions* the right call. Treat them as reminders, not as proof.
 
-### Genuinely still open
+### Catalog payload, and where it now stands
 
-- **Catalog data is not windowed, only the DOM is.** A thousand entries still cross the RSC boundary
-  to mount twelve cards. Narrowing the entry helped; only a server-side search and pagination API
-  fixes it, and no player hits this today with ten games.
-- **Audible playback on a real phone is unverified**, as is two-thumb play. Both need hardware.
+Every field the catalog can derive or does not read has been removed from the wire shape:
+`searchText` (28% of an entry, derivable from `id`/`name`/`tagline`/`inputs`, now built once on the
+client by `buildCatalogSearchIndex`) and the full `controllers` arrays (120 bytes to answer the two
+yes/no questions a card asks, now two booleans).
+
+| | Homepage | 1000-entry benchmark |
+| --- | --- | --- |
+| Originally | 50,083 B | 864,336 B |
+| After narrowing the entry | 32,500 B | 747,762 B |
+| After dropping derived fields | **30,232 B** | **478,962 B** |
+
+Verified in a browser, not only by byte count: searching `camera` still matches 6 of 10 games,
+nonsense matches 0, clearing restores 10, and the Enhanced/Immersive badge counts (8 and 6) match
+what the manifests actually declare.
+
+What remains is genuine per-entry data. Going further means server-side search and pagination —
+sending a page instead of a catalog — which is an architecture decision, not a cleanup, and which no
+player reaches today with ten games. It is deliberately not built.
+
+### Needs hardware, cannot be closed from a workstation
+
+- **Audible playback on a real phone.** The path is wired end to end and tested at every seam, but
+  nobody has heard it.
+- **Two-thumb play.** The React Native single-responder fix is reasoned from RN's source and locked
+  by a test; simulators synthesise only mirrored pinch, never two independent touch points.
 
 ## Known limits — do not treat these as bugs
 

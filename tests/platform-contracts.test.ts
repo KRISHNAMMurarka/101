@@ -789,3 +789,37 @@ test("both renderers share one ordering rule, and it puts controls where the han
     assert.equal(/function zoneRank\(/.test(source), false, `${file} must not keep its own copy`);
   }
 });
+
+test("the catalog ships no field it can derive or does not read", async () => {
+  // The whole catalog is serialised across the server-to-client boundary on every page load, so a
+  // field nobody reads is paid for per entry, per visit. Two were: `searchText`, 28% of an entry and
+  // derivable from `id`/`name`/`tagline`/`inputs` which the entry already carries, and the full
+  // `controllers` arrays — 120 bytes — to answer the two yes/no questions a card actually asks.
+  //
+  // Measured across the change: the homepage went 50,083 to 30,232 bytes, and the thousand-entry
+  // benchmark route 864,336 to 478,962.
+  const { createLauncherCatalogEntry, buildCatalogSearchIndex, filterCatalog } =
+    await import("../app/lib/catalog.ts");
+  const { parseGameManifest } = await import("@101/sdk");
+  const { parseInputManifest } = await import("@101/input");
+
+  const manifest = parseGameManifest(JSON.parse(
+    readFileSync(resolve(import.meta.dirname, "../games/slashstorm/manifest.json"), "utf8")));
+  const input = parseInputManifest(JSON.parse(
+    readFileSync(resolve(import.meta.dirname, "../games/slashstorm/input.manifest.json"), "utf8")));
+  const entry = createLauncherCatalogEntry(manifest, input);
+
+  for (const derived of ["searchText", "controllers", "version", "engine", "offline", "procedural", "accent"]) {
+    assert.equal(derived in entry, false, `${derived} must not cross the boundary`);
+  }
+  // The two questions a card asks, answered as booleans rather than as arrays.
+  assert.equal(entry.enhanced, Boolean(manifest.controllers?.enhanced?.length));
+  assert.equal(entry.immersive, Boolean(manifest.controllers?.immersive?.length));
+
+  // Search still works without the shipped text, whether or not an index is supplied.
+  const withIndex = filterCatalog([entry], { query: "slash", searchIndex: buildCatalogSearchIndex([entry]) });
+  const withoutIndex = filterCatalog([entry], { query: "slash" });
+  assert.equal(withIndex.length, 1, "an indexed search must still match");
+  assert.equal(withoutIndex.length, 1, "and so must one that derives the text per entry");
+  assert.equal(filterCatalog([entry], { query: "zzzznotagame" }).length, 0);
+});

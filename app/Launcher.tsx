@@ -17,6 +17,7 @@ import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-
 import {
   CATALOG_INPUT_LABELS,
   CATALOG_INPUT_PROFILES,
+  buildCatalogSearchIndex,
   filterCatalog,
   planCatalogWindow,
   type CatalogInputFilter,
@@ -85,9 +86,12 @@ export default function Launcher({
   // initial window below remains exactly twelve cards on both sides of hydration.
   const catalog = games;
   const deferredQuery = useDeferredValue(query);
+  // Built once per catalog rather than shipped with it: the text is derived from fields the entry
+  // already carries, and sending it too made it 28% of every entry.
+  const searchIndex = useMemo(() => buildCatalogSearchIndex(catalog), [catalog]);
   const filteredCatalog = useMemo(
-    () => filterCatalog(catalog, { query: deferredQuery, input: inputFilter }),
-    [catalog, deferredQuery, inputFilter],
+    () => filterCatalog(catalog, { query: deferredQuery, input: inputFilter, searchIndex }),
+    [catalog, deferredQuery, inputFilter, searchIndex],
   );
   const { anchorIndex, gridRef, windowPlan } = useCatalogWindow(filteredCatalog.length, view === "library");
   const requestedPage = useMemo(
@@ -429,8 +433,8 @@ export default function Launcher({
                         </div>
                         <div className="preset-status">
                           <span>Playable</span>
-                          {game.controllers?.enhanced?.length ? <span>Enhanced available</span> : null}
-                          {game.controllers?.immersive?.length ? <span>Immersive available</span> : null}
+                          {game.enhanced ? <span>Enhanced available</span> : null}
+                          {game.immersive ? <span>Immersive available</span> : null}
                         </div>
                       </div>
                       {benchmarkMode ? (
