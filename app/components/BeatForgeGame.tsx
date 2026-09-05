@@ -32,6 +32,15 @@ interface BeatHud {
 
 const INITIAL_HUD: BeatHud = { bpm: 112, score: 0, combo: 0, health: 100, accuracy: 100, lastJudge: "FIND THE PULSE", gameOver: false };
 
+/**
+ * How far ahead of the strike line a haptic is dispatched.
+ *
+ * Covers the realtime hop plus the time a phone takes to spin up its vibration motor. Deliberately
+ * small: too much lead makes the buzz precede the note visibly, which is worse for a rhythm game
+ * than a slightly late one.
+ */
+const HAPTIC_LEAD_SECONDS = .06;
+
 export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -85,7 +94,14 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         const state = context.state;
         view.sync(state);
         for (const target of state.targets) {
-          if (target.targetSeconds > state.elapsed || hapticGroups.has(target.groupId)) continue;
+          // Fired a little before the note reaches the strike line rather than exactly on it. A
+          // haptic still has to cross the link and wake the phone's own vibration motor, so
+          // triggering at the instant guarantees the buzz lands after it. The lead is an estimate,
+          // not a measurement: the host answers pings but never computes a round trip of its own,
+          // so there is no per-device figure to use. Reading one back from the controller would let
+          // this adapt per player.
+          if (target.targetSeconds > state.elapsed + HAPTIC_LEAD_SECONDS) continue;
+          if (hapticGroups.has(target.groupId)) continue;
           hapticGroups.add(target.groupId);
           host.haptic("performer", target.accent ? "impact" : "tap");
         }

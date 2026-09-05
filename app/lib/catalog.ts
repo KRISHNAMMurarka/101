@@ -29,10 +29,25 @@ export const CATALOG_INPUT_LABELS: Readonly<Partial<Record<InputSource, string>>
 export type CatalogInputProfileId = typeof CATALOG_INPUT_PROFILES[number]["id"];
 export type CatalogInputFilter = "all" | CatalogInputProfileId;
 
-export interface LauncherCatalogEntry extends GameManifest {
+/**
+ * The subset of a game manifest the launcher actually renders, plus its derived search fields.
+ *
+ * This used to extend `GameManifest` wholesale, so every entry carried `version`, `engine`,
+ * `offline`, `procedural` and `accent` across the server-to-client boundary even though no card
+ * reads them. The catalog is serialised in full on every page load, so unused fields are paid for
+ * per entry, per visit.
+ *
+ * Narrowing is not a substitute for a real fix at catalog scale: a thousand games still cross the
+ * boundary to mount twelve cards, and only a server-side search and pagination API changes that.
+ * It does mean the payload carries nothing nobody looks at.
+ */
+export type LauncherCatalogEntry = Pick<
+  GameManifest,
+  "id" | "name" | "tagline" | "order" | "renderer" | "players" | "inputs" | "status" | "controllers"
+> & {
   readonly searchText: string;
   readonly playableWith: Readonly<Record<CatalogInputProfileId, boolean>>;
-}
+};
 
 export interface CatalogFilterOptions {
   query?: string;
@@ -75,7 +90,17 @@ export function createLauncherCatalogEntry(
   ) as Record<CatalogInputProfileId, boolean>;
 
   return {
-    ...manifest,
+    // Copied field by field rather than spread, so a field added to GameManifest has to be added
+    // here deliberately before it starts crossing the boundary on every page load.
+    id: manifest.id,
+    name: manifest.name,
+    tagline: manifest.tagline,
+    order: manifest.order,
+    renderer: manifest.renderer,
+    players: manifest.players,
+    inputs: manifest.inputs,
+    status: manifest.status,
+    controllers: manifest.controllers,
     searchText: catalogSearchText(manifest),
     playableWith: Object.freeze(playableWith),
   };
@@ -112,7 +137,7 @@ export function createSyntheticCatalog(
     const prefix = `catalog-fixture-${sequence}-`;
     const id = `${prefix}${source.id}`.slice(0, 128);
     const name = `Catalog Fixture ${sequence}: ${source.name}`.slice(0, 80);
-    const fixture: GameManifest = {
+    const fixture: Omit<LauncherCatalogEntry, "searchText" | "playableWith"> = {
       ...source,
       id,
       name,
@@ -187,7 +212,8 @@ export function planCatalogWindow(options: CatalogWindowOptions): CatalogWindowP
   };
 }
 
-function catalogSearchText(manifest: GameManifest) {
+/** Needs only the fields it reads, so it works for a manifest and for a narrowed catalog entry. */
+function catalogSearchText(manifest: Pick<GameManifest, "id" | "name" | "tagline" | "inputs">) {
   return normalizeCatalogText([
     manifest.id,
     manifest.name,

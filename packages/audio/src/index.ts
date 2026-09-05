@@ -116,6 +116,22 @@ export class Audio101 {
     await Howler.ctx.resume();
   }
 
+  /**
+   * Whether audio output is confirmed usable right now.
+   *
+   * `true` and `false` are answers; `undefined` means the question cannot be answered in advance.
+   * With Web Audio the context state is authoritative, so a suspended context is a definite "no" —
+   * `resume()` returns without error when it has nothing to resume, so a caller that treats a
+   * non-throwing resume as success will claim readiness it has no evidence for. On Howler's HTML5
+   * fallback there is no context to inspect and playback may still work, so the honest answer is
+   * that we do not know until a sound is actually attempted.
+   */
+  get outputReady(): boolean | undefined {
+    if (!Howler.usingWebAudio) return undefined;
+    if (!Howler.ctx) return false;
+    return Howler.ctx.state === "running";
+  }
+
   unload() {
     this.sounds.forEach((sound) => sound.unload());
     this.sounds.clear();

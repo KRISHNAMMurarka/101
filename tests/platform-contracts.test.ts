@@ -714,3 +714,78 @@ test("a browser cue that fails to sound hands the role's audio back to the telev
   failPlayback("private-cue");
   assert.equal(announcements, 1);
 });
+
+test("enabling browser audio does not claim readiness the engine can disprove", async () => {
+  // Audio101.resume() returns immediately when there is no context to resume, so a non-throwing
+  // resume was being read as success. Claiming readiness makes the host stop routing this role's
+  // cues to the television, so a wrong claim costs the player every clue for that session.
+  const { BrowserControllerSpeaker } = await import("../app/controller/controller-speaker.ts");
+  const base = {
+    registerTone() {}, async resume() {},
+    play() { return 1; }, unload() {},
+  };
+
+  // A suspended Web Audio context is a definite no, and must be believed.
+  const suspended = new BrowserControllerSpeaker({ ...base, outputReady: false }, () => true);
+  assert.equal(await suspended.enable(), false, "a suspended context must not be reported ready");
+  assert.equal(suspended.state, "locked");
+
+  // A running context is a definite yes.
+  const running = new BrowserControllerSpeaker({ ...base, outputReady: true }, () => true);
+  assert.equal(await running.enable(), true);
+  assert.equal(running.state, "ready");
+
+  // Howler's HTML5 fallback cannot answer in advance. Refusing there would disable private audio on
+  // browsers where it works, so we proceed — and the playback-error path demotes us if it does not.
+  const unknown = new BrowserControllerSpeaker({ ...base, outputReady: undefined }, () => true);
+  assert.equal(await unknown.enable(), true, "an unknowable engine must not block private audio");
+  assert.equal(unknown.state, "ready");
+});
+
+test("both renderers share one ordering rule, and it puts controls where the hand expects", async () => {
+  // This was a regex over both renderers' source, asserting their duplicated comparators looked
+  // alike. They had already drifted once — the browser sorted by priority alone while native sorted
+  // by zone first, so a shoulder button sat above the thumbs on a phone and below them in a browser,
+  // one layout producing two different gamepads.
+  //
+  // The rule now lives in @101/protocol and both renderers call it, so they cannot disagree by
+  // construction. That also makes it directly testable: `node --experimental-strip-types` cannot
+  // import a .tsx file at all, which is the real reason the controller tests were regexes.
+  const { orderControllerElements, controllerZoneRank } = await import("@101/protocol");
+
+  const element = (action: string, zone?: string, priority?: number) => ({
+    type: "button" as const, action, label: action.toUpperCase(),
+    ...(zone ? { zone: zone as never } : {}),
+    ...(priority === undefined ? {} : { priority }),
+  });
+
+  // Zone outranks priority: a shoulder leads even when a thumb control asks to come first.
+  const ordered = orderControllerElements(
+    [element("aim", "thumb", 99), element("fire", "shoulder"), element("menu", "edge")],
+    (item) => item,
+  );
+  assert.deepEqual(ordered.map((item) => item.action), ["fire", "menu", "aim"]);
+
+  // Within a zone, higher priority leads.
+  const byPriority = orderControllerElements(
+    [element("low", "thumb", 10), element("high", "thumb", 90)],
+    (item) => item,
+  );
+  assert.deepEqual(byPriority.map((item) => item.action), ["high", "low"]);
+
+  // An unzoned control ranks with an edge control, so adding a zone to one element never reshuffles
+  // the ones around it.
+  assert.equal(controllerZoneRank(undefined), controllerZoneRank("edge"));
+  assert.ok(controllerZoneRank("shoulder") < controllerZoneRank("thumb"));
+
+  // Declaration order breaks a genuine tie, so a layout stays stable across renders.
+  const stable = orderControllerElements([element("first"), element("second")], (item) => item);
+  assert.deepEqual(stable.map((item) => item.action), ["first", "second"]);
+
+  // And both renderers must actually call it rather than keeping a private copy.
+  for (const file of ["../app/controller/Controller.tsx", "../apps/controller-native/src/controls.tsx"]) {
+    const source = readFileSync(resolve(import.meta.dirname, file), "utf8");
+    assert.match(source, /orderControllerElements\(/, `${file} must use the shared rule`);
+    assert.equal(/function zoneRank\(/.test(source), false, `${file} must not keep its own copy`);
+  }
+});

@@ -1392,3 +1392,42 @@ function parseCapabilities(input: Record<string, unknown>): DeviceCapabilities {
   }
   return capabilities;
 }
+
+/**
+ * Where a control belongs on the hand, as a sort key.
+ *
+ * A zone outranks priority: a shoulder sits above the thumbs whatever its priority, and an unzoned
+ * control ranks with an edge control so that adding a zone to one element never reshuffles the ones
+ * around it.
+ */
+export function controllerZoneRank(zone: ControllerElement["zone"]) {
+  if (zone === "shoulder") return 0;
+  if (zone === "index") return 1;
+  if (zone === "edge") return 2;
+  if (zone === "thumb") return 3;
+  return 2;
+}
+
+/**
+ * The order a layout's controls are laid out in, shared by both renderers.
+ *
+ * It lives here, rather than in either client, because the two were handed the same layout and
+ * disagreed: the browser sorted by priority alone while native sorted by zone first, so a shoulder
+ * button with default priority sat above the thumbs on a phone and below them in a browser. One
+ * layout produced two different gamepads. Duplicated comparators drift; a shared one cannot.
+ */
+export function orderControllerElements<T>(
+  items: readonly T[],
+  elementOf: (item: T) => ControllerElement,
+): T[] {
+  return items
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const first = elementOf(a.item);
+      const second = elementOf(b.item);
+      return controllerZoneRank(first.zone) - controllerZoneRank(second.zone)
+        || (second.priority ?? 50) - (first.priority ?? 50)
+        || a.index - b.index;
+    })
+    .map((entry) => entry.item);
+}

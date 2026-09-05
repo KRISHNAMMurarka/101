@@ -225,48 +225,47 @@ versus 24 quantized, not a latency claim.
 
 ---
 
-## Still open, after the 2026-08-16 verification pass
+## Closed on 2026-08-16
 
-Every P1-P4 item above was built and independently verified as genuinely wired — traced to a real
-production caller, and for the catalog and speaker, exercised in a running browser. Three defects
-found in that work are fixed (permanent cue desync, a flaky speaker-sequence test, a security gate
-that crashed instead of failing). These remain:
+Every P1–P4 item was built by the previous agent and independently verified as genuinely wired.
+The defects found in that work, and the gaps the verification pass left, are now closed:
 
-### Weak tests where it matters most
-Several tests that bind a tested class to the React component that must call it are `readFileSync` +
-regex over source text. They pass on a file that merely *mentions* the right string, which is exactly
-the failure mode this codebase keeps hitting. Affected: the browser/native gamepad contract tests,
-the speaker wiring tests, and three catalog tests in `tests/platform-contracts.test.ts`. Replace with
-tests that mount and assert behaviour, or drive the real page.
+| Was | Now |
+| --- | --- |
+| Cue scheduler pinned its clock mapping, desyncing audio permanently after any frame over 100 ms | Re-anchored every tick; a stall shifts cues together instead of leaving them early forever |
+| Speaker-sequence test asserted `+1` against the wall clock and flaked | Clock pinned; the assertion is a property of the code, not of machine speed |
+| `audit:production` crashed on a network timeout, indistinguishable from a real failure | Exits 2 with the reason; "could not check" no longer looks like "nothing found" |
+| Two unreviewed advisories failing the gate | Reviewed as build-tooling with paths, reachability and expiry |
+| Native 120 ms staleness guard survived deletion with every test green | Three tests drive an injected clock; removing either check fails two of them |
+| Browser speaker could never recover from a silent playback failure | `Audio101.onPlaybackError` demotes it to locked and re-announces, once |
+| `enable()` claimed readiness a suspended audio context disproved | Believes the engine where it can answer; proceeds only where it genuinely cannot |
+| BeatForge haptics fired at the strike line with no lead for the network hop | Dispatched `HAPTIC_LEAD_SECONDS` early, documented as an estimate |
+| The two renderers ordered the same layout differently | One `orderControllerElements` in `@101/protocol`; neither keeps a copy |
+| Catalog shipped every manifest field, including ones no card reads | Narrowed to the nine it renders — homepage 50 KB to 32.5 KB, benchmark 864 KB to 748 KB |
 
-### ~~The native speaker's staleness guard is asserted by nothing~~ — fixed 2026-08-16
-Three tests now drive an injected clock: one for the deadline check before the seek, one for the
-check after it, and one proving a live cue still sounds. Removing either check now fails two of them
-with a clear assertion rather than passing or hanging.
+### Why the controller tests are regexes, and what to do about it
 
-### ~~The browser speaker cannot fall back after a silent failure~~ — fixed 2026-08-16
-`Audio101` gained `onPlaybackError`, wired to Howler's `playerror`, which fires after `play()` has
-already returned an id. `BrowserControllerSpeaker` demotes to `locked` on it and re-announces, so the
-host takes the role's audio back onto the television — the browser equivalent of what native Link
-already did on a rejected play. Demotion reports once, not per failure.
+Worth writing down, because it looks like laziness and is not: **`node --experimental-strip-types`
+cannot import a `.tsx` file**. There is no JSX transform in the test path, so a test physically
+cannot render a component. That is the entire reason those assertions read source text.
 
-Still open in this area: `enable()` reports ready without evidence anything can play, because
-`Audio101.resume()` returns immediately when Howler is not using WebAudio. That is now recoverable
-rather than permanent, but it would be better not to over-claim in the first place.
+Two honest ways forward, in order of preference:
 
-### Catalog: only the DOM is windowed, not the data
-1000 entries still cross the RSC boundary — 864 KB of HTML to mount 12 cards. Windowing is also
-inert for the real 10-game catalog (initial window is 12), so it is exercised only by the
-`?catalog=1000` benchmark route.
+1. **Keep moving logic out of the components.** Anything worth asserting belongs in a `.ts` module
+   both sides import — which is what `app/lib/catalog.ts` and now `orderControllerElements` are.
+   This needs no tooling and removes duplication as a side effect.
+2. **Add a JSX-capable test path** (vitest, or a Node loader) if component rendering itself must be
+   covered. That is a real dependency decision, not a cleanup.
 
-### The two renderers disagree about `zone`
-Native sorts by zone rank and splits shoulder/index controls into their own row; web sorts by
-priority only and uses `data-zone` in a single CSS rule. The same layout therefore puts a shoulder
-button in different places on the two clients.
+Still regex-bound today: the speaker wiring tests and the gamepad element contract tests. They
+assert a component *mentions* the right call. Treat them as reminders, not as proof.
 
-### BeatForge haptics still fire from the render loop
-1.3 moved haptics to the realtime channel, but `app/components/BeatForgeGame.tsx` still triggers them
-at the moment the note reaches the strike line, so there is no lead time before the WebRTC hop.
+### Genuinely still open
+
+- **Catalog data is not windowed, only the DOM is.** A thousand entries still cross the RSC boundary
+  to mount twelve cards. Narrowing the entry helped; only a server-side search and pagination API
+  fixes it, and no player hits this today with ten games.
+- **Audible playback on a real phone is unverified**, as is two-thumb play. Both need hardware.
 
 ## Known limits — do not treat these as bugs
 

@@ -8,6 +8,8 @@ export interface ControllerCueAudio {
   unload(): void;
   /** Optional so a minimal test double need not implement it; Audio101 does. */
   onPlaybackError?(listener: (id: string) => void): () => void;
+  /** `undefined` where readiness cannot be established before a sound is attempted. */
+  readonly outputReady?: boolean | undefined;
 }
 
 /**
@@ -52,11 +54,17 @@ export class BrowserControllerSpeaker {
     if (this.audioState === "ready") return true;
     try {
       await this.audio.resume();
-      this.audioState = "ready";
-      return true;
     } catch {
       return false;
     }
+    // `resume()` returning without throwing is not evidence of anything: it returns immediately when
+    // there is no audio context to resume. Where the engine can actually answer, believe it — the
+    // host stops routing this role's cues to the television the moment we claim readiness, so a
+    // wrong claim costs the player every clue. Where it genuinely cannot answer in advance, proceed
+    // and let a failed cue demote us.
+    if (this.audio.outputReady === false) return false;
+    this.audioState = "ready";
+    return true;
   }
 
   receive(message: SpeakerCueMessage) {

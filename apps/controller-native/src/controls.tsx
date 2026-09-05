@@ -14,7 +14,7 @@ import {
   normalizeJoystick,
   resolveControllerSide,
 } from "@101/link-controller";
-import type { ControllerElement, ControllerLayout } from "@101/protocol";
+import { orderControllerElements, type ControllerElement, type ControllerLayout } from "@101/protocol";
 
 import { radius, space, type, useLayout, useTheme, type Theme } from "./theme.ts";
 
@@ -75,7 +75,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
    */
   const isPad = (element: ControllerElement) =>
     element.type === "joystick" || element.type === "dpad" || element.type === "touch-surface";
-  const entries = layout.layout
+  const unordered = layout.layout
     .map((element, index) => {
       // Optional placement hints must not make every existing layout collapse into the centre.
       // Legacy layouts keep the proven gamepad heuristic: pads left, actions right,
@@ -87,9 +87,10 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
         side: resolveControllerSide(inferredSide, authoredHandedness, playerHandedness),
       };
     })
-    .sort((a, b) => zoneRank(a.element.zone) - zoneRank(b.element.zone)
-      || (b.element.priority ?? 50) - (a.element.priority ?? 50)
-      || a.index - b.index);
+    ;
+  // Ordering lives in @101/protocol so this renderer and the browser one cannot disagree about
+  // where a layout puts a control.
+  const entries = orderControllerElements(unordered, (entry) => entry.element);
   const left = entries.filter((entry) => entry.side === "left");
   const center = entries.filter((entry) => entry.side === "center");
   const right = entries.filter((entry) => entry.side === "right");
@@ -561,14 +562,6 @@ function clamp(value: number) {
 
 function clamp01(value: number) {
   return Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
-}
-
-function zoneRank(zone: ControllerElement["zone"]) {
-  if (zone === "shoulder") return 0;
-  if (zone === "index") return 1;
-  if (zone === "edge") return 2;
-  if (zone === "thumb") return 3;
-  return 2;
 }
 
 function slotStyle(element: ControllerElement): ViewStyle {

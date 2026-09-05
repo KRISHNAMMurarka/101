@@ -15,6 +15,7 @@ import {
   INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
   decodePairingTicket,
+  orderControllerElements,
   type ControllerElement,
   type ControllerLayout,
   type LinkTransport,
@@ -522,7 +523,12 @@ function isStateful(transport: LinkTransport): transport is StatefulLinkTranspor
   return "onStateChange" in transport && typeof transport.onStateChange === "function";
 }
 
-function DynamicControllerDeck({
+/**
+ * Exported for tests: rendering the real deck and inspecting the markup is the only way to prove a
+ * layout actually produces controls. The contract tests for this used to be regexes over this
+ * file's source, which pass on any file that merely mentions the right string.
+ */
+export function DynamicControllerDeck({
   elements,
   actions,
   vectors,
@@ -547,12 +553,12 @@ function DynamicControllerDeck({
   setVector(action: string, x: number, y: number): void;
   haptic(): void;
 }) {
-  const ordered = elements
-    .map((element, index) => ({ element, index }))
-    .sort((a, b) => {
-      const byPriority = (b.element.priority ?? 50) - (a.element.priority ?? 50);
-      return byPriority || a.index - b.index;
-    });
+  // Ordering lives in @101/protocol so both renderers cannot disagree about where a layout puts a
+  // control. They did: the browser sorted by priority alone while native sorted by zone first.
+  const ordered = orderControllerElements(
+    elements.map((element, index) => ({ element, index })),
+    (entry) => entry.element,
+  );
 
   return (
     <section className="dynamic-controller-deck" aria-label="Role controller">
