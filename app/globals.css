@@ -210,7 +210,6 @@
   --on-solid: #f2f2f2;
 }
 
-
 * { box-sizing: border-box; }
 
 html { background: var(--ink); scroll-behavior: smooth; }
@@ -488,7 +487,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .game-card-launch { margin-top: 22px; padding: 15px 0 0; display: flex; justify-content: space-between; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--paper); font-size: 12px; font-weight: 760; cursor: pointer; }
 .game-card-launch span { color: var(--accent); }
 .card-status { margin-top: 22px; display: flex; justify-content: space-between; color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .11em; }
-
 
 /* Shown only while a code-split surface is fetched. Deliberately quiet: a spinner for a chunk that
    usually arrives in a frame or two reads as slower than no spinner at all. */
@@ -1777,7 +1775,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app-shell:not(.rail-open) .rail-door:focus-visible::after { opacity: 1; }
 @media (pointer: coarse) { .app-shell:not(.rail-open) .rail-door::after { content: none; } }
 
-
 /* --- Play surface: orientation, and filling a screen -------------------------------------------- */
 
 /*
@@ -1813,7 +1810,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .game-fullscreen:fullscreen { width: 100vw; height: 100dvh; max-height: none; border: 0; background: var(--ink); }
 .game-fullscreen:fullscreen canvas { width: 100%; height: 100dvh; }
 .game-fullscreen:fullscreen [class*="statusbar"] { position: absolute; inset: 0 0 auto 0; z-index: 3; background: var(--stage-scrim); }
-
 
 /* --- The controller deck ----------------------------------------------------------------------- */
 
@@ -2078,14 +2074,34 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   min-width: 0 !important;
 }
 
+
 /*
- * No rule between the status bar and the play field.
+ * The play field fills the frame instead of overflowing it.
  *
- * Every hairline in the product is rgba(255,255,255,.14), which reads as a hairline against the
- * chrome surfaces it normally sits on. This one sits directly against a black canvas, where the
- * same value is the highest-contrast edge on the screen — so it read as a lit white line across the
- * top of the game rather than as a divider.
+ * The canvas was `height: 100%` of a block-level arena that also contained the status bar, so its
+ * content was always taller than its box and `overflow: hidden` clipped the difference. A clip at a
+ * fractional device-pixel boundary is what puts a bright seam along the cut — the edge is composited
+ * across two rows and reads as a lit line rather than as the hairline above it.
  *
- * The bar needs no rule anyway: it is a HUD row over the play field, not a section above it.
+ * A flex column removes the overflow altogether: the bar takes its height, the canvas takes what is
+ * left, and there is nothing to clip.
  */
-[class$="-statusbar"] { border-bottom: 0 !important; }
+@media (min-width: 760px) {
+  [class$="-arena"],
+  [class$="-stage"],
+  [class$="-stage-shell"] {
+    display: flex;
+    flex-direction: column;
+  }
+  [class$="-arena"] > [class$="statusbar"],
+  [class$="-stage"] > [class$="statusbar"],
+  [class$="-stage-shell"] > [class$="statusbar"] { flex: none; }
+
+  [class$="-arena"] > canvas,
+  [class$="-stage"] > canvas,
+  [class$="-stage-shell"] > canvas {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+  }
+}
