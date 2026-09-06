@@ -2077,3 +2077,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   grid-auto-columns: minmax(0, 1fr);
   min-width: 0 !important;
 }
+
+/*
+ * No rule between the status bar and the play field.
+ *
+ * Every hairline in the product is rgba(255,255,255,.14), which reads as a hairline against the
+ * chrome surfaces it normally sits on. This one sits directly against a black canvas, where the
+ * same value is the highest-contrast edge on the screen — so it read as a lit white line across the
+ * top of the game rather than as a divider.
+ *
+ * The bar needs no rule anyway: it is a HUD row over the play field, not a section above it.
+ */
+[class$="-statusbar"] { border-bottom: 0 !important; }
