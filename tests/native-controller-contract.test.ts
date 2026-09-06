@@ -241,3 +241,34 @@ test("secure storage can never fail a pairing or drop a deep link", async () => 
   assert.ok(config.expo.ios.entitlements?.["keychain-access-groups"]?.length,
     "signed builds need a keychain entitlement for secure storage to work at all");
 });
+
+test("every screen the player can enter has a way back out", async () => {
+  // Found by looking at the running app rather than the code. The QR scanner covers the screen with
+  // a camera feed, which is black whatever theme the player chose, and its Cancel button was styled
+  // from the app theme — in light mode that is a `rgba(0,0,0,0.045)` fill with a `rgba(0,0,0,0.14)`
+  // border, i.e. invisible on black. The only way out of the scanner could not be seen.
+  //
+  // Two further dead ends were in the same flow: manual pairing offered only "Copy", so a player
+  // handed an answer to carry back to their game had no way to abandon it, and a pairing that never
+  // completed left "Connecting…" on screen with nothing to press. Both needed force-quitting.
+  const app = await readFile(new URL("../apps/controller-native/App.tsx", import.meta.url), "utf8");
+
+  // The scanner's control must not inherit the app theme, because its background never does.
+  assert.match(app, /label="Cancel"[^/]*palette=\{DARK_SURFACE\}/,
+    "the scanner's exit must be styled for the dark surface it actually sits on");
+
+  // And each state that can trap a player must offer an exit.
+  assert.match(app, /label="Start over"[\s\S]{0,80}onCancelConnection/,
+    "manual pairing must be escapable");
+  assert.match(app, /connecting \?[\s\S]{0,120}onCancelConnection/,
+    "a pairing that never completes must be cancellable");
+  assert.match(app, /label="Back"[\s\S]{0,80}onCancelCodeEntry/,
+    "code entry must be escapable");
+
+  // The override exists precisely so a permanently dark surface is not styled from a light theme.
+  const theme = await readFile(new URL("../apps/controller-native/src/theme.ts", import.meta.url), "utf8");
+  assert.match(theme, /export const DARK_SURFACE/);
+  const ui = await readFile(new URL("../apps/controller-native/src/ui.tsx", import.meta.url), "utf8");
+  assert.match(ui, /palette\?: Theme/, "Button must accept an explicit palette");
+  assert.match(ui, /const t = palette \?\? themed/, "and prefer it over the app theme");
+});

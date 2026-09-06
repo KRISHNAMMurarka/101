@@ -40,7 +40,15 @@ export interface Theme {
   onSolid: string;
 }
 
-const DARK: Theme = {
+/**
+ * Exported because some surfaces are dark regardless of the player's chosen scheme.
+ *
+ * The QR scanner covers the screen with a camera feed, so its controls sit on black whatever the
+ * app theme is. Styling them from `useTheme()` made the Cancel button invisible in light mode —
+ * `rgba(0,0,0,0.045)` fill and `rgba(0,0,0,0.14)` border on a black background — leaving the only
+ * way out of the scanner unreadable.
+ */
+export const DARK_SURFACE: Theme = {
   scheme: "dark",
   bg: "#0A0A0A",
   bgLift: "#101010",
@@ -54,6 +62,8 @@ const DARK: Theme = {
   solid: "#F2F2F2",
   onSolid: "#0A0A0A",
 };
+
+const DARK = DARK_SURFACE;
 
 const LIGHT: Theme = {
   scheme: "light",

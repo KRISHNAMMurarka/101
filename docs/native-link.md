@@ -233,3 +233,28 @@ Any game package can publish a role such as:
 ```
 
 The session host validates this public layout, assigns a compatible device, and sends it with `controller.configure`. The native app does not need to know the game ID or ship a game-specific screen.
+
+## Navigation: every screen has a visible way out
+
+Found by opening the app rather than by reading it. Three problems, all in the pairing flow.
+
+**The scanner's Cancel was invisible.** The QR scanner covers the screen with a camera feed, which is
+black whatever theme the player chose, but its Cancel button was styled from the app theme. In light
+mode that is a `rgba(0,0,0,0.045)` fill with a `rgba(0,0,0,0.14)` border — black on black. The only
+way out of the scanner could not be seen. `Button` now takes an explicit `palette`, and the scanner
+passes `DARK_SURFACE`, because a surface that is dark regardless of the player's choice must not be
+styled from their choice.
+
+**Manual pairing had no exit.** Once the app produced an answer to carry back to the game, the only
+control was *Copy*. A player who changed their mind, or whose game had since closed, had to
+force-quit. There is now a *Start over*.
+
+**Connecting had no exit.** A pairing that never completes — the wrong network, a game that has moved
+on — left "Connecting…" with nothing to press. There is now a *Cancel*.
+
+Verified on an iPhone 17 Pro simulator: the scanner's Cancel is now a legible pill and dismisses back
+to the connect screen, and code entry's *Back* is visible and works. A malformed code fails fast with
+"Invalid pairing encoding" and leaves the player on the entry screen, which is correct.
+
+The two new exits are wired and covered by a contract test, but were not exercised live: reaching
+them needs a host that accepts an offer and then never completes, which the simulator cannot produce.

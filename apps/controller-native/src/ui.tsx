@@ -9,15 +9,22 @@ import { radius, space, type, useTheme, type Theme } from "./theme.ts";
  * and a dozen near-identical greys in the previous layout.
  */
 
-export function Button({ label, onPress, tone = "quiet", wide, disabled }: {
+export function Button({ label, onPress, tone = "quiet", wide, disabled, palette }: {
   label: string;
   onPress(): void;
   /** `strong` is the inverted block. At most one is visible at a time, on purpose. */
   tone?: "strong" | "quiet" | "bare";
   wide?: boolean;
   disabled?: boolean;
+  /**
+   * Overrides the app theme for a surface that is dark whatever the player chose — the camera
+   * scanner. Without it a quiet button renders near-black on black and the only way out of the
+   * scanner cannot be seen.
+   */
+  palette?: Theme;
 }) {
-  const t = useTheme();
+  const themed = useTheme();
+  const t = palette ?? themed;
   return (
     <Pressable
       accessibilityRole="button"

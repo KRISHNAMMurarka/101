@@ -28,7 +28,7 @@ import { ControllerSession, type ControllerAssignment } from "./src/controller-s
 import { ControllerSpeaker } from "./src/controller-speaker";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
-import { radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
+import { DARK_SURFACE, radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
 import privateCue from "./assets/private-cue.wav";
 
@@ -373,6 +373,7 @@ export default function App() {
           onChangeCode={setPairingInput}
           onConnect={() => void connect(pairingInput)}
           onCopyAnswer={() => { void Clipboard.setStringAsync(manualAnswer); void haptic("tap"); }}
+          onCancelConnection={() => void disconnect()}
         />
       )}
 
@@ -437,7 +438,10 @@ export default function App() {
               <Text style={[type.body, { color: "rgba(255,255,255,0.8)", textAlign: "center" }]}>
                 Point at the code on your game screen
               </Text>
-              <Button label="Cancel" wide onPress={() => setScannerOpen(false)} />
+              {/* The camera feed is black whatever the player's theme is, so this control is styled
+                  from the dark palette explicitly. Styled from the app theme it rendered near-black
+                  on black in light mode, which left the only way out of the scanner invisible. */}
+              <Button label="Cancel" wide palette={DARK_SURFACE} onPress={() => setScannerOpen(false)} />
             </View>
           </SafeAreaView>
         </View>
@@ -491,7 +495,7 @@ function TopBar({ theme, state, title, detail, latency, onMenu }: {
  * The whole screen when nothing is connected. One statement, one action, and a second way in for
  * people who cannot point a camera at the screen they are already looking at.
  */
-function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manualAnswer, onScan, onOpenCodeEntry, onCancelCodeEntry, onChangeCode, onConnect, onCopyAnswer }: {
+function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manualAnswer, onScan, onOpenCodeEntry, onCancelCodeEntry, onChangeCode, onConnect, onCopyAnswer, onCancelConnection }: {
   theme: Theme;
   state: LinkState;
   error?: string;
@@ -504,6 +508,7 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
   onChangeCode(value: string): void;
   onConnect(): void;
   onCopyAnswer(): void;
+  onCancelConnection(): void;
 }) {
   const connecting = state === "connecting";
   const { maxWidth, displayScale, compact } = useLayout();
@@ -548,6 +553,9 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
             value={manualAnswer}
           />
           <Button label="Copy" wide tone="strong" onPress={onCopyAnswer} />
+          {/* Manual pairing used to offer only Copy. A player who changed their mind, or whose game
+              had moved on, had no way back to the start — the only exit was force-quitting. */}
+          <Button label="Start over" wide tone="bare" onPress={onCancelConnection} />
         </View>
       ) : codeEntryOpen ? (
         <View style={{ gap: space.sm, width: "100%", maxWidth }}>
@@ -584,6 +592,9 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
         <View style={{ gap: space.sm, width: "100%", maxWidth }}>
           <Button label="Scan code" wide tone="strong" onPress={onScan} />
           <Button label="Enter code instead" wide onPress={onOpenCodeEntry} />
+          {/* A pairing that never completes — the wrong network, a game that has since closed —
+              otherwise left the player watching "Connecting…" with nothing to press. */}
+          {connecting ? <Button label="Cancel" wide tone="bare" onPress={onCancelConnection} /> : null}
         </View>
       )}
 
