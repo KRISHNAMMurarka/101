@@ -6,8 +6,11 @@ import {
   ControllerActionGesture,
   ControllerInputModel,
   normalizeJoystick,
-  resolveControllerSide,
   type ControllerInputSnapshot,
+  defaultControlSide,
+  planControllerDeck,
+  type DeckCluster,
+  type PlacedControl,
 } from "@101/link-controller";
 import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
@@ -15,7 +18,6 @@ import {
   INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
   decodePairingTicket,
-  orderControllerElements,
   type ControllerElement,
   type ControllerLayout,
   type LinkTransport,
@@ -563,62 +565,86 @@ export function DynamicControllerDeck({
   setVector(action: string, x: number, y: number): void;
   haptic(): void;
 }) {
-  // Ordering lives in @101/protocol so both renderers cannot disagree about where a layout puts a
-  // control. They did: the browser sorted by priority alone while native sorted by zone first.
-  const ordered = orderControllerElements(
-    elements.map((element, index) => ({ element, index })),
-    (entry) => entry.element,
-  );
+  /*
+   * Placement is decided by the planner, not here.
+   *
+   * This used to write an inline `grid-column` per element — left controls starting at line 1, right
+   * controls ending at line -1 — so two controls on the same side always claimed overlapping tracks
+   * and drew on top of each other. Shadow Arena's d-pad plus six buttons became a deck about 1400px
+   * tall on an 812px screen.
+   *
+   * The deck now renders three clusters of three groups and decides nothing. That also moves the
+   * arrangement somewhere testable: this file cannot be imported by the test runner, and the planner
+   * can.
+   */
+  const plan = planControllerDeck(elements, { authoredHandedness, playerHandedness });
+
+  const renderControl = (placed: PlacedControl, index: number) => {
+    const element = placed.element;
+    const key = `${element.type}-${element.action}-${index}`;
+    return (
+      <div
+        className="dynamic-control"
+        data-control={element.type}
+        data-side={placed.side}
+        data-zone={placed.zone}
+        data-size={placed.size}
+        data-priority={element.priority ?? 50}
+        key={key}
+        style={placed.span > 1 ? ({ gridColumn: `span ${placed.span}` } as React.CSSProperties) : undefined}
+      >
+        {(element.type === "button" || element.type === "shoulder") && (
+          <DynamicDigitalAction element={element} owner={key} setActions={setActions} haptic={haptic} />
+        )}
+        {(element.type === "trigger" || element.type === "analog-button") && (
+          <DynamicAnalogAction
+            element={element}
+            value={typeof actions[element.action] === "number" ? Number(actions[element.action]) : 0}
+            setAction={setAction}
+            haptic={haptic}
+          />
+        )}
+        {element.type === "slider" && (() => {
+          const min = element.min ?? -1;
+          const max = element.max ?? 1;
+          return (
+            <label className="dynamic-slider">
+              <span>{element.label}</span>
+              <input type="range" min={min} max={max} step={element.step ?? .01} value={axes[element.action] ?? (min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
+            </label>
+          );
+        })()}
+        {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} />}
+        {(element.type === "joystick" || element.type === "touch-surface") && (
+          <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} />
+        )}
+      </div>
+    );
+  };
+
+  const renderCluster = (cluster: DeckCluster) => {
+    if (cluster.count === 0) return null;
+    return (
+      <div className="deck-cluster" data-side={cluster.side} style={{ "--cluster-weight": cluster.weight } as React.CSSProperties}>
+        {cluster.bars.length > 0 && <div className="deck-bars">{cluster.bars.map(renderControl)}</div>}
+        {cluster.pads.length > 0 && <div className="deck-pads">{cluster.pads.map(renderControl)}</div>}
+        {cluster.keys.length > 0 && <div className="deck-keys">{cluster.keys.map(renderControl)}</div>}
+      </div>
+    );
+  };
 
   return (
-    <section className="dynamic-controller-deck" aria-label="Role controller">
-      {ordered.map(({ element, index }) => {
-        const key = `${element.type}-${element.action}-${index}`;
-        const side = resolveControllerSide(element.side ?? defaultControlSide(element), authoredHandedness, playerHandedness);
-        const size = element.size ?? defaultControlSize(element);
-        const span = element.span ?? defaultControlSpan(element, size);
-        const zone = element.zone ?? defaultControlZone(element);
-        const gridColumn = side === "left" ? `1 / span ${span}` : side === "right" ? `span ${span} / -1` : `span ${span}`;
-        return (
-          <div
-            className="dynamic-control"
-            data-control={element.type}
-            data-side={side}
-            data-zone={zone}
-            data-size={size}
-            data-priority={element.priority ?? 50}
-            key={key}
-            style={{ gridColumn }}
-          >
-            {(element.type === "button" || element.type === "shoulder") && (
-              <DynamicDigitalAction element={element} owner={key} setActions={setActions} haptic={haptic} />
-            )}
-            {(element.type === "trigger" || element.type === "analog-button") && (
-              <DynamicAnalogAction
-                element={element}
-                value={typeof actions[element.action] === "number" ? Number(actions[element.action]) : 0}
-                setAction={setAction}
-                haptic={haptic}
-              />
-            )}
-            {element.type === "slider" && (() => {
-              const min = element.min ?? -1;
-              const max = element.max ?? 1;
-              return (
-                <label className="dynamic-slider">
-                  <span>{element.label}</span>
-                  <input type="range" min={min} max={max} step={element.step ?? .01} value={axes[element.action] ?? (min + max) / 2} onChange={(event) => setAxis(element.action, Number(event.currentTarget.value))} />
-                  <small>{element.action}</small>
-                </label>
-              );
-            })()}
-            {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} />}
-            {(element.type === "joystick" || element.type === "touch-surface") && (
-              <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} />
-            )}
-          </div>
-        );
-      })}
+    <section
+      className="dynamic-controller-deck"
+      aria-label="Role controller"
+      style={{
+        "--left-track": plan.left.count ? `${plan.left.weight}fr` : "0px",
+        "--right-track": plan.right.count ? `${plan.right.weight}fr` : "0px",
+      } as React.CSSProperties}
+    >
+      {renderCluster(plan.center)}
+      {renderCluster(plan.left)}
+      {renderCluster(plan.right)}
     </section>
   );
 }
@@ -768,33 +794,9 @@ function interactionLabel(element: DigitalControllerElement) {
   return `Tap ${interaction.actions.length + 1} together`;
 }
 
-function defaultControlSide(element: ControllerElement): NonNullable<ControllerElement["side"]> {
-  if (element.type === "joystick" || element.type === "dpad" || element.type === "touch-surface") return "left";
-  if (element.type === "slider") return "center";
-  return "right";
-}
 
-function defaultControlZone(element: ControllerElement): NonNullable<ControllerElement["zone"]> {
-  if (element.type === "shoulder") return "shoulder";
-  if (element.type === "trigger") return "index";
-  if (element.type === "slider") return "edge";
-  return "thumb";
-}
 
-function defaultControlSize(element: ControllerElement): NonNullable<ControllerElement["size"]> {
-  if (element.type === "joystick" || element.type === "touch-surface" || element.type === "dpad") return "large";
-  if (element.type === "shoulder" || element.type === "trigger") return "small";
-  return "medium";
-}
 
-function defaultControlSpan(element: ControllerElement, size: NonNullable<ControllerElement["size"]>) {
-  // Width is primarily the span hint; size changes the target's depth. These fallbacks keep old
-  // two-column layouts ergonomic without letting `large` silently become full-width.
-  if (element.type === "joystick" || element.type === "touch-surface" || element.type === "dpad") return 2;
-  if (element.type === "shoulder" || element.type === "trigger" || element.type === "analog-button") return 2;
-  if (size === "small") return 1;
-  return 2;
-}
 
 function DynamicDpad({ element, setVector }: { element: Extract<ControllerElement, { type: "dpad" }>; setVector(action: string, x: number, y: number): void }) {
   const release = () => setVector(element.action, 0, 0);

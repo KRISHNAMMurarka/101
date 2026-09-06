@@ -662,14 +662,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .handedness-toggle strong { font: 850 11px var(--font-mono); letter-spacing: .08em; }
 .handedness-toggle i { color: var(--muted); font-style: normal; }
 .handedness-toggle:active { border-width: 2px; background: var(--paper); color: var(--ink); }
-.dynamic-controller-deck { flex: 1; min-height: 310px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: row dense; grid-auto-rows: minmax(88px, auto); align-content: stretch; gap: 10px; }
-.dynamic-control { min-width: 0; min-height: 88px; display: grid; }
-.dynamic-control[data-size="medium"] { min-height: 120px; }
-.dynamic-control[data-size="large"] { min-height: 180px; }
-.dynamic-control[data-control="joystick"], .dynamic-control[data-control="touch-surface"], .dynamic-control[data-control="dpad"] { min-height: 280px; grid-row: span 2; }
+
+
+
+
+
 .dynamic-control[data-zone="shoulder"] { align-self: start; }
 .dynamic-control > .dynamic-action, .dynamic-control > .dynamic-analog, .dynamic-control > .dynamic-slider, .dynamic-control > .dynamic-surface, .dynamic-control > .dynamic-dpad { width: 100%; height: 100%; }
-.dynamic-action { min-height: 88px; display: grid; place-items: center; align-content: center; gap: 10px; padding: 12px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
+.dynamic-action { display: grid; place-items: center; align-content: center; gap: 10px; padding: 12px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
 .dynamic-action span { font: 900 clamp(18px, 4vw, 38px) var(--font-mono); letter-spacing: -.04em; }
 .dynamic-action small, .dynamic-analog small, .dynamic-slider small, .dynamic-surface small { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
 .dynamic-action.action-primary { border-color: var(--controller-accent); color: var(--controller-accent); background: color-mix(in srgb, var(--controller-accent) 7%, var(--ink)); }
@@ -679,7 +679,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dynamic-shoulder { min-height: 64px; grid-template-columns: 1fr auto; place-items: center start; align-content: center; column-gap: 12px; }
 .dynamic-shoulder span { font-size: clamp(14px, 2.4vw, 22px); }
 .dynamic-shoulder small { justify-self: end; text-align: right; }
-.dynamic-analog { min-height: 88px; padding: 13px 15px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: center; gap: 10px 14px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); }
+.dynamic-analog { padding: 13px 15px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-content: center; gap: 10px 14px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); }
 .dynamic-analog > span { font: 900 clamp(15px, 3vw, 26px) var(--font-mono); letter-spacing: -.035em; }
 .dynamic-analog > output { align-self: center; color: var(--paper); font: 850 11px var(--font-mono); }
 .dynamic-analog input { grid-column: 1 / -1; width: 100%; min-height: 44px; margin: -8px 0; accent-color: var(--paper); cursor: ew-resize; touch-action: none; }
@@ -688,7 +688,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dynamic-analog[data-active="true"] { border-width: 2px; background: var(--surface-strong); color: var(--paper); }
 .dynamic-trigger { border-top-width: 3px; }
 .dynamic-analog-button { border-radius: 18px; }
-.dynamic-surface { position: relative; min-height: 280px; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink);  touch-action: none; }
+.dynamic-surface { position: relative; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink);  touch-action: none; }
 .dynamic-surface:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .dynamic-surface > span { position: absolute; left: 14px; top: 13px; color: var(--controller-accent); font: 800 11px var(--font-mono); letter-spacing: .12em; }
 .dynamic-surface > small { position: absolute; right: 14px; bottom: 12px; }
@@ -700,8 +700,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dynamic-slider { min-height: 150px; padding: 18px; display: grid; align-content: center; gap: 24px; border: 1px solid var(--line-strong); background: var(--ink); }
 .dynamic-slider > span { color: var(--controller-accent); font: 850 11px var(--font-mono); letter-spacing: .1em; }
 .dynamic-slider input { width: 100%; min-height: 44px; accent-color: var(--controller-accent); }
-.dynamic-dpad { position: relative; min-height: 280px; display: grid; grid-template: 38px repeat(3, 1fr) / repeat(3, 1fr); border: 1px solid var(--line-strong); background: var(--ink); touch-action: none; }
-.dynamic-dpad > span { grid-area: 1 / 1 / 2 / 4; padding: 13px; color: var(--controller-accent); font: 800 11px var(--font-mono); letter-spacing: .12em; }
+
+
 .dynamic-dpad button { min-width: 44px; min-height: 44px; border: 1px solid var(--surface); background: var(--panel); color: var(--muted); cursor: pointer; touch-action: none; }
 .dynamic-dpad button:active { background: color-mix(in srgb, var(--controller-accent) 12%, var(--panel)); color: var(--controller-accent); }
 .dynamic-dpad .up { grid-area: 2 / 2; }.dynamic-dpad .left { grid-area: 3 / 1; }.dynamic-dpad > i { grid-area: 3 / 2; margin: 22%; border-radius: 50%; background: var(--ink); }.dynamic-dpad .right { grid-area: 3 / 3; }.dynamic-dpad .down { grid-area: 4 / 2; }
@@ -1177,8 +1177,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .dynamic-controller-deck { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(88px, auto); gap: 7px; }
   .dynamic-control[data-control="joystick"] { min-height: 0; grid-row: span 1; align-self: start; aspect-ratio: 1; }
   .dynamic-control[data-control="joystick"] .dynamic-surface { min-height: 0; aspect-ratio: 1; }
-  .dynamic-control[data-control="touch-surface"], .dynamic-control[data-control="dpad"] { min-height: 250px; }
-  .dynamic-action { min-height: 105px; }.dynamic-action span { font-size: 17px; }
+  .dynamic-action span { font-size: 17px; }
   .controller-role-status dl { grid-template-columns: repeat(3, 1fr); }
   .orbital-heading h1 { font-size: 50px; }
   .orbital-threat-stack { left: 10px; right: 10px; bottom: 10px; }.orbital-threat-stack article > div { grid-template-columns: 45px 1fr; }
@@ -2105,3 +2104,127 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     min-height: 0;
   }
 }
+
+
+/* ==========================================================================
+   The controller deck.
+
+   One rule underneath all of it: a control's size comes from the deck's WIDTH
+   and how many controls there are — never from leftover height. It used to come
+   from height, because the deck was a flex child with stretched auto rows, which
+   meant every control's aspect ratio was a function of how much chrome happened
+   to be on screen. Adding a status row changed the shape of the d-pad.
+
+   Leftover height is now spent on emptiness above the controls, deliberately:
+   thumbs pivot from the bottom corners, so that is where the deck sits.
+   ========================================================================== */
+
+.dynamic-controller-deck {
+  container-type: inline-size;
+  --deck-gap: 10px;
+  /* 3 x 48px targets plus the border is the floor a d-pad cannot go below. */
+  --pad-min: clamp(150px, 44cqw, 156px);
+  --surface-min: clamp(128px, 38cqw, 156px);
+  --pad-max: 240px;
+  --key-min: clamp(48px, 17cqw, 72px);
+  /* Bounded above as well as below: with 1fr tracks the keys spread across their whole cluster, so
+     on a wide screen the buttons drifted into the middle — away from the thumb that has to reach
+     them. A key is a key-sized thing wherever the cluster happens to be. */
+  --key-max: clamp(56px, 20cqw, 96px);
+  --bar-h: 56px;
+  --dead-min: 0px;
+
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-areas: "center center center" "left dead right";
+  /* The weights arrive as whole track sizes ("0.8fr"), not as numbers to multiply: calc() cannot
+     multiply a flex unit, so calc(0.8 * 1fr) made the entire track function invalid and the columns
+     silently fell back to sizing on content — which gave a one-button cluster 65px beside a 256px
+     pad. */
+  grid-template-columns:
+    minmax(0, var(--left-track, 1fr))
+    minmax(var(--dead-min), auto)
+    minmax(0, var(--right-track, 1fr));
+  gap: var(--deck-gap);
+  align-content: end;
+  padding-bottom: max(var(--deck-gap), env(safe-area-inset-bottom));
+}
+
+.deck-cluster { display: grid; gap: var(--deck-gap); align-content: end; min-width: 0; }
+.deck-cluster[data-side="left"] { grid-area: left; justify-items: start; }
+.deck-cluster[data-side="right"] { grid-area: right; justify-items: end; }
+.deck-cluster[data-side="center"] { grid-area: center; justify-items: stretch; }
+
+.deck-bars { display: grid; gap: var(--deck-gap); width: 100%; }
+.deck-pads { display: grid; width: 100%; }
+.deck-keys {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--key-min), var(--key-max)));
+  gap: var(--deck-gap);
+  width: 100%;
+}
+/* Packed towards the hand that reaches them. */
+.deck-cluster[data-side="right"] .deck-keys { justify-content: end; }
+.deck-cluster[data-side="left"] .deck-keys { justify-content: start; }
+.deck-cluster[data-side="center"] .deck-keys { justify-content: center; }
+
+.dynamic-control { min-width: 0; min-height: 0; display: grid; }
+
+/* --- Shapes ------------------------------------------------------------------------------------
+   A d-pad is square because a cross is symmetric: a stretched one makes up and down a different
+   target from left and right. A joystick and a touch surface are square because travel has to be
+   equal in x and y or the normalized vector is anisotropic — normalizeJoystick assumes a circular
+   gate. A shoulder is a bar because it sits under a finger that presses along its length; square, it
+   is indistinguishable from a face button. */
+
+.dynamic-control[data-control="dpad"],
+.dynamic-control[data-control="joystick"],
+.dynamic-control[data-control="touch-surface"] {
+  width: min(100%, var(--pad-max));
+  aspect-ratio: 1;
+}
+.dynamic-control[data-control="dpad"] { min-width: var(--pad-min); }
+.dynamic-control[data-control="joystick"],
+.dynamic-control[data-control="touch-surface"] { min-width: var(--surface-min); }
+
+.dynamic-control[data-control="button"] { aspect-ratio: 1; min-width: var(--key-min); }
+
+.dynamic-control[data-control="shoulder"],
+.dynamic-control[data-control="trigger"],
+.dynamic-control[data-control="analog-button"],
+.dynamic-control[data-control="slider"] { width: 100%; min-height: var(--bar-h); aspect-ratio: auto; }
+
+/* The control fills the cell the cluster gave it; it no longer sets its own height. */
+.dynamic-control > .dynamic-action,
+.dynamic-control > .dynamic-analog,
+.dynamic-control > .dynamic-slider,
+.dynamic-control > .dynamic-surface,
+.dynamic-control > .dynamic-dpad {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: auto;
+}
+
+/* A d-pad's own grid: the label no longer takes a row of its own, which is what made the cross
+   rectangular inside a square box. */
+.dynamic-dpad {
+  position: relative;
+  min-height: 0;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  border: 1px solid var(--line-strong);
+  background: var(--ink);
+  touch-action: none;
+}
+.dynamic-dpad > span {
+  position: absolute;
+  inset: var(--space-2xs) auto auto var(--space-2xs);
+  z-index: 2;
+  color: var(--faint);
+  font: 700 var(--type-label-size) var(--font-mono);
+  letter-spacing: var(--track-label);
+  pointer-events: none;
+}
+.dynamic-surface { min-height: 0; }

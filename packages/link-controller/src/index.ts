@@ -1,5 +1,5 @@
 import type { InputVector } from "@101/input";
-import type { ControllerElement, ControllerLayout } from "@101/protocol";
+import { orderControllerElements, type ControllerElement, type ControllerLayout } from "@101/protocol";
 
 export interface ControllerInputSnapshot {
   actions: Record<string, boolean | number>;
@@ -304,4 +304,149 @@ function clamp(value: number) {
 
 function clampRange(value: number, min: number, max: number, fallback: number) {
   return Math.max(min, Math.min(max, Number.isFinite(value) ? value : fallback));
+}
+
+/* ---- Deck planning ----------------------------------------------------------------------------
+ *
+ * Where each control goes, decided once, in a module that can be tested.
+ *
+ * The browser deck used to place controls by writing an inline `grid-column` per element: left
+ * elements started at line 1, right elements ended at line -1. Two controls on the same side
+ * therefore always claimed overlapping tracks and could never sit beside each other — a six-button
+ * layout stacked them into a deck taller than the phone. And because the deck was a flex child with
+ * stretched auto rows, every control's aspect ratio was a function of how much chrome happened to be
+ * on screen: adding a status row changed the shape of the d-pad.
+ *
+ * So the arrangement is computed from the elements alone, never from available height, and the
+ * result is three clusters of three groups. A renderer lays out clusters; it does not decide
+ * placement. This is also the only shape this repo can test — `node --experimental-strip-types`
+ * cannot import a .tsx file, but it already imports every game's roles.ts.
+ */
+
+export type DeckSide = "left" | "center" | "right";
+export type DeckGroup = "bars" | "pads" | "keys";
+
+export interface PlacedControl {
+  readonly element: ControllerElement;
+  /** Resolved once here, so ordering and styling can never disagree about an undeclared zone. */
+  readonly side: DeckSide;
+  readonly zone: NonNullable<ControllerElement["zone"]>;
+  readonly size: NonNullable<ControllerElement["size"]>;
+  readonly group: DeckGroup;
+  /**
+   * How many columns of its group this control takes.
+   *
+   * `span` used to pick absolute grid lines across the whole deck, which is what made two controls
+   * on one side overlap. It now means what an author would expect it to mean — this control is
+   * twice as wide as its neighbours — within its own group. Kept rather than dropped because games
+   * declare it (TiltDrift's wheel is `span: 2`), and a schema field nothing reads is a field that
+   * silently stops working.
+   */
+  readonly span: number;
+}
+
+export interface DeckCluster {
+  readonly side: DeckSide;
+  readonly bars: readonly PlacedControl[];
+  readonly pads: readonly PlacedControl[];
+  readonly keys: readonly PlacedControl[];
+  /** How much of the deck's width this cluster asks for, relative to the other side. */
+  readonly weight: number;
+  readonly count: number;
+}
+
+export interface ControllerDeckPlan {
+  readonly left: DeckCluster;
+  readonly center: DeckCluster;
+  readonly right: DeckCluster;
+}
+
+export function defaultControlSide(element: ControllerElement): DeckSide {
+  if (element.type === "joystick" || element.type === "dpad" || element.type === "touch-surface") return "left";
+  if (element.type === "slider") return "center";
+  return "right";
+}
+
+export function defaultControlZone(element: ControllerElement): NonNullable<ControllerElement["zone"]> {
+  if (element.type === "shoulder") return "shoulder";
+  if (element.type === "trigger") return "index";
+  if (element.type === "slider") return "edge";
+  return "thumb";
+}
+
+export function defaultControlSize(element: ControllerElement): NonNullable<ControllerElement["size"]> {
+  if (element.type === "joystick" || element.type === "touch-surface" || element.type === "dpad") return "large";
+  if (element.type === "shoulder" || element.type === "trigger") return "small";
+  return "medium";
+}
+
+/**
+ * Which row of a cluster a control belongs in.
+ *
+ * Bars sit at the top, under an index finger; pads in the middle; keys at the bottom, under the
+ * thumb — which is the order a hand actually meets them, from the back of the phone forwards.
+ */
+function groupFor(element: ControllerElement, zone: NonNullable<ControllerElement["zone"]>): DeckGroup {
+  if (element.type === "dpad" || element.type === "joystick" || element.type === "touch-surface") return "pads";
+  if (element.type === "shoulder" || element.type === "trigger" || element.type === "analog-button") return "bars";
+  if (element.type === "slider") return "bars";
+  return zone === "shoulder" || zone === "index" ? "bars" : "keys";
+}
+
+/**
+ * How wide a cluster asks to be, from how much it holds.
+ *
+ * The same curve the native app already uses, so a layout does not change shape between the two
+ * renderers. Bounded at both ends: a single control must not take the whole width, and seven must
+ * not squeeze the other side to nothing.
+ */
+export function clusterWeight(count: number) {
+  if (count === 0) return 0;
+  return Math.max(0.8, Math.min(1.8, 0.2 + count * 0.22));
+}
+
+/**
+ * Mirror the deck for a left-handed player.
+ *
+ * `authoredHandedness` is what the layout was drawn for; `playerHandedness` is what this player set.
+ * When they disagree, sides swap — which is the whole point of the preference, and is more than the
+ * cosmetic reordering it drove before.
+ */
+export function planControllerDeck(
+  elements: readonly ControllerElement[],
+  options: { authoredHandedness?: "left" | "right"; playerHandedness?: "left" | "right" } = {},
+): ControllerDeckPlan {
+  const mirror = Boolean(options.playerHandedness && options.authoredHandedness
+    && options.playerHandedness !== options.authoredHandedness);
+
+  const placed: PlacedControl[] = orderControllerElements(elements, (element) => element).map((element) => {
+    const declared = element.side ?? defaultControlSide(element);
+    const side: DeckSide = mirror && declared !== "center"
+      ? declared === "left" ? "right" : "left"
+      : declared;
+    const zone = element.zone ?? defaultControlZone(element);
+    return {
+      element,
+      side,
+      zone,
+      size: element.size ?? defaultControlSize(element),
+      group: groupFor(element, zone),
+      // Bounded: a span wider than a cluster would push its neighbours out of the deck.
+      span: Math.max(1, Math.min(3, Math.round(element.span ?? 1))),
+    };
+  });
+
+  const cluster = (side: DeckSide): DeckCluster => {
+    const mine = placed.filter((control) => control.side === side);
+    return {
+      side,
+      bars: mine.filter((control) => control.group === "bars"),
+      pads: mine.filter((control) => control.group === "pads"),
+      keys: mine.filter((control) => control.group === "keys"),
+      weight: clusterWeight(mine.length),
+      count: mine.length,
+    };
+  };
+
+  return { left: cluster("left"), center: cluster("center"), right: cluster("right") };
 }

@@ -544,16 +544,31 @@ test("browser Link consumes the complete real-gamepad controller contract", () =
   for (const behavior of [
     "ControllerActionGesture",
     "normalizeJoystick",
-    "resolveControllerSide",
+    // Was resolveControllerSide. Handedness is now resolved inside planControllerDeck along with
+    // ordering and the side/zone/size defaults, so the browser reaches the shared rule through the
+    // planner rather than calling it itself — which is what makes the arrangement testable at all,
+    // since the test runner cannot import a .tsx file.
+    "planControllerDeck",
     "setActions",
   ] as const) {
     assert.match(source, new RegExp(`\\b${behavior}\\b`),
       `browser Link must call ${behavior} rather than leaving the shared behavior unused`);
   }
-  for (const hint of ["side", "zone", "size", "span", "priority"] as const) {
-    assert.match(source, new RegExp(`element\\.${hint}\\b`),
-      `browser Link must consume the ${hint} placement hint`);
+  /*
+   * Every placement hint must still be read by something. side, zone, size and span are resolved in
+   * the planner now — deliberately, so ordering and styling cannot disagree about a hint nobody
+   * declared — and priority stays here because it reaches the DOM as data-priority.
+   *
+   * span in particular is checked because it was nearly dropped: it used to pick absolute grid lines
+   * across the deck, which is what let two controls on one side overlap. It now means width within a
+   * group, which is what an author declaring it on a steering wheel meant.
+   */
+  const deckPlanner = readFileSync(resolve(import.meta.dirname, "../packages/link-controller/src/index.ts"), "utf8");
+  for (const hint of ["side", "zone", "size", "span"] as const) {
+    assert.match(deckPlanner, new RegExp(`element\\.${hint}\\b`),
+      `the deck planner must consume the ${hint} placement hint`);
   }
+  assert.match(source, /element\.priority\b/, "browser Link must consume the priority placement hint");
   assert.match(source, /layout\.handedness/, "the author's handedness preference must reach the renderer");
   assert.match(source, /101-link-handedness/, "the player's handedness override must persist locally");
   assert.match(source, /setActions\(values, owner\)/,
@@ -791,10 +806,22 @@ test("both renderers share one ordering rule, and it puts controls where the han
   const stable = orderControllerElements([element("first"), element("second")], (item) => item);
   assert.deepEqual(stable.map((item) => item.action), ["first", "second"]);
 
-  // And both renderers must actually call it rather than keeping a private copy.
-  for (const file of ["../app/controller/Controller.tsx", "../apps/controller-native/src/controls.tsx"]) {
+  /*
+   * Both renderers must reach this rule rather than keeping a private copy. The browser now reaches
+   * it through planControllerDeck, which calls it before partitioning — so the ordering and the
+   * resolved zone can no longer disagree, which they did: the browser ordered on the raw zone while
+   * styling on the defaulted one, so an undeclared shoulder was styled as a shoulder and ordered as
+   * an edge control.
+   */
+  const planner = readFileSync(resolve(import.meta.dirname, "../packages/link-controller/src/index.ts"), "utf8");
+  assert.match(planner, /orderControllerElements\(/, "the deck planner must order through the shared rule");
+
+  for (const [file, callee] of [
+    ["../app/controller/Controller.tsx", /planControllerDeck\(/],
+    ["../apps/controller-native/src/controls.tsx", /orderControllerElements\(/],
+  ] as const) {
     const source = readFileSync(resolve(import.meta.dirname, file), "utf8");
-    assert.match(source, /orderControllerElements\(/, `${file} must use the shared rule`);
+    assert.match(source, callee, `${file} must use the shared rule`);
     assert.equal(/function zoneRank\(/.test(source), false, `${file} must not keep its own copy`);
   }
 });
@@ -881,4 +908,50 @@ test("a game's own page offers it, and a separate route runs it", () => {
     const source = readFileSync(resolve(import.meta.dirname, `../app/components/${name}`), "utf8");
     assert.match(source, /<FullscreenButton \/>/, `${id} does not offer full screen inside its own frame`);
   }
+});
+
+/**
+ * Every layout this product ships, planned.
+ *
+ * The deck's arrangement used to be inline `grid-column` values written per element: left controls
+ * started at line 1 and right controls ended at line -1, so two on the same side always overlapped.
+ * Shadow Arena declares a d-pad and six buttons; under that scheme the buttons stacked into a deck
+ * roughly 1400px tall on an 812px screen.
+ *
+ * The planner is a plain module precisely so this test can exist — `node --experimental-strip-types`
+ * cannot import the .tsx renderer, which is why the controller's other tests are regexes over
+ * source, but every game's roles.ts is already imported here.
+ */
+test("every shipped controller layout plans into a deck a thumb can reach", async () => {
+  const { planControllerDeck } = await import("@101/link-controller");
+
+  let checked = 0;
+  for (const gameId of GAME_IDS) {
+    for (const role of rolesByGame[gameId] ?? []) {
+      const elements = role.layout.layout;
+      const plan = planControllerDeck(elements);
+      const placed = [plan.left, plan.center, plan.right].flatMap((c) => [...c.bars, ...c.pads, ...c.keys]);
+
+      assert.equal(placed.length, elements.length,
+        `${gameId}/${role.id} loses or duplicates a control when planned`);
+      assert.equal(new Set(placed.map((p) => p.element.action + p.element.type)).size, elements.length,
+        `${gameId}/${role.id} places a control twice`);
+
+      // A cluster is one column of the deck. More than four rows of keys in one is a column taller
+      // than the phone, which is the failure the old inline placement produced.
+      for (const cluster of [plan.left, plan.center, plan.right]) {
+        assert.ok(cluster.pads.length <= 2,
+          `${gameId}/${role.id} puts ${cluster.pads.length} pads under one thumb`);
+        assert.ok(cluster.weight === 0 || (cluster.weight >= 0.8 && cluster.weight <= 1.8),
+          `${gameId}/${role.id} gives the ${cluster.side} cluster an out-of-range weight`);
+      }
+
+      // Something has to be reachable. A layout planned entirely into the centre would leave both
+      // thumbs with nothing.
+      assert.ok(plan.left.count + plan.right.count > 0,
+        `${gameId}/${role.id} puts nothing under either thumb`);
+      checked++;
+    }
+  }
+  assert.ok(checked >= 10, `only ${checked} role layouts were planned`);
 });
