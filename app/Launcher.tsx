@@ -14,6 +14,7 @@ import {
 import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-link";
 import type { InputSource } from "@101/input";
 
+import { GamePoster } from "./components/GamePoster";
 import { Icon } from "./components/Icon";
 import { useLocalDevice } from "./lib/local-capabilities";
 import {
@@ -261,7 +262,7 @@ export default function Launcher({
 
             <article className="game-card featured-game catalog-featured">
               <div className="card-top"><span className="game-number">LAB</span><span className="ready-badge">PLAYABLE</span></div>
-              <div className="mini-arena" aria-hidden="true"><span /><i /><b /></div>
+              <GamePoster id="input-lab" title="101 Input Lab" />
               <div className="game-card-copy">
                 <h3>101 Input Lab</h3>
                 <p>See normalized keyboard, pointer, touch, gamepad and second-screen events in one live arena.</p>
@@ -355,13 +356,7 @@ export default function Launcher({
                             ? <span className="ready-badge">PLAYABLE</span>
                             : <span className="roadmap-badge">ROADMAP</span>}
                       </div>
-                      {/* The card's picture is the answer to the question the player is actually
-                          asking — what do I need to play this? — so every card differs because every
-                          input set differs. It replaces three empty tags that CSS bent into the same
-                          rotated rectangle, circle and bar on all eleven. */}
-                      <div className="game-inputs" aria-hidden="true">
-                        {game.inputs.slice(0, 5).map((input) => <Icon key={input} name={input} size={24} />)}
-                      </div>
+                      <GamePoster id={game.id} title={game.name} />
                       <div className="game-card-copy">
                         <h3>{game.name}</h3>
                         <p>{game.tagline}</p>
