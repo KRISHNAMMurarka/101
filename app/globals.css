@@ -1678,14 +1678,28 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    the middle of — not a full-width row with the icon pushed to one side, which is what a padded
    left-aligned item becomes when its label is hidden. */
 .app-shell:not(.rail-open) .rail-item,
-.app-shell:not(.rail-open) .rail-toggle {
+.app-shell:not(.rail-open) .rail-toggle,
+.app-shell:not(.rail-open) .rail-door {
   width: var(--rail-w);
   height: var(--rail-w);
   padding: 0;
+  gap: 0;
   justify-content: center;
 }
-.app-shell:not(.rail-open) .rail-mark { padding: 0; justify-content: center; }
+.app-shell:not(.rail-open) .rail-mark { padding: 0; gap: 0; justify-content: center; }
 .app-shell:not(.rail-open) .rail-label { display: none; }
+
+/*
+ * Removed from layout, not merely made invisible.
+ *
+ * The labels fade with opacity so the rail can animate open, but an element at opacity 0 still takes
+ * its width — so the collapsed item was centring icon-plus-invisible-label, which put every icon
+ * left of centre in a square that looked correctly centred in the source.
+ */
+.app-shell:not(.rail-open) .rail-item > span,
+.app-shell:not(.rail-open) .rail-toggle > span,
+.app-shell:not(.rail-open) .rail-door > span,
+.app-shell:not(.rail-open) .rail-mark > span { display: none; }
 
 /* The label on hover, because a square with an icon in it is a guess until it names itself. Native
    `title` waits about a second, renders in the OS font, and cannot be positioned. */
