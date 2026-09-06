@@ -651,3 +651,9 @@ function wrappedAngle(value: number) {
  * no dependency on anything above, so it stays testable without a camera or a model.
  */
 export * from "./face.ts";
+
+/*
+ * Skeletal geometry from the metric landmarks: joint angles, facing, posture. Separate because it is
+ * pure arithmetic over positions and needs neither a camera nor a model to test.
+ */
+export * from "./skeleton.ts";
