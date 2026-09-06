@@ -7,6 +7,8 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
@@ -75,7 +77,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
         }
         drawHandle = requestAnimationFrame(draw);
       };
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(draw);
       const timer = window.setInterval(() => {
         const state = context.state;
@@ -116,12 +118,12 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="shadow-page">
       <header className="shadow-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Shadow Arena <span>101</span></h1></div>
-        <div className="shadow-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Shadow Arena <span>101</span></h1></div>
+        <div className="shadow-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
       <div className="shadow-arena">
-        <div className="shadow-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="shadow-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Shadow Arena. Move with A/D or arrows, punch with J and K, block with L, jump with W or Space, duck with S, and use Shadow Burst with I." />
         {/* Local camera capture is muted, requests no audio, and is not recorded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -134,7 +136,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD FIGHTER" : "CONNECT FIGHTER"}</button>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="shadow-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="shadow-instructions"><span><b>MOVE</b> A/D · arrows · body position</span><span><b>PUNCH</b> J/K · physical punch</span><span><b>BLOCK</b> L · hands together</span><span><b>DUCK / JUMP</b> S/W · body motion</span><span><b>SPECIAL</b> I · raise both arms</span></div>
       <p className="shadow-privacy"><strong>Optional body camera:</strong> the bundled pose model runs locally and publishes combat actions plus a compact landmark pose. Video is never uploaded or recorded, and every action has a keyboard/gamepad fallback.</p>

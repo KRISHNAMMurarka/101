@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import FullscreenToggle from "./FullscreenToggle";
 import { Icon, type IconName } from "./Icon";
 import { setRailOpen, useRailOpen } from "../lib/rail-preference";
 
@@ -121,8 +120,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           regions around the content, not the content’s landmark. */}
       <div className="stage">{children}</div>
 
-      {/* Offered where there is a game to fill the screen with, and nowhere else. */}
-      {pathname.startsWith("/games/") && pathname.endsWith("/play") && <FullscreenToggle />}
     </div>
   );
 }

@@ -534,7 +534,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .lab-page, .system-page { max-width: 1540px; min-height: 100dvh; margin: 0 auto; padding: 62px var(--gutter) 100px; }
 .lab-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
 .lab-heading h1 { margin: 0; font-size: clamp(46px, 6vw, 86px); line-height: .9; letter-spacing: -.065em; }
-.back-button { margin-bottom: 28px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 11px; font-weight: 700; cursor: pointer; }
+.back-button { margin-bottom: var(--space-sm); padding: 0; border: 0; background: none; color: var(--muted); font: 600 var(--type-body-size) var(--font-sans); text-decoration: none; cursor: pointer; }
 .back-button:hover { color: var(--paper); }
 .session-readout { min-width: 270px; padding: 12px; }
 .session-readout strong { font-size: 16px; }
@@ -932,11 +932,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .life-meter i { width: 13px; height: 13px; transform: rotate(45deg); border: 1px solid var(--panel-2); }
 .life-meter i.alive { border-color: var(--orange); background: var(--orange); box-shadow: 0 0 12px var(--line-strong); }
 .hit-callout { color: var(--acid); font: 800 11px var(--font-mono); letter-spacing: .12em; text-shadow: 0 2px 8px #000; }
-.game-over-panel { position: absolute; z-index: 6; inset: 44px 0 0; display: grid; place-items: center; align-content: center; background: rgba(10, 10, 10, .87); backdrop-filter: blur(8px); }
-.game-over-panel p { margin: 0 0 8px; color: var(--orange); font: 800 11px var(--font-mono); letter-spacing: .16em; }
-.game-over-panel h2 { margin: 0; font: 850 clamp(76px, 15vw, 150px)/.9 var(--font-mono); letter-spacing: -.1em; }
-.game-over-panel > span { margin: 12px 0 30px; color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; }
-.game-over-panel .primary-button { width: auto; }
+/*
+ * letter-spacing adds its space AFTER every character, including the last one, so a tracked line's
+ * box is wider than its glyphs and centring the box leaves the text sitting left of centre. Every
+ * line here is tracked — the eyebrow at .16em, the caption at .12em, the score at -.1em — so each
+ * compensates with a matching text-indent, which is the standard correction and the only one that
+ * works for a negative value too.
+ */
+.game-over-panel { position: absolute; z-index: 6; inset: 44px 0 0; display: grid; place-items: center; align-content: center; text-align: center; background: rgba(10, 10, 10, .87); backdrop-filter: blur(8px); }
+.game-over-panel p { margin: 0 0 var(--space-2xs); color: var(--muted); font: 800 var(--type-label-size) var(--font-mono); letter-spacing: .16em; text-indent: .16em; }
+.game-over-panel h2 { margin: 0; font: 850 clamp(64px, 12vw, 132px)/.9 var(--font-mono); letter-spacing: -.1em; text-indent: -.1em; font-variant-numeric: tabular-nums; }
+.game-over-panel > span { margin: var(--space-xs) 0 var(--space-md); color: var(--faint); font: 750 var(--type-label-size) var(--font-mono); letter-spacing: .12em; text-indent: .12em; }
+.game-over-panel .primary-button { width: auto; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
 .slash-instructions { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 1px solid var(--line); }
 .slash-instructions span { min-height: 54px; padding: 0 16px; display: flex; align-items: center; gap: 8px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); }
 .slash-instructions b { color: var(--muted); }
@@ -1273,17 +1280,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rail-open .rail { width: var(--rail-w-open); }
 
 .rail-mark {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
   align-items: center;
-  gap: var(--space-xs);
   min-height: var(--tap-min);
   margin-bottom: var(--space-xs);
-  padding: 0 var(--space-sm);
+  padding: 0;
   color: var(--paper);
   text-decoration: none;
 }
 .rail-mark b {
-  flex: none;
+  justify-self: center;
   display: grid;
   place-items: center;
   width: 34px; height: 34px;
@@ -1321,16 +1328,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .rail-item {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
   align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--tap-min);
-  padding: 0 var(--space-sm);
+  min-height: var(--rail-w);
+  padding: 0;
   color: var(--muted);
   font: 600 var(--type-body-size) var(--font-sans);
   text-decoration: none;
 }
-.rail-item .icon { flex: none; }
+.rail-item .icon { justify-self: center; }
+.rail-item > span { padding-right: var(--space-sm); }
 .rail-item:hover { color: var(--paper); background: var(--surface); }
 
 /* State by weight, not hue: the active item gets a solid edge and full-strength text. The same rule
@@ -1345,12 +1353,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 
 .rail-toggle {
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
   align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--tap-min);
+  min-height: var(--rail-w);
+  /* Lifted off the very bottom edge: it sat flush against it, which read as the rail running out
+     rather than as a control placed there. */
   margin-top: auto;
-  padding: 0 var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding: 0;
   border: 0;
   background: none;
   color: var(--faint);
@@ -1359,7 +1370,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   cursor: pointer;
 }
 .rail-toggle:hover { color: var(--paper); }
-.rail-toggle .icon { flex: none; transition: transform .16s ease; }
+.rail-toggle .icon { justify-self: center; transition: transform .16s ease; }
 .rail-open .rail-toggle .icon { transform: rotate(180deg); }
 
 .stage { margin-left: var(--rail-w); transition: margin-left .16s ease; }
@@ -1678,14 +1689,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    left-aligned item becomes when its label is hidden. */
 .app-shell:not(.rail-open) .rail-item,
 .app-shell:not(.rail-open) .rail-toggle,
-.app-shell:not(.rail-open) .rail-door {
-  width: var(--rail-w);
-  height: var(--rail-w);
-  padding: 0;
-  gap: 0;
-  justify-content: center;
-}
-.app-shell:not(.rail-open) .rail-mark { padding: 0; gap: 0; justify-content: center; }
+.app-shell:not(.rail-open) .rail-door,
+.app-shell:not(.rail-open) .rail-mark { grid-template-columns: var(--rail-w); }
 .app-shell:not(.rail-open) .rail-label { display: none; }
 
 /*
@@ -1732,18 +1737,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    destinations. Same square treatment as the rest of the rail when collapsed. */
 .rail-door {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-template-columns: var(--rail-w) 1fr;
   align-items: center;
-  gap: var(--space-xs);
-  min-height: var(--tap-min);
-  padding: 0 var(--space-sm);
+  min-height: var(--rail-w);
+  padding: 0;
   border-top: 1px solid var(--line);
   color: var(--faint);
   font: 600 var(--type-label-size) var(--font-sans);
   text-decoration: none;
 }
 .rail-door:hover { color: var(--paper); background: var(--surface); }
-.rail-door .icon { flex: none; }
+.rail-door .icon { justify-self: center; }
 .rail-door span { white-space: nowrap; overflow: hidden; opacity: 0; transition: opacity .12s ease; }
 .rail-open .rail-door span { opacity: 1; }
 .app-shell:not(.rail-open) .rail-door { width: var(--rail-w); height: var(--rail-w); padding: 0; justify-content: center; }
@@ -1796,26 +1801,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .game-fullscreen:fullscreen canvas { width: 100%; height: 100dvh; }
 .game-fullscreen:fullscreen [class*="statusbar"] { position: absolute; inset: 0 0 auto 0; z-index: 3; background: var(--stage-scrim); }
 
-.fullscreen-toggle {
-  position: fixed;
-  z-index: 45;
-  right: var(--space-sm);
-  bottom: var(--space-sm);
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2xs);
-  min-height: var(--tap-min);
-  padding: 0 var(--space-sm);
-  border: 1px solid var(--line-control);
-  background: var(--chrome-solid);
-  color: var(--muted);
-  font: 600 var(--type-label-size) var(--font-sans);
-  cursor: pointer;
-}
-.fullscreen-toggle:hover { border-color: var(--paper); color: var(--paper); }
-@media (orientation: landscape) and (max-height: 560px) {
-  .fullscreen-toggle { right: var(--space-2xs); bottom: var(--space-2xs); }
-}
 
 /* --- The controller deck ----------------------------------------------------------------------- */
 
@@ -1939,7 +1924,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  * above a --tap-min row, which is what puts the wordmark at its centre in the first place.
  */
 [class$="-page"] { padding-top: var(--space-sm) !important; }
-.back-button { display: inline-flex; align-items: center; min-height: var(--tap-min); }
+/* The arrow is drawn, not a character: "←" at 11px sat off the text baseline and at a different
+   weight from everything around it. */
+.back-button { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
+.back-button .icon { flex: none; }
+.pre-game-back { margin-bottom: var(--space-sm); }
 
 /*
  * A stat is a label, a value and sometimes a unit.
@@ -1988,15 +1977,37 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  * above it rather than a share of the viewport that ignores what is above it.
  */
 @media (min-width: 760px) {
+  /*
+   * The stage takes the room that is left, rather than a share of the viewport that ignores what is
+   * above it.
+   *
+   * The first attempt capped the page at 100dvh and left the canvas on a fixed --stage-h. That does
+   * not shrink a canvas, it shrinks the box around it: the arena is `overflow: hidden`, so it went
+   * from 490px to 244px and quietly clipped half the game — including the status bar the full-screen
+   * control now lives in. A fixed height inside a constrained parent is the wrong shape for "fit on
+   * one screen"; growing into what remains is the right one.
+   */
   [class$="-page"] {
+    height: 100dvh;
     min-height: 0;
     padding-bottom: var(--space-md);
     display: flex;
     flex-direction: column;
-    max-height: 100dvh;
   }
-  [class*="-heading"] { flex: none; }
-  :root { --stage-h: min(72dvh, 780px); }
+  [class*="-heading"],
+  [class$="-stats"],
+  [class$="-instructions"] { flex: none; }
+
+  [class$="-arena"],
+  [class$="-stage"],
+  [class$="-stage-shell"],
+  [class$="-layout"] { flex: 1 1 auto; min-height: 0; }
+
+  /* Fill the frame the flexbox settled on, whatever that turned out to be. */
+  [class$="-arena"] > canvas,
+  [class$="-stage"] > canvas,
+  [class$="-stage-shell"] > canvas,
+  [class$="-layout"] canvas { height: 100%; min-height: 0; }
 }
 
 /*
@@ -2020,3 +2031,36 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 .game-card-copy h3 { -webkit-line-clamp: 2; }
 .game-card-copy > p { -webkit-line-clamp: 2; }
+
+/* The game frame's own control, in the corner a window's controls live in. It replaced a status dot
+   that had been decorative since the subsystem name beside it was removed. */
+.frame-fullscreen {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--faint);
+  cursor: pointer;
+}
+.frame-fullscreen:hover { border-color: var(--line-control); color: var(--paper); }
+/* A coarse pointer needs a real target even though the frame is dense. */
+@media (pointer: coarse) { .frame-fullscreen { width: 36px; height: 36px; } }
+
+/*
+ * A stat block holds however many stats the game has.
+ *
+ * Every one of these declared its column count by hand — repeat(4, 1fr), 1fr 1.4fr 1fr — so adding
+ * the run counter to the row would have pushed the last stat onto a second line in eight games and
+ * squashed it in the other two. The columns now come from the cells.
+ */
+[class$="-stats"],
+[class$="-score"] {
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  min-width: 0 !important;
+}

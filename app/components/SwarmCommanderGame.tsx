@@ -8,6 +8,8 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SWARMCOMMANDER_INPUT from "@/games/swarmcommander/input.manifest.json";
@@ -63,7 +65,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
         if (state.impactSequence !== previousImpact) { previousImpact = state.impactSequence; if (audioEnabledRef.current) audio.play("impact", { volume: .42 }); }
         drawHandle = requestAnimationFrame(draw);
       };
-      canvas.focus(); drawHandle = requestAnimationFrame(draw);
+      canvas.focus({ preventScroll: true }); drawHandle = requestAnimationFrame(draw);
       const timer = window.setInterval(() => {
         const state = context.state; const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
         setHud({ score: state.score, wave: state.wave, agents: state.agents.length, selected: state.selected, enemies, energy: state.energy, formation: state.formation, modifier: state.modifier, event: state.lastEvent, shield: state.shieldUntil > state.elapsed, gameOver: state.gameOver });
@@ -91,10 +93,10 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
 
   return (
     <section className="swarm-page">
-      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
+      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
 
       <div className="swarm-arena">
-        <div className="swarm-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="swarm-statusbar"><FullscreenButton /><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />
         {/* Local camera capture requests no audio and is never recorded or uploaded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -103,7 +105,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
         <div className="swarm-vitals"><SwarmMeter label="ENERGY" value={hud.energy} /><div className={hud.shield ? "swarm-shield active" : "swarm-shield"}><span>COLLECTIVE SHIELD</span><strong>{hud.shield ? "ACTIVE" : "READY"}</strong></div></div>
         <div className="swarm-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}{cameraState === "active" ? <button disabled>HAND COMMAND ACTIVE</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING LOCAL MODEL…" : "ENABLE HAND COMMAND"}</button>}<button onClick={onConnect}>{linked ? "ADD SPECIALIST" : "CONNECT SPECIALISTS"}</button></div>
         {(cameraState === "denied" || cameraState === "error") && <p className="swarm-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>COLLECTIVE DISPERSED</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL COMMAND SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>COLLECTIVE DISPERSED</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL COMMAND SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="swarm-instructions"><span><b>COMMAND</b> mouse · right stick · point</span><span><b>SELECT</b> click · A · pinch</span><span><b>FORMATIONS</b> keys 1–5 · tactician</span><span><b>PULSE / SHIELD</b> Q / E</span><span><b>RECALL</b> R · navigator</span></div>
       <p className="swarm-privacy"><strong>Different dimensions, different devices:</strong> a navigator can tilt the shared direction while a tactician sets targets and formations. Optional hand inference remains local; every command has conventional controls.</p>

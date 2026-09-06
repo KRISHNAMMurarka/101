@@ -3,6 +3,8 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import GRAVITYSTACK_INPUT from "@/games/gravitystack/input.manifest.json";
@@ -127,19 +129,19 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
   return (
     <section className="gravity-page">
       <header className="gravity-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>GravityStack <span>101</span></h1></div>
-        <div className="gravity-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>HEIGHT</span><strong>{hud.height.toFixed(1)}<small>M</small></strong></div><div><span>PIECES</span><strong>{hud.pieces}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>GravityStack <span>101</span></h1></div>
+        <div className="gravity-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>HEIGHT</span><strong>{hud.height.toFixed(1)}<small>M</small></strong></div><div><span>PIECES</span><strong>{hud.pieces}</strong></div></div>
       </header>
 
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
-          <div className="gravity-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
+          <div className="gravity-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
 
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>
           <div className="gravity-drop-guide" style={{ left: `${50 + hud.placementX / 10 * 100}%` }}><i /><span>DROP</span></div>
           <div className="gravity-event">{hud.lastEvent}</div>
-          {hud.gameOver && <div className="game-over-panel"><p>TOWER LOST</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.height.toFixed(1)} M PEAK</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>TOWER LOST</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.height.toFixed(1)} M PEAK</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
         </div>
 
         <aside className="gravity-rail">

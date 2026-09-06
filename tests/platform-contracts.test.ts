@@ -853,9 +853,32 @@ test("a game's own page offers it, and a separate route runs it", () => {
     );
   }
 
-  // Full screen belongs where there is a game to fill the screen with, which is no longer the page
-  // a player lands on from the library.
+  /*
+   * Full screen belongs to the game, and now lives inside it — in the game's own status bar, where a
+   * window's controls sit. That is a stronger guarantee than a route check in the shell: the control
+   * cannot appear on a screen that has no game, because it is part of the game's markup.
+   *
+   * It also has to fill the game rather than the document. requestFullscreen on the document element
+   * is what F11 does, and it takes the website's chrome with it.
+   */
   const shell = readFileSync(resolve(import.meta.dirname, "../app/components/AppShell.tsx"), "utf8");
-  assert.match(shell, /endsWith\("\/play"\)[^\n]*FullscreenToggle|FullscreenToggle[\s\S]{0,80}endsWith\("\/play"\)/,
-    "the fullscreen control must be offered on the running game, not on the chooser");
+  assert.doesNotMatch(shell, /Fullscreen/,
+    "the shell must not own a control that belongs to the game");
+
+  const button = readFileSync(resolve(import.meta.dirname, "../app/components/FullscreenButton.tsx"), "utf8");
+  // The call, not the feature check: reading `documentElement.requestFullscreen` is how you find out
+  // whether the browser has it at all, and Safari on iPhone does not.
+  assert.doesNotMatch(button, /documentElement\.requestFullscreen\s*\(/,
+    "full screen must fill the game, not the document");
+  assert.match(button, /closest</, "it must expand the frame it is in, not a frame it went looking for");
+
+  // Matched case-insensitively against the real filenames: the components are BeatForgeGame.tsx and
+  // SwarmCommanderGame.tsx, which no capitalisation rule applied to an id reproduces.
+  const componentFiles = readdirSync(resolve(import.meta.dirname, "../app/components"));
+  for (const id of GAME_IDS) {
+    const name = componentFiles.find((file) => file.toLowerCase() === `${id}game.tsx`);
+    assert.ok(name, `${id} has no launcher component`);
+    const source = readFileSync(resolve(import.meta.dirname, `../app/components/${name}`), "utf8");
+    assert.match(source, /<FullscreenButton \/>/, `${id} does not offer full screen inside its own frame`);
+  }
 });

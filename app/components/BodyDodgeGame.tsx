@@ -6,6 +6,8 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import BODYDODGE_INPUT from "@/games/bodydodge/input.manifest.json";
@@ -63,7 +65,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         view.sync(context.state);
         renderHandle = requestAnimationFrame(render);
       };
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       renderHandle = requestAnimationFrame(render);
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -117,12 +119,12 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="body-page">
       <header className="body-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>BodyDodge <span>101</span></h1></div>
-        <div className="body-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>BodyDodge <span>101</span></h1></div>
+        <div className="body-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
       <div className="body-arena">
-        <div className="body-statusbar"><span><i className="status-dot" /></span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>
+        <div className="body-statusbar"><FullscreenButton /><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BodyDodge play field. Move with Left and Right, duck with Down, jump with Up or Space, and raise arms with E." />
         {/* Camera capture is always muted and requests no audio track. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -130,7 +132,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         <div className="body-next"><span>NEXT SHAPE</span><strong>{nextLabel}</strong><small>{hud.nextDistance.toFixed(0)} M</small></div>
         <div className="body-overlay"><div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div><div className="body-event">{hud.lastEvent}</div><div className="body-camera-actions">{cameraState === "active" ? <button onClick={() => cameraRef.current?.calibrateNeutral()}>SET NEUTRAL</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING MODEL…" : "ENABLE BODY CAMERA"}</button>}<button onClick={onConnect}>{linked ? "LINKED" : "CONNECT PANEL"}</button></div></div>
         {(cameraState === "denied" || cameraState === "error") && <p className="body-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>SESSION COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>SESSION COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="slash-instructions"><span><b>MOVE / LEAN</b> Left + Right / A + D</span><span><b>DUCK / JUMP</b> Down + Up or Space</span><span><b>ARMS UP</b> E / gamepad Y</span></div>
       <p className="body-privacy"><strong>Camera:</strong> control this game using your body. The bundled model runs locally; video is neither uploaded nor recorded. Camera access is optional.</p>

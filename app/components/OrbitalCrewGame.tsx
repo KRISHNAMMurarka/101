@@ -4,6 +4,8 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
 import type { SessionSnapshot } from "@101/session";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { useGameHost } from "@/app/lib/use-game-host";
 import ORBITALCREW_INPUT from "@/games/orbitalcrew/input.manifest.json";
 import ORBITALCREW_MANIFEST from "@/games/orbitalcrew/manifest.json";
@@ -70,7 +72,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
         drawHandle = requestAnimationFrame(draw);
       };
 
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(draw);
 
       const hudTimer = window.setInterval(() => {
@@ -133,18 +135,18 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="orbital-page">
       <header className="orbital-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Orbital Crew <span>101</span></h1></div>
-        <div className="orbital-score"><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong><small>SECTOR {String(hud.sector).padStart(2, "0")} · CHAIN ×{hud.combo}</small></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Orbital Crew <span>101</span></h1></div>
+        <div className="orbital-score"><div><span>RUN</span><strong>{run}</strong></div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong><small>SECTOR {String(hud.sector).padStart(2, "0")} · CHAIN ×{hud.combo}</small></div>
       </header>
 
 
       <div className="orbital-layout">
         <div className="orbital-stage">
-          <div className="orbital-statusbar"><span><i className="status-dot" /></span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "All clear"}</b></div>
+          <div className="orbital-statusbar"><FullscreenButton /><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "All clear"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />
           <div className="orbital-alert"><span>{hud.activeThreats ? "CREW ACTION REQUIRED" : "SHIP STATUS"}</span><strong>{hud.lastEvent}</strong></div>
           {hud.events.length > 0 && <div className="orbital-threat-stack">{hud.events.map((event) => <article key={event.id}><div><span>{bearingLabel(event.bearing)}</span><strong>{event.label}</strong><small>{event.roles.join(" + ").toUpperCase()}</small></div><b>{event.remaining.toFixed(1)}s</b><i><em style={{ width: `${event.progress * 100}%` }} /></i></article>)}</div>}
-          {hud.gameOver && <div className="game-over-panel"><p>SHIP LOST</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL CREW SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>SHIP LOST</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL CREW SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
         </div>
 
         <aside className="orbital-rail">

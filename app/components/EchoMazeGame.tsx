@@ -6,6 +6,8 @@ import { Audio101 } from "@101/audio";
 import { canTravel, type MazeDirection } from "@101/maze";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { useGameHost } from "@/app/lib/use-game-host";
 import ECHOMAZE_INPUT from "@/games/echomaze/input.manifest.json";
 import ECHOMAZE_MANIFEST from "@/games/echomaze/manifest.json";
@@ -84,7 +86,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         drawHandle = requestAnimationFrame(render);
       };
 
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(render);
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -129,18 +131,18 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
   return (
     <section className="echo-page">
       <header className="echo-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Echo Maze <span>101</span></h1></div>
-        <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Echo Maze <span>101</span></h1></div>
+        <div className="echo-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
 
       <div className="echo-layout">
         <div className="echo-stage">
-          <div className="echo-statusbar"><span><i className="status-dot" /></span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "Clue sent to your phone" : "Clue shown here"}</b></div>
+          <div className="echo-statusbar"><FullscreenButton /><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "Clue sent to your phone" : "Clue shown here"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
           <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong></div>
           {!linked && <CompanionClue clue={hud.clue} fallback />}
           <div className="echo-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}<button onClick={onConnect}>{linked ? "ADD SCANNER" : "CONNECT PRIVATE SCANNER"}</button></div>
-          {hud.gameOver && <div className="game-over-panel"><p>YOUR ECHO REMAINS</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL EXPEDITION SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>YOUR ECHO REMAINS</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL EXPEDITION SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
         </div>
         <aside className="echo-rail">
           <section className="echo-vitals"><h2>EXPLORER STATUS</h2><EchoMeter label="HEALTH" value={hud.health} tone="health" /><EchoMeter label="BATTERY" value={hud.battery} tone="battery" /><p className={hud.flashlight ? "light-on" : ""}><i />FLASHLIGHT {hud.flashlight ? "OPEN" : "CLOSED"}</p></section>

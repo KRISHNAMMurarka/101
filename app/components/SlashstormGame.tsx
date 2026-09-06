@@ -4,6 +4,8 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
@@ -62,7 +64,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
         drawHandle = requestAnimationFrame(draw);
       };
 
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(draw);
 
       const hudTimer = window.setInterval(() => {
@@ -85,8 +87,8 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
   return (
     <section className="slash-page">
       <header className="slash-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Slashstorm <span>101</span></h1></div>
-        <div className="slash-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Slashstorm <span>101</span></h1></div>
+        <div className="slash-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
       {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
@@ -96,10 +98,10 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",
             which claimed a gamepad whether or not one was plugged in. It now reports what the input
             manifest actually resolved against the hardware present. */}
-        <div className="slash-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
+        <div className="slash-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
-        {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="slash-instructions"><span><b>POINTER / TOUCH</b> Hold and slice through targets</span><span><b>KEYBOARD</b> Arrows to aim · Space to slash</span><span><b>WARNING</b> Avoid orange overload bombs</span></div>
     </section>

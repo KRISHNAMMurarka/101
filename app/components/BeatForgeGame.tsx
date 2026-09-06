@@ -7,6 +7,8 @@ import { Audio101, AudioTimeline101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import BEATFORGE_INPUT from "@/games/beatforge/input.manifest.json";
@@ -112,7 +114,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         drawHandle = requestAnimationFrame(render);
       };
 
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(render);
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -194,12 +196,12 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="beat-page">
       <header className="beat-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>BeatForge <span>101</span></h1></div>
-        <div className="beat-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>BeatForge <span>101</span></h1></div>
+        <div className="beat-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
       </header>
 
       <div className="beat-arena">
-        <div className="beat-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>
+        <div className="beat-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -215,7 +217,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
           </div>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="beat-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span></div>
       <p className="beat-privacy"><strong>Optional camera:</strong> body landmarks become punch, raise, duck, and lean actions locally. Video is not uploaded or recorded. Audio cues are generated and bundled by the 101 Audio facade.</p>

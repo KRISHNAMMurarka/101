@@ -57,6 +57,10 @@ export const ICONS = {
   search: "M11 5a6 6 0 110 12 6 6 0 010-12z M15.5 15.5L20 20",
   chevron: "M9 5l7 7-7 7",
   plus: "M12 5v14 M5 12h14",
+  /* Four corners opening outward, and the same four closing in — the pair every windowing system
+     uses for this, so nobody has to learn what they mean. */
+  expand: "M4 9V4h5 M20 9V4h-5 M4 15v5h5 M20 15v5h-5",
+  shrink: "M9 4v5H4 M15 4v5h5 M9 20v-5H4 M15 20v-5h5",
 } as const satisfies Record<InputSource, string> & Record<string, string>;
 
 export type IconName = keyof typeof ICONS;

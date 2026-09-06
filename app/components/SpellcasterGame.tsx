@@ -7,6 +7,8 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SPELLCASTER_INPUT from "@/games/spellcaster/input.manifest.json";
@@ -85,7 +87,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         drawHandle = requestAnimationFrame(render);
       };
 
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       drawHandle = requestAnimationFrame(render);
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -168,12 +170,12 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="spell-page">
       <header className="spell-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Spellcaster <span>101</span></h1></div>
-        <div className="spell-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Spellcaster <span>101</span></h1></div>
+        <div className="spell-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
       <div className="spell-arena">
-        <div className="spell-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "Camera optional"}</b></div>
+        <div className="spell-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "Camera optional"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -186,7 +188,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD CASTER" : "CONNECT MOTION"}</button>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="spell-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="spell-instructions"><span><b>PROJECTILE</b> Space · two fingers</span><span><b>SHIELD</b> Q · open palm</span><span><b>GRAB</b> E · pinch</span><span><b>CHARGE</b> C · fist</span><span><b>BLADE</b> Shift/X · swipe</span><span><b>VORTEX</b> R · circle</span></div>
       <p className="spell-privacy"><strong>Optional camera:</strong> the bundled hand model runs here, converts landmarks into stable spell events, and discards frames. Video is not uploaded or recorded. Every spell also has a keyboard/gamepad fallback.</p>

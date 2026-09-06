@@ -4,6 +4,8 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import FullscreenButton from "@/app/components/FullscreenButton";
+import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import TILTDRIFT_INPUT from "@/games/tiltdrift/input.manifest.json";
@@ -51,7 +53,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
         view.sync(context.state);
         renderHandle = requestAnimationFrame(render);
       };
-      canvas.focus();
+      canvas.focus({ preventScroll: true });
       renderHandle = requestAnimationFrame(render);
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -74,12 +76,12 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="drift-page">
       <header className="drift-heading">
-        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>TiltDrift <span>101</span></h1></div>
-        <div className="drift-stats"><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
+        <div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>TiltDrift <span>101</span></h1></div>
+        <div className="drift-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
 
       <div className="drift-arena">
-        <div className="drift-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
+        <div className="drift-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="TiltDrift play field. Steer with left and right arrows, boost with Space, brake with Down, and drift with Shift." />
         <div className="drift-overlay">
           <div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div>
@@ -87,7 +89,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
           <button onClick={onConnect}>{linked ? "ADD DRIVER" : "CONNECT WHEEL"} ↗</button>
         </div>
         <div className="boost-meter"><span>BOOST</span><i><b style={{ width: `${hud.boost}%` }} /></i></div>
-        {hud.gameOver && <div className="game-over-panel"><p>VEHICLE OFFLINE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>VEHICLE OFFLINE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="slash-instructions"><span><b>STEER</b> Arrow keys / A D / gamepad / phone tilt</span><span><b>BOOST + DRIFT</b> Space + Shift</span><span><b>BRAKE</b> Down arrow / S / Link pedal</span></div>
     </section>

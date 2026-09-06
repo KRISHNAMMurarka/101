@@ -74,6 +74,13 @@ export default function PreGame({
 
   return (
     <main className="pre-game">
+      {/* The chooser is arrived at from the library, so it needs the same way back a game has.
+          Without it the only exit was the rail, which is a different gesture from the one that
+          brought you here. */}
+      <Link className="back-button pre-game-back" href="/">
+        <Icon name="back" size={16} />Back
+      </Link>
+
       <header className="pre-game-head">
         <GamePoster id={manifest.id} title={manifest.name} />
         <div>
