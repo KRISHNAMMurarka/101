@@ -137,7 +137,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD FIGHTER" : "CONNECT FIGHTER"}</button>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="shadow-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Enter another arena ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
       </div>
       <div className="shadow-instructions"><span><b>MOVE</b> A/D · arrows · body position</span><span><b>PUNCH</b> J/K · physical punch</span><span><b>BLOCK</b> L · hands together</span><span><b>DUCK / JUMP</b> S/W · body motion</span><span><b>SPECIAL</b> I · raise both arms</span></div>
       <p className="shadow-privacy"><strong>Optional body camera:</strong> the bundled pose model runs locally and publishes combat actions plus a compact landmark pose. Video is never uploaded or recorded, and every action has a keyboard/gamepad fallback.</p>

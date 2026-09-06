@@ -189,7 +189,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD CASTER" : "CONNECT MOTION"}</button>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="spell-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Open another veil ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
       </div>
       <div className="spell-instructions"><span><b>PROJECTILE</b> Space · two fingers</span><span><b>SHIELD</b> Q · open palm</span><span><b>GRAB</b> E · pinch</span><span><b>CHARGE</b> C · fist</span><span><b>BLADE</b> Shift/X · swipe</span><span><b>VORTEX</b> R · circle</span></div>
       <p className="spell-privacy"><strong>Optional camera:</strong> the bundled hand model runs here, converts landmarks into stable spell events, and discards frames. Video is not uploaded or recorded. Every spell also has a keyboard/gamepad fallback.</p>

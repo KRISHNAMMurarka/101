@@ -142,7 +142,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>
           <div className="gravity-drop-guide" style={{ left: `${50 + hud.placementX / 10 * 100}%` }}><i /><span>DROP</span></div>
           <div className="gravity-event">{hud.lastEvent}</div>
-          {hud.gameOver && <div className="game-over-panel"><p>TOWER LOST</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.height.toFixed(1)} M PEAK</span><button className="primary-button" onClick={restart}>Build another seed ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>TOWER LOST</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.height.toFixed(1)} M PEAK</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
         </div>
 
         <aside className="gravity-rail">

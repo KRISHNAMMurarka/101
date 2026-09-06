@@ -144,7 +144,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
           <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong></div>
           {!linked && <CompanionClue clue={hud.clue} fallback />}
           <div className="echo-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}<button onClick={onConnect}>{linked ? "ADD SCANNER" : "CONNECT PRIVATE SCANNER"}</button></div>
-          {hud.gameOver && <div className="game-over-panel"><p>YOUR ECHO REMAINS</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL EXPEDITION SCORE</span><button className="primary-button" onClick={restart}>Enter another maze ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>YOUR ECHO REMAINS</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL EXPEDITION SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
         </div>
         <aside className="echo-rail">
           <section className="echo-vitals"><h2>EXPLORER STATUS</h2><EchoMeter label="HEALTH" value={hud.health} tone="health" /><EchoMeter label="BATTERY" value={hud.battery} tone="battery" /><p className={hud.flashlight ? "light-on" : ""}><i />FLASHLIGHT {hud.flashlight ? "OPEN" : "CLOSED"}</p></section>

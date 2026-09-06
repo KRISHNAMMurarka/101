@@ -90,7 +90,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
           <button onClick={onConnect}>{linked ? "ADD DRIVER" : "CONNECT WHEEL"} ↗</button>
         </div>
         <div className="boost-meter"><span>BOOST</span><i><b style={{ width: `${hud.boost}%` }} /></i></div>
-        {hud.gameOver && <div className="game-over-panel"><p>VEHICLE OFFLINE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Run another seed ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>VEHICLE OFFLINE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
       </div>
       <div className="slash-instructions"><span><b>STEER</b> Arrow keys / A D / gamepad / phone tilt</span><span><b>BOOST + DRIFT</b> Space + Shift</span><span><b>BRAKE</b> Down arrow / S / Link pedal</span></div>
     </section>

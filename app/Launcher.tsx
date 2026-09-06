@@ -28,7 +28,9 @@ import {
 } from "./lib/catalog";
 const INITIAL_CATALOG_ITEMS = 12;
 const INITIAL_CATALOG_COLUMNS = 3;
-const INITIAL_CATALOG_ROW_HEIGHT = 500;
+/* Must match --catalog-row-height in globals.css: the first window is measured from this on the
+   server and re-measured on the client, and a mismatch is a hydration difference. */
+const INITIAL_CATALOG_ROW_HEIGHT = 524;
 
 export default function Launcher({
   games,

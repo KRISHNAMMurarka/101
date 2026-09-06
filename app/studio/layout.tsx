@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import StudioRail from "./StudioRail";
 
 export const metadata: Metadata = {
-  title: "101 Studio — Build on the input platform",
+  title: "101 — Developer tools",
   // Tooling, not a product page. Keeping it out of search results also keeps a player from
   // arriving at a frame inspector through a link they did not know was for developers.
   robots: { index: false, follow: false },

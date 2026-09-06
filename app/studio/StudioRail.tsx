@@ -22,10 +22,10 @@ import { STUDIO_TOOLS } from "./tools";
 export default function StudioRail() {
   const pathname = usePathname() ?? "";
   return (
-    <nav className="studio-rail" aria-label="Studio">
+    <nav className="studio-rail" aria-label="Developer tools">
       <Link href="/studio" className="studio-mark">
         <b>101</b>
-        <span>Studio</span>
+        <span>Developer tools</span>
       </Link>
       <div className="studio-links">
         {STUDIO_TOOLS.map((tool) => {

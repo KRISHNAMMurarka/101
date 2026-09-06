@@ -102,7 +102,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
         <div className="slash-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
-        {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play another seed ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
       </div>
       <div className="slash-instructions"><span><b>POINTER / TOUCH</b> Hold and slice through targets</span><span><b>KEYBOARD</b> Arrows to aim · Space to slash</span><span><b>WARNING</b> Avoid orange overload bombs</span></div>
     </section>

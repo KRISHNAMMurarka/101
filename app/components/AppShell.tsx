@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import FullscreenToggle from "./FullscreenToggle";
 import { Icon, type IconName } from "./Icon";
 import { setRailOpen, useRailOpen } from "../lib/rail-preference";
 
@@ -69,7 +70,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       href={destination.href}
       className={`rail-item${within(pathname, destination.href) ? " active" : ""}`}
       aria-current={within(pathname, destination.href) ? "page" : undefined}
-      title={open ? undefined : destination.label}
+      data-label={destination.label}
     >
       <Icon name={destination.icon} size={20} />
       <span>{destination.label}</span>
@@ -84,6 +85,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <div className="rail-group">{PRIMARY.map(item)}</div>
+
+        {/* A door, not a destination. It sits at the foot with the rail's own controls rather than
+            beside Play and Devices, because it leads somewhere a player has no reason to go — but
+            leaving it out entirely means a developer's only route in is a footer link. */}
+        <Link href="/studio" className="rail-door" data-label="Developer tools">
+          <Icon name="labs" size={18} />
+          <span>Developer tools</span>
+        </Link>
 
         <button className="rail-toggle" onClick={() => setRailOpen(!open)} aria-expanded={open} title={open ? "Collapse" : "Expand"}>
           <Icon name="chevron" size={16} />
@@ -111,6 +120,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           one inside another is invalid and confuses assistive navigation. The shell owns the
           regions around the content, not the content’s landmark. */}
       <div className="stage">{children}</div>
+
+      {/* Offered where there is a game to fill the screen with, and nowhere else. */}
+      {pathname.startsWith("/games/") && <FullscreenToggle />}
     </div>
   );
 }

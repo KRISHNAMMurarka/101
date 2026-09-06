@@ -218,7 +218,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
           </div>
         </div>
         {(cameraState === "denied" || cameraState === "error") && <p className="beat-camera-error">{cameraError}</p>}
-        {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Forge another chart ↗</button></div>}
+        {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
       </div>
       <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span></div>
       <p className="beat-privacy"><strong>Optional camera:</strong> body landmarks become punch, raise, duck, and lean actions locally. Video is not uploaded or recorded. Audio cues are generated and bundled by the 101 Audio facade.</p>

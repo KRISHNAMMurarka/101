@@ -148,7 +148,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />
           <div className="orbital-alert"><span>{hud.activeThreats ? "CREW ACTION REQUIRED" : "SHIP STATUS"}</span><strong>{hud.lastEvent}</strong></div>
           {hud.events.length > 0 && <div className="orbital-threat-stack">{hud.events.map((event) => <article key={event.id}><div><span>{bearingLabel(event.bearing)}</span><strong>{event.label}</strong><small>{event.roles.join(" + ").toUpperCase()}</small></div><b>{event.remaining.toFixed(1)}s</b><i><em style={{ width: `${event.progress * 100}%` }} /></i></article>)}</div>}
-          {hud.gameOver && <div className="game-over-panel"><p>SHIP LOST</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL CREW SCORE</span><button className="primary-button" onClick={restart}>Launch another seed ↗</button></div>}
+          {hud.gameOver && <div className="game-over-panel"><p>SHIP LOST</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL CREW SCORE</span><button className="primary-button" onClick={restart}>Play again ↗</button></div>}
         </div>
 
         <aside className="orbital-rail">
