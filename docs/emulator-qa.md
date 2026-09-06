@@ -152,3 +152,60 @@ looked like the lazy split had broken hydration. It had not — three `vinext` p
 and a stale one was answering on port 3000 with an asset manifest from a previous build, so the
 HTML referenced a chunk hash that no longer existed. `pkill -f vinext` and a clean restart before
 measuring; check `ps aux | grep vinext` returns one process when a built asset 404s or hangs.
+
+## Two-thumb play, verified on a real iOS runtime (2026-09-06)
+
+This was the last thing in the project marked "reasoned but unverified on hardware", because
+simulators were believed to synthesise only mirrored pinch. They do not: the simulator control API
+accepts an arbitrary two-finger path, which is exactly what the React Native responder bug needed.
+
+The bug was that React Native has one responder for the whole app, and `PanResponder` answers *yes*
+by default when another view asks for it — so pressing a button while holding a stick terminated the
+stick and snapped its vector to neutral. Every gamepad preset was affected.
+
+Method: a Release build on iPhone 17 Pro (iOS 26.5), Classic Controller panel, with the control
+callbacks writing to an on-screen ring buffer so the sequence survives the gesture. Finger 1 holds
+and drags the AIM stick; finger 2 lands on button A and stays down.
+
+```
+B buttonA=true  |  B buttonA=false          ← baseline: a lone tap is seen
+V aim -0.71,-0.71                            ← finger 1 engages the stick
+B buttonA=true                               ← finger 2 presses A while the stick is held
+V aim -0.08,-0.58                            ← the stick keeps tracking
+V aim -0.18,-0.88
+V aim -0.02,-0.58
+V aim 0.00,0.00                              ← released on lift
+B buttonA=false
+```
+
+The stick continued producing vectors *after* `buttonA=true`. Under the original bug the press would
+have been followed immediately by `V aim 0.00,0.00` and nothing further, because the responder was
+terminated. Both halves of the fix are therefore confirmed against real React Native: pads refuse to
+surrender the responder, and buttons take raw touch events so they never ask for it.
+
+Two things this cost, worth recording so the next person does not repeat them. The Debug build fails
+to link — `expo-dev-launcher` tries to link `SwiftUICore` directly, which Apple disallows — so use
+`--configuration Release`. And `console.log` does not reach the device log from a Release build, so
+observation has to be rendered on screen rather than logged.
+
+The test build forced the play surface open (`playing = true`) and instrumented the control
+callbacks, because the panel is otherwise only reachable through a completed pairing, which the
+simulator cannot finish. That harness was reverted immediately; the responder behaviour under test is
+in `controls.tsx` and is unaffected by why the panel is shown.
+
+## Controller audio on a real iOS runtime
+
+`expo-audio` instantiates an `AVPlayer` and loads the bundled `private-cue.wav` at launch on the
+simulator, with no error:
+
+```
+AVPlayer _insertItem:afterItem: currentItem KVO: P/TN called with I/JKN.01
+AVPlayer _setRate:rateChangeReason:...
+```
+
+That rules out the module or the asset being broken on device, which was a genuine unknown.
+
+**It is not proof of audibility.** No cue was delivered — that needs a paired host, and the simulator
+cannot complete WebRTC — and nobody has listened. The honest status stays: the path is wired, tested
+at every seam, and now known to construct a working player on iOS; whether a player actually hears it
+still needs a person and a phone.

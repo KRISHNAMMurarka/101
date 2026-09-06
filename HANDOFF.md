@@ -281,12 +281,19 @@ What remains is genuine per-entry data. Going further means server-side search a
 sending a page instead of a catalog — which is an architecture decision, not a cleanup, and which no
 player reaches today with ten games. It is deliberately not built.
 
-### Needs hardware, cannot be closed from a workstation
+### ~~Two-thumb play~~ — verified on a real iOS runtime, 2026-09-06
 
-- **Audible playback on a real phone.** The path is wired end to end and tested at every seam, but
-  nobody has heard it.
-- **Two-thumb play.** The React Native single-responder fix is reasoned from RN's source and locked
-  by a test; simulators synthesise only mirrored pinch, never two independent touch points.
+Closed. Simulators do *not* only synthesise mirrored pinch — the control API takes an arbitrary
+two-finger path. On a Release build, holding the AIM stick while a second finger presses A produced
+`B buttonA=true` followed by four more `V aim` updates, so the stick was never terminated. Full
+transcript and method in [emulator QA](docs/emulator-qa.md).
+
+### Still needs a person and a phone
+
+- **Audible playback.** `expo-audio` is now known to instantiate an `AVPlayer` and load the bundled
+  cue on a real iOS runtime, which rules out the module or asset being broken. But no cue was
+  delivered — that needs a paired host, and the simulator cannot finish WebRTC — and nobody has
+  listened. Wiring is proven; hearing is not.
 
 ## Known limits — do not treat these as bugs
 
