@@ -1,5 +1,20 @@
 import type { Metadata } from "next";
-import SwarmCommanderStandalone from "./SwarmCommanderStandalone";
+
+import { parseGameManifest } from "@101/sdk";
+
+import PreGame from "@/app/components/PreGame";
+import SWARMCOMMANDER_MANIFEST from "@/games/swarmcommander/manifest.json";
+import { SWARM_COMMANDER_ROLES } from "@/games/swarmcommander/src/roles";
 
 export const metadata: Metadata = { title: "Swarm Commander 101", description: "Command hundreds of units with one gesture, and hold a line that keeps moving." };
-export default function SwarmCommanderPage() { return <SwarmCommanderStandalone />; }
+
+/*
+ * Parsed once at module scope, so a malformed manifest fails the build rather than the page, and the
+ * chooser is derived rather than written: every option it offers comes from this file and the roles
+ * beside it.
+ */
+const manifest = parseGameManifest(SWARMCOMMANDER_MANIFEST);
+
+export default function SwarmCommanderPage() {
+  return <PreGame manifest={manifest} roles={SWARM_COMMANDER_ROLES} />;
+}

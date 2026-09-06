@@ -78,7 +78,7 @@ test("server-renders a bounded first window for the 1000-entry catalog benchmark
 
 test("no game screen labels itself with its development stage or its engine", async () => {
   for (const id of ["slashstorm", "tiltdrift", "bodydodge", "orbitalcrew", "beatforge", "gravitystack", "spellcaster", "echomaze", "shadowarena", "swarmcommander"]) {
-    const html = await (await render(`/games/${id}`)).text();
+    const html = await (await render(`/games/${id}/play`)).text();
     assert.doesNotMatch(html, /Playable [a-z0-9 +-]*(slice|physics|co-op|survival|exploration|movement|combat|command)/i, `${id} still names its development stage`);
     assert.doesNotMatch(html, /· Seed /i, `${id} still prints its RNG seed label`);
     assert.doesNotMatch(html, /INPUT BUS|RAPIER|SPATIAL HASH|SESSION HOST|RHYTHM CLOCK|STATE MACHINE|SEEDED MAZE/i, `${id} still names a subsystem in its status bar`);
@@ -86,21 +86,21 @@ test("no game screen labels itself with its development stage or its engine", as
 });
 
 test("serves Slashstorm as an independently playable game route", async () => {
-  const response = await render("/games/slashstorm");
+  const response = await render("/games/slashstorm/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Slashstorm 101/);
 });
 
 test("serves TiltDrift as an independently playable 3D game route", async () => {
-  const response = await render("/games/tiltdrift");
+  const response = await render("/games/tiltdrift/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /TiltDrift 101/);
 });
 
 test("serves BodyDodge with optional local camera and conventional controls", async () => {
-  const response = await render("/games/bodydodge");
+  const response = await render("/games/bodydodge/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /BodyDodge 101/);
@@ -117,7 +117,7 @@ test("serves BodyDodge with optional local camera and conventional controls", as
 });
 
 test("serves Orbital Crew with asymmetric roles and conventional fallback", async () => {
-  const response = await render("/games/orbitalcrew");
+  const response = await render("/games/orbitalcrew/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Orbital Crew 101/);
@@ -126,7 +126,7 @@ test("serves Orbital Crew with asymmetric roles and conventional fallback", asyn
 });
 
 test("serves BeatForge with offline rhythm, Link motion, and local pose choices", async () => {
-  const response = await render("/games/beatforge");
+  const response = await render("/games/beatforge/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /BeatForge 101/);
@@ -136,7 +136,7 @@ test("serves BeatForge with offline rhythm, Link motion, and local pose choices"
 });
 
 test("serves GravityStack through the 101 physics facade and asymmetric roles", async () => {
-  const response = await render("/games/gravitystack");
+  const response = await render("/games/gravitystack/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /GravityStack 101/);
@@ -146,7 +146,7 @@ test("serves GravityStack through the 101 physics facade and asymmetric roles", 
 });
 
 test("serves Spellcaster through shared hand, motion, and conventional spell actions", async () => {
-  const response = await render("/games/spellcaster");
+  const response = await render("/games/spellcaster/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Spellcaster 101/);
@@ -155,7 +155,7 @@ test("serves Spellcaster through shared hand, motion, and conventional spell act
 });
 
 test("serves Echo Maze with private Link clues and a conventional fallback", async () => {
-  const response = await render("/games/echomaze");
+  const response = await render("/games/echomaze/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Echo Maze 101/);
@@ -164,7 +164,7 @@ test("serves Echo Maze with private Link clues and a conventional fallback", asy
 });
 
 test("serves Shadow Arena through reusable combat-pose semantics and conventional controls", async () => {
-  const response = await render("/games/shadowarena");
+  const response = await render("/games/shadowarena/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Shadow Arena 101/);
@@ -173,7 +173,7 @@ test("serves Shadow Arena through reusable combat-pose semantics and conventiona
 });
 
 test("serves Swarm Commander with scalable simulation and asymmetric specialist roles", async () => {
-  const response = await render("/games/swarmcommander");
+  const response = await render("/games/swarmcommander/play");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Swarm Commander 101/);
@@ -348,4 +348,59 @@ test("a wrong URL is a page, not a dead end", async () => {
   assert.match(html, /isn.t here/i, "a missing page must say so in words");
   assert.match(html, /href="\/"/, "a missing page must offer a way back");
   assert.doesNotMatch(html, /call stack|webpack|__next|Application error/i, "a player must never see a stack trace");
+});
+
+/**
+ * A game opens; it does not start.
+ *
+ * Pressing Play used to drop a player straight into a running game, which is the wrong moment to
+ * arrive for a title built around a second device: the notice telling you to pair one appears while
+ * the game is already going. A mounted game is a running game — useGameHost launches from an effect
+ * with no condition in it — so the chooser and the game are two addresses, and this asserts that
+ * boundary in both directions.
+ */
+test("a game opens at its own page and does not start until the player asks", async () => {
+  // Markup only the running game emits, each verified present at /play and absent at the chooser.
+  const running = {
+    slashstorm: /slash-arena/, tiltdrift: /drift-arena/, bodydodge: /body-arena/,
+    orbitalcrew: /orbital-stage/, beatforge: /beat-arena/, gravitystack: /gravity-stage/,
+    spellcaster: /spell-arena/, echomaze: /echo-stage/, shadowarena: /shadow-arena/,
+    swarmcommander: /swarm-arena/,
+  };
+
+  for (const [id, marker] of Object.entries(running)) {
+    const chooser = await (await render(`/games/${id}`)).text();
+    assert.doesNotMatch(chooser, marker, `${id} starts before the player asks for it`);
+    assert.doesNotMatch(chooser, /<canvas/, `${id} mounts a canvas on a screen that is not the game`);
+    assert.match(chooser, new RegExp(`href="/games/${id}/play`), `${id} offers no way to start`);
+    assert.match(chooser, /How do you want to play/, `${id} does not ask the question`);
+
+    const playing = await (await render(`/games/${id}/play`)).text();
+    assert.match(playing, marker, `${id} does not run at its own play route`);
+  }
+});
+
+/**
+ * The screen offers what each game declares, rather than a menu written by hand.
+ */
+test("the chooser offers only what each game actually supports", async () => {
+  /*
+   * Seats come from the roles a session can fill, not from players.max. Orbital Crew's manifest says
+   * six while it defines five stations, and the session only ever fills declared roles — so a sixth
+   * seat could never be occupied by anyone.
+   */
+  const seats = { gravitystack: 2, orbitalcrew: 5, slashstorm: 2, swarmcommander: 2 };
+  for (const [id, count] of Object.entries(seats)) {
+    // React emits an interpolated number as its own text node, so the seat count arrives as
+    // "Up to <!-- -->5". Stripped the same way the benchmark assertion above does.
+    const html = (await (await render(`/games/${id}`)).text()).replaceAll("<!-- -->", "");
+    assert.match(html, new RegExp(`Up to ${count}`), `${id} must offer the seats it can really fill`);
+  }
+  assert.doesNotMatch((await (await render("/games/orbitalcrew")).text()).replaceAll("<!-- -->", ""), /Up to 6/,
+    "players.max is 6 but only five stations exist");
+
+  for (const id of ["echomaze", "tiltdrift", "bodydodge", "beatforge", "shadowarena", "spellcaster"]) {
+    const html = await (await render(`/games/${id}`)).text();
+    assert.doesNotMatch(html, /With other people/, `${id} is single-player and must not offer a second seat`);
+  }
 });

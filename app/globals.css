@@ -1867,3 +1867,49 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (pointer: coarse) {
   .dynamic-dpad button { min-width: 48px; min-height: 48px; }
 }
+
+/* --- The pre-game screen ------------------------------------------------------------------------ */
+
+.pre-game { max-width: var(--shell-max); margin: 0 auto; padding: var(--content-top) var(--gutter) var(--space-xl); }
+
+.pre-game-head { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); align-items: center; gap: var(--space-lg); }
+.pre-game-head .game-poster { max-height: none; margin: 0; }
+.pre-game-head h1 { margin: 0; font-size: clamp(32px, 5vw, 64px); font-weight: 800; letter-spacing: var(--track-tight); line-height: 1; text-wrap: balance; }
+.pre-game-head p { margin: var(--space-xs) 0 0; color: var(--muted); font-size: var(--type-body-size); }
+
+.pre-game-question {
+  margin: var(--space-xl) 0 var(--space-sm);
+  color: var(--faint);
+  font: 700 var(--type-label-size) var(--font-mono);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+
+.pre-game-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-2xs); }
+.pre-game-option {
+  display: grid;
+  align-content: start;
+  gap: var(--space-2xs);
+  padding: var(--space-md);
+  border: 1px solid var(--line);
+  background: var(--chrome);
+}
+.pre-game-option > .icon { color: var(--muted); }
+.pre-game-option h3 { margin: var(--space-2xs) 0 0; font-size: var(--type-title-size); font-weight: 700; letter-spacing: var(--track-title); }
+.pre-game-option p { margin: 0; color: var(--faint); font-size: var(--type-label-size); line-height: 1.55; }
+/* The action sits on the card's floor whatever the copy above it runs to, so a row of options does
+   not present its buttons at three different heights. */
+.pre-game-option .primary-button,
+.pre-game-option .outline-button {
+  margin-top: var(--space-sm);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2xs);
+  min-height: var(--tap-min);
+  align-self: end;
+}
+
+.pre-game-pairing { margin-top: var(--space-sm); padding: var(--space-md); border: 1px solid var(--line); background: var(--chrome); }
+.pre-game-note { margin: var(--space-md) 0 0; color: var(--faint); font-size: var(--type-label-size); }
+
+@media (max-width: 759px) {
+  .pre-game-head { grid-template-columns: 1fr; gap: var(--space-sm); }
+}

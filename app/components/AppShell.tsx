@@ -122,7 +122,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <div className="stage">{children}</div>
 
       {/* Offered where there is a game to fill the screen with, and nowhere else. */}
-      {pathname.startsWith("/games/") && <FullscreenToggle />}
+      {pathname.startsWith("/games/") && pathname.endsWith("/play") && <FullscreenToggle />}
     </div>
   );
 }

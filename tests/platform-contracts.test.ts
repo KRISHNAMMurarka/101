@@ -252,7 +252,9 @@ test("every game runs through the SDK, and the SDK resolves its input manifest",
   assert.match(host, /sessionSources\(/, "paired devices must count, or a phone is invisible");
 
   const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
-    .filter((file) => file.endsWith("Game.tsx"));
+    // Matched against the discovered games, not a filename suffix: a component named PreGame.tsx
+    // satisfied `endsWith("Game.tsx")` and was counted as an eleventh game.
+    .filter((file) => GAME_IDS.some((id) => file.toLowerCase() === `${id}game.tsx`));
   assert.equal(components.length, GAME_IDS.length, "every game must have a launcher component");
 
   for (const file of components) {
@@ -451,7 +453,9 @@ test("a blocked game reads differently from a merely degraded one", () => {
   assert.doesNotMatch(blocked[1]!, /#[0-9a-f]{3,6}|rgb|hsl/i, "and must not introduce a colour");
 
   const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
-    .filter((file) => file.endsWith("Game.tsx"));
+    // Matched against the discovered games, not a filename suffix: a component named PreGame.tsx
+    // satisfied `endsWith("Game.tsx")` and was counted as an eleventh game.
+    .filter((file) => GAME_IDS.some((id) => file.toLowerCase() === `${id}game.tsx`));
   for (const file of components) {
     const source = readFileSync(resolve(import.meta.dirname, `../app/components/${file}`), "utf8");
     assert.match(source, /playable === false \? " blocked" : ""/,
@@ -855,4 +859,31 @@ test("the catalog ships no field it can derive or does not read", async () => {
   assert.equal(withIndex.length, 1, "an indexed search must still match");
   assert.equal(withoutIndex.length, 1, "and so must one that derives the text per entry");
   assert.equal(filterCatalog([entry], { query: "zzzznotagame" }).length, 0);
+});
+
+/**
+ * The gate is structural, not a convention.
+ *
+ * A game runs because its component mounts: `useGameHost` calls `host.launch()` from a `useEffect`
+ * with no condition in it. So the only way to show a player a game before starting it is to not
+ * mount it — which is why the chooser and the game are two routes rather than one route with a flag.
+ * Rendered HTML cannot see the third assertion here, because FullscreenToggle returns null on the
+ * server.
+ */
+test("a game's own page offers it, and a separate route runs it", () => {
+  for (const id of GAME_IDS) {
+    const chooser = readFileSync(resolve(import.meta.dirname, `../app/games/${id}/page.tsx`), "utf8");
+    assert.match(chooser, /<PreGame\b/, `${id}'s page must offer the game, not mount it`);
+    assert.doesNotMatch(chooser, /<\w+Standalone\b/, `${id}'s page mounts the game, so it starts on arrival`);
+    assert.ok(
+      existsSync(resolve(import.meta.dirname, `../app/games/${id}/play/page.tsx`)),
+      `${id} has no play route, so its game runs at no address`,
+    );
+  }
+
+  // Full screen belongs where there is a game to fill the screen with, which is no longer the page
+  // a player lands on from the library.
+  const shell = readFileSync(resolve(import.meta.dirname, "../app/components/AppShell.tsx"), "utf8");
+  assert.match(shell, /endsWith\("\/play"\)[^\n]*FullscreenToggle|FullscreenToggle[\s\S]{0,80}endsWith\("\/play"\)/,
+    "the fullscreen control must be offered on the running game, not on the chooser");
 });
