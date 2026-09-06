@@ -4,7 +4,7 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import TILTDRIFT_INPUT from "@/games/tiltdrift/input.manifest.json";
 import TILTDRIFT_MANIFEST from "@/games/tiltdrift/manifest.json";
@@ -66,8 +66,6 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
     },
   });
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => {
     setHud(INITIAL_HUD);
     setRun((value) => value + 1);
@@ -76,10 +74,9 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="drift-page">
       <header className="drift-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>TiltDrift <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>TiltDrift <span>101</span></h1></div>
         <div className="drift-stats"><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="drift-arena">
         <div className="drift-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>

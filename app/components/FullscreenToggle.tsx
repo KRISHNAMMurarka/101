@@ -17,8 +17,31 @@ import { Icon } from "./Icon";
  */
 
 function subscribe(listener: () => void) {
-  document.addEventListener("fullscreenchange", listener);
-  return () => document.removeEventListener("fullscreenchange", listener);
+  const onChange = () => {
+    // Leaving full screen by Escape never runs the toggle, so the marker class has to come off here
+    // or the element keeps its full-screen sizing back inside the page.
+    if (!document.fullscreenElement) {
+      for (const element of document.querySelectorAll(".game-fullscreen")) element.classList.remove("game-fullscreen");
+    }
+    listener();
+  };
+  document.addEventListener("fullscreenchange", onChange);
+  return () => document.removeEventListener("fullscreenchange", onChange);
+}
+
+/**
+ * The element to fill the screen with.
+ *
+ * The document element was the wrong target: that is what F11 does, and it takes the page's chrome
+ * with it — the player asked for the game to fill the screen, not the website. The game is the
+ * element that owns the canvas, so this walks up from the canvas to the stage that contains it,
+ * which is also what carries a game's HUD overlays. Falling back to the page element keeps the
+ * control working for a game whose markup does not follow that shape.
+ */
+function fullscreenTarget(): HTMLElement | null {
+  const canvas = document.querySelector("canvas");
+  const stage = canvas?.closest<HTMLElement>("[class$='-arena'], [class$='-stage'], [class$='-stage-shell'], [class$='-layout']");
+  return stage ?? canvas?.parentElement ?? document.querySelector<HTMLElement>("[class$='-page']");
 }
 
 /**
@@ -38,8 +61,11 @@ export default function FullscreenToggle() {
 
   const toggle = async () => {
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await document.documentElement.requestFullscreen({ navigationUI: "hide" });
+      if (document.fullscreenElement) { await document.exitFullscreen(); return; }
+      const target = fullscreenTarget();
+      if (!target) return;
+      target.classList.add("game-fullscreen");
+      await target.requestFullscreen({ navigationUI: "hide" });
     } catch {
       // A rejected request means the browser declined the gesture — nothing to tell the player that
       // they cannot already see.

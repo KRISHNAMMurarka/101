@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { parseInputManifest } from "@101/input";
 import { parseGameManifest } from "@101/sdk";
 
 import PreGame from "@/app/components/PreGame";
+import { createLauncherCatalogEntry } from "@/app/lib/catalog";
+import BODYDODGE_INPUT from "@/games/bodydodge/input.manifest.json";
 import BODYDODGE_MANIFEST from "@/games/bodydodge/manifest.json";
 import { BODYDODGE_ROLES } from "@/games/bodydodge/src/roles";
 
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
  * beside it.
  */
 const manifest = parseGameManifest(BODYDODGE_MANIFEST);
+/* What the game needs, as the source groups the resolver itself uses — so the chooser can say when
+   this device cannot serve one of them, rather than offering a Start that leads nowhere. */
+const { requires } = createLauncherCatalogEntry(manifest, parseInputManifest(BODYDODGE_INPUT));
 
 export default function BodyDodgePage() {
-  return <PreGame manifest={manifest} roles={BODYDODGE_ROLES} />;
+  return <PreGame manifest={manifest} requires={requires} roles={BODYDODGE_ROLES} />;
 }

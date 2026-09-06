@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { parseInputManifest } from "@101/input";
 import { parseGameManifest } from "@101/sdk";
 
 import PreGame from "@/app/components/PreGame";
+import { createLauncherCatalogEntry } from "@/app/lib/catalog";
+import ECHOMAZE_INPUT from "@/games/echomaze/input.manifest.json";
 import ECHOMAZE_MANIFEST from "@/games/echomaze/manifest.json";
 import { ECHO_MAZE_ROLES } from "@/games/echomaze/src/roles";
 
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
  * beside it.
  */
 const manifest = parseGameManifest(ECHOMAZE_MANIFEST);
+/* What the game needs, as the source groups the resolver itself uses — so the chooser can say when
+   this device cannot serve one of them, rather than offering a Start that leads nowhere. */
+const { requires } = createLauncherCatalogEntry(manifest, parseInputManifest(ECHOMAZE_INPUT));
 
 export default function EchoMazePage() {
-  return <PreGame manifest={manifest} roles={ECHO_MAZE_ROLES} />;
+  return <PreGame manifest={manifest} requires={requires} roles={ECHO_MAZE_ROLES} />;
 }

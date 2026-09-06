@@ -7,7 +7,7 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
@@ -111,17 +111,14 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     }
   };
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); poseRef.current = undefined; setRun((value) => value + 1); };
 
   return (
     <section className="shadow-page">
       <header className="shadow-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Shadow Arena <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Shadow Arena <span>101</span></h1></div>
         <div className="shadow-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="shadow-arena">
         <div className="shadow-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>

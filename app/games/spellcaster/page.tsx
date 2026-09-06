@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { parseInputManifest } from "@101/input";
 import { parseGameManifest } from "@101/sdk";
 
 import PreGame from "@/app/components/PreGame";
+import { createLauncherCatalogEntry } from "@/app/lib/catalog";
+import SPELLCASTER_INPUT from "@/games/spellcaster/input.manifest.json";
 import SPELLCASTER_MANIFEST from "@/games/spellcaster/manifest.json";
 import { SPELLCASTER_ROLES } from "@/games/spellcaster/src/roles";
 
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
  * beside it.
  */
 const manifest = parseGameManifest(SPELLCASTER_MANIFEST);
+/* What the game needs, as the source groups the resolver itself uses — so the chooser can say when
+   this device cannot serve one of them, rather than offering a Start that leads nowhere. */
+const { requires } = createLauncherCatalogEntry(manifest, parseInputManifest(SPELLCASTER_INPUT));
 
 export default function SpellcasterPage() {
-  return <PreGame manifest={manifest} roles={SPELLCASTER_ROLES} />;
+  return <PreGame manifest={manifest} requires={requires} roles={SPELLCASTER_ROLES} />;
 }

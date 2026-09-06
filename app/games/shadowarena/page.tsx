@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { parseInputManifest } from "@101/input";
 import { parseGameManifest } from "@101/sdk";
 
 import PreGame from "@/app/components/PreGame";
+import { createLauncherCatalogEntry } from "@/app/lib/catalog";
+import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
 import { SHADOW_ARENA_ROLES } from "@/games/shadowarena/src/roles";
 
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
  * beside it.
  */
 const manifest = parseGameManifest(SHADOWARENA_MANIFEST);
+/* What the game needs, as the source groups the resolver itself uses — so the chooser can say when
+   this device cannot serve one of them, rather than offering a Start that leads nowhere. */
+const { requires } = createLauncherCatalogEntry(manifest, parseInputManifest(SHADOWARENA_INPUT));
 
 export default function ShadowArenaPage() {
-  return <PreGame manifest={manifest} roles={SHADOW_ARENA_ROLES} />;
+  return <PreGame manifest={manifest} requires={requires} roles={SHADOW_ARENA_ROLES} />;
 }

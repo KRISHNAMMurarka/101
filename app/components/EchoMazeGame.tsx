@@ -6,7 +6,6 @@ import { Audio101 } from "@101/audio";
 import { canTravel, type MazeDirection } from "@101/maze";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import ECHOMAZE_INPUT from "@/games/echomaze/input.manifest.json";
 import ECHOMAZE_MANIFEST from "@/games/echomaze/manifest.json";
@@ -40,7 +39,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, readiness } = useGameHost<EchoMazeState>({
+  const { linked } = useGameHost<EchoMazeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -125,17 +124,14 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
     },
   });
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => { setHud(INITIAL_HUD); setRun((value) => value + 1); };
 
   return (
     <section className="echo-page">
       <header className="echo-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Echo Maze <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Echo Maze <span>101</span></h1></div>
         <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="echo-layout">
         <div className="echo-stage">

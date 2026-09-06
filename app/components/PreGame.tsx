@@ -11,7 +11,7 @@ import type { GameManifest } from "@101/sdk";
 import { GamePoster } from "./GamePoster";
 import { Icon } from "./Icon";
 import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser-link";
-import { CATALOG_INPUT_LABELS } from "../lib/catalog";
+import { CATALOG_INPUT_LABELS, playableWithSources } from "../lib/catalog";
 import { useLocalDevice } from "../lib/local-capabilities";
 import { useSessionId } from "../lib/session-id";
 
@@ -33,9 +33,11 @@ import { useSessionId } from "../lib/session-id";
  */
 export default function PreGame({
   manifest,
+  requires,
   roles,
 }: {
   manifest: GameManifest;
+  requires: readonly (readonly InputSource[])[];
   roles: readonly SessionRole[];
 }) {
   const sessionId = useSessionId();
@@ -54,6 +56,16 @@ export default function PreGame({
   const onThisScreen = (manifest.controllers?.basic ?? manifest.inputs)
     .filter((source: InputSource) => sources.includes(source))
     .map((source: InputSource) => CATALOG_INPUT_LABELS[source]);
+
+  /*
+   * Whether this screen alone can serve every control the game needs.
+   *
+   * Before the probe has run there is nothing measured, and an unmeasured device must not be told it
+   * cannot play — so the option stays open until there is a reason to close it. No shipped game can
+   * be blocked here, since all ten run on a bare keyboard; this is for a game 101 did not write.
+   */
+  const measured = sources.length > 0;
+  const playableHere = !measured || playableWithSources({ requires }, sources);
 
   // players.max is what the manifest wishes for; roles are what the session can actually fill.
   // Orbital Crew declares six and defines five stations, and a sixth seat could never be occupied.
@@ -76,10 +88,14 @@ export default function PreGame({
         <article className="pre-game-option">
           <Icon name="keyboard" size={24} />
           <h3>On this screen</h3>
-          <p>{onThisScreen.length > 0 ? `${onThisScreen.join(", ")}. Nothing to connect.` : "Nothing to connect."}</p>
-          <Link className="primary-button" href={playHref}>
-            Start <Icon name="arrow" size={16} />
-          </Link>
+          <p>
+            {playableHere
+              ? onThisScreen.length > 0 ? `${onThisScreen.join(", ")}. Nothing to connect.` : "Nothing to connect."
+              : "This game needs a control this screen cannot provide. Connect a phone to play it."}
+          </p>
+          {playableHere
+            ? <Link className="primary-button" href={playHref}>Start <Icon name="arrow" size={16} /></Link>
+            : <Link className="outline-button needs-device" href={playHref}>Start anyway <Icon name="arrow" size={16} /></Link>}
         </article>
 
         {phoneRole && (

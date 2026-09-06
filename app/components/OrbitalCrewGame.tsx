@@ -4,7 +4,6 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
 import type { SessionSnapshot } from "@101/session";
-import { describeReadiness } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import ORBITALCREW_INPUT from "@/games/orbitalcrew/input.manifest.json";
 import ORBITALCREW_MANIFEST from "@/games/orbitalcrew/manifest.json";
@@ -49,7 +48,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<OrbitalHud>(INITIAL_HUD);
 
-  const { session: liveSession, readiness } = useGameHost<OrbitalCrewState>({
+  const { session: liveSession } = useGameHost<OrbitalCrewState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -123,8 +122,6 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       };
     },
   });
-
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
   const session = liveSession ?? emptySession(sessionId);
 
   const restart = () => {
@@ -136,11 +133,10 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="orbital-page">
       <header className="orbital-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Orbital Crew <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Orbital Crew <span>101</span></h1></div>
         <div className="orbital-score"><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong><small>SECTOR {String(hud.sector).padStart(2, "0")} · CHAIN ×{hud.combo}</small></div>
       </header>
 
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="orbital-layout">
         <div className="orbital-stage">

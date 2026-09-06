@@ -7,7 +7,7 @@ import { Audio101, AudioTimeline101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import BEATFORGE_INPUT from "@/games/beatforge/input.manifest.json";
 import BEATFORGE_MANIFEST from "@/games/beatforge/manifest.json";
@@ -178,8 +178,6 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
     }
   };
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const enableAudio = () => {
     void beatTimelineRef.current?.resume();
     setAudioEnabled(true);
@@ -196,10 +194,9 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="beat-page">
       <header className="beat-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>BeatForge <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>BeatForge <span>101</span></h1></div>
         <div className="beat-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
       </header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="beat-arena">
         <div className="beat-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 
+import { parseInputManifest } from "@101/input";
 import { parseGameManifest } from "@101/sdk";
 
 import PreGame from "@/app/components/PreGame";
+import { createLauncherCatalogEntry } from "@/app/lib/catalog";
+import ORBITALCREW_INPUT from "@/games/orbitalcrew/input.manifest.json";
 import ORBITALCREW_MANIFEST from "@/games/orbitalcrew/manifest.json";
 import { ORBITAL_CREW_ROLES } from "@/games/orbitalcrew/src/roles";
 
@@ -17,7 +20,10 @@ export const metadata: Metadata = {
  * beside it.
  */
 const manifest = parseGameManifest(ORBITALCREW_MANIFEST);
+/* What the game needs, as the source groups the resolver itself uses — so the chooser can say when
+   this device cannot serve one of them, rather than offering a Start that leads nowhere. */
+const { requires } = createLauncherCatalogEntry(manifest, parseInputManifest(ORBITALCREW_INPUT));
 
 export default function OrbitalCrewPage() {
-  return <PreGame manifest={manifest} roles={ORBITAL_CREW_ROLES} />;
+  return <PreGame manifest={manifest} requires={requires} roles={ORBITAL_CREW_ROLES} />;
 }

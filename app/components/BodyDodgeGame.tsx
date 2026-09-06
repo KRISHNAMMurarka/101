@@ -6,7 +6,7 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import BODYDODGE_INPUT from "@/games/bodydodge/input.manifest.json";
 import BODYDODGE_MANIFEST from "@/games/bodydodge/manifest.json";
@@ -106,8 +106,6 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
     }
   };
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => {
     setHud(INITIAL_HUD);
     setCameraState("idle");
@@ -119,10 +117,9 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
   return (
     <section className="body-page">
       <header className="body-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>BodyDodge <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>BodyDodge <span>101</span></h1></div>
         <div className="body-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="body-arena">
         <div className="body-statusbar"><span><i className="status-dot" /></span><span>{linked ? "101 LINK · MOVEMENT PANEL" : cameraState === "active" ? `CAMERA POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>

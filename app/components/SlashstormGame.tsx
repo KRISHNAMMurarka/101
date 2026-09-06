@@ -4,7 +4,7 @@ import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
 import SLASHSTORM_MANIFEST from "@/games/slashstorm/manifest.json";
@@ -77,8 +77,6 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     },
   });
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => {
     setHud(INITIAL_HUD);
     setRun((current) => current + 1);
@@ -87,13 +85,12 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
   return (
     <section className="slash-page">
       <header className="slash-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Slashstorm <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Slashstorm <span>101</span></h1></div>
         <div className="slash-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
       {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
           inside it is drawn under the lives meter. */}
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="slash-arena">
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",

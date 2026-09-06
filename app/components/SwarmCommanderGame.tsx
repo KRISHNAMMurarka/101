@@ -8,7 +8,7 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SWARMCOMMANDER_INPUT from "@/games/swarmcommander/input.manifest.json";
 import SWARMCOMMANDER_MANIFEST from "@/games/swarmcommander/manifest.json";
@@ -86,14 +86,12 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     try { await host.inputBus.register(adapter); setCameraState("active"); }
     catch (cause) { await host.inputBus.unregister(adapter); cameraRef.current = null; const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError"); setCameraState(denied ? "denied" : "error"); setCameraError(denied ? "Camera permission was not granted. Mouse, keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand command could not start."); }
   };
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
 
   const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); setRun((value) => value + 1); };
 
   return (
     <section className="swarm-page">
-      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
-      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
+      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
 
       <div className="swarm-arena">
         <div className="swarm-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>

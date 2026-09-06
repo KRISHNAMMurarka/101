@@ -990,7 +990,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hero { grid-template-columns: 1fr; }
   .hero-copy { max-width: 850px; }
   .game-grid { grid-template-columns: repeat(2, 1fr); }
-  .catalog-grid { --catalog-row-height: 500px; }
   .catalog-spacer { --catalog-spacer-height: var(--catalog-spacer-height-2); }
   .signal-strip { overflow-x: auto; }
   .lab-layout { grid-template-columns: 1fr; }
@@ -1791,13 +1790,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   :root { --stage-h: calc(100dvh - 40px); }
 }
 
-/* Fullscreen: the stage is the whole screen, and the surrounding page has nothing to contribute. */
-:root:has(:fullscreen) { --stage-h: 100dvh; }
-.game-fullscreen:fullscreen { background: var(--ink); }
-.game-fullscreen:fullscreen .site-shell > header,
-.game-fullscreen:fullscreen .footer,
-.game-fullscreen:fullscreen .input-readiness { display: none; }
-.game-fullscreen:fullscreen canvas { height: 100dvh; }
+/* Full screen is the game filling the screen, not the site. The element that owns the canvas goes
+   full screen and its canvas takes the whole of it; the page around it is simply not there. */
+.game-fullscreen:fullscreen { width: 100vw; height: 100dvh; max-height: none; border: 0; background: var(--ink); }
+.game-fullscreen:fullscreen canvas { width: 100%; height: 100dvh; }
+.game-fullscreen:fullscreen [class*="statusbar"] { position: absolute; inset: 0 0 auto 0; z-index: 3; background: var(--stage-scrim); }
 
 .fullscreen-toggle {
   position: fixed;
@@ -1927,3 +1924,99 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 759px) {
   .pre-game-head { grid-template-columns: 1fr; gap: var(--space-sm); }
 }
+
+/* --- Game pages: one header, one stat block, one screenful ------------------------------------- */
+
+/*
+ * The same alignment the library uses: the first line of a game page sits on the wordmark's centre
+ * line. These carried a 42px top padding that agreed with nothing.
+ */
+/*
+ * The first line of a game page sits on the wordmark's centre line, exactly as the library does.
+ *
+ * --content-top is calibrated for an 11px eyebrow, and a game page opens with a back control that is
+ * taller than that — so the page uses the rail's own construction instead: --space-sm of padding
+ * above a --tap-min row, which is what puts the wordmark at its centre in the first place.
+ */
+[class$="-page"] { padding-top: var(--space-sm) !important; }
+.back-button { display: inline-flex; align-items: center; min-height: var(--tap-min); }
+
+/*
+ * A stat is a label, a value and sometimes a unit.
+ *
+ * Five of the eight games laid these out and three did not, so TiltDrift rendered its three cells as
+ * running text — "SPEED91KM/H", "SCORE000002", "CHAIN×1.0" — with the label, the number and the unit
+ * having nothing between them. One rule for all of them.
+ */
+[class$="-stats"] > div,
+[class$="-score"] {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: var(--space-3xs);
+  min-height: 0;
+  padding: var(--space-xs) var(--space-sm);
+}
+[class$="-stats"] > div > span,
+[class$="-score"] > span {
+  color: var(--faint);
+  font: 700 var(--type-label-size) var(--font-mono);
+  letter-spacing: var(--track-label);
+}
+[class$="-stats"] > div > strong,
+[class$="-score"] > strong {
+  font: 800 var(--type-mono-value-size) var(--font-mono);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+/* The unit belongs beside the number it measures, not under it. */
+[class$="-stats"] > div > small {
+  margin-left: var(--space-3xs);
+  color: var(--faint);
+  font: 700 var(--type-label-size) var(--font-mono);
+}
+[class$="-stats"] > div:has(> small) { grid-template-areas: "label label" "value unit"; justify-content: start; }
+[class$="-stats"] > div:has(> small) > span { grid-area: label; }
+[class$="-stats"] > div:has(> small) > strong { grid-area: value; }
+[class$="-stats"] > div:has(> small) > small { grid-area: unit; align-self: end; }
+
+/*
+ * A game fits on the screen it is played on.
+ *
+ * The heading, the stat block and the stage together ran past the bottom of the window, so a player
+ * scrolled to see the game they were already playing. The stage takes what is left after the chrome
+ * above it rather than a share of the viewport that ignores what is above it.
+ */
+@media (min-width: 760px) {
+  [class$="-page"] {
+    min-height: 0;
+    padding-bottom: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    max-height: 100dvh;
+  }
+  [class*="-heading"] { flex: none; }
+  :root { --stage-h: min(72dvh, 780px); }
+}
+
+/*
+ * A card's height is fixed, so its text has to be too.
+ *
+ * The catalog row is a constant — it has to be, because the first window is computed from it on the
+ * server and again on the client, and a mismatch is a hydration difference. But the name and the
+ * tagline wrapped to however many lines the width gave them, so the content height was not constant
+ * at all: at a narrower column the tagline took a third line and pushed the card's last element past
+ * its own bottom edge. Measured at 1000px in the studio, where the fixed 232px rail leaves less
+ * room: every card overflowed by 14px.
+ *
+ * Clamping is what makes the fixed row honest. Two lines for a name, two for a tagline, at every
+ * width — so a card is the size the grid says it is.
+ */
+.game-card-copy h3,
+.game-card-copy > p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.game-card-copy h3 { -webkit-line-clamp: 2; }
+.game-card-copy > p { -webkit-line-clamp: 2; }

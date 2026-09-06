@@ -3,7 +3,7 @@
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
-import { describeReadiness, describeSources } from "@/app/lib/input-readiness";
+import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import GRAVITYSTACK_INPUT from "@/games/gravitystack/input.manifest.json";
 import GRAVITYSTACK_MANIFEST from "@/games/gravitystack/manifest.json";
@@ -118,8 +118,6 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
     },
   });
 
-  const readinessNotice = readiness ? describeReadiness(readiness) : null;
-
   const restart = () => {
     setHud(initialHud(INITIAL_PREVIEW));
     setRun((value) => value + 1);
@@ -129,14 +127,13 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
   return (
     <section className="gravity-page">
       <header className="gravity-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>GravityStack <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Back</button><p className="eyebrow">Run {run}</p><h1>GravityStack <span>101</span></h1></div>
         <div className="gravity-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>HEIGHT</span><strong>{hud.height.toFixed(1)}<small>M</small></strong></div><div><span>PIECES</span><strong>{hud.pieces}</strong></div></div>
       </header>
 
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
           <div className="gravity-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
-          {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>

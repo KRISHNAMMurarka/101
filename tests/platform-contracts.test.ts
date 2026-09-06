@@ -322,38 +322,6 @@ test("every shipped game is playable on a plain keyboard, and says so honestly",
   assert.equal(checked, GAME_IDS.length, "every game must ship an input manifest");
 });
 
-test("the readiness notice names the device that would actually help", async () => {
-  // A camera game and a steering game are both "degraded" on a bare laptop, but telling a camera
-  // game's player to pair a phone is confidently wrong advice — worse than saying nothing. The
-  // suggestion is derived from the recommended sources of the controls that did not resolve.
-  const { describeReadiness } = await import("../app/lib/input-readiness.ts");
-
-  const camera = describeReadiness({
-    mappings: {}, missing: [], blocking: [], degraded: ["lean"], playable: true,
-    wanted: ["camera-pose"],
-  });
-  assert.match(camera ?? "", /Enable the camera/);
-
-  const motion = describeReadiness({
-    mappings: {}, missing: [], blocking: [], degraded: ["steer"], playable: true,
-    wanted: ["phone-motion"],
-  });
-  assert.match(motion ?? "", /Pair a phone/);
-
-  // Nothing to improve means nothing to say. A permanent nudge is noise.
-  const happy = describeReadiness({
-    mappings: {}, missing: [], blocking: [], degraded: [], playable: true,
-    wanted: [],
-  });
-  assert.equal(happy, null);
-
-  // A blocked game still says what is wrong even when no device maps to the missing source.
-  const blocked = describeReadiness({
-    mappings: {}, missing: ["draw"], blocking: ["draw"], degraded: [], playable: false,
-    wanted: ["custom"],
-  });
-  assert.match(blocked ?? "", /draw/);
-});
 
 test("defineGamePackage accepts every game it is the gate for", async () => {
   // This validation is what every third-party package passes through, so an over-strict rule here
@@ -435,31 +403,36 @@ test("pairing a phone does not claim vision a phone never sends", async () => {
     "body controls served by a keyboard are degraded, not satisfied");
 });
 
-test("a blocked game reads differently from a merely degraded one", () => {
-  // `playable: false` means a required control has nothing to serve it: the game starts and then
-  // ignores the player until they act. It deliberately does not refuse to launch — graceful
-  // degradation is the platform's premise, and a launcher that refuses is worse than one that
-  // explains — but it must not look identical to "playable now, and better with a phone".
-  //
-  // No shipped game can reach this state; a test above asserts all ten run on a bare keyboard. It
-  // exists for third-party games, which is precisely why it needs a test rather than a look.
-  const style = readFileSync(resolve(import.meta.dirname, "../app/globals.css"), "utf8");
-  const blocked = /\.input-readiness\.blocked \{([^}]*)\}/.exec(style);
-  assert.ok(blocked, "the blocked state must have its own style");
+test("a game this screen cannot serve reads differently from one it can", () => {
+  /*
+   * `playable: false` means a required control has nothing to serve it. The platform's premise is
+   * graceful degradation, so this never refuses to launch — a screen that refuses is worse than one
+   * that explains — but it must not read identically to "playable now, and better with a phone".
+   *
+   * It used to live in a banner above a running game, which was the wrong moment: the player had
+   * already started. It now lives on the chooser, before anything starts, where the answer is
+   * actionable. No shipped game can reach this state — a test above asserts all ten run on a bare
+   * keyboard — which is exactly why it needs a test rather than a look: it exists for games 101 did
+   * not write.
+   */
+  const chooser = readFileSync(resolve(import.meta.dirname, "../app/components/PreGame.tsx"), "utf8");
 
-  // State is carried by weight and edge, never by hue: the scheme is monochrome, and a colour-only
-  // signal is invisible to a colour-blind player anyway.
-  assert.match(blocked[1]!, /border-width|font-weight/, "it must differ in weight");
-  assert.doesNotMatch(blocked[1]!, /#[0-9a-f]{3,6}|rgb|hsl/i, "and must not introduce a colour");
+  assert.match(chooser, /playableWithSources/,
+    "the chooser must ask the resolver's own question, not a heuristic of its own");
+  assert.match(chooser, /cannot provide/,
+    "it must say what is wrong in a sentence a player can act on");
+  assert.match(chooser, /Start anyway/,
+    "and must still let them try: the platform degrades rather than refuses");
 
-  const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
-    // Matched against the discovered games, not a filename suffix: a component named PreGame.tsx
-    // satisfied `endsWith("Game.tsx")` and was counted as an eleventh game.
-    .filter((file) => GAME_IDS.some((id) => file.toLowerCase() === `${id}game.tsx`));
-  for (const file of components) {
-    const source = readFileSync(resolve(import.meta.dirname, `../app/components/${file}`), "utf8");
-    assert.match(source, /playable === false \? " blocked" : ""/,
-      `${file} must mark a blocked notice as blocked`);
+  // An unmeasured device must not be told it cannot play. The probe returns nothing on the server
+  // and on the first paint, and "no sources yet" is not "no sources".
+  assert.match(chooser, /const measured = sources.length > 0;/,
+    "an unmeasured device must not be blocked");
+
+  // Every route has to hand the chooser what the game needs, or it cannot answer at all.
+  for (const id of GAME_IDS) {
+    const route = readFileSync(resolve(import.meta.dirname, `../app/games/${id}/page.tsx`), "utf8");
+    assert.match(route, /requires=\{requires\}/, `${id} does not tell its chooser what the game needs`);
   }
 });
 
@@ -496,7 +469,6 @@ test("the documented path is the path that runs", () => {
     // package, which is true and fine for a building block and would be damning for a promise.
     { name: "sessionSources", definedIn: "packages/session/" },
     { name: "useGameHost", definedIn: "app/lib/use-game-host" },
-    { name: "describeReadiness", definedIn: "app/lib/input-readiness" },
     { name: "describeSources", definedIn: "app/lib/input-readiness" },
     { name: "AudioTimeline101", definedIn: "packages/audio/" },
     { name: "BeatCueLookahead", definedIn: "games/beatforge/src/cue-scheduler" },
