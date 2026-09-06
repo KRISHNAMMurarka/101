@@ -100,7 +100,7 @@ export default function ControllerLab() {
       </header>
 
       <section className="controller-lab-intro">
-        <p className="eyebrow">Diagnostic 05 · Dynamic controller schema</p>
+        <p className="eyebrow">Dynamic controller schema</p>
         <h1>Design the panel.<br />Watch the bus.</h1>
         <p>Apply a validated JSON layout to 101 Link, then inspect the normalized actions, axes, and vectors it emits. No game-specific phone code is involved.</p>
       </section>

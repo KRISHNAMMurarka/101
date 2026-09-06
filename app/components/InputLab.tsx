@@ -161,7 +161,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       <div className="lab-heading">
         <div>
           <button className="back-button" onClick={onExit}>← Games</button>
-          <p className="eyebrow">Diagnostic 01 · Input normalization</p>
+          <p className="eyebrow">Input normalization</p>
           <h1>101 Input Lab</h1>
         </div>
         <div className="session-readout"><span>SESSION</span><strong>{sessionId}</strong><i>LOCAL</i></div>

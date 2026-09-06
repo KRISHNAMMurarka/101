@@ -1,11 +1,11 @@
 "use client";
 
 import QRCode from "qrcode";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { Icon, type IconName } from "../components/Icon";
+import { Icon } from "../components/Icon";
 import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser-link";
+import { CATALOG_INPUT_LABELS } from "../lib/catalog";
 import { useLocalDevice } from "../lib/local-capabilities";
 import { useSessionId } from "../lib/session-id";
 
@@ -21,17 +21,6 @@ import { useSessionId } from "../lib/session-id";
  * The page is ordered by the questions people actually ask, in order: what can this thing do on its
  * own, what is attached to it, and how do I attach something else.
  */
-
-const SOURCE_LABEL: Record<string, string> = {
-  keyboard: "Keyboard",
-  mouse: "Mouse",
-  touch: "Touch",
-  gamepad: "Gamepad",
-  "phone-motion": "Motion",
-  "camera-hand": "Hand tracking",
-  "camera-pose": "Body tracking",
-  "camera-face": "Face tracking",
-};
 
 export default function DevicesView() {
   const sessionId = useSessionId();
@@ -88,7 +77,7 @@ export default function DevicesView() {
         </div>
         <ul className="capability-list">
           {sources.map((source) => (
-            <li key={source}><Icon name={source as IconName} size={16} /> {SOURCE_LABEL[source] ?? source}</li>
+            <li key={source}><Icon name={source} size={16} /> {CATALOG_INPUT_LABELS[source]}</li>
           ))}
         </ul>
         {/* Presence, not permission: the camera and motion entries above mean the API exists, and
@@ -114,7 +103,7 @@ export default function DevicesView() {
             /* eslint-disable-next-line @next/next/no-img-element */
             <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} />
           ) : (
-            <div className="pairing-qr pending"><span>{hubError ? "HUB OFFLINE" : "PREPARING"}</span></div>
+            <div className="pairing-qr pending"><span>{hubError ? "Not ready" : "Preparing…"}</span></div>
           )}
 
           <ol className="pair-steps">
@@ -124,18 +113,18 @@ export default function DevicesView() {
           </ol>
         </div>
 
-        <div className="session-code"><span>SESSION</span><strong>{sessionId ?? "······"}</strong><i>LOCAL</i></div>
+        <div className="session-code"><span>Room code</span><strong>{sessionId ?? "······"}</strong></div>
         <div className="pair-link">
           <code>{controllerUrl || "preparing…"}</code>
           <button onClick={copy} disabled={!controllerUrl}>{copied ? "Copied" : "Copy"}</button>
         </div>
 
-        {hubError && <p className="pairing-error">The local Hub is not running. Start it with <code>npm run hub</code>, then reload. ({hubError})</p>}
-        {pairing && <p className="pairing-ready">LAN WEBRTC READY · {pairing.hubEndpoint}</p>}
+        {hubError && <p className="pairing-error">Can&apos;t reach this computer&apos;s connection service. Make sure both devices are on the same Wi-Fi, then reload.</p>}
+        {pairing && <p className="pairing-ready">Ready to connect</p>}
 
         <div className="pair-actions">
           {controllerUrl && <a className="primary-button" href={controllerUrl} target="_blank" rel="noreferrer">Open 101 Link on this device <Icon name="external" size={16} /></a>}
-          <Link className="outline-button" href="/network">Pair without a Hub <Icon name="arrow" size={16} /></Link>
+
         </div>
       </article>
 

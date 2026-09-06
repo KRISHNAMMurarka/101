@@ -178,7 +178,7 @@ export default function NetworkLab() {
       </header>
 
       <section className="network-intro">
-        <p className="eyebrow">Diagnostic 02 · Manual offline WebRTC</p>
+        <p className="eyebrow">Manual peer pairing</p>
         <h1>Connect two browsers.<br />No signaling server.</h1>
         <p>Exchange an offer and answer manually. 101 opens a reliable control channel and a disposable realtime channel directly between the peers.</p>
       </section>

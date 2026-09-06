@@ -463,7 +463,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
         <div className="link-runtime-actions">
           {installPrompt && <button onClick={install}>INSTALL 101 LINK</button>}
           <label>
-            <span>PAIRING URL / 101L2 TICKET</span>
+            <span>Connection link</span>
             <input value={pairEntry} onChange={(event) => setPairEntry(event.target.value)} placeholder="Paste local pairing link" autoCapitalize="off" autoCorrect="off" />
           </label>
           <button onClick={connectPairing} disabled={!pairEntry.trim()}>CONNECT TO HOST</button>
@@ -514,7 +514,7 @@ export default function Controller({ session, pairCode }: { session: string; pai
       )}
 
       <ControllerStatus readout={readout} />
-      <p className="controller-footnote">The host can replace this JSON-defined panel without reconnecting. Games receive normalized 101 input only.</p>
+
     </main>
   );
 }

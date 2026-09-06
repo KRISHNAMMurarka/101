@@ -82,7 +82,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <nav className="rail" aria-label="Primary">
         <Link href="/" className="rail-mark" aria-label="101 home">
           <b>101</b>
-          <span>Local gaming system</span>
         </Link>
 
         <div className="rail-group">{PRIMARY.map(item)}</div>

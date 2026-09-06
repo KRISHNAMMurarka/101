@@ -204,10 +204,10 @@ export default function Launcher({
 
           <section className="hero">
             <div className="hero-copy">
-              <p className="eyebrow">Open source · Local first · Browser first</p>
+              <p className="eyebrow">One system · Every controller</p>
               <h1>Anything can be<br />a controller.</h1>
               <p className="hero-intro">
-                101 turns keyboards, phones, watches, cameras and custom hardware into one shared input language—then lets every game speak it.
+                101 turns the devices around you into controllers—then lets every game understand them.
               </p>
               <div className="hero-actions">
                 <Link className="primary-button" href="/games/slashstorm">
@@ -228,8 +228,8 @@ export default function Launcher({
 
           <section className="library-section" id="games">
             <div className="section-heading">
-              <div><p className="eyebrow">Game library</p><h2>{catalog.length} {catalogNoun}. One nervous system.</h2></div>
-              <p>The catalog is manifest-driven. Search by name or control, then show only games that work with the inputs you have.</p>
+              <div><p className="eyebrow">Game library</p><h2>{catalog.length} {catalog.length === 1 ? "game" : "games"}. One way to play.</h2></div>
+              <p>Search by name or control, then show only the games that work with the devices you have.</p>
             </div>
 
             <form className="catalog-controls" role="search" onSubmit={(event) => event.preventDefault()}>
@@ -272,14 +272,14 @@ export default function Launcher({
 
             <div className="catalog-results-heading">
               <p aria-live="polite" aria-atomic="true">{resultCountCopy}</p>
-              <span aria-hidden="true">{query !== deferredQuery ? "Updating…" : "Windowed locally"}</span>
+              <span aria-hidden="true">{query !== deferredQuery ? "Updating…" : ""}</span>
             </div>
 
             {filteredCatalog.length === 0 ? (
               <div className="catalog-empty" id="catalog-results">
                 <span aria-hidden="true">0 / {catalog.length}</span>
                 <h3>No games match this search and input profile.</h3>
-                <p>Input Lab stays available above. Reset the library filters to browse every game.</p>
+                <p>Reset the library filters to browse every game.</p>
                 <button className="outline-button" type="button" onClick={resetCatalog}>Reset search and filter</button>
               </div>
             ) : (
@@ -314,8 +314,8 @@ export default function Launcher({
                         {benchmarkMode
                           ? <span className="roadmap-badge">BENCHMARK</span>
                           : game.status === "playable"
-                            ? <span className="ready-badge">PLAYABLE</span>
-                            : <span className="roadmap-badge">ROADMAP</span>}
+                            ? null
+                            : <span className="roadmap-badge">Coming soon</span>}
                       </div>
                       <GamePoster id={game.id} title={game.name} />
                       <div className="game-card-copy">
@@ -338,7 +338,7 @@ export default function Launcher({
                       ) : game.status === "playable" ? (
                         <Link className="game-card-launch" href={`/games/${game.id}`}>Play <Icon name="arrow" size={16} /></Link>
                       ) : (
-                        <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>
+                        <div className="card-status"><span>Coming soon</span><span>{game.players.max === 1 ? "1 player" : `Up to ${game.players.max} players`}</span></div>
                       )}
                     </article>
                   );
@@ -377,7 +377,7 @@ export default function Launcher({
  * card in the catalog, including the ones whose own badge above said ROADMAP.
  */
 function readinessOn(game: LauncherCatalogEntry, local: readonly InputSource[]): { ok: boolean; text: string } {
-  if (game.status !== "playable") return { ok: false, text: "In development" };
+  if (game.status !== "playable") return { ok: false, text: "Coming soon" };
 
   const have = game.inputs.filter((input) => local.includes(input));
   const missing = game.inputs.filter((input) => !local.includes(input));
@@ -581,16 +581,15 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
     <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <section className="pairing-panel" role="dialog" aria-modal="true" aria-labelledby="pairing-title">
         <button className="close-button" onClick={onClose} aria-label="Close">×</button>
-        <p className="eyebrow">Strict-local pairing</p>
+        <p className="eyebrow">Add a controller</p>
         <h2 id="pairing-title">Scan once. Control every game.</h2>
-        <p className="panel-intro">101 Hub exchanges a short-lived WebRTC offer on your LAN. The controller stays paired while games replace its role and JSON-defined panel—no account or cloud signaling.</p>
+        <p className="panel-intro">Scan the code with your phone. Its screen becomes a controller, and the buttons change to match whatever you are playing.</p>
         {/* A generated data URL is intentionally rendered directly; it never leaves the local browser. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {qrCode ? <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} /> : <div className="pairing-qr pending"><span>{hubError ? "HUB OFFLINE" : "PREPARING QR"}</span></div>}
-        <div className="session-code"><span>SESSION</span><strong>{sessionId}</strong><i>LOCAL</i></div>
+        <div className="session-code"><span>Room code</span><strong>{sessionId}</strong></div>
         <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
-        {hubError && <p className="pairing-error">Start <code>npm run hub</code>, then reopen this panel. {hubError}</p>}
-        {pairing && <p className="pairing-ready">LAN WEBRTC READY · {pairing.hubEndpoint}</p>}
+        {hubError && <p className="pairing-error">Couldn&apos;t reach the other devices on this network. Check that this device is online, then try again.</p>}
         <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
         <div className="pairing-scope"><span>✓ Working now: same-browser game controller</span><span>✓ Automatic LAN WebRTC + reconnect</span><Link href="/network">Manual serverless pairing →</Link></div>
       </section>

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import BodyDodgeStandalone from "./BodyDodgeStandalone";
 
 export const metadata: Metadata = {
-  title: "BodyDodge 101 — Local camera survival",
-  description: "An infinite seeded body-dodging game with bundled local pose tracking and conventional controls.",
+  title: "BodyDodge 101",
+  description: "Move your body to slip through walls that keep coming. Uses your camera, or ordinary controls.",
 };
 
 export default function BodyDodgePage() {

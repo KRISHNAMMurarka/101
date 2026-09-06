@@ -43,7 +43,7 @@ interface StackHud {
 }
 
 function initialHud(preview: StackShapeSpec): StackHud {
-  return { ready: false, score: 0, height: 0, stability: 100, integrity: 100, pieces: 0, gravity: { x: 0, y: 9.81 }, placementX: 0, preview, lastEvent: "INITIALIZING PHYSICS", gameOver: false };
+  return { ready: false, score: 0, height: 0, stability: 100, integrity: 100, pieces: 0, gravity: { x: 0, y: 9.81 }, placementX: 0, preview, lastEvent: "Getting ready…", gameOver: false };
 }
 
 export default function GravityStackGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
@@ -129,13 +129,13 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
   return (
     <section className="gravity-page">
       <header className="gravity-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable Rapier physics · Seed gravitystack-{run}</p><h1>GravityStack <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>GravityStack <span>101</span></h1></div>
         <div className="gravity-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>HEIGHT</span><strong>{hud.height.toFixed(1)}<small>M</small></strong></div><div><span>PIECES</span><strong>{hud.pieces}</strong></div></div>
       </header>
 
       <div className="gravity-layout">
         <div className="gravity-stage-shell">
-          <div className="gravity-statusbar"><span><i className="status-dot" /> RAPIER / VARIABLE GRAVITY ACTIVE</span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "LOADING WASM"}</b></div>
+          <div className="gravity-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
           {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
           <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
@@ -158,10 +158,10 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
             <dl><div><dt>WIDTH</dt><dd>{hud.preview.width.toFixed(2)}</dd></div><div><dt>WEIGHT</dt><dd>{hud.preview.density.toFixed(1)}</dd></div><div><dt>GRIP</dt><dd>{hud.preview.friction.toFixed(2)}</dd></div></dl>
           </section>
           <section className="gravity-role-card">
-            <div><span>ROLE ROUTER</span><button onClick={onConnect}>{linked ? "ADD DEVICE" : "CONNECT DEVICES"} ↗</button></div>
+            <div><span>Players</span><button onClick={onConnect}>{linked ? "Add another" : "Add a phone"} ↗</button></div>
             {GRAVITYSTACK_ROLES.map((role) => {
               const assignment = session?.assignments.find((item) => item.roleId === role.id);
-              return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? assignment.deviceId : "CONVENTIONAL FALLBACK"}</span></p>;
+              return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? assignment.deviceId : "On this screen"}</span></p>;
             })}
           </section>
           <p className="gravity-note">One phone can steer gravity while the keyboard places shapes. Add a second Link device for a dedicated builder panel.</p>

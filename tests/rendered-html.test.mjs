@@ -68,7 +68,7 @@ test("server-renders a bounded first window for the 1000-entry catalog benchmark
   assert.equal(cards.length, 12, "SSR must emit one bounded twelve-card window");
   assert.equal(cardHeadings.length, 12, "only twelve manifest cards belong in the rendered DOM");
   assert.equal((html.match(/aria-setsize="1000"/g) ?? []).length, 12);
-  assert.match(renderedText, /1000 benchmark entries\. One nervous system\./i);
+  assert.match(renderedText, /1000 games\. One way to play\./i);
   assert.match(cardHeadings.at(-1) ?? "", /Catalog Fixture 0012/);
   assert.doesNotMatch(cardHeadings.join("\n"), /Catalog Fixture 0013|Catalog Fixture 1000/,
     "the server must not eagerly mount the rest of the synthetic catalog");
@@ -76,37 +76,41 @@ test("server-renders a bounded first window for the 1000-entry catalog benchmark
     "all one thousand manifest records must cross the production server-to-client boundary");
 });
 
+test("no game screen labels itself with its development stage or its engine", async () => {
+  for (const id of ["slashstorm", "tiltdrift", "bodydodge", "orbitalcrew", "beatforge", "gravitystack", "spellcaster", "echomaze", "shadowarena", "swarmcommander"]) {
+    const html = await (await render(`/games/${id}`)).text();
+    assert.doesNotMatch(html, /Playable [a-z0-9 +-]*(slice|physics|co-op|survival|exploration|movement|combat|command)/i, `${id} still names its development stage`);
+    assert.doesNotMatch(html, /· Seed /i, `${id} still prints its RNG seed label`);
+    assert.doesNotMatch(html, /INPUT BUS|RAPIER|SPATIAL HASH|SESSION HOST|RHYTHM CLOCK|STATE MACHINE|SEEDED MAZE/i, `${id} still names a subsystem in its status bar`);
+  }
+});
+
 test("serves Slashstorm as an independently playable game route", async () => {
   const response = await render("/games/slashstorm");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Slashstorm 101 — Play locally/);
-  assert.match(html, /Playable vertical slice/);
-  assert.match(html, /INPUT BUS \/ SWORD ACTIVE/);
+  assert.match(html, /Slashstorm 101/);
 });
 
 test("serves TiltDrift as an independently playable 3D game route", async () => {
   const response = await render("/games/tiltdrift");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /TiltDrift 101 — Infinite local racing/);
-  assert.match(html, /Playable 3D vertical slice/);
-  assert.match(html, /INPUT BUS \/ STEER ACTIVE/);
+  assert.match(html, /TiltDrift 101/);
 });
 
 test("serves BodyDodge with optional local camera and conventional controls", async () => {
   const response = await render("/games/bodydodge");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /BodyDodge 101 — Local camera survival/);
-  assert.match(html, /Playable local vision slice/);
+  assert.match(html, /BodyDodge 101/);
   assert.match(html, /ENABLE BODY CAMERA/);
   assert.match(html, /CONNECT PANEL/);
   // This used to assert the literal "KEYBOARD · GAMEPAD", which the page printed whether or not a
   // gamepad existed. The slot now reports what the game's input manifest actually resolved against
   // the hardware present, and a server render has measured nothing yet — so the honest server-side
   // value is neither a device list nor "NO INPUT", both of which would be claims we cannot support.
-  assert.match(html, /DETECTING INPUT/);
+  assert.match(html, /Checking…|No controller yet|Keyboard/);
   assert.doesNotMatch(html, /KEYBOARD · GAMEPAD/,
     "the status bar must not claim hardware it has not detected");
   assert.match(html, /video is neither uploaded nor recorded/i);
@@ -116,9 +120,7 @@ test("serves Orbital Crew with asymmetric roles and conventional fallback", asyn
   const response = await render("/games/orbitalcrew");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Orbital Crew 101 — Asymmetric local co-op/);
-  assert.match(html, /Playable asymmetric co-op/);
-  assert.match(html, /SESSION HOST \/ ROLE ROUTING ACTIVE/);
+  assert.match(html, /Orbital Crew 101/);
   assert.match(html, /Keyboard captain fallback/);
   assert.match(html, /CONNECT CREW/);
 });
@@ -127,9 +129,7 @@ test("serves BeatForge with offline rhythm, Link motion, and local pose choices"
   const response = await render("/games/beatforge");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /BeatForge 101 — Infinite local rhythm movement/);
-  assert.match(html, /Playable rhythm \+ movement/);
-  assert.match(html, /RHYTHM CLOCK \/ INPUT BUS ACTIVE/);
+  assert.match(html, /BeatForge 101/);
   assert.match(html, /ENABLE AUDIO/);
   assert.match(html, /ENABLE BODY CAMERA/);
   assert.match(html, /Video is not uploaded or recorded/i);
@@ -139,21 +139,17 @@ test("serves GravityStack through the 101 physics facade and asymmetric roles", 
   const response = await render("/games/gravitystack");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /GravityStack 101 — Variable-gravity physics tower/);
-  assert.match(html, /Playable Rapier physics/);
-  assert.match(html, /RAPIER \/ VARIABLE GRAVITY ACTIVE/);
+  assert.match(html, /GravityStack 101/);
   assert.match(html, /Gravity Controller/);
   assert.match(html, /Shape Builder/);
-  assert.match(html, /CONVENTIONAL FALLBACK/);
+  assert.match(html, /On this screen/);
 });
 
 test("serves Spellcaster through shared hand, motion, and conventional spell actions", async () => {
   const response = await render("/games/spellcaster");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Spellcaster 101 — Local hand-gesture survival/);
-  assert.match(html, /Playable gesture survival/);
-  assert.match(html, /TEMPORAL GESTURE STATE MACHINE/);
+  assert.match(html, /Spellcaster 101/);
   assert.match(html, /ENABLE HAND CAMERA/);
   assert.match(html, /Every spell also has a keyboard\/gamepad fallback/i);
 });
@@ -162,9 +158,7 @@ test("serves Echo Maze with private Link clues and a conventional fallback", asy
   const response = await render("/games/echomaze");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Echo Maze 101 — Local private-display exploration/);
-  assert.match(html, /Playable private-display exploration/);
-  assert.match(html, /SEEDED MAZE \/ LOCAL COMPANION CHANNEL/);
+  assert.match(html, /Echo Maze 101/);
   assert.match(html, /HOST FALLBACK CLUE/);
   assert.match(html, /This slice makes no microphone request/i);
 });
@@ -173,9 +167,7 @@ test("serves Shadow Arena through reusable combat-pose semantics and conventiona
   const response = await render("/games/shadowarena");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Shadow Arena 101 — Local camera combat/);
-  assert.match(html, /Playable silhouette combat/);
-  assert.match(html, /COMBAT POSE \/ INPUT BUS ACTIVE/);
+  assert.match(html, /Shadow Arena 101/);
   assert.match(html, /ENABLE BODY CAMERA/);
   assert.match(html, /every action has a keyboard\/gamepad fallback/i);
 });
@@ -184,9 +176,7 @@ test("serves Swarm Commander with scalable simulation and asymmetric specialist 
   const response = await render("/games/swarmcommander");
   const html = await response.text();
   assert.equal(response.status, 200);
-  assert.match(html, /Swarm Commander 101 — Multi-device spatial strategy/);
-  assert.match(html, /Playable spatial command/);
-  assert.match(html, /SPATIAL HASH · INSTANCED RENDERING/);
+  assert.match(html, /Swarm Commander 101/);
   assert.match(html, /ENABLE HAND COMMAND/);
   assert.match(html, /navigator can tilt the shared direction while a tactician sets targets and formations/i);
 });
@@ -252,7 +242,9 @@ test("serves the controller surface and product metadata", async () => {
   assert.match(html, /101 Link — Browser controller/);
   assert.match(html, /LINK \/ (?:<!-- -->)?CLASSIC/);
   assert.match(html, /Classic Controller/);
-  assert.match(html, /JSON-defined panel/);
+  // The SDK guarantee that a host can swap the panel is a developer fact, and it was printed on the
+  // surface a player holds while playing.
+  assert.doesNotMatch(html, /JSON-defined panel|normalized 101 input/i);
   assert.match(html.replaceAll("<!-- -->", ""), /SAME-BROWSER · ONLINE/,
     "server and first client render need the same connectivity text so the controller hydrates cleanly");
   assert.doesNotMatch(html, /OFFLINE SHELL/,

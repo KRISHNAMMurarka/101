@@ -170,13 +170,13 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="spell-page">
       <header className="spell-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable gesture survival · Seed spellcaster-{run}</p><h1>Spellcaster <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Spellcaster <span>101</span></h1></div>
         <div className="spell-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
       {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="spell-arena">
-        <div className="spell-statusbar"><span><i className="status-dot" /> TEMPORAL GESTURE STATE MACHINE</span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "CAMERA OPTIONAL"}</b></div>
+        <div className="spell-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "Camera optional"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

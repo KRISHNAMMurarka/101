@@ -1,5 +1,7 @@
 import type { InputSource, ResolvedInputManifest } from "@101/input";
 
+import { CATALOG_INPUT_LABELS } from "./catalog.ts";
+
 /**
  * How a game's resolved input needs are put into words.
  *
@@ -57,7 +59,7 @@ export function describeReadiness(readiness: ResolvedInputManifest): string | nu
  * connected.
  */
 export function describeSources(readiness?: { available: InputSource[] }): string {
-  if (!readiness) return "DETECTING INPUT";
-  if (readiness.available.length === 0) return "NO INPUT";
-  return readiness.available.join(" · ").toUpperCase();
+  if (!readiness) return "Checking…";
+  if (readiness.available.length === 0) return "No controller yet";
+  return readiness.available.map((source) => CATALOG_INPUT_LABELS[source] ?? source).join(" · ");
 }

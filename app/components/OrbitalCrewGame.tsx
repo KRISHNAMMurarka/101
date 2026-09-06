@@ -136,7 +136,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   return (
     <section className="orbital-page">
       <header className="orbital-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable asymmetric co-op · Seed orbitalcrew-{run}</p><h1>Orbital Crew <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Orbital Crew <span>101</span></h1></div>
         <div className="orbital-score"><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong><small>SECTOR {String(hud.sector).padStart(2, "0")} · CHAIN ×{hud.combo}</small></div>
       </header>
 
@@ -144,7 +144,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
 
       <div className="orbital-layout">
         <div className="orbital-stage">
-          <div className="orbital-statusbar"><span><i className="status-dot" /> SESSION HOST / ROLE ROUTING ACTIVE</span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "LOCAL SPACE CLEAR"}</b></div>
+          <div className="orbital-statusbar"><span><i className="status-dot" /></span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "All clear"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />
           <div className="orbital-alert"><span>{hud.activeThreats ? "CREW ACTION REQUIRED" : "SHIP STATUS"}</span><strong>{hud.lastEvent}</strong></div>
           {hud.events.length > 0 && <div className="orbital-threat-stack">{hud.events.map((event) => <article key={event.id}><div><span>{bearingLabel(event.bearing)}</span><strong>{event.label}</strong><small>{event.roles.join(" + ").toUpperCase()}</small></div><b>{event.remaining.toFixed(1)}s</b><i><em style={{ width: `${event.progress * 100}%` }} /></i></article>)}</div>}
@@ -160,7 +160,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
             <Vital label="HEAT" value={hud.heat} tone="heat" />
           </section>
           <section className="crew-roster">
-            <div><h2>CREW ROUTER</h2><button onClick={onConnect}>{session.assignments.length ? "ADD DEVICE" : "CONNECT CREW"} ↗</button></div>
+            <div><h2>Stations</h2><button onClick={onConnect}>{session.assignments.length ? "Add another" : "CONNECT CREW"} ↗</button></div>
             {ORBITAL_CREW_ROLES.map((role) => {
               const assigned = assignments.get(role.id);
               return <article key={role.id} className={assigned ? "is-assigned" : ""}><i /><div><strong>{role.label}</strong><span>{assigned ? assigned.deviceId : "Keyboard captain fallback"}</span></div><b>{assigned ? "LINKED" : "OPEN"}</b></article>;

@@ -89,7 +89,7 @@ export default function HardwareLab() {
         <b>OPTIONAL · LOCAL · USER-SELECTED</b>
       </header>
       <section className="hardware-lab-intro">
-        <p className="eyebrow">Diagnostic 06 · Specialist device adapters</p>
+        <p className="eyebrow">Specialist device adapters</p>
         <h1>Wire bytes into<br />game language.</h1>
         <p>The sample contract maps a four-byte report into <code>steer</code>, <code>trigger</code>, and <code>aim</code>. Change the declarative mapping in a developer package for any board or peripheral—games still receive ordinary 101 frames.</p>
       </section>

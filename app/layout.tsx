@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import AppShell from "./components/AppShell";
 import "./globals.css";
 
-const description = "An open, local-first gaming runtime that turns keyboards, phones, cameras, watches and future hardware into one universal input language.";
+const description = "Turn the devices you already own into game controllers, and play together on one screen.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     applicationName: "101",
     manifest: "/manifest.webmanifest",
-    keywords: ["local multiplayer", "browser games", "game controller", "open source"],
+    keywords: ["party games", "couch multiplayer", "phone controller", "motion games"],
     openGraph: { title: "101 — Anything can be a controller", description, images: [{ url: image, width: 1731, height: 909 }] },
     twitter: { card: "summary_large_image", title: "101 — Anything can be a controller", description, images: [image] },
   };

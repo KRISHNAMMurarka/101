@@ -132,14 +132,14 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
   return (
     <section className="echo-page">
       <header className="echo-heading">
-        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable private-display exploration · Seed echomaze-{run}</p><h1>Echo Maze <span>101</span></h1></div>
+        <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Echo Maze <span>101</span></h1></div>
         <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
       {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="echo-layout">
         <div className="echo-stage">
-          <div className="echo-statusbar"><span><i className="status-dot" /> SEEDED MAZE / LOCAL COMPANION CHANNEL</span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "PRIVATE CLUE ROUTED TO LINK" : "FALLBACK CLUE VISIBLE"}</b></div>
+          <div className="echo-statusbar"><span><i className="status-dot" /></span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "Clue sent to your phone" : "Clue shown here"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
           <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong></div>
           {!linked && <CompanionClue clue={hud.clue} fallback />}
@@ -148,7 +148,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         </div>
         <aside className="echo-rail">
           <section className="echo-vitals"><h2>EXPLORER STATUS</h2><EchoMeter label="HEALTH" value={hud.health} tone="health" /><EchoMeter label="BATTERY" value={hud.battery} tone="battery" /><p className={hud.flashlight ? "light-on" : ""}><i />FLASHLIGHT {hud.flashlight ? "OPEN" : "CLOSED"}</p></section>
-          {linked ? <section className="echo-private"><span>101 LINK / PRIVATE</span><h2>THE PHONE KNOWS MORE.</h2><p>Precise target bearing, path distance, signal strength, and echo proximity are visible only on the assigned scanner.</p><b>SCANNER LINKED</b></section> : <section className="echo-private"><span>CONVENTIONAL FALLBACK</span><h2>NO PHONE REQUIRED.</h2><p>The same necessary clue is shown over the maze until a scanner connects. The game never gates progress on special hardware.</p><button onClick={onConnect}>CONNECT SCANNER ↗</button></section>}
+          {linked ? <section className="echo-private"><span>On your phone</span><h2>THE PHONE KNOWS MORE.</h2><p>Precise target bearing, path distance, signal strength, and echo proximity are visible only on the assigned scanner.</p><b>SCANNER LINKED</b></section> : <section className="echo-private"><span>On this screen</span><h2>NO PHONE REQUIRED.</h2><p>The same necessary clue is shown over the maze until a scanner connects. The game never gates progress on special hardware.</p><button onClick={onConnect}>CONNECT SCANNER ↗</button></section>}
           <section className="echo-objective"><span>CURRENT OBJECTIVE</span><strong>{hud.fragments < hud.fragmentTotal ? `RECOVER ${hud.fragmentTotal - hud.fragments} MEMORY FRAGMENT${hud.fragmentTotal - hud.fragments === 1 ? "" : "S"}` : "REACH THE OPEN EXIT"}</strong><small>Floors continue from the same deterministic expedition seed.</small></section>
         </aside>
       </div>

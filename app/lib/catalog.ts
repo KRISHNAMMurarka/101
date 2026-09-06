@@ -13,7 +13,14 @@ export const CATALOG_INPUT_PROFILES = [
 }[];
 
 /** Player-facing names shared by catalog cards and normalized search aliases. */
-export const CATALOG_INPUT_LABELS: Readonly<Partial<Record<InputSource, string>>> = Object.freeze({
+/**
+ * What each input source is called in front of a player.
+ *
+ * A full Record, not a Partial: adding a source to INPUT_SOURCES now fails the build here until
+ * someone names it, which is the only thing that stops an unnamed source reaching a player as its
+ * raw identifier — a game status bar used to read "CAMERA-POSE · PHONE-MOTION".
+ */
+export const CATALOG_INPUT_LABELS: Readonly<Record<InputSource, string>> = Object.freeze({
   keyboard: "Keyboard",
   mouse: "Mouse",
   touch: "Touch",
@@ -23,6 +30,9 @@ export const CATALOG_INPUT_LABELS: Readonly<Partial<Record<InputSource, string>>
   "camera-hand": "Hands",
   "camera-pose": "Body",
   "camera-face": "Head",
+  hid: "Wired controller",
+  bluetooth: "Bluetooth device",
+  serial: "Serial device",
   custom: "Custom hardware",
 });
 

@@ -92,11 +92,11 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
 
   return (
     <section className="swarm-page">
-      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable spatial command · Seed swarmcommander-{run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
+      <header className="swarm-heading"><div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Run {run}</p><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
       {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
       <div className="swarm-arena">
-        <div className="swarm-statusbar"><span><i className="status-dot" /> SPATIAL HASH · INSTANCED RENDERING</span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="swarm-statusbar"><span><i className="status-dot" /></span><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />
         {/* Local camera capture requests no audio and is never recorded or uploaded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

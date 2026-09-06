@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import TiltDriftStandalone from "./TiltDriftStandalone";
 
 export const metadata: Metadata = {
-  title: "TiltDrift 101 — Infinite local racing",
-  description: "A seeded 3D racing slice driven by keyboard, gamepad, touch, or calibrated phone tilt.",
+  title: "TiltDrift 101",
+  description: "Take every corner at speed. Steer with a keyboard, a gamepad, or by tilting your phone.",
 };
 
 export default function TiltDriftPage() {
