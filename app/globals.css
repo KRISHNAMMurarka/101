@@ -1357,15 +1357,20 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   grid-template-columns: var(--rail-w) 1fr;
   align-items: center;
   min-height: var(--rail-w);
-  /* Lifted off the very bottom edge: it sat flush against it, which read as the rail running out
-     rather than as a control placed there. */
+  /*
+   * Sits on the same line as the row at the foot of a game — the instruction strip — so the rail
+   * ends where the content does rather than at some height of its own. Measured: with a
+   * --space-sm margin the control was 17px above that line.
+   *
+   * The rail's own bottom padding is what holds it off the edge; it needs no margin of its own.
+   */
   margin-top: auto;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0;
   padding: 0;
   border: 0;
   background: none;
   color: var(--faint);
-  font: 600 var(--type-label-size) var(--font-sans);
+  font: 600 var(--type-body-size) var(--font-sans);
   text-align: left;
   cursor: pointer;
 }
@@ -1744,7 +1749,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   padding: 0;
   border-top: 1px solid var(--line);
   color: var(--faint);
-  font: 600 var(--type-label-size) var(--font-sans);
+  font: 600 var(--type-body-size) var(--font-sans);
   text-decoration: none;
 }
 .rail-door:hover { color: var(--paper); background: var(--surface); }
