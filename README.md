@@ -276,6 +276,25 @@ Apple installables are deliberately absent. An iOS or watchOS build needs a prov
 | [Emulator QA](docs/emulator-qa.md) | What has actually been *run*, per target, and what has not |
 | [Handoff](HANDOFF.md) | What is left to build, verified against the source, with priorities |
 
+## Try it with your own phone
+
+```bash
+npm run build
+```
+
+```bash
+npm run phone
+```
+
+Prints a QR code and your machine's LAN address, and starts both processes the two-device path needs:
+the Hub for pairing and the web runtime. Open the address on the phone, or scan the code. On this
+machine pick a game and press **Connect device**; the panel shows a six-character session code, and
+the phone joins at `http://<lan-address>:3000/controller?session=<code>`.
+
+No app install — the controller runs in the phone's browser. The native 101 Link app accepts the same
+code if you have it built. Both devices must be on the same Wi-Fi; phone hotspots and guest networks
+usually block the device-to-device traffic this depends on.
+
 ## Privacy and offline behavior
 
 The launcher and game runtime require no account, analytics, database, or cloud gameplay service. Runtime dependencies are bundled. The architecture requires camera, motion, and microphone processing to stay local by default, with clear permission copy and no recording. See [privacy and security](docs/privacy-security.md).

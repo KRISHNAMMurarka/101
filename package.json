@@ -42,7 +42,8 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "package:release": "node tools/package-release.mjs",
     "predev": "node tools/check-port.mjs",
-    "prestart": "node tools/check-port.mjs"
+    "prestart": "node tools/check-port.mjs",
+    "phone": "node tools/lan-test.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",
