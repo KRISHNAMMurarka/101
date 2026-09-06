@@ -12,6 +12,9 @@ import {
   type PoseLandmark,
   type PoseSignals,
   type TrackedHand,
+  readExpression,
+  readOrientation,
+  type TrackedFace,
 } from "@101/vision";
 
 export interface PoseAdapterDiagnostics {
@@ -535,4 +538,99 @@ function cloneHands(hands: readonly TrackedHand[]) {
     confidence: hand.confidence,
     landmarks: hand.landmarks.map((landmark) => ({ ...landmark })),
   }));
+}
+
+/* ---- Faces ------------------------------------------------------------------------------------ */
+
+export interface FaceVisionBackend {
+  initialize(): Promise<void>;
+  detect(video: HTMLVideoElement, timestamp: number): TrackedFace[];
+  close(): void;
+}
+
+export interface MediaPipeFaceBackendOptions {
+  wasmRoot?: string;
+  modelPath?: string;
+  minConfidence?: number;
+  /** How many faces to track. More than one is what makes a room of people playable. */
+  maxFaces?: number;
+  preferGpu?: boolean;
+}
+
+/**
+ * The face backend.
+ *
+ * `camera-face` has been a declared input source with an icon drawn for it since the input
+ * vocabulary was written, and nothing has ever produced one — so no game could react to a blink, a
+ * raised brow or an open mouth.
+ *
+ * Blendshapes and the transformation matrix are both requested, because what a game wants from a
+ * face is an expression and a direction, not 478 points. The mesh comes through as well for anything
+ * that genuinely needs the geometry.
+ */
+export class MediaPipeFaceBackend implements FaceVisionBackend {
+  private readonly options: Required<MediaPipeFaceBackendOptions>;
+  private landmarker?: import("@mediapipe/tasks-vision").FaceLandmarker;
+  private lastTimestamp = -1;
+
+  constructor(options: MediaPipeFaceBackendOptions = {}) {
+    this.options = {
+      wasmRoot: options.wasmRoot ?? "/mediapipe/wasm",
+      modelPath: options.modelPath ?? "/models/face_landmarker.task",
+      minConfidence: options.minConfidence ?? 0.5,
+      maxFaces: Math.max(1, Math.min(4, Math.round(options.maxFaces ?? 1))),
+      preferGpu: options.preferGpu ?? true,
+    };
+  }
+
+  async initialize() {
+    if (this.landmarker) return;
+    const { FilesetResolver, FaceLandmarker } = await import("@mediapipe/tasks-vision");
+    const files = await FilesetResolver.forVisionTasks(this.options.wasmRoot, false);
+    const create = (delegate: "GPU" | "CPU") => FaceLandmarker.createFromOptions(files, {
+      baseOptions: { modelAssetPath: this.options.modelPath, delegate },
+      runningMode: "VIDEO",
+      numFaces: this.options.maxFaces,
+      // The two outputs a game actually acts on. Without these the result is a point cloud.
+      outputFaceBlendshapes: true,
+      outputFacialTransformationMatrixes: true,
+      minFaceDetectionConfidence: this.options.minConfidence,
+      minFacePresenceConfidence: this.options.minConfidence,
+      minTrackingConfidence: this.options.minConfidence,
+    });
+    // Same reason as the pose backend: a blocklisted driver fails at creation, not at detection.
+    try {
+      this.landmarker = this.options.preferGpu ? await create("GPU") : await create("CPU");
+    } catch {
+      this.landmarker = await create("CPU");
+    }
+  }
+
+  detect(video: HTMLVideoElement, timestamp: number): TrackedFace[] {
+    if (!this.landmarker) return [];
+    const safeTimestamp = Math.max(this.lastTimestamp + 1, Math.round(timestamp));
+    this.lastTimestamp = safeTimestamp;
+    const result = this.landmarker.detectForVideo(video, safeTimestamp);
+    return result.faceLandmarks.map((landmarks, index): TrackedFace => {
+      const blendshapes = result.faceBlendshapes?.[index]?.categories ?? [];
+      const matrix = result.facialTransformationMatrixes?.[index]?.data;
+      return {
+        landmarks: landmarks.map((landmark) => ({ x: landmark.x, y: landmark.y, z: landmark.z })),
+        expression: readExpression(blendshapes),
+        orientation: matrix ? readOrientation(Array.from(matrix)) : undefined,
+        /*
+         * The face model reports no detection score of its own, so this is the strongest expression
+         * signal present — which is at least a real measurement of "something is happening on a
+         * face" rather than a hardcoded 1.
+         */
+        confidence: blendshapes.length > 0 ? Math.max(...blendshapes.map((shape) => shape.score)) : 0,
+      };
+    });
+  }
+
+  close() {
+    this.landmarker?.close();
+    this.landmarker = undefined;
+    this.lastTimestamp = -1;
+  }
 }

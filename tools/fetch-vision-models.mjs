@@ -20,6 +20,10 @@ const MODELS = [
     url: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task",
   },
   {
+    file: "face_landmarker.task",
+    url: "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",
+  },
+  {
     file: "pose_landmarker_heavy.task",
     url: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task",
   },

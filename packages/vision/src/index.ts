@@ -645,3 +645,9 @@ function wrappedAngle(value: number) {
   while (angle < -Math.PI) angle += Math.PI * 2;
   return angle;
 }
+
+/*
+ * Faces are their own module: expression reading is pure arithmetic over blendshape scores and has
+ * no dependency on anything above, so it stays testable without a camera or a model.
+ */
+export * from "./face.ts";
