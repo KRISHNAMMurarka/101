@@ -1,9 +1,20 @@
 export interface PoseLandmark {
+  /** Normalized to the frame: 0-1 across the image, with z relative to the hips. */
   x: number;
   y: number;
   z: number;
+  /** 0-1. Below a threshold the point is a guess, and callers must treat it as unknown. */
   visibility: number;
   presence?: number;
+  /**
+   * The same joint in metres, relative to the midpoint of the hips.
+   *
+   * The model produces this on every frame and the adapter used to discard it, so everything
+   * downstream reasoned in image space: a player turning side-on read as a player getting narrower,
+   * and depth could not be told from distance. Anything asking a real geometric question — is an arm
+   * extended, is a knee bent, is someone facing away — needs this rather than the normalized point.
+   */
+  world?: { x: number; y: number; z: number };
 }
 
 export type BodyAction = "standing" | "duck" | "jump" | "leanLeft" | "leanRight" | "stepLeft" | "stepRight" | "armsRaised" | "punch";
@@ -322,6 +333,20 @@ export interface HandLandmark {
   x: number;
   y: number;
   z: number;
+  /**
+   * The same point in metres, relative to the wrist, when the model reports it.
+   */
+  world?: { x: number; y: number; z: number };
+  /**
+   * How much of this point is actually seen, 0-1.
+   *
+   * The pose model has always reported visibility per joint and this package has always thresholded
+   * on it. Hands did not: every one of the 21 points came through as an equally confident position,
+   * so a finger curled behind the palm arrived at a precise, invented coordinate rather than as
+   * unknown. That is what makes occluded fingers read as hallucinated — nothing was lying, nothing
+   * was being asked either.
+   */
+  visibility?: number;
 }
 
 export interface TrackedHand {

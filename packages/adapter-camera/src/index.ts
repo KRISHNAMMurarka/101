@@ -211,6 +211,13 @@ export interface MediaPipePoseBackendOptions {
   wasmRoot?: string;
   modelPath?: string;
   minConfidence?: number;
+  /** How many people to track at once. One was hardcoded, which ruled out playing together. */
+  maxPeople?: number;
+  /**
+   * Try the GPU delegate first. Inference on the CPU is the single biggest reason tracking felt
+   * unreliable — it is the difference between following a movement and sampling it.
+   */
+  preferGpu?: boolean;
 }
 
 export class MediaPipePoseBackend implements PoseVisionBackend {
@@ -223,6 +230,8 @@ export class MediaPipePoseBackend implements PoseVisionBackend {
       wasmRoot: options.wasmRoot ?? "/mediapipe/wasm",
       modelPath: options.modelPath ?? "/models/pose_landmarker_lite.task",
       minConfidence: options.minConfidence ?? 0.55,
+      maxPeople: Math.max(1, Math.min(4, Math.round(options.maxPeople ?? 1))),
+      preferGpu: options.preferGpu ?? true,
     };
   }
 
@@ -230,15 +239,25 @@ export class MediaPipePoseBackend implements PoseVisionBackend {
     if (this.landmarker) return;
     const { FilesetResolver, PoseLandmarker } = await import("@mediapipe/tasks-vision");
     const files = await FilesetResolver.forVisionTasks(this.options.wasmRoot, false);
-    this.landmarker = await PoseLandmarker.createFromOptions(files, {
-      baseOptions: { modelAssetPath: this.options.modelPath, delegate: "CPU" },
+    /*
+     * GPU first, CPU if it will not start. A blocklisted driver fails at creation rather than at
+     * capability-detection time, so the only reliable test is to try — and falling back silently is
+     * right here, because the alternative is no tracking at all.
+     */
+    const create = (delegate: "GPU" | "CPU") => PoseLandmarker.createFromOptions(files, {
+      baseOptions: { modelAssetPath: this.options.modelPath, delegate },
       runningMode: "VIDEO",
-      numPoses: 1,
+      numPoses: this.options.maxPeople,
       minPoseDetectionConfidence: this.options.minConfidence,
       minPosePresenceConfidence: this.options.minConfidence,
       minTrackingConfidence: this.options.minConfidence,
       outputSegmentationMasks: false,
     });
+    try {
+      this.landmarker = this.options.preferGpu ? await create("GPU") : await create("CPU");
+    } catch {
+      this.landmarker = await create("CPU");
+    }
   }
 
   detect(video: HTMLVideoElement, timestamp: number) {
@@ -247,11 +266,14 @@ export class MediaPipePoseBackend implements PoseVisionBackend {
     this.lastTimestamp = safeTimestamp;
     const result = this.landmarker.detectForVideo(video, safeTimestamp);
     const pose = result.landmarks[0];
-    return pose?.map((landmark) => ({
+    const world = result.worldLandmarks?.[0];
+    return pose?.map((landmark, index) => ({
       x: landmark.x,
       y: landmark.y,
       z: landmark.z,
       visibility: landmark.visibility ?? 0,
+      // Carried through rather than dropped: this is the only metric geometry the model produces.
+      world: world?.[index] ? { x: world[index]!.x, y: world[index]!.y, z: world[index]!.z } : undefined,
     }));
   }
 
@@ -271,6 +293,8 @@ export interface HandVisionBackend {
 export interface MediaPipeHandBackendOptions {
   wasmRoot?: string;
   modelPath?: string;
+  /** Try the GPU delegate first, exactly as the pose backend does. */
+  preferGpu?: boolean;
   minConfidence?: number;
   maxHands?: number;
 }
@@ -286,6 +310,7 @@ export class MediaPipeHandBackend implements HandVisionBackend {
       modelPath: options.modelPath ?? "/models/hand_landmarker.task",
       minConfidence: options.minConfidence ?? .55,
       maxHands: Math.max(1, Math.min(2, Math.round(options.maxHands ?? 2))),
+      preferGpu: options.preferGpu ?? true,
     };
   }
 
@@ -294,7 +319,7 @@ export class MediaPipeHandBackend implements HandVisionBackend {
     const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
     const files = await FilesetResolver.forVisionTasks(this.options.wasmRoot, false);
     this.landmarker = await HandLandmarker.createFromOptions(files, {
-      baseOptions: { modelAssetPath: this.options.modelPath, delegate: "CPU" },
+      baseOptions: { modelAssetPath: this.options.modelPath, delegate: this.options.preferGpu ? "GPU" : "CPU" },
       runningMode: "VIDEO",
       numHands: this.options.maxHands,
       minHandDetectionConfidence: this.options.minConfidence,
@@ -311,10 +336,23 @@ export class MediaPipeHandBackend implements HandVisionBackend {
     return result.landmarks.map((landmarks, index): TrackedHand => {
       const category = result.handedness[index]?.[0];
       const label = category?.categoryName.toLowerCase();
+      const world = result.worldLandmarks?.[index];
       return {
         handedness: label === "left" || label === "right" ? label : "unknown",
         confidence: category?.score ?? 1,
-        landmarks: landmarks.map((landmark) => ({ x: landmark.x, y: landmark.y, z: landmark.z })),
+        landmarks: landmarks.map((landmark, point) => ({
+          x: landmark.x,
+          y: landmark.y,
+          z: landmark.z,
+          world: world?.[point] ? { x: world[point]!.x, y: world[point]!.y, z: world[point]!.z } : undefined,
+          /*
+           * The hand model reports no per-point visibility, so a curled or occluded finger arrives
+           * as a confident coordinate. `visibility` here is the model's confidence in the hand as a
+           * whole, which is at least honest about what it is: a property of the detection, not of
+           * the individual point. It gives callers something to threshold on instead of nothing.
+           */
+          visibility: category?.score ?? 1,
+        })),
       };
     });
   }
