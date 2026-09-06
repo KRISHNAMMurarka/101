@@ -1483,17 +1483,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--muted);
 }
 
-.input-tags span { display: inline-flex; align-items: center; gap: var(--space-3xs); }
+.input-tags { flex-wrap: nowrap; overflow: hidden; }
+.input-tags span { flex: none; display: inline-flex; align-items: center; gap: var(--space-3xs); }
 .input-tags .icon { color: var(--faint); }
 
+/* Sentence case, normal tracking. Uppercase at 0.16em pushed "Ready now · Touch adds more" onto a
+   second line, which overflowed the fixed 500px catalog row and clipped the Play link off the
+   bottom of every card carrying an overflow tag. */
 .card-readiness {
   margin: var(--space-xs) 0 0;
   padding-top: var(--space-xs);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font: 700 var(--type-label-size) var(--font-mono);
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
+  font: 600 var(--type-label-size) var(--font-sans);
 }
 .card-readiness.needs-device { color: var(--faint); }
 
@@ -1512,10 +1514,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    it does not compete with the game for attention; a poster stands for the game, not the frame. */
 .game-poster {
   display: block;
+  /* The card is a flex column, so without this the poster is a shrinkable item: it absorbed whatever
+     space the copy left over, and a card with one fewer input tag rendered a poster 40% taller than
+     its neighbours while both declared the same ratio. */
+  flex: none;
   width: 100%;
-  aspect-ratio: 8 / 5;
+  aspect-ratio: 16 / 9;
   margin-bottom: var(--space-sm);
   border: 1px solid var(--line);
   background: var(--panel);
 }
 .game-card:hover .game-poster { border-color: var(--line-control); }
+
+/* The featured card spans the full grid, so an 8:5 poster on it becomes 700px tall. `slice` on the
+   SVG's preserveAspectRatio means a wider ratio crops rather than distorts. */
+.featured-game .game-poster { aspect-ratio: 24 / 7; max-height: 210px; }
+.game-poster { max-height: 260px; }
