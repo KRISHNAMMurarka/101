@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
+import AppShell from "./components/AppShell";
 import "./globals.css";
 
 const description = "An open, local-first gaming runtime that turns keyboards, phones, cameras, watches and future hardware into one universal input language.";
@@ -25,13 +26,18 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const viewport: Viewport = {
   themeColor: "#0a0a0a",
-  colorScheme: "dark",
+  // Both, now that the light palette resolves. It previously declared dark only, which was accurate
+  // in the sense that light mode did not work — the two palettes referenced each other in a cycle,
+  // so every core token was invalid and the page rendered with no background and no button fills.
+  colorScheme: "dark light",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

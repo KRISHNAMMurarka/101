@@ -258,3 +258,39 @@ test("serves the controller surface and product metadata", async () => {
   await access(new URL("dist/client/models/hand_landmarker.task", root));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));
 });
+
+/**
+ * The shell is an invariant, not a component one page happens to include.
+ *
+ * Before it existed, `app/layout.tsx` returned `<html><body>{children}</body></html>` and every
+ * piece of navigation lived inside Launcher.tsx — so it was present on exactly one of seventeen
+ * routes. Land on a game, a lab, or the controller and there was no way back and no indication of
+ * where you were. That is the failure this asserts against, and it is the kind that returns quietly
+ * the moment someone renders a route outside the shell.
+ */
+test("every route ships the navigation shell, and the controller deliberately does not", async () => {
+  const shellRoutes = ["/", "/devices", "/input", "/motion", "/vision", "/network", "/hardware", "/controller-lab", "/games/slashstorm", "/games/echomaze"];
+
+  for (const path of shellRoutes) {
+    const html = await (await render(path)).text();
+    assert.match(html, /class="rail"/, `${path} renders without the rail`);
+    assert.match(html, /class="tabbar"/, `${path} renders without the phone tab bar`);
+    // Both destinations reachable from anywhere: this is what the old header lost below 760px,
+    // where `.nav { display: none }` left eight of ten destinations with no replacement at all.
+    assert.match(html, /href="\/devices"/, `${path} offers no way to reach Devices`);
+    assert.match(html, /href="\/"/, `${path} offers no way back to the library`);
+  }
+
+  // The controller is a device you hold and do not look at; chrome on it would be chrome in your hand.
+  const controller = await (await render("/controller")).text();
+  assert.doesNotMatch(controller, /class="rail"/, "the controller must stay bare");
+});
+
+test("Devices answers what is connected and how to add something", async () => {
+  const html = await (await render("/devices")).text();
+  assert.match(html, /What is connected/);
+  assert.match(html, /Add a device/);
+  // Named rather than hidden: a visible, honestly locked row teaches the model, where a missing one
+  // leaves a player wondering whether they simply have not found the setting yet.
+  assert.match(html, /Screen and sound/);
+});

@@ -1,0 +1,122 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Icon, type IconName } from "./Icon";
+import { setRailOpen, useRailOpen } from "../lib/rail-preference";
+
+/**
+ * The navigation shell.
+ *
+ * `app/layout.tsx` used to return `<html><body>{children}</body></html>` and nothing else, so every
+ * piece of orientation the product had was JSX inside Launcher.tsx — present on exactly one of
+ * seventeen routes. That single fact produced most of the complaints about the interface: five labs
+ * each re-declaring their own topbar because there was nothing to inherit, three incompatible ways
+ * to navigate, and — below 760px — `.topbar .nav { display: none }` deleting primary navigation
+ * outright, leaving eight of ten destinations unreachable on a phone with nothing in their place.
+ *
+ * A rail rather than a header, for reasons that come from these surfaces and not from taste. Every
+ * content surface in 101 is a wide, short stage — the game canvases are `clamp(560px, 62vw, 780px)`
+ * tall inside layouts capped at 1540px — so vertical pixels are the scarce ones and horizontal
+ * pixels are the spare ones. A 72px rail costs the product room it has; a 76px header costs the
+ * room the canvas is starved of, and would sit over a running game. The header also already failed
+ * at this destination count: a comment in Launcher.tsx records the row reaching seventeen items,
+ * which is why six labs ended up behind a popover. A rail holds nine at full label width.
+ */
+
+type Destination = { href: string; label: string; icon: IconName };
+
+/** Nine destinations, flat. No popover: reaching a lab was three clicks and is now one. */
+const PRIMARY: Destination[] = [
+  { href: "/", label: "Play", icon: "play" },
+  { href: "/devices", label: "Devices", icon: "devices" },
+];
+
+const LABS: Destination[] = [
+  { href: "/input", label: "Input", icon: "touch" },
+  { href: "/motion", label: "Motion", icon: "phone-motion" },
+  { href: "/vision", label: "Vision", icon: "camera-face" },
+  { href: "/network", label: "Network", icon: "bluetooth" },
+  { href: "/controller-lab", label: "Controller", icon: "gamepad" },
+  { href: "/hardware", label: "Hardware", icon: "custom" },
+];
+
+/**
+ * The controller is a device you hold and do not look at. Chrome on it would be chrome on a thing
+ * in your hand, and it is the one surface where a shell is wrong.
+ */
+const BARE = ["/controller"];
+
+/**
+ * Prefix matching, but only on a path boundary. A bare `startsWith` makes "/controller-lab" match
+ * "/controller", which silently stripped the shell off the Controller Lab — that route then
+ * rendered with no navigation at all, which is the exact failure the shell exists to prevent.
+ */
+function within(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname() ?? "/";
+  const open = useRailOpen();
+
+  if (BARE.some((href) => within(pathname, href))) return <>{children}</>;
+
+  const item = (destination: Destination) => (
+    <Link
+      key={destination.href}
+      href={destination.href}
+      className={`rail-item${within(pathname, destination.href) ? " active" : ""}`}
+      aria-current={within(pathname, destination.href) ? "page" : undefined}
+      title={open ? undefined : destination.label}
+    >
+      <Icon name={destination.icon} size={20} />
+      <span>{destination.label}</span>
+    </Link>
+  );
+
+  return (
+    <div className={`app-shell${open ? " rail-open" : ""}`}>
+      <nav className="rail" aria-label="Primary">
+        <Link href="/" className="rail-mark" aria-label="101 home">
+          <b>101</b>
+          <span>Local gaming system</span>
+        </Link>
+
+        <div className="rail-group">{PRIMARY.map(item)}</div>
+
+        <div className="rail-group">
+          <p className="rail-label">Labs</p>
+          {LABS.map(item)}
+        </div>
+
+        <button className="rail-toggle" onClick={() => setRailOpen(!open)} aria-expanded={open} title={open ? "Collapse" : "Expand"}>
+          <Icon name="chevron" size={16} />
+          <span>{open ? "Collapse" : "Expand"}</span>
+        </button>
+      </nav>
+
+      {/* Below 760px the rail becomes a bottom tab bar. This is what replaces the breakpoint that
+          used to delete the nav outright: three destinations always reachable, thumb-height. */}
+      <nav className="tabbar" aria-label="Primary">
+        {[...PRIMARY, { href: "/input", label: "Labs", icon: "labs" as IconName }].map((destination) => (
+          <Link
+            key={destination.href}
+            href={destination.href}
+            className={`tab${within(pathname, destination.href) ? " active" : ""}`}
+            aria-current={within(pathname, destination.href) ? "page" : undefined}
+          >
+            <Icon name={destination.icon} size={22} />
+            <span>{destination.label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* A div, not a <main>: sixteen routes already declare their own main landmark, and nesting
+          one inside another is invalid and confuses assistive navigation. The shell owns the
+          regions around the content, not the content’s landmark. */}
+      <div className="stage">{children}</div>
+    </div>
+  );
+}

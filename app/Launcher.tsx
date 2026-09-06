@@ -236,36 +236,6 @@ export default function Launcher({
 
   return (
     <main className="site-shell">
-      <header className="topbar">
-        <button className="wordmark" onClick={() => navigate("library")} aria-label="101 home">
-          <span className="mark-block">101</span>
-          <span className="mark-label">Local gaming system</span>
-        </button>
-        {/*
-          A navigation bar carries destinations, not an inventory. Listing all ten games here
-          duplicated the grid directly below it and pushed the row to seventeen items, so the one
-          control that matters — Connect device — competed with sixteen others. Games live in the
-          grid, the six diagnostics collapse into one menu, and the bar is three items again.
-        */}
-        <nav className="nav" aria-label="Primary navigation">
-          <button className={view === "library" ? "active" : ""} onClick={() => navigate("library")}>Games</button>
-          <details className="nav-menu">
-            <summary>Labs</summary>
-            <div className="nav-menu-items">
-              <button className={view === "lab" ? "active" : ""} onClick={() => navigate("lab")}>Input</button>
-              <Link href="/motion">Motion</Link>
-              <Link href="/vision">Vision</Link>
-              <Link href="/network">Network</Link>
-              <Link href="/controller-lab">Controller</Link>
-              <Link href="/hardware">Hardware</Link>
-            </div>
-          </details>
-          <button className={view === "system" ? "active" : ""} onClick={() => navigate("system")}>System</button>
-        </nav>
-        <button className="connect-button" onClick={() => setPairingOpen(true)}>
-          <span className="status-dot" /> Connect device
-        </button>
-      </header>
 
       {view === "library" && (
         <>
