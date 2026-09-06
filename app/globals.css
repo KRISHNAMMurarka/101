@@ -411,8 +411,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .vector-line { position: absolute; z-index: 1; top: 49%; left: 50%; width: 34%; height: 1px; transform: rotate(-19deg); transform-origin: left; background: var(--orange); opacity: .5; }
 .system-note { margin: 16px 0 0; color: var(--faint); font: 650 11px/1.5 var(--font-mono); text-align: center; }
 
-.signal-strip { overflow: hidden; display: flex; flex-wrap: wrap; border-block: 1px solid var(--line); background: var(--chrome-solid); }
-.signal-strip span { min-height: 64px; display: flex; align-items: center; gap: 10px; padding: 0 var(--space-md); border-right: 1px solid var(--line); color: var(--muted); white-space: nowrap; font: 650 11px var(--font-mono); text-transform: uppercase; }
+.signal-strip { overflow: hidden; display: flex; flex-wrap: wrap; column-gap: var(--space-md); padding: var(--space-2xs) var(--gutter); border-block: 1px solid var(--line); background: var(--chrome-solid); }
+.signal-strip span { min-height: 56px; display: flex; align-items: center; gap: var(--space-2xs); padding: 0 var(--space-sm) 0 0; color: var(--muted); font: 700 var(--type-label-size) var(--font-mono); letter-spacing: var(--track-label); text-transform: uppercase; }
 .signal-strip .icon { flex: none; color: var(--faint); }
 
 .library-section { max-width: 1540px; margin: 0 auto; padding: 110px var(--gutter) 130px; }
@@ -1018,7 +1018,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .topbar .mark-label, .nav { display: none; }
   .connect-button { padding: 11px 12px; }
   .hero { min-height: auto; padding-top: 72px; gap: 70px; }
-  .hero h1 { font-size: clamp(54px, 18vw, 86px); }
+  .hero h1 { font-size: clamp(40px, 12vw, 64px); }
   .hero-intro { margin-top: 28px; }
   .hero-actions { align-items: stretch; flex-direction: column; }
   .primary-button { width: 100%; }
@@ -1138,7 +1138,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .mark-label { display: none; }
   .connect-button { font-size: 11px; }
   .hero { padding-inline: 19px; }
-  .hero h1 { font-size: 56px; }
+  .hero h1 { font-size: clamp(34px, 11vw, 46px); }
   .game-card { padding: 18px; }
   .controller-deck { grid-template-columns: 1fr 1fr; }
   .action-cluster { gap: 10px; }
