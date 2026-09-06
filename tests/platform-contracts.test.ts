@@ -508,9 +508,9 @@ test("the site is monochrome; the games are not", () => {
     "app/Launcher.tsx",
     "app/layout.tsx",
     "app/controller/Controller.tsx",
-    "app/controller-lab/ControllerLab.tsx",
+    "app/studio/controller/ControllerLab.tsx",
     "app/components/InputLab.tsx",
-    "app/vision/VisionLab.tsx",
+    "app/studio/vision/VisionLab.tsx",
   ];
 
   const tinted: string[] = [];

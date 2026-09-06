@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-import InputLab from "../components/InputLab";
-import { useSessionId } from "../lib/session-id";
+import InputLab from "../../components/InputLab";
+import { useSessionId } from "../../lib/session-id";
 
 /**
  * The Input Lab had no route. It was reachable only as `view === "lab"` inside Launcher's state

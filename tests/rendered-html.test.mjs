@@ -182,7 +182,7 @@ test("serves Swarm Commander with scalable simulation and asymmetric specialist 
 });
 
 test("server-renders the local Motion Lab and permission explanation", async () => {
-  const response = await render("/motion");
+  const response = await render("/studio/motion");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Motion Lab/);
@@ -192,7 +192,7 @@ test("server-renders the local Motion Lab and permission explanation", async () 
 });
 
 test("server-renders the local Vision Lab and simulated fallback", async () => {
-  const response = await render("/vision");
+  const response = await render("/studio/vision");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Vision Lab/);
@@ -204,7 +204,7 @@ test("server-renders the local Vision Lab and simulated fallback", async () => {
 });
 
 test("server-renders the offline WebRTC Network Lab", async () => {
-  const response = await render("/network");
+  const response = await render("/studio/network");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Network Lab/);
@@ -214,7 +214,7 @@ test("server-renders the offline WebRTC Network Lab", async () => {
 });
 
 test("server-renders the dynamic Controller Lab", async () => {
-  const response = await render("/controller-lab");
+  const response = await render("/studio/controller");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Controller Lab/);
@@ -224,7 +224,7 @@ test("server-renders the dynamic Controller Lab", async () => {
 });
 
 test("server-renders optional specialist hardware with honest capability state", async () => {
-  const response = await render("/hardware");
+  const response = await render("/studio/hardware");
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Hardware Lab/);
@@ -278,7 +278,7 @@ test("serves the controller surface and product metadata", async () => {
  * the moment someone renders a route outside the shell.
  */
 test("every route ships the navigation shell, and the controller deliberately does not", async () => {
-  const shellRoutes = ["/", "/devices", "/input", "/motion", "/vision", "/network", "/hardware", "/controller-lab", "/games/slashstorm", "/games/echomaze"];
+  const shellRoutes = ["/", "/devices", "/games/slashstorm", "/games/echomaze"];
 
   for (const path of shellRoutes) {
     const html = await (await render(path)).text();
@@ -293,6 +293,29 @@ test("every route ships the navigation shell, and the controller deliberately do
   // The controller is a device you hold and do not look at; chrome on it would be chrome in your hand.
   const controller = await (await render("/controller")).text();
   assert.doesNotMatch(controller, /class="rail"/, "the controller must stay bare");
+});
+
+/**
+ * The split is the invariant, not a convention.
+ *
+ * Six diagnostics used to sit in the player's rail, and one of them held a slot in the three-item
+ * phone tab bar — so a thumb tap on a player's home screen opened a page whose first readout is
+ * "INPUT 0 Hz / FRAME AGE 0 ms / DROPPED 0%". These assertions are what stop that returning by
+ * someone adding "just one" tool link back to the product side.
+ */
+test("the player surface and the studio do not leak into each other", async () => {
+  const player = await (await render("/")).text();
+  assert.doesNotMatch(player, /href="\/studio\/[a-z]/, "the player home must not link to a developer tool");
+  assert.doesNotMatch(player, /Frame age|Dropped|inference|quaternion|GATT|baud/i, "developer telemetry must not reach a player surface");
+
+  for (const path of ["/studio", "/studio/input", "/studio/network"]) {
+    const html = await (await render(path)).text();
+    assert.doesNotMatch(html, /class="tabbar"/, `${path} renders the player's phone tab bar`);
+    assert.doesNotMatch(html, /class="rail"/, `${path} renders the player's rail`);
+    assert.match(html, /class="studio-rail"/, `${path} is missing the studio's own navigation`);
+    // A developer who lands here from a deep link should not have to guess where the product is.
+    assert.match(html, /href="\/"/, `${path} offers no way back to 101`);
+  }
 });
 
 test("Devices answers what is connected and how to add something", async () => {

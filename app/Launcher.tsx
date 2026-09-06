@@ -358,7 +358,7 @@ export default function Launcher({
       <footer className="footer">
         <div className="mark-block">101</div>
         <p>Almost anything can become a controller.</p>
-        <div><Link href="/devices">Devices</Link></div>
+        <div><Link href="/devices">Devices</Link><Link href="/studio">Developers</Link></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
@@ -591,7 +591,6 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
         <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
         {hubError && <p className="pairing-error">Couldn&apos;t reach the other devices on this network. Check that this device is online, then try again.</p>}
         <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
-        <div className="pairing-scope"><span>✓ Working now: same-browser game controller</span><span>✓ Automatic LAN WebRTC + reconnect</span><Link href="/network">Manual serverless pairing →</Link></div>
       </section>
     </div>
   );

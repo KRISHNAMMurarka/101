@@ -21,32 +21,31 @@ import { setRailOpen, useRailOpen } from "../lib/rail-preference";
  * pixels are the spare ones. A 72px rail costs the product room it has; a 76px header costs the
  * room the canvas is starved of, and would sit over a running game. The header also already failed
  * at this destination count: a comment in Launcher.tsx records the row reaching seventeen items,
- * which is why six labs ended up behind a popover. A rail holds nine at full label width.
+ * which is why six labs ended up behind a popover. A rail does not run out of room the way a row does.
  */
 
 type Destination = { href: string; label: string; icon: IconName };
 
-/** Nine destinations, flat. No popover: reaching a lab was three clicks and is now one. */
+/**
+ * The player's destinations. Two, and the bar grows with this array rather than with a comment.
+ *
+ * The six diagnostics that used to sit here now live behind /studio. One of them also held a slot in
+ * the three-item phone tab bar, so a thumb tap on a player's home screen opened a page reading
+ * "INPUT 0 Hz / FRAME AGE 0 ms / DROPPED 0%".
+ */
 const PRIMARY: Destination[] = [
   { href: "/", label: "Play", icon: "play" },
   { href: "/devices", label: "Devices", icon: "devices" },
 ];
 
-const LABS: Destination[] = [
-  { href: "/input", label: "Input", icon: "touch" },
-  { href: "/motion", label: "Motion", icon: "phone-motion" },
-  { href: "/vision", label: "Vision", icon: "camera-face" },
-  { href: "/network", label: "Network", icon: "bluetooth" },
-  { href: "/controller-lab", label: "Controller", icon: "gamepad" },
-  { href: "/hardware", label: "Hardware", icon: "custom" },
-  { href: "/system", label: "System", icon: "labs" },
-];
 
 /**
- * The controller is a device you hold and do not look at. Chrome on it would be chrome on a thing
- * in your hand, and it is the one surface where a shell is wrong.
+ * Surfaces that supply their own chrome, or need none.
+ *
+ * The controller is a device you hold and do not look at — chrome on it would be chrome on a thing
+ * in your hand. The studio is a different product for a different audience, and renders its own rail.
  */
-const BARE = ["/controller"];
+const BARE = ["/controller", "/studio"];
 
 /**
  * Prefix matching, but only on a path boundary. A bare `startsWith` makes "/controller-lab" match
@@ -86,11 +85,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="rail-group">{PRIMARY.map(item)}</div>
 
-        <div className="rail-group">
-          <p className="rail-label">Labs</p>
-          {LABS.map(item)}
-        </div>
-
         <button className="rail-toggle" onClick={() => setRailOpen(!open)} aria-expanded={open} title={open ? "Collapse" : "Expand"}>
           <Icon name="chevron" size={16} />
           <span>{open ? "Collapse" : "Expand"}</span>
@@ -98,9 +92,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* Below 760px the rail becomes a bottom tab bar. This is what replaces the breakpoint that
-          used to delete the nav outright: three destinations always reachable, thumb-height. */}
+          used to delete the nav outright: the player's destinations, thumb-height. */}
       <nav className="tabbar" aria-label="Primary">
-        {[...PRIMARY, { href: "/input", label: "Labs", icon: "labs" as IconName }].map((destination) => (
+        {PRIMARY.map((destination) => (
           <Link
             key={destination.href}
             href={destination.href}
