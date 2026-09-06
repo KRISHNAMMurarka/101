@@ -453,7 +453,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .catalog-results-heading p { margin: 0; color: var(--paper); font: 780 11px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
 .catalog-results-heading span { color: var(--faint); font: 700 11px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 .game-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
-.catalog-grid { --catalog-row-height: 524px; }
+.catalog-grid { --catalog-row-height: 548px; }
 .game-card { --accent: var(--acid); position: relative; min-height: 430px; display: flex; flex-direction: column; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--chrome); transition: background .2s ease; }
 .game-card:hover { background: var(--ink); }
 .catalog-game-card { height: var(--catalog-row-height); min-height: 0; contain: layout paint; scroll-margin-top: 96px; }
@@ -990,7 +990,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hero { grid-template-columns: 1fr; }
   .hero-copy { max-width: 850px; }
   .game-grid { grid-template-columns: repeat(2, 1fr); }
-  .catalog-grid { --catalog-row-height: 470px; }
+  .catalog-grid { --catalog-row-height: 500px; }
   .catalog-spacer { --catalog-spacer-height: var(--catalog-spacer-height-2); }
   .signal-strip { overflow-x: auto; }
   .lab-layout { grid-template-columns: 1fr; }
@@ -1258,8 +1258,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   flex-direction: column;
   gap: var(--space-xs);
   padding: var(--space-sm) 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  /*
+   * Visible, not auto. The hover label on a collapsed item is positioned just outside the rail, so
+   * `overflow-y: auto` both clipped it and — because an overflowing child in one axis makes the
+   * other axis scrollable too — put a horizontal scrollbar across the bottom of the sidebar.
+   *
+   * The rail holds four items and does not need to scroll. If it ever does, the label has to move
+   * out of the rail rather than the rail regaining an overflow context.
+   */
+  overflow: visible;
   border-right: 1px solid var(--line);
   background: var(--chrome-solid);
   transition: width .16s ease;
