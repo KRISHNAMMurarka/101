@@ -1805,3 +1805,65 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (orientation: landscape) and (max-height: 560px) {
   .fullscreen-toggle { right: var(--space-2xs); bottom: var(--space-2xs); }
 }
+
+/* --- The controller deck ----------------------------------------------------------------------- */
+
+/*
+ * A button is square.
+ *
+ * `.dynamic-action` had a min-height and no ratio, so a grid row that stretched turned it into a
+ * portrait slab — measured at 82×166 on a phone, next to a d-pad that was correctly 170 wide. The
+ * older static `.action-cluster button` always had `aspect-ratio: 1`; the dynamic deck that replaced
+ * it did not.
+ */
+/* min-height on the action fought the ratio, so the button grew past its own column and clipped at
+   the deck's right edge. The column decides the width; the ratio decides the height. */
+.dynamic-control > .dynamic-action {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1;
+  align-self: center;
+}
+
+/* The action's own name is the label. The line under it says how to use it, so it is sentence case
+   and not a tracked-out uppercase code. */
+.dynamic-action small { text-transform: none !important; letter-spacing: 0 !important; }
+
+/*
+ * Sideways is how a controller is held.
+ *
+ * The deck goes to a left/right thumb split with the middle kept clear, everything that is not a
+ * control folds away, and the page does not scroll — on this surface a drag that scrolls the page
+ * is a drag the game did not receive, and `touch-action: pan-y` means every miss scrolls.
+ */
+@media (orientation: landscape) and (max-height: 560px) {
+  .controller-page {
+    height: 100dvh;
+    padding: var(--space-2xs) max(var(--space-2xs), env(safe-area-inset-right)) var(--space-2xs) max(var(--space-2xs), env(safe-area-inset-left));
+    overflow: hidden;
+    touch-action: none;
+  }
+  .controller-page > header { min-height: 32px; }
+  .dynamic-controller-heading, .link-runtime, .controller-speaker, .frame-inspector { display: none; }
+  .dynamic-controller-deck {
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    align-content: stretch;
+  }
+  /* Thumbs reach the outer thirds; the middle is where a hand is not. */
+  .dynamic-control[data-control="dpad"],
+  .dynamic-control[data-control="joystick"],
+  .dynamic-control[data-control="touch-surface"] { grid-column: span 2; min-height: 0; grid-row: span 2; }
+  .dynamic-control { min-height: 0; }
+  .dynamic-control > .dynamic-action { aspect-ratio: auto; height: 100%; }
+  .dynamic-action span { font-size: clamp(14px, 3vw, 24px); }
+  .dynamic-action small { display: none; }
+}
+
+/* A phone in the hand is a coarse pointer: every target is at least 48px, including inside a d-pad. */
+@media (pointer: coarse) {
+  .dynamic-dpad button { min-width: 48px; min-height: 48px; }
+}

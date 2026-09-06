@@ -172,7 +172,10 @@ test("the browser advertises opted-in speaker audio and Echo Maze keeps a host f
   assert.match(controller, /speaker:\s*true/, "101 Link must advertise its physical speaker");
   assert.match(controller, /speakerAudio:\s*speakerAudioRef\.current/, "the handshake must distinguish locked audio from ready audio");
   assert.match(controller, /payload\.type === "speaker\.cue"/, "realtime controller cues need a browser caller");
-  assert.match(controller, /ENABLE PRIVATE AUDIO/, "a visible user gesture must unlock private audio");
+  // The invariant is the gesture, not the wording: browsers will not start audio without one, and a
+  // controller that claimed a speaker it could not use would have the host route private cues into
+  // silence. Matched on the handler rather than the label, which is a player-facing string.
+  assert.match(controller, /onClick=\{enableSpeaker\}/, "a visible user gesture must unlock audio on this device");
   assert.match(controller, /configurationRef\.current\s*===\s*configuration\)\s*\{[\s\S]*?publishSnapshot\(inputRef\.current!\.snapshot\(\)\)[\s\S]*?return/,
     "a repeated hello must refresh held browser input for a newly mounted host without releasing it");
   assert.match(echoMaze, /host\.playControllerCue\("scanner"/, "the private clue must call the host speaker API");

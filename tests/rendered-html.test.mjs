@@ -240,12 +240,18 @@ test("serves the controller surface and product metadata", async () => {
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /101 Link — Browser controller/);
-  assert.match(html, /LINK \/ (?:<!-- -->)?CLASSIC/);
+  // Was /LINK \/ CLASSIC/. "Link" is the product's internal name for the controller app and
+  // "classic" was the role id, printed as the title of the thing a player is holding.
+  assert.doesNotMatch(html, /LINK \/|SAME-BROWSER|OFFLINE SHELL|PRIVATE AUDIO/i,
+    "the controller must not name its transport, its internal app name, or its role id");
   assert.match(html, /Classic Controller/);
   // The SDK guarantee that a host can swap the panel is a developer fact, and it was printed on the
   // surface a player holds while playing.
   assert.doesNotMatch(html, /JSON-defined panel|normalized 101 input/i);
-  assert.match(html.replaceAll("<!-- -->", ""), /SAME-BROWSER · ONLINE/,
+  // The invariant is that the server and the first client render agree — the controller hydrates
+  // over whatever this says, and a mismatch is a hydration error on the surface a player is holding.
+  // The wording moved from "SAME-BROWSER · ONLINE", which named the transport.
+  assert.match(html.replaceAll("<!-- -->", ""), /Connected/,
     "server and first client render need the same connectivity text so the controller hydrates cleanly");
   assert.doesNotMatch(html, /OFFLINE SHELL/,
     "the browser updates real connectivity after hydration; the server must not guess from its worker navigator");

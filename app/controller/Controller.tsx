@@ -146,7 +146,15 @@ export default function Controller({ session, pairCode }: { session: string; pai
     window.addEventListener("offline", updateOnline);
     window.addEventListener("beforeinstallprompt", captureInstall);
     updateOnline();
-    if ("serviceWorker" in navigator) void navigator.serviceWorker.register("/sw.js", { scope: "/controller" });
+    if ("serviceWorker" in navigator) {
+      /*
+       * Caught, not floated. `void` on a rejecting promise is still an unhandled rejection: /sw.js
+       * only exists in a production build, so every dev session opened the controller behind a
+       * full-screen error overlay covering the thing being worked on. Offline caching is an
+       * enhancement — the controller works without it, and a failure here is not the player's news.
+       */
+      navigator.serviceWorker.register("/sw.js", { scope: "/controller" }).catch(() => {});
+    }
     return () => {
       window.removeEventListener("online", updateOnline);
       window.removeEventListener("offline", updateOnline);
@@ -450,16 +458,16 @@ export default function Controller({ session, pairCode }: { session: string; pai
     // thumb is the last place attention belongs. Emphasis comes from weight instead.
     <main className={`controller-page role-${roleClass}`}>
       <header className="controller-top">
-        <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">LINK / {assignment.role.toUpperCase()}</span></div>
+        <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">{assignment.role}</span></div>
         <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? assigned ? "LINKED" : "STANDBY" : "WAITING"}</div>
       </header>
       <section className="controller-session">
-        <span>SESSION</span><strong>{session}</strong>
+        <span>Room</span><strong>{session}</strong>
         <small>{connected ? assigned ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : `${assignment.gameId.toUpperCase()} · WAITING FOR ROLE` : "Open a 101 game on the host"}</small>
       </section>
 
       <details className="link-runtime">
-        <summary><span className={online ? "runtime-dot online" : "runtime-dot"} />{pairCode ? "LAN WEBRTC" : "SAME-BROWSER"} · {online ? "ONLINE" : "OFFLINE SHELL"}</summary>
+        <summary><span className={online ? "runtime-dot online" : "runtime-dot"} />{online ? "Connected" : "Reconnecting…"}</summary>
         <div className="link-runtime-actions">
           {installPrompt && <button onClick={install}>INSTALL 101 LINK</button>}
           <label>
@@ -473,20 +481,22 @@ export default function Controller({ session, pairCode }: { session: string; pai
 
       <section className={`controller-speaker${speakerAudio === "ready" ? " ready" : ""}`}>
         <div>
-          <span>PRIVATE AUDIO</span>
-          <strong aria-live="polite">{speakerAudio === "ready" ? lastSpeakerCue === undefined ? "READY · WAITING FOR CUE" : `PRIVATE CUE ${lastSpeakerCue}` : speakerEnableFailed ? "LOCKED · TRY AGAIN" : "LOCKED UNTIL YOU OPT IN"}</strong>
+          <span>Sound on this phone</span>
+          <strong aria-live="polite">{speakerAudio === "ready"
+            ? lastSpeakerCue === undefined ? "On — waiting for the game" : "Playing"
+            : speakerEnableFailed ? "Couldn't start — tap again" : "Off"}</strong>
         </div>
-        <button onClick={enableSpeaker} disabled={speakerAudio === "ready"}>{speakerAudio === "ready" ? "PRIVATE AUDIO READY" : "ENABLE PRIVATE AUDIO"}</button>
+        <button onClick={enableSpeaker} disabled={speakerAudio === "ready"}>{speakerAudio === "ready" ? "Sound on" : "Turn on sound"}</button>
       </section>
 
       <section className="dynamic-controller-heading">
         <div>
-          <span>ROLE AUTO-SYNCED</span>
+          <span>Ready</span>
           <h1>{layout.title ?? assignment.role}</h1>
         </div>
         {canFlipHandedness && (
           <button className="handedness-toggle" onClick={flipHandedness} aria-label={`Switch to ${playerHandedness === "right" ? "left" : "right"}-handed layout`}>
-            <span>HAND</span><strong>{playerHandedness.toUpperCase()}</strong><i aria-hidden="true">↔</i>
+            <span>Thumb</span><strong>{playerHandedness === "right" ? "Right" : "Left"}</strong><i aria-hidden="true">↔</i>
           </button>
         )}
       </section>
@@ -709,7 +719,7 @@ function DynamicDigitalAction({ element, owner, setActions, haptic }: {
       }}
     >
       <span>{element.label}</span>
-      <small>{interactionLabel(element)} · {element.action}</small>
+      <small>{interactionLabel(element)}</small>
     </button>
   );
 }
@@ -743,18 +753,19 @@ function DynamicAnalogAction({ element, value, setAction, haptic }: {
           if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End"].includes(event.key)) release();
         }}
       />
-      <small>{element.type === "trigger" ? "SPRING TRIGGER" : "ANALOG PRESS"} · {element.action}</small>
+      <small>{element.type === "trigger" ? "Spring" : "Pressure"}</small>
     </label>
   );
 }
 
+/** How to use the button, in the words someone holding it would use. */
 function interactionLabel(element: DigitalControllerElement) {
   const interaction = element.interaction;
-  if (!interaction) return "PRESS";
-  if (interaction.type === "hold") return `HOLD ${interaction.thresholdMs ?? 450}MS`;
-  if (interaction.type === "double-tap") return "DOUBLE TAP";
-  if (interaction.type === "toggle") return "TOGGLE";
-  return `CHORD ×${interaction.actions.length + 1}`;
+  if (!interaction) return "Tap";
+  if (interaction.type === "hold") return `Hold ${Math.round((interaction.thresholdMs ?? 450) / 100) / 10}s`;
+  if (interaction.type === "double-tap") return "Double tap";
+  if (interaction.type === "toggle") return "Toggle";
+  return `Tap ${interaction.actions.length + 1} together`;
 }
 
 function defaultControlSide(element: ControllerElement): NonNullable<ControllerElement["side"]> {
@@ -855,7 +866,7 @@ function ControllerStatus({ readout }: { readout: ControllerReadout }) {
   const values = Object.entries(readout.values);
   return (
     <section className={`controller-role-status status-${readout.tone}`} aria-live="polite">
-      <div><span>ROLE FEED</span><strong>{readout.message ?? "AWAITING HOST DATA"}</strong></div>
+      <div><span>Status</span><strong>{readout.message ?? "Waiting for the game"}</strong></div>
       {values.length > 0 && <dl>{values.slice(0, 6).map(([name, value]) => <div key={name}><dt>{name}</dt><dd>{typeof value === "number" ? Math.round(value) : String(value)}</dd></div>)}</dl>}
     </section>
   );
