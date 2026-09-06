@@ -217,34 +217,6 @@ export default function Launcher({
                   Try a second-screen controller
                 </button>
               </div>
-              <div className="local-proof">
-                <span className="proof-icon" aria-hidden="true">⌁</span>
-                <span><strong>No account. No cloud gameplay.</strong> Your inputs stay on the local path.</span>
-              </div>
-            </div>
-            <div className="hero-system" aria-label="101 input system illustration">
-              <div className="system-stage system-stage-inputs">
-                <span className="stage-caption">Physical world</span>
-                <div className="input-nodes">
-                  <span>KEYS</span><span>PHONE</span><span>HAND</span><span>PAD</span><span>WATCH</span><span>DIY</span>
-                </div>
-              </div>
-              <div className="flow-line"><i /><b>normalized events</b><i /></div>
-              <div className="bus-card">
-                <span className="bus-index">01</span>
-                <div><strong>101 INPUT BUS</strong><small>move · aim · slash · pose · trigger</small></div>
-                <span className="live-pill">LIVE</span>
-              </div>
-              <div className="flow-line"><i /><b>one stable API</b><i /></div>
-              <div className="game-window">
-                <div className="window-top"><span>GAME_101</span><span>60 FPS</span></div>
-                <div className="window-field">
-                  <span className="orbit orbit-a" /><span className="orbit orbit-b" />
-                  <span className="player-core">101</span>
-                  <span className="vector-line" />
-                </div>
-              </div>
-              <p className="system-note">The game never needs to know where the action came from.</p>
             </div>
           </section>
 
@@ -259,17 +231,6 @@ export default function Launcher({
               <div><p className="eyebrow">Game library</p><h2>{catalog.length} {catalogNoun}. One nervous system.</h2></div>
               <p>The catalog is manifest-driven. Search by name or control, then show only games that work with the inputs you have.</p>
             </div>
-
-            <article className="game-card featured-game catalog-featured">
-              <div className="card-top"><span className="game-number">LAB</span><span className="ready-badge">PLAYABLE</span></div>
-              <GamePoster id="input-lab" title="101 Input Lab" />
-              <div className="game-card-copy">
-                <h3>101 Input Lab</h3>
-                <p>See normalized keyboard, pointer, touch, gamepad and second-screen events in one live arena.</p>
-                <div className="input-tags"><span>Keyboard</span><span>Mouse</span><span>Gamepad</span><span>Link preview</span></div>
-              </div>
-              <Link href="/input">Launch diagnostic <Icon name="arrow" size={16} /></Link>
-            </article>
 
             <form className="catalog-controls" role="search" onSubmit={(event) => event.preventDefault()}>
               <label className="catalog-control" htmlFor="catalog-search">
@@ -394,17 +355,10 @@ export default function Launcher({
             )}
           </section>
 
-          <section className="promise-section">
-            <div className="promise-index">101</div>
-            <div className="promise-copy"><p className="eyebrow">The promise</p><h2>Game eleven should be dramatically easier to build than game one.</h2></div>
-            <Link className="outline-button" href="/system">Explore the architecture <Icon name="arrow" size={16} /></Link>
-          </section>
-
-
       <footer className="footer">
         <div className="mark-block">101</div>
-        <p>One local runtime. Almost anything can become a controller.</p>
-        <div><span>MIT core</span><span>Offline by design</span><span>Motion · vision · game library</span></div>
+        <p>Almost anything can become a controller.</p>
+        <div><Link href="/devices">Devices</Link></div>
       </footer>
 
       {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}

@@ -139,19 +139,6 @@ export default function DevicesView() {
         </div>
       </article>
 
-      {/* Named rather than hidden. A row that is visible and honestly locked teaches the model; a
-          missing row leaves the player wondering whether they simply have not found it. */}
-      <article className="device-card">
-        <div className="device-card-head">
-          <Icon name="labs" size={24} />
-          <div>
-            <h2>Screen and sound</h2>
-            <p>Where the game draws, and where it is heard</p>
-          </div>
-          <span className="state-badge">Fixed</span>
-        </div>
-        <p className="device-note">Both stay on this screen for now. Sending a game&apos;s picture to a TV while a phone drives it needs the renderer to move inside each game package — that work is real and not yet done, so there is no picker here rather than one that does nothing.</p>
-      </article>
     </main>
   );
 }

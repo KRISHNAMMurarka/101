@@ -15,7 +15,7 @@ async function render(path = "/") {
   );
 }
 
-test("server-renders the 101 launcher and all ten catalog games", async () => {
+test("server-renders the player library, and nothing built for developers", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -23,7 +23,6 @@ test("server-renders the 101 launcher and all ten catalog games", async () => {
   const html = await response.text();
   assert.match(html, /<title>101 — Anything can be a controller<\/title>/i);
   assert.match(html, /Anything can be/);
-  assert.match(html, /101 Input Lab/);
   assert.match(html, /Slashstorm 101/);
   // A link with a real href, not a button that swapped a useState value: the ten /games/<id> routes
   // already existed and nothing in app/ pointed at them, so launching a game produced no URL, no
@@ -40,6 +39,20 @@ test("server-renders the 101 launcher and all ten catalog games", async () => {
   assert.match(html, /Shadow Arena 101/);
   assert.match(html, /Swarm Commander 101/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
+
+  /*
+   * The player home is a library, not a tour of the architecture. These assertions protect the
+   * removal rather than merely surviving it: each string was on this page and each described the
+   * system to someone building on it, not to someone about to play.
+   *
+   * The Input Lab is the sharpest case. gameCatalog.ts filters it out of the catalog precisely
+   * because it is not a game, and the launcher then hand-re-added it as the largest card in the
+   * library — a frame-rate readout presented as the featured title.
+   */
+  assert.doesNotMatch(html, /101 Input Lab|Launch diagnostic/i, "a diagnostic must not be featured in the game library");
+  assert.doesNotMatch(html, /INPUT BUS|normalized events|one stable API|SYSTEM \/ 001/i, "architecture vocabulary is developer copy");
+  assert.doesNotMatch(html, /No cloud gameplay|Offline by design|local path/i, "claims that stop being true once 101 runs a server");
+  assert.doesNotMatch(html, /Game eleven/i, "a hardcoded ordinal goes stale the moment a game is added");
 });
 
 test("server-renders a bounded first window for the 1000-entry catalog benchmark", async () => {
@@ -294,7 +307,12 @@ test("Devices answers what is connected and how to add something", async () => {
   const html = await (await render("/devices")).text();
   assert.match(html, /What is connected/);
   assert.match(html, /Add a device/);
-  // Named rather than hidden: a visible, honestly locked row teaches the model, where a missing one
-  // leaves a player wondering whether they simply have not found the setting yet.
-  assert.match(html, /Screen and sound/);
+  /*
+   * The "Screen and sound" card is deliberately gone. It was a visible, honestly locked row — which
+   * is the right pattern — but its explanation was written in developer terms ("the renderer to move
+   * inside each game package"), which is not a sentence a player can do anything with. The
+   * constraint belongs in docs/architecture.md, and the card returns when output routing ships with
+   * a picker that works.
+   */
+  assert.doesNotMatch(html, /renderer to move inside|game package/i, "a player surface must not explain unbuilt internals");
 });
