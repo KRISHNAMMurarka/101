@@ -657,3 +657,9 @@ export * from "./face.ts";
  * pure arithmetic over positions and needs neither a camera nor a model to test.
  */
 export * from "./skeleton.ts";
+
+/*
+ * Identity across frames. The model returns people unordered with no id attached, so this is what
+ * stops player one and player two swapping every time they cross the room.
+ */
+export * from "./people.ts";
