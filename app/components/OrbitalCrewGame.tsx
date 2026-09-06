@@ -140,9 +140,9 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
         <div className="orbital-score"><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong><small>SECTOR {String(hud.sector).padStart(2, "0")} · CHAIN ×{hud.combo}</small></div>
       </header>
 
-      <div className="orbital-layout">
-        {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
+      <div className="orbital-layout">
         <div className="orbital-stage">
           <div className="orbital-statusbar"><span><i className="status-dot" /> SESSION HOST / ROLE ROUTING ACTIVE</span><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "LOCAL SPACE CLEAR"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />

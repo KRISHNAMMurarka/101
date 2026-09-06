@@ -135,9 +135,9 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
         <div><button className="back-button" onClick={onExit}>← Games</button><p className="eyebrow">Playable private-display exploration · Seed echomaze-{run}</p><h1>Echo Maze <span>101</span></h1></div>
         <div className="echo-stats"><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>FLOOR</span><strong>{hud.floor}</strong></div><div><span>FRAGMENTS</span><strong>{hud.fragments}/{hud.fragmentTotal}</strong></div><div><span>LIGHT</span><strong>{Math.round(hud.battery)}%</strong></div></div>
       </header>
-      <div className="echo-layout">
-        {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
+      {readinessNotice && <p className={`input-readiness${readiness?.playable === false ? " blocked" : ""}`} role={readiness?.playable === false ? "status" : undefined}>{readinessNotice}</p>}
 
+      <div className="echo-layout">
         <div className="echo-stage">
           <div className="echo-statusbar"><span><i className="status-dot" /> SEEDED MAZE / LOCAL COMPANION CHANNEL</span><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "PRIVATE CLUE ROUTED TO LINK" : "FALLBACK CLUE VISIBLE"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
