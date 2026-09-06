@@ -1281,16 +1281,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .rail-mark {
   display: grid;
-  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
+  gap: var(--space-xs);
   min-height: var(--tap-min);
   margin-bottom: var(--space-xs);
-  padding: 0;
+  /* The mark's block is 34px, so its own inset differs from the 20px icons' — same centre line. */
+  padding-left: calc((var(--rail-w) - 34px) / 2);
   color: var(--paper);
   text-decoration: none;
 }
 .rail-mark b {
-  justify-self: center;
   display: grid;
   place-items: center;
   width: 34px; height: 34px;
@@ -1329,15 +1330,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rail-item {
   position: relative;
   display: grid;
-  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
   min-height: var(--rail-w);
   padding: 0;
+  padding-left: calc((var(--rail-w) - 20px) / 2);
+  gap: var(--space-xs);
   color: var(--muted);
   font: 600 var(--type-body-size) var(--font-sans);
   text-decoration: none;
 }
-.rail-item .icon { justify-self: center; }
 .rail-item > span { padding-right: var(--space-sm); }
 .rail-item:hover { color: var(--paper); background: var(--surface); }
 
@@ -1354,9 +1356,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 .rail-toggle {
   display: grid;
-  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
   min-height: var(--rail-w);
+  padding-left: calc((var(--rail-w) - 20px) / 2);
+  gap: var(--space-xs);
   /*
    * Sits on the same line as the row at the foot of a game — the instruction strip — so the rail
    * ends where the content does rather than at some height of its own. Measured: with a
@@ -1366,7 +1370,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    */
   margin-top: auto;
   margin-bottom: 0;
-  padding: 0;
+  padding-right: 0;
   border: 0;
   background: none;
   color: var(--faint);
@@ -1375,7 +1379,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   cursor: pointer;
 }
 .rail-toggle:hover { color: var(--paper); }
-.rail-toggle .icon { justify-self: center; transition: transform .16s ease; }
+/* A little heavier than the rest: it is a bare chevron with no word beside it when collapsed, and
+   at 1.5 it read as a hairline rather than as a control. */
+.rail-toggle .icon { stroke-width: 2.25; transition: transform .16s ease; }
 .rail-open .rail-toggle .icon { transform: rotate(180deg); }
 
 .stage { margin-left: var(--rail-w); transition: margin-left .16s ease; }
@@ -1695,7 +1701,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .app-shell:not(.rail-open) .rail-item,
 .app-shell:not(.rail-open) .rail-toggle,
 .app-shell:not(.rail-open) .rail-door,
-.app-shell:not(.rail-open) .rail-mark { grid-template-columns: var(--rail-w); }
+.app-shell:not(.rail-open) .rail-mark { grid-template-columns: auto; }
 .app-shell:not(.rail-open) .rail-label { display: none; }
 
 /*
@@ -1743,17 +1749,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .rail-door {
   position: relative;
   display: grid;
-  grid-template-columns: var(--rail-w) 1fr;
+  grid-template-columns: auto 1fr;
   align-items: center;
   min-height: var(--rail-w);
   padding: 0;
+  padding-left: calc((var(--rail-w) - 20px) / 2);
+  gap: var(--space-xs);
   border-top: 1px solid var(--line);
   color: var(--faint);
   font: 600 var(--type-body-size) var(--font-sans);
   text-decoration: none;
 }
 .rail-door:hover { color: var(--paper); background: var(--surface); }
-.rail-door .icon { justify-self: center; }
+
 .rail-door span { white-space: nowrap; overflow: hidden; opacity: 0; transition: opacity .12s ease; }
 .rail-open .rail-door span { opacity: 1; }
 .app-shell:not(.rail-open) .rail-door { width: var(--rail-w); height: var(--rail-w); padding: 0; justify-content: center; }

@@ -89,12 +89,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             beside Play and Devices, because it leads somewhere a player has no reason to go — but
             leaving it out entirely means a developer's only route in is a footer link. */}
         <Link href="/studio" className="rail-door" data-label="Developer tools">
-          <Icon name="labs" size={18} />
+          <Icon name="labs" size={20} />
           <span>Developer tools</span>
         </Link>
 
         <button className="rail-toggle" onClick={() => setRailOpen(!open)} aria-expanded={open} title={open ? "Collapse" : "Expand"}>
-          <Icon name="chevron" size={16} />
+          <Icon name="chevron" size={20} />
           <span>{open ? "Collapse" : "Expand"}</span>
         </button>
       </nav>
