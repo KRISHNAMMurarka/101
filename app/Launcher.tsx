@@ -3,8 +3,6 @@
 import Link from "next/link";
 import QRCode from "qrcode";
 import {
-  Suspense,
-  lazy,
   useCallback,
   useDeferredValue,
   useEffect,
@@ -14,6 +12,10 @@ import {
   useState,
 } from "react";
 import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-link";
+import type { InputSource } from "@101/input";
+
+import { Icon } from "./components/Icon";
+import { useLocalDevice } from "./lib/local-capabilities";
 import {
   CATALOG_INPUT_LABELS,
   CATALOG_INPUT_PROFILES,
@@ -24,33 +26,6 @@ import {
   type CatalogWindowPlan,
   type LauncherCatalogEntry,
 } from "./lib/catalog";
-/**
- * Playable surfaces load on demand, one entry each.
- *
- * These used to be static imports. A static import makes every game a hard dependency of the
- * launcher's own chunk, so opening the library downloaded all ten games — 2.8 MB across 36
- * preloaded chunks, including a 1.6 MB physics engine — before rendering a single card. That cost
- * grows with the catalog, which is the one thing a library of a thousand games cannot afford.
- *
- * This map is also the single place a new surface is registered. Adding one no longer means
- * editing an import list, a union type, and a render chain separately.
- */
-const SURFACES = {
-  lab: lazy(() => import("./components/InputLab")),
-  beatforge: lazy(() => import("./components/BeatForgeGame")),
-  bodydodge: lazy(() => import("./components/BodyDodgeGame")),
-  echomaze: lazy(() => import("./components/EchoMazeGame")),
-  gravitystack: lazy(() => import("./components/GravityStackGame")),
-  orbitalcrew: lazy(() => import("./components/OrbitalCrewGame")),
-  shadowarena: lazy(() => import("./components/ShadowArenaGame")),
-  slashstorm: lazy(() => import("./components/SlashstormGame")),
-  spellcaster: lazy(() => import("./components/SpellcasterGame")),
-  swarmcommander: lazy(() => import("./components/SwarmCommanderGame")),
-  tiltdrift: lazy(() => import("./components/TiltDriftGame")),
-} as const;
-
-type View = "library" | "lab" | "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "shadowarena" | "swarmcommander" | "system";
-
 const INITIAL_CATALOG_ITEMS = 12;
 const INITIAL_CATALOG_COLUMNS = 3;
 const INITIAL_CATALOG_ROW_HEIGHT = 500;
@@ -62,7 +37,6 @@ export default function Launcher({
   games: readonly LauncherCatalogEntry[];
   benchmarkMode?: boolean;
 }) {
-  const [view, setView] = useState<View>("library");
   const [pairingOpen, setPairingOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [inputFilter, setInputFilter] = useState<CatalogInputFilter>("all");
@@ -71,6 +45,7 @@ export default function Launcher({
   const pageFocusScrollTopRef = useRef<number | null>(null);
   const pageFocusScrollSettledRef = useRef(false);
   const pageFocusSettleFrameRef = useRef<number | null>(null);
+  const { sources: localSources } = useLocalDevice();
   const instanceId = useId();
   const generatedSessionId = `101${instanceId.replace(/[^a-z0-9]/gi, "").toUpperCase()}LAB`.slice(0, 6).padEnd(6, "X");
   const [sessionId] = useState(() => {
@@ -79,8 +54,6 @@ export default function Launcher({
     return requested && /^[A-Z0-9-]{4,128}$/i.test(requested) ? requested : generatedSessionId;
   });
 
-  // `library` and `system` render inline; every other view is a code-split surface.
-  const Surface = view in SURFACES ? SURFACES[view as keyof typeof SURFACES] : undefined;
 
   // The server passes the complete catalog through the production server/client boundary. The
   // initial window below remains exactly twelve cards on both sides of hydration.
@@ -93,7 +66,7 @@ export default function Launcher({
     () => filterCatalog(catalog, { query: deferredQuery, input: inputFilter, searchIndex }),
     [catalog, deferredQuery, inputFilter, searchIndex],
   );
-  const { anchorIndex, gridRef, windowPlan } = useCatalogWindow(filteredCatalog.length, view === "library");
+  const { anchorIndex, gridRef, windowPlan } = useCatalogWindow(filteredCatalog.length, true);
   const requestedPage = useMemo(
     () => requestedPageStart === null
       ? null
@@ -184,15 +157,6 @@ export default function Launcher({
     setRequestedPageStart(planCatalogPage(filteredCatalog.length, startIndex).startIndex);
   };
 
-  const navigate = (next: View) => {
-    setView(next);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const launchGame = (id: string) => {
-    if (isPlayableView(id)) navigate(id);
-  };
-
   const catalogPager = filteredCatalog.length > INITIAL_CATALOG_ITEMS ? (
     <div className="catalog-pager" role="presentation">
       <div className="catalog-pager-controls" role="group" aria-label="Result page controls">
@@ -237,8 +201,6 @@ export default function Launcher({
   return (
     <main className="site-shell">
 
-      {view === "library" && (
-        <>
           <section className="hero">
             <div className="hero-copy">
               <p className="eyebrow">Open source · Local first · Browser first</p>
@@ -247,9 +209,9 @@ export default function Launcher({
                 101 turns keyboards, phones, watches, cameras and custom hardware into one shared input language—then lets every game speak it.
               </p>
               <div className="hero-actions">
-                <button className="primary-button" onClick={() => navigate("slashstorm")}>
-                  Play Slashstorm <span aria-hidden="true">↗</span>
-                </button>
+                <Link className="primary-button" href="/games/slashstorm">
+                  Play Slashstorm <Icon name="arrow" size={16} />
+                </Link>
                 <button className="text-button" onClick={() => setPairingOpen(true)}>
                   Try a second-screen controller
                 </button>
@@ -305,7 +267,7 @@ export default function Launcher({
                 <p>See normalized keyboard, pointer, touch, gamepad and second-screen events in one live arena.</p>
                 <div className="input-tags"><span>Keyboard</span><span>Mouse</span><span>Gamepad</span><span>Link preview</span></div>
               </div>
-              <button onClick={() => navigate("lab")}>Launch diagnostic <span>↗</span></button>
+              <Link href="/input">Launch diagnostic <Icon name="arrow" size={16} /></Link>
             </article>
 
             <form className="catalog-controls" role="search" onSubmit={(event) => event.preventDefault()}>
@@ -393,24 +355,32 @@ export default function Launcher({
                             ? <span className="ready-badge">PLAYABLE</span>
                             : <span className="roadmap-badge">ROADMAP</span>}
                       </div>
-                      <div className="game-motif" aria-hidden="true"><span /><i /><b /></div>
+                      {/* The card's picture is the answer to the question the player is actually
+                          asking — what do I need to play this? — so every card differs because every
+                          input set differs. It replaces three empty tags that CSS bent into the same
+                          rotated rectangle, circle and bar on all eleven. */}
+                      <div className="game-inputs" aria-hidden="true">
+                        {game.inputs.slice(0, 5).map((input) => <Icon key={input} name={input} size={24} />)}
+                      </div>
                       <div className="game-card-copy">
                         <h3>{game.name}</h3>
                         <p>{game.tagline}</p>
                         <div className="input-tags">
-                          {game.inputs.slice(0, 3).map((input) => <span key={input}>{CATALOG_INPUT_LABELS[input] ?? input}</span>)}
+                          {game.inputs.slice(0, 3).map((input) => <span key={input}><Icon name={input} size={16} />{CATALOG_INPUT_LABELS[input] ?? input}</span>)}
                           {game.inputs.length > 3 && <span>+{game.inputs.length - 3}</span>}
                         </div>
-                        <div className="preset-status">
-                          <span>Playable</span>
-                          {game.enhanced ? <span>Enhanced available</span> : null}
-                          {game.immersive ? <span>Immersive available</span> : null}
-                        </div>
+                        {/* Was three fixed strings, including the literal "Playable" printed on every
+                            card in the catalog — ROADMAP ones included, directly under a badge that
+                            said otherwise. Now computed against what this browser can contribute. */}
+                        {(() => {
+                          const readiness = readinessOn(game, localSources);
+                          return <p className={`card-readiness${readiness.ok ? "" : " needs-device"}`}>{readiness.text}</p>;
+                        })()}
                       </div>
                       {benchmarkMode ? (
                         <div className="card-status"><span>LOCAL FIXTURE</span><span>{game.players.max}P</span><span>∞</span></div>
-                      ) : isPlayableView(game.id) ? (
-                        <button className="game-card-launch" onClick={() => launchGame(game.id)}>Launch game <span>↗</span></button>
+                      ) : game.status === "playable" ? (
+                        <Link className="game-card-launch" href={`/games/${game.id}`}>Play <Icon name="arrow" size={16} /></Link>
                       ) : (
                         <div className="card-status"><span>{game.renderer.toUpperCase()}</span><span>{game.players.max}P</span><span>∞</span></div>
                       )}
@@ -432,17 +402,9 @@ export default function Launcher({
           <section className="promise-section">
             <div className="promise-index">101</div>
             <div className="promise-copy"><p className="eyebrow">The promise</p><h2>Game eleven should be dramatically easier to build than game one.</h2></div>
-            <button className="outline-button" onClick={() => navigate("system")}>Explore the architecture →</button>
+            <Link className="outline-button" href="/system">Explore the architecture <Icon name="arrow" size={16} /></Link>
           </section>
-        </>
-      )}
 
-      {Surface ? (
-        <Suspense fallback={<p className="surface-loading">Loading…</p>}>
-          <Surface sessionId={sessionId} onConnect={() => setPairingOpen(true)} onExit={() => navigate("library")} />
-        </Suspense>
-      ) : null}
-      {view === "system" && <SystemView onLaunch={() => navigate("lab")} />}
 
       <footer className="footer">
         <div className="mark-block">101</div>
@@ -450,9 +412,31 @@ export default function Launcher({
         <div><span>MIT core</span><span>Offline by design</span><span>Motion · vision · game library</span></div>
       </footer>
 
-      {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => { setPairingOpen(false); if (view === "library") navigate("lab"); }} />}
+      {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
     </main>
   );
+}
+
+
+/**
+ * Whether this browser can play a game right now, and what would improve it.
+ *
+ * A game's declared inputs are alternatives, not requirements — Slashstorm takes a keyboard or a
+ * touchscreen or a gamepad — so covering any one of them means you can start. The rest are the
+ * honest answer to "what would make this better", which is a different sentence from "you cannot
+ * play this". The card used to print neither: it printed the literal string "Playable" on every
+ * card in the catalog, including the ones whose own badge above said ROADMAP.
+ */
+function readinessOn(game: LauncherCatalogEntry, local: readonly InputSource[]): { ok: boolean; text: string } {
+  if (game.status !== "playable") return { ok: false, text: "In development" };
+
+  const have = game.inputs.filter((input) => local.includes(input));
+  const missing = game.inputs.filter((input) => !local.includes(input));
+  const name = (input: InputSource) => CATALOG_INPUT_LABELS[input] ?? input;
+
+  if (have.length === 0) return { ok: false, text: `Needs ${missing.slice(0, 2).map(name).join(" or ")}` };
+  if (missing.length === 0) return { ok: true, text: "Ready on this device" };
+  return { ok: true, text: `Ready now · ${missing.slice(0, 2).map(name).join(", ")} adds more` };
 }
 
 interface CatalogViewport {
@@ -665,36 +649,3 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
   );
 }
 
-function SystemView({ onLaunch }: { onLaunch: () => void }) {
-  const layers = [
-    ["01", "101 Games", "Read actions, axes, vectors and poses. Never hardware APIs."],
-    ["02", "Game SDK", "A narrow, versioned contract for lifecycle, assets and input."],
-    ["03", "Input Bus", "Normalizes sources, rejects stale frames and assigns players."],
-    ["04", "Protocol", "Reliable control and disposable realtime channels behind transports."],
-    ["05", "Adapters", "Keyboard, pointer, gamepad, calibrated motion and local camera pose now; hardware next."],
-  ];
-  return (
-    <section className="system-page">
-      <div className="system-page-intro">
-        <p className="eyebrow">System model · Phase 1</p>
-        <h1>Games speak actions.<br />Adapters speak hardware.</h1>
-        <p>That boundary is the product. A new device is added once, and every compatible 101 game can use it without learning a new API.</p>
-        <button className="primary-button" onClick={onLaunch}>Test the bus live ↗</button>
-      </div>
-      <div className="architecture-stack">
-        {layers.map(([number, title, copy]) => (
-          <article key={number}><span>{number}</span><div><h2>{title}</h2><p>{copy}</p></div><b>↘</b></article>
-        ))}
-      </div>
-      <div className="principles-grid">
-        <article><span>LOCAL</span><h3>Private by default</h3><p>Camera, motion and microphone processing remain on the device. No telemetry is required.</p></article>
-        <article><span>OPEN</span><h3>Strong foundations</h3><p>Phaser, Three.js, Rapier and Howler sit behind replaceable 101 facades.</p></article>
-        <article><span>∞</span><h3>Seeded worlds</h3><p>Procedural directors combine threats, modifiers and pacing—not just higher speed.</p></article>
-      </div>
-    </section>
-  );
-}
-
-function isPlayableView(id: string): id is Extract<View, "slashstorm" | "tiltdrift" | "bodydodge" | "orbitalcrew" | "beatforge" | "gravitystack" | "spellcaster" | "echomaze" | "shadowarena" | "swarmcommander"> {
-  return id === "slashstorm" || id === "tiltdrift" || id === "bodydodge" || id === "orbitalcrew" || id === "beatforge" || id === "gravitystack" || id === "spellcaster" || id === "echomaze" || id === "shadowarena" || id === "swarmcommander";
-}

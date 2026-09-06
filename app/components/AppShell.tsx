@@ -39,6 +39,7 @@ const LABS: Destination[] = [
   { href: "/network", label: "Network", icon: "bluetooth" },
   { href: "/controller-lab", label: "Controller", icon: "gamepad" },
   { href: "/hardware", label: "Hardware", icon: "custom" },
+  { href: "/system", label: "System", icon: "labs" },
 ];
 
 /**

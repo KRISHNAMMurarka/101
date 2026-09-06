@@ -470,19 +470,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .ready-badge, .roadmap-badge { padding: 6px 8px; font: 850 11px var(--font-mono); letter-spacing: .1em; }
 .ready-badge { background: var(--acid); color: var(--ink); }
 .roadmap-badge { border: 1px solid var(--line); color: var(--faint); }
-.mini-arena, .game-motif { position: relative; overflow: hidden; flex: 1; min-height: 155px; margin: 22px 0; border: 1px solid var(--line); background-image: linear-gradient(var(--surface) 1px, transparent 1px), linear-gradient(90deg, var(--surface) 1px, transparent 1px); background-size: 24px 24px; }
 .mini-arena span { position: absolute; top: 47%; left: 50%; width: 52px; height: 52px; transform: translate(-50%,-50%); border-radius: 50%; background: var(--paper); }
 .mini-arena i { position: absolute; top: 48%; left: 50%; width: 35%; height: 2px; transform: rotate(-17deg); transform-origin: left; background: var(--orange); }
 .mini-arena b { position: absolute; top: 24%; right: 17%; width: 22px; height: 22px; border: 2px solid var(--acid); border-radius: 50%; }
-.game-motif { border: 0; background-size: 30px 30px; opacity: .9; }
-.game-motif span, .game-motif i, .game-motif b { position: absolute; display: block; border: 1px solid var(--accent); }
-.game-motif span { top: 24%; left: 23%; width: 32%; height: 55%; transform: rotate(14deg); }
-.game-motif i { top: 42%; right: 17%; width: 32%; height: 32%; border-radius: 50%; }
-.game-motif b { top: 18%; right: 30%; width: 2px; height: 68%; border: 0; background: var(--accent); opacity: .5; }
-.game-slashstorm .game-motif span { width: 2px; height: 88%; top: 3%; left: 50%; border: 0; background: var(--accent); transform: rotate(54deg); box-shadow: 18px 5px 0 var(--surface-strong); }
-.game-tiltdrift .game-motif span { inset: 20% 12%; width: auto; height: auto; border-radius: 50% 50% 0 0; border-bottom: 0; transform: perspective(100px) rotateX(55deg); }
-.game-bodydodge .game-motif i { width: 60px; height: 105px; border-radius: 34px 34px 12px 12px; top: 16%; left: 42%; }
-.game-orbitalcrew .game-motif span { border-radius: 50%; box-shadow: 0 0 0 18px var(--surface); }
 .game-card-copy h3 { margin: 0; font-size: 22px; letter-spacing: -.03em; }
 .game-card-copy p { min-height: 44px; margin: 10px 0 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
 .input-tags { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -808,7 +798,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .shadow-vitals { position: absolute; left: 18px; bottom: 16px; width: min(570px,calc(100% - 36px)); display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }.shadow-meter { min-height: 48px; padding: 10px 11px; background: rgba(10, 10, 10, .86); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; border: 1px solid var(--line); }.shadow-meter span { color: var(--faint); font: 750 11px var(--font-mono); }.shadow-meter i { height: 4px; background: var(--panel); }.shadow-meter i b { display: block; height: 100%; background: var(--paper); }.shadow-meter-health i b { background: var(--muted); }.shadow-meter strong { font: 800 11px var(--font-mono); }
 .shadow-actions { position: absolute; right: 18px; bottom: 74px; display: flex; flex-wrap: wrap; justify-content: end; gap: 7px; }.shadow-actions button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .86); color: var(--muted); font: 800 11px var(--font-mono); cursor: pointer; }.shadow-camera-error { position: absolute; right: 18px; bottom: 130px; max-width: 480px; margin: 0; padding: 9px; background: rgba(10, 10, 10, .9); color: var(--muted); font: 700 11px/1.5 var(--font-mono); }
 .shadow-instructions { display: grid; grid-template-columns: repeat(5,1fr); border: 1px solid var(--line); border-top: 0; }.shadow-instructions span { min-height: 54px; padding: 10px; display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-align: center; }.shadow-instructions span:last-child { border-right: 0; }.shadow-instructions b { color: var(--muted); }.shadow-privacy { margin: 16px 0 0; color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.shadow-privacy strong { color: var(--muted); }
-.game-shadowarena .game-motif span { border-radius: 50% 50% 12px 12px; transform: none; }.game-shadowarena .game-motif i { width: 18%; height: 70%; border-radius: 50%; box-shadow: -52px 0 0 var(--surface-strong),52px 0 0 var(--surface-strong); }
 
 .swarm-page { min-height: 100dvh; padding: var(--space-lg) var(--gutter) var(--space-xl); background: radial-gradient(circle at 56% 52%,var(--surface),transparent 35%),var(--ink); }
 .swarm-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 28px; }.swarm-heading h1 { margin: 9px 0 0; font-size: clamp(46px,6.6vw,92px); line-height: .84; letter-spacing: -.065em; }.swarm-heading h1 span { color: var(--paper); }
@@ -819,7 +808,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .swarm-vitals { position: absolute; left: 18px; bottom: 16px; width: min(600px,calc(100% - 36px)); display: grid; grid-template-columns: 1.4fr 1fr; gap: 7px; }.swarm-meter,.swarm-shield { min-height: 48px; padding: 10px 11px; background: rgba(10, 10, 10, .86); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px; border: 1px solid var(--line); }.swarm-meter span,.swarm-shield span { color: var(--faint); font: 750 11px ui-monospace,monospace; }.swarm-meter i { height: 4px; background: var(--panel); }.swarm-meter i b { display: block; height: 100%; background: var(--paper); }.swarm-meter strong,.swarm-shield strong { font: 800 11px ui-monospace,monospace; }.swarm-shield { grid-template-columns: 1fr auto; }.swarm-shield.active { border-color: rgba(255,255,255,.55); }.swarm-shield.active strong { color: var(--paper); }
 .swarm-actions { position: absolute; right: 18px; bottom: 74px; display: flex; flex-wrap: wrap; justify-content: end; gap: 7px; }.swarm-actions button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .86); color: var(--paper); font: 800 11px ui-monospace,monospace; cursor: pointer; }.swarm-actions button:disabled { opacity: .62; }.swarm-camera-error { position: absolute; right: 18px; bottom: 130px; max-width: 480px; margin: 0; padding: 9px; background: rgba(10, 10, 10, .9); color: var(--muted); font: 700 11px/1.5 ui-monospace,monospace; }
 .swarm-instructions { display: grid; grid-template-columns: repeat(5,1fr); border: 1px solid var(--line); border-top: 0; }.swarm-instructions span { min-height: 54px; padding: 10px; display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--faint); font: 650 11px ui-monospace,monospace; text-align: center; }.swarm-instructions span:last-child { border-right: 0; }.swarm-instructions b { color: var(--paper); }.swarm-privacy { margin: 16px 0 0; color: var(--faint); font: 600 11px/1.65 ui-monospace,monospace; }.swarm-privacy strong { color: var(--muted); }
-.game-swarmcommander .game-motif span { width: 12px; height: 12px; border-radius: 50%; box-shadow: 30px 18px 0 var(--accent),60px -8px 0 var(--accent),85px 30px 0 var(--accent),15px 55px 0 var(--accent),65px 64px 0 var(--accent); }.game-swarmcommander .game-motif i { width: 64%; height: 2px; border: 0; border-radius: 0; background: var(--accent); transform: rotate(-15deg); opacity: .35; }
 
 .motion-page { min-height: 100dvh; padding: 0 var(--gutter) 100px; background: var(--ink); }
 .motion-topbar { min-height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
@@ -1484,4 +1472,42 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 759px) {
   .page-head { padding-top: var(--space-lg); }
   .device-card { margin-inline: var(--space-sm); }
+}
+
+/* --- Game card: what you need, and whether you have it ---------------------------------------- */
+
+/* Replaces `.game-motif` — three empty tags (<span/> <i/> <b/>) that CSS bent into the same rotated
+   rectangle, circle and bar on every card, with per-element magic numbers. Eleven games shared three
+   primitives, which is precisely what read as generated. These differ because the input sets do. */
+.game-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  min-height: 56px;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  color: var(--muted);
+}
+
+.input-tags span { display: inline-flex; align-items: center; gap: var(--space-3xs); }
+.input-tags .icon { color: var(--faint); }
+
+.card-readiness {
+  margin: var(--space-xs) 0 0;
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font: 700 var(--type-label-size) var(--font-mono);
+  letter-spacing: var(--track-label);
+  text-transform: uppercase;
+}
+.card-readiness.needs-device { color: var(--faint); }
+
+.game-card-launch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  min-height: var(--tap-min);
+  text-decoration: none;
 }

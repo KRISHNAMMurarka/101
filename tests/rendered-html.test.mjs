@@ -25,7 +25,11 @@ test("server-renders the 101 launcher and all ten catalog games", async () => {
   assert.match(html, /Anything can be/);
   assert.match(html, /101 Input Lab/);
   assert.match(html, /Slashstorm 101/);
-  assert.match(html, /Launch game/);
+  // A link with a real href, not a button that swapped a useState value: the ten /games/<id> routes
+  // already existed and nothing in app/ pointed at them, so launching a game produced no URL, no
+  // history entry and no way back.
+  assert.match(html, /href="\/games\/slashstorm"/);
+  assert.match(html, /href="\/games\/echomaze"/);
   assert.match(html, /TiltDrift 101/);
   assert.match(html, /BodyDodge 101/);
   assert.match(html, /Orbital Crew 101/);
