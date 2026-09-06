@@ -56,7 +56,7 @@ test("server-renders the player library, and nothing built for developers", asyn
 });
 
 test("server-renders a bounded first window for the 1000-entry catalog benchmark", async () => {
-  const response = await render("/?catalog=1000");
+  const response = await render("/studio/catalog-bench?count=1000");
   assert.equal(response.status, 200);
   const html = await response.text();
   const renderedText = html.replaceAll("<!-- -->", "");

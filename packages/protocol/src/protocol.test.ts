@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { INPUT_SOURCES } from "@101/input";
 import {
   INPUT_Q1_BYTES,
   INPUT_Q1_FORMAT,
@@ -626,3 +627,15 @@ class FakePeerConnection {
   close() { this.connectionState = "closed"; }
   getStats() { return Promise.resolve(new Map() as unknown as RTCStatsReport); }
 }
+
+test("input packet source indices are append-only wire values", () => {
+  // The Q1 packet stores the source as a 4-bit index into INPUT_SOURCES, so this list's *order* is
+  // wire format: reordering or inserting silently remaps every frame a deployed controller sends,
+  // and there is no version bump that can rescue a phone already holding the old order. This copy
+  // is deliberately frozen and must never be regenerated — it is the record of what shipped.
+  assert.deepEqual([...INPUT_SOURCES], [
+    "keyboard", "mouse", "touch", "gamepad", "phone-motion", "watch-motion",
+    "camera-hand", "camera-pose", "camera-face", "hid", "bluetooth", "serial", "custom",
+  ], "append only: an existing source may never change index");
+  assert.ok(INPUT_SOURCES.length <= 16, "the packet header has four bits for the source index");
+});

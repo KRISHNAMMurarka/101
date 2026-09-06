@@ -27,6 +27,8 @@
 /* Proportion is what makes a monochrome device legible at 24px, so each body is drawn to the real
    object's ratio: a phone is 1:2.25 with an off-centre lens, a watch is 1:1 with two strap stubs
    and a crown, custom hardware is a DIP outline with four pins a side rather than a chip glyph. */
+import type { InputSource } from "@101/input";
+
 export const ICONS = {
   // — input sources, matching InputSource in packages/input —
   keyboard: "M2 7h20v11H2z M6 11h1 M10 11h1 M14 11h1 M18 11h1 M7 15h10",
@@ -55,7 +57,7 @@ export const ICONS = {
   search: "M11 5a6 6 0 110 12 6 6 0 010-12z M15.5 15.5L20 20",
   chevron: "M9 5l7 7-7 7",
   plus: "M12 5v14 M5 12h14",
-} as const;
+} as const satisfies Record<InputSource, string> & Record<string, string>;
 
 export type IconName = keyof typeof ICONS;
 

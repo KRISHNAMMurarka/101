@@ -19,7 +19,6 @@ import { Icon } from "./components/Icon";
 import { useLocalDevice } from "./lib/local-capabilities";
 import {
   CATALOG_INPUT_LABELS,
-  CATALOG_INPUT_PROFILES,
   buildCatalogSearchIndex,
   filterCatalog,
   planCatalogWindow,
@@ -64,8 +63,8 @@ export default function Launcher({
   // already carries, and sending it too made it 28% of every entry.
   const searchIndex = useMemo(() => buildCatalogSearchIndex(catalog), [catalog]);
   const filteredCatalog = useMemo(
-    () => filterCatalog(catalog, { query: deferredQuery, input: inputFilter, searchIndex }),
-    [catalog, deferredQuery, inputFilter, searchIndex],
+    () => filterCatalog(catalog, { query: deferredQuery, input: inputFilter, available: localSources, searchIndex }),
+    [catalog, deferredQuery, inputFilter, localSources, searchIndex],
   );
   const { anchorIndex, gridRef, windowPlan } = useCatalogWindow(filteredCatalog.length, true);
   const requestedPage = useMemo(
@@ -139,7 +138,7 @@ export default function Launcher({
       pageFocusScrollTopRef.current = null;
     };
   }, [requestedPageStart]);
-  const activeProfile = CATALOG_INPUT_PROFILES.find((profile) => profile.id === inputFilter);
+  const activeProfile = inputFilter === "available" ? { label: "playable on this device" } : undefined;
   const hasCatalogFilter = deferredQuery.trim().length > 0 || inputFilter !== "all";
   const hasCatalogSelection = query.trim().length > 0 || inputFilter !== "all";
   /* The lead title and the input strip both come from the catalog, so adding, removing or reordering
@@ -257,22 +256,18 @@ export default function Launcher({
                   aria-controls="catalog-results"
                 />
               </label>
-              <label className="catalog-control" htmlFor="catalog-input-filter">
-                <span>Works with</span>
-                <select
+              <label className="catalog-control catalog-toggle" htmlFor="catalog-input-filter">
+                <input
                   id="catalog-input-filter"
-                  value={inputFilter}
+                  type="checkbox"
+                  checked={inputFilter === "available"}
                   onChange={(event) => {
-                    setInputFilter(event.currentTarget.value as CatalogInputFilter);
+                    setInputFilter(event.currentTarget.checked ? "available" : "all");
                     setRequestedPageStart(null);
                   }}
                   aria-controls="catalog-results"
-                >
-                  <option value="all">Any available input</option>
-                  {CATALOG_INPUT_PROFILES.map((profile) => (
-                    <option value={profile.id} key={profile.id}>{profile.label}</option>
-                  ))}
-                </select>
+                />
+                <span>Only what I can play now</span>
               </label>
               <button className="catalog-reset" type="button" onClick={resetCatalog} disabled={!hasCatalogSelection}>
                 Reset

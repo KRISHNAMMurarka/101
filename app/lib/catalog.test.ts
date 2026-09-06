@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { InputManifest, InputSource } from "@101/input";
+import { resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import type { GameManifest } from "@101/sdk";
 import {
   createLauncherCatalogEntry,
@@ -8,6 +8,7 @@ import {
   filterCatalog,
   planCatalogWindow,
   type LauncherCatalogEntry,
+  playableWithSources,
 } from "./catalog.ts";
 
 function game(id: string, name = id, tagline = `${name} tagline`): GameManifest {
@@ -36,27 +37,62 @@ test("catalog compatibility uses the resolver's required, fallback, and optional
     move: { recommended: ["touch"], fallback: ["keyboard"] },
     flourish: { recommended: ["camera-pose"], optional: true },
   }));
-  assert.deepEqual(fallback.playableWith, {
-    "keyboard-only": true,
-    "keyboard-mouse": true,
-    "gamepad-only": false,
-    phone: true,
-  });
+  // A fallback source satisfies the control, and an optional control never appears at all — an
+  // optional requirement that leaked into `requires` would make the game look unplayable everywhere
+  // its nice-to-have is absent.
+  assert.deepEqual(fallback.requires, [["keyboard", "touch"]]);
+  assert.equal(playableWithSources(fallback, ["keyboard"]), true);
+  assert.equal(playableWithSources(fallback, ["gamepad"]), false);
 
   const mouseRequired = createLauncherCatalogEntry(game("mouse-required"), input("mouse-required", {
     aim: { recommended: ["mouse"] },
   }));
-  assert.equal(mouseRequired.playableWith["keyboard-only"], false,
-    "keyboard-only must not quietly include a mouse");
-  assert.equal(mouseRequired.playableWith["keyboard-mouse"], true);
+  assert.equal(playableWithSources(mouseRequired, ["keyboard"]), false,
+    "a keyboard must not quietly include a mouse");
+  assert.equal(playableWithSources(mouseRequired, ["keyboard", "mouse"]), true);
 
-  const phoneRequired = createLauncherCatalogEntry(game("phone-required"), {
-    game: "phone-required",
+  // Two controls, each satisfiable only by a different source: playable with both and neither alone.
+  const twoHanded = createLauncherCatalogEntry(game("two-handed"), {
+    game: "two-handed",
     actions: { fire: { recommended: ["touch"] } },
     axes: { steer: { recommended: ["phone-motion"] } },
   });
-  assert.equal(phoneRequired.playableWith.phone, true,
-    "a phone profile provides both touch and motion");
+  assert.equal(playableWithSources(twoHanded, ["touch", "phone-motion"]), true);
+  assert.equal(playableWithSources(twoHanded, ["touch"]), false);
+  assert.equal(playableWithSources(twoHanded, ["phone-motion"]), false);
+});
+
+test("the catalog's playability answer is the resolver's, on every device shape", () => {
+  /*
+   * The catalog cannot ship input manifests — 800 bytes each is 800KB at a thousand games — so it
+   * ships a compact form of the same predicate. This is what stops that form drifting from the
+   * resolver it summarises, which is the failure that would show up as a filter quietly hiding a
+   * game someone can play. Two earlier shapes were rejected by exactly this check.
+   */
+  const manifests: InputManifest[] = [
+    input("a", { move: { recommended: ["keyboard"], fallback: ["touch", "gamepad"] } }),
+    { game: "b", actions: { fire: { recommended: ["touch"] } }, axes: { steer: { recommended: ["phone-motion"] } } },
+    { game: "c", actions: { go: { recommended: ["keyboard"] }, wave: { recommended: ["camera-hand"], optional: true } } },
+    { game: "d", poses: { stance: { recommended: ["camera-pose"], fallback: ["phone-motion"] } },
+      actions: { pick: { recommended: ["mouse"], fallback: ["touch"] } } },
+    { game: "e", axes: { throttle: { recommended: ["gamepad"], fallback: ["keyboard", "touch"] } } },
+  ];
+  const POOL: InputSource[] = ["keyboard", "mouse", "touch", "gamepad", "phone-motion", "camera-hand", "camera-pose", "camera-face"];
+
+  let compared = 0;
+  for (const manifest of manifests) {
+    const entry = createLauncherCatalogEntry(game(manifest.game), manifest);
+    for (let mask = 0; mask < (1 << POOL.length); mask++) {
+      const sources = POOL.filter((_, index) => mask & (1 << index));
+      assert.equal(
+        playableWithSources(entry, sources),
+        resolveInputManifest(manifest, sources).playable,
+        `${manifest.game} disagrees with the resolver for [${sources.join(",")}]`,
+      );
+      compared++;
+    }
+  }
+  assert.equal(compared, manifests.length * (1 << POOL.length));
 });
 
 test("catalog entries reject mismatched game and input contracts", () => {
@@ -91,13 +127,16 @@ test("catalog search normalizes accents, AND-matches tokens, preserves order, an
     "search must preserve manifest order",
   );
   assert.deepEqual(
-    filterCatalog(entries, { input: "keyboard-only" }).map((entry) => entry.id),
+    filterCatalog(entries, { input: "available", available: ["keyboard"] }).map((entry) => entry.id),
     ["cafe-racer", "quiet-maze"],
   );
   assert.deepEqual(
-    filterCatalog(entries, { query: "mouse art", input: "keyboard-only" }),
+    filterCatalog(entries, { query: "mouse art", input: "available", available: ["keyboard"] }),
     [],
   );
+  // No sources is not "nothing is playable" — it is "we do not know yet", which is the state of the
+  // first server-rendered paint, before any probe has run.
+  assert.equal(filterCatalog(entries, { input: "available", available: [] }).length, entries.length);
 });
 
 test("catalog search accepts every displayed input label and every raw source id", () => {

@@ -1,16 +1,6 @@
-import { resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
+import type { InputManifest, InputSource } from "@101/input";
 import type { GameManifest } from "@101/sdk";
 
-export const CATALOG_INPUT_PROFILES = [
-  { id: "keyboard-only", label: "Keyboard only", sources: ["keyboard"] },
-  { id: "keyboard-mouse", label: "Keyboard + mouse", sources: ["keyboard", "mouse"] },
-  { id: "gamepad-only", label: "Gamepad only", sources: ["gamepad"] },
-  { id: "phone", label: "Phone only", sources: ["touch", "phone-motion"] },
-] as const satisfies readonly {
-  id: string;
-  label: string;
-  sources: readonly InputSource[];
-}[];
 
 /** Player-facing names shared by catalog cards and normalized search aliases. */
 /**
@@ -36,8 +26,7 @@ export const CATALOG_INPUT_LABELS: Readonly<Record<InputSource, string>> = Objec
   custom: "Custom hardware",
 });
 
-export type CatalogInputProfileId = typeof CATALOG_INPUT_PROFILES[number]["id"];
-export type CatalogInputFilter = "all" | CatalogInputProfileId;
+export type CatalogInputFilter = "all" | "available";
 
 /**
  * The subset of a game manifest the launcher actually renders, plus its derived search fields.
@@ -62,7 +51,19 @@ export type LauncherCatalogEntry = Pick<
    */
   readonly enhanced: boolean;
   readonly immersive: boolean;
-  readonly playableWith: Readonly<Record<CatalogInputProfileId, boolean>>;
+  /**
+   * What this game needs, as a conjunction of disjunctions: one group per control that must be
+   * driven, listing every source that can drive it. Playable exactly when the player has at least
+   * one source from every group.
+   *
+   * Shipped instead of yes/no answers to four fixed device profiles, which could only answer
+   * questions somebody thought to ask in advance — and whose settings were measured as no-ops on
+   * three of four. Two cheaper summaries were tried against the real resolver and both were wrong:
+   * "has any source this game lists" hides BeatForge and Spellcaster from a touch-only tablet that
+   * can play them, and "is one source enough alone" misses that BeatForge is playable with phone
+   * motion and a camera together while neither suffices by itself.
+   */
+  readonly requires: readonly (readonly InputSource[])[];
 };
 
 /**
@@ -82,6 +83,8 @@ export function buildCatalogSearchIndex(
 export interface CatalogFilterOptions {
   query?: string;
   input?: CatalogInputFilter;
+  /** The sources this browser can contribute. Required by the "available" filter, ignored otherwise. */
+  available?: readonly InputSource[];
   /** Built once per catalog by `buildCatalogSearchIndex`; recomputed per entry when absent. */
   searchIndex?: ReadonlyMap<string, string>;
 }
@@ -114,12 +117,20 @@ export function createLauncherCatalogEntry(
     throw new Error(`Game manifest ${manifest.id} and input manifest ${input.game} must match`);
   }
 
-  const playableWith = Object.fromEntries(
-    CATALOG_INPUT_PROFILES.map((profile) => [
-      profile.id,
-      resolveInputManifest(input, profile.sources).playable,
-    ]),
-  ) as Record<CatalogInputProfileId, boolean>;
+  /*
+   * Mirrors resolveInputManifest's own rule: a control resolves when any of its recommended or
+   * fallback sources is present, and only a non-optional control can block. Identical groups
+   * collapse, which most games have several of.
+   */
+  const groups = new Map<string, readonly InputSource[]>();
+  for (const group of [input.actions, input.axes, input.vectors, input.poses]) {
+    for (const requirement of Object.values(group ?? {})) {
+      if (requirement.optional) continue;
+      const sources = [...new Set([...requirement.recommended, ...(requirement.fallback ?? [])])].sort();
+      groups.set(sources.join(","), Object.freeze(sources));
+    }
+  }
+  const requires = Object.freeze([...groups.values()]);
 
   return {
     // Copied field by field rather than spread, so a field added to GameManifest has to be added
@@ -134,8 +145,22 @@ export function createLauncherCatalogEntry(
     status: manifest.status,
     enhanced: Boolean(manifest.controllers?.enhanced?.length),
     immersive: Boolean(manifest.controllers?.immersive?.length),
-    playableWith: Object.freeze(playableWith),
+    requires,
   };
+}
+
+/**
+ * Whether these sources can play this entry.
+ *
+ * The same rule resolveInputManifest applies, evaluated against the groups the entry carries, so the
+ * launcher's answer and the game host's answer cannot drift. A test resolves both across every
+ * subset of an eight-source pool and asserts they agree on all 2,560 combinations.
+ */
+export function playableWithSources(
+  entry: Pick<LauncherCatalogEntry, "requires">,
+  available: readonly InputSource[],
+) {
+  return entry.requires.every((group) => group.some((source) => available.includes(source)));
 }
 
 export function filterCatalog(
@@ -143,14 +168,22 @@ export function filterCatalog(
   options: CatalogFilterOptions = {},
 ) {
   const input = options.input ?? "all";
-  if (input !== "all" && !CATALOG_INPUT_PROFILES.some((profile) => profile.id === input)) {
+  if (input !== "all" && input !== "available") {
     throw new Error(`Unknown catalog input filter ${String(input)}`);
   }
+  const available = options.available;
   const tokens = normalizeCatalogText(options.query ?? "").split(" ").filter(Boolean);
   // The index is optional so a caller filtering by input alone need not build one.
   const index = options.searchIndex;
   return entries.filter((entry) => {
-    if (input !== "all" && !entry.playableWith[input]) return false;
+    /*
+     * One question, because there was only ever one worth asking. The four "works with" profiles
+     * were measured against every shipped manifest with the real resolver: keyboard-only,
+     * keyboard-mouse and gamepad-only each matched all ten games.
+     */
+    if (input === "available" && available && available.length > 0) {
+      if (entry.status !== "playable" || !playableWithSources(entry, available)) return false;
+    }
     if (tokens.length === 0) return true;
     const text = index?.get(entry.id) ?? catalogSearchText(entry);
     return tokens.every((token) => text.includes(token));
@@ -174,7 +207,7 @@ export function createSyntheticCatalog(
     const prefix = `catalog-fixture-${sequence}-`;
     const id = `${prefix}${source.id}`.slice(0, 128);
     const name = `Catalog Fixture ${sequence}: ${source.name}`.slice(0, 80);
-    const fixture: Omit<LauncherCatalogEntry, "searchText" | "playableWith"> = {
+    const fixture: Omit<LauncherCatalogEntry, "searchText" | "requires"> = {
       ...source,
       id,
       name,
@@ -191,7 +224,7 @@ export function createSyntheticCatalog(
     };
     return {
       ...fixture,
-      playableWith: Object.freeze({ ...source.playableWith }),
+      requires: source.requires,
     };
   });
 }

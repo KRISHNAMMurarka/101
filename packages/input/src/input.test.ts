@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
+import { renderSourceSchemas } from "../../../tools/generate-input-source-schemas.mjs";
 import { InputBus, normalizeInputFrame, resolveInputManifest, type InputManifest } from "./index.ts";
 
 test("normalizes invalid and out-of-range input values", () => {
@@ -154,4 +156,12 @@ test("a game is blocked only by the controls it says it needs", () => {
   assert.deepEqual(paired.blocking, []);
   assert.equal(paired.playable, true);
   assert.deepEqual(paired.missing, ["celebrate"], "an unserved optional control is still reported");
+});
+
+test("the published schemas are generated from INPUT_SOURCES", () => {
+  // Four hand-kept copies of one list is how `maxItems: 14` outlived a thirteen-entry tuple. The
+  // schemas are output now, and this compares the checked-in bytes with what the generator emits.
+  for (const [url, expected] of renderSourceSchemas()) {
+    assert.equal(readFileSync(url, "utf8"), expected, `${String(url)} is stale — run npm run schemas:sources`);
+  }
 });

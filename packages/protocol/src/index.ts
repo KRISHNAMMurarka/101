@@ -11,17 +11,13 @@ export interface LinkFeatures {
   speakerAudio?: "locked" | "ready";
 }
 
-export interface DeviceCapabilities {
-  touch?: boolean;
-  accelerometer?: boolean;
-  gyroscope?: boolean;
-  magnetometer?: boolean;
-  camera?: boolean;
-  microphone?: boolean;
-  haptics?: boolean;
-  gamepad?: boolean;
-  speaker?: boolean;
-}
+export const CAPABILITY_NAMES = [
+  "touch","accelerometer","gyroscope","magnetometer","camera","microphone","haptics","gamepad","speaker",
+] as const;
+
+export type CapabilityName = (typeof CAPABILITY_NAMES)[number];
+
+export type DeviceCapabilities = Partial<Record<CapabilityName, boolean>>;
 
 export type HapticMessage = {
   type: "haptic";
@@ -729,6 +725,11 @@ function canEncodeInputPacket(frame: InputFrame, profile: InputPacketProfile) {
   // Identity is deliberately supplied by the authenticated assignment/profile rather than trusted
   // from every frame. Only the layout-derived values need to be representable here.
   if (frame.poses && Object.keys(frame.poses).length > 0) return false;
+  // A source this build has never heard of has no 4-bit index, so the packet cannot carry it. That
+  // is a reason to fall back to JSON, not to throw: `sendRealtime` does not catch, so a controller
+  // built against a longer INPUT_SOURCES would take the whole link down instead of degrading.
+  const sourceIndex = INPUT_SOURCES.indexOf(frame.source);
+  if (sourceIndex < 0 || sourceIndex > 0x0f) return false;
 
   const actionNames = new Set<string>();
   const axisNames = new Set<string>();

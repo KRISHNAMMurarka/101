@@ -16,4 +16,5 @@ export const STUDIO_TOOLS: readonly StudioTool[] = [
   { href: "/studio/network", label: "Network", icon: "bluetooth", blurb: "Manual peer pairing with no discovery service" },
   { href: "/studio/controller", label: "Controller", icon: "gamepad", blurb: "Author a panel in JSON and watch the frames it emits" },
   { href: "/studio/hardware", label: "Hardware", icon: "custom", blurb: "HID, Bluetooth and serial device profiles" },
+  { href: "/studio/catalog-bench", label: "Catalog", icon: "play", blurb: "The library under a synthetic catalog, on the real server render" },
 ];

@@ -30,7 +30,12 @@ export function detectLocalCapabilities(): DeviceCapabilities {
     camera: Boolean(nav.mediaDevices?.getUserMedia),
     microphone: Boolean(nav.mediaDevices?.getUserMedia),
     haptics: "vibrate" in nav,
-    gamepad: "getGamepads" in nav,
+    // A connected pad, not the API existing. `"getGamepads" in navigator` is true in every modern
+    // browser, so every desktop claimed a gamepad and cards read "Ready on this device" for games
+    // the platform's own resolver said were not playable there. Browsers also withhold pads until
+    // one is used, so this can be false at first paint and true later — which the store below
+    // handles rather than pretending the answer is fixed.
+    gamepad: typeof nav.getGamepads === "function" && nav.getGamepads().some((pad) => pad !== null),
     speaker: "AudioContext" in window || "webkitAudioContext" in window,
   };
 }
@@ -72,17 +77,53 @@ export type LocalDevice = {
 };
 
 let resolvedDevice: LocalDevice | null = null;
+const deviceListeners = new Set<() => void>();
 
+function probe(): LocalDevice {
+  const capabilities = detectLocalCapabilities();
+  return { capabilities, sources: localInputSources(capabilities), shape: describeLocalDevice() };
+}
+
+/**
+ * The snapshot is held rather than recomputed per call, because `useSyncExternalStore` compares by
+ * reference and a fresh object every render is an infinite loop.
+ */
 function resolveLocalDevice(): LocalDevice {
-  if (!resolvedDevice) {
-    const capabilities = detectLocalCapabilities();
-    resolvedDevice = { capabilities, sources: localInputSources(capabilities), shape: describeLocalDevice() };
-  }
+  if (!resolvedDevice) resolvedDevice = probe();
   return resolvedDevice;
 }
 
+function refresh() {
+  const next = probe();
+  const changed = next.shape !== resolvedDevice?.shape
+    || next.sources.length !== resolvedDevice.sources.length
+    || next.sources.some((source, index) => source !== resolvedDevice?.sources[index]);
+  if (!changed) return;
+  resolvedDevice = next;
+  for (const listener of deviceListeners) listener();
+}
+
+/**
+ * Plugging in a pad changes the answer, and so does putting one down. Without this the first paint's
+ * answer would be permanent, which is the same defect as the API-presence check it replaced — just
+ * arrived at more slowly.
+ */
+function subscribeToDevice(listener: () => void) {
+  deviceListeners.add(listener);
+  if (deviceListeners.size === 1 && typeof window !== "undefined") {
+    window.addEventListener("gamepadconnected", refresh);
+    window.addEventListener("gamepaddisconnected", refresh);
+  }
+  return () => {
+    deviceListeners.delete(listener);
+    if (deviceListeners.size === 0 && typeof window !== "undefined") {
+      window.removeEventListener("gamepadconnected", refresh);
+      window.removeEventListener("gamepaddisconnected", refresh);
+    }
+  };
+}
+
 const noDevice: LocalDevice = { capabilities: {}, sources: [], shape: "computer" };
-const subscribeToDevice = () => () => {};
 
 /** `null`-shaped on the server: an empty probe, so the first paint claims nothing it cannot know. */
 export function useLocalDevice(): LocalDevice {

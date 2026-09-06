@@ -37,6 +37,7 @@
     "watch:ios:check": "node tools/check-watchos-build.mjs",
     "watch:wear:test": "node tools/wear-gradle.mjs testDebugUnitTest",
     "watch:wear:build": "node tools/wear-gradle.mjs assembleDebug",
+    "schemas:sources": "node --experimental-strip-types tools/generate-input-source-schemas.mjs",
     "license:inventory": "node tools/generate-license-inventory.mjs && node tools/generate-rust-license-inventory.mjs",
     "audit:production": "node tools/audit-production.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",

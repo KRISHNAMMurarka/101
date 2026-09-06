@@ -1639,3 +1639,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .route-state h1 { margin: 0; font-size: clamp(30px, 4vw, 44px); font-weight: 800; letter-spacing: var(--track-tight); text-wrap: balance; }
 .route-state p { margin: 0; color: var(--muted); font-size: var(--type-body-size); line-height: 1.5; }
 .route-state .primary-button { margin-top: var(--space-sm); display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
+
+/* One question, not five. The four "works with" profiles were measured against every shipped
+   manifest with the real resolver: three of them matched all ten games, so three of the control's
+   four settings filtered nothing. */
+.catalog-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-xs);
+  cursor: pointer;
+}
+.catalog-toggle input { width: 18px; height: 18px; accent-color: var(--paper); cursor: pointer; }
+.catalog-toggle span { color: var(--muted); font-size: var(--type-body-size); }
+.catalog-toggle:has(input:checked) span { color: var(--paper); }

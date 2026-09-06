@@ -590,13 +590,22 @@ test("the launcher calls catalog discovery and windows complete rows", () => {
   const source = readFileSync(resolve(import.meta.dirname, "../app/Launcher.tsx"), "utf8");
 
   for (const helper of [
-    "CATALOG_INPUT_PROFILES",
     "filterCatalog",
     "planCatalogWindow",
   ] as const) {
     assert.match(source, new RegExp(`\\b${helper}\\b`),
       `Launcher must call ${helper} rather than leaving catalog scaling in a test-only layer`);
   }
+
+  /*
+   * Was an assertion that the launcher used CATALOG_INPUT_PROFILES. Those four device profiles are
+   * gone: measured against every shipped manifest with the real resolver, keyboard-only,
+   * keyboard-mouse and gamepad-only each matched all ten games, so three of the control's four
+   * settings filtered nothing. The filter now asks the one question a player has, which means the
+   * launcher has to tell it what this device can actually do.
+   */
+  assert.match(source, /available:\s*localSources/,
+    "the catalog filter must be given this device's real sources, or it cannot answer what is playable now");
 
   assert.match(source, /useDeferredValue\(/,
     "typing in catalog search must not synchronously rebuild the visible grid");
@@ -614,19 +623,26 @@ test("the launcher calls catalog discovery and windows complete rows", () => {
     "windowed cards must expose their position within the full result set");
 });
 
-test("the catalog benchmark URL reaches the launcher's server render", () => {
-  // Launcher must receive the synthetic count before its server render; client-only URL expansion
-  // would keep hydration safe but could not measure a thousand-entry first paint honestly.
-  const page = readFileSync(resolve(import.meta.dirname, "../app/page.tsx"), "utf8");
+test("the catalog benchmark is a studio route, and the player home is not", () => {
+  // The benchmark must still receive its synthetic count before the server render — client-only URL
+  // expansion would keep hydration safe but could not measure a thousand-entry first paint honestly.
+  const bench = readFileSync(resolve(import.meta.dirname, "../app/studio/catalog-bench/page.tsx"), "utf8");
 
-  assert.match(page, /searchParams/,
-    "the home route must inspect its server-side query parameters");
-  assert.match(page, /catalog[^;]+1000/s,
-    "the local benchmark route must recognize ?catalog=1000");
-  assert.match(page, /createSyntheticCatalog\(gameCatalog,\s*1_000\)/,
+  assert.match(bench, /searchParams/, "the benchmark route must inspect its server-side query parameters");
+  assert.match(bench, /createSyntheticCatalog\(gameCatalog,\s*size\)/,
     "the server must generate the complete benchmark catalog before the client boundary");
-  assert.match(page, /<Launcher[^>]+games=\{benchmarkCatalog\}[^>]+benchmarkMode/s,
+  assert.match(bench, /<Launcher[^>]+benchmarkMode/s,
     "all benchmark manifests must reach Launcher before SSR and hydration");
+  // createSyntheticCatalog throws for a non-integer or out-of-range count, so an unvalidated query
+  // parameter is an uncaught server exception rather than a bad render.
+  assert.match(bench, /Number\.isInteger/, "the count must be validated before it reaches the generator");
+  assert.match(bench, /Math\.min\(Math\.max/, "the count must be clamped, not merely checked");
+  assert.match(bench, /robots:\s*\{\s*index:\s*false/, "a benchmark harness must not be indexed");
+
+  // The player's front door carries none of it.
+  const home = readFileSync(resolve(import.meta.dirname, "../app/page.tsx"), "utf8");
+  assert.doesNotMatch(home, /benchmarkMode|createSyntheticCatalog|searchParams/,
+    "a benchmark harness must not be reachable by query parameter on the player's home page");
 });
 
 test("windowed catalog results remain reachable without scroll geometry guesses", () => {
