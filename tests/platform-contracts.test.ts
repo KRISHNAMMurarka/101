@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
@@ -18,7 +18,20 @@ import { SPELLCASTER_ROLES } from "../games/spellcaster/src/roles.ts";
 import { SWARM_COMMANDER_ROLES } from "../games/swarmcommander/src/roles.ts";
 import { TILTDRIFT_ROLES } from "../games/tiltdrift/src/roles.ts";
 
-const GAME_IDS = ["slashstorm", "tiltdrift", "bodydodge", "orbitalcrew", "beatforge", "gravitystack", "spellcaster", "echomaze", "shadowarena", "swarmcommander"] as const;
+/**
+ * Discovered, not listed.
+ *
+ * A game is a directory under games/ that declares an input manifest and is not a tool. Writing the
+ * ids out by hand made adding a game an edit to this file — and the three `assert.equal(…, 10)`
+ * counts below meant an eleventh game failed the suite in four places while the launcher rendered
+ * it correctly.
+ */
+const GAMES_DIR = resolve(import.meta.dirname, "../games");
+const GAME_IDS = readdirSync(GAMES_DIR).filter((id) => {
+  if (!existsSync(resolve(GAMES_DIR, id, "input.manifest.json"))) return false;
+  const manifest = JSON.parse(readFileSync(resolve(GAMES_DIR, id, "manifest.json"), "utf8"));
+  return manifest.surface !== "tool";
+}).sort();
 type GameId = typeof GAME_IDS[number];
 
 const rolesByGame: Record<GameId, readonly SessionRole[]> = {
@@ -36,6 +49,7 @@ const rolesByGame: Record<GameId, readonly SessionRole[]> = {
 
 test("all ten games publish honest playable, local, procedural manifests and fallback inputs", () => {
   for (const gameId of GAME_IDS) {
+    assert.ok(rolesByGame[gameId], `${gameId} has no controller roles registered in this test`);
     const manifest = parseGameManifest(json<GameManifest>(gameId, "manifest.json"));
     const input = parseInputManifest(json<InputManifest>(gameId, "input.manifest.json"));
     assert.equal(manifest.id, gameId);
@@ -236,7 +250,7 @@ test("every game runs through the SDK, and the SDK resolves its input manifest",
 
   const components = readdirSync(resolve(import.meta.dirname, "../app/components"))
     .filter((file) => file.endsWith("Game.tsx"));
-  assert.equal(components.length, 10, "all ten games must be present");
+  assert.equal(components.length, GAME_IDS.length, "every game must have a launcher component");
 
   for (const file of components) {
     const source = readFileSync(resolve(import.meta.dirname, `../app/components/${file}`), "utf8");
@@ -300,7 +314,7 @@ test("every shipped game is playable on a plain keyboard, and says so honestly",
       `${id} reports more degraded controls with a phone than without`);
   }
 
-  assert.equal(checked, 10, "all ten games must ship an input manifest");
+  assert.equal(checked, GAME_IDS.length, "every game must ship an input manifest");
 });
 
 test("the readiness notice names the device that would actually help", async () => {
@@ -374,7 +388,7 @@ test("defineGamePackage accepts every game it is the gate for", async () => {
       `${id} must survive the validation its own launcher performs`,
     );
   }
-  assert.equal(checked, 10, "all ten games must be validated");
+  assert.equal(checked, GAME_IDS.length, "every game must pass the validation its launcher performs");
 });
 
 test("pairing a phone does not claim vision a phone never sends", async () => {

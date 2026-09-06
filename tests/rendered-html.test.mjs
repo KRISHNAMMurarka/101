@@ -331,3 +331,15 @@ test("Devices answers what is connected and how to add something", async () => {
    */
   assert.doesNotMatch(html, /renderer to move inside|game package/i, "a player surface must not explain unbuilt internals");
 });
+
+/**
+ * A player who mistypes a URL, or follows a link to a game that has been retired, previously landed
+ * on Next's stock 404 — unstyled, with no way back into the product.
+ */
+test("a wrong URL is a page, not a dead end", async () => {
+  const response = await render("/games/not-a-real-game");
+  const html = await response.text();
+  assert.match(html, /isn.t here/i, "a missing page must say so in words");
+  assert.match(html, /href="\/"/, "a missing page must offer a way back");
+  assert.doesNotMatch(html, /call stack|webpack|__next|Application error/i, "a player must never see a stack trace");
+});

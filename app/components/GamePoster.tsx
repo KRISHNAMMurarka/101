@@ -537,7 +537,11 @@ function generated(id: string) {
 
 export function GamePoster({ id, title }: { id: string; title: string }) {
   const scene = SCENES[id];
-  const uid = `p-${id.replace(/[^a-z0-9]/gi, "")}`;
+  /* Separators become a hyphen rather than vanishing. Collapsing them made "echo-maze" and
+     "echomaze" produce the same uid, so two posters on one page shared gradient ids and the second
+     painted with the first's palette — unreachable with today's ids, reachable the moment a
+     third party ships one. */
+  const uid = `p-${id.replace(/[^a-z0-9]+/gi, "-")}`;
   return (
     <svg className="game-poster" viewBox="0 0 320 200" role="img" aria-label={title} preserveAspectRatio="xMidYMid slice">
       {scene ? (

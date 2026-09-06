@@ -20,6 +20,14 @@ export interface GameManifest {
   version: string;
   engine: string;
   renderer: RendererKind;
+  /**
+   * What this package is. Defaults to "game".
+   *
+   * The launcher used to filter its one tool out of the catalog with `id !== "input-lab"` — a rule
+   * about a single package rather than a property of packages. A second tool needed a second
+   * exception, and a third-party tool could not be excluded at all.
+   */
+  surface?: "game" | "tool";
   players: { min: number; max: number };
   inputs: InputSource[];
   offline: boolean;
@@ -91,6 +99,9 @@ export function parseGameManifest(input: unknown): GameManifest {
     ? input.engine
     : (() => { throw new Error("Game engine must be a compatible numeric range such as ^1"); })();
   if (input.renderer !== "2d" && input.renderer !== "3d") throw new Error("Game renderer must be 2d or 3d");
+  if (input.surface !== undefined && input.surface !== "game" && input.surface !== "tool") {
+    throw new Error("Game surface must be game or tool");
+  }
   if (!isRecord(input.players) || !positiveInteger(input.players.min) || !positiveInteger(input.players.max) || Number(input.players.min) > Number(input.players.max) || Number(input.players.max) > 32) {
     throw new Error("Game players must contain a valid min/max range up to 32");
   }
@@ -121,6 +132,7 @@ export function parseGameManifest(input: unknown): GameManifest {
     version,
     engine,
     renderer: input.renderer,
+    ...(input.surface === "tool" ? { surface: "tool" as const } : {}),
     players: { min: Number(input.players.min), max: Number(input.players.max) },
     inputs,
     offline: input.offline,

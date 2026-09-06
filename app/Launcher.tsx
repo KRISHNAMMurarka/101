@@ -142,7 +142,14 @@ export default function Launcher({
   const activeProfile = CATALOG_INPUT_PROFILES.find((profile) => profile.id === inputFilter);
   const hasCatalogFilter = deferredQuery.trim().length > 0 || inputFilter !== "all";
   const hasCatalogSelection = query.trim().length > 0 || inputFilter !== "all";
-  const catalogNoun = benchmarkMode ? "benchmark entries" : "games";
+  /* The lead title and the input strip both come from the catalog, so adding, removing or reordering
+     a game changes the home page without anyone editing it. */
+  const featured = useMemo(() => catalog.find((game) => game.status === "playable"), [catalog]);
+  const supportedInputs = useMemo(
+    () => [...new Set(catalog.flatMap((game) => game.inputs))].sort(),
+    [catalog],
+  );
+  const catalogNoun = benchmarkMode ? "entries" : catalog.length === 1 ? "game" : "games";
   const resultCountCopy = hasCatalogFilter
     ? `${filteredCatalog.length} of ${catalog.length} ${catalogNoun} match${activeProfile ? ` · ${activeProfile.label}` : ""}`
     : `${catalog.length} ${catalogNoun} available`;
@@ -210,9 +217,11 @@ export default function Launcher({
                 101 turns the devices around you into controllers—then lets every game understand them.
               </p>
               <div className="hero-actions">
-                <Link className="primary-button" href="/games/slashstorm">
-                  Play Slashstorm <Icon name="arrow" size={16} />
-                </Link>
+                {featured && (
+                  <Link className="primary-button" href={`/games/${featured.id}`}>
+                    Play {featured.name.replace(/ 101$/, "")} <Icon name="arrow" size={16} />
+                  </Link>
+                )}
                 <button className="text-button" onClick={() => setPairingOpen(true)}>
                   Try a second-screen controller
                 </button>
@@ -220,9 +229,9 @@ export default function Launcher({
             </div>
           </section>
 
-          <section className="signal-strip" aria-label="Supported input categories">
-            {["Keyboard", "Gamepad", "Phone motion", "Camera", "Watch", "HID / BLE", "Future input"].map((item, index) => (
-              <span key={item}><b>{String(index + 1).padStart(2, "0")}</b>{item}</span>
+          <section className="signal-strip" aria-label="What you can play with">
+            {supportedInputs.map((source) => (
+              <span key={source}><Icon name={source} size={18} />{CATALOG_INPUT_LABELS[source]}</span>
             ))}
           </section>
 

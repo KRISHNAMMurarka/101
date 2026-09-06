@@ -31,10 +31,10 @@ for (const input of inputManifests) {
 export const gameCatalog: LauncherCatalogEntry[] = manifests
   // Input Lab is a diagnostic with its own featured card, not a game package. It intentionally has
   // no semantic input manifest, so it stays outside compatibility filtering and windowing.
-  .filter((manifest) => manifest.id !== "input-lab")
+  .filter((manifest) => manifest.surface !== "tool")
   .map((manifest) => {
     const input = inputsByGame.get(manifest.id);
     if (!input) throw new Error(`Game ${manifest.id} has no input manifest`);
     return createLauncherCatalogEntry(manifest, input);
   })
-  .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.name.localeCompare(b.name));
+  .sort((a, b) => (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER) || a.name.localeCompare(b.name));

@@ -241,13 +241,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   padding: 0 6px;
   background: var(--orange);
   color: var(--ink);
-  font: 900 19px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 900 19px/1 var(--font-mono);
   letter-spacing: -2px;
 }
 
 .mark-label {
   color: var(--muted);
-  font: 700 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 700 11px/1.2 var(--font-mono);
   letter-spacing: .12em;
   text-transform: uppercase;
 }
@@ -339,7 +339,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .eyebrow {
   margin: 0 0 18px;
   color: var(--orange);
-  font: 750 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  font: 750 11px/1.2 var(--font-mono);
   letter-spacing: .17em;
   text-transform: uppercase;
 }
@@ -411,9 +411,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .vector-line { position: absolute; z-index: 1; top: 49%; left: 50%; width: 34%; height: 1px; transform: rotate(-19deg); transform-origin: left; background: var(--orange); opacity: .5; }
 .system-note { margin: 16px 0 0; color: var(--faint); font: 650 11px/1.5 var(--font-mono); text-align: center; }
 
-.signal-strip { overflow: hidden; display: grid; grid-template-columns: repeat(7, minmax(150px, 1fr)); border-block: 1px solid var(--line); background: var(--chrome-solid); }
-.signal-strip span { min-height: 72px; display: flex; align-items: center; gap: 12px; padding: 0 20px; border-right: 1px solid var(--line); color: var(--muted); white-space: nowrap; font: 650 11px var(--font-mono); text-transform: uppercase; }
-.signal-strip b { color: var(--orange); font-size: 11px; }
+.signal-strip { overflow: hidden; display: flex; flex-wrap: wrap; border-block: 1px solid var(--line); background: var(--chrome-solid); }
+.signal-strip span { min-height: 64px; display: flex; align-items: center; gap: 10px; padding: 0 var(--space-md); border-right: 1px solid var(--line); color: var(--muted); white-space: nowrap; font: 650 11px var(--font-mono); text-transform: uppercase; }
+.signal-strip .icon { flex: none; color: var(--faint); }
 
 .library-section { max-width: 1540px; margin: 0 auto; padding: 110px var(--gutter) 130px; }
 .section-heading { display: grid; grid-template-columns: 1fr minmax(300px, .6fr); gap: 60px; align-items: end; margin-bottom: 48px; }
@@ -1626,3 +1626,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .studio-stage { margin-left: 0; }
   .studio-grid { margin-inline: var(--space-sm); }
 }
+
+/* Empty, missing and broken states. One treatment, because a player's question is the same in all
+   three: what happened, and what do I do now. */
+.route-state {
+  max-width: var(--measure);
+  padding: clamp(80px, 12vw, 160px) var(--gutter);
+  display: grid;
+  justify-items: start;
+  gap: var(--space-xs);
+}
+.route-state h1 { margin: 0; font-size: clamp(30px, 4vw, 44px); font-weight: 800; letter-spacing: var(--track-tight); text-wrap: balance; }
+.route-state p { margin: 0; color: var(--muted); font-size: var(--type-body-size); line-height: 1.5; }
+.route-state .primary-button { margin-top: var(--space-sm); display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }

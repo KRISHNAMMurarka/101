@@ -5,10 +5,20 @@
   "version": "0.1.0",
   "engine": "^1",
   "renderer": "2d",
-  "players": { "min": 1, "max": 4 },
-  "inputs": ["keyboard", "mouse", "touch", "gamepad", "custom"],
+  "players": {
+    "min": 1,
+    "max": 4
+  },
+  "inputs": [
+    "keyboard",
+    "mouse",
+    "touch",
+    "gamepad",
+    "custom"
+  ],
   "offline": true,
   "procedural": false,
   "status": "playable",
-  "accent": "#ff5c35"
+  "accent": "#ff5c35",
+  "surface": "tool"
 }
