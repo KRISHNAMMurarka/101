@@ -559,7 +559,16 @@ export interface FaceVisionBackend {
 
 export interface MediaPipeFaceBackendOptions {
   wasmRoot?: string;
-  modelPath?: string;
+  /**
+   * Required, and deliberately not defaulted.
+   *
+   * face_landmarker.task is not committed to this repository, so a default pointed every caller at
+   * a path that 404s — a failure that does not surface until a player has chosen the camera and
+   * waited for a download that was never coming. Naming the file is now the caller's job, which
+   * makes "this needs an asset you have to supply" a fact the types state rather than one the
+   * network reports.
+   */
+  modelPath: string;
   minConfidence?: number;
   /** How many faces to track. More than one is what makes a room of people playable. */
   maxFaces?: number;
@@ -582,10 +591,10 @@ export class MediaPipeFaceBackend implements FaceVisionBackend {
   private landmarker?: import("@mediapipe/tasks-vision").FaceLandmarker;
   private lastTimestamp = -1;
 
-  constructor(options: MediaPipeFaceBackendOptions = {}) {
+  constructor(options: MediaPipeFaceBackendOptions) {
     this.options = {
       wasmRoot: options.wasmRoot ?? "/mediapipe/wasm",
-      modelPath: options.modelPath ?? "/models/face_landmarker.task",
+      modelPath: options.modelPath,
       minConfidence: options.minConfidence ?? 0.5,
       maxFaces: Math.max(1, Math.min(4, Math.round(options.maxFaces ?? 1))),
       preferGpu: options.preferGpu ?? true,

@@ -114,16 +114,28 @@ function detectGpu() {
  * a git history for a tier most machines will not pick. A checkout without them still tracks a body,
  * because a tier whose asset is absent resolves to one that is present rather than failing to start.
  *
- * `available` is the set of model paths this deployment actually serves; callers that cannot know it
- * pass nothing and get the committed model.
+ * `available` is the set of model paths this deployment actually serves. It defaults to what is
+ * committed, so a caller that cannot know resolves to a file that exists — which is what this
+ * comment claimed before and the code did not do: with `available` undefined the guard was skipped
+ * entirely and the first tier won, so asking for `precise` returned the 30MB model that is not in
+ * the repository.
  */
-export function resolvePoseModel(quality: TrackingQuality, available?: ReadonlySet<string>) {
+/**
+ * The pose models this repository actually serves out of public/models.
+ *
+ * A constant rather than a filesystem read, because the caller is a browser. A test keeps it honest
+ * against the directory, which is the only thing that can: a path that 404s does not fail until a
+ * player has already chosen the camera and waited for a download that is not coming.
+ */
+export const COMMITTED_POSE_MODELS: ReadonlySet<string> = new Set(["/models/pose_landmarker_lite.task"]);
+
+export function resolvePoseModel(quality: TrackingQuality, available: ReadonlySet<string> = COMMITTED_POSE_MODELS) {
   const order: TrackingQuality[] = quality === "precise"
     ? ["precise", "balanced", "fast"]
     : quality === "balanced" ? ["balanced", "fast"] : ["fast"];
   for (const tier of order) {
     const path = TRACKING_PROFILES[tier].poseModel;
-    if (!available || available.has(path)) return { quality: tier, poseModel: path };
+    if (available.has(path)) return { quality: tier, poseModel: path };
   }
   return { quality: "fast" as TrackingQuality, poseModel: TRACKING_PROFILES.fast.poseModel };
 }

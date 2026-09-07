@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import test from "node:test";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import { ControllerInputModel } from "@101/link-controller";
+import { COMMITTED_POSE_MODELS } from "@101/vision";
 import { parseControllerLayout } from "@101/protocol";
 import type { SessionRole } from "@101/session";
 import { parseGameManifest, type GameManifest } from "@101/sdk";
@@ -1021,4 +1022,34 @@ test("a game that advertises a camera actually wires one up", () => {
     }
   }
   assert.deepEqual(offenders, [], `a declared camera input with nothing behind it:\n${offenders.join("\n")}`);
+});
+
+test("every model the code loads by default is actually served", () => {
+  /*
+   * A model path that 404s does not fail until a player has chosen the camera and waited for a
+   * download that was never coming, which is the worst possible moment and the least legible error.
+   * public/models carries the lite pose model and the hand model; `full` and `heavy` are fetched
+   * rather than committed, so resolvePoseModel steps down to what exists — but only because its
+   * default set says what exists, and this is what keeps that set honest.
+   */
+  const root = resolve(import.meta.dirname, "..");
+  const served = new Set(readdirSync(resolve(root, "public/models")).map((name) => `/models/${name}`));
+
+  const offenders: string[] = [];
+  for (const file of ["packages/adapter-camera/src/index.ts", "packages/vision/src/quality.ts"]) {
+    const source = readFileSync(resolve(root, file), "utf8");
+    // Only defaults: `x ?? "/models/…"` is a path taken when the caller supplies nothing, so it has
+    // to exist. A path merely named in a profile may legitimately be fetched at runtime.
+    for (const match of source.matchAll(/\?\?\s*"(\/models\/[^"]+)"/g)) {
+      if (!served.has(match[1]!)) {
+        offenders.push(`${file}: defaults to ${match[1]}, which is not in public/models`);
+      }
+    }
+  }
+
+  assert.deepEqual(offenders, [], offenders.join("\n"));
+  assert.ok(COMMITTED_POSE_MODELS.size > 0, "no pose model is committed at all");
+  for (const path of COMMITTED_POSE_MODELS) {
+    assert.ok(served.has(path), `COMMITTED_POSE_MODELS names ${path}, which is not in public/models`);
+  }
 });
