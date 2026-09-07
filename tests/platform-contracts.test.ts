@@ -992,9 +992,15 @@ test("a game that advertises a camera actually wires one up", () => {
    * same class of failure as a schema field nothing reads.
    */
   const root = resolve(import.meta.dirname, "..");
-  const ADAPTER_FOR: Record<string, string> = {
-    "camera-pose": "BrowserCameraAdapter",
-    "camera-hand": "BrowserHandAdapter",
+  /*
+   * Two ways to wire a camera, and both count. Every game used to construct its own adapter; they
+   * share one hook now, which takes the kind as an argument. The check is that something in the
+   * component actually produces the input the manifest promises — not which of the two shapes it
+   * happens to use, or this test starts failing every time the wiring improves.
+   */
+  const WIRING_FOR: Record<string, readonly string[]> = {
+    "camera-pose": ["BrowserCameraAdapter", 'useCameraInput({\n    kind: "body"', 'kind: "body"'],
+    "camera-hand": ["BrowserHandAdapter", 'kind: "hands"'],
   };
 
   const components = readdirSync(resolve(root, "app/components"))
@@ -1006,7 +1012,7 @@ test("a game that advertises a camera actually wires one up", () => {
     const manifestPath = resolve(root, `games/${id}/manifest.json`);
     if (!existsSync(manifestPath)) continue;
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as { inputs?: string[] };
-    const declared = (manifest.inputs ?? []).filter((source) => source in ADAPTER_FOR);
+    const declared = (manifest.inputs ?? []).filter((source) => source in WIRING_FOR);
     if (declared.length === 0) continue;
 
     const component = components.find((name) => name.toLowerCase() === `${id}game.tsx`);
@@ -1016,8 +1022,9 @@ test("a game that advertises a camera actually wires one up", () => {
     }
     const source = readFileSync(resolve(root, `app/components/${component}`), "utf8");
     for (const input of declared) {
-      if (!source.includes(ADAPTER_FOR[input]!)) {
-        offenders.push(`${id} declares ${input} but ${component} never imports ${ADAPTER_FOR[input]}`);
+      const accepted = WIRING_FOR[input]!;
+      if (!accepted.some((marker) => source.includes(marker))) {
+        offenders.push(`${id} declares ${input} but ${component} never wires one up (looked for ${accepted.join(" or ")})`);
       }
     }
   }

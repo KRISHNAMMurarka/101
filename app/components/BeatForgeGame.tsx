@@ -1,10 +1,10 @@
 "use client";
 
-import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101, AudioTimeline101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
+import { cameraStatusLabel, useCameraInput } from "../lib/use-camera-input";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
 import FullscreenButton from "@/app/components/FullscreenButton";
@@ -18,8 +18,6 @@ import { beatActionLabel, createBeatForgeGame, type BeatForgeState, type BeatTar
 import type { BeatAction } from "@/games/beatforge/src/director";
 import { BeatCueLookahead } from "@/games/beatforge/src/cue-scheduler";
 import { BEATFORGE_ROLES } from "@/games/beatforge/src/roles";
-
-type CameraState = "idle" | "loading" | "active" | "denied" | "error";
 
 interface BeatHud {
   bpm: number;
@@ -47,15 +45,12 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const beatTimelineRef = useRef<AudioTimeline101 | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<BeatHud>(INITIAL_HUD);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [cameraState, setCameraState] = useState<CameraState>("idle");
-  const [cameraConfidence, setCameraConfidence] = useState(0);
-  const [cameraError, setCameraError] = useState("");
+  const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run });
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
@@ -148,37 +143,10 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         audio.unload();
         view.dispose();
         hostRef.current = null;
-        cameraRef.current = null;
         if (beatTimelineRef.current === beatTimeline) beatTimelineRef.current = null;
       };
     },
   });
-
-  const enableCamera = async () => {
-    const host = hostRef.current;
-    const video = videoRef.current;
-    if (!host || !video) return;
-    setCameraState("loading");
-    setCameraError("");
-    const adapter = new BrowserCameraAdapter({
-      video,
-      mirror: true,
-      classifier: { autoCalibrationFrames: 18 },
-      onDiagnostics: (diagnostics: PoseAdapterDiagnostics) => setCameraConfidence(diagnostics.signals.confidence),
-      onError: (error) => setCameraError(error.message),
-    });
-    cameraRef.current = adapter;
-    try {
-      await host.inputBus.register(adapter);
-      setCameraState("active");
-    } catch (cause) {
-      await host.inputBus.unregister(adapter);
-      cameraRef.current = null;
-      const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
-      setCameraState(denied ? "denied" : "error");
-      setCameraError(denied ? "Camera permission was not granted. Keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local movement tracking could not start.");
-    }
-  };
 
   const enableAudio = () => {
     void beatTimelineRef.current?.resume();
@@ -188,8 +156,6 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
 
   const restart = () => {
     setHud(INITIAL_HUD);
-    setCameraState("idle");
-    setCameraConfidence(0);
     setRun((value) => value + 1);
   };
 
@@ -201,26 +167,26 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       </header>
 
       <div className="beat-arena">
-        <div className="beat-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK PERFORMER` : cameraState === "active" ? `LOCAL POSE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b></b></div>
+        <div className="beat-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK PERFORMER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={cameraState === "active" ? "beat-camera-preview active" : "beat-camera-preview"} ref={videoRef} aria-label="Local mirrored movement camera preview" />
+        <video className={camera.state === "on" ? "beat-camera-preview active" : "beat-camera-preview"} ref={videoRef} aria-label="Camera preview" />
         <div className="beat-next"><span>NEXT MOVE</span><strong>{hud.next ? beatActionLabel(hud.next.action) : "READY"}</strong><small>{hud.next ? `${hud.next.remaining.toFixed(2)} S` : "—"}</small></div>
         <div className="beat-judge">{hud.lastJudge}</div>
         <div className="beat-overlay">
           <div className="drift-meter"><span>FLOW</span><i><b style={{ width: `${hud.health}%` }} /></i><strong>{Math.round(hud.health)}%</strong></div>
           <div className="beat-actions">
             {!audioEnabled && <button onClick={enableAudio}>ENABLE AUDIO</button>}
-            {cameraState === "active" ? <button onClick={() => cameraRef.current?.calibrateNeutral()}>SET BODY NEUTRAL</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING MODEL…" : "ENABLE BODY CAMERA"}</button>}
+            {camera.state === "on" ? <button onClick={camera.recentre}>Stand still, then tap</button> : <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}
             <button onClick={onConnect}>{linked ? "ADD PERFORMER" : "CONNECT MOTION"}</button>
           </div>
         </div>
-        {(cameraState === "denied" || cameraState === "error") && <p className="beat-camera-error">{cameraError}</p>}
+        {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
         {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span></div>
-      <p className="beat-privacy"><strong>Optional camera:</strong> body landmarks become punch, raise, duck, and lean actions locally. Video is not uploaded or recorded. Audio cues are generated and bundled by the 101 Audio facade.</p>
+      <p className="beat-privacy"><strong>Camera:</strong> hit the notes with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Keys and a gamepad work just as well.</p>
     </section>
   );
 }

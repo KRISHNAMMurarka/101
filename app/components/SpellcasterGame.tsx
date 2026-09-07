@@ -1,6 +1,5 @@
 "use client";
 
-import { BrowserHandAdapter, type HandAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
@@ -9,6 +8,7 @@ import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
+import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
 import { describeSources } from "@/app/lib/input-readiness";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SPELLCASTER_INPUT from "@/games/spellcaster/input.manifest.json";
@@ -17,8 +17,6 @@ import { useEffect, useRef, useState } from "react";
 import { createSpellcasterGame, type ArcaneEnemy, type SpellcasterState } from "@/games/spellcaster/src/game";
 import type { SpellId } from "@/games/spellcaster/src/director";
 import { SPELLCASTER_ROLES } from "@/games/spellcaster/src/roles";
-
-type CameraState = "idle" | "loading" | "active" | "denied" | "error";
 
 interface SpellHud {
   score: number;
@@ -40,17 +38,28 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SpellHud>(INITIAL_HUD);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [cameraState, setCameraState] = useState<CameraState>("idle");
-  const [cameraConfidence, setCameraConfidence] = useState(0);
   const [gesture, setGesture] = useState("SHOW A HAND");
-  const [cameraError, setCameraError] = useState("");
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
+
+  const camera = useCameraInput({
+    kind: "hands",
+    sessionId,
+    video: videoRef,
+    host: hostRef,
+    runKey: run,
+    classifier: { stableFrames: 3, gestureCooldownMs: 430 },
+    // The arcane feed names the gesture that was just recognised, which only the diagnostics carry.
+    onDiagnostics: (diagnostics) => {
+      const active = diagnostics.signals.activated.at(-1);
+      if (active) setGesture(handGestureLabel(active));
+      else if (!diagnostics.signals.hand) setGesture("SHOW A HAND");
+    },
+  });
 
   const { linked, readiness } = useGameHost<SpellcasterState>({
     sessionId,
@@ -123,47 +132,22 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         audio.unload();
         view.dispose();
         hostRef.current = null;
-        cameraRef.current = null;
       };
     },
   });
 
-  const enableCamera = async () => {
-    const host = hostRef.current;
-    const video = videoRef.current;
-    if (!host || !video) return;
-    setCameraState("loading");
-    setCameraError("");
-    const adapter = new BrowserHandAdapter({
-      video,
-      mirror: true,
-      classifier: { stableFrames: 3, gestureCooldownMs: 430 },
-      onDiagnostics: (diagnostics: HandAdapterDiagnostics) => {
-        setCameraConfidence(diagnostics.signals.confidence);
-        const active = diagnostics.signals.activated.at(-1);
-        if (active) setGesture(handGestureLabel(active));
-        else if (!diagnostics.signals.hand) setGesture("SHOW A HAND");
-      },
-      onError: (error) => setCameraError(error.message),
-    });
-    cameraRef.current = adapter;
-    try {
-      await host.inputBus.register(adapter);
-      setCameraState("active");
-    } catch (cause) {
-      await host.inputBus.unregister(adapter);
-      cameraRef.current = null;
-      const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
-      setCameraState(denied ? "denied" : "error");
-      setCameraError(denied ? "Camera permission was not granted. Keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand tracking could not start.");
-    }
-  };
-
+  /*
+   * This game still builds its own adapter, because the arcane feed names the gesture the camera
+   * just recognised and only onDiagnostics carries that. Everything the player reads, though, now
+   * comes from the shared vocabulary: the same four states, and the same failure copy the setup
+   * walkthrough uses, rather than whatever the browser threw.
+   */
   const restart = () => {
     setHud(INITIAL_HUD);
-    setCameraState("idle");
-    setCameraConfidence(0);
+    
     setGesture("SHOW A HAND");
+    
+    
     setRun((value) => value + 1);
   };
 
@@ -175,23 +159,23 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
       </header>
 
       <div className="spell-arena">
-        <div className="spell-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CASTER` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{cameraState === "active" ? gesture : "Camera optional"}</b></div>
+        <div className="spell-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CASTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{camera.state === "on" ? gesture : "Camera optional"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={cameraState === "active" ? "spell-camera active" : "spell-camera"} ref={videoRef} aria-label="Local mirrored hand tracking preview" />
+        <video className={camera.state === "on" ? "spell-camera active" : "spell-camera"} ref={videoRef} aria-label="Camera preview" />
         <div className="spell-event"><span>ARCANE FEED</span><strong>{hud.event}</strong><small>LAST CAST · {hud.lastCast.toUpperCase()}</small></div>
         <div className="spell-vitals"><Meter label="HEALTH" value={hud.health} tone="health" /><Meter label="MANA" value={hud.mana} tone="mana" /><div className="spell-charge"><span>CHARGE</span><strong>{"◆".repeat(hud.charge)}{"◇".repeat(3 - hud.charge)}</strong></div></div>
         <div className="spell-actions">
           {!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}
-          {cameraState === "active" ? <button disabled>HAND CAMERA ACTIVE</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING LOCAL MODEL…" : "ENABLE HAND CAMERA"}</button>}
+          {camera.state !== "on" && <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}
           <button onClick={onConnect}>{linked ? "ADD CASTER" : "CONNECT MOTION"}</button>
         </div>
-        {(cameraState === "denied" || cameraState === "error") && <p className="spell-camera-error">{cameraError}</p>}
+        {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
         {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="spell-instructions"><span><b>PROJECTILE</b> Space · two fingers</span><span><b>SHIELD</b> Q · open palm</span><span><b>GRAB</b> E · pinch</span><span><b>CHARGE</b> C · fist</span><span><b>BLADE</b> Shift/X · swipe</span><span><b>VORTEX</b> R · circle</span></div>
-      <p className="spell-privacy"><strong>Optional camera:</strong> the bundled hand model runs here, converts landmarks into stable spell events, and discards frames. Video is not uploaded or recorded. Every spell also has a keyboard/gamepad fallback.</p>
+      <p className="spell-privacy"><strong>Camera:</strong> cast with your hands if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Every spell also works on the keyboard or a gamepad.</p>
     </section>
   );
 }

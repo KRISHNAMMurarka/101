@@ -1,6 +1,5 @@
 "use client";
 
-import { BrowserHandAdapter, type HandAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
@@ -8,9 +7,11 @@ import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import type { HandGesture } from "@101/vision";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
+import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SWARMCOMMANDER_INPUT from "@/games/swarmcommander/input.manifest.json";
 import SWARMCOMMANDER_MANIFEST from "@/games/swarmcommander/manifest.json";
@@ -18,25 +19,49 @@ import { useEffect, useRef, useState } from "react";
 import { createSwarmCommanderGame, type CommanderEnemy, type SwarmCommanderState } from "@/games/swarmcommander/src/game";
 import { SWARM_COMMANDER_ROLES } from "@/games/swarmcommander/src/roles";
 
-type CameraState = "idle" | "loading" | "active" | "denied" | "error";
 interface SwarmHud { score: number; wave: number; agents: number; selected: number; enemies: number; energy: number; formation: string; modifier: string; event: string; shield: boolean; gameOver: boolean }
+/*
+ * What the command feed calls the gesture a hand just made.
+ *
+ * Only the four this game acts on are named. The classifier reports nine, and the other five used to
+ * reach the player as their own identifiers — two fingers held up in front of Swarm Commander read
+ * "TWOFINGERS", which is the code's name for a shape that commands nothing here.
+ */
+const COMMAND_GESTURES: Partial<Record<HandGesture, string>> = {
+  point: "POINT · COMMAND TARGET",
+  pinch: "PINCH · SELECT",
+  openPalm: "OPEN PALM · ION PULSE",
+  fist: "FIST · RECALL",
+};
+
 const INITIAL_HUD: SwarmHud = { score: 0, wave: 1, agents: 168, selected: 0, enemies: 0, energy: 100, formation: "cluster", modifier: "clear", event: "COLLECTIVE ONLINE", shield: false, gameOver: false };
 
 export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const cameraRef = useRef<BrowserHandAdapter | null>(null);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SwarmHud>(INITIAL_HUD);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [cameraState, setCameraState] = useState<CameraState>("idle");
-  const [cameraConfidence, setCameraConfidence] = useState(0);
   const [gesture, setGesture] = useState("POINT TO COMMAND");
-  const [cameraError, setCameraError] = useState("");
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
+  const camera = useCameraInput({
+    kind: "hands",
+    sessionId,
+    video: videoRef,
+    host: hostRef,
+    runKey: run,
+    classifier: { stableFrames: 3, gestureCooldownMs: 420 },
+    // The command feed names the order that was just given, which only the diagnostics carry.
+    onDiagnostics: (diagnostics) => {
+      const named = diagnostics.signals.activated.map((activated) => COMMAND_GESTURES[activated]).filter(Boolean).at(-1);
+      const shown = named ?? (diagnostics.signals.gestures.point ? COMMAND_GESTURES.point : undefined);
+      if (shown) setGesture(shown);
+    },
+  });
+
   const { linked, readiness } = useGameHost<SwarmCommanderState>({
     sessionId,
     deps: [run],
@@ -72,43 +97,34 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
         host.sendControllerState("navigator", { WAVE: state.wave, AGENTS: state.agents.length, ENERGY: state.energy }, { message: state.lastEvent, tone: state.agents.length < 45 ? "critical" : enemies > 10 ? "warning" : "normal" });
         host.sendControllerState("tactician", { FORM: state.formation.toUpperCase(), SELECTED: state.selected || "ALL", ENERGY: state.energy, HOSTILES: enemies }, { message: state.lastEvent, tone: enemies > 10 ? "warning" : "normal" });
       }, 100);
-      return () => { window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose(); hostRef.current = null; cameraRef.current = null; };
+      return () => { window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose(); hostRef.current = null; };
     },
   });
 
-  const enableCamera = async () => {
-    const host = hostRef.current; const video = videoRef.current; if (!host || !video) return;
-    setCameraState("loading"); setCameraError("");
-    const adapter = new BrowserHandAdapter({
-      video, mirror: true, classifier: { stableFrames: 3, gestureCooldownMs: 420 },
-      onDiagnostics: (diagnostics: HandAdapterDiagnostics) => { setCameraConfidence(diagnostics.signals.confidence); const active = diagnostics.signals.activated.at(-1); if (active) setGesture(active === "openPalm" ? "OPEN PALM · ION PULSE" : active === "fist" ? "FIST · RECALL" : active === "pinch" ? "PINCH · SELECT" : active.toUpperCase()); else if (diagnostics.signals.gestures.point) setGesture("POINT · COMMAND TARGET"); },
-      onError: (error) => setCameraError(error.message),
-    });
-    cameraRef.current = adapter;
-    try { await host.inputBus.register(adapter); setCameraState("active"); }
-    catch (cause) { await host.inputBus.unregister(adapter); cameraRef.current = null; const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError"); setCameraState(denied ? "denied" : "error"); setCameraError(denied ? "Camera permission was not granted. Mouse, keyboard, gamepad, and Link remain active." : cause instanceof Error ? cause.message : "Local hand command could not start."); }
-  };
+  /* One table of failures, shared with the setup walkthrough, in place of a private NotAllowedError
+     test that fell through to whatever the browser said — "Requested device not found" is a note to
+     a developer, not a sentence a player can act on. */
 
-  const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); setRun((value) => value + 1); };
+  const restart = () => { setHud(INITIAL_HUD); setRun((value) => value + 1); };
 
   return (
     <section className="swarm-page">
       <header className="swarm-heading"><div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
 
       <div className="swarm-arena">
-        <div className="swarm-statusbar"><FullscreenButton /><span>{linked ? `${linked} SPECIALIST DEVICES` : cameraState === "active" ? `LOCAL HAND · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="swarm-statusbar"><FullscreenButton /><span>{linked ? `${linked} SPECIALIST DEVICES` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />
         {/* Local camera capture requests no audio and is never recorded or uploaded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={cameraState === "active" ? "swarm-camera active" : "swarm-camera"} ref={videoRef} aria-label="Local mirrored hand command preview" />
-        <div className="swarm-event"><span>COMMAND FEED</span><strong>{hud.event}</strong><small>{cameraState === "active" ? gesture : `${hud.formation.toUpperCase()} · ${hud.selected || "ALL"} ASSIGNED`}</small></div>
+        <video className={camera.state === "on" ? "swarm-camera active" : "swarm-camera"} ref={videoRef} aria-label="Camera preview" />
+        <div className="swarm-event"><span>COMMAND FEED</span><strong>{hud.event}</strong><small>{camera.state === "on" ? gesture : `${hud.formation.toUpperCase()} · ${hud.selected || "ALL"} ASSIGNED`}</small></div>
         <div className="swarm-vitals"><SwarmMeter label="ENERGY" value={hud.energy} /><div className={hud.shield ? "swarm-shield active" : "swarm-shield"}><span>COLLECTIVE SHIELD</span><strong>{hud.shield ? "ACTIVE" : "READY"}</strong></div></div>
-        <div className="swarm-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}{cameraState === "active" ? <button disabled>HAND COMMAND ACTIVE</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING LOCAL MODEL…" : "ENABLE HAND COMMAND"}</button>}<button onClick={onConnect}>{linked ? "ADD SPECIALIST" : "CONNECT SPECIALISTS"}</button></div>
-        {(cameraState === "denied" || cameraState === "error") && <p className="swarm-camera-error">{cameraError}</p>}
+        <div className="swarm-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}{camera.state !== "on" && <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}<button onClick={onConnect}>{linked ? "ADD SPECIALIST" : "CONNECT SPECIALISTS"}</button></div>
+        {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
         {hud.gameOver && <div className="game-over-panel"><p>COLLECTIVE DISPERSED</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL COMMAND SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="swarm-instructions"><span><b>COMMAND</b> mouse · right stick · point</span><span><b>SELECT</b> click · A · pinch</span><span><b>FORMATIONS</b> keys 1–5 · tactician</span><span><b>PULSE / SHIELD</b> Q / E</span><span><b>RECALL</b> R · navigator</span></div>
-      <p className="swarm-privacy"><strong>Different dimensions, different devices:</strong> a navigator can tilt the shared direction while a tactician sets targets and formations. Optional hand inference remains local; every command has conventional controls.</p>
+      <p className="swarm-privacy"><strong>Different dimensions, different devices:</strong> a navigator can tilt the shared direction while a tactician sets targets and formations. Hands are optional: the picture is read on this device and never leaves it, and every command also has a key, a stick or a pointer.</p>
     </section>
   );
 }

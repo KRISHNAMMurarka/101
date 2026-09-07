@@ -1,6 +1,5 @@
 "use client";
 
-import { BrowserCameraAdapter, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
@@ -10,6 +9,7 @@ import { defineGamePackage } from "@101/sdk";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
+import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
@@ -17,8 +17,6 @@ import type { PoseLandmark } from "@101/vision";
 import { useEffect, useRef, useState } from "react";
 import { createShadowArenaGame, type ShadowArenaState, type ShadowEnemy } from "@/games/shadowarena/src/game";
 import { SHADOW_ARENA_ROLES } from "@/games/shadowarena/src/roles";
-
-type CameraState = "idle" | "loading" | "active" | "denied" | "error";
 
 interface ShadowHud {
   score: number; round: number; combo: number; health: number; focus: number; enemies: number; modifier: string;
@@ -31,15 +29,21 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const cameraRef = useRef<BrowserCameraAdapter | null>(null);
   const poseRef = useRef<PoseLandmark[] | undefined>(undefined);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<ShadowHud>(INITIAL_HUD);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [cameraState, setCameraState] = useState<CameraState>("idle");
-  const [cameraConfidence, setCameraConfidence] = useState(0);
-  const [cameraError, setCameraError] = useState("");
+  const camera = useCameraInput({
+    kind: "body",
+    sessionId,
+    video: videoRef,
+    host: hostRef,
+    runKey: run,
+    classifier: { autoCalibrationFrames: 18, gestureCooldownMs: 300 },
+    // The fighter on screen is drawn from this pose, so the silhouette moves as the player does.
+    onDiagnostics: (diagnostics) => { poseRef.current = diagnostics.pose; },
+  });
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
@@ -89,31 +93,12 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       }, 100);
       return () => {
         window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose();
-        hostRef.current = null; cameraRef.current = null; poseRef.current = undefined;
+        hostRef.current = null; poseRef.current = undefined;
       };
     },
   });
 
-  const enableCamera = async () => {
-    const host = hostRef.current; const video = videoRef.current;
-    if (!host || !video) return;
-    setCameraState("loading"); setCameraError("");
-    const adapter = new BrowserCameraAdapter({
-      video, mirror: true, classifier: { autoCalibrationFrames: 18, gestureCooldownMs: 300 },
-      onDiagnostics: (diagnostics: PoseAdapterDiagnostics) => { poseRef.current = diagnostics.pose; setCameraConfidence(diagnostics.signals.confidence); },
-      onError: (error) => setCameraError(error.message),
-    });
-    cameraRef.current = adapter;
-    try { await host.inputBus.register(adapter); setCameraState("active"); }
-    catch (cause) {
-      await host.inputBus.unregister(adapter); cameraRef.current = null;
-      const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
-      setCameraState(denied ? "denied" : "error");
-      setCameraError(denied ? "Camera permission was not granted. Keyboard, gamepad, and Link controls remain active." : cause instanceof Error ? cause.message : "Local pose combat could not start.");
-    }
-  };
-
-  const restart = () => { setHud(INITIAL_HUD); setCameraState("idle"); setCameraConfidence(0); poseRef.current = undefined; setRun((value) => value + 1); };
+  const restart = () => { setHud(INITIAL_HUD); poseRef.current = undefined; setRun((value) => value + 1); };
 
   return (
     <section className="shadow-page">
@@ -123,23 +108,23 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       </header>
 
       <div className="shadow-arena">
-        <div className="shadow-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK FIGHTER` : cameraState === "active" ? `LOCAL SILHOUETTE · ${Math.round(cameraConfidence * 100)}%` : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
+        <div className="shadow-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK FIGHTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Shadow Arena. Move with A/D or arrows, punch with J and K, block with L, jump with W or Space, duck with S, and use Shadow Burst with I." />
         {/* Local camera capture is muted, requests no audio, and is not recorded. */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={cameraState === "active" ? "shadow-camera active" : "shadow-camera"} ref={videoRef} aria-label="Local mirrored combat pose preview" />
+        <video className={camera.state === "on" ? "shadow-camera active" : "shadow-camera"} ref={videoRef} aria-label="Camera preview" />
         <div className="shadow-event"><span>ARENA FEED</span><strong>{hud.event}</strong><small>{hud.action}</small></div>
         <div className="shadow-vitals"><ShadowMeter label="HEALTH" value={hud.health} tone="health" /><ShadowMeter label="FOCUS" value={hud.focus} tone="focus" /></div>
         <div className="shadow-actions">
           {!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}
-          {cameraState === "active" ? <button onClick={() => cameraRef.current?.calibrateNeutral()}>SET FIGHTING NEUTRAL</button> : <button onClick={enableCamera}>{cameraState === "loading" ? "LOADING LOCAL MODEL…" : "ENABLE BODY CAMERA"}</button>}
+          {camera.state === "on" ? <button onClick={camera.recentre}>Stand still, then tap</button> : <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}
           <button onClick={onConnect}>{linked ? "ADD FIGHTER" : "CONNECT FIGHTER"}</button>
         </div>
-        {(cameraState === "denied" || cameraState === "error") && <p className="shadow-camera-error">{cameraError}</p>}
+        {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
         {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
       </div>
       <div className="shadow-instructions"><span><b>MOVE</b> A/D · arrows · body position</span><span><b>PUNCH</b> J/K · physical punch</span><span><b>BLOCK</b> L · hands together</span><span><b>DUCK / JUMP</b> S/W · body motion</span><span><b>SPECIAL</b> I · raise both arms</span></div>
-      <p className="shadow-privacy"><strong>Optional body camera:</strong> the bundled pose model runs locally and publishes combat actions plus a compact landmark pose. Video is never uploaded or recorded, and every action has a keyboard/gamepad fallback.</p>
+      <p className="shadow-privacy"><strong>Camera:</strong> fight with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Every move also works on the keyboard or a gamepad.</p>
     </section>
   );
 }
