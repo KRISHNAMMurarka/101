@@ -321,14 +321,23 @@ export class MediaPipeHandBackend implements HandVisionBackend {
     if (this.landmarker) return;
     const { FilesetResolver, HandLandmarker } = await import("@mediapipe/tasks-vision");
     const files = await FilesetResolver.forVisionTasks(this.options.wasmRoot, false);
-    this.landmarker = await HandLandmarker.createFromOptions(files, {
-      baseOptions: { modelAssetPath: this.options.modelPath, delegate: this.options.preferGpu ? "GPU" : "CPU" },
+    const create = (delegate: "GPU" | "CPU") => HandLandmarker.createFromOptions(files, {
+      baseOptions: { modelAssetPath: this.options.modelPath, delegate },
       runningMode: "VIDEO",
       numHands: this.options.maxHands,
       minHandDetectionConfidence: this.options.minConfidence,
       minHandPresenceConfidence: this.options.minConfidence,
       minTrackingConfidence: this.options.minConfidence,
     });
+    // The same fallback the pose backend has, and for the same reason: a blocklisted driver fails at
+    // creation rather than at capability-detection time. Without it, hand tracking threw out of
+    // initialize() on exactly the machines where pose tracking quietly carried on working — so the
+    // camera looked broken on some games and fine on others, on one computer.
+    try {
+      this.landmarker = this.options.preferGpu ? await create("GPU") : await create("CPU");
+    } catch {
+      this.landmarker = await create("CPU");
+    }
   }
 
   detect(video: HTMLVideoElement, timestamp: number) {

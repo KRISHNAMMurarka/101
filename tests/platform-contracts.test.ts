@@ -980,3 +980,45 @@ test("every test file in the repo is actually run by test:unit", () => {
   const missing = found.filter((path) => !listed.has(path));
   assert.deepEqual(missing, [], `not run by test:unit: ${missing.join(", ")}`);
 });
+
+test("a game that advertises a camera actually wires one up", () => {
+  /*
+   * A manifest's `inputs` is a promise to the player: the chooser offers what it lists, and a camera
+   * setup walkthrough will offer to spend a minute of someone's time on it. slashstorm listed
+   * camera-hand in both `inputs` and `controllers.immersive` and had no camera code at all — no
+   * adapter imported, and no slashstorm action in HandInputAdapter's map either, so even a wired
+   * adapter could have aimed the blade but never cut. Declaring an input nothing produces is the
+   * same class of failure as a schema field nothing reads.
+   */
+  const root = resolve(import.meta.dirname, "..");
+  const ADAPTER_FOR: Record<string, string> = {
+    "camera-pose": "BrowserCameraAdapter",
+    "camera-hand": "BrowserHandAdapter",
+  };
+
+  const components = readdirSync(resolve(root, "app/components"))
+    .filter((name) => name.endsWith("Game.tsx"));
+
+  const offenders: string[] = [];
+  for (const id of readdirSync(resolve(root, "games"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory()).map((entry) => entry.name)) {
+    const manifestPath = resolve(root, `games/${id}/manifest.json`);
+    if (!existsSync(manifestPath)) continue;
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as { inputs?: string[] };
+    const declared = (manifest.inputs ?? []).filter((source) => source in ADAPTER_FOR);
+    if (declared.length === 0) continue;
+
+    const component = components.find((name) => name.toLowerCase() === `${id}game.tsx`);
+    if (!component) {
+      offenders.push(`${id} declares ${declared.join(", ")} but has no game component`);
+      continue;
+    }
+    const source = readFileSync(resolve(root, `app/components/${component}`), "utf8");
+    for (const input of declared) {
+      if (!source.includes(ADAPTER_FOR[input]!)) {
+        offenders.push(`${id} declares ${input} but ${component} never imports ${ADAPTER_FOR[input]}`);
+      }
+    }
+  }
+  assert.deepEqual(offenders, [], `a declared camera input with nothing behind it:\n${offenders.join("\n")}`);
+});

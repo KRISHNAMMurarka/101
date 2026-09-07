@@ -719,3 +719,8 @@ export * from "./people.ts";
  * recommendQuality found only the module and its own test.
  */
 export * from "./quality.ts";
+
+/*
+ * Whether the camera can see the player, and the words for when it cannot.
+ */
+export * from "./placement.ts";
