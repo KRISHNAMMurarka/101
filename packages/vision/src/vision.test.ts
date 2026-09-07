@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { flattenHand, flattenPose, HandGestureClassifier, mirrorPose, PoseClassifier, type HandLandmark, type PoseLandmark, type TrackedHand } from "./index.ts";
+import { flattenHand, flattenPose, HandGestureClassifier, legVisibility, mirrorPose, POSE_LANDMARK, PoseClassifier, readSkeleton, type HandLandmark, type PoseLandmark, type TrackedHand } from "./index.ts";
 
 function neutralPose(): PoseLandmark[] {
   const pose = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 0.98 }));
@@ -163,3 +163,55 @@ function setFinger(hand: HandLandmark[], indices: number[], x: number) {
   const ys = [.65, .49, .35, .21];
   indices.forEach((index, position) => { hand[index] = { x, y: ys[position]!, z: 0 }; });
 }
+
+test("metric coordinates survive smoothing, so the skeleton reader keeps working past frame one", () => {
+  /*
+   * The bug this guards: smoothPose rebuilt each landmark from a literal listing x, y, z, visibility
+   * and presence. The first frame has no previous frame and spreads the landmark, so `world` was
+   * there exactly once; from the second frame on it was gone. readSkeleton needs `world` on four
+   * points and returns undefined without it, so every posture and facing signal in the product went
+   * quietly dead one frame after the camera started, and no test noticed because none of them
+   * looked at a second frame.
+   */
+  const withWorld = (): PoseLandmark[] => neutralPose().map((landmark, index) => ({
+    ...landmark,
+    world: { x: (landmark.x - 0.5) * 1.6, y: (landmark.y - 0.5) * 1.6, z: index * 0.001 },
+  }));
+
+  const classifier = new PoseClassifier({ autoCalibrationFrames: 1, smoothing: 0.5 });
+  classifier.process(withWorld(), 0);
+
+  for (const [frame, time] of [[1, 16], [2, 32], [3, 48]] as const) {
+    const signals = classifier.process(withWorld(), time);
+    const shoulder = signals.landmarks[POSE_LANDMARK.leftShoulder];
+    assert.ok(shoulder?.world, `frame ${frame}: metric coordinates were dropped by smoothing`);
+    assert.ok(readSkeleton(signals.landmarks), `frame ${frame}: readSkeleton found no body to measure`);
+  }
+});
+
+test("someone seated at a desk is not thrown away for having no legs", () => {
+  /*
+   * poseConfidence averaged nine landmarks — head, shoulders, hips, knees and ankles — when its own
+   * downstream readers need only shoulders and hips. Legs alone at zero still scored 5/9 = 0.55 and
+   * cleared the 0.45 threshold, so the plain case survived; what did not survive is the real one,
+   * where a desk edge also cuts the hips to partial visibility. Then the mean falls to ~0.44, under
+   * the threshold, and the frame is discarded as "no pose at all" — while `measurePose` and
+   * `readSkeleton` could both have read it, because the shoulders and hips they need are right
+   * there. Averaging in points no consumer reads is what makes a clearly framed body score as absent.
+   */
+  const OCCLUDED_BY_DESK = 0.5;
+  const seated = neutralPose().map((landmark, index) =>
+    [25, 26, 27, 28].includes(index) ? { ...landmark, visibility: 0 }
+      : [23, 24].includes(index) ? { ...landmark, visibility: OCCLUDED_BY_DESK }
+        : landmark);
+
+  const classifier = new PoseClassifier({ autoCalibrationFrames: 1 });
+  const signals = classifier.process(seated, 0);
+  assert.ok(signals.confidence > 0.45, `a framed upper body scored ${signals.confidence}`);
+  assert.ok(signals.landmarks.length > 0, "the frame was discarded");
+
+  // And the caller can still tell that the legs are not in shot, which is a framing hint rather
+  // than an error — the two need different words on screen.
+  assert.equal(legVisibility(seated), 0);
+  assert.ok(legVisibility(neutralPose()) > 0.9);
+});

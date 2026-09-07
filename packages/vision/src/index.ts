@@ -280,22 +280,61 @@ function measurePose(pose: readonly PoseLandmark[]): PoseCalibration | undefined
   };
 }
 
+/**
+ * How well the body is seen, scored on the part of it the reader actually needs.
+ *
+ * This used to be one mean over nine landmarks: head, shoulders, hips, knees and ankles. A person
+ * sitting at a laptop — the single most common way anyone will meet this product — has four of
+ * those nine under a desk, so a perfectly framed upper body scored 5/9 and fell under the 0.45
+ * threshold, and the frame was thrown away as "no pose". Meanwhile `measurePose` needs only
+ * shoulders and hips, and `readSkeleton` needs exactly the same four points. The score was
+ * rejecting frames its own consumers could have read.
+ *
+ * Legs are now reported separately rather than averaged in, so a caller can tell "I cannot see you"
+ * from "I can see you but not your legs" — which is the difference between an error and a framing
+ * hint, and the two need different words on screen.
+ */
 function poseConfidence(pose: readonly PoseLandmark[]) {
-  const required = [POSE_LANDMARK.nose, POSE_LANDMARK.leftShoulder, POSE_LANDMARK.rightShoulder, POSE_LANDMARK.leftHip, POSE_LANDMARK.rightHip, POSE_LANDMARK.leftKnee, POSE_LANDMARK.rightKnee, POSE_LANDMARK.leftAnkle, POSE_LANDMARK.rightAnkle];
-  const values = required.map((index) => pose[index]?.visibility ?? 0);
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
+  const seen = (index: number) => pose[index]?.visibility ?? 0;
+  const mean = (indices: readonly number[]) => indices.reduce((sum, index) => sum + seen(index), 0) / indices.length;
+  // The core is what every downstream reader depends on; nothing works without it.
+  return mean([POSE_LANDMARK.leftShoulder, POSE_LANDMARK.rightShoulder, POSE_LANDMARK.leftHip, POSE_LANDMARK.rightHip]);
 }
 
+/** Whether the legs are in shot, which some games need and a seated player never has. */
+export function legVisibility(pose: readonly PoseLandmark[]) {
+  const seen = (index: number) => pose[index]?.visibility ?? 0;
+  const indices = [POSE_LANDMARK.leftKnee, POSE_LANDMARK.rightKnee, POSE_LANDMARK.leftAnkle, POSE_LANDMARK.rightAnkle];
+  return indices.reduce((sum, index) => sum + seen(index), 0) / indices.length;
+}
+
+/**
+ * Smoothing carries the landmark forward and overrides the axes it smooths — it never rebuilds one
+ * from a literal.
+ *
+ * Rebuilding is what made `world` disappear. The literal listed x, y, z, visibility and presence,
+ * so when metric coordinates were added to PoseLandmark they survived the first frame (which has no
+ * previous frame and spreads) and were dropped from the second onward. Everything downstream that
+ * needs metres — readSkeleton, and through it every posture and facing signal — then returned
+ * undefined on every frame but the first, silently and forever. A literal here is a promise to
+ * update this function every time the type grows, and that promise is not kept.
+ */
 function smoothPose(current: readonly PoseLandmark[], previous: readonly PoseLandmark[] | undefined, alpha: number): PoseLandmark[] {
   if (!previous || previous.length !== current.length) return current.map((landmark) => ({ ...landmark }));
   return current.map((landmark, index) => {
     const prior = previous[index]!;
     return {
+      ...landmark,
       x: lerp(prior.x, landmark.x, alpha),
       y: lerp(prior.y, landmark.y, alpha),
       z: lerp(prior.z, landmark.z, alpha),
-      visibility: landmark.visibility,
-      ...(landmark.presence === undefined ? {} : { presence: landmark.presence }),
+      // Metric space is smoothed on the same curve as image space, or a jitter the picture does not
+      // show would still reach the posture signals.
+      ...(landmark.world && prior.world ? { world: {
+        x: lerp(prior.world.x, landmark.world.x, alpha),
+        y: lerp(prior.world.y, landmark.world.y, alpha),
+        z: lerp(prior.world.z, landmark.world.z, alpha),
+      } } : {}),
     };
   });
 }
@@ -608,13 +647,23 @@ function fingerExtended(hand: readonly HandLandmark[], tipIndex: number, pipInde
   return distance(tip, wrist) > distance(pip, wrist) * ratio && distance(tip, mcp) > distance(pip, mcp) * .92;
 }
 
+/** Same rule as smoothPose: carry the landmark, override the axes. See the note there. */
 function smoothHand(current: readonly HandLandmark[], previous: readonly HandLandmark[] | undefined, alpha: number): HandLandmark[] {
   if (!previous || previous.length !== current.length) return current.map((landmark) => ({ ...landmark }));
-  return current.map((landmark, index) => ({
-    x: lerp(previous[index]!.x, landmark.x, alpha),
-    y: lerp(previous[index]!.y, landmark.y, alpha),
-    z: lerp(previous[index]!.z, landmark.z, alpha),
-  }));
+  return current.map((landmark, index) => {
+    const prior = previous[index]!;
+    return {
+      ...landmark,
+      x: lerp(prior.x, landmark.x, alpha),
+      y: lerp(prior.y, landmark.y, alpha),
+      z: lerp(prior.z, landmark.z, alpha),
+      ...(landmark.world && prior.world ? { world: {
+        x: lerp(prior.world.x, landmark.world.x, alpha),
+        y: lerp(prior.world.y, landmark.world.y, alpha),
+        z: lerp(prior.world.z, landmark.world.z, alpha),
+      } } : {}),
+    };
+  });
 }
 
 function palmCenter(hand: readonly HandLandmark[]) {
@@ -663,3 +712,10 @@ export * from "./skeleton.ts";
  * stops player one and player two swapping every time they cross the room.
  */
 export * from "./people.ts";
+
+/*
+ * Which model to run, and how hard. Never exported before, which made the whole module unreachable:
+ * the package's `exports` is a bare string, so there is no subpath either, and a repo-wide grep for
+ * recommendQuality found only the module and its own test.
+ */
+export * from "./quality.ts";

@@ -10,7 +10,13 @@ import { POSE_LANDMARK, type PoseLandmark } from "./index.ts";
  *
  * So a person is matched to the nearest person from the previous frame, and keeps their slot until
  * they have been gone long enough to have actually left. Everything is measured at the hips, which
- * is the steadiest point on a body and the origin the metric landmarks are relative to.
+ * is the steadiest point on a body.
+ *
+ * Measured in the PICTURE, not in metres. The metric landmarks are expressed relative to the
+ * midpoint of the hips, so the hip midpoint of every person in the room is the origin by
+ * construction — this matched everyone to everyone at a distance of zero, and the greedy pass then
+ * handed out identities in arbitrary order. There is no room-absolute position available from this
+ * model at all; where someone is in frame is the real signal, and it is the one the camera has.
  */
 
 export interface TrackedPerson {
@@ -19,16 +25,22 @@ export interface TrackedPerson {
   /** Player one, two, three… The lowest free number, kept while they remain. */
   readonly slot: number;
   readonly landmarks: readonly PoseLandmark[];
-  /** Where they are, in metres, for anything that wants to place them in the room. */
-  readonly position: { x: number; z: number };
+  /**
+   * Where they are in the picture: 0 to 1 across the frame and 0 to 1 down it.
+   *
+   * Not metres, and not a position in the room — the model does not report one. Two people standing
+   * side by side differ here; the same two are identical in metric space.
+   */
+  readonly position: { x: number; y: number };
   readonly lastSeen: number;
 }
 
 export interface PersonTrackerOptions {
   /**
-   * How far someone may move between frames and still be the same person, in metres. A person
-   * crossing a room at speed covers well under half a metre in a frame; two people standing closer
-   * together than this were never going to be told apart by position alone.
+   * How far someone may move between frames and still be the same person, as a fraction of the
+   * frame. A person crossing the picture at speed moves a few percent of it between frames, so this
+   * is generous; two people standing closer together than this were never going to be told apart by
+   * position alone.
    */
   maxStep?: number;
   /**
@@ -47,7 +59,7 @@ export class PersonTracker {
 
   constructor(options: PersonTrackerOptions = {}) {
     this.options = {
-      maxStep: options.maxStep ?? 0.6,
+      maxStep: options.maxStep ?? 0.18,
       forgetAfterMs: options.forgetAfterMs ?? 1_500,
       maxPeople: Math.max(1, Math.round(options.maxPeople ?? 4)),
     };
@@ -63,13 +75,13 @@ export class PersonTracker {
   update(poses: ReadonlyArray<readonly PoseLandmark[]>, timestamp: number): TrackedPerson[] {
     const observations = poses
       .map((landmarks) => ({ landmarks, position: hips(landmarks) }))
-      .filter((observation): observation is { landmarks: readonly PoseLandmark[]; position: { x: number; z: number } } =>
+      .filter((observation): observation is { landmarks: readonly PoseLandmark[]; position: { x: number; y: number } } =>
         observation.position !== undefined);
 
     const pairs: { person: number; observation: number; distance: number }[] = [];
     this.people.forEach((person, personIndex) => {
       observations.forEach((observation, observationIndex) => {
-        const distance = Math.hypot(person.position.x - observation.position.x, person.position.z - observation.position.z);
+        const distance = Math.hypot(person.position.x - observation.position.x, person.position.y - observation.position.y);
         if (distance <= this.options.maxStep) pairs.push({ person: personIndex, observation: observationIndex, distance });
       });
     });
@@ -118,11 +130,12 @@ export class PersonTracker {
   }
 }
 
+/** The hip midpoint in image space, which is where a person's location in the frame actually is. */
 function hips(landmarks: readonly PoseLandmark[]) {
-  const left = landmarks[POSE_LANDMARK.leftHip]?.world;
-  const right = landmarks[POSE_LANDMARK.rightHip]?.world;
+  const left = landmarks[POSE_LANDMARK.leftHip];
+  const right = landmarks[POSE_LANDMARK.rightHip];
   if (!left || !right) return undefined;
-  return { x: (left.x + right.x) / 2, z: (left.z + right.z) / 2 };
+  return { x: (left.x + right.x) / 2, y: (left.y + right.y) / 2 };
 }
 
 function lowestFreeSlot(taken: readonly number[]) {

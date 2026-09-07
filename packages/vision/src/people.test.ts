@@ -4,11 +4,19 @@ import test from "node:test";
 import { POSE_LANDMARK, type PoseLandmark } from "./index.ts";
 import { PLAYER_COLOURS, PersonTracker, playerColour } from "./people.ts";
 
-/** A body at a position on the floor. Only the hips matter to the tracker. */
-function person(x: number, z = 0): PoseLandmark[] {
+/**
+ * A body standing at `x` across the picture, `y` down it. Only the hips matter to the tracker.
+ *
+ * `world` is written the way the model really emits it — relative to the midpoint of this person's
+ * own hips, so both hips straddle the origin and every person in the room looks identical in metric
+ * space. The earlier version of this fixture wrote `world.x = x + offset`, an absolute room
+ * coordinate no pose model produces, and that invention is the only reason a tracker matching on
+ * metric hips ever passed a test.
+ */
+function person(x: number, y = 0.5): PoseLandmark[] {
   const landmarks: PoseLandmark[] = Array.from({ length: 33 }, () => ({ x: 0, y: 0, z: 0, visibility: 0 }));
   for (const [index, offset] of [[POSE_LANDMARK.leftHip, 0.1], [POSE_LANDMARK.rightHip, -0.1]] as const) {
-    landmarks[index] = { x, y: 0, z, visibility: 1, world: { x: x + offset, y: 0, z } };
+    landmarks[index] = { x, y, z: 0, visibility: 1, world: { x: offset, y: 0, z: 0 } };
   }
   return landmarks;
 }
@@ -84,12 +92,33 @@ test("someone who leaves frees their number for the next person", () => {
   assert.notEqual(arrived!.id, leaving.id, "a slot is reused; an identity is not");
 });
 
-test("a body with no metric hips is not a person the tracker can place", () => {
-  // Without world landmarks there is no position, so there is nothing to match on. Guessing would
-  // mean inventing a location and then tracking the invention.
+test("two people are told apart even though their metric hips are identical", () => {
+  // The bug this replaces: position came from `world`, which the model expresses relative to the
+  // midpoint of the hips — so the hip midpoint of every person is the origin, every pairing scored
+  // a distance of zero, and identity fell out of whatever order the greedy pass happened to take.
   const tracker = new PersonTracker();
-  const flat: PoseLandmark[] = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 1 }));
-  assert.deepEqual(tracker.update([flat], 0), []);
+  const left = person(0.25);
+  const right = person(0.75);
+
+  const metric = (body: PoseLandmark[]) => {
+    const a = body[POSE_LANDMARK.leftHip]!.world!;
+    const b = body[POSE_LANDMARK.rightHip]!.world!;
+    return { x: (a.x + b.x) / 2, z: (a.z + b.z) / 2 };
+  };
+  assert.deepEqual(metric(left), metric(right), "the fixture must reproduce the model's hip-relative origin");
+
+  const [one, two] = tracker.update([left, right], 0);
+  assert.notEqual(one!.id, two!.id);
+  assert.notDeepEqual(one!.position, two!.position, "two people in different parts of the frame must not share a position");
+});
+
+test("a body whose hips are not in shot is not a person the tracker can place", () => {
+  // Without hips there is no position, so there is nothing to match on. Guessing would mean
+  // inventing a location and then tracking the invention.
+  const tracker = new PersonTracker();
+  const headless: PoseLandmark[] = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 1 }));
+  headless[POSE_LANDMARK.leftHip] = undefined as unknown as PoseLandmark;
+  assert.deepEqual(tracker.update([headless], 0), []);
 });
 
 test("more people than the game seats are not handed slots", () => {
