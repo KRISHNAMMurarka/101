@@ -586,7 +586,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .principles-grid h3 { margin: 55px 0 12px; font-size: 26px; letter-spacing: -.04em; }
 .principles-grid p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
 
-.controller-page { min-height: 100svh; display: flex; flex-direction: column; padding: 20px; overflow: auto; background: var(--ink); touch-action: pan-y; user-select: none; }
+/* `viewport-fit=cover` is what makes env(safe-area-inset-*) resolve to anything but 0, and it also
+   extends the page under the notch and the home indicator. So the two go together: turning cover on
+   without inset-aware padding moves the deck out from under the home indicator and puts the header
+   under the notch instead. `max()` keeps the ordinary 20px on a device with no insets at all. */
+.controller-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding:
+    max(20px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  overflow: auto;
+  background: var(--ink);
+  touch-action: pan-y;
+  user-select: none;
+}
 .controller-top { display: flex; align-items: center; justify-content: space-between; }
 .controller-status { display: flex; align-items: center; gap: 8px; color: var(--faint); font: 800 11px var(--font-mono); letter-spacing: .12em; }
 .controller-status i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
@@ -1109,7 +1126,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .architecture-stack article { grid-template-columns: 40px 1fr; }
   .architecture-stack article b { display: none; }
   .principles-grid { grid-template-columns: 1fr; }
-  .controller-page { padding: 14px; }
+  /* Inset-aware like the base rule, not a flat number: a shorthand here would drop every
+     safe-area inset on exactly the screens that have one. */
+  .controller-page {
+    padding:
+      max(14px, env(safe-area-inset-top))
+      max(14px, env(safe-area-inset-right))
+      max(14px, env(safe-area-inset-bottom))
+      max(14px, env(safe-area-inset-left));
+  }
   .controller-top .mark-label { display: inline; }
   .controller-deck { gap: 12px; }
   .controller-session small { display: none; }
@@ -1869,7 +1894,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (orientation: landscape) and (max-height: 560px) {
   .controller-page {
     height: 100dvh;
-    padding: var(--space-2xs) max(var(--space-2xs), env(safe-area-inset-right)) var(--space-2xs) max(var(--space-2xs), env(safe-area-inset-left));
+    /* The home indicator is still at the bottom in landscape, and the deck is anchored to it. */
+    padding:
+      var(--space-2xs)
+      max(var(--space-2xs), env(safe-area-inset-right))
+      max(var(--space-2xs), env(safe-area-inset-bottom))
+      max(var(--space-2xs), env(safe-area-inset-left));
     overflow: hidden;
     touch-action: none;
   }
@@ -2178,7 +2208,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     minmax(0, var(--right-track, 1fr));
   gap: var(--deck-gap);
   align-content: end;
-  padding-bottom: max(var(--deck-gap), env(safe-area-inset-bottom));
+  /* Just the gap. The page owns the bottom inset now that it pads for it; adding the inset here as
+     well counted it twice and lifted the deck 34px clear of a home indicator that is 34px tall. */
+  padding-bottom: var(--deck-gap);
 }
 
 .deck-cluster { display: grid; gap: var(--deck-gap); align-content: end; min-width: 0; }

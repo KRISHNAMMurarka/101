@@ -35,6 +35,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      {/* Written here rather than through the `viewport` export because this framework's metadata
+          shim builds the content string from a fixed list of keys — width, height, the scales,
+          userScalable — and has no branch for `viewportFit`, so the key is accepted and silently
+          dropped. Without `viewport-fit=cover` every `env(safe-area-inset-*)` in the stylesheet
+          computes to 0, which is why the controller deck sat under the home indicator. */}
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <body>
         <AppShell>{children}</AppShell>
       </body>

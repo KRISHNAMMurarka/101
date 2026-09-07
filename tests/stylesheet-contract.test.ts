@@ -62,3 +62,21 @@ test("one gutter, not six", () => {
   });
   assert.deepEqual(literals, [], `horizontal page padding must use var(--gutter):\n${literals.join("\n")}`);
 });
+
+test("every .controller-page padding respects the safe-area insets", () => {
+  // `viewport-fit=cover` extends the page under the notch and the home indicator, so the padding is
+  // the only thing keeping content clear of them. A later rule that re-declares the shorthand as a
+  // flat number silently drops every inset — and because media queries add no specificity, whichever
+  // rule is written last simply wins. That is how the narrow-screen `padding: 14px` undid it once.
+  const offenders: string[] = [];
+  for (const match of css.matchAll(/\.controller-page\s*(?:>[^{]*)?\{([^}]*)\}/g)) {
+    const body = match[1];
+    const padding = body.match(/(?:^|;)\s*padding\s*:([^;]*)/);
+    if (!padding) continue;
+    if (!/env\(\s*safe-area-inset/.test(padding[1])) {
+      const line = css.slice(0, match.index).split("\n").length;
+      offenders.push(`line ${line}: padding:${padding[1].trim()}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `a flat padding on .controller-page drops the safe-area insets:\n${offenders.join("\n")}`);
+});
