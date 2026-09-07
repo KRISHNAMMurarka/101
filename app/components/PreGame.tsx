@@ -8,10 +8,13 @@ import type { InputSource } from "@101/input";
 import type { SessionRole } from "@101/session";
 import type { GameManifest } from "@101/sdk";
 
+import CameraSetup from "./camera/CameraSetup";
 import { GamePoster } from "./GamePoster";
 import { Icon } from "./Icon";
 import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser-link";
 import { CATALOG_INPUT_LABELS, playableWithSources } from "../lib/catalog";
+import type { CameraKind } from "../lib/camera-plan";
+import { recallCameraSetup } from "../lib/camera-setup";
 import { useLocalDevice } from "../lib/local-capabilities";
 import { useSessionId } from "../lib/session-id";
 
@@ -43,6 +46,20 @@ export default function PreGame({
   const sessionId = useSessionId();
   const { sources } = useLocalDevice();
   const [pairingOpen, setPairingOpen] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
+
+  /*
+   * Whether a camera is worth offering, which is three separate questions.
+   *
+   * The game has to declare one as an immersive controller; this device has to have one the probe
+   * actually found, rather than a getUserMedia function that exists; and the browser has to be able
+   * to open it at all. Offering a camera the game ignores is a minute of somebody's time spent on
+   * nothing, which is what the manifest contract test exists to prevent.
+   */
+  const cameraSource = (manifest.controllers?.immersive ?? [])
+    .find((source: InputSource) => source === "camera-pose" || source === "camera-hand");
+  const cameraKind: CameraKind | undefined = cameraSource === "camera-pose" ? "body" : cameraSource === "camera-hand" ? "hands" : undefined;
+  const cameraHere = cameraKind !== undefined && sources.includes(cameraSource!);
 
   const playHref = sessionId ? `/games/${manifest.id}/play?session=${sessionId}` : `/games/${manifest.id}/play`;
 
@@ -91,6 +108,17 @@ export default function PreGame({
 
       <h2 className="pre-game-question">How do you want to play?</h2>
 
+      {cameraOpen && cameraKind && sessionId ? (
+        <CameraSetup
+          kind={cameraKind}
+          sessionId={sessionId}
+          playHref={`${playHref}${playHref.includes("?") ? "&" : "?"}camera=${cameraKind}`}
+          // A game that has you dodging on your feet needs your legs in shot; one you play with your
+          // hands at a desk does not, and asking for them would push you out of your own reach.
+          needsLegs={cameraKind === "body"}
+          onCancel={() => setCameraOpen(false)}
+        />
+      ) : (
       <div className="pre-game-options">
         <article className="pre-game-option">
           <Icon name="keyboard" size={24} />
@@ -126,7 +154,25 @@ export default function PreGame({
             </p>
           </article>
         )}
+
+        {/* Always last. Playing with your body is the most interesting thing this product does and
+            the slowest to start, so it is offered after the ways that need nothing set up. */}
+        {cameraHere && cameraKind && (
+          <article className="pre-game-option">
+            <Icon name={cameraSource === "camera-hand" ? "camera-hand" : "camera-pose"} size={24} />
+            <h3>{cameraKind === "body" ? "With your body" : "With your hands"}</h3>
+            <p>
+              {cameraKind === "body"
+                ? "Move in front of the camera. Nothing to hold."
+                : "Wave and gesture at the camera. Nothing to hold."}
+            </p>
+            <button className="outline-button" onClick={() => setCameraOpen(true)} aria-expanded={cameraOpen}>
+              {recallCameraSetup(cameraKind) ? "Set up again" : "Set up the camera"} <Icon name="arrow" size={16} />
+            </button>
+          </article>
+        )}
       </div>
+      )}
 
       {pairingOpen && <PairingBlock sessionId={sessionId} />}
 
