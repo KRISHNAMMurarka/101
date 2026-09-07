@@ -955,3 +955,28 @@ test("every shipped controller layout plans into a deck a thumb can reach", asyn
   }
   assert.ok(checked >= 10, `only ${checked} role layouts were planned`);
 });
+
+test("every test file in the repo is actually run by test:unit", () => {
+  // `test:unit` names each file explicitly, so adding one and forgetting the script means it never
+  // runs and the suite still reports green. That happened to this repo's own d-pad tests.
+  const root = resolve(import.meta.dirname, "..");
+  const script: string = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8")).scripts["test:unit"];
+  const listed = new Set(script.split(/\s+/).filter((token) => token.endsWith(".test.ts")));
+
+  // Only where this project keeps source. A whole-repo walk descends into the native app's
+  // CocoaPods tree, which carries the entire boost header set and takes minutes.
+  const SKIP = new Set(["node_modules", "dist", "build", "ios", "android"]);
+  const found: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(resolve(root, dir), { withFileTypes: true })) {
+      if (SKIP.has(entry.name) || entry.name.startsWith(".")) continue;
+      const path = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) walk(path);
+      else if (entry.name.endsWith(".test.ts")) found.push(path);
+    }
+  };
+  for (const source of ["app", "apps", "games", "packages", "tests"]) walk(source);
+
+  const missing = found.filter((path) => !listed.has(path));
+  assert.deepEqual(missing, [], `not run by test:unit: ${missing.join(", ")}`);
+});

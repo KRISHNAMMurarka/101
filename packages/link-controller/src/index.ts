@@ -450,3 +450,33 @@ export function planControllerDeck(
 
   return { left: cluster("left"), center: cluster("center"), right: cluster("right") };
 }
+
+/** The four directions a cross can report, and the vector each one sends. */
+export const DPAD_DIRECTIONS = {
+  up: { x: 0, y: -1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 },
+  down: { x: 0, y: 1 },
+} as const;
+
+export type DpadDirection = keyof typeof DPAD_DIRECTIONS;
+
+/**
+ * How far from the centre a thumb must be before the pad reports a direction. Without it the exact
+ * centre resolves to `right` on a tie, so resting a thumb in the middle walks the player sideways.
+ */
+export const DPAD_DEAD_ZONE = 0.18;
+
+/**
+ * Which direction a thumb at (x, y) is asking for, in normalised pad coordinates where the centre
+ * is 0 and each edge is ±1.
+ *
+ * The pad used to be four independent buttons, each releasing on `pointerleave`. That drops the
+ * input the moment a thumb drifts a pixel past a cell edge, and it makes rolling from up to left —
+ * which is how a cross is actually used — register as a release rather than a turn. Resolving
+ * position to the nearer axis instead means a roll is continuous and a press ends only on lift.
+ */
+export function readDpadDirection(x: number, y: number): DpadDirection | undefined {
+  if (Math.hypot(x, y) < DPAD_DEAD_ZONE) return undefined;
+  return Math.abs(x) >= Math.abs(y) ? (x < 0 ? "left" : "right") : (y < 0 ? "up" : "down");
+}

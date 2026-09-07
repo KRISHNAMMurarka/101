@@ -9,6 +9,9 @@ import {
   type ControllerInputSnapshot,
   defaultControlSide,
   planControllerDeck,
+  readDpadDirection,
+  DPAD_DIRECTIONS,
+  type DpadDirection,
   type DeckCluster,
   type PlacedControl,
 } from "@101/link-controller";
@@ -24,6 +27,7 @@ import {
   type StatefulLinkTransport,
 } from "@101/protocol";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Icon } from "../components/Icon";
 import { BrowserControllerSpeaker } from "./controller-speaker";
 
 interface Assignment {
@@ -366,6 +370,13 @@ export default function Controller({ session, pairCode }: { session: string; pai
 
   const authoredHandedness = layout.handedness ?? "right";
   const playerHandedness = handednessOverride ?? authoredHandedness;
+  // Once the host has given this phone a role, every setup control on the page is a thing the
+  // player has already finished doing — and it was occupying the two thirds of the screen above the
+  // deck. Setup folds behind the header instead, and stays one tap away.
+  const playing = connected && assigned;
+  const [setupOpen, setSetupOpen] = useState(false);
+  const phase = playing && !setupOpen ? "play" : "setup";
+
   const canFlipHandedness = layout.layout.some((element) => (element.side ?? defaultControlSide(element)) !== "center");
   const flipHandedness = () => {
     const next = playerHandedness === "right" ? "left" : "right";
@@ -458,10 +469,16 @@ export default function Controller({ session, pairCode }: { session: string; pai
     // A layout may carry `accent`, and 101 Link deliberately ignores it. Ten games each choosing a
     // hue turns one controller into ten unrelated ones, and a saturated fill under the player's
     // thumb is the last place attention belongs. Emphasis comes from weight instead.
-    <main className={`controller-page role-${roleClass}`}>
+    <main className={`controller-page role-${roleClass}`} data-phase={phase}>
       <header className="controller-top">
         <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">{assignment.role}</span></div>
         <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? assigned ? "LINKED" : "STANDBY" : "WAITING"}</div>
+        {playing && (
+          <button className="controller-setup-toggle" onClick={() => setSetupOpen((open) => !open)} aria-expanded={setupOpen}>
+            <Icon name={setupOpen ? "shrink" : "expand"} size={16} />
+            <span>{setupOpen ? "Done" : "Setup"}</span>
+          </button>
+        )}
       </header>
       <section className="controller-session">
         <span>Room</span><strong>{session}</strong>
@@ -503,6 +520,8 @@ export default function Controller({ session, pairCode }: { session: string; pai
         )}
       </section>
 
+      <ControllerStatus readout={readout} />
+
       <DynamicControllerDeck
         key={`${assignment.gameId}:${assignment.role}:${layoutRevision}`}
         elements={layout.layout}
@@ -524,8 +543,6 @@ export default function Controller({ session, pairCode }: { session: string; pai
           <p>{motionState === "active" ? `${layout.motion.label ?? "Motion"} is processed locally and mapped to ${layout.motion.action}.` : motionState === "denied" ? "Motion permission was not granted. Touch controls remain available." : motionState === "unsupported" ? "Motion is unavailable here. Touch controls remain available." : `${layout.motion.label ?? "Motion Sensors"}: optional ${layout.motion.mode} control.`}</p>
         </section>
       )}
-
-      <ControllerStatus readout={readout} />
 
     </main>
   );
@@ -614,9 +631,9 @@ export function DynamicControllerDeck({
             </label>
           );
         })()}
-        {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} />}
+        {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} haptic={haptic} />}
         {(element.type === "joystick" || element.type === "touch-surface") && (
-          <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} />
+          <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} haptic={haptic} />
         )}
       </div>
     );
@@ -798,24 +815,82 @@ function interactionLabel(element: DigitalControllerElement) {
 
 
 
-function DynamicDpad({ element, setVector }: { element: Extract<ControllerElement, { type: "dpad" }>; setVector(action: string, x: number, y: number): void }) {
-  const release = () => setVector(element.action, 0, 0);
+function DynamicDpad({ element, setVector, haptic }: {
+  element: Extract<ControllerElement, { type: "dpad" }>;
+  setVector(action: string, x: number, y: number): void;
+  haptic(): void;
+}) {
+  const [active, setActive] = useState<DpadDirection | undefined>(undefined);
+  const activeRef = useRef<DpadDirection | undefined>(undefined);
+  const pressedRef = useRef(false);
+
+  // One place decides the vector, so a roll from up to left sends exactly one release-free change
+  // and a repeat of the same direction sends nothing at all.
+  const apply = useCallback((next: DpadDirection | undefined) => {
+    if (next === activeRef.current) return;
+    activeRef.current = next;
+    setActive(next);
+    const vector = next ? DPAD_DIRECTIONS[next] : { x: 0, y: 0 };
+    setVector(element.action, vector.x, vector.y);
+    if (next) haptic();
+  }, [element.action, haptic, setVector]);
+
+  // The pad captures the pointer; the cells are labels and keyboard targets, not hit regions.
+  const track = (event: React.PointerEvent<HTMLDivElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    apply(readDpadDirection(
+      ((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+      ((event.clientY - bounds.top) / bounds.height) * 2 - 1,
+    ));
+  };
+  const release = () => { pressedRef.current = false; apply(undefined); };
+
   return (
-    <div className="dynamic-dpad" aria-label={element.label ?? element.action}>
+    <div
+      className="dynamic-dpad"
+      role="group"
+      aria-label={element.label ?? element.action}
+      onPointerDown={(event) => {
+        pressedRef.current = true;
+        // Capture keeps the moves coming when the thumb leaves the pad entirely. Whether it is
+        // granted is the browser's call, so it decides nothing: the press itself is what gates
+        // tracking, and a pad that cannot capture still follows a thumb across its own face.
+        try { event.currentTarget.setPointerCapture(event.pointerId); } catch { /* not capturable */ }
+        track(event);
+      }}
+      onPointerMove={(event) => { if (pressedRef.current) track(event); }}
+      onPointerUp={release}
+      onPointerCancel={release}
+      onLostPointerCapture={release}
+    >
       <span>{element.label ?? element.action}</span>
-      <button className="up" aria-label="Up" onPointerDown={() => setVector(element.action, 0, -1)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▲</button>
-      <button className="left" aria-label="Left" onPointerDown={() => setVector(element.action, -1, 0)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>◀</button>
+      {DPAD_ORDER.map((direction) => (
+        <button
+          key={direction}
+          type="button"
+          className={direction}
+          data-active={active === direction ? "" : undefined}
+          aria-label={DPAD_LABELS[direction]}
+          onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); apply(direction); } }}
+          onKeyUp={release}
+          onBlur={release}
+        >
+          <Icon name="chevron" />
+        </button>
+      ))}
       <i />
-      <button className="right" aria-label="Right" onPointerDown={() => setVector(element.action, 1, 0)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▶</button>
-      <button className="down" aria-label="Down" onPointerDown={() => setVector(element.action, 0, 1)} onPointerUp={release} onPointerCancel={release} onPointerLeave={release}>▼</button>
     </div>
   );
 }
 
-function DynamicSurface({ element, vector, setVector }: {
+const DPAD_ORDER = ["up", "left", "right", "down"] as const satisfies readonly DpadDirection[];
+const DPAD_LABELS: Record<DpadDirection, string> = { up: "Up", left: "Left", right: "Right", down: "Down" };
+
+function DynamicSurface({ element, vector, setVector, haptic }: {
   element: Extract<ControllerElement, { type: "joystick" | "touch-surface" }>;
   vector: InputVector;
   setVector(action: string, x: number, y: number): void;
+  haptic(): void;
 }) {
   const update = (event: React.PointerEvent<HTMLButtonElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -846,7 +921,7 @@ function DynamicSurface({ element, vector, setVector }: {
       type="button"
       className={`dynamic-surface surface-${element.type}`}
       aria-label={`${element.label ?? element.action}. Drag or use arrow keys.`}
-      onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); update(event); }}
+      onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); haptic(); update(event); }}
       onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) update(event); }}
       onPointerUp={release}
       onPointerCancel={release}
