@@ -643,3 +643,8 @@ export class MediaPipeFaceBackend implements FaceVisionBackend {
     this.lastTimestamp = -1;
   }
 }
+
+/*
+ * Why a camera did not start, in words a player can act on.
+ */
+export * from "./errors.ts";

@@ -724,3 +724,8 @@ export * from "./quality.ts";
  * Whether the camera can see the player, and the words for when it cannot.
  */
 export * from "./placement.ts";
+
+/*
+ * Drawing a body over the picture it was found in.
+ */
+export * from "./overlay.ts";
