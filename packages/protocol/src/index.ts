@@ -1,6 +1,66 @@
 import { INPUT_SOURCES, type InputFrame } from "@101/input";
 
 export const PROTOCOL_VERSION = 2 as const;
+
+/**
+ * The oldest handshake this build still understands.
+ *
+ * 101 Link is an installable PWA: a controller lives on a phone's home screen with its assets in a
+ * service-worker cache, and it is updated when that phone next happens to load it. So a host will
+ * meet controllers older than itself, and raising PROTOCOL_VERSION with a single equality check
+ * behind it makes every one of them fail — the phone connects, sends a hello nothing accepts, and
+ * waits forever with nothing on screen to say why.
+ *
+ * Raise this only for a change an older peer genuinely cannot survive, and say what it was.
+ */
+export const MIN_SUPPORTED_PROTOCOL_VERSION = 2 as const;
+
+/**
+ * Thrown when a peer's version is understood but not supported, so a caller can tell that case from
+ * a malformed packet and say which side needs updating.
+ */
+export class ProtocolVersionError extends Error {
+  /** The version the other side spoke. */
+  readonly theirs: number;
+  readonly ours = PROTOCOL_VERSION;
+  readonly minimum = MIN_SUPPORTED_PROTOCOL_VERSION;
+
+  constructor(theirs: number, what: string) {
+    super(theirs > PROTOCOL_VERSION
+      ? `This ${what} speaks 101 protocol v${theirs}; this build speaks v${PROTOCOL_VERSION}. Update this device.`
+      : `This ${what} speaks 101 protocol v${theirs}; this build needs at least v${MIN_SUPPORTED_PROTOCOL_VERSION}. Update the other device.`);
+    this.name = "ProtocolVersionError";
+    this.theirs = theirs;
+  }
+
+  /** Which side is behind, so a message can name the device the player has to go and update. */
+  get outdated(): "theirs" | "ours" { return this.theirs > PROTOCOL_VERSION ? "ours" : "theirs"; }
+}
+
+/**
+ * Which version to speak with a peer that announced `theirs`, or undefined if there is no overlap.
+ * For the side deciding what to send: the newer peer is the one that can speak both, so it is the
+ * one that steps down.
+ */
+export function negotiateProtocolVersion(theirs: number): number | undefined {
+  if (!Number.isInteger(theirs)) return undefined;
+  const agreed = Math.min(theirs, PROTOCOL_VERSION);
+  return agreed >= MIN_SUPPORTED_PROTOCOL_VERSION ? agreed : undefined;
+}
+
+/**
+ * Whether a message stamped `theirs` can be read by this build.
+ *
+ * Not the same question as negotiation, and the distinction matters: negotiation may settle on v2
+ * with a peer that speaks v5, but a packet that arrives stamped v5 is v5 on the wire — the peer did
+ * not step down, and this build has no idea what is in it. Reading accepts a closed range;
+ * negotiating clamps.
+ */
+export function acceptProtocolVersion(theirs: number): boolean {
+  return Number.isInteger(theirs)
+    && theirs >= MIN_SUPPORTED_PROTOCOL_VERSION
+    && theirs <= PROTOCOL_VERSION;
+}
 export const INPUT_Q1_FORMAT = "input-q1" as const;
 export const INPUT_Q1_BYTES = 24 as const;
 export type InputFormat = typeof INPUT_Q1_FORMAT;
@@ -38,7 +98,8 @@ export type SpeakerCueMessage = {
 export type ControlMessage =
   | {
       type: "hello";
-      version: typeof PROTOCOL_VERSION;
+      /** The version both peers agreed on, which is not necessarily this build's own. */
+      version: number;
       deviceId: string;
       device: string;
       capabilities: DeviceCapabilities;
@@ -226,10 +287,13 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
 export function parseControlMessage(input: unknown): ControlMessage {
   if (!isRecord(input) || typeof input.type !== "string") throw new Error("Malformed 101 control message");
   if (input.type === "hello") {
-    if (input.version !== PROTOCOL_VERSION || !isRecord(input.capabilities)) throw new Error("Unsupported 101 hello");
+    if (!isRecord(input.capabilities)) throw new Error("Malformed 101 hello");
+    if (typeof input.version !== "number") throw new Error("Malformed 101 hello");
+    if (!acceptProtocolVersion(input.version)) throw new ProtocolVersionError(input.version, "controller");
+    const version = input.version;
     return {
       type: "hello",
-      version: PROTOCOL_VERSION,
+      version,
       deviceId: requiredText(input.deviceId, "deviceId", 128),
       device: requiredText(input.device, "device", 128),
       capabilities: parseCapabilities(input.capabilities),
@@ -504,9 +568,10 @@ export function deserializeControlMessage(data: string): ControlMessage {
     version?: number;
     message?: unknown;
   };
-  if (packet.version !== PROTOCOL_VERSION) {
-    throw new Error("Unsupported or malformed 101 control packet");
-  }
+  if (typeof packet.version !== "number") throw new Error("Malformed 101 control packet");
+  // The envelope negotiates for the same reason the handshake does: this build has to be able to
+  // read a packet written by a peer one version behind it, or every update is a flag day.
+  if (!acceptProtocolVersion(packet.version)) throw new ProtocolVersionError(packet.version, "device");
   return parseControlMessage(packet.message);
 }
 

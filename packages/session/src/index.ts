@@ -3,7 +3,6 @@ import type { GameControllerRole } from "@101/sdk";
 import {
   createInputPacketProfile,
   INPUT_Q1_FORMAT,
-  PROTOCOL_VERSION,
   type ControllerLayout,
   type DeviceCapabilities,
   type LinkFeatures,
@@ -379,7 +378,10 @@ export class SessionHost {
   private receive(message: LinkMessage) {
     if (message.channel === "control" && message.payload.type === "hello") {
       const hello = message.payload;
-      if (hello.version !== PROTOCOL_VERSION) return;
+      // No version check here: `parseControlMessage` has already negotiated one both peers
+      // understand, and a device that could not agree never produces a hello to receive. The check
+      // that used to sit here compared against this build's exact version and returned silently, so
+      // it could only ever have dropped a device without saying so — and it was unreachable.
       this.session.register({
         id: hello.deviceId,
         label: hello.device,

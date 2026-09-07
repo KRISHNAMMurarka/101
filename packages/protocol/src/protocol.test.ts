@@ -3,6 +3,12 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { INPUT_SOURCES } from "@101/input";
 import {
+  MIN_SUPPORTED_PROTOCOL_VERSION,
+  acceptProtocolVersion,
+  PROTOCOL_VERSION,
+  parseControlMessage,
+  ProtocolVersionError,
+  negotiateProtocolVersion,
   INPUT_Q1_BYTES,
   INPUT_Q1_FORMAT,
   createInputPacketProfile,
@@ -638,4 +644,69 @@ test("input packet source indices are append-only wire values", () => {
     "camera-hand", "camera-pose", "camera-face", "hid", "bluetooth", "serial", "custom",
   ], "append only: an existing source may never change index");
   assert.ok(INPUT_SOURCES.length <= 16, "the packet header has four bits for the source index");
+});
+
+test("a hello one version behind is accepted and reported at the agreed version", () => {
+  // 101 Link is an installable PWA, so a host meets controllers older than itself as a matter of
+  // course. Bumping PROTOCOL_VERSION must not orphan them.
+  const hello = {
+    type: "hello",
+    version: MIN_SUPPORTED_PROTOCOL_VERSION,
+    deviceId: "phone-1",
+    device: "Phone",
+    capabilities: { sources: ["touch"], haptics: false },
+  };
+  const parsed = parseControlMessage(hello) as Extract<ControlMessage, { type: "hello" }>;
+  assert.equal(parsed.version, MIN_SUPPORTED_PROTOCOL_VERSION);
+  assert.equal(parsed.deviceId, "phone-1");
+});
+
+test("a version with no overlap names which device is behind", () => {
+  const older = () => parseControlMessage({
+    type: "hello", version: MIN_SUPPORTED_PROTOCOL_VERSION - 1,
+    deviceId: "d", device: "D", capabilities: { sources: ["touch"], haptics: false },
+  });
+  assert.throws(older, (error: unknown) => {
+    assert.ok(error instanceof ProtocolVersionError);
+    assert.equal(error.outdated, "theirs");
+    assert.match(error.message, /Update the other device/);
+    return true;
+  });
+
+  const newer = () => parseControlMessage({
+    type: "hello", version: PROTOCOL_VERSION + 1,
+    deviceId: "d", device: "D", capabilities: { sources: ["touch"], haptics: false },
+  });
+  assert.throws(newer, (error: unknown) => {
+    assert.ok(error instanceof ProtocolVersionError);
+    assert.equal(error.outdated, "ours");
+    assert.match(error.message, /Update this device/);
+    return true;
+  });
+});
+
+test("a version mismatch is distinguishable from a malformed packet", () => {
+  // Both used to throw a bare Error, so a caller could not tell "your controller needs updating"
+  // from "this is not a 101 packet" and could only report the generic case.
+  assert.throws(() => deserializeControlMessage(JSON.stringify({ version: 99, message: {} })), ProtocolVersionError);
+  assert.throws(() => deserializeControlMessage(JSON.stringify({ message: {} })), (error: unknown) => {
+    assert.ok(error instanceof Error && !(error instanceof ProtocolVersionError));
+    return true;
+  });
+});
+
+test("negotiating clamps to the lower version; reading accepts a closed range", () => {
+  // These answer different questions, and conflating them is the bug this pair was written for:
+  // agreeing on v2 with a v7 peer does not mean a packet stamped v7 is readable.
+  assert.equal(negotiateProtocolVersion(PROTOCOL_VERSION + 5), PROTOCOL_VERSION);
+  assert.equal(acceptProtocolVersion(PROTOCOL_VERSION + 5), false);
+
+  assert.equal(negotiateProtocolVersion(PROTOCOL_VERSION), PROTOCOL_VERSION);
+  assert.equal(acceptProtocolVersion(PROTOCOL_VERSION), true);
+  assert.equal(acceptProtocolVersion(MIN_SUPPORTED_PROTOCOL_VERSION), true);
+
+  for (const nonsense of [MIN_SUPPORTED_PROTOCOL_VERSION - 1, 1.5, Number.NaN]) {
+    assert.equal(negotiateProtocolVersion(nonsense), undefined, `negotiated ${nonsense}`);
+    assert.equal(acceptProtocolVersion(nonsense), false, `accepted ${nonsense}`);
+  }
 });
