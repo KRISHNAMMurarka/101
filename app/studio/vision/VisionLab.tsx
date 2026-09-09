@@ -4,6 +4,7 @@ import { BrowserCameraAdapter, BrowserHandAdapter, HandInputAdapter, PoseInputAd
 import { InputBus, type InputFrame } from "@101/input";
 import { coverTransform, createSimulatedPose, drawHands, drawPose } from "@101/vision";
 import { observeCanvasViewport, type CanvasViewport } from "../../components/camera/canvas-viewport";
+import { appendInferenceSample, INFERENCE_SAMPLE_WINDOW, summarizeInferenceSamples } from "../../lib/inference-samples";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -19,6 +20,7 @@ export default function VisionLab() {
   const busRef = useRef<InputBus | null>(null);
   const adapterRef = useRef<PoseInputAdapter | HandInputAdapter | null>(null);
   const simulationTimerRef = useRef<number | undefined>(undefined);
+  const [inferenceSamples, setInferenceSamples] = useState<readonly number[]>([]);
   const [viewport, setViewport] = useState<CanvasViewport>({ width: 0, height: 0, ratio: 1 });
   const simulationRef = useRef({ x: 0, duck: false, jump: false, arms: false, punch: false });
   const [visionState, setVisionState] = useState<VisionState>("idle");
@@ -34,6 +36,14 @@ export default function VisionLab() {
   const actions = mode === "body" ? BODY_ACTIONS : HAND_ACTIONS;
   const confidence = mode === "body" ? poseDiagnostics?.signals.confidence ?? 0 : handDiagnostics?.signals.confidence ?? 0;
   const inferenceMs = mode === "body" ? poseDiagnostics?.inferenceMs : handDiagnostics?.inferenceMs;
+  const inferenceSummary = summarizeInferenceSamples(inferenceSamples);
+
+  const resetInferenceSamples = useCallback(() => {
+    setInferenceSamples([]);
+  }, []);
+  const recordInferenceSample = useCallback((durationMs: number) => {
+    setInferenceSamples((samples) => appendInferenceSample(samples, durationMs));
+  }, []);
 
   const stopCurrent = useCallback(() => {
     if (simulationTimerRef.current !== undefined) window.clearTimeout(simulationTimerRef.current);
@@ -49,6 +59,7 @@ export default function VisionLab() {
     setPoseDiagnostics(null);
     setHandDiagnostics(null);
     setFrame(null);
+    resetInferenceSamples();
     setVisionState("idle");
     setError("");
     setMode(next);
@@ -124,6 +135,7 @@ export default function VisionLab() {
     const video = videoRef.current;
     if (!video) return;
     stopCurrent();
+    resetInferenceSamples();
     setVisionState("loading");
     setError("");
     const recovered = () => {
@@ -139,9 +151,9 @@ export default function VisionLab() {
     };
     const adapter = mode === "body"
       ? new BrowserCameraAdapter({ video, mirror: true, classifier: { autoCalibrationFrames: 18 },
-        onDiagnostics: (diagnostics) => { if (recovered()) setPoseDiagnostics(diagnostics); }, onError, onCameraLost: onError })
+        onDiagnostics: (diagnostics) => { if (recovered()) { recordInferenceSample(diagnostics.inferenceMs); setPoseDiagnostics(diagnostics); } }, onError, onCameraLost: onError })
       : new BrowserHandAdapter({ video, mirror: true, classifier: { stableFrames: 3 },
-        onDiagnostics: (diagnostics) => { if (recovered()) setHandDiagnostics(diagnostics); }, onError, onCameraLost: onError });
+        onDiagnostics: (diagnostics) => { if (recovered()) { recordInferenceSample(diagnostics.inferenceMs); setHandDiagnostics(diagnostics); } }, onError, onCameraLost: onError });
     adapterRef.current = adapter;
     try {
       await adapter.start(emit);
@@ -158,6 +170,7 @@ export default function VisionLab() {
   // camera callbacks cannot turn a simulator (or a different mode) back into an active camera.
   const startSimulation = () => {
     stopCurrent();
+    resetInferenceSamples();
     const adapter = new PoseInputAdapter({ mirror: false, classifier: { autoCalibrationFrames: 1, smoothing: 1 }, onDiagnostics: setPoseDiagnostics });
     adapter.start(emit);
     adapterRef.current = adapter;
@@ -208,6 +221,13 @@ export default function VisionLab() {
           {mode === "body" && <button className="outline-button" onClick={startSimulation}>Use keyboard simulation</button>}
           {mode === "body" && <button className="vision-neutral" disabled={!poseDiagnostics} onClick={() => { if (adapterRef.current instanceof PoseInputAdapter) adapterRef.current.calibrateNeutral(); }}>Hold normally · Set neutral</button>}
           {mode === "body" ? <div className="vision-readouts"><div><span>BODY X</span><strong>{(frame?.axes?.bodyX ?? 0).toFixed(2)}</strong></div><div><span>CROUCH</span><strong>{(frame?.axes?.crouch ?? 0).toFixed(2)}</strong></div><div><span>LIFT</span><strong>{(frame?.axes?.lift ?? 0).toFixed(2)}</strong></div><div><span>ACTIVE</span><strong>{activeActions.length || "—"}</strong></div></div> : <div className="vision-readouts"><div><span>POINTER X</span><strong>{(frame?.vectors?.aim?.x ?? 0).toFixed(2)}</strong></div><div><span>POINTER Y</span><strong>{(frame?.vectors?.aim?.y ?? 0).toFixed(2)}</strong></div><div><span>HANDS</span><strong>{handDiagnostics?.hands.length ?? 0}</strong></div><div><span>ACTIVE</span><strong>{activeActions.length || "—"}</strong></div></div>}
+          {inferenceSummary && <dl className="vision-inference-summary" aria-label={`Most recent ${inferenceSummary.count} inference timings`}>
+            <div><dt>SAMPLES</dt><dd>{inferenceSummary.count} / {INFERENCE_SAMPLE_WINDOW}</dd></div>
+            <div><dt>MEAN</dt><dd>{inferenceSummary.meanMs.toFixed(1)} MS</dd></div>
+            <div><dt>MEDIAN</dt><dd>{inferenceSummary.medianMs.toFixed(1)} MS</dd></div>
+            <div><dt>P95</dt><dd>{inferenceSummary.p95Ms.toFixed(1)} MS</dd></div>
+            <div><dt>RANGE</dt><dd>{inferenceSummary.minimumMs.toFixed(1)}–{inferenceSummary.maximumMs.toFixed(1)} MS</dd></div>
+          </dl>}
           {visionState === "simulated" && <div className="vision-sim-buttons"><button onClick={() => simulate("left")}>LEAN L</button><button onClick={() => simulate("right")}>LEAN R</button><button onClick={() => simulate("duck")}>DUCK</button><button onClick={() => simulate("jump")}>JUMP</button><button onClick={() => simulate("arms")}>ARMS</button></div>}
           {error && <p className="vision-error">{error}</p>}
           <p className="vision-permission-copy"><strong>Camera:</strong> control games using your {mode === "body" ? "body" : "hands"}. Frames are processed here and are never uploaded or recorded. Denial leaves keyboard and gamepad controls available.</p>

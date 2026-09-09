@@ -4,6 +4,8 @@ The first release is a local gaming system with a manifest-driven library, playa
 
 This is an acceptance definition, not a release approval. Publishing, deployment, signing, and distribution are outside the current authorization.
 
+The exact human/device procedure and required receipts are in [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md).
+
 ## Required evidence
 
 - Every commit passes the four commands in AGENTS.md against a current production build. CI repeats that gate. Bundle budgets are 2 MiB gzip for all client JavaScript, 800 KiB per JavaScript file, and 32 KiB for CSS; increases require a written reason.
