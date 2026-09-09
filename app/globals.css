@@ -2257,6 +2257,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 [data-phase="play"] .handedness-toggle { width: auto; align-self: start; }
 [data-phase="play"] .dynamic-controller-heading:not(:has(> button)) { display: none; }
 
+/* Portrait has room for two larger face buttons in the action-thumb cluster. Use that width rather
+   than leaving small targets beside the movement surface; narrow 320px phones keep the base size. */
+@media (orientation: portrait) and (min-width: 360px) and (max-width: 560px) {
+  [data-phase="play"] .dynamic-controller-deck { --key-max: min(92px, 24cqw); }
+}
+
 /* In short landscape, the role panel becomes a held controller. The deck uses the lower corners,
    compact bars share a row, and the handedness choice stays visible without spending a second row
    on wider phones. Every individual target remains at least 44px on a coarse pointer. */

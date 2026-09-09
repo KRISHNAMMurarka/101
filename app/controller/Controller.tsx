@@ -29,6 +29,7 @@ import {
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Icon } from "../components/Icon";
 import { BrowserControllerSpeaker } from "./controller-speaker";
+import { controllerHint } from "./controller-copy";
 import { resolveControllerRoute, type ControllerRoute } from "./controller-route";
 import { controllerSurfaceState } from "./controller-surface-state";
 
@@ -807,6 +808,9 @@ function DynamicAnalogAction({ element, value, setAction, haptic }: {
   setAction(action: string, value: number): void;
   haptic(kind?: LocalHaptic): void;
 }) {
+  const label = element.label ?? element.action;
+  const behavior = element.type === "trigger" ? "Spring" : "Pressure";
+  const behaviorHint = controllerHint(label, behavior);
   const current = Math.max(0, Math.min(1, value));
   const engaged = useRef(false);
   const press = () => {
@@ -820,7 +824,7 @@ function DynamicAnalogAction({ element, value, setAction, haptic }: {
   };
   return (
     <label className={`dynamic-analog dynamic-${element.type}`} data-active={current > 0 ? "true" : "false"}>
-      <span>{element.label}</span>
+      <span>{label}</span>
       <output>{Math.round(current * 100)}%</output>
       <input
         type="range"
@@ -828,7 +832,7 @@ function DynamicAnalogAction({ element, value, setAction, haptic }: {
         max={1}
         step={.01}
         value={current}
-        aria-label={`${element.label}. Arrow keys adjust; hold Space or Enter for full pressure.`}
+        aria-label={`${label}. Arrow keys adjust; hold Space or Enter for full pressure.`}
         onChange={(event) => setAction(element.action, Number(event.currentTarget.value))}
         onPointerDown={press}
         onPointerUp={release}
@@ -849,7 +853,7 @@ function DynamicAnalogAction({ element, value, setAction, haptic }: {
           }
         }}
       />
-      <small>{element.type === "trigger" ? "Spring" : "Pressure"}</small>
+      {behaviorHint && <small>{behaviorHint}</small>}
     </label>
   );
 }
@@ -977,6 +981,8 @@ function DynamicSurface({ element, vector, setVector, haptic }: {
   setVector(action: string, x: number, y: number): void;
   haptic(kind?: LocalHaptic): void;
 }) {
+  const label = element.label ?? element.action;
+  const actionHint = controllerHint(label, element.action);
   const [active, setActive] = useState(false);
   const update = (event: React.PointerEvent<HTMLButtonElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -1009,7 +1015,7 @@ function DynamicSurface({ element, vector, setVector, haptic }: {
       type="button"
       className={`dynamic-surface surface-${element.type}`}
       data-active={active ? "true" : "false"}
-      aria-label={`${element.label ?? element.action}. Drag or use arrow keys.`}
+      aria-label={`${label}. Drag or use arrow keys.`}
       onPointerDown={(event) => { event.currentTarget.setPointerCapture(event.pointerId); setActive(true); haptic("press"); update(event); }}
       onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) update(event); }}
       onPointerUp={release}
@@ -1019,11 +1025,11 @@ function DynamicSurface({ element, vector, setVector, haptic }: {
       onKeyUp={(event) => { if (event.key.startsWith("Arrow")) release(); }}
       onBlur={release}
     >
-      <span>{element.label ?? element.action}</span>
+      <span>{label}</span>
       <i className="surface-crosshair" />
       {element.type === "joystick" && <i className="surface-dead-zone" style={{ width: `${(element.deadZone ?? .12) * 100}%` }} />}
       <b style={{ left: `${(vector.x + 1) * 50}%`, top: `${(vector.y + 1) * 50}%` }}>101</b>
-      <small>{element.action}</small>
+      {actionHint && <small>{actionHint}</small>}
     </button>
   );
 }

@@ -12,6 +12,7 @@
 | CUX-02 | A dense layout put the centred control in a separate row, reducing the height available to the thumb clusters and clipping lower controls at 740×320. | In short landscape, place left, centre, and right clusters in one row; compact bars share a row. | A seven-control stress layout has no vertical scroll at 740×320 and every shown control is fully visible. |
 | CUX-03 | A player's handedness can change their safe thumb reach. | Retain a reversible handedness control and mirror only left/right controls; centre controls do not move. | Switching handedness swaps thumb clusters, retains the centre control, and leaves every control keyboard reachable. |
 | CUX-04 | A pad or surface changes input geometry if it is stretched to leftover vertical space. | Keep pads square; size them from the deck and set a 48px coarse-pointer floor for each directional cell. | Portrait and landscape D-pads remain square and directional cells retain their touch target. |
+| CUX-05 | The portrait stress layout repeated labels inside the controls and left width unused beside the action thumb. | Show a secondary label only when it adds information; let two portrait face buttons fill their available thumb cluster on phones 360px and wider. | The dense layout has no repeated `MOVE` or `PRESSURE` label, and fits at 390×844 and 320×740 without overflow. |
 
 ## Responsive contract
 
@@ -19,7 +20,7 @@
 | --- | --- | --- |
 | Waiting for a game | Room, connection action, and a plain next step; no pretend game controls. | The same path fits before the fold, leaving the device ready to pair. |
 | Assigned role | Status stays above a bottom-anchored deck. Movement stays under one thumb; face actions under the other. | Setup stays one tap away. The handedness choice stays visible on wider phones; status is one line; the deck uses one left/centre/right row and keeps primary controls at the lower edges. |
-| Dense role | Groups remain distinct: shoulder/index bars first, pad beneath the movement thumb, keys beneath the action thumb. | Bars share horizontal space, centre controls no longer consume a row, and the square pad is bounded by the available short viewport. |
+| Dense role | Groups remain distinct: shoulder/index bars first, pad beneath the movement thumb, keys beneath the action thumb. Secondary labels never repeat the main label; two face buttons fill the portrait action cluster on phones 360px and wider. | Bars share horizontal space, centre controls no longer consume a row, and the square pad is bounded by the available short viewport. |
 | Keyboard | Every control remains native and focusable; held values release on blur. | The same focus order and release behavior applies. |
 
 ## Research log
@@ -32,6 +33,6 @@ Thumb reach depends on device size, grip, and the person holding it, so the layo
 
 ## Verification and remaining evidence
 
-Local browser checks used a production build and a live Controller Lab host. At 844×390, the unassigned controller showed only connection guidance. At 740×320, the dense seven-control layout fit within `scrollHeight === innerHeight`; the right-handed and left-handed arrangements both kept all controls visible. Activating the centre toggle set the host's normalized `lock` action to `true`. The browser accessibility tree reported native buttons, sliders, labels, and the handedness action.
+Local browser checks used a production build and a live Controller Lab host. At 844×390, the unassigned controller showed only connection guidance. At 740×320, the dense seven-control layout fit within `scrollHeight === innerHeight`; the right-handed and left-handed arrangements both kept all controls visible. At 390×844, the dense layout used its portrait action-thumb space without duplicate surface or pressure labels. At 320×740, `scrollHeight` and `scrollWidth` both matched the viewport. Activating the centre toggle set the host's normalized `lock` action to `true`. The browser accessibility tree reported native buttons, sliders, labels, and the handedness action.
 
 This does not replace physical phone ergonomics, haptic feel, or screen-reader testing. Those remain in [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md).
