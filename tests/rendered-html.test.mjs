@@ -245,7 +245,9 @@ test("serves the controller surface and product metadata", async () => {
   // "classic" was the role id, printed as the title of the thing a player is holding.
   assert.doesNotMatch(html, /LINK \/|SAME-BROWSER|OFFLINE SHELL|PRIVATE AUDIO/i,
     "the controller must not name its transport, its internal app name, or its role id");
-  assert.match(html, /Classic Controller/);
+  assert.match(html, /Ready to connect/);
+  assert.doesNotMatch(html, /class="[^"]*dynamic-controller-deck[^"]*"/,
+    "an unassigned controller must not show inactive game controls");
   // The SDK guarantee that a host can swap the panel is a developer fact, and it was printed on the
   // surface a player holds while playing.
   assert.doesNotMatch(html, /JSON-defined panel|normalized 101 input/i);

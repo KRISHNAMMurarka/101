@@ -15,7 +15,7 @@ Read with [NEXT-101.md](NEXT-101.md). This records implemented work and remainin
 | 24 | Deleted unused MediaPipeFaceBackend; no model/game integration is shipped. Pure face geometry utilities remain tested. |
 | 25–26 | Device hints select among available pose profiles; committed lite is the default. Optional full/heavy profiles remain because the explicit model-fetch tool supports them. Startup rejects once; repeated runtime failures report once until recovery. |
 | 27–30 | VisionLab uses resize observation, clears recovered errors, clears/replaces simulator timers, and removes the dead start guard. |
-| 31–36 | Controller icons, unified active states, differentiated vibration patterns, phase-owned folding, keyboard slider/trigger control, and dense/center/two-pad layout coverage implemented. Physical haptic feel is unverified. |
+| 31–36 | Controller icons, unified active states, differentiated vibration patterns, phase-owned folding, keyboard slider/trigger control, and dense/center/two-pad layout coverage implemented. An unassigned phone now shows connection guidance instead of inactive default controls. Short landscape puts dense left/centre/right clusters on one row so the 740×320 stress layout stays visible; handedness mirrors only thumb clusters. See CONTROLLER-UX.md. Physical haptic feel is unverified. |
 | 37 | Implemented the bottom dock using the phone deck/planner and the existing host InputBus. Role changes/blur/hide/unmount release inputs. Run completion collapses it. Browser checked portrait, landscape, and fullscreen; physical touch acceptance remains pending. |
 | 38–39 | Design completed before dock code: DEVICE-ROUTING.md documents separate simulation/view ownership and independent input/display/audio routes. Same-device screen+controls works through the dock. Remote second views and selective output routing are not implemented. |
 | 40–41 | Vision error state now differs by fill/border/weight. Label roles and duplicate declarations consolidated. |
@@ -47,4 +47,4 @@ Read with [NEXT-101.md](NEXT-101.md). This records implemented work and remainin
 
 The concrete remaining work is hardware/profile integration and physical/device/assistive-technology/performance acceptance, plus remote-screen implementation if selected after the routing design. [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md) assigns the required human/device actions and receipts. Keep these open instead of treating a passing unit gate as proof of them.
 
-Final local gate: production build, typecheck and lint pass; **430 unit tests and 27 rendered/build checks pass**. See QA-2026-09-09.md for measured bundle sizes.
+Final local gate: production build, typecheck and lint pass; **433 unit tests and 27 rendered/build checks pass**. See QA-2026-09-09.md for measured bundle sizes.

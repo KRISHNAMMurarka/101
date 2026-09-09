@@ -30,6 +30,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { Icon } from "../components/Icon";
 import { BrowserControllerSpeaker } from "./controller-speaker";
 import { resolveControllerRoute, type ControllerRoute } from "./controller-route";
+import { controllerSurfaceState } from "./controller-surface-state";
 
 interface Assignment {
   gameId: string;
@@ -394,10 +395,13 @@ export default function Controller(renderedRoute: ControllerRoute) {
 
   const authoredHandedness = layout.handedness ?? "right";
   const playerHandedness = handednessOverride ?? savedHandedness ?? authoredHandedness;
+  // A visible control must be live. Before this phone has a role, the fallback panel only sent
+  // frames into an empty room while looking like a usable gamepad.
+  const surfaceState = controllerSurfaceState({ connected, assigned, controlCount: layout.layout.length + (layout.motion ? 1 : 0) });
   // Once the host has given this phone a role, every setup control on the page is a thing the
   // player has already finished doing — and it was occupying the two thirds of the screen above the
   // deck. Setup folds behind the header instead, and stays one tap away.
-  const playing = connected && assigned;
+  const playing = surfaceState === "play";
   const [setupOpen, setSetupOpen] = useState(false);
   const phase = playing && !setupOpen ? "play" : "setup";
 
@@ -522,46 +526,48 @@ export default function Controller(renderedRoute: ControllerRoute) {
         </div>
       </details>
 
-      <section className={`controller-speaker${speakerAudio === "ready" ? " ready" : ""}`}>
-        <div>
-          <span>Sound on this phone</span>
-          <strong aria-live="polite">{speakerAudio === "ready"
-            ? lastSpeakerCue === undefined ? "On — waiting for the game" : "Playing"
-            : speakerEnableFailed ? "Couldn't start — tap again" : "Off"}</strong>
-        </div>
-        <button onClick={enableSpeaker} disabled={speakerAudio === "ready"}>{speakerAudio === "ready" ? "Sound on" : "Turn on sound"}</button>
-      </section>
+      {surfaceState === "play" ? <>
+        <section className={`controller-speaker${speakerAudio === "ready" ? " ready" : ""}`}>
+          <div>
+            <span>Sound on this phone</span>
+            <strong aria-live="polite">{speakerAudio === "ready"
+              ? lastSpeakerCue === undefined ? "On — waiting for the game" : "Playing"
+              : speakerEnableFailed ? "Couldn't start — tap again" : "Off"}</strong>
+          </div>
+          <button onClick={enableSpeaker} disabled={speakerAudio === "ready"}>{speakerAudio === "ready" ? "Sound on" : "Turn on sound"}</button>
+        </section>
 
-      <section className="dynamic-controller-heading">
-        <div>
-          <span>Ready</span>
-          <h1>{layout.title ?? assignment.role}</h1>
-        </div>
-        {canFlipHandedness && (
-          <button className="handedness-toggle" onClick={flipHandedness} aria-label={`Switch to ${playerHandedness === "right" ? "left" : "right"}-handed layout`}>
-            <span>Thumb</span><strong>{playerHandedness === "right" ? "Right" : "Left"}</strong><Icon name="arrow" size={16} />
-          </button>
-        )}
-      </section>
+        <section className="dynamic-controller-heading">
+          <div>
+            <span>Ready</span>
+            <h1>{layout.title ?? assignment.role}</h1>
+          </div>
+          {canFlipHandedness && (
+            <button className="handedness-toggle" onClick={flipHandedness} aria-label={`Switch to ${playerHandedness === "right" ? "left" : "right"}-handed layout`}>
+              <span>Thumb</span><strong>{playerHandedness === "right" ? "Right" : "Left"}</strong><Icon name="arrow" size={16} />
+            </button>
+          )}
+        </section>
 
-      <ControllerStatus readout={readout} />
+        <ControllerStatus readout={readout} />
 
-      <DynamicControllerDeck
-        key={`${assignment.gameId}:${assignment.role}:${layoutRevision}`}
-        elements={layout.layout}
-        actions={actions}
-        vectors={vectors}
-        axes={axes}
-        authoredHandedness={authoredHandedness}
-        playerHandedness={playerHandedness}
-        setActions={setActions}
-        setAction={setAction}
-        setAxis={setAxis}
-        setVector={setVector}
-        haptic={haptic}
-      />
+        <DynamicControllerDeck
+          key={`${assignment.gameId}:${assignment.role}:${layoutRevision}`}
+          elements={layout.layout}
+          actions={actions}
+          vectors={vectors}
+          axes={axes}
+          authoredHandedness={authoredHandedness}
+          playerHandedness={playerHandedness}
+          setActions={setActions}
+          setAction={setAction}
+          setAxis={setAxis}
+          setVector={setVector}
+          haptic={haptic}
+        />
+      </> : <ControllerWaiting connected={connected} assigned={assigned} />}
 
-      {layout.motion && (
+      {surfaceState === "play" && layout.motion && (
         <section className="motion-permission">
           <button onClick={motionState === "active" ? calibrate : enableMotion}>{motionState === "active" ? "SET NEUTRAL" : "ENABLE MOTION"}</button>
           <p>{motionState === "active" ? `${layout.motion.label ?? "Motion"} is processed locally and mapped to ${layout.motion.action}.` : motionState === "denied" ? "Motion permission was not granted. Touch controls remain available." : motionState === "unsupported" ? "Motion is unavailable here. Touch controls remain available." : `${layout.motion.label ?? "Motion Sensors"}: optional ${layout.motion.mode} control.`}</p>
@@ -574,6 +580,19 @@ export default function Controller(renderedRoute: ControllerRoute) {
 
 function isStateful(transport: LinkTransport): transport is StatefulLinkTransport {
   return "onStateChange" in transport && typeof transport.onStateChange === "function";
+}
+
+function ControllerWaiting({ connected, assigned }: { connected: boolean; assigned: boolean }) {
+  const message = !connected
+    ? "Open a game on the host. Your controls will appear here when it is ready."
+    : assigned
+      ? "The game is getting your controls ready."
+      : "You are connected. The game will show your controls when a role opens.";
+  return <section className="controller-awaiting" aria-live="polite">
+    <span>Controller</span>
+    <strong>{!connected ? "Ready to connect" : assigned ? "Getting ready" : "Waiting for a role"}</strong>
+    <p>{message}</p>
+  </section>;
 }
 
 /**
