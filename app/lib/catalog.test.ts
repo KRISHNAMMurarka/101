@@ -3,6 +3,7 @@ import test from "node:test";
 import { resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import type { GameManifest } from "@101/sdk";
 import {
+  catalogLaunchHref,
   createLauncherCatalogEntry,
   createSyntheticCatalog,
   filterCatalog,
@@ -271,3 +272,22 @@ test("the row window stays bounded and complete at the top, middle, and end for 
 // Keeps test fixtures honest when helper signatures evolve.
 const _entryTypecheck: readonly LauncherCatalogEntry[] = [];
 void _entryTypecheck;
+
+test("fifty titles retain search results and bounded paging", () => {
+  const entries = createSyntheticCatalog([createLauncherCatalogEntry(game("seed"), input("seed", {}))], 50);
+  assert.equal(entries.length, 50);
+  assert.equal(filterCatalog(entries, { query: "0050" }).length, 1);
+  const plan = planCatalogWindow({ itemCount: 50, columns: 2, rowHeight: 400, viewportTop: 8_000, viewportHeight: 800, overscanRows: 1 });
+  assert.ok(plan.endIndex <= 50);
+  assert.ok(plan.endIndex - plan.startIndex <= 8);
+});
+
+
+test("runtime routing keeps hosted titles out of local game paths", () => {
+  const local = createLauncherCatalogEntry(game("local"), input("local", {}));
+  assert.equal(catalogLaunchHref(local), "/games/local");
+  const hosted = createLauncherCatalogEntry({ ...game("hosted"), runtime: "hosted", launchUrl: "https://example.test/play" }, input("hosted", {}));
+  assert.equal(catalogLaunchHref(hosted), "https://example.test/play");
+  const streamed = createLauncherCatalogEntry({ ...game("streamed"), runtime: "streamed", renderer: "video" }, input("streamed", {}));
+  assert.equal(catalogLaunchHref(streamed), undefined);
+});

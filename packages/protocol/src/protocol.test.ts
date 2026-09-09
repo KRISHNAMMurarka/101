@@ -710,3 +710,47 @@ test("negotiating clamps to the lower version; reading accepts a closed range", 
     assert.equal(acceptProtocolVersion(nonsense), false, `accepted ${nonsense}`);
   }
 });
+
+test("preserves independent display and audio-output capabilities in a hello", () => {
+  const hello = parseControlMessage({ type: "hello", version: PROTOCOL_VERSION, deviceId: "screen-1", device: "Screen", capabilities: { display: true, audioOut: true, touch: false } });
+  assert.equal(hello.type, "hello");
+  if (hello.type === "hello") assert.deepEqual(hello.capabilities, { display: true, audioOut: true, touch: false });
+});
+
+test("binary lane version failures name the outdated peer", () => {
+  const layout = { layout: [{ type: "button", action: "fire", label: "Fire" }] } as const;
+  const profile = createInputPacketProfile(layout, { revision: 1, deviceId: "pad", playerId: "player-1" })!;
+  const packet = encodeInputPacket({ deviceId: "pad", playerId: "player-1", source: "touch", sequence: 1, timestamp: 1, actions: { fire: true } }, profile);
+  for (const version of [1, PROTOCOL_VERSION + 1]) {
+    packet[0] = version;
+    assert.throws(() => decodeInputPacket(packet, profile), (error: unknown) => error instanceof ProtocolVersionError && error.outdated === (version > PROTOCOL_VERSION ? "ours" : "theirs"));
+    const motion = new Uint8Array(48);
+    motion[0] = version;
+    motion[1] = 1;
+    assert.throws(() => decodeMotionPacket(motion), ProtocolVersionError);
+  }
+});
+
+test("multiplex rejects a mismatched peer across a real BroadcastChannel and keeps compatible traffic", async () => {
+  const { BroadcastChannelTransport } = await import("./index.ts");
+  const channel = `version-test-${process.pid}-${Date.now()}`;
+  const errors: ProtocolVersionError[] = [];
+  const multiplex = new MultiplexLinkTransport({ onProtocolError: (error: ProtocolVersionError) => errors.push(error) });
+  const sender = new BroadcastChannelTransport(channel);
+  const received: LinkMessage[] = [];
+  let done!: () => void;
+  const delivered = new Promise<void>((resolve) => { done = resolve; });
+  multiplex.onMessage((message) => { received.push(message); if (message.channel === "control" && message.payload.type === "hello" && message.payload.deviceId === "compatible") done(); });
+  const timeout = setTimeout(() => done(), 1500);
+  try {
+    await multiplex.add("local", new BroadcastChannelTransport(channel));
+    await multiplex.connect();
+    await sender.connect();
+    sender.sendReliable({ type: "hello", version: PROTOCOL_VERSION + 1, deviceId: "future", device: "Future", capabilities: { touch: true } });
+    sender.sendReliable({ type: "hello", version: PROTOCOL_VERSION, deviceId: "compatible", device: "Compatible", capabilities: { touch: true } });
+    await delivered;
+    assert.equal(received.length, 1);
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0]?.outdated, "ours");
+  } finally { clearTimeout(timeout); await sender.disconnect(); await multiplex.disconnect(); }
+});

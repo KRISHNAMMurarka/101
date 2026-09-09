@@ -1,9 +1,13 @@
 "use client";
 
+import { observeCanvasViewport, type CanvasViewport } from "./camera/canvas-viewport";
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
 import type { SessionSnapshot } from "@101/session";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { useGameHost } from "@/app/lib/use-game-host";
@@ -50,7 +54,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<OrbitalHud>(INITIAL_HUD);
 
-  const { session: liveSession } = useGameHost<OrbitalCrewState>({
+  const { session: liveSession, controllerHost } = useGameHost<OrbitalCrewState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -65,10 +69,12 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       if (!canvas) return;
       const announcedThreats = new Set<number>();
       let drawHandle = 0;
+      let viewport = { width: 1, height: 1, ratio: 1 };
+      const stopResize = observeCanvasViewport(canvas, (next) => { viewport = next; });
 
       const draw = () => {
         const context = canvas.getContext("2d");
-        if (context) renderShip(context, canvas, engineContext.state);
+        if (context) renderShip(context, viewport, engineContext.state);
         drawHandle = requestAnimationFrame(draw);
       };
 
@@ -119,6 +125,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       }, 120);
 
       return () => {
+        stopResize();
         window.clearInterval(hudTimer);
         cancelAnimationFrame(drawHandle);
       };
@@ -141,13 +148,15 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
 
 
       <div className="orbital-layout">
+        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
         <div className="orbital-stage">
           <div className="orbital-statusbar"><FullscreenButton /><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "All clear"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />
           <div className="orbital-alert"><span>{hud.activeThreats ? "CREW ACTION REQUIRED" : "SHIP STATUS"}</span><strong>{hud.lastEvent}</strong></div>
           {hud.events.length > 0 && <div className="orbital-threat-stack">{hud.events.map((event) => <article key={event.id}><div><span>{bearingLabel(event.bearing)}</span><strong>{event.label}</strong><small>{event.roles.join(" + ").toUpperCase()}</small></div><b>{event.remaining.toFixed(1)}s</b><i><em style={{ width: `${event.progress * 100}%` }} /></i></article>)}</div>}
-          {hud.gameOver && <div className="game-over-panel"><p>SHIP LOST</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL CREW SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+          {hud.gameOver && <GameOverPanel title="Ship lost" score={hud.score} detail="Final crew score" onRestart={restart} />}
         </div>
+      </GameControllerOverlay>
 
         <aside className="orbital-rail">
           <section className="ship-vitals">
@@ -161,10 +170,10 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
             <div><h2>Stations</h2><button onClick={onConnect}>{session.assignments.length ? "Add another" : "CONNECT CREW"} ↗</button></div>
             {ORBITAL_CREW_ROLES.map((role) => {
               const assigned = assignments.get(role.id);
-              return <article key={role.id} className={assigned ? "is-assigned" : ""}><i /><div><strong>{role.label}</strong><span>{assigned ? assigned.deviceId : "Keyboard captain fallback"}</span></div><b>{assigned ? "LINKED" : "OPEN"}</b></article>;
+              return <article key={role.id} className={assigned ? "is-assigned" : ""}><i /><div><strong>{role.label}</strong><span>{assigned ? assigned.deviceId : "Ready on this screen"}</span></div><b>{assigned ? "LINKED" : "OPEN"}</b></article>;
             })}
           </section>
-          <p className="orbital-local-note"><b>NO DEVICE REQUIRED</b> One keyboard or gamepad can operate every station. Connected phones receive independent panels automatically.</p>
+          <p className="orbital-local-note"><b>Play on this screen</b> One keyboard or gamepad can operate every station. Connected phones receive independent panels automatically.</p>
         </aside>
       </div>
 
@@ -177,15 +186,9 @@ function Vital({ label, value, tone }: { label: string; value: number; tone: str
   return <div className={`vital vital-${tone}`}><span>{label}</span><i><b style={{ width: `${Math.max(0, Math.min(100, value))}%` }} /></i><strong>{Math.round(value)}%</strong></div>;
 }
 
-function renderShip(context: CanvasRenderingContext2D, canvas: HTMLCanvasElement, state: OrbitalCrewState) {
-  const bounds = canvas.getBoundingClientRect();
-  const ratio = Math.min(window.devicePixelRatio || 1, 2);
-  const width = Math.max(1, Math.round(bounds.width * ratio));
-  const height = Math.max(1, Math.round(bounds.height * ratio));
-  if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
+function renderShip(context: CanvasRenderingContext2D, viewport: CanvasViewport, state: OrbitalCrewState) {
+  const { width: w, height: h, ratio } = viewport;
   context.setTransform(ratio, 0, 0, ratio, 0, 0);
-  const w = bounds.width;
-  const h = bounds.height;
   context.fillStyle = "#040809";
   context.fillRect(0, 0, w, h);
 

@@ -20,7 +20,7 @@ test("installs, updates, catalogs, and uninstalls game packages", () => {
   registry.install(game("1.0.0"), { kind: "local", path: "/games/tiny" }, 10);
   registry.install(game("1.1.0"), { kind: "download", url: "https://local.invalid/tiny" }, 20);
   assert.deepEqual(registry.catalog(), [{
-    id: "tiny-game", name: "Tiny Game", version: "1.1.0", renderer: "2d",
+    id: "tiny-game", name: "Tiny Game", version: "1.1.0", renderer: "2d", runtime: "local",
     players: { min: 1, max: 1 }, offline: true, procedural: false,
     inputs: ["keyboard"], source: "download",
   }]);

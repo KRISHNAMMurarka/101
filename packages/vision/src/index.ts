@@ -5,7 +5,6 @@ export interface PoseLandmark {
   z: number;
   /** 0-1. Below a threshold the point is a guess, and callers must treat it as unknown. */
   visibility: number;
-  presence?: number;
   /**
    * The same joint in metres, relative to the midpoint of the hips.
    *
@@ -242,20 +241,44 @@ export class PoseClassifier {
   }
 }
 
+/** Rich poses use a tagged v1 payload; image-only poses retain the legacy four-scalar tuples. */
+const POSE_WIRE_TAG = -101;
+const POSE_WIRE_VERSION = 1;
+
 export function flattenPose(pose: readonly PoseLandmark[]) {
-  return pose.flatMap((landmark) => [landmark.x, landmark.y, landmark.z, landmark.visibility]);
+  if (!pose.some((landmark) => landmark.world)) {
+    return pose.flatMap((landmark) => [landmark.x, landmark.y, landmark.z, landmark.visibility]);
+  }
+  return [POSE_WIRE_TAG, POSE_WIRE_VERSION, ...pose.flatMap((landmark) => [
+    landmark.x, landmark.y, landmark.z, landmark.visibility,
+    landmark.world ? 1 : 0, landmark.world?.x ?? 0, landmark.world?.y ?? 0, landmark.world?.z ?? 0,
+  ])];
 }
 
 export function unflattenPose(values: ReadonlyArray<number>): PoseLandmark[] {
+  const rich = values[0] === POSE_WIRE_TAG;
+  const start = rich ? 2 : 0;
+  const stride = rich ? 8 : 4;
+  if ((rich && values[1] !== POSE_WIRE_VERSION) || (values.length - start) % stride !== 0
+    || !values.every(Number.isFinite)) return [];
   const pose: PoseLandmark[] = [];
-  for (let index = 0; index + 3 < values.length; index += 4) {
-    pose.push({ x: values[index]!, y: values[index + 1]!, z: values[index + 2]!, visibility: values[index + 3]! });
+  for (let index = start; index + stride <= values.length; index += stride) {
+    if (rich && values[index + 4] !== 0 && values[index + 4] !== 1) return [];
+    pose.push({
+      x: values[index]!, y: values[index + 1]!, z: values[index + 2]!, visibility: values[index + 3]!,
+      ...(rich && values[index + 4] === 1 ? { world: {
+        x: values[index + 5]!, y: values[index + 6]!, z: values[index + 7]!,
+      } } : {}),
+    });
   }
   return pose;
 }
 
 export function mirrorPose(pose: readonly PoseLandmark[]): PoseLandmark[] {
-  return pose.map((landmark) => ({ ...landmark, x: 1 - landmark.x }));
+  return pose.map((landmark) => ({
+    ...landmark, x: 1 - landmark.x,
+    ...(landmark.world ? { world: { ...landmark.world, x: -landmark.world.x } } : {}),
+  }));
 }
 
 function measurePose(pose: readonly PoseLandmark[]): PoseCalibration | undefined {
@@ -312,7 +335,7 @@ export function legVisibility(pose: readonly PoseLandmark[]) {
  * Smoothing carries the landmark forward and overrides the axes it smooths — it never rebuilds one
  * from a literal.
  *
- * Rebuilding is what made `world` disappear. The literal listed x, y, z, visibility and presence,
+ * Rebuilding is what made `world` disappear. The literal listed only the image coordinates and confidence,
  * so when metric coordinates were added to PoseLandmark they survived the first frame (which has no
  * previous frame and spreads) and were dropped from the second onward. Everything downstream that
  * needs metres — readSkeleton, and through it every posture and facing signal — then returned
@@ -462,6 +485,7 @@ type StaticHandGesture = "openPalm" | "fist" | "pinch" | "point" | "twoFingers";
 
 export class HandGestureClassifier {
   private readonly options: Required<HandGestureClassifierOptions>;
+  private frameAspect = 1;
   private previous?: TrackedHand;
   private previousTimestamp?: number;
   private lastDetectedAt?: number;
@@ -481,7 +505,10 @@ export class HandGestureClassifier {
     };
   }
 
-  process(hands: readonly TrackedHand[], timestamp: number): HandSignals {
+  process(hands: readonly TrackedHand[], timestamp: number, frameAspect = 1): HandSignals {
+    const aspect = Number.isFinite(frameAspect) && frameAspect > 0 ? frameAspect : 1;
+    if (aspect !== this.frameAspect) this.reset();
+    this.frameAspect = aspect;
     const detected = [...hands].sort((a, b) => b.confidence - a.confidence)[0];
     if (!detected || detected.landmarks.length < 21) {
       this.releaseHand(timestamp);
@@ -500,13 +527,15 @@ export class HandGestureClassifier {
     const palm = { x: midpoint(wrist.x, middleMcp.x), y: midpoint(wrist.y, middleMcp.y) };
     const deltaSeconds = this.previousTimestamp === undefined ? 0 : Math.max(1 / 120, (timestamp - this.previousTimestamp) / 1_000);
     const previousPalm = this.previous ? palmCenter(this.previous.landmarks) : palm;
-    const velocity = deltaSeconds > 0 ? { x: (palm.x - previousPalm.x) / deltaSeconds, y: (palm.y - previousPalm.y) / deltaSeconds } : { x: 0, y: 0 };
-    const palmSize = Math.max(.035, distance(wrist, middleMcp));
-    this.pointerHistory.push({ ...pointer, timestamp });
-    this.palmHistory.push({ ...palm, timestamp });
+    const velocity = deltaSeconds > 0 ? { x: (palm.x - previousPalm.x) * aspect / deltaSeconds, y: (palm.y - previousPalm.y) / deltaSeconds } : { x: 0, y: 0 };
+    // Distances/history use frame-height units; public pointer and palm remain image coordinates.
+    const geometry = hand.landmarks.map((landmark) => ({ ...landmark, x: landmark.x * aspect }));
+    const palmSize = Math.max(.035, distance(geometry[HAND_LANDMARK.wrist]!, geometry[HAND_LANDMARK.middleMcp]!));
+    this.pointerHistory.push({ x: pointer.x * aspect, y: pointer.y, timestamp });
+    this.palmHistory.push({ x: palm.x * aspect, y: palm.y, timestamp });
     this.trimHistory(timestamp);
 
-    const staticGesture = classifyStaticGesture(hand.landmarks, palmSize);
+    const staticGesture = classifyStaticGesture(geometry, palmSize);
     if (staticGesture === this.candidate) this.candidateFrames += 1;
     else {
       this.candidate = staticGesture;
@@ -620,7 +649,10 @@ export function unflattenHand(values: ReadonlyArray<number>): HandLandmark[] {
 }
 
 export function mirrorHand(hand: readonly HandLandmark[]): HandLandmark[] {
-  return hand.map((landmark) => ({ ...landmark, x: 1 - landmark.x }));
+  return hand.map((landmark) => ({
+    ...landmark, x: 1 - landmark.x,
+    ...(landmark.world ? { world: { ...landmark.world, x: -landmark.world.x } } : {}),
+  }));
 }
 
 function classifyStaticGesture(hand: readonly HandLandmark[], palmSize: number): StaticHandGesture | undefined {

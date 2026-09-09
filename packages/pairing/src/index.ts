@@ -1,6 +1,6 @@
 import {
   MultiplexLinkTransport,
-  PROTOCOL_VERSION,
+  PAIRING_TICKET_VERSION,
   WebRTCTransport,
   type ControlMessage,
   type DeviceCapabilities,
@@ -112,7 +112,7 @@ export class LocalSignalingBroker {
     if (this.sessions.has(options.sessionId)) throw new Error(`Signaling session ${options.sessionId} already exists`);
     if (this.sessions.size >= MAX_SIGNALING_SESSIONS) throw new Error("Signaling Hub has too many live sessions");
     const ticket: PairingTicket = {
-      version: PROTOCOL_VERSION,
+      version: PAIRING_TICKET_VERSION,
       sessionId: options.sessionId,
       endpoint: options.endpoint,
       joinToken: this.randomToken(),

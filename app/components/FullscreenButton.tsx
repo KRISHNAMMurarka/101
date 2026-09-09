@@ -46,7 +46,7 @@ export default function FullscreenButton() {
        * The frame this button is in. Walking up from the button rather than searching the document
        * means a page with two game frames would still expand the right one.
        */
-      const frame = event.currentTarget.closest<HTMLElement>(
+      const frame = event.currentTarget.closest<HTMLElement>("[data-game-frame]") ?? event.currentTarget.closest<HTMLElement>(
         "[class$='-arena'], [class$='-stage'], [class$='-stage-shell'], [class$='-layout']",
       ) ?? event.currentTarget.closest<HTMLElement>("[class$='-page']");
       if (!frame) return;

@@ -1,11 +1,14 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
 import { canTravel, type MazeDirection } from "@101/maze";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { useGameHost } from "@/app/lib/use-game-host";
@@ -41,7 +44,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked } = useGameHost<EchoMazeState>({
+  const { linked, controllerHost } = useGameHost<EchoMazeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -136,28 +139,30 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
       </header>
 
       <div className="echo-layout">
+        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
         <div className="echo-stage">
           <div className="echo-statusbar"><FullscreenButton /><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "Clue sent to your phone" : "Clue shown here"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
           <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong></div>
           {!linked && <CompanionClue clue={hud.clue} fallback />}
           <div className="echo-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}<button onClick={onConnect}>{linked ? "ADD SCANNER" : "CONNECT PRIVATE SCANNER"}</button></div>
-          {hud.gameOver && <div className="game-over-panel"><p>YOUR ECHO REMAINS</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL EXPEDITION SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+          {hud.gameOver && <GameOverPanel title="Your echo remains" score={hud.score} detail="Final expedition score" onRestart={restart} />}
         </div>
+      </GameControllerOverlay>
         <aside className="echo-rail">
           <section className="echo-vitals"><h2>EXPLORER STATUS</h2><EchoMeter label="HEALTH" value={hud.health} tone="health" /><EchoMeter label="BATTERY" value={hud.battery} tone="battery" /><p className={hud.flashlight ? "light-on" : ""}><i />FLASHLIGHT {hud.flashlight ? "OPEN" : "CLOSED"}</p></section>
-          {linked ? <section className="echo-private"><span>On your phone</span><h2>THE PHONE KNOWS MORE.</h2><p>Precise target bearing, path distance, signal strength, and echo proximity are visible only on the assigned scanner.</p><b>SCANNER LINKED</b></section> : <section className="echo-private"><span>On this screen</span><h2>NO PHONE REQUIRED.</h2><p>The same necessary clue is shown over the maze until a scanner connects. The game never gates progress on special hardware.</p><button onClick={onConnect}>CONNECT SCANNER ↗</button></section>}
-          <section className="echo-objective"><span>CURRENT OBJECTIVE</span><strong>{hud.fragments < hud.fragmentTotal ? `RECOVER ${hud.fragmentTotal - hud.fragments} MEMORY FRAGMENT${hud.fragmentTotal - hud.fragments === 1 ? "" : "S"}` : "REACH THE OPEN EXIT"}</strong><small>Floors continue from the same deterministic expedition seed.</small></section>
+          {linked ? <section className="echo-private"><span>On your phone</span><h2>Clues on your phone</h2><p>Precise target bearing, path distance, signal strength, and echo proximity are visible only on the assigned scanner.</p><b>SCANNER LINKED</b></section> : <section className="echo-private"><span>On this screen</span><h2>Play on this screen</h2><p>Follow the clue over the maze, or connect a phone to read it there.</p><button onClick={onConnect}>CONNECT SCANNER ↗</button></section>}
+          <section className="echo-objective"><span>CURRENT OBJECTIVE</span><strong>{hud.fragments < hud.fragmentTotal ? `RECOVER ${hud.fragmentTotal - hud.fragments} MEMORY FRAGMENT${hud.fragmentTotal - hud.fragments === 1 ? "" : "S"}` : "REACH THE OPEN EXIT"}</strong><small>Keep exploring to reach the next floor.</small></section>
         </aside>
       </div>
       <div className="echo-instructions"><span><b>MOVE</b> WASD · arrows · left stick</span><span><b>SCAN</b> R/Space · gamepad A · phone ping</span><span><b>FLASHLIGHT</b> F · gamepad Y · Link</span><span><b>PRIVATE DISPLAY</b> phone receives clues, never required</span></div>
-      <p className="echo-privacy"><strong>Local by design:</strong> the companion receives tiny role-targeted state messages—not video, microphone, location, or account data. This slice makes no microphone request.</p>
+      <p className="echo-privacy"><strong>Your privacy:</strong> your phone receives game clues. No camera or microphone is needed.</p>
     </section>
   );
 }
 
 function CompanionClue({ clue, fallback }: { clue: EchoMazeState["clue"]; fallback?: boolean }) {
-  return <div className={`echo-clue${fallback ? " fallback" : ""}`}><span>{fallback ? "HOST FALLBACK CLUE" : "PRIVATE SCANNER"}</span><div><strong>{clue.compass}</strong><i style={{ transform: `rotate(${clue.bearing}rad)` }}>↑</i></div><dl><div><dt>TARGET</dt><dd>{clue.target.toUpperCase()}</dd></div><div><dt>PATH</dt><dd>{clue.distance}</dd></div><div><dt>SIGNAL</dt><dd>{clue.signal}%</dd></div><div><dt>ECHO</dt><dd>{clue.echoDistance > 8 ? "FAR" : clue.echoDistance}</dd></div></dl></div>;
+  return <div className={`echo-clue${fallback ? " fallback" : ""}`}><span>{fallback ? "YOUR CLUE" : "PRIVATE SCANNER"}</span><div><strong>{clue.compass}</strong><i style={{ transform: `rotate(${clue.bearing}rad)` }}>↑</i></div><dl><div><dt>TARGET</dt><dd>{clue.target.toUpperCase()}</dd></div><div><dt>PATH</dt><dd>{clue.distance}</dd></div><div><dt>SIGNAL</dt><dd>{clue.signal}%</dd></div><div><dt>ECHO</dt><dd>{clue.echoDistance > 8 ? "FAR" : clue.echoDistance}</dd></div></dl></div>;
 }
 
 function EchoMeter({ label, value, tone }: { label: string; value: number; tone: string }) {
@@ -219,9 +224,12 @@ function createEchoView(canvas: HTMLCanvasElement) {
     view.camera.lookAt(0, 0, 0);
   };
 
+  const resize = new ResizeObserver(([entry]) => {
+    if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height));
+  });
+  resize.observe(canvas);
+
   const sync = (state: EchoMazeState) => {
-    const bounds = canvas.getBoundingClientRect();
-    view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
     if (floorNumber !== state.floorNumber) { floorNumber = state.floorNumber; rebuild(state); }
     const x = state.player.x - state.floor.width / 2 + .5;
     const z = state.player.y - state.floor.height / 2 + .5;
@@ -246,6 +254,7 @@ function createEchoView(canvas: HTMLCanvasElement) {
   return {
     sync,
     dispose() {
+      resize.disconnect();
       while (floorGroup.children.length) disposeObject(floorGroup.children[0]!);
       player.geometry.dispose(); (player.material as THREE.Material).dispose();
       scan.geometry.dispose(); (scan.material as THREE.Material).dispose();

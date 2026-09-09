@@ -1,9 +1,13 @@
 "use client";
 
+import { observeCanvasViewport } from "./camera/canvas-viewport";
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
@@ -31,7 +35,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SlashHud>(INITIAL_HUD);
 
-  const { linked, readiness } = useGameHost<SlashstormState>({
+  const { linked, readiness, controllerHost } = useGameHost<SlashstormState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -50,17 +54,14 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
       const canvas = canvasRef.current;
       if (!canvas) return;
       let drawHandle = 0;
+      let viewport = { width: 1, height: 1, ratio: 1 };
+      const stopResize = observeCanvasViewport(canvas, (next) => { viewport = next; });
 
       const draw = () => {
         const surface = canvas.getContext("2d");
         if (!surface) return;
-        const bounds = canvas.getBoundingClientRect();
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        const width = Math.max(1, Math.round(bounds.width * ratio));
-        const height = Math.max(1, Math.round(bounds.height * ratio));
-        if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
-        surface.setTransform(ratio, 0, 0, ratio, 0, 0);
-        renderSlashstorm(surface, bounds.width, bounds.height, context.state);
+        surface.setTransform(viewport.ratio, 0, 0, viewport.ratio, 0, 0);
+        renderSlashstorm(surface, viewport.width, viewport.height, context.state);
         drawHandle = requestAnimationFrame(draw);
       };
 
@@ -73,6 +74,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
       }, 100);
 
       return () => {
+        stopResize();
         window.clearInterval(hudTimer);
         cancelAnimationFrame(drawHandle);
       };
@@ -94,15 +96,17 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
       {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
           inside it is drawn under the lives meter. */}
 
-      <div className="slash-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="slash-arena">
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",
             which claimed a gamepad whether or not one was plugged in. It now reports what the input
             manifest actually resolved against the hardware present. */}
         <div className="slash-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
-        {hud.gameOver && <div className="game-over-panel"><p>RUN COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Run complete" score={hud.score} detail="Final score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="slash-instructions"><span><b>POINTER / TOUCH</b> Hold and slice through targets</span><span><b>KEYBOARD</b> Arrows to aim · Space to slash</span><span><b>WARNING</b> Avoid orange overload bombs</span></div>
     </section>
   );

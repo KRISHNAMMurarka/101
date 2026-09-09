@@ -27,6 +27,8 @@ export interface HardwareDecodedState {
   actions: Record<string, boolean | number>;
   axes: Record<string, number>;
   vectors: Record<string, InputVector>;
+  /** Opaque finite pose tuples; the source profile declares their geometry and schema. */
+  poses?: Record<string, ReadonlyArray<number>>;
 }
 
 export interface HardwarePacket {
@@ -125,6 +127,7 @@ export class HardwareFrameEmitter {
       actions: state.actions,
       axes: state.axes,
       vectors: state.vectors,
+      ...(state.poses ? { poses: state.poses } : {}),
     } as const;
   }
 
@@ -138,6 +141,7 @@ export class HardwareFrameEmitter {
       actions: {},
       axes: {},
       vectors: {},
+      poses: {},
     } as const;
   }
 }

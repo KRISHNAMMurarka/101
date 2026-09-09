@@ -27,7 +27,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/geist-latin.woff2") format("woff2");
+  src: url("./assets/fonts/geist-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
@@ -35,7 +35,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/geist-latin-ext.woff2") format("woff2");
+  src: url("./assets/fonts/geist-latin-ext.woff2") format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
@@ -43,7 +43,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/geist-mono-latin.woff2") format("woff2");
+  src: url("./assets/fonts/geist-mono-latin.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
@@ -51,7 +51,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/geist-mono-latin-ext.woff2") format("woff2");
+  src: url("./assets/fonts/geist-mono-latin-ext.woff2") format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 
@@ -109,23 +109,18 @@
   --space-lg: 40px;
   --space-xl: 64px;
 
-  /* Type: six roles, not twenty-four sizes. 11px is the floor — matching the native app's `label`
+  /* Type: shared text roles, with responsive display sizes owned by their headings. 11px is the floor — matching the native app's `label`
      — which retires the ~155 declarations previously set at 7px and 8px. Those are what made the
      product read as defaulted rather than designed. */
-  --type-display-size: clamp(40px, 6vw, 96px);
-  --type-display-line: 0.88;
   --type-title-size: 19px;
   --type-body-size: 15px;
   --type-label-size: 11px;
-  --type-action-size: 15px;
   --type-mono-value-size: 15px;
 
   --track-tight: -0.04em;
   --track-title: -0.3px;
   --track-label: 0.16em;
 
-  --radius-control: 18px;
-  --radius-card: 22px;
   --radius-pill: 999px;
 
   /* Layout. One gutter, one measure, one cap. The stylesheet previously held six competing gutter
@@ -135,7 +130,6 @@
   --shell-max: 1540px;
   --gutter: clamp(20px, 4vw, 64px);
   --measure: 65ch;
-  --measure-wide: 90ch;
   --rail-w: 72px;
   --rail-w-open: 232px;
   --tabbar-h: 56px;
@@ -170,7 +164,8 @@
   /* A scrim over a running canvas. Permanently dark in both themes — the canvas is its own world
      and a white HUD panel over a dark game is not a light theme, it is a hole. */
   --stage-scrim: rgba(10, 10, 10, 0.84);
-  --stage-scrim-strong: rgba(10, 10, 10, 0.92);
+  --stage-paper: #f2f2f2;
+  --stage-muted: #bcbcbc;
 }
 
 /* The light palette, written out literally. Guarded with :not([data-theme="light"]) so an explicit
@@ -185,9 +180,9 @@
     --surface-strong: rgba(0, 0, 0, 0.10);
     --paper: #0a0a0a;
     --muted: rgba(10, 10, 10, 0.62);
-    --faint: rgba(10, 10, 10, 0.48);
+    --faint: rgba(10, 10, 10, 0.60);
     --line: rgba(0, 0, 0, 0.12);
-    --line-control: rgba(0, 0, 0, 0.32);
+    --line-control: rgba(0, 0, 0, 0.44);
     --line-strong: rgba(0, 0, 0, 0.44);
     --solid: #0a0a0a;
     --on-solid: #f2f2f2;
@@ -202,9 +197,9 @@
   --surface-strong: rgba(0, 0, 0, 0.10);
   --paper: #0a0a0a;
   --muted: rgba(10, 10, 10, 0.62);
-  --faint: rgba(10, 10, 10, 0.48);
+  --faint: rgba(10, 10, 10, 0.60);
   --line: rgba(0, 0, 0, 0.12);
-  --line-control: rgba(0, 0, 0, 0.32);
+  --line-control: rgba(0, 0, 0, 0.44);
   --line-strong: rgba(0, 0, 0, 0.44);
   --solid: #0a0a0a;
   --on-solid: #f2f2f2;
@@ -225,7 +220,7 @@ body {
 
 button, a { font: inherit; }
 button { color: inherit; }
-button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, canvas:focus-visible { outline: 2px solid var(--acid); outline-offset: 4px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, canvas:focus-visible { outline: 2px solid var(--acid); outline-offset: 4px; }
 
 .site-shell { min-height: 100dvh; }
 
@@ -361,8 +356,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .eyebrow {
   margin: 0 0 18px;
   color: var(--orange);
-  font: 750 11px/1.2 var(--font-mono);
-  letter-spacing: .17em;
+  /* Section labels share the pre-game question role. */
+  font: 700 var(--type-label-size)/1.2 var(--font-mono);
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -403,35 +399,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 800;
 }
 .primary-button:hover { background: var(--muted); transform: translateY(-1px); }
-.text-button { padding: 10px 0; color: var(--paper); background: none; border-bottom: 1px solid var(--line-strong); font-size: 13px; font-weight: 700; }
-.text-button:hover { color: var(--paper); border-color: var(--paper); }
+.text-button {
+  min-height: var(--tap-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  font: 700 var(--type-label-size) var(--font-mono);
+  letter-spacing: var(--track-label);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.text-button:hover { color: var(--paper); }
 .outline-button { min-height: 46px; padding: 0 16px; border: 1px solid var(--line-strong); background: transparent; color: var(--paper); font-size: 12px; font-weight: 760; }
 .outline-button:hover { border-color: var(--acid); }
-
-.proof-icon { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); color: var(--acid); font-size: 19px; }
-
-.stage-caption { display: block; margin-bottom: 14px; color: var(--faint); font: 700 11px var(--font-mono); letter-spacing: .13em; text-transform: uppercase; }
-.input-nodes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.input-nodes span { padding: 12px 7px; border: 1px solid var(--line); background: var(--ink); color: var(--muted); text-align: center; font: 750 11px var(--font-mono); letter-spacing: .08em; }
-.input-nodes span:nth-child(2), .input-nodes span:nth-child(5) { border-color: var(--line-strong); color: var(--cyan); }
-.flow-line { height: 48px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
-.flow-line i { height: 1px; background: var(--line); }
-.flow-line b { color: var(--faint); font: 650 11px var(--font-mono); letter-spacing: .11em; text-transform: uppercase; }
-.bus-card { min-height: 78px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; padding: 15px; border: 1px solid rgba(255,255,255,.42); background: var(--ink); }
-.bus-index { color: var(--orange); font: 800 12px var(--font-mono); }
-.bus-card strong, .bus-card small { display: block; }
-.bus-card strong { font: 800 12px var(--font-mono); letter-spacing: .08em; }
-.bus-card small { margin-top: 8px; color: var(--faint); font: 600 11px var(--font-mono); }
-.game-window { border: 1px solid var(--line); background: var(--ink); }
-.window-top { display: flex; justify-content: space-between; padding: 9px 12px; border-bottom: 1px solid var(--line); color: var(--faint); font: 700 11px var(--font-mono); letter-spacing: .1em; }
-.window-field { position: relative; overflow: hidden; height: 188px;  }
-.window-field::after { content: ""; position: absolute; inset: 18px; border: 1px dashed var(--surface); }
-.player-core { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; place-items: center; width: 56px; height: 56px; transform: translate(-50%,-50%); border-radius: 50%; background: var(--paper); color: var(--ink); font: 900 12px var(--font-mono); }
-.orbit { position: absolute; z-index: 1; border-radius: 50%; border: 1px solid; }
-.orbit-a { top: 25%; left: 21%; width: 24px; height: 24px; border-color: var(--orange); box-shadow: 0 0 20px var(--line-strong); }
-.orbit-b { right: 19%; bottom: 20%; width: 15px; height: 15px; border-color: var(--acid); }
-.vector-line { position: absolute; z-index: 1; top: 49%; left: 50%; width: 34%; height: 1px; transform: rotate(-19deg); transform-origin: left; background: var(--orange); opacity: .5; }
-.system-note { margin: 16px 0 0; color: var(--faint); font: 650 11px/1.5 var(--font-mono); text-align: center; }
 
 .signal-strip { overflow: hidden; display: flex; flex-wrap: wrap; column-gap: var(--space-md); padding: var(--space-2xs) var(--gutter); border-block: 1px solid var(--line); background: var(--chrome-solid); }
 .signal-strip span { min-height: 56px; display: flex; align-items: center; gap: var(--space-2xs); padding: 0 var(--space-sm) 0 0; color: var(--muted); font: 700 var(--type-label-size) var(--font-mono); letter-spacing: var(--track-label); text-transform: uppercase; }
@@ -453,7 +435,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .catalog-results-heading span { color: var(--faint); font: 700 11px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
 .game-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .catalog-grid { --catalog-row-height: 548px; }
-.game-card { --accent: var(--acid); position: relative; min-height: 430px; display: flex; flex-direction: column; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--chrome); transition: background .2s ease; }
+.game-card { --accent: var(--acid); position: relative; min-width: 0; min-height: 430px; display: flex; flex-direction: column; padding: 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--chrome); transition: background .2s ease; }
 .game-card:hover { background: var(--ink); }
 .catalog-game-card { height: var(--catalog-row-height); min-height: 0; contain: layout paint; scroll-margin-top: 96px; }
 .catalog-game-card:focus-visible { outline: 2px solid var(--paper); outline-offset: -6px; }
@@ -478,13 +460,20 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .ready-badge, .roadmap-badge { padding: 6px 8px; font: 850 11px var(--font-mono); letter-spacing: .1em; }
 .ready-badge { background: var(--acid); color: var(--ink); }
 .roadmap-badge { border: 1px solid var(--line); color: var(--faint); }
-.game-card-copy h3 { margin: 0; font-size: 22px; letter-spacing: -.03em; }
+.game-card-copy h3 { margin: 0; font-size: 22px; letter-spacing: -.03em; -webkit-line-clamp: 2; }
 .game-card-copy p { min-height: 44px; margin: 10px 0 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-.input-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.input-tags span { padding: 6px 8px; border: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; }
+.input-tags { display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden; }
+.input-tags span { padding: 6px 8px; border: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; flex: none; display: inline-flex; align-items: center; gap: var(--space-3xs); }
 .preset-status { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
 .preset-status span:first-child { color: var(--acid); }.preset-status span::before { content: "●"; margin-right: 5px; font-size: 11px; }
-.game-card-launch { margin-top: 22px; padding: 15px 0 0; display: flex; justify-content: space-between; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--paper); font-size: 12px; font-weight: 760; cursor: pointer; }
+.game-card-launch { padding: 15px 0 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--paper); font-size: 12px; font-weight: 760; cursor: pointer;
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  min-height: var(--tap-min);
+  text-decoration: none; }
 .game-card-launch span { color: var(--accent); }
 .card-status { margin-top: 22px; display: flex; justify-content: space-between; color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .11em; }
 
@@ -532,7 +521,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .lab-page, .system-page { max-width: 1540px; min-height: 100dvh; margin: 0 auto; padding: 62px var(--gutter) 100px; }
 .lab-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 30px; }
 .lab-heading h1 { margin: 0; font-size: clamp(46px, 6vw, 86px); line-height: .9; letter-spacing: -.065em; }
-.back-button { margin-bottom: var(--space-sm); padding: 0; border: 0; background: none; color: var(--muted); font: 600 var(--type-body-size) var(--font-sans); text-decoration: none; cursor: pointer; }
+.back-button { margin-bottom: var(--space-sm); padding: 0; border: 0; background: none; color: var(--muted); font: 600 var(--type-body-size) var(--font-sans); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
 .back-button:hover { color: var(--paper); }
 .session-readout { min-width: 270px; padding: 12px; }
 .session-readout strong { font-size: 16px; }
@@ -677,7 +666,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .handedness-toggle { flex: 0 0 auto; min-width: 116px; min-height: 48px; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--paper); cursor: pointer; }
 .handedness-toggle span { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; }
 .handedness-toggle strong { font: 850 11px var(--font-mono); letter-spacing: .08em; }
-.handedness-toggle i { color: var(--muted); font-style: normal; }
+.handedness-toggle .icon { color: var(--muted); font-style: normal; }
 .handedness-toggle:active { border-width: 2px; background: var(--paper); color: var(--ink); }
 
 
@@ -685,14 +674,21 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 
 .dynamic-control[data-zone="shoulder"] { align-self: start; }
-.dynamic-control > .dynamic-action, .dynamic-control > .dynamic-analog, .dynamic-control > .dynamic-slider, .dynamic-control > .dynamic-surface, .dynamic-control > .dynamic-dpad { width: 100%; height: 100%; }
-.dynamic-action { display: grid; place-items: center; align-content: center; gap: 10px; padding: 12px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
-.dynamic-action span { font: 900 clamp(18px, 4vw, 38px) var(--font-mono); letter-spacing: -.04em; }
+.dynamic-action { display: grid; place-items: center; align-content: center; gap: 2px; padding: 6px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--muted); cursor: pointer; touch-action: none; }
+.dynamic-control > .dynamic-action span { max-width: 100%; font: 800 clamp(11px, 18cqi, 18px)/1.1 var(--font-mono); overflow-wrap: anywhere; letter-spacing: -.02em; }
 .dynamic-action small, .dynamic-analog small, .dynamic-slider small, .dynamic-surface small { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+/* Interaction instructions use sentence case, like the rest of the player guidance. */
+.dynamic-action small { max-width: 100%; font-size: 11px; line-height: 1.1; overflow-wrap: anywhere; letter-spacing: 0; text-transform: none; }
 .dynamic-action.action-primary { border-color: var(--controller-accent); color: var(--controller-accent); background: color-mix(in srgb, var(--controller-accent) 7%, var(--ink)); }
 .dynamic-action.action-danger { border-color: var(--orange); color: var(--orange); background: var(--surface); }
-.dynamic-action:active, .dynamic-action[data-active="true"] { transform: scale(.975); border-width: 2px; background: var(--paper); color: var(--ink); }
-.dynamic-action[data-active="true"] small { color: color-mix(in srgb, var(--ink) 62%, transparent); }
+/* All deck controls publish the same input state for pointer and keyboard use. */
+.dynamic-controller-deck [data-active="true"] {
+  border-color: var(--paper);
+  box-shadow: inset 0 0 0 2px var(--paper);
+  background: var(--surface-strong);
+  color: var(--paper);
+}
+.dynamic-controller-deck [data-active="true"] :is(span, small, output) { color: inherit; }
 .dynamic-shoulder { min-height: 64px; grid-template-columns: 1fr auto; place-items: center start; align-content: center; column-gap: 12px; }
 .dynamic-shoulder span { font-size: clamp(14px, 2.4vw, 22px); }
 .dynamic-shoulder small { justify-self: end; text-align: right; }
@@ -700,13 +696,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .dynamic-analog > span { font: 900 clamp(15px, 3vw, 26px) var(--font-mono); letter-spacing: -.035em; }
 .dynamic-analog > output { align-self: center; color: var(--paper); font: 850 11px var(--font-mono); }
 .dynamic-analog input { grid-column: 1 / -1; width: 100%; min-height: 44px; margin: -8px 0; accent-color: var(--paper); cursor: ew-resize; touch-action: none; }
-.dynamic-analog input:focus-visible, .dynamic-slider input:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+.dynamic-controller-deck :focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .dynamic-analog small { grid-column: 1 / -1; }
-.dynamic-analog[data-active="true"] { border-width: 2px; background: var(--surface-strong); color: var(--paper); }
 .dynamic-trigger { border-top-width: 3px; }
 .dynamic-analog-button { border-radius: 18px; }
-.dynamic-surface { position: relative; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink);  touch-action: none; }
-.dynamic-surface:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+.dynamic-surface { position: relative; overflow: hidden; border: 1px solid var(--line-strong); background-color: var(--ink);  touch-action: none; min-height: 0; }
 .dynamic-surface > span { position: absolute; left: 14px; top: 13px; color: var(--controller-accent); font: 800 11px var(--font-mono); letter-spacing: .12em; }
 .dynamic-surface > small { position: absolute; right: 14px; bottom: 12px; }
 .dynamic-surface > b { position: absolute; width: 54px; aspect-ratio: 1; display: grid; place-items: center; transform: translate(-50%,-50%); border: 2px solid var(--controller-accent); border-radius: 50%; background: var(--ink); color: var(--controller-accent); font: 900 11px var(--font-mono); box-shadow: 0 0 24px color-mix(in srgb, var(--controller-accent) 24%, transparent); pointer-events: none; }
@@ -730,10 +724,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   cursor: pointer;
   touch-action: none;
 }
-/* The pad captures the pointer, so a cell is never itself `:active` while it is being pressed.
-   Press state is the direction the pad has resolved. */
-.dynamic-dpad button[data-active] { background: color-mix(in srgb, var(--controller-accent) 12%, var(--panel)); color: var(--controller-accent); }
-
 /* Rows 1-3 of a three-row grid. These cells used to sit at rows 2, 3 and 4: row 1 was blank, and
    `down` at row 4 created an implicit fourth row the template never sized. The cross was a row of
    dead space above three rows of arrows, with a short one at the bottom. */
@@ -785,7 +775,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .layout-editor, .controller-lab-preview { min-width: 0; padding: 20px; }.layout-editor { border-right: 1px solid var(--line); }
 .controller-lab-section-title { min-height: 32px; display: flex; justify-content: space-between; color: var(--faint); font: 800 11px var(--font-mono); letter-spacing: .11em; }.controller-lab-section-title b { color: var(--acid); }
 .preset-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }.preset-row button { min-height: 38px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--faint); font: 750 11px var(--font-mono); text-transform: uppercase; cursor: pointer; }.preset-row button.active { border-color: var(--acid); color: var(--acid); background: var(--surface); }
-.layout-editor textarea { width: 100%; height: 430px; resize: vertical; padding: 16px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--paper); font: 600 11px/1.6 var(--font-mono); outline: none; }.layout-editor textarea:focus { border-color: var(--cyan); }.layout-editor .primary-button { margin-top: 12px; }
+.layout-editor textarea { width: 100%; height: 430px; resize: vertical; padding: 16px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--paper); font: 600 11px/1.6 var(--font-mono); }.layout-editor textarea:focus { border-color: var(--cyan); }.layout-editor .primary-button { margin-top: 12px; }
 .controller-layout-error { margin: 12px 0 0; color: var(--orange); font: 700 11px/1.5 var(--font-mono); }
 .controller-lab-link-card { min-height: 95px; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 13px; border-top: 1px solid var(--line); }.controller-lab-link-card > span { color: var(--orange); font: 850 11px var(--font-mono); }.controller-lab-link-card strong { font-size: 13px; }.controller-lab-link-card p { margin: 6px 0 0; color: var(--faint); font: 600 11px/1.45 var(--font-mono); }.controller-lab-link-card a, .controller-lab-link-card > b { color: var(--acid); font: 800 11px var(--font-mono); }
 .frame-inspector { margin-top: 8px; border: 1px solid var(--line-strong); background: var(--ink); }.frame-inspector > div { min-height: 42px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .1em; }.frame-inspector > div b { color: var(--cyan); }.frame-inspector dl { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); }.frame-inspector dl > div { min-width: 0; min-height: 230px; padding: 12px; border-right: 1px solid var(--line); }.frame-inspector dl > div:last-child { border-right: 0; }.frame-inspector dt { color: var(--faint); font: 750 11px var(--font-mono); }.frame-inspector dd { margin: 12px 0 0; }.frame-inspector code { color: var(--muted); font: 600 11px/1.45 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
@@ -893,7 +883,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .vision-state i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
 .vision-state.state-active, .vision-state.state-simulated { color: var(--acid); }.vision-state.state-active i, .vision-state.state-simulated i { background: var(--acid); box-shadow: 0 0 14px rgba(255,255,255,.65); }
 .vision-state.state-loading { color: var(--cyan); }.vision-state.state-loading i { background: var(--cyan); animation: signal .8s infinite; }
-.vision-state.state-denied, .vision-state.state-error { color: var(--orange); }.vision-state.state-denied i, .vision-state.state-error i { background: var(--orange); }
+/* Error has an outlined square and a heavier boundary; healthy remains a filled round dot. */
+.vision-state.state-denied, .vision-state.state-error { color: var(--paper); border: 2px solid var(--line-strong); font-weight: 900; }
+.vision-state.state-denied i, .vision-state.state-error i { border: 2px solid currentColor; border-radius: 0; background: transparent; box-shadow: none; }
 .vision-intro { max-width: 1180px; padding: 85px 0 54px; }
 .vision-intro h1 { margin: 0; font-size: clamp(56px, 8vw, 116px); line-height: .84; letter-spacing: -.07em; }
 .vision-intro > p:last-child { max-width: 760px; margin: 34px 0 0; color: var(--muted); font-size: 16px; line-height: 1.65; }
@@ -920,7 +912,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .vision-error { margin: 17px 0 0; color: var(--muted); font: 650 11px/1.55 var(--font-mono); }
 .vision-permission-copy { margin: 25px 0 0; color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.vision-permission-copy strong { color: var(--muted); }
 .vision-pipeline { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; border-left: 1px solid var(--line); }
-.vision-pipeline span { min-height: 76px; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .08em; }.vision-pipeline span b { color: var(--acid); }.vision-pipeline > i { padding: 0 9px; color: var(--orange); font-style: normal; }
+.vision-pipeline span { min-width: 0; overflow-wrap: anywhere; min-height: 76px; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .08em; }.vision-pipeline span b { color: var(--acid); }.vision-pipeline > i { padding: 0 9px; color: var(--orange); font-style: normal; }
 .vision-keyboard-hint { color: var(--faint); font: 600 11px/1.65 var(--font-mono); }
 
 .drift-page { max-width: 1540px; min-height: 100dvh; margin: 0 auto; padding: 42px var(--gutter) 100px; }
@@ -948,7 +940,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .body-arena { position: relative; overflow: hidden; border: 1px solid var(--line); background: var(--ink); }.body-statusbar { min-height: 44px; padding: 0 15px; display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 20px; border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .09em; }.body-statusbar span { display: flex; align-items: center; gap: 9px; }.body-statusbar span:nth-child(2) { justify-self: center; }.body-statusbar b { color: var(--acid); }
 .body-arena > canvas { display: block; width: 100%; height: var(--stage-h); }.body-camera-preview { position: absolute; z-index: 5; left: 18px; bottom: 18px; width: min(190px, 24%); aspect-ratio: 4 / 3; object-fit: cover; border: 1px solid var(--line-strong); background: var(--ink); opacity: 0; pointer-events: none; transform: scaleX(-1); transition: opacity .2s ease; }.body-camera-preview.active { opacity: .75; }
 .body-next { position: absolute; z-index: 4; top: 74px; left: 50%; min-width: 190px; padding: 14px 20px; transform: translateX(-50%); border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .8); text-align: center; }.body-next span, .body-next small { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; }.body-next strong { display: block; margin: 8px 0; color: var(--acid); font: 850 16px var(--font-mono); letter-spacing: .08em; }
-.body-overlay { position: absolute; z-index: 4; top: 62px; right: 18px; left: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; }.body-event { color: var(--acid); font: 850 11px var(--font-mono); letter-spacing: .12em; text-shadow: 0 2px 8px #000; }.body-camera-actions button { min-height: 38px; padding: 0 13px; border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .8); color: var(--cyan); font: 800 11px var(--font-mono); letter-spacing: .08em; pointer-events: auto; cursor: pointer; }
+.body-overlay { position: absolute; z-index: 4; top: 62px; right: 18px; left: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; pointer-events: none; }.body-event { color: var(--acid); font: 850 11px var(--font-mono); letter-spacing: .12em; text-shadow: 0 2px 8px #000; }.body-camera-actions button { min-height: var(--tap-min); padding: 0 13px; border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .8); color: var(--cyan); font: 800 11px var(--font-mono); letter-spacing: .08em; pointer-events: auto; cursor: pointer; }
 .body-privacy { margin: 16px 0 0; color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.body-privacy strong { color: var(--muted); }
 
 .slash-page { max-width: 1540px; min-height: 100dvh; margin: 0 auto; padding: 42px var(--gutter) 100px; }
@@ -977,11 +969,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  * compensates with a matching text-indent, which is the standard correction and the only one that
  * works for a negative value too.
  */
-.game-over-panel { position: absolute; z-index: 6; inset: 44px 0 0; display: grid; place-items: center; align-content: center; text-align: center; background: rgba(10, 10, 10, .87); backdrop-filter: blur(8px); }
-.game-over-panel p { margin: 0 0 var(--space-2xs); color: var(--muted); font: 800 var(--type-label-size) var(--font-mono); letter-spacing: .16em; text-indent: .16em; }
+.game-over-panel { position: absolute; z-index: 6; inset: 44px 0 0; display: grid; place-items: center; align-content: center; text-align: center; color: var(--stage-paper); background: rgba(10, 10, 10, .87); backdrop-filter: blur(8px); }
+.game-over-panel p { margin: 0 0 var(--space-2xs); color: var(--stage-muted); font: 800 var(--type-label-size) var(--font-mono); letter-spacing: .16em; text-indent: .16em; }
 .game-over-panel h2 { margin: 0; font: 850 clamp(64px, 12vw, 132px)/.9 var(--font-mono); letter-spacing: -.1em; text-indent: -.1em; font-variant-numeric: tabular-nums; }
-.game-over-panel > span { margin: var(--space-xs) 0 var(--space-md); color: var(--faint); font: 750 var(--type-label-size) var(--font-mono); letter-spacing: .12em; text-indent: .12em; }
-.game-over-panel .primary-button { width: auto; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
+.game-over-panel span { display: block; margin: var(--space-xs) 0 var(--space-md); color: var(--stage-muted); font: 750 var(--type-label-size) var(--font-mono); letter-spacing: .12em; text-indent: .12em; }
+.game-over-panel .primary-button { width: auto; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); color: #0a0a0a; background: var(--stage-paper); }
 .slash-instructions { display: grid; grid-template-columns: repeat(3, 1fr); border-left: 1px solid var(--line); }
 .slash-instructions span { min-height: 54px; padding: 0 16px; display: flex; align-items: center; gap: 8px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); }
 .slash-instructions b { color: var(--muted); }
@@ -1034,7 +1026,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 1050px) {
   .hero { grid-template-columns: 1fr; }
   .hero-copy { max-width: 850px; }
-  .game-grid { grid-template-columns: repeat(2, 1fr); }
+  .game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .catalog-spacer { --catalog-spacer-height: var(--catalog-spacer-height-2); }
   .signal-strip { overflow-x: auto; }
   .lab-layout { grid-template-columns: 1fr; }
@@ -1077,7 +1069,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .vision-workbench { grid-template-columns: 1fr; }
   .vision-stage { border-right: 0; border-bottom: 1px solid var(--line); }
   .vision-actions { grid-template-columns: repeat(4, 1fr); }
-  .vision-pipeline { grid-template-columns: 1fr 1fr; }.vision-pipeline > i { display: none; }
+  .vision-pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }.vision-pipeline > i { display: none; }
   .controller-lab-workbench { grid-template-columns: 1fr; }.layout-editor { border-right: 0; border-bottom: 1px solid var(--line); }
 }
 
@@ -1100,7 +1092,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .catalog-control { border-right: 0; border-bottom: 1px solid var(--line); }
   .catalog-reset { min-height: 50px; }
   .catalog-results-heading { align-items: flex-start; flex-direction: column; justify-content: center; gap: 5px; padding-block: 12px; }
-  .game-grid { grid-template-columns: 1fr; }
+  .game-grid { grid-template-columns: minmax(0, 1fr); }
   .catalog-spacer { --catalog-spacer-height: var(--catalog-spacer-height-1); }
   .catalog-pager { height: 112px; padding: 10px; }
   .catalog-pager-controls { grid-template: "status status" auto "previous next" 50px / 1fr 1fr; gap: 6px 10px; }
@@ -1223,7 +1215,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .handedness-toggle { width: 100%; }
   .dynamic-control[data-control="joystick"] { min-height: 0; grid-row: span 1; align-self: start; aspect-ratio: 1; }
   .dynamic-control[data-control="joystick"] .dynamic-surface { min-height: 0; aspect-ratio: 1; }
-  .dynamic-action span { font-size: 17px; }
   .controller-role-status dl { grid-template-columns: repeat(3, 1fr); }
   .orbital-heading h1 { font-size: 50px; }
   .orbital-threat-stack { left: 10px; right: 10px; bottom: 10px; }.orbital-threat-stack article > div { grid-template-columns: 45px 1fr; }
@@ -1545,9 +1536,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin-bottom: var(--space-sm);
   color: var(--muted);
 }
-
-.input-tags { flex-wrap: nowrap; overflow: hidden; }
-.input-tags span { flex: none; display: inline-flex; align-items: center; gap: var(--space-3xs); }
 .input-tags .icon { color: var(--faint); }
 
 /* Sentence case, normal tracking. Uppercase at 0.16em pushed "Ready now · Touch adds more" onto a
@@ -1561,16 +1549,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font: 600 var(--type-label-size) var(--font-sans);
 }
 .card-readiness.needs-device { color: var(--faint); }
-
-.game-card-launch {
-  margin-top: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2xs);
-  min-height: var(--tap-min);
-  text-decoration: none;
-}
 
 /* --- Game posters ------------------------------------------------------------------------------ */
 
@@ -1587,12 +1565,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   margin-bottom: var(--space-sm);
   border: 1px solid var(--line);
   background: var(--panel);
+  max-height: 260px;
 }
 .game-card:hover .game-poster { border-color: var(--line-control); }
-
-/* The featured card spans the full grid, so an 8:5 poster on it becomes 700px tall. `slice` on the
-   SVG's preserveAspectRatio means a wider ratio crops rather than distorts. */
-.game-poster { max-height: 260px; }
 
 /* ==========================================================================
    Studio — the developer surface.
@@ -1841,7 +1816,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    * The name of the game is on the screen you came from. What is needed here is the game.
    */
   [class$="-page"], [class*="-page "] { min-height: 0; padding: 0; }
-  [class*="-heading"] { display: none; }
+  [class*="-heading"]:not(.dynamic-controller-heading) { display: none; }
   .input-readiness { display: none; }
   [class*="-layout"] { border: 0; }
   /* The status bar stays — it is the one line that says what is driving the game — so the stage
@@ -1858,64 +1833,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* --- The controller deck ----------------------------------------------------------------------- */
 
-/*
- * A button is square.
- *
- * `.dynamic-action` had a min-height and no ratio, so a grid row that stretched turned it into a
- * portrait slab — measured at 82×166 on a phone, next to a d-pad that was correctly 170 wide. The
- * older static `.action-cluster button` always had `aspect-ratio: 1`; the dynamic deck that replaced
- * it did not.
- */
-/* min-height on the action fought the ratio, so the button grew past its own column and clipped at
-   the deck's right edge. The column decides the width; the ratio decides the height. */
-.dynamic-control > .dynamic-action {
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 1;
-  align-self: center;
-}
-
-/* The action's own name is the label. The line under it says how to use it, so it is sentence case
-   and not a tracked-out uppercase code. */
-.dynamic-action small { text-transform: none !important; letter-spacing: 0 !important; }
-
-/*
- * Sideways is how a controller is held.
- *
- * The deck goes to a left/right thumb split with the middle kept clear, everything that is not a
- * control folds away, and the page does not scroll — on this surface a drag that scrolls the page
- * is a drag the game did not receive, and `touch-action: pan-y` means every miss scrolls.
- */
+/* Short viewports change spacing only. Setup stays scrollable and the phase owns chrome. */
 @media (orientation: landscape) and (max-height: 560px) {
   .controller-page {
-    height: 100dvh;
-    /* The home indicator is still at the bottom in landscape, and the deck is anchored to it. */
+    min-height: 100dvh;
+    height: auto;
     padding:
-      var(--space-2xs)
+      max(var(--space-2xs), env(safe-area-inset-top))
       max(var(--space-2xs), env(safe-area-inset-right))
       max(var(--space-2xs), env(safe-area-inset-bottom))
       max(var(--space-2xs), env(safe-area-inset-left));
-    overflow: hidden;
-    touch-action: none;
   }
-  .controller-page > header { min-height: 32px; }
-  .dynamic-controller-heading, .link-runtime, .controller-speaker, .frame-inspector { display: none; }
-  .dynamic-controller-deck {
-    flex: 1;
-    min-height: 0;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
-    align-content: stretch;
-  }
-  /* Thumbs reach the outer thirds; the middle is where a hand is not. */
-  .dynamic-control[data-control="dpad"],
-  .dynamic-control[data-control="joystick"],
-  .dynamic-control[data-control="touch-surface"] { grid-column: span 2; min-height: 0; grid-row: span 2; }
-  .dynamic-control { min-height: 0; }
-  .dynamic-control > .dynamic-action { aspect-ratio: auto; height: 100%; }
-  .dynamic-action span { font-size: clamp(14px, 3vw, 24px); }
-  .dynamic-action small { display: none; }
+  .controller-page > header { min-height: var(--tap-min); }
 }
 
 /* A phone in the hand is a coarse pointer: every target is at least 48px, including inside a d-pad. */
@@ -1985,7 +1914,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 [class$="-page"] { padding-top: var(--space-sm) !important; }
 /* The arrow is drawn, not a character: "←" at 11px sat off the text baseline and at a different
    weight from everything around it. */
-.back-button { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
 .back-button .icon { flex: none; }
 .pre-game-back { margin-bottom: var(--space-sm); }
 
@@ -2088,7 +2016,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.game-card-copy h3 { -webkit-line-clamp: 2; }
 .game-card-copy > p { -webkit-line-clamp: 2; }
 
 /* The game frame's own control, in the corner a window's controls live in. It replaced a status dot
@@ -2097,8 +2024,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   flex: none;
   display: inline-grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: var(--tap-min);
+  height: var(--tap-min);
   padding: 0;
   border: 1px solid var(--line);
   background: none;
@@ -2106,8 +2033,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   cursor: pointer;
 }
 .frame-fullscreen:hover { border-color: var(--line-control); color: var(--paper); }
-/* A coarse pointer needs a real target even though the frame is dense. */
-@media (pointer: coarse) { .frame-fullscreen { width: 36px; height: 36px; } }
+
 
 /*
  * A stat block holds however many stats the game has.
@@ -2215,7 +2141,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .deck-cluster[data-side="center"] { grid-area: center; justify-items: stretch; }
 
 .deck-bars { display: grid; gap: var(--deck-gap); width: 100%; }
-.deck-pads { display: grid; width: 100%; }
+.deck-pads { display: grid; gap: var(--deck-gap); width: 100%; }
 .deck-keys {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(var(--key-min), var(--key-max)));
@@ -2227,7 +2153,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .deck-cluster[data-side="left"] .deck-keys { justify-content: start; }
 .deck-cluster[data-side="center"] .deck-keys { justify-content: center; }
 
-.dynamic-control { min-width: 0; min-height: 0; display: grid; }
+.dynamic-control { min-width: 0; min-height: 0; display: grid; container-type: inline-size; }
 
 /* --- Shapes ------------------------------------------------------------------------------------
    A d-pad is square because a cross is symmetric: a stretched one makes up and down a different
@@ -2285,7 +2211,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   letter-spacing: var(--track-label);
   pointer-events: none;
 }
-.dynamic-surface { min-height: 0; }
 
 /* ── Controller phases ────────────────────────────────────────────────────────
    A phone that has been given a role is a controller, not a settings page. Room code, pairing,
@@ -2393,19 +2318,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
    gap as everything else runs together into "Skip the check Play another way". */
 .camera-setup-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-md); margin-top: var(--space-xs); }
 .camera-setup-actions .primary-button { margin-right: var(--space-2xs); }
-.text-button {
-  min-height: var(--tap-min);
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  font: 700 var(--type-label-size) var(--font-mono);
-  letter-spacing: var(--track-label);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.text-button:hover { color: var(--paper); }
 
 @media (max-width: 760px) {
   .camera-setup-view { grid-template-columns: minmax(0, 1fr); }
@@ -2435,3 +2347,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* The instruction is the part that gets acted on, but the problem is what gets read first, so the
    fix is set quieter rather than smaller — under 11px it stops being readable over a moving game. */
 .camera-notice span { color: var(--muted); font-weight: 600; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* A canvas has its own dark ground in either page theme. Keep only its overlay text and controls
+   on that palette; the surrounding page, status bar and reserved controller dock follow the OS. */
+.orbital-threat-stack, .beat-next, .beat-overlay, .gravity-event,
+.spell-event, .spell-vitals, .spell-actions, .echo-event, .echo-clue.fallback, .echo-actions,
+.shadow-event, .shadow-vitals, .shadow-actions, .swarm-event, .swarm-vitals, .swarm-actions,
+.drift-overlay, .boost-meter, .body-next, .body-overlay, .slash-overlay-top, .hit-callout,
+.sword-trigger, .game-fullscreen:fullscreen [class*="statusbar"] {
+  --paper: #f2f2f2;
+  --muted: #bcbcbc;
+  --faint: #bcbcbc;
+  --panel: #151515;
+  --line: rgba(255, 255, 255, .34);
+  --line-strong: rgba(255, 255, 255, .44);
+  --acid: var(--paper);
+  --orange: var(--paper);
+  --cyan: var(--muted);
+  color: var(--paper);
+}

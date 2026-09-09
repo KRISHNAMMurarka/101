@@ -1,9 +1,12 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
@@ -33,7 +36,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<DriftHud>(INITIAL_HUD);
 
-  const { linked, readiness } = useGameHost<TiltDriftState>({
+  const { linked, readiness, controllerHost } = useGameHost<TiltDriftState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -80,7 +83,8 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
         <div className="drift-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
 
-      <div className="drift-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="drift-arena">
         <div className="drift-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="TiltDrift play field. Steer with left and right arrows, boost with Space, brake with Down, and drift with Shift." />
         <div className="drift-overlay">
@@ -89,8 +93,9 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
           <button onClick={onConnect}>{linked ? "ADD DRIVER" : "CONNECT WHEEL"} ↗</button>
         </div>
         <div className="boost-meter"><span>BOOST</span><i><b style={{ width: `${hud.boost}%` }} /></i></div>
-        {hud.gameOver && <div className="game-over-panel"><p>VEHICLE OFFLINE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Vehicle offline" score={hud.score} detail="Final score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="slash-instructions"><span><b>STEER</b> Arrow keys / A D / gamepad / phone tilt</span><span><b>BOOST + DRIFT</b> Space + Shift</span><span><b>BRAKE</b> Down arrow / S / Link pedal</span></div>
     </section>
   );
@@ -118,9 +123,12 @@ function createDriftView(canvas: HTMLCanvasElement) {
   const trafficMeshes = new Map<number, THREE.Mesh>();
   let lastEnvironment: RoadEnvironment | undefined;
 
+  const resize = new ResizeObserver(([entry]) => {
+    if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height));
+  });
+  resize.observe(canvas);
+
   const sync = (state: TiltDriftState) => {
-    const bounds = canvas.getBoundingClientRect();
-    view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
     if (state.environment !== lastEnvironment) {
       const color = environmentColor(state.environment);
       view.renderer.setClearColor(color.background, 1);
@@ -176,6 +184,7 @@ function createDriftView(canvas: HTMLCanvasElement) {
   return {
     sync,
     dispose() {
+      resize.disconnect();
       for (const group of roadGroups.values()) disposeObject(group);
       for (const mesh of trafficMeshes.values()) { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }
       carBody.geometry.dispose(); cockpit.geometry.dispose();

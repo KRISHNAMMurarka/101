@@ -1,7 +1,7 @@
 {
   "id": "shadowarena", "name": "Shadow Arena 101", "tagline": "Your silhouette enters the fight.", "order": 9,
   "version": "0.2.0", "engine": "^1", "renderer": "3d",
-  "players": { "min": 1, "max": 1 },
+  "players": { "min": 1, "max": 2 },
   "inputs": ["keyboard", "gamepad", "touch", "camera-pose"],
   "offline": true, "procedural": true, "status": "playable", "accent": "#f98b70",
   "controllers": { "basic": ["keyboard", "gamepad", "touch"], "immersive": ["camera-pose"] }

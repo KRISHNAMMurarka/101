@@ -91,3 +91,17 @@ test("requires a conventional playable preset at the package boundary", () => {
   const withoutControllers = { ...manifest, controllers: undefined };
   assert.throws(() => Game101.package({ manifest: withoutControllers, input, game: definition }), /basic controllers/);
 });
+
+test("describes local, hosted and streamed runtimes without inventing a local renderer", () => {
+  assert.equal(parseGameManifest(manifest).runtime, "local");
+  const remote = parseGameManifest({ ...manifest, runtime: "streamed", renderer: "video", offline: false,
+    launchUrl: "https://games.example.test/play",
+    inputTarget: { transport: "webrtc", endpoint: "https://games.example.test/input", format: "101-json" },
+  });
+  assert.equal(remote.runtime, "streamed");
+  assert.equal(remote.renderer, "video");
+  assert.equal(remote.launchUrl, "https://games.example.test/play");
+  assert.deepEqual(remote.inputTarget, { transport: "webrtc", endpoint: "https://games.example.test/input", format: "101-json" });
+  assert.throws(() => parseGameManifest({ ...manifest, runtime: "unknown" }), /runtime/);
+  assert.throws(() => parseGameManifest({ ...manifest, runtime: "hosted", launchUrl: "javascript:alert(1)" }), /URL/);
+});

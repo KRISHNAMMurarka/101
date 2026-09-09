@@ -18,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description,
     applicationName: "101",
     manifest: "/manifest.webmanifest",
+    icons: { icon: "/icons/101-link.svg" },
     keywords: ["party games", "couch multiplayer", "phone controller", "motion games"],
     openGraph: { title: "101 — Anything can be a controller", description, images: [{ url: image, width: 1731, height: 909 }] },
     twitter: { card: "summary_large_image", title: "101 — Anything can be a controller", description, images: [image] },

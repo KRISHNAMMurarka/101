@@ -37,13 +37,47 @@ the same way.
 | `/sw.js`, `*manifest.json` | network only | a stale manifest names chunks that are gone |
 | `/_next/static/…` | cache first | content-hashed: the name changes with the bytes |
 | everything else | stale-while-revalidate | instant offline, and an update still lands |
-| navigation | network first, `/controller` shell cached | offline fallback for the installed controller |
+| navigation | network first, fixed matching `/controller` shell on failure | a newer online page cannot replace an older worker's fallback |
 
 The cache name is `101-link-${BUILD_ID}`, and `BUILD_ID` is stamped into `dist/client/sw.js` after
-every build by `tools/stamp-service-worker.mjs`, from a hash of the built client. A version derived
+every build by `tools/stamp-service-worker.mjs`, from a hash of the built client, source worker, and
+rendered controller shell. A version derived
 from the build is the only one nobody can forget to bump. `public/sw.js` keeps the `__BUILD_ID__`
 placeholder; the stamper exits non-zero if it is missing, so an unstamped worker fails the build
 instead of silently shipping one shared cache again.
+
+## Installing an update atomically
+
+The stamper invokes the built server's controller route locally, writes the resulting HTML to a
+content-addressed `/_next/static/controller-shell-….html` file, and walks the build manifest from
+the modules present in that document. It includes their static dependencies, controller/framework
+dynamic dependencies, stylesheets, CSS fonts/assets, manifest, and icon. It does not follow the
+browser entry's registry of unrelated game and Studio routes. Every selected file must exist in
+the built client; missing assets fail the build.
+
+The worker installs this complete list with one `Cache.addAll` batch, then stores the matching
+HTML under the offline controller lookup key. A failed fetch or cache write rejects installation
+and removes the candidate cache; the previous worker and cache remain available. Fetching the
+content-addressed shell avoids mixing an older worker's asset list with HTML from a newer release
+that reaches the server during installation.
+
+Updates use the browser's normal waiting lifecycle. There is no forced `skipWaiting` or
+`clients.claim`: an update waits until clients controlled by the old worker close. Activation can
+then delete the old build's cache. Cache reads stay within the active worker's named cache, so a
+waiting update cannot supply a different build's fallback. Online navigation responses are served
+but never saved over the fixed offline shell.
+
+The fallback is the default controller page (`session=101LAB`), not a saved private pairing page.
+Pairing-secret URLs and signalling always require the network. Offline caching preserves the
+controller interface; it does not make an unreachable game host available or install every game.
+
+`tests/service-worker.test.ts` runs the actual worker source in a VM with simulated browser cache,
+fetch, and lifecycle events. It exercises v1 → waiting v2 → activated v2 offline shell/JS/CSS,
+failed-update preservation, takeover avoidance, online-page isolation, and secret exclusions.
+`tests/pwa-contract.test.ts` tests the stamper against a dependency fixture, including fonts,
+controller lazy imports, unrelated-game exclusion, missing assets, and stable build IDs. Browser
+device lifecycle and offline launch still require browser verification; the VM explicitly models
+the point at which the browser permits activation.
 
 ## The build is reproducible, and that took finding one UUID
 
@@ -115,4 +149,3 @@ the way through. A check that cannot run — no `lsof`, another platform — nev
 
 The general lesson is worth keeping: when a symptom implicates caching, verify *which server
 answered* before investigating what it served.
-

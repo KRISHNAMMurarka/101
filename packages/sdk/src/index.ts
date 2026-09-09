@@ -6,12 +6,21 @@ import {
   type InputVector,
 } from "@101/input";
 import {
+  CAPABILITY_NAMES,
   parseControllerLayout,
   type ControllerLayout,
   type DeviceCapabilities,
 } from "@101/protocol";
 
-export type RendererKind = "2d" | "3d";
+export type RendererKind = "2d" | "3d" | "video";
+export type GameRuntime = "local" | "hosted" | "streamed";
+
+/** Remote input is delivered by the remote runtime, never by the local update loop. */
+export interface GameInputTarget {
+  transport: "webrtc" | "websocket";
+  endpoint: string;
+  format: "101-json";
+}
 
 export interface GameManifest {
   id: string;
@@ -20,6 +29,11 @@ export interface GameManifest {
   version: string;
   engine: string;
   renderer: RendererKind;
+  /** Omitted manifests retain the local runtime. */
+  runtime?: GameRuntime;
+  /** Entry point supplied by a hosted/streamed title. No endpoint means not launchable here. */
+  launchUrl?: string;
+  inputTarget?: GameInputTarget;
   /**
    * What this package is. Defaults to "game".
    *
@@ -98,7 +112,25 @@ export function parseGameManifest(input: unknown): GameManifest {
   const engine = typeof input.engine === "string" && /^\^?\d+(?:\.\d+){0,2}$/.test(input.engine)
     ? input.engine
     : (() => { throw new Error("Game engine must be a compatible numeric range such as ^1"); })();
-  if (input.renderer !== "2d" && input.renderer !== "3d") throw new Error("Game renderer must be 2d or 3d");
+  if (input.renderer !== "2d" && input.renderer !== "3d" && input.renderer !== "video") throw new Error("Game renderer must be 2d, 3d or video");
+  const runtime = input.runtime ?? "local";
+  if (runtime !== "local" && runtime !== "hosted" && runtime !== "streamed") throw new Error("Invalid game runtime");
+  if (runtime === "local" && (input.launchUrl !== undefined || input.inputTarget !== undefined || input.renderer === "video")) {
+    throw new Error("A local runtime cannot declare a remote launch, input target or video renderer");
+  }
+  const launchUrl = input.launchUrl === undefined ? undefined : runtimeUrl(input.launchUrl, "launch URL", ["https:", "http:"]);
+  let inputTarget: GameInputTarget | undefined;
+  if (input.inputTarget !== undefined) {
+    const target = input.inputTarget;
+    if (!isRecord(target) || (target.transport !== "webrtc" && target.transport !== "websocket") || target.format !== "101-json") {
+      throw new Error("Invalid game input target");
+    }
+    inputTarget = {
+      transport: target.transport,
+      endpoint: runtimeUrl(target.endpoint, "input URL", target.transport === "websocket" ? ["wss:", "ws:"] : ["https:", "http:"]),
+      format: target.format,
+    };
+  }
   if (input.surface !== undefined && input.surface !== "game" && input.surface !== "tool") {
     throw new Error("Game surface must be game or tool");
   }
@@ -132,6 +164,9 @@ export function parseGameManifest(input: unknown): GameManifest {
     version,
     engine,
     renderer: input.renderer,
+    runtime,
+    ...(launchUrl ? { launchUrl } : {}),
+    ...(inputTarget ? { inputTarget } : {}),
     ...(input.surface === "tool" ? { surface: "tool" as const } : {}),
     players: { min: Number(input.players.min), max: Number(input.players.max) },
     inputs,
@@ -234,7 +269,7 @@ function inputControls(input: InputManifest) {
   };
 }
 
-const CAPABILITIES = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad", "speaker"] as const;
+const CAPABILITIES = CAPABILITY_NAMES;
 
 function uniqueCapabilities(input: readonly (keyof DeviceCapabilities)[], label: string) {
   if (!Array.isArray(input) || input.some((value) => !CAPABILITIES.includes(value))) throw new Error(`Invalid ${label}`);
@@ -283,6 +318,14 @@ function finiteInteger(value: unknown, label: string, min: number, max: number) 
 function color(value: unknown, label: string) {
   if (typeof value !== "string" || !/^#[0-9a-f]{6}$/i.test(value)) throw new Error(`Invalid ${label}`);
   return value;
+}
+
+function runtimeUrl(value: unknown, label: string, protocols: readonly string[]) {
+  if (typeof value !== "string" || value.length > 2048) throw new Error(`Invalid ${label}`);
+  let url: URL;
+  try { url = new URL(value); } catch { throw new Error(`Invalid ${label}`); }
+  if (!protocols.includes(url.protocol) || url.username || url.password) throw new Error(`Invalid ${label}`);
+  return url.toString();
 }
 
 function deepFreeze<Value>(value: Value): Value {

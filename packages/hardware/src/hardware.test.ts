@@ -36,3 +36,10 @@ test("hardware frame emitter preserves stable identity and releases state", () =
   assert.equal(frame.actions.trigger, true);
   assert.equal(emitter.release(11).sequence, 2);
 });
+
+test("a hardware decoder carries a complete metric skeleton and clears it on release", () => {
+  const emitter = new HardwareFrameEmitter("suit", "player-2", "hid", () => ({ actions: {}, axes: {}, vectors: {}, poses: { body: [0.5, 0.4, -1.8, 1] } }));
+  const frame = emitter.decode({ bytes: new Uint8Array(), timestamp: 10 })!;
+  assert.deepEqual(frame.poses?.body, [0.5, 0.4, -1.8, 1]);
+  assert.deepEqual(emitter.release(11).poses, {});
+});

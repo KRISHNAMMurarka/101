@@ -5,6 +5,10 @@ import { useSyncExternalStore } from "react";
 import type { DeviceCapabilities } from "@101/protocol";
 
 import type { InputSource } from "@101/input";
+import { listCameras } from "@101/adapter-camera";
+
+let cameraPresent = false;
+let cameraProbe = 0;
 
 /**
  * What this browser can actually contribute.
@@ -27,7 +31,7 @@ export function detectLocalCapabilities(): DeviceCapabilities {
     accelerometer: "DeviceMotionEvent" in window,
     gyroscope: "DeviceOrientationEvent" in window,
     magnetometer: "ondeviceorientationabsolute" in window,
-    camera: Boolean(nav.mediaDevices?.getUserMedia),
+    camera: cameraPresent,
     microphone: Boolean(nav.mediaDevices?.getUserMedia),
     haptics: "vibrate" in nav,
     // A connected pad, not the API existing. `"getGamepads" in navigator` is true in every modern
@@ -48,7 +52,7 @@ export function localInputSources(capabilities = detectLocalCapabilities()): Inp
   if (capabilities.touch) sources.push("touch");
   if (capabilities.gamepad) sources.push("gamepad");
   if (capabilities.gyroscope || capabilities.accelerometer) sources.push("phone-motion");
-  if (capabilities.camera) sources.push("camera-hand", "camera-pose", "camera-face");
+  if (capabilities.camera) sources.push("camera-hand", "camera-pose");
   return sources;
 }
 
@@ -66,9 +70,8 @@ export function describeLocalDevice(): "phone" | "tablet" | "computer" {
 /**
  * The probe as a client-only store.
  *
- * Nothing here changes during a document's life — a browser does not grow a gyroscope — so the
- * snapshot is resolved once and held, which is both what `useSyncExternalStore` needs for a stable
- * reference and the reason this is not state that an effect should be assigning.
+ * Snapshots are stable until a device event changes the answer. Camera enumeration is asynchronous,
+ * so the first snapshot claims no camera, then refreshes after the presence probe completes.
  */
 export type LocalDevice = {
   capabilities: DeviceCapabilities;
@@ -96,12 +99,23 @@ function resolveLocalDevice(): LocalDevice {
 function refresh() {
   const next = probe();
   const changed = next.shape !== resolvedDevice?.shape
-    || next.sources.length !== resolvedDevice.sources.length
+    || next.sources.length !== resolvedDevice?.sources.length
     || next.sources.some((source, index) => source !== resolvedDevice?.sources[index]);
   if (!changed) return;
   resolvedDevice = next;
   for (const listener of deviceListeners) listener();
 }
+
+/** Enumeration never requests permission. A late result cannot overwrite a newer device probe. */
+export async function refreshLocalCameras() {
+  const generation = ++cameraProbe;
+  const cameras = await listCameras();
+  if (generation !== cameraProbe) return;
+  cameraPresent = cameras.length > 0;
+  refresh();
+}
+
+const cameraChanged = () => { void refreshLocalCameras(); };
 
 /**
  * Plugging in a pad changes the answer, and so does putting one down. Without this the first paint's
@@ -113,12 +127,16 @@ function subscribeToDevice(listener: () => void) {
   if (deviceListeners.size === 1 && typeof window !== "undefined") {
     window.addEventListener("gamepadconnected", refresh);
     window.addEventListener("gamepaddisconnected", refresh);
+    navigator.mediaDevices?.addEventListener("devicechange", cameraChanged);
+    cameraChanged();
   }
   return () => {
     deviceListeners.delete(listener);
     if (deviceListeners.size === 0 && typeof window !== "undefined") {
       window.removeEventListener("gamepadconnected", refresh);
       window.removeEventListener("gamepaddisconnected", refresh);
+      navigator.mediaDevices?.removeEventListener("devicechange", cameraChanged);
+      ++cameraProbe;
     }
   };
 }

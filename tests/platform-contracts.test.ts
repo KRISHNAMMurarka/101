@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import test from "node:test";
+import { discoverUnitTests } from "../tools/unit-test-files.mjs";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import { ControllerInputModel } from "@101/link-controller";
 import { COMMITTED_POSE_MODELS } from "@101/vision";
@@ -958,11 +959,11 @@ test("every shipped controller layout plans into a deck a thumb can reach", asyn
 });
 
 test("every test file in the repo is actually run by test:unit", () => {
-  // `test:unit` names each file explicitly, so adding one and forgetting the script means it never
-  // runs and the suite still reports green. That happened to this repo's own d-pad tests.
+  // Compare the runner's bounded discovery with an independent walk so new tests cannot be omitted.
   const root = resolve(import.meta.dirname, "..");
   const script: string = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8")).scripts["test:unit"];
-  const listed = new Set(script.split(/\s+/).filter((token) => token.endsWith(".test.ts")));
+  assert.match(script, /tools\/run-unit-tests\.mjs/);
+  const listed = new Set(discoverUnitTests(root));
 
   // Only where this project keeps source. A whole-repo walk descends into the native app's
   // CocoaPods tree, which carries the entire boost header set and takes minutes.
@@ -1058,5 +1059,13 @@ test("every model the code loads by default is actually served", () => {
   assert.ok(COMMITTED_POSE_MODELS.size > 0, "no pose model is committed at all");
   for (const path of COMMITTED_POSE_MODELS) {
     assert.ok(served.has(path), `COMMITTED_POSE_MODELS names ${path}, which is not in public/models`);
+  }
+});
+
+
+test("games use the shared camera lifecycle", () => {
+  const components = resolve(import.meta.dirname, "../app/components");
+  for (const name of readdirSync(components).filter((name) => name.endsWith("Game.tsx"))) {
+    assert.doesNotMatch(readFileSync(resolve(components, name), "utf8"), /import[\s\S]*?\b(?:BrowserCameraAdapter|BrowserHandAdapter)\b[^;]*from\s+["']@101\/adapter-camera["']/, `${name} must use useCameraInput`);
   }
 });

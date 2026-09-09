@@ -1,4 +1,4 @@
-import { engineSupportsVersion, type GamePackage } from "@101/sdk";
+import { engineSupportsVersion, type GameRuntime, type RendererKind, type GamePackage } from "@101/sdk";
 
 export type GameInstallSource =
   | { kind: "bundled" }
@@ -15,7 +15,8 @@ export interface GameCatalogEntry {
   id: string;
   name: string;
   version: string;
-  renderer: "2d" | "3d";
+  renderer: RendererKind;
+  runtime: GameRuntime;
   players: { min: number; max: number };
   offline: boolean;
   procedural: boolean;
@@ -64,6 +65,7 @@ export class GameRegistry {
       name: gamePackage.manifest.name,
       version: gamePackage.manifest.version,
       renderer: gamePackage.manifest.renderer,
+      runtime: gamePackage.manifest.runtime ?? "local",
       players: { ...gamePackage.manifest.players },
       offline: gamePackage.manifest.offline,
       procedural: gamePackage.manifest.procedural,

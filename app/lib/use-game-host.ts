@@ -2,11 +2,16 @@
 
 import { GameHost101, type InputReadiness } from "@101/game-host";
 import type { InputAdapter } from "@101/input";
-import type { GameContext, GamePackage } from "@101/sdk";
+import type { GameContext, GamePackage, GameControllerRole } from "@101/sdk";
 import { LocalSession, type SessionSnapshot } from "@101/session";
 import { useEffect, useState } from "react";
 
 import { getBrowserHostTransport } from "./browser-link";
+
+export interface ControllerHostBinding {
+  host: GameHost101;
+  roles: readonly Readonly<GameControllerRole>[];
+}
 
 export interface GameHostBinding<State> {
   /** Everything the game needs to draw: state, input, and the rest of the engine context. */
@@ -53,6 +58,7 @@ export function useGameHost<State>({
   deps = [],
 }: UseGameHostOptions<State>) {
   const [linked, setLinked] = useState(0);
+  const [controllerHost, setControllerHost] = useState<ControllerHostBinding | null>(null);
   const [session, setSession] = useState<SessionSnapshot>();
   const [readiness, setReadiness] = useState<InputReadiness>();
 
@@ -71,21 +77,24 @@ export function useGameHost<State>({
       onInputReadiness: setReadiness,
     });
 
-    void host.launch(build()).then((context) => {
+    const gamePackage = build();
+    void host.launch(gamePackage).then((context) => {
       // The effect can be torn down while the launch is still resolving — a fast unmount, or React
       // running effects twice in development. Starting a draw loop then would leave it running
       // against a stopped engine.
       if (disposed) return;
       teardown = onReady({ context, host });
+      setControllerHost({ host, roles: gamePackage.controllers });
     });
 
     return () => {
       disposed = true;
+      setControllerHost((current) => current?.host === host ? null : current);
       teardown?.();
       void host.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, ...deps]);
 
-  return { linked, session, readiness };
+  return { linked, session, readiness, controllerHost };
 }

@@ -2,7 +2,8 @@
 
 import { BrowserCameraAdapter, BrowserHandAdapter, HandInputAdapter, PoseInputAdapter, type HandAdapterDiagnostics, type PoseAdapterDiagnostics } from "@101/adapter-camera";
 import { InputBus, type InputFrame } from "@101/input";
-import { HAND_CONNECTIONS, POSE_CONNECTIONS, type HandLandmark, type PoseLandmark } from "@101/vision";
+import { coverTransform, createSimulatedPose, drawHands, drawPose } from "@101/vision";
+import { observeCanvasViewport, type CanvasViewport } from "../../components/camera/canvas-viewport";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -17,6 +18,8 @@ export default function VisionLab() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const busRef = useRef<InputBus | null>(null);
   const adapterRef = useRef<PoseInputAdapter | HandInputAdapter | null>(null);
+  const simulationTimerRef = useRef<number | undefined>(undefined);
+  const [viewport, setViewport] = useState<CanvasViewport>({ width: 0, height: 0, ratio: 1 });
   const simulationRef = useRef({ x: 0, duck: false, jump: false, arms: false, punch: false });
   const [visionState, setVisionState] = useState<VisionState>("idle");
   const [mode, setMode] = useState<VisionMode>("body");
@@ -32,10 +35,17 @@ export default function VisionLab() {
   const confidence = mode === "body" ? poseDiagnostics?.signals.confidence ?? 0 : handDiagnostics?.signals.confidence ?? 0;
   const inferenceMs = mode === "body" ? poseDiagnostics?.inferenceMs : handDiagnostics?.inferenceMs;
 
+  const stopCurrent = useCallback(() => {
+    if (simulationTimerRef.current !== undefined) window.clearTimeout(simulationTimerRef.current);
+    simulationTimerRef.current = undefined;
+    const adapter = adapterRef.current;
+    adapterRef.current = null;
+    void adapter?.stop();
+  }, []);
+
   const selectMode = (next: VisionMode) => {
     if (next === mode) return;
-    void adapterRef.current?.stop();
-    adapterRef.current = null;
+    stopCurrent();
     setPoseDiagnostics(null);
     setHandDiagnostics(null);
     setFrame(null);
@@ -50,10 +60,16 @@ export default function VisionLab() {
     const unsubscribe = bus.subscribe((next) => setFrame(next));
     return () => {
       unsubscribe();
-      void adapterRef.current?.stop();
+      stopCurrent();
       void bus.destroy();
       busRef.current = null;
     };
+  }, [stopCurrent]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    return observeCanvasViewport(canvas, setViewport);
   }, []);
 
   useEffect(() => {
@@ -61,22 +77,22 @@ export default function VisionLab() {
     if (!canvas) return;
     const context = canvas.getContext("2d");
     if (!context) return;
-    const bounds = canvas.getBoundingClientRect();
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.max(1, Math.round(bounds.width * ratio));
-    canvas.height = Math.max(1, Math.round(bounds.height * ratio));
+    const { width, height, ratio } = viewport;
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    context.clearRect(0, 0, bounds.width, bounds.height);
+    context.clearRect(0, 0, width, height);
     if (visionState === "simulated") {
       context.fillStyle = "#0a0a0a";
-      context.fillRect(0, 0, bounds.width, bounds.height);
+      context.fillRect(0, 0, width, height);
       context.strokeStyle = "rgba(255,255,255,.04)";
-      for (let x = 0; x < bounds.width; x += 36) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, bounds.height); context.stroke(); }
-      for (let y = 0; y < bounds.height; y += 36) { context.beginPath(); context.moveTo(0, y); context.lineTo(bounds.width, y); context.stroke(); }
+      for (let x = 0; x < width; x += 36) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, height); context.stroke(); }
+      for (let y = 0; y < height; y += 36) { context.beginPath(); context.moveTo(0, y); context.lineTo(width, y); context.stroke(); }
     }
-    if (mode === "body") drawPose(context, poseDiagnostics?.pose ?? [], bounds.width, bounds.height, confidence);
-    else drawHands(context, handDiagnostics?.hands ?? [], bounds.width, bounds.height, confidence);
-  }, [confidence, handDiagnostics, mode, poseDiagnostics, visionState]);
+    const video = videoRef.current;
+    const transform = coverTransform({ streamWidth: visionState === "simulated" ? width : video?.videoWidth ?? 0,
+      streamHeight: visionState === "simulated" ? height : video?.videoHeight ?? 0, boxWidth: width, boxHeight: height });
+    if (mode === "body") drawPose(context, poseDiagnostics?.pose ?? [], transform, confidence);
+    else drawHands(context, handDiagnostics?.hands ?? [], transform);
+  }, [confidence, handDiagnostics, mode, poseDiagnostics, viewport, visionState]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -107,26 +123,41 @@ export default function VisionLab() {
   const enableCamera = async () => {
     const video = videoRef.current;
     if (!video) return;
+    stopCurrent();
     setVisionState("loading");
     setError("");
-    void adapterRef.current?.stop();
+    const recovered = () => {
+      if (adapterRef.current !== adapter) return false;
+      setVisionState("active");
+      setError("");
+      return true;
+    };
+    const onError = (cause: Error) => {
+      if (adapterRef.current !== adapter) return;
+      setVisionState("error");
+      setError(cause.message);
+    };
     const adapter = mode === "body"
-      ? new BrowserCameraAdapter({ video, mirror: true, classifier: { autoCalibrationFrames: 18 }, onDiagnostics: setPoseDiagnostics, onError: (cause) => setError(cause.message) })
-      : new BrowserHandAdapter({ video, mirror: true, classifier: { stableFrames: 3 }, onDiagnostics: setHandDiagnostics, onError: (cause) => setError(cause.message) });
+      ? new BrowserCameraAdapter({ video, mirror: true, classifier: { autoCalibrationFrames: 18 },
+        onDiagnostics: (diagnostics) => { if (recovered()) setPoseDiagnostics(diagnostics); }, onError, onCameraLost: onError })
+      : new BrowserHandAdapter({ video, mirror: true, classifier: { stableFrames: 3 },
+        onDiagnostics: (diagnostics) => { if (recovered()) setHandDiagnostics(diagnostics); }, onError, onCameraLost: onError });
     adapterRef.current = adapter;
     try {
       await adapter.start(emit);
-      setVisionState("active");
+      recovered();
     } catch (cause) {
+      if (adapterRef.current !== adapter) return;
       const denied = cause instanceof DOMException && (cause.name === "NotAllowedError" || cause.name === "SecurityError");
       setVisionState(denied ? "denied" : "error");
       setError(denied ? "Camera permission was not granted. The simulator remains available." : cause instanceof Error ? cause.message : "Camera tracking could not start.");
     }
   };
 
+  // This action only exists in body mode. Clear the old adapter before replacing it so pending
+  // camera callbacks cannot turn a simulator (or a different mode) back into an active camera.
   const startSimulation = () => {
-    void adapterRef.current?.stop();
-    if (mode !== "body") return;
+    stopCurrent();
     const adapter = new PoseInputAdapter({ mirror: false, classifier: { autoCalibrationFrames: 1, smoothing: 1 }, onDiagnostics: setPoseDiagnostics });
     adapter.start(emit);
     adapterRef.current = adapter;
@@ -137,14 +168,17 @@ export default function VisionLab() {
   };
 
   const simulate = (action: "left" | "right" | "duck" | "jump" | "arms") => {
+    const adapter = adapterRef.current;
     const state = simulationRef.current;
     state.x = action === "left" ? -0.72 : action === "right" ? 0.72 : 0;
     state.duck = action === "duck";
     state.jump = action === "jump";
     state.arms = action === "arms";
     publishSimulation();
-    window.setTimeout(() => {
-      if (visionState !== "simulated") return;
+    if (simulationTimerRef.current !== undefined) window.clearTimeout(simulationTimerRef.current);
+    simulationTimerRef.current = window.setTimeout(() => {
+      simulationTimerRef.current = undefined;
+      if (adapterRef.current !== adapter) return;
       simulationRef.current = { x: 0, duck: false, jump: false, arms: false, punch: false };
       publishSimulation();
     }, 500);
@@ -161,9 +195,8 @@ export default function VisionLab() {
           <div className="vision-stagebar"><span>LOCAL {mode === "body" ? "POSE" : "HAND"} PREVIEW</span><code>{inferenceMs !== undefined ? `${Math.round(confidence * 100)}% CONFIDENCE · ${inferenceMs.toFixed(1)} MS` : "CAMERA OFF"}</code></div>
           <div className={`vision-feed ${visionState === "simulated" ? "is-simulated" : ""}`}>
             {/* Camera capture is always muted and requests no audio track. */}
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-            <video ref={videoRef} aria-label="Local mirrored camera preview" />
-            <canvas ref={canvasRef} aria-label="Local pose landmark overlay" />
+            <video ref={videoRef} playsInline muted aria-label={`Mirrored camera preview of your ${mode === "body" ? "body" : "hands"}`} />
+            <canvas ref={canvasRef} aria-label={`${mode === "body" ? "Body" : "Hand"} tracking overlay`} />
             {visionState === "idle" && <div className="vision-empty"><span>{mode === "body" ? 33 : 21}</span><p>{mode === "body" ? "BODY" : "HAND"} LANDMARK PIPELINE READY</p></div>}
             {visionState === "loading" && <div className="vision-empty"><span>···</span><p>LOADING LOCAL MODEL</p></div>}
           </div>
@@ -184,66 +217,4 @@ export default function VisionLab() {
       <p className="vision-keyboard-hint">{mode === "body" ? "Simulation: arrows move, Down ducks, Up or Space jumps, and A raises both arms. This path uses the same pose adapter without opening a camera." : "Hand mode stabilizes static poses across frames and recognizes directional swipes and closed circles over time. Spellcaster consumes the same normalized events as phone motion and keyboard input."}</p>
     </main>
   );
-}
-
-function drawPose(context: CanvasRenderingContext2D, pose: readonly PoseLandmark[], width: number, height: number, confidence: number) {
-  if (pose.length < 29) return;
-  context.lineWidth = 3;
-  // Confidence already rides the alpha channel, so the hue carried nothing the greyscale cannot.
-  context.strokeStyle = `rgba(242,242,242,${0.35 + confidence * 0.65})`;
-  for (const [from, to] of POSE_CONNECTIONS) {
-    const a = pose[from]; const b = pose[to];
-    if (!a || !b || a.visibility < 0.35 || b.visibility < 0.35) continue;
-    context.beginPath(); context.moveTo(a.x * width, a.y * height); context.lineTo(b.x * width, b.y * height); context.stroke();
-  }
-  for (const landmark of pose) {
-    if (landmark.visibility < 0.35) continue;
-    // Visibility was green-vs-orange; it is now solid-vs-dim, which survives a monochrome scheme and
-    // a colour-blind reader alike.
-    context.fillStyle = landmark.visibility > .8 ? "#f2f2f2" : "rgba(242,242,242,.42)";
-    context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
-  }
-}
-
-function drawHands(context: CanvasRenderingContext2D, hands: readonly { landmarks: HandLandmark[]; handedness: string; confidence: number }[], width: number, height: number, confidence: number) {
-  for (const hand of hands) {
-    if (hand.landmarks.length < 21) continue;
-    context.lineWidth = 3;
-    context.strokeStyle = `rgba(242,242,242,${0.35 + confidence * 0.65})`;
-    for (const [from, to] of HAND_CONNECTIONS) {
-      const a = hand.landmarks[from]; const b = hand.landmarks[to];
-      if (!a || !b) continue;
-      context.beginPath(); context.moveTo(a.x * width, a.y * height); context.lineTo(b.x * width, b.y * height); context.stroke();
-    }
-    for (const landmark of hand.landmarks) {
-      // Handedness stays legible as white against mid grey rather than blue against green.
-    context.fillStyle = hand.handedness === "left" ? "#f2f2f2" : "#8f8f8f";
-      context.beginPath(); context.arc(landmark.x * width, landmark.y * height, 4, 0, Math.PI * 2); context.fill();
-    }
-  }
-}
-
-function createSimulatedPose(state: { x: number; duck: boolean; jump: boolean; arms: boolean; punch: boolean }): PoseLandmark[] {
-  const pose = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 0.98 }));
-  const shiftY = state.jump ? -0.08 : 0;
-  const upperY = state.duck ? 0.09 : 0;
-  const center = 0.5 + state.x * 0.12;
-  pose[0] = { x: center, y: 0.15 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[11] = { x: center - .1, y: .34 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[12] = { x: center + .1, y: .34 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[13] = { x: center - .14, y: state.arms ? .24 : .46 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[14] = { x: center + .14, y: state.arms ? .24 : .46 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[15] = { x: center - .16, y: state.arms ? .14 : .57 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[16] = { x: center + .16, y: state.arms ? .14 : .57 + shiftY + upperY, z: 0, visibility: .98 };
-  pose[23] = { x: center - .06, y: .59 + shiftY, z: 0, visibility: .98 };
-  pose[24] = { x: center + .06, y: .59 + shiftY, z: 0, visibility: .98 };
-  pose[25] = { x: center - .05, y: .76 + shiftY, z: 0, visibility: .98 };
-  pose[26] = { x: center + .05, y: .76 + shiftY, z: 0, visibility: .98 };
-  pose[27] = { x: center - .05, y: .94 + shiftY, z: 0, visibility: .98 };
-  pose[28] = { x: center + .05, y: .94 + shiftY, z: 0, visibility: .98 };
-  pose[29] = { ...pose[27]!, x: center - .07 };
-  pose[30] = { ...pose[28]!, x: center + .07 };
-  pose[31] = { ...pose[27]!, x: center - .09 };
-  pose[32] = { ...pose[28]!, x: center + .09 };
-  return pose;
 }

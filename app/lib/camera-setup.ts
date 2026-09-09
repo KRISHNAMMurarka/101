@@ -1,5 +1,5 @@
 import type { CameraFailure } from "@101/adapter-camera";
-import type { PlacementIssue } from "@101/vision";
+import type { HandSignals, PlacementIssue, PoseSignals } from "@101/vision";
 
 import type { CameraKind } from "./camera-plan.ts";
 
@@ -28,6 +28,9 @@ export interface SetupState {
   readonly skipped: boolean;
   /** How long the framing has been broken during the confirm beat, in milliseconds. */
   readonly brokenForMs: number;
+  /** A retry must restart acquisition even though its step is still camera. */
+  readonly attempt: number;
+  readonly confirmForMs: number;
 }
 
 export type SetupEvent =
@@ -40,6 +43,7 @@ export type SetupEvent =
   /** The framing has been right for long enough to be believed. */
   | { type: "placement-held" }
   | { type: "gesture" }
+  | { type: "confirm-time"; elapsedMs: number }
   | { type: "skip" }
   | { type: "back" }
   | { type: "retry" };
@@ -49,6 +53,8 @@ export const INITIAL_SETUP = (kind: CameraKind): SetupState => ({
   kind,
   skipped: false,
   brokenForMs: 0,
+  attempt: 0,
+  confirmForMs: 0,
 });
 
 /**
@@ -61,18 +67,20 @@ export const INITIAL_SETUP = (kind: CameraKind): SetupState => ({
  * cannot see them — having just told them it could.
  */
 export const CONFIRM_GRACE_MS = 800;
+export const CONFIRM_ALTERNATIVE_MS = 8_000;
 
 export function advanceSetup(state: SetupState, event: SetupEvent): SetupState {
+  if (state.failure && ["continue", "placement", "placement-held", "gesture", "confirm-time"].includes(event.type)) return state;
   switch (event.type) {
     case "camera-failed":
       // From any step. A camera can fail after it has been working.
-      return { ...state, step: "camera", failure: event.failure, issue: undefined, brokenForMs: 0 };
+      return { ...state, step: "camera", failure: event.failure, issue: undefined, brokenForMs: 0, confirmForMs: 0 };
 
     case "camera-lost":
-      return { ...state, step: "camera", failure: "in-use", issue: undefined, brokenForMs: 0 };
+      return { ...state, step: "camera", failure: "in-use", issue: undefined, brokenForMs: 0, confirmForMs: 0 };
 
     case "retry":
-      return { ...INITIAL_SETUP(state.kind), skipped: state.skipped };
+      return { ...INITIAL_SETUP(state.kind), attempt: state.attempt + 1 };
 
     case "camera-started":
       if (state.step !== "camera") return state;
@@ -85,6 +93,7 @@ export function advanceSetup(state: SetupState, event: SetupEvent): SetupState {
         step: state.step === "ready" ? "confirm" : state.step === "confirm" ? "check" : state.step === "check" ? "place" : "camera",
         issue: undefined,
         brokenForMs: 0,
+        confirmForMs: 0,
       };
 
     case "skip":
@@ -97,7 +106,7 @@ export function advanceSetup(state: SetupState, event: SetupEvent): SetupState {
         // The confirmation only survives a short lapse; see CONFIRM_GRACE_MS.
         const brokenForMs = event.issue ? state.brokenForMs + event.elapsedMs : 0;
         if (brokenForMs > CONFIRM_GRACE_MS) {
-          return { ...state, step: "check", issue: event.issue, brokenForMs: 0 };
+          return { ...state, step: "check", issue: event.issue, brokenForMs: 0, confirmForMs: 0 };
         }
         return { ...state, brokenForMs };
       }
@@ -116,7 +125,11 @@ export function advanceSetup(state: SetupState, event: SetupEvent): SetupState {
       // which it was not when one event did both jobs and stepped over it entirely.
       if (state.step === "place") return { ...state, step: "check", issue: undefined };
       if (state.step !== "check") return state;
-      return { ...state, step: "confirm", issue: undefined, brokenForMs: 0 };
+      return { ...state, step: "confirm", issue: undefined, brokenForMs: 0, confirmForMs: 0 };
+
+    case "confirm-time":
+      if (state.step !== "confirm") return state;
+      return { ...state, confirmForMs: Math.max(0, event.elapsedMs) };
 
     case "gesture":
       if (state.step !== "confirm") return state;
@@ -129,11 +142,11 @@ export function advanceSetup(state: SetupState, event: SetupEvent): SetupState {
 
 /** Whether the player may move on from where they are. */
 export function canAdvance(state: SetupState) {
-  if (state.failure) return false;
+  if (state.failure || state.skipped) return false;
   return state.step === "place" || state.step === "ready";
 }
 
-export const SETUP_COPY: Readonly<Record<SetupStep, { readonly title: string; readonly body: Readonly<Record<CameraKind, string>> }>> = {
+export const SETUP_COPY: Readonly<Record<SetupStep, { readonly title: string; readonly body: Readonly<Record<CameraKind, string>>; readonly alternative?: string }>> = {
   camera: {
     title: "Camera",
     body: {
@@ -161,6 +174,7 @@ export const SETUP_COPY: Readonly<Record<SetupStep, { readonly title: string; re
       body: "Raise both hands above your head.",
       hands: "Hold your hand up and spread your fingers.",
     },
+    alternative: "You can also take a step to either side, or choose another way to play.",
   },
   ready: {
     title: "Ready",
@@ -170,6 +184,13 @@ export const SETUP_COPY: Readonly<Record<SetupStep, { readonly title: string; re
     },
   },
 };
+
+/** Placement alone is not a gesture: use the classifier that drives the actual game. */
+export function confirmsCameraGesture(signals: PoseSignals | HandSignals, previousArmsRaised: boolean, allowStep: boolean) {
+  if ("gestures" in signals) return signals.gestures.openPalm;
+  return signals.combat.special || (signals.actions.armsRaised && !previousArmsRaised)
+    || (allowStep && (signals.actions.stepLeft || signals.actions.stepRight));
+}
 
 /*
  * What the player already did, remembered per camera kind rather than per game.

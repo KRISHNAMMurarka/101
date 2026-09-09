@@ -20,7 +20,7 @@ import {
 function body({ centre = 0.5, fill = 0.4, visible = ["head", "torso", "arms", "legs"] as string[] } = {}): PoseLandmark[] {
   const landmarks: PoseLandmark[] = Array.from({ length: 33 }, () => ({ x: centre, y: 0.5, z: 0, visibility: 0 }));
   const at = (index: number, x: number, y: number, region: string) => {
-    landmarks[index] = { x, y, z: 0, visibility: visible.includes(region) ? 0.95 : 0.05 };
+    landmarks[index] = { x, y, z: 0, visibility: visible.includes(region) && x >= 0 && x <= 1 && y >= 0 && y <= 1 ? 0.95 : 0.05 };
   };
   const hipY = 0.5 + fill / 2;
   const noseY = hipY - fill;
@@ -35,8 +35,8 @@ function body({ centre = 0.5, fill = 0.4, visible = ["head", "torso", "arms", "l
   at(POSE_LANDMARK.rightWrist, centre + 0.12, noseY + fill * 0.8, "arms");
   at(POSE_LANDMARK.leftKnee, centre - 0.05, hipY + fill * 0.5, "legs");
   at(POSE_LANDMARK.rightKnee, centre + 0.05, hipY + fill * 0.5, "legs");
-  at(POSE_LANDMARK.leftAnkle, centre - 0.05, hipY + fill * 0.9, "legs");
-  at(POSE_LANDMARK.rightAnkle, centre + 0.05, hipY + fill * 0.9, "legs");
+  at(POSE_LANDMARK.leftAnkle, centre - 0.05, hipY + fill * 0.7, "legs");
+  at(POSE_LANDMARK.rightAnkle, centre + 0.05, hipY + fill * 0.7, "legs");
   return landmarks;
 }
 

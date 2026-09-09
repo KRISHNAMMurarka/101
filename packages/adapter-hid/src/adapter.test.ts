@@ -54,3 +54,26 @@ test("WebHID releases held input when the device is unplugged", async () => {
   assert.deepEqual(frames.at(-1)?.actions, {}, "a detached device must not resume emitting");
   await adapter.stop();
 });
+
+test("a suit report reaches the input bus as a skeleton and releases on disconnect", async () => {
+  const { InputBus } = await import("@101/input");
+  const device = new FakeHIDDevice();
+  const manager = Object.assign(new EventTarget(), { async getDevices() { return [device]; }, async requestDevice() { return [device]; } }) satisfies HIDManager101;
+  const bus = new InputBus();
+  const adapter = new WebHIDAdapter({ manager, filters: [{ vendorId: 0x101 }], decoder: ({ bytes }) => {
+    if (bytes.byteLength !== 16) return undefined;
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    return { actions: {}, axes: {}, vectors: {}, poses: { body: Array.from({ length: 4 }, (_, i) => view.getFloat32(i * 4, true)) } };
+  } });
+  await bus.register(adapter);
+  const bytes = new Uint8Array(16);
+  const view = new DataView(bytes.buffer);
+  [0.5, 0.25, -2, 1].forEach((value, i) => view.setFloat32(i * 4, value, true));
+  device.report([...bytes]);
+  assert.deepEqual(bus.pose("body"), [0.5, 0.25, -2, 1]);
+  device.opened = false;
+  manager.dispatchEvent(Object.assign(new Event("disconnect"), { device }));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(bus.pose("body"), undefined);
+  await bus.unregister(adapter);
+});

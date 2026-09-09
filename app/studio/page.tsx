@@ -10,8 +10,7 @@ export default function StudioIndex() {
         <p className="eyebrow">Developer tools</p>
         <h1>Build on 101</h1>
         <p className="page-intro">
-          A game asks 101 for controls — move, aim, fire — and 101 works out which of the player&apos;s devices can
-          provide them. These tools let you see that happening, and try a device before you write anything.
+          Test controllers, explore how games work, and build your own games for 101.
         </p>
       </header>
 

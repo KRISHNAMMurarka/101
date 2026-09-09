@@ -9,11 +9,9 @@ import {
   type CameraFailure,
 } from "./errors.ts";
 
-/** DOMException is not available in this runtime, and the classifier reads `name` either way. */
+/** Browsers reject camera requests with named DOMExceptions; missing API calls throw TypeError. */
 function browserError(name: string, message = "") {
-  const error = new Error(message);
-  error.name = name;
-  return error;
+  return name === "TypeError" ? new TypeError(message) : new DOMException(message, name);
 }
 
 test("every failure a browser actually throws has a player sentence", () => {

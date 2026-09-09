@@ -4,6 +4,14 @@
 
 ## Why a declarative mapping
 
+Custom decoders can also return `poses: Record<string, number[]>`. The hardware emitter forwards
+these arrays through HID, Bluetooth, and serial without clamping metric coordinates to joystick
+range; disconnect clears them. A fake HID report now exercises this path through the real InputBus.
+This is transport support, not automatic suit compatibility: the profile must define joint order,
+units, calibration and the semantic actions its game consumes. No shipped game currently declares
+a HID/Bluetooth/serial profile. See [the profile integration contract](VISION-VALIDATION.md) before
+adding a player-facing connection option.
+
 Every one of these transports ultimately delivers **bytes**. HID delivers input reports, BLE delivers GATT characteristic notifications, serial delivers a stream that must be framed. The interesting engineering problem is identical in all three cases: convert a byte layout into 101 game language.
 
 `@101/hardware` owns that conversion once, so `@101/adapter-hid`, `@101/adapter-bluetooth` and `@101/adapter-serial` differ only in how they obtain bytes. A mapping authored for a prototype board over serial keeps working unchanged when the same firmware later exposes itself as a HID device.

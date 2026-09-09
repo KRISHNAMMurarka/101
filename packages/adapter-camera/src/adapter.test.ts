@@ -73,3 +73,14 @@ function setFinger(hand: HandLandmark[], indices: number[], x: number, extended:
   const ys = extended ? [.65, .49, .35, .21] : [.65, .57, .62, .67];
   indices.forEach((index, position) => { hand[index] = { x, y: ys[position]!, z: 0 }; });
 }
+
+test("stopping a hand adapter releases its last gesture", () => {
+  const frames: InputFrame[] = [];
+  const adapter = new HandInputAdapter({ mirror: false, classifier: { smoothing: 1, stableFrames: 1 } });
+  adapter.start((frame) => frames.push(frame));
+  adapter.ingestHands([{ landmarks: twoFingerHand(), handedness: "right", confidence: .98 }], 0);
+  assert.equal(frames.at(-1)!.actions["hand.twoFingers"], true);
+  adapter.stop();
+  assert.ok(Object.values(frames.at(-1)!.actions).every((value) => value === false));
+  assert.deepEqual(frames.at(-1)!.poses, {});
+});

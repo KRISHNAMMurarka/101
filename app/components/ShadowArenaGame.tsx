@@ -1,5 +1,7 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
@@ -13,23 +15,24 @@ import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
-import type { PoseLandmark } from "@101/vision";
+import { playerColour, type PoseLandmark, type TrackedPerson } from "@101/vision";
+import GameOverPanel from "./GameOverPanel";
 import { useEffect, useRef, useState } from "react";
 import { createShadowArenaGame, type ShadowArenaState, type ShadowEnemy } from "@/games/shadowarena/src/game";
 import { SHADOW_ARENA_ROLES } from "@/games/shadowarena/src/roles";
 
 interface ShadowHud {
   score: number; round: number; combo: number; health: number; focus: number; enemies: number; modifier: string;
-  event: string; action: string; gameOver: boolean;
+  event: string; action: string; gameOver: boolean; players: number;
 }
 
-const INITIAL_HUD: ShadowHud = { score: 0, round: 1, combo: 0, health: 100, focus: 0, enemies: 0, modifier: "clear", event: "THE ARENA IS LISTENING", action: "READY", gameOver: false };
+const INITIAL_HUD: ShadowHud = { score: 0, round: 1, combo: 0, health: 100, focus: 0, enemies: 0, modifier: "clear", event: "THE ARENA IS LISTENING", action: "READY", gameOver: false, players: 1 };
 
 export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const poseRef = useRef<PoseLandmark[] | undefined>(undefined);
+  const peopleRef = useRef<readonly TrackedPerson[]>([]);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<ShadowHud>(INITIAL_HUD);
@@ -40,14 +43,15 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     video: videoRef,
     host: hostRef,
     runKey: run,
+    maxPeople: SHADOWARENA_MANIFEST.players.max,
     classifier: { autoCalibrationFrames: 18, gestureCooldownMs: 300 },
     // The fighter on screen is drawn from this pose, so the silhouette moves as the player does.
-    onDiagnostics: (diagnostics) => { poseRef.current = diagnostics.pose; },
+    onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people.filter((person) => person.lastSeen === diagnostics.frame.timestamp); },
   });
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, readiness } = useGameHost<ShadowArenaState>({
+  const { linked, readiness, controllerHost } = useGameHost<ShadowArenaState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -68,7 +72,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       hostRef.current = host;
       const draw = () => {
         const state = context.state;
-        view.sync(state, poseRef.current);
+        view.sync(state, peopleRef.current);
         if (state.actionSequence !== previousAction) {
           previousAction = state.actionSequence;
           if (audioEnabledRef.current) audio.play(state.lastAction === "SHADOW BURST" ? "special" : "strike", { volume: .65, pan: state.facing * .35 });
@@ -86,19 +90,19 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       const timer = window.setInterval(() => {
         const state = context.state;
         const enemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).length;
-        setHud({ score: state.score, round: state.round, combo: state.combo, health: state.health, focus: state.focus, enemies, modifier: state.modifier, event: state.lastEvent, action: state.lastAction, gameOver: state.gameOver });
+        setHud({ score: state.score, round: state.round, combo: state.combo, health: state.health, focus: state.focus, enemies, modifier: state.modifier, event: state.lastEvent, action: state.lastAction, gameOver: state.gameOver, players: state.players.filter((player) => player.active).length });
         host.sendControllerState("fighter", { ROUND: state.round, HEALTH: state.health, FOCUS: state.focus, CHAIN: state.combo }, {
           message: state.lastEvent, tone: state.health < 30 ? "critical" : enemies > 2 ? "warning" : "normal",
         });
       }, 100);
       return () => {
         window.clearInterval(timer); cancelAnimationFrame(drawHandle); audio.unload(); view.dispose();
-        hostRef.current = null; poseRef.current = undefined;
+        hostRef.current = null; peopleRef.current = [];
       };
     },
   });
 
-  const restart = () => { setHud(INITIAL_HUD); poseRef.current = undefined; setRun((value) => value + 1); };
+  const restart = () => { setHud(INITIAL_HUD); peopleRef.current = []; setRun((value) => value + 1); };
 
   return (
     <section className="shadow-page">
@@ -107,12 +111,12 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
         <div className="shadow-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
-      <div className="shadow-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="shadow-arena">
         <div className="shadow-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK FIGHTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Shadow Arena. Move with A/D or arrows, punch with J and K, block with L, jump with W or Space, duck with S, and use Shadow Burst with I." />
         {/* Local camera capture is muted, requests no audio, and is not recorded. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={camera.state === "on" ? "shadow-camera active" : "shadow-camera"} ref={videoRef} aria-label="Camera preview" />
+        <video className={camera.state === "on" ? "shadow-camera active" : "shadow-camera"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your body" />
         <div className="shadow-event"><span>ARENA FEED</span><strong>{hud.event}</strong><small>{hud.action}</small></div>
         <div className="shadow-vitals"><ShadowMeter label="HEALTH" value={hud.health} tone="health" /><ShadowMeter label="FOCUS" value={hud.focus} tone="focus" /></div>
         <div className="shadow-actions">
@@ -121,9 +125,11 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD FIGHTER" : "CONNECT FIGHTER"}</button>
         </div>
         {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
-        {hud.gameOver && <div className="game-over-panel"><p>YOUR SHADOW FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARENA SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Your shadow fell" score={hud.score} detail="Final arena score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="shadow-instructions"><span><b>MOVE</b> A/D · arrows · body position</span><span><b>PUNCH</b> J/K · physical punch</span><span><b>BLOCK</b> L · hands together</span><span><b>DUCK / JUMP</b> S/W · body motion</span><span><b>SPECIAL</b> I · raise both arms</span></div>
+      {hud.players > 1 && <p>Players 1 and 2 fight together. Health, focus and score belong to the team.</p>}
       <p className="shadow-privacy"><strong>Camera:</strong> fight with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Every move also works on the keyboard or a gamepad.</p>
     </section>
   );
@@ -151,21 +157,31 @@ function createShadowView(canvas: HTMLCanvasElement) {
   const back = new THREE.DirectionalLight(0xf98b70, 4); back.position.set(-4, 8, -5); view.scene.add(back);
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(28, 10), new THREE.MeshStandardMaterial({ color: 0x0d1011, roughness: .85, metalness: .2 })); floor.rotation.x = -Math.PI / 2; view.scene.add(floor);
   const rings = Array.from({ length: 5 }, (_, index) => { const ring = new THREE.Mesh(new THREE.RingGeometry(2.2 + index * 1.8, 2.23 + index * 1.8, 64), new THREE.MeshBasicMaterial({ color: index % 2 ? 0x2b1b1b : 0x152126, side: THREE.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.position.y = .01; view.scene.add(ring); return ring; });
-  const player = createFighter(0x08090a, 0xf98b70); view.scene.add(player.group);
+  const players = new Map<number, ReturnType<typeof createFighter>>();
+  const resize = new ResizeObserver(([entry]) => { if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height)); });
+  resize.observe(canvas);
   const enemies = new Map<string, ReturnType<typeof createFighter>>();
   const effects = new Map<number, THREE.Mesh>();
 
-  const sync = (state: ShadowArenaState, pose?: readonly PoseLandmark[]) => {
-    const bounds = canvas.getBoundingClientRect(); view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
-    player.group.position.set(state.playerX, state.playerY, 0); player.group.rotation.y = state.facing < 0 ? Math.PI : 0;
-    if (pose && pose.length >= 29) applyPose(player, pose);
-    else animateFighter(player, state.elapsed, state.lastAction);
+  const sync = (state: ShadowArenaState, people: readonly TrackedPerson[]) => {
+    for (const body of state.players) {
+      let fighter = players.get(body.slot);
+      if (!fighter) { fighter = createFighter(0x08090a, playerColour(body.slot), body.slot); players.set(body.slot, fighter); view.scene.add(fighter.group); }
+      fighter.group.visible = body.active;
+      if (!body.active) continue;
+      fighter.group.position.set(body.playerX, body.playerY, (body.slot - 1) * .35);
+      if (fighter.number) fighter.number.position.x = state.players.filter((player) => player.active).length > 1 ? (body.slot === 1 ? -.35 : .35) : 0;
+      fighter.group.rotation.y = body.facing < 0 ? Math.PI : 0;
+      const pose = people.find((person) => person.slot === body.slot)?.landmarks;
+      if (pose && pose.length >= 29) applyPose(fighter, pose);
+      else animateFighter(fighter, state.elapsed, body.lastAction);
+    }
     const active = new Set(state.enemies.map((enemy) => enemy.id));
     for (const enemy of state.enemies) {
       let fighter = enemies.get(enemy.id);
       if (!fighter) { fighter = createFighter(0x08090a, ENEMY_COLOR[enemy.type]); enemies.set(enemy.id, fighter); view.scene.add(fighter.group); }
       fighter.group.visible = enemy.spawnAt <= state.elapsed;
-      fighter.group.position.set(enemy.x, 0, -.15); fighter.group.rotation.y = enemy.x > state.playerX ? Math.PI : 0;
+      fighter.group.position.set(enemy.x, 0, -.15); fighter.group.rotation.y = enemy.x > (state.players.find((player) => player.slot === enemy.targetSlot)?.playerX ?? state.playerX) ? Math.PI : 0;
       const warning = enemy.attackAt > state.elapsed && enemy.attackAt - state.elapsed < enemy.windup;
       animateFighter(fighter, state.elapsed + enemy.id.length, warning ? enemy.attack === "low" ? "LOW" : enemy.attack === "heavy" ? "HEAVY" : "PUNCH" : "READY");
       fighter.group.scale.setScalar(enemy.type === "sentinel" ? 1.32 : enemy.type === "brute" ? 1.14 : enemy.type === "shade" ? .88 : 1);
@@ -181,10 +197,10 @@ function createShadowView(canvas: HTMLCanvasElement) {
     back.intensity = state.modifier === "blackout" ? .8 : 4; rings.forEach((ring, index) => { ring.rotation.z = state.elapsed * .02 * (index % 2 ? 1 : -1); });
     view.render();
   };
-  return { sync, dispose() { enemies.forEach((fighter) => disposeFighter(view, fighter)); effects.forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }); disposeFighter(view, player); floor.geometry.dispose(); (floor.material as THREE.Material).dispose(); rings.forEach((ring) => { ring.geometry.dispose(); (ring.material as THREE.Material).dispose(); }); view.dispose(); } };
+  return { sync, dispose() { resize.disconnect(); players.forEach((fighter) => disposeFighter(view, fighter)); enemies.forEach((fighter) => disposeFighter(view, fighter)); effects.forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }); floor.geometry.dispose(); (floor.material as THREE.Material).dispose(); rings.forEach((ring) => { ring.geometry.dispose(); (ring.material as THREE.Material).dispose(); }); view.dispose(); } };
 }
 
-function createFighter(bodyColor: number, edgeColor: number) {
+function createFighter(bodyColor: number, edgeColor: number | string, slot?: number) {
   const material = new THREE.MeshStandardMaterial({ color: bodyColor, emissive: edgeColor, emissiveIntensity: .55, roughness: .55 });
   const group = new THREE.Group();
   const head = new THREE.Mesh(new THREE.SphereGeometry(.27, 16, 12), material); head.position.y = 2.35;
@@ -193,7 +209,9 @@ function createFighter(bodyColor: number, edgeColor: number) {
   const leftArm = limb(); const rightArm = limb(); const leftLeg = limb(); const rightLeg = limb();
   leftArm.position.set(-.48, 1.65, 0); rightArm.position.set(.48, 1.65, 0); leftLeg.position.set(-.22, .58, 0); rightLeg.position.set(.22, .58, 0);
   group.add(head, torso, leftArm, rightArm, leftLeg, rightLeg);
-  return { group, material, head, torso, leftArm, rightArm, leftLeg, rightLeg };
+  const number = slot ? playerNumber(slot) : undefined;
+  if (number) group.add(number);
+  return { group, material, head, torso, leftArm, rightArm, leftLeg, rightLeg, number };
 }
 
 function animateFighter(fighter: ReturnType<typeof createFighter>, time: number, action: string) {
@@ -205,11 +223,24 @@ function animateFighter(fighter: ReturnType<typeof createFighter>, time: number,
 }
 
 function applyPose(fighter: ReturnType<typeof createFighter>, pose: readonly PoseLandmark[]) {
-  const map = (index: number) => ({ x: (pose[index]!.x - .5) * 3.2, y: (1 - pose[index]!.y) * 3 });
+  const hipX = (pose[23]!.x + pose[24]!.x) / 2;
+  const map = (index: number) => ({ x: (pose[index]!.x - hipX) * 3.2, y: (1 - pose[index]!.y) * 3 });
   const shoulderL = map(11); const shoulderR = map(12); const wristL = map(15); const wristR = map(16); const hipL = map(23); const hipR = map(24); const ankleL = map(27); const ankleR = map(28);
   placeLimb(fighter.leftArm, shoulderL, wristL); placeLimb(fighter.rightArm, shoulderR, wristR); placeLimb(fighter.leftLeg, hipL, ankleL); placeLimb(fighter.rightLeg, hipR, ankleR);
-  fighter.head.position.set((pose[0]!.x - .5) * 3.2, (1 - pose[0]!.y) * 3, 0);
+  fighter.head.position.set((pose[0]!.x - hipX) * 3.2, (1 - pose[0]!.y) * 3, 0);
 }
 
 function placeLimb(mesh: THREE.Mesh, from: { x: number; y: number }, to: { x: number; y: number }) { mesh.position.set((from.x + to.x) / 2, (from.y + to.y) / 2, 0); mesh.rotation.z = Math.atan2(to.y - from.y, to.x - from.x) - Math.PI / 2; }
-function disposeFighter(view: Renderer3D101, fighter: ReturnType<typeof createFighter>) { view.scene.remove(fighter.group); fighter.group.traverse((object) => { if (object instanceof THREE.Mesh) object.geometry.dispose(); }); fighter.material.dispose(); }
+function disposeFighter(view: Renderer3D101, fighter: ReturnType<typeof createFighter>) { view.scene.remove(fighter.group); fighter.group.traverse((object) => { if (object instanceof THREE.Mesh) object.geometry.dispose(); }); fighter.number?.material.map?.dispose(); fighter.number?.material.dispose(); fighter.material.dispose(); }
+
+
+function playerNumber(slot: number) {
+  const canvas = document.createElement("canvas"); canvas.width = 96; canvas.height = 96;
+  const context = canvas.getContext("2d")!;
+  context.fillStyle = "#101010"; context.beginPath(); context.arc(48, 48, 42, 0, Math.PI * 2); context.fill();
+  context.strokeStyle = playerColour(slot); context.lineWidth = 7; context.stroke();
+  context.fillStyle = "#ffffff"; context.font = "bold 56px sans-serif"; context.textAlign = "center"; context.textBaseline = "middle"; context.fillText(String(slot), 48, 49);
+  const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false }));
+  label.position.y = 3.1; label.scale.set(.65, .65, 1); label.renderOrder = 10;
+  return label;
+}

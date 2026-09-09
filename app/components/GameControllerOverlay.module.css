@@ -1,0 +1,30 @@
+.frame { display: flex; flex-direction: column; position: relative; min-width: 0; width: 100%; }
+.playfield { position: relative; min-width: 0; min-height: 0; }
+.dock { --controller-accent: var(--paper); flex: none; padding: 10px 12px max(10px, env(safe-area-inset-bottom)); border: 1px solid var(--line-strong); border-top: 0; background: var(--ink); color: var(--paper); }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.toolbar > button { min-height: 44px; }
+.role { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.role select { max-width: 220px; min-height: 44px; padding: 8px; border: 1px solid var(--line-strong); background: var(--ink); color: var(--paper); }
+.role select:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+.deck { max-width: 760px; margin: 10px auto 0; container-type: inline-size; }
+.deck[hidden] { display: none; }
+.deck :global(.dynamic-controller-deck) { --pad-min: 144px; --surface-min: 128px; --pad-max: 160px; --key-min: 44px; --key-max: 64px; --bar-h: 44px; --deck-gap: 8px; padding-bottom: 0; }
+.frame[data-controls-open="true"] { --stage-h: max(180px, calc(100svh - var(--dock-height, 240px) - 140px)); }
+.frame:fullscreen { height: 100dvh; overflow: hidden; background: var(--ink); }
+.frame:fullscreen .playfield { flex: 1; }
+.frame:fullscreen .playfield > div { display: flex; flex-direction: column; height: 100%; }
+.frame:fullscreen .playfield > div > canvas { flex: 1 1 0; height: auto; min-height: 0; }
+.frame:fullscreen .playfield > div > :global(.gravity-stage) { flex: 1 1 0; height: auto; min-height: 0; }
+.frame:fullscreen .dock { max-height: 65dvh; overflow-y: auto; }
+@container (max-width: 340px) {
+  .deck :global(.dynamic-controller-deck) { grid-template-areas: "center" "left" "right"; grid-template-columns: minmax(0, 1fr); }
+  .deck :global(.deck-cluster) { justify-items: center; }
+  .deck :global(.deck-pads) { justify-items: center; }
+  .deck :global(.deck-keys) { justify-content: center; }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .dock { padding: 4px 10px max(4px, env(safe-area-inset-bottom)); }
+  .deck { margin-top: 4px; }
+  .deck :global(.dynamic-controller-deck) { --pad-min: 134px; --surface-min: 118px; --pad-max: 134px; --key-max: 48px; --deck-gap: 6px; }
+  .frame[data-controls-open="true"] { --stage-h: max(150px, calc(100svh - var(--dock-height, 200px) - 80px)); }
+}

@@ -21,7 +21,7 @@ test("normalizes invalid and out-of-range input values", () => {
   assert.equal(frame.timestamp, 100);
   assert.equal(frame.axes?.steer, 1);
   assert.deepEqual(frame.vectors?.aim, { x: -1, y: 0.4, z: 0 });
-  assert.deepEqual(frame.poses?.body, [1, -1, 0, 0.8]);
+  assert.equal(frame.poses?.body, undefined, "an invalid skeleton is discarded whole");
 });
 
 test("reads normalized pose landmarks through the same player/device ordering", () => {
@@ -164,4 +164,11 @@ test("the published schemas are generated from INPUT_SOURCES", () => {
   for (const [url, expected] of renderSourceSchemas()) {
     assert.equal(readFileSync(url, "utf8"), expected, `${String(url)} is stale — run npm run schemas:sources`);
   }
+});
+
+test("pose payloads preserve metric geometry and schema tags through the input bus", () => {
+  const bus = new InputBus();
+  const body = [-101, 1, 0.5, 0.4, 0, 1, 1, 1.4, -2.1, 0.3];
+  bus.accept({ deviceId: "suit", playerId: "player-1", source: "serial", sequence: 1, timestamp: 0, actions: {}, poses: { body } });
+  assert.deepEqual(bus.pose("body"), body);
 });

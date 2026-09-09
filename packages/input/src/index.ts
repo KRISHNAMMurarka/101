@@ -211,9 +211,13 @@ export function normalizeInputFrame(
     : undefined;
   const poses = frame.poses
     ? Object.fromEntries(
-        Object.entries(frame.poses).map(([name, values]) => [
+        Object.entries(frame.poses).slice(0, 16).filter(([, values]) =>
+          Array.isArray(values) && values.length <= 4096
+          && values.every((value) => Number.isFinite(value) && Math.abs(value) <= 1_000_000),
+        ).map(([name, values]) => [
           name,
-          values.map((value) => clamp(value)),
+          // Poses carry schema tags and metric coordinates, not normalized stick axes.
+          [...values],
         ]),
       )
     : undefined;

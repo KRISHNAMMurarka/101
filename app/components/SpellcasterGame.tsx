@@ -1,11 +1,14 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101 } from "@101/audio";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
@@ -61,7 +64,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     },
   });
 
-  const { linked, readiness } = useGameHost<SpellcasterState>({
+  const { linked, readiness, controllerHost } = useGameHost<SpellcasterState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -158,12 +161,12 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         <div className="spell-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
-      <div className="spell-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="spell-arena">
         <div className="spell-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CASTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{camera.state === "on" ? gesture : "Camera optional"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={camera.state === "on" ? "spell-camera active" : "spell-camera"} ref={videoRef} aria-label="Camera preview" />
+        <video className={camera.state === "on" ? "spell-camera active" : "spell-camera"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your hands" />
         <div className="spell-event"><span>ARCANE FEED</span><strong>{hud.event}</strong><small>LAST CAST · {hud.lastCast.toUpperCase()}</small></div>
         <div className="spell-vitals"><Meter label="HEALTH" value={hud.health} tone="health" /><Meter label="MANA" value={hud.mana} tone="mana" /><div className="spell-charge"><span>CHARGE</span><strong>{"◆".repeat(hud.charge)}{"◇".repeat(3 - hud.charge)}</strong></div></div>
         <div className="spell-actions">
@@ -172,8 +175,9 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
           <button onClick={onConnect}>{linked ? "ADD CASTER" : "CONNECT MOTION"}</button>
         </div>
         {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
-        {hud.gameOver && <div className="game-over-panel"><p>THE CIRCLE FELL</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL ARCANE SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="The circle fell" score={hud.score} detail="Final arcane score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="spell-instructions"><span><b>PROJECTILE</b> Space · two fingers</span><span><b>SHIELD</b> Q · open palm</span><span><b>GRAB</b> E · pinch</span><span><b>CHARGE</b> C · fist</span><span><b>BLADE</b> Shift/X · swipe</span><span><b>VORTEX</b> R · circle</span></div>
       <p className="spell-privacy"><strong>Camera:</strong> cast with your hands if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Every spell also works on the keyboard or a gamepad.</p>
     </section>
@@ -221,9 +225,12 @@ function createSpellView(canvas: HTMLCanvasElement) {
   const enemies = new Map<string, THREE.Mesh>();
   const effects = new Map<number, THREE.Mesh>();
 
+  const resize = new ResizeObserver(([entry]) => {
+    if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height));
+  });
+  resize.observe(canvas);
+
   const sync = (state: SpellcasterState) => {
-    const bounds = canvas.getBoundingClientRect();
-    view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
     const enemyIds = new Set(state.enemies.map((enemy) => enemy.id));
     for (const enemy of state.enemies) {
       let mesh = enemies.get(enemy.id);
@@ -267,6 +274,7 @@ function createSpellView(canvas: HTMLCanvasElement) {
   return {
     sync,
     dispose() {
+      resize.disconnect();
       enemies.forEach((mesh) => disposeMesh(view, mesh));
       effects.forEach((mesh) => disposeMesh(view, mesh));
       [floor, circle, aim].forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); });

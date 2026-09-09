@@ -19,6 +19,7 @@ import { Icon } from "./components/Icon";
 import { useLocalDevice } from "./lib/local-capabilities";
 import {
   CATALOG_INPUT_LABELS,
+  catalogLaunchHref,
   buildCatalogSearchIndex,
   filterCatalog,
   planCatalogWindow,
@@ -145,7 +146,7 @@ export default function Launcher({
   const hasCatalogSelection = query.trim().length > 0 || inputFilter !== "all";
   /* The lead title and the input strip both come from the catalog, so adding, removing or reordering
      a game changes the home page without anyone editing it. */
-  const featured = useMemo(() => catalog.find((game) => game.status === "playable"), [catalog]);
+  const featured = useMemo(() => catalog.find((game) => game.status === "playable" && catalogLaunchHref(game)), [catalog]);
   const supportedInputs = useMemo(
     () => [...new Set(catalog.flatMap((game) => game.inputs))].sort(),
     [catalog],
@@ -219,7 +220,7 @@ export default function Launcher({
               </p>
               <div className="hero-actions">
                 {featured && (
-                  <Link className="primary-button" href={`/games/${featured.id}`}>
+                  <Link className="primary-button" href={catalogLaunchHref(featured)!}>
                     Play {featured.name.replace(/ 101$/, "")} <Icon name="arrow" size={16} />
                   </Link>
                 )}
@@ -341,8 +342,8 @@ export default function Launcher({
                       </div>
                       {benchmarkMode ? (
                         <div className="card-status"><span>LOCAL FIXTURE</span><span>{game.players.max}P</span><span>∞</span></div>
-                      ) : game.status === "playable" ? (
-                        <Link className="game-card-launch" href={`/games/${game.id}`}>Play <Icon name="arrow" size={16} /></Link>
+                      ) : game.status === "playable" && catalogLaunchHref(game) ? (
+                        <Link className="game-card-launch" href={catalogLaunchHref(game)!}>Play <Icon name="arrow" size={16} /></Link>
                       ) : (
                         <div className="card-status"><span>Coming soon</span><span>{game.players.max === 1 ? "1 player" : `Up to ${game.players.max} players`}</span></div>
                       )}

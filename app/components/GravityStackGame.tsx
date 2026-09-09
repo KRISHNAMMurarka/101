@@ -1,8 +1,11 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
@@ -53,7 +56,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<StackHud>(() => initialHud(INITIAL_PREVIEW));
 
-  const { linked, session, readiness } = useGameHost<GravityStackState>({
+  const { linked, session, readiness, controllerHost } = useGameHost<GravityStackState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -134,6 +137,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       </header>
 
       <div className="gravity-layout">
+        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
         <div className="gravity-stage-shell">
           <div className="gravity-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
 
@@ -141,8 +145,9 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>
           <div className="gravity-drop-guide" style={{ left: `${50 + hud.placementX / 10 * 100}%` }}><i /><span>DROP</span></div>
           <div className="gravity-event">{hud.lastEvent}</div>
-          {hud.gameOver && <div className="game-over-panel"><p>TOWER LOST</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.height.toFixed(1)} M PEAK</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+          {hud.gameOver && <GameOverPanel title="Tower lost" score={hud.score} detail={`${hud.height.toFixed(1)} m peak`} onRestart={restart} />}
         </div>
+      </GameControllerOverlay>
 
         <aside className="gravity-rail">
           <section className="gravity-vitals">
@@ -163,7 +168,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
               return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? assignment.deviceId : "On this screen"}</span></p>;
             })}
           </section>
-          <p className="gravity-note">One phone can steer gravity while the keyboard places shapes. Add a second Link device for a dedicated builder panel.</p>
+          <p className="gravity-note">One phone can steer gravity while you place shapes here. Add another phone for the builder controls.</p>
         </aside>
       </div>
       <div className="gravity-instructions"><span><b>GRAVITY</b> Arrow keys / right stick / phone tilt</span><span><b>PLACE</b> A + D / left stick / builder slider</span><span><b>DROP</b> Space / gamepad A / Link</span></div>

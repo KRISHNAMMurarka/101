@@ -1,6 +1,9 @@
 import { INPUT_SOURCES, type InputFrame } from "@101/input";
 
 export const PROTOCOL_VERSION = 2 as const;
+/** Pairing envelopes keep their own schema revision across gameplay protocol upgrades. */
+export const PAIRING_TICKET_VERSION = 2 as const;
+export const PAIRING_DESCRIPTION_VERSION = 2 as const;
 
 /**
  * The oldest handshake this build still understands.
@@ -72,7 +75,7 @@ export interface LinkFeatures {
 }
 
 export const CAPABILITY_NAMES = [
-  "touch","accelerometer","gyroscope","magnetometer","camera","microphone","haptics","gamepad","speaker",
+  "touch","accelerometer","gyroscope","magnetometer","camera","microphone","haptics","gamepad","speaker","display","audioOut",
 ] as const;
 
 export type CapabilityName = (typeof CAPABILITY_NAMES)[number];
@@ -395,6 +398,8 @@ export interface MultiplexPeerBinding {
 }
 
 export class MultiplexLinkTransport implements LinkTransport {
+  private readonly onProtocolError?: (error: ProtocolVersionError, peerId: string) => void;
+  private readonly reportedVersions = new Map<string, number>();
   private readonly transports = new Map<string, {
     transport: LinkTransport;
     removeListener: () => void;
@@ -404,6 +409,10 @@ export class MultiplexLinkTransport implements LinkTransport {
   private readonly listeners = new Set<(message: LinkMessage) => void>();
   private connected = false;
 
+  constructor(options: { onProtocolError?(error: ProtocolVersionError, peerId: string): void } = {}) {
+    this.onProtocolError = options.onProtocolError;
+  }
+
   async add(id: string, transport: LinkTransport, binding?: MultiplexPeerBinding) {
     if (!/^[a-z0-9._-]{1,128}$/i.test(id)) throw new Error("Invalid multiplex transport id");
     if (binding && (!binding.wireDeviceId || binding.wireDeviceId.length > 128
@@ -412,6 +421,19 @@ export class MultiplexLinkTransport implements LinkTransport {
     }
     if (this.transports.has(id)) await this.remove(id);
     const removeListener = transport.onMessage((message) => {
+      // Custom and BroadcastChannel transports also cross this boundary; their types are not validation.
+      if (message.channel === "control") {
+        try {
+          message = { channel: "control", payload: parseControlMessage(message.payload) };
+          if (message.payload.type === "hello") this.reportedVersions.delete(id);
+        } catch (error) {
+          if (error instanceof ProtocolVersionError && this.reportedVersions.get(id) !== error.theirs) {
+            this.reportedVersions.set(id, error.theirs);
+            this.onProtocolError?.(error, id);
+          }
+          return;
+        }
+      }
       const inbound = binding ? bindInboundPeerMessage(message, binding) : message;
       if (!inbound) return;
       if (inbound.channel === "control" && inbound.payload.type === "hello") {
@@ -437,6 +459,7 @@ export class MultiplexLinkTransport implements LinkTransport {
     const entry = this.transports.get(id);
     if (!entry) return false;
     this.transports.delete(id);
+    this.reportedVersions.delete(id);
     for (const [deviceId, routeId] of this.deviceRoutes) if (routeId === id) this.deviceRoutes.delete(deviceId);
     entry.removeListener();
     await entry.transport.disconnect();
@@ -520,7 +543,7 @@ function bindOutboundRealtimeMessage(message: RealtimeMessage, binding?: Multipl
 }
 
 export interface PairingTicket {
-  version: typeof PROTOCOL_VERSION;
+  version: typeof PAIRING_TICKET_VERSION;
   sessionId: string;
   endpoint: string;
   joinToken: string;
@@ -703,7 +726,8 @@ function encodeRepresentableInputPacket(frame: InputFrame, profile: InputPacketP
 export function decodeInputPacket(bytes: Uint8Array, profile: InputPacketProfile): InputFrame {
   if (bytes.byteLength !== INPUT_Q1_BYTES) throw new Error(`Expected ${INPUT_Q1_BYTES} input bytes`);
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (view.getUint8(0) !== PROTOCOL_VERSION || (view.getUint8(1) & 0x0f) !== 2) {
+  if (view.getUint8(0) !== PROTOCOL_VERSION) throw new ProtocolVersionError(view.getUint8(0), "input controller");
+  if ((view.getUint8(1) & 0x0f) !== 2) {
     throw new Error("Unsupported 101 input packet");
   }
   if (view.getUint16(2, true) !== profile.revision) throw new Error("Stale input packet revision");
@@ -859,7 +883,8 @@ export function decodeMotionPacket(bytes: Uint8Array): MotionPacket {
     throw new Error(`Expected ${MOTION_PACKET_BYTES} motion bytes`);
   }
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  if (view.getUint8(0) !== PROTOCOL_VERSION || view.getUint8(1) !== 1) {
+  if (view.getUint8(0) !== PROTOCOL_VERSION) throw new ProtocolVersionError(view.getUint8(0), "motion controller");
+  if (view.getUint8(1) !== 1) {
     throw new Error("Unsupported 101 realtime packet");
   }
   return {
@@ -1129,7 +1154,7 @@ export class WebRTCTransport implements StatefulLinkTransport {
 }
 
 interface PairingEnvelope {
-  v: typeof PROTOCOL_VERSION;
+  v: typeof PAIRING_DESCRIPTION_VERSION;
   type: RTCSdpType;
   sdp: string;
   checksum: string;
@@ -1143,7 +1168,7 @@ export async function encodePairingDescription(
   if (description.sdp.length > 256_000) throw new Error("Pairing description is too large");
   const payload = `${description.type}\n${description.sdp}`;
   const envelope: PairingEnvelope = {
-    v: PROTOCOL_VERSION,
+    v: PAIRING_DESCRIPTION_VERSION,
     type: description.type,
     sdp: description.sdp,
     checksum: checksum(payload),
@@ -1172,7 +1197,7 @@ export async function decodePairingDescription(code: string): Promise<RTCSession
   }
   if (bytes.byteLength > 300_000) throw new Error("Pairing code is too large");
   const envelope = JSON.parse(new TextDecoder().decode(bytes)) as Partial<PairingEnvelope>;
-  if (envelope.v !== PROTOCOL_VERSION || !envelope.type || !envelope.sdp) {
+  if (envelope.v !== PAIRING_DESCRIPTION_VERSION || !envelope.type || !envelope.sdp) {
     throw new Error("Unsupported or malformed 101 pairing code");
   }
   if (!(["offer", "answer"] as string[]).includes(envelope.type)) {
@@ -1259,7 +1284,7 @@ function checksum(value: string) {
 }
 
 function parsePairingTicket(input: unknown): PairingTicket {
-  if (!isRecord(input) || input.version !== PROTOCOL_VERSION || input.transport !== "webrtc") throw new Error("Unsupported 101 LAN pairing ticket");
+  if (!isRecord(input) || input.version !== PAIRING_TICKET_VERSION || input.transport !== "webrtc") throw new Error("Unsupported 101 LAN pairing ticket");
   const sessionId = requiredText(input.sessionId, "sessionId", 128);
   if (!/^[A-Z0-9-]{4,128}$/i.test(sessionId)) throw new Error("Invalid pairing session id");
   const joinToken = requiredText(input.joinToken, "joinToken", 256);
@@ -1270,7 +1295,7 @@ function parsePairingTicket(input: unknown): PairingTicket {
   const expiresAt = requiredFinite(input.expiresAt, "expiresAt");
   if (!Number.isSafeInteger(expiresAt) || expiresAt <= 0) throw new Error("Invalid pairing expiration");
   const hostName = input.hostName === undefined ? undefined : requiredText(input.hostName, "hostName", 128);
-  return { version: PROTOCOL_VERSION, sessionId, endpoint: url.toString().replace(/\/$/, ""), joinToken, expiresAt, ...(hostName ? { hostName } : {}), transport: "webrtc" };
+  return { version: PAIRING_TICKET_VERSION, sessionId, endpoint: url.toString().replace(/\/$/, ""), joinToken, expiresAt, ...(hostName ? { hostName } : {}), transport: "webrtc" };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -1450,8 +1475,7 @@ function parseSpeakerCue(input: Record<string, unknown>): SpeakerCueMessage {
 
 function parseCapabilities(input: Record<string, unknown>): DeviceCapabilities {
   const capabilities: DeviceCapabilities = {};
-  const names = ["touch", "accelerometer", "gyroscope", "magnetometer", "camera", "microphone", "haptics", "gamepad", "speaker"] as const;
-  for (const name of names) {
+  for (const name of CAPABILITY_NAMES) {
     const value = input[name];
     if (value !== undefined && typeof value !== "boolean") throw new Error(`Invalid capability: ${name}`);
     if (value !== undefined) capabilities[name] = value;

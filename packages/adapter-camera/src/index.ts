@@ -12,13 +12,22 @@ import {
   type PoseLandmark,
   type PoseSignals,
   type TrackedHand,
-  readExpression,
-  readOrientation,
-  type TrackedFace,
+  PersonTracker,
+  readDeviceHints,
+  recommendQuality,
+  resolvePoseModel,
+  type TrackedPerson,
+  type TrackingQuality,
 } from "@101/vision";
+import { CameraLostError } from "./errors.ts";
+import { cameraConstraints, listCameras } from "./cameras.ts";
 
 export interface PoseAdapterDiagnostics {
   rawPose: PoseLandmark[];
+  /** The stable player this frame belongs to; absent for direct single-pose ingestion. */
+  person?: TrackedPerson;
+  /** Includes temporarily missed people, identified by lastSeen. */
+  people: readonly TrackedPerson[];
   pose: PoseLandmark[];
   signals: PoseSignals;
   frame: InputFrame;
@@ -30,6 +39,7 @@ export interface PoseInputAdapterOptions {
   playerId?: string;
   mirror?: boolean;
   classifier?: PoseClassifierOptions;
+  maxPeople?: number;
   onDiagnostics?: (diagnostics: PoseAdapterDiagnostics) => void;
 }
 
@@ -43,12 +53,18 @@ export class PoseInputAdapter implements InputAdapter {
   private emit?: InputFrameListener;
   private sequence = 0;
   private lastPose?: PoseLandmark[];
+  readonly tracker: PersonTracker;
+  private readonly classifierOptions?: PoseClassifierOptions;
+  private readonly peopleClassifiers = new Map<number, PoseClassifier>();
+  private previousPeople: readonly TrackedPerson[] = [];
 
   constructor(options: PoseInputAdapterOptions = {}) {
     this.id = options.deviceId ?? "camera-pose-browser";
     this.playerId = options.playerId ?? "player-1";
     this.mirror = options.mirror ?? true;
+    this.classifierOptions = options.classifier;
     this.classifier = new PoseClassifier(options.classifier);
+    this.tracker = new PersonTracker({ maxPeople: Math.max(1, Math.min(4, Math.round(options.maxPeople ?? 1))) });
     this.onDiagnostics = options.onDiagnostics;
   }
 
@@ -57,18 +73,57 @@ export class PoseInputAdapter implements InputAdapter {
   }
 
   stop() {
+    const timestamp = performance.now();
+    for (const person of this.previousPeople) {
+      this.createFrame([], [], timestamp, 0, this.peopleClassifiers.get(person.id) ?? this.classifier, person, []);
+    }
+    if (!this.previousPeople.length && this.lastPose) this.createFrame([], [], timestamp, 0, this.classifier);
     this.emit = undefined;
     this.lastPose = undefined;
+    this.previousPeople = [];
+    this.peopleClassifiers.clear();
+    this.tracker.reset();
     this.classifier.reset();
+  }
+
+  /** Every model detection enters the tracker, including empty frames that release held controls. */
+  ingestPoses(rawPoses: ReadonlyArray<readonly PoseLandmark[]>, timestamp = performance.now(), inferenceMs = 0) {
+    const poses = rawPoses.map((pose) => this.mirror ? mirrorPose(pose) : pose.map((point) => ({ ...point })));
+    const people = this.tracker.update(poses, timestamp);
+    const frames: InputFrame[] = [];
+    for (const prior of this.previousPeople) {
+      if (people.some((person) => person.id === prior.id)) continue;
+      frames.push(this.createFrame([], [], timestamp, inferenceMs, this.peopleClassifiers.get(prior.id) ?? this.classifier, prior, people));
+      this.peopleClassifiers.delete(prior.id);
+    }
+    for (const person of people) {
+      let classifier = this.peopleClassifiers.get(person.id);
+      if (!classifier) {
+        classifier = person.slot === 1 ? this.classifier : new PoseClassifier(this.classifierOptions);
+        classifier.reset();
+        this.peopleClassifiers.set(person.id, classifier);
+      }
+      const index = poses.indexOf(person.landmarks as PoseLandmark[]);
+      const pose = index < 0 ? [] : poses[index]!;
+      if (person.slot === 1) this.lastPose = pose.length ? pose : undefined;
+      frames.push(this.createFrame(index < 0 ? [] : rawPoses[index]!, pose, timestamp, inferenceMs, classifier, person, people));
+    }
+    this.previousPeople = people;
+    return frames;
   }
 
   ingestPose(rawPose: readonly PoseLandmark[], timestamp = performance.now(), inferenceMs = 0) {
     const pose = this.mirror ? mirrorPose(rawPose) : rawPose.map((landmark) => ({ ...landmark }));
     this.lastPose = pose;
-    const signals = this.classifier.process(pose, timestamp);
+    return this.createFrame(rawPose, pose, timestamp, inferenceMs, this.classifier);
+  }
+
+  private createFrame(rawPose: readonly PoseLandmark[], pose: PoseLandmark[], timestamp: number, inferenceMs: number,
+    classifier: PoseClassifier, person?: TrackedPerson, people: readonly TrackedPerson[] = []): InputFrame {
+    const signals = classifier.process(pose, timestamp);
     const frame: InputFrame = {
-      deviceId: this.id,
-      playerId: this.playerId,
+      deviceId: person && person.slot > 1 ? `${this.id}.player-${person.slot}` : this.id,
+      playerId: person && person.slot > 1 ? `player-${person.slot}` : this.playerId,
       sequence: ++this.sequence,
       timestamp,
       source: this.source,
@@ -96,12 +151,16 @@ export class PoseInputAdapter implements InputAdapter {
       poses: { body: flattenPose(pose) },
     };
     this.emit?.(frame);
-    this.onDiagnostics?.({ rawPose: rawPose.map((landmark) => ({ ...landmark })), pose, signals, frame, inferenceMs });
+    this.onDiagnostics?.({ rawPose: rawPose.map((landmark) => ({ ...landmark })), pose, signals, frame, inferenceMs, person, people });
     return frame;
   }
 
   calibrateNeutral() {
-    return this.lastPose ? this.classifier.calibrateNeutral(this.lastPose) : false;
+    let calibrated = false;
+    for (const person of this.previousPeople) {
+      calibrated = (this.peopleClassifiers.get(person.id)?.calibrateNeutral(person.landmarks) ?? false) || calibrated;
+    }
+    return calibrated || (this.lastPose ? this.classifier.calibrateNeutral(this.lastPose) : false);
   }
 }
 
@@ -144,17 +203,18 @@ export class HandInputAdapter implements InputAdapter {
   }
 
   stop() {
+    if (this.emit) this.ingestHands([], performance.now());
     this.emit = undefined;
     this.classifier.reset();
   }
 
-  ingestHands(rawHands: readonly TrackedHand[], timestamp = performance.now(), inferenceMs = 0) {
+  ingestHands(rawHands: readonly TrackedHand[], timestamp = performance.now(), inferenceMs = 0, frameAspect = 1) {
     const hands = rawHands.map((hand): TrackedHand => ({
       handedness: hand.handedness,
       confidence: hand.confidence,
       landmarks: this.mirror ? mirrorHand(hand.landmarks) : hand.landmarks.map((landmark) => ({ ...landmark })),
     }));
-    const signals = this.classifier.process(hands, timestamp);
+    const signals = this.classifier.process(hands, timestamp, frameAspect);
     const activated = new Set(signals.activated);
     const poses: Record<string, number[]> = {};
     hands.forEach((hand, index) => {
@@ -206,7 +266,7 @@ export class HandInputAdapter implements InputAdapter {
 
 export interface PoseVisionBackend {
   initialize(): Promise<void>;
-  detect(video: HTMLVideoElement, timestamp: number): PoseLandmark[] | undefined;
+  detect(video: HTMLVideoElement, timestamp: number): PoseLandmark[][];
   close(): void;
 }
 
@@ -264,20 +324,19 @@ export class MediaPipePoseBackend implements PoseVisionBackend {
   }
 
   detect(video: HTMLVideoElement, timestamp: number) {
-    if (!this.landmarker) return undefined;
+    if (!this.landmarker) return [];
     const safeTimestamp = Math.max(this.lastTimestamp + 1, Math.round(timestamp));
     this.lastTimestamp = safeTimestamp;
     const result = this.landmarker.detectForVideo(video, safeTimestamp);
-    const pose = result.landmarks[0];
-    const world = result.worldLandmarks?.[0];
-    return pose?.map((landmark, index) => ({
-      x: landmark.x,
-      y: landmark.y,
-      z: landmark.z,
-      visibility: landmark.visibility ?? 0,
-      // Carried through rather than dropped: this is the only metric geometry the model produces.
-      world: world?.[index] ? { x: world[index]!.x, y: world[index]!.y, z: world[index]!.z } : undefined,
-    }));
+    return result.landmarks.map((pose, person) => {
+      const world = result.worldLandmarks?.[person];
+      return pose.map((landmark, index) => ({
+        x: landmark.x, y: landmark.y, z: landmark.z,
+        visibility: landmark.visibility ?? 0,
+        // The installed web API exposes visibility, but does not expose per-joint presence.
+        ...(world?.[index] ? { world: { x: world[index]!.x, y: world[index]!.y, z: world[index]!.z } } : {}),
+      }));
+    });
   }
 
   close() {
@@ -377,19 +436,34 @@ export class MediaPipeHandBackend implements HandVisionBackend {
 }
 
 export interface BrowserCameraAdapterOptions extends PoseInputAdapterOptions {
+  quality?: TrackingQuality;
+  /** Explicitly provisioned assets. Omitted means only models committed to this checkout. */
+  availablePoseModels?: ReadonlySet<string>;
   video: HTMLVideoElement;
   backend?: PoseVisionBackend;
   maxFps?: number;
   constraints?: MediaTrackConstraints;
+  /** Startup errors reject start(); this callback reports runtime inference failures only. */
   onError?: (error: Error) => void;
+  /** A running stream ended unexpectedly. Intentional stop never calls this. */
+  onCameraLost?: (error: CameraLostError) => void;
 }
 
 export class BrowserCameraAdapter extends PoseInputAdapter {
+  readonly trackingProfile: ReturnType<typeof resolvePoseModel>;
   private readonly video: HTMLVideoElement;
   private readonly backend: PoseVisionBackend;
   private readonly maxFps: number;
   private readonly constraints: MediaTrackConstraints;
   private readonly onError?: (error: Error) => void;
+  private readonly onCameraLost?: (error: CameraLostError) => void;
+  private detachTracks?: () => void;
+  private detachDevices?: () => void;
+  private cameraAvailable = false;
+  private running = false;
+  private generation = 0;
+  private inferenceFailed = false;
+  private initialization?: Promise<void>;
   private stream?: MediaStream;
   private frameHandle?: number;
   private lastInferenceAt = Number.NEGATIVE_INFINITY;
@@ -398,32 +472,83 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
   constructor(options: BrowserCameraAdapterOptions) {
     super(options);
     this.video = options.video;
-    this.backend = options.backend ?? new MediaPipePoseBackend();
+    this.trackingProfile = resolvePoseModel(options.quality ?? recommendQuality(readDeviceHints()), options.availablePoseModels);
+    this.backend = options.backend ?? new MediaPipePoseBackend({ modelPath: this.trackingProfile.poseModel, maxPeople: options.maxPeople });
     this.maxFps = Math.max(5, Math.min(30, options.maxFps ?? 24));
-    this.constraints = options.constraints ?? { facingMode: "user", width: { ideal: 960 }, height: { ideal: 720 } };
+    this.constraints = options.constraints ?? cameraConstraints();
     this.onError = options.onError;
+    this.onCameraLost = options.onCameraLost;
+    this.watchAvailability();
+  }
+
+  get available() { return this.cameraAvailable && isCameraSupported(); }
+
+  async refreshAvailability() {
+    this.cameraAvailable = isCameraSupported() && (await listCameras()).length > 0;
+    return this.cameraAvailable;
+  }
+
+  private watchAvailability() {
+    void this.refreshAvailability();
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.addEventListener) return;
+    const devices = navigator.mediaDevices;
+    const changed = () => { void this.refreshAvailability(); };
+    devices.addEventListener("devicechange", changed);
+    this.detachDevices = () => devices.removeEventListener("devicechange", changed);
   }
 
   override async start(emit: InputFrameListener) {
+    this.stop();
+    const generation = this.generation;
+    this.watchAvailability();
     super.start(emit);
-    if (!isCameraSupported()) throw new Error("Camera access is unavailable in this browser");
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: this.constraints, audio: false });
+      if (!isCameraSupported()) throw new Error("Camera access is unavailable in this browser");
+      const stream = await navigator.mediaDevices.getUserMedia({ video: this.constraints, audio: false });
+      if (generation !== this.generation) {
+        stream.getTracks().forEach((track) => track.stop());
+        throw new DOMException("Camera start was cancelled", "AbortError");
+      }
+      this.stream = stream;
       this.video.srcObject = this.stream;
       this.video.muted = true;
       this.video.playsInline = true;
       await this.video.play();
-      await this.backend.initialize();
+      if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
+      // A restart waits for any previous initialization to settle before reusing this backend.
+      if (this.initialization) await this.initialization.catch(() => undefined);
+      if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
+      const initialization = this.backend.initialize();
+      this.initialization = initialization;
+      await initialization;
+      if (this.initialization === initialization) this.initialization = undefined;
+      if (generation !== this.generation) {
+        this.backend.close();
+        throw new DOMException("Camera start was cancelled", "AbortError");
+      }
+      if (stream.getTracks().some((track) => track.readyState === "ended")) throw new CameraLostError();
+      this.running = true;
+      const ended = () => {
+        if (!this.running || this.stream !== stream) return;
+        this.stop();
+        this.onCameraLost?.(new CameraLostError());
+      };
+      stream.getTracks().forEach((track) => track.addEventListener("ended", ended));
+      this.detachTracks = () => stream.getTracks().forEach((track) => track.removeEventListener("ended", ended));
       this.frameHandle = requestAnimationFrame(this.processFrame);
     } catch (cause) {
       const error = cause instanceof Error ? cause : new Error("Unable to start local pose tracking");
-      this.onError?.(error);
-      this.releaseCamera();
+      if (generation === this.generation) this.stop();
       throw error;
     }
   }
 
   override stop() {
+    this.generation++;
+    this.running = false;
+    this.inferenceFailed = false;
+    this.detachDevices?.();
+    this.detachDevices = undefined;
     if (this.frameHandle !== undefined) cancelAnimationFrame(this.frameHandle);
     this.frameHandle = undefined;
     this.backend.close();
@@ -432,22 +557,29 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
   }
 
   private processFrame = (now: number) => {
+    if (!this.running) return;
+    const generation = this.generation;
     const interval = 1000 / this.maxFps;
     if (this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && this.video.currentTime !== this.lastVideoTime && now - this.lastInferenceAt >= interval) {
       const startedAt = performance.now();
+      this.lastVideoTime = this.video.currentTime;
+      this.lastInferenceAt = now;
       try {
-        const pose = this.backend.detect(this.video, now);
-        if (pose) this.ingestPose(pose, now, performance.now() - startedAt);
-        this.lastVideoTime = this.video.currentTime;
-        this.lastInferenceAt = now;
+        const poses = this.backend.detect(this.video, now);
+        this.ingestPoses(poses, now, performance.now() - startedAt);
+        this.inferenceFailed = false;
       } catch (cause) {
-        this.onError?.(cause instanceof Error ? cause : new Error("Pose inference failed"));
+        this.ingestPoses([], now);
+        if (!this.inferenceFailed) this.onError?.(cause instanceof Error ? cause : new Error("Pose inference failed"));
+        this.inferenceFailed = true;
       }
     }
-    this.frameHandle = requestAnimationFrame(this.processFrame);
+    if (this.running && generation === this.generation) this.frameHandle = requestAnimationFrame(this.processFrame);
   };
 
   private releaseCamera() {
+    this.detachTracks?.();
+    this.detachTracks = undefined;
     this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = undefined;
     this.video.pause();
@@ -462,7 +594,10 @@ export interface BrowserHandAdapterOptions extends HandInputAdapterOptions {
   backend?: HandVisionBackend;
   maxFps?: number;
   constraints?: MediaTrackConstraints;
+  /** Startup errors reject start(); this callback reports runtime inference failures only. */
   onError?: (error: Error) => void;
+  /** A running stream ended unexpectedly. Intentional stop never calls this. */
+  onCameraLost?: (error: CameraLostError) => void;
 }
 
 export class BrowserHandAdapter extends HandInputAdapter {
@@ -471,6 +606,14 @@ export class BrowserHandAdapter extends HandInputAdapter {
   private readonly maxFps: number;
   private readonly constraints: MediaTrackConstraints;
   private readonly onError?: (error: Error) => void;
+  private readonly onCameraLost?: (error: CameraLostError) => void;
+  private detachTracks?: () => void;
+  private detachDevices?: () => void;
+  private cameraAvailable = false;
+  private running = false;
+  private generation = 0;
+  private inferenceFailed = false;
+  private initialization?: Promise<void>;
   private stream?: MediaStream;
   private frameHandle?: number;
   private lastInferenceAt = Number.NEGATIVE_INFINITY;
@@ -481,30 +624,80 @@ export class BrowserHandAdapter extends HandInputAdapter {
     this.video = options.video;
     this.backend = options.backend ?? new MediaPipeHandBackend();
     this.maxFps = Math.max(5, Math.min(30, options.maxFps ?? 24));
-    this.constraints = options.constraints ?? { facingMode: "user", width: { ideal: 960 }, height: { ideal: 720 } };
+    this.constraints = options.constraints ?? cameraConstraints();
     this.onError = options.onError;
+    this.onCameraLost = options.onCameraLost;
+    this.watchAvailability();
+  }
+
+  get available() { return this.cameraAvailable && isCameraSupported(); }
+
+  async refreshAvailability() {
+    this.cameraAvailable = isCameraSupported() && (await listCameras()).length > 0;
+    return this.cameraAvailable;
+  }
+
+  private watchAvailability() {
+    void this.refreshAvailability();
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.addEventListener) return;
+    const devices = navigator.mediaDevices;
+    const changed = () => { void this.refreshAvailability(); };
+    devices.addEventListener("devicechange", changed);
+    this.detachDevices = () => devices.removeEventListener("devicechange", changed);
   }
 
   override async start(emit: InputFrameListener) {
+    this.stop();
+    const generation = this.generation;
+    this.watchAvailability();
     super.start(emit);
-    if (!isCameraSupported()) throw new Error("Camera access is unavailable in this browser");
     try {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: this.constraints, audio: false });
+      if (!isCameraSupported()) throw new Error("Camera access is unavailable in this browser");
+      const stream = await navigator.mediaDevices.getUserMedia({ video: this.constraints, audio: false });
+      if (generation !== this.generation) {
+        stream.getTracks().forEach((track) => track.stop());
+        throw new DOMException("Camera start was cancelled", "AbortError");
+      }
+      this.stream = stream;
       this.video.srcObject = this.stream;
       this.video.muted = true;
       this.video.playsInline = true;
       await this.video.play();
-      await this.backend.initialize();
+      if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
+      // A restart waits for any previous initialization to settle before reusing this backend.
+      if (this.initialization) await this.initialization.catch(() => undefined);
+      if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
+      const initialization = this.backend.initialize();
+      this.initialization = initialization;
+      await initialization;
+      if (this.initialization === initialization) this.initialization = undefined;
+      if (generation !== this.generation) {
+        this.backend.close();
+        throw new DOMException("Camera start was cancelled", "AbortError");
+      }
+      if (stream.getTracks().some((track) => track.readyState === "ended")) throw new CameraLostError();
+      this.running = true;
+      const ended = () => {
+        if (!this.running || this.stream !== stream) return;
+        this.stop();
+        this.onCameraLost?.(new CameraLostError());
+      };
+      stream.getTracks().forEach((track) => track.addEventListener("ended", ended));
+      this.detachTracks = () => stream.getTracks().forEach((track) => track.removeEventListener("ended", ended));
       this.frameHandle = requestAnimationFrame(this.processFrame);
     } catch (cause) {
       const error = cause instanceof Error ? cause : new Error("Unable to start local hand tracking");
-      this.onError?.(error);
-      this.releaseCamera();
+      if (generation === this.generation) this.stop();
       throw error;
     }
   }
 
   override stop() {
+    this.generation++;
+    this.running = false;
+    this.inferenceFailed = false;
+    this.detachDevices?.();
+    this.detachDevices = undefined;
     if (this.frameHandle !== undefined) cancelAnimationFrame(this.frameHandle);
     this.frameHandle = undefined;
     this.backend.close();
@@ -513,21 +706,28 @@ export class BrowserHandAdapter extends HandInputAdapter {
   }
 
   private processFrame = (now: number) => {
+    if (!this.running) return;
+    const generation = this.generation;
     const interval = 1_000 / this.maxFps;
     if (this.video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && this.video.currentTime !== this.lastVideoTime && now - this.lastInferenceAt >= interval) {
       const startedAt = performance.now();
+      this.lastVideoTime = this.video.currentTime;
+      this.lastInferenceAt = now;
       try {
-        this.ingestHands(this.backend.detect(this.video, now), now, performance.now() - startedAt);
-        this.lastVideoTime = this.video.currentTime;
-        this.lastInferenceAt = now;
+        this.ingestHands(this.backend.detect(this.video, now), now, performance.now() - startedAt, this.video.videoWidth / this.video.videoHeight);
+        this.inferenceFailed = false;
       } catch (cause) {
-        this.onError?.(cause instanceof Error ? cause : new Error("Hand inference failed"));
+        this.ingestHands([], now);
+        if (!this.inferenceFailed) this.onError?.(cause instanceof Error ? cause : new Error("Hand inference failed"));
+        this.inferenceFailed = true;
       }
     }
-    this.frameHandle = requestAnimationFrame(this.processFrame);
+    if (this.running && generation === this.generation) this.frameHandle = requestAnimationFrame(this.processFrame);
   };
 
   private releaseCamera() {
+    this.detachTracks?.();
+    this.detachTracks = undefined;
     this.stream?.getTracks().forEach((track) => track.stop());
     this.stream = undefined;
     this.video.pause();
@@ -549,111 +749,9 @@ function cloneHands(hands: readonly TrackedHand[]) {
   }));
 }
 
-/* ---- Faces ------------------------------------------------------------------------------------ */
-
-export interface FaceVisionBackend {
-  initialize(): Promise<void>;
-  detect(video: HTMLVideoElement, timestamp: number): TrackedFace[];
-  close(): void;
-}
-
-export interface MediaPipeFaceBackendOptions {
-  wasmRoot?: string;
-  /**
-   * Required, and deliberately not defaulted.
-   *
-   * face_landmarker.task is not committed to this repository, so a default pointed every caller at
-   * a path that 404s — a failure that does not surface until a player has chosen the camera and
-   * waited for a download that was never coming. Naming the file is now the caller's job, which
-   * makes "this needs an asset you have to supply" a fact the types state rather than one the
-   * network reports.
-   */
-  modelPath: string;
-  minConfidence?: number;
-  /** How many faces to track. More than one is what makes a room of people playable. */
-  maxFaces?: number;
-  preferGpu?: boolean;
-}
-
-/**
- * The face backend.
- *
- * `camera-face` has been a declared input source with an icon drawn for it since the input
- * vocabulary was written, and nothing has ever produced one — so no game could react to a blink, a
- * raised brow or an open mouth.
- *
- * Blendshapes and the transformation matrix are both requested, because what a game wants from a
- * face is an expression and a direction, not 478 points. The mesh comes through as well for anything
- * that genuinely needs the geometry.
- */
-export class MediaPipeFaceBackend implements FaceVisionBackend {
-  private readonly options: Required<MediaPipeFaceBackendOptions>;
-  private landmarker?: import("@mediapipe/tasks-vision").FaceLandmarker;
-  private lastTimestamp = -1;
-
-  constructor(options: MediaPipeFaceBackendOptions) {
-    this.options = {
-      wasmRoot: options.wasmRoot ?? "/mediapipe/wasm",
-      modelPath: options.modelPath,
-      minConfidence: options.minConfidence ?? 0.5,
-      maxFaces: Math.max(1, Math.min(4, Math.round(options.maxFaces ?? 1))),
-      preferGpu: options.preferGpu ?? true,
-    };
-  }
-
-  async initialize() {
-    if (this.landmarker) return;
-    const { FilesetResolver, FaceLandmarker } = await import("@mediapipe/tasks-vision");
-    const files = await FilesetResolver.forVisionTasks(this.options.wasmRoot, false);
-    const create = (delegate: "GPU" | "CPU") => FaceLandmarker.createFromOptions(files, {
-      baseOptions: { modelAssetPath: this.options.modelPath, delegate },
-      runningMode: "VIDEO",
-      numFaces: this.options.maxFaces,
-      // The two outputs a game actually acts on. Without these the result is a point cloud.
-      outputFaceBlendshapes: true,
-      outputFacialTransformationMatrixes: true,
-      minFaceDetectionConfidence: this.options.minConfidence,
-      minFacePresenceConfidence: this.options.minConfidence,
-      minTrackingConfidence: this.options.minConfidence,
-    });
-    // Same reason as the pose backend: a blocklisted driver fails at creation, not at detection.
-    try {
-      this.landmarker = this.options.preferGpu ? await create("GPU") : await create("CPU");
-    } catch {
-      this.landmarker = await create("CPU");
-    }
-  }
-
-  detect(video: HTMLVideoElement, timestamp: number): TrackedFace[] {
-    if (!this.landmarker) return [];
-    const safeTimestamp = Math.max(this.lastTimestamp + 1, Math.round(timestamp));
-    this.lastTimestamp = safeTimestamp;
-    const result = this.landmarker.detectForVideo(video, safeTimestamp);
-    return result.faceLandmarks.map((landmarks, index): TrackedFace => {
-      const blendshapes = result.faceBlendshapes?.[index]?.categories ?? [];
-      const matrix = result.facialTransformationMatrixes?.[index]?.data;
-      return {
-        landmarks: landmarks.map((landmark) => ({ x: landmark.x, y: landmark.y, z: landmark.z })),
-        expression: readExpression(blendshapes),
-        orientation: matrix ? readOrientation(Array.from(matrix)) : undefined,
-        /*
-         * The face model reports no detection score of its own, so this is the strongest expression
-         * signal present — which is at least a real measurement of "something is happening on a
-         * face" rather than a hardcoded 1.
-         */
-        confidence: blendshapes.length > 0 ? Math.max(...blendshapes.map((shape) => shape.score)) : 0,
-      };
-    });
-  }
-
-  close() {
-    this.landmarker?.close();
-    this.landmarker = undefined;
-    this.lastTimestamp = -1;
-  }
-}
-
 /*
  * Why a camera did not start, in words a player can act on.
  */
 export * from "./errors.ts";
+export * from "./luma.ts";
+export * from "./cameras.ts";

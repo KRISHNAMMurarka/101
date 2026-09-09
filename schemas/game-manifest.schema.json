@@ -43,7 +43,8 @@
     "renderer": {
       "enum": [
         "2d",
-        "3d"
+        "3d",
+        "video"
       ]
     },
     "players": {
@@ -116,6 +117,70 @@
         "tool"
       ],
       "default": "game"
+    },
+    "runtime": {
+      "enum": [
+        "local",
+        "hosted",
+        "streamed"
+      ],
+      "default": "local"
+    },
+    "launchUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://",
+      "maxLength": 2048
+    },
+    "inputTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "transport",
+        "endpoint",
+        "format"
+      ],
+      "properties": {
+        "transport": {
+          "enum": [
+            "webrtc",
+            "websocket"
+          ]
+        },
+        "endpoint": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2048
+        },
+        "format": {
+          "const": "101-json"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "transport": {
+                "const": "webrtc"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "endpoint": {
+                "pattern": "^https?://"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "endpoint": {
+                "pattern": "^wss?://"
+              }
+            }
+          }
+        }
+      ]
     }
   },
   "$defs": {
@@ -151,5 +216,40 @@
         "$ref": "#/$defs/source"
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "runtime": {
+            "const": "local"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "renderer": {
+            "enum": [
+              "2d",
+              "3d"
+            ]
+          }
+        },
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "launchUrl"
+              ]
+            },
+            {
+              "required": [
+                "inputTarget"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
@@ -8,6 +10,7 @@ import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
 import type { HandGesture } from "@101/vision";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
@@ -62,7 +65,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     },
   });
 
-  const { linked, readiness } = useGameHost<SwarmCommanderState>({
+  const { linked, readiness, controllerHost } = useGameHost<SwarmCommanderState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -111,18 +114,19 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     <section className="swarm-page">
       <header className="swarm-heading"><div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
 
-      <div className="swarm-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="swarm-arena">
         <div className="swarm-statusbar"><FullscreenButton /><span>{linked ? `${linked} SPECIALIST DEVICES` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />
         {/* Local camera capture requests no audio and is never recorded or uploaded. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={camera.state === "on" ? "swarm-camera active" : "swarm-camera"} ref={videoRef} aria-label="Camera preview" />
+        <video className={camera.state === "on" ? "swarm-camera active" : "swarm-camera"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your hands" />
         <div className="swarm-event"><span>COMMAND FEED</span><strong>{hud.event}</strong><small>{camera.state === "on" ? gesture : `${hud.formation.toUpperCase()} · ${hud.selected || "ALL"} ASSIGNED`}</small></div>
         <div className="swarm-vitals"><SwarmMeter label="ENERGY" value={hud.energy} /><div className={hud.shield ? "swarm-shield active" : "swarm-shield"}><span>COLLECTIVE SHIELD</span><strong>{hud.shield ? "ACTIVE" : "READY"}</strong></div></div>
         <div className="swarm-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}{camera.state !== "on" && <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}<button onClick={onConnect}>{linked ? "ADD SPECIALIST" : "CONNECT SPECIALISTS"}</button></div>
         {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
-        {hud.gameOver && <div className="game-over-panel"><p>COLLECTIVE DISPERSED</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL COMMAND SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Collective dispersed" score={hud.score} detail="Final command score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="swarm-instructions"><span><b>COMMAND</b> mouse · right stick · point</span><span><b>SELECT</b> click · A · pinch</span><span><b>FORMATIONS</b> keys 1–5 · tactician</span><span><b>PULSE / SHIELD</b> Q / E</span><span><b>RECALL</b> R · navigator</span></div>
       <p className="swarm-privacy"><strong>Different dimensions, different devices:</strong> a navigator can tilt the shared direction while a tactician sets targets and formations. Hands are optional: the picture is read on this device and never leaves it, and every command also has a key, a stick or a pointer.</p>
     </section>
@@ -142,8 +146,12 @@ function createSwarmView(canvas: HTMLCanvasElement) {
   const target = new THREE.Mesh(new THREE.RingGeometry(.28, .36, 30), new THREE.MeshBasicMaterial({ color: 0x50e3ff, side: THREE.DoubleSide })); target.rotation.x = -Math.PI / 2; target.position.y = .04; view.scene.add(target);
   const shield = new THREE.Mesh(new THREE.RingGeometry(1.2, 1.27, 64), new THREE.MeshBasicMaterial({ color: 0x50e3ff, transparent: true, opacity: 0, side: THREE.DoubleSide })); shield.rotation.x = -Math.PI / 2; shield.position.y = .06; view.scene.add(shield);
   const zones = new Map<string, THREE.Mesh>(); const effects = new Map<number, THREE.Mesh>(); const matrix = new THREE.Matrix4(); const quaternion = new THREE.Quaternion(); const scale = new THREE.Vector3(); const position = new THREE.Vector3();
+  const resize = new ResizeObserver(([entry]) => {
+    if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height));
+  });
+  resize.observe(canvas);
+
   const sync = (state: SwarmCommanderState) => {
-    const bounds = canvas.getBoundingClientRect(); view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
     agents.count = Math.min(300, state.agents.length);
     state.agents.slice(0, agents.count).forEach((agent, index) => { position.set(agent.x, .19, agent.y); quaternion.setFromAxisAngle(new THREE.Vector3(0,1,0), -Math.atan2(agent.vy, agent.vx) - Math.PI / 2); scale.setScalar(agent.selected ? 1.28 : 1); matrix.compose(position, quaternion, scale); agents.setMatrixAt(index, matrix); agents.setColorAt(index, new THREE.Color(agent.selected ? 0x50e3ff : 0xf6c15c)); }); agents.instanceMatrix.needsUpdate = true; if (agents.instanceColor) agents.instanceColor.needsUpdate = true;
     const activeEnemies = state.enemies.filter((enemy) => enemy.spawnAt <= state.elapsed && enemy.hitPoints > 0).slice(0, 128); enemies.count = activeEnemies.length;
@@ -156,6 +164,6 @@ function createSwarmView(canvas: HTMLCanvasElement) {
     for (const [id, mesh] of effects) if (!effectIds.has(id)) { disposeMesh(view,mesh); effects.delete(id); }
     target.position.set(state.target.x,.05,state.target.y); target.rotation.z = state.elapsed * .9; const center = state.agents.length ? state.agents.reduce((sum,agent) => ({ x: sum.x + agent.x, y: sum.y + agent.y }), {x:0,y:0}) : {x:0,y:0}; if (state.agents.length) { center.x /= state.agents.length; center.y /= state.agents.length; } shield.position.set(center.x,.06,center.y); (shield.material as THREE.MeshBasicMaterial).opacity = state.shieldUntil > state.elapsed ? .75 : 0; shield.scale.setScalar(1.8 + Math.sin(state.elapsed * 7) * .08); view.render();
   };
-  return { sync, dispose() { zones.forEach((mesh) => disposeMesh(view,mesh)); effects.forEach((mesh) => disposeMesh(view,mesh)); [floor,target,shield,agents,enemies].forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }); view.dispose(); } };
+  return { sync, dispose() { resize.disconnect(); zones.forEach((mesh) => disposeMesh(view,mesh)); effects.forEach((mesh) => disposeMesh(view,mesh)); [floor,target,shield,agents,enemies].forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }); view.dispose(); } };
 }
 function disposeMesh(view: Renderer3D101, mesh: THREE.Mesh) { view.scene.remove(mesh); mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }

@@ -45,9 +45,14 @@ export default function MotionLab() {
     view.scene.add(grid);
 
     let frame = 0;
-    const render = () => {
+    const resize = () => {
       const bounds = canvas.getBoundingClientRect();
       view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(canvas);
+    const render = () => {
       const [x, y, z, w] = orientationRef.current;
       phone.quaternion.slerp(new THREE.Quaternion(x, y, z, w), 0.22);
       phone.position.y = Math.sin(performance.now() / 850) * 0.04;
@@ -57,6 +62,7 @@ export default function MotionLab() {
     frame = requestAnimationFrame(render);
     return () => {
       cancelAnimationFrame(frame);
+      observer.disconnect();
       body.geometry.dispose();
       screen.geometry.dispose();
       mark.geometry.dispose();

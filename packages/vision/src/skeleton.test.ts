@@ -11,8 +11,9 @@ import { readSkeleton } from "./skeleton.ts";
 function pose(world: Partial<Record<keyof typeof POSE_LANDMARK, readonly [number, number, number]>>): PoseLandmark[] {
   const landmarks: PoseLandmark[] = Array.from({ length: 33 }, () => ({ x: 0, y: 0, z: 0, visibility: 0 }));
   for (const [name, [x, y, z]] of Object.entries(world)) {
-    landmarks[POSE_LANDMARK[name as keyof typeof POSE_LANDMARK]] = { x, y, z, visibility: 1, world: { x, y, z } };
+    landmarks[POSE_LANDMARK[name as keyof typeof POSE_LANDMARK]] = { x: .5 + x * .4, y: .5 + y * .4, z: z * .4, visibility: 1, world: { x, y, z } };
   }
+  assert.ok(landmarks.every((point) => point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1), "metric positions must be projected into image coordinates");
   return landmarks;
 }
 

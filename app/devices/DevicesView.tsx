@@ -43,8 +43,8 @@ export default function DevicesView() {
         setQrCode(image);
         setHubError("");
       })
-      .catch((error) => {
-        if (current) setHubError(error instanceof Error ? error.message : "Local Hub unavailable");
+      .catch(() => {
+        if (current) setHubError("The connection is unavailable. Try again in a moment.");
       });
     return () => { current = false; };
   }, [sessionId]);
@@ -101,7 +101,7 @@ export default function DevicesView() {
           {qrCode ? (
             /* A generated data URL, rendered directly; it never leaves the local browser. */
             /* eslint-disable-next-line @next/next/no-img-element */
-            <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} />
+            <img className="pairing-qr" src={qrCode} alt="Scan this code to connect a controller" />
           ) : (
             <div className="pairing-qr pending"><span>{hubError ? "Not ready" : "Preparing…"}</span></div>
           )}

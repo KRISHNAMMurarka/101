@@ -1,4 +1,5 @@
 import { POSE_LANDMARK, type PoseLandmark } from "./index.ts";
+import { PLACEMENT_LIMITS } from "./placement.ts";
 
 /**
  * Who is who, frame to frame.
@@ -8,7 +9,7 @@ import { POSE_LANDMARK, type PoseLandmark } from "./index.ts";
  * index 0 last frame. Handing those straight to a game means player one and player two swap every
  * time they cross the room, or whenever one of them is briefly missed.
  *
- * So a person is matched to the nearest person from the previous frame, and keeps their slot until
+ * A short motion prediction matches each person through ordinary crossings, and keeps their slot until
  * they have been gone long enough to have actually left. Everything is measured at the hips, which
  * is the steadiest point on a body.
  *
@@ -56,6 +57,7 @@ export class PersonTracker {
   private readonly options: Required<PersonTrackerOptions>;
   private people: TrackedPerson[] = [];
   private nextId = 1;
+  private velocity = new Map<number, { x: number; y: number }>();
 
   constructor(options: PersonTrackerOptions = {}) {
     this.options = {
@@ -68,11 +70,14 @@ export class PersonTracker {
   /**
    * Match this frame's poses to the people already being tracked.
    *
-   * Greedy nearest-first over every pairing, which is enough at these numbers — four people is at
+   * Greedy nearest predicted position over every pairing, which is enough at these numbers — four people is at
    * most sixteen pairs — and has the property that the most confident match is made first, so one
    * ambiguous pairing cannot displace an obvious one.
    */
   update(poses: ReadonlyArray<readonly PoseLandmark[]>, timestamp: number): TrackedPerson[] {
+    this.people = this.people.filter((person) => timestamp - person.lastSeen <= this.options.forgetAfterMs);
+    const activeIds = new Set(this.people.map((person) => person.id));
+    for (const id of this.velocity.keys()) if (!activeIds.has(id)) this.velocity.delete(id);
     const observations = poses
       .map((landmarks) => ({ landmarks, position: hips(landmarks) }))
       .filter((observation): observation is { landmarks: readonly PoseLandmark[]; position: { x: number; y: number } } =>
@@ -80,8 +85,12 @@ export class PersonTracker {
 
     const pairs: { person: number; observation: number; distance: number }[] = [];
     this.people.forEach((person, personIndex) => {
+      const velocity = this.velocity.get(person.id) ?? { x: 0, y: 0 };
+      // Short extrapolation follows crossings without guessing a long path while someone is absent.
+      const elapsed = Math.max(0, Math.min(120, timestamp - person.lastSeen));
+      const predicted = { x: person.position.x + velocity.x * elapsed, y: person.position.y + velocity.y * elapsed };
       observations.forEach((observation, observationIndex) => {
-        const distance = Math.hypot(person.position.x - observation.position.x, person.position.y - observation.position.y);
+        const distance = Math.hypot(predicted.x - observation.position.x, predicted.y - observation.position.y);
         if (distance <= this.options.maxStep) pairs.push({ person: personIndex, observation: observationIndex, distance });
       });
     });
@@ -97,6 +106,11 @@ export class PersonTracker {
       claimedObservations.add(pair.observation);
       const person = this.people[pair.person]!;
       const observation = observations[pair.observation]!;
+      const elapsed = timestamp - person.lastSeen;
+      if (elapsed > 0) this.velocity.set(person.id, {
+        x: (observation.position.x - person.position.x) / elapsed,
+        y: (observation.position.y - person.position.y) / elapsed,
+      });
       next.push({ ...person, landmarks: observation.landmarks, position: observation.position, lastSeen: timestamp });
     }
 
@@ -127,6 +141,7 @@ export class PersonTracker {
   reset() {
     this.people = [];
     this.nextId = 1;
+    this.velocity.clear();
   }
 }
 
@@ -134,7 +149,7 @@ export class PersonTracker {
 function hips(landmarks: readonly PoseLandmark[]) {
   const left = landmarks[POSE_LANDMARK.leftHip];
   const right = landmarks[POSE_LANDMARK.rightHip];
-  if (!left || !right) return undefined;
+  if (!left || !right || !(left.visibility >= PLACEMENT_LIMITS.seen) || !(right.visibility >= PLACEMENT_LIMITS.seen)) return undefined;
   return { x: (left.x + right.x) / 2, y: (left.y + right.y) / 2 };
 }
 

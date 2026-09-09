@@ -16,6 +16,8 @@
  * of a camera that reverses their movements, which is worse than asking them again.
  */
 
+import { COMMITTED_POSE_MODELS } from "@101/vision";
+
 export type CameraKind = "body" | "hands";
 
 export interface CameraPlan {
@@ -26,6 +28,7 @@ export interface CameraPlan {
   readonly mirror: boolean;
   /** The pose model the check settled on, so the game does not resolve a different one. */
   readonly poseModel?: string;
+  readonly maxPeople?: number;
 }
 
 /**
@@ -57,12 +60,33 @@ export function decodeCameraPlan(raw: string | null | undefined): CameraPlan | u
   if (typeof record.mirror !== "boolean") return undefined;
   if (record.deviceId !== undefined && typeof record.deviceId !== "string") return undefined;
   if (record.poseModel !== undefined && typeof record.poseModel !== "string") return undefined;
+  if (record.maxPeople !== undefined && (typeof record.maxPeople !== "number" || !Number.isInteger(record.maxPeople) || record.maxPeople < 1 || record.maxPeople > 4)) return undefined;
 
   return {
     kind: record.kind,
     mirror: record.mirror,
     ...(record.deviceId ? { deviceId: record.deviceId } : {}),
     ...(record.poseModel ? { poseModel: record.poseModel } : {}),
+    ...(record.maxPeople !== undefined ? { maxPeople: record.maxPeople as number } : {}),
+  };
+}
+
+/** A previous check is a preference, never permission to open a camera on a later visit. */
+export function cameraRequested(search: string, kind: CameraKind) {
+  return new URLSearchParams(search).get("camera") === kind;
+}
+
+/** Device ids rotate and optional models can disappear between visits. Only reuse what exists. */
+export function resolveCameraPreferences(kind: CameraKind, plan: CameraPlan | undefined, cameras: readonly Pick<MediaDeviceInfo, "deviceId">[], maxPeople = 1): CameraPlan {
+  const remembered = plan?.kind === kind ? plan : undefined;
+  const ceiling = Number.isFinite(maxPeople) ? Math.max(1, Math.min(4, Math.round(maxPeople))) : 1;
+  const count = Math.min(remembered?.maxPeople ?? ceiling, ceiling);
+  return {
+    kind,
+    mirror: remembered?.mirror ?? true,
+    ...(remembered?.deviceId && cameras.some((camera) => camera.deviceId === remembered.deviceId) ? { deviceId: remembered.deviceId } : {}),
+    ...(kind === "body" && remembered?.poseModel && COMMITTED_POSE_MODELS.has(remembered.poseModel) ? { poseModel: remembered.poseModel } : {}),
+    ...(kind === "body" ? { maxPeople: Number.isFinite(count) ? Math.max(1, Math.min(4, Math.round(count))) : 1 } : {}),
   };
 }
 

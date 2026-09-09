@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { flattenHand, flattenPose, HandGestureClassifier, legVisibility, mirrorPose, POSE_LANDMARK, PoseClassifier, readSkeleton, type HandLandmark, type PoseLandmark, type TrackedHand } from "./index.ts";
+import { flattenHand, flattenPose, unflattenPose, HandGestureClassifier, legVisibility, mirrorPose, POSE_LANDMARK, PoseClassifier, readSkeleton, type HandLandmark, type PoseLandmark, type TrackedHand } from "./index.ts";
 
 function neutralPose(): PoseLandmark[] {
   const pose = Array.from({ length: 33 }, () => ({ x: 0.5, y: 0.5, z: 0, visibility: 0.98 }));
@@ -110,7 +110,7 @@ test("hand classifier recognizes a closed circle and directional swipe over time
   const swipeClassifier = new HandGestureClassifier({ smoothing: 1, stableFrames: 1, gestureCooldownMs: 100 });
   let swipeDetected = false;
   for (let index = 0; index < 7; index += 1) {
-    const shifted = openHand().map((landmark) => ({ ...landmark, x: landmark.x - index * .075 }));
+    const shifted = openHand().map((landmark) => ({ ...landmark, x: landmark.x + .23 - index * .075 }));
     swipeDetected ||= swipeClassifier.process([tracked(shifted)], 1_500 + index * 35).activated.includes("swipeLeft");
   }
   assert.equal(swipeDetected, true);
@@ -175,9 +175,13 @@ test("metric coordinates survive smoothing, so the skeleton reader keeps working
    */
   const withWorld = (): PoseLandmark[] => neutralPose().map((landmark, index) => ({
     ...landmark,
-    world: { x: (landmark.x - 0.5) * 1.6, y: (landmark.y - 0.5) * 1.6, z: index * 0.001 },
+    world: { x: (landmark.x - 0.5) * 1.6, y: (landmark.y - 0.59) * 1.6, z: (index - 23.5) * 0.001 },
   }));
 
+  const metric = withWorld();
+  for (const axis of ["x", "y", "z"] as const) {
+    assert.ok(Math.abs((metric[23]!.world![axis] + metric[24]!.world![axis]) / 2) < 1e-10, "the pose world origin is the hip midpoint");
+  }
   const classifier = new PoseClassifier({ autoCalibrationFrames: 1, smoothing: 0.5 });
   classifier.process(withWorld(), 0);
 
@@ -214,4 +218,44 @@ test("someone seated at a desk is not thrown away for having no legs", () => {
   // than an error — the two need different words on screen.
   assert.equal(legVisibility(seated), 0);
   assert.ok(legVisibility(neutralPose()) > 0.9);
+});
+
+
+test("pose wire round trip preserves metric landmarks and reads legacy tuples", () => {
+  const pose = neutralPose();
+  pose[11] = { ...pose[11]!, world: { x: -1.25, y: 0.25, z: -0.6 } };
+  assert.deepEqual(unflattenPose(flattenPose(pose)), pose);
+  assert.deepEqual(unflattenPose([.1, .2, .3, .9]), [{ x: .1, y: .2, z: .3, visibility: .9 }]);
+});
+
+test("mirroring keeps metric and image horizontal directions aligned", () => {
+  const pose: PoseLandmark[] = [{ x: .2, y: .3, z: .4, visibility: .9, world: { x: -.3, y: .2, z: .1 } }];
+  const mirrored = mirrorPose(pose);
+  assert.equal(mirrored[0]!.world!.x, .3);
+  assert.deepEqual(mirrorPose(mirrored)[0]!.world, pose[0]!.world);
+  assert.equal(pose[0]!.world!.x, -.3);
+});
+
+test("the same hand geometry classifies identically at 4:3 and 16:9", () => {
+  const physical = openHand();
+  physical[4] = { ...physical[8]!, x: physical[8]!.x + .11 };
+  const classify = (aspect: number) => {
+    const classifier = new HandGestureClassifier({ smoothing: 1, stableFrames: 1 });
+    const landmarks = physical.map((point) => ({ ...point, x: .5 + (point.x - .5) / aspect }));
+    return classifier.process([tracked(landmarks)], 0, aspect).gestures;
+  };
+  assert.deepEqual(classify(4 / 3), classify(16 / 9));
+  assert.equal(classify(16 / 9).pinch, false);
+});
+
+test("the same swipe activates at the same frame on different camera shapes", () => {
+  const run = (aspect: number) => {
+    const classifier = new HandGestureClassifier({ smoothing: 1, stableFrames: 1 });
+    return Array.from({ length: 8 }, (_, index) => {
+      const hand = openHand().map((point) => ({ ...point, x: .5 + (point.x - .5 - index * .0385) / aspect }));
+      return classifier.process([tracked(hand)], index * 35, aspect).activated;
+    });
+  };
+  assert.deepEqual(run(4 / 3), run(16 / 9));
+  assert.ok(run(16 / 9).some((events) => events.includes("swipeLeft")));
 });

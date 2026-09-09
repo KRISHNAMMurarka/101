@@ -1,9 +1,13 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import type { GameHost101 } from "@101/game-host";
 import { cameraStatusLabel, useCameraInput } from "../lib/use-camera-input";
+import { playerColour, type TrackedPerson } from "@101/vision";
+import GameOverPanel from "./GameOverPanel";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
 import FullscreenButton from "@/app/components/FullscreenButton";
@@ -28,19 +32,21 @@ interface BodyHud {
   nextDistance: number;
   lastEvent: string;
   gameOver: boolean;
+  players: number;
 }
 
-const INITIAL_HUD: BodyHud = { score: 0, combo: 0, integrity: 100, wave: 1, distance: 0, next: "center", nextDistance: 0, lastEvent: "CALIBRATE OR USE KEYS", gameOver: false };
+const INITIAL_HUD: BodyHud = { score: 0, combo: 0, integrity: 100, wave: 1, distance: 0, next: "center", nextDistance: 0, lastEvent: "MOVE TO BEGIN", gameOver: false, players: 1 };
 
 export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
+  const peopleRef = useRef<readonly TrackedPerson[]>([]);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<BodyHud>(INITIAL_HUD);
-  const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run });
+  const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run, maxPeople: BODYDODGE_MANIFEST.players.max, onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people; } });
 
-  const { linked, readiness } = useGameHost<BodyDodgeState>({
+  const { linked, readiness, controllerHost } = useGameHost<BodyDodgeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -58,7 +64,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
       let renderHandle = 0;
 
       const render = () => {
-        view.sync(context.state);
+        view.sync(context.state, peopleRef.current);
         renderHandle = requestAnimationFrame(render);
       };
       canvas.focus({ preventScroll: true });
@@ -66,12 +72,13 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
       const hudTimer = window.setInterval(() => {
         const state = context.state;
         const next = state.gates.find((gate) => !gate.resolved) ?? state.gates[0];
-        setHud({ score: state.score, combo: state.combo, integrity: state.integrity, wave: state.wave, distance: state.distance, next: next?.requirement ?? "center", nextDistance: Math.max(0, (next?.distance ?? state.distance) - state.distance), lastEvent: state.lastEvent, gameOver: state.gameOver });
+        setHud({ score: state.score, combo: state.combo, integrity: state.integrity, wave: state.wave, distance: state.distance, next: next?.requirement ?? "center", nextDistance: Math.max(0, (next?.distance ?? state.distance) - state.distance), lastEvent: state.lastEvent, gameOver: state.gameOver, players: state.players.filter((player) => player.active).length });
       }, 80);
       return () => {
         window.clearInterval(hudTimer);
         cancelAnimationFrame(renderHandle);
         hostRef.current = null;
+        peopleRef.current = [];
         view.dispose();
       };
     },
@@ -90,18 +97,20 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         <div className="body-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
-      <div className="body-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="body-arena">
         <div className="body-statusbar"><FullscreenButton /><span>{linked ? "101 LINK · MOVEMENT PANEL" : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BodyDodge play field. Move with Left and Right, duck with Down, jump with Up or Space, and raise arms with E." />
         {/* Camera capture is always muted and requests no audio track. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={camera.state === "on" ? "body-camera-preview active" : "body-camera-preview"} ref={videoRef} aria-label="Camera preview" />
+        <video className={camera.state === "on" ? "body-camera-preview active" : "body-camera-preview"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your body" />
         <div className="body-next"><span>NEXT SHAPE</span><strong>{nextLabel}</strong><small>{hud.nextDistance.toFixed(0)} M</small></div>
         <div className="body-overlay"><div className="drift-meter"><span>INTEGRITY</span><i><b style={{ width: `${hud.integrity}%` }} /></i><strong>{Math.round(hud.integrity)}%</strong></div><div className="body-event">{hud.lastEvent}</div><div className="body-camera-actions">{camera.state === "on" ? <button onClick={camera.recentre}>Stand still, then tap</button> : <button onClick={camera.enable}>{camera.state === "starting" ? "Starting…" : "Use the camera"}</button>}<button onClick={onConnect}>{linked ? "LINKED" : "CONNECT PANEL"}</button></div></div>
         {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
-        {hud.gameOver && <div className="game-over-panel"><p>SESSION COMPLETE</p><h2>{hud.score.toLocaleString()}</h2><span>FINAL SCORE</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Run complete" score={hud.score} detail="Final score" onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="slash-instructions"><span><b>MOVE / LEAN</b> Left + Right / A + D</span><span><b>DUCK / JUMP</b> Down + Up or Space</span><span><b>ARMS UP</b> E / gamepad Y</span></div>
+      {hud.players > 1 && <p>Players 1 and 2 share the run. Clear each shape together; every miss uses shared integrity.</p>}
       <p className="body-privacy"><strong>Camera:</strong> play this with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Keys and a gamepad work just as well.</p>
     </section>
   );
@@ -119,27 +128,48 @@ function createBodyView(canvas: HTMLCanvasElement) {
   const grid = new THREE.GridHelper(80, 50, 0x31513a, 0x17231b); grid.position.y = 0; view.scene.add(grid);
   const rails = [-3.7, 3.7].map((x) => { const rail = new THREE.Mesh(new THREE.BoxGeometry(.08, .08, 100), new THREE.MeshBasicMaterial({ color: x < 0 ? 0x50e3ff : 0xff5c35 })); rail.position.set(x, .05, -42); view.scene.add(rail); return rail; });
 
-  const player = new THREE.Group();
-  const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xeef1e8, emissive: 0x2e3b32, emissiveIntensity: .35, roughness: .5 });
-  const head = new THREE.Mesh(new THREE.SphereGeometry(.32, 18, 14), bodyMaterial); head.position.y = 2.3;
-  const torso = new THREE.Mesh(new THREE.BoxGeometry(.72, 1.25, .34), bodyMaterial); torso.position.y = 1.45;
-  const leftArm = new THREE.Mesh(new THREE.BoxGeometry(.22, 1.15, .22), bodyMaterial); leftArm.position.set(-.55, 1.53, 0); leftArm.rotation.z = -.2;
-  const rightArm = leftArm.clone(); rightArm.position.x = .55; rightArm.rotation.z = .2;
-  const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(.26, 1.05, .28), bodyMaterial); leftLeg.position.set(-.23, .55, 0);
-  const rightLeg = leftLeg.clone(); rightLeg.position.x = .23;
-  player.add(head, torso, leftArm, rightArm, leftLeg, rightLeg); player.position.z = 2; view.scene.add(player);
+  const createPlayer = (slot: number) => {
+    const player = new THREE.Group();
+    const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xeef1e8, emissive: 0x2e3b32, emissiveIntensity: .35, roughness: .5 });
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.32, 18, 14), bodyMaterial); head.position.y = 2.3;
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(.72, 1.25, .34), bodyMaterial); torso.position.y = 1.45;
+    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(.22, 1.15, .22), bodyMaterial); leftArm.position.set(-.55, 1.53, 0); leftArm.rotation.z = -.2;
+    const rightArm = leftArm.clone(); rightArm.position.x = .55; rightArm.rotation.z = .2;
+    const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(.26, 1.05, .28), bodyMaterial); leftLeg.position.set(-.23, .55, 0);
+    const rightLeg = leftLeg.clone(); rightLeg.position.x = .23;
+    player.add(head, torso, leftArm, rightArm, leftLeg, rightLeg); player.position.z = 2; view.scene.add(player);
+    bodyMaterial.color.set(playerColour(slot));
+    bodyMaterial.emissive.set(playerColour(slot));
+    const number = playerNumber(slot); player.add(number);
+    return { player, bodyMaterial, head, torso, leftArm, rightArm, leftLeg, rightLeg, number };
+  };
+  const players = new Map<number, ReturnType<typeof createPlayer>>();
+  const resize = new ResizeObserver(([entry]) => { if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height)); });
+  resize.observe(canvas);
   const gateGroups = new Map<number, THREE.Group>();
 
-  const sync = (state: BodyDodgeState) => {
-    const bounds = canvas.getBoundingClientRect();
-    view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
-    player.position.x += (state.playerX * 2.45 - player.position.x) * .2;
-    player.position.y += (state.lift * 1.05 - player.position.y) * .22;
-    player.rotation.z += ((-state.lean * .28) - player.rotation.z) * .18;
-    torso.scale.y = 1 - state.crouch * .45; torso.position.y = 1.45 - state.crouch * .37;
-    head.position.y = 2.3 - state.crouch * .78;
-    leftArm.rotation.z += ((state.arms > .5 ? 2.75 : -.2) - leftArm.rotation.z) * .18;
-    rightArm.rotation.z += ((state.arms > .5 ? -2.75 : .2) - rightArm.rotation.z) * .18;
+  const sync = (state: BodyDodgeState, people: readonly TrackedPerson[]) => {
+    const tracked = new Set(people.map((person) => person.slot));
+    const activeCount = state.players.filter((player) => player.active).length;
+    for (const body of state.players) {
+      let avatar = players.get(body.slot);
+      if (!avatar) { avatar = createPlayer(body.slot); players.set(body.slot, avatar); }
+      const { player, torso, head, leftArm, rightArm } = avatar;
+      player.visible = body.active;
+      if (!body.active) continue;
+      // Both teammates fit within one opening and remain distinguishable while moving together.
+      player.scale.setScalar(activeCount > 1 ? .82 : 1);
+      player.position.z = 2;
+      const offset = activeCount > 1 ? (body.slot === 1 ? -.26 : .26) : 0;
+      player.position.x += (body.playerX * 2.25 + offset - player.position.x) * .2;
+      player.position.y += (body.lift * 1.05 - player.position.y) * .22;
+      player.rotation.z += ((-body.lean * .28) - player.rotation.z) * .18;
+      torso.scale.y = 1 - body.crouch * .45; torso.position.y = 1.45 - body.crouch * .37;
+      head.position.y = 2.3 - body.crouch * .78;
+      leftArm.rotation.z += ((body.arms > .5 ? 2.75 : -.2) - leftArm.rotation.z) * .18;
+      rightArm.rotation.z += ((body.arms > .5 ? -2.75 : .2) - rightArm.rotation.z) * .18;
+      avatar.bodyMaterial.emissiveIntensity = tracked.has(body.slot) ? .5 : .35;
+    }
 
     const active = new Set(state.gates.map((gate) => gate.id));
     for (const gate of state.gates) {
@@ -162,9 +192,13 @@ function createBodyView(canvas: HTMLCanvasElement) {
   return {
     sync,
     dispose() {
+      resize.disconnect();
       for (const group of gateGroups.values()) disposeObject(group);
-      [head, torso, leftArm, rightArm, leftLeg, rightLeg, ...rails].forEach((mesh) => mesh.geometry.dispose());
-      bodyMaterial.dispose(); rails.forEach((rail) => (rail.material as THREE.Material).dispose());
+      for (const avatar of players.values()) {
+        [avatar.head, avatar.torso, avatar.leftArm, avatar.rightArm, avatar.leftLeg, avatar.rightLeg].forEach((mesh) => mesh.geometry.dispose());
+        avatar.bodyMaterial.dispose(); avatar.number.material.map?.dispose(); avatar.number.material.dispose();
+      }
+      rails.forEach((rail) => { rail.geometry.dispose(); (rail.material as THREE.Material).dispose(); });
       view.dispose();
     },
   };
@@ -212,4 +246,16 @@ function disposeObject(group: THREE.Object3D) {
 
 function label(requirement: DodgeRequirement) {
   return requirement.replace("-", " ").toUpperCase();
+}
+
+
+function playerNumber(slot: number) {
+  const canvas = document.createElement("canvas"); canvas.width = 96; canvas.height = 96;
+  const context = canvas.getContext("2d")!;
+  context.fillStyle = "#101010"; context.beginPath(); context.arc(48, 48, 42, 0, Math.PI * 2); context.fill();
+  context.strokeStyle = playerColour(slot); context.lineWidth = 7; context.stroke();
+  context.fillStyle = "#ffffff"; context.font = "bold 56px sans-serif"; context.textAlign = "center"; context.textBaseline = "middle"; context.fillText(String(slot), 48, 49);
+  const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas), depthTest: false }));
+  label.position.y = 3.1; label.scale.set(.65, .65, 1); label.renderOrder = 10;
+  return label;
 }

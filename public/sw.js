@@ -1,22 +1,14 @@
 /**
- * 101 Link offline shell.
- *
- * `BUILD_ID` is rewritten by tools/stamp-service-worker.mjs after every build, from a hash of the
- * built client. That stamp is what makes the cache disposable: `activate` deletes every cache from
- * a different build, so a release cannot inherit the previous one.
- *
- * It used to be the literal "v1", which no build step ever changed, so `activate` compared the
- * constant to itself and deleted nothing — the cache from a user's first visit survived every
- * subsequent release. Combined with a blanket cache-first that stored *any* same-origin GET, an
- * installed controller could keep serving arbitrarily old files. The worst case was not merely
- * stale UI: `vinext-client-entry-manifest.json` and `.vite/manifest.json` are unversioned, so a
- * pinned copy pointed at content-hashed chunks that no longer existed and the app failed to boot
- * after an update.
+ * 101 Link caches one complete controller build before installing an update. The browser keeps
+ * that update waiting until clients of the previous worker close; it never replaces their code.
+ * The shell is rendered from the same build as its stamped dependency list, not fetched from a
+ * moving /controller endpoint during installation.
  */
 const BUILD_ID = "__BUILD_ID__";
 const CACHE_VERSION = `101-link-${BUILD_ID}`;
 const CONTROLLER_SHELL = "/controller?session=101LAB";
-const PRECACHE = [CONTROLLER_SHELL, "/link.webmanifest", "/icons/101-link.svg"];
+const OFFLINE_SHELL = "__CONTROLLER_SHELL__";
+const PRECACHE = /* __PRECACHE__ */ [];
 
 /** Content-hashed by the bundler: the filename changes when the bytes do, so pinning is safe. */
 const IMMUTABLE = /^\/_next\/static\//;
@@ -28,16 +20,30 @@ const IMMUTABLE = /^\/_next\/static\//;
 const NEVER_CACHE = /(^\/sw\.js$)|(manifest\.json$)/;
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  event.waitUntil(installBuild());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("101-link-") && key !== CACHE_VERSION).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim()),
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith("101-link-") && key !== CACHE_VERSION).map((key) => caches.delete(key)))),
   );
 });
+
+async function installBuild() {
+  if (!PRECACHE.length || BUILD_ID.startsWith("__")) throw new Error("The controller cache was not stamped by the build");
+  const cache = await caches.open(CACHE_VERSION);
+  try {
+    // addAll commits only once every response succeeds. Reload avoids a stale browser HTTP cache.
+    await cache.addAll(PRECACHE.map((url) => new Request(url, { cache: "reload" })));
+    const shell = await cache.match(OFFLINE_SHELL);
+    if (!shell) throw new Error("The matching controller shell is missing");
+    await cache.put(CONTROLLER_SHELL, shell);
+  } catch (error) {
+    await caches.delete(CACHE_VERSION);
+    throw error;
+  }
+}
 
 self.addEventListener("fetch", (event) => {
   const request = event.request;
@@ -61,21 +67,18 @@ self.addEventListener("fetch", (event) => {
   // Only content-hashed files may be answered from cache without checking the network. Everything
   // else is served fast and refreshed behind the player, so an update lands on the next launch
   // instead of never.
-  event.respondWith(IMMUTABLE.test(url.pathname) ? cacheFirst(request) : staleWhileRevalidate(request));
+  event.respondWith(IMMUTABLE.test(url.pathname) ? cacheFirst(request) : staleWhileRevalidate(request, event));
 });
 
 async function navigationResponse(request, url) {
   try {
-    const response = await fetch(request);
-    // Pairing URLs contain a temporary join secret. Never persist that URL or response.
-    if (!url.searchParams.has("pair") && url.pathname === "/controller" && response.ok) {
-      const cache = await caches.open(CACHE_VERSION);
-      await cache.put(CONTROLLER_SHELL, response.clone());
-    }
-    return response;
+    // Never persist that URL or response: an online navigation can already be serving the next
+    // release, while this active worker must keep its own complete offline fallback intact.
+    return await fetch(request);
   } catch {
     if (url.pathname === "/controller") {
-      const cached = await caches.match(CONTROLLER_SHELL, { ignoreSearch: true });
+      const cache = await caches.open(CACHE_VERSION);
+      const cached = await cache.match(CONTROLLER_SHELL);
       if (cached) return cached;
     }
     return new Response("101 Link is offline. Reopen the installed controller when the host is reachable.", {
@@ -86,15 +89,17 @@ async function navigationResponse(request, url) {
 }
 
 async function cacheFirst(request) {
-  const cached = await caches.match(request);
+  const cache = await caches.open(CACHE_VERSION);
+  const cached = await cache.match(request);
   if (cached) return cached;
   const response = await fetch(request);
   await store(request, response);
   return response;
 }
 
-async function staleWhileRevalidate(request) {
-  const cached = await caches.match(request);
+async function staleWhileRevalidate(request, event) {
+  const cache = await caches.open(CACHE_VERSION);
+  const cached = await cache.match(request);
   const network = fetch(request)
     .then(async (response) => {
       await store(request, response);
@@ -104,7 +109,7 @@ async function staleWhileRevalidate(request) {
 
   if (cached) {
     // Answer instantly and refresh behind the player; a controller on a slow LAN must not wait.
-    void network;
+    event.waitUntil(network);
     return cached;
   }
   const response = await network;

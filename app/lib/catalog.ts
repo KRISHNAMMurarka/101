@@ -42,7 +42,7 @@ export type CatalogInputFilter = "all" | "available";
  */
 export type LauncherCatalogEntry = Pick<
   GameManifest,
-  "id" | "name" | "tagline" | "order" | "renderer" | "players" | "inputs" | "status" | "controllers"
+  "id" | "name" | "tagline" | "order" | "renderer" | "runtime" | "launchUrl" | "players" | "inputs" | "status" | "controllers"
 > & {
   /**
    * Whether the game offers anything beyond its basic controls. The launcher only asks these two
@@ -140,6 +140,8 @@ export function createLauncherCatalogEntry(
     tagline: manifest.tagline,
     order: manifest.order,
     renderer: manifest.renderer,
+    runtime: manifest.runtime ?? "local",
+    ...(manifest.launchUrl ? { launchUrl: manifest.launchUrl } : {}),
     players: manifest.players,
     inputs: manifest.inputs,
     status: manifest.status,
@@ -147,6 +149,11 @@ export function createLauncherCatalogEntry(
     immersive: Boolean(manifest.controllers?.immersive?.length),
     requires,
   };
+}
+
+/** Remote titles must supply a destination; a missing one never starts a local game by accident. */
+export function catalogLaunchHref(entry: Pick<LauncherCatalogEntry, "id" | "runtime" | "launchUrl">): string | undefined {
+  return (entry.runtime ?? "local") === "local" ? `/games/${entry.id}` : entry.launchUrl;
 }
 
 /**

@@ -2,7 +2,7 @@
 
 import QRCode from "qrcode";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { InputSource } from "@101/input";
 import type { SessionRole } from "@101/session";
@@ -47,6 +47,13 @@ export default function PreGame({
   const { sources } = useLocalDevice();
   const [pairingOpen, setPairingOpen] = useState(false);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [cameraPlayers, setCameraPlayers] = useState(1);
+  const chooserHeading = useRef<HTMLHeadingElement>(null);
+  const cameraWasOpen = useRef(false);
+  useEffect(() => {
+    if (cameraWasOpen.current && !cameraOpen) chooserHeading.current?.focus();
+    cameraWasOpen.current = cameraOpen;
+  }, [cameraOpen]);
 
   /*
    * Whether a camera is worth offering, which is three separate questions.
@@ -86,7 +93,9 @@ export default function PreGame({
 
   // players.max is what the manifest wishes for; roles are what the session can actually fill.
   // Orbital Crew declares six and defines five stations, and a sixth seat could never be occupied.
-  const seats = Math.min(manifest.players.max, Math.max(roles.length, 1));
+  const phoneSeats = Math.min(manifest.players.max, Math.max(roles.length, 1));
+  const cameraSeats = cameraHere && cameraKind === "body" ? Math.min(2, manifest.players.max) : 0;
+  const seats = Math.max(phoneSeats, cameraSeats);
   const phoneRole = roles[0];
 
   return (
@@ -106,11 +115,12 @@ export default function PreGame({
         </div>
       </header>
 
-      <h2 className="pre-game-question">How do you want to play?</h2>
+      <h2 className="pre-game-question" ref={chooserHeading} tabIndex={-1}>How do you want to play?</h2>
 
       {cameraOpen && cameraKind && sessionId ? (
         <CameraSetup
           kind={cameraKind}
+          maxPeople={cameraPlayers}
           sessionId={sessionId}
           playHref={`${playHref}${playHref.includes("?") ? "&" : "?"}camera=${cameraKind}`}
           // A game that has you dodging on your feet needs your legs in shot; one you play with your
@@ -130,7 +140,7 @@ export default function PreGame({
           </p>
           {playableHere
             ? <Link className="primary-button" href={playHref}>Start <Icon name="arrow" size={16} /></Link>
-            : <Link className="outline-button needs-device" href={playHref}>Start anyway <Icon name="arrow" size={16} /></Link>}
+            : <Link className="outline-button" href={playHref}>Start anyway <Icon name="arrow" size={16} /></Link>}
         </article>
 
         {phoneRole && (
@@ -151,7 +161,14 @@ export default function PreGame({
             <p>
               Up to {seats} {seats === 1 ? "person" : "people"}
               {roles.length > 1 ? `. Each phone takes a part: ${roles.map((role) => role.label).join(", ")}.` : "."}
+              {cameraSeats > 1 && " Stand side by side and play together with one camera."}
             </p>
+            {cameraSeats > 1 && <button className="outline-button" onClick={() => { setCameraPlayers(cameraSeats); setCameraOpen(true); }}>
+              Share a camera <Icon name="camera-pose" size={16} />
+            </button>}
+            {phoneSeats > 1 && <button className="outline-button" onClick={() => setPairingOpen((open) => !open)} aria-expanded={pairingOpen}>
+              {pairingOpen ? "Hide the code" : "Connect players"} <Icon name={pairingOpen ? "close" : "plus"} size={16} />
+            </button>}
           </article>
         )}
 
@@ -166,7 +183,7 @@ export default function PreGame({
                 ? "Move in front of the camera. Nothing to hold."
                 : "Wave and gesture at the camera. Nothing to hold."}
             </p>
-            <button className="outline-button" onClick={() => setCameraOpen(true)} aria-expanded={cameraOpen}>
+            <button className="outline-button" onClick={() => { setCameraPlayers(1); setCameraOpen(true); }} aria-expanded={cameraOpen}>
               {recallCameraSetup(cameraKind) ? "Set up again" : "Set up the camera"} <Icon name="arrow" size={16} />
             </button>
           </article>

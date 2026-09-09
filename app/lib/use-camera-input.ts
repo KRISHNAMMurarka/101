@@ -6,13 +6,15 @@ import {
   BrowserCameraAdapter,
   BrowserHandAdapter,
   describeCameraFailure,
+  cameraConstraints,
+  listCameras,
   type HandAdapterDiagnostics,
   type PoseAdapterDiagnostics,
 } from "@101/adapter-camera";
-import type { HandGestureClassifierOptions, PoseClassifierOptions } from "@101/vision";
+import { TRACKING_PROFILES, type HandGestureClassifierOptions, type PoseClassifierOptions } from "@101/vision";
 import type { GameHost101 } from "@101/game-host";
 
-import { readCameraPlan, type CameraKind } from "./camera-plan.ts";
+import { cameraRequested, readCameraPlan, resolveCameraPreferences, type CameraKind } from "./camera-plan.ts";
 
 /**
  * A camera as a controller, from the game's point of view.
@@ -40,6 +42,8 @@ interface CommonOptions {
   host: React.RefObject<GameHost101 | null>;
   /** Reset when the game restarts, so a new run does not inherit the last one's camera. */
   runKey?: unknown;
+  /** Supported ceiling; a successful setup may select fewer people. */
+  maxPeople?: number;
 }
 
 /*
@@ -76,7 +80,7 @@ export interface CameraInput {
 }
 
 export function useCameraInput(options: CameraInputOptions): CameraInput {
-  const { kind, sessionId, video, host, runKey } = options;
+  const { kind, sessionId, video, host, runKey, maxPeople = 1 } = options;
   /*
    * Held in refs so a game passing an inline callback or an object literal — which all of them do —
    * does not tear the camera down and rebuild it on every render. Written in an effect rather than
@@ -93,7 +97,10 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
   const [state, setState] = useState<CameraInputState>("off");
   const [message, setMessage] = useState("");
   const [fix, setFix] = useState("");
-  const adapterRef = useRef<BrowserCameraAdapter | BrowserHandAdapter | null>(null);
+  type CameraLease = { adapter: BrowserCameraAdapter | BrowserHandAdapter; host: GameHost101 };
+  const leaseRef = useRef<CameraLease | null>(null);
+  const generationRef = useRef(0);
+  const pendingRef = useRef(false);
 
   const fail = useCallback((cause: unknown) => {
     const described = describeCameraFailure(cause);
@@ -102,89 +109,106 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
     setFix(described.fix);
   }, []);
 
+  const release = useCallback(async (lease: CameraLease) => {
+    if (leaseRef.current === lease) leaseRef.current = null;
+    await lease.host.inputBus.unregister(lease.adapter);
+  }, []);
+
   const enable = useCallback(async () => {
     const runningHost = host.current;
     const element = video.current;
-    if (!runningHost || !element || adapterRef.current) return;
-
+    if (!runningHost || !element || leaseRef.current || pendingRef.current) return;
+    const generation = ++generationRef.current;
+    pendingRef.current = true;
     setState("starting");
     setMessage("");
     setFix("");
-
+    const cameras = await listCameras();
+    if (generation !== generationRef.current) return;
+    const preferences = resolveCameraPreferences(kind, readCameraPlan(sessionId), cameras, maxPeople);
+    const failRun = (cause: unknown) => {
+      if (generation !== generationRef.current) return;
+      ++generationRef.current;
+      pendingRef.current = false;
+      void release(lease).catch(() => {});
+      fail(cause);
+    };
+    const common = {
+      video: element,
+      mirror: preferences.mirror,
+      constraints: cameraConstraints(preferences.deviceId),
+      onError: failRun,
+      onCameraLost: failRun,
+    };
     const adapter = kind === "body"
       ? new BrowserCameraAdapter({
-        video: element,
-        mirror: true,
-        onError: fail,
+        ...common,
+        maxPeople: preferences.maxPeople,
+        quality: Object.values(TRACKING_PROFILES).find((profile) => profile.poseModel === preferences.poseModel)?.quality,
         classifier: classifierRef.current as PoseClassifierOptions | undefined,
-        onDiagnostics: (diagnostics) => (observerRef.current as ((d: PoseAdapterDiagnostics) => void) | undefined)?.(diagnostics),
+        onDiagnostics: (diagnostics) => {
+          if (generation === generationRef.current) (observerRef.current as ((d: PoseAdapterDiagnostics) => void) | undefined)?.(diagnostics);
+        },
       })
       : new BrowserHandAdapter({
-        video: element,
-        mirror: true,
-        onError: fail,
+        ...common,
         classifier: classifierRef.current as HandGestureClassifierOptions | undefined,
-        onDiagnostics: (diagnostics) => (observerRef.current as ((d: HandAdapterDiagnostics) => void) | undefined)?.(diagnostics),
+        onDiagnostics: (diagnostics) => {
+          if (generation === generationRef.current) (observerRef.current as ((d: HandAdapterDiagnostics) => void) | undefined)?.(diagnostics);
+        },
       });
-    adapterRef.current = adapter;
-
+    const lease: CameraLease = { adapter, host: runningHost };
+    leaseRef.current = lease;
+    // Keep the preview consistent with the remembered input orientation. The shared preview CSS
+    // assumes mirroring by default, so an explicitly unmirrored plan needs to override it.
+    element.style.setProperty("transform", preferences.mirror ? "scaleX(-1)" : "none");
     try {
       await runningHost.inputBus.register(adapter);
+      if (generation !== generationRef.current) { await release(lease); return; }
+      pendingRef.current = false;
       setState("on");
-      /*
-       * A camera that is taken away does not fail a call — the track simply ends. Without this a
-       * revoked permission or a closed lid leaves the game showing a camera that is on, waiting for
-       * movement from a player it can no longer see, with nothing on screen to explain the silence.
-       */
-      for (const track of (element.srcObject as MediaStream | null)?.getTracks() ?? []) {
-        track.addEventListener("ended", () => {
-          if (adapterRef.current !== adapter) return;
-          /*
-           * Release the adapter as well as reporting the loss. `enable` refuses to start while one
-           * is held, so leaving it in place left the player with a camera reported as failed and a
-           * button that did nothing at all when pressed — the only way back was to restart the run.
-           */
-          adapterRef.current = null;
-          void host.current?.inputBus.unregister(adapter);
-          fail(new Error("The camera stopped"));
-        });
-      }
     } catch (cause) {
-      await runningHost.inputBus.unregister(adapter);
-      adapterRef.current = null;
+      await release(lease);
+      if (generation !== generationRef.current) return;
+      pendingRef.current = false;
       fail(cause);
     }
-  }, [fail, host, kind, video]);
+  }, [fail, host, kind, maxPeople, release, sessionId, video]);
 
-  /*
-   * If the player already set the camera up in the chooser, the game does not ask them to do it
-   * again. Arriving at a game you have just spent a minute pointing a camera at, to be met by a
-   * button reading ENABLE BODY CAMERA, is the setup having been for nothing.
-   */
+  const stopCurrent = useCallback(() => {
+    ++generationRef.current;
+    pendingRef.current = false;
+    const lease = leaseRef.current;
+    if (lease) void release(lease).catch(() => {});
+  }, [release]);
+
+  // A prior plan supplies preferences only. Opening the camera automatically also requires this
+  // visit's explicit camera=body/hands choice. One cancellable frame waits for the game host.
   useEffect(() => {
-    if (readCameraPlan(sessionId)?.kind !== kind) return;
     let cancelled = false;
-    // One frame of grace: the host is assigned in the game's own onReady, and this effect can run
-    // first. Retrying rather than assuming avoids ordering that depends on which mounts sooner.
+    let frame: number | undefined;
     const attempt = () => {
       if (cancelled) return;
-      if (host.current) void enable();
-      else requestAnimationFrame(attempt);
+      if (host.current && video.current) void enable();
+      else frame = requestAnimationFrame(attempt);
     };
-    attempt();
-    return () => { cancelled = true; };
-  }, [enable, host, kind, sessionId]);
-
-  // A new run gets a clean camera rather than an adapter registered against a host that is gone.
-  useEffect(() => () => {
-    adapterRef.current = null;
-    setState("off");
-    setMessage("");
-    setFix("");
-  }, [runKey]);
+    // Reset in the effect's scheduled work, avoiding state updates during unmount or effect cleanup.
+    frame = requestAnimationFrame(() => {
+      if (cancelled) return;
+      setState("off");
+      setMessage("");
+      setFix("");
+      if (cameraRequested(window.location.search, kind)) attempt();
+    });
+    return () => {
+      cancelled = true;
+      if (frame !== undefined) cancelAnimationFrame(frame);
+      stopCurrent();
+    };
+  }, [enable, host, kind, runKey, sessionId, stopCurrent, video]);
 
   const recentre = useCallback(() => {
-    const adapter = adapterRef.current;
+    const adapter = leaseRef.current?.adapter;
     if (adapter instanceof BrowserCameraAdapter) adapter.calibrateNeutral();
   }, []);
 

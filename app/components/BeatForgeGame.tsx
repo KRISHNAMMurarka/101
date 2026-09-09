@@ -1,5 +1,7 @@
 "use client";
 
+import GameControllerOverlay from "./GameControllerOverlay";
+
 import { GamepadAdapter } from "@101/adapter-gamepad";
 import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Audio101, AudioTimeline101 } from "@101/audio";
@@ -7,6 +9,7 @@ import type { GameHost101 } from "@101/game-host";
 import { cameraStatusLabel, useCameraInput } from "../lib/use-camera-input";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
+import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
 import { describeSources } from "@/app/lib/input-readiness";
@@ -50,11 +53,11 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<BeatHud>(INITIAL_HUD);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run });
+  const camera = useCameraInput({ kind: "body", classifier: { gestureCooldownMs: 150 }, sessionId, video: videoRef, host: hostRef, runKey: run });
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, readiness } = useGameHost<BeatForgeState>({
+  const { linked, readiness, controllerHost } = useGameHost<BeatForgeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -166,12 +169,12 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         <div className="beat-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
       </header>
 
-      <div className="beat-arena">
+      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <div className="beat-arena">
         <div className="beat-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK PERFORMER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video className={camera.state === "on" ? "beat-camera-preview active" : "beat-camera-preview"} ref={videoRef} aria-label="Camera preview" />
+        <video className={camera.state === "on" ? "beat-camera-preview active" : "beat-camera-preview"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your body" />
         <div className="beat-next"><span>NEXT MOVE</span><strong>{hud.next ? beatActionLabel(hud.next.action) : "READY"}</strong><small>{hud.next ? `${hud.next.remaining.toFixed(2)} S` : "—"}</small></div>
         <div className="beat-judge">{hud.lastJudge}</div>
         <div className="beat-overlay">
@@ -183,8 +186,9 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
           </div>
         </div>
         {camera.state === "failed" && <p className="camera-notice">{camera.message} <span>{camera.fix}</span></p>}
-        {hud.gameOver && <div className="game-over-panel"><p>FORGE COOLED</p><h2>{hud.score.toLocaleString()}</h2><span>{hud.accuracy.toFixed(1)}% ACCURACY</span><button className="primary-button" onClick={restart}>Play again <Icon name="arrow" size={16} /></button></div>}
+        {hud.gameOver && <GameOverPanel title="Forge cooled" score={hud.score} detail={`${hud.accuracy.toFixed(1)}% accuracy`} onRestart={restart} />}
       </div>
+      </GameControllerOverlay>
       <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span></div>
       <p className="beat-privacy"><strong>Camera:</strong> hit the notes with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Keys and a gamepad work just as well.</p>
     </section>
@@ -227,9 +231,12 @@ function createBeatView(canvas: HTMLCanvasElement) {
   strike.position.set(0, .03, 2.75); view.scene.add(strike);
   const noteMeshes = new Map<string, THREE.Mesh>();
 
+  const resize = new ResizeObserver(([entry]) => {
+    if (entry) view.resize(Math.max(1, entry.contentRect.width), Math.max(1, entry.contentRect.height));
+  });
+  resize.observe(canvas);
+
   const sync = (state: BeatForgeState) => {
-    const bounds = canvas.getBoundingClientRect();
-    view.resize(Math.max(1, bounds.width), Math.max(1, bounds.height));
     const active = new Set(state.targets.map((target) => target.id));
     for (const target of state.targets) {
       let mesh = noteMeshes.get(target.id);
@@ -259,6 +266,7 @@ function createBeatView(canvas: HTMLCanvasElement) {
   return {
     sync,
     dispose() {
+      resize.disconnect();
       noteMeshes.forEach((mesh) => { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); });
       rails.forEach((rail) => { rail.geometry.dispose(); (rail.material as THREE.Material).dispose(); });
       strike.geometry.dispose(); (strike.material as THREE.Material).dispose();

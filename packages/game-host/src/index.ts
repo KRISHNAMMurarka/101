@@ -114,6 +114,9 @@ export class GameHost101 {
   }
 
   launch<State>(gamePackage: GamePackage<State>) {
+    if ((gamePackage.manifest.runtime ?? "local") !== "local") {
+      return Promise.reject(new Error("This game requires its remote runtime entry point"));
+    }
     const revision = ++this.launchRevision;
     const pending = this.openLaunch(gamePackage, revision);
     this.launches.add(pending);

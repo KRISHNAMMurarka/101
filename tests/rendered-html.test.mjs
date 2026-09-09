@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
+import { execFileSync } from "node:child_process";
 
 const root = new URL("../", import.meta.url);
 
@@ -104,7 +105,7 @@ test("serves BodyDodge with optional local camera and conventional controls", as
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /BodyDodge 101/);
-  assert.match(html, /ENABLE BODY CAMERA/);
+  assert.match(html, /Use the camera/);
   assert.match(html, /CONNECT PANEL/);
   // This used to assert the literal "KEYBOARD · GAMEPAD", which the page printed whether or not a
   // gamepad existed. The slot now reports what the game's input manifest actually resolved against
@@ -113,7 +114,7 @@ test("serves BodyDodge with optional local camera and conventional controls", as
   assert.match(html, /Checking…|No controller yet|Keyboard/);
   assert.doesNotMatch(html, /KEYBOARD · GAMEPAD/,
     "the status bar must not claim hardware it has not detected");
-  assert.match(html, /video is neither uploaded nor recorded/i);
+  assert.match(html, /nothing is uploaded, nothing is recorded/i);
 });
 
 test("serves Orbital Crew with asymmetric roles and conventional fallback", async () => {
@@ -121,7 +122,7 @@ test("serves Orbital Crew with asymmetric roles and conventional fallback", asyn
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Orbital Crew 101/);
-  assert.match(html, /Keyboard captain fallback/);
+  assert.match(html, /Play on this screen/);
   assert.match(html, /CONNECT CREW/);
 });
 
@@ -131,8 +132,8 @@ test("serves BeatForge with offline rhythm, Link motion, and local pose choices"
   assert.equal(response.status, 200);
   assert.match(html, /BeatForge 101/);
   assert.match(html, /ENABLE AUDIO/);
-  assert.match(html, /ENABLE BODY CAMERA/);
-  assert.match(html, /Video is not uploaded or recorded/i);
+  assert.match(html, /Use the camera/);
+  assert.match(html, /nothing is uploaded, nothing is recorded/i);
 });
 
 test("serves GravityStack through the 101 physics facade and asymmetric roles", async () => {
@@ -150,8 +151,8 @@ test("serves Spellcaster through shared hand, motion, and conventional spell act
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Spellcaster 101/);
-  assert.match(html, /ENABLE HAND CAMERA/);
-  assert.match(html, /Every spell also has a keyboard\/gamepad fallback/i);
+  assert.match(html, /Use the camera/);
+  assert.match(html, /Every spell also works on the keyboard or a gamepad/i);
 });
 
 test("serves Echo Maze with private Link clues and a conventional fallback", async () => {
@@ -159,8 +160,8 @@ test("serves Echo Maze with private Link clues and a conventional fallback", asy
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Echo Maze 101/);
-  assert.match(html, /HOST FALLBACK CLUE/);
-  assert.match(html, /This slice makes no microphone request/i);
+  assert.match(html, /YOUR CLUE/);
+  assert.match(html, /No camera or microphone is needed/i);
 });
 
 test("serves Shadow Arena through reusable combat-pose semantics and conventional controls", async () => {
@@ -168,8 +169,8 @@ test("serves Shadow Arena through reusable combat-pose semantics and conventiona
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Shadow Arena 101/);
-  assert.match(html, /ENABLE BODY CAMERA/);
-  assert.match(html, /every action has a keyboard\/gamepad fallback/i);
+  assert.match(html, /Use the camera/);
+  assert.match(html, /Every move also works on the keyboard or a gamepad/i);
 });
 
 test("serves Swarm Commander with scalable simulation and asymmetric specialist roles", async () => {
@@ -177,7 +178,7 @@ test("serves Swarm Commander with scalable simulation and asymmetric specialist 
   const html = await response.text();
   assert.equal(response.status, 200);
   assert.match(html, /Swarm Commander 101/);
-  assert.match(html, /ENABLE HAND COMMAND/);
+  assert.match(html, /Use the camera/);
   assert.match(html, /navigator can tilt the shared direction while a tactician sets targets and formations/i);
 });
 
@@ -251,7 +252,7 @@ test("serves the controller surface and product metadata", async () => {
   // The invariant is that the server and the first client render agree — the controller hydrates
   // over whatever this says, and a mismatch is a hydration error on the surface a player is holding.
   // The wording moved from "SAME-BROWSER · ONLINE", which named the transport.
-  assert.match(html.replaceAll("<!-- -->", ""), /Connected/,
+  assert.match(html.replaceAll("<!-- -->", ""), /Connect to a game/,
     "server and first client render need the same connectivity text so the controller hydrates cleanly");
   assert.doesNotMatch(html, /OFFLINE SHELL/,
     "the browser updates real connectivity after hydration; the server must not guess from its worker navigator");
@@ -383,24 +384,66 @@ test("a game opens at its own page and does not start until the player asks", as
 /**
  * The screen offers what each game declares, rather than a menu written by hand.
  */
-test("the chooser offers only what each game actually supports", async () => {
-  /*
-   * Seats come from the roles a session can fill, not from players.max. Orbital Crew's manifest says
-   * six while it defines five stations, and the session only ever fills declared roles — so a sixth
-   * seat could never be occupied by anyone.
-   */
-  const seats = { gravitystack: 2, orbitalcrew: 5, slashstorm: 2, swarmcommander: 2 };
-  for (const [id, count] of Object.entries(seats)) {
-    // React emits an interpolated number as its own text node, so the seat count arrives as
-    // "Up to <!-- -->5". Stripped the same way the benchmark assertion above does.
+test("the chooser option count and multiplayer action follow the shipped roles", async () => {
+  // Load real ordinary-TS role exports in the same supported Node stripping mode as unit tests.
+  const catalog = JSON.parse(execFileSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", `
+    import { readdir, readFile } from "node:fs/promises";
+    import { pathToFileURL } from "node:url";
+    import { resolve } from "node:path";
+    const rows = [];
+    for (const id of await readdir("games")) {
+      const manifest = JSON.parse(await readFile("games/" + id + "/manifest.json", "utf8"));
+      if (manifest.surface === "tool") continue;
+      const exports = await import(pathToFileURL(resolve("games", id, "src/roles.ts")));
+      const roles = Object.values(exports).find(Array.isArray);
+      rows.push({ id: manifest.id, seats: Math.min(manifest.players.max, Math.max(roles.length, 1)), hasPhone: Boolean(roles[0]) });
+    }
+    console.log(JSON.stringify(rows));
+  `], { cwd: root, encoding: "utf8" }));
+  for (const { id, seats, hasPhone } of catalog) {
     const html = (await (await render(`/games/${id}`)).text()).replaceAll("<!-- -->", "");
-    assert.match(html, new RegExp(`Up to ${count}`), `${id} must offer the seats it can really fill`);
+    const options = html.match(/<article class="pre-game-option"/g) ?? [];
+    assert.equal(options.length, 1 + Number(hasPhone) + Number(seats > 1), `${id}: initial options must follow roles; camera options await enumeration`);
+    if (seats > 1) {
+      assert.match(html, new RegExp(`Up to ${seats}`));
+      assert.match(html, /Connect players/);
+    } else assert.doesNotMatch(html, /With other people/);
   }
-  assert.doesNotMatch((await (await render("/games/orbitalcrew")).text()).replaceAll("<!-- -->", ""), /Up to 6/,
-    "players.max is 6 but only five stations exist");
+});
 
-  for (const id of ["echomaze", "tiltdrift", "bodydodge", "beatforge", "shadowarena", "spellcaster"]) {
-    const html = await (await render(`/games/${id}`)).text();
-    assert.doesNotMatch(html, /With other people/, `${id} is single-player and must not offer a second seat`);
+test("the complete client stays inside the initial compressed bundle budget", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const { gzipSync } = await import("node:zlib");
+  const client = new URL("dist/client/", root);
+  const files = (await readdir(client, { recursive: true })).filter((path) => /\.(js|css)$/.test(path));
+  assert.ok(files.length > 0, "build output is required");
+  let scripts = 0;
+  let styles = 0;
+  for (const file of files) {
+    const size = gzipSync(await readFile(new URL(file, client))).length;
+    if (file.endsWith(".css")) styles += size;
+    else {
+      scripts += size;
+      assert.ok(size <= 800 * 1024, `${file}: ${size} gzip bytes exceeds 800 KiB`);
+    }
   }
+  assert.ok(scripts <= 2 * 1024 * 1024, `all client JavaScript: ${scripts} gzip bytes exceeds 2 MiB`);
+  assert.ok(styles <= 32 * 1024, `all CSS: ${styles} gzip bytes exceeds 32 KiB`);
+});
+
+
+test("every production font URL resolves to an emitted file", async () => {
+  const { readdir } = await import("node:fs/promises");
+  const client = new URL("dist/client/", root);
+  const cssFiles = (await readdir(client, { recursive: true })).filter((file) => file.endsWith(".css"));
+  let checked = 0;
+  for (const file of cssFiles) {
+    const css = await readFile(new URL(file, client), "utf8");
+    for (const match of css.matchAll(/url\(["']?([^"')]+\.woff2(?:\?[^"')]*)?)["']?\)/g)) {
+      const pathname = new URL(match[1], "http://localhost/" + file).pathname;
+      await access(new URL(pathname.slice(1), client));
+      checked++;
+    }
+  }
+  assert.ok(checked >= 4, "font checks must exercise the real stylesheet");
 });

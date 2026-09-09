@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { existsSync, readdirSync } from "node:fs";
 
 import type { ControllerElement } from "@101/protocol";
 
@@ -107,4 +108,75 @@ test("a declared side beats the default", () => {
   const plan = planControllerDeck([dpad({ side: "right" }), button("a", { side: "left" })]);
   assert.equal(plan.right.pads.length, 1);
   assert.equal(plan.left.keys.length, 1);
+});
+
+test("eight buttons on one side remain separate keys with bounded reach weight", () => {
+  const elements = Array.from({ length: 8 }, (_, index) => button(`key-${index}`, { side: "right" }));
+  const plan = planControllerDeck(elements);
+  assert.equal(plan.right.keys.length, 8);
+  assert.equal(plan.right.count, 8);
+  assert.equal(plan.left.count, 0);
+  assert.equal(plan.center.count, 0);
+  assert.equal(new Set(all(plan).map((placed) => placed.element)).size, 8);
+  assert.ok(plan.right.weight <= 1.8);
+});
+
+test("centre-only layouts reserve no empty thumb clusters", () => {
+  const elements = [button("confirm", { side: "center" }),
+    { type: "slider", action: "power", label: "Power", side: "center" } as ControllerElement];
+  const plan = planControllerDeck(elements, { authoredHandedness: "right", playerHandedness: "left" });
+  assert.equal(plan.left.weight, 0);
+  assert.equal(plan.right.weight, 0);
+  assert.equal(plan.center.count, elements.length);
+  assert.equal(plan.center.bars.length, 1);
+  assert.equal(plan.center.keys.length, 1);
+});
+
+test("two pads on the same side keep distinct placements", () => {
+  const elements = [dpad({ action: "move", side: "left" }),
+    { type: "joystick", action: "aim", side: "left", span: 2 } as ControllerElement];
+  const plan = planControllerDeck(elements);
+  assert.equal(plan.left.pads.length, 2);
+  assert.equal(plan.left.count, 2);
+  assert.deepEqual(new Set(plan.left.pads.map((placed) => placed.element)), new Set(elements));
+  assert.equal(plan.right.count, 0);
+});
+
+test("every shipped role keeps every control in its reachable group for either hand", async () => {
+  // This checks topology, not pixel geometry. Portrait/landscape overlap and physical reach still
+  // need the rendered deck: the planner deliberately has no viewport or DOM measurements.
+  const games = new URL("../../../games/", import.meta.url);
+  let roleCount = 0;
+  for (const game of readdirSync(games, { withFileTypes: true })) {
+    if (!game.isDirectory()) continue;
+    const rolesPath = new URL(`${game.name}/src/roles.ts`, games);
+    if (!existsSync(rolesPath)) continue;
+    const exports = await import(rolesPath.href);
+    for (const roles of Object.values(exports)) {
+      if (!Array.isArray(roles)) continue;
+      for (const role of roles) {
+        if (!role.layout?.layout) continue;
+        roleCount++;
+        const elements: ControllerElement[] = role.layout.layout;
+        for (const playerHandedness of ["left", "right"] as const) {
+          const plan = planControllerDeck(elements, { authoredHandedness: role.layout.handedness ?? "right", playerHandedness });
+          const placements = all(plan);
+          const context = `${game.name}/${role.id}/${playerHandedness}`;
+          assert.equal(placements.length, elements.length, context);
+          assert.equal(new Set(placements.map((placed) => placed.element)).size, elements.length, context);
+          for (const cluster of [plan.left, plan.center, plan.right]) {
+            assert.equal(cluster.count, cluster.bars.length + cluster.pads.length + cluster.keys.length, context);
+            for (const group of ["bars", "pads", "keys"] as const) {
+              for (const placed of cluster[group]) {
+                assert.equal(placed.side, cluster.side, context);
+                assert.equal(placed.group, group, context);
+                assert.ok(placed.span >= 1 && placed.span <= 3, context);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  assert.ok(roleCount > 0, "the role discovery must exercise shipped layouts");
 });

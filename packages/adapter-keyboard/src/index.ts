@@ -7,7 +7,9 @@ export class KeyboardAdapter implements InputAdapter {
   private sequence = 0;
   private readonly pressed = new Set<string>();
 
-  constructor(private readonly playerId = "player-1") {}
+  private readonly playerId: string;
+
+  constructor(playerId = "player-1") { this.playerId = playerId; }
 
   start(emit: InputFrameListener) {
     this.emit = emit;

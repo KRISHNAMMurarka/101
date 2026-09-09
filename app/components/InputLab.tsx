@@ -10,6 +10,7 @@ import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
 import { useEffect, useRef, useState } from "react";
 import inputLabGame from "@/games/input-lab/src/game";
+import { observeCanvasViewport, type CanvasViewport } from "./camera/canvas-viewport";
 
 const ZERO_METRICS: LatencySnapshot = { inputHz: 0, frameAgeMs: 0, droppedPercent: 0, samples: 0 };
 
@@ -55,6 +56,9 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     let pulse = 0;
     let previousTrigger = false;
     let latestFrame: InputFrame | undefined;
+    let flashTimer = 0;
+    let viewport: CanvasViewport = { width: 1, height: 1, ratio: 1 };
+    const stopSizing = observeCanvasViewport(canvas, (next) => { viewport = next; });
 
     const unsubscribeInput = engine.inputBus.subscribe((frame) => {
       latestFrame = frame;
@@ -62,7 +66,8 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       if (frame.actions.trigger && !previousTrigger) {
         pulse = 1;
         setFlash(true);
-        window.setTimeout(() => setFlash(false), 90);
+        window.clearTimeout(flashTimer);
+        flashTimer = window.setTimeout(() => setFlash(false), 90);
       }
       previousTrigger = Boolean(frame.actions.trigger);
     });
@@ -70,17 +75,8 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     const draw = () => {
       const context = canvas.getContext("2d");
       if (!context) return;
-      const bounds = canvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(1, Math.round(bounds.width * ratio));
-      const height = Math.max(1, Math.round(bounds.height * ratio));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
+      const { ratio, width: w, height: h } = viewport;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      const w = bounds.width;
-      const h = bounds.height;
 
       // The Input Lab is a diagnostic surface of the site, not a game, so it follows the site's
       // monochrome rule. Aim and pointer stay distinguishable by form — an outlined reticle against
@@ -148,6 +144,8 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
 
     return () => {
       window.clearInterval(metricTimer);
+      window.clearTimeout(flashTimer);
+      stopSizing();
       cancelAnimationFrame(drawHandle);
       unsubscribeInput();
       void host.stop();

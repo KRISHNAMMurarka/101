@@ -1,0 +1,20 @@
+name: Local application gate
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Rendered HTML tests must consume this revision's production build.
+      - run: npm run build
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run test:unit
+      - run: node --test tests/rendered-html.test.mjs

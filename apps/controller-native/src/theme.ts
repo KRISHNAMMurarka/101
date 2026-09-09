@@ -85,10 +85,13 @@ export function useTheme(): Theme {
 }
 
 /**
- * One spacing scale, used everywhere. Alignment problems are usually spacing problems: when every
- * gap is drawn from four steps, edges line up on their own.
+ * Canonical spacing names match --space-* in app/globals.css exactly.
  */
-export const space = { xs: 6, sm: 10, md: 16, lg: 24, xl: 40 } as const;
+export const spacing = { "3xs": 4, "2xs": 6, xs: 10, sm: 16, md: 24, lg: 40, xl: 64 } as const;
+
+/** @deprecated Existing native screens use this older naming. Preserve their dimensions while
+ * migrating each screen to `spacing`: xs→2xs, sm→xs, md→sm, lg→md, xl→lg. */
+export const space = { xs: spacing["2xs"], sm: spacing.xs, md: spacing.sm, lg: spacing.md, xl: spacing.lg } as const;
 
 export const radius = { control: 18, card: 22, pill: 999 } as const;
 
