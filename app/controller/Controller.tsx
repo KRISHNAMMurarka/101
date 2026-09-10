@@ -897,7 +897,11 @@ function interactionLabel(element: DigitalControllerElement) {
   if (interaction.type === "hold") return `Hold ${Math.round((interaction.thresholdMs ?? 450) / 100) / 10}s`;
   if (interaction.type === "double-tap") return "Double tap";
   if (interaction.type === "toggle") return "Toggle";
-  return `Tap ${interaction.actions.length + 1} together`;
+  // "at once" rather than "together": the label sits inside a face button that is 56px wide on a
+  // small landscape phone, and "together" is eight characters — about 53px of monospace against 44px
+  // of usable width, so it broke mid-word into "togeth / er". A phrase wraps cleanly only when its
+  // longest word fits the box.
+  return `Tap ${interaction.actions.length + 1} at once`;
 }
 
 
