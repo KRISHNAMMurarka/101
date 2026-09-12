@@ -259,13 +259,14 @@ test("serves the controller surface and product metadata", async () => {
   assert.doesNotMatch(html, /OFFLINE SHELL/,
     "the browser updates real connectivity after hydration; the server must not guess from its worker navigator");
 
-  const [layout, manifest, packageJson] = await Promise.all([
-    readFile(new URL("app/layout.tsx", root), "utf8"),
+  const [manifest, packageJson] = await Promise.all([
     readFile(new URL("public/manifest.webmanifest", root), "utf8"),
     readFile(new URL("package.json", root), "utf8"),
   ]);
-  assert.match(layout, /openGraph/);
-  assert.match(layout, /twitter/);
+  // The social tags are asserted against the rendered <head> further down rather than against the
+  // source of app/layout.tsx. Matching /openGraph/ in the source only proved the key was typed: it
+  // passed for months while every one of those tags was being rendered into a hidden div in the
+  // body, where nothing that unfurls a link would ever look.
   assert.match(manifest, /"display": "standalone"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("public/og.png", root));
@@ -448,4 +449,55 @@ test("every production font URL resolves to an emitted file", async () => {
     }
   }
   assert.ok(checked >= 4, "font checks must exercise the real stylesheet");
+});
+
+test("the tags browsers only honour in <head> are in <head>", async () => {
+  /*
+   * This framework's metadata shim renders its tags inside the streamed part of the tree and relies
+   * on React hoisting them. It does not happen from the root layout: title, description, keywords,
+   * the Open Graph and Twitter sets, the icon and the web app manifest were all left in a
+   * `<div hidden>` in the body, before and after hydration.
+   *
+   * The manifest is the one that costs something. A browser only honours `<link rel="manifest">` in
+   * the head, so the controller could not be installed — which is the first step of the
+   * offline-update case in the acceptance runbook. Nothing that unfurls a link could read a
+   * description or find an image either.
+   */
+  const head = (html) => html.slice(html.indexOf("<head"), html.indexOf("</head>"));
+  const body = (html) => html.slice(html.indexOf("<body"));
+
+  const home = await (await render("/")).text();
+  for (const tag of [/<title>/, /<meta name="description"/, /<link rel="manifest"/, /<meta property="og:image"/]) {
+    assert.match(head(home), tag, `missing from <head>: ${tag}`);
+  }
+  assert.doesNotMatch(body(home), /<meta name="description"/, "description was stranded in the body again");
+  assert.doesNotMatch(body(home), /<link rel="manifest"/, "manifest was stranded in the body again");
+});
+
+test("each route carries exactly one title, and the controller keeps its own manifest", async () => {
+  /*
+   * A <title> in the root layout won out at runtime over the page's, so the controller tab read
+   * "101 — Anything can be a controller" instead of "101 Link". Titles are per route; the root
+   * layout does not set one.
+   *
+   * The controller declares its own manifest because it installs as its own app. Both links reach
+   * the head on that route and the browser takes the first, so the order is load-bearing — which is
+   * exactly why it is asserted rather than assumed.
+   */
+  const head = (html) => html.slice(html.indexOf("<head"), html.indexOf("</head>"));
+
+  for (const [path, expected] of [
+    ["/", "101 — Anything can be a controller"],
+    ["/controller?session=T", "101 Link — Browser controller"],
+    ["/games/bodydodge", "BodyDodge 101"],
+    ["/studio", "101 Studio — Build and test controllers"],
+  ]) {
+    const titles = [...head(await (await render(path)).text()).matchAll(/<title>([^<]*)<\/title>/g)].map((m) => m[1]);
+    assert.equal(titles.length, 1, `${path} has ${titles.length} titles: ${titles.join(" | ")}`);
+    assert.equal(titles[0], expected, `${path} title`);
+  }
+
+  const controller = head(await (await render("/controller?session=T")).text());
+  const manifests = [...controller.matchAll(/<link rel="manifest" href="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(manifests[0], "/link.webmanifest", `the controller must install as itself, not the site: ${manifests.join(" | ")}`);
 });

@@ -3,6 +3,10 @@ import Link from "next/link";
 import { Icon } from "../components/Icon";
 import { STUDIO_TOOLS } from "./tools";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "101 Studio — Build and test controllers" };
+
 export default function StudioIndex() {
   return (
     <main className="studio-index">
