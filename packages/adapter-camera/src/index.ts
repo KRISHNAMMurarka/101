@@ -1,4 +1,6 @@
 import type { InputAdapter, InputFrame, InputFrameListener } from "@101/input";
+
+import { acquireFirstFrame } from "./acquire.ts";
 import {
   flattenPose,
   flattenHand,
@@ -513,7 +515,7 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
       this.video.srcObject = this.stream;
       this.video.muted = true;
       this.video.playsInline = true;
-      await this.video.play();
+      await acquireFirstFrame(this.video);
       if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
       // A restart waits for any previous initialization to settle before reusing this backend.
       if (this.initialization) await this.initialization.catch(() => undefined);
@@ -662,7 +664,7 @@ export class BrowserHandAdapter extends HandInputAdapter {
       this.video.srcObject = this.stream;
       this.video.muted = true;
       this.video.playsInline = true;
-      await this.video.play();
+      await acquireFirstFrame(this.video);
       if (generation !== this.generation) throw new DOMException("Camera start was cancelled", "AbortError");
       // A restart waits for any previous initialization to settle before reusing this backend.
       if (this.initialization) await this.initialization.catch(() => undefined);
@@ -755,3 +757,8 @@ function cloneHands(hands: readonly TrackedHand[]) {
 export * from "./errors.ts";
 export * from "./luma.ts";
 export * from "./cameras.ts";
+
+/*
+ * Waiting for a camera to produce a picture, with an end to the waiting.
+ */
+export * from "./acquire.ts";

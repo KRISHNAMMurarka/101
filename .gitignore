@@ -50,3 +50,6 @@ yarn-error.log*
 /apps/desktop-hub/src-tauri/icons/android/
 /apps/desktop-hub/src-tauri/icons/ios/
 release/
+
+# Self-signed certificates for local phone acceptance testing. Private keys never leave this machine.
+.certs/

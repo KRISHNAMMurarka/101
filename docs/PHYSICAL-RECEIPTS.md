@@ -22,10 +22,37 @@ npm run start      # production server, port 3000
 | Laptop URL | `http://127.0.0.1:3000/` |
 | Phone URL | `http://192.168.0.143:3000/` — the laptop's address on this network. Re-check with `ipconfig getifaddr en0` if it has moved; both phones must be on the same Wi-Fi. |
 
-A phone camera will not start over plain `http://` on a LAN address, because getUserMedia requires a
-secure context. That affects only the **phone** inference case (E2); everything else on a phone is
-touch and networking and works over http. The laptop is `127.0.0.1`, which counts as secure, so the
-laptop camera cases are unaffected.
+**A phone camera needs a secure origin, and `http://192.168.0.143:3000` is not one.** Plain http on a
+LAN address means `getUserMedia` never starts and the page looks broken for a reason that has
+nothing to do with the product. Two ways round it, both local, neither of them publishing:
+
+**Android, over USB — nothing to trust, nothing to clean up:**
+
+```bash
+adb reverse tcp:3000 tcp:3000
+```
+
+The phone then opens `http://localhost:3000`, and localhost is a secure context by definition.
+
+**Anything else, including every iPhone:**
+
+```bash
+npm run start          # plain server on 3000
+npm run serve:secure   # TLS front on 3443, prints the URL and fingerprint
+```
+
+Open `https://192.168.0.143:3443/` on the phone. Safari says "This Connection Is Not Private" —
+correct, the certificate was made on this machine a moment ago. Check the fingerprint the command
+printed, then Show Details, "visit this website", Visit Website. Safari treats the origin as secure
+afterwards, which is what the camera needs. Walked end to end on an iPhone 17 simulator: the warning,
+the two taps, and the Vision Lab loading over https on the LAN address.
+
+To make it survive a restart, install the certificate instead: AirDrop `.certs/lan.crt` to the
+phone, Settings > General > VPN & Device Management to install, then
+Settings > General > About > Certificate Trust Settings to switch full trust on.
+
+Record which route you used — it is part of the environment. The certificate is self-signed,
+git-ignored, valid for 90 days and never leaves this machine.
 
 Fill one row per attempt. A skipped case stays pending — it does not become a pass.
 
@@ -193,25 +220,39 @@ Open the browser's performance tools, set CPU throttling to 4x, then run the bod
 
 ## Block E — Phone inference (runbook §"Inference and throttling")
 
-### E1 · 120 samples, phone body camera — **read the note first**
+### E1 · 120 samples, phone body camera
 
-A phone reaching the laptop over `http://192.168.0.143:3000` is not a secure context, so the phone's
-camera will not start there. Before recording this case you need one of:
-
-- the site served over https on the LAN with a certificate the phone trusts, or
-- a tunnel that terminates TLS, which is a form of publishing and is **not** permitted here without
-  the owner's say-so, or
-- the phone's browser configured to treat that origin as secure.
-
-Whichever you choose, record it in the receipt — it is part of the environment.
+The secure-origin problem is solved — see "Before you start". Use `adb reverse` on Android or
+`npm run serve:secure` on iPhone, and record which.
 
 | Field | Record |
 | --- | --- |
-| How the origin was made secure | |
+| Secure route used | adb reverse / https front / installed certificate |
 | Device model | |
 | Mean / median / P95 / range | |
 
 ---
+
+## A note on D1 and D2, from trying to automate them
+
+The laptop cases were driven with a real Chrome and a real camera — `--use-fake-ui-for-media-stream`
+auto-accepts the permission prompt without faking the device, and the track that came back was the
+FaceTime HD Camera at 640x480. So the evidence was reachable in principle.
+
+It did not complete, and what stopped it is worth knowing before you sit down to it. The camera
+granted a track and then produced no frames at all: `videoWidth` stayed 0 and `video.play()` was
+still pending after eight seconds, in headless **and** headful Chrome. The model itself was fine —
+5.7 MB fetched in 19 ms.
+
+Whether that is this machine's camera refusing frames to an automated Chrome, or something that
+would also happen to a person sitting in front of it, is not established. What it did prove is a
+real defect, now fixed: the adapter awaited `video.play()` with no timeout, so a camera that opens
+but never delivers left the setup on "starting the camera" for the life of the page, with no error
+and no way out. That is bounded now and reports as a camera in use.
+
+**So when you run D1, watch for the case where it says the camera is in use and you know it is not.**
+That would mean the frame stall is real and not an automation artifact, and it is worth a note in the
+receipt.
 
 ## What is already closed, and by what
 
