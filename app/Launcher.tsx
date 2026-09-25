@@ -47,6 +47,7 @@ export default function Launcher({
   const pageFocusTargetRef = useRef<HTMLElement>(null);
   const pageFocusScrollTopRef = useRef<number | null>(null);
   const pageFocusScrollSettledRef = useRef(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const pageFocusSettleFrameRef = useRef<number | null>(null);
   const { sources: localSources } = useLocalDevice();
   const instanceId = useId();
@@ -160,6 +161,9 @@ export default function Launcher({
     setQuery("");
     setInputFilter("all");
     setRequestedPageStart(null);
+    // Both reset buttons go away when pressed (one disables, one unmounts), which drops keyboard
+    // focus to the page; the search is where a player starts again.
+    searchRef.current?.focus();
   };
 
   const requestCatalogPage = (startIndex: number) => {
@@ -247,6 +251,7 @@ export default function Launcher({
               <label className="catalog-control" htmlFor="catalog-search">
                 <span>Search games</span>
                 <input
+                  ref={searchRef}
                   id="catalog-search"
                   type="search"
                   value={query}
@@ -561,7 +566,20 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
   const [hubError, setHubError] = useState("");
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const controllerUrl = `/controller?session=${sessionId}`;
+
+  // A modal <dialog> moves focus inside, makes the page behind it inert, and turns Escape into
+  // `cancel`. React removes it rather than closing it, so focus goes back to the opener by hand.
+  // Chrome would otherwise start on the scrollable panel, which shows no focus ring.
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog?.showModal();
+    closeRef.current?.focus();
+    return () => { dialog?.close(); opener?.focus(); };
+  }, []);
 
   useEffect(() => {
     let current = true;
@@ -585,9 +603,14 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
   };
 
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
-      <section className="pairing-panel" role="dialog" aria-modal="true" aria-labelledby="pairing-title">
-        <button className="close-button" onClick={onClose} aria-label="Close">×</button>
+    // The dialog is also the dimmed layer, so pressing outside the panel lands on it. That is a
+    // pointer shortcut; Escape and the Close button are the keyboard ways out.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <dialog ref={dialogRef} className="modal-backdrop" aria-labelledby="pairing-title"
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <section className="pairing-panel">
+        <button ref={closeRef} className="close-button" onClick={onClose} aria-label="Close">×</button>
         <p className="eyebrow">Add a controller</p>
         <h2 id="pairing-title">Scan once. Control every game.</h2>
         <p className="panel-intro">Scan the code with your phone. Its screen becomes a controller, and the buttons change to match whatever you are playing.</p>
@@ -599,7 +622,7 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
         {hubError && <p className="pairing-error">Couldn&apos;t reach the other devices on this network. Check that this device is online, then try again.</p>}
         <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
       </section>
-    </div>
+    </dialog>
   );
 }
 

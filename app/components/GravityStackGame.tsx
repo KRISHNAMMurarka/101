@@ -69,6 +69,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
     onReady: ({ context, host }) => {
       const stage = stageRef.current;
       if (!stage) return;
+      stage.focus({ preventScroll: true });
       let cancelled = false;
       let view: { destroy: () => void } | undefined;
       let previousLost = 0;
@@ -141,7 +142,10 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
         <div className="gravity-stage-shell">
           <div className="gravity-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
 
-          <div className="gravity-stage" ref={stageRef} role="img" aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
+          {/* The play field takes the game's keys, like the canvas every other game focuses on start;
+              Phaser owns the canvas inside, so the focus and the visible ring sit on this frame. */}
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */}
+          <div className="gravity-stage" ref={stageRef} role="img" tabIndex={0} aria-label="GravityStack physics world. Arrow keys change gravity, A and D move the drop position, and Space drops the next shape." />
           <div className="gravity-vector" style={{ transform: `rotate(${gravityAngle - 90}deg)` }}><i /><span>G</span></div>
           <div className="gravity-drop-guide" style={{ left: `${50 + hud.placementX / 10 * 100}%` }}><i /><span>DROP</span></div>
           <div className="gravity-event">{hud.lastEvent}</div>

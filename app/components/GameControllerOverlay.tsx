@@ -16,6 +16,7 @@ export default function GameControllerOverlay({ binding, children, runComplete =
   const id = useId();
   const frameRef = useRef<HTMLDivElement>(null);
   const dockRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const role = binding?.roles.find((candidate) => candidate.id === selected) ?? binding?.roles[0];
 
   useEffect(() => {
@@ -34,10 +35,14 @@ export default function GameControllerOverlay({ binding, children, runComplete =
       {/* Keep child control keys from also driving the game through its window keyboard listener. */}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <section className={styles.dock} aria-label="Controls on this screen" ref={dockRef}
-        onKeyDown={(event) => { event.stopPropagation(); if (event.key === "Escape") setOpen(false); }}
+        onKeyDown={(event) => {
+          event.stopPropagation();
+          // Closing unmounts the control that has focus; hand it to the toggle rather than the page.
+          if (event.key === "Escape" && expanded) { setOpen(false); toggleRef.current?.focus(); }
+        }}
         onKeyUp={(event) => event.stopPropagation()}>
         <div className={styles.toolbar}>
-          <button className="outline-button" type="button" disabled={!role || runComplete} aria-expanded={expanded} aria-controls={id} onClick={() => setOpen((value) => !value)}>
+          <button ref={toggleRef} className="outline-button" type="button" disabled={!role || runComplete} aria-expanded={expanded} aria-controls={id} onClick={() => setOpen((value) => !value)}>
             <Icon name="gamepad" size={18} /> {expanded ? "Hide controls" : "Show controls"}
           </button>
           {expanded && role && binding && (binding.roles.length > 1

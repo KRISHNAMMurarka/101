@@ -209,7 +209,8 @@ export default function CameraSetup({
     onCancel();
   };
 
-  const slowStart = state.attempt > 0 && slowAttempt === state.attempt && !cameraReady && !state.failure;
+  const starting = state.attempt > 0 && !cameraReady;
+  const slowStart = starting && slowAttempt === state.attempt && !state.failure;
   const failure = state.failure ? CAMERA_FAILURE_COPY[state.failure] : undefined;
   const placement = reading && !state.failure && (state.step === "place" || state.step === "check") ? describePlacement(reading, true) : undefined;
   const copy = SETUP_COPY[state.step];
@@ -250,7 +251,9 @@ export default function CameraSetup({
             {failure
               ? <button className="primary-button" onClick={retry}>Try again <Icon name="arrow" size={16} /></button>
               : state.step === "camera"
-                ? <button className="primary-button" disabled={state.attempt > 0 && !cameraReady} onClick={cameraReady ? () => dispatch({ type: "camera-started" }) : retry}>{cameraReady ? "Use this camera" : state.attempt > 0 ? "Starting the camera…" : "Turn on the camera"} <Icon name="arrow" size={16} /></button>
+                // Not `disabled` while starting: the player pressed this very button, and disabling a
+                // focused control drops keyboard focus to the page, so it would be lost by "Use this camera".
+                ? <button className="primary-button" aria-disabled={starting || undefined} onClick={starting ? undefined : cameraReady ? () => dispatch({ type: "camera-started" }) : retry}>{cameraReady ? "Use this camera" : state.attempt > 0 ? "Starting the camera…" : "Turn on the camera"} <Icon name="arrow" size={16} /></button>
               : state.step === "place"
                 ? <button className="primary-button" onClick={() => dispatch({ type: "continue" })}>I&apos;m ready <Icon name="arrow" size={16} /></button>
                 : state.step === "ready"

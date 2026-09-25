@@ -381,6 +381,10 @@ test("a game opens at its own page and does not start until the player asks", as
 
     const playing = await (await render(`/games/${id}/play`)).text();
     assert.match(playing, marker, `${id} does not run at its own play route`);
+    // Every game focuses its play field on start so a keyboard player can see where they are. The
+    // GravityStack stage was an unfocusable image, which left focus on the page for the whole run.
+    assert.match(playing, /<(?:canvas|div)\b[^>]*\btabindex="0"[^>]*\baria-label="[^"]*\b(?:Space|arrows?|Arrow|WASD)\b/,
+      `${id} has no focusable play field that names its keys`);
   }
 });
 

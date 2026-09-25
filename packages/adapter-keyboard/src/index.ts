@@ -1,5 +1,16 @@
 import type { InputAdapter, InputFrameListener } from "@101/input";
 
+/** Elements whose own keyboard behaviour a game key must not override. The play field is not one. */
+const KEY_OWNERS = [
+  "button", "a[href]", "input", "select", "textarea", "summary", "[contenteditable]:not([contenteditable=\"false\"])",
+  "[role=\"button\"]", "[role=\"link\"]", "[role=\"checkbox\"]", "[role=\"radio\"]", "[role=\"switch\"]", "[role=\"slider\"]",
+  "[role=\"spinbutton\"]", "[role=\"tab\"]", "[role=\"menuitem\"]", "[role=\"option\"]", "[role=\"combobox\"]", "[role=\"textbox\"]",
+].join(", ");
+
+function ownsKeys(target: EventTarget | null) {
+  return typeof (target as Element | null)?.matches === "function" && (target as Element).matches(KEY_OWNERS);
+}
+
 export class KeyboardAdapter implements InputAdapter {
   readonly id = "keyboard-primary";
   readonly source = "keyboard" as const;
@@ -28,6 +39,8 @@ export class KeyboardAdapter implements InputAdapter {
   }
 
   private onKeyDown = (event: KeyboardEvent) => {
+    // A focused control owns its keys: cancelling Space here cancels a button's own activation.
+    if (ownsKeys(event.target)) return;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) {
       event.preventDefault();
     }
