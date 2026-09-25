@@ -434,6 +434,27 @@ test("the complete client stays inside the initial compressed bundle budget", as
   assert.ok(styles <= 32 * 1024, `all CSS: ${styles} gzip bytes exceeds 32 KiB`);
 });
 
+test("hashed scripts and styles ship precompressed for the local server", async () => {
+  /*
+   * The budget above is measured compressed, but `vinext start` only compresses a hashed asset when
+   * the build left a .br/.gz/.zst file beside it; it never compresses one on the fly. Without them
+   * the launcher sent 145 KB of render-blocking CSS and 589 KB of script raw, and Lighthouse's
+   * mobile profile put first paint at 4.8 s.
+   */
+  const { readdir, stat } = await import("node:fs/promises");
+  const assets = new URL("dist/client/_next/static/", root);
+  const files = await readdir(assets, { recursive: true });
+  const present = new Set(files);
+  const originals = [];
+  for (const file of files.filter((path) => /\.(js|css)$/.test(path))) {
+    if ((await stat(new URL(file, assets))).size >= 1024) originals.push(file);
+  }
+  assert.ok(originals.length >= 10, "the check must see the real client build");
+  for (const file of originals) {
+    for (const suffix of [".br", ".gz"]) assert.ok(present.has(file + suffix), `${file} has no ${suffix} sibling`);
+  }
+});
+
 
 test("every production font URL resolves to an emitted file", async () => {
   const { readdir } = await import("node:fs/promises");
@@ -449,6 +470,33 @@ test("every production font URL resolves to an emitted file", async () => {
     }
   }
   assert.ok(checked >= 4, "font checks must exercise the real stylesheet");
+});
+
+test("a bare dynamic import only loads a chunk built for that dynamic entry", async () => {
+  /*
+   * A bare `import("./x.js")` resolves to that chunk's own exports, so it is only right when the
+   * chunk was emitted for the module being imported. Rolldown 1.0.1 merged the framework's
+   * navigation module into the app entry chunk under minified export names and left the link
+   * chunk's `import("./navigation.js")` pointing at the entry bare. Every destructured name came
+   * back undefined, and each page load logged "RSC prefetch setup error: ee is not a function".
+   * Fixed upstream in rolldown 1.0.2 (#9448); a module merged elsewhere must be reached through
+   * `.then((chunk) => chunk.<namespace>)`.
+   */
+  const { readdir } = await import("node:fs/promises");
+  const client = new URL("dist/client/", root);
+  const manifest = JSON.parse(await readFile(new URL(".vite/manifest.json", client), "utf8"));
+  const dynamicEntries = new Set(Object.values(manifest).filter((chunk) => chunk.isDynamicEntry).map((chunk) => chunk.file));
+  const chunks = new URL("_next/static/chunks/", client);
+  let checked = 0;
+  for (const file of (await readdir(chunks)).filter((name) => name.endsWith(".js"))) {
+    const source = await readFile(new URL(file, chunks), "utf8");
+    for (const match of source.matchAll(/import\(`\.\/([^`]+\.js)`\)(\.then\()?/g)) {
+      if (match[2]) continue;
+      checked++;
+      assert.ok(dynamicEntries.has(`_next/static/chunks/${match[1]}`), `${file} loads ${match[1]} bare, but that chunk is not the imported module`);
+    }
+  }
+  assert.ok(checked >= 10, "the check must see the real code-split client");
 });
 
 test("the tags browsers only honour in <head> are in <head>", async () => {

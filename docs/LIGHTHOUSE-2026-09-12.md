@@ -85,6 +85,9 @@ Two per load: `[vinext] RSC prefetch setup error: TypeError: ee is not a functio
 the framework's own `link` chunk. Recorded rather than chased — there is no call site in this
 repository to change.
 
+*Resolved 25 September — the cause was the bundler version this repository pins, not the framework;
+see the follow-up below.*
+
 ## Not covered by this receipt
 
 Lighthouse 13 removed the PWA category and its installability audits, so this run proves nothing
@@ -94,3 +97,42 @@ physical device remains a case in
 [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md).
 
 A single run on one machine is a baseline, not a distribution. Scores move between runs.
+
+## Follow-up — 25 September 2026
+
+Same route, same Lighthouse 13.4.1 and the same simulated mobile profile (412x823 @ 1.75x, 150 ms
+RTT, 1638.4 kbps, 4x CPU). Chrome was HeadlessChrome/154.0.0.0. The tree was `39fba9b` plus the two
+changes below. "Before" repeats the baseline on that tree, and "after" is three consecutive runs, all
+identical.
+
+| | Before | After (×3) |
+| --- | --- | --- |
+| Performance | 66 | 90 |
+| Accessibility | 100 | 100 |
+| Best Practices | 96 | 100 |
+| SEO | 100 | 100 |
+| First Contentful Paint | 4.8 s | 2.7 s |
+| Largest Contentful Paint | 6.0 s | 3.0 s |
+| Total Blocking Time | 0 ms | 0 ms |
+| Script transferred | 589,057 B | 182,943 B |
+| CSS transferred | 145,804 B | 23,556 B |
+
+**Why it arrived late: nothing was compressed.** The HTML was compressed, but every hashed script
+and stylesheet went out raw. `vinext start` compresses a hashed asset only when the build has left a
+`.br`/`.gz`/`.zst` file beside it. It never compresses one on the fly, and vinext leaves that
+precompression off by default because an edge host normally does the job. Players run this local
+server, so `vite.config.ts` now sets `vinext({ precompress: true })`. The "unused" JavaScript and CSS
+named above were mostly raw bytes: once the assets were compressed, the estimates fell from 230 KiB
+and 93 KiB to 29 KiB and 15 KiB. A rendered test fails if a hashed script or stylesheet ships without
+its compressed siblings.
+
+**Why the console errored: a bundler bug.** Rolldown 1.0.1, pinned by Vite 8.0.13, merged the
+framework's navigation module into the app entry chunk under minified export names. It left the link
+chunk's dynamic `import("./navigation.js")` pointing at that chunk bare, so every destructured
+function was `undefined` and no link was ever prefetched. Rolldown 1.0.2 fixed exactly this ("publish
+absorbed dynamic-entry namespace cross-chunk", #9448). Vite is now 8.0.16 (Rolldown 1.0.3). The
+import now extracts the namespace, the console is empty, and visible links prefetch their routes. A
+rendered test fails if any bare dynamic import targets a chunk that was not built for that module.
+
+What remains: the 23.6 KB stylesheet still blocks rendering (an estimated 450 ms), and the largest
+paint is the hero heading's text.

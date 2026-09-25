@@ -26,7 +26,9 @@ export default defineConfig(async () => {
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
     plugins: [
-      vinext(),
+      // `vinext start` serves hashed assets raw unless a .br/.gz/.zst sibling exists; it never
+      // compresses them on the fly. Players run that server, so the build writes the siblings.
+      vinext({ precompress: true }),
       cloudflare({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
         config: localBindingConfig,
