@@ -48,3 +48,5 @@ Read with [NEXT-101.md](NEXT-101.md). This records implemented work and remainin
 The concrete remaining work is hardware/profile integration and physical/device/assistive-technology/performance acceptance, plus remote-screen implementation if selected after the routing design. [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md) assigns the required human/device actions and receipts. Keep these open instead of treating a passing unit gate as proof of them.
 
 Final local gate: production build, typecheck and lint pass; **434 unit tests and 27 rendered/build checks pass**. See QA-2026-09-09.md for measured bundle sizes.
+
+On 25 September 2026 the same gate passed on a fresh production build: **440 unit tests and 31 rendered/build checks**, plus native typecheck and `audit:production`. It ran locally, and no remote CI run is recorded.
