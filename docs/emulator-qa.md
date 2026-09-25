@@ -183,10 +183,19 @@ have been followed immediately by `V aim 0.00,0.00` and nothing further, because
 terminated. Both halves of the fix are therefore confirmed against real React Native: pads refuse to
 surrender the responder, and buttons take raw touch events so they never ask for it.
 
-Two things this cost, worth recording so the next person does not repeat them. The Debug build fails
-to link — `expo-dev-launcher` tries to link `SwiftUICore` directly, which Apple disallows — so use
-`--configuration Release`. And `console.log` does not reach the device log from a Release build, so
-observation has to be rendered on screen rather than logged.
+Two things this cost, worth recording so the next person does not repeat them. At the time the Debug
+build failed to link — `expo-dev-launcher` tried to link `SwiftUICore` directly, which Apple
+disallows — so this run used `--configuration Release`. And `console.log` does not reach the device
+log from a Release build, so observation has to be rendered on screen rather than logged.
+
+**The Debug link failure no longer reproduces (2026-09-25).** With Xcode 26.6 (17F113), unchanged
+pods (`expo-dev-launcher` 57.0.11) and a clean derived-data directory,
+`xcodebuild -workspace 101Link.xcworkspace -scheme 101Link -configuration Debug -sdk iphonesimulator
+-destination 'generic/platform=iOS Simulator' build` succeeded for arm64 and x86_64. The only linker
+output was a duplicate `-lc++` warning. The app installed on the iPhone 17 Pro simulator (iOS 26.5)
+and opened the dev launcher's SwiftUI home screen, "Searching for development servers". Nothing in
+the repository changed, so the likeliest fix is the Xcode update. If the error returns on an older
+Xcode, build Release as above.
 
 The test build forced the play surface open (`playing = true`) and instrumented the control
 callbacks, because the panel is otherwise only reachable through a completed pairing, which the

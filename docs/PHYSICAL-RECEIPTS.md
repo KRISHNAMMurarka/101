@@ -105,10 +105,15 @@ Do this while the phones are already out.
 | --- | --- | --- |
 | Open the controller URL and use the browser's "Add to Home Screen" | It offers to install, and the name is **101 Link** (not "101") | |
 | Open the installed app | Runs without browser chrome | |
-| Keep it open. On the laptop: `npm run build` again, note the new build id, restart `npm run start` | — | |
+| Keep it open. On the laptop, check out a **different** accepted commit, `npm run build`, restart `npm run start` | The id in `Stamped dist/client/sw.js with build …` differs from build A's | |
 | Open a second controller page so the update can download | — | |
 | With the first page still open, turn the phone's networking off | The open controller and its assets still work | |
-| Reopen the installed app | It comes up on the newer build | |
+| Close every controller page and the installed app so the update can activate | — | |
+| With networking still off, open the controller at a different room, e.g. `/controller?session=BUILDB1` | Build B opens **that** room, not a cached one, with usable controls | |
+
+Rebuilding the same commit is not an update. Builds are byte-reproducible, so the same source stamps
+the same build id and the phone has nothing to download; that run proves only a one-build offline
+reopen, which the runbook says does not satisfy this case.
 
 **Read this before A4.** Until commit `ae60272` the manifest link was rendered into the page body
 instead of the head, so no browser applied it and the controller was not installable at all. That is
@@ -258,7 +263,7 @@ receipt.
 
 | Case | Status |
 | --- | --- |
-| Production Lighthouse audit of the launcher | **Closed.** [LIGHTHOUSE-2026-09-12.md](LIGHTHOUSE-2026-09-12.md) — Performance 67, Accessibility 100, Best Practices 96, SEO 100, with the full environment recorded. |
+| Production Lighthouse audit of the launcher | **Closed.** [LIGHTHOUSE-2026-09-12.md](LIGHTHOUSE-2026-09-12.md): baseline 67/100/96/100. After the 25 September compression and bundler fixes it scored 90/100/100/100 in three runs. Full environments are recorded, and the release candidate needs its own run. |
 | Controller layout across landscape and portrait | **Pre-flight only.** Emulated viewports at six landscape and two portrait sizes; see [CONTROLLER-UX.md](CONTROLLER-UX.md). An emulated viewport is not a phone. |
 | Controller on real iOS Safari, unassigned state | **Pre-flight only.** iPhone 17 simulator: connection guidance shown, no inactive controls, content clear of the Dynamic Island. A simulator is not a phone, and it cannot receive a role from the laptop's lab, so the deck itself was not reachable there. |
 | Keyboard focus visibility on the launcher | **Pre-flight only.** Real Tab presses; every control reports `:focus-visible` with a solid 2px outline. |

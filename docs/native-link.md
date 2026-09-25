@@ -137,10 +137,13 @@ than assumed: rebuilding it costs a fraction of a microsecond against a 16 ms fr
 into a ref meant writing to that ref during render, which the lint rules correctly reject. The
 allocation is not worth the hazard.
 
-**Not yet verified on hardware.** The reasoning is confirmed against the React Native source in this
-repo, and the logic is locked by a test, but genuine simultaneous multi-touch cannot be exercised on
-a simulator — both iOS and Android emulators synthesise only mirrored two-finger pinch gestures, not
-two independent touch points. This needs one pass on a real phone.
+**Verified on the iOS simulator runtime, not yet on a phone.** On 2026-09-06 a Release build on the
+iPhone 17 Pro simulator held the AIM stick with one finger while a second pressed A, and the stick
+kept reporting vectors after the press; the transcript is in [emulator QA](emulator-qa.md). The
+simulator's control API accepts an arbitrary two-finger path, so the earlier belief that simulators
+only synthesise a mirrored pinch was wrong. The Android emulator has not been exercised this way, and
+thumb comfort and touch-screen behaviour still need the physical pass in the
+[acceptance runbook](PHYSICAL-ACCEPTANCE-RUNBOOK.md).
 
 ## Solved: the host used to expire a controller that was still being played
 

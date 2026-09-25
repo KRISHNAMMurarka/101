@@ -281,10 +281,10 @@ What remains is genuine per-entry data. Going further means server-side search a
 sending a page instead of a catalog — which is an architecture decision, not a cleanup, and which no
 player reaches today with ten games. It is deliberately not built.
 
-### ~~Two-thumb play~~ — verified on a real iOS runtime, 2026-09-06
+### Two-thumb play — verified on the iOS simulator runtime, 2026-09-06
 
-Closed. Simulators do *not* only synthesise mirrored pinch — the control API takes an arbitrary
-two-finger path. On a Release build, holding the AIM stick while a second finger presses A produced
+The responder bug is closed. Simulators do *not* only synthesise mirrored pinch — the control API
+takes an arbitrary two-finger path. On a Release simulator build, holding the AIM stick while a second finger presses A produced
 `B buttonA=true` followed by four more `V aim` updates, so the stick was never terminated. Full
 transcript and method in [emulator QA](docs/emulator-qa.md).
 
@@ -308,9 +308,9 @@ transcript and method in [emulator QA](docs/emulator-qa.md).
 
 ## Unverified on hardware
 
-- **Two-thumb play.** The fix for the React Native single-responder bug is reasoned from RN's source
-  and locked by a test, but simulators synthesise only mirrored pinch, not two independent touch
-  points. Needs one pass on a real phone: hold a stick, press a button, confirm the stick holds.
+- **Two-thumb play on a phone.** The React Native single-responder fix is verified on the iOS
+  simulator runtime with two independent touch points (see "Two-thumb play" above). A physical phone
+  and the Android emulator have not run it: hold a stick, press a button, confirm the stick holds.
 - **Private controller audio over WebRTC.** Browser opt-in/readiness, targeted routing, stale-cue
   rejection, the bundled native asset and both Expo exports are verified, but simulator ICE cannot
   complete a real LAN session. On one physical phone, pair Echo Maze, enable private audio if using

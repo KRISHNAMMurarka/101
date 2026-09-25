@@ -49,7 +49,7 @@ For a laptop and a physical phone, open **Studio → Vision Lab**, enable the bo
 
 On the laptop, apply a fourfold CPU throttle in the browser's performance tools before starting the body-camera walkthrough. Complete placement and an actual gesture confirmation under that throttle, then restore normal throttling. Record the throttle profile and the Vision Lab distribution. Do not treat a single frame time, a simulated pose, or CPU throttling as phone evidence.
 
-Run a production Lighthouse audit of the launcher from an installed local audit tool or the browser's built-in auditing facility. Record the Lighthouse version, browser, device/emulation profile, throttling profile, and the complete reported category scores. This repository intentionally makes no score claim until that receipt exists.
+Run a production Lighthouse audit of the launcher from an installed local audit tool or the browser's built-in auditing facility. Record the Lighthouse version, browser, device/emulation profile, throttling profile, and the complete reported category scores. Earlier receipts are in [LIGHTHOUSE-2026-09-12.md](LIGHTHOUSE-2026-09-12.md); they describe earlier trees, and the release candidate needs its own run.
 
 ## Installed controller update and offline recovery
 
