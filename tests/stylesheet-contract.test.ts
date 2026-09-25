@@ -194,3 +194,45 @@ test("every .controller-page padding respects the safe-area insets", () => {
   }
   assert.deepEqual(offenders, [], `a flat padding on .controller-page drops the safe-area insets:\n${offenders.join("\n")}`);
 });
+
+test("an auto-fit track minimum never outgrows the column it sits in", () => {
+  // `repeat(auto-fill, minmax(280px, 1fr))` still demands 280px when the column is 250px wide, so
+  // the Studio index and the game chooser ran off a narrow phone. Capping with min(…, 100%) keeps the
+  // intent above that width and fits below it.
+  const offenders: string[] = [];
+  stylesheet.walkDecls("grid-template-columns", (declaration) => {
+    for (const match of declaration.value.matchAll(/repeat\(\s*auto-(?:fit|fill)\s*,\s*minmax\(\s*(\d+)px/g)) {
+      if (Number(match[1]) > 200) offenders.push(`line ${declaration.source?.start?.line}: ${declaration.value}`);
+    }
+  });
+  assert.deepEqual(offenders, []);
+});
+
+test("a grid folded to one column folds its named areas too", () => {
+  // Echo Maze, GravityStack and Orbital Crew set `grid-template-columns: 1fr` for narrow screens but
+  // kept `grid-template-areas: "stage rail"`, which is still two columns: the rail took the second at
+  // its full width and the play field collapsed to nothing on every phone and tablet.
+  const multiColumnAreas = new Map<string, number>();
+  stylesheet.walkDecls("grid-template-areas", (declaration) => {
+    const rows = [...declaration.value.matchAll(/"([^"]*)"/g)].map((row) => row[1].trim().split(/\s+/).length);
+    const rule = declaration.parent;
+    if (rule?.type === "rule" && rule.parent?.type === "root" && Math.max(...rows) > 1) {
+      for (const selector of rule.selectors) multiColumnAreas.set(selector.trim(), Math.max(...rows));
+    }
+  });
+  const offenders: string[] = [];
+  stylesheet.walkRules((rule) => {
+    if (rule.parent?.type !== "atrule") return;
+    let oneColumn = false;
+    let areas = false;
+    rule.walkDecls((declaration) => {
+      if (declaration.prop === "grid-template-columns" && /^(1fr|minmax\(0,\s*1fr\))$/.test(declaration.value.trim())) oneColumn = true;
+      if (declaration.prop === "grid-template-areas" || declaration.prop === "grid-template") areas = true;
+    });
+    if (!oneColumn || areas) return;
+    for (const selector of rule.selectors) {
+      if (multiColumnAreas.has(selector.trim())) offenders.push(`line ${rule.source?.start?.line}: ${selector.trim()}`);
+    }
+  });
+  assert.deepEqual(offenders, []);
+});

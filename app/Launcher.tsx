@@ -334,7 +334,10 @@ export default function Launcher({
                         <h3>{game.name}</h3>
                         <p>{game.tagline}</p>
                         <div className="input-tags">
-                          {game.inputs.slice(0, 3).map((input) => <span key={input}><Icon name={input} size={16} />{CATALOG_INPUT_LABELS[input] ?? input}</span>)}
+                          {game.inputs.slice(0, 3).map((input) => {
+                            const label = CATALOG_INPUT_LABELS[input] ?? input;
+                            return <span key={input} title={label}><Icon name={input} size={16} /><span className="input-tag-label">{label}</span></span>;
+                          })}
                           {game.inputs.length > 3 && <span>+{game.inputs.length - 3}</span>}
                         </div>
                         {/* Was three fixed strings, including the literal "Playable" printed on every
@@ -553,10 +556,13 @@ function CatalogSpacer({
   const rows = (columns: number) => position === "top"
     ? Math.floor(startIndex / columns)
     : Math.ceil((itemCount - endIndex) / columns);
+  // The same row height the cards are drawn at. These were 470px and 500px from an older card, so
+  // every row that scrolled in made the page 48–78px longer and pushed the footer, and focus with
+  // it, back below the screen.
   const style = {
-    "--catalog-spacer-height-1": `${rows(1) * 470}px`,
-    "--catalog-spacer-height-2": `${rows(2) * 470}px`,
-    "--catalog-spacer-height-3": `${rows(3) * 500}px`,
+    "--catalog-spacer-height-1": `${rows(1) * INITIAL_CATALOG_ROW_HEIGHT}px`,
+    "--catalog-spacer-height-2": `${rows(2) * INITIAL_CATALOG_ROW_HEIGHT}px`,
+    "--catalog-spacer-height-3": `${rows(3) * INITIAL_CATALOG_ROW_HEIGHT}px`,
   } as React.CSSProperties;
   return <div className="catalog-spacer" style={style} role="presentation" aria-hidden="true" />;
 }

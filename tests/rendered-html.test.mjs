@@ -75,6 +75,17 @@ test("server-renders a bounded first window for the 1000-entry catalog benchmark
     "the server must not eagerly mount the rest of the synthetic catalog");
   assert.match(html, /Catalog Fixture 1000/,
     "all one thousand manifest records must cross the production server-to-client boundary");
+
+  // The rows not yet mounted are held open at the height the mounted rows are drawn at. The spacer
+  // used 470px and 500px against a 548px card, so the page grew under a player as rows came in.
+  const css = await readFile(new URL(`dist/client/${html.match(/href="\/(_next\/static\/css\/[^"]+\.css)"/)[1]}`, root), "utf8");
+  const rowHeight = Number(css.match(/\.catalog-grid\{--catalog-row-height:(\d+)px/)?.[1]);
+  assert.ok(rowHeight > 0, "the stylesheet declares the catalog row height");
+  const unmounted = 1000 - 12;
+  for (const columns of [1, 2, 3]) {
+    const spacer = Number(html.match(new RegExp(`--catalog-spacer-height-${columns}:(\\d+)px`))?.[1]);
+    assert.equal(spacer, Math.ceil(unmounted / columns) * rowHeight, `${columns}-column spacer is not ${rowHeight}px a row`);
+  }
 });
 
 test("no game screen labels itself with its development stage or its engine", async () => {

@@ -422,7 +422,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .signal-strip span { min-height: 56px; display: flex; align-items: center; gap: var(--space-2xs); padding: 0 var(--space-sm) 0 0; color: var(--muted); font: 700 var(--type-label-size) var(--font-mono); letter-spacing: var(--track-label); text-transform: uppercase; }
 .signal-strip .icon { flex: none; color: var(--faint); }
 
-.library-section { max-width: 1540px; margin: 0 auto; padding: 110px var(--gutter) 130px; }
+.library-section { max-width: 1540px; margin: 0 auto; padding: 110px var(--gutter) 130px; container-type: inline-size; }
 .section-heading { display: grid; grid-template-columns: 1fr minmax(300px, .6fr); gap: 60px; align-items: end; margin-bottom: 48px; }
 .section-heading h2 { max-width: 850px; margin: 0; font-size: clamp(38px, 4.8vw, 76px); line-height: .98; letter-spacing: -.052em; }
 .section-heading > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
@@ -432,6 +432,11 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .catalog-control input, .catalog-control select { width: 100%; min-height: 46px; padding: 0 13px; border: 1px solid var(--line); border-radius: 0; background: var(--ink); color: var(--paper); font: 700 12px var(--font-mono); }
 .catalog-control input::placeholder { color: var(--faint); }
 .catalog-reset { min-width: 118px; padding: 0 22px; border: 0; background: var(--solid); color: var(--on-solid); font-size: 11px; font-weight: 800; cursor: pointer; }
+@container (max-width: 640px) {
+  .catalog-controls { grid-template-columns: 1fr; }
+  .catalog-control { border-right: 0; border-bottom: 1px solid var(--line); }
+  .catalog-reset { min-height: 50px; }
+}
 .catalog-reset:disabled { background: var(--surface); color: var(--faint); cursor: default; }
 .catalog-results-heading { min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 0 3px; }
 .catalog-results-heading p { margin: 0; color: var(--paper); font: 780 11px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
@@ -465,8 +470,13 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .roadmap-badge { border: 1px solid var(--line); color: var(--faint); }
 .game-card-copy h3 { margin: 0; font-size: 22px; letter-spacing: -.03em; -webkit-line-clamp: 2; }
 .game-card-copy p { min-height: 44px; margin: 10px 0 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+/* One line, because the card's height is fixed. A card column narrower than the three tags plus the
+   count used to clip them at the card edge, taking the "+N" with them; now the labels give way to an
+   ellipsis and the icons and the count always stay. The full label is in the markup and the title. */
 .input-tags { display: flex; gap: 6px; flex-wrap: nowrap; overflow: hidden; }
-.input-tags span { padding: 6px 8px; border: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; flex: none; display: inline-flex; align-items: center; gap: var(--space-3xs); }
+.input-tags > span { padding: 6px 8px; border: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; flex: 0 1 auto; min-width: 0; display: inline-flex; align-items: center; gap: var(--space-3xs); }
+.input-tags > span:last-child:not(:has(.icon)) { flex: none; }
+.input-tag-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .preset-status { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; color: var(--faint); font: 650 11px var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
 .preset-status span:first-child { color: var(--acid); }.preset-status span::before { content: "●"; margin-right: 5px; font-size: 11px; }
 .game-card-launch { padding: 15px 0 0; border: 0; border-top: 1px solid var(--line); background: transparent; color: var(--paper); font-size: 12px; font-weight: 760; cursor: pointer;
@@ -494,7 +504,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .input-readiness.blocked { color: var(--paper); border-color: var(--line-strong); border-width: 2px; background: var(--surface-strong); font-weight: 600; }
 
 .footer { padding: var(--space-md) var(--gutter); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); border-top: 1px solid var(--line); background: var(--ink); }
-.footer p { flex: 1; min-width: 200px; margin: 0; color: var(--faint); font-size: var(--type-label-size); }
+.footer p { flex: 1; min-width: min(200px, 100%); margin: 0; color: var(--faint); font-size: var(--type-label-size); }
 .footer > div:last-child { display: flex; gap: var(--space-sm); }
 .footer a { color: var(--muted); font: 600 var(--type-label-size) var(--font-sans); text-decoration: none; }
 .footer a:hover { color: var(--paper); }
@@ -507,10 +517,10 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .panel-intro { margin: 22px 0 28px; color: var(--muted); font-size: 13px; line-height: 1.65; }
 .pairing-qr { display: block; width: min(220px, 62vw); aspect-ratio: 1; margin: 0 auto 18px; border: 8px solid var(--paper); background: var(--paper); image-rendering: pixelated; }
 .pairing-qr.pending { display: grid; place-items: center; border: 1px dashed var(--line-strong); background: var(--ink); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; }
-.session-code, .session-readout { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line-strong); background: var(--surface); }
+.session-code, .session-readout { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; border: 1px solid var(--line-strong); background: var(--surface); }
 .session-code { padding: 17px; }
 .session-code span, .session-readout span { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .13em; }
-.session-code strong, .session-readout strong { flex: 1; color: var(--acid); font: 850 26px var(--font-mono); letter-spacing: .13em; }
+.session-code strong, .session-readout strong { flex: 1; color: var(--acid); font: 850 clamp(20px, 7vw, 26px) var(--font-mono); letter-spacing: .13em; }
 .session-code i, .session-readout i { padding: 5px 7px; background: var(--acid); color: var(--ink); font: normal 850 11px var(--font-mono); letter-spacing: .1em; }
 .pair-link { margin: 10px 0; display: flex; border: 1px solid var(--line); }
 .pair-link code { overflow: hidden; flex: 1; padding: 14px; color: var(--faint); font: 11px var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
@@ -527,7 +537,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .lab-heading h1 { margin: 0; font-size: clamp(46px, 6vw, 86px); line-height: .9; letter-spacing: -.065em; }
 .back-button { margin-bottom: var(--space-sm); padding: 0; border: 0; background: none; color: var(--muted); font: 600 var(--type-body-size) var(--font-sans); text-decoration: none; cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
 .back-button:hover { color: var(--paper); }
-.session-readout { min-width: 270px; padding: 12px; }
+.session-readout { min-width: min(270px, 100%); padding: 12px; }
 .session-readout strong { font-size: 16px; }
 .lab-layout { display: grid; grid-template-columns: minmax(0, 1fr) 280px; border: 1px solid var(--line); background: var(--ink); }
 .arena-shell { min-width: 0; border-right: 1px solid var(--line); }
@@ -535,6 +545,10 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .arena-bar { border-bottom: 1px solid var(--line); }
 .arena-bar span { display: flex; align-items: center; gap: 9px; }
 .arena-shell canvas { display: block; width: 100%; height: var(--stage-h); cursor: crosshair; touch-action: none; }
+/* The game rule `[class$="-layout"] canvas { height: 100% }` also matched this lab, where 100% is a
+   grid cell that already holds the canvas plus its bar and hint: every resize made the canvas 96px
+   taller, and the Input Lab grew by about 5,000px a second for as long as it was open. */
+.lab-layout .arena-shell canvas { height: var(--stage-h); }
 .arena-hint { justify-content: center; border-top: 1px solid var(--line); }
 .arena-hint span { color: var(--acid); }
 .arena-hint b { color: var(--orange); }
@@ -759,6 +773,10 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .orbital-score { min-width: 245px; display: grid; justify-items: end; padding: 15px 0 4px; border-top: 1px solid var(--line-strong); }
 .orbital-score > span, .orbital-score small { color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .1em; }.orbital-score strong { color: var(--paper); font: 900 clamp(29px, 4vw, 48px) var(--font-mono); }.orbital-score small { margin-top: 6px; color: var(--yellow); }
 .orbital-layout { display: grid; grid-template-areas: "stage rail"; grid-template-columns: minmax(0, 1fr) 340px; border: 1px solid var(--line); background: var(--ink); }
+/* The controller dock's frame wraps each stage, so the frame is the grid item that takes the stage
+   area. Naming it matters on narrow screens: with "stage rail" still declared over one column, the
+   rail took an implicit second column at its full width and the play field collapsed to nothing. */
+.orbital-layout > [data-game-frame], .gravity-layout > [data-game-frame], .echo-layout > [data-game-frame] { grid-area: stage; min-width: 0; }
 .orbital-stage { grid-area: stage; position: relative; min-width: 0; border-right: 1px solid var(--line); overflow: hidden; }
 .orbital-statusbar { min-height: 48px; padding: 0 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .1em; }.orbital-statusbar span { display: flex; gap: 9px; align-items: center; }.orbital-statusbar b { color: var(--orange); }
 .orbital-stage canvas { display: block; width: 100%; height: var(--stage-h); }
@@ -827,7 +845,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .echo-clue { padding: 17px; border: 1px solid var(--line-strong); background: var(--ink); }.echo-clue.fallback { position: absolute; right: 18px; bottom: 70px; width: min(310px, calc(100% - 36px)); background: rgba(10, 10, 10, .91); backdrop-filter: blur(8px); }.echo-clue > span { color: var(--muted); font: 800 11px var(--font-mono); letter-spacing: .11em; }.echo-clue > div { min-height: 90px; display: flex; align-items: center; justify-content: center; gap: 24px; }.echo-clue > div strong { font: 900 42px var(--font-mono); }.echo-clue > div i { color: var(--muted); font: 900 38px var(--font-mono); font-style: normal; }.echo-clue dl { margin: 0; display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid var(--line); }.echo-clue dl div { padding: 10px 5px 0; border-right: 1px solid var(--line); text-align: center; }.echo-clue dl div:last-child { border-right: 0; }.echo-clue dt { color: var(--faint); font: 700 11px var(--font-mono); }.echo-clue dd { margin: 5px 0 0; font: 850 11px var(--font-mono); }
 .echo-actions { position: absolute; left: 18px; bottom: 18px; display: flex; gap: 7px; flex-wrap: wrap; }.echo-actions button, .echo-private button { min-height: 39px; padding: 0 12px; border: 1px solid var(--line-strong); background: rgba(10, 10, 10, .84); color: var(--muted); font: 800 11px var(--font-mono); cursor: pointer; }
 .echo-rail { grid-area: rail; background: var(--ink); }.echo-vitals, .echo-private, .echo-objective { padding: 20px; border-bottom: 1px solid var(--line); }.echo-vitals h2 { margin: 0 0 16px; color: var(--faint); font: 800 11px var(--font-mono); letter-spacing: .1em; }.echo-meter { display: grid; grid-template-columns: 55px 1fr 38px; align-items: center; gap: 9px; margin-top: 15px; }.echo-meter span { color: var(--faint); font: 700 11px var(--font-mono); }.echo-meter > i { height: 4px; background: var(--panel); }.echo-meter > i b { display: block; height: 100%; background: var(--muted); }.echo-meter-health > i b { background: var(--muted); }.echo-meter strong { font: 800 11px var(--font-mono); text-align: right; }.echo-vitals > p { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); }.echo-vitals > p i { display: inline-block; width: 7px; height: 7px; margin-right: 8px; border-radius: 50%; background: var(--faint); }.echo-vitals > p.light-on { color: var(--paper); }.echo-vitals > p.light-on i { background: var(--paper); box-shadow: 0 0 14px var(--muted); }
-.echo-private > span, .echo-objective > span { color: var(--muted); font: 800 11px var(--font-mono); letter-spacing: .1em; }.echo-private h2 { margin: 17px 0 12px; font-size: 21px; line-height: 1.05; }.echo-private p, .echo-objective small { color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.echo-private b { display: block; margin-top: 17px; color: var(--acid); font: 800 11px var(--font-mono); }.echo-private button { margin-top: 14px; }.echo-objective strong { display: block; margin: 15px 0 9px; font: 850 13px/1.4 var(--font-mono); }
+.echo-private > span, .echo-objective > span { color: var(--muted); font: 800 11px var(--font-mono); letter-spacing: .1em; }.echo-private h2 { margin: 17px 0 12px; font-size: 21px; line-height: 1.05; }.echo-private p, .echo-objective small { color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.echo-private b { display: block; margin-top: 17px; color: var(--acid); font: 800 11px var(--font-mono); }.echo-private button { margin-top: 14px; background: none; color: var(--paper); }.echo-objective strong { display: block; margin: 15px 0 9px; font: 850 13px/1.4 var(--font-mono); }
 .echo-instructions { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--line); border-top: 0; }.echo-instructions span { min-height: 54px; padding: 10px; display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--faint); font: 650 11px var(--font-mono); text-align: center; }.echo-instructions span:last-child { border-right: 0; }.echo-instructions b { color: var(--muted); }.echo-privacy { margin: 16px 0 0; color: var(--faint); font: 600 11px/1.65 var(--font-mono); }.echo-privacy strong { color: var(--muted); }
 
 .shadow-page { min-height: 100dvh; padding: 48px var(--gutter) 80px; background: radial-gradient(circle at 50% 58%, var(--surface), transparent 34%), var(--ink); }
@@ -906,7 +924,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .vision-feed video { transform: scaleX(-1); }.vision-feed canvas { z-index: 2; pointer-events: none; }
 .vision-feed.is-simulated video { display: none; }
 .vision-empty { position: absolute; z-index: 3; inset: 0; display: grid; place-items: center; align-content: center; gap: 12px;  }
-.vision-empty span { color: var(--cyan); font: 900 clamp(70px, 11vw, 130px)/.8 var(--font-mono); letter-spacing: -.12em; }.vision-empty p { margin: 0; color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .16em; }
+.vision-empty span { color: var(--cyan); font: 900 clamp(70px, 11vw, 130px)/.8 var(--font-mono); letter-spacing: -.04em; }.vision-empty p { margin: 0; color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .16em; }
 .vision-actions { display: grid; grid-template-columns: repeat(8, 1fr); border-top: 1px solid var(--line); }
 .vision-actions span { min-height: 48px; padding: 10px 5px; display: grid; place-items: center; border-right: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); text-transform: uppercase; text-align: center; }
 .vision-actions span.active { background: var(--surface); color: var(--acid); box-shadow: inset 0 2px 0 var(--acid); }
@@ -1054,12 +1072,12 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   .body-stats { width: 100%; min-width: 0; }
   .orbital-heading { align-items: start; flex-direction: column; }
   .orbital-score { width: 100%; min-width: 0; justify-items: start; }
-  .orbital-layout { grid-template-columns: 1fr; }
+  .orbital-layout { grid-template-columns: 1fr; grid-template-areas: "stage" "rail"; }
   .orbital-stage { border-right: 0; border-bottom: 1px solid var(--line); }
   .orbital-rail { display: grid; grid-template-columns: 1fr 1fr; }.orbital-local-note { grid-column: 1 / -1; }
   .beat-heading, .gravity-heading { align-items: start; flex-direction: column; }
   .beat-stats, .gravity-stats { width: 100%; min-width: 0; }
-  .gravity-layout { grid-template-columns: 1fr; }
+  .gravity-layout { grid-template-columns: 1fr; grid-template-areas: "stage" "rail"; }
   .gravity-stage-shell { border-right: 0; border-bottom: 1px solid var(--line); }
   .gravity-rail { display: grid; grid-template-columns: 1fr 1fr; }
   .gravity-note { grid-column: 1 / -1; }
@@ -1067,7 +1085,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   .spell-stats { width: 100%; min-width: 0; }
   .echo-heading { align-items: start; flex-direction: column; }
   .echo-stats { width: 100%; min-width: 0; }
-  .echo-layout { grid-template-columns: 1fr; }
+  .echo-layout { grid-template-columns: 1fr; grid-template-areas: "stage" "rail"; }
   .echo-stage { border-right: 0; border-bottom: 1px solid var(--line); }
   .echo-rail { display: grid; grid-template-columns: 1fr 1fr; }.echo-objective { grid-column: 1 / -1; }
   .shadow-heading { align-items: start; flex-direction: column; }
@@ -1106,6 +1124,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   .catalog-spacer { --catalog-spacer-height: var(--catalog-spacer-height-1); }
   .catalog-pager { height: 112px; padding: 10px; }
   .catalog-pager-controls { grid-template: "status status" auto "previous next" 50px / 1fr 1fr; gap: 6px 10px; }
+  .catalog-pager button { min-width: 0; }
   .catalog-pager button:first-child { grid-area: previous; justify-self: stretch; }
   .catalog-pager button:last-child { grid-area: next; justify-self: stretch; }
   .catalog-page-status { grid-area: status; }
@@ -1146,7 +1165,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   .sensor-table article { grid-template-columns: 1fr 1fr; }
   .sensor-table article > span, .sensor-table article > b { min-height: 44px; }
   .vision-intro { padding-top: 65px; }
-  .vision-intro h1 { font-size: clamp(50px, 15vw, 78px); }
+  .vision-intro h1 { font-size: clamp(34px, 15vw, 78px); }
   .vision-feed { height: 62vh; min-height: 480px; }
   .drift-page { padding-top: 30px; }
   .drift-statusbar { grid-template-columns: 1fr auto; }.drift-statusbar span:nth-child(2) { display: none; }
@@ -1220,7 +1239,8 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   .drift-stats { grid-template-columns: 1fr 1fr; }.drift-stats div:last-child { display: none; }
   .body-stats { grid-template-columns: 1fr 1fr; }.body-stats div:last-child { display: none; }
   .drift-meter { min-width: 165px; }
-  .body-next { top: 115px; min-width: 160px; }
+  /* Below the strip it shares with the integrity meter and the camera and connect buttons. */
+  .body-next { top: 160px; min-width: 160px; }
   .dynamic-controller-heading { align-items: stretch; flex-direction: column; }
   .handedness-toggle { width: 100%; }
   .dynamic-control[data-control="joystick"] { min-height: 0; grid-row: span 1; align-self: start; aspect-ratio: 1; }
@@ -1278,11 +1298,11 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .hardware-card button:disabled { background: var(--panel); color: var(--faint); cursor: not-allowed; }
 .hardware-frame-panel { margin-top: 24px; border: 1px solid var(--line); background: var(--ink); }
 .hardware-frame-panel > div { display: flex; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .1em; }
-.hardware-frame-panel > div b { color: var(--acid); }.hardware-frame-panel pre { min-height: 180px; margin: 0; padding: 22px; overflow: auto; color: var(--paper); font: 12px/1.7 var(--font-mono); }
+.hardware-frame-panel > div b { color: var(--acid); }.hardware-frame-panel pre { min-height: 180px; margin: 0; padding: 22px; overflow: auto; color: var(--paper); font: 12px/1.7 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
 .hardware-error { margin: 0 0 20px; padding: 14px 18px; border: 1px solid var(--panel-2); background: var(--panel); color: var(--muted); font: 12px var(--font-mono); }
 .hardware-safety-note { display: grid; grid-template-columns: 190px 1fr; gap: 20px; margin-top: 20px; padding: 20px; border-left: 3px solid var(--orange); background: var(--ink); }
 .hardware-safety-note b { font: 800 11px var(--font-mono); letter-spacing: .1em; }.hardware-safety-note span { color: var(--muted); font-size: 12px; line-height: 1.5; }
-@media (max-width: 1000px) { .hardware-grid { grid-template-columns: 1fr; }.hardware-card { min-height: 0; }.hardware-fields { min-height: 100px; } }
+@media (max-width: 1000px) { .hardware-grid { grid-template-columns: minmax(0, 1fr); }.hardware-card { min-height: 0; }.hardware-fields { min-height: 100px; } }
 @media (max-width: 540px) { .hardware-lab-page { padding-inline: 14px; }.hardware-lab-topbar > b { display: none; }.hardware-lab-intro { padding-top: 42px; }.hardware-lab-intro h1 { font-size: 55px; }.hardware-safety-note { grid-template-columns: 1fr; } }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1438,6 +1458,9 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   /* Both selectors, because a media query adds no specificity: .rail-open .stage is (0,2,0) and
      would otherwise keep pushing the content 232px right on a phone with no rail to make room for. */
   .stage, .rail-open .stage { margin-left: 0; padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
+  /* Scrolling something into view (a Tab press, a find) stops short of the fixed tab bar instead of
+     leaving the focused control underneath it. */
+  html { scroll-padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
 
   /* This replaces `.topbar .nav { display: none }`, which deleted primary navigation on phones and
      left eight of ten destinations unreachable with nothing in their place. */
@@ -1489,12 +1512,19 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   padding: var(--space-md);
   border: 1px solid var(--line);
   background: var(--chrome);
+  container-type: inline-size;
 }
 .device-card-head { display: flex; align-items: center; gap: var(--space-sm); }
 .device-card-head > .icon { flex: none; color: var(--muted); }
 .device-card-head div { flex: 1; min-width: 0; }
 .device-card-head h2 { margin: 0; font-size: var(--type-title-size); font-weight: 700; letter-spacing: var(--track-title); }
 .device-card-head p { margin: var(--space-3xs) 0 0; color: var(--faint); font-size: var(--type-label-size); }
+/* Icon, name and state side by side need about 340px. Below that the title wrapped a word per line
+   beside the icon and the badge was squeezed into the corner, so the head stacks instead: icon, then
+   what it is, then its state. Measured on the card, not the window, so it holds in any column. */
+@container (max-width: 340px) {
+  .device-card-head { flex-direction: column; align-items: flex-start; gap: var(--space-xs); }
+}
 
 /* Hollow ring to solid fill, never a hue: the same weight-not-colour rule the rest of the system
    uses, and the reason the old always-lit `.status-dot` was misleading next to "Connect device". */
@@ -1523,13 +1553,19 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .device-note { max-width: var(--measure); margin: var(--space-sm) 0 0; color: var(--faint); font-size: var(--type-label-size); line-height: 1.55; }
 
 .pair-body { display: flex; flex-wrap: wrap; align-items: start; gap: var(--space-md); margin-top: var(--space-md); }
-.pair-steps { flex: 1; min-width: 240px; margin: 0; padding-left: var(--space-sm); color: var(--muted); font-size: var(--type-body-size); line-height: 1.7; }
+/* Numbered, because they are an order; and no minimum width, which pushed them out of the card on
+   anything narrower than about 300px. */
+.pair-steps { flex: 1 1 240px; min-width: 0; margin: 0; padding-left: 1.4em; list-style: decimal; color: var(--muted); font-size: var(--type-body-size); line-height: 1.5; }
+.pair-steps li + li { margin-top: var(--space-2xs); }
 .pair-actions { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-top: var(--space-sm); }
 .pair-actions .primary-button, .pair-actions .outline-button { display: inline-flex; align-items: center; gap: var(--space-2xs); min-height: var(--tap-min); }
 
 @media (max-width: 759px) {
   .page-head { padding-top: var(--space-lg); }
   .device-card { margin-inline: var(--space-sm); }
+}
+@media (max-width: 360px) {
+  .device-card { padding: var(--space-sm); }
 }
 
 /* --- Game card: what you need, and whether you have it ---------------------------------------- */
@@ -1546,7 +1582,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   margin-bottom: var(--space-sm);
   color: var(--muted);
 }
-.input-tags .icon { color: var(--faint); }
+.input-tags .icon { flex: none; color: var(--faint); }
 
 /* Sentence case, normal tracking. Uppercase at 0.16em pushed "Ready now · Touch adds more" onto a
    second line, which overflowed the fixed 500px catalog row and clipped the Play link off the
@@ -1654,7 +1690,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .studio-index { padding-bottom: var(--space-xl); }
 .studio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: var(--space-2xs);
   max-width: var(--shell-max);
   margin: 0 var(--gutter);
@@ -1879,7 +1915,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   text-transform: uppercase;
 }
 
-.pre-game-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-2xs); }
+.pre-game-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: var(--space-2xs); }
 .pre-game-option {
   display: grid;
   align-content: start;
@@ -2430,4 +2466,112 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   --orange: var(--paper);
   --cyan: var(--muted);
   color: var(--paper);
+}
+
+/*
+ * Narrow phones, measured down to 240px.
+ *
+ * Kept last on purpose: the stat rule above carries !important and silently won over the ten
+ * per-game two-column rules in the 430px block, so every score bar stayed one row and at 320px the
+ * seven-digit score ran into its neighbour while the last label was cut at the frame.
+ */
+@media (max-width: 430px) {
+  /* Two stats to a row; a lone last one takes the row. The hairlines come from the gap, so they stay
+     even at any count, including the ones each game hides at this width. */
+  [class$="-stats"] {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 1px;
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--line);
+  }
+  [class$="-stats"] > div { flex: 1 1 calc(50% - 1px); min-width: 0; border: 0 !important; background: var(--ink); }
+  /* Orbital Crew's score is one block of unlike parts, not a row of cells: stack it. */
+  [class$="-score"] { grid-template-columns: minmax(0, 1fr) !important; grid-auto-flow: row; }
+
+  /* A game's title scales with the screen instead of holding a 48–50px floor that ran past 300px. */
+  [class$="-page"] > [class$="-heading"] h1 { font-size: clamp(28px, 11.5vw, 50px); overflow-wrap: anywhere; }
+
+  /* The strips laid over a play field wrap rather than pushing their buttons past its edge. */
+  .drift-overlay, .body-overlay, .slash-overlay-top { flex-wrap: wrap; row-gap: var(--space-2xs); }
+  .drift-overlay .drift-meter, .body-overlay .drift-meter { min-width: 0; flex: 1 1 140px; }
+  .drift-overlay button, .body-overlay button, .slash-overlay-top button { white-space: normal; text-align: left; }
+
+  /* The judgement sat level with the next-move card and printed across it. */
+  .beat-judge { top: 176px; max-width: calc(100% - 24px); text-align: center; }
+
+  .vision-actions { grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); }
+  .vision-actions span { overflow-wrap: anywhere; }
+}
+@media (max-width: 300px) {
+  .echo-clue dl { grid-template-columns: repeat(2, 1fr); }
+  .swarm-vitals { grid-template-columns: 1fr; }
+  .hardware-card { padding: 18px; }
+  .hardware-card dl { grid-template-columns: 1fr; }
+  .hardware-card dl div + div { border-left: 0; border-top: 1px solid var(--line); }
+}
+
+/* Actions set as text still need a thumb-sized target on a touch screen; they measured 14px tall. */
+@media (pointer: coarse) {
+  .footer a, .crew-roster > div:first-child button, .gravity-role-card > div:first-child button, .controller-lab-link-card a {
+    display: inline-flex; align-items: center; min-height: var(--tap-min);
+  }
+}
+
+/* On a phone the maze is short, and the clue card laid over it covered most of it along with the
+   field log. It sits under the maze instead, on the maze's own dark ground, with its buttons. */
+@media (max-width: 759px) {
+  .echo-clue.fallback, .echo-actions { position: static; width: auto; }
+  .echo-clue.fallback { margin: 0; border-width: 1px 0 0; backdrop-filter: none; background: #0a0a0a; }
+  .echo-actions { padding: var(--space-xs) 15px 15px; background: #0a0a0a; }
+}
+.device-card .session-code { margin-top: var(--space-md); }
+
+/*
+ * The three games with a side rail fit the screen the same way the others do.
+ *
+ * The page is one screen tall above 760px and the layout shrinks to what the heading leaves, but its
+ * grid row still took the height of its tallest item, so the extra was drawn over whatever came
+ * next: at 1280x800 GravityStack's instructions printed across its rail and the controls dock fell
+ * off the bottom, and Orbital Crew's crew list ran over its key legend.
+ */
+@media (min-width: 1051px) {
+  /* Beside the stage: the row is exactly the room left, the stage shrinks into it, the rail scrolls. */
+  .orbital-layout, .gravity-layout, .echo-layout { grid-template-rows: minmax(0, 1fr); }
+  .orbital-layout > [data-game-frame], .gravity-layout > [data-game-frame], .echo-layout > [data-game-frame] { min-height: 0; }
+  .orbital-layout > [data-game-frame] > :first-child,
+  .gravity-layout > [data-game-frame] > :first-child,
+  .echo-layout > [data-game-frame] > :first-child { display: flex; flex-direction: column; flex: 1 1 auto; }
+  .orbital-rail, .gravity-rail, .echo-rail { min-height: 0; overflow-y: auto; }
+}
+@media (min-width: 760px) and (max-width: 1050px) {
+  /* Under the stage there is no single screen to fit; the page scrolls instead of overlapping. */
+  .orbital-layout, .gravity-layout, .echo-layout { flex: none; }
+}
+
+/* BodyDodge's camera and connect buttons sit side by side; at 320px they stacked into the
+   next-shape card below them. */
+.body-camera-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+/* Below 300px Swarm Commander's meters take two rows, so its actions move up to clear them. */
+@media (max-width: 300px) {
+  /* Below 300px the feed, the meters and the actions cannot all sit on the field: the meters and
+     actions go under it, on the field's own dark ground. */
+  .swarm-vitals, .swarm-actions { position: static; width: auto; padding: 10px; background: #0a0a0a; }
+}
+
+/* Orbital Crew's score is a run counter, a labelled score and a sector line, not a row of cells:
+   the label belongs over its number rather than in a column of its own. */
+@media (min-width: 431px) {
+  .orbital-score {
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    grid-template-areas: "run label sector" "run value sector";
+    grid-auto-flow: row;
+    column-gap: var(--space-md);
+    align-items: end;
+  }
+  .orbital-score > div { grid-area: run; }
+  .orbital-score > span { grid-area: label; }
+  .orbital-score > strong { grid-area: value; }
+  .orbital-score > small { grid-area: sector; }
 }
