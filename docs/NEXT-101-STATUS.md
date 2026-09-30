@@ -50,3 +50,19 @@ The concrete remaining work is hardware/profile integration and physical/device/
 Final local gate: production build, typecheck and lint pass; **434 unit tests and 27 rendered/build checks pass**. See QA-2026-09-09.md for measured bundle sizes.
 
 On 25 September 2026 the same gate passed on a fresh production build: first **440 unit tests and 31 rendered/build checks**, then, after the keyboard and responsive-layout fixes, **444 unit tests and 31 rendered/build checks**, plus native typecheck and `audit:production` both times. It ran locally, and no remote CI run is recorded.
+
+## Follow-up — 30 September 2026
+
+The remaining local engineering work from the handoff was completed: repeatable browser QA scripts
+are committed, vinext is at beta.5 and serves the camera wasm type correctly, every phone-library
+card remains reachable under held Tab, and WebKit's pairing dialog returns focus correctly. The
+production build, four-command commit gate, native typecheck, dependency audit, 448-page layout
+matrix, 96-page growth check, keyboard journeys, offline controller check, WebKit/Firefox matrix,
+iOS Simulator Safari pass, and three Lighthouse runs are recorded in [QA-2026-09-30.md](QA-2026-09-30.md).
+
+Release acceptance is still open. The Android emulator booted but its Pixel Launcher became
+unresponsive before Chrome could show the app. Desktop Safari.app did not complete opening the
+localhost page, despite the WebKit and iOS Simulator passes. Physical phone, camera-person,
+two-person, haptic, screen-reader, installed-app upgrade, and watch/sensor receipts remain absent.
+No push or remote CI run was made under this repository's local-only rule. The first-release scope
+continues to exclude remote game views and output routing.

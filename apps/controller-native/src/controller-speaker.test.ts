@@ -68,9 +68,12 @@ function cue(sequence: number, pitch = 1, volume = 1): SpeakerCueMessage {
   };
 }
 
+// These tests cover sequencing and playback. Deadline behavior has its own driven-clock cases below.
+const steadyClock = () => 0;
+
 test("the controller speaker restarts the bundled cue with the host's private pitch and level", async () => {
   const player = new FakePlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   assert.equal(await speaker.play(cue(7, 1.75, 0.35)), true);
   assert.deepEqual(player.seeks, [0], "each cue starts at the beginning instead of waiting for an old sound");
@@ -82,7 +85,7 @@ test("the controller speaker restarts the bundled cue with the host's private pi
 
 test("late and duplicate speaker packets never replay an old private clue", async () => {
   const player = new FakePlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   assert.equal(await speaker.play(cue(12)), true);
   assert.equal(await speaker.play(cue(12, 0.5)), false);
@@ -93,7 +96,7 @@ test("late and duplicate speaker packets never replay an old private clue", asyn
 
 test("a newer cue cancels an older seek that finishes late", async () => {
   const player = new DeferredPlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   const oldCue = speaker.play(cue(20, 0.6));
   await Promise.resolve();
@@ -114,7 +117,7 @@ test("a newer cue cancels an older seek that finishes late", async () => {
 
 test("only one restart seek can be in flight on the shared native player", async () => {
   const player = new DeferredPlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   const oldCue = speaker.play(cue(30, .7));
   await Promise.resolve();
@@ -134,7 +137,7 @@ test("only one restart seek can be in flight on the shared native player", async
 
 test("a new pairing may restart speaker sequencing without reconstructing native audio", async () => {
   const player = new FakePlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   await speaker.play(cue(4));
   assert.equal(await speaker.play(cue(1)), false);
@@ -145,7 +148,7 @@ test("a new pairing may restart speaker sequencing without reconstructing native
 
 test("native accepts the protocol's first legal sequence and cancel keeps stale protection", async () => {
   const player = new FakePlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   assert.equal(await speaker.play(cue(0)), true);
   speaker.cancel();
@@ -155,7 +158,7 @@ test("native accepts the protocol's first legal sequence and cancel keeps stale 
 
 test("a cue discarded while locked cannot replay after native audio becomes ready", async () => {
   const player = new FakePlayer();
-  const speaker = new ControllerSpeaker(player);
+  const speaker = new ControllerSpeaker(player, steadyClock);
 
   assert.equal(speaker.discard(cue(8)), true);
   assert.equal(await speaker.play(cue(8)), false);

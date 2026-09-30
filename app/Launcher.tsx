@@ -48,6 +48,7 @@ export default function Launcher({
   const pageFocusScrollTopRef = useRef<number | null>(null);
   const pageFocusScrollSettledRef = useRef(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const pairingTriggerRef = useRef<HTMLButtonElement>(null);
   const pageFocusSettleFrameRef = useRef<number | null>(null);
   const { sources: localSources } = useLocalDevice();
   const instanceId = useId();
@@ -228,7 +229,7 @@ export default function Launcher({
                     Play {featured.name.replace(/ 101$/, "")} <Icon name="arrow" size={16} />
                   </Link>
                 )}
-                <button className="text-button" onClick={() => setPairingOpen(true)}>
+                <button ref={pairingTriggerRef} className="text-button" onClick={() => setPairingOpen(true)}>
                   Try a second-screen controller
                 </button>
               </div>
@@ -376,7 +377,7 @@ export default function Launcher({
         <div><Link href="/devices">Devices</Link><Link href="/studio">Developers</Link></div>
       </footer>
 
-      {pairingOpen && <PairingPanel sessionId={sessionId} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
+      {pairingOpen && <PairingPanel sessionId={sessionId} returnFocusTo={pairingTriggerRef} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
     </main>
   );
 }
@@ -481,6 +482,9 @@ function useCatalogWindow(itemCount: number, active: boolean) {
   }, [active, itemCount, scheduleMeasurement]);
 
   const windowPlan = useMemo<CatalogWindowPlan>(() => {
+    // Keep every card in the tab order when the filtered library fits on one result page.
+    // Windowing a small phone grid can remove the next link before a held Tab reaches it.
+    if (itemCount <= INITIAL_CATALOG_ITEMS) return initialCatalogWindow(itemCount);
     if (!viewport.ready) return initialCatalogWindow(itemCount);
     return planCatalogWindow({
       itemCount,
@@ -567,7 +571,7 @@ function CatalogSpacer({
   return <div className="catalog-spacer" style={style} role="presentation" aria-hidden="true" />;
 }
 
-function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: string; onClose: () => void; onOpenController: () => void }) {
+function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: { sessionId: string; returnFocusTo: React.RefObject<HTMLButtonElement | null>; onClose: () => void; onOpenController: () => void }) {
   const [copied, setCopied] = useState(false);
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
@@ -578,14 +582,14 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
 
   // A modal <dialog> moves focus inside, makes the page behind it inert, and turns Escape into
   // `cancel`. React removes it rather than closing it, so focus goes back to the opener by hand.
-  // Chrome would otherwise start on the scrollable panel, which shows no focus ring.
+  // Safari does not focus buttons on pointer click; document.activeElement can still be the body.
   useEffect(() => {
     const dialog = dialogRef.current;
-    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const opener = returnFocusTo.current;
     dialog?.showModal();
     closeRef.current?.focus();
     return () => { dialog?.close(); opener?.focus(); };
-  }, []);
+  }, [returnFocusTo]);
 
   useEffect(() => {
     let current = true;
@@ -631,4 +635,3 @@ function PairingPanel({ sessionId, onClose, onOpenController }: { sessionId: str
     </dialog>
   );
 }
-

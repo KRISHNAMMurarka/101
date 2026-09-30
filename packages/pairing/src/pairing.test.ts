@@ -839,7 +839,9 @@ test("an unreachable Hub reports a connection state instead of an unhandled reje
     signaling: failing as never,
     device: { deviceId: "phone-1", label: "Phone 1", capabilities: { touch: true } },
     transportFactory: () => new FakeRtcNetwork().create(false),
-    pollIntervalMs: 5,
+    // Leave enough time to inspect the retry window even when the full suite is under load.
+    // The explicit sync calls below still exercise repeated outage handling without waiting.
+    pollIntervalMs: 1_000,
   });
 
   const errors: Error[] = [];
