@@ -4,11 +4,17 @@
 
 The repository contains playable games, the browser launcher and 101 Link controller, a local session Hub, native phone/watch projects, and a shared game SDK. The shipped games run in the browser. Hosted and streamed titles can now describe their launch and input endpoints; a remote runtime and additional game screens are not implemented. See [routing decisions](docs/DEVICE-ROUTING.md).
 
-The next platform direction is a general device and signal SDK with 101 as a reference application.
-The [proposed architecture](docs/superpowers/specs/2026-10-01-universal-device-platform-design.md),
+The repository now includes a game-independent embedded device SDK: `@101/device-model`,
+`@101/device-runtime` and the public `@101/connect` facade. It validates device descriptions,
+routes permitted signals, manages ownership and bounds pending work. The standalone
+[pointer and sensor examples](examples/device-pipelines/README.md) run with
+`npm run example:devices`. See [the SDK guide](docs/platform/SDK.md).
+
+The [platform architecture](docs/superpowers/specs/2026-10-01-universal-device-platform-design.md),
 [device/protocol research](docs/platform/RESEARCH-2026-10-01.md) and
-[first foundation scope](docs/superpowers/specs/2026-10-01-device-foundation-design.md)
-describe that migration. They are design artifacts, not a claim that the new platform is implemented.
+[foundation scope](docs/superpowers/specs/2026-10-01-device-foundation-design.md)
+describe the broader migration. This first implementation uses providers in one process;
+internet routing, OS cursor control and new physical device connectors remain later stages.
 
 ## Start locally
 
@@ -66,6 +72,7 @@ Game package: manifest + semantic controls + lifecycle + controller roles
 | `app/` | Launcher, chooser, game views, controller, and shared UI |
 | `app/studio/` | Diagnostics and development tools |
 | `packages/sdk`, `game-registry`, `game-host`, `core` | Package validation, catalog, composition, and game lifecycle |
+| `packages/device-model`, `device-runtime`, `connect` | Embedded device contracts, authorized routes, ownership and public facade |
 | `packages/input`, `adapter-*`, `hardware` | Device-independent controls and device access |
 | `packages/protocol`, `pairing`, `session`, `hub-server` | Wire formats, local pairing, identity, roles, and reconnect |
 | `packages/vision`, `motion` | Local body/hand interpretation and motion filtering |

@@ -1,6 +1,6 @@
 # Device platform foundation design
 
-Status: proposed for owner review, 1 October 2026. Implements stage 1 of [the platform design](2026-10-01-universal-device-platform-design.md), after its written implementation plan is reviewed. None of the API names below is shipped yet.
+Status: implemented embedded foundation, 1 October 2026. Stage 1 of [the platform design](2026-10-01-universal-device-platform-design.md). Exact API and constraints are documented in [the SDK guide](../../platform/SDK.md); the implementation plan records decisions and verification.
 
 ## One observable outcome
 
@@ -10,20 +10,20 @@ The phone/browser network path is stage 2. This foundation's examples use embedd
 
 ## Owned paths and dependencies
 
-| Proposed path | Responsibility | Allowed dependencies |
+| Implemented path | Responsibility | Allowed dependencies |
 | --- | --- | --- |
 | `packages/device-model/src/descriptor.ts` | Descriptor/schema types and bounded parser | Standard library only |
-| `packages/device-model/src/sample.ts` | Value, quality and freshness validation | Descriptor types |
+| `packages/device-model/src/sample.ts` | Signal value and schema compatibility | Descriptor types |
 | `packages/device-model/src/index.ts` | Model exports | Own package |
-| `packages/device-runtime/src/registry.ts` | Registered endpoint handles and readiness | `@101/device-model` |
-| `packages/device-runtime/src/route.ts` | Route lifecycle, grant checks and source/sink schema compatibility | Model/registry |
+| `packages/device-runtime/src/runtime.ts` | Registry, readiness, route lifecycle, grant checks and compatibility | Model/lease/scheduler |
+| `packages/device-runtime/src/types.ts` | Embedded API types | Model |
 | `packages/device-runtime/src/lease.ts` | Exclusive ownership, renewal, expiry/release | Standard library |
 | `packages/device-runtime/src/scheduler.ts` | Bounded latest sample and event/command admission | Model |
 | `packages/device-runtime/src/index.ts` | Composition and runtime exports | Own package |
 | `packages/connect/src/index.ts` | Public facade with readable types | Model/runtime |
-| `examples/phone-pointer/` | Embedded absolute-pointer source/sink reference | `@101/connect` |
-| `examples/sensor-feedback/` | Temperature → threshold → simulated relay/feedback | `@101/connect` |
-| `examples/sensor-feedback/threshold.ts` | App-owned typed processor, hysteresis, provenance and reset | `@101/connect`; no dynamic code loading |
+| `examples/device-pipelines/pointer.ts` | Embedded absolute-pointer source/sink reference | `@101/connect` |
+| `examples/device-pipelines/sensor-feedback.ts` | Temperature → threshold → simulated relay/feedback | `@101/connect` |
+| `examples/device-pipelines/threshold.ts` | App-owned typed processor, hysteresis, provenance and reset | `@101/connect`; no dynamic code loading |
 | `schemas/device-descriptor.schema.json` | Editor/tool contract matching runtime parser | Generated or maintained from reviewed model |
 | `tests/device-platform-boundary.test.ts` | Public import and dependency-direction integration | New packages/examples |
 | Root tooling | Workspace/type aliases, Node unit discovery compatibility | Minimal changes to `tsconfig.json`, package metadata and lockfile |
@@ -40,7 +40,7 @@ Value schemas support boolean, finite scalar, bounded two/three-component vector
 
 Parser limits: UTF-8 descriptor at most 64 KiB; at most 128 capabilities; IDs/semantic/frame/unit strings at most 128 characters; labels at most 160 characters; enums at most 64 values with 128 characters each. IDs reject control characters and are compared as exact strings. Revisions are integers from 1 through 2³²−1; sample rates are integers from 1 through 1000 Hz; maximum age is an integer from 1 through 60000 ms. Numeric range values are finite and ordered, vector values are objects with exactly their declared x/y[/z] components, and duplicate capability IDs fail. Core unknown properties fail except within a namespaced `extensions` object bounded by the descriptor byte ceiling, depth 8, and 128 entries per container; extensions are data and grant no operation. No parser fetches a schema or URL.
 
-Illustrative authoring format, proposed:
+Supported authoring format:
 
 ```json
 {
@@ -62,23 +62,23 @@ Illustrative authoring format, proposed:
 }
 ```
 
-The public JSON Schema and runtime parser must accept/reject the same fixtures. WoT import/export is a subsequent connector/model task; this example is not presented as a conformant Thing Description.
+The public JSON Schema and runtime parser agree on structural fixtures. The schema annotates parser-only byte, depth, finite-number and relational checks; the runtime parser remains authoritative. WoT import/export is a subsequent connector/model task; this example is not presented as a conformant Thing Description.
 
 ## Embedded runtime contract
 
 The runtime is created with an injected monotonic clock and a host-supplied authorization authority. Registration returns opaque source/sink handles bound to the trusted registered capability. Publication cannot select another device identity or destination arbitrarily. Untrusted descriptions remain inert until the host registers a provider and grants the requested route.
 
-Proposed facade operations are `registerSource`, `registerSink`, `route`, `publish`, `setReadiness`, `renew`, `flush`, `revoke` and `close`. Registration checks descriptors and enforces supported direction/kind. A route returns a typed lifecycle/result and exposes `start` and `stop`; source/sink callbacks are explicit. A provider starts unavailable until explicitly ready. Changing readiness suspends affected routes and applies their release policy. The detailed implementation plan will freeze exact signatures before downstream work uses them.
+Facade operations are `registerSource`, `registerSink`, `route`, `publish`, `setReadiness`, `renew`, `flush`, `revoke` and `close`. Registration checks descriptors and enforces supported direction/kind. A route returns a typed lifecycle/result and exposes `start` and `stop`; source/sink callbacks are explicit. A provider starts unavailable until explicitly ready. Changing readiness away from available closes affected routes and applies their release policy; a new route is required after recovery. The SDK guide records exact signatures.
 
 Route activation requires the authority to approve source read/subscribe and sink write/invoke for the requesting principal/application/session. The request binds concrete registration handles, capability/schema revisions, operation, ownership and rate/expiry limits. A parsed grant is not authority; only the host authority can issue the effective permission. This is an embedded trust model, not a substitute for network authentication or signed grants in stage 4.
 
 For this stage, processing is explicit application-owned composition: the app registers a typed temperature input sink and a separate boolean derived source, then creates an upstream and a downstream route. The same authority checks both legs; registration of a processor's output grants no right to read the physical input or invoke the final output. The processor's input/output descriptors identify compatible schemas, and derived observations carry source observation identity/time/quality plus processor name/version/configuration revision in bounded provenance metadata. The facade does not yet insert a `via` processor automatically or execute a recipe. A general processor registry/composition API is specified in its later ecosystem stage.
 
-Ownership defaults to exclusive for pointer/control/command sinks. Observer sample subscribers can coexist under explicit grants and fan-out limits. Partitioned application sinks may expose named partitions; each partition has its own lease. A merge policy must be registered explicitly, and no magnitude or last-writer rule is assumed for all signals. Initial examples exercise exclusive and observer behavior; arbitrary merge algorithms are not bundled.
+Ownership defaults to exclusive for pointer/control/command sinks. Observer sample subscribers can coexist under explicit grants and fan-out limits. Partitioned application sinks may expose named partitions; each partition has its own lease. Apply/release contexts identify the route and partition so providers can release only the affected output. A merge policy must be registered explicitly, and no magnitude or last-writer rule is assumed for all signals. Initial examples exercise exclusive and observer behavior; arbitrary merge algorithms are not bundled.
 
 Lease expiry or revocation stops the route, drops pending work, detaches subscriptions and invokes the sink's release/safe-state callback exactly once for that route generation. A state-changing sink must supply that callback at registration. Initial embedded lease duration defaults to 1500 ms and is configurable from 1 through 30000 ms; renewal must occur before expiry and cannot exceed the effective grant's expiry. Lease renewal validates the current owner/generation/grant; another principal cannot renew or take ownership. Reconnecting obtains a new registration/route generation and cannot revive old publications or commands. Removing a source/sink releases all affected routes.
 
-The runtime owns no implicit endless interval. `flush(now)`/expiry checks use the injected clock; an embedding app may supply its own lifecycle-managed tick. Closing is idempotent and disposes callbacks and pending state. On revoke/expiry, mark the generation closed before dropping queues, request cancellation of in-flight work through its AbortSignal, then invoke the sink's release callback without waiting for that work. Cancellation is a request, not proof that a dispatched physical operation was undone. A sink checks the generation/cancellation signal before applying output after an await; it cannot mutate a later generation. Async completion from a closed generation remains historical operation evidence and cannot re-activate the route.
+The runtime owns no implicit endless interval. `flush()`/expiry checks use the injected clock; an embedding app may supply its own lifecycle-managed tick. Closing is idempotent and disposes callbacks and pending state. On revoke/expiry, mark the generation closed before dropping queues, request cancellation of in-flight work through its AbortSignal, then invoke the sink's release callback without waiting for that work. Cancellation is a request, not proof that a dispatched physical operation was undone. A sink checks the generation/cancellation signal before applying output after an await; it cannot mutate a later generation. Async completion from a closed generation remains historical operation evidence and cannot re-activate the route.
 
 ## Scheduling and sample meaning
 
@@ -86,7 +86,7 @@ Latest-sample storage is one pending value per active route. New publications re
 
 Pointer example uses recoverable absolute position in a `surface-normalized` frame with two dimensionless coordinates in `[0,1]`. Resize changes rendering from normalized position to the sink's available area. The later relative-trackpad transform must accumulate unsent deltas or use a recoverable target; it cannot use replacement on independent deltas.
 
-Reliable event/command admission has a configured finite capacity (default 64, allowed 1–256), operation ID, deadline and duplicate policy. Active plus queued operations count toward that capacity; settled deduplication records have a bounded deadline/retention and count. Each serialized operation is at most 4 KiB in this stage. Overload rejects a new operation with a typed busy result; it never silently grows memory. Commands are not retried automatically. Expired commands cannot invoke the sink. If a sink completes after its route was revoked, the runtime records the operation's actual evidence without resuming the route or fabricating success. Embedded defaults cap active routes at 128 and subscribers per source at 32; exceeding either returns an explicit capacity result.
+Reliable event/command admission has a configured finite capacity (default 64, allowed 1–256), monotonically increasing positive decimal operation ID per source registration, deadline and duplicate policy. Active plus queued operations count toward that capacity; settled deduplication records have a bounded deadline/retention and count. Unresolved providers pin their operation records; settlement retains history until at least 1000 ms after completion. A source watermark rejects old IDs even after history expires. Each serialized operation is at most 4 KiB in this stage. Overload rejects a new operation with a typed busy result; it never silently grows memory. Commands are not retried automatically. Expired commands cannot invoke the sink. If a sink completes after its route was revoked, the runtime records the operation's actual evidence without resuming the route or fabricating success. A runtime-wide pending-delivery budget (default 256, bounded configuration 1–4096) includes unresolved providers after cancellation, so replacing routes cannot create unlimited async work. Embedded limits cap active routes at 128 and subscribers per source at 32; exceeding either returns an explicit capacity result.
 
 Source timestamp and clock domain are preserved, with local receipt time attached. Embedded examples use the injected shared clock. Unknown remote clock offsets are not converted into misleading latency numbers. Missing/unavailable quality never causes a default zero, false or a new actuator command. The initial simulator makes no physical safety claim.
 
@@ -117,4 +117,4 @@ Examples include a short README and standalone runnable integration harness. The
 | Schema tooling | Public schema and authoritative runtime parser agree on accepted/rejected fixtures |
 | Regression | Fresh build and all AGENTS.md gates pass on each committed candidate; existing 101 contract tests remain green |
 
-Before implementation, the written plan must include exact signatures, fixture definitions, expected red/green focused tests, integration callers, and the full commit gate. After this stage, a separate transport-bridge spec defines physical phone/browser integration, security-boundary mapping and migration of the existing 101 host. Remote connectivity and OS pointer claims remain unavailable until their corresponding stages pass.
+The written implementation plan includes exact signatures, fixture definitions, expected red/green focused tests, integration callers, and the full commit gate. After this stage, a separate transport-bridge spec defines physical phone/browser integration, security-boundary mapping and migration of the existing 101 host. Remote connectivity and OS pointer claims remain unavailable until their corresponding stages pass.

@@ -48,7 +48,10 @@
       "@101/physics": ["./packages/physics/src/index.ts"],
       "@101/rhythm": ["./packages/rhythm/src/index.ts"],
       "@101/maze": ["./packages/maze/src/index.ts"],
-      "@101/swarm": ["./packages/swarm/src/index.ts"]
+      "@101/swarm": ["./packages/swarm/src/index.ts"],
+      "@101/device-model": ["./packages/device-model/src/index.ts"],
+      "@101/device-runtime": ["./packages/device-runtime/src/index.ts"],
+      "@101/connect": ["./packages/connect/src/index.ts"]
     }
   },
   "include": [

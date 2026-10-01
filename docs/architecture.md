@@ -4,8 +4,20 @@ The broader device and signal platform requested on 1 October is proposed in
 [the platform design](superpowers/specs/2026-10-01-universal-device-platform-design.md),
 with [source-backed research](platform/RESEARCH-2026-10-01.md) and
 [the first foundation scope](superpowers/specs/2026-10-01-device-foundation-design.md).
-That proposal places 101 above a general capability/routing SDK. The runtime
-described below is the existing implementation; the proposal is not shipped support.
+Stage 1 now implements a game-independent embedded SDK; see [its API guide](platform/SDK.md)
+and [reference examples](../examples/device-pipelines/README.md). The foundation has no game,
+network or OS-device dependency. The game runtime below remains the current 101 application;
+the transport bridge and broader platform stages still require their own implementation.
+
+```text
+Application provider → @101/device-model validation
+                              ↓
+                    @101/device-runtime
+           host grants · leases · bounded queues · cancellation
+                              ↓
+                     Application output
+          public facade: @101/connect (no game imports)
+```
 
 ## Product boundary
 

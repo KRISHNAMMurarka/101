@@ -51,7 +51,9 @@
     "predev": "node tools/check-port.mjs",
     "prestart": "node tools/check-port.mjs",
     "phone": "node tools/lan-test.mjs",
-    "vision:models": "node tools/fetch-vision-models.mjs"
+    "vision:models": "node tools/fetch-vision-models.mjs",
+    "example:devices": "node --experimental-strip-types examples/device-pipelines/run.ts",
+    "schemas:devices": "node --experimental-strip-types tools/generate-device-schema.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",
@@ -76,6 +78,7 @@
     "@types/three": "0.179.0",
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
+    "ajv": "6.15.0",
     "eslint": "9.39.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",

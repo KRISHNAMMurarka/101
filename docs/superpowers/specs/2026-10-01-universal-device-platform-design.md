@@ -1,6 +1,6 @@
 # Universal device and signal platform design
 
-Status: proposed for owner review, 1 October 2026. Runtime baseline: `9c422e21b7b1d33e323f100436fc29963af7c43c`. No implementation or deployment is implied by this document.
+Status: platform architecture with embedded stage 1 implemented, 1 October 2026. Original runtime baseline: `9c422e21b7b1d33e323f100436fc29963af7c43c`. Later stages remain planned; implementation evidence is in [the foundation QA record](../../platform/FOUNDATION-QA-2026-10-01.md).
 
 ## Outcome and scope
 
@@ -8,7 +8,7 @@ A developer can build an application by describing capabilities, connections, pr
 
 The user's requirements are a reusable open SDK; readable syntax and examples; multiple simultaneous inputs/outputs; heterogeneous sensors and devices, including legacy hardware behind gateways; global secure connections; small efficient payloads; extensible connectors and algorithms; responsive polished UI; explicit sharing and conflict behavior. The proposed foundation is an open SDK with native adapters and an optional self-hosted coordinator/relay. The owner's branding, future managed service, pricing and marketplace rules have not been specified and are not invented here.
 
-This design covers the platform architecture and migration sequence. Each major subsystem receives its own bounded spec and implementation plan. [The first foundation spec](2026-10-01-device-foundation-design.md) is the next proposed implementation scope. [Research and current-code evidence](../../platform/RESEARCH-2026-10-01.md) support the choices.
+This design covers the platform architecture and migration sequence. Each major subsystem receives its own bounded spec and implementation plan. [The first foundation spec](2026-10-01-device-foundation-design.md) describes the implemented embedded scope. [Research and current-code evidence](../../platform/RESEARCH-2026-10-01.md) support the choices.
 
 Repository work remains local under AGENTS.md. Remote-capable code and local protocol tests are within the proposed engineering scope; live hosting, publishing and external provider setup need their own concrete release decision. Existing physical 101 acceptance remains open and is not replaced by this design.
 
@@ -136,7 +136,7 @@ Measure capture → processor → encode → network → decode → sink/render,
 
 ## Developer experience and extensions
 
-The proposed public entry point is `@101/connect`, a working namespace pending branding. It has no dependency on game rules, player seats or render engines. OS packages supply adapters; optional protocol packages supply connectors; processor packages expose typed algorithms.
+The embedded stage now exports `@101/connect`, a working namespace pending branding. The following network/recipe API remains illustrative for later stages. It has no dependency on game rules, player seats or render engines. OS packages supply adapters; optional protocol packages supply connectors; processor packages expose typed algorithms.
 
 Proposed usage, not runnable API:
 
@@ -249,4 +249,4 @@ Label support as researched, implemented, contract-tested, runtime-tested or phy
 
 ## Review decisions
 
-The proposed architecture is ready for review. The next decision is approval of the common resource/route model and the bounded foundation scope. That approval permits a detailed foundation implementation plan. Code restructuring begins after the written plan review required by the engineering workflow. Future service operator/hosting, brand and device-priority choices can be resolved in their own stages without blocking the first general contract.
+The owner authorized implementation on 1 October. The common embedded resource/route foundation is implemented in `@101/device-model`, `@101/device-runtime` and `@101/connect`; see the foundation design and SDK guide. The next bounded implementation is the existing transport/application bridge in stage 2. Future service operator/hosting, brand and device-priority choices can be resolved in their own stages without blocking the first general contract.
