@@ -9,6 +9,8 @@ The repository now includes a game-independent embedded device SDK: `@101/device
 routes permitted signals, manages ownership and bounds pending work. The standalone
 [pointer and sensor examples](examples/device-pipelines/README.md) run with
 `npm run example:devices`. See [the SDK guide](docs/platform/SDK.md).
+The [master completion checklist](docs/platform/MASTER-CHECKLIST.md) tracks the full SDK,
+device qualification, 101 acceptance and publication gates.
 
 The [platform architecture](docs/superpowers/specs/2026-10-01-universal-device-platform-design.md),
 [device/protocol research](docs/platform/RESEARCH-2026-10-01.md) and

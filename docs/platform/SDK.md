@@ -5,6 +5,7 @@ The first platform implementation connects typed providers inside one applicatio
 The runnable [examples](../../examples/device-pipelines/README.md) use simulated providers.
 The [platform stages](../superpowers/specs/2026-10-01-universal-device-platform-design.md)
 describe transport, native agents, media, discovery and connector work still to come.
+The [master checklist](MASTER-CHECKLIST.md) is the canonical implementation and release task ledger.
 
 ## Start with a provider
 

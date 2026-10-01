@@ -2,6 +2,8 @@
 
 Status: platform architecture with embedded stage 1 implemented, 1 October 2026. Original runtime baseline: `9c422e21b7b1d33e323f100436fc29963af7c43c`. Later stages remain planned; implementation evidence is in [the foundation QA record](../../platform/FOUNDATION-QA-2026-10-01.md).
 
+Implementation and release tracking: [master checklist](../../platform/MASTER-CHECKLIST.md).
+
 ## Outcome and scope
 
 A developer can build an application by describing capabilities, connections, processing and screens. Consenting device owners can combine resources from different devices nearby or across the internet. The same contracts support games, remote pointers, appliance controls, robotics interfaces, sensor dashboards and collaboration. 101 becomes a maintained consumer and reference application of that platform.
