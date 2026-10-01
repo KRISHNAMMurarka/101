@@ -484,11 +484,10 @@ export default function App() {
           <View
             style={StyleSheet.absoluteFill}
             onStartShouldSetResponder={() => true}
-            onMoveShouldSetResponder={() => true}
-            onResponderGrant={(event) => updateScannerPinch(event.nativeEvent.touches)}
-            onResponderMove={(event) => updateScannerPinch(event.nativeEvent.touches)}
-            onResponderRelease={() => { pinchRef.current = undefined; }}
-            onResponderTerminate={() => { pinchRef.current = undefined; }}
+            onTouchStart={(event) => updateScannerPinch(event.nativeEvent.touches)}
+            onTouchMove={(event) => updateScannerPinch(event.nativeEvent.touches)}
+            onTouchEnd={(event) => updateScannerPinch(event.nativeEvent.touches)}
+            onTouchCancel={() => { pinchRef.current = undefined; }}
           />
           <SafeAreaView style={{
             flex: 1,
