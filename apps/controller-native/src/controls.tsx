@@ -154,9 +154,9 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
 
   return (
     <View style={{ gap: space.md }}>
-      <View style={styles.panelMeta}>
+      <View style={[styles.panelMeta, !landscape && styles.panelMetaPortrait]}>
         {layout.motion ? (
-          <Text style={[type.label, { color: t.faint }]}>
+          <Text style={[type.label, !landscape && styles.portraitMotionLabel, { color: t.faint }]}>
             {(layout.motion.label ?? layout.motion.mode).toUpperCase()} · MOTION ACTIVE
           </Text>
         ) : <View />}
@@ -475,6 +475,8 @@ const styles = StyleSheet.create({
   grid: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, alignContent: "center" },
   stack: { gap: space.md },
   panelMeta: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: space.sm },
+  panelMetaPortrait: { flexDirection: "column", alignItems: "flex-end" },
+  portraitMotionLabel: { alignSelf: "stretch" },
   handedness: {
     minHeight: 32,
     borderRadius: radius.pill,

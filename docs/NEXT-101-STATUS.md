@@ -75,4 +75,17 @@ launched; a full deep-link ticket completed signaling and ICE gathering, but cou
 connectivity through emulator NAT. A stale manual-pairing instruction was corrected: the six-character
 room code cannot authorize a native controller; use the game's full link or QR code. The native app
 now explains that error visibly. See [QA-2026-10-01.md](QA-2026-10-01.md). These checks do not close
-physical controller acceptance. Desktop Safari.app still has an unresolved launcher load.
+physical controller acceptance. Desktop Safari.app initially stalled on the launcher;
+a later attempt rendered the launcher and reached a Slashstorm play result, leaving
+the cause of the intermittent load unconfirmed.
+
+The iPhone 17 Pro Simulator native app subsequently joined a local Slashstorm host with
+a full pairing ticket and kept its `SWORD-ONE` role after backgrounding. A clipped
+portrait handedness control was fixed and its side swap checked in portrait and
+landscape. Live built-in laptop camera runs produced 120-frame body and hand timing
+distributions. The exact observations and limits are in [QA-2026-10-01.md](QA-2026-10-01.md).
+These advance simulator and laptop evidence only; physical pairing, person-led camera
+flow, phone performance, and release acceptance remain open.
+
+The fresh local launcher Lighthouse sample scored 88/100/100/100 under simulated
+mobile throttling; see the same QA receipt for its profile and metrics.
