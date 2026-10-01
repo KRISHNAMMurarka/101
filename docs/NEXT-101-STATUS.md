@@ -66,3 +66,13 @@ localhost page, despite the WebKit and iOS Simulator passes. Physical phone, cam
 two-person, haptic, screen-reader, installed-app upgrade, and watch/sensor receipts remain absent.
 No push or remote CI run was made under this repository's local-only rule. The first-release scope
 continues to exclude remote game views and output routing.
+
+## Follow-up — 1 October 2026
+
+The Pixel Fold API 36 emulator now boots cleanly. Android Chrome rendered the production launcher
+and unassigned controller route in portrait and short landscape. A freshly rebuilt Android 101 Link
+launched; a full deep-link ticket completed signaling and ICE gathering, but could not establish
+connectivity through emulator NAT. A stale manual-pairing instruction was corrected: the six-character
+room code cannot authorize a native controller; use the game's full link or QR code. The native app
+now explains that error visibly. See [QA-2026-10-01.md](QA-2026-10-01.md). These checks do not close
+physical controller acceptance. Desktop Safari.app still has an unresolved launcher load.

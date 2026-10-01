@@ -16,9 +16,17 @@ interface PairingEnvelope {
 
 export function ticketFromInput(input: string, now = Date.now()) {
   const trimmed = input.trim();
+  if (/^[A-Z0-9]{6}$/i.test(trimmed)) {
+    throw new Error("This room code only names the game. Scan or paste the full connection link.");
+  }
   let code = trimmed;
   if (!trimmed.startsWith("101L2.")) {
-    const url = new URL(trimmed);
+    let url: URL;
+    try {
+      url = new URL(trimmed);
+    } catch {
+      throw new Error("Paste or scan a valid 101 Link pairing code");
+    }
     code = url.searchParams.get("pair") ?? (url.protocol === "oneohone:" ? url.searchParams.get("ticket") ?? "" : "");
   }
   return decodeNativePairingTicket(code, now);

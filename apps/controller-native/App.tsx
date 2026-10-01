@@ -570,7 +570,7 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
             autoFocus
             multiline
             onChangeText={onChangeCode}
-            placeholder="Paste the pairing code"
+            placeholder="Paste the full connection link or 101L2 code"
             placeholderTextColor={theme.faint}
             style={{
               color: theme.text,
@@ -585,6 +585,7 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
             }}
             value={pairingInput}
           />
+          {error ? <Text style={[type.body, { color: theme.text }]}>{error}</Text> : null}
           <Button label="Connect" wide tone="strong" onPress={onConnect} />
           <Button label="Back" wide tone="bare" onPress={onCancelCodeEntry} />
         </View>
@@ -598,7 +599,7 @@ function ConnectScreen({ theme, state, error, codeEntryOpen, pairingInput, manua
         </View>
       )}
 
-      {error ? <Text style={[type.body, { color: theme.text, width: "100%", maxWidth }]}>{error}</Text> : null}
+      {error && !codeEntryOpen ? <Text style={[type.body, { color: theme.text, width: "100%", maxWidth }]}>{error}</Text> : null}
 
       <Text style={[type.body, { color: theme.faint, fontSize: 13, width: "100%", maxWidth }]}>
         No account, no telemetry, no cloud. Your inputs stay on your network.

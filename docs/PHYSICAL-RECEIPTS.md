@@ -17,12 +17,12 @@ npm run start      # production server, port 3000
 
 | Field | Value |
 | --- | --- |
-| Commit | `ae60272` |
-| Build id | printed by `npm run build` as `Stamped dist/client/sw.js with build <id>` — the run this file was prepared against was `12d6a0b382d026cd`; **write down the one your build prints** |
+| Commit | Use `git rev-parse --short HEAD` for the exact tree under test. |
+| Build id | Use the `Stamped dist/client/sw.js with build <id>` value from that tree's `npm run build`. |
 | Laptop URL | `http://127.0.0.1:3000/` |
-| Phone URL | `http://192.168.0.143:3000/` — the laptop's address on this network. Re-check with `ipconfig getifaddr en0` if it has moved; both phones must be on the same Wi-Fi. |
+| Phone URL | `http://<laptop LAN address>:3000/` — find the current address with `ipconfig getifaddr en0`; both phones must be on the same Wi-Fi. The game supplies its full pairing URL or QR code. |
 
-**A phone camera needs a secure origin, and `http://192.168.0.143:3000` is not one.** Plain http on a
+**A phone camera needs a secure origin, and `http://<laptop LAN address>:3000` is not one.** Plain http on a
 LAN address means `getUserMedia` never starts and the page looks broken for a reason that has
 nothing to do with the product. Two ways round it, both local, neither of them publishing:
 
@@ -41,7 +41,7 @@ npm run start          # plain server on 3000
 npm run serve:secure   # TLS front on 3443, prints the URL and fingerprint
 ```
 
-Open `https://192.168.0.143:3443/` on the phone. Safari says "This Connection Is Not Private" —
+Open `https://<laptop LAN address>:3443/` on the phone. Safari says "This Connection Is Not Private" —
 correct, the certificate was made on this machine a moment ago. Check the fingerprint the command
 printed, then Show Details, "visit this website", Visit Website. Safari treats the origin as secure
 afterwards, which is what the camera needs. Walked end to end on an iPhone 17 simulator: the warning,
@@ -71,12 +71,13 @@ Fill one row per attempt. A skipped case stays pending — it does not become a 
 
 Have the iPhone and the Android phone on the same Wi-Fi. On the laptop open
 `http://127.0.0.1:3000/` and start any game, then use the pairing action it shows.
+The six-character room code identifies the game; pairing needs the full connection link or QR code.
 
 ### A1 · Pair and drive — iPhone
 
 | Step | Expected | Observed |
 | --- | --- | --- |
-| Open `http://192.168.0.143:3000/controller` and pair | A role is assigned; controls replace the "Ready to connect" panel | |
+| Scan the game's QR code or open its full connection link on the phone and pair | A role is assigned; controls replace the "Ready to connect" panel | |
 | Perform the role's basic actions | The game on the laptop visibly responds | |
 | Rotate to landscape, then back | Every required control stays reachable; nothing is cut off; no page scrolling | |
 | Switch apps, then return | Reconnects to the same session, or shows a visible recovery path | |

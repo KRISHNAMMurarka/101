@@ -38,6 +38,18 @@ test("native Link rejects expired and modified tickets", () => {
   assert.throws(() => decodeNativePairingTicket(`${code.slice(0, -1)}A`, 1_900_000_000_000));
 });
 
+test("native Link explains why a short room code cannot authorize pairing", () => {
+  assert.throws(
+    () => ticketFromInput("101WHV"),
+    /room code only names the game.*full connection link/i,
+  );
+});
+
+test("native Link explains malformed pasted links without raw URL errors", () => {
+  assert.throws(() => ticketFromInput("https://"), /valid 101 Link pairing code/i);
+  assert.throws(() => ticketFromInput("not a link"), /valid 101 Link pairing code/i);
+});
+
 test("native Link reads compressed browser offers and browser reads native answers", async () => {
   const offer = { type: "offer" as const, sdp: "v=0\r\na=setup:actpass\r\n".repeat(32) };
   const compressed = await encodePairingDescription(offer, true);

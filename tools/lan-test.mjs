@@ -99,14 +99,16 @@ ${qr}
   1. Both devices on the same Wi-Fi. Phone hotspots and "guest" networks usually
      block device-to-device traffic, which is the one thing this needs.
   2. On this machine open ${url}, pick a game, and press Connect device.
-  3. The panel shows a SESSION code, six characters like 101R6A.
-  4. On the phone, open:   ${url}/controller?session=THATCODE
-     Scanning the on-screen QR does the same thing; typing the address is the
-     path that works even when a camera or a scanner app gets in the way.
+  3. In the game, press Connect device. Its panel shows a full connection link
+     and a QR code. The short room code identifies the game but cannot pair a
+     phone by itself.
+  4. On the phone, scan the game's QR code or open its full connection link.
+     If scanning is unavailable, use Copy in the game's panel to transfer the
+     full link to the phone.
   5. The phone is now the controller. No app install — it runs in the browser.
 
-  The native 101 Link app takes the same code: "Scan code", or "Enter code
-  instead" on its first screen.
+  The native 101 Link app takes the game's full connection link or 101L2 ticket:
+  use "Scan code" or "Enter code instead" on its first screen.
 
   Ctrl-C stops both processes.
 `);
