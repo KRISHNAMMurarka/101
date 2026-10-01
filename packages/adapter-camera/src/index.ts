@@ -447,6 +447,8 @@ export interface BrowserCameraAdapterOptions extends PoseInputAdapterOptions {
   constraints?: MediaTrackConstraints;
   /** Startup errors reject start(); this callback reports runtime inference failures only. */
   onError?: (error: Error) => void;
+  /** Completed inference timing, including frames without a detected person. */
+  onInference?: (durationMs: number) => void;
   /** A running stream ended unexpectedly. Intentional stop never calls this. */
   onCameraLost?: (error: CameraLostError) => void;
 }
@@ -458,6 +460,7 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
   private readonly maxFps: number;
   private readonly constraints: MediaTrackConstraints;
   private readonly onError?: (error: Error) => void;
+  private readonly onInference?: (durationMs: number) => void;
   private readonly onCameraLost?: (error: CameraLostError) => void;
   private detachTracks?: () => void;
   private detachDevices?: () => void;
@@ -479,6 +482,7 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
     this.maxFps = Math.max(5, Math.min(30, options.maxFps ?? 24));
     this.constraints = options.constraints ?? cameraConstraints();
     this.onError = options.onError;
+    this.onInference = options.onInference;
     this.onCameraLost = options.onCameraLost;
     this.watchAvailability();
   }
@@ -568,7 +572,9 @@ export class BrowserCameraAdapter extends PoseInputAdapter {
       this.lastInferenceAt = now;
       try {
         const poses = this.backend.detect(this.video, now);
-        this.ingestPoses(poses, now, performance.now() - startedAt);
+        const inferenceMs = performance.now() - startedAt;
+        this.ingestPoses(poses, now, inferenceMs);
+        this.onInference?.(inferenceMs);
         this.inferenceFailed = false;
       } catch (cause) {
         this.ingestPoses([], now);

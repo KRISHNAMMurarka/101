@@ -119,6 +119,21 @@ test("one camera drives separate player frames and releases a missing player's a
   assert.equal(env.callbacks.size, 0);
 });
 
+test("pose inference timing includes frames with no detected person", async (t) => {
+  const env = browser(t);
+  const timings: number[] = [];
+  const adapter = new BrowserCameraAdapter({
+    video: env.video,
+    backend: { initialize: async () => undefined, detect: () => [], close: () => undefined },
+    onInference: (durationMs: number) => timings.push(durationMs),
+  });
+  await adapter.start(() => undefined);
+  env.frame(0);
+  assert.equal(timings.length, 1);
+  assert.ok(timings[0]! >= 0);
+  adapter.stop();
+});
+
 test("quality selection never points the default camera at an absent model", (t) => {
   const env = browser(t);
   const adapter = new BrowserCameraAdapter({ video: env.video, quality: "precise" });

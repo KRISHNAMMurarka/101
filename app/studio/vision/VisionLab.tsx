@@ -36,6 +36,11 @@ export default function VisionLab() {
   const actions = mode === "body" ? BODY_ACTIONS : HAND_ACTIONS;
   const confidence = mode === "body" ? poseDiagnostics?.signals.confidence ?? 0 : handDiagnostics?.signals.confidence ?? 0;
   const inferenceMs = mode === "body" ? poseDiagnostics?.inferenceMs : handDiagnostics?.inferenceMs;
+  const latestInferenceMs = inferenceSamples.at(-1);
+  const bodyNotDetected = mode === "body" && visionState === "active" && !poseDiagnostics?.pose.length;
+  let stageReadout = "CAMERA OFF";
+  if (bodyNotDetected) stageReadout = latestInferenceMs !== undefined ? `NO BODY DETECTED · ${latestInferenceMs.toFixed(1)} MS` : "CAMERA ACTIVE";
+  else if (inferenceMs !== undefined) stageReadout = `${Math.round(confidence * 100)}% CONFIDENCE · ${inferenceMs.toFixed(1)} MS`;
   const inferenceSummary = summarizeInferenceSamples(inferenceSamples);
 
   const resetInferenceSamples = useCallback(() => {
@@ -135,6 +140,9 @@ export default function VisionLab() {
     const video = videoRef.current;
     if (!video) return;
     stopCurrent();
+    setPoseDiagnostics(null);
+    setHandDiagnostics(null);
+    setFrame(null);
     resetInferenceSamples();
     setVisionState("loading");
     setError("");
@@ -151,7 +159,9 @@ export default function VisionLab() {
     };
     const adapter = mode === "body"
       ? new BrowserCameraAdapter({ video, mirror: true, classifier: { autoCalibrationFrames: 18 },
-        onDiagnostics: (diagnostics) => { if (recovered()) { recordInferenceSample(diagnostics.inferenceMs); setPoseDiagnostics(diagnostics); } }, onError, onCameraLost: onError })
+        onDiagnostics: (diagnostics) => { if (recovered()) setPoseDiagnostics(diagnostics); },
+        onInference: (durationMs) => { if (recovered()) recordInferenceSample(durationMs); },
+        onError, onCameraLost: onError })
       : new BrowserHandAdapter({ video, mirror: true, classifier: { stableFrames: 3 },
         onDiagnostics: (diagnostics) => { if (recovered()) { recordInferenceSample(diagnostics.inferenceMs); setHandDiagnostics(diagnostics); } }, onError, onCameraLost: onError });
     adapterRef.current = adapter;
@@ -205,7 +215,7 @@ export default function VisionLab() {
       <div className="vision-mode-switch" aria-label="Vision pipeline"><button className={mode === "body" ? "active" : ""} onClick={() => selectMode("body")}>BODY · 33 LANDMARKS</button><button className={mode === "hands" ? "active" : ""} onClick={() => selectMode("hands")}>HANDS · 21 LANDMARKS</button></div>
       <section className="vision-workbench">
         <div className="vision-stage">
-          <div className="vision-stagebar"><span>LOCAL {mode === "body" ? "POSE" : "HAND"} PREVIEW</span><code>{inferenceMs !== undefined ? `${Math.round(confidence * 100)}% CONFIDENCE · ${inferenceMs.toFixed(1)} MS` : "CAMERA OFF"}</code></div>
+          <div className="vision-stagebar"><span>LOCAL {mode === "body" ? "POSE" : "HAND"} PREVIEW</span><code>{stageReadout}</code></div>
           <div className={`vision-feed ${visionState === "simulated" ? "is-simulated" : ""}`}>
             {/* Camera capture is always muted and requests no audio track. */}
             <video ref={videoRef} playsInline muted aria-label={`Mirrored camera preview of your ${mode === "body" ? "body" : "hands"}`} />

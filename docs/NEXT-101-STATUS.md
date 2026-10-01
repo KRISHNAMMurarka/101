@@ -89,3 +89,14 @@ flow, phone performance, and release acceptance remain open.
 
 The fresh local launcher Lighthouse sample scored 88/100/100/100 under simulated
 mobile throttling; see the same QA receipt for its profile and metrics.
+
+Vision Lab now records body inference timing on live camera frames even when no
+person is detected; previously those frames left its sample count at zero and
+called an active camera “off.” The old behavior failed a focused regression, and
+the rebuilt lab reached 120 samples under 4× Chrome CPU throttling. That run used
+the iPhone Continuity Camera as a source while inference ran on the Mac. Direct
+Xcode builds succeeded for Simulator and physical-iPhone targets with SDK stat
+cache disabled, but the physical build was unsigned. The paired iPhone's Safari
+was opened with a controller link; Mirroring remained locked and Web Inspector
+disabled, so no physical pairing or phone-inference pass is claimed. See
+[QA-2026-10-01.md](QA-2026-10-01.md) for the measured distribution and limits.
