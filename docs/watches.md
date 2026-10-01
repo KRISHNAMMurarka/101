@@ -105,7 +105,12 @@ To verify it compiles for the watch itself:
 npm run watch:ios:check
 ```
 
-**To run it on hardware**, create a watchOS App target in Xcode, add `apps/watch-ios/App/*.swift` to it, and add the local `One01Watch` package as a dependency. Then set your own signing team. This step cannot be skipped or bundled: Apple requires a registered Apple Developer account and a provisioning profile tied to your team, and no repository can remove that requirement. The watch app must be embedded in an iOS host app whose bundle identifier matches the watch app's prefix; for 101 that host is `apps/controller-native`.
+Expo prebuild adds the `101LinkWatch` target to `apps/controller-native`, links the
+local `One01WatchCore` package, and embeds the watch app in the iPhone host.
+After prebuild and CocoaPods installation, an unsigned workspace build verifies
+both targets. Physical installation still needs a valid Xcode account and
+provisioning profiles for `com.oneohone.link` and
+`com.oneohone.link.watchkitapp`.
 
 ### Wear OS
 
@@ -145,6 +150,7 @@ On Android the phone advertises the `one01_link` capability from the module's ow
 Stated plainly, because the brief asks for honesty over polish:
 
 - **Neither watch app has been run on physical watch hardware in this repository.** The Wear OS app *has* been run on a Wear OS 3 emulator: it launches, reports `UNKNOWN` locality with "No paired phone." because no companion exists there, correctly disables **Start**, and `dumpsys` confirms it declares zero permissions on-device. That exercises the honest-locality contract but not a real watch-to-phone relay, which needs two paired devices.
-- The watchOS app has not been run at all. Its sources compile against the real watchOS SDK, but no watchOS simulator runtime is installed here and the app target still needs to be created and signed in Xcode.
-- The watchOS app target still has to be added in Xcode and signed with your own team, as described above. That is an Apple requirement, not a gap this repository can close.
+- The watchOS app builds and launches on a paired Apple Watch Series 11 simulator. It reports a direct local iPhone route, and Start is disabled because that simulator reports no motion sensor. A real wrist-to-phone input sample remains unverified.
+- Shutting down the paired iPhone simulator left the watch UI saying LOCAL despite CoreSimulator reporting a disconnected pair. Simulator WatchConnectivity is not accepted as a disconnection receipt. The physical watch path remains open.
+- The iPhone workspace embeds the watch app, and automatic signing for both bundle IDs passed with Personal Team `D2Z55G42SY`. The updated host installed and launched on a physical iPhone; no physical Apple Watch was available. See [the QA receipt](QA-2026-10-01.md).
 - watchOS relaying is foreground-only. Background wrist input would need an extended runtime session, which costs battery and is not justified for a controller the player is actively using.

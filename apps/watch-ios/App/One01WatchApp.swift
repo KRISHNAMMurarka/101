@@ -51,9 +51,11 @@ struct ControllerView: View {
             }
 
             if !motion.available {
-                Text("This watch reports no motion sensor.")
+                Text("Motion unavailable")
                     .font(.caption2)
                     .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.horizontal, 6)

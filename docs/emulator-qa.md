@@ -16,7 +16,7 @@ Recorded 2026-08-13 on macOS 15 (Apple silicon), Xcode 26.5, Android SDK 36, JDK
 | Engineering Labs | ✅ | Motion, Vision, Hardware, Network, Controller all render and respond |
 | Wear OS 101 Link | ✅ | Launches, honest locality state, zero permissions on-device |
 | iOS 101 Link | ✅ | Launches, renders, switches modes, and cold-launches from a deep link straight to `Connecting…`. Like Android, it cannot finish WebRTC through the simulator's NAT. |
-| watchOS 101 Link | — | Compiles for watchOS; not run (no simulator runtime, app target needs signing) |
+| watchOS 101 Link | ✅ partial | Updated 1 October: watchOS 26.5 simulator app launches beside a paired iPhone simulator and shows LOCAL. Simulator motion is unavailable, so wrist-to-phone samples remain unverified. See [QA-2026-10-01.md](QA-2026-10-01.md). |
 
 ## End-to-end pairing
 

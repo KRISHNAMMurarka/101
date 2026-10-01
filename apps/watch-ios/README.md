@@ -24,14 +24,21 @@ npm run watch:ios:check
 
 The first runs the core's unit tests on the host. The second typechecks every source — including the shell's `WatchConnectivity`, `CoreMotion`, `WatchKit` and `SwiftUI` usage — against the real watchOS SDK, so a watch-only mistake fails on a Mac rather than on a wrist. It needs Xcode's watchOS SDK but not an installed watchOS simulator runtime, and skips with a clear message where the SDK is absent.
 
-## Running on hardware
+## iPhone app integration
 
-1. In Xcode, add a **watchOS App** target to the iOS host app in `apps/controller-native`.
-2. Add `App/*.swift` to that target.
-3. Add this directory as a local Swift package dependency so the target can `import One01WatchCore`.
-4. Select your own signing team.
+`apps/controller-native/plugins/with-watch-app.cjs` adds the `101LinkWatch` target
+during Expo prebuild. It includes these Swift files, links the local
+`One01WatchCore` package, and embeds the watch app in the iPhone host. The watch
+bundle ID is `com.oneohone.link.watchkitapp`, with companion
+`com.oneohone.link`. The generated `ios/` project is ignored; the plugin is the
+source of truth after regeneration.
 
-Step 4 cannot be skipped or bundled. Apple requires a registered Apple Developer account and a provisioning profile tied to your team; no repository can remove that requirement, and this one does not pretend otherwise. The watch app must also be embedded in an iOS host whose bundle identifier is a prefix of the watch app's.
+After prebuild and CocoaPods installation, build the iPhone workspace with
+`CODE_SIGNING_ALLOWED=NO SDK_STAT_CACHE_ENABLE=NO` to verify both targets and
+the embedded watch bundle. Running on a physical watch also requires Xcode to
+have a valid Apple account, signing team, and provisioning profiles for both
+bundle IDs. The local unsigned simulator build does not establish that signing
+or real wrist motion works.
 
 ## Privacy
 

@@ -111,3 +111,15 @@ same-LAN Slashstorm host as SWORD-ONE. Background/foreground and a process resta
 both reconnected to the same host. Physical touch-to-game response, haptics,
 rotation, network-loss recovery, and Android hardware remain open. The Mac Safari
 Develop menu did not list the physical phone over the current wireless connection.
+
+A physical OnePlus IV2201 on Android 13 later connected over USB ADB. The current
+native debug APK rebuilt and installed, and the phone could reach the Mac over
+the local network. Its screen was in an active call and it disconnected before
+an app interaction could be checked, so Android pairing and touch acceptance
+remain open. Expo prebuild now generates and embeds the watchOS app target. The
+unsigned iPhone/watch builds passed, and the watch app launched on a paired
+watchOS simulator; that simulator has no motion sensor and did not give a
+reliable disconnection receipt. Automatic signing passed with the Personal
+Team from the existing provisioning profile; the updated iPhone host installed
+and launched on the physical iPhone. No physical watch was available.
+See [QA-2026-10-01.md](QA-2026-10-01.md) for the exact boundaries.

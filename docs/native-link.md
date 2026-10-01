@@ -183,8 +183,10 @@ genuinely silent device is still reclaimed. Removing either half of the fix fail
   [QA-2026-10-01.md](QA-2026-10-01.md).
 - **QR scanning is untested here**, because the simulator has no camera. The camera permission
   prompt appears with the correct copy, so the path up to capture is wired.
-- The watchOS app target still has to be created and signed in Xcode; that is an Apple requirement,
-  not a gap this repository can close.
+- Expo prebuild now creates and embeds the watchOS app target. The unsigned
+  and signed iPhone/watch workspace builds pass. The signed iPhone host installed
+  and launched on a physical iPhone, but a physical watch-to-phone sample remains
+  unverified. See [the QA receipt](QA-2026-10-01.md).
 
 ## Privacy and permissions
 

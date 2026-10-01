@@ -55,6 +55,7 @@
       ]
     },
     "plugins": [
+      "./plugins/with-watch-app",
       [
         "expo-build-properties",
         {
