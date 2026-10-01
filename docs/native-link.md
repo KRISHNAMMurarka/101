@@ -176,10 +176,11 @@ genuinely silent device is still reclaimed. Removing either half of the fix fail
 
 ## Remaining iOS gaps
 
-- **Physical iPhone pairing remains unverified.** The iOS Simulator joined a local host, but this
-  does not establish same-LAN connection, touch, haptics, or recovery on a physical phone. A signed
-  debug build installed on an iPhone 16 Pro; iOS blocked its first launch until the owner trusts
-  the Apple Development profile. See [QA-2026-10-01.md](QA-2026-10-01.md).
+- **Physical iPhone touch and haptic acceptance remain unverified.** After the owner trusted the
+  Apple Development profile, a signed debug build joined a same-LAN Slashstorm host as SWORD-ONE
+  and reconnected after backgrounding and a process restart. A phone touch changing the game,
+  thumb reach, rotation, haptics, and network-loss recovery still need receipts. See
+  [QA-2026-10-01.md](QA-2026-10-01.md).
 - **QR scanning is untested here**, because the simulator has no camera. The camera permission
   prompt appears with the correct copy, so the path up to capture is wired.
 - The watchOS app target still has to be created and signed in Xcode; that is an Apple requirement,

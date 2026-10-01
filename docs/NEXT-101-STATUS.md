@@ -105,6 +105,9 @@ The owner subsequently unlocked Mirroring, enabled iPhone Safari Web Inspector,
 and signed in to an Xcode Personal Team. A valid Apple Development identity was
 available after keychain authorization. The automatic-signing iPhone build passed
 signature verification and installed on the physical iPhone 16 Pro. iOS denied
-its first launch as an untrusted developer profile; phone trust, physical pairing,
-haptics, and recovery remain open. The Mac Safari Develop menu did not list the
-physical phone over the current wireless connection.
+its first launch as an untrusted developer profile. After the owner trusted the
+profile, the signed app launched, received local network access, and joined a
+same-LAN Slashstorm host as SWORD-ONE. Background/foreground and a process restart
+both reconnected to the same host. Physical touch-to-game response, haptics,
+rotation, network-loss recovery, and Android hardware remain open. The Mac Safari
+Develop menu did not list the physical phone over the current wireless connection.
