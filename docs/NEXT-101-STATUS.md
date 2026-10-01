@@ -96,7 +96,15 @@ called an active camera “off.” The old behavior failed a focused regression,
 the rebuilt lab reached 120 samples under 4× Chrome CPU throttling. That run used
 the iPhone Continuity Camera as a source while inference ran on the Mac. Direct
 Xcode builds succeeded for Simulator and physical-iPhone targets with SDK stat
-cache disabled, but the physical build was unsigned. The paired iPhone's Safari
-was opened with a controller link; Mirroring remained locked and Web Inspector
-disabled, so no physical pairing or phone-inference pass is claimed. See
+cache disabled. The paired iPhone's Safari was opened with a controller link;
+that first attempt had no verified connection while Mirroring was locked and Web
+Inspector disabled. See
 [QA-2026-10-01.md](QA-2026-10-01.md) for the measured distribution and limits.
+
+The owner subsequently unlocked Mirroring, enabled iPhone Safari Web Inspector,
+and signed in to an Xcode Personal Team. A valid Apple Development identity was
+available after keychain authorization. The automatic-signing iPhone build passed
+signature verification and installed on the physical iPhone 16 Pro. iOS denied
+its first launch as an untrusted developer profile; phone trust, physical pairing,
+haptics, and recovery remain open. The Mac Safari Develop menu did not list the
+physical phone over the current wireless connection.
