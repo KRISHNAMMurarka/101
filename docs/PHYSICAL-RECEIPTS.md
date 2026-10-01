@@ -264,8 +264,9 @@ receipt.
 
 | Case | Status |
 | --- | --- |
-| Production Lighthouse audit of the launcher | **Closed.** [LIGHTHOUSE-2026-09-12.md](LIGHTHOUSE-2026-09-12.md): baseline 67/100/96/100. After the 25 September compression and bundler fixes it scored 90/100/100/100 in three runs. Full environments are recorded, and the release candidate needs its own run. |
+| Production Lighthouse audit of the launcher | **Current local sample recorded.** [QA-2026-10-01.md](QA-2026-10-01.md) records Lighthouse 13.5.0 at 88/100/100/100 on the fresh 1 October build; earlier measurements are in [LIGHTHOUSE-2026-09-12.md](LIGHTHOUSE-2026-09-12.md). Freeze the final release candidate before using a score for sign-off. |
 | Controller layout across landscape and portrait | **Pre-flight only.** Emulated viewports at six landscape and two portrait sizes; see [CONTROLLER-UX.md](CONTROLLER-UX.md). An emulated viewport is not a phone. |
 | Controller on real iOS Safari, unassigned state | **Pre-flight only.** iPhone 17 simulator: connection guidance shown, no inactive controls, content clear of the Dynamic Island. A simulator is not a phone, and it cannot receive a role from the laptop's lab, so the deck itself was not reachable there. |
+| Native 101 Link on physical iPhone | **Partial pass.** iPhone 16 Pro joined a same-LAN Slashstorm host as SWORD-ONE and reconnected after backgrounding and a process restart. See [QA-2026-10-01.md](QA-2026-10-01.md). Touch-to-game response, haptics, rotation, network interruption, and long play are pending. |
 | Keyboard focus visibility on the launcher | **Pre-flight only.** Real Tab presses; every control reports `:focus-visible` with a solid 2px outline. |
-| Everything else in this file | **Pending.** Needs the device, the second person, or the screen reader named in its block. |
+| Other unfilled cases in this file | **Pending.** Needs the device, the second person, or the screen reader named in its block. |
