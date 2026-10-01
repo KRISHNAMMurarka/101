@@ -95,7 +95,7 @@ The fixes:
 - `rememberPairing`, `forgetPairing` and `readSavedPairing` swallow storage failures. Convenience must never gate the link.
 - `ios.entitlements` now declares `keychain-access-groups`, so secure storage genuinely works in signed builds rather than merely failing quietly.
 
-Verified: an iOS Release build, cold-launched via `oneohone://pair?ticket=…`, reads the ticket and reaches **Connecting…** — the first time iOS moved past `IDLE`. It holds there for the same simulator WebRTC/NAT reason Android does, which is an environment limit, not a defect.
+The first iOS Release check cold-launched via `oneohone://pair?ticket=…`, read the ticket, and reached **Connecting…**. A later iPhone 17 Pro Simulator run completed signaling and joined a local Slashstorm host with the `SWORD-ONE` role. That host test exposed LAN candidates by disabling Chrome's WebRTC mDNS host-candidate hiding in the QA harness; see [QA-2026-10-01.md](QA-2026-10-01.md).
 
 Three contract tests hold this shut: identity must degrade, only the guarded effect may touch `SecureStore` directly, and the keychain entitlement must stay declared.
 
@@ -176,9 +176,10 @@ genuinely silent device is still reclaimed. Removing either half of the fix fail
 
 ## Remaining iOS gaps
 
-- **Pairing has not completed end to end on iOS.** The deep link is read and the app reaches
-  `Connecting…`, but the simulator cannot finish a WebRTC connection through its NAT — the same
-  limit that stops the Android emulator. Confirming a completed pair needs a real device on the LAN.
+- **Physical iPhone pairing remains unverified.** The iOS Simulator joined a local host, but this
+  does not establish same-LAN connection, touch, haptics, or recovery on a physical phone. A signed
+  debug build installed on an iPhone 16 Pro; iOS blocked its first launch until the owner trusts
+  the Apple Development profile. See [QA-2026-10-01.md](QA-2026-10-01.md).
 - **QR scanning is untested here**, because the simulator has no camera. The camera permission
   prompt appears with the correct copy, so the path up to capture is wired.
 - The watchOS app target still has to be created and signed in Xcode; that is an Apple requirement,
