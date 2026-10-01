@@ -3,10 +3,8 @@ import type { SessionRole } from "@101/session";
 const swordLayout = (title: string, accent: string) => ({
   title,
   accent,
-  motion: { action: "aim", mode: "wand" as const, label: "Phone orientation", gestures: { swing: "slash" } },
   layout: [
-    { type: "touch-surface" as const, action: "aim", label: "BLADE" },
-    { type: "button" as const, action: "trigger", label: "SLASH", emphasis: "danger" as const },
+    { type: "touch-surface" as const, action: "aim", pressAction: "trigger", label: "Swipe to slice", size: "large" as const },
   ],
 });
 

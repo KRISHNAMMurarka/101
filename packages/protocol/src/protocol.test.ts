@@ -330,6 +330,27 @@ test("packs a complete gamepad snapshot into a fixed 24-byte negotiated packet",
   assert.throws(() => decodeInputPacket(stale, profile), /revision/i);
 });
 
+test("a swipe surface carries blade position and held state in one compact packet", () => {
+  const layout = parseControllerLayout({
+    title: "Swipe blade",
+    layout: [{ type: "touch-surface", action: "aim", label: "Swipe to slice", pressAction: "trigger" }],
+  });
+  assert.deepEqual(layout.layout[0], { type: "touch-surface", action: "aim", label: "Swipe to slice", pressAction: "trigger" });
+  const profile = requireProfile(layout, 3);
+  assert.deepEqual(profile.lanes.map((lane) => lane.name), ["aim", "aim", "trigger"]);
+  const frame = {
+    deviceId: "phone", playerId: "forged", sequence: 1, timestamp: 2, source: "touch" as const,
+    actions: { trigger: true }, vectors: { aim: { x: .5, y: -.5 } },
+  };
+  const encoded = encodeInputPacket(frame, profile);
+  assert.equal(encoded.byteLength, INPUT_Q1_BYTES);
+  const decoded = decodeInputPacket(encoded, profile);
+  assert.equal(decoded.actions.trigger, true);
+  assert.ok(Math.abs(decoded.vectors!.aim!.x - .5) <= 1 / 127);
+  assert.throws(() => parseControllerLayout({ layout: [{ type: "touch-surface", action: "aim", pressAction: "aim" }] }), /press action/);
+  assert.throws(() => parseControllerLayout({ layout: [{ type: "dpad", action: "move", pressAction: "trigger" }] }), /Unsupported/);
+});
+
 test("keeps JSON realtime fallback for layouts that cannot be represented safely", () => {
   const oversized: ControllerLayout = {
     layout: Array.from({ length: 13 }, (_, index) => ({

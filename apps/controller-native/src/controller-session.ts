@@ -45,6 +45,7 @@ export class ControllerSession {
   private model = new ControllerInputModel();
   private currentLayout?: ControllerLayout;
   private assignment?: ControllerAssignment;
+  private waitingForRole = false;
   private sequence = 0;
   private readonly configurationGate = new ControllerConfigurationGate();
   private readonly speakerGate = new ControllerSpeakerGate();
@@ -115,9 +116,11 @@ export class ControllerSession {
     await this.transport?.disconnect();
     this.transport = undefined;
     this.assignment = undefined;
+    this.waitingForRole = false;
     this.configurationGate.reset();
     this.events.speakerReset();
     this.events.assignment(undefined);
+    this.events.hostState({});
   }
 
   setSpeakerReady(ready: boolean) {
@@ -242,6 +245,8 @@ export class ControllerSession {
   private handleControl(message: ControlMessage) {
     if ("deviceId" in message && message.deviceId !== this.deviceId) return;
     if (message.type === "player.assign") {
+      if (this.waitingForRole) this.events.hostState({});
+      this.waitingForRole = false;
       if (!this.assignment
         || this.assignment.playerId !== message.playerId
         || this.assignment.role !== message.role
@@ -250,6 +255,7 @@ export class ControllerSession {
       this.events.assignment(this.assignment);
     } else if (message.type === "player.wait") {
       this.assignment = undefined;
+      this.waitingForRole = true;
       this.configurationGate.reset();
       this.events.assignment(undefined);
       this.events.hostState({}, "Waiting for an open controller role", "warning");

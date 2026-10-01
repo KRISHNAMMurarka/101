@@ -2,8 +2,8 @@
   "game": "slashstorm",
   "actions": {
     "slash": {
-      "recommended": ["phone-motion", "camera-hand", "mouse"],
-      "fallback": ["touch", "gamepad", "keyboard"],
+      "recommended": ["touch", "mouse"],
+      "fallback": ["gamepad", "keyboard"],
       "description": "Slice through a target using a blade gesture."
     },
     "trigger": {
@@ -18,8 +18,8 @@
   },
   "vectors": {
     "aim": {
-      "recommended": ["phone-motion", "camera-hand", "mouse"],
-      "fallback": ["touch", "gamepad", "keyboard"]
+      "recommended": ["touch", "mouse"],
+      "fallback": ["gamepad", "keyboard"]
     },
     "move": {
       "recommended": ["keyboard", "gamepad"],

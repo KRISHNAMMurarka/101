@@ -263,6 +263,7 @@ export class ControllerInputModel {
     for (const element of layout.layout) {
       if (element.type === "button" || element.type === "shoulder") this.actionKinds.set(element.action, "digital");
       else if (element.type === "trigger" || element.type === "analog-button") this.actionKinds.set(element.action, "analog");
+      else if (element.type === "touch-surface" && element.pressAction) this.actionKinds.set(element.pressAction, "digital");
     }
     for (const element of layout.layout) {
       if (element.type === "button" || element.type === "shoulder") {
@@ -276,7 +277,10 @@ export class ControllerInputModel {
       }
       else if (element.type === "trigger" || element.type === "analog-button") this.actions[element.action] = 0;
       else if (element.type === "slider") this.axes[element.action] = clamp(((element.min ?? -1) + (element.max ?? 1)) / 2);
-      else this.setVector(element.action, 0, 0);
+      else {
+        this.setVector(element.action, 0, 0);
+        if (element.type === "touch-surface" && element.pressAction) this.actions[element.pressAction] = false;
+      }
     }
     if (layout.motion) {
       this.setVector(layout.motion.action, 0, 0);

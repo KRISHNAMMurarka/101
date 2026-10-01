@@ -142,7 +142,7 @@ export { createHttpSignalingSession as createRemoteHubSession } from "@101/pairi
 
 export function localAddresses() {
   const addresses: string[] = [];
-  for (const interfaces of Object.values(networkInterfaces())) for (const address of interfaces ?? []) if (!address.internal && address.family === "IPv4") addresses.push(address.address);
+  for (const interfaces of Object.values(networkInterfaces())) for (const address of interfaces ?? []) if (!address.internal && address.family === "IPv4" && !address.address.startsWith("169.254.")) addresses.push(address.address);
   return addresses.sort();
 }
 

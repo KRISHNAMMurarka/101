@@ -623,6 +623,7 @@ function PlaySurface({ theme, layout, controls, message, tone, values }: {
 }) {
   const { landscape } = useLayout();
   const entries = Object.entries(values).slice(0, 4);
+  const singleSwipe = layout.layout.length === 1 && layout.layout[0]?.type === "touch-surface" && Boolean(layout.layout[0].pressAction);
   return (
     <View style={{ flex: 1, backgroundColor: theme.bgLift }}>
       {message || entries.length ? (
@@ -653,7 +654,7 @@ function PlaySurface({ theme, layout, controls, message, tone, values }: {
         // Held in two hands, thumbs rest in the bottom corners — so the controls live there
         // rather than in the middle of the screen. Nothing scrolls in this orientation: a control
         // you have to find is a control you have already missed.
-        <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: space.lg, paddingBottom: GESTURE_INSET }}>
+        <View style={{ flex: 1, justifyContent: "flex-end", paddingHorizontal: space.lg + (Platform.OS === "android" && singleSwipe ? 48 : 0), paddingBottom: GESTURE_INSET }}>
           <ControllerPanel layout={layout} controls={controls} />
         </View>
       ) : (

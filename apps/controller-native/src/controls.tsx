@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  useWindowDimensions,
   type GestureResponderEvent,
   type LayoutChangeEvent,
   type ViewStyle,
@@ -62,6 +63,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
   const playerHandedness = handednessOverride?.layout === layout
     ? handednessOverride.value
     : authoredHandedness;
+  const singleSwipe = layout.layout.length === 1 && layout.layout[0]?.type === "touch-surface" && Boolean(layout.layout[0].pressAction);
   const swapTouchActive = useRef(false);
 
   /**
@@ -154,7 +156,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
 
   return (
     <View style={{ gap: space.md }}>
-      <View style={[styles.panelMeta, !landscape && styles.panelMetaPortrait]}>
+      {!singleSwipe && <View style={[styles.panelMeta, !landscape && styles.panelMetaPortrait]}>
         {layout.motion ? (
           <Text style={[type.label, !landscape && styles.portraitMotionLabel, { color: t.faint }]}>
             {(layout.motion.label ?? layout.motion.mode).toUpperCase()} · MOTION ACTIVE
@@ -173,7 +175,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
             {playerHandedness.toUpperCase()}-HANDED · SWAP SIDES
           </Text>
         </View>
-      </View>
+      </View>}
       {center.length ? <View style={styles.centerGroup}>{center.map((entry) => render(entry))}</View> : null}
       <View style={wide ? styles.split : styles.stack}>
         {left.length ? <View style={[styles.sideGroup, wide && { flex: sideWeight(left.length) }, styles.splitLeft]}>{renderSide(left, "left")}</View> : null}
@@ -198,6 +200,7 @@ function Control({ element, theme, controls }: { element: ControllerElement; the
       element={element}
       theme={theme}
       update={controls.vector}
+      setAction={controls.action}
     />
   );
 }
@@ -330,14 +333,17 @@ function VectorControl({
   element,
   theme,
   update,
+  setAction,
 }: {
   element: Extract<ControllerElement, { type: "joystick" | "dpad" | "touch-surface" }>;
   theme: Theme;
   update(name: string, x: number, y: number): void;
+  setAction(name: string, active: boolean): void;
 }) {
   const mode = element.type;
   const label = element.label ?? element.type.toUpperCase();
   const stick = useStickSize();
+  const { height: screenHeight } = useWindowDimensions();
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [held, setHeld] = useState(false);
@@ -362,6 +368,7 @@ function VectorControl({
     update(element.action, nextX, nextY);
   };
   const release = () => {
+    if (element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, false);
     setHeld(false);
     setPosition({ x: 0, y: 0 });
     update(element.action, 0, 0);
@@ -376,6 +383,7 @@ function VectorControl({
     onPanResponderGrant: (event) => {
       setHeld(true);
       move(event.nativeEvent.locationX, event.nativeEvent.locationY);
+      if (element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, true);
     },
     onPanResponderMove: (event) => move(event.nativeEvent.locationX, event.nativeEvent.locationY),
     onPanResponderRelease: release,
@@ -392,7 +400,7 @@ function VectorControl({
         style={[
           styles.vectorPad,
           mode === "touch-surface"
-            ? [styles.touchPad, surfaceSizeStyle(element.size)]
+            ? [styles.touchPad, surfaceSizeStyle(element.size, screenHeight)]
             : stickDimensions(stick, element.size),
           { backgroundColor: theme.surface, borderColor: held ? theme.lineStrong : theme.line },
         ]}
@@ -604,10 +612,10 @@ function analogSizeStyle(size: ControllerElement["size"], landscape: boolean): V
   return undefined;
 }
 
-function surfaceSizeStyle(size: ControllerElement["size"]): ViewStyle | undefined {
+function surfaceSizeStyle(size: ControllerElement["size"], screenHeight: number): ViewStyle | undefined {
   if (size === "small") return { height: 160 };
   if (size === "medium") return { height: 220 };
-  if (size === "large") return { height: 280 };
+  if (size === "large") return { height: Math.max(160, Math.min(560, screenHeight - 210)) };
   return undefined;
 }
 

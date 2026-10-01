@@ -97,6 +97,7 @@ export default function PreGame({
   const cameraSeats = cameraHere && cameraKind === "body" ? Math.min(2, manifest.players.max) : 0;
   const seats = Math.max(phoneSeats, cameraSeats);
   const phoneRole = roles[0];
+  const phoneControl = phoneRole?.layout.layout.find((element) => element.type === "touch-surface" && element.pressAction);
 
   return (
     <main className="pre-game">
@@ -147,7 +148,7 @@ export default function PreGame({
           <article className="pre-game-option">
             <Icon name="phone-motion" size={24} />
             <h3>With a phone</h3>
-            <p>{phoneRole.layout.motion?.label ?? phoneRole.layout.title}</p>
+            <p>{phoneRole.layout.motion?.label ?? phoneControl?.label ?? phoneRole.layout.title}</p>
             <button className="outline-button" onClick={() => setPairingOpen((open) => !open)} aria-expanded={pairingOpen}>
               {pairingOpen ? "Hide the code" : "Connect a phone"} <Icon name={pairingOpen ? "close" : "plus"} size={16} />
             </button>

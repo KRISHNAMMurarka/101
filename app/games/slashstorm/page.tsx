@@ -11,7 +11,7 @@ import { SLASHSTORM_ROLES } from "@/games/slashstorm/src/roles";
 
 export const metadata: Metadata = {
   title: "Slashstorm 101",
-  description: "Slice an endless storm of shapes. Play with a keyboard, a gamepad, or by swinging your phone.",
+  description: "Slice an endless storm of shapes. Swipe on a phone, or play with a keyboard or gamepad.",
 };
 
 /*

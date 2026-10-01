@@ -27,6 +27,25 @@ simulate("Slashstorm supports two independent swords deterministically", () => c
   return pick(state, "score", "lives", "wave", "bestCombo", "playerTwoActive", "lastHit");
 });
 
+test("Slashstorm places a newly pressed blade before cutting on the next drag", () => {
+  const game = createSlashstormGame("swipe-start");
+  const input = new ScriptedInput();
+  const state = game.initialState();
+  const context: GameContext<typeof state> = { input, state, assets: { load: async () => {} } };
+  game.start?.(context);
+  state.targets.push({ id: 1, kind: "core", x: .45, y: .45, vx: 0, vy: 0, radius: .075, health: 1, rotation: 0, spin: 0 });
+  input.vector("aim", .9, .45);
+  input.action("trigger", true);
+  game.update(context, STEP);
+  assert.equal(state.targets[0]?.health, 1, "touch-down must not cut a line from the blade's old position");
+  input.vector("aim", -.9, .45);
+  game.update(context, STEP);
+  assert.equal(state.targets.length, 0, "dragging through the target must cut it");
+  input.vector("aim", 0, 0);
+  game.update(context, STEP);
+  assert.deepEqual(state.blade, { x: 0, y: 0 }, "the center of the touchpad is a valid blade position");
+});
+
 simulate("TiltDrift advances an infinite road under normalized steering", () => createTiltDriftGame("sim-drift"), (input, _state, frame) => {
   input.axis("steer", Math.sin(frame * .018) * .32);
   input.action("drift", frame % 180 > 105);

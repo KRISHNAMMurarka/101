@@ -172,7 +172,7 @@ export type ControllerElement = ControllerPlacementHints & (
   | { type: "shoulder"; action: string; label: string; interaction?: ControllerInteraction }
   | { type: "trigger"; action: string; label: string }
   | { type: "analog-button"; action: string; label: string }
-  | { type: "touch-surface"; action: string; label?: string }
+  | { type: "touch-surface"; action: string; label?: string; pressAction?: string }
   | {
       type: "slider";
       action: string;
@@ -220,9 +220,18 @@ export function parseControllerLayout(input: unknown): ControllerLayout {
       }
       return { type: "joystick", action: value.action, ...(label ? { label } : {}), deadZone, responseCurve, ...placement };
     }
-    if (value.type === "dpad" || value.type === "touch-surface") {
+    if (value.type === "dpad") {
       rejectUnknownElementProperties(value, index);
-      return { type: value.type, action: value.action, ...(label ? { label } : {}), ...placement };
+      return { type: "dpad", action: value.action, ...(label ? { label } : {}), ...placement };
+    }
+    if (value.type === "touch-surface") {
+      rejectUnknownElementProperties(value, index, ["pressAction"]);
+      if (value.pressAction !== undefined
+        && (!isActionName(value.pressAction) || value.pressAction === value.action)) {
+        throw new Error(`Invalid touch surface press action at index ${index}`);
+      }
+      return { type: "touch-surface", action: value.action, ...(label ? { label } : {}),
+        ...(typeof value.pressAction === "string" ? { pressAction: value.pressAction } : {}), ...placement };
     }
     if (value.type === "button") {
       rejectUnknownElementProperties(value, index, ["emphasis", "interaction"]);
@@ -672,8 +681,9 @@ export function createInputPacketProfile(
       if (!add(element.action, "analog")) return undefined;
     } else if (element.type === "slider") {
       if (!add(element.action, "axis")) return undefined;
-    } else if (!add(element.action, "vector")) {
-      return undefined;
+    } else {
+      if (!add(element.action, "vector")) return undefined;
+      if (element.type === "touch-surface" && element.pressAction && !add(element.pressAction, "digital")) return undefined;
     }
   }
   if (layout.motion) {

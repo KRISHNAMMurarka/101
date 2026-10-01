@@ -86,8 +86,11 @@ export class BrowserHostTransport implements LinkTransport {
     const requested = requestedHubEndpoint();
     const health = await fetch(`${requested}/v1/health`, { cache: "no-store", signal: AbortSignal.timeout(2_500) });
     if (!health.ok) throw new Error(`Local 101 Hub is unavailable (${health.status})`);
-    const details = await health.json() as { addresses?: string[] };
-    const lanAddress = details.addresses?.[0];
+    const details = await health.json() as { endpoint?: string; addresses?: string[] };
+    const advertisedHost = details.endpoint ? new URL(details.endpoint).hostname : undefined;
+    const lanAddress = advertisedHost && !isLoopbackOrLinkLocal(advertisedHost)
+      ? advertisedHost
+      : details.addresses?.find((address) => !isLoopbackOrLinkLocal(address));
     const advertisedEndpoint = withLanHost(requested, lanAddress);
     const storedHostToken = handedOffHostToken ?? loadHostAuthority(requested, this.sessionId);
     const created = await createHttpSignalingSession(requested, this.sessionId, {
@@ -152,6 +155,10 @@ function withLanHost(value: string, lanAddress?: string) {
   const url = new URL(value);
   if (lanAddress && (url.hostname === "localhost" || url.hostname === "127.0.0.1" || url.hostname === "[::1]")) url.hostname = lanAddress;
   return url.toString().replace(/\/$/, "");
+}
+
+function isLoopbackOrLinkLocal(host: string) {
+  return host === "localhost" || host === "127.0.0.1" || host === "[::1]" || host.startsWith("169.254.");
 }
 
 function hostAuthorityKey(endpoint: string, sessionId: string) {

@@ -113,5 +113,5 @@ ${qr}
   Ctrl-C stops both processes.
 `);
 
-start("hub", "node", ["--experimental-strip-types", "tools/hub-server.mjs"]);
+start("hub", "node", ["--experimental-strip-types", "tools/hub-server.mjs"], { ADVERTISED_HOST: lan.address });
 start("web", "npx", ["vinext", "start"], { PORT: String(PORT), WRANGLER_LOG_PATH: ".wrangler/wrangler.log" });

@@ -57,6 +57,15 @@ test("disconnect release clears held inputs in the local model", () => {
   assert.deepEqual(model.snapshot().vectors.aim, { x: 0, y: 0 });
 });
 
+test("swipe surface initializes and releases its held action", () => {
+  const model = new ControllerInputModel({ layout: [{ type: "touch-surface", action: "aim", pressAction: "trigger" }] });
+  assert.equal(model.snapshot().actions.trigger, false);
+  model.setAction("trigger", true);
+  model.setVector("aim", .5, -.5);
+  assert.equal(model.releaseAll().actions.trigger, false);
+  assert.deepEqual(model.snapshot().vectors.aim, { x: 0, y: 0 });
+});
+
 test("joysticks use a radial dead zone and clamp diagonals to cardinal speed", () => {
   assert.deepEqual(normalizeJoystick(.08, -.06, .12, 1), { x: 0, y: 0 });
 

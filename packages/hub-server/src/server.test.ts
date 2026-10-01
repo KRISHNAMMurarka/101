@@ -127,6 +127,47 @@ test("browser host reload resumes with stored authority while unauthenticated ca
   }
 });
 
+test("browser pairing uses the Hub's advertised address when another interface is link-local", async () => {
+  const advertisedHost = "192.0.2.25";
+  const server = new LocalHubServer({ host: "127.0.0.1", port: 0, advertisedHost });
+  const advertisedEndpoint = await server.start();
+  const requestedEndpoint = `http://127.0.0.1:${new URL(advertisedEndpoint).port}`;
+  const storage = memoryStorage();
+  const names = ["window", "document", "localStorage", "fetch"] as const;
+  const saved = names.map((name) => [name, Object.getOwnPropertyDescriptor(globalThis, name)] as const);
+  const realFetch = globalThis.fetch;
+  let host: BrowserHostTransport | undefined;
+  try {
+    Object.defineProperty(globalThis, "localStorage", { configurable: true, value: storage });
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: { location: { origin: "http://127.0.0.1:3000", search: `?hub=${encodeURIComponent(requestedEndpoint)}` }, localStorage: storage },
+    });
+    Object.defineProperty(globalThis, "document", { configurable: true, value: { title: "LAN Test" } });
+    Object.defineProperty(globalThis, "fetch", {
+      configurable: true,
+      value: ((input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input) === `${requestedEndpoint}/v1/health`) {
+          return Promise.resolve(new Response(JSON.stringify({ endpoint: advertisedEndpoint, addresses: ["169.254.114.128", advertisedHost] }), { status: 200 }));
+        }
+        return realFetch(input, init);
+      }) satisfies typeof fetch,
+    });
+
+    host = new BrowserHostTransport("LAN101");
+    const pairing = await host.preparePairing();
+    assert.equal(pairing.ticket.endpoint, advertisedEndpoint);
+    assert.equal(new URL(pairing.controllerUrl).hostname, advertisedHost);
+  } finally {
+    if (host) await closeBrowserHost(host);
+    for (const [name, descriptor] of saved) {
+      if (descriptor) Object.defineProperty(globalThis, name, descriptor);
+      else delete (globalThis as unknown as Record<string, unknown>)[name];
+    }
+    await server.stop();
+  }
+});
+
 test("desktop launcher fragment hands session authority to the browser exactly once", async () => {
   const server = new LocalHubServer({ host: "127.0.0.1", port: 0 });
   const endpoint = await server.start();
