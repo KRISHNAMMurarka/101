@@ -1,5 +1,12 @@
 # 101 architecture
 
+The broader device and signal platform requested on 1 October is proposed in
+[the platform design](superpowers/specs/2026-10-01-universal-device-platform-design.md),
+with [source-backed research](platform/RESEARCH-2026-10-01.md) and
+[the first foundation scope](superpowers/specs/2026-10-01-device-foundation-design.md).
+That proposal places 101 above a general capability/routing SDK. The runtime
+described below is the existing implementation; the proposal is not shipped support.
+
 ## Product boundary
 
 101 separates **intent** from **hardware**. A game consumes a stable input vocabulary. Adapters translate physical devices into that vocabulary. Network transports move frames, but neither a game nor the Input Bus depends on a particular transport.

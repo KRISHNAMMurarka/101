@@ -4,6 +4,12 @@
 
 The repository contains playable games, the browser launcher and 101 Link controller, a local session Hub, native phone/watch projects, and a shared game SDK. The shipped games run in the browser. Hosted and streamed titles can now describe their launch and input endpoints; a remote runtime and additional game screens are not implemented. See [routing decisions](docs/DEVICE-ROUTING.md).
 
+The next platform direction is a general device and signal SDK with 101 as a reference application.
+The [proposed architecture](docs/superpowers/specs/2026-10-01-universal-device-platform-design.md),
+[device/protocol research](docs/platform/RESEARCH-2026-10-01.md) and
+[first foundation scope](docs/superpowers/specs/2026-10-01-device-foundation-design.md)
+describe that migration. They are design artifacts, not a claim that the new platform is implemented.
+
 ## Start locally
 
 Use Node.js 22.13 or later. From this directory:
