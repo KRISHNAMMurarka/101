@@ -515,7 +515,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .close-button { position: absolute; top: 16px; right: 16px; width: 35px; height: 35px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
 .pairing-panel h2 { max-width: 450px; margin: 0; font-size: clamp(36px, 6vw, 56px); line-height: .96; letter-spacing: -.055em; }
 .panel-intro { margin: 22px 0 28px; color: var(--muted); font-size: 13px; line-height: 1.65; }
-.pairing-qr { display: block; width: min(220px, 62vw); aspect-ratio: 1; margin: 0 auto 18px; border: 8px solid var(--paper); background: var(--paper); image-rendering: pixelated; }
+.pairing-qr { display: block; flex-shrink: 0; box-sizing: border-box; width: min(320px, 72vw); aspect-ratio: 1; margin: 0 auto 18px; border: 8px solid #d8d8d8; background: #d8d8d8; image-rendering: pixelated; }
 .pairing-qr.pending { display: grid; place-items: center; border: 1px dashed var(--line-strong); background: var(--ink); color: var(--faint); font: 750 11px var(--font-mono); letter-spacing: .12em; }
 .session-code, .session-readout { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; border: 1px solid var(--line-strong); background: var(--surface); }
 .session-code { padding: 17px; }
@@ -2363,6 +2363,13 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
   min-height: min(54svh, 620px);
   aspect-ratio: auto;
 }
+.dynamic-controller-deck[data-swipe-only="true"] .surface-crosshair { display: none; }
+.dynamic-controller-deck[data-swipe-only="true"] .dynamic-surface > b {
+  width: 24px;
+  font-size: 0;
+  opacity: 0;
+}
+.dynamic-controller-deck[data-swipe-only="true"] .dynamic-surface[data-active="true"] > b { opacity: 1; }
 
 
 

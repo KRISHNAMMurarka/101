@@ -73,6 +73,6 @@ function LocalDeck({ binding, role }: { binding: ControllerHostBinding; role: Ga
   return <DynamicControllerDeck key={releaseRevision} elements={role.layout.layout}
     actions={snapshot.actions} axes={snapshot.axes} vectors={snapshot.vectors}
     authoredHandedness={role.layout.handedness ?? "right"} playerHandedness={role.layout.handedness ?? "right"}
-    setActions={input.setActions} setAction={input.setAction} setAxis={input.setAxis} setVector={input.setVector}
+    setActions={input.setActions} setAction={input.setAction} setAxis={input.setAxis} setVector={input.setVector} setSurface={input.setSurface}
     haptic={() => undefined} />;
 }

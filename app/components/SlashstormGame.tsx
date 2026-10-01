@@ -15,7 +15,7 @@ import { useGameHost } from "@/app/lib/use-game-host";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
 import SLASHSTORM_MANIFEST from "@/games/slashstorm/manifest.json";
 import { useRef, useState } from "react";
-import { createSlashstormGame, type SlashstormState } from "@/games/slashstorm/src/game";
+import { createSlashstormGame, SLASH_TRAIL_SECONDS, type SlashstormState, type SlashStrokeSegment } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
 import { SLASHSTORM_ROLES } from "@/games/slashstorm/src/roles";
 
@@ -137,21 +137,25 @@ function renderSlashstorm(context: CanvasRenderingContext2D, width: number, heig
   context.globalAlpha = 1;
   for (const target of state.targets) drawTarget(context, target, width, height);
 
-  drawBlade(context, state.previousBlade, state.blade, width, height, "#ff5c35", "rgba(255,92,53,.25)");
-  if (state.playerTwoActive) drawBlade(context, state.previousBladeTwo, state.bladeTwo, width, height, "#50e3ff", "rgba(80,227,255,.25)");
+  drawBlade(context, state.trail, width, height, "#ff5c35", "rgba(255,92,53,.25)");
+  if (state.playerTwoActive) drawBlade(context, state.trailTwo, width, height, "#50e3ff", "rgba(80,227,255,.25)");
 }
 
-function drawBlade(context: CanvasRenderingContext2D, previousBlade: { x: number; y: number }, currentBlade: { x: number; y: number }, width: number, height: number, color: string, glow: string) {
-  const previous = toScreen(previousBlade.x, previousBlade.y, width, height);
-  const blade = toScreen(currentBlade.x, currentBlade.y, width, height);
-  context.strokeStyle = glow;
-  context.lineWidth = 14;
-  context.beginPath(); context.moveTo(previous.x, previous.y); context.lineTo(blade.x, blade.y); context.stroke();
-  context.strokeStyle = "#eff1e8";
-  context.lineWidth = 3;
-  context.beginPath(); context.moveTo(previous.x, previous.y); context.lineTo(blade.x, blade.y); context.stroke();
-  context.fillStyle = color;
-  context.beginPath(); context.arc(blade.x, blade.y, 7, 0, Math.PI * 2); context.fill();
+function drawBlade(context: CanvasRenderingContext2D, trail: SlashStrokeSegment[], width: number, height: number, color: string, glow: string) {
+  context.save();
+  context.lineCap = "round";
+  for (const segment of trail) {
+    const from = toScreen(segment.from.x, segment.from.y, width, height);
+    const to = toScreen(segment.to.x, segment.to.y, width, height);
+    context.globalAlpha = Math.min(1, segment.life / SLASH_TRAIL_SECONDS);
+    context.strokeStyle = glow;
+    context.lineWidth = 14;
+    context.beginPath(); context.moveTo(from.x, from.y); context.lineTo(to.x, to.y); context.stroke();
+    context.strokeStyle = color;
+    context.lineWidth = 4;
+    context.beginPath(); context.moveTo(from.x, from.y); context.lineTo(to.x, to.y); context.stroke();
+  }
+  context.restore();
 }
 
 function drawTarget(context: CanvasRenderingContext2D, target: SlashTarget, width: number, height: number) {

@@ -10,16 +10,24 @@ export interface SlashParticle {
   color: string;
 }
 
+export interface SlashStrokeSegment {
+  from: { x: number; y: number };
+  to: { x: number; y: number };
+  life: number;
+}
+
+export const SLASH_TRAIL_SECONDS = 0.18;
+
 export interface SlashstormState {
   seed: string;
   director: SlashstormDirector;
   targets: SlashTarget[];
   particles: SlashParticle[];
   blade: { x: number; y: number };
-  previousBlade: { x: number; y: number };
+  trail: SlashStrokeSegment[];
   bladeOneSlashing: boolean;
   bladeTwo: { x: number; y: number };
-  previousBladeTwo: { x: number; y: number };
+  trailTwo: SlashStrokeSegment[];
   bladeTwoSlashing: boolean;
   playerTwoActive: boolean;
   score: number;
@@ -41,10 +49,10 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       targets: [],
       particles: [],
       blade: { x: 0, y: 0.45 },
-      previousBlade: { x: 0, y: 0.45 },
+      trail: [],
       bladeOneSlashing: false,
       bladeTwo: { x: .25, y: .45 },
-      previousBladeTwo: { x: .25, y: .45 },
+      trailTwo: [],
       bladeTwoSlashing: false,
       playerTwoActive: false,
       score: 0,
@@ -70,11 +78,17 @@ export function createSlashstormGame(seed = "slashstorm-101") {
 
       const bladeOne = advanceBlade(ctx.input, state.blade, delta, "player-1", state.bladeOneSlashing);
       const bladeTwo = advanceBlade(ctx.input, state.bladeTwo, delta, "player-2", state.bladeTwoSlashing);
+      state.trail = state.trail.filter((segment) => (segment.life -= delta) > 0);
+      state.trailTwo = state.trailTwo.filter((segment) => (segment.life -= delta) > 0);
+      if (bladeOne.slashing && !bladeOne.justStarted && bladeOne.distance > .002) {
+        state.trail.push({ from: bladeOne.previous, to: bladeOne.current, life: SLASH_TRAIL_SECONDS });
+      }
+      if (bladeTwo.slashing && !bladeTwo.justStarted && bladeTwo.distance > .002) {
+        state.trailTwo.push({ from: bladeTwo.previous, to: bladeTwo.current, life: SLASH_TRAIL_SECONDS });
+      }
       state.bladeOneSlashing = bladeOne.slashing;
       state.bladeTwoSlashing = bladeTwo.slashing;
-      state.previousBlade = bladeOne.previous;
       state.blade = bladeOne.current;
-      state.previousBladeTwo = bladeTwo.previous;
       state.bladeTwo = bladeTwo.current;
       state.playerTwoActive ||= bladeTwo.active;
 

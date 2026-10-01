@@ -594,8 +594,10 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
   useEffect(() => {
     let current = true;
     getBrowserHostTransport(sessionId).preparePairing().then(async (info) => {
-      const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", // The QR library needs literal hex, not a CSS variable, so these mirror --ink and --paper.
-        color: { dark: "#0a0a0a", light: "#f2f2f2" } });
+      // Large modules and a full quiet zone scan more reliably from a bright display. The grey
+      // background emits less light than white while retaining strong contrast with black.
+      const image = await QRCode.toDataURL(info.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M",
+        color: { dark: "#000000", light: "#d8d8d8" } });
       if (!current) return;
       setPairing(info);
       setQrCode(image);

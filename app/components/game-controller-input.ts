@@ -34,6 +34,9 @@ export class GameControllerInput {
   setAction = (action: string, value: boolean | number) => { if (this.active) this.publish(this.model.setAction(action, value)); };
   setAxis = (action: string, value: number) => { if (this.active) this.publish(this.model.setAxis(action, value)); };
   setVector = (action: string, x: number, y: number) => { if (this.active) this.publish(this.model.setVector(action, x, y)); };
+  setSurface = (vectorAction: string, pressAction: string, x: number, y: number, held: boolean) => {
+    if (this.active) this.publish(this.model.setSurface(vectorAction, pressAction, x, y, held));
+  };
 
   private publish(snapshot: ControllerInputSnapshot) {
     // Late pointer/timer callbacks from a hidden or replaced panel cannot restore held controls.

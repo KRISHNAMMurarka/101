@@ -36,8 +36,7 @@ export default function DevicesView() {
     getBrowserHostTransport(sessionId)
       .preparePairing()
       .then(async (info) => {
-        // The QR library needs literal hex, not a CSS variable; these mirror --ink and --paper.
-        const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", color: { dark: "#0a0a0a", light: "#f2f2f2" } });
+        const image = await QRCode.toDataURL(info.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#d8d8d8" } });
         if (!current) return;
         setPairing(info);
         setQrCode(image);

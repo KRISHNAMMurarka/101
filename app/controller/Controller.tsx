@@ -392,6 +392,14 @@ export default function Controller(renderedRoute: ControllerRoute) {
     publishSnapshot(snapshot, source);
   }, [publishSnapshot]);
 
+  const setSurface = useCallback((vectorAction: string, pressAction: string, x: number, y: number, held: boolean) => {
+    const snapshot = inputRef.current!.setSurface(vectorAction, pressAction, x, y, held);
+    setActionsState(snapshot.actions);
+    setVectors(snapshot.vectors);
+    setAxes(snapshot.axes);
+    publishSnapshot(snapshot, "touch");
+  }, [publishSnapshot]);
+
   const haptic = useCallback((kind: LocalHaptic = "press") => { navigator.vibrate?.(LOCAL_HAPTICS[kind]); }, []);
 
   const authoredHandedness = layout.handedness ?? "right";
@@ -565,6 +573,7 @@ export default function Controller(renderedRoute: ControllerRoute) {
           setAction={setAction}
           setAxis={setAxis}
           setVector={setVector}
+          setSurface={setSurface}
           haptic={haptic}
         />
       </> : <ControllerWaiting connected={connected} assigned={assigned} />}
@@ -613,6 +622,7 @@ export function DynamicControllerDeck({
   setAction,
   setAxis,
   setVector,
+  setSurface,
   haptic,
 }: {
   elements: readonly ControllerElement[];
@@ -625,6 +635,7 @@ export function DynamicControllerDeck({
   setAction(action: string, active: boolean | number): void;
   setAxis(action: string, value: number): void;
   setVector(action: string, x: number, y: number): void;
+  setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean): void;
   haptic(kind?: LocalHaptic): void;
 }) {
   /*
@@ -669,7 +680,7 @@ export function DynamicControllerDeck({
         {element.type === "slider" && <DynamicSlider element={element} value={axes[element.action]} setAxis={setAxis} haptic={haptic} />}
         {element.type === "dpad" && <DynamicDpad element={element} setVector={setVector} haptic={haptic} />}
         {(element.type === "joystick" || element.type === "touch-surface") && (
-          <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} setAction={setAction} haptic={haptic} />
+          <DynamicSurface element={element} vector={vectors[element.action] ?? { x: 0, y: 0 }} setVector={setVector} setSurface={setSurface} haptic={haptic} />
         )}
       </div>
     );
@@ -981,36 +992,34 @@ function DynamicDpad({ element, setVector, haptic }: {
 const DPAD_ORDER = ["up", "left", "right", "down"] as const satisfies readonly DpadDirection[];
 const DPAD_LABELS: Record<DpadDirection, string> = { up: "Up", left: "Left", right: "Right", down: "Down" };
 
-function DynamicSurface({ element, vector, setVector, setAction, haptic }: {
+function DynamicSurface({ element, vector, setVector, setSurface, haptic }: {
   element: Extract<ControllerElement, { type: "joystick" | "touch-surface" }>;
   vector: InputVector;
   setVector(action: string, x: number, y: number): void;
-  setAction(action: string, active: boolean): void;
+  setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean): void;
   haptic(kind?: LocalHaptic): void;
 }) {
   const label = element.label ?? element.action;
   const actionHint = controllerHint(label, element.action);
   const [active, setActive] = useState(false);
   const held = useRef(false);
-  const update = (event: React.PointerEvent<HTMLButtonElement>) => {
+  const update = (event: React.PointerEvent<HTMLButtonElement>, pressed?: boolean) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     const rawX = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
     const rawY = ((event.clientY - bounds.top) / bounds.height) * 2 - 1;
     const next = element.type === "joystick"
       ? normalizeJoystick(rawX, rawY, element.deadZone ?? .12, element.responseCurve ?? 1)
       : { x: rawX, y: rawY };
-    setVector(
-      element.action,
-      next.x,
-      next.y,
-    );
+    if (element.type === "touch-surface" && element.pressAction && pressed !== undefined) {
+      setSurface(element.action, element.pressAction, next.x, next.y, pressed);
+    } else setVector(element.action, next.x, next.y);
   };
   const release = () => {
     if (!held.current) return;
     held.current = false;
     setActive(false);
-    if (element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, false);
-    setVector(element.action, 0, 0);
+    if (element.type === "touch-surface" && element.pressAction) setSurface(element.action, element.pressAction, 0, 0, false);
+    else setVector(element.action, 0, 0);
   };
   const keyboardVector = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     const next = event.key === "ArrowLeft" ? { x: -1, y: 0 }
@@ -1023,9 +1032,9 @@ function DynamicSurface({ element, vector, setVector, setAction, haptic }: {
     const starting = !held.current;
     held.current = true;
     setActive(true);
-    if (starting && element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, true);
     if (!event.repeat) haptic("step");
-    setVector(element.action, next.x, next.y);
+    if (starting && element.type === "touch-surface" && element.pressAction) setSurface(element.action, element.pressAction, next.x, next.y, true);
+    else setVector(element.action, next.x, next.y);
   };
   return (
     <button
@@ -1038,8 +1047,7 @@ function DynamicSurface({ element, vector, setVector, setAction, haptic }: {
         const starting = !held.current;
         held.current = true;
         setActive(true);
-        update(event);
-        if (starting && element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, true);
+        update(event, starting ? true : undefined);
         haptic("press");
       }}
       onPointerMove={(event) => { if (event.currentTarget.hasPointerCapture(event.pointerId)) update(event); }}

@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import {
   PanResponder,
   StyleSheet,
@@ -37,6 +37,7 @@ export interface ControllerActions {
   actions(values: Record<string, boolean | number>, owner: string): void;
   axis(name: string, value: number): void;
   vector(name: string, x: number, y: number): void;
+  surface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean): void;
   localHaptic(): void;
 }
 
@@ -200,7 +201,7 @@ function Control({ element, theme, controls }: { element: ControllerElement; the
       element={element}
       theme={theme}
       update={controls.vector}
-      setAction={controls.action}
+      setSurface={controls.surface}
     />
   );
 }
@@ -333,12 +334,12 @@ function VectorControl({
   element,
   theme,
   update,
-  setAction,
+  setSurface,
 }: {
   element: Extract<ControllerElement, { type: "joystick" | "dpad" | "touch-surface" }>;
   theme: Theme;
   update(name: string, x: number, y: number): void;
-  setAction(name: string, active: boolean): void;
+  setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean): void;
 }) {
   const mode = element.type;
   const label = element.label ?? element.type.toUpperCase();
@@ -347,7 +348,7 @@ function VectorControl({
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [held, setHeld] = useState(false);
-  const move = (x: number, y: number) => {
+  const move = useCallback((x: number, y: number, pressed?: boolean) => {
     let nextX = clamp((x / size.width) * 2 - 1);
     let nextY = clamp((y / size.height) * 2 - 1);
     if (mode === "joystick") {
@@ -365,15 +366,17 @@ function VectorControl({
       nextY = Math.abs(nextY) < 0.25 ? 0 : Math.sign(nextY);
     }
     setPosition({ x: nextX, y: nextY });
-    update(element.action, nextX, nextY);
-  };
-  const release = () => {
-    if (element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, false);
+    if (mode === "touch-surface" && element.pressAction && pressed !== undefined) {
+      setSurface(element.action, element.pressAction, nextX, nextY, pressed);
+    } else update(element.action, nextX, nextY);
+  }, [element, mode, setSurface, size.height, size.width, update]);
+  const release = useCallback(() => {
     setHeld(false);
     setPosition({ x: 0, y: 0 });
-    update(element.action, 0, 0);
-  };
-  const responder = PanResponder.create({
+    if (element.type === "touch-surface" && element.pressAction) setSurface(element.action, element.pressAction, 0, 0, false);
+    else update(element.action, 0, 0);
+  }, [element, setSurface, update]);
+  const responder = useMemo(() => PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
     // A stick keeps the responder until the thumb holding it lifts. Without this, React Native's
@@ -382,13 +385,12 @@ function VectorControl({
     onPanResponderTerminationRequest: () => false,
     onPanResponderGrant: (event) => {
       setHeld(true);
-      move(event.nativeEvent.locationX, event.nativeEvent.locationY);
-      if (element.type === "touch-surface" && element.pressAction) setAction(element.pressAction, true);
+      move(event.nativeEvent.locationX, event.nativeEvent.locationY, true);
     },
     onPanResponderMove: (event) => move(event.nativeEvent.locationX, event.nativeEvent.locationY),
     onPanResponderRelease: release,
     onPanResponderTerminate: release,
-  });
+  }), [move, release]);
   const onLayout = (event: LayoutChangeEvent) => setSize(event.nativeEvent.layout);
   return (
     <View style={[styles.vectorWrap, mode === "touch-surface" && styles.touchWrap]}>
@@ -413,12 +415,22 @@ function VectorControl({
           </>
         ) : null}
         <View
+          pointerEvents="none"
           style={[
             styles.knob,
+            mode === "touch-surface" ? {
+              position: "absolute",
+              left: ((position.x + 1) * size.width / 2) - 14,
+              top: ((position.y + 1) * size.height / 2) - 14,
+              width: 28,
+              height: 28,
+              borderRadius: 14,
+              opacity: held ? 1 : 0,
+            } : null,
             {
               borderColor: theme.text,
               backgroundColor: held ? theme.solid : theme.surfacePressed,
-              transform: [
+              transform: mode === "touch-surface" ? [] : [
                 { translateX: position.x * Math.min(56, size.width * 0.3) },
                 { translateY: position.y * Math.min(56, size.height * 0.3) },
               ],

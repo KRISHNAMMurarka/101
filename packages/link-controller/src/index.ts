@@ -238,6 +238,16 @@ export class ControllerInputModel {
   }
 
   setVector(action: string, x: number, y: number) {
+    this.updateVector(action, x, y);
+    return this.snapshot();
+  }
+
+  setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean) {
+    this.updateVector(vectorAction, x, y);
+    return this.setAction(pressAction, held);
+  }
+
+  private updateVector(action: string, x: number, y: number) {
     const vector = { x: clamp(x), y: clamp(y) };
     this.vectors[action] = vector;
     this.axes[action] = vector.x;
@@ -248,7 +258,6 @@ export class ControllerInputModel {
       this.axes.moveY = vector.y;
     }
     if (action === "steer") this.axes.steer = vector.x;
-    return this.snapshot();
   }
 
   snapshot(): ControllerInputSnapshot {

@@ -46,6 +46,33 @@ test("Slashstorm places a newly pressed blade before cutting on the next drag", 
   assert.deepEqual(state.blade, { x: 0, y: 0 }, "the center of the touchpad is a valid blade position");
 });
 
+test("Slashstorm draws only dragged stroke segments, never a line from the old blade position", () => {
+  const game = createSlashstormGame("free-strokes");
+  const input = new ScriptedInput();
+  const state = game.initialState();
+  const context: GameContext<typeof state> = { input, state, assets: { load: async () => {} } };
+  game.start?.(context);
+  assert.equal(state.trail.length, 0);
+  input.vector("aim", -.8, -.7);
+  input.action("trigger", true);
+  game.update(context, STEP);
+  assert.equal(state.trail.length, 0, "touch-down positions the blade without drawing from its old location");
+  input.vector("aim", .7, .6);
+  game.update(context, STEP);
+  assert.deepEqual(state.trail.at(-1)?.from, { x: -.8, y: -.7 });
+  assert.deepEqual(state.trail.at(-1)?.to, { x: .7, y: .6 });
+  input.action("trigger", false);
+  game.update(context, STEP);
+  input.vector("aim", .8, -.8);
+  input.action("trigger", true);
+  game.update(context, STEP);
+  assert.equal(state.trail.length, 1, "a new touch cannot connect to the preceding stroke");
+  input.vector("aim", -.8, .8);
+  game.update(context, STEP);
+  assert.deepEqual(state.trail.at(-1)?.from, { x: .8, y: -.8 });
+  assert.deepEqual(state.trail.at(-1)?.to, { x: -.8, y: .8 }, "the opposite diagonal follows the new drag, not an anchor");
+});
+
 simulate("TiltDrift advances an infinite road under normalized steering", () => createTiltDriftGame("sim-drift"), (input, _state, frame) => {
   input.axis("steer", Math.sin(frame * .018) * .32);
   input.action("drift", frame % 180 > 105);

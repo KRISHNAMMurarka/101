@@ -66,6 +66,16 @@ test("swipe surface initializes and releases its held action", () => {
   assert.deepEqual(model.snapshot().vectors.aim, { x: 0, y: 0 });
 });
 
+test("a swipe edge returns one snapshot with position and held action together", () => {
+  const model = new ControllerInputModel({ layout: [{ type: "touch-surface", action: "aim", pressAction: "trigger" }] });
+  const pressed = model.setSurface("aim", "trigger", .5, -.5, true);
+  assert.deepEqual(pressed.vectors.aim, { x: .5, y: -.5 });
+  assert.equal(pressed.actions.trigger, true);
+  const released = model.setSurface("aim", "trigger", 0, 0, false);
+  assert.deepEqual(released.vectors.aim, { x: 0, y: 0 });
+  assert.equal(released.actions.trigger, false);
+});
+
 test("joysticks use a radial dead zone and clamp diagonals to cardinal speed", () => {
   assert.deepEqual(normalizeJoystick(.08, -.06, .12, 1), { x: 0, y: 0 });
 

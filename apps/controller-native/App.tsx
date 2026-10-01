@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
@@ -25,9 +26,12 @@ import type { ControllerLayout, LinkState } from "@101/protocol";
 
 import { ControllerPanel, type ControllerActions } from "./src/controls";
 import { ControllerSession, type ControllerAssignment } from "./src/controller-session";
+import { connectionErrorMessage } from "./src/link-error";
 import { ControllerSpeaker } from "./src/controller-speaker";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
+import { ticketFromInput } from "./src/pairing-code";
+import { pinchDistance, zoomFromPinch } from "./src/scanner-controls";
 import { DARK_SURFACE, radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
 import privateCue from "./assets/private-cue.wav";
@@ -55,6 +59,8 @@ const GESTURE_INSET = 34;
  */
 export default function App() {
   const t = useTheme();
+  const { height: windowHeight } = useWindowDimensions();
+  const scanShort = windowHeight < 600;
   const privateAudioPlayer = useAudioPlayer(privateCue, { downloadFirst: true });
   const privateAudioStatus = useAudioPlayerStatus(privateAudioPlayer);
   const speaker = useMemo(() => new ControllerSpeaker(privateAudioPlayer), [privateAudioPlayer]);
@@ -75,6 +81,11 @@ export default function App() {
   const [speakerPlaybackFailed, setSpeakerPlaybackFailed] = useState(false);
   const [latency, setLatency] = useState<number>();
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [scannerZoom, setScannerZoom] = useState(0);
+  const [scannerTorch, setScannerTorch] = useState(false);
+  const [scannerMessage, setScannerMessage] = useState("");
+  const scanClaimedRef = useRef(false);
+  const pinchRef = useRef<{ distance: number; zoom: number } | undefined>(undefined);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [codeEntryOpen, setCodeEntryOpen] = useState(false);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
@@ -136,7 +147,7 @@ export default function App() {
       setPairingInput(input);
       setCodeEntryOpen(false);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Could not reach that 101 Hub.");
+      setError(connectionErrorMessage(reason));
       setLinkState("failed");
     }
   }, []);
@@ -286,6 +297,7 @@ export default function App() {
     actions: (values, owner) => sessionRef.current?.setActions(values, owner),
     axis: (name, value) => sessionRef.current?.setAxis(name, value),
     vector: (name, x, y) => sessionRef.current?.setVector(name, x, y),
+    surface: (vectorAction, pressAction, x, y, held) => sessionRef.current?.setSurface(vectorAction, pressAction, x, y, held),
     localHaptic: () => void haptic("tap"),
   }), [haptic]);
 
@@ -319,8 +331,48 @@ export default function App() {
 
   const openScanner = async () => {
     const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
-    if (permission.granted) setScannerOpen(true);
+    if (permission.granted) {
+      scanClaimedRef.current = false;
+      pinchRef.current = undefined;
+      setScannerZoom(0);
+      setScannerTorch(false);
+      setScannerMessage("");
+      setScannerOpen(true);
+    }
     else setError("101 Link needs the camera only to read the pairing code on your game screen.");
+  };
+
+  const acceptScan = (data: string) => {
+    if (scanClaimedRef.current) return;
+    try {
+      // Camera callbacks can report unrelated QR codes repeatedly. Keep the camera open until
+      // the code is an unexpired, integrity-checked 101 Link ticket.
+      ticketFromInput(data);
+    } catch (reason) {
+      setScannerMessage(reason instanceof Error && /expired/i.test(reason.message)
+        ? "This code expired. Open a new one on the game screen."
+        : "That isn't a 101 Link code. Keep scanning.");
+      return;
+    }
+    scanClaimedRef.current = true;
+    setScannerOpen(false);
+    setScannerTorch(false);
+    setPairingInput(data);
+    void connect(data);
+  };
+
+  const updateScannerPinch = (touches: readonly { pageX: number; pageY: number }[]) => {
+    const distance = pinchDistance(touches);
+    if (distance === undefined) {
+      pinchRef.current = undefined;
+      return;
+    }
+    if (!pinchRef.current) {
+      pinchRef.current = { distance, zoom: scannerZoom };
+      return;
+    }
+    const next = zoomFromPinch(pinchRef.current.zoom, pinchRef.current.distance, distance);
+    setScannerZoom((current) => Math.abs(current - next) < 0.005 ? current : next);
   };
 
   const disconnect = async () => {
@@ -424,25 +476,58 @@ export default function App() {
           <CameraView
             barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
             facing="back"
-            onBarcodeScanned={({ data }) => {
-              setScannerOpen(false);
-              setPairingInput(data);
-              void connect(data);
-            }}
+            zoom={scannerZoom}
+            enableTorch={scannerTorch}
+            onBarcodeScanned={({ data }) => acceptScan(data)}
             style={StyleSheet.absoluteFill}
           />
-          <SafeAreaView style={{ flex: 1, justifyContent: "space-between", padding: space.lg }}>
-            <View />
-            <View style={{ alignSelf: "center", width: 232, height: 232, borderRadius: radius.card, borderWidth: 2, borderColor: "rgba(255,255,255,0.9)" }} />
-            <View style={{ gap: space.md }}>
-              <Text style={[type.body, { color: "rgba(255,255,255,0.8)", textAlign: "center" }]}>
+          <View
+            style={StyleSheet.absoluteFill}
+            onStartShouldSetResponder={() => true}
+            onMoveShouldSetResponder={() => true}
+            onResponderGrant={(event) => updateScannerPinch(event.nativeEvent.touches)}
+            onResponderMove={(event) => updateScannerPinch(event.nativeEvent.touches)}
+            onResponderRelease={() => { pinchRef.current = undefined; }}
+            onResponderTerminate={() => { pinchRef.current = undefined; }}
+          />
+          <SafeAreaView style={{
+            flex: 1,
+            justifyContent: "space-between",
+            flexDirection: scanShort ? "row" : "column",
+            gap: space.sm,
+            paddingHorizontal: scanShort ? space.sm : space.lg,
+            paddingTop: (Platform.OS === "android" ? (RNStatusBar.currentHeight ?? 0) : 0) + space.sm,
+            paddingBottom: Platform.OS === "android" ? GESTURE_INSET + space.sm : space.lg,
+          }} pointerEvents="box-none">
+            <View style={{ flex: scanShort ? 1 : undefined, justifyContent: "space-between", alignItems: "center", gap: space.xs }}>
+              <View style={{ gap: space.xs, alignItems: "center" }}>
+                <Text style={[type.title, { color: "#fff", textAlign: "center" }]}>Scan game code</Text>
+                {!scanShort ? (
+                  <Text style={[type.body, { color: "#fff", textAlign: "center" }]}>
+                    Pinch to zoom. The camera adjusts to the light as you move.
+                  </Text>
+                ) : null}
+              </View>
+              <View pointerEvents="none" style={{ alignSelf: "center", width: scanShort ? Math.min(windowHeight - 100, 220) : 260, height: scanShort ? Math.min(windowHeight - 100, 220) : 260, borderRadius: radius.card, borderWidth: 3, borderColor: "#fff" }} />
+            </View>
+            <ScrollView style={{ flexGrow: scanShort ? 1 : 0, flexBasis: scanShort ? 0 : undefined }} contentContainerStyle={{ gap: space.md, justifyContent: "flex-end", flexGrow: 1 }}>
+              {scannerMessage ? (
+                <Text accessibilityRole="alert" style={[type.body, { color: "#fff", textAlign: "center", backgroundColor: "rgba(0,0,0,0.8)", padding: space.sm }]}>
+                  {scannerMessage}
+                </Text>
+              ) : null}
+              <View style={{ gap: space.sm, padding: space.sm, borderRadius: radius.control, backgroundColor: "rgba(0,0,0,0.8)" }}>
+                <Text style={[type.label, { color: "#fff", textAlign: "center" }]}>Pinch to zoom · {Math.round(scannerZoom * 100)}%</Text>
+                <Button label={scannerTorch ? "Light off" : "Light on"} wide palette={DARK_SURFACE} onPress={() => setScannerTorch((value) => !value)} />
+              </View>
+              <Text style={[type.body, { color: "#fff", backgroundColor: "rgba(0,0,0,0.7)", textAlign: "center" }]}>
                 Point at the code on your game screen
               </Text>
               {/* The camera feed is black whatever the player's theme is, so this control is styled
                   from the dark palette explicitly. Styled from the app theme it rendered near-black
                   on black in light mode, which left the only way out of the scanner invisible. */}
-              <Button label="Cancel" wide palette={DARK_SURFACE} onPress={() => setScannerOpen(false)} />
-            </View>
+              <Button label="Cancel" wide palette={DARK_SURFACE} onPress={() => { setScannerOpen(false); setScannerTorch(false); }} />
+            </ScrollView>
           </SafeAreaView>
         </View>
       </Modal>

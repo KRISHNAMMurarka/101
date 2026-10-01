@@ -13,6 +13,7 @@ import type { InputSource } from "@101/input";
 
 import { NativeWebRTCTransport } from "./native-webrtc";
 import { ticketFromInput } from "./pairing-code";
+import { connectionErrorMessage } from "./link-error";
 import { ControllerConfigurationGate, ControllerSpeakerGate } from "./controller-runtime-gates";
 
 export interface ControllerAssignment {
@@ -83,7 +84,7 @@ export class ControllerSession {
     try {
       await transport.connect();
     } catch (error) {
-      this.events.error(errorMessage(error));
+      this.events.error(connectionErrorMessage(error));
       await this.disconnect();
       throw error;
     }
@@ -98,7 +99,7 @@ export class ControllerSession {
       await transport.connect();
       return await transport.acceptOfferCode(offer);
     } catch (error) {
-      this.events.error(errorMessage(error));
+      this.events.error(connectionErrorMessage(error));
       await this.disconnect();
       throw error;
     }
@@ -158,6 +159,10 @@ export class ControllerSession {
     this.sendSnapshot(this.model.setVector(action, x, y), source);
   }
 
+  setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean) {
+    this.sendSnapshot(this.model.setSurface(vectorAction, pressAction, x, y, held), "touch");
+  }
+
   setMotion(
     action: string,
     x: number,
@@ -214,8 +219,8 @@ export class ControllerSession {
     });
     // Signaling failures the transport recovers from. Without this the outage was invisible until
     // it surfaced as an unhandled-rejection toast; now the controller can explain itself.
-    this.removeError = withErrorChannel(transport)?.onError((error) => {
-      this.events.error(`Hub unreachable — retrying. ${error.message}`);
+    this.removeError = withErrorChannel(transport)?.onError(() => {
+      this.events.error("Connection interrupted. Retrying on this Wi-Fi…");
     });
   }
 
@@ -294,10 +299,6 @@ export class ControllerSession {
       vectors: snapshot.vectors,
     });
   }
-}
-
-function errorMessage(error: unknown) {
-  return error instanceof Error ? error.message : "101 Link could not connect";
 }
 
 /**
