@@ -162,6 +162,7 @@ import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitat
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
+import type { EffectEvidence, HandlerResult, RouteRequest } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
@@ -253,6 +254,10 @@ const health: DeviceHealthReport = parseDeviceHealthReport({ schemaVersion: 1, d
 const healthAssessment: DeviceHealthAssessment = assessDeviceHealth(health, 'demo-thermometer', 'temperature',
   { clockId: 'embedded-demo', at: 0 });
 void [healthAssessment, sensor.publishHealth(health)];
+const handlerResult: HandlerResult = 'running';
+const effectEvidence: EffectEvidence = 'none';
+const propertyRoute: Partial<RouteRequest> = { sourceOperation: 'read' };
+void [handlerResult, effectEvidence, propertyRoute];
 const evolution: DescriptorEvolution = planDescriptorEvolution(descriptor, { ...descriptor, revision: 2,
   capabilities: [{ id: 'new-sensor', semantic: 'example:new-sensor', schemaVersion: 1,
     kind: 'sample', value: { type: 'boolean' }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 },
@@ -353,6 +358,53 @@ export async function checkRuntime() {
   try { model.planDescriptorEvolution(originalDescriptor, { ...originalDescriptor, revision: 2, executable: true }); }
   catch { unknownDescriptorRejected = true; }
   check(unknownDescriptorRejected, 'Packed unknown descriptor field was accepted');
+  const propertySource = { schemaVersion: 1, id: 'packed-property', label: 'Property', revision: 1,
+    adapter: { id: 'example:property', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [
+      { id: 'state', semantic: 'example:state', schemaVersion: 1, kind: 'property', value: { type: 'boolean' },
+        delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 }, permissions: ['read', 'subscribe'] }] };
+  const propertySink = { ...propertySource, id: 'packed-reader', capabilities: [
+    { ...propertySource.capabilities[0], permissions: ['write'] }] };
+  let observedProperty;
+  const propertyRuntime = sdk.createDeviceRuntime({ now: () => 0,
+    authorize: () => ({ expiresAt: 10000, maxAgeMs: 1000, maxHz: 10 }) });
+  try {
+    const source = propertyRuntime.registerSource({ device: propertySource, capability: 'state' });
+    const sink = propertyRuntime.registerSink({ device: propertySink, capability: 'state',
+      apply(observation) { observedProperty = observation.value; }, release() {} });
+    propertyRuntime.setReadiness(source, 'available'); propertyRuntime.setReadiness(sink, 'available');
+    propertyRuntime.publish(source, true);
+    const route = propertyRuntime.route({ from: source, to: sink, principalId: 'owner',
+      applicationId: 'packed', sessionId: 'session', sourceOperation: 'read' });
+    check(route.start().ok, 'Packed one-shot property read did not start');
+    propertyRuntime.flush();
+    check(observedProperty === true && route.status().state === 'closed', 'Packed property read did not close after one result');
+  } finally { propertyRuntime.close(); }
+  const jobSource = { ...propertySource, id: 'packed-job-source', capabilities: [
+    { ...propertySource.capabilities[0], id: 'run', semantic: 'example:run', kind: 'event',
+      delivery: { mode: 'reliable', maxAgeMs: 1000 }, permissions: ['subscribe'] }] };
+  const jobSink = { ...jobSource, id: 'packed-job-sink', capabilities: [
+    { ...jobSource.capabilities[0], kind: 'job', permissions: ['invoke'] }] };
+  let finishJob;
+  const jobRuntime = sdk.createDeviceRuntime({ now: () => 0,
+    authorize: () => ({ expiresAt: 10000, maxAgeMs: 1000, maxHz: 10 }) });
+  try {
+    const source = jobRuntime.registerSource({ device: jobSource, capability: 'run' });
+    const sink = jobRuntime.registerSink({ device: jobSink, capability: 'run',
+      apply(_observation, context) {
+        context.reportEvidence('dispatched');
+        return new Promise(resolve => { finishJob = resolve; });
+      }, release() {} });
+    jobRuntime.setReadiness(source, 'available'); jobRuntime.setReadiness(sink, 'available');
+    const route = jobRuntime.route({ from: source, to: sink, principalId: 'owner', applicationId: 'packed', sessionId: 'session' });
+    check(route.start().ok && jobRuntime.publish(source, true, { operationId: '1', deadline: 500 }).ok,
+      'Packed job did not admit');
+    jobRuntime.flush();
+    check(route.operations()[0].handlerResult === 'running' && route.operations()[0].effectEvidence === 'dispatched',
+      'Packed pending job conflated result and effect');
+    finishJob(); await Promise.resolve(); await Promise.resolve();
+    check(route.operations()[0].handlerResult === 'returned' && route.operations()[0].effectEvidence === 'dispatched',
+      'Packed completed job invented effect observation');
+  } finally { jobRuntime.close(); }
   const healthPipeline = createSensorFeedbackPipeline({ now: () => 100 });
   try {
     check(healthPipeline.publishHealth(health).readiness === 'available', 'Packed health caller denied available resource');
@@ -407,7 +459,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

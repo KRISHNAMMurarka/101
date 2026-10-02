@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 21,
+  "revision": 22,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6400,6 +6400,31 @@
       "supportRows": []
     },
     {
+      "id": "operation-semantics-2026-10-02",
+      "revision": "containing implementation commit, base 9c34c98; immutable SDK producer tree f7086017e51ac0dcc7c0cffb11e8f3f50156defb and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M10"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-02-operation-semantics-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-operation-semantics-sdk-consumer.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed property/job consumers; no physical job provider",
+      "reproduction": "Focused property read, subscription, command replay, async job and handler/effect RED-GREEN tests with independent review; node tools/build-sdk.mjs f7086017e51ac0dcc7c0cffb11e8f3f50156defb; node tools/qa-sdk-consumer.mjs release/sdk-nxJ5Zu/manifest.json; exact candidate repository gates",
+      "scope": "M10 only: authorized one-shot fresh property reads and subscriptions, reliable set-state/non-idempotent command IDs without auto retry, declared async job invoke/cancellation, and separate handler-result/effect-evidence fields. No physical effect or job output payload proof, remote job support or support promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6707,7 +6732,8 @@
     {
       "id": "M10",
       "records": [
-        "pending-M10"
+        "pending-M10",
+        "operation-semantics-2026-10-02"
       ],
       "dependencies": [
         "C01",

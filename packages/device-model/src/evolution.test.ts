@@ -41,6 +41,6 @@ test('identity, permission, schema, delivery and removals are incompatible', () 
 test('malformed revisions and unknown types reject before compatibility planning', () => {
   assert.throws(() => planDescriptorEvolution(old, { ...old, revision: 2, executable: true }), DeviceValidationError);
   assert.throws(() => planDescriptorEvolution(old, { ...old, revision: 2,
-    capabilities: [{ ...capability, kind: 'job' }] }), DeviceValidationError);
+    capabilities: [{ ...capability, kind: 'unknown-job' }] }), DeviceValidationError);
   assert.throws(() => planDescriptorEvolution(old, { ...old, schemaVersion: 2, revision: 2 }), DeviceValidationError);
 });

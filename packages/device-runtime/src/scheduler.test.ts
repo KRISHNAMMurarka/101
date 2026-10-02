@@ -48,6 +48,31 @@ test("operation evidence never regresses and bounded history expires", () => {
   assert.equal(queue.admit("2", 1200, false, 1101).ok, true);
 });
 
+test("handler completion and effect evidence remain distinct, including late observations", () => {
+  const queue = new OperationQueue<string>();
+  queue.admit('1', 100, 'set-state', 0);
+  assert.deepEqual(queue.records()[0], { id: '1', deadline: 100, state: 'accepted',
+    handlerResult: 'not-started', effectEvidence: 'none' });
+  queue.next(0);
+  queue.started('1');
+  queue.evidence('1', 'dispatched');
+  queue.settle('1', 'unverified');
+  assert.deepEqual(queue.records()[0], { id: '1', deadline: 100, state: 'unverified',
+    handlerResult: 'returned', effectEvidence: 'dispatched' });
+  queue.evidence('1', 'observed');
+  assert.deepEqual(queue.records()[0], { id: '1', deadline: 100, state: 'observed',
+    handlerResult: 'returned', effectEvidence: 'observed' });
+  queue.admit('2', 100, 'non-idempotent', 0);
+  queue.next(0);
+  queue.started('2');
+  queue.expire(100);
+  queue.evidence('2', 'observed');
+  assert.deepEqual(queue.records()[1], { id: '2', deadline: 100, state: 'observed',
+    handlerResult: 'running', effectEvidence: 'observed' });
+  queue.settle('2', 'unverified');
+  assert.equal(queue.records()[1].handlerResult, 'returned');
+});
+
 test("settled evidence yields capacity to new events without allowing replay", () => {
   const queue = new OperationQueue<string>(2);
   assert.equal(queue.admit("1", 1000, "first", 0).ok, true);

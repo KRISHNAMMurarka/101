@@ -804,7 +804,8 @@
             "sample",
             "event",
             "command",
-            "property"
+            "property",
+            "job"
           ]
         },
         "value": {

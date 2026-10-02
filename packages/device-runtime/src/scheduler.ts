@@ -1,7 +1,10 @@
 export type OperationState = "accepted" | "dispatched" | "target-acknowledged" | "observed"
   | "unverified" | "failed" | "cancelled" | "expired";
 export type Evidence = "dispatched" | "target-acknowledged" | "observed" | "unverified";
-export interface OperationRecord { id: string; deadline: number; state: OperationState }
+export type HandlerResult = "not-started" | "running" | "returned" | "failed";
+export type EffectEvidence = "none" | "dispatched" | "target-acknowledged" | "observed";
+export interface OperationRecord { id: string; deadline: number; state: OperationState;
+  handlerResult: HandlerResult; effectEvidence: EffectEvidence }
 export type Result<T = undefined> = { ok: true; value: T } | { ok: false; reason: string };
 export const success = <T = undefined>(value = undefined as T): Result<T> => ({ ok: true, value });
 export const failure = (reason: string): { ok: false; reason: string } => ({ ok: false, reason });
@@ -22,6 +25,9 @@ export class LatestSlot<T> {
 interface Entry<T> extends OperationRecord { value?: T; settled: boolean; pinned: boolean; retainUntil: number }
 const EVIDENCE_RANK: Record<Evidence, number> = {
   dispatched: 1, unverified: 2, "target-acknowledged": 3, observed: 4,
+};
+const EFFECT_RANK: Record<EffectEvidence, number> = {
+  none: 0, dispatched: 1, "target-acknowledged": 2, observed: 3,
 };
 
 /** Decimal monotonic IDs permit bounded replay protection even after history expires. */
@@ -60,7 +66,8 @@ export class OperationQueue<T> {
       if (this.entries.size >= this.capacity) return failure("capacity");
     }
     this.watermark = number;
-    this.entries.set(id, { id, deadline, value, state: "accepted", settled: false, pinned: false, retainUntil: deadline + 1000 });
+    this.entries.set(id, { id, deadline, value, state: "accepted", handlerResult: "not-started",
+      effectEvidence: "none", settled: false, pinned: false, retainUntil: deadline + 1000 });
     return success();
   }
 
@@ -76,16 +83,28 @@ export class OperationQueue<T> {
     }
   }
 
+  started(id: string): void {
+    const entry = this.entries.get(id);
+    if (entry && !entry.settled && entry.handlerResult === "not-started") entry.handlerResult = "running";
+  }
+
   evidence(id: string, evidence: Evidence): void {
     const entry = this.entries.get(id);
     if (!entry) return;
     const previous = EVIDENCE_RANK[entry.state as Evidence] ?? 0;
     if (EVIDENCE_RANK[evidence] > previous) entry.state = evidence;
+    if (evidence !== "unverified" && EFFECT_RANK[evidence] > EFFECT_RANK[entry.effectEvidence])
+      entry.effectEvidence = evidence;
   }
 
   settle(id: string, state: OperationState): void {
     const entry = this.entries.get(id);
-    if (!entry || entry.settled) return;
+    if (!entry) return;
+    if (entry.handlerResult === "running") {
+      if (state === "failed") entry.handlerResult = "failed";
+      else if (state === "unverified") entry.handlerResult = "returned";
+    }
+    if (entry.settled) return;
     if (state in EVIDENCE_RANK) this.evidence(id, state as Evidence);
     else if (entry.state !== "observed") entry.state = state;
     entry.settled = true;
@@ -127,6 +146,7 @@ export class OperationQueue<T> {
   }
 
   records(): readonly OperationRecord[] {
-    return Object.freeze([...this.entries.values()].map(({ id, deadline, state }) => Object.freeze({ id, deadline, state })));
+    return Object.freeze([...this.entries.values()].map(({ id, deadline, state, handlerResult, effectEvidence }) =>
+      Object.freeze({ id, deadline, state, handlerResult, effectEvidence })));
   }
 }

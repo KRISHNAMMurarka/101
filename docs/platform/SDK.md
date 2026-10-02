@@ -322,6 +322,44 @@ callback return supplies `unverified` evidence. Trusted providers can report ack
 or observation through `context.reportEvidence()`. Only independent feedback should establish
 an observed effect. The example's separate simulated state read demonstrates this distinction.
 
+## Property, command and job operations
+
+A latest `property` source may expose `read` and/or `subscribe`. A `read` route
+requires a fresh retained property value when it starts, captures that value
+after host authorization, delivers it once and closes. A `subscribe` route
+continues to receive new publications. Missing or stale snapshots fail rather
+than waiting for an update; a snapshot that expires before delivery is dropped.
+Events and samples use subscriptions. The host authorizes the exact selected
+operation and the sink's `write` or `invoke` permission.
+
+Reliable `command` and `job` sinks require operation IDs and deadlines. Jobs
+use `invoke`, return through an asynchronous provider callback and can be
+cancelled by route loss. `OperationRecord.handlerResult` records whether the
+handler has not started, is running, returned or failed. `effectEvidence`
+separately records dispatch, target acknowledgment or observed effect; `none`
+means no such evidence. A deadline or cancellation changes the operation
+state without claiming the handler has stopped. If it later returns, its
+handler result can update while the expired/cancelled state remains. The
+runtime never automatically retries a command or job; a host with a
+non-idempotent operation must use a new explicit operation after resolving
+an ambiguous effect. The threshold example's set-state relay command is
+idempotent by its own provider contract. Handler return does not prove a
+physical effect or a job-specific output payload.
+
+M10 local evidence: property reads and handler/effect records failed focused
+tests before implementation. Independent review found missing current-value
+reads and premature handler-result claims; both were reproduced and fixed.
+The [immutable SDK build](receipts/2026-10-02-operation-semantics-sdk-build.json)
+and [clean consumer receipt](receipts/2026-10-02-operation-semantics-sdk-consumer.json)
+verify strict NodeNext/Bundler types plus ordinary Node, Chromium, Firefox and
+WebKit. The unpublished artifact is `release/sdk-nxJ5Zu` from producer tree
+`f7086017e51ac0dcc7c0cffb11e8f3f50156defb`; manifest SHA-256 is
+`6ad6fc1b4e237d9d0c06bdc577f08522af914db1f00353c39fe0da81e6d6bc6d`.
+Builder SHA-256 is `7e91360653dfbc1cd0c872eb7759d2a6a46cc2e1e5095cb0aff4079d4e0fd966`;
+QA tool SHA-256 is `02d130ec80221a5eb7cca53428c3c5279eb142f325863428fb93f0237583c52c`.
+The containing commit binds exact repository gates. Physical job completion,
+provider-supplied output data and remote support are not qualified here.
+
 ## Explicit measurement conversion
 
 `createUnitConverter(sourceSchema, targetSchema, { decimalPlaces,

@@ -56,6 +56,53 @@ test("inert descriptor extensions cannot authorize a route", () => {
   runtime.close();
 });
 
+test("property reads are one-shot while subscriptions remain authorized streams", () => {
+  let now = 0;
+  const requests: AuthorizationRequest[] = [];
+  const received: Observation[] = [];
+  const runtime = createDeviceRuntime({ now: () => now, authorize(request) {
+    requests.push(request);
+    return { expiresAt: 10000, maxAgeMs: 1000, maxHz: 100 };
+  } });
+  const sourceDevice = { ...device('readable'), capabilities: [{ ...device('readable').capabilities[0],
+    kind: 'property', permissions: ['read', 'subscribe'] }] };
+  const sinkDevice = { ...device('reader', false, true), capabilities: [{ ...device('reader', false, true).capabilities[0],
+    kind: 'property', permissions: ['write'] }] };
+  const source = runtime.registerSource({ device: sourceDevice, capability: 'control' });
+  const sink = runtime.registerSink({ device: sinkDevice, capability: 'control',
+    apply(observation) { received.push(observation); }, release() {} });
+  runtime.setReadiness(source, 'available'); runtime.setReadiness(sink, 'available');
+  const base = { from: source, to: sink, principalId: 'owner', applicationId: 'example', sessionId: 'session' };
+  assert.equal(runtime.publish(source, { x: 0.2, y: 0.8 }).ok, true);
+  const read = runtime.route({ ...base, sourceOperation: 'read' });
+  assert.equal(read.start().ok, true);
+  assert.equal(requests[0].sourceOperation, 'read');
+  runtime.flush();
+  assert.equal(received.length, 1);
+  assert.equal(read.status().state, 'closed');
+  const subscribe = runtime.route({ ...base, sourceOperation: 'subscribe' });
+  assert.equal(subscribe.start().ok, true);
+  assert.equal(requests[1].sourceOperation, 'subscribe');
+  now = 20;
+  runtime.publish(source, { x: 0.4, y: 0.6 }); runtime.flush();
+  assert.equal(received.length, 2);
+  assert.equal(subscribe.status().state, 'active');
+  subscribe.stop('done');
+  now = 200;
+  assert.deepEqual(runtime.route({ ...base, sourceOperation: 'read' }).start(), { ok: false, reason: 'stale' });
+  runtime.publish(source, { x: 0.8, y: 0.2 });
+  const expiringRead = runtime.route({ ...base, sourceOperation: 'read' });
+  assert.equal(expiringRead.start().ok, true);
+  now = 301;
+  runtime.flush();
+  assert.equal(expiringRead.status().state, 'closed');
+  assert.equal(received.length, 2);
+  runtime.close();
+  const sample = harness();
+  assert.equal(sample.runtime.route({ ...sample.request, sourceOperation: 'read' }).start().ok, false);
+  sample.runtime.close();
+});
+
 test("latest samples remain immutable and coalesced within the negotiated rate", () => {
   const h = harness(); assert.equal(h.connection.start().ok, true);
   const position = { x: 0.2, y: 0.8 };
@@ -288,4 +335,69 @@ test("expired async operations retain late evidence until completion retention e
   assert.equal(route.operations()[0]?.state, "observed");
   h.setNow(2100); h.runtime.flush(); assert.equal(route.operations().length, 1);
   h.setNow(2101); h.runtime.flush(); assert.equal(route.operations().length, 0); h.runtime.close();
+});
+
+test("asynchronous command result, effect observation and non-idempotent replay stay separate", async () => {
+  let finish: (() => void) | undefined;
+  let context: DeliveryContext | undefined;
+  const h = harness({ command: true, apply: async (_observation, current) => {
+    context = current;
+    current.reportEvidence('dispatched');
+    await new Promise<void>(resolve => { finish = resolve; });
+  } });
+  assert.equal(h.connection.start().ok, true);
+  assert.equal(h.runtime.publish(h.source, true, { operationId: '1', deadline: 100 }).ok, true);
+  h.runtime.flush();
+  assert.deepEqual(h.connection.operations()[0], { id: '1', deadline: 100, state: 'dispatched',
+    handlerResult: 'running', effectEvidence: 'dispatched' });
+  assert.equal(h.runtime.publish(h.source, true, { operationId: '1', deadline: 200 }).ok, false);
+  finish!(); await new Promise<void>(resolve => setImmediate(resolve));
+  assert.deepEqual(h.connection.operations()[0], { id: '1', deadline: 100, state: 'unverified',
+    handlerResult: 'returned', effectEvidence: 'dispatched' });
+  context!.reportEvidence('observed');
+  assert.deepEqual(h.connection.operations()[0], { id: '1', deadline: 100, state: 'observed',
+    handlerResult: 'returned', effectEvidence: 'observed' });
+  h.connection.stop('owner-left');
+  const next = h.runtime.route(h.request);
+  assert.equal(next.start().ok, true);
+  assert.equal(h.runtime.publish(h.source, true, { operationId: '1', deadline: 200 }).ok, false);
+  h.runtime.close();
+});
+
+test("a declared asynchronous job is invoked and can finish without effect proof", async () => {
+  let now = 0;
+  let finish: (() => void) | undefined;
+  let signal: AbortSignal | undefined;
+  const runtime = createDeviceRuntime({ now: () => now, authorize: request => {
+    assert.equal(request.sinkOperation, 'invoke');
+    return { expiresAt: 10000, maxAgeMs: 1000, maxHz: 10 };
+  } });
+  const source = runtime.registerSource({ device: device('submitter', true), capability: 'control' });
+  const sinkDevice = { ...device('printer', true, true), capabilities: [{ ...device('printer', true, true).capabilities[0], kind: 'job' }] };
+  const sink = runtime.registerSink({ device: sinkDevice, capability: 'control',
+    async apply(_observation, context) {
+      signal = context.signal;
+      context.reportEvidence('dispatched');
+      await new Promise<void>(resolve => { finish = resolve; });
+    }, release() {} });
+  runtime.setReadiness(source, 'available'); runtime.setReadiness(sink, 'available');
+  const route = runtime.route({ from: source, to: sink, principalId: 'owner', applicationId: 'example', sessionId: 'session' });
+  assert.equal(route.start().ok, true);
+  assert.equal(runtime.publish(source, true, { operationId: '1', deadline: 500 }).ok, true);
+  runtime.flush();
+  assert.equal(route.operations()[0].handlerResult, 'running');
+  finish!(); await new Promise<void>(resolve => setImmediate(resolve));
+  assert.deepEqual(route.operations()[0], { id: '1', deadline: 500, state: 'unverified',
+    handlerResult: 'returned', effectEvidence: 'dispatched' });
+  now = 200;
+  assert.equal(runtime.publish(source, true, { operationId: '2', deadline: 600 }).ok, true);
+  runtime.flush();
+  assert.equal(route.operations()[1].handlerResult, 'running');
+  runtime.revoke(route);
+  assert.equal(signal?.aborted, true);
+  assert.equal(route.operations()[1].handlerResult, 'running');
+  finish!(); await new Promise<void>(resolve => setImmediate(resolve));
+  assert.equal(route.operations()[1].handlerResult, 'returned');
+  assert.equal(route.operations()[1].state, 'cancelled');
+  runtime.close();
 });

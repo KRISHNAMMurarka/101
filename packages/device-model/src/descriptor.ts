@@ -34,7 +34,7 @@ export type OwnershipPolicy = { mode: 'exclusive' } | { mode: 'observe' }
   | { mode: 'partitioned'; partitions: readonly string[] };
 export interface DeviceCapability {
   id: string; semantic: string; schemaVersion: number;
-  kind: 'sample' | 'event' | 'command' | 'property';
+  kind: 'sample' | 'event' | 'command' | 'property' | 'job';
   value: ValueSchema; delivery: DeliveryPolicy;
   permissions: readonly PermissionOperation[]; ownership?: OwnershipPolicy;
   metadata?: JsonObject; extensions?: JsonObject;
@@ -409,7 +409,7 @@ function parseCapability(input: unknown, path: string): DeviceCapability {
   const capability = object(input, path);
   closed(capability, ['id', 'semantic', 'schemaVersion', 'kind', 'value', 'delivery', 'permissions'], ['ownership', 'metadata', 'extensions'], path);
   const kind = capability.kind;
-  if (kind !== 'sample' && kind !== 'event' && kind !== 'command' && kind !== 'property') fail('capability-kind', `${path}.kind`);
+  if (kind !== 'sample' && kind !== 'event' && kind !== 'command' && kind !== 'property' && kind !== 'job') fail('capability-kind', `${path}.kind`);
   const permissions = stringList(capability.permissions, `${path}.permissions`, 4);
   if (permissions.some((permission) => !['read', 'subscribe', 'write', 'invoke'].includes(permission))) fail('permission-operation', `${path}.permissions`);
   const schemaVersion = integer(capability.schemaVersion, `${path}.schemaVersion`, 4294967295);

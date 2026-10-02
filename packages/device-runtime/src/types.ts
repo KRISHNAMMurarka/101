@@ -40,6 +40,8 @@ export interface SinkProvider {
 }
 export interface RouteRequest {
   from: EndpointHandle; to: EndpointHandle; principalId: string; applicationId: string; sessionId: string;
+  /** Read is a single latest property snapshot; subscribe is a continuing route. */
+  sourceOperation?: "read" | "subscribe";
   partition?: string; leaseMs?: number; queueCapacity?: number;
   /** Optional caller constraints only narrow the host-authorized grant. */
   constraints?: RouteGrant;

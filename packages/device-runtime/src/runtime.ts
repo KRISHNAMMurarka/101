@@ -9,7 +9,7 @@ import type { AuthorizationRequest, Connection, DeliveryContext, DeviceRuntime, 
 interface Registration {
   handle: EndpointHandle; descriptor: DeviceDescriptor; capability: DeviceCapability;
   role: "source" | "sink"; readiness: Readiness; readinessExpiresAt?: number; sequence: number; operation: number;
-  routes: Set<EmbeddedConnection>; provider?: Pick<SinkProvider, "apply" | "release">;
+  routes: Set<EmbeddedConnection>; propertySnapshot?: Observation; provider?: Pick<SinkProvider, "apply" | "release">;
 }
 const READINESS: readonly string[] = ["available", "unavailable", "busy", "denied", "stale"];
 const OPTIONS = ["sequence", "timestamp", "clockDomain", "quality", "provenance", "operationId", "deadline"];
@@ -91,9 +91,11 @@ export class EmbeddedRuntime implements DeviceRuntime {
     const descriptor = parseDeviceDescriptor(device);
     const capability = descriptor.capabilities.find((candidate) => candidate.id === capabilityId);
     if (!capability) throw new TypeError("Unknown capability");
-    if (role === "source" ? (!capability.permissions.some((value) => value === "read" || value === "subscribe") || capability.kind === "command")
+    if (role === "source" ? (!capability.permissions.some((value) => value === "read" || value === "subscribe") || capability.kind === "command" || capability.kind === "job")
       : !capability.permissions.some((value) => value === "write" || value === "invoke")) throw new TypeError("Unsupported operation");
-    if (capability.kind === "command" && capability.delivery.mode !== "reliable") throw new TypeError("Commands require reliable delivery");
+    if ((capability.kind === "command" || capability.kind === "job") && capability.delivery.mode !== "reliable")
+      throw new TypeError("Commands and jobs require reliable delivery");
+    if (role === "sink" && capability.kind === "job" && !capability.permissions.includes("invoke")) throw new TypeError("Jobs require invoke permission");
     const handle = Object.freeze({ id: `registration-${++this.registrationId}` });
     const entry: Registration = { handle, descriptor, capability, role, readiness: "unavailable", sequence: -1,
       operation: 0, routes: new Set(), provider };
@@ -116,7 +118,10 @@ export class EmbeddedRuntime implements DeviceRuntime {
       expiresAt < 0 || expiresAt > Number.MAX_SAFE_INTEGER)) return failure("invalid-expiry");
     entry.readiness = readiness;
     entry.readinessExpiresAt = expiresAt;
-    if (readiness !== "available") for (const route of [...entry.routes]) route.stop(readiness);
+    if (readiness !== "available") {
+      entry.propertySnapshot = undefined;
+      for (const route of [...entry.routes]) route.stop(readiness);
+    }
     return success();
   }
   expireReadiness(entry: Registration, now: number): void {
@@ -136,12 +141,19 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.connections.add(route);
     return route;
   }
-  activate(route: EmbeddedConnection, request: RouteRequest): Result<{ source: Registration; sink: Registration; grant: RouteGrant; now: number; leaseKey?: string }> {
+  activate(route: EmbeddedConnection, request: RouteRequest): Result<{ source: Registration; sink: Registration;
+    sourceOperation: "read" | "subscribe"; readSnapshot?: Observation;
+    grant: RouteGrant; now: number; leaseKey?: string }> {
     if (this.closed) return failure("closed");
     if (this.authorizing) return failure("authorization-reentry");
     const source = this.entry(request.from), sink = this.entry(request.to);
     if (!source || !sink || source.role !== "source" || sink.role !== "sink") return failure("unknown-endpoint");
     if (![request.principalId, request.applicationId, request.sessionId].every(identifier)) return failure("invalid-identity");
+    const sourceOperation = request.sourceOperation ?? (source.capability.permissions.includes("subscribe") ? "subscribe" : "read");
+    if ((sourceOperation !== "read" && sourceOperation !== "subscribe") ||
+      !source.capability.permissions.includes(sourceOperation) ||
+      sourceOperation === "read" && (source.capability.kind !== "property" || source.capability.delivery.mode !== "latest"))
+      return failure("unsupported-operation");
     if (!schemasCompatible(source.capability, sink.capability) || source.capability.delivery.mode !== sink.capability.delivery.mode) return failure("incompatible");
     const ownership = sink.capability.ownership;
     if (ownership?.mode === "partitioned" ? !ownership.partitions.includes(request.partition ?? "") : request.partition !== undefined) return failure("invalid-partition");
@@ -153,8 +165,8 @@ export class EmbeddedRuntime implements DeviceRuntime {
     if (this.active.size >= this.maxRoutes || source.routes.size >= this.maxSubscribers) return failure("capacity");
     const authorization: AuthorizationRequest = Object.freeze({ principalId: request.principalId, applicationId: request.applicationId,
       sessionId: request.sessionId, source: reference(source), sink: reference(sink),
-      sourceOperation: source.capability.permissions.includes("subscribe") ? "subscribe" : "read",
-      sinkOperation: sink.capability.kind === "command" ? "invoke" : "write", ...(request.partition === undefined ? {} : { partition: request.partition }) });
+      sourceOperation,
+      sinkOperation: sink.capability.kind === "command" || sink.capability.kind === "job" ? "invoke" : "write", ...(request.partition === undefined ? {} : { partition: request.partition }) });
     if (!sink.capability.permissions.includes(authorization.sinkOperation)) return failure("unsupported-operation");
     let grant: RouteGrant | undefined;
     this.authorizing = true;
@@ -172,11 +184,15 @@ export class EmbeddedRuntime implements DeviceRuntime {
       grant = { expiresAt: Math.min(grant.expiresAt, constraints.expiresAt), maxAgeMs: Math.min(grant.maxAgeMs, constraints.maxAgeMs),
         maxHz: Math.min(grant.maxHz ?? 1000, constraints.maxHz ?? 1000) };
     }
+    const readSnapshot = sourceOperation === "read" ? source.propertySnapshot : undefined;
+    if (sourceOperation === "read" && !readSnapshot) return failure("unavailable");
+    if (readSnapshot && (readSnapshot.timestamp > now || now - readSnapshot.timestamp >
+      Math.min(grant.maxAgeMs, source.capability.delivery.maxAgeMs, sink.capability.delivery.maxAgeMs))) return failure("stale");
     const leaseKey = ownership?.mode === "observe" ? undefined : `${sink.handle.id}:${request.partition ?? ""}`;
     const expiresAt = Math.min(grant.expiresAt, now + (request.leaseMs ?? 1500));
     if (leaseKey && !this.leases.claim(leaseKey, route.id, expiresAt, now)) return failure("busy");
     this.active.add(route); source.routes.add(route); sink.routes.add(route);
-    return success({ source, sink, grant, now, leaseKey });
+    return success({ source, sink, sourceOperation, ...(readSnapshot ? { readSnapshot } : {}), grant, now, leaseKey });
   }
   detach(route: EmbeddedConnection, source: Registration, sink: Registration, leaseKey?: string): void {
     this.active.delete(route); source.routes.delete(route); sink.routes.delete(route);
@@ -231,6 +247,8 @@ export class EmbeddedRuntime implements DeviceRuntime {
         if (result.ok) accepted++; else { rejected++; reason = result.reason; }
       }
       if (reliable && accepted === 0) return failure(reason);
+      if (entry.capability.kind === "property" && entry.capability.delivery.mode === "latest")
+        entry.propertySnapshot = observation;
       entry.sequence = sequence;
       if (reliable) entry.operation = Number(valueOptions.operationId);
       return success({ accepted, rejected });
@@ -278,6 +296,7 @@ class EmbeddedConnection implements Connection {
   private latestBusy = false;
   private lastDispatch = -Infinity;
   private generation = 0;
+  private oneShot = false;
   private maxAgeMs = 0;
   private maxHz = 1;
 
@@ -296,13 +315,15 @@ class EmbeddedConnection implements Connection {
     try {
       const result = this.runtime.activate(this, this.request);
       if (!result.ok) { this.reason = result.reason; return result; }
-      const { source, sink, grant, now, leaseKey } = result.value;
+      const { source, sink, sourceOperation, readSnapshot, grant, now, leaseKey } = result.value;
       this.source = source; this.sink = sink; this.grant = grant; this.leaseKey = leaseKey;
+      this.oneShot = sourceOperation === "read";
       this.expiresAt = Math.min(grant.expiresAt, now + this.leaseMs);
       this.maxAgeMs = Math.min(grant.maxAgeMs, source.capability.delivery.maxAgeMs, sink.capability.delivery.maxAgeMs);
       this.maxHz = Math.min(grant.maxHz ?? 1000, source.capability.delivery.mode === "latest" ? source.capability.delivery.maxHz : 1000,
         sink.capability.delivery.mode === "latest" ? sink.capability.delivery.maxHz : 1000);
       this.state = "active"; this.reason = undefined; this.generation++;
+      if (readSnapshot) this.latest.offer(readSnapshot, readSnapshot.receivedAt);
       return success();
     } finally { this.starting = false; }
   }
@@ -348,6 +369,7 @@ class EmbeddedConnection implements Connection {
   }
   offer(observation: Observation, now: number, options: PublishOptions): Result {
     this.check(now);
+    if (this.oneShot) return failure("read-snapshot");
     if (this.state !== "active" || now - observation.timestamp > this.maxAgeMs) return failure("stale");
     if (this.source!.capability.delivery.mode === "latest") {
       this.latest.offer(observation, observation.timestamp); return success();
@@ -361,7 +383,11 @@ class EmbeddedConnection implements Connection {
     if (this.source!.capability.delivery.mode === "latest") {
       if (this.latestBusy || !this.latest.size || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery()) return [];
       const observation = this.latest.take(now, this.maxAgeMs);
-      if (!observation) { this.runtime.releaseDelivery(); return []; }
+      if (!observation) {
+        this.runtime.releaseDelivery();
+        if (this.oneShot) this.stop("stale");
+        return [];
+      }
       this.lastDispatch = now; this.latestBusy = true;
       return [() => this.dispatch(observation)];
     } else {
@@ -385,7 +411,7 @@ class EmbeddedConnection implements Connection {
     const controller = new AbortController();
     const key = operationId ?? "latest", generation = this.generation;
     this.inFlight.set(key, controller); if (!operationId) this.latestBusy = true;
-    if (operationId) this.queue.pin(operationId);
+    if (operationId) { this.queue.pin(operationId); this.queue.started(operationId); }
     const context: DeliveryContext = Object.freeze({ signal: controller.signal, routeId: this.id, generation, operationId, partition: this.request.partition,
       isCurrent: () => {
         if (this.state !== "active" || this.generation !== generation || controller.signal.aborted) return false;
@@ -405,6 +431,7 @@ class EmbeddedConnection implements Connection {
         this.queue.unpin(operationId, settledAt);
       }
       if (failed && this.state === "active") this.stop("provider-failed");
+      if (!failed && this.oneShot && this.state === "active") this.stop("read-complete");
     };
     try {
       const returned = this.sink!.provider!.apply(observation, context);

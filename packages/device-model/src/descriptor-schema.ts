@@ -94,7 +94,7 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
     ] },
     capability: closed({
       id: identifier, semantic: namespaced, schemaVersion: positiveInteger,
-      kind: { enum: ['sample', 'event', 'command', 'property'] }, value: { $ref: '#/definitions/value' },
+      kind: { enum: ['sample', 'event', 'command', 'property', 'job'] }, value: { $ref: '#/definitions/value' },
       delivery: { $ref: '#/definitions/delivery' },
       permissions: { type: 'array', minItems: 1, maxItems: 4, uniqueItems: true, items: { enum: ['read', 'subscribe', 'write', 'invoke'] } },
       ownership: { $ref: '#/definitions/ownership' }, metadata: { $ref: '#/definitions/jsonObject' }, extensions: { $ref: '#/definitions/extensions' },

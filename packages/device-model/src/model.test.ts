@@ -52,6 +52,14 @@ test('unknown fields, duplicate capability IDs and unnamespaced definitions fail
   rejects({ ...thermometer, runtime: { platform: 'embedded-test', executable: 'code' } });
 });
 
+test('an asynchronous job is a declared reliable invoke capability', () => {
+  const job = { ...temperature, id: 'print', semantic: 'example:print', kind: 'job',
+    value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 1000 },
+    permissions: ['invoke'] };
+  assert.deepEqual(parseDeviceDescriptor({ ...thermometer, capabilities: [job] }).capabilities[0].kind, 'job');
+  rejects({ ...thermometer, capabilities: [{ ...job, kind: 'task' }] });
+});
+
 test('descriptor strings, revision, delivery and enumeration limits reject their first excess', () => {
   assert.doesNotThrow(() => parseDeviceDescriptor({ ...thermometer, id: 'x'.repeat(128), label: 'x'.repeat(160), revision: 4294967295 }));
   for (const changes of [
@@ -190,6 +198,7 @@ test('draft-07 editor schema agrees with runtime structural fixtures', () => {
   const valid = [
     thermometer,
     { ...thermometer, capabilities: [{ ...temperature, value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 50 }, ownership: { mode: 'exclusive' }, permissions: ['invoke'] }] },
+    { ...thermometer, capabilities: [{ ...temperature, kind: 'job', value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 50 }, permissions: ['invoke'] }] },
     { ...thermometer, capabilities: [{ ...temperature, value: { type: 'vector', unit: '1', frame: 'surface-normalized', min: 0, max: 1, components: ['x', 'y'] } }], extensions: { 'vendor:info': { version: 1 } } },
   ];
   const invalid = [
