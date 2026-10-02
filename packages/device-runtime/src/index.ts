@@ -4,3 +4,5 @@ import type { DeviceRuntime, RuntimeOptions } from "./types.ts";
 export const createDeviceRuntime = (options: RuntimeOptions): DeviceRuntime => new EmbeddedRuntime(options);
 export type * from "./types.ts";
 export type { Evidence, OperationRecord, OperationState, Result } from "./scheduler.ts";
+export { chunkResource, readVerifiedResource, ResourceTransferError } from './resource.ts';
+export type { ResourceChunk, ResourceReadScope, ResourceReadRequest, ResourceReadGrant, ReadVerifiedResourceOptions } from './resource.ts';

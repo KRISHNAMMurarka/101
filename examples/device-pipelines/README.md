@@ -125,6 +125,16 @@ returns the fixture summary. A continuing `createRichInputPipeline()` caller
 invokes `renew()` before the ten-second lease expires and flushes after
 publishing. The fixtures do not claim actual browser or native input.
 
+## Bounded document resources
+
+`resource-documents.ts` reads a simulated UTF-8 text resource and JSON
+document through the public `@101/connect` facade. Each read supplies an
+inert content reference, a separate host authorization decision and ordered
+chunks. The receiver checks size, SHA-256 and content before returning bytes;
+denial, changed bytes and cancellation expose no partial document. This
+example does not read a URL or filesystem path, and it does not qualify a
+remote or physical provider.
+
 ## Local peer resource example
 
 [remote-pointer.ts](remote-pointer.ts) declares application pointer/contact resources and explicit owner selection into host-authorized sinks through the public facade. Run `node tools/qa-resource-peer.mjs chromium` or `webkit` from the repository root for actual two-peer WebRTC with synthetic values, both diagonals, resize and loss. This separately labeled runtime check does not prove a phone touch provider, native input, endpoint authentication or physical acceptance. See [resource QA](../../docs/platform/RESOURCE-BINDING-QA-2026-10-02.md).

@@ -12,3 +12,5 @@ export { createUnitConverter, parseUnitToken } from './units.ts';
 export type { UnitConverter, UnitConverterOptions, UnitConversionMetadata } from './units.ts';
 export { createSpatialPoseConverter } from './spatial.ts';
 export type { SpatialPoseConverter, SpatialPoseConverterOptions, SpatialConversionMetadata } from './spatial.ts';
+export { createAssetReference, parseAssetReference, verifyAssetContent, snapshotResourceBytes, MAX_RESOURCE_BYTES, MAX_RESOURCE_CHUNK_BYTES } from './resource.ts';
+export type { AssetKind, AssetReference } from './resource.ts';

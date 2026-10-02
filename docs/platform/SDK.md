@@ -167,6 +167,23 @@ browser/native input provider availability and physical behavior are not
 established by these fixtures. A continuing example caller invokes `renew()`
 before its ten-second route lease expires and owns the `flush()` cadence.
 
+## Binary and document resources
+
+`createAssetReference()` and `parseAssetReference()` define an inert typed
+resource ID, exact media type, byte length and SHA-256. The initial kinds are
+opaque blob, UTF-8 text and JSON document; the latter two have a 64 KiB
+limit, and blobs have an 8 MiB limit. A reference never fetches a URL or
+grants read permission. `chunkResource()` snapshots bytes and yields ordered
+chunks of at most 16 KiB. `readVerifiedResource()` requires an explicit
+scope and host grant for every read, bounds the resource and chunk count,
+checks expiry/cancellation, then validates complete length, digest and
+content before returning a fresh byte copy. Abort interrupts a stalled
+source; no partial bytes are returned. This is a local software resource
+path separate from the 4 KiB signal packets. The
+[simulated document example](../../examples/device-pipelines/resource-documents.ts)
+demonstrates success, denial, changed content and cancellation; remote
+transport and actual file/browser/native providers remain separate work.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

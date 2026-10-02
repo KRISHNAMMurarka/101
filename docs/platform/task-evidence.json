@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 15,
+  "revision": 16,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6242,6 +6242,32 @@
       "supportRows": []
     },
     {
+      "id": "binary-resources-2026-10-02",
+      "revision": "containing implementation commit, base 1088b086214bb97a4532657b40abb4655ea5955b; immutable SDK producer tree 521cf5260e88d89d6d41ae88503e11bfa0e8a689 and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M04"
+      ],
+      "paths": [
+        "docs/platform/BINARY-RESOURCES-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-binary-resource-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-binary-resource-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-binary-resource-sdk-consumer-commands.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed API consumers; no filesystem, remote transport or physical resource provider",
+      "reproduction": "Focused resource model/runtime/pipeline RED-GREEN regressions and independent review in QA; node tools/build-sdk.mjs 521cf5260e88d89d6d41ae88503e11bfa0e8a689; node tools/qa-sdk-consumer.mjs release/sdk-LNbmEe/manifest.json; exact candidate repository gates",
+      "scope": "M04 only: inert typed blob/text/JSON-document references, bounded ordered chunks, per-read host grant, intrinsic byte snapshot, byte count/SHA-256/content checks, prompt abort and expiry, simulated authorized document caller and clean packed consumer. No remote transport, PDF/image/media decoder, physical provider/support/full-release promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6476,7 +6502,8 @@
     {
       "id": "M04",
       "records": [
-        "pending-M04"
+        "pending-M04",
+        "binary-resources-2026-10-02"
       ],
       "dependencies": [
         "C01",
