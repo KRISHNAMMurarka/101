@@ -1,16 +1,7 @@
-import { createDeviceRuntime, RemoteResourceReceiver } from '@101/connect';
-import type { DeviceDescriptor, ResourcePeer, WireCodec } from '@101/connect';
+import { createDeviceRuntime, RemoteResourceReceiver, pointerSourceDescriptor } from '@101/connect';
+export { pointerSourceDescriptor } from '@101/connect';
+import type { DeviceDescriptor, ResourcePeer, WireCodec, RouteGrant, Observation } from '@101/connect';
 
-export function pointerSourceDescriptor(): DeviceDescriptor {
-  return { schemaVersion: 1, id: 'touch-surface', label: 'Touch surface', revision: 1,
-    adapter: { id: 'app:touch-surface', version: '1.0.0' }, runtime: { platform: 'provider-selected-by-host' }, capabilities: [
-      { id: 'position', semantic: 'app:pointer-position/1', schemaVersion: 1, kind: 'sample',
-        value: { type: 'vector', components: ['x', 'y'], unit: '1', frame: 'surface-normalized', min: 0, max: 1 },
-        delivery: { mode: 'latest', maxHz: 60, maxAgeMs: 100 }, permissions: ['subscribe'] },
-      { id: 'contact', semantic: 'app:pointer-contact/1', schemaVersion: 1, kind: 'event', value: { type: 'boolean' },
-        delivery: { mode: 'reliable', maxAgeMs: 100 }, permissions: ['subscribe'] },
-    ] };
-}
 const surfaceDescriptor: DeviceDescriptor = {
   ...pointerSourceDescriptor(), id: 'application-surface', label: 'Application surface',
   adapter: { id: 'app:pointer-surface', version: '1.0.0' }, runtime: { platform: 'browser-application' },
@@ -19,7 +10,7 @@ const surfaceDescriptor: DeviceDescriptor = {
 interface SurfaceOptions {
   peer: ResourcePeer; epoch: string; principalId: string; applicationId: string; sessionId: string;
   clockId: string; now: () => number; width: number; height: number;
-  onChange?: () => void; onStatus?: (status: string) => void;
+  onChange?: () => void; onObservation?: (observation: Observation) => void; onStatus?: (status: string) => void;
 }
 /** An app-owned surface. The caller enrolls its peer and invokes select after owner consent. */
 export function createRemotePointerSurface(options: SurfaceOptions) {
@@ -29,8 +20,7 @@ export function createRemotePointerSurface(options: SurfaceOptions) {
   const allowed = new Set<string>();
   const now = options.now;
   const identity = Object.freeze({ principalId: options.principalId, applicationId: options.applicationId, sessionId: options.sessionId });
-  const expiresAt = now() + 60000;
-  const ownerGrant = Object.freeze({ expiresAt, maxHz: 60, maxAgeMs: 100 });
+  let ownerGrant: Readonly<RouteGrant> | undefined;
   const runtime = createDeviceRuntime({ now, clockDomain: options.clockId, authorize(request) {
     if (request.principalId !== identity.principalId || request.applicationId !== identity.applicationId || request.sessionId !== identity.sessionId ||
       request.source.deviceId !== receiver.description()?.id || !allowed.has(request.source.capabilityId) ||
@@ -44,6 +34,7 @@ export function createRemotePointerSurface(options: SurfaceOptions) {
         if (capability.id === 'position' && typeof observation.value === 'object') normalized = { x: observation.value.x, y: observation.value.y };
         if (capability.id === 'contact' && typeof observation.value === 'boolean') contact = observation.value;
         options.onChange?.();
+        try { options.onObservation?.(observation); } catch { /* An evidence observer cannot own a route. */ }
       },
       release() { if (capability.id === 'position') normalized = undefined; else contact = false; releases++; options.onChange?.(); },
     });
@@ -60,6 +51,7 @@ export function createRemotePointerSurface(options: SurfaceOptions) {
     receiver,
     select(codec: WireCodec = 'normalized-pointer/1'): boolean {
       const description = receiver.description(); if (!description) return false;
+      ownerGrant = Object.freeze({ expiresAt: now() + 60000, maxHz: 60, maxAgeMs: 100 });
       const approved: number[] = [];
       for (const sink of surfaceDescriptor.capabilities) {
         const source = description.capabilities.find(capability => capability.semantic === sink.semantic);

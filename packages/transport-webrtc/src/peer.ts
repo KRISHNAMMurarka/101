@@ -1,3 +1,4 @@
+import type { PeerConnectionPort, PeerDataChannelPort } from './ports.ts';
 export type PeerState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'failed';
 export type PeerLane = 'reliable' | 'disposable';
 export type PeerData = string | ArrayBuffer | Uint8Array;
@@ -8,15 +9,15 @@ export interface PeerTransportOptions {
   reliableBufferLimit?: number;
   disposableBufferLimit?: number;
   maxMessageBytes?: number;
-  createPeer?: (configuration: RTCConfiguration) => RTCPeerConnection;
+  createPeer?: (configuration: RTCConfiguration) => PeerConnectionPort;
 }
 
 /** Raw, game-independent peer. Payload parsing and resource authority belong to the caller. */
 export class PeerDataTransport {
-  private peer?: RTCPeerConnection;
+  private peer?: PeerConnectionPort;
   private generation = 0;
   private lifecycle?: AbortController;
-  private readonly channels: Partial<Record<PeerLane, RTCDataChannel>> = {};
+  private readonly channels: Partial<Record<PeerLane, PeerDataChannelPort>> = {};
   private readonly dataListeners = new Set<(lane: PeerLane, data: string | ArrayBuffer) => void>();
   private readonly stateListeners = new Set<(state: PeerState) => void>();
   private currentState: PeerState = 'idle';
@@ -41,7 +42,7 @@ export class PeerDataTransport {
 
   async connect(): Promise<void> {
     if (this.peer) return;
-    const createPeer = this.options.createPeer ?? (configuration => new RTCPeerConnection(configuration));
+    const createPeer: NonNullable<PeerTransportOptions['createPeer']> = this.options.createPeer ?? (configuration => new RTCPeerConnection(configuration));
     const peer = createPeer({ iceServers: this.options.iceServers ?? [] });
     const generation = ++this.generation;
     this.peer = peer;
@@ -148,7 +149,7 @@ export class PeerDataTransport {
   }
   async stats(): Promise<RTCStatsReport | undefined> { return this.peer?.getStats(); }
 
-  private attach(lane: PeerLane, channel: RTCDataChannel, peer: RTCPeerConnection, generation: number): void {
+  private attach(lane: PeerLane, channel: PeerDataChannelPort, peer: PeerConnectionPort, generation: number): void {
     if (!this.matchesDelivery(lane, channel)) { channel.close(); throw new Error('Incompatible peer channel delivery'); }
     this.channels[lane] = channel;
     channel.binaryType = 'arraybuffer';
@@ -168,28 +169,28 @@ export class PeerDataTransport {
     channel.onerror = () => { if (this.isCurrent(peer, generation)) this.setState('failed'); };
   }
 
-  private transaction(): { peer: RTCPeerConnection; generation: number; signal: AbortSignal } {
+  private transaction(): { peer: PeerConnectionPort; generation: number; signal: AbortSignal } {
     if (!this.peer || !this.lifecycle) throw new Error('Peer is disconnected; connect before exchanging descriptions');
     return { peer: this.peer, generation: this.generation, signal: this.lifecycle.signal };
   }
-  private matchesDelivery(lane: PeerLane, channel: RTCDataChannel): boolean {
+  private matchesDelivery(lane: PeerLane, channel: PeerDataChannelPort): boolean {
     return channel.maxPacketLifeTime === null && (lane === 'reliable'
       ? channel.ordered && channel.maxRetransmits === null
       : !channel.ordered && channel.maxRetransmits === 0);
   }
-  private isCurrent(peer: RTCPeerConnection, generation: number): boolean { return this.peer === peer && this.generation === generation; }
-  private checkCurrent(peer: RTCPeerConnection, generation: number): void {
+  private isCurrent(peer: PeerConnectionPort, generation: number): boolean { return this.peer === peer && this.generation === generation; }
+  private checkCurrent(peer: PeerConnectionPort, generation: number): void {
     if (!this.isCurrent(peer, generation)) throw new Error('Peer disconnected during negotiation (stale generation)');
   }
   private validateDescription(description: RTCSessionDescriptionInit, type: 'offer' | 'answer'): void {
     if (description.type !== type || typeof description.sdp !== 'string' || !description.sdp || description.sdp.length > 256000)
       throw new Error(`Expected a bounded WebRTC ${type} description`);
   }
-  private localDescription(peer: RTCPeerConnection): RTCSessionDescriptionInit {
+  private localDescription(peer: PeerConnectionPort): RTCSessionDescriptionInit {
     if (!peer.localDescription?.sdp) throw new Error('WebRTC did not produce pairing data');
     return { type: peer.localDescription.type, sdp: peer.localDescription.sdp };
   }
-  private async gather(peer: RTCPeerConnection, signal: AbortSignal): Promise<void> {
+  private async gather(peer: PeerConnectionPort, signal: AbortSignal): Promise<void> {
     if (signal.aborted) throw new Error('Peer disconnected during ICE gathering');
     if (peer.iceGatheringState === 'complete') return;
     await new Promise<void>((resolve, reject) => {

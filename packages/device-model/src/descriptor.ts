@@ -107,14 +107,18 @@ function copyJson(input: unknown, maxDepth: number): JsonValue {
       const length = Object.getOwnPropertyDescriptor(value, 'length')?.value as number;
       if (length > MAX_ENTRIES) fail('entry-limit', path);
       if (entries.length !== length || entries.some((key, index) => key !== String(index))) fail('dense-json-array', path);
-      result = entries.map((key) => copy(descriptors[key].value, depth + 1, `${path}[${key}]`));
+      result = entries.map((key) => {
+        const property = descriptors[key]; if (!property) fail('data-property', `${path}[${key}]`);
+        return copy(property.value, depth + 1, `${path}[${key}]`);
+      });
     } else {
       const object: JsonObject = {};
       for (const key of entries) {
         consumeText(key, path);
         consume(1, path);
         // Defining the data property keeps __proto__ and constructor inert.
-        Object.defineProperty(object, key, { value: copy(descriptors[key].value, depth + 1, `${path}.${key}`), enumerable: true, writable: true, configurable: true });
+        const property = descriptors[key]; if (!property) fail('data-property', `${path}.${key}`);
+        Object.defineProperty(object, key, { value: copy(property.value, depth + 1, `${path}.${key}`), enumerable: true, writable: true, configurable: true });
       }
       result = object;
     }

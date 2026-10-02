@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 3,
+  "revision": 4,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5597,6 +5597,347 @@
           ]
         }
       }
+    },
+    {
+      "id": "pointer-provider-2026-10-02",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "T06",
+        "T07",
+        "T09",
+        "I02",
+        "I12",
+        "N02",
+        "N03",
+        "N04"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/SDK.md"
+      ],
+      "scope": "Complete T06 scheduling and T09 explicit 101 consumer; implemented browser/native pointer subset only for other tasks, with native virtual movement unresolved and physical/authenticated enrollment absent",
+      "reproduction": "Repository commit gates; npm run native:typecheck; npm run native:test; npm run native:export; focused native20/driver14/provider3/manual3/game11/surface1 regressions",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [
+        "pointer-ui-chromium-2026-10-02",
+        "game-pointer-chromium-2026-10-02",
+        "pointer-native-ios-simulator-2026-10-02"
+      ],
+      "supportTargets": {
+        "pointer-ui-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright Chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "real DOM pointer/keyboard to independent application surface"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection"
+          ]
+        },
+        "game-pointer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright Chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "typed resources to explicitly mapped 101 Input Lab aim/trigger"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection"
+          ]
+        },
+        "pointer-native-ios-simulator-2026-10-02": {
+          "os": "iOS Simulator",
+          "osVersion": "26.5",
+          "runtime": "React Native/Hermes + native WebRTC",
+          "runtimeVersion": "0.86.2 / 124.0.8",
+          "formFactor": "iPhone17 Simulator",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "native source directional/contact subset to Chromium application"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection",
+            "qualified touch movement"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pointer-ui-chromium-2026-10-02",
+      "result": "pass",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T06",
+        "T07",
+        "T08",
+        "I02",
+        "I12"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-pointer-ui-chromium.json"
+      ],
+      "scope": "Actual source DOM events through real two-page Chromium WebRTC, owner consent, independent sinks, resize, anchor/contact/keyboard/reconnect and80 mapped capture-to-DOM intervals; no native/physical/authenticated endpoint or display scanout claim",
+      "reproduction": "node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:3002/pointer-lab against fresh local build292576be770640c6",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [
+        "pointer-ui-chromium-2026-10-02"
+      ],
+      "supportTargets": {
+        "pointer-ui-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright Chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "real DOM pointer/keyboard to independent application surface"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection"
+          ]
+        }
+      }
+    },
+    {
+      "id": "game-pointer-chromium-2026-10-02",
+      "result": "pass",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T09"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-game-pointer-chromium.json"
+      ],
+      "scope": "Actual approved typed resources to real 101 Input Lab consumer via explicit custom source/aim/trigger mapping; canvas observation preserves actual rendering; no injected bus frames, all-games or physical claim",
+      "reproduction": "node tools/qa-game-pointer-ui.mjs http://127.0.0.1:3002 against fresh local build292576be770640c6",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [
+        "game-pointer-chromium-2026-10-02"
+      ],
+      "supportTargets": {
+        "game-pointer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright Chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "typed resources to explicitly mapped 101 Input Lab aim/trigger"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pointer-ui-webkit-failed-2026-10-02",
+      "result": "fail",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T07",
+        "T08"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-pointer-ui-webkit-failed.json"
+      ],
+      "scope": "Actual separate-page WebKit pointer UI; unchanged failure on IPv4 production origin, distinct from earlier single-page synthetic route",
+      "reproduction": "node tools/qa-pointer-ui.mjs webkit http://127.0.0.1:3002/pointer-lab",
+      "failure": "Two-page UI owner-approval readiness timed out after 15 seconds; stable signaling but both ICE/connection states new, source channels connecting, no candidate-pair statistics, no application output.",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "supportRows": [],
+      "supportTargets": {}
+    },
+    {
+      "id": "pointer-native-partial-2026-10-02",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "T07",
+        "T08",
+        "N03",
+        "N04"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-pointer-native.json"
+      ],
+      "scope": "Partial actual iOS Simulator native source directional/contact/stop binding, typed adapter/runtime/build/export; not full T07, native touch motion, physical candidate or endpoint authentication acceptance",
+      "reproduction": "Recorded local native build/export and actual Simulator/Chromium manual pairing; CUA button/contact/Stop interactions, source module maps in receipt",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [
+        "pointer-native-ios-simulator-2026-10-02"
+      ],
+      "supportTargets": {
+        "pointer-native-ios-simulator-2026-10-02": {
+          "os": "iOS Simulator",
+          "osVersion": "26.5",
+          "runtime": "React Native/Hermes + native WebRTC",
+          "runtimeVersion": "0.86.2 / 124.0.8",
+          "formFactor": "iPhone17 Simulator",
+          "transport": "local WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+          "profiles": [
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "native source directional/contact subset to Chromium application"
+          ],
+          "unavailable": [
+            "physical candidate acceptance",
+            "endpoint key authentication",
+            "cross-network/relay acceptance",
+            "OS pointer injection",
+            "qualified touch movement"
+          ]
+        }
+      }
+    },
+    {
+      "id": "pointer-native-touch-unqualified-2026-10-02",
+      "result": "fail",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T07",
+        "T08",
+        "I02"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-pointer-native.json"
+      ],
+      "scope": "Native virtual drag movement qualification; not a physical observation",
+      "reproduction": "Actual native Simulator source paired to Chromium, CUA horizontal/diagonal pad drags, original and reverted responder experiment",
+      "failure": "Virtual drags produce Contact begin/end but no Position movement. Source versus simulator automation cause is unresolved; experiment did not repair it.",
+      "revision": "containing commit based9bf6ec4; immutable source module maps in linked receipts",
+      "historical": false,
+      "environment": "macOS26.5.2 (25F84), Node24.14.0, Playwright1.61.1; native React Native0.86.2/WebRTC124.0.8/iOS26.5 Simulator where explicitly recorded",
+      "equipment": [
+        "Local browsers and native build tools; actual physical iPhone/Android still required for T08/T14"
+      ],
+      "supportRows": [],
+      "supportTargets": {}
     }
   ],
   "tasks": [
@@ -5982,11 +6323,19 @@
       "id": "T06",
       "records": [
         "pending-T06",
-        "resource-binding-2026-10-02"
+        "resource-binding-2026-10-02",
+        "pointer-provider-2026-10-02",
+        "pointer-ui-chromium-2026-10-02"
       ],
       "dependencies": [
         "C01",
-        "H01"
+        "H01",
+        "H06",
+        "H08",
+        "T02",
+        "T03",
+        "T05",
+        "T10"
       ],
       "equipment": [
         "Peer browser; iPhone and Android for T08/T14"
@@ -5995,11 +6344,22 @@
     {
       "id": "T07",
       "records": [
-        "pending-T07"
+        "pending-T07",
+        "pointer-provider-2026-10-02",
+        "pointer-ui-chromium-2026-10-02",
+        "pointer-ui-webkit-failed-2026-10-02",
+        "pointer-native-partial-2026-10-02",
+        "pointer-native-touch-unqualified-2026-10-02"
       ],
       "dependencies": [
         "C01",
-        "H01"
+        "H01",
+        "H06",
+        "H08",
+        "T02",
+        "T03",
+        "T05",
+        "T10"
       ],
       "equipment": [
         "Peer browser; iPhone and Android for T08/T14"
@@ -6008,7 +6368,11 @@
     {
       "id": "T08",
       "records": [
-        "pending-T08"
+        "pending-T08",
+        "pointer-ui-chromium-2026-10-02",
+        "pointer-ui-webkit-failed-2026-10-02",
+        "pointer-native-partial-2026-10-02",
+        "pointer-native-touch-unqualified-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6021,11 +6385,19 @@
     {
       "id": "T09",
       "records": [
-        "pending-T09"
+        "pending-T09",
+        "pointer-provider-2026-10-02",
+        "game-pointer-chromium-2026-10-02"
       ],
       "dependencies": [
         "C01",
-        "H01"
+        "H01",
+        "H06",
+        "H08",
+        "T02",
+        "T03",
+        "T05",
+        "T10"
       ],
       "equipment": [
         "Peer browser; iPhone and Android for T08/T14"
@@ -6483,7 +6855,8 @@
     {
       "id": "N02",
       "records": [
-        "pending-N02"
+        "pending-N02",
+        "pointer-provider-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6498,7 +6871,9 @@
     {
       "id": "N03",
       "records": [
-        "pending-N03"
+        "pending-N03",
+        "pointer-provider-2026-10-02",
+        "pointer-native-partial-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6513,7 +6888,9 @@
     {
       "id": "N04",
       "records": [
-        "pending-N04"
+        "pending-N04",
+        "pointer-provider-2026-10-02",
+        "pointer-native-partial-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6721,7 +7098,10 @@
     {
       "id": "I02",
       "records": [
-        "pending-I02"
+        "pending-I02",
+        "pointer-provider-2026-10-02",
+        "pointer-ui-chromium-2026-10-02",
+        "pointer-native-touch-unqualified-2026-10-02"
       ],
       "dependencies": [
         "M01",
@@ -6851,7 +7231,9 @@
     {
       "id": "I12",
       "records": [
-        "pending-I12"
+        "pending-I12",
+        "pointer-provider-2026-10-02",
+        "pointer-ui-chromium-2026-10-02"
       ],
       "dependencies": [
         "M01",

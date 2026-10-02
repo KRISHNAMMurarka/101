@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 3,
+  "revision": 4,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -1191,6 +1191,187 @@
         "contract",
         "runtime",
         "physical"
+      ]
+    },
+    {
+      "id": "pointer-ui-chromium-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright Chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "computer",
+        "transport": "local WebRTC/DTLS",
+        "connector": "@101/device-web + @101/connect",
+        "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+        "profiles": [
+          "connect/1",
+          "json/1",
+          "normalized-pointer/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "real DOM pointer/keyboard to independent application surface"
+        ],
+        "unavailable": [
+          "physical candidate acceptance",
+          "endpoint key authentication",
+          "cross-network/relay acceptance",
+          "OS pointer injection"
+        ]
+      },
+      "qualificationTasks": [
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T14",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "pointer-provider-2026-10-02"
+        ],
+        "contract": [
+          "pointer-provider-2026-10-02"
+        ],
+        "runtime": [
+          "pointer-ui-chromium-2026-10-02"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ],
+      "limitations": [
+        "Only the recorded subset is proven; T07/native touch and physical/full release qualification remain open."
+      ]
+    },
+    {
+      "id": "game-pointer-chromium-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright Chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "computer",
+        "transport": "local WebRTC/DTLS",
+        "connector": "@101/device-web + @101/connect",
+        "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+        "profiles": [
+          "connect/1",
+          "json/1",
+          "normalized-pointer/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed resources to explicitly mapped 101 Input Lab aim/trigger"
+        ],
+        "unavailable": [
+          "physical candidate acceptance",
+          "endpoint key authentication",
+          "cross-network/relay acceptance",
+          "OS pointer injection"
+        ]
+      },
+      "qualificationTasks": [
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T14",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "pointer-provider-2026-10-02"
+        ],
+        "contract": [
+          "pointer-provider-2026-10-02"
+        ],
+        "runtime": [
+          "game-pointer-chromium-2026-10-02"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ],
+      "limitations": [
+        "Only the recorded subset is proven; T07/native touch and physical/full release qualification remain open."
+      ]
+    },
+    {
+      "id": "pointer-native-ios-simulator-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "iOS Simulator",
+        "osVersion": "26.5",
+        "runtime": "React Native/Hermes + native WebRTC",
+        "runtimeVersion": "0.86.2 / 124.0.8",
+        "formFactor": "iPhone17 Simulator",
+        "transport": "local WebRTC/DTLS",
+        "connector": "@101/device-web + @101/connect",
+        "connectorVersion": "0.1.0; source SHA256 maps in pointer receipts",
+        "profiles": [
+          "connect/1",
+          "json/1",
+          "normalized-pointer/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "native source directional/contact subset to Chromium application"
+        ],
+        "unavailable": [
+          "physical candidate acceptance",
+          "endpoint key authentication",
+          "cross-network/relay acceptance",
+          "OS pointer injection",
+          "qualified touch movement"
+        ]
+      },
+      "qualificationTasks": [
+        "T06",
+        "T07",
+        "T08",
+        "T09",
+        "T14",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "pointer-provider-2026-10-02"
+        ],
+        "contract": [
+          "pointer-provider-2026-10-02"
+        ],
+        "runtime": [
+          "pointer-native-partial-2026-10-02"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ],
+      "limitations": [
+        "Only the recorded subset is proven; T07/native touch and physical/full release qualification remain open."
       ]
     }
   ]

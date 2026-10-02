@@ -564,3 +564,14 @@ test("each route carries exactly one title, and the controller keeps its own man
   const manifests = [...controller.matchAll(/<link rel="manifest" href="([^"]+)"/g)].map((m) => m[1]);
   assert.equal(manifests[0], "/link.webmanifest", `the controller must install as itself, not the site: ${manifests.join(" | ")}`);
 });
+
+test('renders explicit local pointer consent and keeps typed game mapping in Studio', async () => {
+  const independent = await (await render('/pointer-lab')).text();
+  assert.match(independent, /Pointer lab/);
+  assert.match(independent, /Allow pointer for one minute/);
+  assert.match(independent, /they do not verify endpoint identity/);
+  assert.match(independent, /Application pointer surface/);
+  const studio = await (await render('/studio')).text();
+  assert.match(studio, /href="\/pointer-lab"/);
+  assert.match(studio, /href="\/studio\/input"/);
+});

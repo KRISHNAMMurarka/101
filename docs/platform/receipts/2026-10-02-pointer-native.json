@@ -1,0 +1,381 @@
+{
+  "scope": "Partial native iOS Simulator source binding and local compilation/export, with failed virtual drag movement and unavailable physical acceptance. Current source module hashes identify the implementation; these partial observations do not attest full candidate acceptance.",
+  "sourceSha256": {
+    "apps/controller-native/src/PointerLab.tsx": "4bf98cd0459a85e9311edb9036e1519284c48fb53ed1ebce07178235cbf9e9a3",
+    "apps/controller-native/App.tsx": "1e25e3f16e4cb9a30f86341d2b7e24f79bc55b00333c05389a259f07dbd27259",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "c3b6f9ea22c410e6af8c23410088d7f8085a3128a7af28d2f2df6bce6e6e9e2b",
+    "packages/device-web/src/binding.ts": "ae6355223b62e62b21aab283b26cbdf3a6d4d9c5783c2c9c517e0f16dd437ca4",
+    "packages/transport-webrtc/src/peer.ts": "e3210b3bf3ef4705b8229c759722920c25f18f1aa552e5b243a9d9fe57f4925a",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209"
+  },
+  "environment": {
+    "os": "macOS26.5.2 (25F84)",
+    "simulator": "iPhone17 / iOS26.5",
+    "xcode": "26.6",
+    "reactNative": "0.86.2",
+    "expo": "57.0.12",
+    "reactNativeWebRTC": "124.0.8",
+    "hermes": "installed React Native Hermes",
+    "node": "24.14.0",
+    "androidGradle": "9.3.1",
+    "androidBuildJava": "21"
+  },
+  "runtime": {
+    "initialOfferFailure": "iOS unset delivery limit wrapped to uint16 65535, rejected by the original -1-only adapter; faithful regression failed before repair.",
+    "afterSentinelRepair": [
+      {
+        "scope": "Actual iOS Simulator Release/Hermes source, installed react-native-webrtc124.0.8 native data channels, CUA virtual touch/button interactions, real Chromium owner-approved independent application sink. Not physical phone/authenticated identity/display scanout proof.",
+        "browser": "149.0.7827.55",
+        "snapshots": [
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 1,
+            "earliest": 52913.589566075134,
+            "latest": 52915.09680787392,
+            "receivedAt": 52915.90000009537,
+            "renderedAt": 52920.700000047684,
+            "uncertaintyMs": 0.7536208993915352
+          },
+          {
+            "x": 0.525,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 282,
+            "earliest": 69717.4750919651,
+            "latest": 69718.63140794526,
+            "receivedAt": 69748.80000019073,
+            "renderedAt": 69749.10000014305,
+            "uncertaintyMs": 0.5781579900794895
+          },
+          {
+            "x": 0.525,
+            "y": 0.5252443890274314,
+            "contact": false,
+            "sequence": 291,
+            "earliest": 70247.77986025519,
+            "latest": 70248.83634901338,
+            "receivedAt": 70250.20000004768,
+            "renderedAt": 70260.80000019073,
+            "uncertaintyMs": 0.5282443790929392
+          },
+          {
+            "x": 0.5,
+            "y": 0.5252443890274314,
+            "contact": false,
+            "sequence": 519,
+            "earliest": 83897.7351670948,
+            "latest": 83898.9058338913,
+            "receivedAt": 83899.40000009537,
+            "renderedAt": 83909.10000014305,
+            "uncertaintyMs": 0.5853333982522599
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 528,
+            "earliest": 84430.85709008499,
+            "latest": 84432.12547674851,
+            "receivedAt": 84432.40000009537,
+            "renderedAt": 84439.70000004768,
+            "uncertaintyMs": 0.6341933317598887
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002367758186398,
+            "contact": true,
+            "sequence": 535,
+            "earliest": 84880.84067813096,
+            "latest": 84882.20080479445,
+            "receivedAt": 84891.10000014305,
+            "renderedAt": 84922,
+            "uncertaintyMs": 0.6800633317470783
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 535,
+            "earliest": 84880.84067813096,
+            "latest": 84882.20080479445,
+            "receivedAt": 84891.10000014305,
+            "renderedAt": 84940.40000009537,
+            "uncertaintyMs": 0.6800633317470783
+          },
+          {
+            "released": true,
+            "status": [
+              "Connection stopped. Start a fresh connection to continue."
+            ]
+          }
+        ],
+        "errors": []
+      },
+      {
+        "scope": "Actual iOS Simulator Release/Hermes source, installed react-native-webrtc124.0.8 native data channels, CUA virtual touch/button interactions, real Chromium owner-approved independent application sink. Not physical phone/authenticated identity/display scanout proof.",
+        "browser": "149.0.7827.55",
+        "snapshots": [
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 1,
+            "earliest": 103575.77594393394,
+            "latest": 103576.9827647815,
+            "receivedAt": 103577.39999985695,
+            "renderedAt": 103580.79999995232,
+            "uncertaintyMs": 0.6034104237769498
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002367758186398,
+            "contact": true,
+            "sequence": 358,
+            "earliest": 124942.508985008,
+            "latest": 124943.6040587771,
+            "receivedAt": 124944.39999985695,
+            "renderedAt": 124973,
+            "uncertaintyMs": 0.5475368845509365
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 359,
+            "earliest": 125009.08122983444,
+            "latest": 125010.18956360352,
+            "receivedAt": 125010.70000004768,
+            "renderedAt": 125010.89999985695,
+            "uncertaintyMs": 0.5541668845398817
+          },
+          {
+            "x": 0.525,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 375,
+            "earliest": 125920.55765483224,
+            "latest": 125921.39230158484,
+            "receivedAt": 125923.5,
+            "renderedAt": 125930.39999985695,
+            "uncertaintyMs": 0.41732337629946414
+          },
+          {
+            "x": 0.525,
+            "y": 0.5252443890274314,
+            "contact": false,
+            "sequence": 384,
+            "earliest": 126416.69220484751,
+            "latest": 126417.62575160009,
+            "receivedAt": 126418,
+            "renderedAt": 126420.79999995232,
+            "uncertaintyMs": 0.46677337629080284
+          },
+          {
+            "x": 0.5,
+            "y": 0.5252443890274314,
+            "contact": false,
+            "sequence": 393,
+            "earliest": 126939.49438696442,
+            "latest": 126940.48140496673,
+            "receivedAt": 126941.79999995232,
+            "renderedAt": 126942.5,
+            "uncertaintyMs": 0.49350900115678087
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 403,
+            "earliest": 127487.054637837,
+            "latest": 127488.1552358393,
+            "receivedAt": 127509.70000004768,
+            "renderedAt": 127510.20000004768,
+            "uncertaintyMs": 0.5502990011445945
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002367758186398,
+            "contact": true,
+            "sequence": 412,
+            "earliest": 128039.1876181633,
+            "latest": 128040.3011699646,
+            "receivedAt": 128042.29999995232,
+            "renderedAt": 128054.89999985695,
+            "uncertaintyMs": 0.5567759006517008
+          },
+          {
+            "x": 0.5,
+            "y": 0.5002344139650873,
+            "contact": false,
+            "sequence": 490,
+            "earliest": 132775.70166000506,
+            "latest": 132776.85885706762,
+            "receivedAt": 132777.5,
+            "renderedAt": 132813.79999995232,
+            "uncertaintyMs": 0.5785985312832054
+          },
+          {
+            "released": true,
+            "status": [
+              "Connection stopped. Start a fresh connection to continue."
+            ]
+          }
+        ],
+        "errors": []
+      }
+    ],
+    "virtualGestureFailure": "CUA virtual drags emitted contact begin/end without position movement. A temporary scroll/responder ownership experiment preserved that failure and was reverted; neither source nor automation cause is established.",
+    "experimentalBackgroundRelease": {
+      "scope": "Actual iOS Simulator Release/Hermes source, installed react-native-webrtc124.0.8 native data channels, CUA virtual touch/button interactions, real Chromium owner-approved independent application sink. Not physical phone/authenticated identity/display scanout proof.",
+      "browser": "149.0.7827.55",
+      "snapshots": [
+        {
+          "x": 0.5,
+          "y": 0.5002344139650873,
+          "contact": false,
+          "sequence": 1,
+          "earliest": 26632.43272528596,
+          "latest": 26633.34094204955,
+          "receivedAt": 26634.10000014305,
+          "renderedAt": 26634.900000095367,
+          "uncertaintyMs": 0.45410838179668644
+        },
+        {
+          "x": 0.5,
+          "y": 0.5002367758186398,
+          "contact": true,
+          "sequence": 255,
+          "earliest": 41915.133851227685,
+          "latest": 41916.799999952316,
+          "receivedAt": 41916.90000009537,
+          "renderedAt": 41924.799999952316,
+          "uncertaintyMs": 0.9782554531848291
+        },
+        {
+          "x": 0.5,
+          "y": 0.5002344139650873,
+          "contact": false,
+          "sequence": 255,
+          "earliest": 41915.133851227685,
+          "latest": 41916.799999952316,
+          "receivedAt": 41916.90000009537,
+          "renderedAt": 41934.40000009537,
+          "uncertaintyMs": 0.9782554531848291
+        },
+        {
+          "x": 0.5,
+          "y": 0.5002367758186398,
+          "contact": true,
+          "sequence": 270,
+          "earliest": 42798.90888208313,
+          "latest": 42800.03436809616,
+          "receivedAt": 42800.60000014305,
+          "renderedAt": 42838.700000047684,
+          "uncertaintyMs": 0.5627430065142107
+        },
+        {
+          "x": 0.5,
+          "y": 0.5002344139650873,
+          "contact": false,
+          "sequence": 271,
+          "earliest": 42849.04081895897,
+          "latest": 42850.176264972,
+          "receivedAt": 42850.299999952316,
+          "renderedAt": 42861.700000047684,
+          "uncertaintyMs": 0.5677230065120966
+        },
+        {
+          "x": 0.525,
+          "y": 0.5002344139650873,
+          "contact": false,
+          "sequence": 284,
+          "earliest": 43616.80695210221,
+          "latest": 43618.096298115226,
+          "receivedAt": 43620.10000014305,
+          "renderedAt": 43623.799999952316,
+          "uncertaintyMs": 0.6446730065072188
+        },
+        {
+          "x": 0.525,
+          "y": 0.5252443890274314,
+          "contact": false,
+          "sequence": 292,
+          "earliest": 44116.501759172366,
+          "latest": 44117.7890340081,
+          "receivedAt": 44119.60000014305,
+          "renderedAt": 44123.90000009537,
+          "uncertaintyMs": 0.6436374178665574
+        },
+        {
+          "x": 0.525,
+          "y": 0.5252468513853904,
+          "contact": true,
+          "sequence": 301,
+          "earliest": 44648.67900202377,
+          "latest": 44650.07245685952,
+          "receivedAt": 44650.5,
+          "renderedAt": 44686.10000014305,
+          "uncertaintyMs": 0.6967274178750813
+        },
+        {
+          "released": true,
+          "status": [
+            "Connection stopped. Start a fresh connection to continue."
+          ]
+        }
+      ],
+      "errors": []
+    },
+    "experimentalSourceNote": "Only PointerLab ScrollView canCancelContentTouches=false and onResponderTerminationRequest=false differed in this additional observation. Experiment is reverted; no passing movement claim.",
+    "physical": {
+      "iphone": "Available iPhone16Pro iOS26.5; candidate installation blocked by absent Xcode signing account/profiles",
+      "android": "No physical Android attached",
+      "accepted": false
+    }
+  },
+  "checks": {
+    "nativeTypecheck": "pass",
+    "nativeUnit": 27,
+    "focusedNativeAdapter": 20,
+    "iOSUnsignedDeviceDebug": "pass; native compilation only, embedded JS absent",
+    "androidNativeDebug": "pass; 485 Gradle tasks, device runtime absent",
+    "iOSSimulatorRelease": "pass; embedded Hermes JS",
+    "endpointAuthentication": "unimplemented"
+  },
+  "artifacts": {
+    "iosExport": {
+      "name": "AppEntry-d72290632b4a207dcc4e6ecfcd99a948.hbc",
+      "sha256": "6157d5d35cbdada3357537bad4d13dd652af9202c1a07e2d0366dc808827441d",
+      "bytes": 2103633,
+      "scope": "current integrated Hermes export, not physical runtime acceptance"
+    },
+    "androidExport": {
+      "name": "AppEntry-3381b5330def7c0931ba0640b9199ac7.hbc",
+      "sha256": "f91a0f00c768417a128cfef43996ca2fb57f5e3cba1e143e88b026269d598d33",
+      "bytes": 2109189,
+      "scope": "current integrated Hermes export, not physical runtime acceptance"
+    },
+    "iOSSimulatorJS": {
+      "name": "main.jsbundle",
+      "sha256": "f818614fef749f36cd886901ee6cfccb2f7dbf6b27068bf128050cb8fda6f908",
+      "bytes": 2103619,
+      "scope": "final rebuilt embedded Hermes; earlier partial observations above retain their scope"
+    },
+    "androidDebugAPK": {
+      "name": "app-debug.apk",
+      "sha256": "b1d622b46d683c4a20b346b1c967020d8090165b17cff77b9f1b44ad263296df",
+      "bytes": 217530933,
+      "scope": "native Debug assembly; embedded production JS is not claimed"
+    },
+    "iOSUnsignedDeviceExecutable": {
+      "name": "101Link",
+      "sha256": "56126bbbf98114781f593da2e6429686e9375edfd6a2f90be472e815f9c4dc9a",
+      "bytes": 72688,
+      "scope": "native device compilation with signing disabled; no embedded JS or installed physical runtime"
+    }
+  }
+}

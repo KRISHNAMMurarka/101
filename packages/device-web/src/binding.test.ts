@@ -283,3 +283,13 @@ test('jitter retains fresh replacement state while delayed stale packets cannot 
   assert.deepEqual(h.received[0].value, { x: 0.8, y: 0.2 });
   h.setNow(246); h.host.deliver(second); h.runtime.flush(); h.receiver.tick(); assert.equal(h.released(), 1); assert.equal(h.received.length, 1);
 });
+test('publisher readiness queries are capability-specific and disappear on slot loss', () => {
+  const h = harness();
+  assert.equal(h.publisher.isBound('position'), false);
+  h.approve('contact'); h.approve('temperature');
+  assert.equal(h.publisher.status().active, 2);
+  assert.equal(h.publisher.isBound('position'), false);
+  assert.equal(h.publisher.isBound('contact'), true);
+  h.phone.disconnect();
+  assert.equal(h.publisher.isBound('contact'), false);
+});

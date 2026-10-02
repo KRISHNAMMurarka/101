@@ -5,10 +5,11 @@ import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { PointerAdapter } from "@101/adapter-pointer";
 import { Engine101 } from "@101/core";
 import { InputDiagnostics, type LatencySnapshot } from "@101/diagnostics";
-import type { InputFrame, InputSource } from "@101/input";
+import type { InputBus, InputFrame, InputSource } from "@101/input";
 import { getBrowserHostTransport } from "@/app/lib/browser-link";
 import { LocalSession, SessionHost } from "@101/session";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import RemotePointerPanel from "./RemotePointerPanel";
 import inputLabGame from "@/games/input-lab/src/game";
 import { observeCanvasViewport, type CanvasViewport } from "./camera/canvas-viewport";
 
@@ -16,6 +17,9 @@ const ZERO_METRICS: LatencySnapshot = { inputHz: 0, frameAgeMs: 0, droppedPercen
 
 export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const busRef = useRef<InputBus | null>(null);
+  const acceptRemoteFrame = useCallback((frame: InputFrame) => busRef.current?.accept(frame) ?? false, []);
+  const removeRemoteDevice = useCallback((deviceId: string, playerId: string) => { busRef.current?.removeDevice(deviceId, playerId); }, []);
   const [latestSource, setLatestSource] = useState<InputSource | "waiting">("waiting");
   const [metrics, setMetrics] = useState<LatencySnapshot>(ZERO_METRICS);
   const [linkedDevices, setLinkedDevices] = useState<string[]>([]);
@@ -26,6 +30,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     if (!canvas) return;
 
     const engine = new Engine101(inputLabGame);
+    busRef.current = engine.inputBus;
     const keyboard = new KeyboardAdapter();
     const pointer = new PointerAdapter(canvas);
     const gamepad = new GamepadAdapter();
@@ -63,13 +68,14 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
     const unsubscribeInput = engine.inputBus.subscribe((frame) => {
       latestFrame = frame;
       diagnostics.observe(frame);
-      if (frame.actions.trigger && !previousTrigger) {
+      const triggering = Boolean(engine.inputBus.action("trigger"));
+      if (triggering && !previousTrigger) {
         pulse = 1;
         setFlash(true);
         window.clearTimeout(flashTimer);
         flashTimer = window.setTimeout(() => setFlash(false), 90);
       }
-      previousTrigger = Boolean(frame.actions.trigger);
+      previousTrigger = triggering;
     });
 
     const draw = () => {
@@ -149,6 +155,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       cancelAnimationFrame(drawHandle);
       unsubscribeInput();
       void host.stop();
+      busRef.current = null;
       engine.stop();
       void engine.inputBus.destroy();
     };
@@ -193,6 +200,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
             {linkedDevices.length ? linkedDevices.map((device) => <p key={device}><i className="status-dot" />{device}</p>) : <p className="muted">No browser controller yet</p>}
             <button className="outline-button" onClick={onConnect}>{linkedDevices.length ? "Add another" : "Connect controller"} →</button>
           </div>
+          <RemotePointerPanel sessionId={sessionId} acceptFrame={acceptRemoteFrame} removeDevice={removeRemoteDevice} />
           <p className="privacy-note"><strong>PRIVATE PATH</strong> Input stays on BroadcastChannel or a direct LAN WebRTC channel. The local Hub only exchanges short-lived pairing descriptions.</p>
         </aside>
       </div>

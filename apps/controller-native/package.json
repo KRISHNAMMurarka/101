@@ -36,7 +36,8 @@
     "pako": "3.0.1",
     "react": "19.2.8",
     "react-native": "0.86.2",
-    "react-native-webrtc": "124.0.8"
+    "react-native-webrtc": "124.0.8",
+    "@101/connect": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "22.19.19",

@@ -1,0 +1,586 @@
+{
+  "scope": "Local UI real WebRTC; Playwright pointer/key events reach actual React source handlers, shared driver, approved independent sinks and DOM commit. No human/native/physical/authenticated endpoint proof. Timing is mapped JS source capture to receiver DOM commit callback, not display scanout.",
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "sourceSha256": {
+    "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+    "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+    "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+    "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+    "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+    "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+    "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+    "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+    "packages/device-web/src/binding.ts": "ae6355223b62e62b21aab283b26cbdf3a6d4d9c5783c2c9c517e0f16dd437ca4",
+    "packages/device-web/src/index.ts": "ad971c0f3d22050db872763b9fa7467ccc4328bd9bdf060122186e02d124f276",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "c3b6f9ea22c410e6af8c23410088d7f8085a3128a7af28d2f2df6bce6e6e9e2b",
+    "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+    "packages/transport-webrtc/src/index.ts": "c0123b2d9dcf6fd859dcfa1d3dc8d2e16c006ec8ddfad5b080f7202bf0643d62",
+    "packages/transport-webrtc/src/peer.ts": "e3210b3bf3ef4705b8229c759722920c25f18f1aa552e5b243a9d9fe57f4925a",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+    "packages/connect/src/index.ts": "1b003642f7b6cb4944c5322cf2234baeec84490345e21ed18407ab57ad0a210b",
+    "app/pointer-lab/PointerLab.tsx": "39a3b804ef588983b9cf907d3ad0b2631a167cc8cf98fb3ae48a8b5c0e8fd13a",
+    "app/pointer-lab/page.tsx": "29524f4f7d7f53ab387a33b3c4188ee9330607873f97bf79af4921360693de97",
+    "app/pointer-lab/pointer-lab.module.css": "4d6ced73503161da3f1fa9ab4bc98e61fc033967f03ded9609db5eb6ec9549b6",
+    "examples/device-pipelines/remote-pointer.ts": "f97b9d8980def485496c33865dc42785acde922c7b9dd713bbc2873aff54a3cf",
+    "app/globals.css": "e35d02445f75a9d1b063cc451b440850cba1191d74fa3890a3f312e497095876"
+  },
+  "environment": {
+    "os": "macOS",
+    "osVersion": "26.5.2",
+    "osBuild": "25F84",
+    "node": "24.14.0",
+    "playwright": "1.61.1"
+  },
+  "result": {
+    "begin": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 1,
+      "earliest": 1942.7955499523164,
+      "latest": 1944.1044499046325,
+      "receivedAt": 1945,
+      "renderedAt": 1984.2999999523163,
+      "uncertaintyMs": 0.6544499761580482
+    },
+    "downRight": {
+      "x": 0.7000000000000001,
+      "y": 0.7003299748110832,
+      "contact": true,
+      "sequence": 2,
+      "earliest": 1990.8907798569442,
+      "latest": 1992.2092198092698,
+      "receivedAt": 1992.6000001430511,
+      "renderedAt": 2000.7000000476837,
+      "uncertaintyMs": 0.6592199761628308
+    },
+    "upLeft": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 3,
+      "earliest": 2015.888279856944,
+      "latest": 2017.2117198092699,
+      "receivedAt": 2017.6000001430511,
+      "renderedAt": 2019.6000001430511,
+      "uncertaintyMs": 0.6617199761628854
+    },
+    "upRight": {
+      "x": 0.7000000000000001,
+      "y": 0.30014105793450885,
+      "contact": true,
+      "sequence": 4,
+      "earliest": 2029.0855399046422,
+      "latest": 2030.4144598569392,
+      "receivedAt": 2045,
+      "renderedAt": 2050.600000143051,
+      "uncertaintyMs": 0.6644599761484642
+    },
+    "downLeft": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 5,
+      "earliest": 2062.483629999995,
+      "latest": 2063.816369952321,
+      "receivedAt": 2064.100000143051,
+      "renderedAt": 2071,
+      "uncertaintyMs": 0.6663699761629687
+    },
+    "recontact": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 6,
+      "earliest": 2112.478620000005,
+      "latest": 2113.8213799523114,
+      "receivedAt": 2114.100000143051,
+      "renderedAt": 2126,
+      "uncertaintyMs": 0.6713799761532755
+    },
+    "keyPress": {
+      "x": 0.52,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 7,
+      "earliest": 2146.8751973767244,
+      "latest": 2148.2000000476837,
+      "receivedAt": 2148.2999999523163,
+      "renderedAt": 2167.5,
+      "uncertaintyMs": 0.674802456382622
+    },
+    "keyRelease": {
+      "x": 0.52,
+      "y": 0.5002344139650873,
+      "contact": false,
+      "sequence": 7,
+      "earliest": 2146.8751973767244,
+      "latest": 2148.2000000476837,
+      "receivedAt": 2148.2999999523163,
+      "renderedAt": 2184.2000000476837,
+      "uncertaintyMs": 0.674802456382622
+    },
+    "blurRelease": {
+      "x": 0.52,
+      "y": 0.5002344139650873,
+      "contact": false,
+      "sequence": 8,
+      "earliest": 2201.569709904623,
+      "latest": 2202.9302898569586,
+      "receivedAt": 2203.2000000476837,
+      "renderedAt": 2225.7000000476837,
+      "uncertaintyMs": 0.6802899761678418
+    },
+    "resized": {
+      "x": 0.52,
+      "y": 0.5,
+      "contact": false,
+      "sequence": 8,
+      "earliest": 2201.569709904623,
+      "latest": 2202.9302898569586,
+      "receivedAt": 2203.2000000476837,
+      "renderedAt": 2235.600000143051,
+      "uncertaintyMs": 0.6802899761678418
+    },
+    "replacement": {
+      "x": 0.5,
+      "y": 0.5,
+      "contact": false,
+      "sequence": 1,
+      "earliest": 6462.595570143056,
+      "latest": 6463.204430047679,
+      "receivedAt": 6463.5,
+      "renderedAt": 6469.799999952316,
+      "uncertaintyMs": 0.30442995231169334
+    },
+    "widths": [
+      {
+        "viewport": 1280,
+        "document": 1280
+      },
+      {
+        "viewport": 700,
+        "document": 700
+      }
+    ],
+    "timing": {
+      "count": 80,
+      "minP50Ms": 4.6693798092601355,
+      "maxP50Ms": 5.730619809270138,
+      "maxP95Ms": 10.541670238423649,
+      "maxP99Ms": 18.745060286092667,
+      "maxMs": 19.33413019073032,
+      "maxClockUncertaintyMs": 0.7492098971265477,
+      "samples": [
+        {
+          "minMs": 17.965870238423122,
+          "maxMs": 19.33413019073032,
+          "uncertaintyMs": 0.6841299761535993
+        },
+        {
+          "minMs": 8.76161019072515,
+          "maxMs": 10.13839014306086,
+          "uncertaintyMs": 0.6883899761678549
+        },
+        {
+          "minMs": 9.158330286097225,
+          "maxMs": 10.541670238423649,
+          "uncertaintyMs": 0.6916699761632117
+        },
+        {
+          "minMs": 17.35494033379564,
+          "maxMs": 18.745060286092667,
+          "uncertaintyMs": 0.6950599761485137
+        },
+        {
+          "minMs": 1.4509599999901184,
+          "maxMs": 2.849039952326166,
+          "uncertaintyMs": 0.6990399761680237
+        },
+        {
+          "minMs": 5.900000095367432,
+          "maxMs": 7.251465194188768,
+          "uncertaintyMs": 0.701465122663194
+        },
+        {
+          "minMs": 1,
+          "maxMs": 2.254865534222972,
+          "uncertaintyMs": 0.7048654626973985
+        },
+        {
+          "minMs": 8.641690286111498,
+          "maxMs": 10.058310238409376,
+          "uncertaintyMs": 0.7083099761489393
+        },
+        {
+          "minMs": 6,
+          "maxMs": 7.362456436335833,
+          "uncertaintyMs": 0.7124562217591119
+        },
+        {
+          "minMs": 0.9341599999902428,
+          "maxMs": 2.3658399523260414,
+          "uncertaintyMs": 0.7158399761678993
+        },
+        {
+          "minMs": 7.830760095357618,
+          "maxMs": 9.269240047693529,
+          "uncertaintyMs": 0.7192399761679553
+        },
+        {
+          "minMs": 7.926720238423059,
+          "maxMs": 9.373280190730384,
+          "uncertaintyMs": 0.7232799761536626
+        },
+        {
+          "minMs": 4.623420286106921,
+          "maxMs": 6.076580238413953,
+          "uncertaintyMs": 0.7265799761535163
+        },
+        {
+          "minMs": 0.6200800476790391,
+          "maxMs": 2.0799200000046767,
+          "uncertaintyMs": 0.7299199761628188
+        },
+        {
+          "minMs": 7.6000001430511475,
+          "maxMs": 8.882398430544526,
+          "uncertaintyMs": 0.7323982159678053
+        },
+        {
+          "minMs": 3.614330047678777,
+          "maxMs": 5.085670000004939,
+          "uncertaintyMs": 0.7356699761630807
+        },
+        {
+          "minMs": 0.510890143060351,
+          "maxMs": 1.9891100953582281,
+          "uncertaintyMs": 0.7391099761489386
+        },
+        {
+          "minMs": 4.800000190734863,
+          "maxMs": 6.191569299957337,
+          "uncertaintyMs": 0.7415691330643313
+        },
+        {
+          "minMs": 9.504980143046396,
+          "maxMs": 10.995020095372183,
+          "uncertaintyMs": 0.7450199761628937
+        },
+        {
+          "minMs": 8,
+          "maxMs": 9.399210111703269,
+          "uncertaintyMs": 0.7492098971265477
+        },
+        {
+          "minMs": 6.897559856939097,
+          "maxMs": 7.902439856958608,
+          "uncertaintyMs": 0.5024400000097557
+        },
+        {
+          "minMs": 4.5,
+          "maxMs": 5.505640564066198,
+          "uncertaintyMs": 0.5056405640661978
+        },
+        {
+          "minMs": 0.5910299046277032,
+          "maxMs": 1.6089699046374335,
+          "uncertaintyMs": 0.5089700000048651
+        },
+        {
+          "minMs": 7.900000095367432,
+          "maxMs": 8.912331090091357,
+          "uncertaintyMs": 0.5123312331425041
+        },
+        {
+          "minMs": 4.58437990462744,
+          "maxMs": 5.615619904637697,
+          "uncertaintyMs": 0.5156200000051285
+        },
+        {
+          "minMs": 0.4810400000092159,
+          "maxMs": 1.5189599999907841,
+          "uncertaintyMs": 0.5189599999907841
+        },
+        {
+          "minMs": 7.67865980925535,
+          "maxMs": 8.721339809274923,
+          "uncertaintyMs": 0.5213400000097863
+        },
+        {
+          "minMs": 2.0999999046325684,
+          "maxMs": 3.124852389881198,
+          "uncertaintyMs": 0.5248524852486298
+        },
+        {
+          "minMs": 0.5,
+          "maxMs": 1.5281428142911864,
+          "uncertaintyMs": 0.5281428142911864
+        },
+        {
+          "minMs": 4.6693798092601355,
+          "maxMs": 5.730619809270138,
+          "uncertaintyMs": 0.5306200000050012
+        },
+        {
+          "minMs": 0.4660200000043915,
+          "maxMs": 1.5339799999956085,
+          "uncertaintyMs": 0.5339799999956085
+        },
+        {
+          "minMs": 5.200000047683716,
+          "maxMs": 6.2364834576492285,
+          "uncertaintyMs": 0.5364836483840918
+        },
+        {
+          "minMs": 2.1601400476929484,
+          "maxMs": 3.239860047674483,
+          "uncertaintyMs": 0.5398599999907674
+        },
+        {
+          "minMs": 10.199999809265137,
+          "maxMs": 11.143054210063383,
+          "uncertaintyMs": 0.5430543054308146
+        },
+        {
+          "minMs": 8.55264990463229,
+          "maxMs": 9.647349904632847,
+          "uncertaintyMs": 0.5473500000002787
+        },
+        {
+          "minMs": 3.249239952325752,
+          "maxMs": 4.350759952306817,
+          "uncertaintyMs": 0.5507599999905324
+        },
+        {
+          "minMs": 0.545999904632481,
+          "maxMs": 1.6539999046326557,
+          "uncertaintyMs": 0.5540000000000873
+        },
+        {
+          "minMs": 7.0435199046369235,
+          "maxMs": 8.156479904628213,
+          "uncertaintyMs": 0.5564799999956449
+        },
+        {
+          "minMs": 2.0402099046227704,
+          "maxMs": 3.1597899046423663,
+          "uncertaintyMs": 0.559790000009798
+        },
+        {
+          "minMs": 0.4369197615860685,
+          "maxMs": 1.5630797615767733,
+          "uncertaintyMs": 0.5630799999953524
+        },
+        {
+          "minMs": 5.334430095362677,
+          "maxMs": 6.465570095372186,
+          "uncertaintyMs": 0.5655700000047545
+        },
+        {
+          "minMs": 0.6310100476739535,
+          "maxMs": 1.7689900476934781,
+          "uncertaintyMs": 0.5689900000097623
+        },
+        {
+          "minMs": 6.028519904637051,
+          "maxMs": 7.171479904628086,
+          "uncertaintyMs": 0.5714799999955176
+        },
+        {
+          "minMs": 2.1251998092648137,
+          "maxMs": 3.2747998092654598,
+          "uncertaintyMs": 0.574800000000323
+        },
+        {
+          "minMs": 9.100000143051147,
+          "maxMs": 10.17813771843339,
+          "uncertaintyMs": 0.5781378138008222
+        },
+        {
+          "minMs": 6.099999904632568,
+          "maxMs": 7.1815280574528515,
+          "uncertaintyMs": 0.5815281528202831
+        },
+        {
+          "minMs": 2.515229904627631,
+          "maxMs": 3.6847699046375055,
+          "uncertaintyMs": 0.5847700000049372
+        },
+        {
+          "minMs": 8.111749809264893,
+          "maxMs": 9.28824980926538,
+          "uncertaintyMs": 0.5882500000002437
+        },
+        {
+          "minMs": 8.207679952311537,
+          "maxMs": 9.392319952321031,
+          "uncertaintyMs": 0.5923200000047473
+        },
+        {
+          "minMs": 7.003529904627612,
+          "maxMs": 8.196469904637524,
+          "uncertaintyMs": 0.5964700000049561
+        },
+        {
+          "minMs": 2.0001999046321544,
+          "maxMs": 3.1997999046329824,
+          "uncertaintyMs": 0.599800000000414
+        },
+        {
+          "minMs": 9.29789995231613,
+          "maxMs": 10.102099904632723,
+          "uncertaintyMs": 0.40209997615829707
+        },
+        {
+          "minMs": 6.1945200476884565,
+          "maxMs": 7.005479999995259,
+          "uncertaintyMs": 0.40547997615340137
+        },
+        {
+          "minMs": 3.291349952316068,
+          "maxMs": 4.1086499046327845,
+          "uncertaintyMs": 0.4086499761583582
+        },
+        {
+          "minMs": 0.5879599046229487,
+          "maxMs": 1.4120398569584722,
+          "uncertaintyMs": 0.4120399761677618
+        },
+        {
+          "minMs": 5.685490047693293,
+          "maxMs": 6.514509999990423,
+          "uncertaintyMs": 0.41450997614856533
+        },
+        {
+          "minMs": 0.6820900476932366,
+          "maxMs": 1.5179099999904793,
+          "uncertaintyMs": 0.41790997614862135
+        },
+        {
+          "minMs": 7.679670047688887,
+          "maxMs": 8.520329999994829,
+          "uncertaintyMs": 0.42032997615297063
+        },
+        {
+          "minMs": 3.7763799523117996,
+          "maxMs": 4.623619904637053,
+          "uncertaintyMs": 0.4236199761626267
+        },
+        {
+          "minMs": 0.7729099523066907,
+          "maxMs": 1.6270899046421619,
+          "uncertaintyMs": 0.4270899761677356
+        },
+        {
+          "minMs": 4.770369952320834,
+          "maxMs": 5.629629904628018,
+          "uncertaintyMs": 0.429629976153592
+        },
+        {
+          "minMs": 0.6670700476888669,
+          "maxMs": 1.532929999994849,
+          "uncertaintyMs": 0.432929976152991
+        },
+        {
+          "minMs": 7.26459995231653,
+          "maxMs": 8.135399904632322,
+          "uncertaintyMs": 0.43539997615789616
+        },
+        {
+          "minMs": 3.3613400953772725,
+          "maxMs": 4.238660047673875,
+          "uncertaintyMs": 0.4386599761483012
+        },
+        {
+          "minMs": 0.757929952311315,
+          "maxMs": 1.6420699046375375,
+          "uncertaintyMs": 0.4420699761631113
+        },
+        {
+          "minMs": 6.354539856958581,
+          "maxMs": 7.245459809255408,
+          "uncertaintyMs": 0.44545997614841326
+        },
+        {
+          "minMs": 2.251219952320753,
+          "maxMs": 3.1487799046280998,
+          "uncertaintyMs": 0.4487799761536735
+        },
+        {
+          "minMs": 9.24787995231145,
+          "maxMs": 10.152119904637402,
+          "uncertaintyMs": 0.45211997616297595
+        },
+        {
+          "minMs": 8.843740095377143,
+          "maxMs": 9.756260047674004,
+          "uncertaintyMs": 0.4562599761484307
+        },
+        {
+          "minMs": 3.4403000000002066,
+          "maxMs": 4.3596999523160775,
+          "uncertaintyMs": 0.45969997615793545
+        },
+        {
+          "minMs": 0.8370598569390495,
+          "maxMs": 1.7629398092749398,
+          "uncertaintyMs": 0.46293997616794513
+        },
+        {
+          "minMs": 7.434590000009848,
+          "maxMs": 8.365409952306436,
+          "uncertaintyMs": 0.46540997614829394
+        },
+        {
+          "minMs": 2.0312699046371563,
+          "maxMs": 2.9687298569442646,
+          "uncertaintyMs": 0.46872997615355416
+        },
+        {
+          "minMs": 0.8279200953720647,
+          "maxMs": 1.7720800476790828,
+          "uncertaintyMs": 0.47207997615350905
+        },
+        {
+          "minMs": 4.925409999990734,
+          "maxMs": 5.87458995232555,
+          "uncertaintyMs": 0.47458997616740817
+        },
+        {
+          "minMs": 0.7220599523070632,
+          "maxMs": 1.6779399046417893,
+          "uncertaintyMs": 0.47793997616736306
+        },
+        {
+          "minMs": 7.219569952320853,
+          "maxMs": 8.180429904628,
+          "uncertaintyMs": 0.4804299761535731
+        },
+        {
+          "minMs": 2.316249856949071,
+          "maxMs": 3.2837498092649184,
+          "uncertaintyMs": 0.4837499761579238
+        },
+        {
+          "minMs": 0.6130500476838279,
+          "maxMs": 1.586949999999888,
+          "uncertaintyMs": 0.48694997615803004
+        },
+        {
+          "minMs": 6.01055014305075,
+          "maxMs": 6.989450095367829,
+          "uncertaintyMs": 0.48944997615853936
+        }
+      ]
+    },
+    "errors": []
+  },
+  "buildId": "292576be770640c6"
+}

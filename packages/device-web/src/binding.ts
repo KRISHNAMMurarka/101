@@ -278,6 +278,10 @@ export class RemoteResourcePublisher {
   status(): Readonly<{ active: number; pending: number; stopped: boolean; reason: string }> {
     return Object.freeze({ active: this.slots.size, pending: [...this.slots.values()].reduce((total, slot) => total + (slot.pending ? 1 : 0) + slot.queue.length, 0), stopped: this.stopped, reason: this.reason });
   }
+  /** Provider readiness for an actual selected capability; a route count is insufficient. */
+  isBound(capability: string): boolean {
+    return !this.stopped && [...this.slots.values()].some(slot => slot.capability.id === capability) && this.ready(capability);
+  }
   start(): boolean {
     if (this.started || this.stopped) return false;
     this.started = true;
@@ -320,14 +324,15 @@ export class RemoteResourcePublisher {
   publish(capability: string, input: unknown, options: { capturedAt?: number; deadline?: number } = {}): boolean {
     if (this.stopped || !this.started) return false;
     const now = this.localTime(); if (now === undefined) return false;
-    const entries = [...this.slots.values()].filter(slot => slot.capability.id === capability); if (!entries.length) return false;
+    const entries = [...this.slots.values()].filter(slot => slot.capability.id === capability);
+    const first = entries[0]; if (!first) return false;
     let value: SignalValue, capturedAt: number;
     try {
       const copied = snapshotJson(options);
       if (!copied || typeof copied !== 'object' || Array.isArray(copied) || Object.keys(copied).some(key => !['capturedAt', 'deadline'].includes(key))) return false;
       capturedAt = copied.capturedAt === undefined ? now : copied.capturedAt as number;
       if (!time(capturedAt) || capturedAt > now) return false;
-      value = parseSignalValue(input, entries[0].capability.value);
+      value = parseSignalValue(input, first.capability.value);
       options = copied as { capturedAt?: number; deadline?: number };
     } catch { return false; }
     let admitted = true;

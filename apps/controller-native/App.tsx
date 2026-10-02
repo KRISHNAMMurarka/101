@@ -35,6 +35,7 @@ import { pinchDistance, zoomFromPinch } from "./src/scanner-controls";
 import { DARK_SURFACE, radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
 import privateCue from "./assets/private-cue.wav";
+import PointerLab from "./src/PointerLab";
 
 const DEVICE_ID_KEY = "101-link-device-id-v1";
 const LAST_PAIRING_KEY = "101-link-last-pairing-v1";
@@ -58,6 +59,11 @@ const GESTURE_INSET = 34;
  * reason the app exists) sat below a fold of chrome that stayed on screen even after connecting.
  */
 export default function App() {
+  const [pointerLab, setPointerLab] = useState(false);
+  return pointerLab ? <PointerLab onClose={() => setPointerLab(false)} /> : <GameControllerApp onOpenPointerLab={() => setPointerLab(true)} />;
+}
+
+function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void }) {
   const t = useTheme();
   const { height: windowHeight } = useWindowDimensions();
   const scanShort = windowHeight < 600;
@@ -428,6 +434,10 @@ export default function App() {
           onCancelConnection={() => void disconnect()}
         />
       )}
+
+      {!playing ? <View style={{ paddingHorizontal: space.lg, paddingBottom: space.sm }}>
+        <Button label="Open pointer lab" wide onPress={() => { void disconnect().then(onOpenPointerLab); }} />
+      </View> : null}
 
       <Sheet visible={sheetOpen} theme={t} onClose={() => setSheetOpen(false)}>
         {hostControlled ? (

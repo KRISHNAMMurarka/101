@@ -1,0 +1,23 @@
+.lab { max-width: 960px; margin: 0 auto; padding: var(--space-md); color: var(--paper); }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); }
+.title { margin-bottom: var(--space-md); }
+.title h1 { font-size: var(--type-display-size); font-weight: 750; letter-spacing: var(--track-tight); }
+.title p, .pairing p { color: var(--muted); max-width: 64ch; }
+.lab button { padding: var(--space-xs) var(--space-sm); border: 1px solid var(--line-strong); border-radius: var(--radius-control); font: inherit; color: var(--paper); background: var(--surface); min-height: 44px; cursor: pointer; }
+.lab button:disabled { opacity: 0.55; cursor: default; }
+.lab button:focus-visible, .lab textarea:focus-visible, .pad:focus-visible, .pairing summary:focus-visible { outline: 3px solid var(--paper); outline-offset: 4px; }
+.roles, .controls { display: flex; gap: var(--space-xs); flex-wrap: wrap; }
+.roles button[aria-pressed='true'], .lab .primary { background: var(--paper); color: var(--ink); }
+.status { min-height: 3em; max-width: 64ch; margin: var(--space-sm) 0; }
+.pad { height: clamp(220px, 42vh, 440px); position: relative; overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--radius-card); background: var(--panel); margin: var(--space-md) 0 var(--space-sm); }
+.source { touch-action: none; user-select: none; cursor: crosshair; }
+.pad[data-contact='true'] { border: 3px solid var(--paper); }
+.padLabel { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: max-content; max-width: 85%; text-align: center; color: var(--muted); pointer-events: none; }
+.marker { position: absolute; width: 24px; height: 24px; border: 3px solid var(--paper); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.pad[data-contact='true'] .marker { background: var(--paper); }
+.pairing { margin-top: var(--space-lg); }
+.pairing summary { cursor: pointer; margin-bottom: var(--space-sm); }
+.pairing p { margin-bottom: var(--space-sm); }
+.pairing label { display: block; margin: var(--space-sm) 0 var(--space-xs); }
+.pairing textarea { width: 100%; min-height: 110px; max-height: 220px; border: 1px solid var(--line-strong); border-radius: var(--radius-control); padding: var(--space-xs); color: var(--paper); background: var(--panel); font: inherit; resize: vertical; margin-bottom: var(--space-xs); }
+@media (max-width: 600px) { .lab { padding: var(--space-sm); } .header { margin-bottom: var(--space-md); } .roles button { flex: 1; } }
