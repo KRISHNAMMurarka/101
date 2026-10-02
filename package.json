@@ -53,7 +53,8 @@
     "phone": "node tools/lan-test.mjs",
     "vision:models": "node tools/fetch-vision-models.mjs",
     "example:devices": "node --experimental-strip-types examples/device-pipelines/run.ts",
-    "schemas:devices": "node --experimental-strip-types tools/generate-device-schema.mjs"
+    "schemas:devices": "node --experimental-strip-types tools/generate-device-schema.mjs",
+    "build:sdk": "node tools/build-sdk.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",

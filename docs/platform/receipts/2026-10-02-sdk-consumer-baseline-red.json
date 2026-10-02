@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "mode": "baseline",
+  "startedAt": "2026-10-02T05:42:55.054Z",
+  "consumer": "/tmp/101-sdk-consumer-TFIvW5",
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0"
+  },
+  "checks": [
+    {
+      "name": "baseline-offline-install",
+      "status": "pass"
+    }
+  ],
+  "source": {
+    "revision": "5bb84e6ce691845d2ac85aac092dd06ed7a9ae57",
+    "tree": "cdad9c73bccaf094cd19fd042447c3a19e47c1b0"
+  },
+  "packages": [
+    {
+      "name": "@101/device-model",
+      "version": "0.1.0",
+      "tarball": "/tmp/101-sdk-consumer-TFIvW5/101-device-model-0.1.0.tgz",
+      "sha256": "4c73a6988778b77309b578f8cc0f2291ba9319cc69681de0f4f8ca365629773e"
+    },
+    {
+      "name": "@101/device-runtime",
+      "version": "0.1.0",
+      "tarball": "/tmp/101-sdk-consumer-TFIvW5/101-device-runtime-0.1.0.tgz",
+      "sha256": "abbe0f24e769bf278959b7e47b9656b6aa37d23379363e624f54e0d0302b9b87"
+    },
+    {
+      "name": "@101/transport-webrtc",
+      "version": "0.1.0",
+      "tarball": "/tmp/101-sdk-consumer-TFIvW5/101-transport-webrtc-0.1.0.tgz",
+      "sha256": "6d20c7042af4b715368f545480ba3ddabfac3b598a33d0032766fb0a6ce81755"
+    },
+    {
+      "name": "@101/device-web",
+      "version": "0.1.0",
+      "tarball": "/tmp/101-sdk-consumer-TFIvW5/101-device-web-0.1.0.tgz",
+      "sha256": "f8aab9590402c3a3ff5dd5dd21353f1ccc3e301279eb12ee44e2b7ed24e4e242"
+    },
+    {
+      "name": "@101/connect",
+      "version": "0.1.0",
+      "tarball": "/tmp/101-sdk-consumer-TFIvW5/101-connect-0.1.0.tgz",
+      "sha256": "b4f73be94df125e1d56a4e8c54dce35d5c600b7cc9a44ca70948a9141dda155a"
+    }
+  ],
+  "status": "fail",
+  "failure": {
+    "name": "AssertionError",
+    "message": "baseline-no-typescript-runtime failed (1): node:internal/modules/esm/get_format:185\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".ts\" for /private/tmp/101-sdk-consumer-TFIvW5/node_modules/@101/connect/src/index.ts\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:185:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:211:36)\n    at defaultLoadSync (node:internal/modules/esm/load:158:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:796:12)\n    at #loadSync (node:internal/modules/esm/loader:816:49)\n    at ModuleLoader.load (node:internal/modules/esm/loader:781:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:526:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:577:36)\n    at afterResolve (node:internal/modules/esm/loader:625:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:631:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.14.0\n\n\n1 !== 0\n"
+  },
+  "finishedAt": "2026-10-02T05:42:56.808Z"
+}

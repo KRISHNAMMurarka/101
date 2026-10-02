@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 8,
+  "revision": 10,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5943,7 +5943,7 @@
       "id": "threat-model-2026-10-02",
       "revision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
       "result": "pass",
-      "historical": false,
+      "historical": true,
       "levels": [
         "implementation",
         "contract"
@@ -5955,13 +5955,13 @@
         "docs/platform/SDK.md"
       ],
       "environment": "Offline immutable source review at 4af38ec; Codex Security target-bound persistent artifact on the local host; no application execution, service contact or security-scan coverage claim",
-      "reproduction": "Use read_codex_security_artifact with targetPath set to this repository root, storage persistent and path threat_model.md; verify the content digest and exact Repository/Version footer; inspect the cited immutable source",
+      "reproduction": "Read the archived exact prior body via read_codex_security_artifact with repository targetPath, storage persistent and path artifacts/01_context/threat_model-4af38ec.md; inspect immutable 4af38ec sources",
       "scope": "Persisted four-section reusable platform model: actual peers/native privileges/packages/processors and conditional directory/media/gateway/operator boundaries; fresh-context architecture review plus integration-owner reconciliation; not S02-S17 completion or support acceptance",
       "failure": null,
       "equipment": [],
       "managedArtifact": {
         "storage": "persistent",
-        "relativePath": "threat_model.md",
+        "relativePath": "artifacts/01_context/threat_model-4af38ec.md",
         "sha256": "3c080e3db3b38a66cc7fdb3c0901f6021623c4b5522dd5d597a5e41dcf969a11",
         "bytes": 44897,
         "targetId": "sha256:360bcf5a89bc53ddae2dda7a6fc291e9ade6bb2164a3d02ae463818a3f29d8fa",
@@ -6063,6 +6063,74 @@
       "equipment": [
         "Configured Xcode signing account/profiles and attached physical Android/iPhone remain required"
       ],
+      "supportRows": []
+    },
+    {
+      "id": "threat-model-enrollment-2026-10-02",
+      "revision": "5bb84e6ce691845d2ac85aac092dd06ed7a9ae57",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "S01"
+      ],
+      "paths": [
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Offline immutable source review at 5bb84e6; managed persistent artifact with exact readback; separate local Chromium receipts are runtime evidence, no full security-scan claim",
+      "reproduction": "Read target-bound persistent threat_model.md with Codex Security MCP; verify digest and Repository/Version footer; inspect cited immutable source",
+      "scope": "Four-section reusable whole-platform model reconciled to endpoint identity/facade and actual enrollment callers; tracks native watch source resolution, exact resource/startup chains, 43 effective resource rows and retained conditional hypotheses/discrepancies; no S16 or support promotion",
+      "failure": null,
+      "equipment": [],
+      "managedArtifact": {
+        "storage": "persistent",
+        "relativePath": "threat_model.md",
+        "sha256": "a71141a2bea68a7b7537a7f79c26462d9b76b054a4cdb37638163c57ac3f2f37",
+        "bytes": 71208,
+        "targetId": "sha256:360bcf5a89bc53ddae2dda7a6fc291e9ade6bb2164a3d02ae463818a3f29d8fa",
+        "reviewedRevision": "5bb84e6ce691845d2ac85aac092dd06ed7a9ae57",
+        "readback": "exact selected body matched",
+        "citationCount": 272,
+        "sourcePathCount": 71,
+        "independentReview": "Fresh-context read-only architecture reviewer plus root verification of final consumers, native protection limits, documentation resolution and all citation bounds",
+        "distribution": "Local managed collection only; not packaged or published"
+      }
+    },
+    {
+      "id": "sdk-distributions-2026-10-02",
+      "revision": "containing implementation commit; immutable SDK producer 5bb84e6ce691845d2ac85aac092dd06ed7a9ae57, exact tool/artifact hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K01",
+        "K02",
+        "K10",
+        "K11",
+        "K12",
+        "L01",
+        "L02",
+        "L03"
+      ],
+      "paths": [
+        "docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-sdk-distribution-manifest.json",
+        "docs/platform/receipts/2026-10-02-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-sdk-consumer-baseline-red.json",
+        "docs/platform/receipts/2026-10-02-sdk-dom-library-qualification.log"
+      ],
+      "environment": "macOS26.5.2; Node24.14.0/npm11.9.0/TypeScript5.9.3; actual Chromium149.0.7827.55/Firefox151/WebKit26.5 with Playwright1.61.1",
+      "reproduction": "npm run build:sdk -- <immutable revision/tree>; node tools/qa-sdk-consumer.mjs <printed owned manifest.json>; staged pack contract plus repository exact candidate gates",
+      "scope": "Current five-package ESM/types/schema/examples/license tarballs; strict clean offline external consumer, closed bytes/dependency graph, ordinary Node and three browser engines, repeated tarball-byte reproducibility and independent review. Wider API/toolchain/native/release scope remains open; no row or support promotion.",
+      "failure": "ES2022-only strict declaration consumer fails: DOM/DOM.Iterable required and documented. Node22.13 minimum, other compiler/OS versions, physical transport, native-language/app distribution and upgrade/rollback are unverified.",
+      "equipment": [],
       "supportRows": []
     }
   ],
@@ -6733,7 +6801,8 @@
       "id": "S01",
       "records": [
         "pending-S01",
-        "threat-model-2026-10-02"
+        "threat-model-2026-10-02",
+        "threat-model-enrollment-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -9188,7 +9257,8 @@
     {
       "id": "K01",
       "records": [
-        "pending-K01"
+        "pending-K01",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [
@@ -9198,7 +9268,8 @@
     {
       "id": "K02",
       "records": [
-        "pending-K02"
+        "pending-K02",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [
@@ -9278,7 +9349,8 @@
     {
       "id": "K10",
       "records": [
-        "pending-K10"
+        "pending-K10",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [
@@ -9288,7 +9360,8 @@
     {
       "id": "K11",
       "records": [
-        "pending-K11"
+        "pending-K11",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [
@@ -9298,7 +9371,8 @@
     {
       "id": "K12",
       "records": [
-        "pending-K12"
+        "pending-K12",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [
@@ -9404,7 +9478,8 @@
     {
       "id": "L01",
       "records": [
-        "pending-L01"
+        "pending-L01",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [
         "K01",
@@ -9417,7 +9492,8 @@
     {
       "id": "L02",
       "records": [
-        "pending-L02"
+        "pending-L02",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [
         "K01",
@@ -9430,7 +9506,8 @@
     {
       "id": "L03",
       "records": [
-        "pending-L03"
+        "pending-L03",
+        "sdk-distributions-2026-10-02"
       ],
       "dependencies": [
         "K01",

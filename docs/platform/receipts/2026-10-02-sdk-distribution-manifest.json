@@ -1,0 +1,510 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "revision": "5bb84e6ce691845d2ac85aac092dd06ed7a9ae57",
+    "tree": "cdad9c73bccaf094cd19fd042447c3a19e47c1b0",
+    "sha256": {
+      "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+      "examples/device-pipelines/pointer.ts": "753145a4a02823aa1838e1c42d55c5fe90bb75078d3d074e849ed127ba033148",
+      "examples/device-pipelines/run.ts": "ab481db3439d733daa1ea8556e8f44c76148e5c0a401989a52c2031f6b4d3f96",
+      "examples/device-pipelines/sensor-feedback.ts": "92d90895e2c705c5097df216df05c5139d52e6cedea8309627d4d0006e6bac2e",
+      "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+      "packages/connect/package.json": "b6cc88b216e9b672d01c7595db7a99e58e03aebeefb7106d0a0611062bdab59a",
+      "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+      "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+      "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+      "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+      "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+      "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+      "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+      "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+      "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+      "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+      "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+      "packages/device-web/package.json": "6944da1082082ab4db143a24ad567fae043dd102675b4b2ef52658974bbe6b53",
+      "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+      "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+      "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+      "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+      "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+      "schemas/device-descriptor.schema.json": "d27cd3d787154a9aea7bf5b7873035d54cae9739c634b404345914988dc1dd55"
+    }
+  },
+  "environment": {
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3"
+  },
+  "builderSha256": "2127996bc3af1a19bbb90eb4383b04b07270567a6e9b38b9c5130e22312fe532",
+  "outputDir": "/Users/km/Desktop/games/101/release/sdk-3PMz0F",
+  "packages": [
+    {
+      "name": "@101/device-model",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/packages/device-model",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/tarballs/101-device-model-0.1.0.tgz",
+      "sha256": "f4d7d4979c7008b9251f52ced1556150e280336b3cfce4ce5c9439124c9c7142",
+      "bytes": 10994,
+      "files": [
+        {
+          "path": "dist/descriptor-schema.d.ts",
+          "size": 2509,
+          "sha256": "af71d646ac4e1bb4ab0719cd5aa754bbb1a980a5c12c5a9bb0ff72382a8a9d6b"
+        },
+        {
+          "path": "dist/descriptor-schema.js",
+          "size": 4679,
+          "sha256": "96d88dd1de119bd943cb46198b1fbe2629d5ac79efbce1b53a19272c3775ee44"
+        },
+        {
+          "path": "dist/descriptor.d.ts",
+          "size": 2298,
+          "sha256": "9a21eae52b8954c692cc780e0184cf78a4849c2136dec7c99d9381b65b89d774"
+        },
+        {
+          "path": "dist/descriptor.js",
+          "size": 13353,
+          "sha256": "b97a171df23de1e79bd55ade54a539b34a294c4c157e6a81e9eb25b136c22bac"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 568,
+          "sha256": "c9cb941b92fa3d8d01e083441a654ed8561084bab5be1ae68bebda998c7d0bff"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 280,
+          "sha256": "897010c86e0a451f93535e0c928bc4de8e524952be77f7be4b231cc45e3127b2"
+        },
+        {
+          "path": "dist/remote-clock.d.ts",
+          "size": 1174,
+          "sha256": "bdff9ebc243b578d5d4cb31463abb9a91ade422f2003cadff74cc134fd5e37c5"
+        },
+        {
+          "path": "dist/remote-clock.js",
+          "size": 5168,
+          "sha256": "64915bdf11526b6321ea2dbf07dd9cf1759e120c00feb1dbdfdbcbeadbf4bbb5"
+        },
+        {
+          "path": "dist/sample.d.ts",
+          "size": 277,
+          "sha256": "822eb2e6d5c06d24f436c15dda3d47879bd9859184a67b729cc61c2dde8602b5"
+        },
+        {
+          "path": "dist/sample.js",
+          "size": 2600,
+          "sha256": "42ab55eded82be9b830bc6f8f1a50011ce365534ca31dd519dd10174352f784f"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 567,
+          "sha256": "3d0c6ec31cea209480e7670581c3ee603a3f1972de5c47e5aaf52f23a4dd6cfd"
+        },
+        {
+          "path": "README.md",
+          "size": 1731,
+          "sha256": "cb0a8590bc1c5e8c2dfebf168697fedef325e2b5d361b869f5e8583d8a8ca893"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 10199,
+          "sha256": "d27cd3d787154a9aea7bf5b7873035d54cae9739c634b404345914988dc1dd55"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-runtime",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/packages/device-runtime",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/tarballs/101-device-runtime-0.1.0.tgz",
+      "sha256": "44c6a4b1f6ac054f340b3d1e128d0dce5fec72c6b556ff9c732050b5537b70d0",
+      "bytes": 10903,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 321,
+          "sha256": "04afa4c2e057802698e127fbfa9ea17c5237616b36a41cc4a91d7d64c2759487"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 174,
+          "sha256": "0e8932b29a3560fd9ad1eac3f0cfc9a45a9eeac0add547c6978c5dc9167bc4c9"
+        },
+        {
+          "path": "dist/lease.d.ts",
+          "size": 378,
+          "sha256": "c145d2d3f6fe9416f8bb458bedd628ea02faa7fe2af7681680edddf586c62b0e"
+        },
+        {
+          "path": "dist/lease.js",
+          "size": 933,
+          "sha256": "3cbfbc21d551cb0a6fc3a1358d2f3e850d315b3a8285176ca119890bd2f6f376"
+        },
+        {
+          "path": "dist/runtime.d.ts",
+          "size": 3611,
+          "sha256": "e153d0143775556c11a1b5b9a6f8141edb55b4f13e7ce963950262737d3d5f72"
+        },
+        {
+          "path": "dist/runtime.js",
+          "size": 25338,
+          "sha256": "aa81b9e9344eb31616f013dd4d9f20054d03917cb633b426fcb20c32d7b123e9"
+        },
+        {
+          "path": "dist/scheduler.d.ts",
+          "size": 1584,
+          "sha256": "6cc881fc0c119f989c52a987a03865409403ae00d938638b4577bef989f5a254"
+        },
+        {
+          "path": "dist/scheduler.js",
+          "size": 4204,
+          "sha256": "2e79c4e94f93a68eb1ce75421db9d48bae3c070cff2717cbe573b9c8decab984"
+        },
+        {
+          "path": "dist/types.d.ts",
+          "size": 3894,
+          "sha256": "3c70c9b4e8d26b992434c8402aaee3598c871ec6813dc8c4da5bd272f2549fd8"
+        },
+        {
+          "path": "dist/types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 541,
+          "sha256": "31f8850b4f30e8d2d5098f29fb3b18012d034e24712392dc2a89d03632c9c854"
+        },
+        {
+          "path": "README.md",
+          "size": 1549,
+          "sha256": "f181a2c6c8ce1d5b0ede2466e90d7e023a05328015c48bd455068cf7442ab3c1"
+        }
+      ]
+    },
+    {
+      "name": "@101/transport-webrtc",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/packages/transport-webrtc",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/tarballs/101-transport-webrtc-0.1.0.tgz",
+      "sha256": "491cb17ac2cc82de26d8ef985132594acf3cde548870e84c1ed2b1736b3ed968",
+      "bytes": 6154,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 228,
+          "sha256": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 47,
+          "sha256": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c"
+        },
+        {
+          "path": "dist/peer.d.ts",
+          "size": 2753,
+          "sha256": "2323982bfa4bb1dc3cf51e2e00803057f5a20dc4cdbf56b585c8618282062274"
+        },
+        {
+          "path": "dist/peer.js",
+          "size": 14486,
+          "sha256": "d76d9a4067b68ab60205058dfef6ba2d28202f309523e04b6adec42a09dceea6"
+        },
+        {
+          "path": "dist/ports.d.ts",
+          "size": 1784,
+          "sha256": "2e265404c5b3d297b2c1f7a743313ebeeed003d0ba32a7d3567531f347b2f186"
+        },
+        {
+          "path": "dist/ports.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 487,
+          "sha256": "65d390bbf31a1c217ab9b7f65af1880650801f410e36a3ac2046f69357095c81"
+        },
+        {
+          "path": "README.md",
+          "size": 1567,
+          "sha256": "ad9fcc30606a109d215075ec5e3199ef2897e86e811c4c3c26cb26ac84bfbe7a"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-web",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/packages/device-web",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/tarballs/101-device-web-0.1.0.tgz",
+      "sha256": "d336edda3fdf7e5867ccf3a3f506ca16ca37ef62f7c4468a175f09eeec8d9e68",
+      "bytes": 29843,
+      "files": [
+        {
+          "path": "dist/authenticated-peer.d.ts",
+          "size": 2478,
+          "sha256": "9e9d6eee8b115ee32eb7c1b69c22069419490932056a3f4dd4d8ad81b27bfd5f"
+        },
+        {
+          "path": "dist/authenticated-peer.js",
+          "size": 18726,
+          "sha256": "b94e54dde2b4cfed869fef7b87dbc2b9e774b13c8a005eb783145545d11b0c6f"
+        },
+        {
+          "path": "dist/binding.d.ts",
+          "size": 4069,
+          "sha256": "df82e27d2353f9d5f3a19f6fb8ec680bde0b45012c8fbf08bb4b3ce956a5a833"
+        },
+        {
+          "path": "dist/binding.js",
+          "size": 28567,
+          "sha256": "3e2ceea8385cb8729e7f3691de60ce40b7c5bab20148ea6add72b02b53062150"
+        },
+        {
+          "path": "dist/identity-format.d.ts",
+          "size": 621,
+          "sha256": "d1ecf4fd510739f384f52e01e8d0d9bac2fa255fd94b2d20fa43309392fdc23e"
+        },
+        {
+          "path": "dist/identity-format.js",
+          "size": 3638,
+          "sha256": "cb8544fddaf3f523904382fea41b532551ed45d0898d7c0f45e79d0d4bc6d25a"
+        },
+        {
+          "path": "dist/identity-types.d.ts",
+          "size": 718,
+          "sha256": "d319bfe6410d55220bbc437b1130c8780867f711c2bc8223b8771d991108d0a0"
+        },
+        {
+          "path": "dist/identity-types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 1660,
+          "sha256": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 868,
+          "sha256": "911efbce6bf6f2e18728f020665139fcd57cf8f4a88efbfc0756a088facf433e"
+        },
+        {
+          "path": "dist/invitation.d.ts",
+          "size": 912,
+          "sha256": "b8ba99cb12f2fb531f17b536eb827edab2e105a0d130fe040feab60f331945e1"
+        },
+        {
+          "path": "dist/invitation.js",
+          "size": 3036,
+          "sha256": "8f4baf59d84b78e5698e6aeaaf87a306e56c3429c24c9c4b9def3aab1e7ab312"
+        },
+        {
+          "path": "dist/manual-peer.d.ts",
+          "size": 568,
+          "sha256": "b81ba7f069c533fdf32d1e570b80d887f98902e5bce71d1d0bc6f3e73b5fc0e9"
+        },
+        {
+          "path": "dist/manual-peer.js",
+          "size": 2006,
+          "sha256": "7181d40f4c5ba19c1635026edaf0ab323a7a69bd081fc93b19c438fa63d4098b"
+        },
+        {
+          "path": "dist/native-peer.d.ts",
+          "size": 2334,
+          "sha256": "f95d08d55a34b664d77cfc7c4fbc93f8680cc9b5a05c5aa2957588c501c1c659"
+        },
+        {
+          "path": "dist/native-peer.js",
+          "size": 11790,
+          "sha256": "8856c6595fa79f8babc15bee248256ee928d9725119ce03a4141e11bd26141df"
+        },
+        {
+          "path": "dist/pointer-driver.d.ts",
+          "size": 2275,
+          "sha256": "9dd9d5ec4a5159988b0fdf6fc752e40d9b6c9bbfd16c92db5c391d76d4cf009a"
+        },
+        {
+          "path": "dist/pointer-driver.js",
+          "size": 9240,
+          "sha256": "c160c55b2624bc9e2143aa415f7cb484251b07b42112b8f934d2eb067b97e9bc"
+        },
+        {
+          "path": "dist/pointer-provider.d.ts",
+          "size": 1250,
+          "sha256": "f261f27fd9f09690857992911b6b48630f849957353acfee9f930acf37a545bc"
+        },
+        {
+          "path": "dist/pointer-provider.js",
+          "size": 3211,
+          "sha256": "38489baade948fa49e3cc0dfc64198117543c001b53e95767b8f14cf36d2766c"
+        },
+        {
+          "path": "dist/web-identity.d.ts",
+          "size": 716,
+          "sha256": "b1489c4b544f485a6df768770048f3fca7010224f1333a219df68ce4abd203c1"
+        },
+        {
+          "path": "dist/web-identity.js",
+          "size": 15725,
+          "sha256": "7a14c9f90606a2b668a6385118cce91065c5f48234cd97a47ab950e66a3a2afc"
+        },
+        {
+          "path": "dist/wire.d.ts",
+          "size": 1675,
+          "sha256": "bb02b3cb43d4afa8a2b0f69ce3daf80d74aea1420e818a98975995b1b6d24cf0"
+        },
+        {
+          "path": "dist/wire.js",
+          "size": 10551,
+          "sha256": "0f54951c26ebed0d25427d90eaacbc307ca71c8e9b196fc25c27e487b6691713"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 607,
+          "sha256": "2e394c7f2af437fbd27caedea803f2c73a3a0c427c87abb7126daf0c7f65e9c0"
+        },
+        {
+          "path": "README.md",
+          "size": 1530,
+          "sha256": "54638aced7f4ad5cbf274786c83c712a2e11bf3c29cfc2cf1484c7ddb42958ae"
+        }
+      ]
+    },
+    {
+      "name": "@101/connect",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/packages/connect",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-3PMz0F/tarballs/101-connect-0.1.0.tgz",
+      "sha256": "594383e942315e46262fa85ad3e3b52c359ecece702bf682862d5b17644ac886",
+      "bytes": 10096,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 323,
+          "sha256": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 164,
+          "sha256": "b36746339bb1e96e7d9aabaca015025f16b02218a182f1a686c747072c7021fe"
+        },
+        {
+          "path": "examples/pointer.d.ts",
+          "size": 1297,
+          "sha256": "2047eac875e2d943785925f264e3fa2f957fbc8a4daa9a5240204ddb9df32362"
+        },
+        {
+          "path": "examples/pointer.js",
+          "size": 3796,
+          "sha256": "b35b139fb55f122404b24b1d063fe277e504146e67890f2ae79507348a4e7686"
+        },
+        {
+          "path": "examples/pointer.ts",
+          "size": 3931,
+          "sha256": "753145a4a02823aa1838e1c42d55c5fe90bb75078d3d074e849ed127ba033148"
+        },
+        {
+          "path": "examples/run.d.ts",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "examples/run.js",
+          "size": 318,
+          "sha256": "e4e0528560b53f011d01f5a46c08ce3e27e1598ee7a11cae1543c0b077401a02"
+        },
+        {
+          "path": "examples/run.ts",
+          "size": 313,
+          "sha256": "ab481db3439d733daa1ea8556e8f44c76148e5c0a401989a52c2031f6b4d3f96"
+        },
+        {
+          "path": "examples/sensor-feedback.d.ts",
+          "size": 1797,
+          "sha256": "d313e67fac8cab0abe1ebe91ab41a444b808360cce7305724053657ec6cce14f"
+        },
+        {
+          "path": "examples/sensor-feedback.js",
+          "size": 6955,
+          "sha256": "bccc8b32b12e2ea2d795dea8a4351dd9c38759bdc3c1789657f274cea6369373"
+        },
+        {
+          "path": "examples/sensor-feedback.ts",
+          "size": 6881,
+          "sha256": "92d90895e2c705c5097df216df05c5139d52e6cedea8309627d4d0006e6bac2e"
+        },
+        {
+          "path": "examples/threshold.d.ts",
+          "size": 590,
+          "sha256": "5fed13c008ae58b242cfc08e73670d4edcb53c501d04e14818de1b1ebb25d9ef"
+        },
+        {
+          "path": "examples/threshold.js",
+          "size": 1062,
+          "sha256": "6b6d2c0364b1c34d088de53b89c7c8028e624cb893b923de3fef4e6e27c2f159"
+        },
+        {
+          "path": "examples/threshold.ts",
+          "size": 1136,
+          "sha256": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 1223,
+          "sha256": "f98bfd84812aad379c92800ef826a3e3437d856edc914f3067d84b34d49e2dfd"
+        },
+        {
+          "path": "README.md",
+          "size": 2144,
+          "sha256": "73629355eeeb074cb4d6a8788aa5b13e7409eea2109d3ab641a8454357003ea1"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 10199,
+          "sha256": "d27cd3d787154a9aea7bf5b7873035d54cae9739c634b404345914988dc1dd55"
+        }
+      ]
+    }
+  ]
+}

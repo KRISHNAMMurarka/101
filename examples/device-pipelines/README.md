@@ -7,6 +7,15 @@ network, move an operating system cursor or operate an actual relay.
 Run them with `npm run example:devices` from the repository root. The command
 prints deterministic pointer coordinates and command evidence as JSON.
 
+For an external consumer, build the current SDK with `npm run build:sdk -- HEAD`,
+install all five produced tarballs in a separate directory using offline npm,
+and run `node node_modules/@101/connect/examples/run.js`. The facade exports
+`@101/connect/examples/pointer`, `/examples/sensor-feedback` and
+`/examples/threshold` as compiled ESM with declarations. The packed examples also
+include readable source. No workspace link, type stripping or game dependency is
+needed for the compiled examples. See [distribution evidence](../../docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md)
+for exact supported checks and remaining qualification.
+
 ## Touch position → application pointer
 
 `pointer.ts` describes a dimensionless two-coordinate touch source and an

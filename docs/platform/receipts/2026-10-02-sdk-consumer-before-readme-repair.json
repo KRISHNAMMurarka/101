@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "mode": "distribution",
+  "startedAt": "2026-10-02T05:48:25.001Z",
+  "consumer": "/tmp/101-sdk-consumer-b49TOj",
+  "qaTool": {
+    "path": "/Users/km/Desktop/games/101/tools/qa-sdk-consumer.mjs",
+    "sha256": "87906db000ccd4e42269cef600ac346b5640af849afdb2993eadeeb8c8e682c9"
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 5,
+      "files": 82,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 15,
+      "packedRunEntry": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true
+    }
+  ],
+  "manifest": {
+    "path": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/manifest.json",
+    "sha256": "2baae542cf8b561f1ab3b33cc59e74161905bcec139eef87d64d0ad8d9c621df"
+  },
+  "source": {
+    "revision": "5bb84e6ce691845d2ac85aac092dd06ed7a9ae57",
+    "tree": "cdad9c73bccaf094cd19fd042447c3a19e47c1b0",
+    "sha256": {
+      "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+      "examples/device-pipelines/pointer.ts": "753145a4a02823aa1838e1c42d55c5fe90bb75078d3d074e849ed127ba033148",
+      "examples/device-pipelines/run.ts": "ab481db3439d733daa1ea8556e8f44c76148e5c0a401989a52c2031f6b4d3f96",
+      "examples/device-pipelines/sensor-feedback.ts": "92d90895e2c705c5097df216df05c5139d52e6cedea8309627d4d0006e6bac2e",
+      "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+      "packages/connect/package.json": "b6cc88b216e9b672d01c7595db7a99e58e03aebeefb7106d0a0611062bdab59a",
+      "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+      "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+      "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+      "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+      "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+      "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+      "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+      "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+      "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+      "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+      "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+      "packages/device-web/package.json": "6944da1082082ab4db143a24ad567fae043dd102675b4b2ef52658974bbe6b53",
+      "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+      "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+      "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+      "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+      "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+      "schemas/device-descriptor.schema.json": "d27cd3d787154a9aea7bf5b7873035d54cae9739c634b404345914988dc1dd55"
+    }
+  },
+  "buildEnvironment": {
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3"
+  },
+  "packages": [
+    {
+      "name": "@101/device-model",
+      "version": "0.1.0",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/tarballs/101-device-model-0.1.0.tgz",
+      "sha256": "2cc3b1d91fe54fd357272eebaad85aa342cf54bf50ee09417b97bc29371e8264",
+      "bytes": 10927
+    },
+    {
+      "name": "@101/device-runtime",
+      "version": "0.1.0",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/tarballs/101-device-runtime-0.1.0.tgz",
+      "sha256": "355b051f0963aa3a518f7a453426677b4ae4723d4759964578f81367fd4c3076",
+      "bytes": 10820
+    },
+    {
+      "name": "@101/transport-webrtc",
+      "version": "0.1.0",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/tarballs/101-transport-webrtc-0.1.0.tgz",
+      "sha256": "89db8a90da096a90633f1def702ce6ba532de5ea6b834b3e899aff0c11170816",
+      "bytes": 6086
+    },
+    {
+      "name": "@101/device-web",
+      "version": "0.1.0",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/tarballs/101-device-web-0.1.0.tgz",
+      "sha256": "e687c8255f4cd4333d01d519f6ddb60076dc53ff31f18e8ae9d5f0d69ad3c747",
+      "bytes": 29776
+    },
+    {
+      "name": "@101/connect",
+      "version": "0.1.0",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-i9ltKk/tarballs/101-connect-0.1.0.tgz",
+      "sha256": "cb044fbd46c38a525cb47965e95a8cef24384cdd09bbb86072ac9eb2fcfd0356",
+      "bytes": 10034
+    }
+  ],
+  "browserServer": {
+    "owned": true,
+    "bind": "127.0.0.1",
+    "port": 50348,
+    "installedPackageFilesOnly": true,
+    "closed": true
+  },
+  "status": "pass",
+  "finishedAt": "2026-10-02T05:48:41.060Z"
+}

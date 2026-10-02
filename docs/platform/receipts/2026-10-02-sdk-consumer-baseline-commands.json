@@ -1,0 +1,146 @@
+[
+  {
+    "label": "baseline-revision",
+    "executable": "git",
+    "args": [
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/",
+    "status": 0,
+    "stdout": "[redacted hex]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-tree",
+    "executable": "git",
+    "args": [
+      "rev-parse",
+      "HEAD^{tree}"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/",
+    "status": 0,
+    "stdout": "[redacted hex]\n",
+    "stderr": ""
+  },
+  {
+    "label": "npm-version",
+    "executable": "npm",
+    "args": [
+      "--version"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-TFIvW5",
+    "status": 0,
+    "stdout": "11.9.0\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-pack:@101/device-model",
+    "executable": "npm",
+    "args": [
+      "pack",
+      "--json",
+      "--ignore-scripts",
+      "--pack-destination",
+      "/tmp/101-sdk-consumer-TFIvW5"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/packages/device-model",
+    "status": 0,
+    "stdout": "[\n  {\n    \"id\": \"@101/device-model@0.1.0\",\n    \"name\": \"@101/device-model\",\n    \"version\": \"0.1.0\",\n    \"size\": 12254,\n    \"unpackedSize\": 51172,\n    \"shasum\": \"[redacted hex]\",\n    \"integrity\": \"sha512-4ohgzAXP6aUhC0K4noH5p+Ug/f30F4Zovea3o8kcKqvsuuKZfLmU+maFOsYwNtw9gfvqt1sdjvXCaeL1Pa1hMw==\",\n    \"filename\": \"101-device-model-0.1.0.tgz\",\n    \"files\": [\n      {\n        \"path\": \"package.json\",\n        \"size\": 127,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/descriptor-schema.ts\",\n        \"size\": 4446,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/descriptor.ts\",\n        \"size\": 14622,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/index.ts\",\n        \"size\": 572,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/model.test.ts\",\n        \"size\": 12776,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/remote-clock.test.ts\",\n        \"size\": 10293,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/remote-clock.ts\",\n        \"size\": 5789,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/sample.ts\",\n        \"size\": 2547,\n        \"mode\": 420\n      }\n    ],\n    \"entryCount\": 8,\n    \"bundled\": []\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-pack:@101/device-runtime",
+    "executable": "npm",
+    "args": [
+      "pack",
+      "--json",
+      "--ignore-scripts",
+      "--pack-destination",
+      "/tmp/101-sdk-consumer-TFIvW5"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/packages/device-runtime",
+    "status": 0,
+    "stdout": "[\n  {\n    \"id\": \"@101/device-runtime@0.1.0\",\n    \"name\": \"@101/device-runtime\",\n    \"version\": \"0.1.0\",\n    \"size\": 12512,\n    \"unpackedSize\": 53540,\n    \"shasum\": \"[redacted hex]\",\n    \"integrity\": \"sha512-GwOYEgM1AkF9uZAXqUgQd0XjF1cKYem3YI+YOXFCu2NkueCKKfqdZmGkVWeAs7c9qFedOZiYhvCsDs5kh29UuA==\",\n    \"filename\": \"101-device-runtime-0.1.0.tgz\",\n    \"files\": [\n      {\n        \"path\": \"package.json\",\n        \"size\": 181,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/index.ts\",\n        \"size\": 392,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/lease.test.ts\",\n        \"size\": 1135,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/lease.ts\",\n        \"size\": 1009,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/runtime.test.ts\",\n        \"size\": 16146,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/runtime.ts\",\n        \"size\": 24450,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/scheduler.test.ts\",\n        \"size\": 1951,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/scheduler.ts\",\n        \"size\": 4761,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/types.ts\",\n        \"size\": 3515,\n        \"mode\": 420\n      }\n    ],\n    \"entryCount\": 9,\n    \"bundled\": []\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-pack:@101/transport-webrtc",
+    "executable": "npm",
+    "args": [
+      "pack",
+      "--json",
+      "--ignore-scripts",
+      "--pack-destination",
+      "/tmp/101-sdk-consumer-TFIvW5"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/packages/transport-webrtc",
+    "status": 0,
+    "stdout": "[\n  {\n    \"id\": \"@101/transport-webrtc@0.1.0\",\n    \"name\": \"@101/transport-webrtc\",\n    \"version\": \"0.1.0\",\n    \"size\": 7435,\n    \"unpackedSize\": 33311,\n    \"shasum\": \"[redacted hex]\",\n    \"integrity\": \"sha512-ihMSt5KGtXDN11uhg3RUSn4GoJDmRaVeTTNYrBl3jNnABSuKokTn2Lli+gLMSY0niu/2CHZGVy//8rV/SIVYpA==\",\n    \"filename\": \"101-transport-webrtc-0.1.0.tgz\",\n    \"files\": [\n      {\n        \"path\": \"package.json\",\n        \"size\": 131,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/index.ts\",\n        \"size\": 228,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/peer.test.ts\",\n        \"size\": 16372,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/peer.ts\",\n        \"size\": 14927,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/ports.ts\",\n        \"size\": 1653,\n        \"mode\": 420\n      }\n    ],\n    \"entryCount\": 5,\n    \"bundled\": []\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-pack:@101/device-web",
+    "executable": "npm",
+    "args": [
+      "pack",
+      "--json",
+      "--ignore-scripts",
+      "--pack-destination",
+      "/tmp/101-sdk-consumer-TFIvW5"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/packages/device-web",
+    "status": 0,
+    "stdout": "[\n  {\n    \"id\": \"@101/device-web@0.1.0\",\n    \"name\": \"@101/device-web\",\n    \"version\": \"0.1.0\",\n    \"size\": 48783,\n    \"unpackedSize\": 210495,\n    \"shasum\": \"[redacted hex]\",\n    \"integrity\": \"sha512-2h7qeZmizWJUSahYkTkJbmTBwmIbv43Y2ns21qCd9lTAz5VenCRQgYj0wamSIirKxK41ZudEad8Zzq7+ov5YMg==\",\n    \"filename\": \"101-device-web-0.1.0.tgz\",\n    \"files\": [\n      {\n        \"path\": \"package.json\",\n        \"size\": 257,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/authenticated-peer.test.ts\",\n        \"size\": 16225,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/authenticated-peer.ts\",\n        \"size\": 19435,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/binding.test.ts\",\n        \"size\": 24881,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/binding.ts\",\n        \"size\": 28469,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/identity-format.test.ts\",\n        \"size\": 3397,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/identity-format.ts\",\n        \"size\": 3635,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/identity-types.ts\",\n        \"size\": 701,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/index.ts\",\n        \"size\": 1660,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/invitation.test.ts\",\n        \"size\": 1973,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/invitation.ts\",\n        \"size\": 3400,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/manual-peer.test.ts\",\n        \"size\": 2126,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/manual-peer.ts\",\n        \"size\": 2284,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/native-peer.test.ts\",\n        \"size\": 18239,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/native-peer.ts\",\n        \"size\": 13084,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/pointer-driver.test.ts\",\n        \"size\": 9198,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/pointer-driver.ts\",\n        \"size\": 9708,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/pointer-provider.test.ts\",\n        \"size\": 5973,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/pointer-provider.ts\",\n        \"size\": 3563,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/web-identity.test.ts\",\n        \"size\": 4091,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/web-identity.ts\",\n        \"size\": 14231,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/wire.test.ts\",\n        \"size\": 12542,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/wire.ts\",\n        \"size\": 11423,\n        \"mode\": 420\n      }\n    ],\n    \"entryCount\": 23,\n    \"bundled\": []\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-pack:@101/connect",
+    "executable": "npm",
+    "args": [
+      "pack",
+      "--json",
+      "--ignore-scripts",
+      "--pack-destination",
+      "/tmp/101-sdk-consumer-TFIvW5"
+    ],
+    "cwd": "/Users/km/Desktop/games/101/packages/connect",
+    "status": 0,
+    "stdout": "[\n  {\n    \"id\": \"@101/connect@0.1.0\",\n    \"name\": \"@101/connect\",\n    \"version\": \"0.1.0\",\n    \"size\": 372,\n    \"unpackedSize\": 601,\n    \"shasum\": \"[redacted hex]\",\n    \"integrity\": \"sha512-P07JxR5TVOIF6TZtXcn/4do5oz04A3aXY9EzupxjLqlUTOXiK1UtGKDOrwuDNifpMcp/lSDclmf08JRcpQbBwA==\",\n    \"filename\": \"101-connect-0.1.0.tgz\",\n    \"files\": [\n      {\n        \"path\": \"package.json\",\n        \"size\": 278,\n        \"mode\": 420\n      },\n      {\n        \"path\": \"src/index.ts\",\n        \"size\": 323,\n        \"mode\": 420\n      }\n    ],\n    \"entryCount\": 2,\n    \"bundled\": []\n  }\n]\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-offline-install",
+    "executable": "npm",
+    "args": [
+      "install",
+      "--offline",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "/tmp/101-sdk-consumer-TFIvW5/101-device-model-0.1.0.tgz",
+      "/tmp/101-sdk-consumer-TFIvW5/101-device-runtime-0.1.0.tgz",
+      "/tmp/101-sdk-consumer-TFIvW5/101-transport-webrtc-0.1.0.tgz",
+      "/tmp/101-sdk-consumer-TFIvW5/101-device-web-0.1.0.tgz",
+      "/tmp/101-sdk-consumer-TFIvW5/101-connect-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-TFIvW5",
+    "status": 0,
+    "stdout": "\nadded 5 packages in 174ms\n",
+    "stderr": ""
+  },
+  {
+    "label": "baseline-no-typescript-runtime",
+    "executable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "args": [
+      "--no-experimental-strip-types",
+      "--input-type=module",
+      "-e",
+      "await import('@101/connect');"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-TFIvW5",
+    "status": 1,
+    "stdout": "",
+    "stderr": "node:internal/modules/esm/get_format:185\n  throw new ERR_UNKNOWN_FILE_EXTENSION(ext, filepath);\n        ^\n\nTypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension \".ts\" for /private/tmp/101-sdk-consumer-TFIvW5/node_modules/@101/connect/src/index.ts\n    at Object.getFileProtocolModuleFormat [as file:] (node:internal/modules/esm/get_format:185:9)\n    at defaultGetFormat (node:internal/modules/esm/get_format:211:36)\n    at defaultLoadSync (node:internal/modules/esm/load:158:16)\n    at #loadAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:796:12)\n    at #loadSync (node:internal/modules/esm/loader:816:49)\n    at ModuleLoader.load (node:internal/modules/esm/loader:781:26)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:526:31)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:577:36)\n    at afterResolve (node:internal/modules/esm/loader:625:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:631:12) {\n  code: 'ERR_UNKNOWN_FILE_EXTENSION'\n}\n\nNode.js v24.14.0\n"
+  }
+]
