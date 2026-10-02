@@ -73,7 +73,8 @@ export class WebHIDAdapter implements InputAdapter {
     if (!secureContext()) throw new Error("WebHID requires a secure context");
     const [device] = await manager.requestDevice({ filters: this.filters });
     if (!device) throw new Error("No HID device was selected");
-    await this.attach(device);
+    if (this.active) await this.attach(device);
+    else { this.device = device; this.report(); }
     return device;
   }
 

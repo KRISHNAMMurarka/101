@@ -77,7 +77,8 @@ export class WebBluetoothAdapter implements InputAdapter {
       ...(this.options.acceptAllDevices ? { acceptAllDevices: true } : { filters: this.options.filters }),
       optionalServices: this.options.optionalServices,
     });
-    await this.attach(device);
+    if (this.active) await this.attach(device);
+    else { this.device = device; this.report(); }
     return device;
   }
 

@@ -3,12 +3,24 @@ import test from "node:test";
 import { WebHIDAdapter, type HIDDevice101, type HIDInputReportEvent101, type HIDManager101 } from "./index.ts";
 
 class FakeHIDDevice extends EventTarget implements HIDDevice101 {
-  opened = false; vendorId = 0x101; productId = 0x202; productName = "101 Wand"; sent: number[] = [];
-  async open() { this.opened = true; }
+  opened = false; opens = 0; vendorId = 0x101; productId = 0x202; productName = "101 Wand"; sent: number[] = [];
+  async open() { this.opened = true; this.opens++; }
   async close() { this.opened = false; }
   async sendReport(reportId: number) { this.sent.push(reportId); }
   report(bytes: number[]) { this.dispatchEvent(Object.assign(new Event("inputreport"), { device: this, reportId: 1, data: new DataView(Uint8Array.from(bytes).buffer) } satisfies HIDInputReportEvent101)); }
 }
+
+test("selecting HID before bus registration opens only after start", async () => {
+  const device = new FakeHIDDevice();
+  const manager: HIDManager101 = { async getDevices() { return []; }, async requestDevice() { return [device]; } };
+  const adapter = new WebHIDAdapter({ manager, filters: [{ vendorId: 0x101 }], mapping: { reportId: 1,
+    controls: [{ kind: "action", name: "trigger", offset: 0, valueType: "u8", threshold: 1 }] } });
+  await adapter.requestDevice();
+  assert.equal(device.opens, 0);
+  await adapter.start(() => {});
+  assert.equal(device.opens, 1);
+  await adapter.stop();
+});
 
 test("WebHID keeps chooser permission explicit and emits mapped reports", async () => {
   const device = new FakeHIDDevice();

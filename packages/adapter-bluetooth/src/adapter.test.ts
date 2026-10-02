@@ -3,12 +3,27 @@ import test from "node:test";
 import { WebBluetoothAdapter, type BluetoothCharacteristic101, type BluetoothDevice101, type BluetoothGATTServer101, type BluetoothManager101, type BluetoothService101 } from "./index.ts";
 
 class FakeCharacteristic extends EventTarget implements BluetoothCharacteristic101 {
-  value?: DataView; notifying = false; writes: number[][] = [];
-  async startNotifications() { this.notifying = true; return this; }
+  value?: DataView; notifying = false; notificationStarts = 0; writes: number[][] = [];
+  async startNotifications() { this.notifying = true; this.notificationStarts++; return this; }
   async stopNotifications() { this.notifying = false; return this; }
   async writeValue(value: BufferSource) { this.writes.push(Array.from(new Uint8Array(value instanceof ArrayBuffer ? value : value.buffer, value instanceof ArrayBuffer ? 0 : value.byteOffset, value instanceof ArrayBuffer ? value.byteLength : value.byteLength))); }
   notify(bytes: number[]) { this.value = new DataView(Uint8Array.from(bytes).buffer); this.dispatchEvent(new Event("characteristicvaluechanged")); }
 }
+
+test("selecting Bluetooth before bus registration starts notifications only after start", async () => {
+  const characteristic = new FakeCharacteristic();
+  const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };
+  const gatt: BluetoothGATTServer101 = { connected: false, async connect() { this.connected = true; return this; }, disconnect() { this.connected = false; }, async getPrimaryService() { return service; } };
+  const device: BluetoothDevice101 = Object.assign(new EventTarget(), { id: "ble-101", name: "101 Sensor", gatt });
+  const manager: BluetoothManager101 = { async requestDevice() { return device; } };
+  const adapter = new WebBluetoothAdapter({ manager, service: "101-service", characteristic: "101-input", filters: [{ namePrefix: "101" }], mapping: { controls: [{ kind: "axis", name: "steer", offset: 0, valueType: "u8", inputCenter: 128 }] } });
+  await adapter.requestDevice();
+  assert.equal(gatt.connected, false);
+  assert.equal(characteristic.notificationStarts, 0);
+  await adapter.start(() => {});
+  assert.equal(characteristic.notificationStarts, 1);
+  await adapter.stop();
+});
 
 test("Web Bluetooth prompts only on request and consumes GATT notifications", async () => {
   const characteristic = new FakeCharacteristic();

@@ -8,8 +8,10 @@ class FakeSerialPort implements SerialPort101 {
   writable: WritableStream<Uint8Array> | null = null;
   controller?: ReadableStreamDefaultController<Uint8Array>;
   writes: number[][] = [];
+  opens = 0;
   getInfo() { return { usbVendorId: 0x101, usbProductId: 0x303 }; }
   async open() {
+    this.opens++;
     this.readable = new ReadableStream({ start: (controller) => { this.controller = controller; } });
     this.writable = new WritableStream({ write: (bytes) => { this.writes.push(Array.from(bytes)); } });
   }
@@ -18,6 +20,22 @@ class FakeSerialPort implements SerialPort101 {
   fail(error: Error) { this.controller?.error(error); }
   finish() { this.controller?.close(); }
 }
+
+test("selecting Serial before bus registration opens only after start", async () => {
+  const port = new FakeSerialPort();
+  const manager: SerialManager101 = { async getPorts() { return []; }, async requestPort() { return port; } };
+  const frames: Array<{ actions: Record<string, boolean | number> }> = [];
+  const adapter = new WebSerialAdapter({ manager, open: { baudRate: 115200 }, framer: new FixedLengthByteFramer(2),
+    mapping: { controls: [{ kind: "action", name: "buttonA", offset: 0, valueType: "u8", threshold: 1 }] } });
+  await adapter.requestPort();
+  assert.equal(port.opens, 0);
+  await adapter.start((frame) => frames.push(frame));
+  assert.equal(port.opens, 1);
+  port.push([1, 0]);
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(frames.at(-1)?.actions.buttonA, true);
+  await adapter.stop();
+});
 
 test("Web Serial keeps chooser permission explicit and frames split input", async () => {
   const port = new FakeSerialPort();

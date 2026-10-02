@@ -71,7 +71,8 @@ export class WebSerialAdapter implements InputAdapter {
     if (!manager) throw new Error("Web Serial is unavailable in this browser");
     if (!secureContext()) throw new Error("Web Serial requires a secure context");
     const port = await manager.requestPort(this.options.filters?.length ? { filters: this.options.filters } : undefined);
-    await this.attach(port);
+    if (this.active) await this.attach(port);
+    else { this.port = port; this.report(); }
     return port;
   }
 
