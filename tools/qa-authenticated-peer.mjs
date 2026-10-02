@@ -21,11 +21,26 @@ function collect(path) {
   sourceSha256[relative(root, path)] = createHash('sha256').update(source).digest('hex');
   modules.set(route, '');
   const javascript = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
-  modules.set(route, javascript.replace(/((?:from\s*|import\s*)['"])([^'"]+)(['"])/g, (_match, before, specifier, after) => {
-    const dependency = aliases[specifier] ?? (specifier.startsWith('.') ? resolve(dirname(path), specifier) : undefined);
-    if (!dependency || !dependency.startsWith(`${root}/packages/`) && !dependency.startsWith(`${root}/examples/`)) throw new Error('Unexpected authenticated QA import');
-    return before + collect(dependency) + after;
-  }));
+  const file = ts.createSourceFile(path, javascript, ts.ScriptTarget.ES2022, true, ts.ScriptKind.JS);
+  const imports = [];
+  function visit(node) {
+    const staticModule = (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) && node.moduleSpecifier;
+    const dynamicModule = ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword && node.arguments[0];
+    const specifier = staticModule || dynamicModule;
+    if (specifier && ts.isStringLiteral(specifier)) imports.push({ start: specifier.getStart(file) + 1,
+      end: specifier.getEnd() - 1, value: specifier.text });
+    ts.forEachChild(node, visit);
+  }
+  visit(file);
+  let rewritten = javascript;
+  for (const specifier of imports.sort((a, b) => b.start - a.start)) {
+    const dependency = aliases[specifier.value] ?? (specifier.value.startsWith('.') ? resolve(dirname(path), specifier.value) : undefined);
+    if (!dependency || !dependency.startsWith(`${root}/packages/`) && !dependency.startsWith(`${root}/examples/`)) {
+      throw new Error(`Unexpected authenticated QA import ${path}: ${specifier.value}`);
+    }
+    rewritten = rewritten.slice(0, specifier.start) + collect(dependency) + rewritten.slice(specifier.end);
+  }
+  modules.set(route, rewritten);
   return route;
 }
 const entries = {

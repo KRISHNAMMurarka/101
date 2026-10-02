@@ -1,0 +1,448 @@
+{
+  "scope": "local real-browser two-page independent persisted endpoint keys; actual WebRTC transcript proof, bilateral owner comparison, application owner pointer selection, generated pointer/contact delivery and loss release; no UI, physical input, native signature or account identity qualification",
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "node": "24.14.0",
+  "playwright": "1.61.1",
+  "sourceSha256": {
+    "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-model/src/index.ts": "237cbe56887a2d7b64c310116c990bbbafd5e1a0327b784b843ead9c9ef51fd6",
+    "packages/device-model/src/wot.ts": "810be699471fb7109d83269f10b15b7f28d32374136d3bfa84023842211b2dc9",
+    "packages/device-model/src/descriptor.ts": "fa6fee25200ff25d827ccfced1f834f35f48e7bf64c372bddae85f84549e1184",
+    "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+    "packages/device-model/src/health.ts": "edb3a6c2ed4912e7948199bb37ae1142c12107235c0c6ba714b43cba73d8d3dc",
+    "packages/device-model/src/observation-timing.ts": "57b57679fdf15b1d0f9a3fada69ba71111c3ab081f30c7b5f3492ed68377e35c",
+    "packages/device-model/src/quality.ts": "ef6edc24858841a97cca43fbfdccb747a4f2ec6bbf6ab635644629f5ea2cda34",
+    "packages/device-model/src/sample.ts": "575829156c84c17b9b2b71a4453564015aecec56c9de1ed6a80238d6aae3222a",
+    "packages/device-model/src/media.ts": "b229f931822f6a6dc59e518286534fc20f9e2b0ee44d526300bdff54bdd4d4f3",
+    "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+    "packages/device-model/src/spatial.ts": "374046ee11b7daf7286f687eb34e81c1d075ad2d3e2c09ed609d7b7b105629e3",
+    "packages/device-model/src/units.ts": "12d780341e5533f350e38c6fc18a95c2f7485f16022ab07207dd7bac650a533f",
+    "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+    "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+    "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+    "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/binding.ts": "6e454f2883b01ac43c678ffef6c9069f6bb217a0899b2380744f286a5fe36378",
+    "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+    "examples/device-pipelines/remote-pointer.ts": "603f8e765437e0fa33b303823119d0a10649f38d5b42aaf77ae23868b54d2da5",
+    "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+    "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+    "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-runtime/src/index.ts": "b42b2c1acc2d64dec929d72d3615a48b8334ea7fd1a97da8f9042d116a7aebcd",
+    "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+    "packages/device-runtime/src/runtime.ts": "11474ad18089f53e1c1ac90643d31887151fb9fc086514e426d884bb702f691c",
+    "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "tools/qa-authenticated-peer.mjs": "3a19eb9056772f7513621030e68845a3a4e81f33683963366e613de0a7570eb3"
+  },
+  "checks": [
+    "receiver persisted identity survives page reload",
+    "source persisted identity survives page reload",
+    "wrong expected application: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+    "wrong expected session: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+    "tampered accepted answer SDP: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+    "valid owner enrollment, transport disconnect: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+    "valid owner enrollment, endpoint key removal: pre-auth descriptor/sample admission blocked and raw premature packets dropped"
+  ],
+  "trials": [
+    {
+      "name": "wrong expected application",
+      "expected": "RED authentication",
+      "result": [
+        {
+          "phase": "stopped",
+          "reason": "wrong-endpoint-or-scope",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        },
+        {
+          "phase": "stopped",
+          "reason": "wrong-endpoint-or-scope",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        }
+      ]
+    },
+    {
+      "name": "wrong expected session",
+      "expected": "RED authentication",
+      "result": [
+        {
+          "phase": "stopped",
+          "reason": "wrong-endpoint-or-scope",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        },
+        {
+          "phase": "stopped",
+          "reason": "wrong-endpoint-or-scope",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        }
+      ]
+    },
+    {
+      "name": "tampered accepted answer SDP",
+      "expected": "RED authentication",
+      "result": [
+        {
+          "phase": "stopped",
+          "reason": "invalid-endpoint-proof",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        },
+        {
+          "phase": "stopped",
+          "reason": "invalid-endpoint-proof",
+          "scopeAbsent": true,
+          "appAdmission": false,
+          "samplesAbsent": true,
+          "deliveredApplications": 0
+        }
+      ]
+    },
+    {
+      "name": "valid owner enrollment, transport disconnect",
+      "expected": "GREEN authentication and application routes",
+      "matchingOwnerDigest": true,
+      "unilateralEnrollmentBlocked": true,
+      "states": [
+        {
+          "contact": true,
+          "releases": 0,
+          "position": {
+            "x": 80.0000011920929,
+            "y": 160.0000023841858
+          }
+        },
+        {
+          "contact": false,
+          "releases": 0,
+          "position": {
+            "x": 320.0000047683716,
+            "y": 40.00000059604645
+          }
+        }
+      ],
+      "resized": {
+        "contact": false,
+        "releases": 0,
+        "position": {
+          "x": 800.000011920929,
+          "y": 100.00000149011612
+        }
+      },
+      "ended": [
+        {
+          "phase": "stopped",
+          "reason": "transport-ended",
+          "scopeAbsent": true,
+          "lateAdmission": false,
+          "receiver": {
+            "active": 0,
+            "pending": 0,
+            "stopped": true,
+            "reason": "unavailable",
+            "clockReady": false
+          },
+          "state": {
+            "positionAbsent": true,
+            "contact": false,
+            "releases": 2
+          },
+          "packetShapes": [
+            {
+              "lane": "reliable",
+              "type": "describe",
+              "encoding": "JSON",
+              "bytes": 842
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "describe",
+              "encoding": "JSON",
+              "bytes": 842
+            },
+            {
+              "lane": "reliable",
+              "type": "clock",
+              "encoding": "JSON",
+              "bytes": 196
+            },
+            {
+              "lane": "reliable",
+              "type": "ready",
+              "encoding": "JSON",
+              "bytes": 127
+            },
+            {
+              "lane": "reliable",
+              "type": "ready",
+              "encoding": "JSON",
+              "bytes": 127
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 206
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 177
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 206
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 177
+            }
+          ]
+        },
+        {
+          "phase": "stopped",
+          "reason": "transport-ended",
+          "scopeAbsent": true,
+          "lateAdmission": false,
+          "provider": {
+            "ready": false,
+            "stopped": true,
+            "reason": "unavailable"
+          },
+          "packetShapes": [
+            {
+              "lane": "reliable",
+              "type": "clock",
+              "encoding": "JSON",
+              "bytes": 126
+            },
+            {
+              "lane": "reliable",
+              "type": "bind",
+              "encoding": "JSON",
+              "bytes": 222
+            },
+            {
+              "lane": "reliable",
+              "type": "bind",
+              "encoding": "JSON",
+              "bytes": 207
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "valid owner enrollment, endpoint key removal",
+      "expected": "GREEN authentication and application routes",
+      "matchingOwnerDigest": true,
+      "unilateralEnrollmentBlocked": true,
+      "states": [
+        {
+          "contact": true,
+          "releases": 0,
+          "position": {
+            "x": 80.0000011920929,
+            "y": 160.0000023841858
+          }
+        },
+        {
+          "contact": false,
+          "releases": 0,
+          "position": {
+            "x": 320.0000047683716,
+            "y": 40.00000059604645
+          }
+        }
+      ],
+      "resized": {
+        "contact": false,
+        "releases": 0,
+        "position": {
+          "x": 800.000011920929,
+          "y": 100.00000149011612
+        }
+      },
+      "ended": [
+        {
+          "phase": "stopped",
+          "reason": "transport-ended",
+          "scopeAbsent": true,
+          "lateAdmission": false,
+          "receiver": {
+            "active": 0,
+            "pending": 0,
+            "stopped": true,
+            "reason": "unavailable",
+            "clockReady": false
+          },
+          "state": {
+            "positionAbsent": true,
+            "contact": false,
+            "releases": 2
+          },
+          "packetShapes": [
+            {
+              "lane": "reliable",
+              "type": "describe",
+              "encoding": "JSON",
+              "bytes": 842
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "describe",
+              "encoding": "JSON",
+              "bytes": 842
+            },
+            {
+              "lane": "reliable",
+              "type": "clock",
+              "encoding": "JSON",
+              "bytes": 196
+            },
+            {
+              "lane": "reliable",
+              "type": "ready",
+              "encoding": "JSON",
+              "bytes": 127
+            },
+            {
+              "lane": "reliable",
+              "type": "ready",
+              "encoding": "JSON",
+              "bytes": 127
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 183
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 207
+            },
+            {
+              "lane": "disposable",
+              "type": "sample",
+              "encoding": "binary",
+              "bytes": 48
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 208
+            },
+            {
+              "lane": "reliable",
+              "type": "event",
+              "encoding": "JSON",
+              "bytes": 207
+            }
+          ]
+        },
+        {
+          "phase": "stopped",
+          "reason": "identity-unavailable",
+          "scopeAbsent": true,
+          "lateAdmission": false,
+          "provider": {
+            "ready": false,
+            "stopped": true,
+            "reason": "unavailable"
+          },
+          "packetShapes": [
+            {
+              "lane": "reliable",
+              "type": "clock",
+              "encoding": "JSON",
+              "bytes": 126
+            },
+            {
+              "lane": "reliable",
+              "type": "bind",
+              "encoding": "JSON",
+              "bytes": 222
+            },
+            {
+              "lane": "reliable",
+              "type": "bind",
+              "encoding": "JSON",
+              "bytes": 207
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "status": "passed"
+}

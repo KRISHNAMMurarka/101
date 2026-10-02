@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 51 completed with recorded evidence; 221 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 52 completed with recorded evidence; 220 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -100,7 +100,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **T01 — Write the transport-bridge spec and plan.** Freeze wire messages, resource binding, peer authority, reconnect epochs, limits, first callers and regression tests against the existing v2 path. [Transport evidence](TRANSPORT-QA-2026-10-02.md).
 - [x] **T02 — Extract reusable peer transport.** Introduce the first `transport-webrtc` caller while preserving current reliable/disposable channels and existing 101 codecs/tests. [Transport evidence](TRANSPORT-QA-2026-10-02.md).
 - [x] **T03 — Negotiate general resources.** Exchange bounded descriptors, schema/codec revisions, supported operations and effective route limits; incompatible peers get a recoverable rejection. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
-- [ ] **T04 — Bind remote resources to authenticated peers.** Remote packets cannot choose arbitrary source IDs, sink registrations, sessions or permissions; cross-peer and cross-session fixtures fail.
+- [x] **T04 — Bind remote resources to authenticated peers.** Remote packets cannot choose arbitrary source IDs, sink registrations, sessions or permissions; cross-peer and cross-session fixtures fail. [SDK evidence](SDK.md#bind-a-remote-provider).
 - [x] **T05 — Implement general wire codecs.** Use a versioned readable baseline and selected compact profiles; arbitrary sensor values retain units/ranges and are not encoded as game axes. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
 - [x] **T06 — Implement sample/event/control scheduling.** Apply freshness, sequences, epochs, deadlines, deduplication and bounded send queues; button edges and relative deltas survive loss policy correctly. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
 - [ ] **T07 — Implement generic browser/native provider binding.** A phone source and browser application sink use the new SDK end to end rather than a special game role.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 23,
+  "revision": 24,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6475,6 +6475,31 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "authenticated-resource-binding-2026-10-02",
+      "revision": "containing qualification commit, base 2dda40f; exact current source and QA tool hashes in Chromium receipt",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "T04"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-web/src/authenticated-peer.test.ts",
+        "docs/platform/receipts/2026-10-02-t04-authenticated-chromium.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/Playwright1.61.1; real two-page Chromium149.0.7827.55 WebRTC with persisted browser keys, plus faithful Node port fixtures; no physical source",
+      "reproduction": "node --test packages/device-web/src/authenticated-peer.test.ts packages/device-web/src/binding.test.ts (36/36); node tools/qa-authenticated-peer.mjs chromium; exact candidate repository gates",
+      "scope": "T04 only: issued authenticated peer scope gates resource description/approval, private receiver slots bind host-selected source/sink/permission/session, malformed packet-selected authority and wrong peer/session reject, current Chromium enrollment/delivery/loss pass. Browser post-auth field injection uses Node port fixture; Firefox/WebKit auth and physical/account support remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -6844,7 +6869,8 @@
         "pending-T04",
         "resource-binding-2026-10-02",
         "endpoint-auth-core-2026-10-02",
-        "endpoint-enrollment-ui-2026-10-02"
+        "endpoint-enrollment-ui-2026-10-02",
+        "authenticated-resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",

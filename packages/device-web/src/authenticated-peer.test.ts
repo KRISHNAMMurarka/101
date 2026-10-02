@@ -150,15 +150,27 @@ test('an enrolled scope delivers typed pointer resources and revocation releases
   f.a.confirmEnrollment(f.a.status().comparisonDigest!); f.b.confirmEnrollment(f.b.status().comparisonDigest!);
   await f.pump(() => f.a.state === 'connected' && f.b.state === 'connected');
   await f.pump(() => { provider.tick(); surface.tick(); return !!surface.receiver.description(); });
-  assert.equal(surface.select(), true);
+  assert.equal(surface.select('json/1'), true);
   await f.pump(() => { provider.tick(); surface.tick(); return !!provider.driver() && !!surface.state().position; });
   f.setTime(120);
   provider.driver()!.nudge(0.2, -0.3); provider.driver()!.setContact(true);
   await f.pump(() => { provider.tick(); surface.tick(); return surface.state().contact && !!surface.state().position; })
     .catch(() => assert.fail(JSON.stringify({ provider: provider.status(), receiver: surface.receiver.status(), surface: surface.state() })));
   assert.ok(Math.abs(surface.state().position!.x - 700) < 0.001 && Math.abs(surface.state().position!.y - 100) < 0.001);
+  f.setTime(140);
+  const sample = { protocol: 'connect', version: 1, type: 'sample', epoch: 'a'.repeat(32),
+    slot: 1, sequence: 100, capturedAt: 140, value: { x: 0.4, y: 0.6 } };
+  assert.equal(f.a.send('disposable', JSON.stringify(sample)), true);
+  while (f.queue.length) f.queue.shift()!(); surface.tick();
+  assert.deepEqual(surface.state().position, { x: 400, y: 300 });
+  for (const [field, value] of Object.entries({ sourceId: 'other-device', sinkRegistrationId: 'other-sink',
+    sessionId: 'other-session', permissions: ['write'] })) {
+    assert.equal(f.a.send('disposable', JSON.stringify({ ...sample, sequence: 101, [field]: value })), true);
+    while (f.queue.length) f.queue.shift()!(); surface.tick();
+    assert.deepEqual(surface.state().position, { x: 400, y: 300 }, `${field} changed the authorized sink`);
+  }
   surface.resize(500, 1000);
-  assert.ok(Math.abs(surface.state().position!.x - 350) < 0.001 && Math.abs(surface.state().position!.y - 200) < 0.001);
+  assert.ok(Math.abs(surface.state().position!.x - 200) < 0.001 && Math.abs(surface.state().position!.y - 600) < 0.001);
   f.identities[1].lose();
   assert.equal(surface.state().position, undefined); assert.equal(surface.state().contact, false);
   assert.equal(surface.state().releases, 2); assert.equal(authenticatedPeerScope(f.b), undefined);
