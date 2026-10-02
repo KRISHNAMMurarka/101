@@ -43,6 +43,19 @@ test("routes bind both resource operations and reject denied or forged authority
   assert.equal(h.runtime.publish({ ...h.source }, { x: 0, y: 0 }).ok, false);
 });
 
+test("inert descriptor extensions cannot authorize a route", () => {
+  const runtime = createDeviceRuntime({ now: () => 0, authorize: () => undefined });
+  const source = runtime.registerSource({ device: { ...device('extended-source'),
+    extensions: { 'vendor:authority': { authorize: true } } }, capability: 'control' });
+  const sink = runtime.registerSink({ device: { ...device('extended-sink', false, true),
+    extensions: { 'vendor:authority': { authorize: true } } }, capability: 'control',
+    apply() { assert.fail('Extension granted a route'); }, release() {} });
+  runtime.setReadiness(source, 'available'); runtime.setReadiness(sink, 'available');
+  const route = runtime.route({ from: source, to: sink, principalId: 'owner', applicationId: 'example', sessionId: 'session' });
+  assert.deepEqual(route.start(), { ok: false, reason: 'denied' });
+  runtime.close();
+});
+
 test("latest samples remain immutable and coalesced within the negotiated rate", () => {
   const h = harness(); assert.equal(h.connection.start().ok, true);
   const position = { x: 0.2, y: 0.8 };

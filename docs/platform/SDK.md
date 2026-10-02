@@ -369,6 +369,32 @@ fault or firmware state, and it does not enforce the reported resource limits
 as runtime quotas. [M09 evidence](DEVICE-HEALTH-QA-2026-10-02.md) covers the
 parser, embedded caller and installed package consumers.
 
+## Descriptor revisions and extensions
+
+`planDescriptorEvolution(previous, candidate)` validates both descriptors and
+accepts only a higher revision of the same device, adapter and platform whose
+existing capability contracts remain identical. New capabilities, labels,
+adapter versions and inert metadata/extensions can be added without silently
+changing existing routes. Removed capabilities or changes to permissions,
+ownership, schema, delivery, kind or semantic return an incompatible plan.
+Unknown fields/types and unsupported descriptor schema versions reject before
+planning. This is a compatibility decision, not payload migration, grant
+transfer or permission approval. Every new resource still needs host authority.
+
+M11 local evidence: the focused evolution test was RED before the helper existed;
+unknown fields/types, revision ordering, additive capabilities, changed
+contracts and extension authority denial now pass. Independent read-only review
+found no concrete defect. The [immutable SDK build](receipts/2026-10-02-descriptor-evolution-sdk-build.json)
+and [clean consumer receipt](receipts/2026-10-02-descriptor-evolution-sdk-consumer.json)
+cover strict NodeNext/Bundler types and ordinary Node, Chromium, Firefox and
+WebKit. The unpublished artifact is `release/sdk-IpSb9H` from source tree
+`302727f01e4076a90945aae82becb2f53e0dffbc`; manifest SHA-256 is
+`da3f3473942d4bb9e68246ed867a49a7f1f097c868f768ea6d3ef658e7d6245f`.
+Builder SHA-256 is `7e91360653dfbc1cd0c872eb7759d2a6a46cc2e1e5095cb0aff4079d4e0fd966`;
+QA tool SHA-256 is `99c97da5bbc40bec1b01eeda2381c4769cd29bd65b71ab7227159e456f47ae9d`.
+The containing commit binds the exact repository gates. This does not qualify
+remote upgrade rollout, physical providers or support.
+
 Workspace packages expose TypeScript source for the repository's existing tools.
 `npm run build:sdk -- HEAD` separately compiles an explicit immutable revision/tree
 into five local ESM tarballs under a fresh ignored `release/sdk-*` directory.

@@ -23,3 +23,5 @@ export { parseObservationTiming, observationAgeBounds, compareClockStamps } from
 export type { ClockStamp, CaptureMapping, ProcessorTimingStep, ObservationTiming } from './observation-timing.ts';
 export { parseDeviceHealthReport, assessDeviceHealth } from './health.ts';
 export type { DeviceHealthFault, DeviceHealthResource, DeviceHealthReport, DeviceHealthAssessment } from './health.ts';
+export { planDescriptorEvolution } from './evolution.ts';
+export type { DescriptorEvolution } from './evolution.ts';

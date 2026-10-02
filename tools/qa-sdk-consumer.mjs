@@ -180,6 +180,8 @@ import { parseObservationTiming, observationAgeBounds, compareClockStamps } from
 import type { ObservationTiming } from '@101/device-model';
 import { parseDeviceHealthReport, assessDeviceHealth } from '@101/device-model';
 import type { DeviceHealthReport, DeviceHealthAssessment } from '@101/device-model';
+import { planDescriptorEvolution } from '@101/device-model';
+import type { DescriptorEvolution } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -251,6 +253,11 @@ const health: DeviceHealthReport = parseDeviceHealthReport({ schemaVersion: 1, d
 const healthAssessment: DeviceHealthAssessment = assessDeviceHealth(health, 'demo-thermometer', 'temperature',
   { clockId: 'embedded-demo', at: 0 });
 void [healthAssessment, sensor.publishHealth(health)];
+const evolution: DescriptorEvolution = planDescriptorEvolution(descriptor, { ...descriptor, revision: 2,
+  capabilities: [{ id: 'new-sensor', semantic: 'example:new-sensor', schemaVersion: 1,
+    kind: 'sample', value: { type: 'boolean' }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 },
+    permissions: ['subscribe'] }] });
+void evolution;
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -289,7 +296,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -333,6 +340,19 @@ export async function checkRuntime() {
     { clockId: 'embedded-demo', at: 1100 }).limits?.maxHz === 10 &&
     model.assessDeviceHealth(health, 'demo-thermometer', 'temperature',
       { clockId: 'embedded-demo', at: 1100.001 }).readiness === 'stale', 'Packed health assessment failed');
+  const originalDescriptor = { schemaVersion: 1, id: 'fixture', label: 'Fixture', revision: 1,
+    adapter: { id: 'example:fixture', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [
+      { id: 'sensor', semantic: 'example:sensor', schemaVersion: 1, kind: 'sample', value: { type: 'boolean' },
+        delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 }, permissions: ['subscribe'] }] };
+  check(model.planDescriptorEvolution(originalDescriptor, { ...originalDescriptor, revision: 2,
+    extensions: { 'vendor:note': { authorize: true } } }).compatibility === 'compatible' &&
+    model.planDescriptorEvolution(originalDescriptor, { ...originalDescriptor, revision: 2,
+      capabilities: [{ ...originalDescriptor.capabilities[0], permissions: ['subscribe', 'read'] }] }).compatibility === 'incompatible',
+    'Packed descriptor revision planning failed');
+  let unknownDescriptorRejected = false;
+  try { model.planDescriptorEvolution(originalDescriptor, { ...originalDescriptor, revision: 2, executable: true }); }
+  catch { unknownDescriptorRejected = true; }
+  check(unknownDescriptorRejected, 'Packed unknown descriptor field was accepted');
   const healthPipeline = createSensorFeedbackPipeline({ now: () => 100 });
   try {
     check(healthPipeline.publishHealth(health).readiness === 'available', 'Packed health caller denied available resource');
@@ -387,7 +407,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

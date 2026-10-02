@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 20,
+  "revision": 21,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6375,6 +6375,31 @@
       "supportRows": []
     },
     {
+      "id": "descriptor-evolution-2026-10-02",
+      "revision": "containing implementation commit, base 015858a; immutable SDK producer tree 302727f01e4076a90945aae82becb2f53e0dffbc and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M11"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-02-descriptor-evolution-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-descriptor-evolution-sdk-consumer.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed revision planning; no remote upgrade rollout or physical provider",
+      "reproduction": "Focused evolution parser/runtime authority RED-GREEN tests and independent read-only review; node tools/build-sdk.mjs 302727f01e4076a90945aae82becb2f53e0dffbc; node tools/qa-sdk-consumer.mjs release/sdk-IpSb9H/manifest.json; exact candidate repository gates",
+      "scope": "M11 only: validated additive descriptor revision planning, unknown type/field rejection, immutable extension preservation and explicit incompatibility for identity/permissions/schema/delivery/ownership changes; inert extensions cannot grant an embedded route. No payload migration, remote rollout, grant transfer or support promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6693,7 +6718,8 @@
     {
       "id": "M11",
       "records": [
-        "pending-M11"
+        "pending-M11",
+        "descriptor-evolution-2026-10-02"
       ],
       "dependencies": [
         "C01",
