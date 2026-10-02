@@ -3,6 +3,7 @@ import test from 'node:test';
 import { createDeviceRuntime } from '../../device-runtime/src/index.ts';
 import type { DeliveryContext, Observation, RouteGrant } from '../../device-runtime/src/types.ts';
 import type { DeviceDescriptor } from '../../device-model/src/index.ts';
+import { observationAgeBounds, parseObservationTiming } from '../../device-model/src/index.ts';
 import { RemoteResourcePublisher, RemoteResourceReceiver } from './binding.ts';
 import { decodePacket, encodePacket } from './wire.ts';
 
@@ -87,6 +88,13 @@ test('negotiated typed position and temperature retain meaning with a foreign cl
   assert.equal(h.received[0].timestamp <= 100, true); assert.equal(h.received[0].clockDomain, 'host-clock');
   assert.equal(h.received[0].provenance?.remoteClockId, 'phone-clock');
   assert.equal(h.received[0].provenance?.remoteCapturedAt, 1100);
+  const timing = parseObservationTiming(h.received[0].provenance?.timing);
+  assert.deepEqual(timing.capture, { clockId: 'phone-clock', at: 1100 });
+  assert.deepEqual(timing.receipt, { clockId: 'host-clock', at: 100 });
+  assert.equal(timing.mapping?.maxDriftPpm, 100);
+  assert.deepEqual(timing.processors, []);
+  const age = observationAgeBounds(timing);
+  assert.ok(age.earliestMs >= 0 && age.latestMs >= age.earliestMs);
   assert.equal(h.publisher.publish('temperature', 200), false);
 });
 test('compact normalized pointer is negotiated independently of sensor JSON', () => {

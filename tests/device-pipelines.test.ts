@@ -3,6 +3,7 @@ import test from 'node:test';
 import { createPointerPipeline, runPointerExample } from '../examples/device-pipelines/pointer.ts';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '../examples/device-pipelines/sensor-feedback.ts';
 import { createTemperatureThreshold } from '../examples/device-pipelines/threshold.ts';
+import { parseObservationTiming, observationAgeBounds } from '@101/connect';
 import type { AuthorizationRequest } from '@101/connect';
 
 test('the pointer example maps normalized coordinates to the destination dimensions', () => {
@@ -44,11 +45,28 @@ test('sensor command dispatch is distinct from a separate feedback observation',
     sequence: 7, timestamp: 0, clockDomain: 'embedded-demo', quality: 'valid',
     provenance: { calibration: { offset: 0.25 } },
   });
+  const timing = parseObservationTiming(before.commands[0].provenance?.timing);
+  assert.deepEqual(timing.capture, { clockId: 'embedded-demo', at: 0 });
+  assert.deepEqual(timing.receipt, { clockId: 'embedded-demo', at: 0 });
+  assert.deepEqual(timing.processors.map(step => step.id), ['example:temperature-threshold']);
+  assert.deepEqual(observationAgeBounds(timing), { earliestMs: 0, latestMs: 0 });
   assert.deepEqual(example.receiveFeedback(), { value: true, timestamp: 0 });
   assert.equal(example.state().operations[0].state, 'observed');
   example.runtime.close();
   assert.equal(runSensorFeedbackExample({ feedback: false }).operations[0].state, 'unverified');
   assert.equal(runSensorFeedbackExample().operations[0].state, 'observed');
+});
+
+test('a source metadata claim cannot replace runtime-owned timing lineage', () => {
+  const example = createSensorFeedbackPipeline();
+  const forgedTiming = { capture: { clockId: 'forged-clock', at: 9000 },
+    receipt: { clockId: 'embedded-demo', at: 0 },
+    mapping: { earliest: 0, latest: 0, uncertaintyMs: 0, maxDriftPpm: 0 }, processors: [] };
+  assert.equal(example.publishTemperature(31.25, { provenance: { timing: forgedTiming } }).ok, true);
+  example.runtime.flush(); example.runtime.flush();
+  const timing = parseObservationTiming(example.state().commands[0].provenance?.timing);
+  assert.deepEqual(timing.capture, { clockId: 'embedded-demo', at: 0 });
+  example.runtime.close();
 });
 
 test('measurement reports preserve producer calibration and fault meaning', () => {

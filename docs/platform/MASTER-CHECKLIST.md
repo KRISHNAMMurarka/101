@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 46 completed with recorded evidence; 226 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 47 completed with recorded evidence; 225 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -89,7 +89,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **M05 — Media/surface descriptions.** Define tracks, render targets, codecs, capture/output properties and geometry; unsupported resources cannot advertise a working route. [Media-description evidence](MEDIA-DESCRIPTIONS-QA-2026-10-02.md).
 - [x] **M06 — Units and conversions.** Validate unit representation and explicit converters, scale/offset, precision and error budgets; incompatible measurements fail without silent normalization. [Unit-conversion evidence](UNITS-QA-2026-10-02.md).
 - [x] **M07 — Calibration and quality.** Promote needed calibration revision, uncertainty, faults and stale/unavailable state into validated contracts; fixtures preserve producer meaning. [Measurement-quality evidence](MEASUREMENT-QUALITY-QA-2026-10-02.md).
-- [ ] **M08 — Clock and observation provenance.** Define remote clock identity, offset uncertainty, drift, capture/receipt timestamps and processor lineage; unsupported clock comparisons are rejected.
+- [x] **M08 — Clock and observation provenance.** Define remote clock identity, offset uncertainty, drift, capture/receipt timestamps and processor lineage; unsupported clock comparisons are rejected. [Observation-timing evidence](OBSERVATION-TIMING-QA-2026-10-02.md).
 - [ ] **M09 — Device health/resources.** Model battery, charging, thermal, firmware, connectivity and hardware faults as truthful readiness/telemetry with supported resource limits.
 - [ ] **M10 — Property/action/event/job semantics.** Specify readable properties, subscriptions, set-state commands, non-idempotent operations and asynchronous jobs with distinct result/effect evidence.
 - [ ] **M11 — Schema evolution and extensions.** Test unknown types/fields, compatible upgrades, incompatible revisions and preserved inert extensions; data cannot introduce executable authority.

@@ -176,6 +176,8 @@ import { parseMediaManifest, planMediaBinding } from '@101/device-model';
 import type { MediaManifest, MediaBindingResult } from '@101/device-model';
 import { parseMeasurementReport } from '@101/device-model';
 import type { MeasurementReport } from '@101/device-model';
+import { parseObservationTiming, observationAgeBounds, compareClockStamps } from '@101/device-model';
+import type { ObservationTiming } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -237,6 +239,9 @@ const qualityReport: MeasurementReport = parseMeasurementReport({ status: 'valid
   calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
   { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
 void qualityReport;
+const timing: ObservationTiming = parseObservationTiming({ capture: { clockId: 'source-clock', at: 100 },
+  receipt: { clockId: 'source-clock', at: 110 }, mapping: null, processors: [] });
+void [observationAgeBounds(timing), compareClockStamps(timing.capture, timing.receipt)];
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -275,7 +280,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -301,6 +306,15 @@ export async function checkRuntime() {
     { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
   check(measurementReport.status === 'valid' && measurementReport.calibration.revision === 7 &&
     runSensorFeedbackExample().lastReport?.status === 'valid', 'Packed measurement quality contract failed');
+  const timing = model.parseObservationTiming({ capture: { clockId: 'source-clock', at: 100 },
+    receipt: { clockId: 'source-clock', at: 110 }, mapping: null, processors: [] });
+  check(model.observationAgeBounds(timing).latestMs === 10 &&
+    model.compareClockStamps(timing.capture, timing.receipt) === -1 &&
+    runSensorFeedbackExample().commands[0].provenance?.timing?.processors?.[0]?.id === 'example:temperature-threshold',
+    'Packed observation timing contract failed');
+  let crossClockRejected = false;
+  try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }
+  check(crossClockRejected, 'Packed cross-clock comparison was accepted');
   const pointer = runPointerExample();
   check(pointer.kind === 'embedded-simulation' && pointer.position.x === 200 && pointer.position.y === 400 && pointer.competing.ok === false && pointer.competing.reason === 'busy' && pointer.nextOwner.ok === true && pointer.released === 1, 'Packed pointer example behavior failed');
   const feedback = runSensorFeedbackExample(), unverified = runSensorFeedbackExample({ feedback: false });
@@ -336,7 +350,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

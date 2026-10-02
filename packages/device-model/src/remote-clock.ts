@@ -52,6 +52,7 @@ export class RemoteClockMap {
   private readonly maxRttMs: number;
   private readonly maxUncertaintyMs: number;
   private readonly drift: number;
+  private readonly driftCeilingPpm: number;
   private readonly maxAgeMs: number;
   private interval: OffsetInterval | undefined;
   private lastLocalReceipt: number | undefined;
@@ -64,9 +65,13 @@ export class RemoteClockMap {
     if (this.localClockId === this.remoteClockId) throw new RangeError('Clock identities must be distinct');
     this.maxRttMs = boundedOption(options.maxRttMs === undefined ? 200 : options.maxRttMs, 60000);
     this.maxUncertaintyMs = boundedOption(options.maxUncertaintyMs === undefined ? 20 : options.maxUncertaintyMs, 60000);
-    this.drift = boundedOption(options.maxDriftPpm === undefined ? 100 : options.maxDriftPpm, 10000) / 1000000;
+    this.driftCeilingPpm = boundedOption(options.maxDriftPpm === undefined ? 100 : options.maxDriftPpm, 10000);
+    this.drift = this.driftCeilingPpm / 1000000;
     this.maxAgeMs = boundedOption(options.maxAgeMs === undefined ? 5000 : options.maxAgeMs, 60000, true);
   }
+
+  /** The assumed maximum relative clock drift used in interval expansion. */
+  driftPpm(): number { return this.driftCeilingPpm; }
 
   observe(observation: RemoteClockObservation): boolean {
     const { localSentAt, remoteReceivedAt, remoteSentAt, localReceivedAt } = observation;

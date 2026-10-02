@@ -1,4 +1,4 @@
-import { createDeviceRuntime, parseMeasurementReport } from '@101/connect';
+import { createDeviceRuntime, parseMeasurementReport, parseObservationTiming } from '@101/connect';
 import type { Authorize, DeliveryContext, DeviceDescriptor, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
@@ -67,14 +67,26 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
       temperature = observation.value;
       const next = processor.evaluate(temperature);
       if (next === undefined) return;
+      const processedAt = now();
+      const upstreamTiming = parseObservationTiming({
+        capture: { clockId: observation.clockDomain, at: observation.timestamp },
+        receipt: { clockId: observation.clockDomain, at: observation.receivedAt }, mapping: null, processors: [],
+      });
+      const timing = parseObservationTiming({ ...upstreamTiming, processors: [...upstreamTiming.processors, {
+        id: processor.metadata.id, version: processor.metadata.version,
+        configurationRevision: processor.metadata.configurationRevision,
+        processed: { clockId: observation.clockDomain, at: processedAt },
+      }] });
       const provenance: JsonObject = {
         upstream: { source: { ...observation.source }, sequence: observation.sequence, timestamp: observation.timestamp,
           clockDomain: observation.clockDomain, quality: observation.quality,
           ...(observation.provenance ? { provenance: observation.provenance } : {}),
         },
         processor: { ...processor.metadata },
+        timing: { capture: { ...timing.capture }, receipt: { ...timing.receipt },
+          mapping: timing.mapping ? { ...timing.mapping } : null,
+          processors: timing.processors.map(step => ({ ...step, processed: { ...step.processed } })) },
       };
-      const processedAt = now();
       const admitted = runtime.publish(derived, next, {
         operationId: String(++operationSequence), deadline: Math.min(processedAt + 500, observation.timestamp + 1000),
         timestamp: processedAt, clockDomain: observation.clockDomain, quality: observation.quality, provenance,

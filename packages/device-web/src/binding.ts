@@ -1,4 +1,4 @@
-import { parseDeviceDescriptor, parseSignalValue, schemasCompatible, snapshotJson, RemoteClockMap } from '@101/device-model';
+import { parseDeviceDescriptor, parseSignalValue, schemasCompatible, snapshotJson, RemoteClockMap, parseObservationTiming } from '@101/device-model';
 import type { DeviceCapability, DeviceDescriptor, SignalValue } from '@101/device-model';
 import type { Connection, DeviceRuntime, EndpointHandle, RouteGrant } from '@101/device-runtime';
 import { decodePacket, encodePacket } from './wire.ts';
@@ -228,9 +228,14 @@ export class RemoteResourceReceiver {
       if (!expiry || expiry.earliest <= now) return;
       deadline = Math.min(expiry.earliest, translated.earliest + entry.maxAgeMs);
     }
+    const timing = parseObservationTiming({ capture: { clockId: this.described.clockId, at: packet.capturedAt },
+      receipt: { clockId: this.clockId, at: now },
+      mapping: { earliest: translated.earliest, latest: translated.latest, uncertaintyMs: translated.uncertaintyMs,
+        maxDriftPpm: this.clock!.driftPpm() }, processors: [] });
     const result = this.runtime.publish(entry.source, value, { sequence: packet.sequence, timestamp: translated.earliest, clockDomain: this.clockId,
       provenance: { remoteClockId: this.described.clockId, localClockId: this.clockId, remoteCapturedAt: packet.capturedAt,
-        receivedAt: now, captureLatest: Math.min(translated.latest, now), uncertaintyMs: translated.uncertaintyMs },
+        receivedAt: now, captureLatest: Math.min(translated.latest, now), uncertaintyMs: translated.uncertaintyMs,
+        timing: { capture: { ...timing.capture }, receipt: { ...timing.receipt }, mapping: { ...timing.mapping! }, processors: [] } },
       ...(packet.type === 'event' ? { operationId: packet.operationId, deadline } : {}) });
     if (this.stopped || this.slots.get(entry.slot) !== entry) return;
     if (!result.ok && result.reason === 'payload-limit') { this.report('payload-limit'); return; }

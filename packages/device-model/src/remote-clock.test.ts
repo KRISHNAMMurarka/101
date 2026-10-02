@@ -143,6 +143,11 @@ test('clock identities remain distinguishable and translation results are immuta
   assert.throws(() => { (result as { earliest: number }).earliest = 0; }, TypeError);
 });
 
+test('clock mapping reports the drift ceiling used for translated evidence', () => {
+  assert.equal(new RemoteClockMap(clockIds).driftPpm(), 100);
+  assert.equal(new RemoteClockMap({ ...clockIds, maxDriftPpm: 250 }).driftPpm(), 250);
+});
+
 test('constructor rejects unbounded identities and invalid options', () => {
   for (const id of ['', ' x', 'x ', 'x\u0000', 'x'.repeat(129)]) {
     assert.throws(() => new RemoteClockMap({ ...clockIds, localClockId: id }), RangeError);

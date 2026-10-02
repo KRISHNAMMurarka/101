@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 18,
+  "revision": 19,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6321,6 +6321,33 @@
       "supportRows": []
     },
     {
+      "id": "observation-timing-2026-10-02",
+      "revision": "containing implementation commit, base 65c537e; immutable SDK producer tree 2484646811e1fd6ab8486b91656980f5598442f9 and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M08"
+      ],
+      "paths": [
+        "docs/platform/OBSERVATION-TIMING-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-observation-timing-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-observation-timing-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-observation-timing-sdk-consumer-commands.json",
+        "docs/platform/receipts/2026-10-02-observation-timing-sdk-build-stderr.log"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; repository remote receiver and embedded processor tests; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed helper consumers; no physical clock/capture provider",
+      "reproduction": "Focused timing/model/receiver/processor RED-GREEN tests and independent review in QA; node tools/build-sdk.mjs 2484646811e1fd6ab8486b91656980f5598442f9; node tools/qa-sdk-consumer.mjs release/sdk-Uzox95/manifest.json; exact candidate repository gates",
+      "scope": "M08 only: bounded immutable capture/receipt/mapping and processor timing, actual map drift readback, receiver-owned remote provenance, runtime-owned embedded lineage, conservative age bounds and cross-clock rejection. Packed QA covers helpers/embedded example; remote mapping uses repository receiver tests. No capture truth, global clock authentication, physical latency or support promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6604,7 +6631,8 @@
       "id": "M08",
       "records": [
         "pending-M08",
-        "resource-binding-2026-10-02"
+        "resource-binding-2026-10-02",
+        "observation-timing-2026-10-02"
       ],
       "dependencies": [
         "C01",

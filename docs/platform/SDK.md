@@ -208,6 +208,18 @@ temperature pipeline's `publishReport()` keeps the producer's revision and
 uncertainty in downstream provenance; loss closes its source route. These
 fields preserve producer assertions and do not verify physical calibration.
 
+## Observation clocks and processor lineage
+
+`parseObservationTiming()` validates a closed capture/receipt record. Common
+clock IDs permit exact age; different clocks require a bounded translated
+capture interval with the clock map's drift ceiling. `observationAgeBounds()`
+returns the conservative age interval, clipping a possible future upper
+capture bound at receipt. `compareClockStamps()` rejects raw cross-clock
+comparisons. The remote receiver attaches this timing to its existing raw
+provenance, and the embedded temperature processor appends its versioned
+configuration step. The interval does not certify the producer's capture claim
+or physical end-to-end latency.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp
