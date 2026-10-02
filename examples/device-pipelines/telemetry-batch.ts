@@ -64,9 +64,14 @@ export function createTelemetryBatchPipeline(options: { version?: Version; sinkV
   const connection = runtime.route({ from: source, to: sink, ...scope }), start = connection.start();
   function publishBatch(batch: readonly TelemetryReading[], publicationProvenance?: JsonObject) {
     const current = now();
-    if (!Number.isFinite(current) || batch.some((value, index) => value.timestamp > current || current - value.timestamp > 1000 ||
-      index > 0 && value.timestamp < batch[index - 1].timestamp)) throw new DeviceValidationError('batch-timestamp');
-    return runtime.publish(source, batch, { timestamp: batch[batch.length - 1].timestamp, clockDomain: runtime.clockDomain,
+    const last = batch.at(-1);
+    if (!last) throw new DeviceValidationError('batch-timestamp');
+    if (!Number.isFinite(current) || batch.some((value, index) => {
+      const previous = batch[index - 1];
+      return value.timestamp > current || current - value.timestamp > 1000 ||
+        index > 0 && (!previous || value.timestamp < previous.timestamp);
+    })) throw new DeviceValidationError('batch-timestamp');
+    return runtime.publish(source, batch, { timestamp: last.timestamp, clockDomain: runtime.clockDomain,
       ...(publicationProvenance ? { provenance: publicationProvenance } : {}) });
   }
   return { runtime, source, sink, sourceDevice, sinkDevice, connection, start,

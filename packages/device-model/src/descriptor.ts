@@ -206,14 +206,15 @@ function parseSpatialFrame(input: unknown, path: string): SpatialFrame {
   const origin = text(value.origin, `${path}.origin`, 128, true);
   if (value.unit !== 'm' && value.unit !== 'cm' && value.unit !== 'mm') fail('spatial-unit', `${path}.unit`);
   if (!Array.isArray(value.axes) || value.axes.length !== 3) fail('spatial-axes', `${path}.axes`);
-  const axes = value.axes as unknown[];
+  const axes = value.axes as [SpatialAxis, SpatialAxis, SpatialAxis];
   if (axes.some((axis) => typeof axis !== 'string' || !Object.hasOwn(AXIS_DIRECTION, axis))) fail('spatial-axes', `${path}.axes`);
-  const vectors = axes.map((axis) => AXIS_DIRECTION[axis as SpatialAxis]);
-  const dot = (a: readonly number[], b: readonly number[]) => a.reduce((sum, member, index) => sum + member * b[index], 0);
-  if (dot(vectors[0], vectors[1]) || dot(vectors[0], vectors[2]) || dot(vectors[1], vectors[2])) fail('spatial-axes', `${path}.axes`);
-  const determinant = vectors[0][0] * (vectors[1][1] * vectors[2][2] - vectors[1][2] * vectors[2][1]) -
-    vectors[1][0] * (vectors[0][1] * vectors[2][2] - vectors[0][2] * vectors[2][1]) +
-    vectors[2][0] * (vectors[0][1] * vectors[1][2] - vectors[0][2] * vectors[1][1]);
+  const [x, y, z] = [AXIS_DIRECTION[axes[0]], AXIS_DIRECTION[axes[1]], AXIS_DIRECTION[axes[2]]];
+  const dot = (a: readonly [number, number, number], b: readonly [number, number, number]) =>
+    a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  if (dot(x, y) || dot(x, z) || dot(y, z)) fail('spatial-axes', `${path}.axes`);
+  const determinant = x[0] * (y[1] * z[2] - y[2] * z[1]) -
+    y[0] * (x[1] * z[2] - x[2] * z[1]) +
+    z[0] * (x[1] * y[2] - x[2] * y[1]);
   if (value.handedness !== 'right' && value.handedness !== 'left') fail('spatial-handedness', `${path}.handedness`);
   if (determinant !== (value.handedness === 'right' ? 1 : -1)) fail('spatial-handedness', `${path}.handedness`);
   return Object.freeze({ id, origin, unit: value.unit, axes: Object.freeze(axes.slice()) as SpatialFrame['axes'], handedness: value.handedness });
@@ -283,7 +284,9 @@ export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema 
       for (const name of names) {
         text(name, `${path}.fields.${name}`);
         if (!FIELD_NAME.test(name) || UNSAFE_FIELDS.has(name)) fail('record-field-name', `${path}.fields.${name}`);
-        fields[name] = parse(declared[name], `${path}.fields.${name}`, depth + 1);
+        const member = declared[name];
+        if (member === undefined) fail('required-property', `${path}.fields.${name}`);
+        fields[name] = parse(member, `${path}.fields.${name}`, depth + 1);
       }
       let optional: readonly string[] | undefined;
       if (Object.hasOwn(value, 'optional')) {
@@ -300,7 +303,9 @@ export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema 
       const { minItems, maxItems } = value;
       if (typeof minItems !== 'number' || !Number.isInteger(minItems) || minItems < 0 || minItems > 128) fail('array-bounds', `${path}.minItems`);
       if (typeof maxItems !== 'number' || !Number.isInteger(maxItems) || maxItems < minItems || maxItems > 128) fail('array-bounds', `${path}.maxItems`);
-      return Object.freeze({ type: 'array', items: parse(value.items, `${path}.items`, depth + 1), minItems, maxItems });
+      const items = value.items;
+      if (items === undefined) fail('required-property', `${path}.items`);
+      return Object.freeze({ type: 'array', items: parse(items, `${path}.items`, depth + 1), minItems, maxItems });
     }
     if (value.type === 'boolean') {
       closed(value, ['type'], [], path);

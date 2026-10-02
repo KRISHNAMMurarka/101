@@ -98,12 +98,17 @@ function profileDocument(descriptor: Readonly<DeviceDescriptor>, bindings: WoTBi
   for (const capability of descriptor.capabilities) {
     const path = `$.capabilities.${capability.id}`;
     const schema = dataSchema(capability.value, `${path}.value`);
-    const href = bindings.hrefs[capability.id];
-    const forms = operations(capability, `${path}.permissions`).map((op) => ({
-      op, href, contentType: 'application/json' as const,
-      'htv:methodName': op === 'invokeaction' ? 'POST' as const : 'GET' as const,
-      ...(op === 'observeproperty' || op === 'subscribeevent' ? { subprotocol: bindings.subscriptions[capability.id] } : {}),
-    }));
+    const href = bindingHref(bindings.hrefs[capability.id], `$.bindings.hrefs.${capability.id}`);
+    const forms = operations(capability, `${path}.permissions`).map((op): WoTForm => {
+      const form = { op, href, contentType: 'application/json' as const,
+        'htv:methodName': op === 'invokeaction' ? 'POST' as const : 'GET' as const };
+      if (op === 'observeproperty' || op === 'subscribeevent') {
+        const subprotocol = bindings.subscriptions[capability.id];
+        if (subprotocol !== 'longpoll') reject('wot-bindings', `$.bindings.subscriptions.${capability.id}`);
+        return { ...form, subprotocol };
+      }
+      return form;
+    });
     if (forms.length === 0) reject('wot-unsupported-operation', path);
     if (capability.kind === 'property') {
       properties[capability.id] = { ...schema, observable: capability.permissions.includes('subscribe'),
@@ -135,7 +140,11 @@ export function exportWoTThingDescription(descriptorInput: unknown, bindingsInpu
 function normalized(value: JsonValue): string {
   if (Array.isArray(value)) return `[${value.map(normalized).join(',')}]`;
   if (value !== null && typeof value === 'object') {
-    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${normalized(value[key])}`).join(',')}}`;
+    return `{${Object.keys(value).sort().map((key) => {
+      const member = value[key];
+      if (member === undefined) reject('wot-document', '$');
+      return `${JSON.stringify(key)}:${normalized(member)}`;
+    }).join(',')}}`;
   }
   return JSON.stringify(value);
 }

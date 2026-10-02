@@ -167,7 +167,8 @@ export function planMediaBinding(input: unknown, sourceId: string, targetId: str
   if (sourceProbe.state !== 'available' || targetProbe.state !== 'available') return no('unavailable');
   const codecs = source.codecs.filter(codec => sourceProbe.codecs.includes(codec) && targetProbe.codecs.includes(codec) &&
     (target.type === 'render-target' || target.codecs.includes(codec)));
-  if (!codecs.length) return no('codec');
+  const codec = codecs[0];
+  if (codec === undefined) return no('codec');
   if (source.media === 'video') {
     const actual = sourceProbe.video;
     if (!actual || !inside(actual.widthPx, source.video.widthPx) || !inside(actual.heightPx, source.video.heightPx) ||
@@ -182,7 +183,7 @@ export function planMediaBinding(input: unknown, sourceId: string, targetId: str
         !inside(actual.frameRateHz, target.video.frameRateHz) || JSON.stringify(actual) !== JSON.stringify(targetProbe.video)) return no('geometry');
     return Object.freeze({ ok: true, value: Object.freeze({ sourceId, targetId,
       sourceRegistrationId: sourceProbe.registrationId, targetRegistrationId: targetProbe.registrationId,
-      codec: codecs[0], video: Object.freeze({ ...actual }) }) });
+      codec, video: Object.freeze({ ...actual }) }) });
   }
   if (target.type !== 'track' || target.media !== 'audio' || !sourceProbe.audio || !targetProbe.audio ||
       !inside(sourceProbe.audio.sampleRateHz, source.audio.sampleRateHz) || !inside(sourceProbe.audio.channels, source.audio.channels) ||
@@ -191,5 +192,5 @@ export function planMediaBinding(input: unknown, sourceId: string, targetId: str
     return no('geometry');
   return Object.freeze({ ok: true, value: Object.freeze({ sourceId, targetId,
     sourceRegistrationId: sourceProbe.registrationId, targetRegistrationId: targetProbe.registrationId,
-    codec: codecs[0], audio: Object.freeze({ ...sourceProbe.audio }) }) });
+    codec, audio: Object.freeze({ ...sourceProbe.audio }) }) });
 }

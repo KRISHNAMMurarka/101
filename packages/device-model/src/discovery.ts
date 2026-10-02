@@ -41,7 +41,7 @@ const RECEIPT_ID = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 const MAX_LIFETIME_MS = 86_400_000;
 
 function fail(code: string, path: string): never { throw new DeviceValidationError(code, path); }
-function object(input: JsonValue, path: string): JsonObject {
+function object(input: JsonValue | undefined, path: string): JsonObject {
   if (input === null || Array.isArray(input) || typeof input !== 'object') fail('discovery-object', path);
   return input;
 }
@@ -50,17 +50,17 @@ function closed(value: JsonObject, fields: readonly string[], path: string): voi
       fields.some(field => !Object.hasOwn(value, field)) ||
       Object.keys(value).some(field => !fields.includes(field))) fail('discovery-fields', path);
 }
-function label(value: JsonValue, path: string, max: number): string {
+function label(value: JsonValue | undefined, path: string, max: number): string {
   if (typeof value !== 'string' || !value.length || value.length > max || value.trim() !== value ||
       Array.from(value).some(character => { const code = character.charCodeAt(0);
         return code < 32 || code === 127 || code >= 128 && code <= 159; })) fail('discovery-label', path);
   return value;
 }
-function timestamp(value: JsonValue, path: string): number {
+function timestamp(value: JsonValue | undefined, path: string): number {
   if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) fail('discovery-time', path);
   return value;
 }
-function scope(input: JsonValue, path: string): DiscoveryScope {
+function scope(input: JsonValue | undefined, path: string): DiscoveryScope {
   const value = object(input, path);
   closed(value, ['kind', 'id'], path);
   if (!['local', 'application', 'session', 'directory'].includes(value.kind as string))

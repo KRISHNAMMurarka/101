@@ -17,7 +17,7 @@ export interface ObservationTiming {
 
 const PROCESSOR_ID = /^[A-Za-z][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/;
 function fail(code: string, path: string): never { throw new DeviceValidationError(code, path); }
-function object(input: JsonValue, path: string): Record<string, JsonValue> {
+function object(input: JsonValue | undefined, path: string): Record<string, JsonValue> {
   if (input === null || typeof input !== 'object' || Array.isArray(input)) fail('timing-object', path);
   return input;
 }
@@ -26,18 +26,18 @@ function closed(value: Record<string, JsonValue>, keys: readonly string[], path:
   if (names.length !== keys.length || names.some(name => !keys.includes(name)) || keys.some(name => !Object.hasOwn(value, name)))
     fail('timing-fields', path);
 }
-function finiteTime(value: JsonValue, path: string): number {
+function finiteTime(value: JsonValue | undefined, path: string): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0 || value > Number.MAX_SAFE_INTEGER)
     fail('timing-time', path);
   return value;
 }
-function clockId(value: JsonValue, path: string): string {
+function clockId(value: JsonValue | undefined, path: string): string {
   if (typeof value !== 'string' || !value.length || value.length > 128 || value.trim() !== value ||
       Array.from(value).some(character => { const code = character.charCodeAt(0); return code <= 31 || code >= 127 && code <= 159; }))
     fail('timing-clock-id', path);
   return value;
 }
-function stamp(input: JsonValue, path: string): ClockStamp {
+function stamp(input: JsonValue | undefined, path: string): ClockStamp {
   const value = object(input, path); closed(value, ['clockId', 'at'], path);
   return Object.freeze({ clockId: clockId(value.clockId, `${path}.clockId`), at: finiteTime(value.at, `${path}.at`) });
 }

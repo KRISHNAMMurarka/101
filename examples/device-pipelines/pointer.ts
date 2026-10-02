@@ -1,24 +1,26 @@
 import { createDeviceRuntime } from '@101/connect';
-import type { Authorize, DeviceDescriptor } from '@101/connect';
+import type { Authorize, DeviceCapability, DeviceDescriptor } from '@101/connect';
 
 interface Surface { width: number; height: number }
 interface PointerOptions { width?: number; height?: number; now?: () => number; authorize?: Authorize }
 
+const positionCapability: DeviceCapability = {
+  id: 'position', semantic: 'example:absolute-pointer', schemaVersion: 1, kind: 'sample',
+  value: { type: 'vector', components: ['x', 'y'], unit: '1', frame: 'surface-normalized', min: 0, max: 1 },
+  delivery: { mode: 'latest', maxHz: 60, maxAgeMs: 1000 }, permissions: ['subscribe'],
+};
+
 const phone: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-touch-surface', label: 'Touch surface', revision: 1,
   adapter: { id: 'example:embedded-touch', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
-  capabilities: [{
-    id: 'position', semantic: 'example:absolute-pointer', schemaVersion: 1, kind: 'sample',
-    value: { type: 'vector', components: ['x', 'y'], unit: '1', frame: 'surface-normalized', min: 0, max: 1 },
-    delivery: { mode: 'latest', maxHz: 60, maxAgeMs: 1000 }, permissions: ['subscribe'],
-  }],
+  capabilities: [positionCapability],
 };
 
 const application: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-application-surface', label: 'Application pointer', revision: 1,
   adapter: { id: 'example:embedded-surface', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [{
-    ...phone.capabilities[0], kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' },
+    ...positionCapability, kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' },
   }],
 };
 

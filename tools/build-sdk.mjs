@@ -65,7 +65,8 @@ try {
   const compiled = join(snapshot, '.compiled');
   const program = ts.createProgram(roots, {
     target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler,
-    lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], strict: true, types: [], skipLibCheck: false,
+    lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], strict: true,
+    noUncheckedIndexedAccess: true, types: [], skipLibCheck: false,
     declaration: true, noEmitOnError: true, rewriteRelativeImportExtensions: true, rootDir: snapshot, outDir: compiled,
     paths: Object.fromEntries(names.map(name => [`@101/${name}`, [join(snapshot, `packages/${name}/src/index.ts`)]])),
   });

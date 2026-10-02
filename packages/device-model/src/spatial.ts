@@ -41,7 +41,12 @@ const UNIT_SCALE = { m: 1, cm: 0.01, mm: 0.001 } as const;
 function fail(code: string, path: string): never { throw new DeviceValidationError(code, path); }
 function dot(a: Vector, b: Vector): number { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
 function multiply(a: Matrix, b: Matrix): Matrix {
-  return a.map((row) => [0, 1, 2].map((column) => row[0] * b[0][column] + row[1] * b[1][column] + row[2] * b[2][column]) as unknown as Vector) as unknown as Matrix;
+  const row = (vector: Vector): Vector => [
+    vector[0] * b[0][0] + vector[1] * b[1][0] + vector[2] * b[2][0],
+    vector[0] * b[0][1] + vector[1] * b[1][1] + vector[2] * b[2][1],
+    vector[0] * b[0][2] + vector[1] * b[1][2] + vector[2] * b[2][2],
+  ];
+  return [row(a[0]), row(a[1]), row(a[2])];
 }
 function product(matrix: Matrix, vector: Vector): Vector { return matrix.map((row) => dot(row, vector)) as unknown as Vector; }
 function axesMap(source: SpatialFrame, target: SpatialFrame): Matrix {
@@ -106,7 +111,10 @@ export function createSpatialPoseConverter(sourceInput: ValueSchema, targetInput
   const rotation = transform ? rotationMatrix(transform.rotation) : undefined;
   const map = rotation ? multiply(rotation, axisMap) : axisMap;
   const translation: Vector = transform ? [transform.translation.x, transform.translation.y, transform.translation.z] : [0, 0, 0];
-  const projected = map.map((row, index) => Math.abs(translation[index]) + from.extent * unitScale * row.reduce((sum, value) => sum + Math.abs(value), 0));
+  const projection = (row: Vector, offset: number): number =>
+    Math.abs(offset) + from.extent * unitScale * row.reduce((sum, value) => sum + Math.abs(value), 0);
+  const projected: Vector = [projection(map[0], translation[0]), projection(map[1], translation[1]),
+    projection(map[2], translation[2])];
   const largest = Math.max(...projected, to.extent);
   const margin = Number.EPSILON * (from.extent * unitScale * 3 + largest + 1) * 64;
   const positionErrorBound = 0.5 / factor + margin;
@@ -124,7 +132,8 @@ export function createSpatialPoseConverter(sourceInput: ValueSchema, targetInput
   return Object.freeze({ metadata, convert(input: unknown): SignalValue {
     const value = parseSignalValue(input, from) as unknown as Pose;
     const position = product(map, [value.position.x, value.position.y, value.position.z]);
-    const mapped: Vector = position.map((number, index) => coordinate(number * unitScale + translation[index])) as unknown as Vector;
+    const mapped: Vector = [coordinate(position[0] * unitScale + translation[0]),
+      coordinate(position[1] * unitScale + translation[1]), coordinate(position[2] * unitScale + translation[2])];
     const sourceVector: Vector = [value.orientation.x, value.orientation.y, value.orientation.z];
     const axial = product(axisMap, sourceVector).map((member) => cleanZero((mirrored ? -1 : 1) * member)) as unknown as Vector;
     const orientation: Quaternion = { x: axial[0], y: axial[1], z: axial[2], w: value.orientation.w };

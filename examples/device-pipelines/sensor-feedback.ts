@@ -1,34 +1,40 @@
 import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming } from '@101/connect';
-import type { Authorize, DeliveryContext, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
+import type { Authorize, DeliveryContext, DeviceCapability, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
 interface SensorOptions { feedback?: boolean; now?: () => number; authorize?: Authorize }
 interface AppliedCommand { value: boolean; operationId: string; provenance?: JsonObject }
 
+const temperatureCapability: DeviceCapability = {
+  id: 'temperature', semantic: 'example:temperature', schemaVersion: 1, kind: 'sample',
+  value: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
+  delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 }, permissions: ['subscribe'],
+};
+
+const relayStateCapability: DeviceCapability = {
+  id: 'relay-state', semantic: 'example:relay-state', schemaVersion: 1, kind: 'event',
+  value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 500 }, permissions: ['subscribe'],
+};
+
 const thermometer: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-thermometer', label: 'Room temperature', revision: 1,
   adapter: { id: 'example:embedded-temperature', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
-  capabilities: [{
-    id: 'temperature', semantic: 'example:temperature', schemaVersion: 1, kind: 'sample',
-    value: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
-    delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 }, permissions: ['subscribe'],
-  }],
+  capabilities: [temperatureCapability],
 };
 
 const thresholdDevice: DeviceDescriptor = {
   schemaVersion: 1, id: 'temperature-threshold', label: 'Temperature threshold', revision: 1,
   adapter: { id: 'example:threshold', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [
-    { ...thermometer.capabilities[0], id: 'temperature-input', kind: 'property', permissions: ['write'], ownership: { mode: 'observe' } },
-    { id: 'relay-state', semantic: 'example:relay-state', schemaVersion: 1, kind: 'event',
-      value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 500 }, permissions: ['subscribe'] },
+    { ...temperatureCapability, id: 'temperature-input', kind: 'property', permissions: ['write'], ownership: { mode: 'observe' } },
+    relayStateCapability,
   ],
 };
 
 const relay: DeviceDescriptor = {
   schemaVersion: 1, id: 'simulated-relay', label: 'Simulated relay', revision: 1,
   adapter: { id: 'example:embedded-relay', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
-  capabilities: [{ ...thresholdDevice.capabilities[1], id: 'set-state', kind: 'command', permissions: ['invoke'], ownership: { mode: 'exclusive' } }],
+  capabilities: [{ ...relayStateCapability, id: 'set-state', kind: 'command', permissions: ['invoke'], ownership: { mode: 'exclusive' } }],
 };
 
 /** Explicit two-leg processor wiring. All output and feedback here are simulated. */
@@ -111,7 +117,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
     runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
     publishTemperature(value: unknown, publication?: PublishOptions) { return runtime.publish(sensor, value, publication); },
     publishReport(input: unknown) {
-      const report = parseMeasurementReport(input, thermometer.capabilities[0].value);
+      const report = parseMeasurementReport(input, temperatureCapability.value);
       lastReport = report;
       return report.status === 'valid'
         ? runtime.publish(sensor, report.value, { quality: 'valid', provenance: {

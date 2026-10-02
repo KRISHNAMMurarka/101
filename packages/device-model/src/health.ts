@@ -32,7 +32,7 @@ export type DeviceHealthAssessment =
 
 const FAULT_CODE = /^[A-Za-z][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/;
 function fail(code: string, path: string): never { throw new DeviceValidationError(code, path); }
-function object(input: JsonValue, path: string): Record<string, JsonValue> {
+function object(input: JsonValue | undefined, path: string): Record<string, JsonValue> {
   if (input === null || typeof input !== 'object' || Array.isArray(input)) fail('health-object', path);
   return input;
 }
@@ -41,17 +41,17 @@ function closed(value: Record<string, JsonValue>, keys: readonly string[], path:
   if (names.length !== keys.length || names.some(name => !keys.includes(name)) || keys.some(name => !Object.hasOwn(value, name)))
     fail('health-fields', path);
 }
-function label(value: JsonValue, path: string, maxLength: number): string {
+function label(value: JsonValue | undefined, path: string, maxLength: number): string {
   if (typeof value !== 'string' || !value.length || value.length > maxLength || value.trim() !== value ||
       Array.from(value).some(character => { const code = character.charCodeAt(0); return code < 32 || code === 127 || code >= 128 && code <= 159; }))
     fail('health-label', path);
   return value;
 }
-function boundedNumber(value: JsonValue, path: string, min: number, max: number): number {
+function boundedNumber(value: JsonValue | undefined, path: string, min: number, max: number): number {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) fail('health-number', path);
   return value;
 }
-function choice<T extends string>(value: JsonValue, choices: readonly T[], path: string): T {
+function choice<T extends string>(value: JsonValue | undefined, choices: readonly T[], path: string): T {
   if (typeof value !== 'string' || !choices.includes(value as T)) fail('health-choice', path);
   return value as T;
 }

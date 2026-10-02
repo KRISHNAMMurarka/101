@@ -11,7 +11,7 @@ export type MeasurementReport =
 
 const FAULT_CODE = /^[A-Za-z][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/;
 function fail(code: string, path: string): never { throw new DeviceValidationError(code, path); }
-function object(input: JsonValue, path: string): Record<string, JsonValue> {
+function object(input: JsonValue | undefined, path: string): Record<string, JsonValue> {
   if (input === null || typeof input !== 'object' || Array.isArray(input)) fail('measurement-object', path);
   return input;
 }

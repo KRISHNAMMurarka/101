@@ -126,7 +126,11 @@ export function createUnitConverter(sourceInput: ValueSchema, targetInput: Value
     convert(input: unknown): SignalValue {
       const value = parseSignalValue(input, numericSource);
       const converted = numericSource.type === 'scalar' ? coordinate(value as number) :
-        Object.fromEntries(numericSource.components.map((name) => [name, coordinate((value as Record<string, number>)[name])]));
+        Object.fromEntries(numericSource.components.map((name) => {
+          const component = (value as Record<string, unknown>)[name];
+          if (typeof component !== 'number') fail('conversion-shape', '$');
+          return [name, coordinate(component)];
+        }));
       return parseSignalValue(converted, numericTarget);
     },
   });
