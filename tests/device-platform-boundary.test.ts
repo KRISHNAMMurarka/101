@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import test from "node:test";
+import ts from "typescript";
 import { createDeviceRuntime, parseDeviceDescriptor, DEVICE_DESCRIPTOR_SCHEMA, RemoteResourcePublisher, RemoteResourceReceiver, PeerDataTransport } from "@101/connect";
 
 test("public device facade exposes embedded and peer-bound resources without a game dependency", () => {
@@ -17,7 +18,9 @@ test("public device facade exposes embedded and peer-bound resources without a g
     assert.ok(dependencies.every(dependency => publicNames.includes(dependency)), `${name}: ${dependencies}`);
     for (const file of readdirSync(new URL("src/", root)).filter((entry) => entry.endsWith(".ts") && !entry.endsWith(".test.ts"))) {
       const source = readFileSync(new URL(`src/${file}`, root), "utf8");
-      const imports = [...source.matchAll(/(?:from\s*|import\s*)["']([^"']+)["']/g)].map((match) => match[1]);
+      const syntax = ts.createSourceFile(file, source, ts.ScriptTarget.ES2022, false, ts.ScriptKind.TS);
+      const imports = syntax.statements.filter(ts.isImportDeclaration).map(declaration =>
+        (declaration.moduleSpecifier as ts.StringLiteral).text);
       assert.ok(imports.every(dependency => dependency.startsWith("./") ? new URL(dependency, new URL(`src/${file}`, root)).href.startsWith(new URL("src/", root).href)
         : dependencies.includes(dependency) && publicNames.includes(dependency)), `${name}/${file}: ${imports}`);
     }

@@ -72,6 +72,26 @@ test('structured capabilities negotiate json/2, retain nested source-clock value
   }
 });
 
+test('spatial pose values negotiate json/2 and reject json/1 without relaxing the bounded lane', () => {
+  const schema: ValueSchema = { type: 'pose', frame: { id: 'test:watch', origin: 'test:room', unit: 'm',
+    axes: ['right', 'up', 'forward'], handedness: 'right' }, extent: 2 };
+  const h = harness(false, schema);
+  try {
+    const description = decodePacket(h.remote.sent[0].data, 'reliable')?.packet;
+    assert.ok(description?.type === 'describe');
+    assert.deepEqual(description.codecs, ['json/1', 'json/2']);
+    assert.equal(h.approve('json/1'), undefined);
+    assert.equal(h.approve('json/2'), 1);
+    const pose = { position: { x: 1, y: 0.5, z: -1 }, orientation: { x: 0, y: 0, z: 0, w: 1 } };
+    assert.equal(h.publisher.publish('readings', pose), true);
+    h.receiver.tick();
+    assert.deepEqual(h.received.map(observation => observation.value), [pose]);
+    const frame = h.remote.sent.find(entry => decodePacket(entry.data, entry.lane)?.codec === 'json/2');
+    assert.ok(frame);
+    assert.equal(decodePacket(frame.data, frame.lane)?.packet.version, 2);
+  } finally { h.close(); }
+});
+
 test('wrong codec/version, scope, unknown fields, malformed members and replay cannot enter a structured slot', () => {
   const h = harness();
   try {

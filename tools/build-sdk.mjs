@@ -8,7 +8,7 @@ import ts from 'typescript';
 
 const root = resolve(import.meta.dirname, '..');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'device-web', 'connect'];
-const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'run'];
+const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'run'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();

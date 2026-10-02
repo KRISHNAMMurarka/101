@@ -5,6 +5,8 @@ const identifierList = { type: 'array', minItems: 1, maxItems: 128, uniqueItems:
 const range = { unit: identifier, min: { type: 'number' }, max: { type: 'number' }, resolution: { type: 'number', exclusiveMinimum: 0 } };
 const fieldName = { ...identifier, pattern: '^[A-Za-z_][A-Za-z0-9_]*$', not: { enum: ['__proto__', 'prototype', 'constructor'] } };
 const arrayBound = { type: 'integer', minimum: 0, maximum: 128 };
+const spatialFrame = { $ref: '#/definitions/spatialFrame' };
+const positiveSpatial = { type: 'number', exclusiveMinimum: 0 };
 
 function closed(properties: Record<string, unknown>, required: string[]) {
   return { type: 'object', required, properties, additionalProperties: false };
@@ -27,10 +29,11 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
   'x-runtime-validation': {
     descriptorMaxUtf8Bytes: 65536,
     jsonMaxDepth: 8,
+    valueSchemaJsonMaxDepth: 10,
     jsonMaxEntriesPerContainer: 128,
     valueSchemaMaxDepth: 4,
     valueSchemaMaxNodes: 256,
-    rules: ['finite numeric values', 'min must be no greater than max', 'array minItems must be no greater than maxItems', 'record optional members must be declared fields', 'value schema depth and total node limits apply recursively', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
+    rules: ['finite numeric values', 'min must be no greater than max', 'array minItems must be no greater than maxItems', 'record optional members must be declared fields', 'spatial values require capability schemaVersion >= 2 recursively', 'spatial axes must be orthogonal and match declared handedness', 'joint names, parents and optional members must be declared, unique and acyclic', 'quaternion squared norm must be within 0.002 of 1', 'transform mirror parity must match frame handedness', 'value schema depth and total node limits apply recursively', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
   },
   ...closed({
     schemaVersion: { const: 1 }, id: identifier,
@@ -48,6 +51,11 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
     ] },
     jsonObject: { type: 'object', maxProperties: 128, additionalProperties: { $ref: '#/definitions/jsonValue' } },
     extensions: { type: 'object', maxProperties: 128, propertyNames: namespaced, additionalProperties: { $ref: '#/definitions/jsonValue' } },
+    spatialFrame: closed({ id: namespaced, origin: namespaced,
+      unit: { enum: ['m', 'cm', 'mm'] }, axes: { type: 'array', minItems: 3, maxItems: 3, items: { enum: ['right', 'left', 'up', 'down', 'forward', 'backward'] } },
+      handedness: { enum: ['right', 'left'] },
+    }, ['id', 'origin', 'unit', 'axes', 'handedness']),
+    spatialJoint: closed({ name: fieldName, parent: fieldName }, ['name']),
     value: { oneOf: [
       closed({ type: { const: 'boolean' } }, ['type']),
       closed({ type: { const: 'scalar' }, ...range, frame: identifier }, ['type', 'unit', 'min', 'max']),
@@ -55,6 +63,14 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
       closed({ type: { const: 'enum' }, values: { ...identifierList, maxItems: 64 } }, ['type', 'values']),
       { $ref: '#/definitions/record' },
       { $ref: '#/definitions/array' },
+      closed({ type: { const: 'quaternion' }, frame: spatialFrame }, ['type', 'frame']),
+      closed({ type: { const: 'pose' }, frame: spatialFrame, extent: positiveSpatial }, ['type', 'frame', 'extent']),
+      closed({ type: { const: 'joints' }, frame: spatialFrame, extent: positiveSpatial,
+        joints: { type: 'array', minItems: 1, maxItems: 32, items: { $ref: '#/definitions/spatialJoint' } },
+        optional: { type: 'array', maxItems: 32, uniqueItems: true, items: fieldName },
+      }, ['type', 'frame', 'extent', 'joints']),
+      closed({ type: { const: 'transform' }, from: spatialFrame, to: spatialFrame, maxTranslation: positiveSpatial },
+        ['type', 'from', 'to', 'maxTranslation']),
     ] },
     record: closed({
       type: { const: 'record' },

@@ -127,7 +127,9 @@ The [game pointer bridge](../../examples/device-pipelines/game-pointer-bridge.ts
 `parseDeviceDescriptor(unknown)` accepts JSON text or plain data and returns a frozen snapshot.
 Core fields are closed. Namespaced extension data is preserved and never executed.
 `parseSignalValue(value, schema)` validates a boolean, scalar, exact x/y[/z] vector,
-enum, bounded record or bounded array. Records declare closed member schemas and
+enum, bounded record or bounded array. Version 2 spatial capabilities additionally
+declare a bounded quaternion, pose, articulated joints or transform with an exact
+metric reference frame. Records declare closed member schemas and
 an optional-member list; arrays declare item schemas and integer min/max lengths.
 The result is a deep frozen inert snapshot, including every nested member.
 Values retain their units and coordinate frame; out-of-range values fail rather than clamp.
@@ -139,6 +141,17 @@ connect version 2. Description/control messages remain version 1. Primitive-only
 devices keep their existing codec list and `json/1` bytes. A structured capability
 cannot bind `json/1` or the compact pointer codec. Compatibility includes recursive
 member definitions, optionality and array bounds; record-field ordering is inert.
+Spatial schema nesting also requires capability version 2. Frame ID, origin,
+unit, signed axes and handedness all participate in exact compatibility.
+`createSpatialPoseConverter` explicitly maps metric units and axes for a common
+origin; different origins require a declared transform. It validates the full
+position box, quaternion norm and a position error budget before conversion.
+Rotation math accounts for admitted near-unit quaternions without changing the
+serialized input. Transforms declare geometry, not verified calibration or
+resource permission. The [simulated spatial joint example](../../examples/device-pipelines/spatial-joints.ts)
+validates watch-style joint poses, converts them before an authorized embedded
+publication, and preserves conversion provenance. Physical watch qualification
+is separate.
 
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
@@ -164,7 +177,7 @@ parser-only finite-number, relational, byte, depth and plain-object constraints.
 | Capabilities / entries per container | 128 / 128 |
 | Identifier, unit, semantic, frame / label | 128 / 160 Unicode characters |
 | Extension and metadata nesting | 8 |
-| Structured schema depth / total nodes | 4 / 256 |
+| Structured schema node depth / total nodes / JSON container depth | 4 / 256 / 10 |
 | Record fields / declared array maximum | 1–32 / 0–128 |
 | Wire value / full runtime observation-options envelope | 4 KiB / 4 KiB independently |
 | Descriptor rate / maximum age | 1–1000 Hz / 1–60000 ms |

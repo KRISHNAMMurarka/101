@@ -11,7 +11,8 @@ For an external consumer, build the current SDK with `npm run build:sdk -- HEAD`
 install all five produced tarballs in a separate directory using offline npm,
 and run `node node_modules/@101/connect/examples/run.js`. The facade exports
 `@101/connect/examples/pointer`, `/examples/sensor-feedback`,
-`/examples/threshold` and `/examples/telemetry-batch` as compiled ESM with declarations. The packed examples also
+`/examples/threshold`, `/examples/telemetry-batch` and `/examples/spatial-joints`
+as compiled ESM with declarations. The packed examples also
 include readable source. No workspace link, type stripping or game dependency is
 needed for the compiled examples. See [distribution evidence](../../docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md)
 for exact supported checks and remaining qualification.
@@ -101,6 +102,16 @@ The wire and full runtime observation/options envelopes each have an independent
 4 KiB limit. A wire-valid batch may exceed host admission once provenance is
 included. `payload-limit` reports a dropped batch without refreshing the route;
 smaller data may recover while the current grant remains active.
+
+## Simulated spatial joints
+
+`spatial-joints.ts` declares a simulated watch-style wrist/index hierarchy in
+a right-handed metre frame. `createSpatialPoseConverter()` explicitly maps each
+pose into a left-handed centimetre display frame. The example validates the
+raw hierarchy, publishes only the converted schema on an authorized embedded
+route, and retains source-frame and conversion provenance. `runSpatialJointExample()`
+returns a deterministic fixture. It does not measure a physical watch or
+establish real-world transform calibration.
 
 ## Local peer resource example
 

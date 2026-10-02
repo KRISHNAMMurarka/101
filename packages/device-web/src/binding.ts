@@ -30,7 +30,9 @@ export interface RemoteApproval {
 export interface RemotePublisherOptions extends CommonOptions {
   device: unknown; available: (capability: string) => boolean;
 }
-function structured(capability: DeviceCapability): boolean { return capability.value.type === 'record' || capability.value.type === 'array'; }
+function structured(capability: DeviceCapability): boolean {
+  return ['record', 'array', 'quaternion', 'pose', 'joints', 'transform'].includes(capability.value.type);
+}
 function codecsFor(device: Readonly<DeviceDescriptor>): readonly WireCodec[] {
   return Object.freeze(['json/1', ...(device.capabilities.some(structured) ? ['json/2'] : []),
     ...(device.capabilities.some(normalized) ? ['normalized-pointer/1'] : [])] as WireCodec[]);

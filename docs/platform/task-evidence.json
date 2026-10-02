@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 13,
+  "revision": 14,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6190,6 +6190,32 @@
       "supportRows": []
     },
     {
+      "id": "spatial-signals-2026-10-02",
+      "revision": "containing implementation commit, base f1395fc127142cffad0f9057304ec5a6073a9174; immutable SDK producer tree 076af025ce1e67fb4b3794223141244bbd83f84c and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M02"
+      ],
+      "paths": [
+        "docs/platform/SPATIAL-SIGNALS-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-spatial-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-spatial-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-spatial-sdk-consumer-commands.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed API consumers; no physical watch, sensor calibration or WebRTC",
+      "reproduction": "Focused spatial/parser/codec/pipeline RED-GREEN regressions and independent review in QA; node tools/build-sdk.mjs 076af025ce1e67fb4b3794223141244bbd83f84c; node tools/qa-sdk-consumer.mjs release/sdk-6XoKue/manifest.json; exact candidate repository gates",
+      "scope": "M02 only: immutable bounded quaternion/pose/joint/transform schemas and values, exact metric frames/handedness, capability v2 gate, explicit norm-aware pose conversion and box/budget checks, authorized simulated joint caller, json/2 negotiation and clean packed consumer. No M07/M08/watch physical/calibration/support/full-release promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6400,7 +6426,8 @@
     {
       "id": "M02",
       "records": [
-        "pending-M02"
+        "pending-M02",
+        "spatial-signals-2026-10-02"
       ],
       "dependencies": [
         "C01",

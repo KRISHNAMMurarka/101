@@ -2,6 +2,13 @@ export type JsonValue = null | boolean | number | string | JsonValue[] | JsonObj
 export interface JsonObject { [key: string]: JsonValue }
 
 export type SignalValue = boolean | number | string | readonly SignalValue[] | { readonly [key: string]: SignalValue };
+export type SpatialAxis = 'right' | 'left' | 'up' | 'down' | 'forward' | 'backward';
+export interface SpatialFrame {
+  readonly id: string; readonly origin: string; readonly unit: 'm' | 'cm' | 'mm';
+  readonly axes: readonly [SpatialAxis, SpatialAxis, SpatialAxis];
+  readonly handedness: 'right' | 'left';
+}
+export interface SpatialJoint { readonly name: string; readonly parent?: string }
 export type ValueSchema =
   | { type: 'boolean' }
   | { type: 'scalar'; unit: string; min: number; max: number; frame?: string; resolution?: number }
@@ -9,7 +16,11 @@ export type ValueSchema =
       components: readonly ['x', 'y'] | readonly ['x', 'y', 'z']; resolution?: number }
   | { type: 'enum'; values: readonly string[] }
   | { type: 'record'; fields: Readonly<Record<string, ValueSchema>>; optional?: readonly string[] }
-  | { type: 'array'; items: ValueSchema; minItems: number; maxItems: number };
+  | { type: 'array'; items: ValueSchema; minItems: number; maxItems: number }
+  | { type: 'quaternion'; frame: SpatialFrame }
+  | { type: 'pose'; frame: SpatialFrame; extent: number }
+  | { type: 'joints'; frame: SpatialFrame; extent: number; joints: readonly SpatialJoint[]; optional?: readonly string[] }
+  | { type: 'transform'; from: SpatialFrame; to: SpatialFrame; maxTranslation: number };
 export type DeliveryPolicy = { mode: 'latest'; maxHz: number; maxAgeMs: number }
   | { mode: 'reliable'; maxAgeMs: number };
 export type PermissionOperation = 'read' | 'subscribe' | 'write' | 'invoke';
@@ -31,6 +42,8 @@ export interface DeviceDescriptor {
 const MAX_BYTES = 65536;
 const MAX_ENTRIES = 128;
 const MAX_JSON_DEPTH = 8;
+// Spatial frame/joint declarations add containers inside the four schema nodes.
+const MAX_SCHEMA_JSON_DEPTH = 10;
 const MAX_SCHEMA_DEPTH = 4;
 const MAX_SCHEMA_NODES = 256;
 const FIELD_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
@@ -175,9 +188,73 @@ function stringList(input: unknown, path: string, max: number): string[] {
   return list;
 }
 
+const AXIS_DIRECTION: Readonly<Record<SpatialAxis, readonly [number, number, number]>> = Object.freeze({
+  right: [1, 0, 0], left: [-1, 0, 0], up: [0, 1, 0], down: [0, -1, 0],
+  forward: [0, 0, 1], backward: [0, 0, -1],
+});
+
+function parseSpatialFrame(input: unknown, path: string): SpatialFrame {
+  const value = object(input, path);
+  closed(value, ['id', 'origin', 'unit', 'axes', 'handedness'], [], path);
+  const id = text(value.id, `${path}.id`, 128, true);
+  const origin = text(value.origin, `${path}.origin`, 128, true);
+  if (value.unit !== 'm' && value.unit !== 'cm' && value.unit !== 'mm') fail('spatial-unit', `${path}.unit`);
+  if (!Array.isArray(value.axes) || value.axes.length !== 3) fail('spatial-axes', `${path}.axes`);
+  const axes = value.axes as unknown[];
+  if (axes.some((axis) => typeof axis !== 'string' || !Object.hasOwn(AXIS_DIRECTION, axis))) fail('spatial-axes', `${path}.axes`);
+  const vectors = axes.map((axis) => AXIS_DIRECTION[axis as SpatialAxis]);
+  const dot = (a: readonly number[], b: readonly number[]) => a.reduce((sum, member, index) => sum + member * b[index], 0);
+  if (dot(vectors[0], vectors[1]) || dot(vectors[0], vectors[2]) || dot(vectors[1], vectors[2])) fail('spatial-axes', `${path}.axes`);
+  const determinant = vectors[0][0] * (vectors[1][1] * vectors[2][2] - vectors[1][2] * vectors[2][1]) -
+    vectors[1][0] * (vectors[0][1] * vectors[2][2] - vectors[0][2] * vectors[2][1]) +
+    vectors[2][0] * (vectors[0][1] * vectors[1][2] - vectors[0][2] * vectors[1][1]);
+  if (value.handedness !== 'right' && value.handedness !== 'left') fail('spatial-handedness', `${path}.handedness`);
+  if (determinant !== (value.handedness === 'right' ? 1 : -1)) fail('spatial-handedness', `${path}.handedness`);
+  return Object.freeze({ id, origin, unit: value.unit, axes: Object.freeze(axes.slice()) as SpatialFrame['axes'], handedness: value.handedness });
+}
+
+function positiveSpatial(input: unknown, path: string): number {
+  const value = finite(input, path);
+  if (value <= 0) fail('positive-spatial-bound', path);
+  return value;
+}
+
+function parseSpatialJoints(input: unknown, path: string): readonly SpatialJoint[] {
+  if (!Array.isArray(input) || input.length < 1 || input.length > 32) fail('joint-count', path);
+  const joints = input.map((entry, index) => {
+    const point = `${path}[${index}]`;
+    const objectEntry = object(entry, point);
+    closed(objectEntry, ['name'], ['parent'], point);
+    const name = text(objectEntry.name, `${point}.name`);
+    if (!FIELD_NAME.test(name) || UNSAFE_FIELDS.has(name)) fail('joint-name', `${point}.name`);
+    const parent = Object.hasOwn(objectEntry, 'parent') ? text(objectEntry.parent, `${point}.parent`) : undefined;
+    if (parent !== undefined && (!FIELD_NAME.test(parent) || UNSAFE_FIELDS.has(parent))) fail('joint-name', `${point}.parent`);
+    return Object.freeze({ name, ...(parent === undefined ? {} : { parent }) });
+  });
+  const parents = new Map(joints.map((joint) => [joint.name, joint.parent]));
+  if (parents.size !== joints.length) fail('duplicate-joint', path);
+  for (const joint of joints) {
+    const visited = new Set<string>();
+    let current: string | undefined = joint.name;
+    while (current !== undefined) {
+      if (visited.has(current)) fail('joint-cycle', path);
+      visited.add(current);
+      if (!parents.has(current)) fail('joint-parent', path);
+      current = parents.get(current);
+    }
+  }
+  return Object.freeze(joints);
+}
+
+function usesSpatial(schema: ValueSchema): boolean {
+  if (schema.type === 'record') return Object.values(schema.fields).some(usesSpatial);
+  if (schema.type === 'array') return usesSpatial(schema.items);
+  return schema.type === 'quaternion' || schema.type === 'pose' || schema.type === 'joints' || schema.type === 'transform';
+}
+
 /** A bounded immutable value definition, including recursive record and array members. */
 export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema {
-  const snapshot = snapshotJson(input);
+  const snapshot = copyJson(input, MAX_SCHEMA_JSON_DEPTH);
   let nodes = 0;
   function parse(input: JsonValue, path: string, depth: number): ValueSchema {
     if (depth > MAX_SCHEMA_DEPTH) fail('schema-depth-limit', path);
@@ -219,6 +296,32 @@ export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema 
     if (value.type === 'enum') {
       closed(value, ['type', 'values'], [], path);
       return Object.freeze({ type: 'enum', values: Object.freeze(stringList(value.values, `${path}.values`, 64)) });
+    }
+    if (value.type === 'quaternion') {
+      closed(value, ['type', 'frame'], [], path);
+      return Object.freeze({ type: 'quaternion', frame: parseSpatialFrame(value.frame, `${path}.frame`) });
+    }
+    if (value.type === 'pose' || value.type === 'joints') {
+      const joints = value.type === 'joints';
+      closed(value, joints ? ['type', 'frame', 'extent', 'joints'] : ['type', 'frame', 'extent'], joints ? ['optional'] : [], path);
+      const frame = parseSpatialFrame(value.frame, `${path}.frame`);
+      const extent = positiveSpatial(value.extent, `${path}.extent`);
+      if (!joints) return Object.freeze({ type: 'pose', frame, extent });
+      const declared = parseSpatialJoints(value.joints, `${path}.joints`);
+      let optional: readonly string[] | undefined;
+      if (Object.hasOwn(value, 'optional')) {
+        if (!Array.isArray(value.optional) || value.optional.length > declared.length) fail('bounded-array', `${path}.optional`);
+        const names = value.optional.map((name, index) => text(name, `${path}.optional[${index}]`));
+        if (new Set(names).size !== names.length) fail('duplicate-value', `${path}.optional`);
+        if (names.some((name) => !declared.some((joint) => joint.name === name))) fail('optional-joint', `${path}.optional`);
+        optional = Object.freeze(names);
+      }
+      return Object.freeze({ type: 'joints', frame, extent, joints: declared, ...(optional === undefined ? {} : { optional }) });
+    }
+    if (value.type === 'transform') {
+      closed(value, ['type', 'from', 'to', 'maxTranslation'], [], path);
+      return Object.freeze({ type: 'transform', from: parseSpatialFrame(value.from, `${path}.from`),
+        to: parseSpatialFrame(value.to, `${path}.to`), maxTranslation: positiveSpatial(value.maxTranslation, `${path}.maxTranslation`) });
     }
     if (value.type !== 'scalar' && value.type !== 'vector') fail('value-type', `${path}.type`);
     const vector = value.type === 'vector';
@@ -278,10 +381,13 @@ function parseCapability(input: unknown, path: string): DeviceCapability {
   if (kind !== 'sample' && kind !== 'event' && kind !== 'command' && kind !== 'property') fail('capability-kind', `${path}.kind`);
   const permissions = stringList(capability.permissions, `${path}.permissions`, 4);
   if (permissions.some((permission) => !['read', 'subscribe', 'write', 'invoke'].includes(permission))) fail('permission-operation', `${path}.permissions`);
+  const schemaVersion = integer(capability.schemaVersion, `${path}.schemaVersion`, 4294967295);
+  const value = parseValueSchema(capability.value, `${path}.value`);
+  if (schemaVersion < 2 && usesSpatial(value)) fail('spatial-schema-version', `${path}.schemaVersion`);
   return Object.freeze({
     id: text(capability.id, `${path}.id`), semantic: text(capability.semantic, `${path}.semantic`, 128, true),
-    schemaVersion: integer(capability.schemaVersion, `${path}.schemaVersion`, 4294967295), kind,
-    value: parseValueSchema(capability.value, `${path}.value`), delivery: parseDelivery(capability.delivery, `${path}.delivery`),
+    schemaVersion, kind,
+    value, delivery: parseDelivery(capability.delivery, `${path}.delivery`),
     permissions: Object.freeze(permissions) as readonly PermissionOperation[],
     ...(Object.hasOwn(capability, 'ownership') ? { ownership: parseOwnership(capability.ownership, `${path}.ownership`) } : {}),
     ...(Object.hasOwn(capability, 'metadata') ? { metadata: parseMetadata(capability.metadata, `${path}.metadata`) } : {}),
