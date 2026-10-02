@@ -25,3 +25,5 @@ export { parseDeviceHealthReport, assessDeviceHealth } from './health.ts';
 export type { DeviceHealthFault, DeviceHealthResource, DeviceHealthReport, DeviceHealthAssessment } from './health.ts';
 export { planDescriptorEvolution } from './evolution.ts';
 export type { DescriptorEvolution } from './evolution.ts';
+export { exportWoTThingDescription, importWoTThingDescription } from './wot.ts';
+export type { WoTBindings, WoTForm, WoTAffordance, WoTThingDescription } from './wot.ts';

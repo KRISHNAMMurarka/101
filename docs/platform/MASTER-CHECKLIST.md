@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 50 completed with recorded evidence; 222 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 51 completed with recorded evidence; 221 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -93,7 +93,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **M09 — Device health/resources.** Model battery, charging, thermal, firmware, connectivity and hardware faults as truthful readiness/telemetry with supported resource limits. [Device-health evidence](DEVICE-HEALTH-QA-2026-10-02.md).
 - [x] **M10 — Property/action/event/job semantics.** Specify readable properties, subscriptions, set-state commands, non-idempotent operations and asynchronous jobs with distinct result/effect evidence. [SDK evidence](SDK.md#property-command-and-job-operations).
 - [x] **M11 — Schema evolution and extensions.** Test unknown types/fields, compatible upgrades, incompatible revisions and preserved inert extensions; data cannot introduce executable authority. [SDK evidence](SDK.md#descriptor-revisions-and-extensions).
-- [ ] **M12 — Interoperable description import/export.** Implement a bounded WoT mapping with declared extensions and conformance fixtures; do not claim standard compatibility from a similar JSON shape.
+- [x] **M12 — Interoperable description import/export.** Implement a bounded WoT mapping with declared extensions and conformance fixtures; do not claim standard compatibility from a similar JSON shape. [SDK evidence](SDK.md#bounded-wot-thing-description-mapping).
 
 ### T — Transport bridge and 101 continuity: first implementation lane
 

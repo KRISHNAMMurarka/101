@@ -433,6 +433,46 @@ QA tool SHA-256 is `99c97da5bbc40bec1b01eeda2381c4769cd29bd65b71ab7227159e456f47
 The containing commit binds the exact repository gates. This does not qualify
 remote upgrade rollout, physical providers or support.
 
+## Bounded WoT Thing Description mapping
+
+`exportWoTThingDescription(descriptor, bindings)` projects boolean, scalar and
+enum property, event, command and job capabilities into WoT TD 1.1 property,
+event and action affordances. The caller must provide one canonical HTTPS form
+URL per capability and declare bearer security; the SDK does not invent an
+endpoint or verify that the service implements those forms. Property read and
+observation and event subscription use the corresponding WoT operations.
+Subscriptions require an explicit `longpoll` binding from the caller and emit
+`GET` plus `subprotocol: longpoll`; action invocation emits `POST`.
+Commands and jobs map to action input. A job's native lifecycle is retained in
+the `c101:descriptor` extension; the TD makes no WoT status-query or
+synchronicity claim. Sample streams, rich/spatial/structured value schemas,
+unbound forms and other security schemes are outside this profile and reject.
+
+The TD includes the standard 1.1 context and declares the `c101` namespace as
+`urn:101:td:profile:1#`. The extension retains native delivery, ownership,
+permissions, semantic IDs, revisions and inert vendor data, which WoT's core
+affordances cannot represent exactly. `importWoTThingDescription(td)` accepts
+only this closed profile. It validates the native descriptor, HTTPS forms,
+security declaration and every projected standard field, then returns an
+immutable inert descriptor. Importing a TD never connects to a URL or grants a
+runtime route; host authorization remains required. Arbitrary third-party TDs
+without the declared extension are unsupported. Neither function establishes
+that a bound endpoint is a conforming WoT implementation.
+
+M12 evidence: focused positive, tamper, malformed and unsupported-profile
+fixtures pass. The positive fixture is checked by the normal unit gate against
+the locally pinned [W3C TD 1.1 JSON Schema](https://www.w3.org/2022/wot/td-schema/v1.1)
+at `packages/device-model/fixtures/wot-td-schema-v1.1.json` (SHA-256
+`fd44f319f94c6f16f66978860ef2f9f4e0e9fd7fc5835a2f3840b9cf2002e0f1`).
+The [immutable SDK build](receipts/2026-10-02-wot-profile-sdk-build.json)
+and [clean consumer receipt](receipts/2026-10-02-wot-profile-sdk-consumer.json)
+verify strict NodeNext/Bundler types and packed Node, Chromium, Firefox and
+WebKit imports. The unpublished artifact is `release/sdk-v5MnXF` from source
+tree `8990666dae9bbe9501291448bcaa3c9378155d79`; manifest SHA-256 is
+`c29deff6fc45d0e12c5567af110c68fa767977ca1a50fa98891a81aea8d6419e`.
+Builder SHA-256 is `7e91360653dfbc1cd0c872eb7759d2a6a46cc2e1e5095cb0aff4079d4e0fd966`;
+consumer QA tool SHA-256 is `466a52bb295cf1da6bd6c95f7f7f542f1d3938ccf75d4300648c3b7218f8294b`.
+
 Workspace packages expose TypeScript source for the repository's existing tools.
 `npm run build:sdk -- HEAD` separately compiles an explicit immutable revision/tree
 into five local ESM tarballs under a fresh ignored `release/sdk-*` directory.

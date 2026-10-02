@@ -183,6 +183,8 @@ import { parseDeviceHealthReport, assessDeviceHealth } from '@101/device-model';
 import type { DeviceHealthReport, DeviceHealthAssessment } from '@101/device-model';
 import { planDescriptorEvolution } from '@101/device-model';
 import type { DescriptorEvolution } from '@101/device-model';
+import { exportWoTThingDescription, importWoTThingDescription } from '@101/device-model';
+import type { WoTBindings, WoTThingDescription } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -263,6 +265,9 @@ const evolution: DescriptorEvolution = planDescriptorEvolution(descriptor, { ...
     kind: 'sample', value: { type: 'boolean' }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 1000 },
     permissions: ['subscribe'] }] });
 void evolution;
+const wotBindings: WoTBindings = { security: { scheme: 'bearer' }, hrefs: {}, subscriptions: {} };
+const thing: WoTThingDescription = exportWoTThingDescription(descriptor, wotBindings);
+void importWoTThingDescription(thing);
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -301,7 +306,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -358,6 +363,20 @@ export async function checkRuntime() {
   try { model.planDescriptorEvolution(originalDescriptor, { ...originalDescriptor, revision: 2, executable: true }); }
   catch { unknownDescriptorRejected = true; }
   check(unknownDescriptorRejected, 'Packed unknown descriptor field was accepted');
+  const tdDescriptor = { ...originalDescriptor, capabilities: [
+    { ...originalDescriptor.capabilities[0], kind: 'property', permissions: ['read', 'subscribe'] }] };
+  const thing = model.exportWoTThingDescription(tdDescriptor, {
+    security: { scheme: 'bearer' }, hrefs: { sensor: 'https://example.com/sensor' },
+    subscriptions: { sensor: 'longpoll' } });
+  check(thing.properties.sensor.forms[0].op === 'readproperty' &&
+    thing.properties.sensor.forms[1].subprotocol === 'longpoll' &&
+    model.importWoTThingDescription(thing).capabilities[0].kind === 'property',
+    'Packed WoT profile import/export failed');
+  let tamperedThingRejected = false;
+  try { model.importWoTThingDescription({ ...thing, properties: {
+    sensor: { ...thing.properties.sensor, type: 'string' } } }); }
+  catch { tamperedThingRejected = true; }
+  check(tamperedThingRejected, 'Packed WoT profile accepted a changed standard affordance');
   const propertySource = { schemaVersion: 1, id: 'packed-property', label: 'Property', revision: 1,
     adapter: { id: 'example:property', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [
       { id: 'state', semantic: 'example:state', schemaVersion: 1, kind: 'property', value: { type: 'boolean' },
