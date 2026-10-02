@@ -41,11 +41,14 @@ export interface SinkProvider {
 export interface RouteRequest {
   from: EndpointHandle; to: EndpointHandle; principalId: string; applicationId: string; sessionId: string;
   partition?: string; leaseMs?: number; queueCapacity?: number;
+  /** Optional caller constraints only narrow the host-authorized grant. */
+  constraints?: RouteGrant;
 }
 export interface Connection {
   readonly id: string;
   start(): Result; stop(reason?: string): void; renew(principalId: string): Result;
   status(): Readonly<{ state: "idle" | "active" | "closed"; reason?: string; pending: number }>;
+  limits(): Readonly<{ maxHz: number; maxAgeMs: number; expiresAt: number }> | undefined;
   operations(): readonly OperationRecord[];
 }
 export interface RuntimeOptions {
@@ -53,6 +56,7 @@ export interface RuntimeOptions {
   maxRoutes?: number; maxSubscribers?: number; maxRegistrations?: number; maxPendingDeliveries?: number;
 }
 export interface DeviceRuntime {
+  readonly clockDomain: string;
   registerSource(provider: { device: unknown; capability: string }): EndpointHandle;
   registerSink(provider: SinkProvider): EndpointHandle;
   setReadiness(handle: EndpointHandle, readiness: Readiness): Result;

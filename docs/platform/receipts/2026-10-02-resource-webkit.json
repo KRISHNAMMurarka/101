@@ -1,0 +1,125 @@
+{
+  "scope": "local real-browser WebRTC typed application pointer/contact, owner-approved embedded sinks, clock exchange, resize and loss; synthetic provider values, no physical/native/global identity proof",
+  "browser": "webkit",
+  "version": "26.5",
+  "sourceSha256": {
+    "examples/device-pipelines/remote-pointer.ts": "36bfe47006906f126ea109df580477dca55aa460abbd06988239c57b221c6eb5",
+    "packages/connect/src/index.ts": "601bb96447df78c7a6109f0c00d6478d97c79d81ba0f20cf839d35b3b37f0948",
+    "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+    "packages/device-model/src/descriptor.ts": "83c520b87477ed5729e96c8051fcebbfbaff761276efa2c479f3ccbfa976f50b",
+    "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+    "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+    "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+    "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+    "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+    "packages/device-web/src/index.ts": "01477c293066ca2448a46412b86081dcba4afd556f77c03b14b2e96ce6fb0913",
+    "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+    "packages/device-web/src/binding.ts": "acae6f68a9ae1423277978b04d406fb0bfcfff9b25bf6ea65d219053a995268b",
+    "packages/transport-webrtc/src/index.ts": "10b37c42abca8fa408677d1c5ce27c33d2c69ab9c157fa3461211bfdb907e01a",
+    "packages/transport-webrtc/src/peer.ts": "1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3"
+  },
+  "environment": {
+    "node": "24.14.0",
+    "playwright": "1.61.1",
+    "os": "macOS",
+    "osVersion": "26.5.2",
+    "osBuild": "25F84"
+  },
+  "result": {
+    "states": [
+      {
+        "contact": true,
+        "releases": 0,
+        "position": {
+          "x": 80.0000011920929,
+          "y": 160.0000023841858
+        }
+      },
+      {
+        "contact": false,
+        "releases": 0,
+        "position": {
+          "x": 320.0000047683716,
+          "y": 40.00000059604645
+        }
+      }
+    ],
+    "resized": {
+      "contact": false,
+      "releases": 0,
+      "position": {
+        "x": 800.000011920929,
+        "y": 100.00000149011612
+      }
+    },
+    "afterLoss": {
+      "contact": false,
+      "releases": 2
+    },
+    "receiver": {
+      "active": 0,
+      "pending": 0,
+      "stopped": true,
+      "reason": "unavailable",
+      "clockReady": false
+    },
+    "provider": {
+      "active": 0,
+      "pending": 0,
+      "stopped": true,
+      "reason": "unavailable"
+    },
+    "packetShapes": [
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 835
+      },
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 157
+      },
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 127
+      },
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 127
+      },
+      {
+        "lane": "disposable",
+        "encoding": "binary",
+        "bytes": 48
+      },
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 179
+      },
+      {
+        "lane": "disposable",
+        "encoding": "binary",
+        "bytes": 48
+      },
+      {
+        "lane": "reliable",
+        "encoding": "JSON",
+        "bytes": 180
+      }
+    ],
+    "supportedSemantics": [
+      "app:pointer-position/1",
+      "app:pointer-contact/1"
+    ],
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.5 Safari/605.1.15"
+  },
+  "baseRevision": "37edebc",
+  "resultStatus": "pass",
+  "reproduction": "node tools/qa-resource-peer.mjs webkit"
+}

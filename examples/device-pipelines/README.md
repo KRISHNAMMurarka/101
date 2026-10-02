@@ -58,3 +58,7 @@ Unavailable input or upstream revocation resets hysteresis, marks derived output
 unavailable and clears pending commands. Invalid, stale or nonfinite readings do
 not produce an actuator command. The processor declares `Cel`; the SDK performs
 no automatic unit conversion.
+
+## Local peer resource example
+
+[remote-pointer.ts](remote-pointer.ts) declares application pointer/contact resources and explicit owner selection into host-authorized sinks through the public facade. Run `node tools/qa-resource-peer.mjs chromium` or `webkit` from the repository root for actual two-peer WebRTC with synthetic values, both diagonals, resize and loss. This separately labeled runtime check does not prove a phone touch provider, native input, endpoint authentication or physical acceptance. See [resource QA](../../docs/platform/RESOURCE-BINDING-QA-2026-10-02.md).

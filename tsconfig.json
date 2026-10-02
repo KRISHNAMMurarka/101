@@ -52,7 +52,8 @@
       "@101/device-model": ["./packages/device-model/src/index.ts"],
       "@101/device-runtime": ["./packages/device-runtime/src/index.ts"],
       "@101/connect": ["./packages/connect/src/index.ts"],
-      "@101/transport-webrtc": ["./packages/transport-webrtc/src/index.ts"]
+      "@101/transport-webrtc": ["./packages/transport-webrtc/src/index.ts"],
+      "@101/device-web": ["./packages/device-web/src/index.ts"]
     }
   },
   "include": [

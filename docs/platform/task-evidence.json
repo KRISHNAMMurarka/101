@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 2,
+  "revision": 3,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5115,7 +5115,7 @@
     },
     {
       "id": "transport-extraction-2026-10-02",
-      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "revision": "37edebc",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -5221,7 +5221,7 @@
     },
     {
       "id": "peer-loopback-chromium-2026-10-02",
-      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "revision": "37edebc",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -5273,7 +5273,7 @@
     },
     {
       "id": "peer-loopback-webkit-2026-10-02",
-      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "revision": "37edebc",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -5325,7 +5325,7 @@
     },
     {
       "id": "peer-loopback-firefox-2026-10-02",
-      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "revision": "37edebc",
       "result": "fail",
       "historical": false,
       "levels": [
@@ -5371,6 +5371,229 @@
             "authenticated SDK binding",
             "physical phone input",
             "cross-network relay qualification"
+          ]
+        }
+      }
+    },
+    {
+      "id": "resource-binding-2026-10-02",
+      "revision": "containing commit; complete SHA256 source maps in linked browser receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "T03",
+        "T05",
+        "T10",
+        "T11",
+        "T04",
+        "T06",
+        "M08",
+        "S09"
+      ],
+      "paths": [
+        "docs/platform/RESOURCE-BINDING-QA-2026-10-02.md",
+        "docs/superpowers/plans/2026-10-02-resource-binding.md",
+        "docs/superpowers/plans/2026-10-02-remote-clock.md",
+        "packages/device-web/src/binding.ts",
+        "packages/device-web/src/binding.test.ts",
+        "packages/device-web/src/wire.ts",
+        "packages/device-web/src/wire.test.ts",
+        "packages/device-model/src/remote-clock.ts",
+        "packages/device-model/src/remote-clock.test.ts",
+        "packages/device-runtime/src/runtime.ts",
+        "packages/device-runtime/src/runtime.test.ts",
+        "tests/device-platform-boundary.test.ts"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, TypeScript 5.9.3; exact browser/build versions in QA and per-engine receipts",
+      "reproduction": "npx tsc --noEmit; npm run lint; npm run test:unit; npm run build; node --test tests/rendered-html.test.mjs; node tools/qa-resource-peer.mjs chromium",
+      "scope": "Complete T03/T05/T10/T11 bounded negotiation/codecs/generation/impairment deliverables; partial T04/T06/M08/S09 core only, with actual authenticated enrollment, relative provider and full provenance/all-boundary replay remaining open",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed browser engines"
+      ],
+      "supportRows": [
+        "typed-peer-chromium-2026-10-02",
+        "typed-peer-webkit-2026-10-02"
+      ],
+      "supportTargets": {
+        "typed-peer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-chromium.json",
+          "profiles": [
+            "descriptor/1",
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "synthetic typed application pointer/contact to owner-approved embedded sinks"
+          ],
+          "unavailable": [
+            "physical touch provider",
+            "native general provider",
+            "endpoint key authentication",
+            "cross-network/relay qualification",
+            "OS pointer"
+          ]
+        },
+        "typed-peer-webkit-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright webkit",
+          "runtimeVersion": "26.5",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-webkit.json",
+          "profiles": [
+            "descriptor/1",
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "synthetic typed application pointer/contact to owner-approved embedded sinks"
+          ],
+          "unavailable": [
+            "physical touch provider",
+            "native general provider",
+            "endpoint key authentication",
+            "cross-network/relay qualification",
+            "OS pointer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "resource-loopback-chromium-2026-10-02",
+      "revision": "containing commit; complete SHA256 source maps in linked browser receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T03",
+        "T05",
+        "T10",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-02-resource-chromium.json",
+        "tools/qa-resource-peer.mjs",
+        "examples/device-pipelines/remote-pointer.ts"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, Playwright 1.61.1 chromium 149.0.7827.55",
+      "reproduction": "node tools/qa-resource-peer.mjs chromium",
+      "scope": "Exact typed WebRTC description/bind/ready/clock, compact diagonal position, JSON contact, resize and loss; synthetic values, no physical/native/endpoint authentication claim",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed chromium engine"
+      ],
+      "supportRows": [
+        "typed-peer-chromium-2026-10-02"
+      ],
+      "supportTargets": {
+        "typed-peer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-chromium.json",
+          "profiles": [
+            "descriptor/1",
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "synthetic typed application pointer/contact to owner-approved embedded sinks"
+          ],
+          "unavailable": [
+            "physical touch provider",
+            "native general provider",
+            "endpoint key authentication",
+            "cross-network/relay qualification",
+            "OS pointer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "resource-loopback-webkit-2026-10-02",
+      "revision": "containing commit; complete SHA256 source maps in linked browser receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T03",
+        "T05",
+        "T10",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-02-resource-webkit.json",
+        "tools/qa-resource-peer.mjs",
+        "examples/device-pipelines/remote-pointer.ts"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, Playwright 1.61.1 webkit 26.5",
+      "reproduction": "node tools/qa-resource-peer.mjs webkit",
+      "scope": "Exact typed WebRTC description/bind/ready/clock, compact diagonal position, JSON contact, resize and loss; synthetic values, no physical/native/endpoint authentication claim",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed webkit engine"
+      ],
+      "supportRows": [
+        "typed-peer-webkit-2026-10-02"
+      ],
+      "supportTargets": {
+        "typed-peer-webkit-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright webkit",
+          "runtimeVersion": "26.5",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/device-web + @101/connect",
+          "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-webkit.json",
+          "profiles": [
+            "descriptor/1",
+            "connect/1",
+            "json/1",
+            "normalized-pointer/1",
+            "app:pointer-position/1",
+            "app:pointer-contact/1"
+          ],
+          "resources": [
+            "synthetic typed application pointer/contact to owner-approved embedded sinks"
+          ],
+          "unavailable": [
+            "physical touch provider",
+            "native general provider",
+            "endpoint key authentication",
+            "cross-network/relay qualification",
+            "OS pointer"
           ]
         }
       }
@@ -5625,7 +5848,8 @@
     {
       "id": "M08",
       "records": [
-        "pending-M08"
+        "pending-M08",
+        "resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5711,7 +5935,10 @@
     {
       "id": "T03",
       "records": [
-        "pending-T03"
+        "pending-T03",
+        "resource-binding-2026-10-02",
+        "resource-loopback-chromium-2026-10-02",
+        "resource-loopback-webkit-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5724,7 +5951,8 @@
     {
       "id": "T04",
       "records": [
-        "pending-T04"
+        "pending-T04",
+        "resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5737,7 +5965,10 @@
     {
       "id": "T05",
       "records": [
-        "pending-T05"
+        "pending-T05",
+        "resource-binding-2026-10-02",
+        "resource-loopback-chromium-2026-10-02",
+        "resource-loopback-webkit-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5750,7 +5981,8 @@
     {
       "id": "T06",
       "records": [
-        "pending-T06"
+        "pending-T06",
+        "resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5802,7 +6034,10 @@
     {
       "id": "T10",
       "records": [
-        "pending-T10"
+        "pending-T10",
+        "resource-binding-2026-10-02",
+        "resource-loopback-chromium-2026-10-02",
+        "resource-loopback-webkit-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5815,7 +6050,8 @@
     {
       "id": "T11",
       "records": [
-        "pending-T11"
+        "pending-T11",
+        "resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6105,7 +6341,8 @@
     {
       "id": "S09",
       "records": [
-        "pending-S09"
+        "pending-S09",
+        "resource-binding-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -8090,7 +8327,9 @@
         "pending-Q07",
         "peer-loopback-chromium-2026-10-02",
         "peer-loopback-webkit-2026-10-02",
-        "peer-loopback-firefox-2026-10-02"
+        "peer-loopback-firefox-2026-10-02",
+        "resource-loopback-chromium-2026-10-02",
+        "resource-loopback-webkit-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [

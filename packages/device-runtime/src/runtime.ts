@@ -158,6 +158,12 @@ export class EmbeddedRuntime implements DeviceRuntime {
     try { now = this.time(); } catch { return failure("invalid-clock"); }
     if (this.closed || this.entry(request.from) !== source || this.entry(request.to) !== sink ||
       source.readiness !== "available" || sink.readiness !== "available" || grant.expiresAt <= now || route.status().state !== "idle") return failure("unavailable");
+    if (request.constraints !== undefined) {
+      const constraints = parseGrant(request.constraints, now);
+      if (!constraints) return failure("invalid-constraints");
+      grant = { expiresAt: Math.min(grant.expiresAt, constraints.expiresAt), maxAgeMs: Math.min(grant.maxAgeMs, constraints.maxAgeMs),
+        maxHz: Math.min(grant.maxHz ?? 1000, constraints.maxHz ?? 1000) };
+    }
     const leaseKey = ownership?.mode === "observe" ? undefined : `${sink.handle.id}:${request.partition ?? ""}`;
     const expiresAt = Math.min(grant.expiresAt, now + (request.leaseMs ?? 1500));
     if (leaseKey && !this.leases.claim(leaseKey, route.id, expiresAt, now)) return failure("busy");
@@ -264,7 +270,11 @@ class EmbeddedConnection implements Connection {
   private maxHz = 1;
 
   constructor(runtime: EmbeddedRuntime, id: string, request: RouteRequest) {
-    this.runtime = runtime; this.id = id; this.request = request;
+    this.runtime = runtime; this.id = id; this.request = { ...request };
+    if (request.constraints !== undefined) {
+      try { this.request.constraints = snapshotJson(request.constraints) as unknown as RouteGrant; }
+      catch { this.request.constraints = {} as RouteGrant; }
+    }
     this.leaseMs = bound(request.leaseMs, 1500, 30000);
     this.queue = new OperationQueue(request.queueCapacity);
   }
@@ -307,6 +317,12 @@ class EmbeddedConnection implements Connection {
   }
   status(): ReturnType<Connection["status"]> {
     return Object.freeze({ state: this.state, reason: this.reason, pending: this.latest.size + this.queue.pending });
+  }
+  limits(): ReturnType<Connection["limits"]> {
+    if (this.state !== "active") return;
+    try { this.check(this.runtime.time()); } catch { return; }
+    if (this.state !== "active") return;
+    return Object.freeze({ maxHz: this.maxHz, maxAgeMs: this.maxAgeMs, expiresAt: this.expiresAt });
   }
   operations(): ReturnType<Connection["operations"]> { return this.queue.records(); }
   check(now: number): void {

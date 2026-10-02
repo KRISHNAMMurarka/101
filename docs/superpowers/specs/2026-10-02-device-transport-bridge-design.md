@@ -40,9 +40,9 @@ Wire protocol `connect/1` uses closed JSON objects encoded as UTF-8 JSON strings
 
 ```ts
 type GeneralControl =
-  | { protocol: 'connect'; version: 1; type: 'describe'; epoch: string; device: DeviceDescriptor; codecs: ['json/1'] }
-  | { protocol: 'connect'; version: 1; type: 'bind'; epoch: string; slot: number; capability: string; descriptorRevision: number; schemaVersion: number; codec: 'json/1'; maxHz: number; maxAgeMs: number }
-  | { protocol: 'connect'; version: 1; type: 'ready'; epoch: string; slot: number }
+  | { protocol: 'connect'; version: 1; type: 'describe'; epoch: string; clockId: string; device: DeviceDescriptor; codecs: WireCodec[] }
+  | { protocol: 'connect'; version: 1; type: 'bind'; epoch: string; slot: number; capability: string; descriptorRevision: number; schemaVersion: number; codec: WireCodec; maxHz: number; maxAgeMs: number }
+  | { protocol: 'connect'; version: 1; type: 'ready'; epoch: string; slot: number; maxHz: number; maxAgeMs: number }
   | { protocol: 'connect'; version: 1; type: 'stop'; epoch: string; slot: number; reason: 'stopped' | 'unavailable' | 'expired' | 'overload' | 'incompatible' }
   | { protocol: 'connect'; version: 1; type: 'clock'; epoch: string; id: number; sentAt: number; remoteReceivedAt?: number; remoteSentAt?: number };
 type GeneralValue = {
@@ -53,6 +53,10 @@ type GeneralValue = {
 ```
 
 Epoch is a fresh cryptographically random 128-bit channel-generation token from the trusted host. Slots are integers 1–128 assigned by the receiver's approved binding, never arbitrary embedded handle IDs. Descriptor and supported operations are parsed first; schema/revision, codec and rate/age intersect both descriptors and owner grants. The bind response confirms actual accepted limits. A peer cannot bind another peer/session or select an ungranted resource. Each binding owns its embedded source handle/route and drops all old-generation packets after close; fresh reconnect repeats describe/consent/bind/ready. Source readiness begins unavailable and becomes available only after negotiation and actual provider permission.
+
+The first bridge uses a shared epoch established by trusted enrollment on both ends, rather than accepting an epoch selected by a describe packet. Each receiver is bound to one concrete transport object and immutable principal/application/session context. A host approval selects a capability from the parsed description, concrete sink handle/descriptor and expiring owner limits. The embedded runtime still authorizes the actual route, intersecting immutable caller constraints with its host grant so renewal, queued dispatch and asynchronous effect checks cannot outlive owner approval. If its effective limits differ from the proposed negotiated limits, the route is released and approval must be retried with current limits before any delivery. This first caller requires exact descriptor identity/revision and codecs; it does not silently replace registrations when a peer sends another description.
+
+`normalized-pointer/1` is a 48-byte sample-only format for schema-1 x/y vectors with unit `1`, frame `surface-normalized` and range `[0,1]`. Big-endian fields: `CN` magic at 0, version 1 at 2, sample tag 1 at 3, 16-byte epoch at 4, uint16 slot at 20, zero uint16 reserved at 22, uint32 sequence at 24, float64 capture time at 28, float32 x/y at 36/40, zero uint32 reserved at 44. Float32 coordinate error is at most 2^-25 absolute; timestamps retain float64 precision. Contact events and arbitrary sensor values use JSON/1. Unnegotiated binary, wrong profile, nonzero reserved bits, invalid ranges and any other length reject.
 
 Samples are replaceable absolute state, positive increasing uint32 sequence, finite capture time and validated typed value. Events use the reliable channel, strictly increasing positive decimal operation IDs, finite deadlines and bounded deduplication state. Contact release is a reliable event and also occurs locally on blur/hide/unmount/permission loss/disconnect/deadman expiry. Invalid/out-of-order/duplicate/expired/wrong-lane packets cannot refresh liveness or mutate held state. Relative input accumulates bounded unsent deltas into recoverable normalized position; first contact establishes only a local touch anchor and never jumps the remote pointer.
 

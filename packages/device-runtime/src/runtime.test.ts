@@ -56,6 +56,30 @@ test("latest samples remain immutable and coalesced within the negotiated rate",
   h.setNow(10); h.runtime.flush(); assert.equal(h.received.length, 2);
 });
 
+test("active route limits expose actual descriptor/grant intersections without renewing authority", () => {
+  const h = harness({ authorize: () => ({ expiresAt: 1000, maxAgeMs: 50, maxHz: 20.5 }) });
+  assert.equal(h.connection.limits(), undefined);
+  assert.equal(h.connection.start().ok, true);
+  const limits = h.connection.limits();
+  assert.deepEqual(limits, { maxAgeMs: 50, maxHz: 20.5, expiresAt: 1000 });
+  assert.equal(Object.isFrozen(limits), true);
+  h.setNow(1000);
+  assert.equal(h.connection.limits(), undefined);
+  assert.equal(h.releases(), 1);
+  assert.equal(h.runtime.clockDomain, "embedded");
+});
+test("route constraints narrow host authority, remain immutable and cap renewal/dispatch", () => {
+  const h = harness();
+  const constraints = { expiresAt: 100, maxAgeMs: 30, maxHz: 20 };
+  const route = h.runtime.route({ ...h.request, constraints }); constraints.expiresAt = 10000;
+  assert.equal(route.start().ok, true); assert.deepEqual(route.limits(), { expiresAt: 100, maxAgeMs: 30, maxHz: 20 });
+  h.setNow(50); assert.equal(route.renew("owner").ok, true);
+  h.setNow(99); h.runtime.publish(h.source, { x: 0.9, y: 0.9 });
+  h.setNow(100); h.runtime.flush(); assert.equal(h.received.length, 0); assert.equal(h.releases(), 1);
+  const invalid = h.runtime.route({ ...h.request, constraints: { expiresAt: 101, maxAgeMs: 0 } });
+  assert.equal(invalid.start().ok, false);
+});
+
 test("exclusive ownership, renewal and expiry release exactly once", () => {
   const h = harness(); assert.equal(h.connection.start().ok, true);
   const other = h.runtime.route({ ...h.request, principalId: "other" });

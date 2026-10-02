@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 2,
+  "revision": 3,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -1065,6 +1065,132 @@
         "implementation",
         "contract",
         "runtime"
+      ]
+    },
+    {
+      "id": "typed-peer-chromium-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "computer",
+        "transport": "local two-peer WebRTC/DTLS",
+        "connector": "@101/device-web + @101/connect",
+        "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-chromium.json",
+        "profiles": [
+          "descriptor/1",
+          "connect/1",
+          "json/1",
+          "normalized-pointer/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "synthetic typed application pointer/contact to owner-approved embedded sinks"
+        ],
+        "unavailable": [
+          "physical touch provider",
+          "native general provider",
+          "endpoint key authentication",
+          "cross-network/relay qualification",
+          "OS pointer"
+        ]
+      },
+      "qualificationTasks": [
+        "T03",
+        "T05",
+        "T07",
+        "T08",
+        "T10",
+        "T14",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "resource-binding-2026-10-02"
+        ],
+        "contract": [
+          "resource-binding-2026-10-02"
+        ],
+        "runtime": [
+          "resource-loopback-chromium-2026-10-02"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Synthetic provider values and local harness enrollment; full browser/physical SDK qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "typed-peer-webkit-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright webkit",
+        "runtimeVersion": "26.5",
+        "formFactor": "computer",
+        "transport": "local two-peer WebRTC/DTLS",
+        "connector": "@101/device-web + @101/connect",
+        "connectorVersion": "0.1.0; immutable complete module SHA256 map in 2026-10-02-resource-webkit.json",
+        "profiles": [
+          "descriptor/1",
+          "connect/1",
+          "json/1",
+          "normalized-pointer/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "synthetic typed application pointer/contact to owner-approved embedded sinks"
+        ],
+        "unavailable": [
+          "physical touch provider",
+          "native general provider",
+          "endpoint key authentication",
+          "cross-network/relay qualification",
+          "OS pointer"
+        ]
+      },
+      "qualificationTasks": [
+        "T03",
+        "T05",
+        "T07",
+        "T08",
+        "T10",
+        "T14",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "resource-binding-2026-10-02"
+        ],
+        "contract": [
+          "resource-binding-2026-10-02"
+        ],
+        "runtime": [
+          "resource-loopback-webkit-2026-10-02"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Synthetic provider values and local harness enrollment; full browser/physical SDK qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
       ]
     }
   ]
