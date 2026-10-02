@@ -1,0 +1,41 @@
+{
+  "tree": "4afc16b2f9b4718bd8690466aebb51d66b368037",
+  "node": "v24.14.0",
+  "results": [
+    {
+      "platform": "apple",
+      "module": "one01-watch",
+      "files": [
+        {
+          "path": "modules/one01-watch/ios/One01Watch.podspec",
+          "sha256": "9e7b728b00d3ac7488a9fae9b89f8499f602c503036d56ef87de9be8cda209a1"
+        },
+        {
+          "path": "modules/one01-watch/ios/One01WatchModule.swift",
+          "sha256": "939bf2dccf16d7338bf1003ff21944c4e37c73d5d43bbaec939c3689d6279184"
+        }
+      ]
+    },
+    {
+      "platform": "android",
+      "module": "one01-watch",
+      "files": [
+        {
+          "path": "modules/one01-watch/android/build.gradle",
+          "sha256": "5f693f0307015e66d40ac7a196b84c817fc0cd4986003c31779124ef9aec0e55"
+        },
+        {
+          "path": "modules/one01-watch/android/src/main/java/com/oneohone/link/watch/One01WatchModule.kt",
+          "sha256": "a5ca651d7e0c60946934a7ccf6e9ab9467005806dffbd7e430e194d5840042ac"
+        },
+        {
+          "path": "modules/one01-watch/android/src/main/res/values/wear.xml",
+          "sha256": "2e6ddd0727adc74c7f48a6dfac6defe7d42602f9ace1e978baa2f63d1abcd04f"
+        }
+      ]
+    }
+  ],
+  "base": "b67b1dc7d9a716f03149e098b8f2708e7a5432e6",
+  "autolinkingVersion": "57.0.9",
+  "scope": "Immutable local-module source resolution only; installed dependencies reused, no native compile or physical/install acceptance"
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Advertises this phone app to the 101 Wear OS companion.
+
+      Without a declared capability the watch would have to hardcode a node ID, which breaks the
+      moment a user pairs a different phone. The watch queries this name through CapabilityClient
+      and picks a nearby node when one exists.
+    -->
+    <string-array name="android_wear_capabilities">
+        <item>one01_link</item>
+    </string-array>
+</resources>

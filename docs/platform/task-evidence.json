@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 5,
+  "revision": 6,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -34,7 +34,7 @@
       ],
       "environment": "Recorded single-process Node foundation; exact historical toolchain not recorded in this receipt; current harness Node 24.14.0/macOS 26.5.2 is separate",
       "reproduction": "npm run example:devices; repository gates listed in foundation QA",
-      "scope": "Embedded-only foundation H01\u2013H12; 503 unit/31 rendered checks, no remote or physical claim",
+      "scope": "Embedded-only foundation H01–H12; 503 unit/31 rendered checks, no remote or physical claim",
       "failure": null,
       "equipment": [],
       "supportRows": [
@@ -68,7 +68,7 @@
       ],
       "environment": "Per-case exact environments/revisions in chronological QA; mixed Mac browsers, simulators, iPhone 16 Pro and OnePlus IV2201 Android 13",
       "reproduction": "Per-case commands and performed actions in chronological QA; do not rerun as a substituted current acceptance",
-      "scope": "Only J01\u2013J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
+      "scope": "Only J01–J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
       "failure": null,
       "equipment": [
         "Recorded devices only; no current support implication"
@@ -591,7 +591,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Prove physical phone \u2192 browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
+      "reproduction": "Prove physical phone → browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
       "scope": "T08 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2331,7 +2331,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I\u00b2C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
+      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I²C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
       "scope": "A15 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2391,7 +2391,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Apple Watch \u2192 iPhone \u2192 host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Apple Watch → iPhone → host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
       "scope": "W02 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2411,7 +2411,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Wear OS \u2192 Android \u2192 host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Wear OS → Android → host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
       "scope": "W03 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -4351,7 +4351,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4\u00d7 CPU slowdown meet recorded budgets.",
+      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4× CPU slowdown meet recorded budgets.",
       "scope": "G14 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5051,7 +5051,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Publication-ready candidate is accepted. K/O and L01\u2013L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
+      "reproduction": "Publication-ready candidate is accepted. K/O and L01–L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
       "scope": "Z05 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5071,7 +5071,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Published system is verified. Authorized L06\u2013L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
+      "reproduction": "Published system is verified. Authorized L06–L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
       "scope": "Z06 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5108,7 +5108,7 @@
       ],
       "environment": "Node 24.14.0/npm 11.9.0/TypeScript 5.9.3; macOS 26.5.2 (25F84)",
       "reproduction": "node tools/audit-platform-records.mjs; node --experimental-strip-types --test tests/platform-records.test.ts; full repository gates in receipt",
-      "scope": "C01\u2013C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
+      "scope": "C01–C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -5972,6 +5972,29 @@
         "independentReview": "fresh-context architecture reviewer; root verified material consumers and corrected ignored watch-source distinction",
         "distribution": "Local managed collection only; not packaged or published"
       }
+    },
+    {
+      "id": "native-source-2026-10-02",
+      "revision": "containing commit; source tree 4afc16b2f9b4718bd8690466aebb51d66b368037",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "T07",
+        "E12"
+      ],
+      "paths": [
+        "docs/platform/NATIVE-SOURCE-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-native-source.json"
+      ],
+      "environment": "Node 24.14.0/macOS 26.5.2; Expo module autolinking 57.0.9; installed dependencies reused",
+      "reproduction": "node tools/qa-native-module-sources.mjs <revision-or-tree>; npm run native:typecheck; npm run native:test",
+      "scope": "Immutable local-module source resolution only; installed dependencies reused, no native compile or physical/install acceptance",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -6383,7 +6406,8 @@
         "pointer-ui-chromium-2026-10-02",
         "pointer-ui-webkit-failed-2026-10-02",
         "pointer-native-partial-2026-10-02",
-        "pointer-native-touch-unqualified-2026-10-02"
+        "pointer-native-touch-unqualified-2026-10-02",
+        "native-source-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -8321,7 +8345,8 @@
     {
       "id": "E12",
       "records": [
-        "pending-E12"
+        "pending-E12",
+        "native-source-2026-10-02"
       ],
       "dependencies": [
         "M01",

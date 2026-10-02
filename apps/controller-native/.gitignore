@@ -1,7 +1,11 @@
 .expo/
 dist/
 node_modules/
-ios/
-android/
+# Expo-generated app projects. Local Expo module source belongs in Git.
+/ios/
+/android/
+modules/**/android/build/
+modules/**/android/.gradle/
+modules/**/ios/build/
 *.jks
 *.mobileprovision
