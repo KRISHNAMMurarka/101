@@ -48,6 +48,11 @@ a reliable set-state command. `threshold.ts` turns on at 30 °C and off at 28 °
 readings between those limits retain the known state. An initial in-band reading
 does not invent a state. This processor preserves upstream identity, time,
 quality and calibration provenance with its own version and configuration.
+`publishReport()` accepts a validated producer report: a valid Celsius value
+with calibration revision and absolute error bound, or a stale/unavailable
+loss report with bounded fault codes and no value. The example preserves these
+claims without asserting physical accuracy. `publishTemperature()` remains the
+lower-level compatibility path.
 
 ```ts
 import { createSensorFeedbackPipeline } from './sensor-feedback.ts';

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 17,
+  "revision": 18,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6294,6 +6294,33 @@
       "supportRows": []
     },
     {
+      "id": "measurement-quality-2026-10-02",
+      "revision": "containing implementation commit, base 1a92f1b; immutable SDK producer tree 62185d2b9fca454ff36e8b2f700ea2d6b4262d20 and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M07"
+      ],
+      "paths": [
+        "docs/platform/MEASUREMENT-QUALITY-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-measurement-quality-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-measurement-quality-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-measurement-quality-sdk-consumer-commands.json",
+        "docs/platform/receipts/2026-10-02-measurement-quality-sdk-build-stderr.log"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed API consumers; no physical calibration or sensor provider",
+      "reproduction": "Focused quality parser and embedded sensor pipeline RED-GREEN tests plus independent review in QA; node tools/build-sdk.mjs 62185d2b9fca454ff36e8b2f700ea2d6b4262d20; node tools/qa-sdk-consumer.mjs release/sdk-DHuCYJ/manifest.json; exact candidate repository gates",
+      "scope": "M07 only: closed scalar producer reports with calibration revision, exact-unit absolute bound, bounded fault codes and stale/unavailable no-value states; authorized simulated temperature caller preserves provenance and cancels pending output on loss. No physical accuracy, vector/spatial calibration, provider or support promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6564,7 +6591,8 @@
     {
       "id": "M07",
       "records": [
-        "pending-M07"
+        "pending-M07",
+        "measurement-quality-2026-10-02"
       ],
       "dependencies": [
         "C01",

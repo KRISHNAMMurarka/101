@@ -51,6 +51,46 @@ test('sensor command dispatch is distinct from a separate feedback observation',
   assert.equal(runSensorFeedbackExample().operations[0].state, 'observed');
 });
 
+test('measurement reports preserve producer calibration and fault meaning', () => {
+  let now = 0;
+  const example = createSensorFeedbackPipeline({ now: () => now });
+  const valid = { status: 'valid', value: 31.25, calibration: { revision: 7 },
+    uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] } as const;
+  assert.equal(example.publishReport(valid).ok, true);
+  example.runtime.flush(); example.runtime.flush();
+  assert.deepEqual((example.state().commands[0].provenance?.upstream as { provenance: unknown }).provenance,
+    { calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' } });
+  assert.deepEqual(example.state().lastReport, valid);
+  now = 100;
+  assert.equal(example.publishReport({ ...valid, value: 27, calibration: { revision: 8 } }).ok, true);
+  example.runtime.flush(); example.runtime.flush();
+  const secondUpstream = example.state().commands[1].provenance?.upstream as { provenance: { calibration: { revision: number } } };
+  assert.equal(secondUpstream.provenance.calibration.revision, 8);
+  const loss = { status: 'unavailable', faults: [{ code: 'sensor:disconnected' }] } as const;
+  assert.equal(example.publishReport(loss).ok, false);
+  example.runtime.flush();
+  assert.deepEqual(example.state().lastReport, loss);
+  assert.equal(example.state().temperature, undefined);
+  assert.equal(example.upstream.status().state, 'closed');
+  assert.throws(() => example.publishReport({ ...valid, uncertainty: { absoluteErrorBound: 0.5, unit: 'K' } }));
+  assert.deepEqual(example.state().lastReport, loss);
+  example.runtime.close();
+});
+
+test('a stale producer report cancels a pending derived command', () => {
+  const example = createSensorFeedbackPipeline();
+  example.publishReport({ status: 'valid', value: 31.25, calibration: { revision: 7 },
+    uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] });
+  example.runtime.flush();
+  assert.equal(example.downstream.status().pending, 1);
+  assert.equal(example.publishReport({ status: 'stale', faults: [{ code: 'sensor:timeout' }] }).ok, false);
+  example.runtime.flush();
+  assert.deepEqual(example.state().commands, []);
+  assert.equal(example.downstream.operations()[0].state, 'cancelled');
+  assert.deepEqual(example.state().lastReport, { status: 'stale', faults: [{ code: 'sensor:timeout' }] });
+  example.runtime.close();
+});
+
 test('both processor legs require independent resource authorization', () => {
   const requests: Readonly<AuthorizationRequest>[] = [];
   const deniedOutput = createSensorFeedbackPipeline({ authorize(request) {

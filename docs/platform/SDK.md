@@ -198,6 +198,16 @@ shows a video-to-canvas proposal and unavailable microphone/codec failures.
 Actual capture, transport, permission and physical output remain separate
 qualifications.
 
+## Measurement calibration and quality
+
+`parseMeasurementReport()` accepts a scalar producer report with closed,
+immutable status. A valid value includes a calibration revision and declared
+absolute error bound in the capability's exact unit. Stale and unavailable
+reports contain no value and may carry bounded, distinct fault codes. The
+temperature pipeline's `publishReport()` keeps the producer's revision and
+uncertainty in downstream provenance; loss closes its source route. These
+fields preserve producer assertions and do not verify physical calibration.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

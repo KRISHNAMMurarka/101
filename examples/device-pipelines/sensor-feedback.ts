@@ -1,5 +1,5 @@
-import { createDeviceRuntime } from '@101/connect';
-import type { Authorize, DeliveryContext, DeviceDescriptor, JsonObject, PublishOptions } from '@101/connect';
+import { createDeviceRuntime, parseMeasurementReport } from '@101/connect';
+import type { Authorize, DeliveryContext, DeviceDescriptor, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
 interface SensorOptions { feedback?: boolean; now?: () => number; authorize?: Authorize }
@@ -39,6 +39,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
   let operationSequence = 0;
   let simulatedState = false;
   let pendingFeedback: { value: boolean; context: DeliveryContext } | undefined;
+  let lastReport: MeasurementReport | undefined;
   const commands: AppliedCommand[] = [];
   const runtime = createDeviceRuntime({ now, clockDomain: 'embedded-demo',
     authorize: options.authorize ?? (() => ({ expiresAt: now() + 10000, maxAgeMs: 1000, maxHz: 10 })),
@@ -96,6 +97,15 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
   return {
     runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
     publishTemperature(value: unknown, publication?: PublishOptions) { return runtime.publish(sensor, value, publication); },
+    publishReport(input: unknown) {
+      const report = parseMeasurementReport(input, thermometer.capabilities[0].value);
+      lastReport = report;
+      return report.status === 'valid'
+        ? runtime.publish(sensor, report.value, { quality: 'valid', provenance: {
+          calibration: { ...report.calibration }, uncertainty: { ...report.uncertainty },
+        } })
+        : runtime.publish(sensor, undefined, { quality: report.status });
+    },
     receiveFeedback() {
       const pending = pendingFeedback;
       pendingFeedback = undefined;
@@ -105,7 +115,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
       return observed;
     },
     state() {
-      return { temperature, unit: 'Cel', commands: commands.map((command) => ({ ...command })), operations: downstream.operations() };
+      return { temperature, unit: 'Cel', lastReport, commands: commands.map((command) => ({ ...command })), operations: downstream.operations() };
     },
   };
 }
@@ -113,7 +123,8 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
 export function runSensorFeedbackExample(options: Pick<SensorOptions, 'feedback'> = {}) {
   const example = createSensorFeedbackPipeline(options);
   try {
-    example.publishTemperature(31.25, { provenance: { calibration: { offset: 0.25 } } });
+    example.publishReport({ status: 'valid', value: 31.25, calibration: { revision: 7 },
+      uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] });
     example.runtime.flush();
     example.runtime.flush();
     example.receiveFeedback();

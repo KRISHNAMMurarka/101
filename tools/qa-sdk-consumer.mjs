@@ -174,6 +174,8 @@ import { runResourceDocumentExample } from '@101/connect/examples/resource-docum
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
 import { parseMediaManifest, planMediaBinding } from '@101/device-model';
 import type { MediaManifest, MediaBindingResult } from '@101/device-model';
+import { parseMeasurementReport } from '@101/device-model';
+import type { MeasurementReport } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -231,6 +233,10 @@ const mediaResult: MediaBindingResult = planMediaBinding(described, 'media:missi
   resourceId: 'media:missing', registrationId: 'missing', state: 'unavailable', codecs: [], video: { widthPx: 640, heightPx: 480, frameRateHz: 30 } },
   target: { resourceId: 'media:surface', registrationId: 'surface', state: 'available', codecs: [], geometry: { widthPx: 640, heightPx: 480, pixelRatio: 1 } } });
 void [mediaResult, runMediaDescriptionExample().workingRoute];
+const qualityReport: MeasurementReport = parseMeasurementReport({ status: 'valid', value: 31.25,
+  calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
+  { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
+void qualityReport;
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -269,7 +275,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -290,6 +296,11 @@ export async function checkRuntime() {
   check(resourceDocuments.kind === 'embedded-simulated-resource' && resourceDocuments.text === 'Hello from a bounded resource.' && resourceDocuments.documentTitle === '101 resource example' && resourceDocuments.denied && resourceDocuments.corrupted && resourceDocuments.cancelled, 'Packed resource document example failed');
   const mediaDescription = runMediaDescriptionExample();
   check(mediaDescription.codec === 'video/vp8' && mediaDescription.widthPx === 640 && mediaDescription.heightPx === 480 && mediaDescription.unavailableMicrophone && mediaDescription.unsupportedCodec && mediaDescription.workingRoute === false, 'Packed media description example failed');
+  const measurementReport = model.parseMeasurementReport({ status: 'valid', value: 31.25,
+    calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
+    { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
+  check(measurementReport.status === 'valid' && measurementReport.calibration.revision === 7 &&
+    runSensorFeedbackExample().lastReport?.status === 'valid', 'Packed measurement quality contract failed');
   const pointer = runPointerExample();
   check(pointer.kind === 'embedded-simulation' && pointer.position.x === 200 && pointer.position.y === 400 && pointer.competing.ok === false && pointer.competing.reason === 'busy' && pointer.nextOwner.ok === true && pointer.released === 1, 'Packed pointer example behavior failed');
   const feedback = runSensorFeedbackExample(), unverified = runSensorFeedbackExample({ feedback: false });
@@ -325,7 +336,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

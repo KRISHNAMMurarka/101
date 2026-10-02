@@ -17,3 +17,5 @@ export type { AssetKind, AssetReference } from './resource.ts';
 export { parseMediaManifest, planMediaBinding } from './media.ts';
 export type { MediaRange, AudioProperties, VideoProperties, VideoGeometry, MediaTrackDescription,
   RenderTargetDescription, MediaManifest, MediaEndpointProbe, MediaHostProbe, MediaBindingResult } from './media.ts';
+export { parseMeasurementReport } from './quality.ts';
+export type { MeasurementFault, MeasurementReport } from './quality.ts';
