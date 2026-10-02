@@ -1,0 +1,71 @@
+{
+  "outcome": "failed",
+  "target": "http://127.0.0.1:3002/pointer-lab",
+  "revision": "0de40c1b5144b6e66e9ddb26c18563230d008b09",
+  "sourceSha256": {
+    "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+    "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+    "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+    "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+    "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+    "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+    "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+    "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+    "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+    "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+    "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+    "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+    "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+    "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+    "app/pointer-lab/PointerLab.tsx": "460116850d812c5a2e45290ad8313ae08b490bbc228eb428aff1bc1558b454fe",
+    "app/pointer-lab/page.tsx": "29524f4f7d7f53ab387a33b3c4188ee9330607873f97bf79af4921360693de97",
+    "app/pointer-lab/pointer-lab.module.css": "cd7a2f853da48997fa93781a4cab3604f60abe67def6add48ab5478bd60fa319",
+    "examples/device-pipelines/remote-pointer.ts": "3dad90a36cd296932decbe868abc926b2ccb78d90c8c7bb37876c821a6a0766d",
+    "app/globals.css": "e35d02445f75a9d1b063cc451b440850cba1191d74fa3890a3f312e497095876",
+    "tools/qa-enrollment-ui.mjs": "9ed74e5e76cf229fef827e5ece8f68d821c0045849f694f81dbee86d71e03701",
+    "tools/qa-pointer-ui.mjs": "f1c76d13e524ea2b34966160bc02795477b20cd2aca1ab0b5f91528d48d87f50"
+  },
+  "buildSha256": {
+    "dist/server/index.js": "4535102008fb0fa678b64d5196fffb992cf71a05a8a6f20c380cbb7229511a8b"
+  },
+  "paths": {
+    "stdout": "/tmp/101-pointer-ui-chromium-1790917174183-45829.stdout.json",
+    "stderr": "/tmp/101-pointer-ui-chromium-1790917174183-45829.stderr.json"
+  },
+  "screenshots": [],
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "stage": "explicit identity creation and reload",
+  "errorType": "AssertionError",
+  "expectedFeature": "explicit identity creation is available without silent key creation",
+  "diagnostic": [
+    {
+      "visibility": "visible",
+      "status": [
+        "Paste the offer from your phone or another source."
+      ],
+      "output": false,
+      "peers": []
+    },
+    {
+      "visibility": "visible",
+      "status": [
+        "Paste the offer from your phone or another source."
+      ],
+      "output": false,
+      "peers": []
+    }
+  ]
+}

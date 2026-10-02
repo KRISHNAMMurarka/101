@@ -1,0 +1,18 @@
+{
+  "check": "Receiver final owner confirmation after invitation expiry must reject admission",
+  "beforeAllowDisabled": true,
+  "confirmation": {
+    "wasDisabled": false,
+    "wallClockPastInvitation": true,
+    "initialRealTimeWasBeforeExpiry": true
+  },
+  "expectedAdmittedAfterExpiry": false,
+  "actualAdmittedAfterExpiry": true,
+  "pointerAfterExpiredAdmission": true,
+  "sourceSha256": {
+    "app/components/use-endpoint-identity.ts": "0fdfa5c4feda610a9263f959a8495442f8f3563b6fca2e6754e15da9897505f8",
+    "app/pointer-lab/PointerLab.tsx": "460116850d812c5a2e45290ad8313ae08b490bbc228eb428aff1bc1558b454fe",
+    "app/components/RemotePointerPanel.tsx": "ffe8e4e59b00d5518c6ad5129838ba1b359f8397617c67295b28c269805279af"
+  },
+  "version": "149.0.7827.55"
+}

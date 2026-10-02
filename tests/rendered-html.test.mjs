@@ -569,7 +569,10 @@ test('renders explicit local pointer consent and keeps typed game mapping in Stu
   const independent = await (await render('/pointer-lab')).text();
   assert.match(independent, /Pointer lab/);
   assert.match(independent, /Allow pointer for one minute/);
-  assert.match(independent, /they do not verify endpoint identity/);
+  assert.match(independent, /Loading local identity/);
+  assert.match(independent, /Create invitation/);
+  assert.match(independent, /Both owners compare the verified connection code before any resources are shared/);
+  assert.match(independent, /<button[^>]*disabled=""[^>]*>Allow pointer for one minute<\/button>/);
   assert.match(independent, /Application pointer surface/);
   const studio = await (await render('/studio')).text();
   assert.match(studio, /href="\/pointer-lab"/);

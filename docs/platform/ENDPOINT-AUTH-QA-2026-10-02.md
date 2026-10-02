@@ -57,11 +57,13 @@ Explicit receiver selection then delivers generated normalized Position and
 reliable Contact, rescales the surface and releases both routes on transport loss
 or key removal. These are generated provider values, not UI/touch/physical input.
 
-The actual `/pointer-lab`, native PointerLab and Studio input consumer still use
+At this core milestone, `/pointer-lab`, native PointerLab and Studio used
 explicit `authentication: 'local-diagnostic'`. Their existing UI behavior remains
-available, but they do not establish endpoint authentication. Plan task 6 requires
-receiver-owned scope invitation, enrollment/recovery controls and both owners'
-confirmation before replacing these exemptions. Wider resource grants, account
+available at that revision, but does not establish endpoint authentication.
+The subsequent [enrollment UI milestone](ENDPOINT-ENROLLMENT-UI-QA-2026-10-02.md)
+replaces these exemptions with receiver-owned scope invitations, explicit local
+identity controls and both owners' confirmations. Its runtime evidence covers
+actual browser UI; native screen/bridge acceptance remains open. Wider resource grants, account
 identity, coordinator/relay topology and final security validation remain open.
 
 ## Retained evidence and reproduction

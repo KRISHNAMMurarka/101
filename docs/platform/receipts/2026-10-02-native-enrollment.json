@@ -1,0 +1,74 @@
+{
+  "baseRevision": "0de40c1b5144b6e66e9ddb26c18563230d008b09",
+  "ownedSource": "apps/controller-native/src/PointerLab.tsx",
+  "sources": {
+    "apps/controller-native/src/PointerLab.tsx": "b21cd26ef6fa515d2e4e5491c37bdb5a57c1584936794ae7e6fe5b4eda6aed18",
+    "apps/controller-native/src/native-identity.ts": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18",
+    "apps/controller-native/modules/one01-identity/index.ts": "469e38b476d2122c2dae574f1de3c6a3d1306af8df816ceb0078ca4afcc58889",
+    "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+    "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+    "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+    "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e"
+  },
+  "checks": [
+    {
+      "check": "native-types",
+      "exitCode": 0,
+      "durationSeconds": 2.252,
+      "log": "docs/platform/receipts/2026-10-02-enrollment-native-types.log",
+      "logSha256": "7411480635fa73c5db73dc552a15e46ca60dee3d1d41fccd5b79967d4def92ab"
+    },
+    {
+      "check": "native-lint",
+      "exitCode": 0,
+      "durationSeconds": 3.499,
+      "log": "docs/platform/receipts/2026-10-02-enrollment-native-lint.log",
+      "logSha256": "0d19f79353e9e41dd580e117cb40fce6128f2e6e28dc4393e8a544f0455f9057"
+    },
+    {
+      "check": "affected-checks",
+      "exitCode": 0,
+      "durationSeconds": 0.285,
+      "log": "docs/platform/receipts/2026-10-02-enrollment-affected-checks.log",
+      "logSha256": "2a690b34e121bd10391bf9fe488961317c95022b44e00ae3133f6c1d256722a8"
+    },
+    {
+      "check": "native-export",
+      "exitCode": 0,
+      "durationSeconds": 10.07,
+      "log": "docs/platform/receipts/2026-10-02-enrollment-native-export.log",
+      "logSha256": "396c8a40ab2219dd224a0af20fc826fe9b3963bf3f881d75ad3c4e65b3c27286"
+    }
+  ],
+  "affectedChecksPassed": 45,
+  "nativeUiInteraction": "unverified",
+  "expoBridgeInvocation": "unverified",
+  "iosPersistedKeychain": "unverified",
+  "physicalEndpointQualification": "unverified",
+  "exportDirectory": "/tmp/101-native-pointer-ui-Mc4C5y/export",
+  "exportArtifacts": [
+    {
+      "path": "_expo/static/js/android/AppEntry-803404bd0d76a519041d8a41032bb0b0.hbc",
+      "bytes": 2195654,
+      "sha256": "5a1e854ce4e689661492c609f1552a1bf88aadb96bb64528280108f265931225"
+    },
+    {
+      "path": "_expo/static/js/ios/AppEntry-6c9088d197fc92b064fddc388cb22072.hbc",
+      "bytes": 2190114,
+      "sha256": "a10880dbe502048800fb8a3b4de31336f1e7d9d1ec858c903dddbfcd9f019c4a"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 374,
+      "sha256": "2e6d1647779db7502c12c821663bc7ebf180891167de69da2e94952631db4c4e"
+    }
+  ],
+  "scope": "Native source/type/lint/contracts and JS export only; actual native screen/Expo invocation/iOS persisted storage/physical acceptance remain unverified"
+}

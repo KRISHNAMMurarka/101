@@ -1,0 +1,16 @@
+{
+  "check": "Hiding Studio before resource approval retires enrollment",
+  "buildStamp": "5ccdcf18947f6390",
+  "expectedAfterHideState": "closed",
+  "before": {
+    "state": "connected",
+    "comparisonVisible": true
+  },
+  "after": {
+    "state": "connected",
+    "comparisonVisible": true,
+    "resourcesCanStillBeAllowed": true
+  },
+  "version": "149.0.7827.55",
+  "instrumentation": "actual document.hidden branch + visibilitychange, owned browser contexts; no input resources selected"
+}

@@ -1,56 +1,58 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
-import { resolve, relative } from 'node:path';
 import { chromium, webkit, firefox } from 'playwright';
+import { assertControlReachability, assertReloadPersistence, assertReloadUnmountClosesStore, codeValue, compareAndEnroll, createLocalIdentity, createUiEvidence,
+  exerciseEnrollmentFailures, exerciseHiddenBeforeApproval, exchangeOffer, keyboardClick, observeActualIdentityDatabases, observeActualPeers,
+  redactedDiagnostics, reviewTarget, savedKeyId, timeout } from './qa-enrollment-ui.mjs';
 const name = process.argv[2] ?? 'chromium';
 const target = new URL(process.argv[3] ?? 'http://localhost:3001/pointer-lab');
 if (!['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) || target.pathname !== '/pointer-lab') throw new Error('Use the local pointer lab');
 const browserType = { chromium, webkit, firefox }[name]; if (!browserType) throw new Error('Choose chromium, webkit or firefox');
-const root = resolve(import.meta.dirname, '..'), sourceSha256 = {};
-for (const directory of ['packages/device-model/src', 'packages/device-runtime/src', 'packages/device-web/src', 'packages/transport-webrtc/src', 'packages/connect/src', 'app/pointer-lab']) {
-  for (const file of readdirSync(resolve(root, directory))) if (/\.(?:ts|tsx|css)$/.test(file) && !file.includes('.test.')) {
-    const path = resolve(root, directory, file); sourceSha256[relative(root, path)] = createHash('sha256').update(readFileSync(path)).digest('hex');
-  }
-}
-for (const file of ['examples/device-pipelines/remote-pointer.ts', 'app/globals.css']) sourceSha256[file] = createHash('sha256').update(readFileSync(resolve(root, file))).digest('hex');
-const browser = await browserType.launch({ headless: true });
+const evidence = createUiEvidence(`pointer-ui-${name}`, target, ['tools/qa-pointer-ui.mjs']);
+let browser, stage = 'browser startup';
 const pages = [];
 try {
-  const context = await browser.newContext({ viewport: { width: 1280, height: 960 } });
-  await context.addInitScript(() => {
-    const NativePeer = window.RTCPeerConnection;
-    window.__qaPointerPeers = [];
-    window.RTCPeerConnection = class extends NativePeer {
-      constructor(configuration) { super(configuration); window.__qaPointerPeers.push(this); }
-    };
-  });
-  const source = await context.newPage(), receiver = await context.newPage();
+  browser = await browserType.launch({ headless: true });
+  const sourceContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
+  const receiverContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
+  await Promise.all([observeActualPeers(sourceContext), observeActualPeers(receiverContext), observeActualIdentityDatabases(sourceContext), observeActualIdentityDatabases(receiverContext)]);
+  const source = await sourceContext.newPage(), receiver = await receiverContext.newPage();
   pages.push(source, receiver);
-  const errors = []; for (const page of [source, receiver]) page.on('pageerror', error => errors.push(error.message));
+  const errors = []; for (const page of [source, receiver]) page.on('pageerror', error => errors.push(error.name));
   await Promise.all([source.goto(target.href), receiver.goto(target.href)]);
   await Promise.all([source.waitForLoadState('networkidle'), receiver.waitForLoadState('networkidle')]);
   const sourcePad = source.getByRole('group', { name: /^Touch pad/ });
   const receiverPad = receiver.getByRole('img', { name: 'Application pointer surface' });
   const marker = receiver.getByTestId('application-pointer');
-  const timeout = 15000;
+  stage = 'explicit identity creation and reload';
+  const sourceDatabase = '101.endpoint-identity.v1:pointer-source', receiverDatabase = '101.endpoint-identity.v1:pointer-receiver';
+  await keyboardClick(source, source.getByRole('button', { name: 'Send pointer', exact: true }));
+  const sourceKey = await createLocalIdentity(source, sourceDatabase), receiverKey = await createLocalIdentity(receiver, receiverDatabase);
+  assert.equal(sourceKey !== receiverKey, true, 'independent endpoint contexts do not share the same saved identity');
+  await assertReloadPersistence(source, sourceDatabase, sourceKey, () => keyboardClick(source, source.getByRole('button', { name: 'Send pointer', exact: true })));
+  await assertReloadPersistence(receiver, receiverDatabase, receiverKey);
+  const consentChecks = [];
+  async function noOutput() { assert.equal(await marker.count(), 0, 'there is no application pointer before owner resource permission'); }
+  stage = 'expired invitation, stale offer and wrong application recovery';
+  const selectors = { invitation: '#receiver-invitation-code', offer: '#remote-pointer-code', answer: '#local-pointer-code',
+    comparison: '#endpoint-comparison-code', status: '[role="status"]', allowLabel: 'Allow pointer for one minute', stopLabel: 'Stop' };
+  const rejectionChecks = await exerciseEnrollmentFailures(source, receiver, selectors, noOutput);
+  stage = 'visibility loss before resource approval';
+  const visibilityCheck = await exerciseHiddenBeforeApproval(source, receiver, selectors, noOutput);
   async function pair() {
-    await source.getByRole('button', { name: 'Send pointer', exact: true }).click();
+    stage = 'receiver invitation and source review';
+    await keyboardClick(source, source.getByRole('button', { name: 'Send pointer', exact: true }));
     await sourcePad.waitFor({ state: 'visible', timeout });
-    await source.getByRole('button', { name: 'Create offer', exact: true }).click();
-    await source.waitForFunction(() => !!document.querySelector('#local-pointer-code')?.value, undefined, { timeout });
-    const offer = await source.locator('#local-pointer-code').inputValue();
-    await receiver.locator('#remote-pointer-code').fill(offer);
-    await receiver.getByRole('button', { name: 'Use offer', exact: true }).click();
-    await receiver.waitForFunction(() => !!document.querySelector('#local-pointer-code')?.value, undefined, { timeout });
-    const answer = await receiver.locator('#local-pointer-code').inputValue();
-    await source.locator('#remote-pointer-code').fill(answer);
-    await source.getByRole('button', { name: 'Use answer', exact: true }).click();
+    await keyboardClick(receiver, receiver.getByRole('button', { name: 'Create invitation', exact: true }));
+    const invitation = await codeValue(receiver, '#receiver-invitation-code');
+    assert.ok(new TextEncoder().encode(invitation).length <= 2048, 'receiver invitation stays byte bounded');
+    await noOutput(); await reviewTarget(source, invitation); await noOutput();
+    stage = 'actual offer and answer exchange';
+    await exchangeOffer(source, receiver, '#remote-pointer-code', '#local-pointer-code');
     const allow = receiver.getByRole('button', { name: 'Allow pointer for one minute', exact: true });
-    await allow.waitFor({ state: 'visible', timeout });
-    await receiver.waitForFunction(() => ![...document.querySelectorAll('button')].find(button => button.textContent === 'Allow pointer for one minute')?.disabled, undefined, { timeout });
-    assert.equal(await marker.count(), 0, 'there is no output before owner selection');
-    await allow.click(); await marker.waitFor({ state: 'visible', timeout });
+    stage = 'bilateral endpoint comparison and separate resource permission';
+    await compareAndEnroll(source, receiver, '#endpoint-comparison-code', allow, noOutput);
+    consentChecks.push('reviewed local application/session', 'matching full verified screens', 'source consent alone blocked', 'separate receiver resource permission');
+    await keyboardClick(receiver, allow); await marker.waitFor({ state: 'visible', timeout });
     await source.waitForFunction(() => document.querySelector('[aria-label^="Touch pad"]')?.dataset.ready === 'true', undefined, { timeout });
   }
   async function point() {
@@ -70,7 +72,7 @@ try {
     }, { x, y, contact }, { timeout });
     return point();
   }
-  await pair(); await near(0.5, 0.5, false);
+  await pair(); stage = 'actual pointer and keyboard resource delivery'; await near(0.5, 0.5, false);
   let bounds = await sourcePad.boundingBox();
   const padPoint = (x, y) => ({ x: bounds.x + bounds.width * x, y: bounds.y + bounds.height * y });
   let anchor = padPoint(0.2, 0.3); await source.mouse.move(anchor.x, anchor.y); await source.mouse.down();
@@ -100,27 +102,49 @@ try {
   }
   const widths = await Promise.all([source, receiver].map(page => page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))));
   assert.ok(widths.every(value => value.document <= value.viewport));
-  await receiver.screenshot({ path: `/tmp/101-pointer-${name}-receiver.png` });
+  await evidence.screenshot(receiver, 'receiver-active');
   await source.getByRole('button', { name: 'Stop', exact: true }).click(); await marker.waitFor({ state: 'hidden', timeout });
   assert.equal(await receiverPad.getAttribute('data-contact'), 'false');
   await receiver.getByRole('button', { name: 'Stop', exact: true }).click();
   await pair(); const replacement = await near(0.5, 0.5, false);
   await receiver.getByRole('button', { name: 'Stop', exact: true }).click(); await marker.waitFor({ state: 'hidden', timeout });
   await source.getByRole('button', { name: 'Stop', exact: true }).click();
+  stage = 'identity removal and fresh endpoint reenrollment';
+  await pair(); await near(0.5, 0.5, false);
+  await keyboardClick(source, source.getByRole('button', { name: 'Press / release', exact: true })); await near(0.5, 0.5, true);
+  await keyboardClick(source, source.getByRole('button', { name: 'Remove saved identity', exact: true }));
+  await marker.waitFor({ state: 'hidden', timeout });
+  assert.equal(await receiverPad.getAttribute('data-contact'), 'false');
+  assert.equal(await savedKeyId(source, sourceDatabase), undefined, 'explicit deletion removes saved key and held resource authority');
+  const replacementKey = await createLocalIdentity(source, sourceDatabase);
+  assert.equal(replacementKey !== sourceKey, true, 'explicit fresh key cannot reuse old enrollment');
+  await receiver.getByRole('button', { name: 'Stop', exact: true }).click();
+  await pair(); const freshKeyReenrolled = await near(0.5, 0.5, false);
+  await Promise.all([source.setViewportSize({ width: 375, height: 812 }), receiver.setViewportSize({ width: 375, height: 812 })]);
+  await sourcePad.focus(); await source.keyboard.press('ArrowRight'); const narrowInput = await near(0.52, 0.5, false);
+  const narrowWidths = await Promise.all([source, receiver].map(page => page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))));
+  assert.ok(narrowWidths.every(value => value.document <= value.viewport), 'narrow reduced-motion screen remains usable without horizontal overflow');
+  const narrowReachability = await assertControlReachability(source, ['Left', 'Up', 'Down', 'Right', 'Press / release', 'Remove saved identity']);
+  await evidence.screenshot(source, 'source-narrow'); await evidence.screenshot(receiver, 'receiver-narrow');
+  await source.getByRole('button', { name: 'Stop', exact: true }).click(); await marker.waitFor({ state: 'hidden', timeout });
+  await receiver.getByRole('button', { name: 'Stop', exact: true }).click();
+  stage = 'replacement identity store closes on SPA unmount';
+  const storeCleanup = await Promise.all([
+    assertReloadUnmountClosesStore(source, sourceDatabase, '101 Studio', '/studio'),
+    assertReloadUnmountClosesStore(receiver, receiverDatabase, '101 Studio', '/studio'),
+  ]);
   assert.deepEqual(errors, []);
   const percentile = (values, fraction) => values.toSorted((a, b) => a - b)[Math.floor((values.length - 1) * fraction)];
-  console.log(JSON.stringify({ scope: 'Local UI real WebRTC; Playwright pointer/key events reach actual React source handlers, shared driver, approved independent sinks and DOM commit. No human/native/physical/authenticated endpoint proof. Timing is mapped JS source capture to receiver DOM commit callback, not display scanout.',
-    browser: name, version: browser.version(), sourceSha256, environment: { node: process.versions.node, playwright: '1.61.1' },
-    result: { begin, downRight, upLeft, upRight, downLeft, recontact, keyPress, keyRelease, blurRelease, resized, replacement, widths,
+  evidence.record('passed', { scope: 'Local actual DOM invitation/review, persisted endpoint keys, bilateral proof comparison and distinct resource permission over real WebRTC. Playwright pointer/key events reach the actual source handlers, driver, independent sinks and DOM commit. Timing is mapped JS capture to DOM callback; physical/native/account identity acceptance remains separate.',
+    browser: name, version: browser.version(), environment: { node: process.versions.node, playwright: '1.61.1' },
+    result: { consentChecks, rejectionChecks, visibilityCheck, storeCleanup, identityReloadPreserved: true, identityRemovalReleases: true, freshKeyReenrolled, narrowInput, narrowWidths, narrowReachability,
+      begin, downRight, upLeft, upRight, downLeft, recontact, keyPress, keyRelease, blurRelease, resized, replacement, widths,
       timing: { count: latencies.length, minP50Ms: percentile(latencies.map(value => value.minMs), 0.5), maxP50Ms: percentile(latencies.map(value => value.maxMs), 0.5),
         maxP95Ms: percentile(latencies.map(value => value.maxMs), 0.95), maxP99Ms: percentile(latencies.map(value => value.maxMs), 0.99), maxMs: Math.max(...latencies.map(value => value.maxMs)),
-        maxClockUncertaintyMs: Math.max(...latencies.map(value => value.uncertaintyMs)), samples: latencies }, errors } }, null, 2));
+        maxClockUncertaintyMs: Math.max(...latencies.map(value => value.uncertaintyMs)), samples: latencies }, errors } });
 } catch (error) {
-  console.error(JSON.stringify({ browser: name, version: browser.version(), sourceSha256, outcome: 'failed', scope: 'Local two-page pointer UI over actual WebRTC; no physical/native/authenticated identity proof.', diagnostic: await Promise.all(pages.map(page => page.evaluate(async () => ({
-    visibility: document.visibilityState, status: [...document.querySelectorAll('[role="status"]')].map(element => element.textContent),
-    output: !!document.querySelector('[data-testid="application-pointer"]'), buttons: [...document.querySelectorAll('button')].filter(button => !['Expand'].includes(button.textContent)).map(button => ({ label: button.textContent, disabled: button.disabled })),
-    peers: await Promise.all(window.__qaPointerPeers.map(async peer => ({ connectionState: peer.connectionState, iceConnectionState: peer.iceConnectionState,
-      signalingState: peer.signalingState, stats: [...(await peer.getStats()).values()].filter(stat => stat.type === 'candidate-pair' || stat.type === 'data-channel').map(stat => ({ type: stat.type, state: stat.state, nominated: stat.nominated, bytesSent: stat.bytesSent, bytesReceived: stat.bytesReceived, messagesSent: stat.messagesSent, messagesReceived: stat.messagesReceived })) }))),
-  })).catch(() => ({ closed: true })))) }, null, 2));
-  throw error;
-} finally { await browser.close(); }
+  await Promise.all(pages.map((page, index) => evidence.screenshot(page, `failed-${index}`).catch(() => {})));
+  evidence.record('failed', { browser: name, version: browser?.version(), stage, errorType: error.name,
+    expectedFeature: stage === 'explicit identity creation and reload' ? 'explicit identity creation is available without silent key creation' : undefined,
+    diagnostic: await redactedDiagnostics(pages) });
+} finally { await browser?.close(); }

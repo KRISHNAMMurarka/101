@@ -1,0 +1,713 @@
+{
+  "outcome": "passed",
+  "target": "http://127.0.0.1:3002/pointer-lab",
+  "revision": "0de40c1b5144b6e66e9ddb26c18563230d008b09",
+  "sourceSha256": {
+    "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+    "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+    "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+    "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+    "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+    "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+    "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+    "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+    "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+    "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+    "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+    "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+    "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+    "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+    "app/pointer-lab/PointerLab.tsx": "3923b554cd65b95077840db1cefd43fdb6251ba1e4f6ee2f9c7be08d7620204f",
+    "app/pointer-lab/page.tsx": "29524f4f7d7f53ab387a33b3c4188ee9330607873f97bf79af4921360693de97",
+    "app/pointer-lab/pointer-lab.module.css": "cd7a2f853da48997fa93781a4cab3604f60abe67def6add48ab5478bd60fa319",
+    "examples/device-pipelines/remote-pointer.ts": "3dad90a36cd296932decbe868abc926b2ccb78d90c8c7bb37876c821a6a0766d",
+    "app/components/use-endpoint-identity.ts": "3f45eb5f48fbdd544df1e821addb9854240dfdc5fd0b2170dc392aaefc9f2c0b",
+    "app/globals.css": "e35d02445f75a9d1b063cc451b440850cba1191d74fa3890a3f312e497095876",
+    "tools/qa-enrollment-ui.mjs": "b7fd519af7fae5ae3e1026aa6c19f5a491c25a03c2dacc2a362d750043c0a77c",
+    "tools/qa-pointer-ui.mjs": "9a0f979565626592a3c25f2d85f1a1f2668c4b68f40709dddba8c7bfd86b0a54"
+  },
+  "buildSha256": {
+    "dist/server/index.js": "ded3e9039e3e6df74256295430ea8310b3f92c3b2c6659d1afd666b697cb8c23"
+  },
+  "paths": {
+    "stdout": "/tmp/101-pointer-ui-chromium-1790918286955-25471.stdout.json",
+    "stderr": "/tmp/101-pointer-ui-chromium-1790918286955-25471.stderr.json"
+  },
+  "screenshots": [
+    "/tmp/101-pointer-ui-chromium-1790918286955-25471-receiver-active.png",
+    "/tmp/101-pointer-ui-chromium-1790918286955-25471-source-narrow.png",
+    "/tmp/101-pointer-ui-chromium-1790918286955-25471-receiver-narrow.png"
+  ],
+  "screenshotFailures": [],
+  "scope": "Local actual DOM invitation/review, persisted endpoint keys, bilateral proof comparison and distinct resource permission over real WebRTC. Playwright pointer/key events reach the actual source handlers, driver, independent sinks and DOM commit. Timing is mapped JS capture to DOM callback; physical/native/account identity acceptance remains separate.",
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "environment": {
+    "node": "24.14.0",
+    "playwright": "1.61.1"
+  },
+  "result": {
+    "consentChecks": [
+      "reviewed local application/session",
+      "matching full verified screens",
+      "source consent alone blocked",
+      "separate receiver resource permission",
+      "reviewed local application/session",
+      "matching full verified screens",
+      "source consent alone blocked",
+      "separate receiver resource permission",
+      "reviewed local application/session",
+      "matching full verified screens",
+      "source consent alone blocked",
+      "separate receiver resource permission",
+      "reviewed local application/session",
+      "matching full verified screens",
+      "source consent alone blocked",
+      "separate receiver resource permission"
+    ],
+    "rejectionChecks": [
+      "expired receiver invitation rejected before connection",
+      "stale offer rejected against receiver-owned replacement scope",
+      "reviewed wrong application cannot borrow authority from offer or answer",
+      "final owner confirmation rejects expiry between timer ticks",
+      "actual remote finish arriving after invitation expiry cannot admit resources"
+    ],
+    "visibilityCheck": {
+      "hiddenBeforeResourceApprovalRetires": true,
+      "fixture": "actual document.hidden branch and visibilitychange, no selected resources"
+    },
+    "storeCleanup": [
+      {
+        "reloadOpenStores": 1,
+        "unmountOpenStores": 0,
+        "sameDocumentNavigation": true
+      },
+      {
+        "reloadOpenStores": 1,
+        "unmountOpenStores": 0,
+        "sameDocumentNavigation": true
+      }
+    ],
+    "identityReloadPreserved": true,
+    "identityRemovalReleases": true,
+    "freshKeyReenrolled": {
+      "x": 0.5,
+      "y": 0.5,
+      "contact": false,
+      "sequence": 1,
+      "earliest": 6603.696960047674,
+      "latest": 6604.403040095377,
+      "receivedAt": 6610.900000095367,
+      "renderedAt": 6611.700000047684,
+      "uncertaintyMs": 0.35304002385146305
+    },
+    "narrowInput": {
+      "x": 0.52,
+      "y": 0.500047197640118,
+      "contact": false,
+      "sequence": 2,
+      "earliest": 6633.594540143061,
+      "latest": 6634.305460190725,
+      "receivedAt": 6635.100000143051,
+      "renderedAt": 6642.100000143051,
+      "uncertaintyMs": 0.35546002383216546
+    },
+    "narrowWidths": [
+      {
+        "viewport": 375,
+        "document": 375
+      },
+      {
+        "viewport": 375,
+        "document": 375
+      }
+    ],
+    "narrowReachability": [
+      {
+        "control": "Left",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Up",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Down",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Right",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Press / release",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Remove saved identity",
+        "inViewport": true,
+        "centerHitsControl": true
+      }
+    ],
+    "begin": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 1,
+      "earliest": 2277.295930190754,
+      "latest": 2278.104070143032,
+      "receivedAt": 2278.800000190735,
+      "renderedAt": 2313,
+      "uncertaintyMs": 0.40406997613899875
+    },
+    "downRight": {
+      "x": 0.7000000000000001,
+      "y": 0.7003299748110832,
+      "contact": true,
+      "sequence": 2,
+      "earliest": 2317.991860000014,
+      "latest": 2318.808139952302,
+      "receivedAt": 2319.300000190735,
+      "renderedAt": 2328.4000000953674,
+      "uncertaintyMs": 0.40813997614395703
+    },
+    "upLeft": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 3,
+      "earliest": 2342.789400190735,
+      "latest": 2343.610600143051,
+      "receivedAt": 2344,
+      "renderedAt": 2349.300000190735,
+      "uncertaintyMs": 0.41059997615820976
+    },
+    "upRight": {
+      "x": 0.7000000000000001,
+      "y": 0.30014105793450885,
+      "contact": true,
+      "sequence": 4,
+      "earliest": 2353.8869200953723,
+      "latest": 2354.713080047679,
+      "receivedAt": 2368.7000000476837,
+      "renderedAt": 2378.100000143051,
+      "uncertaintyMs": 0.4130799761533126
+    },
+    "downLeft": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 5,
+      "earliest": 2388.1848500476835,
+      "latest": 2389.01515,
+      "receivedAt": 2389.5,
+      "renderedAt": 2399.5,
+      "uncertaintyMs": 0.41514997615831817
+    },
+    "recontact": {
+      "x": 0.5,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 5,
+      "earliest": 2388.1848500476835,
+      "latest": 2389.01515,
+      "receivedAt": 2389.5,
+      "renderedAt": 2443.9000000953674,
+      "uncertaintyMs": 0.41514997615831817
+    },
+    "keyPress": {
+      "x": 0.52,
+      "y": 0.5002367758186398,
+      "contact": true,
+      "sequence": 7,
+      "earliest": 2463.577320143056,
+      "latest": 2464.4226800953625,
+      "receivedAt": 2464.600000143051,
+      "renderedAt": 2494.2000000476837,
+      "uncertaintyMs": 0.42267997615317654
+    },
+    "keyRelease": {
+      "x": 0.52,
+      "y": 0.5002344139650873,
+      "contact": false,
+      "sequence": 7,
+      "earliest": 2463.577320143056,
+      "latest": 2464.4226800953625,
+      "receivedAt": 2464.600000143051,
+      "renderedAt": 2510.4000000953674,
+      "uncertaintyMs": 0.42267997615317654
+    },
+    "blurRelease": {
+      "x": 0.52,
+      "y": 0.5002344139650873,
+      "contact": false,
+      "sequence": 8,
+      "earliest": 2514.1722500476835,
+      "latest": 2515.02775,
+      "receivedAt": 2515.300000190735,
+      "renderedAt": 2552.100000143051,
+      "uncertaintyMs": 0.42774997615833854
+    },
+    "resized": {
+      "x": 0.52,
+      "y": 0.5,
+      "contact": false,
+      "sequence": 8,
+      "earliest": 2514.1722500476835,
+      "latest": 2515.02775,
+      "receivedAt": 2515.300000190735,
+      "renderedAt": 2561.300000190735,
+      "uncertaintyMs": 0.42774997615833854
+    },
+    "replacement": {
+      "x": 0.5,
+      "y": 0.5,
+      "contact": false,
+      "sequence": 1,
+      "earliest": 5755.3963200953485,
+      "latest": 5755.903680095386,
+      "receivedAt": 5756.400000095367,
+      "renderedAt": 5760.200000047684,
+      "uncertaintyMs": 0.25368000001890323
+    },
+    "widths": [
+      {
+        "viewport": 1280,
+        "document": 1280
+      },
+      {
+        "viewport": 700,
+        "document": 700
+      }
+    ],
+    "timing": {
+      "count": 80,
+      "minP50Ms": 3.5542601430415743,
+      "maxP50Ms": 4.445740095377005,
+      "maxP95Ms": 10.781340286112027,
+      "maxP99Ms": 11.614009904623344,
+      "maxMs": 11.868039952301842,
+      "maxClockUncertaintyMs": 0.49982997615325075,
+      "samples": [
+        {
+          "minMs": 4.266510190749159,
+          "maxMs": 5.133490143036852,
+          "uncertaintyMs": 0.43348997614384643
+        },
+        {
+          "minMs": 9.162820047688456,
+          "maxMs": 10.03717999999526,
+          "uncertaintyMs": 0.4371799761534021
+        },
+        {
+          "minMs": 6.958540238428213,
+          "maxMs": 7.841460190725229,
+          "uncertaintyMs": 0.44145997614850785
+        },
+        {
+          "minMs": 2.4551900000096794,
+          "maxMs": 3.344809952306605,
+          "uncertaintyMs": 0.44480997614846274
+        },
+        {
+          "minMs": 1.4000000953674316,
+          "maxMs": 2.247764824152,
+          "uncertaintyMs": 0.44776475262642634
+        },
+        {
+          "minMs": 5.549529904651536,
+          "maxMs": 6.450469856929885,
+          "uncertaintyMs": 0.45046997613917483
+        },
+        {
+          "minMs": 3.200000047683716,
+          "maxMs": 4.053595359521751,
+          "uncertaintyMs": 0.45359533567989274
+        },
+        {
+          "minMs": 9.242820190739621,
+          "maxMs": 10.15718014304639,
+          "uncertaintyMs": 0.4571799761533839
+        },
+        {
+          "minMs": 5.538490143060699,
+          "maxMs": 6.46151009535788,
+          "uncertaintyMs": 0.4615099761485908
+        },
+        {
+          "minMs": 2.4000000953674316,
+          "maxMs": 3.2647765253123,
+          "uncertaintyMs": 0.46477645378672605
+        },
+        {
+          "minMs": 10.931960000014442,
+          "maxMs": 11.868039952301842,
+          "uncertaintyMs": 0.4680399761437002
+        },
+        {
+          "minMs": 0.32782009537231716,
+          "maxMs": 1.2721800476788303,
+          "uncertaintyMs": 0.4721799761532566
+        },
+        {
+          "minMs": 2.4252600000140774,
+          "maxMs": 3.374739952302207,
+          "uncertaintyMs": 0.4747399761440647
+        },
+        {
+          "minMs": 0.5219301430702217,
+          "maxMs": 1.4780700953483574,
+          "uncertaintyMs": 0.4780699761390679
+        },
+        {
+          "minMs": 5.319449856948722,
+          "maxMs": 6.280549809265267,
+          "uncertaintyMs": 0.48054997615827233
+        },
+        {
+          "minMs": 1.0158601430653107,
+          "maxMs": 1.9841400953532684,
+          "uncertaintyMs": 0.48413997614397886
+        },
+        {
+          "minMs": 3.313380095386492,
+          "maxMs": 4.286620047664655,
+          "uncertaintyMs": 0.4866199761390817
+        },
+        {
+          "minMs": 2.6102100476978194,
+          "maxMs": 3.5897899999858964,
+          "uncertaintyMs": 0.4897899761440385
+        },
+        {
+          "minMs": 7.606710047698016,
+          "maxMs": 8.5932899999857,
+          "uncertaintyMs": 0.49328997614384207
+        },
+        {
+          "minMs": 0.7027699523209776,
+          "maxMs": 1.697229904627875,
+          "uncertaintyMs": 0.49722997615344866
+        },
+        {
+          "minMs": 1.1001700476886072,
+          "maxMs": 2.0998299999951087,
+          "uncertaintyMs": 0.49982997615325075
+        },
+        {
+          "minMs": 0.6978602860926912,
+          "maxMs": 1.5021402384281828,
+          "uncertaintyMs": 0.40213997616774577
+        },
+        {
+          "minMs": 3.1952202861070873,
+          "maxMs": 4.004780238413787,
+          "uncertaintyMs": 0.4047799761533497
+        },
+        {
+          "minMs": 2.1921202861071833,
+          "maxMs": 3.0078802384136907,
+          "uncertaintyMs": 0.40787997615325366
+        },
+        {
+          "minMs": 7.988630238413862,
+          "maxMs": 8.81137019073958,
+          "uncertaintyMs": 0.41136997616285953
+        },
+        {
+          "minMs": 9.784650190734737,
+          "maxMs": 10.615350143051273,
+          "uncertaintyMs": 0.41534997615826796
+        },
+        {
+          "minMs": 1.1811100476743377,
+          "maxMs": 2.018890000009378,
+          "uncertaintyMs": 0.4188899761675202
+        },
+        {
+          "minMs": 8.377800095367547,
+          "maxMs": 9.2222000476836,
+          "uncertaintyMs": 0.4221999761580264
+        },
+        {
+          "minMs": 5.573420143055955,
+          "maxMs": 6.426580095362624,
+          "uncertaintyMs": 0.42657997615333443
+        },
+        {
+          "minMs": 7.069510143041498,
+          "maxMs": 7.930490095377081,
+          "uncertaintyMs": 0.4304899761677916
+        },
+        {
+          "minMs": 2.5661801430464948,
+          "maxMs": 3.4338200953720843,
+          "uncertaintyMs": 0.4338199761627948
+        },
+        {
+          "minMs": 8.362690333771752,
+          "maxMs": 9.237310286116553,
+          "uncertaintyMs": 0.43730997617240064
+        },
+        {
+          "minMs": 8.258660190725095,
+          "maxMs": 9.141340143060916,
+          "uncertaintyMs": 0.4413399761679102
+        },
+        {
+          "minMs": 3.5542601430415743,
+          "maxMs": 4.445740095377005,
+          "uncertaintyMs": 0.4457399761677152
+        },
+        {
+          "minMs": 2.3511803337810306,
+          "maxMs": 3.248820286107275,
+          "uncertaintyMs": 0.4488199761631222
+        },
+        {
+          "minMs": 0.7479401907203282,
+          "maxMs": 1.6520601430656825,
+          "uncertaintyMs": 0.4520599761726771
+        },
+        {
+          "minMs": 3.145300286102156,
+          "maxMs": 4.054700238418718,
+          "uncertaintyMs": 0.45469997615828106
+        },
+        {
+          "minMs": 0.6420502861024033,
+          "maxMs": 1.5579502384184707,
+          "uncertaintyMs": 0.4579499761580337
+        },
+        {
+          "minMs": 5.739440190720416,
+          "maxMs": 6.660560143065595,
+          "uncertaintyMs": 0.4605599761725898
+        },
+        {
+          "minMs": 0.6360402860877912,
+          "maxMs": 1.5639602384330828,
+          "uncertaintyMs": 0.46395997617264584
+        },
+        {
+          "minMs": 5.033340143036639,
+          "maxMs": 5.96666009538194,
+          "uncertaintyMs": 0.4666599761726502
+        },
+        {
+          "minMs": 8.629590286087932,
+          "maxMs": 9.570410238432942,
+          "uncertaintyMs": 0.4704099761725047
+        },
+        {
+          "minMs": 3.226200190734744,
+          "maxMs": 4.173800143051267,
+          "uncertaintyMs": 0.4737999761582614
+        },
+        {
+          "minMs": 7.922800238418404,
+          "maxMs": 8.877200190735039,
+          "uncertaintyMs": 0.47719997615831744
+        },
+        {
+          "minMs": 9.818660333776279,
+          "maxMs": 10.781340286112027,
+          "uncertaintyMs": 0.48133997616787383
+        },
+        {
+          "minMs": 8.51458014304626,
+          "maxMs": 9.48542009537232,
+          "uncertaintyMs": 0.4854199761630298
+        },
+        {
+          "minMs": 2.311140095353039,
+          "maxMs": 3.2888600476981082,
+          "uncertaintyMs": 0.4888599761725345
+        },
+        {
+          "minMs": 0.5079901430372047,
+          "maxMs": 1.4920100953813744,
+          "uncertaintyMs": 0.49200997617208486
+        },
+        {
+          "minMs": 6.7054601907257165,
+          "maxMs": 7.694540143060294,
+          "uncertaintyMs": 0.49453997616728884
+        },
+        {
+          "minMs": 3.0023001430508884,
+          "maxMs": 3.9977000953676907,
+          "uncertaintyMs": 0.4976999761584011
+        },
+        {
+          "minMs": 8.400000095367432,
+          "maxMs": 9.10107001162396,
+          "uncertaintyMs": 0.35107001162396045
+        },
+        {
+          "minMs": 5.295599952316479,
+          "maxMs": 6.004399761581226,
+          "uncertaintyMs": 0.35439990463237336
+        },
+        {
+          "minMs": 1.0921999046322526,
+          "maxMs": 1.8077997138980209,
+          "uncertaintyMs": 0.35779990463288414
+        },
+        {
+          "minMs": 2.3894300953861602,
+          "maxMs": 3.1105699046138398,
+          "uncertaintyMs": 0.36056990461383975
+        },
+        {
+          "minMs": 10.885990095376656,
+          "maxMs": 11.614009904623344,
+          "uncertaintyMs": 0.3640099046233445
+        },
+        {
+          "minMs": 7.181750047683636,
+          "maxMs": 7.918249856948933,
+          "uncertaintyMs": 0.3682499046326484
+        },
+        {
+          "minMs": 3.377520095372347,
+          "maxMs": 4.122479904627653,
+          "uncertaintyMs": 0.372479904627653
+        },
+        {
+          "minMs": 6.573730143069952,
+          "maxMs": 7.32626995229748,
+          "uncertaintyMs": 0.3762699046137641
+        },
+        {
+          "minMs": 2.369400095367382,
+          "maxMs": 3.130599904632618,
+          "uncertaintyMs": 0.38059990463261784
+        },
+        {
+          "minMs": 10.46600000000035,
+          "maxMs": 11.233999809264787,
+          "uncertaintyMs": 0.3839999046322191
+        },
+        {
+          "minMs": 10.162030047702501,
+          "maxMs": 10.937969856930067,
+          "uncertaintyMs": 0.387969904613783
+        },
+        {
+          "minMs": 7.357850095367212,
+          "maxMs": 8.142149904632788,
+          "uncertaintyMs": 0.3921499046327881
+        },
+        {
+          "minMs": 4.653520047688289,
+          "maxMs": 5.446479856944279,
+          "uncertaintyMs": 0.396479904627995
+        },
+        {
+          "minMs": 0.650190047693286,
+          "maxMs": 1.4498098569392823,
+          "uncertaintyMs": 0.39980990462299815
+        },
+        {
+          "minMs": 6.747760190749432,
+          "maxMs": 7.5522399999854315,
+          "uncertaintyMs": 0.40223990461799985
+        },
+        {
+          "minMs": 5.443600238418185,
+          "maxMs": 6.25640004768411,
+          "uncertaintyMs": 0.4063999046329627
+        },
+        {
+          "minMs": 3.739419952321441,
+          "maxMs": 4.560579761576264,
+          "uncertaintyMs": 0.41057990462741145
+        },
+        {
+          "minMs": 2.835830095386882,
+          "maxMs": 3.664169904613118,
+          "uncertaintyMs": 0.414169904613118
+        },
+        {
+          "minMs": 7.132900047683506,
+          "maxMs": 7.967099856949062,
+          "uncertaintyMs": 0.4170999046327779
+        },
+        {
+          "minMs": 0.928899999999885,
+          "maxMs": 1.7710998092652517,
+          "uncertaintyMs": 0.4210999046326833
+        },
+        {
+          "minMs": 0.726139952325866,
+          "maxMs": 1.573859761571839,
+          "uncertaintyMs": 0.4238599046229865
+        },
+        {
+          "minMs": 0.923200000000179,
+          "maxMs": 1.7767998092649577,
+          "uncertaintyMs": 0.42679990463238937
+        },
+        {
+          "minMs": 5.020549904632389,
+          "maxMs": 5.879449713897884,
+          "uncertaintyMs": 0.42944990463274735
+        },
+        {
+          "minMs": 5.816630095386245,
+          "maxMs": 6.683369904613755,
+          "uncertaintyMs": 0.43336990461375535
+        },
+        {
+          "minMs": 4.212500190735227,
+          "maxMs": 5.087499999999636,
+          "uncertaintyMs": 0.43749990463220456
+        },
+        {
+          "minMs": 5.808610095381482,
+          "maxMs": 6.691389904618518,
+          "uncertaintyMs": 0.4413899046185179
+        },
+        {
+          "minMs": 1.8043500953672265,
+          "maxMs": 2.6956499046327735,
+          "uncertaintyMs": 0.44564990463277354
+        },
+        {
+          "minMs": 1.200999952316124,
+          "maxMs": 2.098999761581581,
+          "uncertaintyMs": 0.44899990463272843
+        },
+        {
+          "minMs": 1.7983700953718653,
+          "maxMs": 2.7016299046281347,
+          "uncertaintyMs": 0.4516299046281347
+        },
+        {
+          "minMs": 1.095190047692995,
+          "maxMs": 2.0048098569395734,
+          "uncertaintyMs": 0.4548099046232892
+        }
+      ]
+    },
+    "errors": []
+  }
+}

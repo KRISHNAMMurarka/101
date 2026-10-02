@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 7,
+  "revision": 8,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6027,6 +6027,43 @@
         "Physical signed iPhone/Android, successful native storage/Expo invocation and lock-state checks remain required"
       ],
       "supportRows": []
+    },
+    {
+      "id": "endpoint-enrollment-ui-2026-10-02",
+      "revision": "containing commit; exact consumed source and built server hashes in linked receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "T04",
+        "S02",
+        "S03",
+        "S04",
+        "T07",
+        "T09",
+        "N01"
+      ],
+      "paths": [
+        "docs/platform/ENDPOINT-ENROLLMENT-UI-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-enrollment-pointer-chromium.json",
+        "docs/platform/receipts/2026-10-02-enrollment-studio-chromium.json",
+        "docs/platform/receipts/2026-10-02-native-enrollment.json",
+        "docs/platform/receipts/2026-10-02-enrollment-expiry-red.json",
+        "docs/platform/receipts/2026-10-02-enrollment-store-red.json",
+        "docs/platform/receipts/2026-10-02-enrollment-hidden-red.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2; Playwright1.61.1 Chromium149.0.7827.55; native source/types/contracts/Hermes export only",
+      "reproduction": "Repository exact candidate gates; node tools/qa-pointer-ui.mjs chromium <owned local pointer-lab URL>; node tools/qa-game-pointer-ui.mjs <owned local URL>; npm run native:typecheck; npm run native:export",
+      "scope": "Actual DOM receiver-owned invitation, explicit reviewed source scope, persistent identity controls, bilateral full-code consent, separate resource permission and real pointer/key mapping over WebRTC; expiry/visibility/store cleanup RED to GREEN. Native caller implementation/export only. No master row or support acceptance promoted.",
+      "failure": "Firefox raw lanes and WebKit ICE failures retained from core; actual native UI/Expo identity invocation, iOS persisted Keychain and physical qualification remain unverified",
+      "equipment": [
+        "Configured Xcode signing account/profiles and attached physical Android/iPhone remain required"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -6383,7 +6420,8 @@
       "records": [
         "pending-T04",
         "resource-binding-2026-10-02",
-        "endpoint-auth-core-2026-10-02"
+        "endpoint-auth-core-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6440,7 +6478,8 @@
         "pointer-ui-webkit-failed-2026-10-02",
         "pointer-native-partial-2026-10-02",
         "pointer-native-touch-unqualified-2026-10-02",
-        "native-source-2026-10-02"
+        "native-source-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6478,7 +6517,8 @@
       "records": [
         "pending-T09",
         "pointer-provider-2026-10-02",
-        "game-pointer-chromium-2026-10-02"
+        "game-pointer-chromium-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6706,7 +6746,8 @@
       "id": "S02",
       "records": [
         "pending-S02",
-        "endpoint-auth-core-2026-10-02"
+        "endpoint-auth-core-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6721,7 +6762,8 @@
       "id": "S03",
       "records": [
         "pending-S03",
-        "endpoint-auth-core-2026-10-02"
+        "endpoint-auth-core-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6736,7 +6778,8 @@
       "id": "S04",
       "records": [
         "pending-S04",
-        "endpoint-auth-core-2026-10-02"
+        "endpoint-auth-core-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -6934,7 +6977,8 @@
       "id": "N01",
       "records": [
         "pending-N01",
-        "endpoint-auth-core-2026-10-02"
+        "endpoint-auth-core-2026-10-02",
+        "endpoint-enrollment-ui-2026-10-02"
       ],
       "dependencies": [
         "C01",

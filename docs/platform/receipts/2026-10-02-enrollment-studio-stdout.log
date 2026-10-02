@@ -1,0 +1,163 @@
+{
+  "outcome": "passed",
+  "target": "http://127.0.0.1:3002/",
+  "revision": "0de40c1b5144b6e66e9ddb26c18563230d008b09",
+  "sourceSha256": {
+    "packages/device-model/src/descriptor-schema.ts": "faa875a7ec937d1da4ec7b2f4238c3c48da33b5f2856c21fa326cd695d587529",
+    "packages/device-model/src/descriptor.ts": "034f4cbb64c58a5aa37b4d9345c2f513e5d64a24704134de6cc96c68dc7d2d54",
+    "packages/device-model/src/index.ts": "8e2a3cc941226b7c3bd8525376d086d571a0dfdaf63d2768c5524493cf86958c",
+    "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+    "packages/device-model/src/sample.ts": "f01926e3822578f428f0a862f9e672b74009c37e118c7b02f7b6a1a37ede90e8",
+    "packages/device-runtime/src/index.ts": "ef884fca8e63573aab05e6f351d3eb57bb3e54e41840a4fb247de1f271196abe",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+    "packages/device-runtime/src/scheduler.ts": "6e90ccdc542ffbc0746ffea3ed73403cce77b4c98bf8012902e2eab6fa969e13",
+    "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+    "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+    "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+    "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+    "packages/device-web/src/wire.ts": "145501b293eb2d7f5943aafd6b5dfc2f4cc724dcab516bc1b71e73bbe1d8a2a3",
+    "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+    "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+    "app/pointer-lab/PointerLab.tsx": "3923b554cd65b95077840db1cefd43fdb6251ba1e4f6ee2f9c7be08d7620204f",
+    "app/pointer-lab/page.tsx": "29524f4f7d7f53ab387a33b3c4188ee9330607873f97bf79af4921360693de97",
+    "app/pointer-lab/pointer-lab.module.css": "cd7a2f853da48997fa93781a4cab3604f60abe67def6add48ab5478bd60fa319",
+    "examples/device-pipelines/remote-pointer.ts": "3dad90a36cd296932decbe868abc926b2ccb78d90c8c7bb37876c821a6a0766d",
+    "app/components/use-endpoint-identity.ts": "3f45eb5f48fbdd544df1e821addb9854240dfdc5fd0b2170dc392aaefc9f2c0b",
+    "app/globals.css": "e35d02445f75a9d1b063cc451b440850cba1191d74fa3890a3f312e497095876",
+    "tools/qa-enrollment-ui.mjs": "b7fd519af7fae5ae3e1026aa6c19f5a491c25a03c2dacc2a362d750043c0a77c",
+    "examples/device-pipelines/game-pointer-bridge.ts": "dddb78a834e1be5f6ca73c218efc8effb501844b69e70adf1ea02d863abdb5ff",
+    "app/components/InputLab.tsx": "92e210240ff95454d6ae29183762b115d0b4a3481e90a28f83209552b4b86faa",
+    "app/components/RemotePointerPanel.tsx": "26a9d8b2cbe8b4b9452967a9cecb76d0f38fd39cb52c0e7c207e94a13f163bc9",
+    "tools/qa-game-pointer-ui.mjs": "086adaee868fb5f760913622056c4f04d7bfd038d4892d3a9655c73987796673"
+  },
+  "buildSha256": {
+    "dist/server/index.js": "ded3e9039e3e6df74256295430ea8310b3f92c3b2c6659d1afd666b697cb8c23"
+  },
+  "paths": {
+    "stdout": "/tmp/101-game-pointer-ui-chromium-1790918286947-25483.stdout.json",
+    "stderr": "/tmp/101-game-pointer-ui-chromium-1790918286947-25483.stderr.json"
+  },
+  "screenshots": [
+    "/tmp/101-game-pointer-ui-chromium-1790918286947-25483-studio-narrow.png",
+    "/tmp/101-game-pointer-ui-chromium-1790918286947-25483-source-narrow.png"
+  ],
+  "screenshotFailures": [],
+  "scope": "Actual Studio DOM invitation and local source review, persisted endpoint keys, bilateral comparison consent and separate aim/trigger mapping permission over real browser WebRTC. Source pointer/key events feed original canvas renderer; arc instrumentation observes rendering without simulated bus frames. Native, physical and account acceptance remains separate.",
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "result": {
+    "rejectionChecks": [
+      "expired receiver invitation rejected before connection",
+      "stale offer rejected against receiver-owned replacement scope",
+      "reviewed wrong application cannot borrow authority from offer or answer",
+      "final owner confirmation rejects expiry between timer ticks",
+      "actual remote finish arriving after invitation expiry cannot admit resources"
+    ],
+    "visibilityCheck": {
+      "hiddenBeforeResourceApprovalRetires": true,
+      "fixture": "actual document.hidden branch and visibilitychange, no selected resources"
+    },
+    "storeCleanup": [
+      {
+        "reloadOpenStores": 1,
+        "unmountOpenStores": 0,
+        "sameDocumentNavigation": true
+      },
+      {
+        "reloadOpenStores": 1,
+        "unmountOpenStores": 0,
+        "sameDocumentNavigation": true
+      }
+    ],
+    "identityReloadPreserved": true,
+    "sourceOnlyEnrollmentBlocked": true,
+    "separateGamePermission": true,
+    "centered": {
+      "x": 0.4998842592592593,
+      "y": 0.5
+    },
+    "contactBegin": {
+      "x": 0.4998842592592593,
+      "y": 0.5
+    },
+    "diagonal": {
+      "x": 0.6998379510447935,
+      "y": 0.30000001192092896
+    },
+    "keyboardAim": {
+      "x": 0.6798425997434943,
+      "y": 0.30000001192092896
+    },
+    "released": {
+      "x": 0.4998842592592593,
+      "y": 0.5
+    },
+    "deletionNeutral": {
+      "x": 0.4998842592592593,
+      "y": 0.5
+    },
+    "freshKeyReenrolled": {
+      "x": 0.4998842592592593,
+      "y": 0.5
+    },
+    "narrowKeyboardAim": {
+      "x": 0.5199999809265137,
+      "y": 0.5
+    },
+    "widths": [
+      {
+        "viewport": 375,
+        "document": 375
+      },
+      {
+        "viewport": 375,
+        "document": 375
+      }
+    ],
+    "narrowReachability": [
+      {
+        "control": "Left",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Up",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Down",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Right",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Press / release",
+        "inViewport": true,
+        "centerHitsControl": true
+      },
+      {
+        "control": "Remove saved identity",
+        "inViewport": true,
+        "centerHitsControl": true
+      }
+    ],
+    "heldPositionDoesNotRetrigger": true,
+    "errors": []
+  }
+}

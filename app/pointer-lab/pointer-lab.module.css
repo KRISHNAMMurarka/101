@@ -20,4 +20,9 @@
 .pairing p { margin-bottom: var(--space-sm); }
 .pairing label { display: block; margin: var(--space-sm) 0 var(--space-xs); }
 .pairing textarea { width: 100%; min-height: 110px; max-height: 220px; border: 1px solid var(--line-strong); border-radius: var(--radius-control); padding: var(--space-xs); color: var(--paper); background: var(--panel); font: inherit; resize: vertical; margin-bottom: var(--space-xs); }
+.identity, .comparison { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin: var(--space-sm) 0; }
+.identity p, .comparison p { flex-basis: 100%; max-width: 64ch; }
+.comparison label { flex-basis: 100%; font-weight: 650; }
+.comparison textarea { width: 100%; min-width: 0; padding: var(--space-xs); color: var(--paper); background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius-control); font-family: monospace; overflow-wrap: anywhere; resize: vertical; }
+.target { overflow-wrap: anywhere; margin: var(--space-sm) 0; }
 @media (max-width: 600px) { .lab { padding: var(--space-sm); } .header { margin-bottom: var(--space-md); } .roles button { flex: 1; } }

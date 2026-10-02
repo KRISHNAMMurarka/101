@@ -1,0 +1,39 @@
+Expo Autolinking module resolution enabled
+Starting Metro Bundler
+
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:69221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+iOS Bundled 6562ms node_modules/expo/AppEntry.js (718 modules)
+Android Bundled 8562ms node_modules/expo/AppEntry.js (719 modules)
+
+› Assets (1):
+assets/private-cue.wav (7.1KB)
+
+› ios bundles (1):
+_expo/static/js/ios/AppEntry-6c9088d197fc92b064fddc388cb22072.hbc (2.2MB)
+
+› android bundles (1):
+_expo/static/js/android/AppEntry-803404bd0d76a519041d8a41032bb0b0.hbc (2.2MB)
+
+› Files (1):
+metadata.json (374B)
+
+Exported: /tmp/101-native-pointer-ui-Mc4C5y/export
