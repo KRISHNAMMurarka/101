@@ -31,7 +31,8 @@ export interface RemotePublisherOptions extends CommonOptions {
   device: unknown; available: (capability: string) => boolean;
 }
 function structured(capability: DeviceCapability): boolean {
-  return ['record', 'array', 'quaternion', 'pose', 'joints', 'transform'].includes(capability.value.type);
+  return ['record', 'array', 'quaternion', 'pose', 'joints', 'transform',
+    'contact', 'pen', 'key', 'text', 'wheel', 'relative-motion'].includes(capability.value.type);
 }
 function codecsFor(device: Readonly<DeviceDescriptor>): readonly WireCodec[] {
   return Object.freeze(['json/1', ...(device.capabilities.some(structured) ? ['json/2'] : []),

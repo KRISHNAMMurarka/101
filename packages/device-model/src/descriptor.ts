@@ -20,7 +20,13 @@ export type ValueSchema =
   | { type: 'quaternion'; frame: SpatialFrame }
   | { type: 'pose'; frame: SpatialFrame; extent: number }
   | { type: 'joints'; frame: SpatialFrame; extent: number; joints: readonly SpatialJoint[]; optional?: readonly string[] }
-  | { type: 'transform'; from: SpatialFrame; to: SpatialFrame; maxTranslation: number };
+  | { type: 'transform'; from: SpatialFrame; to: SpatialFrame; maxTranslation: number }
+  | { type: 'contact'; frame: string }
+  | { type: 'pen'; frame: string }
+  | { type: 'key' }
+  | { type: 'text'; maxLength: number }
+  | { type: 'wheel'; maxDelta: number }
+  | { type: 'relative-motion'; frame: string; maxDelta: number };
 export type DeliveryPolicy = { mode: 'latest'; maxHz: number; maxAgeMs: number }
   | { mode: 'reliable'; maxAgeMs: number };
 export type PermissionOperation = 'read' | 'subscribe' | 'write' | 'invoke';
@@ -252,6 +258,13 @@ function usesSpatial(schema: ValueSchema): boolean {
   return schema.type === 'quaternion' || schema.type === 'pose' || schema.type === 'joints' || schema.type === 'transform';
 }
 
+function usesRichInput(schema: ValueSchema): boolean {
+  if (schema.type === 'record') return Object.values(schema.fields).some(usesRichInput);
+  if (schema.type === 'array') return usesRichInput(schema.items);
+  return schema.type === 'contact' || schema.type === 'pen' || schema.type === 'key' ||
+    schema.type === 'text' || schema.type === 'wheel' || schema.type === 'relative-motion';
+}
+
 /** A bounded immutable value definition, including recursive record and array members. */
 export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema {
   const snapshot = copyJson(input, MAX_SCHEMA_JSON_DEPTH);
@@ -323,6 +336,24 @@ export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema 
       return Object.freeze({ type: 'transform', from: parseSpatialFrame(value.from, `${path}.from`),
         to: parseSpatialFrame(value.to, `${path}.to`), maxTranslation: positiveSpatial(value.maxTranslation, `${path}.maxTranslation`) });
     }
+    if (value.type === 'contact' || value.type === 'pen') {
+      closed(value, ['type', 'frame'], [], path);
+      return Object.freeze({ type: value.type, frame: text(value.frame, `${path}.frame`) });
+    }
+    if (value.type === 'key') {
+      closed(value, ['type'], [], path);
+      return Object.freeze({ type: 'key' });
+    }
+    if (value.type === 'text') {
+      closed(value, ['type', 'maxLength'], [], path);
+      return Object.freeze({ type: 'text', maxLength: integer(value.maxLength, `${path}.maxLength`, 2048) });
+    }
+    if (value.type === 'wheel' || value.type === 'relative-motion') {
+      closed(value, value.type === 'wheel' ? ['type', 'maxDelta'] : ['type', 'frame', 'maxDelta'], [], path);
+      const maxDelta = positiveSpatial(value.maxDelta, `${path}.maxDelta`);
+      if (value.type === 'wheel') return Object.freeze({ type: 'wheel', maxDelta });
+      return Object.freeze({ type: 'relative-motion', frame: text(value.frame, `${path}.frame`), maxDelta });
+    }
     if (value.type !== 'scalar' && value.type !== 'vector') fail('value-type', `${path}.type`);
     const vector = value.type === 'vector';
     closed(value, vector ? ['type', 'unit', 'min', 'max', 'frame', 'components'] : ['type', 'unit', 'min', 'max'], vector ? ['resolution'] : ['frame', 'resolution'], path);
@@ -384,10 +415,14 @@ function parseCapability(input: unknown, path: string): DeviceCapability {
   const schemaVersion = integer(capability.schemaVersion, `${path}.schemaVersion`, 4294967295);
   const value = parseValueSchema(capability.value, `${path}.value`);
   if (schemaVersion < 2 && usesSpatial(value)) fail('spatial-schema-version', `${path}.schemaVersion`);
+  const richInput = usesRichInput(value);
+  if (schemaVersion < 2 && richInput) fail('input-schema-version', `${path}.schemaVersion`);
+  const delivery = parseDelivery(capability.delivery, `${path}.delivery`);
+  if (richInput && (kind !== 'event' || delivery.mode !== 'reliable')) fail('input-event-delivery', path);
   return Object.freeze({
     id: text(capability.id, `${path}.id`), semantic: text(capability.semantic, `${path}.semantic`, 128, true),
     schemaVersion, kind,
-    value, delivery: parseDelivery(capability.delivery, `${path}.delivery`),
+    value, delivery,
     permissions: Object.freeze(permissions) as readonly PermissionOperation[],
     ...(Object.hasOwn(capability, 'ownership') ? { ownership: parseOwnership(capability.ownership, `${path}.ownership`) } : {}),
     ...(Object.hasOwn(capability, 'metadata') ? { metadata: parseMetadata(capability.metadata, `${path}.metadata`) } : {}),

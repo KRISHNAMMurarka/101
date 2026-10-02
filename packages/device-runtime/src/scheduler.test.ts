@@ -47,3 +47,28 @@ test("operation evidence never regresses and bounded history expires", () => {
   assert.equal(queue.records().length, 0);
   assert.equal(queue.admit("2", 1200, false, 1101).ok, true);
 });
+
+test("settled evidence yields capacity to new events without allowing replay", () => {
+  const queue = new OperationQueue<string>(2);
+  assert.equal(queue.admit("1", 1000, "first", 0).ok, true);
+  assert.equal(queue.next(0)?.value, "first");
+  queue.settle("1", "observed");
+  assert.equal(queue.admit("2", 1000, "second", 1).ok, true);
+  assert.equal(queue.next(1)?.value, "second");
+  queue.settle("2", "observed");
+  assert.equal(queue.pending, 0);
+  assert.equal(queue.admit("3", 1000, "third", 2).ok, true);
+  assert.deepEqual(queue.records().map(record => record.id), ["2", "3"]);
+  assert.deepEqual(queue.admit("1", 1000, "replay", 2), { ok: false, reason: "stale-operation" });
+});
+
+test("pinned evidence cannot be retired to admit another event", () => {
+  const queue = new OperationQueue<string>(1);
+  assert.equal(queue.admit("1", 1000, "first", 0).ok, true);
+  queue.next(0);
+  queue.pin("1");
+  queue.settle("1", "observed");
+  assert.deepEqual(queue.admit("2", 1000, "second", 1), { ok: false, reason: "capacity" });
+  queue.unpin("1", 1);
+  assert.equal(queue.admit("2", 1000, "second", 1).ok, true);
+});

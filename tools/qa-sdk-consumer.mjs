@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'rich-input', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|rich-input|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -169,6 +169,7 @@ import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/con
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import { createSpatialJointPipeline, runSpatialJointExample } from '@101/connect/examples/spatial-joints';
+import { createRichInputPipeline, runRichInputExample } from '@101/connect/examples/rich-input';
 import modelSchema from '@101/device-model/schema/device-descriptor.json' with { type: 'json' };
 import facadeSchema from '@101/connect/schema/device-descriptor.json' with { type: 'json' };
 // @ts-expect-error Private source paths are not part of the external API.
@@ -202,6 +203,9 @@ const spatialConversion: SpatialPoseConverter = createSpatialPoseConverter({ typ
 const spatial = createSpatialJointPipeline({ now: () => 1000 });
 spatial.runtime.close();
 void [runSpatialJointExample().publication, spatialConversion.metadata.unitScale];
+const richInput = createRichInputPipeline({ now: () => 1000 });
+richInput.runtime.close();
+void runRichInputExample().events;
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -232,6 +236,7 @@ import { runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback'
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import { runSpatialJointExample } from '@101/connect/examples/spatial-joints';
+import { runRichInputExample } from '@101/connect/examples/rich-input';
 `;
 
 const runtimeChecks = String.raw`
@@ -252,6 +257,8 @@ export async function checkRuntime() {
   check(incompatibleRejected, 'Packed incompatible dimensions were converted');
   const spatial = runSpatialJointExample();
   check(spatial.publication && spatial.joints.wrist.position.x === -100 && spatial.joints.index.position.x === -120 && spatial.provenance?.conversion?.mirrored === true, 'Packed spatial conversion example failed');
+  const richInput = runRichInputExample();
+  check(richInput.events === 12 && richInput.overflow === 0 && richInput.phases[6] === 'end' && richInput.phases[7] === 'commit' && richInput.wheelDeltas.join(',') === '-120,-80', 'Packed rich input event example failed');
   const pointer = runPointerExample();
   check(pointer.kind === 'embedded-simulation' && pointer.position.x === 200 && pointer.position.y === 400 && pointer.competing.ok === false && pointer.competing.reason === 'busy' && pointer.nextOwner.ok === true && pointer.released === 1, 'Packed pointer example behavior failed');
   const feedback = runSensorFeedbackExample(), unverified = runSensorFeedbackExample({ feedback: false });
@@ -287,7 +294,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, explicitSpatialConversion: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, explicitSpatialConversion: true, richInputEvents: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 
@@ -319,7 +326,7 @@ const print = console.log;
 let entryResult;
 try { console.log = value => { entryResult = JSON.parse(value); }; await import('@101/connect/examples/run'); }
 finally { console.log = print; }
-check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100, 'Packed examples/run entry failed');
+check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.richInput?.events === 12, 'Packed examples/run entry failed');
 console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 15, packedRunEntry: true }));
 `;
   const path = join(work, 'runtime-check.mjs');

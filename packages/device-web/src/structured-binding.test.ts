@@ -26,11 +26,13 @@ class Peer {
 
 function harness(reliable = false, schema?: ValueSchema) {
   let now = 1000, released = 0;
+  const rich = schema && ['contact', 'pen', 'key', 'text', 'wheel', 'relative-motion'].includes(schema.type);
   const epoch = 'b'.repeat(32), sourceDevice = telemetryBatchDescriptor(2), sinkDevice = telemetryBatchDescriptor(2, true);
   const source = { ...sourceDevice, capabilities: sourceDevice.capabilities.map(capability => ({ ...capability,
     value: schema ?? capability.value, ...(reliable ? { kind: 'event' as const, delivery: { mode: 'reliable' as const, maxAgeMs: 1000 } } : {}) })) };
   const sinkDescription = { ...sinkDevice, capabilities: sinkDevice.capabilities.map(capability => ({ ...capability,
-    value: schema ?? capability.value, ...(reliable ? { delivery: { mode: 'reliable' as const, maxAgeMs: 1000 } } : {}) })) };
+    value: schema ?? capability.value, ...(rich ? { kind: 'event' as const } : {}),
+    ...(reliable ? { delivery: { mode: 'reliable' as const, maxAgeMs: 1000 } } : {}) })) };
   const received: Observation[] = [], host = new Peer(), remote = new Peer(); host.other = remote; remote.other = host;
   const runtime = createDeviceRuntime({ now: () => now, clockDomain: 'host-clock', authorize(request) {
     if (request.principalId !== 'fixture-owner' || request.applicationId !== 'fixture-app' || request.sessionId !== 'fixture-session' ||
@@ -89,6 +91,27 @@ test('spatial pose values negotiate json/2 and reject json/1 without relaxing th
     const frame = h.remote.sent.find(entry => decodePacket(entry.data, entry.lane)?.codec === 'json/2');
     assert.ok(frame);
     assert.equal(decodePacket(frame.data, frame.lane)?.packet.version, 2);
+  } finally { h.close(); }
+});
+
+test('key edges use the reliable json/2 event lane without latest-sample replacement', () => {
+  const h = harness(true, { type: 'key' });
+  try {
+    const description = decodePacket(h.remote.sent[0].data, 'reliable')?.packet;
+    assert.ok(description?.type === 'describe');
+    assert.deepEqual(description.codecs, ['json/1', 'json/2']);
+    assert.equal(h.approve('json/1'), undefined);
+    assert.equal(h.approve('json/2'), 1);
+    const modifiers = { shift: false, control: false, alt: false, meta: false };
+    const down = { code: 'KeyA', key: 'a', phase: 'down', repeat: false, location: 0, composing: false, modifiers };
+    const up = { ...down, phase: 'up' };
+    assert.equal(h.publisher.publish('readings', down), true); h.receiver.tick();
+    h.setTime(1002);
+    assert.equal(h.publisher.publish('readings', up), true); h.receiver.tick();
+    assert.deepEqual(h.received.map(observation => observation.value), [down, up]);
+    const frames = h.remote.sent.filter(entry => decodePacket(entry.data, entry.lane)?.codec === 'json/2');
+    assert.equal(frames.length, 2);
+    assert.ok(frames.every(frame => frame.lane === 'reliable'));
   } finally { h.close(); }
 });
 

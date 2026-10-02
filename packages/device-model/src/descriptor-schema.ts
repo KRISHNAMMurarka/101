@@ -33,7 +33,7 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
     jsonMaxEntriesPerContainer: 128,
     valueSchemaMaxDepth: 4,
     valueSchemaMaxNodes: 256,
-    rules: ['finite numeric values', 'min must be no greater than max', 'array minItems must be no greater than maxItems', 'record optional members must be declared fields', 'spatial values require capability schemaVersion >= 2 recursively', 'spatial axes must be orthogonal and match declared handedness', 'joint names, parents and optional members must be declared, unique and acyclic', 'quaternion squared norm must be within 0.002 of 1', 'transform mirror parity must match frame handedness', 'value schema depth and total node limits apply recursively', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
+    rules: ['finite numeric values', 'min must be no greater than max', 'array minItems must be no greater than maxItems', 'record optional members must be declared fields', 'spatial values require capability schemaVersion >= 2 recursively', 'rich input values require capability schemaVersion >= 2, event kind and reliable delivery recursively', 'spatial axes must be orthogonal and match declared handedness', 'joint names, parents and optional members must be declared, unique and acyclic', 'quaternion squared norm must be within 0.002 of 1', 'transform mirror parity must match frame handedness', 'value schema depth and total node limits apply recursively', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
   },
   ...closed({
     schemaVersion: { const: 1 }, id: identifier,
@@ -71,6 +71,12 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
       }, ['type', 'frame', 'extent', 'joints']),
       closed({ type: { const: 'transform' }, from: spatialFrame, to: spatialFrame, maxTranslation: positiveSpatial },
         ['type', 'from', 'to', 'maxTranslation']),
+      closed({ type: { const: 'contact' }, frame: identifier }, ['type', 'frame']),
+      closed({ type: { const: 'pen' }, frame: identifier }, ['type', 'frame']),
+      closed({ type: { const: 'key' } }, ['type']),
+      closed({ type: { const: 'text' }, maxLength: { type: 'integer', minimum: 1, maximum: 2048 } }, ['type', 'maxLength']),
+      closed({ type: { const: 'wheel' }, maxDelta: positiveSpatial }, ['type', 'maxDelta']),
+      closed({ type: { const: 'relative-motion' }, frame: identifier, maxDelta: positiveSpatial }, ['type', 'frame', 'maxDelta']),
     ] },
     record: closed({
       type: { const: 'record' },

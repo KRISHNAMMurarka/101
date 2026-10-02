@@ -16,6 +16,7 @@
       "array minItems must be no greater than maxItems",
       "record optional members must be declared fields",
       "spatial values require capability schemaVersion >= 2 recursively",
+      "rich input values require capability schemaVersion >= 2, event kind and reliable delivery recursively",
       "spatial axes must be orthogonal and match declared handedness",
       "joint names, parents and optional members must be declared, unique and acyclic",
       "quaternion squared norm must be within 0.002 of 1",
@@ -482,6 +483,115 @@
               "$ref": "#/definitions/spatialFrame"
             },
             "maxTranslation": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "frame"
+          ],
+          "properties": {
+            "type": {
+              "const": "contact"
+            },
+            "frame": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "frame"
+          ],
+          "properties": {
+            "type": {
+              "const": "pen"
+            },
+            "frame": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "const": "key"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "maxLength"
+          ],
+          "properties": {
+            "type": {
+              "const": "text"
+            },
+            "maxLength": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2048
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "maxDelta"
+          ],
+          "properties": {
+            "type": {
+              "const": "wheel"
+            },
+            "maxDelta": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "frame",
+            "maxDelta"
+          ],
+          "properties": {
+            "type": {
+              "const": "relative-motion"
+            },
+            "frame": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+            },
+            "maxDelta": {
               "type": "number",
               "exclusiveMinimum": 0
             }

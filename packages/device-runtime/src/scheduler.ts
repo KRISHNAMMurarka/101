@@ -48,7 +48,17 @@ export class OperationQueue<T> {
     if (!Number.isFinite(deadline) || deadline <= now) return failure("expired");
     if (this.entries.has(id)) return failure("duplicate-operation");
     if (number <= this.watermark) return failure("stale-operation");
-    if (this.entries.size >= this.capacity) return failure("capacity");
+    if (this.entries.size >= this.capacity) {
+      // Settled, unpinned records are diagnostic history, not queued work.
+      // The monotonic watermark still rejects replay after a record is retired.
+      for (const [previousId, entry] of this.entries) {
+        if (entry.settled && !entry.pinned) {
+          this.entries.delete(previousId);
+          break;
+        }
+      }
+      if (this.entries.size >= this.capacity) return failure("capacity");
+    }
     this.watermark = number;
     this.entries.set(id, { id, deadline, value, state: "accepted", settled: false, pinned: false, retainUntil: deadline + 1000 });
     return success();

@@ -153,6 +153,20 @@ validates watch-style joint poses, converts them before an authorized embedded
 publication, and preserves conversion provenance. Physical watch qualification
 is separate.
 
+Version 2 rich input values declare normalized contact and pen transitions,
+physical/logical key edges, IME text phases, wheel deltas with an explicit
+pixel/line/page mode, and relative CSS-pixel motion. They require an event
+capability with reliable delivery, even inside bounded records or arrays.
+`json/2` carries these events in order; a latest sample cannot replace a
+down/up pair or accumulate deltas. A key label never becomes text, and an IME
+`end` never becomes a `commit` automatically. All values are closed, bounded
+immutable snapshots; resource permission remains a separate host decision.
+The [embedded rich-input example](../../examples/device-pipelines/rich-input.ts)
+uses six separately authorized routes and DOM-shaped simulated events. Actual
+browser/native input provider availability and physical behavior are not
+established by these fixtures. A continuing example caller invokes `renew()`
+before its ten-second route lease expires and owns the `flush()` cadence.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp
@@ -234,8 +248,10 @@ calls `flush()` and renewal. A provider awaiting work must check `context.isCurr
 `context.signal.aborted` again before applying output.
 
 Cancelled providers remain inside the global workload budget until their promises settle.
-Unresolved operations pin bounded history; after settlement, records remain until at least
-1000 ms after completion and their original deadline. Historical evidence may change without
+Unresolved operations pin bounded history. Settled records normally remain until
+1000 ms after completion and their original deadline, but the oldest unpinned
+record can be retired earlier when a new operation needs queue capacity.
+Monotonic operation IDs still reject replay. Historical evidence may change without
 reopening authority. A hanging provider can exhaust the budget; pending work then waits or
 expires. Cancellation cannot undo an effect that has already occurred.
 

@@ -11,7 +11,8 @@ For an external consumer, build the current SDK with `npm run build:sdk -- HEAD`
 install all five produced tarballs in a separate directory using offline npm,
 and run `node node_modules/@101/connect/examples/run.js`. The facade exports
 `@101/connect/examples/pointer`, `/examples/sensor-feedback`,
-`/examples/threshold`, `/examples/telemetry-batch` and `/examples/spatial-joints`
+`/examples/threshold`, `/examples/telemetry-batch`, `/examples/spatial-joints`
+and `/examples/rich-input`
 as compiled ESM with declarations. The packed examples also
 include readable source. No workspace link, type stripping or game dependency is
 needed for the compiled examples. See [distribution evidence](../../docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md)
@@ -112,6 +113,17 @@ raw hierarchy, publishes only the converted schema on an authorized embedded
 route, and retains source-frame and conversion provenance. `runSpatialJointExample()`
 returns a deterministic fixture. It does not measure a physical watch or
 establish real-world transform calibration.
+
+## Rich input event routes
+
+`rich-input.ts` declares separate contact, pen, key, text/IME, wheel and
+relative-motion event capabilities. Each source/sink pair requires its own
+host authorization and reliable delivery. The deterministic simulated
+sequence retains down/up edges, separate IME end/commit and consecutive wheel
+and relative deltas in an ordered bounded log. `runRichInputExample()`
+returns the fixture summary. A continuing `createRichInputPipeline()` caller
+invokes `renew()` before the ten-second lease expires and flushes after
+publishing. The fixtures do not claim actual browser or native input.
 
 ## Local peer resource example
 

@@ -70,6 +70,93 @@ function canonicalPosition(value: JsonValue): JsonValue {
   return { x: point.x, y: point.y, z: point.z };
 }
 
+function inputObject(value: JsonValue, fields: readonly string[], path: string): Record<string, JsonValue> {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) throw new DeviceValidationError('input-value', path);
+  const names = Object.keys(value);
+  if (names.length !== fields.length || names.some((name) => !fields.includes(name))) throw new DeviceValidationError('input-fields', path);
+  return value;
+}
+function inputString(value: JsonValue, path: string, max: number, empty = false): void {
+  if (typeof value !== 'string' || (!empty && value.length === 0) || Array.from(value).length > max ||
+      (!empty && Array.from(value).some((character) => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127)))
+    throw new DeviceValidationError('input-string', path);
+}
+function inputNumber(value: JsonValue, path: string, min: number, max: number): void {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max)
+    throw new DeviceValidationError('input-range', path);
+}
+function inputPosition(value: JsonValue, path: string): void {
+  const point = inputObject(value, ['x', 'y'], path);
+  inputNumber(point.x, `${path}.x`, 0, 1);
+  inputNumber(point.y, `${path}.y`, 0, 1);
+}
+function inputModifiers(value: JsonValue, path: string): void {
+  const flags = inputObject(value, ['shift', 'control', 'alt', 'meta'], path);
+  for (const name of ['shift', 'control', 'alt', 'meta']) if (typeof flags[name] !== 'boolean') throw new DeviceValidationError('input-modifier', `${path}.${name}`);
+}
+function validateRichInput(value: JsonValue, schema: ValueSchema, path: string): void {
+  if (schema.type === 'contact' || schema.type === 'pen') {
+    const pen = schema.type === 'pen';
+    const input = inputObject(value, pen ? ['id', 'phase', 'position', 'primary', 'pressure', 'tiltX', 'tiltY', 'twist'] :
+      ['id', 'phase', 'position', 'primary'], path);
+    inputString(input.id, `${path}.id`, 64);
+    if (!['down', 'move', 'up', 'cancel'].includes(input.phase as string)) throw new DeviceValidationError('input-phase', `${path}.phase`);
+    inputPosition(input.position, `${path}.position`);
+    if (typeof input.primary !== 'boolean') throw new DeviceValidationError('input-primary', `${path}.primary`);
+    if (pen) {
+      inputNumber(input.pressure, `${path}.pressure`, 0, 1);
+      inputNumber(input.tiltX, `${path}.tiltX`, -90, 90);
+      inputNumber(input.tiltY, `${path}.tiltY`, -90, 90);
+      inputNumber(input.twist, `${path}.twist`, 0, 359);
+    }
+    return;
+  }
+  if (schema.type === 'key') {
+    const input = inputObject(value, ['code', 'key', 'phase', 'repeat', 'location', 'composing', 'modifiers'], path);
+    inputString(input.code, `${path}.code`, 64);
+    inputString(input.key, `${path}.key`, 128);
+    if (input.phase !== 'down' && input.phase !== 'up') throw new DeviceValidationError('input-phase', `${path}.phase`);
+    if (typeof input.repeat !== 'boolean' || input.phase === 'up' && input.repeat) throw new DeviceValidationError('input-repeat', `${path}.repeat`);
+    if (typeof input.location !== 'number' || !Number.isInteger(input.location) || input.location < 0 || input.location > 3)
+      throw new DeviceValidationError('input-location', `${path}.location`);
+    if (typeof input.composing !== 'boolean') throw new DeviceValidationError('input-composing', `${path}.composing`);
+    inputModifiers(input.modifiers, `${path}.modifiers`);
+    return;
+  }
+  if (schema.type === 'text') {
+    const input = inputObject(value, ['compositionId', 'phase', 'text'], path);
+    inputString(input.compositionId, `${path}.compositionId`, 64);
+    if (!['start', 'update', 'end', 'commit'].includes(input.phase as string)) throw new DeviceValidationError('input-phase', `${path}.phase`);
+    inputString(input.text, `${path}.text`, schema.maxLength, true);
+    return;
+  }
+  if (schema.type === 'wheel') {
+    const input = inputObject(value, ['x', 'y', 'z', 'mode', 'modifiers'], path);
+    for (const component of ['x', 'y', 'z']) inputNumber(input[component], `${path}.${component}`, -schema.maxDelta, schema.maxDelta);
+    if (!['pixel', 'line', 'page'].includes(input.mode as string)) throw new DeviceValidationError('input-wheel-mode', `${path}.mode`);
+    inputModifiers(input.modifiers, `${path}.modifiers`);
+    return;
+  }
+  if (schema.type === 'relative-motion') {
+    const input = inputObject(value, ['x', 'y', 'unit', 'locked'], path);
+    inputNumber(input.x, `${path}.x`, -schema.maxDelta, schema.maxDelta);
+    inputNumber(input.y, `${path}.y`, -schema.maxDelta, schema.maxDelta);
+    if (input.unit !== 'css-px') throw new DeviceValidationError('input-unit', `${path}.unit`);
+    if (typeof input.locked !== 'boolean') throw new DeviceValidationError('input-lock', `${path}.locked`);
+  }
+}
+
+function containsRichInput(schema: ValueSchema): boolean {
+  if (schema.type === 'record') return Object.values(schema.fields).some(containsRichInput);
+  if (schema.type === 'array') return containsRichInput(schema.items);
+  return isRichInputSchema(schema);
+}
+function isRichInputSchema(schema: ValueSchema): schema is Extract<ValueSchema,
+  { type: 'contact' | 'pen' | 'key' | 'text' | 'wheel' | 'relative-motion' }> {
+  return schema.type === 'contact' || schema.type === 'pen' || schema.type === 'key' || schema.type === 'text' ||
+    schema.type === 'wheel' || schema.type === 'relative-motion';
+}
+
 export function parseSignalValue(input: unknown, schema: ValueSchema): SignalValue {
   const definition = parseValueSchema(schema);
   const snapshot = snapshotJson(input);
@@ -123,6 +210,7 @@ export function parseSignalValue(input: unknown, schema: ValueSchema): SignalVal
         throw new DeviceValidationError('transform-parity', `${path}.mirrored`);
       return;
     }
+    if (isRichInputSchema(definition)) return validateRichInput(value, definition, path);
     const { min, max } = definition;
     function coordinate(value: JsonValue, path: string): void {
       if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) throw new DeviceValidationError('value-range', path);
@@ -160,6 +248,11 @@ function valuesCompatible(a: ValueSchema, b: ValueSchema): boolean {
     const aa = a.optional ?? [], bb = b.optional ?? [];
     return aa.length === bb.length && aa.every((name) => bb.includes(name));
   }
+  if ((a.type === 'contact' && b.type === 'contact') || (a.type === 'pen' && b.type === 'pen')) return a.frame === b.frame;
+  if (a.type === 'key' && b.type === 'key') return true;
+  if (a.type === 'text' && b.type === 'text') return a.maxLength === b.maxLength;
+  if (a.type === 'wheel' && b.type === 'wheel') return a.maxDelta === b.maxDelta;
+  if (a.type === 'relative-motion' && b.type === 'relative-motion') return a.frame === b.frame && a.maxDelta === b.maxDelta;
   if ((a.type === 'scalar' && b.type === 'scalar') || (a.type === 'vector' && b.type === 'vector')) {
     if (a.unit !== b.unit || a.min !== b.min || a.max !== b.max || a.frame !== b.frame || a.resolution !== b.resolution) return false;
     return a.type === 'scalar' || (b.type === 'vector' && a.components.length === b.components.length && a.components.every((value, index) => value === b.components[index]));
@@ -171,7 +264,10 @@ export function schemasCompatible(source: DeviceCapability, sink: DeviceCapabili
   if (source.semantic !== sink.semantic || source.schemaVersion !== sink.schemaVersion) return false;
   try {
     const a = parseValueSchema(source.value), b = parseValueSchema(sink.value);
-    return (source.schemaVersion >= 2 || !containsSpatial(a) && !containsSpatial(b)) && valuesCompatible(a, b);
+    if (source.schemaVersion < 2 && (containsSpatial(a) || containsSpatial(b) || containsRichInput(a) || containsRichInput(b))) return false;
+    if ((containsRichInput(a) || containsRichInput(b)) &&
+        (source.kind !== 'event' || sink.kind !== 'event' || source.delivery.mode !== 'reliable' || sink.delivery.mode !== 'reliable')) return false;
+    return valuesCompatible(a, b);
   } catch (error) {
     if (error instanceof DeviceValidationError) return false;
     throw error;

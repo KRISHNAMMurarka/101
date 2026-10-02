@@ -2,6 +2,7 @@ import { runPointerExample } from './pointer.ts';
 import { runSensorFeedbackExample } from './sensor-feedback.ts';
 import { runTelemetryBatchExample } from './telemetry-batch.ts';
 import { runSpatialJointExample } from './spatial-joints.ts';
+import { runRichInputExample } from './rich-input.ts';
 
 console.log(JSON.stringify({
   pointer: runPointerExample(),
@@ -9,4 +10,5 @@ console.log(JSON.stringify({
   sensorWithoutFeedback: runSensorFeedbackExample({ feedback: false }),
   telemetryBatch: runTelemetryBatchExample(),
   spatialJoints: runSpatialJointExample(),
+  richInput: runRichInputExample(),
 }, null, 2));
