@@ -452,13 +452,15 @@ test("WebRTC switches to binary only after both peers negotiate the configured p
     assert.ok(hostControl && hostRealtime);
     host.sendReliable(assignment);
     host.sendReliable(configuration);
-    hostRealtime.receive(binary);
+    // binaryType=arraybuffer delivers an ArrayBuffer at the native browser boundary.
+    assert.ok(binary.buffer instanceof ArrayBuffer);
+    hostRealtime.receive(binary.buffer);
     const decoded = received.at(-1);
     assert.equal(decoded?.channel, "realtime");
     assert.equal(decoded?.channel === "realtime" && !("type" in decoded.payload) && decoded.payload.deviceId, "phone");
 
     const receivedBeforeMalformed = received.length;
-    hostRealtime.receive(new Uint8Array(3));
+    hostRealtime.receive(new Uint8Array(3).buffer);
     assert.equal(received.length, receivedBeforeMalformed, "partial disposable input packets are dropped");
   } finally {
     await Promise.all([controller.disconnect(), host.disconnect()]);
@@ -627,8 +629,15 @@ class FakeDataChannel {
   bufferedAmountLowThreshold = 0;
   binaryType: BinaryType = "blob";
   onmessage: ((event: MessageEvent) => void) | null = null;
+  readonly ordered: boolean;
+  readonly maxRetransmits: number | null;
+  readonly maxPacketLifeTime: number | null;
 
-  constructor(label: string) { this.label = label; }
+  constructor(label: string, options: RTCDataChannelInit = {}) {
+    this.label = label; this.ordered = options.ordered ?? true;
+    this.maxRetransmits = options.maxRetransmits ?? null;
+    this.maxPacketLifeTime = options.maxPacketLifeTime ?? null;
+  }
 
   send(data: string | ArrayBuffer | ArrayBufferView) { this.sent.push(data); }
   close() {}
@@ -641,11 +650,14 @@ class FakePeerConnection {
   connectionState: RTCPeerConnectionState = "new";
   onconnectionstatechange: (() => void) | null = null;
   ondatachannel: ((event: RTCDataChannelEvent) => void) | null = null;
+  iceGatheringState: RTCIceGatheringState = 'complete';
+  localDescription: RTCSessionDescriptionInit | null = null;
+  remoteDescription: RTCSessionDescriptionInit | null = null;
 
   constructor() { FakePeerConnection.instances.push(this); }
 
-  createDataChannel(label: string) {
-    const channel = new FakeDataChannel(label);
+  createDataChannel(label: string, options: RTCDataChannelInit = {}) {
+    const channel = new FakeDataChannel(label, options);
     this.channels.set(label, channel);
     return channel as unknown as RTCDataChannel;
   }
@@ -653,7 +665,43 @@ class FakePeerConnection {
   channel(label: string) { return this.channels.get(label); }
   close() { this.connectionState = "closed"; }
   getStats() { return Promise.resolve(new Map() as unknown as RTCStatsReport); }
+  async createOffer(): Promise<RTCSessionDescriptionInit> { return { type: 'offer', sdp: 'v=0\r\n' }; }
+  async createAnswer(): Promise<RTCSessionDescriptionInit> { return { type: 'answer', sdp: 'v=0\r\n' }; }
+  async setLocalDescription(description: RTCSessionDescriptionInit) { this.localDescription = description; }
+  async setRemoteDescription(description: RTCSessionDescriptionInit) { this.remoteDescription = description; }
 }
+
+test('disconnect during compressed offer decoding cannot create another peer', async () => {
+  const original = globalThis.RTCPeerConnection;
+  globalThis.RTCPeerConnection = FakePeerConnection as unknown as typeof RTCPeerConnection;
+  const transport = new WebRTCTransport({ initiator: false });
+  try {
+    const code = await encodePairingDescription({ type: 'offer', sdp: 'v=0\r\n' }, true);
+    const count = FakePeerConnection.instances.length;
+    const pending = transport.acceptOfferCode(code);
+    const rejected = assert.rejects(pending, /disconnected|generation/i);
+    await transport.disconnect();
+    await rejected;
+    assert.equal(FakePeerConnection.instances.length, count);
+    assert.equal(transport.state, 'disconnected');
+  } finally { await transport.disconnect(); globalThis.RTCPeerConnection = original; }
+});
+
+test('a compressed answer decoded after reconnect cannot target the replacement peer', async () => {
+  const original = globalThis.RTCPeerConnection;
+  globalThis.RTCPeerConnection = FakePeerConnection as unknown as typeof RTCPeerConnection;
+  const transport = new WebRTCTransport({ initiator: true });
+  try {
+    await transport.connect();
+    const code = await encodePairingDescription({ type: 'answer', sdp: 'v=0\r\n' }, true);
+    const pending = transport.acceptAnswerCode(code);
+    const rejected = assert.rejects(pending, /disconnected|generation/i);
+    await transport.disconnect(); await transport.connect();
+    const replacement = FakePeerConnection.instances.at(-1)!;
+    await rejected;
+    assert.equal(replacement.remoteDescription, null);
+  } finally { await transport.disconnect(); globalThis.RTCPeerConnection = original; }
+});
 
 test("input packet source indices are append-only wire values", () => {
   // The Q1 packet stores the source as a 4-bit index into INPUT_SOURCES, so this list's *order* is

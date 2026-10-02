@@ -1,3 +1,4 @@
+import { PeerDataTransport } from "@101/transport-webrtc";
 import { INPUT_SOURCES, type InputFrame } from "@101/input";
 
 export const PROTOCOL_VERSION = 2 as const;
@@ -961,9 +962,8 @@ export interface WebRTCTransportOptions {
 }
 
 export class WebRTCTransport implements StatefulLinkTransport {
-  private peer?: RTCPeerConnection;
-  private control?: RTCDataChannel;
-  private realtime?: RTCDataChannel;
+  private readonly transport: PeerDataTransport;
+  private lifecycleRevision = 0;
   private readonly listeners = new Set<(message: LinkMessage) => void>();
   private readonly stateListeners = new Set<(state: LinkState) => void>();
   private readonly options: WebRTCTransportOptions;
@@ -975,100 +975,77 @@ export class WebRTCTransport implements StatefulLinkTransport {
 
   constructor(options: WebRTCTransportOptions) {
     this.options = options;
-  }
-
-  get state() {
-    return this.currentState;
-  }
-
-  async connect() {
-    if (this.peer) return;
-    if (typeof RTCPeerConnection === "undefined") {
-      throw new Error("WebRTC DataChannel is unavailable in this browser");
-    }
-
-    this.setState("connecting");
-    this.peer = new RTCPeerConnection({
-      iceServers: this.options.iceServers ?? [],
+    // Keep deployed 101 behavior during extraction. General callers use the raw
+    // peer's finite send defaults and inspect admission; the v2 API is still void.
+    this.transport = new PeerDataTransport({
+      initiator: options.initiator, iceServers: options.iceServers,
+      channels: { reliable: "101-control", disposable: "101-realtime" },
+      reliableBufferLimit: Infinity, disposableBufferLimit: Infinity,
+      maxMessageBytes: 1048576,
     });
-    this.peer.onconnectionstatechange = () => {
-      const state = this.peer?.connectionState;
-      if (state === "connected") this.setState("connected");
-      else if (state === "failed") this.setState("failed");
-      else if (state === "disconnected" || state === "closed") this.setState("disconnected");
-    };
-    this.peer.ondatachannel = (event) => {
-      if (event.channel.label === "101-control") this.attachControl(event.channel);
-      if (event.channel.label === "101-realtime") this.attachRealtime(event.channel);
-    };
-
-    if (this.options.initiator) {
-      this.attachControl(this.peer.createDataChannel("101-control", { ordered: true }));
-      this.attachRealtime(this.peer.createDataChannel("101-realtime", {
-        ordered: false,
-        maxRetransmits: 0,
-      }));
-    }
+    this.transport.onStateChange(state => this.setState(state));
+    this.transport.onData((lane, data) => {
+      try {
+        if (lane === "reliable") {
+          if (typeof data !== "string") return;
+          const payload = deserializeControlMessage(data);
+          this.observeControl(payload, "outgoing");
+          this.emit({ channel: "control", payload });
+        } else this.emit({ channel: "realtime", payload: deserializeRealtimeMessage(data, this.incomingProfile) });
+      } catch { /* Invalid remote packets never reach the application. */ }
+    });
   }
+
+  get state() { return this.currentState; }
+  async connect() { await this.transport.connect(); }
 
   async disconnect() {
-    this.control?.close();
-    this.realtime?.close();
-    this.peer?.close();
-    this.control = undefined;
-    this.realtime = undefined;
-    this.peer = undefined;
+    this.lifecycleRevision += 1;
     this.outgoingAssignment = undefined;
     this.outgoingProfile = undefined;
     this.incomingAssignment = undefined;
     this.incomingProfile = undefined;
-    this.setState("disconnected");
+    await this.transport.disconnect();
   }
 
   async createOfferCode() {
-    await this.connect();
-    const peer = this.requirePeer();
-    await peer.setLocalDescription(await peer.createOffer());
-    await waitForIceGathering(peer);
-    return encodePairingDescription(
-      requireLocalDescription(peer),
-      this.options.pairingCompression ?? true,
-    );
+    const revision = this.lifecycleRevision;
+    const offer = await this.transport.createOffer();
+    this.checkRevision(revision);
+    const code = await encodePairingDescription(offer, this.options.pairingCompression ?? true);
+    this.checkRevision(revision);
+    return code;
   }
 
   async acceptOfferCode(code: string) {
-    await this.connect();
-    const peer = this.requirePeer();
+    const revision = this.lifecycleRevision;
     const offer = await decodePairingDescription(code);
-    if (offer.type !== "offer") throw new Error("Expected a 101 WebRTC offer");
-    await peer.setRemoteDescription(offer);
-    await peer.setLocalDescription(await peer.createAnswer());
-    await waitForIceGathering(peer);
-    return encodePairingDescription(
-      requireLocalDescription(peer),
-      this.options.pairingCompression ?? true,
-    );
+    this.checkRevision(revision);
+    const answer = await this.transport.acceptOffer(offer);
+    this.checkRevision(revision);
+    const encoded = await encodePairingDescription(answer, this.options.pairingCompression ?? true);
+    this.checkRevision(revision);
+    return encoded;
   }
 
   async acceptAnswerCode(code: string) {
-    const peer = this.requirePeer();
+    const revision = this.lifecycleRevision;
     const answer = await decodePairingDescription(code);
-    if (answer.type !== "answer") throw new Error("Expected a 101 WebRTC answer");
-    await peer.setRemoteDescription(answer);
+    this.checkRevision(revision);
+    await this.transport.acceptAnswer(answer);
+    this.checkRevision(revision);
   }
 
   sendReliable(message: ControlMessage) {
-    if (this.control?.readyState !== "open") return;
-    this.observeControl(message, "incoming");
-    this.control.send(serializeControlMessage(message));
+    if (!this.transport.isOpen("reliable")) return;
+    if (this.transport.send("reliable", serializeControlMessage(message))) this.observeControl(message, "incoming");
   }
 
   sendRealtime(message: RealtimeMessage) {
-    if (this.realtime?.readyState !== "open") return;
-    if (this.realtime.bufferedAmount > (this.options.realtimeBufferLimit ?? 64 * 1024)) return;
+    if (!this.transport.isOpen("disposable")) return;
+    if (this.transport.bufferedAmount("disposable") > (this.options.realtimeBufferLimit ?? 64 * 1024)) return;
     const serialized = serializeRealtimeMessage(message, this.outgoingProfile);
-    if (typeof serialized === "string") this.realtime.send(serialized);
-    else this.realtime.send(serialized as Uint8Array<ArrayBuffer>);
+    this.transport.send("disposable", serialized);
   }
 
   onMessage(callback: (message: LinkMessage) => void) {
@@ -1082,38 +1059,14 @@ export class WebRTCTransport implements StatefulLinkTransport {
     return () => this.stateListeners.delete(callback);
   }
 
-  async stats(): Promise<RTCStatsReport | undefined> {
-    return this.peer?.getStats();
-  }
-
-  private attachControl(channel: RTCDataChannel) {
-    this.control = channel;
-    channel.onmessage = (event: MessageEvent<string>) => {
-      try {
-        const payload = deserializeControlMessage(event.data);
-        this.observeControl(payload, "outgoing");
-        this.emit({ channel: "control", payload });
-      } catch {
-        // Invalid remote packets are ignored rather than reaching a game.
-      }
-    };
-  }
-
-  private attachRealtime(channel: RTCDataChannel) {
-    this.realtime = channel;
-    channel.binaryType = "arraybuffer";
-    channel.bufferedAmountLowThreshold = 16 * 1024;
-    channel.onmessage = (event: MessageEvent<string | ArrayBuffer>) => {
-      try {
-        this.emit({ channel: "realtime", payload: deserializeRealtimeMessage(event.data, this.incomingProfile) });
-      } catch {
-        // Invalid or partial disposable frames are safe to drop.
-      }
-    };
-  }
+  async stats(): Promise<RTCStatsReport | undefined> { return this.transport.stats(); }
 
   private emit(message: LinkMessage) {
     this.listeners.forEach((listener) => listener(message));
+  }
+
+  private checkRevision(revision: number) {
+    if (revision !== this.lifecycleRevision) throw new Error('Peer disconnected during pairing (stale generation)');
   }
 
   /**
@@ -1157,10 +1110,7 @@ export class WebRTCTransport implements StatefulLinkTransport {
     this.stateListeners.forEach((listener) => listener(state));
   }
 
-  private requirePeer() {
-    if (!this.peer) throw new Error("Call connect() before exchanging pairing data");
-    return this.peer;
-  }
+
 }
 
 interface PairingEnvelope {
@@ -1217,27 +1167,6 @@ export async function decodePairingDescription(code: string): Promise<RTCSession
     throw new Error("Pairing code failed integrity validation");
   }
   return { type: envelope.type, sdp: envelope.sdp };
-}
-
-async function waitForIceGathering(peer: RTCPeerConnection, timeoutMs = 5000) {
-  if (peer.iceGatheringState === "complete") return;
-  await new Promise<void>((resolve) => {
-    const timeout = setTimeout(finish, timeoutMs);
-    peer.addEventListener("icegatheringstatechange", onChange);
-    function onChange() {
-      if (peer.iceGatheringState === "complete") finish();
-    }
-    function finish() {
-      clearTimeout(timeout);
-      peer.removeEventListener("icegatheringstatechange", onChange);
-      resolve();
-    }
-  });
-}
-
-function requireLocalDescription(peer: RTCPeerConnection): RTCSessionDescriptionInit {
-  if (!peer.localDescription) throw new Error("WebRTC did not produce pairing data");
-  return { type: peer.localDescription.type, sdp: peer.localDescription.sdp };
 }
 
 async function transformBytes(

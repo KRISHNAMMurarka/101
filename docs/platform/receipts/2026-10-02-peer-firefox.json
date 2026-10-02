@@ -1,0 +1,133 @@
+{
+  "scope": "single-machine real browser two-peer WebRTC loopback; no physical phone or authenticated resource route",
+  "browser": "firefox",
+  "version": "151.0",
+  "sourceSha256": "1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+  "resultStatus": "fail",
+  "failure": "Timed out after 10 seconds; both peers remained connecting, channels unopened, ICE candidate pairs in progress without nomination",
+  "diagnostics": [
+    {
+      "state": "connecting",
+      "reliable": false,
+      "disposable": false,
+      "entries": [
+        {
+          "type": "candidate-pair",
+          "state": "in-progress",
+          "nominated": false
+        },
+        {
+          "type": "candidate-pair",
+          "state": "in-progress",
+          "nominated": false
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        }
+      ]
+    },
+    {
+      "state": "connecting",
+      "reliable": false,
+      "disposable": false,
+      "entries": [
+        {
+          "type": "candidate-pair",
+          "state": "in-progress",
+          "nominated": false
+        },
+        {
+          "type": "candidate-pair",
+          "state": "in-progress",
+          "nominated": false
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "local-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "udp"
+        },
+        {
+          "type": "remote-candidate",
+          "candidateType": "host",
+          "protocol": "tcp"
+        }
+      ]
+    }
+  ],
+  "environment": {
+    "os": "macOS",
+    "osVersion": "26.5.2",
+    "osBuild": "25F84",
+    "node": "24.14.0",
+    "playwright": "1.61.1"
+  },
+  "reproduction": "node tools/qa-device-peer.mjs firefox",
+  "baseRevision": "79bc605"
+}

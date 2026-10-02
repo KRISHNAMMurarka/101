@@ -39,7 +39,7 @@ Each route binds both concrete endpoint registrations, peer identity, principal,
 
 ## Public names and compatibility
 
-- `@101/device-model`, `@101/device-runtime` and `@101/connect` remain the public working namespace, version 0.1.0. Public JS/type/schema distributions are K01 work; current TypeScript workspace exports are explicitly not an installable release.
+- `@101/device-model`, `@101/device-runtime`, `@101/connect` and the first peer package `@101/transport-webrtc` use the public working namespace, version 0.1.0. Public JS/type/schema distributions are K01 work; current TypeScript workspace exports are explicitly not an installable release.
 - Existing `@101/sdk`, 101 protocol v2, controller roles and `input-q1` retain their public behavior. New platform packages do not import game/session/input code. The 101 bridge imports the general layer, never the reverse.
 - Descriptor schema 1 stays closed and immutable; changes to required fields, meaning, ranges/units, frame or operation semantics require a new incompatible revision. Namespaced extensions remain inert data. Unknown operations/types/codecs reject with a recoverable incompatibility result.
 - Schema/profile/codec IDs are exact namespaced IDs with positive integer revisions. Wire protocol revision is independent from package semver. A peer must negotiate all relevant revisions before resource use; old bytes never enter a new profile or epoch.

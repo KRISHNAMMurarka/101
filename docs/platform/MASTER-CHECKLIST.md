@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 29 completed with recorded evidence; 243 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 31 completed with recorded evidence; 241 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -97,8 +97,8 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 ### T — Transport bridge and 101 continuity: first implementation lane
 
-- [ ] **T01 — Write the transport-bridge spec and plan.** Freeze wire messages, resource binding, peer authority, reconnect epochs, limits, first callers and regression tests against the existing v2 path.
-- [ ] **T02 — Extract reusable peer transport.** Introduce the first `transport-webrtc` caller while preserving current reliable/disposable channels and existing 101 codecs/tests.
+- [x] **T01 — Write the transport-bridge spec and plan.** Freeze wire messages, resource binding, peer authority, reconnect epochs, limits, first callers and regression tests against the existing v2 path. [Transport evidence](TRANSPORT-QA-2026-10-02.md).
+- [x] **T02 — Extract reusable peer transport.** Introduce the first `transport-webrtc` caller while preserving current reliable/disposable channels and existing 101 codecs/tests. [Transport evidence](TRANSPORT-QA-2026-10-02.md).
 - [ ] **T03 — Negotiate general resources.** Exchange bounded descriptors, schema/codec revisions, supported operations and effective route limits; incompatible peers get a recoverable rejection.
 - [ ] **T04 — Bind remote resources to authenticated peers.** Remote packets cannot choose arbitrary source IDs, sink registrations, sessions or permissions; cross-peer and cross-session fixtures fail.
 - [ ] **T05 — Implement general wire codecs.** Use a versioned readable baseline and selected compact profiles; arbitrary sensor values retain units/ranges and are not encoded as game axes.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 1,
+  "revision": 2,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5080,7 +5080,7 @@
     },
     {
       "id": "contract-2026-10-02",
-      "revision": "commit containing CONTRACT-QA-2026-10-02.md; source fingerprint in receipt",
+      "revision": "79bc605",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -5112,6 +5112,268 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "transport-extraction-2026-10-02",
+      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "T01",
+        "T02"
+      ],
+      "paths": [
+        "docs/platform/TRANSPORT-QA-2026-10-02.md",
+        "docs/superpowers/specs/2026-10-02-device-transport-bridge-design.md",
+        "docs/superpowers/plans/2026-10-02-device-transport-bridge.md",
+        "packages/transport-webrtc/src/peer.ts",
+        "packages/transport-webrtc/src/peer.test.ts",
+        "packages/protocol/src/index.ts",
+        "packages/protocol/src/protocol.test.ts"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0; current browser/build versions in QA and per-engine receipts",
+      "reproduction": "npx tsc --noEmit; npm run lint; npm run test:unit; npm run build; node --test tests/rendered-html.test.mjs; npm run native:typecheck; npm run native:test; node tools/qa-device-peer.mjs chromium",
+      "scope": "T01 bounded transport contract/plan and T02 game-independent raw peer extraction with compatible 101 first caller; no general resource binding or physical phone acceptance",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed browser engines"
+      ],
+      "supportRows": [
+        "raw-peer-chromium-2026-10-02",
+        "raw-peer-webkit-2026-10-02",
+        "raw-peer-firefox-2026-10-02"
+      ],
+      "supportTargets": {
+        "raw-peer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        },
+        "raw-peer-webkit-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright webkit",
+          "runtimeVersion": "26.5",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        },
+        "raw-peer-firefox-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright firefox",
+          "runtimeVersion": "151.0",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        }
+      }
+    },
+    {
+      "id": "peer-loopback-chromium-2026-10-02",
+      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T02",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-02-peer-chromium.json",
+        "tools/qa-device-peer.mjs"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, Playwright 1.61.1 chromium 149.0.7827.55",
+      "reproduction": "node tools/qa-device-peer.mjs chromium",
+      "scope": "Exact raw peer two-lane loopback, byte preservation, teardown; no physical/general SDK claim",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed chromium engine"
+      ],
+      "supportRows": [
+        "raw-peer-chromium-2026-10-02"
+      ],
+      "supportTargets": {
+        "raw-peer-chromium-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright chromium",
+          "runtimeVersion": "149.0.7827.55",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        }
+      }
+    },
+    {
+      "id": "peer-loopback-webkit-2026-10-02",
+      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T02",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-02-peer-webkit.json",
+        "tools/qa-device-peer.mjs"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, Playwright 1.61.1 webkit 26.5",
+      "reproduction": "node tools/qa-device-peer.mjs webkit",
+      "scope": "Exact raw peer two-lane loopback, byte preservation, teardown; no physical/general SDK claim",
+      "failure": null,
+      "equipment": [
+        "local macOS host and installed webkit engine"
+      ],
+      "supportRows": [
+        "raw-peer-webkit-2026-10-02"
+      ],
+      "supportTargets": {
+        "raw-peer-webkit-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright webkit",
+          "runtimeVersion": "26.5",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        }
+      }
+    },
+    {
+      "id": "peer-loopback-firefox-2026-10-02",
+      "revision": "containing commit; raw source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "T02",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-02-peer-firefox.json",
+        "tools/qa-device-peer.mjs"
+      ],
+      "environment": "macOS 26.5.2 (25F84), Node 24.14.0, Playwright 1.61.1 firefox 151.0",
+      "reproduction": "node tools/qa-device-peer.mjs firefox",
+      "scope": "Exact raw peer two-lane loopback, byte preservation, teardown; no physical/general SDK claim",
+      "failure": "Timed out after 10 seconds; both peers remained connecting, channels unopened, ICE candidate pairs in progress without nomination",
+      "equipment": [
+        "local macOS host and installed firefox engine"
+      ],
+      "supportRows": [
+        "raw-peer-firefox-2026-10-02"
+      ],
+      "supportTargets": {
+        "raw-peer-firefox-2026-10-02": {
+          "os": "macOS",
+          "osVersion": "26.5.2 (25F84)",
+          "runtime": "Playwright firefox",
+          "runtimeVersion": "151.0",
+          "formFactor": "computer",
+          "transport": "local two-peer WebRTC/DTLS",
+          "connector": "@101/transport-webrtc",
+          "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+          "profiles": [
+            "raw reliable ordered channel",
+            "raw disposable unordered maxRetransmits=0 channel"
+          ],
+          "resources": [
+            "application-owned strings and byte payloads"
+          ],
+          "unavailable": [
+            "general resource negotiation",
+            "authenticated SDK binding",
+            "physical phone input",
+            "cross-network relay qualification"
+          ]
+        }
+      }
     }
   ],
   "tasks": [
@@ -5418,7 +5680,8 @@
     {
       "id": "T01",
       "records": [
-        "pending-T01"
+        "pending-T01",
+        "transport-extraction-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -5431,7 +5694,11 @@
     {
       "id": "T02",
       "records": [
-        "pending-T02"
+        "pending-T02",
+        "transport-extraction-2026-10-02",
+        "peer-loopback-chromium-2026-10-02",
+        "peer-loopback-webkit-2026-10-02",
+        "peer-loopback-firefox-2026-10-02"
       ],
       "dependencies": [
         "C01",
@@ -7820,7 +8087,10 @@
     {
       "id": "Q07",
       "records": [
-        "pending-Q07"
+        "pending-Q07",
+        "peer-loopback-chromium-2026-10-02",
+        "peer-loopback-webkit-2026-10-02",
+        "peer-loopback-firefox-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [

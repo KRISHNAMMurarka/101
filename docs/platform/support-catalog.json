@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 1,
+  "revision": 2,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -904,6 +904,162 @@
       },
       "limitations": [
         "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "raw-peer-chromium-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "computer",
+        "transport": "local two-peer WebRTC/DTLS",
+        "connector": "@101/transport-webrtc",
+        "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+        "profiles": [
+          "raw reliable ordered channel",
+          "raw disposable unordered maxRetransmits=0 channel"
+        ],
+        "resources": [
+          "application-owned strings and byte payloads"
+        ],
+        "unavailable": [
+          "general resource negotiation",
+          "authenticated SDK binding",
+          "physical phone input",
+          "cross-network relay qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T02",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "transport-extraction-2026-10-02"
+        ],
+        "contract": [
+          "transport-extraction-2026-10-02"
+        ],
+        "runtime": [
+          "peer-loopback-chromium-2026-10-02"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Loopback smoke only; full browser SDK qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "raw-peer-webkit-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright webkit",
+        "runtimeVersion": "26.5",
+        "formFactor": "computer",
+        "transport": "local two-peer WebRTC/DTLS",
+        "connector": "@101/transport-webrtc",
+        "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+        "profiles": [
+          "raw reliable ordered channel",
+          "raw disposable unordered maxRetransmits=0 channel"
+        ],
+        "resources": [
+          "application-owned strings and byte payloads"
+        ],
+        "unavailable": [
+          "general resource negotiation",
+          "authenticated SDK binding",
+          "physical phone input",
+          "cross-network relay qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T02",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "transport-extraction-2026-10-02"
+        ],
+        "contract": [
+          "transport-extraction-2026-10-02"
+        ],
+        "runtime": [
+          "peer-loopback-webkit-2026-10-02"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Loopback smoke only; full browser SDK qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "raw-peer-firefox-2026-10-02",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2 (25F84)",
+        "runtime": "Playwright firefox",
+        "runtimeVersion": "151.0",
+        "formFactor": "computer",
+        "transport": "local two-peer WebRTC/DTLS",
+        "connector": "@101/transport-webrtc",
+        "connectorVersion": "0.1.0 source SHA256 1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+        "profiles": [
+          "raw reliable ordered channel",
+          "raw disposable unordered maxRetransmits=0 channel"
+        ],
+        "resources": [
+          "application-owned strings and byte payloads"
+        ],
+        "unavailable": [
+          "general resource negotiation",
+          "authenticated SDK binding",
+          "physical phone input",
+          "cross-network relay qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T02",
+        "Q07"
+      ],
+      "evidence": {
+        "implementation": [
+          "transport-extraction-2026-10-02"
+        ],
+        "contract": [
+          "transport-extraction-2026-10-02"
+        ],
+        "runtime": [
+          "peer-loopback-firefox-2026-10-02"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Loopback smoke only; full browser SDK qualification remains open."
       ],
       "requiredLevels": [
         "implementation",

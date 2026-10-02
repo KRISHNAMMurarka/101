@@ -1,0 +1,63 @@
+{
+  "scope": "single-machine real browser two-peer WebRTC loopback; no physical phone or authenticated resource route",
+  "browser": "chromium",
+  "version": "149.0.7827.55",
+  "sourceSha256": "1f6d21bb5ebc106f972428e89b90f69fe4a14ba16ac5ae144cbd18bb5f64ecc3",
+  "result": {
+    "accepted": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "received": [
+      {
+        "receiver": "phone",
+        "lane": "reliable",
+        "data": "descriptor-v1"
+      },
+      {
+        "receiver": "phone",
+        "lane": "disposable",
+        "data": [
+          0,
+          32,
+          255
+        ]
+      },
+      {
+        "receiver": "host",
+        "lane": "reliable",
+        "data": "grant-v1"
+      },
+      {
+        "receiver": "host",
+        "lane": "disposable",
+        "data": "{\"x\":0.2,\"y\":0.8}"
+      }
+    ],
+    "elapsedMs": 13.400000095367432,
+    "paths": [
+      {
+        "type": "candidate-pair",
+        "state": "succeeded"
+      }
+    ],
+    "states": [
+      "disconnected",
+      "disconnected"
+    ],
+    "afterStopAccepted": false,
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/149.0.7827.55 Safari/537.36"
+  },
+  "environment": {
+    "os": "macOS",
+    "osVersion": "26.5.2",
+    "osBuild": "25F84",
+    "node": "24.14.0",
+    "playwright": "1.61.1"
+  },
+  "reproduction": "node tools/qa-device-peer.mjs chromium",
+  "baseRevision": "79bc605",
+  "resultStatus": "pass"
+}
