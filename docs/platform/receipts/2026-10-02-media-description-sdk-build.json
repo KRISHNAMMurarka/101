@@ -1,0 +1,645 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "revision": null,
+    "tree": "f404fda32ae2a9630ce2818dfa817d6814f2c805",
+    "sha256": {
+      "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+      "examples/device-pipelines/media-description.ts": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a",
+      "examples/device-pipelines/pointer.ts": "496b67f53df61b5ecee572ecfa071a021f2f16c2085aecd3296ab214914f7874",
+      "examples/device-pipelines/resource-documents.ts": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595",
+      "examples/device-pipelines/rich-input.ts": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19",
+      "examples/device-pipelines/run.ts": "a3f9bbda7112c76bf8355d424f49b773856b4c8dddced60fd8bd1371e8c377c8",
+      "examples/device-pipelines/sensor-feedback.ts": "92d90895e2c705c5097df216df05c5139d52e6cedea8309627d4d0006e6bac2e",
+      "examples/device-pipelines/spatial-joints.ts": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339",
+      "examples/device-pipelines/telemetry-batch.ts": "3315b1ecaf9f064925d2b4dc28a8cc4e37de7fa48151e3a35eaff2d4c365b9b5",
+      "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+      "packages/connect/package.json": "b6cc88b216e9b672d01c7595db7a99e58e03aebeefb7106d0a0611062bdab59a",
+      "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+      "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+      "packages/device-model/src/descriptor-schema.ts": "d784ab29b9f3509befdbfde283d53c5dd0162a9e5adf572905020dfa083fd29c",
+      "packages/device-model/src/descriptor.ts": "e5a2ea75d6e9a5173fc3982de06ae34114454f93f83420a016eabc80ae7c2cb3",
+      "packages/device-model/src/index.ts": "b1f5c57072031a8315aa7740fa30701ac3a123548022bbb5555cc93f00d542b3",
+      "packages/device-model/src/media.ts": "b229f931822f6a6dc59e518286534fc20f9e2b0ee44d526300bdff54bdd4d4f3",
+      "packages/device-model/src/remote-clock.ts": "edf2c097fdecf5f2a35742dcec4e80e79ad8b64594c8cd3c429b4c18dc8a7b78",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/sample.ts": "575829156c84c17b9b2b71a4453564015aecec56c9de1ed6a80238d6aae3222a",
+      "packages/device-model/src/spatial.ts": "374046ee11b7daf7286f687eb34e81c1d075ad2d3e2c09ed609d7b7b105629e3",
+      "packages/device-model/src/units.ts": "12d780341e5533f350e38c6fc18a95c2f7485f16022ab07207dd7bac650a533f",
+      "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+      "packages/device-runtime/src/index.ts": "83492732e51a35a4dc3741cad596a44e9ac0b91bc82098d6b9f583bfb14003a7",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/runtime.ts": "b18f39848f1de96213a281a727d68a5515035d20d55af57a3d8681d398c32e7c",
+      "packages/device-runtime/src/scheduler.ts": "92bcc9ee936c09c9aacb3f80d7089af36fd97c9fb8896072a7331bb8dbd32c69",
+      "packages/device-runtime/src/types.ts": "63ef55b4b69274e316a03084adb17bd5e81c72bbc05d8fbbf94d103e59b04bc0",
+      "packages/device-web/package.json": "6944da1082082ab4db143a24ad567fae043dd102675b4b2ef52658974bbe6b53",
+      "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+      "packages/device-web/src/binding.ts": "8356ad70af781e1a9a911b152b05cbf3eda8cf51b13aaa57d514263de590decb",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+      "packages/device-web/src/index.ts": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4",
+      "packages/device-web/src/invitation.ts": "26cd467f1457720b95f5fd348fd6bc918c1d72cc6e90a9bb0800e73833325a99",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+      "schemas/device-descriptor.schema.json": "5d28c2ea542827041806c8543898d0cecbd14a042d6203204b0145da0893a061"
+    }
+  },
+  "environment": {
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3"
+  },
+  "builderSha256": "7e91360653dfbc1cd0c872eb7759d2a6a46cc2e1e5095cb0aff4079d4e0fd966",
+  "outputDir": "/Users/km/Desktop/games/101/release/sdk-LeM7RM",
+  "packages": [
+    {
+      "name": "@101/device-model",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/packages/device-model",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/tarballs/101-device-model-0.1.0.tgz",
+      "sha256": "110519742c470279a5231546f692cddfd9c6b2f3acb46bc00463bb44024ffbce",
+      "bytes": 26534,
+      "files": [
+        {
+          "path": "dist/descriptor-schema.d.ts",
+          "size": 3401,
+          "sha256": "51d31276a175d108345f75c745dd9c1a43fd4990998944dad15f8bbb9f982b92"
+        },
+        {
+          "path": "dist/descriptor-schema.js",
+          "size": 8155,
+          "sha256": "6e7e65d8ca0c892e6170b0a4cffd05184a5ec117fb5d6b2fea9d045d5b66cc8e"
+        },
+        {
+          "path": "dist/descriptor.d.ts",
+          "size": 3584,
+          "sha256": "aabf4d19b1041d2186c9fd9de825581268c8030d8d4e01ac861d1609b4d2b553"
+        },
+        {
+          "path": "dist/descriptor.js",
+          "size": 23996,
+          "sha256": "fcb2bc9dd5f4b9ff0fdfc56184231330c2ba182bef17a5797dec290af32fce6b"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 1470,
+          "sha256": "6423097d3ec8b7d629d5c249d58b6076936bce08773a77fb2a3c3bb251e2ddc3"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 654,
+          "sha256": "ae1a6ae8956cd61a04cde58a6d00d7cd343927cf2f8eb462b92bcc25539ec0ba"
+        },
+        {
+          "path": "dist/media.d.ts",
+          "size": 2584,
+          "sha256": "35e9165e0fbd5ccefe551fc3e8b96359914386bdc35e257cae9984a6a494b6a2"
+        },
+        {
+          "path": "dist/media.js",
+          "size": 11187,
+          "sha256": "87eb016cf39a6f056b3070048d62377325279a10f8b6a8a141da4a6b8250fdfd"
+        },
+        {
+          "path": "dist/remote-clock.d.ts",
+          "size": 1174,
+          "sha256": "bdff9ebc243b578d5d4cb31463abb9a91ade422f2003cadff74cc134fd5e37c5"
+        },
+        {
+          "path": "dist/remote-clock.js",
+          "size": 5168,
+          "sha256": "64915bdf11526b6321ea2dbf07dd9cf1759e120c00feb1dbdfdbcbeadbf4bbb5"
+        },
+        {
+          "path": "dist/resource.d.ts",
+          "size": 924,
+          "sha256": "37dae09fec9b1caf7eb6cc9e10e4cd7a6c3de12bbec9db762ba6cafccf35065a"
+        },
+        {
+          "path": "dist/resource.js",
+          "size": 4067,
+          "sha256": "95b0e15dff6713cb166cf82b2781b4d1d8e7f876f44cdff7fb452d93c4ed91ea"
+        },
+        {
+          "path": "dist/sample.d.ts",
+          "size": 277,
+          "sha256": "822eb2e6d5c06d24f436c15dda3d47879bd9859184a67b729cc61c2dde8602b5"
+        },
+        {
+          "path": "dist/sample.js",
+          "size": 17127,
+          "sha256": "0c95544f9f268e2c717de868430c8a2e5c4e34196f2357e0585c99c677686787"
+        },
+        {
+          "path": "dist/spatial.d.ts",
+          "size": 1603,
+          "sha256": "08bb798556790d4c5454f587db3f763bf0776e3ff762fb7403b71b7759ccb5e2"
+        },
+        {
+          "path": "dist/spatial.js",
+          "size": 7144,
+          "sha256": "5616b70f31e1b2ee8f9669fae27149039c922d924c9029391bcc2e64a56136b4"
+        },
+        {
+          "path": "dist/units.d.ts",
+          "size": 984,
+          "sha256": "cb926e8904ea7828cae4e76b53227d977d04d3aa69a5d0c4a85c9cb7a252f5b0"
+        },
+        {
+          "path": "dist/units.js",
+          "size": 6357,
+          "sha256": "166c527857dce451b063de5a1f3a5f9fc52fb0ebd8c80ebeb23f96fcc0a9a595"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 567,
+          "sha256": "3d0c6ec31cea209480e7670581c3ee603a3f1972de5c47e5aaf52f23a4dd6cfd"
+        },
+        {
+          "path": "README.md",
+          "size": 2658,
+          "sha256": "10572d511600299e322c8f1057542f1a4c1824b032ee02a90189b3ce8ebded6c"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 20077,
+          "sha256": "5d28c2ea542827041806c8543898d0cecbd14a042d6203204b0145da0893a061"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-runtime",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/packages/device-runtime",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/tarballs/101-device-runtime-0.1.0.tgz",
+      "sha256": "75acd3524f72ddd3517e42d98890c65a2648cd4c9e901cb7c9891e746e56447c",
+      "bytes": 13633,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 553,
+          "sha256": "abf1a7c8c223df8d2984f132644ebadeb7d66cd9daa583a5474af71e53af6217"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 266,
+          "sha256": "c1377057f31b7164fa5effbf040d17219b7427c06ae1fc909c71b33a689e9aa4"
+        },
+        {
+          "path": "dist/lease.d.ts",
+          "size": 378,
+          "sha256": "c145d2d3f6fe9416f8bb458bedd628ea02faa7fe2af7681680edddf586c62b0e"
+        },
+        {
+          "path": "dist/lease.js",
+          "size": 933,
+          "sha256": "3cbfbc21d551cb0a6fc3a1358d2f3e850d315b3a8285176ca119890bd2f6f376"
+        },
+        {
+          "path": "dist/resource.d.ts",
+          "size": 1413,
+          "sha256": "a1025acd3f44efa71dde350d7afcd3b8f242ebf2091c1b4ed8352608407fd866"
+        },
+        {
+          "path": "dist/resource.js",
+          "size": 7443,
+          "sha256": "c172aeb574a812c3646942da47796169f7dab4882f2078c56cbedfb2a4508017"
+        },
+        {
+          "path": "dist/runtime.d.ts",
+          "size": 3611,
+          "sha256": "e153d0143775556c11a1b5b9a6f8141edb55b4f13e7ce963950262737d3d5f72"
+        },
+        {
+          "path": "dist/runtime.js",
+          "size": 25338,
+          "sha256": "aa81b9e9344eb31616f013dd4d9f20054d03917cb633b426fcb20c32d7b123e9"
+        },
+        {
+          "path": "dist/scheduler.d.ts",
+          "size": 1584,
+          "sha256": "6cc881fc0c119f989c52a987a03865409403ae00d938638b4577bef989f5a254"
+        },
+        {
+          "path": "dist/scheduler.js",
+          "size": 4669,
+          "sha256": "beefc758256da166a4a77d6cc2901004460c5274bc28d2559a9eec56c3ecd95e"
+        },
+        {
+          "path": "dist/types.d.ts",
+          "size": 3894,
+          "sha256": "3c70c9b4e8d26b992434c8402aaee3598c871ec6813dc8c4da5bd272f2549fd8"
+        },
+        {
+          "path": "dist/types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 541,
+          "sha256": "31f8850b4f30e8d2d5098f29fb3b18012d034e24712392dc2a89d03632c9c854"
+        },
+        {
+          "path": "README.md",
+          "size": 2334,
+          "sha256": "4f302b45bf55b8efc45d246e83b1da32067127efd290d96e29df3fad74d810d4"
+        }
+      ]
+    },
+    {
+      "name": "@101/transport-webrtc",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/packages/transport-webrtc",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/tarballs/101-transport-webrtc-0.1.0.tgz",
+      "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+      "bytes": 6529,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 228,
+          "sha256": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 47,
+          "sha256": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c"
+        },
+        {
+          "path": "dist/peer.d.ts",
+          "size": 2753,
+          "sha256": "2323982bfa4bb1dc3cf51e2e00803057f5a20dc4cdbf56b585c8618282062274"
+        },
+        {
+          "path": "dist/peer.js",
+          "size": 14486,
+          "sha256": "d76d9a4067b68ab60205058dfef6ba2d28202f309523e04b6adec42a09dceea6"
+        },
+        {
+          "path": "dist/ports.d.ts",
+          "size": 1784,
+          "sha256": "2e265404c5b3d297b2c1f7a743313ebeeed003d0ba32a7d3567531f347b2f186"
+        },
+        {
+          "path": "dist/ports.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 487,
+          "sha256": "65d390bbf31a1c217ab9b7f65af1880650801f410e36a3ac2046f69357095c81"
+        },
+        {
+          "path": "README.md",
+          "size": 2352,
+          "sha256": "4af007a2d554a17c97e56368f37dc12f84116941de640aad9f302727ffb7fd23"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-web",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/packages/device-web",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/tarballs/101-device-web-0.1.0.tgz",
+      "sha256": "5d4419ffe7d6803504a4549bd00b76e647c386eea0011e6758b1ca331d81da50",
+      "bytes": 30661,
+      "files": [
+        {
+          "path": "dist/authenticated-peer.d.ts",
+          "size": 2478,
+          "sha256": "9e9d6eee8b115ee32eb7c1b69c22069419490932056a3f4dd4d8ad81b27bfd5f"
+        },
+        {
+          "path": "dist/authenticated-peer.js",
+          "size": 18726,
+          "sha256": "b94e54dde2b4cfed869fef7b87dbc2b9e774b13c8a005eb783145545d11b0c6f"
+        },
+        {
+          "path": "dist/binding.d.ts",
+          "size": 4069,
+          "sha256": "df82e27d2353f9d5f3a19f6fb8ec680bde0b45012c8fbf08bb4b3ce956a5a833"
+        },
+        {
+          "path": "dist/binding.js",
+          "size": 29480,
+          "sha256": "d7c38513598ec7602d4c39bd482eefc81614f0ed3ce1d988d7d8539d3227bd6d"
+        },
+        {
+          "path": "dist/identity-format.d.ts",
+          "size": 621,
+          "sha256": "d1ecf4fd510739f384f52e01e8d0d9bac2fa255fd94b2d20fa43309392fdc23e"
+        },
+        {
+          "path": "dist/identity-format.js",
+          "size": 3638,
+          "sha256": "cb8544fddaf3f523904382fea41b532551ed45d0898d7c0f45e79d0d4bc6d25a"
+        },
+        {
+          "path": "dist/identity-types.d.ts",
+          "size": 718,
+          "sha256": "d319bfe6410d55220bbc437b1130c8780867f711c2bc8223b8771d991108d0a0"
+        },
+        {
+          "path": "dist/identity-types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 1660,
+          "sha256": "ca60a0f2a24c4999375af18a4ec3ba55b7e568ac17befe6bcf2dd40941706ff4"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 868,
+          "sha256": "911efbce6bf6f2e18728f020665139fcd57cf8f4a88efbfc0756a088facf433e"
+        },
+        {
+          "path": "dist/invitation.d.ts",
+          "size": 912,
+          "sha256": "b8ba99cb12f2fb531f17b536eb827edab2e105a0d130fe040feab60f331945e1"
+        },
+        {
+          "path": "dist/invitation.js",
+          "size": 3036,
+          "sha256": "8f4baf59d84b78e5698e6aeaaf87a306e56c3429c24c9c4b9def3aab1e7ab312"
+        },
+        {
+          "path": "dist/manual-peer.d.ts",
+          "size": 568,
+          "sha256": "b81ba7f069c533fdf32d1e570b80d887f98902e5bce71d1d0bc6f3e73b5fc0e9"
+        },
+        {
+          "path": "dist/manual-peer.js",
+          "size": 2006,
+          "sha256": "7181d40f4c5ba19c1635026edaf0ab323a7a69bd081fc93b19c438fa63d4098b"
+        },
+        {
+          "path": "dist/native-peer.d.ts",
+          "size": 2334,
+          "sha256": "f95d08d55a34b664d77cfc7c4fbc93f8680cc9b5a05c5aa2957588c501c1c659"
+        },
+        {
+          "path": "dist/native-peer.js",
+          "size": 11790,
+          "sha256": "8856c6595fa79f8babc15bee248256ee928d9725119ce03a4141e11bd26141df"
+        },
+        {
+          "path": "dist/pointer-driver.d.ts",
+          "size": 2275,
+          "sha256": "9dd9d5ec4a5159988b0fdf6fc752e40d9b6c9bbfd16c92db5c391d76d4cf009a"
+        },
+        {
+          "path": "dist/pointer-driver.js",
+          "size": 9240,
+          "sha256": "c160c55b2624bc9e2143aa415f7cb484251b07b42112b8f934d2eb067b97e9bc"
+        },
+        {
+          "path": "dist/pointer-provider.d.ts",
+          "size": 1250,
+          "sha256": "f261f27fd9f09690857992911b6b48630f849957353acfee9f930acf37a545bc"
+        },
+        {
+          "path": "dist/pointer-provider.js",
+          "size": 3211,
+          "sha256": "38489baade948fa49e3cc0dfc64198117543c001b53e95767b8f14cf36d2766c"
+        },
+        {
+          "path": "dist/web-identity.d.ts",
+          "size": 716,
+          "sha256": "b1489c4b544f485a6df768770048f3fca7010224f1333a219df68ce4abd203c1"
+        },
+        {
+          "path": "dist/web-identity.js",
+          "size": 15725,
+          "sha256": "7a14c9f90606a2b668a6385118cce91065c5f48234cd97a47ab950e66a3a2afc"
+        },
+        {
+          "path": "dist/wire.d.ts",
+          "size": 1712,
+          "sha256": "01332afa53219736d711bb38ad6e36b7163f9a2c8085bd0e0b058351a71ece82"
+        },
+        {
+          "path": "dist/wire.js",
+          "size": 11458,
+          "sha256": "64583fc29d567022af584484dd23e4e4afc68231d7052b97dcf6b36b067e4b36"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 607,
+          "sha256": "2e394c7f2af437fbd27caedea803f2c73a3a0c427c87abb7126daf0c7f65e9c0"
+        },
+        {
+          "path": "README.md",
+          "size": 2315,
+          "sha256": "c2e3c074f1e4a080ed731d6c21f46b73abab40521f4d222d51b3eaa6057fe6ca"
+        }
+      ]
+    },
+    {
+      "name": "@101/connect",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/packages/connect",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-LeM7RM/tarballs/101-connect-0.1.0.tgz",
+      "sha256": "258fe24dcb9216b7091bbe95704af8f4a5001b4a6297940e1cafc2b32d042522",
+      "bytes": 23952,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 323,
+          "sha256": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 164,
+          "sha256": "b36746339bb1e96e7d9aabaca015025f16b02218a182f1a686c747072c7021fe"
+        },
+        {
+          "path": "examples/media-description.d.ts",
+          "size": 379,
+          "sha256": "b1e9a9ea7fa541e22f2b6678c784708f412c8ddae252d5dc88f2560ab1d96320"
+        },
+        {
+          "path": "examples/media-description.js",
+          "size": 2702,
+          "sha256": "07f8ed0b4ce4f6ab3c1340b396c9ca2f3bfa659f68848716bc3a5b39e1d9faf2"
+        },
+        {
+          "path": "examples/media-description.ts",
+          "size": 2600,
+          "sha256": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a"
+        },
+        {
+          "path": "examples/pointer.d.ts",
+          "size": 1297,
+          "sha256": "2047eac875e2d943785925f264e3fa2f957fbc8a4daa9a5240204ddb9df32362"
+        },
+        {
+          "path": "examples/pointer.js",
+          "size": 3905,
+          "sha256": "2e6903198d0d59134753a01407479308da117d66b83494ad76b81b0c2e17b4b9"
+        },
+        {
+          "path": "examples/pointer.ts",
+          "size": 4042,
+          "sha256": "496b67f53df61b5ecee572ecfa071a021f2f16c2085aecd3296ab214914f7874"
+        },
+        {
+          "path": "examples/resource-documents.d.ts",
+          "size": 313,
+          "sha256": "32d3e9a6de25b0e3bacab62eb576fd0cb51f147caa455f7193729c25ca43c451"
+        },
+        {
+          "path": "examples/resource-documents.js",
+          "size": 2981,
+          "sha256": "08a1f92ff712e6877315b11fa72371e7931855bf44c393c9a0a0fcd30dbc6473"
+        },
+        {
+          "path": "examples/resource-documents.ts",
+          "size": 2969,
+          "sha256": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595"
+        },
+        {
+          "path": "examples/rich-input.d.ts",
+          "size": 2134,
+          "sha256": "8eb4c560ace6b22d2617b0e49ea3418990a9d4157b8156cbe1f4b951b15a6868"
+        },
+        {
+          "path": "examples/rich-input.js",
+          "size": 6640,
+          "sha256": "e22114fd7bd4f9d1f96304dcea8b02f9245fe3a91a166d7d98f2b4c898308684"
+        },
+        {
+          "path": "examples/rich-input.ts",
+          "size": 6989,
+          "sha256": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19"
+        },
+        {
+          "path": "examples/run.d.ts",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "examples/run.js",
+          "size": 881,
+          "sha256": "205e46b1d7a4dff26f00c414b7bfe3b33e0515b8c21d8580b4d9829b60227b3a"
+        },
+        {
+          "path": "examples/run.ts",
+          "size": 866,
+          "sha256": "a3f9bbda7112c76bf8355d424f49b773856b4c8dddced60fd8bd1371e8c377c8"
+        },
+        {
+          "path": "examples/sensor-feedback.d.ts",
+          "size": 1797,
+          "sha256": "d313e67fac8cab0abe1ebe91ab41a444b808360cce7305724053657ec6cce14f"
+        },
+        {
+          "path": "examples/sensor-feedback.js",
+          "size": 6955,
+          "sha256": "bccc8b32b12e2ea2d795dea8a4351dd9c38759bdc3c1789657f274cea6369373"
+        },
+        {
+          "path": "examples/sensor-feedback.ts",
+          "size": 6881,
+          "sha256": "92d90895e2c705c5097df216df05c5139d52e6cedea8309627d4d0006e6bac2e"
+        },
+        {
+          "path": "examples/spatial-joints.d.ts",
+          "size": 1449,
+          "sha256": "db3f770fb2364a288d1d5f7dc1a48bc546733cec30f5e2c556c1be2777def52c"
+        },
+        {
+          "path": "examples/spatial-joints.js",
+          "size": 4830,
+          "sha256": "e876e9d85fff2eb257b6c63bc6e7a35c6b432bacb81ffe99aa31197beaa24396"
+        },
+        {
+          "path": "examples/spatial-joints.ts",
+          "size": 5197,
+          "sha256": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339"
+        },
+        {
+          "path": "examples/telemetry-batch.d.ts",
+          "size": 2024,
+          "sha256": "bafa1f5fa4877e0971e204124825b49e2a8a5096f355672806141938dedfc17e"
+        },
+        {
+          "path": "examples/telemetry-batch.js",
+          "size": 6503,
+          "sha256": "64a1b97473dc4fb870460e45e202bdb54755b366c92f432ffa6496efff30bcf9"
+        },
+        {
+          "path": "examples/telemetry-batch.ts",
+          "size": 6910,
+          "sha256": "3315b1ecaf9f064925d2b4dc28a8cc4e37de7fa48151e3a35eaff2d4c365b9b5"
+        },
+        {
+          "path": "examples/threshold.d.ts",
+          "size": 590,
+          "sha256": "5fed13c008ae58b242cfc08e73670d4edcb53c501d04e14818de1b1ebb25d9ef"
+        },
+        {
+          "path": "examples/threshold.js",
+          "size": 1062,
+          "sha256": "6b6d2c0364b1c34d088de53b89c7c8028e624cb893b923de3fef4e6e27c2f159"
+        },
+        {
+          "path": "examples/threshold.ts",
+          "size": 1136,
+          "sha256": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 1925,
+          "sha256": "95fc82a1ebb90399d17a50f1ded8bc579ea9aab16d6ba03666dda4547b24124b"
+        },
+        {
+          "path": "README.md",
+          "size": 3071,
+          "sha256": "fe1e97c1154ccf7ee44961565b2d80ad3248c4e05335ef33e2ea25f87240d680"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 20077,
+          "sha256": "5d28c2ea542827041806c8543898d0cecbd14a042d6203204b0145da0893a061"
+        }
+      ]
+    }
+  ]
+}

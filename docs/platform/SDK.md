@@ -184,6 +184,20 @@ path separate from the 4 KiB signal packets. The
 demonstrates success, denial, changed content and cancellation; remote
 transport and actual file/browser/native providers remain separate work.
 
+## Media and render-surface descriptions
+
+`parseMediaManifest()` validates a separate version 1 manifest for audio and
+video capture/output tracks, exact codec tokens, property ranges and video
+render-target geometry. Descriptions are immutable and cannot carry a static
+ready or working claim. `planMediaBinding()` accepts concrete host probes that
+name the selected manifest resource IDs and registrations, and returns only a compatible proposal when availability,
+codec and current properties match without silent conversion or scaling. It
+does not open a track, route media or report a rendered frame. The
+[simulated media description example](../../examples/device-pipelines/media-description.ts)
+shows a video-to-canvas proposal and unavailable microphone/codec failures.
+Actual capture, transport, permission and physical output remain separate
+qualifications.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

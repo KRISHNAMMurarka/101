@@ -135,6 +135,14 @@ denial, changed bytes and cancellation expose no partial document. This
 example does not read a URL or filesystem path, and it does not qualify a
 remote or physical provider.
 
+## Media description proposal
+
+`media-description.ts` declares simulated video/audio tracks and a canvas
+render target, then asks trusted local probes whether exact codec and geometry
+support exists. It returns a compatible video proposal while an unavailable
+microphone and unsupported codec fail. A proposal is description evidence;
+this example starts no capture or output route.
+
 ## Local peer resource example
 
 [remote-pointer.ts](remote-pointer.ts) declares application pointer/contact resources and explicit owner selection into host-authorized sinks through the public facade. Run `node tools/qa-resource-peer.mjs chromium` or `webkit` from the repository root for actual two-peer WebRTC with synthetic values, both diagonals, resize and loss. This separately labeled runtime check does not prove a phone touch provider, native input, endpoint authentication or physical acceptance. See [resource QA](../../docs/platform/RESOURCE-BINDING-QA-2026-10-02.md).

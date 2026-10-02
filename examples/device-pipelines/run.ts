@@ -4,6 +4,7 @@ import { runTelemetryBatchExample } from './telemetry-batch.ts';
 import { runSpatialJointExample } from './spatial-joints.ts';
 import { runRichInputExample } from './rich-input.ts';
 import { runResourceDocumentExample } from './resource-documents.ts';
+import { runMediaDescriptionExample } from './media-description.ts';
 
 console.log(JSON.stringify({
   pointer: runPointerExample(),
@@ -13,4 +14,5 @@ console.log(JSON.stringify({
   spatialJoints: runSpatialJointExample(),
   richInput: runRichInputExample(),
   resourceDocuments: await runResourceDocumentExample(),
+  mediaDescription: runMediaDescriptionExample(),
 }, null, 2));

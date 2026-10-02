@@ -14,3 +14,6 @@ export { createSpatialPoseConverter } from './spatial.ts';
 export type { SpatialPoseConverter, SpatialPoseConverterOptions, SpatialConversionMetadata } from './spatial.ts';
 export { createAssetReference, parseAssetReference, verifyAssetContent, snapshotResourceBytes, MAX_RESOURCE_BYTES, MAX_RESOURCE_CHUNK_BYTES } from './resource.ts';
 export type { AssetKind, AssetReference } from './resource.ts';
+export { parseMediaManifest, planMediaBinding } from './media.ts';
+export type { MediaRange, AudioProperties, VideoProperties, VideoGeometry, MediaTrackDescription,
+  RenderTargetDescription, MediaManifest, MediaEndpointProbe, MediaHostProbe, MediaBindingResult } from './media.ts';
