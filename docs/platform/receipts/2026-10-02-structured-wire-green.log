@@ -1,0 +1,21 @@
+✔ structured JSON values have a distinct negotiated wire version and immutable roundtrip (3.216542ms)
+✔ structured reliable events retain their own codec, operation and deadline (0.311375ms)
+✔ structured wire rejects oversized, sparse, executable, nonfinite and excessive nesting values (0.955916ms)
+✔ compact pointer cannot drop extra structured fields and old primitive wire bytes stay version one (0.341125ms)
+✔ JSON retains general controls, signal types, events and immutable snapshots on their lanes (3.429292ms)
+✔ malformed JSON, unknown protocol vocabulary and codecs fail closed (1.338292ms)
+✔ slots, sequences, revisions and ready limits reject first invalid bounds (1.086625ms)
+✔ capture, clock and event shape require finite times and canonical safe operation IDs (1.50475ms)
+✔ UTF-8 packet limits and the independent descriptor limit reject oversized non-ASCII payloads (3.697ms)
+✔ encoder rejects accessors, prototypes, cycles and non-JSON data without evaluating getters (0.770333ms)
+✔ compact pointer has independently specified network-order bytes and preserves float64 capture time (0.298208ms)
+✔ compact pointer rejects wrong lengths, reserved bits, profile tags and numeric bounds (0.394708ms)
+✔ compact coordinates preserve both diagonal directions within the absolute error contract (0.294666ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1213.099958

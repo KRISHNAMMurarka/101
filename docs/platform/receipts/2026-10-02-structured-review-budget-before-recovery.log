@@ -1,0 +1,26 @@
+{
+  "wireBytes": 3941,
+  "runtimeBytes": 4352,
+  "runtimeResult": {
+    "ok": false,
+    "reason": "payload-limit"
+  },
+  "slot": 1,
+  "accepted": false,
+  "smallerAccepted": false,
+  "count": 0,
+  "released": 1,
+  "publisher": {
+    "active": 0,
+    "pending": 0,
+    "stopped": false,
+    "reason": "overload"
+  },
+  "receiver": {
+    "active": 0,
+    "pending": 0,
+    "stopped": false,
+    "reason": "overload",
+    "clockReady": true
+  }
+}

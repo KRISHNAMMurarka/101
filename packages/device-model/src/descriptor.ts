@@ -1,13 +1,15 @@
 export type JsonValue = null | boolean | number | string | JsonValue[] | JsonObject;
 export interface JsonObject { [key: string]: JsonValue }
 
-export type SignalValue = boolean | number | string | { x: number; y: number; z?: number };
+export type SignalValue = boolean | number | string | readonly SignalValue[] | { readonly [key: string]: SignalValue };
 export type ValueSchema =
   | { type: 'boolean' }
   | { type: 'scalar'; unit: string; min: number; max: number; frame?: string; resolution?: number }
   | { type: 'vector'; unit: string; min: number; max: number; frame: string;
       components: readonly ['x', 'y'] | readonly ['x', 'y', 'z']; resolution?: number }
-  | { type: 'enum'; values: readonly string[] };
+  | { type: 'enum'; values: readonly string[] }
+  | { type: 'record'; fields: Readonly<Record<string, ValueSchema>>; optional?: readonly string[] }
+  | { type: 'array'; items: ValueSchema; minItems: number; maxItems: number };
 export type DeliveryPolicy = { mode: 'latest'; maxHz: number; maxAgeMs: number }
   | { mode: 'reliable'; maxAgeMs: number };
 export type PermissionOperation = 'read' | 'subscribe' | 'write' | 'invoke';
@@ -29,6 +31,10 @@ export interface DeviceDescriptor {
 const MAX_BYTES = 65536;
 const MAX_ENTRIES = 128;
 const MAX_JSON_DEPTH = 8;
+const MAX_SCHEMA_DEPTH = 4;
+const MAX_SCHEMA_NODES = 256;
+const FIELD_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
+const UNSAFE_FIELDS = new Set(['__proto__', 'prototype', 'constructor']);
 const NAMESPACE = /^[A-Za-z][A-Za-z0-9._-]*:[\s\S]+$/;
 
 function hasControl(value: string): boolean {
@@ -169,32 +175,68 @@ function stringList(input: unknown, path: string, max: number): string[] {
   return list;
 }
 
-/** Internal validated value-definition parser, also used for stand-alone signal parsing. */
+/** A bounded immutable value definition, including recursive record and array members. */
 export function parseValueSchema(input: unknown, path = '$.value'): ValueSchema {
-  const value = object(snapshotJson(input), path);
-  if (value.type === 'boolean') {
-    closed(value, ['type'], [], path);
-    return Object.freeze({ type: 'boolean' });
+  const snapshot = snapshotJson(input);
+  let nodes = 0;
+  function parse(input: JsonValue, path: string, depth: number): ValueSchema {
+    if (depth > MAX_SCHEMA_DEPTH) fail('schema-depth-limit', path);
+    nodes += 1;
+    if (nodes > MAX_SCHEMA_NODES) fail('schema-node-limit', path);
+    const value = object(input, path);
+    if (value.type === 'record') {
+      closed(value, ['type', 'fields'], ['optional'], path);
+      const declared = object(value.fields, `${path}.fields`);
+      const names = Object.keys(declared);
+      if (names.length < 1 || names.length > 32) fail('record-field-count', `${path}.fields`);
+      const fields: Record<string, ValueSchema> = {};
+      for (const name of names) {
+        text(name, `${path}.fields.${name}`);
+        if (!FIELD_NAME.test(name) || UNSAFE_FIELDS.has(name)) fail('record-field-name', `${path}.fields.${name}`);
+        fields[name] = parse(declared[name], `${path}.fields.${name}`, depth + 1);
+      }
+      let optional: readonly string[] | undefined;
+      if (Object.hasOwn(value, 'optional')) {
+        if (!Array.isArray(value.optional) || value.optional.length > 32) fail('bounded-array', `${path}.optional`);
+        const list = value.optional.map((member, index) => text(member, `${path}.optional[${index}]`));
+        if (new Set(list).size !== list.length) fail('duplicate-value', `${path}.optional`);
+        if (list.some((name) => !Object.hasOwn(fields, name))) fail('optional-field', `${path}.optional`);
+        optional = Object.freeze(list);
+      }
+      return Object.freeze({ type: 'record', fields: Object.freeze(fields), ...(optional === undefined ? {} : { optional }) });
+    }
+    if (value.type === 'array') {
+      closed(value, ['type', 'items', 'minItems', 'maxItems'], [], path);
+      const { minItems, maxItems } = value;
+      if (typeof minItems !== 'number' || !Number.isInteger(minItems) || minItems < 0 || minItems > 128) fail('array-bounds', `${path}.minItems`);
+      if (typeof maxItems !== 'number' || !Number.isInteger(maxItems) || maxItems < minItems || maxItems > 128) fail('array-bounds', `${path}.maxItems`);
+      return Object.freeze({ type: 'array', items: parse(value.items, `${path}.items`, depth + 1), minItems, maxItems });
+    }
+    if (value.type === 'boolean') {
+      closed(value, ['type'], [], path);
+      return Object.freeze({ type: 'boolean' });
+    }
+    if (value.type === 'enum') {
+      closed(value, ['type', 'values'], [], path);
+      return Object.freeze({ type: 'enum', values: Object.freeze(stringList(value.values, `${path}.values`, 64)) });
+    }
+    if (value.type !== 'scalar' && value.type !== 'vector') fail('value-type', `${path}.type`);
+    const vector = value.type === 'vector';
+    closed(value, vector ? ['type', 'unit', 'min', 'max', 'frame', 'components'] : ['type', 'unit', 'min', 'max'], vector ? ['resolution'] : ['frame', 'resolution'], path);
+    const unit = text(value.unit, `${path}.unit`);
+    const min = finite(value.min, `${path}.min`);
+    const max = finite(value.max, `${path}.max`);
+    if (min > max) fail('ordered-range', path);
+    const frame = Object.hasOwn(value, 'frame') ? text(value.frame, `${path}.frame`) : undefined;
+    const resolution = Object.hasOwn(value, 'resolution') ? finite(value.resolution, `${path}.resolution`) : undefined;
+    if (resolution !== undefined && resolution <= 0) fail('positive-resolution', `${path}.resolution`);
+    const common = { unit, min, max, ...(frame === undefined ? {} : { frame }), ...(resolution === undefined ? {} : { resolution }) };
+    if (!vector) return Object.freeze({ type: 'scalar', ...common });
+    const components = stringList(value.components, `${path}.components`, 3);
+    if ((components.length !== 2 && components.length !== 3) || components[0] !== 'x' || components[1] !== 'y' || (components.length === 3 && components[2] !== 'z')) fail('vector-components', `${path}.components`);
+    return Object.freeze({ type: 'vector', ...common, frame: frame as string, components: Object.freeze(components) as readonly ['x', 'y'] | readonly ['x', 'y', 'z'] });
   }
-  if (value.type === 'enum') {
-    closed(value, ['type', 'values'], [], path);
-    return Object.freeze({ type: 'enum', values: Object.freeze(stringList(value.values, `${path}.values`, 64)) });
-  }
-  if (value.type !== 'scalar' && value.type !== 'vector') fail('value-type', `${path}.type`);
-  const vector = value.type === 'vector';
-  closed(value, vector ? ['type', 'unit', 'min', 'max', 'frame', 'components'] : ['type', 'unit', 'min', 'max'], vector ? ['resolution'] : ['frame', 'resolution'], path);
-  const unit = text(value.unit, `${path}.unit`);
-  const min = finite(value.min, `${path}.min`);
-  const max = finite(value.max, `${path}.max`);
-  if (min > max) fail('ordered-range', path);
-  const frame = Object.hasOwn(value, 'frame') ? text(value.frame, `${path}.frame`) : undefined;
-  const resolution = Object.hasOwn(value, 'resolution') ? finite(value.resolution, `${path}.resolution`) : undefined;
-  if (resolution !== undefined && resolution <= 0) fail('positive-resolution', `${path}.resolution`);
-  const common = { unit, min, max, ...(frame === undefined ? {} : { frame }), ...(resolution === undefined ? {} : { resolution }) };
-  if (!vector) return Object.freeze({ type: 'scalar', ...common });
-  const components = stringList(value.components, `${path}.components`, 3);
-  if ((components.length !== 2 && components.length !== 3) || components[0] !== 'x' || components[1] !== 'y' || (components.length === 3 && components[2] !== 'z')) fail('vector-components', `${path}.components`);
-  return Object.freeze({ type: 'vector', ...common, frame: frame as string, components: Object.freeze(components) as readonly ['x', 'y'] | readonly ['x', 'y', 'z'] });
+  return parse(snapshot, path, 1);
 }
 
 function parseDelivery(input: unknown, path: string): DeliveryPolicy {

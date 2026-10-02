@@ -10,8 +10,8 @@ prints deterministic pointer coordinates and command evidence as JSON.
 For an external consumer, build the current SDK with `npm run build:sdk -- HEAD`,
 install all five produced tarballs in a separate directory using offline npm,
 and run `node node_modules/@101/connect/examples/run.js`. The facade exports
-`@101/connect/examples/pointer`, `/examples/sensor-feedback` and
-`/examples/threshold` as compiled ESM with declarations. The packed examples also
+`@101/connect/examples/pointer`, `/examples/sensor-feedback`,
+`/examples/threshold` and `/examples/telemetry-batch` as compiled ESM with declarations. The packed examples also
 include readable source. No workspace link, type stripping or game dependency is
 needed for the compiled examples. See [distribution evidence](../../docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md)
 for exact supported checks and remaining qualification.
@@ -67,6 +67,34 @@ Unavailable input or upstream revocation resets hysteresis, marks derived output
 unavailable and clears pending commands. Invalid, stale or nonfinite readings do
 not produce an actuator command. The processor declares `Cel`; the SDK performs
 no automatic unit conversion.
+
+## Timestamped resident-memory batch
+
+`telemetry-batch.ts` declares 1–16 records of timestamp and resident bytes. Version
+2 adds optional quality; `upgradeTelemetryBatchV1()` explicitly validates and
+migrates version 1, labeling old readings `unverified`. A version mismatch cannot
+silently route. The deterministic runner uses labeled fixtures. A Node consumer
+can publish actual process memory through the same authorized embedded route:
+
+```js
+import { createTelemetryBatchPipeline } from '@101/connect/examples/telemetry-batch';
+
+const timestamp = performance.now();
+const batch = createTelemetryBatchPipeline({ now: () => timestamp });
+try {
+  batch.publish([{ timestamp, residentBytes: process.memoryUsage().rss, quality: 'observed' }]);
+  batch.runtime.flush();
+  console.log(batch.state().residentBytes);
+  batch.connection.stop(); // Releases the sink's owned telemetry state.
+} finally { batch.runtime.close(); }
+```
+
+Timestamp members retain the application's clock domain. Remote structured samples
+and events negotiate `json/2`; outer observation timestamps translate separately.
+The wire and full runtime observation/options envelopes each have an independent
+4 KiB limit. A wire-valid batch may exceed host admission once provenance is
+included. `payload-limit` reports a dropped batch without refreshing the route;
+smaller data may recover while the current grant remains active.
 
 ## Local peer resource example
 

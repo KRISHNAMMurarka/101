@@ -30,7 +30,14 @@ export interface RemoteApproval {
 export interface RemotePublisherOptions extends CommonOptions {
   device: unknown; available: (capability: string) => boolean;
 }
-const CODECS: readonly WireCodec[] = Object.freeze(['json/1', 'normalized-pointer/1']);
+function structured(capability: DeviceCapability): boolean { return capability.value.type === 'record' || capability.value.type === 'array'; }
+function codecsFor(device: Readonly<DeviceDescriptor>): readonly WireCodec[] {
+  return Object.freeze(['json/1', ...(device.capabilities.some(structured) ? ['json/2'] : []),
+    ...(device.capabilities.some(normalized) ? ['normalized-pointer/1'] : [])] as WireCodec[]);
+}
+function supports(capability: DeviceCapability, codec: WireCodec): boolean {
+  return codec === 'json/2' ? structured(capability) : codec === 'normalized-pointer/1' ? normalized(capability) : !structured(capability);
+}
 const envelope = (epoch: string) => ({ protocol: 'connect' as const, version: 1 as const, epoch });
 function identifier(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0 && value.length <= 128 && value.trim() === value &&
@@ -136,10 +143,10 @@ export class RemoteResourceReceiver {
     const capability = this.described.device.capabilities.find(value => value.id === options.capability);
     let sink: DeviceCapability | undefined;
     try { sink = parseDeviceDescriptor(options.sinkDevice).capabilities.find(value => value.id === options.sinkCapability); } catch { return; }
-    const codec = options.codec ?? 'json/1';
+    const codec = options.codec ?? (capability && structured(capability) ? 'json/2' : 'json/1');
     if (!capability || !sink || !capability.permissions.some(value => value === 'subscribe' || value === 'read') ||
       !schemasCompatible(capability, sink) || capability.delivery.mode !== sink.delivery.mode ||
-      !this.described.codecs.includes(codec) || (codec === 'normalized-pointer/1' && !normalized(capability))) return;
+      !this.described.codecs.includes(codec) || !supports(capability, codec)) return;
     const sourceLimits = limit(capability), sinkLimits = limit(sink);
     const maxHz = Math.min(sourceLimits.maxHz, sinkLimits.maxHz, ownerGrant.maxHz ?? 1000);
     const maxAgeMs = Math.min(sourceLimits.maxAgeMs, sinkLimits.maxAgeMs, ownerGrant.maxAgeMs);
@@ -204,7 +211,7 @@ export class RemoteResourceReceiver {
       }
       entry.ready = true; entry.lastReceivedAt = now; this.report('active'); return;
     }
-    if (!entry.ready || entry.connection.status().state !== 'active' || decoded.codec !== entry.codec && packet.type === 'sample' ||
+    if (!entry.ready || entry.connection.status().state !== 'active' || decoded.codec !== entry.codec ||
       packet.type !== (entry.capability.delivery.mode === 'latest' ? 'sample' : 'event') || packet.sequence <= entry.lastSequence) return;
     const translated = this.clock?.translate(packet.capturedAt, now);
     if (!translated) { this.loseClock(); return; }
@@ -223,6 +230,7 @@ export class RemoteResourceReceiver {
         receivedAt: now, captureLatest: Math.min(translated.latest, now), uncertaintyMs: translated.uncertaintyMs },
       ...(packet.type === 'event' ? { operationId: packet.operationId, deadline } : {}) });
     if (this.stopped || this.slots.get(entry.slot) !== entry) return;
+    if (!result.ok && result.reason === 'payload-limit') { this.report('payload-limit'); return; }
     if (!result.ok || result.value.accepted === 0) { this.remove(entry.slot, 'overload'); return; }
     entry.lastSequence = packet.sequence; if (packet.type === 'event') entry.lastOperation = Number(packet.operationId);
     entry.lastReceivedAt = now;
@@ -309,7 +317,7 @@ export class RemoteResourcePublisher {
   start(): boolean {
     if (this.started || this.stopped || !this.authorized()) return false;
     this.started = true;
-    if (!this.control({ ...envelope(this.epoch), type: 'describe', clockId: this.clockId, device: this.device, codecs: CODECS })) { this.stop('overload'); return false; }
+    if (!this.control({ ...envelope(this.epoch), type: 'describe', clockId: this.clockId, device: this.device, codecs: codecsFor(this.device) })) { this.stop('overload'); return false; }
     this.report('ready-to-select'); return !this.stopped;
   }
   private remove(slot: number, reason: StopReason, send = true): void {
@@ -334,8 +342,8 @@ export class RemoteResourcePublisher {
     const actual = capability && limit(capability);
     if (packet.slot <= this.slotWatermark || this.slots.size >= 128 || !capability || !actual || this.device.revision !== packet.descriptorRevision ||
       capability.schemaVersion !== packet.schemaVersion || !capability.permissions.some(value => value === 'read' || value === 'subscribe') ||
-      packet.maxAgeMs > actual.maxAgeMs || packet.maxHz > actual.maxHz || !CODECS.includes(packet.codec) ||
-      packet.codec === 'normalized-pointer/1' && !normalized(capability) || !this.ready(capability.id)) {
+      packet.maxAgeMs > actual.maxAgeMs || packet.maxHz > actual.maxHz || !codecsFor(this.device).includes(packet.codec) ||
+      !supports(capability, packet.codec) || !this.ready(capability.id)) {
       this.control({ ...envelope(this.epoch), type: 'stop', slot: packet.slot, reason: 'incompatible' }); return;
     }
     this.slotWatermark = packet.slot;
@@ -374,6 +382,8 @@ export class RemoteResourcePublisher {
         if (!time(deadline) || deadline <= now || deadline > capturedAt + entry.maxAgeMs) { admitted = false; continue; }
         packet = { ...base, type: 'event', operationId: String(entry.operation + 1), deadline };
       }
+      // Apply the negotiated wire byte budget before retaining producer data or advancing IDs.
+      try { encodePacket(packet, entry.codec); } catch { admitted = false; continue; }
       entry.sequence++; if (packet.type === 'event') entry.operation++;
       if (packet.type === 'sample') {
         entry.pending = packet;
@@ -388,7 +398,7 @@ export class RemoteResourcePublisher {
   }
   private sendValue(entry: PublishSlot, packet: WireValue, now: number): boolean {
     try {
-      const accepted = this.#peer.send(packet.type === 'sample' ? 'disposable' : 'reliable', encodePacket(packet, packet.type === 'event' ? 'json/1' : entry.codec));
+      const accepted = this.#peer.send(packet.type === 'sample' ? 'disposable' : 'reliable', encodePacket(packet, entry.codec));
       if (accepted && !this.stopped && this.slots.get(entry.slot) === entry) { entry.lastSentAt = now; return true; }
     } catch { /* Invalid/oversized producer output cannot be dispatched. */ }
     return false;

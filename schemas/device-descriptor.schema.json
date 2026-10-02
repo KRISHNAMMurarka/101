@@ -7,9 +7,14 @@
     "descriptorMaxUtf8Bytes": 65536,
     "jsonMaxDepth": 8,
     "jsonMaxEntriesPerContainer": 128,
+    "valueSchemaMaxDepth": 4,
+    "valueSchemaMaxNodes": 256,
     "rules": [
       "finite numeric values",
       "min must be no greater than max",
+      "array minItems must be no greater than maxItems",
+      "record optional members must be declared fields",
+      "value schema depth and total node limits apply recursively",
       "capability IDs must be unique",
       "metadata and extensions must be bounded immutable plain JSON data",
       "object input must have only enumerable data properties without cycles or custom prototypes"
@@ -272,8 +277,94 @@
             }
           },
           "additionalProperties": false
+        },
+        {
+          "$ref": "#/definitions/record"
+        },
+        {
+          "$ref": "#/definitions/array"
         }
       ]
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "type",
+        "fields"
+      ],
+      "properties": {
+        "type": {
+          "const": "record"
+        },
+        "fields": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 32,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "not": {
+              "enum": [
+                "__proto__",
+                "prototype",
+                "constructor"
+              ]
+            }
+          },
+          "additionalProperties": {
+            "$ref": "#/definitions/value"
+          }
+        },
+        "optional": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "not": {
+              "enum": [
+                "__proto__",
+                "prototype",
+                "constructor"
+              ]
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "array": {
+      "type": "object",
+      "required": [
+        "type",
+        "items",
+        "minItems",
+        "maxItems"
+      ],
+      "properties": {
+        "type": {
+          "const": "array"
+        },
+        "items": {
+          "$ref": "#/definitions/value"
+        },
+        "minItems": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        },
+        "maxItems": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 128
+        }
+      },
+      "additionalProperties": false
     },
     "delivery": {
       "oneOf": [

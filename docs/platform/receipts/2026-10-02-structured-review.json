@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "internal read-only structured_boundary_review",
+  "status": "no reproduced blocker",
+  "base": "eadbeb88f1c3388fdd5313db7080221dd967e55b",
+  "scope": "Recursive validation, codec/version negotiation, resource authority, replay and cleanup; targeted follow-up of payload-limit recovery. This is not a managed security scan or physical qualification.",
+  "initialReview": {
+    "bindingSha256": "2eb2aa6740c1ac15a826cc650e6fad5f9733ef25c8dec53896da6314078c53e4",
+    "focusedTests": 23,
+    "result": "pass",
+    "extraReliableProbe": "json/1 event rejected without consuming IDs; json/2 operation 1 delivered"
+  },
+  "reproducedBoundary": {
+    "wireBytes": 3941,
+    "runtimeBytes": 4352,
+    "beforeRecovery": "payload-limit correctly rejected but removed slot; smaller subsequent batch could not recover",
+    "producerCommand": "node --experimental-strip-types /tmp/101-structured-review-budget-repro.mjs",
+    "preservedResult": "docs/platform/receipts/2026-10-02-structured-review-budget-before-recovery.log"
+  },
+  "followup": {
+    "result": "no blocker",
+    "inspected": "payload-limit returns after stopped/current-slot guard and before receiver sequence/operation/freshness advancement. Runtime rejects before queue or source ID mutation. Regression covers latest and reliable, smaller batch recovery, repeated rejection, expiry and one release. RED and 132-test GREEN receipts inspected; broad gates not rerun by reviewer.",
+    "bindingSha256": "dd2b8b7e2143fc23b19fec7628e6319f844135abf9895f95427cc35c0e8f9cbd",
+    "testSha256": "936d9e83baa6a70ea810e394bd752ad62705fbe3758d9ba4755ba258918fc19a"
+  },
+  "integrationOwnerSourceHashes": {
+    "packages/device-model/src/descriptor.ts": "f60291f5298fb69443eefff741469990d936cd6001951025e9eae197c65db594",
+    "packages/device-model/src/sample.ts": "bc522278ec27bf39b342763b7759395e6326688dc0f754fde5fbbf757178feab",
+    "packages/device-model/src/descriptor-schema.ts": "0645d3aa20662ad06aa66f482979e0c179ee1c7daa8473914e312889f6b9cb37",
+    "packages/device-model/src/structured.test.ts": "241ffaf05653d1f7e97eaa867d40874d05b4af9e78c26cce6b9a80f6b0a94111",
+    "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+    "packages/device-web/src/binding.ts": "dd2b8b7e2143fc23b19fec7628e6319f844135abf9895f95427cc35c0e8f9cbd",
+    "packages/device-web/src/structured-binding.test.ts": "936d9e83baa6a70ea810e394bd752ad62705fbe3758d9ba4755ba258918fc19a",
+    "packages/device-web/src/structured-wire.test.ts": "cea69451b3bf40aec906ed82f6ce6edc816b7b06beb8f220c96dc35c53e049cd",
+    "examples/device-pipelines/telemetry-batch.ts": "4494dcfdc14bf72b9cde3a6085102ac241e78de243ac6a5fd70d200a83cee8d8",
+    "tools/build-sdk.mjs": "038752f3e1d57a2d1bbb01c8e76ba2befc96c70e9a94879d84fb9823b338210c",
+    "tools/qa-sdk-consumer.mjs": "7d57783eb5bac1266344873b1ebaf3d1b97cd2a0fc9522629b0c54daf3cabfe7",
+    "schemas/device-descriptor.schema.json": "e2c09f86a60ba3af192ce72933fab1542435e9e406a30e2776e55e6bbf75aa0a"
+  }
+}

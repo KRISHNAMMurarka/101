@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -166,6 +166,7 @@ import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
+import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import modelSchema from '@101/device-model/schema/device-descriptor.json' with { type: 'json' };
 import facadeSchema from '@101/connect/schema/device-descriptor.json' with { type: 'json' };
 // @ts-expect-error Private source paths are not part of the external API.
@@ -187,6 +188,9 @@ async function authenticated() {
 const pointer = createPointerPipeline({ width: 500, height: 1000 });
 const sensor = createSensorFeedbackPipeline({ feedback: false });
 const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
+const telemetry = createTelemetryBatchPipeline({ now: () => 1000 });
+const migrated = upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }]);
+void [telemetry.publish(migrated), runTelemetryBatchExample().residentBytes];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
 `;
 
@@ -213,6 +217,7 @@ import { PeerDataTransport } from '@101/transport-webrtc';
 import { runPointerExample } from '@101/connect/examples/pointer';
 import { runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
+import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 `;
 
 const runtimeChecks = String.raw`
@@ -225,6 +230,14 @@ export async function checkRuntime() {
   check(feedback.temperature === 31.25 && feedback.unit === 'Cel' && feedback.commands.length === 1 && feedback.commands[0].value === true && feedback.operations[0].state === 'observed' && unverified.operations[0].state === 'unverified', 'Packed sensor feedback evidence failed');
   const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
   check(threshold.evaluate(31) === true && threshold.evaluate(29) === undefined && threshold.evaluate(27) === false, 'Packed threshold hysteresis failed');
+  const batch = runTelemetryBatchExample();
+  check(batch.kind === 'embedded-fixture' && batch.publication && batch.count === 2 && batch.residentBytes === 69632 && batch.quality === 'unverified', 'Packed structured batch consumer/migration failed');
+  const pipeline = createTelemetryBatchPipeline({ now: () => 1000 });
+  try {
+    check(pipeline.publish(upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }])).ok, 'Packed batch publication failed');
+    pipeline.runtime.flush(); check(pipeline.state().count === 1 && pipeline.state().residentBytes === 65536, 'Packed batch sink failed');
+    pipeline.connection.stop(); check(pipeline.state().count === 0 && pipeline.state().released === 1, 'Packed batch release failed');
+  } finally { pipeline.runtime.close(); }
   const identity = await sdk.createEphemeralWebIdentity();
   const message = new TextEncoder().encode('101 external consumer verification');
   const signature = await identity.sign(message);
@@ -242,7 +255,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 
@@ -251,6 +264,14 @@ function executeNode() {
 import { readFileSync } from 'node:fs';
 ` + runtimeChecks + String.raw`
 const summary = await checkRuntime();
+const observedAt = performance.now(), residentBytes = process.memoryUsage().rss;
+const memory = createTelemetryBatchPipeline({ now: () => observedAt });
+try {
+  check(memory.publish([{ timestamp: observedAt, residentBytes, quality: 'observed' }]).ok, 'Actual Node process memory batch failed admission');
+  memory.runtime.flush(); check(memory.state().residentBytes === residentBytes && memory.state().quality === 'observed', 'Actual Node memory reading lost meaning');
+  memory.connection.stop(); check(memory.state().count === 0, 'Actual Node telemetry state survived stop');
+  summary.actualNodeMemoryBatch = true;
+} finally { memory.runtime.close(); }
 const modelSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/device-model/schema/device-descriptor.json')), 'utf8'));
 const facadeSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/connect/schema/device-descriptor.json')), 'utf8'));
 check(JSON.stringify(modelSchema) === JSON.stringify(facadeSchema) && JSON.stringify(modelSchema) === JSON.stringify(model.DEVICE_DESCRIPTOR_SCHEMA), 'Public packed schema assets differ from runtime schema');

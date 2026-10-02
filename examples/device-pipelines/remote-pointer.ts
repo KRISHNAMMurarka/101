@@ -32,7 +32,9 @@ export function createRemotePointerSurface(options: SurfaceOptions) {
     const handle = runtime.registerSink({ device: surfaceDescriptor, capability: capability.id,
       apply(observation, context) {
         if (!context.isCurrent()) return;
-        if (capability.id === 'position' && typeof observation.value === 'object') normalized = { x: observation.value.x, y: observation.value.y };
+        const value = observation.value;
+        if (capability.id === 'position' && typeof value === 'object' && 'x' in value && 'y' in value &&
+          typeof value.x === 'number' && typeof value.y === 'number') normalized = { x: value.x, y: value.y };
         if (capability.id === 'contact' && typeof observation.value === 'boolean') contact = observation.value;
         options.onChange?.();
         try { options.onObservation?.(observation); } catch { /* An evidence observer cannot own a route. */ }

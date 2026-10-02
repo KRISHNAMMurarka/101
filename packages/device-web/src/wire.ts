@@ -1,16 +1,16 @@
-import { parseDeviceDescriptor } from '@101/device-model';
+import { parseDeviceDescriptor, snapshotJson } from '@101/device-model';
 import type { DeviceDescriptor, SignalValue } from '@101/device-model';
 
-export type WireCodec = 'json/1' | 'normalized-pointer/1';
-type Envelope = { protocol: 'connect'; version: 1; epoch: string };
-export type WireControl = Envelope & (
+export type WireCodec = 'json/1' | 'json/2' | 'normalized-pointer/1';
+type Envelope = { protocol: 'connect'; epoch: string };
+export type WireControl = Envelope & { version: 1 } & (
   | { type: 'describe'; clockId: string; device: Readonly<DeviceDescriptor>; codecs: readonly WireCodec[] }
   | { type: 'bind'; slot: number; capability: string; descriptorRevision: number; schemaVersion: number; codec: WireCodec; maxHz: number; maxAgeMs: number }
   | { type: 'ready'; slot: number; maxHz: number; maxAgeMs: number }
   | { type: 'stop'; slot: number; reason: 'stopped' | 'unavailable' | 'expired' | 'overload' | 'incompatible' }
   | { type: 'clock'; id: number; sentAt: number; remoteReceivedAt?: number; remoteSentAt?: number }
 );
-export type WireValue = Envelope & { slot: number; sequence: number; capturedAt: number; value: SignalValue } & (
+export type WireValue = Envelope & { version: 1 | 2; slot: number; sequence: number; capturedAt: number; value: SignalValue } & (
   | { type: 'sample'; operationId?: never; deadline?: never }
   | { type: 'event'; operationId: string; deadline: number }
 );
@@ -64,16 +64,16 @@ function text(input: unknown, max = 128): string {
 }
 
 function codec(input: unknown): WireCodec {
-  if (input !== 'json/1' && input !== 'normalized-pointer/1') invalid();
+  if (input !== 'json/1' && input !== 'json/2' && input !== 'normalized-pointer/1') invalid();
   return input;
 }
 
 function codecs(input: unknown): readonly WireCodec[] {
   if (!Array.isArray(input) || Object.getPrototypeOf(input) !== Array.prototype) invalid();
   const length = Object.getOwnPropertyDescriptor(input, 'length')?.value as number;
-  if (length < 1 || length > 2) invalid();
+  if (length < 1 || length > 3) invalid();
   const keys = Reflect.ownKeys(input);
-  if (keys.length !== length + 1 || keys.some((key) => key !== 'length' && key !== '0' && !(length === 2 && key === '1'))) invalid();
+  if (keys.length !== length + 1 || keys.some((key) => key !== 'length' && !Array.from({ length }, (_, index) => String(index)).includes(key as string))) invalid();
   const result: WireCodec[] = [];
   for (let index = 0; index < length; index += 1) {
     const property = Object.getOwnPropertyDescriptor(input, String(index));
@@ -84,7 +84,16 @@ function codecs(input: unknown): readonly WireCodec[] {
   return Object.freeze(result);
 }
 
-function signal(input: unknown): SignalValue {
+function signal(input: unknown, structured = false): SignalValue {
+  if (structured) {
+    const copied = snapshotJson(input);
+    function validate(value: typeof copied): void {
+      if (value === null) invalid();
+      if (typeof value === 'object') for (const child of Object.values(value)) validate(child);
+    }
+    validate(copied);
+    return copied as SignalValue;
+  }
   if (typeof input === 'boolean') return input;
   if (typeof input === 'number') {
     if (!Number.isFinite(input)) invalid();
@@ -105,8 +114,9 @@ function signal(input: unknown): SignalValue {
 
 function parsePacket(input: unknown): WirePacket {
   const packet = fields(input);
-  if (packet.protocol !== 'connect' || packet.version !== 1 || typeof packet.epoch !== 'string' || !EPOCH.test(packet.epoch)) invalid();
-  const envelope: Envelope = { protocol: 'connect', version: 1, epoch: packet.epoch };
+  if (packet.protocol !== 'connect' || (packet.version !== 1 && packet.version !== 2) || typeof packet.epoch !== 'string' || !EPOCH.test(packet.epoch) ||
+    packet.version === 2 && packet.type !== 'sample' && packet.type !== 'event') invalid();
+  const envelope = { protocol: 'connect' as const, version: 1 as const, epoch: packet.epoch };
   const shape = (required: readonly string[], optional: readonly string[] = []) => closed(packet, [...ENVELOPE_KEYS, ...required], optional);
   const limits = () => ({ maxHz: finite(packet.maxHz, 1, 1000), maxAgeMs: finite(packet.maxAgeMs, 1, 60000) });
   switch (packet.type) {
@@ -139,7 +149,7 @@ function parsePacket(input: unknown): WirePacket {
     case 'event': {
       const event = packet.type === 'event';
       shape(['slot', 'sequence', 'capturedAt', 'value', ...(event ? ['operationId', 'deadline'] : [])]);
-      const value = { ...envelope, slot: uint(packet.slot, 128), sequence: uint(packet.sequence), capturedAt: finite(packet.capturedAt), value: signal(packet.value) };
+      const value = { ...envelope, version: packet.version as 1 | 2, slot: uint(packet.slot, 128), sequence: uint(packet.sequence), capturedAt: finite(packet.capturedAt), value: signal(packet.value, packet.version === 2) };
       if (!event) return Object.freeze({ ...value, type: 'sample' });
       const operationId = packet.operationId;
       if (typeof operationId !== 'string' || operationId.length > 16 || !/^[1-9][0-9]*$/.test(operationId) || !Number.isSafeInteger(Number(operationId))) invalid();
@@ -156,8 +166,10 @@ function withinBytes(input: string, max: number): boolean {
 }
 
 function compactValue(packet: WirePacket): { x: number; y: number } {
-  if (packet.type !== 'sample' || packet.value === null || typeof packet.value !== 'object' || Object.hasOwn(packet.value, 'z')) invalid();
-  return { x: finite(packet.value.x, 0, 1), y: finite(packet.value.y, 0, 1) };
+  if (packet.type !== 'sample' || packet.version !== 1) invalid();
+  const value = fields(packet.value, 2);
+  closed(value, ['x', 'y']);
+  return { x: finite(value.x, 0, 1), y: finite(value.y, 0, 1) };
 }
 
 function encodeCompact(packet: WirePacket): ArrayBuffer {
@@ -195,14 +207,19 @@ export function decodePacket(data: string | ArrayBuffer, lane: 'reliable' | 'dis
     const packet = parsePacket(JSON.parse(data));
     if (packet.type !== 'describe' && !withinBytes(data, MAX_PACKET_BYTES)) return undefined;
     if ((packet.type === 'sample') !== (lane === 'disposable')) return undefined;
-    return { packet, codec: 'json/1' };
+    return { packet, codec: packet.version === 2 ? 'json/2' : 'json/1' };
   } catch { return undefined; }
 }
 
 /** Encode only validated inert snapshots; throws rather than coercing malformed input. */
 export function encodePacket(packet: unknown, selectedCodec: WireCodec = 'json/1'): string | ArrayBuffer {
   const selected = codec(selectedCodec);
-  const parsed = parsePacket(packet);
+  const input = fields(packet);
+  if (selected === 'json/2') {
+    if ((input.version !== 1 && input.version !== 2) || input.type !== 'sample' && input.type !== 'event') invalid();
+    input.version = 2;
+  } else if (input.version !== 1) invalid();
+  const parsed = parsePacket(input);
   if (selected === 'normalized-pointer/1') return encodeCompact(parsed);
   const data = JSON.stringify(parsed);
   if (!withinBytes(data, parsed.type === 'describe' ? MAX_ENVELOPE_BYTES : MAX_PACKET_BYTES)) invalid();

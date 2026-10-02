@@ -64,5 +64,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "apps/controller-native"]
+  "exclude": ["node_modules", "apps/controller-native", "release"]
 }

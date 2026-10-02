@@ -1,0 +1,143 @@
+[
+  {
+    "label": "tar-inventory:@101/device-model",
+    "executable": "tar",
+    "args": [
+      "-tzf",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-model-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "package/LICENSE\npackage/dist/descriptor-schema.js\npackage/dist/descriptor.js\npackage/dist/index.js\npackage/dist/remote-clock.js\npackage/dist/sample.js\npackage/schema/device-descriptor.json\npackage/package.json\npackage/README.md\npackage/dist/descriptor-schema.d.ts\npackage/dist/descriptor.d.ts\npackage/dist/index.d.ts\npackage/dist/remote-clock.d.ts\npackage/dist/sample.d.ts\n",
+    "stderr": ""
+  },
+  {
+    "label": "tar-inventory:@101/device-runtime",
+    "executable": "tar",
+    "args": [
+      "-tzf",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-runtime-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "package/LICENSE\npackage/dist/index.js\npackage/dist/lease.js\npackage/dist/runtime.js\npackage/dist/scheduler.js\npackage/dist/types.js\npackage/package.json\npackage/README.md\npackage/dist/index.d.ts\npackage/dist/lease.d.ts\npackage/dist/runtime.d.ts\npackage/dist/scheduler.d.ts\npackage/dist/types.d.ts\n",
+    "stderr": ""
+  },
+  {
+    "label": "tar-inventory:@101/transport-webrtc",
+    "executable": "tar",
+    "args": [
+      "-tzf",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-transport-webrtc-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "package/LICENSE\npackage/dist/index.js\npackage/dist/peer.js\npackage/dist/ports.js\npackage/package.json\npackage/README.md\npackage/dist/index.d.ts\npackage/dist/peer.d.ts\npackage/dist/ports.d.ts\n",
+    "stderr": ""
+  },
+  {
+    "label": "tar-inventory:@101/device-web",
+    "executable": "tar",
+    "args": [
+      "-tzf",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-web-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "package/LICENSE\npackage/dist/authenticated-peer.js\npackage/dist/binding.js\npackage/dist/identity-format.js\npackage/dist/identity-types.js\npackage/dist/index.js\npackage/dist/invitation.js\npackage/dist/manual-peer.js\npackage/dist/native-peer.js\npackage/dist/pointer-driver.js\npackage/dist/pointer-provider.js\npackage/dist/web-identity.js\npackage/dist/wire.js\npackage/package.json\npackage/README.md\npackage/dist/authenticated-peer.d.ts\npackage/dist/binding.d.ts\npackage/dist/identity-format.d.ts\npackage/dist/identity-types.d.ts\npackage/dist/index.d.ts\npackage/dist/invitation.d.ts\npackage/dist/manual-peer.d.ts\npackage/dist/native-peer.d.ts\npackage/dist/pointer-driver.d.ts\npackage/dist/pointer-provider.d.ts\npackage/dist/web-identity.d.ts\npackage/dist/wire.d.ts\n",
+    "stderr": ""
+  },
+  {
+    "label": "tar-inventory:@101/connect",
+    "executable": "tar",
+    "args": [
+      "-tzf",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-connect-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "package/LICENSE\npackage/dist/index.js\npackage/examples/pointer.js\npackage/examples/run.js\npackage/examples/sensor-feedback.js\npackage/examples/telemetry-batch.js\npackage/examples/threshold.js\npackage/schema/device-descriptor.json\npackage/package.json\npackage/README.md\npackage/dist/index.d.ts\npackage/examples/pointer.d.ts\npackage/examples/pointer.ts\npackage/examples/run.d.ts\npackage/examples/run.ts\npackage/examples/sensor-feedback.d.ts\npackage/examples/sensor-feedback.ts\npackage/examples/telemetry-batch.d.ts\npackage/examples/telemetry-batch.ts\npackage/examples/threshold.d.ts\npackage/examples/threshold.ts\n",
+    "stderr": ""
+  },
+  {
+    "label": "npm-version",
+    "executable": "npm",
+    "args": [
+      "--version"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "11.9.0\n",
+    "stderr": ""
+  },
+  {
+    "label": "offline-install",
+    "executable": "npm",
+    "args": [
+      "install",
+      "--offline",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-model-0.1.0.tgz",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-runtime-0.1.0.tgz",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-transport-webrtc-0.1.0.tgz",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-device-web-0.1.0.tgz",
+      "/Users/km/Desktop/games/101/release/sdk-dDpS8M/tarballs/101-connect-0.1.0.tgz"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "\nadded 5 packages in 231ms\n",
+    "stderr": ""
+  },
+  {
+    "label": "typescript-version",
+    "executable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "args": [
+      "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+      "--version"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "Version 5.9.3\n",
+    "stderr": ""
+  },
+  {
+    "label": "strict-types:nodenext",
+    "executable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "args": [
+      "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+      "--project",
+      "/tmp/101-sdk-consumer-THqBqb/tsconfig.nodenext.json"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "strict-types:bundler",
+    "executable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "args": [
+      "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+      "--project",
+      "/tmp/101-sdk-consumer-THqBqb/tsconfig.bundler.json"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "packed-node-javascript",
+    "executable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "args": [
+      "--no-experimental-strip-types",
+      "/tmp/101-sdk-consumer-THqBqb/runtime-check.mjs"
+    ],
+    "cwd": "/tmp/101-sdk-consumer-THqBqb",
+    "status": 0,
+    "stdout": "{\"embeddedPointer\":true,\"embeddedSensorFeedback\":true,\"threshold\":true,\"structuredBatch\":true,\"explicitBatchMigration\":true,\"moduleIdentity\":true,\"webCryptoSignVerify\":true,\"invitationExpiry\":true,\"directTransportAcceptedByFacade\":true,\"physicalWebRTC\":\"not-exercised\",\"actualNodeMemoryBatch\":true,\"publicSchemas\":true,\"privateSubpathsRejected\":15,\"packedRunEntry\":true}\n",
+    "stderr": ""
+  }
+]

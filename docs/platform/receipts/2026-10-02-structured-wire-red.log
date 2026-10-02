@@ -1,0 +1,23 @@
+✖ structured JSON values have a distinct negotiated wire version and immutable roundtrip (0.686459ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 145.449584
+
+✖ failing tests:
+
+test at packages/device-web/src/structured-wire.test.ts:8:1
+✖ structured JSON values have a distinct negotiated wire version and immutable roundtrip (0.686459ms)
+  TypeError: Invalid connect/1 packet
+      at invalid (file:///Users/km/Desktop/games/101/packages/device-web/src/wire.ts:27:35)
+      at codec (file:///Users/km/Desktop/games/101/packages/device-web/src/wire.ts:67:63)
+      at encodePacket (file:///Users/km/Desktop/games/101/packages/device-web/src/wire.ts:204:20)
+      at TestContext.<anonymous> (file:///Users/km/Desktop/games/101/packages/device-web/src/structured-wire.test.ts:10:19)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)

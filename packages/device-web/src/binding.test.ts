@@ -93,8 +93,9 @@ test('compact normalized pointer is negotiated independently of sensor JSON', ()
   const h = harness(); h.approve('position', 'normalized-pointer/1');
   assert.equal(h.approve('temperature', 'normalized-pointer/1'), undefined);
   h.publisher.publish('position', { x: 0.9, y: 0.1 }); h.receiver.tick();
-  const value = h.received[0].value; assert.equal(typeof value, 'object');
-  if (typeof value === 'object') { assert.ok(Math.abs(value.x - 0.9) <= 2 ** -25); assert.ok(Math.abs(value.y - 0.1) <= 2 ** -25); }
+  const value = h.received[0].value;
+  assert.ok(typeof value === 'object' && 'x' in value && 'y' in value && typeof value.x === 'number' && typeof value.y === 'number');
+  assert.ok(Math.abs(value.x - 0.9) <= 2 ** -25); assert.ok(Math.abs(value.y - 0.1) <= 2 ** -25);
   assert.equal(h.phone.sent.some(frame => frame.lane === 'disposable' && frame.data instanceof ArrayBuffer), true);
 });
 test('reliable contact operations deliver both edges and release locally on loss', () => {

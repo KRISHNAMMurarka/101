@@ -1,0 +1,47 @@
+✔ a descriptor preserves signal meaning and is an immutable snapshot (2.60775ms)
+✔ unknown fields, duplicate capability IDs and unnamespaced definitions fail closed (1.253583ms)
+✔ descriptor strings, revision, delivery and enumeration limits reject their first excess (2.383708ms)
+✔ capability count and UTF-8 byte limits apply to strings and object input (8.146166ms)
+✔ JSON snapshots reject getters, cycles, custom prototypes, sparse arrays and non-JSON values (0.502709ms)
+✔ metadata and extension snapshots bound container count and nesting without executing keys (1.233333ms)
+✔ aggregate byte overflow aborts traversal before inspecting later nested objects (0.651458ms)
+✔ signal values retain scalar units and reject nonfinite, out-of-range or coercible input (0.450958ms)
+✔ vectors have exactly the declared finite coordinates and are independent immutable copies (0.424416ms)
+✔ boolean and enumeration schemas do not coerce or accept undeclared choices (0.22675ms)
+✔ compatibility requires exact semantic, version, units, frame, range and representation (0.366792ms)
+✔ draft-07 editor schema agrees with runtime structural fixtures (44.409958ms)
+✔ four timestamps translate both offset signs without assuming symmetric delay (1.351417ms)
+✔ compatible exchanges intersect bounds instead of averaging their midpoints (0.131709ms)
+✔ incompatible exchanges clear synchronization until a later valid exchange (0.101708ms)
+✔ default drift expands the observation and ages the translated interval (0.167ms)
+✔ historical and future remote timestamps accrue drift from the observation anchor (0.14775ms)
+✔ drift widens old bounds before accepting a later compatible exchange (0.123375ms)
+✔ uncertainty admission is bounded and later observations can narrow a broad map (0.781125ms)
+✔ expiry includes its exact boundary and expired observations do not constrain reacquisition (0.136958ms)
+✔ default total RTT admission includes 200ms but rejects its first excess (0.130834ms)
+✔ impossible, negative, nonfinite and unsafe exchange timestamps fail closed (0.333083ms)
+✔ nonmonotonic exchanges and backwards translation times invalidate synchronization (0.136666ms)
+✔ explicit reset permits reacquisition in a new clock era (0.078125ms)
+✔ invalid translation inputs never yield an interval or poison a valid remote mapping (0.112041ms)
+✔ clock identities remain distinguishable and translation results are immutable (0.302541ms)
+✔ constructor rejects unbounded identities and invalid options (0.656ms)
+✔ a bounded telemetry batch accepts nested records with an omitted optional field (2.031208ms)
+✔ nested values are independent deep frozen snapshots with present optional fields (1.221958ms)
+✔ recursive value validation never drops unknown fields or fills missing required fields (2.282458ms)
+✔ each input container is snapshotted once before recursive value validation (0.225709ms)
+✔ nested executable and malformed JSON data fail without evaluating getters (1.220417ms)
+✔ record declarations enforce bounded safe names and declared unique optional members (1.41025ms)
+✔ array schema and value bounds accept zero and 128 but reject their first excess (0.581375ms)
+✔ schema nesting allows four nodes along a path and rejects a fifth (0.384125ms)
+✔ schema node budget counts all declared occurrences, allowing 256 and rejecting 257 (2.87225ms)
+✔ structured schema and value snapshots retain the existing aggregate JSON byte budget (5.176459ms)
+✔ recursive compatibility ignores record and optional ordering while retaining exact meaning (2.872ms)
+✔ draft-07 editor schema matches recursive structural fixtures and annotates runtime bounds (41.334584ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 192.752542

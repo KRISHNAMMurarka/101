@@ -126,10 +126,33 @@ The [game pointer bridge](../../examples/device-pipelines/game-pointer-bridge.ts
 
 `parseDeviceDescriptor(unknown)` accepts JSON text or plain data and returns a frozen snapshot.
 Core fields are closed. Namespaced extension data is preserved and never executed.
-`parseSignalValue(value, schema)` validates a boolean, scalar, exact x/y[/z] vector or enum.
+`parseSignalValue(value, schema)` validates a boolean, scalar, exact x/y[/z] vector,
+enum, bounded record or bounded array. Records declare closed member schemas and
+an optional-member list; arrays declare item schemas and integer min/max lengths.
+The result is a deep frozen inert snapshot, including every nested member.
 Values retain their units and coordinate frame; out-of-range values fail rather than clamp.
 `schemasCompatible(source, sink)` requires matching semantic ID, schema version and complete
 value definition. A conversion or algorithm needs explicit application-owned processing.
+
+Structured remote samples and events negotiate `json/2` value envelopes with
+connect version 2. Description/control messages remain version 1. Primitive-only
+devices keep their existing codec list and `json/1` bytes. A structured capability
+cannot bind `json/1` or the compact pointer codec. Compatibility includes recursive
+member definitions, optionality and array bounds; record-field ordering is inert.
+
+The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
+timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
+adapter validates each version and labels migrated readings `unverified`. Timestamp
+members retain the application's source clock domain; the remote bridge translates
+only the observation timestamp. Clean installed SDK QA additionally publishes an
+actual `process.memoryUsage().rss` reading through an authorized embedded route.
+
+Wire packets and runtime observation/options envelopes each have a separate 4 KiB
+limit. Provenance consumes runtime space, so a wire-valid batch may still fail host
+admission. Sender success does not prove host delivery or effect. Wire overflow
+fails before queueing or consuming IDs. A runtime `payload-limit` rejection reports
+the reason and preserves the grant without advancing received IDs or freshness.
+A smaller batch can recover; repeated rejected data cannot extend the deadman.
 
 The [editor schema](../../schemas/device-descriptor.schema.json) is generated with
 `npm run schemas:devices`. Standard schema validation covers structure; annotations identify
@@ -141,7 +164,9 @@ parser-only finite-number, relational, byte, depth and plain-object constraints.
 | Capabilities / entries per container | 128 / 128 |
 | Identifier, unit, semantic, frame / label | 128 / 160 Unicode characters |
 | Extension and metadata nesting | 8 |
-| Sample or operation envelope | 4 KiB |
+| Structured schema depth / total nodes | 4 / 256 |
+| Record fields / declared array maximum | 1–32 / 0–128 |
+| Wire value / full runtime observation-options envelope | 4 KiB / 4 KiB independently |
 | Descriptor rate / maximum age | 1–1000 Hz / 1–60000 ms |
 | Active routes / subscribers per source | At most 128 / 32; configurable downward |
 | Registered endpoints | Default 1024; configurable 1–4096 |

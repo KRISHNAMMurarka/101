@@ -1,4 +1,4 @@
-export { DeviceValidationError, parseDeviceDescriptor, snapshotJson } from './descriptor.ts';
+export { DeviceValidationError, parseDeviceDescriptor, parseValueSchema, snapshotJson } from './descriptor.ts';
 export type {
   DeviceCapability, DeviceDescriptor, DeliveryPolicy, JsonObject, JsonValue,
   OwnershipPolicy, PermissionOperation, SignalValue, ValueSchema,

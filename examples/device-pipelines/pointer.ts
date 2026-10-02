@@ -40,8 +40,10 @@ export function createPointerPipeline(options: PointerOptions = {}) {
   const sink = runtime.registerSink({ device: application, capability: 'position',
     apply(observation, context) {
       if (context.signal.aborted || !context.isCurrent()) return;
-      if (typeof observation.value !== 'object') throw new TypeError('Expected the declared pointer coordinates');
-      normalized = { x: observation.value.x, y: observation.value.y };
+      const value = observation.value;
+      if (typeof value !== 'object' || !('x' in value) || !('y' in value) || typeof value.x !== 'number' || typeof value.y !== 'number')
+        throw new TypeError('Expected the declared pointer coordinates');
+      normalized = { x: value.x, y: value.y };
     },
     release() { normalized = undefined; released += 1; },
   });

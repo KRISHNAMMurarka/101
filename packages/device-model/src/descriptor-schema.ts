@@ -3,6 +3,8 @@ const namespaced = { ...identifier, pattern: '^[A-Za-z][A-Za-z0-9._-]*:[^\\u0000
 const positiveInteger = { type: 'integer', minimum: 1, maximum: 4294967295 };
 const identifierList = { type: 'array', minItems: 1, maxItems: 128, uniqueItems: true, items: identifier };
 const range = { unit: identifier, min: { type: 'number' }, max: { type: 'number' }, resolution: { type: 'number', exclusiveMinimum: 0 } };
+const fieldName = { ...identifier, pattern: '^[A-Za-z_][A-Za-z0-9_]*$', not: { enum: ['__proto__', 'prototype', 'constructor'] } };
+const arrayBound = { type: 'integer', minimum: 0, maximum: 128 };
 
 function closed(properties: Record<string, unknown>, required: string[]) {
   return { type: 'object', required, properties, additionalProperties: false };
@@ -26,7 +28,9 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
     descriptorMaxUtf8Bytes: 65536,
     jsonMaxDepth: 8,
     jsonMaxEntriesPerContainer: 128,
-    rules: ['finite numeric values', 'min must be no greater than max', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
+    valueSchemaMaxDepth: 4,
+    valueSchemaMaxNodes: 256,
+    rules: ['finite numeric values', 'min must be no greater than max', 'array minItems must be no greater than maxItems', 'record optional members must be declared fields', 'value schema depth and total node limits apply recursively', 'capability IDs must be unique', 'metadata and extensions must be bounded immutable plain JSON data', 'object input must have only enumerable data properties without cycles or custom prototypes'],
   },
   ...closed({
     schemaVersion: { const: 1 }, id: identifier,
@@ -49,7 +53,15 @@ export const DEVICE_DESCRIPTOR_SCHEMA = freeze({
       closed({ type: { const: 'scalar' }, ...range, frame: identifier }, ['type', 'unit', 'min', 'max']),
       closed({ type: { const: 'vector' }, ...range, frame: identifier, components: { enum: [['x', 'y'], ['x', 'y', 'z']] } }, ['type', 'unit', 'min', 'max', 'frame', 'components']),
       closed({ type: { const: 'enum' }, values: { ...identifierList, maxItems: 64 } }, ['type', 'values']),
+      { $ref: '#/definitions/record' },
+      { $ref: '#/definitions/array' },
     ] },
+    record: closed({
+      type: { const: 'record' },
+      fields: { type: 'object', minProperties: 1, maxProperties: 32, propertyNames: fieldName, additionalProperties: { $ref: '#/definitions/value' } },
+      optional: { type: 'array', maxItems: 32, uniqueItems: true, items: fieldName },
+    }, ['type', 'fields']),
+    array: closed({ type: { const: 'array' }, items: { $ref: '#/definitions/value' }, minItems: arrayBound, maxItems: arrayBound }, ['type', 'items', 'minItems', 'maxItems']),
     delivery: { oneOf: [
       closed({ mode: { const: 'latest' }, maxHz: { type: 'integer', minimum: 1, maximum: 1000 }, maxAgeMs: { type: 'integer', minimum: 1, maximum: 60000 } }, ['mode', 'maxHz', 'maxAgeMs']),
       closed({ mode: { const: 'reliable' }, maxAgeMs: { type: 'integer', minimum: 1, maximum: 60000 } }, ['mode', 'maxAgeMs']),

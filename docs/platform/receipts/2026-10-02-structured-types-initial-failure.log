@@ -1,0 +1,19 @@
+examples/device-pipelines/telemetry-batch.ts(27,10): error TS2352: Conversion of type 'string | number | boolean | readonly SignalValue[] | { readonly [key: string]: SignalValue; }' to type 'readonly TelemetryReading[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ readonly [key: string]: SignalValue; }' is missing the following properties from type 'readonly TelemetryReading[]': length, concat, join, slice, and 26 more.
+packages/device-web/src/binding.test.ts(97,61): error TS2339: Property 'x' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'x' does not exist on type 'readonly SignalValue[]'.
+packages/device-web/src/binding.test.ts(97,109): error TS2339: Property 'y' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'y' does not exist on type 'readonly SignalValue[]'.
+packages/device-web/src/structured-wire.test.ts(16,31): error TS2352: Conversion of type '(Envelope & { version: 2 | 1; slot: number; sequence: number; capturedAt: number; value: SignalValue; } & { type: "sample"; operationId?: undefined; deadline?: undefined; }) | (Envelope & ... 1 more ... & { ...; })' to type '{ value: unknown[]; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Envelope & { version: 2 | 1; slot: number; sequence: number; capturedAt: number; value: SignalValue; } & { type: "event"; operationId: string; deadline: number; }' is not comparable to type '{ value: unknown[]; }'.
+    Types of property 'value' are incompatible.
+      Type 'SignalValue' is not comparable to type 'unknown[]'.
+        Type '{ readonly [key: string]: SignalValue; }' is missing the following properties from type 'unknown[]': length, pop, push, concat, and 35 more.
+release/sdk-3PMz0F/packages/connect/examples/pointer.ts(44,43): error TS2339: Property 'x' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'x' does not exist on type 'readonly SignalValue[]'.
+release/sdk-3PMz0F/packages/connect/examples/pointer.ts(44,67): error TS2339: Property 'y' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'y' does not exist on type 'readonly SignalValue[]'.
+release/sdk-i9ltKk/packages/connect/examples/pointer.ts(44,43): error TS2339: Property 'x' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'x' does not exist on type 'readonly SignalValue[]'.
+release/sdk-i9ltKk/packages/connect/examples/pointer.ts(44,67): error TS2339: Property 'y' does not exist on type 'readonly SignalValue[] | { readonly [key: string]: SignalValue; }'.
+  Property 'y' does not exist on type 'readonly SignalValue[]'.

@@ -46,9 +46,11 @@ export function createGamePointerBridge(options: GamePointerBridgeOptions) {
   const device = (kind: Kind) => `${scope.deviceId}:${kind}`;
   const report = (next: string) => { reason = next; try { onStatus?.(next); } catch { /* Diagnostics cannot own input. */ } };
   function frame(kind: Kind, value: Observation['value'], sequence: number, timestamp: number, receivedAt: number): InputFrame {
+    const position = kind === 'position' && typeof value === 'object' && 'x' in value && 'y' in value &&
+      typeof value.x === 'number' && typeof value.y === 'number' ? { x: 2 * value.x - 1, y: 2 * value.y - 1 } : undefined;
     return { deviceId: device(kind), playerId: scope.playerId, sequence, timestamp, receivedAt, source: mapping.source,
       actions: kind === 'contact' ? { [mapping.action]: value === true } : {},
-      ...(kind === 'position' && typeof value === 'object' && value !== null ? { vectors: { [mapping.vector]: { x: 2 * value.x - 1, y: 2 * value.y - 1 } } } : {}) };
+      ...(position ? { vectors: { [mapping.vector]: position } } : {}) };
   }
   function stop(next = 'stopped'): void {
     if (stopped) return;
