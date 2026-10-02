@@ -563,7 +563,10 @@ test("a failed initial offer transaction releases its lease and retries from a f
   }
 });
 
-test("a later controller offer failure is reported and backed off without an unhandled rejection", async () => {
+test("a later controller offer failure is reported and backed off without an unhandled rejection", async (context) => {
+  // Polling uses real timers, but its 20 ms retry window must not expire merely
+  // because other test/build processes delayed this test's next event-loop turn.
+  context.mock.method(Date, "now", () => 10_000);
   let exposeOffer = false;
   let signalOfferAttempted!: () => void;
   const offerAttempted = new Promise<void>((resolve) => { signalOfferAttempted = resolve; });

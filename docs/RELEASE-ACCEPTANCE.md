@@ -4,6 +4,37 @@ The first release is a local gaming system with a manifest-driven library, playa
 
 This is an acceptance definition, not a release approval. Publishing, deployment, signing, and distribution are outside the current authorization.
 
+## Evidence status — 2 October 2026
+
+The 1 October QA record contains supporting receipts for local gates, browser
+smokes, simulator behavior, a physical iPhone native pairing/reconnect, physical
+OnePlus pairing and ADB-injected Slashstorm swipes, laptop camera inference, and
+watch target/simulator work. Later sections in that same receipt supersede its
+earlier device-availability snapshots: the OnePlus later became available and
+produced injected game-response evidence; the earlier note that no Android
+phone was available remains accurate for the earlier candidate verification
+section only. These receipts do not close full release acceptance.
+
+In particular, injected phone gestures demonstrate transport-to-game response,
+but do not establish a human gameplay session, thumb reach, simultaneous touch,
+haptic feel, long-session behavior, or physical network-loss recovery. The
+iPhone's native role assignment and background/process-restart reconnect are
+physical-device evidence, while touch-to-game response and network interruption
+remain pending. Laptop camera timing, including a run using the iPhone as a
+Continuity Camera source, is not phone-side inference; no person completed the
+fourfold-throttled placement/gesture walkthrough. The watch evidence is target,
+signing, and simulator evidence; no physical watch or real sensor receipt exists.
+The Safari observations establish visual/navigation smoke only, and the
+automated two-build offline check does not close physical installed-PWA update
+acceptance.
+
+Keep the J rows in the [platform checklist](platform/MASTER-CHECKLIST.md) as
+historical supporting receipts. The G rows remain open until their complete
+procedures pass on the final accepted candidate. The [physical runbook](PHYSICAL-ACCEPTANCE-RUNBOOK.md)
+records how to perform and classify those remaining cases; the dated
+[reconciliation](platform/HISTORICAL-RECONCILIATION-2026-10-02.md) provides the
+chronological disposition map.
+
 The exact human/device procedure and required receipts are in [PHYSICAL-ACCEPTANCE-RUNBOOK.md](PHYSICAL-ACCEPTANCE-RUNBOOK.md).
 
 ## Required evidence

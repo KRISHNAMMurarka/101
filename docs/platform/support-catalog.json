@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "contract": "docs/platform/RELEASE-CONTRACT.md",
+  "baseline": "32e0e37",
+  "rows": [
+    {
+      "id": "embedded-node-foundation",
+      "status": "embedded",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "historical not recorded; current harness 26.5.2",
+        "runtime": "Node",
+        "runtimeVersion": "historical not recorded; current harness 24.14.0",
+        "formFactor": "computer",
+        "transport": "in-process",
+        "connector": "@101/connect",
+        "connectorVersion": "0.1.0",
+        "profiles": [
+          "descriptor/1",
+          "boolean/1",
+          "scalar/1",
+          "vector/1",
+          "enum/1"
+        ],
+        "resources": [
+          "application pointer surface-normalized",
+          "temperature Cel",
+          "boolean feedback"
+        ],
+        "unavailable": [
+          "transport",
+          "OS input",
+          "physical gateway",
+          "public distributions"
+        ]
+      },
+      "qualificationTasks": [
+        "H01",
+        "H02",
+        "H03",
+        "H04",
+        "H05",
+        "H06",
+        "H07",
+        "H08",
+        "H09",
+        "H10",
+        "H11",
+        "H12"
+      ],
+      "evidence": {
+        "implementation": [
+          "foundation-32e0e37"
+        ],
+        "contract": [
+          "foundation-32e0e37"
+        ],
+        "runtime": [
+          "foundation-32e0e37"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "historical-101-iphone",
+      "status": "historical",
+      "accepted": false,
+      "target": {
+        "os": "iOS",
+        "osVersion": "exact QA receipt",
+        "runtime": "React Native",
+        "runtimeVersion": "exact QA receipt",
+        "formFactor": "iPhone 16 Pro",
+        "transport": "LAN WebRTC",
+        "connector": "101 Link",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "101-v2",
+          "input-q1"
+        ],
+        "resources": [
+          "pairing",
+          "background/process reconnect"
+        ],
+        "unavailable": [
+          "complete touch/gameplay",
+          "network-loss",
+          "human ergonomics"
+        ]
+      },
+      "qualificationTasks": [
+        "J01",
+        "J02",
+        "G02",
+        "G04"
+      ],
+      "evidence": {
+        "implementation": [
+          "101-supporting-2026-10-01"
+        ],
+        "contract": [
+          "101-supporting-2026-10-01"
+        ],
+        "runtime": [
+          "101-supporting-2026-10-01"
+        ],
+        "physical": [
+          "101-supporting-2026-10-01"
+        ]
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "historical-101-oneplus",
+      "status": "historical",
+      "accepted": false,
+      "target": {
+        "os": "Android",
+        "osVersion": "13",
+        "runtime": "React Native",
+        "runtimeVersion": "exact QA receipt",
+        "formFactor": "OnePlus IV2201",
+        "transport": "LAN WebRTC",
+        "connector": "101 Link",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "101-v2",
+          "input-q1"
+        ],
+        "resources": [
+          "injected Slashstorm swipe",
+          "scanner torch/pinch"
+        ],
+        "unavailable": [
+          "human gameplay",
+          "optical QR",
+          "long/network-loss sessions"
+        ]
+      },
+      "qualificationTasks": [
+        "J03",
+        "J04",
+        "J05",
+        "G03",
+        "G04",
+        "G05"
+      ],
+      "evidence": {
+        "implementation": [
+          "101-supporting-2026-10-01"
+        ],
+        "contract": [
+          "101-supporting-2026-10-01"
+        ],
+        "runtime": [
+          "101-supporting-2026-10-01"
+        ],
+        "physical": [
+          "101-supporting-2026-10-01"
+        ]
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "node-floor",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "portable host",
+        "osVersion": "named receipt",
+        "runtime": "Node",
+        "runtimeVersion": "22.13.0",
+        "formFactor": "computer",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "node-current",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "computer",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    },
+    {
+      "id": "browser-chromium",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "supported target OS",
+        "osVersion": "exact receipt",
+        "runtime": "Chromium/Chrome",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer/phone/tablet",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "browser-firefox",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "supported target OS",
+        "osVersion": "exact receipt",
+        "runtime": "Firefox",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer/phone/tablet",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "browser-safari",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS/iOS/iPadOS",
+        "osVersion": "exact receipt",
+        "runtime": "Safari/WebKit",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer/phone/tablet",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "native-iphone",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "iOS",
+        "osVersion": "26.5",
+        "runtime": "React Native",
+        "runtimeVersion": "0.86.2",
+        "formFactor": "iPhone 16 Pro",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "native-android",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Android",
+        "osVersion": "13",
+        "runtime": "React Native",
+        "runtimeVersion": "0.86.2",
+        "formFactor": "OnePlus IV2201",
+        "transport": "in-process or negotiated WebRTC",
+        "connector": "general SDK provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "descriptor/1",
+          "app:pointer-position/1",
+          "app:pointer-contact/1"
+        ],
+        "resources": [
+          "typed application pointer",
+          "selected provider resources after probing"
+        ],
+        "unavailable": [
+          "unprobed resources",
+          "OS pointer until native qualification"
+        ]
+      },
+      "qualificationTasks": [
+        "T07",
+        "T08",
+        "T14",
+        "Q07",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "macos-agent",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "native OS agent",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "N05",
+        "N08",
+        "N09",
+        "N14",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "windows-agent",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Windows",
+        "osVersion": "11 24H2",
+        "runtime": "native OS agent",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "N06",
+        "N08",
+        "N09",
+        "N14",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "linux-agent",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Ubuntu",
+        "osVersion": "24.04 LTS",
+        "runtime": "named X11/Wayland portal",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "computer",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "N07",
+        "N08",
+        "N09",
+        "N14",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "apple-watch",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "watchOS",
+        "osVersion": "physical version required",
+        "runtime": "WatchConnectivity",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "watch",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "W01",
+        "W02",
+        "W04",
+        "W09",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "wear-watch",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Wear OS",
+        "osVersion": "physical version required",
+        "runtime": "Data Layer",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "watch",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "W01",
+        "W03",
+        "W04",
+        "W09",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "tv-receiver",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Android TV/receiver",
+        "osVersion": "physical version required",
+        "runtime": "permitted app/browser",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "TV",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "N10",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "headless-gateway",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "selected Linux/MCU",
+        "osVersion": "firmware required",
+        "runtime": "native gateway",
+        "runtimeVersion": "exact installed build required",
+        "formFactor": "embedded",
+        "transport": "qualified provider path",
+        "connector": "selected native provider",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [
+          "profile selected and frozen in bounded plan"
+        ],
+        "resources": [
+          "only probed/profile-declared resources"
+        ],
+        "unavailable": [
+          "all other resources"
+        ]
+      },
+      "qualificationTasks": [
+        "N12",
+        "A16",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "unlisted-devices",
+      "status": "unknown",
+      "accepted": false,
+      "target": {
+        "os": "unknown",
+        "osVersion": "unknown",
+        "runtime": "unknown",
+        "runtimeVersion": "unknown",
+        "formFactor": "unknown",
+        "transport": "unknown",
+        "connector": "unknown",
+        "connectorVersion": "not-yet-qualified",
+        "profiles": [],
+        "resources": [],
+        "unavailable": [
+          "all capabilities unknown until identified/profile-qualified"
+        ]
+      },
+      "qualificationTasks": [
+        "D07",
+        "Q12"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Only linked evidence scope applies; final release qualification remains open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ]
+    }
+  ]
+}

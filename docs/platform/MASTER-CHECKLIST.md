@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 20 completed with recorded evidence; 252 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 29 completed with recorded evidence; 243 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -54,14 +54,14 @@ Sections are workstreams, not permission to skip their dependencies. Security, a
 
 ### C — Release contract, support scope and evidence
 
-- [ ] **C01 — Define the release matrix.** Name supported OS/runtime/browser versions, form factors, transports, connectors, profiles, resources and explicit unavailable features; every claim resolves to a qualification row.
-- [ ] **C02 — Create the machine-readable support catalog.** Store implementation, contract-test, runtime-test and physical-verification levels independently, with versioned evidence references; unknown devices remain unknown.
-- [ ] **C03 — Reconcile historical 101 status.** Update stale dispositions using the chronological 1 October receipts; retain earlier failures and distinguish old smoke results from final candidate acceptance.
-- [ ] **C04 — Define roles and permissions.** Document device owner, participant, observer, developer, connector author, administrator and operator actions; no administrator bypasses resource-owner or OS permission.
-- [ ] **C05 — Freeze public naming and compatibility rules.** Define package names, schema/profile/codec versions, stability guarantees, deprecation and migration behavior; existing `@101/sdk` callers continue to work.
-- [ ] **C06 — Map migration and write ownership.** Assign each shared schema, lockfile, generated artifact, integration boundary and evidence ledger one owner; every new package has a tested first caller.
-- [ ] **C07 — Establish per-task evidence records.** Record source/build, environment, reproduction, result, failure and required equipment for each row; skipped and unavailable checks remain open.
-- [ ] **C08 — Define final acceptance and support policy.** Specify required profiles, supported life cycles, security maintenance and release-blocking failures; approve a named scope rather than an unrestricted compatibility claim.
+- [x] **C01 — Define the release matrix.** Name supported OS/runtime/browser versions, form factors, transports, connectors, profiles, resources and explicit unavailable features; every claim resolves to a qualification row. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C02 — Create the machine-readable support catalog.** Store implementation, contract-test, runtime-test and physical-verification levels independently, with versioned evidence references; unknown devices remain unknown. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C03 — Reconcile historical 101 status.** Update stale dispositions using the chronological 1 October receipts; retain earlier failures and distinguish old smoke results from final candidate acceptance. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C04 — Define roles and permissions.** Document device owner, participant, observer, developer, connector author, administrator and operator actions; no administrator bypasses resource-owner or OS permission. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C05 — Freeze public naming and compatibility rules.** Define package names, schema/profile/codec versions, stability guarantees, deprecation and migration behavior; existing `@101/sdk` callers continue to work. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C06 — Map migration and write ownership.** Assign each shared schema, lockfile, generated artifact, integration boundary and evidence ledger one owner; every new package has a tested first caller. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C07 — Establish per-task evidence records.** Record source/build, environment, reproduction, result, failure and required equipment for each row; skipped and unavailable checks remain open. [Contract evidence](CONTRACT-QA-2026-10-02.md).
+- [x] **C08 — Define final acceptance and support policy.** Specify required profiles, supported life cycles, security maintenance and release-blocking failures; approve a named scope rather than an unrestricted compatibility claim. [Contract evidence](CONTRACT-QA-2026-10-02.md).
 
 ### H — Embedded foundation already completed
 
@@ -310,7 +310,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### Q — Conformance, support matrix and regression qualification
 
-- [ ] **Q01 — Create the per-profile qualification template.** Require the evidence envelope below for every claimed connector/profile/runtime combination.
+- [x] **Q01 — Create the per-profile qualification template.** Require the evidence envelope below for every claimed connector/profile/runtime combination. [Contract evidence](CONTRACT-QA-2026-10-02.md).
 - [ ] **Q02 — Build portable model/codec contract tests.** Shared golden and negative fixtures cover all language bindings, supported schema versions and incompatible revisions.
 - [ ] **Q03 — Build faithful producer/decoder fixtures.** Use actual documented device/backend output, including malformed, short, nonfinite, missing and unexpected-profile data.
 - [ ] **Q04 — Build permission/identity adversarial suites.** Copied IDs, unauthorized peers, cross-session operations, revoked grants and plugin escalation fail at real execution boundaries.

@@ -2,6 +2,26 @@
 
 This runbook produces the physical evidence still required by [RELEASE-ACCEPTANCE.md](RELEASE-ACCEPTANCE.md). It does not approve a release, publish anything, or ask anyone to record camera, audio, or personal data.
 
+## Existing evidence and current disposition
+
+The 1 October [QA receipt](QA-2026-10-01.md) already documents limited physical
+supporting evidence. The OnePlus ADB-injected swipe runs show that phone input
+reached Slashstorm and changed its score, and the scanner checks show pinch and
+light-control behavior. Treat these as injected interaction smokes: they do not
+replace a person's gameplay, comfort, simultaneous-touch, haptic, long-session,
+or recovery observations. The iPhone receipt proves same-LAN native pairing and
+background/process-restart reconnect, but not touch-driven gameplay or a network
+interruption case. Run the full procedures below on the final accepted build.
+
+Laptop camera measurements, even when the source was the physical iPhone's
+Continuity Camera, measure inference on the Mac. They do not count as inference
+on a physical phone or as a person completing the placement/gesture walkthrough
+under fourfold CPU throttling. Watch target, signing, and simulator work does not
+count as physical watch or sensor evidence. Desktop Safari visual/navigation
+smoke and scripted browser checks do not complete the active-session Safari
+matrix. An automated two-build offline check is supporting evidence only; the
+physical installed-controller update procedure below remains required.
+
 Run it against a clean production build at one exact commit. Record the commit, build time, browser/version, operating system/version, device model, connection type, and any failure before changing the build or repeating a case. A pass means every stated observation occurred. A skipped case is still pending.
 
 ## People, equipment, and receipt
@@ -64,4 +84,4 @@ A missing asset on the old active page, an offline failure after activation, or 
 
 ## Closing and recording
 
-Attach completed receipts to [QA-2026-09-09.md](QA-2026-09-09.md), replacing only the matching pending item with a concise environment and outcome. Retain failed receipts and link the follow-up regression. Update [NEXT-101-STATUS.md](NEXT-101-STATUS.md) only after the source or physical receipt exists. Do not mark the release approved while any case above is pending or failed.
+Attach completed receipts to the current dated QA record (the 1 October record is [QA-2026-10-01.md](QA-2026-10-01.md)), replacing only the matching pending item with a concise environment and outcome. Retain failed receipts and link the follow-up regression. Update [NEXT-101-STATUS.md](NEXT-101-STATUS.md) only after the source or physical receipt exists. Do not mark the release approved while any case above is pending or failed.
