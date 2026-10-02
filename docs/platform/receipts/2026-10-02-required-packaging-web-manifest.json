@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "mode": "release",
+  "requiredTargets": [
+    "web"
+  ],
+  "status": "complete",
+  "packagingComplete": true,
+  "releaseAccepted": false,
+  "produced": [
+    {
+      "target": "web",
+      "profile": "production",
+      "artifact": "release/package-mAUDi0/web"
+    }
+  ],
+  "skipped": []
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 10,
+  "revision": 11,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6132,6 +6132,33 @@
       "failure": "ES2022-only strict declaration consumer fails: DOM/DOM.Iterable required and documented. Node22.13 minimum, other compiler/OS versions, physical transport, native-language/app distribution and upgrade/rollback are unverified.",
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "required-target-packaging-2026-10-02",
+      "revision": "containing implementation commit, base 239ae56f362f87b9cbb325130817871600301069; exact tool/test/manifest hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K08"
+      ],
+      "paths": [
+        "docs/platform/REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-required-packaging-red.log",
+        "docs/platform/receipts/2026-10-02-required-packaging-green.log",
+        "docs/platform/receipts/2026-10-02-required-packaging-web.receipt.json",
+        "docs/platform/receipts/2026-10-02-required-packaging-blocked.receipt.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0; actual local Web production build and actual debug/intermediate CLI rejection; disposable actual-CLI/npm fixture regressions",
+      "reproduction": "node --experimental-strip-types --test tests/release-packaging.test.ts; npm run package:release -- --release web; npm run package:release -- --release wear link (expected exit 1); exact repository gates",
+      "scope": "K08 only: all selected release targets required; debug/intermediate blocked; missing/empty/symlink artifacts and strict args rejected; diagnostic reports remain nonaccepted; unique owned outputs preserve prior bytes. No support or K04-K07/K10/K11/full-release/publication acceptance.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9329,7 +9356,8 @@
     {
       "id": "K08",
       "records": [
-        "pending-K08"
+        "pending-K08",
+        "required-target-packaging-2026-10-02"
       ],
       "dependencies": [],
       "equipment": [

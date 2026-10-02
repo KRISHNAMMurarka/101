@@ -1,29 +1,25 @@
 #!/usr/bin/env node
-// Builds the distributable 101 artifacts and collects them under `release/`.
+// Local packaging only. Each run owns one new directory; prior artifacts survive.
+// Default mode is diagnostic and reports build skips with exit zero. In --release
+// mode every selected target is required and must have a production profile.
+// Successful packaging does not establish signing, installation or release acceptance.
 //
-// The targets need genuinely different toolchains — Node for the web build, Rust and Tauri for the
-// desktop Hub, the Android SDK and JDK 21 for the Wear OS watch, Xcode for anything Apple — and no
-// single machine is guaranteed to have all of them. So each target is attempted independently and
-// the run reports exactly what was produced, what was skipped, and why.
-//
-// A skipped target is never silently omitted: "we shipped everything" and "we shipped what this
-// machine could build" are different claims, and only the second one is usually true.
-//
-//   node tools/package-release.mjs            # everything this machine can build
-//   node tools/package-release.mjs web hub    # only the named targets
+//   node tools/package-release.mjs                    # diagnostic, all targets
+//   node tools/package-release.mjs --release web hub  # required production targets
 
 import { execFile } from "node:child_process";
-import { cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { dirname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const run = promisify(execFile);
-const ROOT = new URL("..", import.meta.url).pathname;
-const OUT = join(ROOT, "release");
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 const TARGETS = [
   {
     name: "web",
+    profile: "production",
     description: "Standalone browser build of the launcher, all ten games and the Labs",
     async build() {
       await npm("build");
@@ -32,17 +28,17 @@ const TARGETS = [
   },
   {
     name: "hub",
+    profile: "production",
     description: "Native 101 Hub desktop bundle for this platform",
     async build() {
       await npm("desktop:app");
       // Tauri writes per-platform bundles; take whichever this OS produced.
-      const bundles = join(ROOT, "apps/desktop-hub/src-tauri/target/release/bundle");
-      if (!(await exists(bundles))) throw new Error("Tauri produced no bundle directory");
-      return collect(bundles, "desktop-hub", { from: bundles });
+      return collect("apps/desktop-hub/src-tauri/target/release/bundle", "desktop-hub");
     },
   },
   {
     name: "link",
+    profile: "intermediate",
     description: "JavaScript bundles for native 101 Link (iOS and Android)",
     async build() {
       await npm("native:export");
@@ -51,6 +47,7 @@ const TARGETS = [
   },
   {
     name: "wear",
+    profile: "debug",
     description: "Wear OS watch companion APK",
     async build() {
       await npm("watch:wear:build");
@@ -59,15 +56,18 @@ const TARGETS = [
   },
 ];
 
-const requested = process.argv.slice(2);
-const selected = requested.length ? TARGETS.filter((target) => requested.includes(target.name)) : TARGETS;
-if (!selected.length) {
-  console.error(`Unknown target. Available: ${TARGETS.map((target) => target.name).join(", ")}`);
+const args = process.argv.slice(2);
+const requested = args.filter((arg) => arg !== "--release");
+const invalid = args.filter((arg) => arg !== "--release" && !TARGETS.some((target) => target.name === arg));
+if (invalid.length || new Set(args).size !== args.length) {
+  console.error(`Unknown or duplicate argument. Use [--release] [${TARGETS.map((target) => target.name).join(" ")}].`);
   process.exit(1);
 }
+const mode = args.includes("--release") ? "release" : "diagnostic";
+const selected = requested.length ? requested.map((name) => TARGETS.find((target) => target.name === name)) : TARGETS;
 
-await rm(OUT, { recursive: true, force: true });
-await mkdir(OUT, { recursive: true });
+await mkdir(join(ROOT, "release"), { recursive: true });
+const OUT = await mkdtemp(join(ROOT, "release", "package-"));
 
 const produced = [];
 const skipped = [];
@@ -75,30 +75,41 @@ const skipped = [];
 for (const target of selected) {
   process.stdout.write(`\n▸ ${target.name} — ${target.description}\n`);
   try {
+    if (mode === "release" && target.profile !== "production") {
+      throw new Error(`${target.profile} target is unavailable for release packaging; an installable production target is required`);
+    }
     const artifact = await target.build();
-    produced.push({ target: target.name, artifact });
+    produced.push({ target: target.name, profile: target.profile, artifact });
     console.log(`  ok  ${artifact}`);
   } catch (error) {
     const reason = firstMeaningfulLine(error);
-    skipped.push({ target: target.name, reason });
+    skipped.push({ target: target.name, profile: target.profile, reason });
     console.log(`  skipped  ${reason}`);
   }
 }
 
 const manifest = {
-  // Callers stamp the time; scripts here stay deterministic so repeated runs diff cleanly.
+  schemaVersion: 1,
   version: JSON.parse(await readFile(join(ROOT, "package.json"), "utf8")).version,
+  mode,
+  requiredTargets: mode === "release" ? selected.map((target) => target.name) : [],
+  status: mode === "diagnostic" ? "diagnostic" : skipped.length ? "incomplete" : "complete",
+  packagingComplete: mode === "release" && skipped.length === 0,
+  releaseAccepted: false,
   produced,
   skipped,
 };
 await writeFile(join(OUT, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 
-console.log(`\n${produced.length} produced, ${skipped.length} skipped. See release/manifest.json`);
+console.log(`\n${produced.length} produced, ${skipped.length} skipped. See ${relative(ROOT, join(OUT, "manifest.json"))}`);
 if (skipped.length) {
-  console.log("\nSkipped targets need a toolchain this machine is missing:");
+  console.log("\nSkipped targets:");
   for (const entry of skipped) console.log(`  ${entry.target}: ${entry.reason}`);
-  console.log("\nThis is a report, not a failure. Install the toolchain and rerun that target alone.");
 }
+console.log(mode === "release"
+  ? `\nRequired production packaging ${manifest.packagingComplete ? "passed" : "failed"}. Release acceptance remains separate.`
+  : "\nDiagnostic report only; no release acceptance.");
+if (mode === "release" && skipped.length) process.exitCode = 1;
 
 // iOS and watchOS deliberately have no target here. Both need a provisioning profile tied to a
 // registered Apple Developer account, so a repository cannot produce an installable build for
@@ -109,22 +120,32 @@ async function npm(script) {
   await run("npm", ["run", script], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
 }
 
-async function collect(source, destination, options = {}) {
-  const from = options.from ?? join(ROOT, source);
-  if (!(await exists(from))) throw new Error(`${source} was not produced`);
+async function collect(source, destination) {
+  const from = join(ROOT, source);
   const to = join(OUT, destination);
-  await mkdir(join(to, ".."), { recursive: true });
-  await cp(from, to, { recursive: true });
-  return `release/${destination}`;
+  try {
+    await inspectArtifact(from);
+    await mkdir(dirname(to), { recursive: true });
+    await cp(from, to, { recursive: true, errorOnExist: true, force: false });
+    await inspectArtifact(to);
+    return relative(ROOT, to).replaceAll("\\", "/");
+  } catch (error) {
+    await rm(to, { recursive: true, force: true });
+    throw error;
+  }
 }
 
-async function exists(path) {
-  try {
-    await stat(path);
-    return true;
-  } catch {
-    return false;
+async function inspectArtifact(path) {
+  let files = 0, bytes = 0;
+  async function visit(current) {
+    const info = await lstat(current);
+    if (info.isFile()) { files++; bytes += info.size; }
+    else if (info.isDirectory()) {
+      for (const entry of await readdir(current)) await visit(join(current, entry));
+    } else throw new Error("Artifact contains a symlink or unsupported file type");
   }
+  await visit(path);
+  if (!files || !bytes) throw new Error("Artifact has no nonempty regular files");
 }
 
 function firstMeaningfulLine(error) {
@@ -133,5 +154,3 @@ function firstMeaningfulLine(error) {
     .find((entry) => entry && !entry.startsWith("npm ERR") && !entry.startsWith(">"));
   return (line ?? "unavailable").slice(0, 200);
 }
-
-

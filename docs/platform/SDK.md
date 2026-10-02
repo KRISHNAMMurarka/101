@@ -237,4 +237,13 @@ Node 22.13 minimum, other compiler/OS toolchains and physical WebRTC are unverif
 These are local dry runs of the current API, with no registry publication.
 Swift/Kotlin/C bindings and complete future API/platform qualification remain open.
 
+The application collector is separate: `npm run package:release -- --release web hub`
+requires every selected production target and exits nonzero on any skip. Each
+invocation owns a new `release/package-*` directory and preserves earlier SDK
+artifacts. Current Link exports are intermediate and Wear APKs are debug, so
+release mode rejects those profiles. Default mode remains a diagnostic report.
+Every manifest records `releaseAccepted: false`; successful packaging alone
+does not establish signing, installation, support or publication approval. See
+[required-target QA](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
+
 Verification: [foundation QA record](FOUNDATION-QA-2026-10-01.md).

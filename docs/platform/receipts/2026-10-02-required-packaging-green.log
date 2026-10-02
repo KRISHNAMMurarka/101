@@ -1,0 +1,15 @@
+✔ release packaging fails a missing required target while retaining successful artifacts (1097.430709ms)
+✔ packaging preserves prior artifacts and creates a different owned output on each invocation (1185.427708ms)
+✔ complete production packaging is distinct from release acceptance (1148.554666ms)
+✔ release mode blocks debug and intermediate targets before invoking their producer (1071.499708ms)
+✔ diagnostic mode reports independent build skips and debug profiles without acceptance (1196.970042ms)
+✔ release packaging rejects missing, empty and symlink artifacts even when the producer exits zero (1431.035ms)
+✔ unknown, mixed, duplicate and conflicting arguments fail before invoking or creating outputs (190.410709ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7459.232916

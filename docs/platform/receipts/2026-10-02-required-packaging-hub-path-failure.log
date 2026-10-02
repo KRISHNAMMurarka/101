@@ -1,0 +1,38 @@
+✔ release packaging fails a missing required target while retaining successful artifacts (1180.78025ms)
+✔ packaging preserves prior artifacts and creates a different owned output on each invocation (1154.293625ms)
+✖ complete production packaging is distinct from release acceptance (1116.175458ms)
+✔ release mode blocks debug and intermediate targets before invoking their producer (1308.251125ms)
+✔ diagnostic mode reports independent build skips and debug profiles without acceptance (1873.530083ms)
+✔ release packaging rejects missing, empty and symlink artifacts even when the producer exits zero (1932.829916ms)
+✔ unknown, mixed, duplicate and conflicting arguments fail before invoking or creating outputs (333.942292ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9056.348083
+
+✖ failing tests:
+
+test at tests/release-packaging.test.ts:65:1
+✖ complete production packaging is distinct from release acceptance (1116.175458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  1 !== 0
+
+      at TestContext.<anonymous> (file:///Users/km/Desktop/games/101/tests/release-packaging.test.ts:68:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

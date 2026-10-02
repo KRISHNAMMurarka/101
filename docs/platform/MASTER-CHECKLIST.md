@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 38 completed with recorded evidence; 234 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 39 completed with recorded evidence; 233 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -368,7 +368,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.
 - [ ] **K06 — Produce desktop installers.** macOS, Windows and Linux packages have required platform signing/notarization where applicable plus target-OS install/update/uninstall receipts.
 - [ ] **K07 — Produce browser/PWA release assets.** Offline/update/cache/security and runtime asset availability pass production builds with no hidden development origin requirement.
-- [ ] **K08 — Repair required-target packaging semantics.** `tools/package-release.mjs` gets a release mode that fails missing required targets; debug/skipped artifacts cannot report an accepted release.
+- [x] **K08 — Repair required-target packaging semantics.** `tools/package-release.mjs` gets a release mode that fails missing required targets; debug/skipped artifacts cannot report an accepted release. [Required-target packaging evidence](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
 - [ ] **K09 — Complete redistribution licenses.** Synchronize notices/inventories with the lockfile and include licenses/assets/model attribution and supported third-party distribution terms.
 - [ ] **K10 — Create artifact provenance/manifests.** Exact revision, build/profile versions, hashes, sizes, toolchains, licenses and provenance identify every package/binary.
 - [ ] **K11 — Verify reproducible build/upgrade rollback.** Clean build inputs and installation migrations are repeatable; corrupt/partial updates fail safely and retain a recoverable accepted version.

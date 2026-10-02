@@ -1,0 +1,9 @@
+
+▸ web — Standalone browser build of the launcher, all ten games and the Labs
+  ok  release/package-mAUDi0/web
+
+1 produced, 0 skipped. See release/package-mAUDi0/manifest.json
+
+Required production packaging passed. Release acceptance remains separate.
+
+Apple installables are not built here: they require your own signing identity.

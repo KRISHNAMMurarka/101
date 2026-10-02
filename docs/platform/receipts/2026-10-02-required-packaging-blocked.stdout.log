@@ -1,0 +1,16 @@
+
+▸ wear — Wear OS watch companion APK
+  skipped  debug target is unavailable for release packaging; an installable production target is required
+
+▸ link — JavaScript bundles for native 101 Link (iOS and Android)
+  skipped  intermediate target is unavailable for release packaging; an installable production target is required
+
+0 produced, 2 skipped. See release/package-bk9sEB/manifest.json
+
+Skipped targets:
+  wear: debug target is unavailable for release packaging; an installable production target is required
+  link: intermediate target is unavailable for release packaging; an installable production target is required
+
+Required production packaging failed. Release acceptance remains separate.
+
+Apple installables are not built here: they require your own signing identity.

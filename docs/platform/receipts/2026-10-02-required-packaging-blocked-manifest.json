@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "mode": "release",
+  "requiredTargets": [
+    "wear",
+    "link"
+  ],
+  "status": "incomplete",
+  "packagingComplete": false,
+  "releaseAccepted": false,
+  "produced": [],
+  "skipped": [
+    {
+      "target": "wear",
+      "profile": "debug",
+      "reason": "debug target is unavailable for release packaging; an installable production target is required"
+    },
+    {
+      "target": "link",
+      "profile": "intermediate",
+      "reason": "intermediate target is unavailable for release packaging; an installable production target is required"
+    }
+  ]
+}
