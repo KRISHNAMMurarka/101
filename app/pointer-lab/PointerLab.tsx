@@ -1,11 +1,13 @@
 'use client';
 import { AuthenticatedResourcePeer, PeerDataTransport, PointerResourceProvider, createReceiverInvitation,
-  decodeReceiverInvitation, encodeReceiverInvitation, receiverInvitationCurrent, webEndpointCrypto,
+  decodeReceiverInvitationInput, encodeReceiverInvitation, encodeReceiverInvitationLink,
+  receiverInvitationCurrent, webEndpointCrypto,
   decodeManualPeerCode, encodeManualPeerCode } from '@101/connect';
 import type { PointerSourceDriver, Observation, ReceiverInvitation } from '@101/connect';
 import { createRemotePointerSurface } from '@/examples/device-pipelines/remote-pointer';
 import { useEndpointIdentity } from '@/app/components/use-endpoint-identity';
 import Link from 'next/link';
+import QRCode from 'qrcode';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent } from 'react';
 import styles from './pointer-lab.module.css';
@@ -27,6 +29,8 @@ export default function PointerLab() {
   const [remoteCode, setRemoteCode] = useState('');
   const [snapshot, setSnapshot] = useState<Snapshot>(EMPTY);
   const [invitationCode, setInvitationCode] = useState('');
+  const [invitationLink, setInvitationLink] = useState('');
+  const [invitationQr, setInvitationQr] = useState('');
   const [sourceInvitation, setSourceInvitation] = useState('');
   const [reviewed, setReviewed] = useState<ReceiverInvitation>();
   const [busy, setBusy] = useState(false);
@@ -43,8 +47,29 @@ export default function PointerLab() {
     const session = sessionRef.current; sessionRef.current = null;
     session?.dispose();
     invitation.current = undefined;
-    if (update) { setBusy(false); setSnapshot({ ...EMPTY, stopped: true }); setLocalCode(''); setInvitationCode(''); setReviewed(undefined); setMessage('Stopped. Create a fresh invitation to continue.'); }
+    if (update) { setBusy(false); setSnapshot({ ...EMPTY, stopped: true }); setLocalCode(''); setInvitationCode('');
+      setInvitationLink(''); setInvitationQr(''); setReviewed(undefined); setMessage('Stopped. Create a fresh invitation to continue.'); }
   }, []);
+  useEffect(() => {
+    const acceptLink = () => {
+      if (!window.location.hash.startsWith('#invite=')) return;
+      const incoming = window.location.href;
+      window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+      stop(); setRole('source'); setSourceInvitation(incoming); setSnapshot(EMPTY);
+      setMessage('Review the receiver application and session before connecting.');
+    };
+    acceptLink(); window.addEventListener('hashchange', acceptLink);
+    return () => window.removeEventListener('hashchange', acceptLink);
+  }, [stop]);
+  useEffect(() => {
+    if (!invitationLink) return;
+    let current = true;
+    void QRCode.toDataURL(invitationLink, { width: 512, margin: 4, errorCorrectionLevel: 'M',
+      color: { dark: '#000000', light: '#ffffff' } }).then(image => {
+      if (current) setInvitationQr(image);
+    }).catch(() => { if (current) setInvitationQr(''); });
+    return () => { current = false; };
+  }, [invitationLink]);
   useEffect(() => {
     const blur = () => { sessionRef.current?.provider?.driver()?.release(); };
     const visibility = () => { if (document.hidden) stop(); };
@@ -111,11 +136,12 @@ export default function PointerLab() {
     try {
       const value = createReceiverInvitation({ applicationId: 'independent-pointer-surface', sessionId: newSessionId(), now: Date.now(), randomBytes: webEndpointCrypto.randomBytes });
       invitation.current = value; setInvitationCode(encodeReceiverInvitation(value));
-      setMessage('Copy the invitation to the source. It can be used for five minutes.');
+      setInvitationQr(''); setInvitationLink(encodeReceiverInvitationLink(value, `${window.location.origin}/pointer-lab`));
+      setMessage('Share the link, scan the code, or copy the manual invitation. It lasts five minutes.');
     } catch { setMessage('Could not create an invitation. Reload your local identity and try again.'); }
   };
   const reviewInvitation = () => {
-    try { setReviewed(decodeReceiverInvitation(sourceInvitation, Date.now())); setMessage('Review the receiver application and session below before connecting.'); }
+    try { setReviewed(decodeReceiverInvitationInput(sourceInvitation, Date.now())); setMessage('Review the receiver application and session below before connecting.'); }
     catch { setReviewed(undefined); setMessage('Use a complete fresh receiver invitation. Check that both device clocks agree.'); }
   };
   const createOffer = async () => {
@@ -153,7 +179,8 @@ export default function PointerLab() {
       };
       const surface = createRemotePointerSurface({ peer: auth, epoch: target.epoch, clockId: `browser-surface:${target.epoch}`, now: () => performance.now(),
         principalId: 'local-lab-owner', applicationId: target.applicationId, sessionId: target.sessionId, onObservation, ...receiverSize.current });
-      install(peer, auth, target, undefined, surface, () => captured); setInvitationCode(''); setMessage('Preparing a local answer…');
+      install(peer, auth, target, undefined, surface, () => captured); setInvitationCode(''); setInvitationLink('');
+      setInvitationQr(''); setMessage('Preparing a local answer…');
       const answer = await peer.acceptOffer(code.description); if (generation.current !== id) return;
       setLocalCode(encodeManualPeerCode(code.epoch, answer)); setMessage('Copy this answer to the source, then compare the connection codes on both screens.');
     } catch { if (generation.current === id) { stop(); setMessage('Could not use this offer. Create a fresh invitation and use its matching complete offer.'); } }
@@ -202,7 +229,7 @@ export default function PointerLab() {
   };
   const choose = (next: 'receiver' | 'source') => {
     stop(false); setBusy(false); setRole(next); setSnapshot(EMPTY); setLocalCode(''); setRemoteCode('');
-    setInvitationCode(''); setSourceInvitation(''); setReviewed(undefined);
+    setInvitationCode(''); setInvitationLink(''); setInvitationQr(''); setSourceInvitation(''); setReviewed(undefined);
     setMessage(next === 'receiver' ? 'Create an invitation for the source you want to use.' : 'Paste a receiver invitation and review its application and session.');
   };
   return <main className={styles.lab}>
@@ -248,10 +275,17 @@ export default function PointerLab() {
         <button onClick={createInvitation} disabled={!identity.identity || busy}>Create invitation</button>
         {invitationCode ? <><label htmlFor='receiver-invitation-code'>Invitation to copy to source</label>
           <textarea id='receiver-invitation-code' value={invitationCode} readOnly spellCheck={false} rows={3} />
-          <button onClick={() => void navigator.clipboard.writeText(invitationCode).then(() => setMessage('Invitation copied.')).catch(() => setMessage('Select and copy the invitation from its field.'))}>Copy invitation</button></> : null}
+          <button onClick={() => void navigator.clipboard.writeText(invitationCode).then(() => setMessage('Invitation copied.')).catch(() => setMessage('Select and copy the invitation from its field.'))}>Copy invitation</button>
+          {invitationLink ? <><label htmlFor='receiver-invitation-link'>Invitation link</label>
+            <textarea id='receiver-invitation-link' value={invitationLink} readOnly spellCheck={false} rows={2} />
+            <button onClick={() => void navigator.clipboard.writeText(invitationLink).then(() => setMessage('Link copied.')).catch(() => setMessage('Select and copy the link from its field.'))}>Copy link</button>
+            {invitationQr ? <div className={styles.qr}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={invitationQr} alt='Scan this invitation link on the source device' />
+            </div> : null}</> : null}</> : null}
       </> : <>
-        <label htmlFor='source-invitation-code'>Invitation from receiver</label>
-        <textarea id='source-invitation-code' value={sourceInvitation} onChange={event => { setSourceInvitation(event.target.value); setReviewed(undefined); }} maxLength={2048} spellCheck={false} />
+        <label htmlFor='source-invitation-code'>Invitation link or manual code from receiver</label>
+        <textarea id='source-invitation-code' value={sourceInvitation} onChange={event => { setSourceInvitation(event.target.value); setReviewed(undefined); }} maxLength={4096} spellCheck={false} />
         <button onClick={reviewInvitation} disabled={!identity.identity || busy || !sourceInvitation}>Review invitation</button>
         {reviewed ? <div data-testid='reviewed-target' className={styles.target}>
           <p>Receiver application: <strong>{reviewed.applicationId}</strong></p><p>Receiver session: <strong>{reviewed.sessionId}</strong></p>

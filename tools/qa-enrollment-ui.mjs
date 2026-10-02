@@ -164,7 +164,7 @@ export async function codeValue(page, selector) {
 }
 
 export async function reviewTarget(source, code) {
-  const invitation = JSON.parse(code);
+  const invitation = code.startsWith('{') ? JSON.parse(code) : JSON.parse(decodeURIComponent(new URL(code).hash.slice('#invite='.length)));
   await source.locator('#source-invitation-code').fill(code);
   const connect = source.getByRole('button', { name: 'Connect to this receiver', exact: true });
   assert.equal(await disabledOrAbsent(connect), true, 'pasted invitation does not itself select authority');

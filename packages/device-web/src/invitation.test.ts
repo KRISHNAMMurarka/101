@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createReceiverInvitation, decodeReceiverInvitation, encodeReceiverInvitation, receiverInvitationCurrent } from './invitation.ts';
+import { createReceiverInvitation, decodeReceiverInvitation, decodeReceiverInvitationInput,
+  encodeReceiverInvitation, encodeReceiverInvitationLink, receiverInvitationCurrent } from './invitation.ts';
 
 const now = 1790916000000;
 const scope = { applicationId: 'independent-pointer-surface', sessionId: 'owned-session' };
@@ -26,4 +27,26 @@ test('invitation parsing rejects stale, excessive, malformed and substituted env
   assert.throws(() => decodeReceiverInvitation(encodeReceiverInvitation(value), NaN), TypeError);
   assert.throws(() => createReceiverInvitation({ ...scope, now, randomBytes: () => new Uint8Array(15) }), TypeError);
   assert.throws(() => createReceiverInvitation({ ...scope, now: -1, randomBytes: length => new Uint8Array(length) }), TypeError);
+});
+
+test('shareable invitation links carry only the bounded fragment and still require review', () => {
+  const invitation = make();
+  const link = encodeReceiverInvitationLink(invitation, 'https://host.example/pointer-lab');
+  const url = new URL(link);
+  assert.equal(url.pathname, '/pointer-lab');
+  assert.equal(url.search, '');
+  assert.ok(url.hash.startsWith('#invite='));
+  assert.deepEqual(decodeReceiverInvitationInput(link, now), invitation);
+  assert.deepEqual(decodeReceiverInvitationInput(encodeReceiverInvitation(invitation), now), invitation);
+  assert.throws(() => decodeReceiverInvitationInput(link, invitation.expiresAt), TypeError);
+  for (const bad of [
+    link.replace('/pointer-lab#', '/devices#'),
+    link.replace('/pointer-lab#', '/pointer-lab?redirect=https://evil.example/#'),
+    link.replace('#invite=', '#other='),
+    link.replace('https://', 'javascript://'),
+    link.replace('host.example/', 'user:secret@host.example/'),
+    link + 'extra',
+  ]) assert.throws(() => decodeReceiverInvitationInput(bad, now), TypeError);
+  assert.throws(() => encodeReceiverInvitationLink(invitation, 'https://user:secret@host.example/pointer-lab'), TypeError);
+  assert.throws(() => encodeReceiverInvitationLink(invitation, 'https://host.example/pointer-lab?x=1'), TypeError);
 });

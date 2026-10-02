@@ -86,6 +86,15 @@ API directly to untrusted network callers.
 
 `RemoteResourcePublisher` and `RemoteResourceReceiver` require an issued authenticated facade by default. They may be constructed while enrollment is pending but cannot describe, bind or deliver resources yet. Receiver application/session and both endpoint roles/epochs must match the facade's locally chosen scope. Raw peers or copied scope objects cannot substitute. Explicit `authentication: 'local-diagnostic'` permits lab/contract fixtures and establishes no authenticated provenance. Browser/native pointer labs and the Studio input consumer use issued facades; they no longer use that exemption.
 
+The pointer lab receiver can share its five-minute invitation as manual JSON,
+a copied link or a QR image of that link. The link keeps the invitation in the
+URL fragment; opening it on an already mounted source retires any prior
+connection, removes the fragment from the address bar and prefills the review
+field. Browser and native sources accept the same link or manual code, then
+require an explicit application/session review. The link never enrolls a peer
+or approves a resource. Enrolled-agent discovery still needs a verified agent
+source before D02 can close.
+
 The receiver captures immutable principal/application/session scope. After owner approval, private slots map to embedded source registrations and an application-owned sink. Packets never select registrations or authority. Endpoint authentication remains separate from per-resource owner approval and the embedded runtime's route grant.
 
 T04 current-candidate evidence adds an authenticated route fixture: a valid JSON

@@ -15,5 +15,6 @@ export type { AuthenticatedPeerOptions, AuthenticatedPeerScope } from './authent
 export type { EndpointCrypto, EndpointIdentity } from './identity-types.ts';
 export { createEphemeralWebIdentity, createWebCryptoIdentityStore, webEndpointCrypto } from './web-identity.ts';
 export { bytesToHex, hexToBytes, derToP1363, p1363ToDer, endpointKeyId } from './identity-format.ts';
-export { createReceiverInvitation, decodeReceiverInvitation, encodeReceiverInvitation, receiverInvitationCurrent } from './invitation.ts';
+export { createReceiverInvitation, decodeReceiverInvitation, decodeReceiverInvitationInput,
+  encodeReceiverInvitation, encodeReceiverInvitationLink, receiverInvitationCurrent } from './invitation.ts';
 export type { ReceiverInvitation } from './invitation.ts';

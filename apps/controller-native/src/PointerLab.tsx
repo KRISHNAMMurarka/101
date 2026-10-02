@@ -3,7 +3,7 @@ import { AppState, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput,
 import * as Clipboard from 'expo-clipboard';
 import { RTCPeerConnection, RTCSessionDescription } from 'react-native-webrtc';
 import {
-  AuthenticatedResourcePeer, createNativePeerPort, decodeManualPeerCode, decodeReceiverInvitation, encodeManualPeerCode,
+  AuthenticatedResourcePeer, createNativePeerPort, decodeManualPeerCode, decodeReceiverInvitationInput, encodeManualPeerCode,
   PeerDataTransport, PointerResourceProvider, receiverInvitationCurrent,
   type EndpointIdentity, type PointerSourceDriver, type ReceiverInvitation,
 } from '@101/connect';
@@ -163,7 +163,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
     if (active || busy || identityState === 'loading') return;
     reviewedTarget.current = undefined; setReviewed(undefined);
     try {
-      const target = decodeReceiverInvitation(invitation, Date.now());
+      const target = decodeReceiverInvitationInput(invitation, Date.now());
       reviewedTarget.current = target; setReviewed(target);
       setStatus('Review the application and session below. Choose Connect to this receiver only if this is your intended target.');
     } catch {

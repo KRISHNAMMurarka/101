@@ -48,3 +48,33 @@ export function decodeReceiverInvitation(code: string, now: number): ReceiverInv
     return value;
   } catch { throw new TypeError('Use a complete invitation created within the last five minutes; check both device clocks'); }
 }
+
+function invitationUrl(value: string): URL {
+  let url: URL;
+  try { url = new URL(value); } catch { throw new TypeError('Use a complete pointer-lab invitation link'); }
+  if (url.protocol !== 'https:' && url.protocol !== 'http:' || !url.hostname || url.username || url.password ||
+      url.pathname !== '/pointer-lab' || url.search) throw new TypeError('Use a complete pointer-lab invitation link');
+  return url;
+}
+
+/** A QR or copied link keeps invitation data in the fragment; no endpoint grant is embedded. */
+export function encodeReceiverInvitationLink(invitation: ReceiverInvitation, baseUrl: string): string {
+  if (typeof baseUrl !== 'string' || baseUrl.length > 2048) throw new TypeError('Use a complete pointer-lab invitation link');
+  const url = invitationUrl(baseUrl);
+  if (url.hash) throw new TypeError('Use a complete pointer-lab invitation link');
+  url.hash = `invite=${encodeURIComponent(encodeReceiverInvitation(invitation))}`;
+  return url.href;
+}
+
+/** Manual JSON and URL/QR text share the same freshness check; callers must still review the target. */
+export function decodeReceiverInvitationInput(input: string, now: number): ReceiverInvitation {
+  if (typeof input !== 'string' || input.length > 4096 || new TextEncoder().encode(input).length > 4096)
+    throw new TypeError('Use a complete pointer-lab invitation');
+  if (input.startsWith('{')) return decodeReceiverInvitation(input, now);
+  try {
+    const url = invitationUrl(input);
+    if (!url.hash.startsWith('#invite=')) throw new Error();
+    const code = decodeURIComponent(url.hash.slice('#invite='.length));
+    return decodeReceiverInvitation(code, now);
+  } catch { throw new TypeError('Use a complete fresh pointer-lab invitation link or manual code'); }
+}

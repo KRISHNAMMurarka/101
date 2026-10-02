@@ -38,6 +38,7 @@ try {
   const rejectionChecks = await exerciseEnrollmentFailures(source, receiver, selectors, noOutput);
   stage = 'visibility loss before resource approval';
   const visibilityCheck = await exerciseHiddenBeforeApproval(source, receiver, selectors, noOutput);
+  let invitationVisits = 0;
   async function pair() {
     stage = 'receiver invitation and source review';
     await keyboardClick(source, source.getByRole('button', { name: 'Send pointer', exact: true }));
@@ -45,7 +46,17 @@ try {
     await keyboardClick(receiver, receiver.getByRole('button', { name: 'Create invitation', exact: true }));
     const invitation = await codeValue(receiver, '#receiver-invitation-code');
     assert.ok(new TextEncoder().encode(invitation).length <= 2048, 'receiver invitation stays byte bounded');
-    await noOutput(); await reviewTarget(source, invitation); await noOutput();
+    const link = await codeValue(receiver, '#receiver-invitation-link');
+    assert.ok(link.startsWith(new URL('/pointer-lab#invite=', receiver.url()).toString()), 'link names the same local pointer-lab origin');
+    const qr = receiver.getByRole('img', { name: 'Scan this invitation link on the source device' });
+    await qr.waitFor({ state: 'visible', timeout });
+    assert.ok((await qr.getAttribute('src'))?.startsWith('data:image/png;base64,'), 'link QR is rendered locally');
+    if (invitationVisits++ === 0) {
+      await source.goto(link); await source.waitForLoadState('networkidle');
+      await source.waitForFunction(value => document.querySelector('#source-invitation-code')?.value === value, link, { timeout });
+      assert.equal(new URL(source.url()).hash, '', 'incoming fragment is cleared after local handoff');
+    }
+    await noOutput(); await reviewTarget(source, link); await noOutput();
     stage = 'actual offer and answer exchange';
     await exchangeOffer(source, receiver, '#remote-pointer-code', '#local-pointer-code');
     const allow = receiver.getByRole('button', { name: 'Allow pointer for one minute', exact: true });
