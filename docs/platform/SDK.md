@@ -7,6 +7,27 @@ The [platform stages](../superpowers/specs/2026-10-01-universal-device-platform-
 describe native agents, media, discovery and connector work still to come. The new peer bridge has local Chromium/WebKit runtime evidence with synthetic providers; physical/native and authenticated enrollment qualification remain open.
 The [master checklist](MASTER-CHECKLIST.md) is the canonical implementation and release task ledger.
 
+## Platform threat model
+
+S01's reusable model is retained in Codex Security's repository-bound persistent
+collection as `threat_model.md`, reviewed against
+`4af38ec01c8f1097c4bd5061476ce0c51ae73304`. Read it through
+`read_codex_security_artifact` with this repository's absolute root as `targetPath`,
+`storage: "persistent"` and `path: "threat_model.md"`. The managed artifact is local
+to this host; it is not included in a package or published by this documentation.
+Its digest, target identity, readback verification and review scope are recorded
+in [task evidence](task-evidence.json), record `threat-model-2026-10-02`.
+
+The model covers network peers, owner grants, native privilege, package and
+processor execution, directory membership, media/privacy, gateways and operators.
+It separates implemented controls from future requirements and hypothetical
+attacker stories from validated findings. A fresh independent architecture review
+and integration-owner verification checked the material consumers and startup
+paths; 155 citations across 55 committed source paths have valid line bounds.
+This closes the persisted model deliverable, not endpoint authentication or S16's
+independent security validation. Update the model when a new trust boundary is
+implemented, preserving earlier failures and documentation discrepancies.
+
 ## Start with a provider
 
 A description says what a device can expose. A registration binds that description to

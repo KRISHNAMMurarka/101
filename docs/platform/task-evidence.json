@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 4,
+  "revision": 5,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5938,6 +5938,40 @@
       ],
       "supportRows": [],
       "supportTargets": {}
+    },
+    {
+      "id": "threat-model-2026-10-02",
+      "revision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "S01"
+      ],
+      "paths": [
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Offline immutable source review at 4af38ec; Codex Security target-bound persistent artifact on the local host; no application execution, service contact or security-scan coverage claim",
+      "reproduction": "Use read_codex_security_artifact with targetPath set to this repository root, storage persistent and path threat_model.md; verify the content digest and exact Repository/Version footer; inspect the cited immutable source",
+      "scope": "Persisted four-section reusable platform model: actual peers/native privileges/packages/processors and conditional directory/media/gateway/operator boundaries; fresh-context architecture review plus integration-owner reconciliation; not S02-S17 completion or support acceptance",
+      "failure": null,
+      "equipment": [],
+      "managedArtifact": {
+        "storage": "persistent",
+        "relativePath": "threat_model.md",
+        "sha256": "3c080e3db3b38a66cc7fdb3c0901f6021623c4b5522dd5d597a5e41dcf969a11",
+        "bytes": 44897,
+        "targetId": "sha256:360bcf5a89bc53ddae2dda7a6fc291e9ade6bb2164a3d02ae463818a3f29d8fa",
+        "reviewedRevision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
+        "readback": "exact selected body matched",
+        "citationCount": 155,
+        "sourcePathCount": 55,
+        "independentReview": "fresh-context architecture reviewer; root verified material consumers and corrected ignored watch-source distinction",
+        "distribution": "Local managed collection only; not packaged or published"
+      }
     }
   ],
   "tasks": [
@@ -6601,16 +6635,15 @@
     {
       "id": "S01",
       "records": [
-        "pending-S01"
+        "pending-S01",
+        "threat-model-2026-10-02"
       ],
       "dependencies": [
         "C01",
         "H01",
         "T01"
       ],
-      "equipment": [
-        "Disposable local identity/coordinator harness; physical endpoints on two networks for S08"
-      ]
+      "equipment": []
     },
     {
       "id": "S02",

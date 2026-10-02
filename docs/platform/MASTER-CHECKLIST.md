@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 37 completed with recorded evidence; 235 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 38 completed with recorded evidence; 234 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -126,7 +126,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 ### S — Security, identity and global sessions
 
-- [ ] **S01 — Persist the platform threat model.** Cover network peers, native privilege, packages, processors, directories, media, gateways and operators with assets, trust transitions and abuse cases.
+- [x] **S01 — Persist the platform threat model.** Cover network peers, native privilege, packages, processors, directories, media, gateways and operators with assets, trust transitions and abuse cases. [Model location and evidence](SDK.md#platform-threat-model); `threat-model-2026-10-02` in [task evidence](task-evidence.json).
 - [ ] **S02 — Implement endpoint identities and key storage.** Use established cryptographic/OS facilities; test enrollment, key loss, rotation, revocation and copied identity rejection.
 - [ ] **S03 — Implement owner consent and scoped grants.** Bind source/destination, principal/app/session, operation, direction, rate, expiry and peer endpoint; deny unsupported scope.
 - [ ] **S04 — Implement encrypted authenticated remote channels.** Verify peer binding and certificate/key failures; document the actual trust topology rather than assuming encryption grants access.
