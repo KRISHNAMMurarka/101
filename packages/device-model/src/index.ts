@@ -27,3 +27,6 @@ export { planDescriptorEvolution } from './evolution.ts';
 export type { DescriptorEvolution } from './evolution.ts';
 export { exportWoTThingDescription, importWoTThingDescription } from './wot.ts';
 export type { WoTBindings, WoTForm, WoTAffordance, WoTThingDescription } from './wot.ts';
+export { parseDiscoveryCandidate, assessDiscoveryCandidate } from './discovery.ts';
+export type { DiscoveryStage, DiscoveryScope, DiscoveryEvidence, DiscoveryRecovery,
+  DiscoveryCandidate, DiscoveryAssessment, DiscoveryReceiptVerifier } from './discovery.ts';

@@ -418,6 +418,25 @@ fault or firmware state, and it does not enforce the reported resource limits
 as runtime quotas. [M09 evidence](DEVICE-HEALTH-QA-2026-10-02.md) covers the
 parser, embedded caller and installed package consumers.
 
+## Discovery candidates and evidence
+
+`parseDiscoveryCandidate()` snapshots one bounded, inert candidate with an exact
+local, application, session or directory scope; an expiry; and a recovery action
+and hint. Its ordered evidence claims distinguish observation, identity, peer
+authentication, resource authorization and a live readiness probe. Each claim
+names the candidate and scope, a stage-specific kind, an opaque host receipt ID
+and its own expiry. Missing or skipped stages, copied scopes and expired claims
+cannot promote the candidate.
+
+`assessDiscoveryCandidate(candidate, expectedScope, now, verifyReceipt)` asks the
+trusted host to verify each receipt in order. The verifier must bind the receipt
+to this candidate, scope and stage; returning `true` for arbitrary IDs is unsafe.
+Assessment stops at the first missing, stale or unverified stage and reports
+`unverified`, `out-of-scope` or `expired` when appropriate. The recovery path is
+always returned. Parsing or observing a candidate never enrolls an endpoint,
+grants a resource operation or probes the device. Discovery providers, chooser
+flows and live capability inventory remain separate D02–D09 work.
+
 ## Descriptor revisions and extensions
 
 `planDescriptorEvolution(previous, candidate)` validates both descriptors and

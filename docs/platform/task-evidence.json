@@ -6500,6 +6500,31 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "discovery-candidate-2026-10-02",
+      "revision": "containing implementation commit, base 8ceba6b; immutable SDK producer tree 2b835c02eb313f5bc8bbf9bf9cb575135068f562",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D01"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-model/src/discovery.test.ts",
+        "docs/platform/receipts/2026-10-02-d01-discovery.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed packed API in Node and Chromium/Firefox/WebKit; no discovery hardware or provider",
+      "reproduction": "node --test packages/device-model/src/discovery.test.ts (RED missing export, GREEN 3/3); node tools/build-sdk.mjs 2b835c02eb313f5bc8bbf9bf9cb575135068f562; node tools/qa-sdk-consumer.mjs release/sdk-ULRxoH/manifest.json; exact candidate repository gates",
+      "scope": "D01 only: bounded immutable scoped candidates and five ordered evidence kinds with independent expiry/recovery, assessment requires a trusted host receipt verifier. Does not discover, authenticate, authorize or probe a physical endpoint.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -7055,16 +7080,15 @@
     {
       "id": "D01",
       "records": [
-        "pending-D01"
+        "pending-D01",
+        "discovery-candidate-2026-10-02"
       ],
       "dependencies": [
         "C01",
         "T01",
         "S01"
       ],
-      "equipment": [
-        "Named discovery/chooser targets"
-      ]
+      "equipment": []
     },
     {
       "id": "D02",

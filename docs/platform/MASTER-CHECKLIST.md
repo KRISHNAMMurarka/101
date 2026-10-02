@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 52 completed with recorded evidence; 220 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 53 completed with recorded evidence; 219 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -114,7 +114,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 ### D — Discovery, identification and resource inventory
 
-- [ ] **D01 — Define discovery candidate/evidence types.** Separate observed, identified, authenticated, authorized and ready states; each candidate has scope, expiry and a recovery path.
+- [x] **D01 — Define discovery candidate/evidence types.** Separate observed, identified, authenticated, authorized and ready states; each candidate has scope, expiry and a recovery path. [Scoped receipt and SDK consumer evidence](receipts/2026-10-02-d01-discovery.json).
 - [ ] **D02 — Integrate explicit invites and pairing.** QR, links, manual entry and enrolled-agent discovery identify the intended endpoint without turning an invitation into unlimited grants.
 - [ ] **D03 — Integrate OS/browser choosers.** HID/BLE/serial/camera/audio selection remains permissioned; cancellation, denial, disappearance and retry produce recoverable states.
 - [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal.

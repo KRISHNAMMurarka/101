@@ -185,6 +185,8 @@ import { planDescriptorEvolution } from '@101/device-model';
 import type { DescriptorEvolution } from '@101/device-model';
 import { exportWoTThingDescription, importWoTThingDescription } from '@101/device-model';
 import type { WoTBindings, WoTThingDescription } from '@101/device-model';
+import { parseDiscoveryCandidate, assessDiscoveryCandidate } from '@101/device-model';
+import type { DiscoveryCandidate, DiscoveryAssessment, DiscoveryScope } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -268,6 +270,14 @@ void evolution;
 const wotBindings: WoTBindings = { security: { scheme: 'bearer' }, hrefs: {}, subscriptions: {} };
 const thing: WoTThingDescription = exportWoTThingDescription(descriptor, wotBindings);
 void importWoTThingDescription(thing);
+const discoveryScope: DiscoveryScope = { kind: 'session', id: 'external-session' };
+const discovered: DiscoveryCandidate = parseDiscoveryCandidate({ schemaVersion: 1, id: 'external-device',
+  scope: discoveryScope, expiresAt: 1000, recovery: { action: 'rescan', hint: 'Scan again.' },
+  evidence: [{ stage: 'observed', kind: 'observation', candidateId: 'external-device',
+    scope: discoveryScope, receiptId: 'local:observation', at: 100, expiresAt: 1000 }] });
+const discoveryAssessment: DiscoveryAssessment = assessDiscoveryCandidate(discovered, discoveryScope, 110,
+  (_candidate, evidence) => evidence.receiptId === 'local:observation');
+void discoveryAssessment;
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -306,7 +316,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -377,6 +387,20 @@ export async function checkRuntime() {
     sensor: { ...thing.properties.sensor, type: 'string' } } }); }
   catch { tamperedThingRejected = true; }
   check(tamperedThingRejected, 'Packed WoT profile accepted a changed standard affordance');
+  const discovered = model.parseDiscoveryCandidate({ schemaVersion: 1, id: 'fixture-device',
+    scope: { kind: 'session', id: 'fixture-session' }, expiresAt: 1000,
+    recovery: { action: 'rescan', hint: 'Scan again.' }, evidence: [
+      { stage: 'observed', kind: 'observation', candidateId: 'fixture-device',
+        scope: { kind: 'session', id: 'fixture-session' }, receiptId: 'local:observed', at: 100, expiresAt: 1000 },
+      { stage: 'identified', kind: 'identity', candidateId: 'fixture-device',
+        scope: { kind: 'session', id: 'fixture-session' }, receiptId: 'local:identity', at: 110, expiresAt: 1000 } ] });
+  const scope = { kind: 'session', id: 'fixture-session' };
+  check(model.assessDiscoveryCandidate(discovered, scope, 120,
+    (_candidate, evidence) => evidence.stage === 'observed').state === 'observed' &&
+    model.assessDiscoveryCandidate(discovered, scope, 120, () => true).state === 'identified' &&
+    model.assessDiscoveryCandidate(discovered, { ...scope, id: 'other' }, 120, () => true).state === 'out-of-scope' &&
+    model.assessDiscoveryCandidate(discovered, scope, 1000, () => true).state === 'expired',
+    'Packed discovery evidence promoted without valid scope, verifier or freshness');
   const propertySource = { schemaVersion: 1, id: 'packed-property', label: 'Property', revision: 1,
     adapter: { id: 'example:property', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [
       { id: 'state', semantic: 'example:state', schemaVersion: 1, kind: 'property', value: { type: 'boolean' },
@@ -478,7 +502,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, discoveryEvidence: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

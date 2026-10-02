@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "task": "D01",
+  "status": "pass",
+  "baseCommit": "8ceba6b",
+  "sdkProducerTree": "2b835c02eb313f5bc8bbf9bf9cb575135068f562",
+  "discoverySourceSha256": "5d62ea91c6e2098d0706d6c1fe1c91576a45e399cef9a6306959364818844f92",
+  "sdkBuild": {
+    "command": "node tools/build-sdk.mjs 2b835c02eb313f5bc8bbf9bf9cb575135068f562",
+    "artifact": "release/sdk-ULRxoH/manifest.json",
+    "manifestSha256": "29788e46c8b9e03f96942fbedc81d581c51d6ea5c8c278708797b4c09e7d62fb",
+    "toolSha256": "7e91360653dfbc1cd0c872eb7759d2a6a46cc2e1e5095cb0aff4079d4e0fd966"
+  },
+  "externalConsumer": {
+    "command": "node tools/qa-sdk-consumer.mjs release/sdk-ULRxoH/manifest.json",
+    "toolSha256": "15694764f0f33b71cfeb0250c58bd80f7c9125044d73a699cf07c823217ac3b7",
+    "checks": [
+      "source-and-tarball-manifest",
+      "offline-install-closed-graph-and-exact-bytes",
+      "strict-types:nodenext",
+      "strict-types:bundler",
+      "packed-node-javascript:discoveryEvidence",
+      "packed-browser:chromium:discoveryEvidence",
+      "packed-browser:firefox:discoveryEvidence",
+      "packed-browser:webkit:discoveryEvidence"
+    ]
+  },
+  "focusedTest": "node --test packages/device-model/src/discovery.test.ts (3/3 pass after missing-export RED)",
+  "scope": "Typed, bounded candidate claims and trusted-host receipt assessment only; no discovery provider, live probe, enrollment or authorization grant."
+}
