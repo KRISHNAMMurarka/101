@@ -82,7 +82,7 @@ export default function PointerLab() {
   const createOffer = async () => {
     stop(false); setSnapshot(EMPTY); setLocalCode(''); setMessage('Preparing a local offer…');
     const id = generation.current, epoch = newEpoch(), peer = new PeerDataTransport({ initiator: true });
-    const provider = new PointerResourceProvider({ peer, epoch, clockId: `browser-source:${epoch}`, now: () => performance.now(),
+    const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer, epoch, clockId: `browser-source:${epoch}`, now: () => performance.now(),
       platform: 'browser-pointer-events', available: () => !document.hidden });
     install(peer, epoch, provider);
     try {
@@ -103,7 +103,7 @@ export default function PointerLab() {
         if (typeof latest === 'number' && typeof uncertainty === 'number') captured = { sequence: observation.sequence,
           earliest: observation.timestamp, latest, receivedAt: observation.receivedAt, uncertaintyMs: uncertainty };
       };
-      const surface = createRemotePointerSurface({ peer, epoch: code.epoch, clockId: `browser-surface:${code.epoch}`, now: () => performance.now(),
+      const surface = createRemotePointerSurface({ authentication: 'local-diagnostic', peer, epoch: code.epoch, clockId: `browser-surface:${code.epoch}`, now: () => performance.now(),
         principalId: 'local-lab-owner', applicationId: 'independent-pointer-surface', sessionId: code.epoch, onObservation, ...receiverSize.current });
       install(peer, code.epoch, undefined, surface, () => captured); setMessage('Preparing a local answer…');
       const answer = await peer.acceptOffer(code.description); if (generation.current !== id) return;

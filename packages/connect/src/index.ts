@@ -2,4 +2,4 @@ export * from "@101/device-model";
 export * from "@101/device-runtime";
 export * from "@101/device-web";
 export { PeerDataTransport } from "@101/transport-webrtc";
-export type { PeerData, PeerLane, PeerState, PeerTransportOptions, PeerConnectionPort, PeerDataChannelPort } from "@101/transport-webrtc";
+export type { PeerData, PeerLane, PeerState, PeerTransportOptions, PeerSessionBinding, PeerConnectionPort, PeerDataChannelPort } from "@101/transport-webrtc";

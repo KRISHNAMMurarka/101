@@ -37,9 +37,9 @@ function harness() {
       apply: observation => { received.push({ capability: capability.id, value: observation.value }); }, release: () => { releases++; } });
     runtime.setReadiness(sink, 'available'); return [capability.id, sink];
   }));
-  const receiver = new RemoteResourceReceiver({ peer: host, runtime, epoch, clockId: 'surface', now: () => time,
+  const receiver = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: host, runtime, epoch, clockId: 'surface', now: () => time,
     principalId: 'owner', applicationId: 'surface', sessionId: 'local-test' });
-  const provider = new PointerResourceProvider({ peer: phone, epoch, clockId: 'phone', now: () => time + 1000, platform: 'browser', available: () => available });
+  const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer: phone, epoch, clockId: 'phone', now: () => time + 1000, platform: 'browser', available: () => available });
   const tick = () => { provider.tick(); receiver.tick(); };
   const approve = (capability: string) => receiver.approve({ capability, sink: sinks.get(capability)!, sinkDevice, sinkCapability: capability,
     grant: { expiresAt: 10000, maxHz: 60, maxAgeMs: 100 }, codec: capability === 'position' ? 'normalized-pointer/1' : 'json/1' });

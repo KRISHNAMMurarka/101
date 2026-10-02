@@ -10,3 +10,8 @@ export { decodeManualPeerCode, encodeManualPeerCode } from './manual-peer.ts';
 export type { ManualPeerCode } from './manual-peer.ts';
 export { createNativePeerPort } from './native-peer.ts';
 export type { NativePeerProducer, NativeChannelProducer, NativeDescription, NativePeerPortOptions } from './native-peer.ts';
+export { AuthenticatedResourcePeer, authenticatedPeerScope } from './authenticated-peer.ts';
+export type { AuthenticatedPeerOptions, AuthenticatedPeerScope } from './authenticated-peer.ts';
+export type { EndpointCrypto, EndpointIdentity } from './identity-types.ts';
+export { createEphemeralWebIdentity, createWebCryptoIdentityStore, webEndpointCrypto } from './web-identity.ts';
+export { bytesToHex, hexToBytes, derToP1363, p1363ToDer, endpointKeyId } from './identity-format.ts';

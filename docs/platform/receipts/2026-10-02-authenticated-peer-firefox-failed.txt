@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.evaluate: Raw two-page transport did not open: {"phase":"waiting","reason":"waiting-for-transport","rawState":"connecting","reliable":false,"disposable":false,"rawApplications":0,"deliveredApplications":0,"described":false,"receiver":{"active":0,"pending":0,"stopped":false,"reason":"waiting","clockReady":false},"scopeCurrent":false}
+waitFor@debugger eval code line 303 > eval:35:57
+async*@debugger eval code line 303 > eval:2:16
+evaluate@debugger eval code:305:16
+@debugger eval code:1:44
+@debugger eval code:1:62
+
+    at /Users/km/Desktop/games/101/tools/qa-authenticated-peer.mjs:139:46
+    at begin (/Users/km/Desktop/games/101/tools/qa-authenticated-peer.mjs:139:29)
+    at async negative (/Users/km/Desktop/games/101/tools/qa-authenticated-peer.mjs:157:7)
+    at async file:///Users/km/Desktop/games/101/tools/qa-authenticated-peer.mjs:168:3 {
+  log: [],
+  name: 'Error'
+}
+
+Node.js v24.14.0

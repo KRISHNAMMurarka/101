@@ -3,6 +3,7 @@ import type { DeviceCapability, DeviceDescriptor, SignalValue } from '@101/devic
 import type { Connection, DeviceRuntime, EndpointHandle, RouteGrant } from '@101/device-runtime';
 import { decodePacket, encodePacket } from './wire.ts';
 import type { WireCodec, WireControl, WireValue } from './wire.ts';
+import { authenticatedPeerExpectedScope, authenticatedPeerScope } from './authenticated-peer.ts';
 
 type Lane = 'reliable' | 'disposable';
 type PeerState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'failed';
@@ -16,6 +17,8 @@ export interface ResourcePeer {
 }
 interface CommonOptions {
   peer: ResourcePeer; epoch: string; clockId: string; now: () => number; onStatus?: (status: string) => void;
+  /** Local lab/contract fixtures only. Omitting this requires an issued authenticated peer. */
+  authentication?: 'local-diagnostic';
 }
 export interface RemoteReceiverOptions extends CommonOptions {
   runtime: DeviceRuntime; principalId: string; applicationId: string; sessionId: string;
@@ -34,9 +37,14 @@ function identifier(value: unknown): value is string {
     !Array.from(value).some(character => { const code = character.charCodeAt(0); return code < 32 || code >= 127 && code <= 159; });
 }
 function time(value: unknown): value is number { return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= Number.MAX_SAFE_INTEGER; }
-function common(options: CommonOptions): void {
+function common(options: CommonOptions, role: 'source' | 'receiver'): void {
   if (typeof options.epoch !== 'string' || !/^[0-9a-f]{32}$/.test(options.epoch) || !identifier(options.clockId) ||
     typeof options.now !== 'function' || !time(options.now())) throw new TypeError('Invalid enrolled peer clock or epoch');
+  if (options.authentication !== undefined && options.authentication !== 'local-diagnostic') throw new TypeError('Invalid diagnostic scope');
+  if (options.authentication !== 'local-diagnostic') {
+    const expected = authenticatedPeerExpectedScope(options.peer);
+    if (!expected || expected.role !== role || expected.epoch !== options.epoch) throw new TypeError('Use an authenticated endpoint peer or an explicit local diagnostic scope');
+  }
 }
 function normalized(capability: DeviceCapability): boolean {
   const schema = capability.value;
@@ -72,6 +80,7 @@ export class RemoteResourceReceiver {
   private readonly now: () => number;
   private readonly identity: Readonly<{ principalId: string; applicationId: string; sessionId: string }>;
   private readonly onStatus?: CommonOptions['onStatus'];
+  private readonly diagnostic: boolean;
   private readonly slots = new Map<number, ReceiveSlot>();
   private readonly detach: (() => void)[] = [];
   private described?: Extract<WireControl, { type: 'describe' }>;
@@ -86,9 +95,13 @@ export class RemoteResourceReceiver {
   private reason = 'waiting';
 
   constructor(options: RemoteReceiverOptions) {
-    common(options);
+    common(options, 'receiver');
     if (![options.principalId, options.applicationId, options.sessionId].every(identifier) || options.runtime.clockDomain !== options.clockId)
       throw new TypeError('Invalid host scope or runtime clock');
+    const expected = authenticatedPeerExpectedScope(options.peer);
+    if (options.authentication !== 'local-diagnostic' && (expected?.applicationId !== options.applicationId || expected?.sessionId !== options.sessionId))
+      throw new TypeError('Authenticated endpoint application or session does not match the host');
+    this.diagnostic = options.authentication === 'local-diagnostic';
     this.#peer = options.peer; this.runtime = options.runtime; this.epoch = options.epoch; this.clockId = options.clockId;
     this.now = options.now; this.onStatus = options.onStatus;
     this.identity = Object.freeze({ principalId: options.principalId, applicationId: options.applicationId, sessionId: options.sessionId });
@@ -97,13 +110,18 @@ export class RemoteResourceReceiver {
     if (this.#peer.state === 'failed' || this.#peer.state === 'disconnected') this.stop('unavailable');
   }
   private ownSubscription(detach: () => void): void { if (this.stopped) detach(); else this.detach.push(detach); }
+  private authorized(): boolean {
+    const scope = authenticatedPeerScope(this.#peer);
+    return this.diagnostic || !!scope && scope.role === 'receiver' && scope.epoch === this.epoch &&
+      scope.applicationId === this.identity.applicationId && scope.sessionId === this.identity.sessionId;
+  }
   private localTime(): number | undefined {
     try { const result = this.now(); if (!time(result) || result < this.previousTime) throw new RangeError(); this.previousTime = result; return result; }
     catch { this.stop('unavailable'); return; }
   }
   private report(reason: string): void { this.reason = reason; notify(this.onStatus, reason); }
   private control(packet: WireControl): boolean {
-    if (this.stopped) return false;
+    if (this.stopped || !this.authorized()) return false;
     try { return this.#peer.send('reliable', encodePacket(packet)); } catch { return false; }
   }
   description(): Readonly<DeviceDescriptor> | undefined { return this.described?.device; }
@@ -112,7 +130,7 @@ export class RemoteResourceReceiver {
       pending: [...this.slots.values()].filter(slot => !slot.ready).length, stopped: this.stopped, reason: this.reason, clockReady: this.clockReady });
   }
   approve(options: RemoteApproval): number | undefined {
-    if (this.stopped || !this.described || this.nextSlot >= 128) return;
+    if (this.stopped || !this.authorized() || !this.described || this.nextSlot >= 128) return;
     const now = this.localTime(); if (now === undefined) return;
     const ownerGrant = grant(options.grant, now); if (!ownerGrant) return;
     const capability = this.described.device.capabilities.find(value => value.id === options.capability);
@@ -150,7 +168,7 @@ export class RemoteResourceReceiver {
     this.report('clock-unavailable');
   }
   private receive(lane: Lane, data: string | ArrayBuffer): void {
-    if (this.stopped) return;
+    if (this.stopped || !this.authorized()) return;
     const decoded = decodePacket(data, lane); if (!decoded || decoded.packet.epoch !== this.epoch) return;
     const packet = decoded.packet, now = this.localTime(); if (now === undefined || this.stopped) return;
     if (packet.type === 'describe') {
@@ -210,7 +228,7 @@ export class RemoteResourceReceiver {
     entry.lastReceivedAt = now;
   }
   tick(): void {
-    if (this.stopped) return;
+    if (this.stopped || !this.authorized()) return;
     const now = this.localTime(); if (now === undefined) return;
     for (const entry of [...this.slots.values()]) {
       if (now >= entry.grantExpiresAt || now - entry.lastReceivedAt > entry.maxAgeMs || entry.ready && !entry.connection.renew(this.identity.principalId).ok)
@@ -251,6 +269,7 @@ export class RemoteResourcePublisher {
   private readonly now: () => number;
   private readonly available: RemotePublisherOptions['available'];
   private readonly onStatus?: CommonOptions['onStatus'];
+  private readonly diagnostic: boolean;
   private readonly slots = new Map<number, PublishSlot>();
   private readonly detach: (() => void)[] = [];
   private previousTime = -Infinity;
@@ -260,7 +279,8 @@ export class RemoteResourcePublisher {
   private stopped = false;
   private reason = 'idle';
   constructor(options: RemotePublisherOptions) {
-    common(options); if (typeof options.available !== 'function') throw new TypeError('Provider readiness is required');
+    common(options, 'source'); if (typeof options.available !== 'function') throw new TypeError('Provider readiness is required');
+    this.diagnostic = options.authentication === 'local-diagnostic';
     this.device = parseDeviceDescriptor(options.device); this.#peer = options.peer; this.epoch = options.epoch; this.clockId = options.clockId;
     this.now = options.now; this.available = options.available; this.onStatus = options.onStatus;
     this.ownSubscription(this.#peer.onData((lane, data) => { this.receive(lane, data); }));
@@ -268,6 +288,10 @@ export class RemoteResourcePublisher {
     if (this.#peer.state === 'failed' || this.#peer.state === 'disconnected') this.stop('unavailable');
   }
   private ownSubscription(detach: () => void): void { if (this.stopped) detach(); else this.detach.push(detach); }
+  private authorized(): boolean {
+    const scope = authenticatedPeerScope(this.#peer);
+    return this.diagnostic || !!scope && scope.role === 'source' && scope.epoch === this.epoch;
+  }
   private localTime(): number | undefined {
     try { const result = this.now(); if (!time(result) || result < this.previousTime) throw new RangeError(); this.previousTime = result; return result; }
     catch { this.stop('unavailable'); return; }
@@ -280,10 +304,10 @@ export class RemoteResourcePublisher {
   }
   /** Provider readiness for an actual selected capability; a route count is insufficient. */
   isBound(capability: string): boolean {
-    return !this.stopped && [...this.slots.values()].some(slot => slot.capability.id === capability) && this.ready(capability);
+    return !this.stopped && this.authorized() && [...this.slots.values()].some(slot => slot.capability.id === capability) && this.ready(capability);
   }
   start(): boolean {
-    if (this.started || this.stopped) return false;
+    if (this.started || this.stopped || !this.authorized()) return false;
     this.started = true;
     if (!this.control({ ...envelope(this.epoch), type: 'describe', clockId: this.clockId, device: this.device, codecs: CODECS })) { this.stop('overload'); return false; }
     this.report('ready-to-select'); return !this.stopped;
@@ -294,7 +318,7 @@ export class RemoteResourcePublisher {
     this.report(reason);
   }
   private receive(lane: Lane, data: string | ArrayBuffer): void {
-    if (!this.started || this.stopped) return;
+    if (!this.started || this.stopped || !this.authorized()) return;
     const decoded = decodePacket(data, lane); if (!decoded || decoded.packet.epoch !== this.epoch) return;
     const packet = decoded.packet, now = this.localTime(); if (now === undefined || this.stopped) return;
     if (packet.type === 'clock') {
@@ -322,7 +346,7 @@ export class RemoteResourcePublisher {
     if (!this.stopped && this.slots.get(entry.slot) === entry) this.report('active');
   }
   publish(capability: string, input: unknown, options: { capturedAt?: number; deadline?: number } = {}): boolean {
-    if (this.stopped || !this.started) return false;
+    if (this.stopped || !this.started || !this.authorized()) return false;
     const now = this.localTime(); if (now === undefined) return false;
     const entries = [...this.slots.values()].filter(slot => slot.capability.id === capability);
     const first = entries[0]; if (!first) return false;
@@ -387,7 +411,7 @@ export class RemoteResourcePublisher {
     return true;
   }
   tick(): void {
-    if (this.stopped) return;
+    if (this.stopped || !this.authorized()) return;
     const now = this.localTime(); if (now === undefined) return;
     for (const entry of [...this.slots.values()]) {
       if (!this.ready(entry.capability.id)) this.remove(entry.slot, 'unavailable');

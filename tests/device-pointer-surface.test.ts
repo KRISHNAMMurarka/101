@@ -18,9 +18,9 @@ test('owner approval begins at explicit selection after an idle pairing exchange
   let now = 100;
   const host = new Peer(), phone = new Peer(); host.other = phone; phone.other = host;
   const epoch = '0123456789abcdef0123456789abcdef';
-  const surface = createRemotePointerSurface({ peer: host, epoch, clockId: 'surface', now: () => now,
+  const surface = createRemotePointerSurface({ authentication: 'local-diagnostic', peer: host, epoch, clockId: 'surface', now: () => now,
     principalId: 'owner', applicationId: 'test', sessionId: 'pairing', width: 200, height: 100 });
-  const provider = new PointerResourceProvider({ peer: phone, epoch, clockId: 'phone', now: () => now + 1000, platform: 'browser', available: () => true });
+  const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer: phone, epoch, clockId: 'phone', now: () => now + 1000, platform: 'browser', available: () => true });
   provider.tick(); surface.tick();
   now += 70000;
   provider.tick(); surface.tick();

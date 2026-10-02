@@ -16,6 +16,7 @@ export function pointerSourceDescriptor(platform = 'provider-selected-by-host'):
 }
 export interface PointerResourceProviderOptions {
   peer: ResourcePeer; epoch: string; clockId: string; now: () => number; platform: string;
+  authentication?: 'local-diagnostic';
   available: () => boolean; onStatus?: (status: string) => void;
 }
 /** Shared provider lifetime. Call tick from an owned loop; input starts after actual selection. */

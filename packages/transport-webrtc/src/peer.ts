@@ -2,6 +2,13 @@ import type { PeerConnectionPort, PeerDataChannelPort } from './ports.ts';
 export type PeerState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'failed';
 export type PeerLane = 'reliable' | 'disposable';
 export type PeerData = string | ArrayBuffer | Uint8Array;
+export interface PeerSessionBinding {
+  readonly generation: number;
+  /** The SDP offerer; distinct from which endpoint creates the data channels. */
+  readonly initiator: boolean;
+  readonly offer: Readonly<{ type: 'offer'; sdp: string }>;
+  readonly answer: Readonly<{ type: 'answer'; sdp: string }>;
+}
 export interface PeerTransportOptions {
   initiator: boolean;
   iceServers?: RTCIceServer[];
@@ -25,6 +32,9 @@ export class PeerDataTransport {
   private readonly names: { reliable: string; disposable: string };
   private readonly limits: Record<PeerLane, number>;
   private readonly maxMessageBytes: number;
+  private negotiation: 'none' | 'offering' | 'offered' | 'answering' | 'complete' = 'none';
+  private negotiatedOffer?: Readonly<{ type: 'offer'; sdp: string }>;
+  #binding?: PeerSessionBinding;
 
   constructor(options: PeerTransportOptions) {
     this.options = options;
@@ -39,6 +49,14 @@ export class PeerDataTransport {
   }
 
   get state(): PeerState { return this.currentState; }
+
+  /** Only this transport can issue a proof of its successfully applied SDP pair. */
+  sessionBinding(): PeerSessionBinding | undefined { return this.#binding; }
+  isCurrentSession(binding: unknown): binding is PeerSessionBinding {
+    const owned = this.#binding;
+    return !!owned && owned === binding && !!this.peer && owned.generation === this.generation &&
+      this.currentState !== 'failed' && this.currentState !== 'disconnected';
+  }
 
   async connect(): Promise<void> {
     if (this.peer) return;
@@ -83,6 +101,7 @@ export class PeerDataTransport {
     const peer = this.peer;
     this.peer = undefined;
     this.generation += 1;
+    this.#binding = undefined; this.negotiatedOffer = undefined; this.negotiation = 'none';
     this.lifecycle?.abort(); this.lifecycle = undefined;
     if (peer) { peer.ondatachannel = null; peer.onconnectionstatechange = null; }
     for (const lane of ['reliable', 'disposable'] as const) {
@@ -98,29 +117,50 @@ export class PeerDataTransport {
     await this.connect();
     const { peer, generation, signal } = this.transaction();
     if (generation !== expectedGeneration) throw new Error('Peer disconnected before negotiation (stale generation)');
-    const offer = await peer.createOffer(); this.checkCurrent(peer, generation);
-    await peer.setLocalDescription(offer); this.checkCurrent(peer, generation);
-    await this.gather(peer, signal); this.checkCurrent(peer, generation);
-    return this.localDescription(peer);
+    if (this.negotiation !== 'none') throw new Error('A negotiation already owns this peer generation');
+    this.negotiation = 'offering';
+    try {
+      const offer = await peer.createOffer(); this.checkCurrent(peer, generation);
+      await peer.setLocalDescription(offer); this.checkCurrent(peer, generation);
+      await this.gather(peer, signal); this.checkCurrent(peer, generation);
+      const complete = this.copyDescription(this.localDescription(peer), 'offer');
+      this.negotiatedOffer = Object.freeze(complete); this.negotiation = 'offered';
+      return { ...complete };
+    } catch (cause) { await this.retireFailedNegotiation(peer, generation); throw cause; }
   }
 
   async acceptOffer(offer: RTCSessionDescriptionInit): Promise<RTCSessionDescriptionInit> {
-    this.validateDescription(offer, 'offer');
+    const acceptedOffer = this.copyDescription(offer, 'offer');
     const expectedGeneration = this.peer ? this.generation : this.generation + 1;
     await this.connect();
     const { peer, generation, signal } = this.transaction();
     if (generation !== expectedGeneration) throw new Error('Peer disconnected before negotiation (stale generation)');
-    await peer.setRemoteDescription(offer); this.checkCurrent(peer, generation);
-    const answer = await peer.createAnswer(); this.checkCurrent(peer, generation);
-    await peer.setLocalDescription(answer); this.checkCurrent(peer, generation);
-    await this.gather(peer, signal); this.checkCurrent(peer, generation);
-    return this.localDescription(peer);
+    if (this.negotiation !== 'none') throw new Error('A negotiation already owns this peer generation');
+    this.negotiation = 'answering';
+    try {
+      await peer.setRemoteDescription({ ...acceptedOffer }); this.checkCurrent(peer, generation);
+      const answer = await peer.createAnswer(); this.checkCurrent(peer, generation);
+      await peer.setLocalDescription(answer); this.checkCurrent(peer, generation);
+      await this.gather(peer, signal); this.checkCurrent(peer, generation);
+      const complete = this.copyDescription(this.localDescription(peer), 'answer');
+      this.#binding = Object.freeze({ generation, initiator: false,
+        offer: Object.freeze(acceptedOffer), answer: Object.freeze(complete) });
+      this.negotiation = 'complete';
+      return { ...complete };
+    } catch (cause) { await this.retireFailedNegotiation(peer, generation); throw cause; }
   }
 
   async acceptAnswer(answer: RTCSessionDescriptionInit): Promise<void> {
-    this.validateDescription(answer, 'answer');
+    const acceptedAnswer = this.copyDescription(answer, 'answer');
     const { peer, generation } = this.transaction();
-    await peer.setRemoteDescription(answer); this.checkCurrent(peer, generation);
+    if (this.negotiation !== 'offered' || !this.negotiatedOffer) throw new Error('No pending completed offer negotiation');
+    this.negotiation = 'answering';
+    const offer = this.negotiatedOffer;
+    try {
+      await peer.setRemoteDescription({ ...acceptedAnswer }); this.checkCurrent(peer, generation);
+      this.#binding = Object.freeze({ generation, initiator: true, offer, answer: Object.freeze(acceptedAnswer) });
+      this.negotiation = 'complete';
+    } catch (cause) { await this.retireFailedNegotiation(peer, generation); throw cause; }
   }
 
   /** Admission only. Finite defaults bound the native channel buffer, with no hidden app queue. */
@@ -182,9 +222,17 @@ export class PeerDataTransport {
   private checkCurrent(peer: PeerConnectionPort, generation: number): void {
     if (!this.isCurrent(peer, generation)) throw new Error('Peer disconnected during negotiation (stale generation)');
   }
-  private validateDescription(description: RTCSessionDescriptionInit, type: 'offer' | 'answer'): void {
-    if (description.type !== type || typeof description.sdp !== 'string' || !description.sdp || description.sdp.length > 256000)
+  private copyDescription<T extends 'offer' | 'answer'>(description: RTCSessionDescriptionInit, type: T): { type: T; sdp: string } {
+    const actualType = description.type, sdp = description.sdp;
+    if (actualType !== type || typeof sdp !== 'string' || !sdp || sdp.length > 256000 || new TextEncoder().encode(sdp).length > 256000)
       throw new Error(`Expected a bounded WebRTC ${type} description`);
+    return { type, sdp };
+  }
+  private async retireFailedNegotiation(peer: PeerConnectionPort, generation: number): Promise<void> {
+    if (!this.isCurrent(peer, generation)) return;
+    const closed = this.disconnect(), retiredGeneration = this.generation;
+    await closed;
+    if (!this.peer && this.generation === retiredGeneration) this.setState('failed');
   }
   private localDescription(peer: PeerConnectionPort): RTCSessionDescriptionInit {
     if (!peer.localDescription?.sdp) throw new Error('WebRTC did not produce pairing data');
@@ -194,7 +242,7 @@ export class PeerDataTransport {
     if (signal.aborted) throw new Error('Peer disconnected during ICE gathering');
     if (peer.iceGatheringState === 'complete') return;
     await new Promise<void>((resolve, reject) => {
-      const timeout = setTimeout(finish, 5000);
+      const timeout = setTimeout(() => { cleanup(); reject(new Error('ICE gathering did not complete before timeout')); }, 5000);
       function cleanup() {
         clearTimeout(timeout); peer.removeEventListener('icegatheringstatechange', onChange);
         signal.removeEventListener('abort', onAbort);
@@ -208,6 +256,7 @@ export class PeerDataTransport {
   }
   private setState(state: PeerState): void {
     if (this.currentState === state) return;
+    if (state === 'failed' || state === 'disconnected') this.#binding = undefined;
     this.currentState = state;
     for (const listener of this.stateListeners) {
       if (this.currentState !== state) break;

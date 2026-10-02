@@ -86,7 +86,7 @@ export function createGamePointerBridge(options: GamePointerBridgeOptions) {
   };
 }
 
-export interface GamePointerReceiverOptions extends GamePointerBridgeOptions { peer: ResourcePeer; epoch: string }
+export interface GamePointerReceiverOptions extends GamePointerBridgeOptions { peer: ResourcePeer; epoch: string; authentication?: 'local-diagnostic' }
 /** Receiver/sinks are app-owned. select is called only by the resource consent control. */
 export function createGamePointerReceiver(options: GamePointerReceiverOptions) {
   const bridge = createGamePointerBridge(options), scope = Object.freeze({ ...options.scope }), now = options.now;
@@ -108,6 +108,7 @@ export function createGamePointerReceiver(options: GamePointerReceiverOptions) {
     runtime.setReadiness(handle, 'available'); return [kind, handle];
   }));
   const receiver = new RemoteResourceReceiver({ peer: options.peer, epoch: options.epoch, runtime, now,
+    authentication: options.authentication,
     clockId: scope.clockDomain, principalId: 'local-input-lab-owner', applicationId: scope.applicationId,
     sessionId: scope.sessionId, onStatus: options.onStatus });
   function stop() {

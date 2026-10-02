@@ -181,6 +181,83 @@ test('SDP exchange accepts only its expected offer/answer and returns complete l
   await responder.transport.disconnect();
 });
 
+test('incomplete ICE gathering rejects rather than returning incomplete pairing data', async t => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const { transport, peers } = fixture();
+  await transport.connect();
+  peers[0].iceGatheringState = 'gathering';
+  const offer = transport.createOffer();
+  const rejected = assert.rejects(offer, /gathering.*complete|gathering.*timeout/i);
+  await new Promise<void>(resolve => setImmediate(resolve));
+  t.mock.timers.tick(5000);
+  await rejected;
+  assert.equal(peers[0].iceListeners.size, 0);
+  assert.equal(transport.state, 'failed');
+  assert.equal(peers[0].connectionState, 'closed');
+});
+
+test('only a completed current negotiation owns an immutable offer and answer binding', async () => {
+  const { transport } = fixture();
+  assert.equal(transport.sessionBinding(), undefined);
+  const offer = await transport.createOffer();
+  assert.equal(transport.sessionBinding(), undefined);
+  assert.equal(transport.isCurrentSession(undefined), false);
+  const answer = { type: 'answer' as const, sdp: 'answer-sdp' };
+  await transport.acceptAnswer(answer);
+  const binding = transport.sessionBinding()!;
+  assert.equal(transport.isCurrentSession(binding), true);
+  assert.equal(transport.isCurrentSession({ ...binding }), false);
+  assert.deepEqual(binding.offer, { type: 'offer', sdp: 'offer-sdp' });
+  assert.deepEqual(binding.answer, { type: 'answer', sdp: 'answer-sdp' });
+  assert.equal(binding.initiator, true);
+  offer.sdp = 'changed returned offer'; answer.sdp = 'changed caller answer';
+  assert.equal(binding.offer.sdp, 'offer-sdp'); assert.equal(binding.answer.sdp, 'answer-sdp');
+  assert.ok(Object.isFrozen(binding) && Object.isFrozen(binding.offer) && Object.isFrozen(binding.answer));
+  await transport.disconnect();
+  assert.equal(transport.sessionBinding(), undefined);
+  assert.equal(transport.isCurrentSession(binding), false);
+  await transport.createOffer(); await transport.acceptAnswer({ type: 'answer', sdp: 'new-answer' });
+  assert.notEqual(transport.sessionBinding(), binding);
+  assert.equal(transport.isCurrentSession(binding), false);
+  await transport.disconnect();
+});
+
+test('overlapping and repeated negotiation cannot replace the transcript of a generation', async () => {
+  const { transport, peers } = fixture();
+  await transport.connect();
+  let complete!: (value: RTCSessionDescriptionInit) => void;
+  peers[0].createOffer = () => new Promise(resolve => { complete = resolve; });
+  const pending = transport.createOffer();
+  await new Promise<void>(resolve => setImmediate(resolve));
+  await assert.rejects(() => transport.createOffer(), /negotiation|already/i);
+  await assert.rejects(() => transport.acceptAnswer({ type: 'answer', sdp: 'early' }), /negotiation|offer/i);
+  complete({ type: 'offer', sdp: 'owned-offer' });
+  await pending;
+  await transport.acceptAnswer({ type: 'answer', sdp: 'owned-answer' });
+  const binding = transport.sessionBinding();
+  await assert.rejects(() => transport.createOffer(), /negotiation|already/i);
+  await assert.rejects(() => transport.acceptAnswer({ type: 'answer', sdp: 'replacement-answer' }), /negotiation|already/i);
+  assert.equal(transport.sessionBinding(), binding);
+  assert.equal(peers[0].remoteDescription?.sdp, 'owned-answer');
+  await transport.disconnect();
+});
+
+test('responder binds the accepted offer and final answer and retires proof on lane failure', async () => {
+  const { transport, peers } = fixture(false);
+  const offer = { type: 'offer' as const, sdp: 'accepted-offer' };
+  const returned = await transport.acceptOffer(offer);
+  const binding = transport.sessionBinding()!;
+  assert.equal(binding.initiator, false);
+  assert.equal(binding.offer.sdp, 'accepted-offer'); assert.equal(binding.answer.sdp, 'answer-sdp');
+  returned.sdp = 'changed-answer'; offer.sdp = 'changed-offer';
+  assert.equal(binding.offer.sdp, 'accepted-offer'); assert.equal(binding.answer.sdp, 'answer-sdp');
+  const channel = new Channel('connect-control-1'); peers[0].offerChannel(channel);
+  channel.onerror?.();
+  assert.equal(transport.sessionBinding(), undefined);
+  assert.equal(transport.isCurrentSession(binding), false);
+  await transport.disconnect();
+});
+
 test('a failing subscriber cannot prevent other subscribers receiving state or payloads', async () => {
   const { transport, peers } = fixture();
   const states: string[] = [];

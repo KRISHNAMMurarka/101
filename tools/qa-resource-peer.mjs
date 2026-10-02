@@ -59,9 +59,9 @@ try {
     try {
       await host.acceptAnswer(await phone.acceptOffer(await host.createOffer()));
       await waitFor(() => [host, phone].every(peer => peer.isOpen('reliable') && peer.isOpen('disposable')));
-      surface = createRemotePointerSurface({ peer: host, epoch, principalId: 'loopback-owner', applicationId: 'independent-pointer', sessionId: 'local-runtime-harness',
+      surface = createRemotePointerSurface({ authentication: 'local-diagnostic', peer: host, epoch, principalId: 'loopback-owner', applicationId: 'independent-pointer', sessionId: 'local-runtime-harness',
         clockId: 'surface-clock', now: () => performance.now(), width: 400, height: 200 });
-      publisher = new RemoteResourcePublisher({ peer: phone, epoch, device: pointerSourceDescriptor(), clockId: 'source-clock', now: () => performance.now(), available: () => true });
+      publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: phone, epoch, device: pointerSourceDescriptor(), clockId: 'source-clock', now: () => performance.now(), available: () => true });
       timer = setInterval(() => { publisher.tick(); surface.tick(); }, 5);
       if (!publisher.start()) throw new Error('Provider description was not admitted');
       await waitFor(() => surface.receiver.description() && surface.receiver.status().clockReady);

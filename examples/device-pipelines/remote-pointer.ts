@@ -10,6 +10,7 @@ const surfaceDescriptor: DeviceDescriptor = {
 interface SurfaceOptions {
   peer: ResourcePeer; epoch: string; principalId: string; applicationId: string; sessionId: string;
   clockId: string; now: () => number; width: number; height: number;
+  authentication?: 'local-diagnostic';
   onChange?: () => void; onObservation?: (observation: Observation) => void; onStatus?: (status: string) => void;
 }
 /** An app-owned surface. The caller enrolls its peer and invokes select after owner consent. */
@@ -41,7 +42,7 @@ export function createRemotePointerSurface(options: SurfaceOptions) {
     runtime.setReadiness(handle, 'available'); return [capability.id, handle];
   }));
   const receiver = new RemoteResourceReceiver({ ...identity, peer: options.peer, epoch: options.epoch, runtime, now,
-    clockId: options.clockId, onStatus: options.onStatus });
+    clockId: options.clockId, onStatus: options.onStatus, authentication: options.authentication });
   function resize(nextWidth: number, nextHeight: number): void {
     if (!Number.isFinite(nextWidth) || !Number.isFinite(nextHeight) || nextWidth <= 0 || nextHeight <= 0) throw new RangeError('Surface size must be positive');
     width = nextWidth; height = nextHeight;

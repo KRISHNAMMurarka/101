@@ -40,7 +40,7 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
       const code = decodeManualPeerCode(offer, 'offer');
       peer = new PeerDataTransport({ initiator: false });
       const selectedPeer = peer;
-      const receiver = createGamePointerReceiver({ peer, epoch: code.epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
+      const receiver = createGamePointerReceiver({ authentication: 'local-diagnostic', peer, epoch: code.epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
         scope: { applicationId: INPUT_LAB_POINTER_MANIFEST.game, sessionId, playerId: 'player-1', roleId: 'classic',
           deviceId: `remote-pointer-${code.epoch}`, clockDomain: `input-lab:${code.epoch}` },
         mapping: { vector: 'aim', action: 'trigger', coordinates: 'normalized-to-signed', source: 'custom' },

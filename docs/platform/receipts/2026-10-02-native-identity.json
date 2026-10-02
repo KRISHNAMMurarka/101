@@ -1,0 +1,54 @@
+{
+  "scope": "native source compilation and simulator Security producer interoperability; no persisted iOS lifecycle or Expo bridge/physical acceptance",
+  "node": "24.14.0",
+  "sourceSha256": {
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "apps/controller-native/modules/one01-identity/README.md": "a30db7bb14d93773353cb6357d5d7deaca178affc4bc1b0a927d36d73d138ff8",
+    "apps/controller-native/modules/one01-identity/android/build.gradle": "297f0c63c24d99d5e320e14c7ef5d15539fdb167f750da38ea24141c92179e52",
+    "apps/controller-native/modules/one01-identity/android/src/main/java/com/oneohone/link/identity/One01IdentityModule.kt": "3349b4ec6162859c6f06f912bac0155df71068fff54892de3a411a12feacd998",
+    "apps/controller-native/modules/one01-identity/android/src/main/java/com/oneohone/link/identity/One01IdentityStore.kt": "c445e1fc549c8300cba922fb64ecc2a5906a51a37ffc96ee3a69d2087099d5b7",
+    "apps/controller-native/modules/one01-identity/expo-module.config.json": "38899e32f8123d21c5303f39e3e4bab199464c1bced62d949a575d3e5ed61ee7",
+    "apps/controller-native/modules/one01-identity/index.ts": "469e38b476d2122c2dae574f1de3c6a3d1306af8df816ceb0078ca4afcc58889",
+    "apps/controller-native/modules/one01-identity/ios/One01Identity.podspec": "38f35a4f5c3374a5aff019e6e2925b09df7703fc115541f7f6a43e28537b9d12",
+    "apps/controller-native/modules/one01-identity/ios/One01IdentityModule.swift": "62f773fd45709b6a33d7a09acf2a0975d07258cd3db212529ebf0f16bbf244d9",
+    "apps/controller-native/modules/one01-identity/ios/One01IdentityStore.swift": "aeaac8d9ec025d99627d5c3b63ae31fe5117707829bb52985e1f62a1a3494b47",
+    "apps/controller-native/modules/one01-identity/qa/AndroidIdentityFixture.kt": "9eafe092fd27ff132146086c02b6a23ce1712010d209fa1294cfa4993d612a0a",
+    "apps/controller-native/modules/one01-identity/qa/AndroidManifest.xml": "7eea6f2106d3c76ade536ce0839d5bd55400dda1919c8641715a8a9a34c4bb62",
+    "apps/controller-native/modules/one01-identity/qa/android-compile.mjs": "492e7da208d93cf1b4953d4374b218ce60093f29ac1b95fe2f00ef943809445a",
+    "apps/controller-native/modules/one01-identity/qa/ios-compile.py": "6fcbd94849c0b8386f0726c4bbfd58301da88f3410a21b8ec2658f42adeb1389",
+    "apps/controller-native/modules/one01-identity/qa/ios-producer.mjs": "e48a96e195099f5a5ea6e9936f146af1d5a0e9564b52147d891f620ecd2fda2f",
+    "apps/controller-native/modules/one01-identity/qa/ios-producer.swift": "641bb12c3b6521eadbde4aed4df1191457e4042b2fc4ffd761335f434f2d4f89",
+    "apps/controller-native/modules/one01-identity/qa/ios-storage.mjs": "1cf00f9c3313757f00bf9ceeb7838e65d06141b5857933aa0801b64104968d33",
+    "apps/controller-native/modules/one01-identity/qa/ios-storage.swift": "c5787120e714708795cfa62d750c56b08645f1906431c08dfb0a44a6184f952c",
+    "apps/controller-native/src/native-identity.ts": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18",
+    "apps/controller-native/src/native-identity.test.ts": "2027ca289c379eedf4160c28559a5ab6d7e5776b6334c0c327ea905b39e7c6c3"
+  },
+  "swiftCompilation": "Swift Security core and real Expo registration compiled for iOS simulator; bridge runtime unverified",
+  "kotlinCompilation": {
+    "result": "Kotlin native core and Expo module compiled",
+    "kotlin": "2.1.21",
+    "androidApi": 36,
+    "runtime": "unverified"
+  },
+  "iOSProducer": {
+    "platform": "simulator",
+    "candidate": "iPhone 17 Pro",
+    "result": "Security producer DER \u2192 strict P1363 \u2192 WebCrypto verified; tampering and native bounds rejected",
+    "storageLifecycle": "unverified"
+  },
+  "gaps": [
+    "iOS persisted Keychain lifecycle: both owned QA entry approaches failed to launch",
+    "Actual Expo bridge invocation",
+    "Lock-state behavior",
+    "Physical endpoints",
+    "Hardware backing"
+  ],
+  "androidRuntime": {
+    "result": "AndroidKeyStore create/load/idempotence/remove/rotation and DER \u2192 P1363 \u2192 WebCrypto verified; bounds/tampering rejected",
+    "candidate": "Pixel_Fold_API_36",
+    "androidApi": "36",
+    "hardwareProtection": "unverified",
+    "expoBridgeRuntime": "unverified",
+    "preconditionFailure": "First root capture attempt found no running emulator because its launcher process had exited; no product behavior exercised. Keeping a separate owned foreground emulator resolved that precondition."
+  }
+}

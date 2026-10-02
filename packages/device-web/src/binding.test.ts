@@ -44,6 +44,16 @@ function device(sink = false): DeviceDescriptor {
         permissions: sink ? ['write'] : ['subscribe'] },
     ] };
 }
+
+test('raw or copied peers cannot be registered as authenticated resource endpoints', () => {
+  const peer = new Peer();
+  const runtime = createDeviceRuntime({ clockDomain: 'clock', now: () => 100, authorize: () => undefined });
+  assert.throws(() => new RemoteResourceReceiver({ peer, runtime, epoch, clockId: 'clock', now: () => 100,
+    principalId: 'owner', applicationId: 'app', sessionId: 'session' }), /authenticated|diagnostic/i);
+  assert.throws(() => new RemoteResourcePublisher({ peer, device: device(), epoch, clockId: 'source', now: () => 100,
+    available: () => true }), /authenticated|diagnostic/i);
+  assert.equal(peer.listeners.size, 0); assert.equal(peer.states.size, 0); runtime.close();
+});
 function harness(options: { grant?: RouteGrant; available?: boolean; apply?: (observation: Observation, context: DeliveryContext) => void | Promise<void>; remoteOffset?: number; synchronize?: boolean } = {}) {
   let now = 100, released = 0;
   const received: Observation[] = [], status: string[] = [];
@@ -56,10 +66,10 @@ function harness(options: { grant?: RouteGrant; available?: boolean; apply?: (ob
       apply: options.apply ?? (observation => { received.push(observation); }), release: () => { released++; } });
     runtime.setReadiness(sink, 'available'); return [capability.id, sink];
   }));
-  const receiver = new RemoteResourceReceiver({ peer: host, runtime, epoch, principalId: 'owner', applicationId: 'app', sessionId: 'session',
+  const receiver = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: host, runtime, epoch, principalId: 'owner', applicationId: 'app', sessionId: 'session',
     clockId: 'host-clock', now: () => now, onStatus: value => { status.push(value); } });
   let available = options.available ?? true;
-  const publisher = new RemoteResourcePublisher({ peer: phone, device: device(), epoch, clockId: 'phone-clock',
+  const publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: phone, device: device(), epoch, clockId: 'phone-clock',
     now: () => now + (options.remoteOffset ?? 1000), available: () => available, onStatus: value => { status.push(value); } });
   publisher.start(); if (options.synchronize !== false) receiver.tick();
   const approve = (capability = 'position', codec: 'json/1' | 'normalized-pointer/1' = 'json/1', ownerGrant = grant) => receiver.approve({ capability,
@@ -111,8 +121,8 @@ test('a different concrete peer cannot address the enrolled receiver and wrong h
   for (const scope of [{ principalId: 'attacker', applicationId: 'app', sessionId: 'session' },
     { principalId: 'owner', applicationId: 'app', sessionId: 'other' }]) {
     const otherPeer = new Peer(), otherPhone = new Peer(); otherPeer.other = otherPhone; otherPhone.other = otherPeer;
-    const other = new RemoteResourceReceiver({ peer: otherPeer, runtime: h.runtime, epoch, clockId: 'host-clock', now: () => 100, ...scope });
-    const publisher = new RemoteResourcePublisher({ peer: otherPhone, device: device(), epoch, clockId: 'other-phone-clock', now: () => 1100, available: () => true });
+    const other = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: otherPeer, runtime: h.runtime, epoch, clockId: 'host-clock', now: () => 100, ...scope });
+    const publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: otherPhone, device: device(), epoch, clockId: 'other-phone-clock', now: () => 1100, available: () => true });
     publisher.start(); other.tick();
     assert.equal(other.approve({ capability: 'position', sink: h.sinks.get('position')!, sinkDevice: device(true), sinkCapability: 'position',
       grant: { expiresAt: 10000, maxAgeMs: 100, maxHz: 60 } }), undefined);
@@ -190,9 +200,9 @@ test('slow receiver cancellation invalidates late effects and bounded route queu
 });
 test('invalid constructor authority/clock options attach no listener', () => {
   const h = harness(); const peer = new Peer();
-  assert.throws(() => new RemoteResourceReceiver({ peer, runtime: h.runtime, epoch: 'bad', clockId: 'host-clock', now: () => 100,
+  assert.throws(() => new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer, runtime: h.runtime, epoch: 'bad', clockId: 'host-clock', now: () => 100,
     principalId: 'owner', applicationId: 'app', sessionId: 'session' }));
-  assert.throws(() => new RemoteResourceReceiver({ peer, runtime: h.runtime, epoch, clockId: 'foreign-clock', now: () => 100,
+  assert.throws(() => new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer, runtime: h.runtime, epoch, clockId: 'foreign-clock', now: () => 100,
     principalId: 'owner', applicationId: 'app', sessionId: 'session' }));
   assert.equal(peer.listeners.size, 0); assert.equal(peer.states.size, 0);
 });
@@ -254,20 +264,20 @@ test('queued delivery and async authority cannot survive owner approval expiry',
 test('initial disconnected state notification detaches both subscriptions during construction', () => {
   const h = harness();
   const host = new Peer(); host.state = 'disconnected';
-  const receiver = new RemoteResourceReceiver({ peer: host, runtime: h.runtime, epoch, clockId: 'host-clock', now: () => 100,
+  const receiver = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: host, runtime: h.runtime, epoch, clockId: 'host-clock', now: () => 100,
     principalId: 'owner', applicationId: 'app', sessionId: 'session' });
   receiver.stop(); assert.equal(host.listeners.size, 0); assert.equal(host.states.size, 0);
   const phone = new Peer(); phone.state = 'disconnected';
-  const publisher = new RemoteResourcePublisher({ peer: phone, device: device(), epoch, clockId: 'phone-clock', now: () => 1100, available: () => true });
+  const publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: phone, device: device(), epoch, clockId: 'phone-clock', now: () => 1100, available: () => true });
   publisher.stop(); assert.equal(phone.listeners.size, 0); assert.equal(phone.states.size, 0);
 });
 test('a replacement generation requires fresh approval and rejects old epoch samples', () => {
   const h = harness(); h.approve(); h.phone.hold = true; h.publisher.publish('position', { x: 0.8, y: 0.2 });
   const oldFrame = h.phone.queue.pop()!; h.receiver.stop(); h.publisher.stop(); h.phone.hold = false;
   const nextEpoch = 'fedcba9876543210fedcba9876543210';
-  const receiver = new RemoteResourceReceiver({ peer: h.host, runtime: h.runtime, epoch: nextEpoch, clockId: 'host-clock', now: () => 100,
+  const receiver = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: h.host, runtime: h.runtime, epoch: nextEpoch, clockId: 'host-clock', now: () => 100,
     principalId: 'owner', applicationId: 'app', sessionId: 'session' });
-  const publisher = new RemoteResourcePublisher({ peer: h.phone, device: device(), epoch: nextEpoch, clockId: 'new-source-clock', now: () => 1100, available: () => true });
+  const publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: h.phone, device: device(), epoch: nextEpoch, clockId: 'new-source-clock', now: () => 1100, available: () => true });
   publisher.start(); receiver.tick(); assert.equal(publisher.publish('position', { x: 0.1, y: 0.9 }), false);
   assert.equal(receiver.approve({ capability: 'position', sink: h.sinks.get('position')!, sinkDevice: device(true), sinkCapability: 'position',
     grant: { expiresAt: 10000, maxAgeMs: 100, maxHz: 60 } }), 1);

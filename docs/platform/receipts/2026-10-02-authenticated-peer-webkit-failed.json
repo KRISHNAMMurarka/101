@@ -1,0 +1,16 @@
+{
+  "scope": "prior core same authentication/binding/transport implementation; no authenticated qualification",
+  "browser": "webkit",
+  "version": "26.5",
+  "node": "24.14.0",
+  "playwright": "1.61.1",
+  "status": "failed",
+  "stage": "raw transport before authentication",
+  "reason": "Strict five-second ICE gathering deadline rejected offer creation; authentication did not start",
+  "retainedFailureLogSha256": "e180a30c7a423ce6a93e69ea71b02b816dc1864e39b38e8bc5aa70fbaba3906c",
+  "sourceSha256": {
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/binding.ts": "6b7891e14a8c31ebdbc2546aaf88f90e0385f2347f996a6fd91f22b88d87725c",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e"
+  }
+}

@@ -74,7 +74,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         new RTCPeerConnection({ iceServers: [] }), value => new RTCSessionDescription(value),
         { unsetDeliveryLimit: Platform.OS === 'ios' ? 65535 : -1 },
       ) });
-      const provider = new PointerResourceProvider({ peer, epoch, clockId: `native:${epoch}`, now: () => globalThis.performance.now(),
+      const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer, epoch, clockId: `native:${epoch}`, now: () => globalThis.performance.now(),
         platform: Platform.OS, available: () => foreground.current && mounted.current && generation.current === version,
         onStatus: () => {
           const value = session.current;

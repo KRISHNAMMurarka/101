@@ -124,11 +124,11 @@ test('actual provider and receiver negotiation supplies the application bus only
   let now = 100;
   const host = new LocalPeer(), source = new LocalPeer(); host.other = source; source.other = host;
   const bus = new InputBus(), epoch = '0123456789abcdef0123456789abcdef';
-  const receiver = createGamePointerReceiver({ peer: host, epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
+  const receiver = createGamePointerReceiver({ authentication: 'local-diagnostic', peer: host, epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
     scope: { applicationId: 'input-lab', sessionId: 'local-session', playerId: 'player-1', roleId: 'classic', deviceId: 'remote-pointer', clockDomain: 'host' },
     mapping: { vector: 'aim', action: 'trigger', coordinates: 'normalized-to-signed', source: 'custom' }, now: () => now,
     emit: frame => bus.accept(frame), removeDevice: (id, player) => { bus.removeDevice(id, player); } });
-  const provider = new PointerResourceProvider({ peer: source, epoch, clockId: 'source', now: () => now + 1000,
+  const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer: source, epoch, clockId: 'source', now: () => now + 1000,
     platform: 'test-real-producer', available: () => true });
   provider.tick(); receiver.tick();
   assert.equal(bus.connectedDevices().length, 0); assert.equal(provider.driver(), undefined);
