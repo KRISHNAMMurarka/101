@@ -1,5 +1,5 @@
-import { createDeviceRuntime, parseMeasurementReport, parseObservationTiming } from '@101/connect';
-import type { Authorize, DeliveryContext, DeviceDescriptor, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
+import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming } from '@101/connect';
+import type { Authorize, DeliveryContext, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
 interface SensorOptions { feedback?: boolean; now?: () => number; authorize?: Authorize }
@@ -40,6 +40,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
   let simulatedState = false;
   let pendingFeedback: { value: boolean; context: DeliveryContext } | undefined;
   let lastReport: MeasurementReport | undefined;
+  let lastHealth: DeviceHealthReport | undefined;
   const commands: AppliedCommand[] = [];
   const runtime = createDeviceRuntime({ now, clockDomain: 'embedded-demo',
     authorize: options.authorize ?? (() => ({ expiresAt: now() + 10000, maxAgeMs: 1000, maxHz: 10 })),
@@ -118,6 +119,14 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
         } })
         : runtime.publish(sensor, undefined, { quality: report.status });
     },
+    publishHealth(input: unknown) {
+      const report = parseDeviceHealthReport(input);
+      const assessment = assessDeviceHealth(report, thermometer.id, 'temperature', { clockId: 'embedded-demo', at: now() });
+      lastHealth = report;
+      runtime.setReadiness(sensor, assessment.readiness, assessment.readiness === 'available'
+        ? Math.min(Number.MAX_SAFE_INTEGER, report.observed.at + report.maxAgeMs) : undefined);
+      return assessment;
+    },
     receiveFeedback() {
       const pending = pendingFeedback;
       pendingFeedback = undefined;
@@ -127,7 +136,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
       return observed;
     },
     state() {
-      return { temperature, unit: 'Cel', lastReport, commands: commands.map((command) => ({ ...command })), operations: downstream.operations() };
+      return { temperature, unit: 'Cel', lastReport, lastHealth, commands: commands.map((command) => ({ ...command })), operations: downstream.operations() };
     },
   };
 }

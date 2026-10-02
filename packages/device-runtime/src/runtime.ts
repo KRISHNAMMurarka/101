@@ -8,7 +8,7 @@ import type { AuthorizationRequest, Connection, DeliveryContext, DeviceRuntime, 
 
 interface Registration {
   handle: EndpointHandle; descriptor: DeviceDescriptor; capability: DeviceCapability;
-  role: "source" | "sink"; readiness: Readiness; sequence: number; operation: number;
+  role: "source" | "sink"; readiness: Readiness; readinessExpiresAt?: number; sequence: number; operation: number;
   routes: Set<EmbeddedConnection>; provider?: Pick<SinkProvider, "apply" | "release">;
 }
 const READINESS: readonly string[] = ["available", "unavailable", "busy", "denied", "stale"];
@@ -108,13 +108,20 @@ export class EmbeddedRuntime implements DeviceRuntime {
     // Capture the callbacks; later caller mutation cannot substitute another sink.
     return this.register(provider.device, provider.capability, "sink", { apply: provider.apply.bind(provider), release: provider.release.bind(provider) });
   }
-  setReadiness(handle: EndpointHandle, readiness: Readiness): Result {
+  setReadiness(handle: EndpointHandle, readiness: Readiness, expiresAt?: number): Result {
     const entry = this.registry.get(handle);
     if (this.closed || !entry) return failure("unknown-endpoint");
     if (!READINESS.includes(readiness)) return failure("invalid-readiness");
+    if (expiresAt !== undefined && (readiness !== "available" || !Number.isFinite(expiresAt) ||
+      expiresAt < 0 || expiresAt > Number.MAX_SAFE_INTEGER)) return failure("invalid-expiry");
     entry.readiness = readiness;
+    entry.readinessExpiresAt = expiresAt;
     if (readiness !== "available") for (const route of [...entry.routes]) route.stop(readiness);
     return success();
+  }
+  expireReadiness(entry: Registration, now: number): void {
+    if (entry.readiness === "available" && entry.readinessExpiresAt !== undefined && now > entry.readinessExpiresAt)
+      this.setReadiness(entry.handle, "stale");
   }
   unregister(handle: EndpointHandle): Result {
     const entry = this.registry.get(handle);
@@ -135,7 +142,6 @@ export class EmbeddedRuntime implements DeviceRuntime {
     const source = this.entry(request.from), sink = this.entry(request.to);
     if (!source || !sink || source.role !== "source" || sink.role !== "sink") return failure("unknown-endpoint");
     if (![request.principalId, request.applicationId, request.sessionId].every(identifier)) return failure("invalid-identity");
-    if (source.readiness !== "available" || sink.readiness !== "available") return failure("unavailable");
     if (!schemasCompatible(source.capability, sink.capability) || source.capability.delivery.mode !== sink.capability.delivery.mode) return failure("incompatible");
     const ownership = sink.capability.ownership;
     if (ownership?.mode === "partitioned" ? !ownership.partitions.includes(request.partition ?? "") : request.partition !== undefined) return failure("invalid-partition");
@@ -143,6 +149,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     try { now = this.time(); } catch { return failure("invalid-clock"); }
     this.sweep(now);
     if (this.closed || this.entry(request.from) !== source || this.entry(request.to) !== sink) return failure("unknown-endpoint");
+    if (source.readiness !== "available" || sink.readiness !== "available") return failure("unavailable");
     if (this.active.size >= this.maxRoutes || source.routes.size >= this.maxSubscribers) return failure("capacity");
     const authorization: AuthorizationRequest = Object.freeze({ principalId: request.principalId, applicationId: request.applicationId,
       sessionId: request.sessionId, source: reference(source), sink: reference(sink),
@@ -156,6 +163,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     if (!grant) return failure("denied");
     // Host callbacks may remove endpoints, revoke readiness, or close the runtime.
     try { now = this.time(); } catch { return failure("invalid-clock"); }
+    this.sweep(now);
     if (this.closed || this.entry(request.from) !== source || this.entry(request.to) !== sink ||
       source.readiness !== "available" || sink.readiness !== "available" || grant.expiresAt <= now || route.status().state !== "idle") return failure("unavailable");
     if (request.constraints !== undefined) {
@@ -180,7 +188,10 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.pendingDeliveries++; return true;
   }
   releaseDelivery(): void { this.pendingDeliveries--; }
-  private sweep(now: number): void { for (const route of [...this.active]) route.check(now); }
+  private sweep(now: number): void {
+    for (const entry of [...this.entries]) this.expireReadiness(entry, now);
+    for (const route of [...this.active]) route.check(now);
+  }
 
   publish(source: EndpointHandle, input: unknown, options: PublishOptions = {}): Result<{ accepted: number; rejected: number }> {
     const entry = this.entry(source);
@@ -230,6 +241,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.flushing = true;
     try {
       const now = this.time();
+      this.sweep(now);
       // Freeze this flush's work before calling any provider. Derived work is a later turn.
       const work = [...this.active].flatMap((route) => route.prepare(now));
       for (const dispatch of work) dispatch();
@@ -326,6 +338,9 @@ class EmbeddedConnection implements Connection {
   }
   operations(): ReturnType<Connection["operations"]> { return this.queue.records(); }
   check(now: number): void {
+    if (this.state !== "active") return;
+    this.runtime.expireReadiness(this.source!, now);
+    this.runtime.expireReadiness(this.sink!, now);
     if (this.state !== "active") return;
     if (now >= this.expiresAt || now >= this.grant!.expiresAt) { this.stop("expired"); return; }
     for (const id of this.queue.expire(now)) this.inFlight.get(id)?.abort();

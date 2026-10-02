@@ -59,7 +59,7 @@ export interface DeviceRuntime {
   readonly clockDomain: string;
   registerSource(provider: { device: unknown; capability: string }): EndpointHandle;
   registerSink(provider: SinkProvider): EndpointHandle;
-  setReadiness(handle: EndpointHandle, readiness: Readiness): Result;
+  setReadiness(handle: EndpointHandle, readiness: Readiness, expiresAt?: number): Result;
   unregister(handle: EndpointHandle): Result;
   route(request: RouteRequest): Connection;
   publish(source: EndpointHandle, value: unknown, options?: PublishOptions): Result<{ accepted: number; rejected: number }>;

@@ -178,6 +178,8 @@ import { parseMeasurementReport } from '@101/device-model';
 import type { MeasurementReport } from '@101/device-model';
 import { parseObservationTiming, observationAgeBounds, compareClockStamps } from '@101/device-model';
 import type { ObservationTiming } from '@101/device-model';
+import { parseDeviceHealthReport, assessDeviceHealth } from '@101/device-model';
+import type { DeviceHealthReport, DeviceHealthAssessment } from '@101/device-model';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -242,6 +244,13 @@ void qualityReport;
 const timing: ObservationTiming = parseObservationTiming({ capture: { clockId: 'source-clock', at: 100 },
   receipt: { clockId: 'source-clock', at: 110 }, mapping: null, processors: [] });
 void [observationAgeBounds(timing), compareClockStamps(timing.capture, timing.receipt)];
+const health: DeviceHealthReport = parseDeviceHealthReport({ schemaVersion: 1, deviceId: 'demo-thermometer',
+  observed: { clockId: 'embedded-demo', at: 0 }, maxAgeMs: 1000, battery: null,
+  thermal: 'nominal', firmware: null, connectivity: 'not-applicable', faults: [],
+  resources: [{ capabilityId: 'temperature', state: 'available', maxHz: 10, maxActiveRoutes: 1 }] });
+const healthAssessment: DeviceHealthAssessment = assessDeviceHealth(health, 'demo-thermometer', 'temperature',
+  { clockId: 'embedded-demo', at: 0 });
+void [healthAssessment, sensor.publishHealth(health)];
 void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
   runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
@@ -268,7 +277,7 @@ import * as runtime from '@101/device-runtime';
 import * as web from '@101/device-web';
 import { PeerDataTransport } from '@101/transport-webrtc';
 import { runPointerExample } from '@101/connect/examples/pointer';
-import { runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
+import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import { runSpatialJointExample } from '@101/connect/examples/spatial-joints';
@@ -280,7 +289,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
     { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
   check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
@@ -315,6 +324,34 @@ export async function checkRuntime() {
   let crossClockRejected = false;
   try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }
   check(crossClockRejected, 'Packed cross-clock comparison was accepted');
+  const health = model.parseDeviceHealthReport({ schemaVersion: 1, deviceId: 'demo-thermometer',
+    observed: { clockId: 'embedded-demo', at: 100 }, maxAgeMs: 1000,
+    battery: { levelPercent: 0, charging: false }, thermal: 'nominal', firmware: { version: '1.2.3' },
+    connectivity: 'not-applicable', faults: [], resources: [
+      { capabilityId: 'temperature', state: 'available', maxHz: 10, maxActiveRoutes: 1 }] });
+  check(model.assessDeviceHealth(health, 'demo-thermometer', 'temperature',
+    { clockId: 'embedded-demo', at: 1100 }).limits?.maxHz === 10 &&
+    model.assessDeviceHealth(health, 'demo-thermometer', 'temperature',
+      { clockId: 'embedded-demo', at: 1100.001 }).readiness === 'stale', 'Packed health assessment failed');
+  const healthPipeline = createSensorFeedbackPipeline({ now: () => 100 });
+  try {
+    check(healthPipeline.publishHealth(health).readiness === 'available', 'Packed health caller denied available resource');
+    healthPipeline.publishTemperature(31.25); healthPipeline.runtime.flush();
+    check(healthPipeline.downstream.status().pending === 1, 'Packed health fixture did not queue output');
+    check(healthPipeline.publishHealth({ ...health, connectivity: 'offline' }).readiness === 'unavailable' &&
+      healthPipeline.downstream.operations()[0].state === 'cancelled', 'Packed health loss left pending command');
+  } finally { healthPipeline.runtime.close(); }
+  let healthNow = 100;
+  const expiringPipeline = createSensorFeedbackPipeline({ now: () => healthNow });
+  try {
+    check(expiringPipeline.publishHealth({ ...health, maxAgeMs: 1 }).readiness === 'available',
+      'Packed expiring health report was not initially available');
+    expiringPipeline.publishTemperature(31.25); expiringPipeline.runtime.flush();
+    healthNow = 102; expiringPipeline.runtime.flush();
+    check(expiringPipeline.upstream.status().state === 'closed' &&
+      expiringPipeline.downstream.operations()[0].state === 'cancelled',
+      'Packed health expiry left a pending command');
+  } finally { expiringPipeline.runtime.close(); }
   const pointer = runPointerExample();
   check(pointer.kind === 'embedded-simulation' && pointer.position.x === 200 && pointer.position.y === 400 && pointer.competing.ok === false && pointer.competing.reason === 'busy' && pointer.nextOwner.ok === true && pointer.released === 1, 'Packed pointer example behavior failed');
   const feedback = runSensorFeedbackExample(), unverified = runSensorFeedbackExample({ feedback: false });
@@ -350,7 +387,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 

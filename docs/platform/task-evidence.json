@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 19,
+  "revision": 20,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6348,6 +6348,33 @@
       "supportRows": []
     },
     {
+      "id": "device-health-2026-10-02",
+      "revision": "containing implementation commit, base 0e666f3; immutable SDK producer tree 9d534649815b850492a41f9933da554417b71c4d and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M09"
+      ],
+      "paths": [
+        "docs/platform/DEVICE-HEALTH-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-device-health-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-device-health-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-device-health-sdk-consumer-commands.json",
+        "docs/platform/receipts/2026-10-02-device-health-sdk-build-stderr.log"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed helper and embedded caller; no physical health provider",
+      "reproduction": "Focused health/model/runtime/embedded RED-GREEN tests and independent review in QA; node tools/build-sdk.mjs 9d534649815b850492a41f9933da554417b71c4d; node tools/qa-sdk-consumer.mjs release/sdk-XLoyjV/manifest.json; exact candidate repository gates",
+      "scope": "M09 only: closed bounded immutable provider health reports, exact device/capability and same-clock freshness assessment, provider-reported resource limits, runtime readiness expiry and embedded temperature caller closing pending commands. No physical state authentication, live quota enforcement, remote binding or support promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
       "id": "explicit-units-2026-10-02",
       "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
       "result": "pass",
@@ -6643,7 +6670,8 @@
     {
       "id": "M09",
       "records": [
-        "pending-M09"
+        "pending-M09",
+        "device-health-2026-10-02"
       ],
       "dependencies": [
         "C01",

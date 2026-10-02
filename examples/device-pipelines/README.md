@@ -54,6 +54,20 @@ loss report with bounded fault codes and no value. The example preserves these
 claims without asserting physical accuracy. `publishTemperature()` remains the
 lower-level compatibility path.
 
+`publishHealth()` accepts a bounded snapshot for the exact thermometer and
+`temperature` capability. Its timestamp must be in the embedded clock domain
+and no older than the report's `maxAgeMs`. The report supplies optional battery
+and firmware details, thermal/connectivity states, faults and per-capability
+limits. `state().lastHealth` retains the validated claim. Offline, critical,
+blocking, missing and stale states remove source readiness, which closes the
+upstream route and pending relay commands. A later healthy report changes
+readiness; the host must explicitly restart routes and obtain authorization.
+The runtime checks that deadline when starting, publishing, flushing or
+renewing a route; it does not run a background timer while idle. `maxHz` and
+`maxActiveRoutes` are reported ceilings for diagnostics and later
+negotiation. This example does not enforce them as dynamic runtime quotas.
+Battery percentage and firmware text do not establish route availability.
+
 ```ts
 import { createSensorFeedbackPipeline } from './sensor-feedback.ts';
 

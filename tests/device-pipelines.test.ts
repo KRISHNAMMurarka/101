@@ -109,6 +109,51 @@ test('a stale producer report cancels a pending derived command', () => {
   example.runtime.close();
 });
 
+test('sensor health loss closes pending output and keeps reported limits diagnostic', () => {
+  let now = 100;
+  const example = createSensorFeedbackPipeline({ now: () => now });
+  const health = { schemaVersion: 1, deviceId: 'demo-thermometer', observed: { clockId: 'embedded-demo', at: 100 },
+    maxAgeMs: 1000, battery: { levelPercent: 0, charging: false }, thermal: 'nominal',
+    firmware: { version: '1.2.3' }, connectivity: 'not-applicable', faults: [],
+    resources: [{ capabilityId: 'temperature', state: 'available', maxHz: 10, maxActiveRoutes: 1 }] } as const;
+  assert.deepEqual(example.publishHealth(health), { readiness: 'available', limits: { maxHz: 10, maxActiveRoutes: 1 } });
+  assert.deepEqual(example.state().lastHealth, health);
+  example.publishTemperature(31.25);
+  example.runtime.flush();
+  assert.equal(example.downstream.status().pending, 1);
+  assert.deepEqual(example.publishHealth({ ...health, connectivity: 'offline' }),
+    { readiness: 'unavailable', reason: 'connectivity' });
+  example.runtime.flush();
+  assert.deepEqual(example.state().commands, []);
+  assert.equal(example.downstream.operations()[0].state, 'cancelled');
+  assert.equal(example.upstream.status().state, 'closed');
+  now = 1100.001;
+  assert.deepEqual(example.publishHealth(health), { readiness: 'stale', reason: 'stale' });
+  assert.deepEqual(example.publishHealth({ ...health, observed: { clockId: 'embedded-demo', at: now }, deviceId: 'other' }),
+    { readiness: 'unavailable', reason: 'device' });
+  assert.throws(() => example.publishHealth({ ...health, observed: { clockId: 'foreign', at: now } }));
+  assert.equal(example.upstream.status().state, 'closed');
+  example.runtime.close();
+});
+
+test('an available health claim expires during use and cancels pending output', () => {
+  let now = 100;
+  const example = createSensorFeedbackPipeline({ now: () => now });
+  const health = { schemaVersion: 1, deviceId: 'demo-thermometer', observed: { clockId: 'embedded-demo', at: 100 },
+    maxAgeMs: 1, battery: null, thermal: 'nominal', firmware: null, connectivity: 'not-applicable',
+    faults: [], resources: [{ capabilityId: 'temperature', state: 'available', maxHz: 10, maxActiveRoutes: 1 }] };
+  assert.equal(example.publishHealth(health).readiness, 'available');
+  example.publishTemperature(31.25);
+  example.runtime.flush();
+  assert.equal(example.downstream.status().pending, 1);
+  now = 102;
+  example.runtime.flush();
+  assert.equal(example.upstream.status().state, 'closed');
+  assert.equal(example.downstream.operations()[0].state, 'cancelled');
+  assert.equal(example.publishTemperature(31.25).ok, false);
+  example.runtime.close();
+});
+
 test('both processor legs require independent resource authorization', () => {
   const requests: Readonly<AuthorizationRequest>[] = [];
   const deniedOutput = createSensorFeedbackPipeline({ authorize(request) {

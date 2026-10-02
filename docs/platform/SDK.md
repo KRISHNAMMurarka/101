@@ -347,6 +347,28 @@ conversion metadata in provenance. Its normal `publish()` accepts declared
 bytes. [M06 evidence](UNITS-QA-2026-10-02.md) is local model/runtime and installed
 SDK evidence, not a physical device claim.
 
+## Device health and supported resources
+
+`parseDeviceHealthReport()` accepts a closed, bounded, immutable schema 1
+provider snapshot for one device. It records an observation clock and age
+limit; optional battery and firmware details; thermal and connectivity states;
+distinct warning or blocking fault codes; and per-capability state, maximum
+rate and maximum active routes. `assessDeviceHealth()` requires a caller clock
+stamp and exact device/capability identity. It rejects cross-clock or future
+time, treats expired reports as stale and withholds availability for unknown or
+blocking conditions. It returns resource limits only for an available result.
+Battery level or firmware text alone never supplies a readiness decision.
+
+The [embedded sensor example](../../examples/device-pipelines/sensor-feedback.ts)
+applies the assessed readiness to its existing source with an expiry deadline.
+The runtime rechecks that deadline on route start, publication, flush and
+renewal; it has no idle background timer. Loss closes routes and cancels
+pending output. Recovery requires a new authorized route start. These
+reports are provider claims: this SDK cannot authenticate a physical battery,
+fault or firmware state, and it does not enforce the reported resource limits
+as runtime quotas. [M09 evidence](DEVICE-HEALTH-QA-2026-10-02.md) covers the
+parser, embedded caller and installed package consumers.
+
 Workspace packages expose TypeScript source for the repository's existing tools.
 `npm run build:sdk -- HEAD` separately compiles an explicit immutable revision/tree
 into five local ESM tarballs under a fresh ignored `release/sdk-*` directory.

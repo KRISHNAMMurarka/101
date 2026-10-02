@@ -68,6 +68,21 @@ test("active route limits expose actual descriptor/grant intersections without r
   assert.equal(h.releases(), 1);
   assert.equal(h.runtime.clockDomain, "embedded");
 });
+test("a source readiness deadline closes an active route before further delivery", () => {
+  const h = harness();
+  assert.deepEqual(h.runtime.setReadiness(h.source, "available", 1), { ok: true, value: undefined });
+  assert.equal(h.connection.start().ok, true);
+  assert.equal(h.runtime.publish(h.source, { x: 0.2, y: 0.8 }).ok, true);
+  h.setNow(2);
+  h.runtime.flush();
+  assert.equal(h.connection.status().state, "closed");
+  assert.equal(h.releases(), 1);
+  assert.deepEqual(h.received, []);
+  assert.equal(h.runtime.publish(h.source, { x: 0.2, y: 0.8 }).ok, false);
+  const next = h.runtime.route(h.request);
+  assert.equal(next.start().ok, false);
+  h.runtime.close();
+});
 test("route constraints narrow host authority, remain immutable and cap renewal/dispatch", () => {
   const h = harness();
   const constraints = { expiresAt: 100, maxAgeMs: 30, maxHz: 20 };

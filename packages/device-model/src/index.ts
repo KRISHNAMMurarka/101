@@ -21,3 +21,5 @@ export { parseMeasurementReport } from './quality.ts';
 export type { MeasurementFault, MeasurementReport } from './quality.ts';
 export { parseObservationTiming, observationAgeBounds, compareClockStamps } from './observation-timing.ts';
 export type { ClockStamp, CaptureMapping, ProcessorTimingStep, ObservationTiming } from './observation-timing.ts';
+export { parseDeviceHealthReport, assessDeviceHealth } from './health.ts';
+export type { DeviceHealthFault, DeviceHealthResource, DeviceHealthReport, DeviceHealthAssessment } from './health.ts';
