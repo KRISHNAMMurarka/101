@@ -1,17 +1,26 @@
-import { createDeviceRuntime, DeviceValidationError, parseDeviceDescriptor, parseSignalValue } from '@101/connect';
-import type { Authorize, DeviceDescriptor, ValueSchema } from '@101/connect';
+import { createDeviceRuntime, createUnitConverter, DeviceValidationError, parseDeviceDescriptor, parseSignalValue } from '@101/connect';
+import type { Authorize, DeviceDescriptor, JsonObject, ValueSchema } from '@101/connect';
 
 export interface TelemetryReading { readonly timestamp: number; readonly residentBytes: number; readonly quality?: 'observed' | 'unverified' }
 type Version = 1 | 2;
+const RESIDENT_BYTES: ValueSchema = { type: 'scalar', unit: 'By', min: 0, max: Number.MAX_SAFE_INTEGER };
+const RESIDENT_KIBY: ValueSchema = { type: 'scalar', unit: 'KiBy', min: 0, max: 1000000000 };
+const kibyConverter = createUnitConverter(RESIDENT_KIBY, RESIDENT_BYTES, { decimalPlaces: 0, maxAbsoluteError: 0.51 });
 
 function batchSchema(version: Version): ValueSchema {
   if (version !== 1 && version !== 2) throw new TypeError('Unsupported telemetry batch version');
   return { type: 'array', minItems: 1, maxItems: 16, items: { type: 'record', fields: {
     timestamp: { type: 'scalar', unit: 'ms', min: 0, max: Number.MAX_SAFE_INTEGER },
-    residentBytes: { type: 'scalar', unit: 'By', min: 0, max: Number.MAX_SAFE_INTEGER },
+    residentBytes: RESIDENT_BYTES,
     ...(version === 2 ? { quality: { type: 'enum' as const, values: ['observed', 'unverified'] } } : {}),
   }, ...(version === 2 ? { optional: ['quality'] } : {}) } };
 }
+
+const kibyBatchSchema: ValueSchema = { type: 'array', minItems: 1, maxItems: 16, items: { type: 'record', fields: {
+  timestamp: { type: 'scalar', unit: 'ms', min: 0, max: Number.MAX_SAFE_INTEGER },
+  residentKiBy: RESIDENT_KIBY,
+  quality: { type: 'enum', values: ['observed', 'unverified'] },
+}, optional: ['quality'] } };
 
 export function telemetryBatchDescriptor(version: Version = 2, sink = false): Readonly<DeviceDescriptor> {
   return parseDeviceDescriptor({ schemaVersion: 1, id: sink ? 'telemetry-batch-consumer' : 'telemetry-batch-source',
@@ -36,7 +45,7 @@ export function upgradeTelemetryBatchV1(input: unknown): readonly TelemetryReadi
 export function createTelemetryBatchPipeline(options: { version?: Version; sinkVersion?: Version; now?: () => number; authorize?: Authorize } = {}) {
   const version = options.version ?? 2, now = options.now ?? (() => 0);
   const sourceDevice = telemetryBatchDescriptor(version), sinkDevice = telemetryBatchDescriptor(options.sinkVersion ?? version, true);
-  let latest: readonly TelemetryReading[] = Object.freeze([]), released = 0;
+  let latest: readonly TelemetryReading[] = Object.freeze([]), provenance: JsonObject | undefined, released = 0;
   const scope = { principalId: 'telemetry-owner', applicationId: 'telemetry-batch-example', sessionId: 'embedded-telemetry' };
   const runtime = createDeviceRuntime({ now, clockDomain: 'embedded-telemetry-clock', authorize(request) {
     if (request.principalId !== scope.principalId || request.applicationId !== scope.applicationId || request.sessionId !== scope.sessionId ||
@@ -46,20 +55,35 @@ export function createTelemetryBatchPipeline(options: { version?: Version; sinkV
   } });
   const source = runtime.registerSource({ device: sourceDevice, capability: 'readings' });
   const sink = runtime.registerSink({ device: sinkDevice, capability: 'readings', apply(observation, context) {
-    if (context.isCurrent() && !context.signal.aborted) latest = readings(observation.value, options.sinkVersion ?? version);
-  }, release() { latest = Object.freeze([]); released++; } });
+    if (context.isCurrent() && !context.signal.aborted) {
+      latest = readings(observation.value, options.sinkVersion ?? version);
+      provenance = observation.provenance;
+    }
+  }, release() { latest = Object.freeze([]); provenance = undefined; released++; } });
   runtime.setReadiness(source, 'available'); runtime.setReadiness(sink, 'available');
   const connection = runtime.route({ from: source, to: sink, ...scope }), start = connection.start();
+  function publishBatch(batch: readonly TelemetryReading[], publicationProvenance?: JsonObject) {
+    const current = now();
+    if (!Number.isFinite(current) || batch.some((value, index) => value.timestamp > current || current - value.timestamp > 1000 ||
+      index > 0 && value.timestamp < batch[index - 1].timestamp)) throw new DeviceValidationError('batch-timestamp');
+    return runtime.publish(source, batch, { timestamp: batch[batch.length - 1].timestamp, clockDomain: runtime.clockDomain,
+      ...(publicationProvenance ? { provenance: publicationProvenance } : {}) });
+  }
   return { runtime, source, sink, sourceDevice, sinkDevice, connection, start,
-    publish(input: unknown) {
-      const batch = readings(input, version), current = now();
-      if (!Number.isFinite(current) || batch.some((value, index) => value.timestamp > current || current - value.timestamp > 1000 ||
-        index > 0 && value.timestamp < batch[index - 1].timestamp)) throw new DeviceValidationError('batch-timestamp');
-      return runtime.publish(source, batch, { timestamp: batch[batch.length - 1].timestamp, clockDomain: runtime.clockDomain });
+    publish(input: unknown) { return publishBatch(readings(input, version)); },
+    publishResidentKiBy(input: unknown) {
+      if (version !== 2) throw new DeviceValidationError('conversion-version');
+      const values = parseSignalValue(input, kibyBatchSchema) as unknown as readonly
+        { timestamp: number; residentKiBy: number; quality?: 'observed' | 'unverified' }[];
+      const batch = readings(values.map(({ timestamp, residentKiBy, quality }) => ({ timestamp,
+        residentBytes: kibyConverter.convert(residentKiBy) as number,
+        ...(quality === undefined ? {} : { quality }),
+      })), 2);
+      return publishBatch(batch, { conversion: { ...kibyConverter.metadata } });
     },
     state() {
       const last = latest[latest.length - 1];
-      return Object.freeze({ count: latest.length, residentBytes: last?.residentBytes, quality: last?.quality, released });
+      return Object.freeze({ count: latest.length, residentBytes: last?.residentBytes, quality: last?.quality, provenance, released });
     } };
 }
 

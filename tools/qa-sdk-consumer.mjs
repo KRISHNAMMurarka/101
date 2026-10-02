@@ -159,7 +159,8 @@ function installAndAudit(manifest) {
 const typeConsumer = String.raw`
 import { createDeviceRuntime, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
-import { DeviceValidationError, parseDeviceDescriptor } from '@101/device-model';
+import { DeviceValidationError, createUnitConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
+import type { UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
@@ -190,7 +191,11 @@ const sensor = createSensorFeedbackPipeline({ feedback: false });
 const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
 const telemetry = createTelemetryBatchPipeline({ now: () => 1000 });
 const migrated = upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }]);
-void [telemetry.publish(migrated), runTelemetryBatchExample().residentBytes];
+const conversionOptions: UnitConverterOptions = { decimalPlaces: 0, maxAbsoluteError: 0.51 };
+const conversion: UnitConverter = createUnitConverter({ type: 'scalar', unit: 'KiBy', min: 0, max: 1000000 },
+  { type: 'scalar', unit: 'By', min: 0, max: 1024000000 }, conversionOptions);
+void [telemetry.publish(migrated), telemetry.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5 }]),
+  runTelemetryBatchExample().residentBytes, conversion.convert(64.5), parseUnitToken('KiBy')];
 void [descriptor, runtime, runtimeFactory, peer, DeviceValidationError, modelSchema.$schema, facadeSchema.$schema, authenticated, pointer.publish({ x: 0, y: 1 }), runPointerExample().position, sensor.publishTemperature(31), runSensorFeedbackExample().operations, threshold.evaluate(31)];
 `;
 
@@ -223,7 +228,19 @@ import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetr
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  const conversion = model.createUnitConverter({ type: 'scalar', unit: 'K', min: 200, max: 400 },
+    { type: 'scalar', unit: 'Cel', min: -100, max: 150 }, { decimalPlaces: 2, maxAbsoluteError: 0.00501 });
+  check(conversion.convert(303.15) === 30 && conversion.metadata.offset === -273.15, 'Packed affine unit conversion failed');
+  check(model.parseUnitToken('KiBy') === 'KiBy', 'Packed unit token validation failed');
+  let malformedUnitRejected = false;
+  try { model.parseUnitToken(' KiBy'); } catch { malformedUnitRejected = true; }
+  check(malformedUnitRejected, 'Packed ambiguous conversion unit was accepted');
+  let incompatibleRejected = false;
+  try { model.createUnitConverter({ type: 'scalar', unit: 'm', min: 0, max: 1 },
+    { type: 'scalar', unit: 's', min: 0, max: 1 }, { decimalPlaces: 2, maxAbsoluteError: 0.01 }); }
+  catch { incompatibleRejected = true; }
+  check(incompatibleRejected, 'Packed incompatible dimensions were converted');
   const pointer = runPointerExample();
   check(pointer.kind === 'embedded-simulation' && pointer.position.x === 200 && pointer.position.y === 400 && pointer.competing.ok === false && pointer.competing.reason === 'busy' && pointer.nextOwner.ok === true && pointer.released === 1, 'Packed pointer example behavior failed');
   const feedback = runSensorFeedbackExample(), unverified = runSensorFeedbackExample({ feedback: false });
@@ -232,10 +249,14 @@ export async function checkRuntime() {
   check(threshold.evaluate(31) === true && threshold.evaluate(29) === undefined && threshold.evaluate(27) === false, 'Packed threshold hysteresis failed');
   const batch = runTelemetryBatchExample();
   check(batch.kind === 'embedded-fixture' && batch.publication && batch.count === 2 && batch.residentBytes === 69632 && batch.quality === 'unverified', 'Packed structured batch consumer/migration failed');
-  const pipeline = createTelemetryBatchPipeline({ now: () => 1000 });
+  let fixtureNow = 1000;
+  const pipeline = createTelemetryBatchPipeline({ now: () => fixtureNow });
   try {
     check(pipeline.publish(upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }])).ok, 'Packed batch publication failed');
     pipeline.runtime.flush(); check(pipeline.state().count === 1 && pipeline.state().residentBytes === 65536, 'Packed batch sink failed');
+    fixtureNow = 1100;
+    check(pipeline.publishResidentKiBy([{ timestamp: fixtureNow, residentKiBy: 64.5, quality: 'observed' }]).ok, 'Packed explicit KiBy publication failed');
+    pipeline.runtime.flush(); check(pipeline.state().residentBytes === 66048 && pipeline.state().provenance?.conversion?.sourceUnit === 'KiBy', 'Packed unit conversion provenance failed');
     pipeline.connection.stop(); check(pipeline.state().count === 0 && pipeline.state().released === 1, 'Packed batch release failed');
   } finally { pipeline.runtime.close(); }
   const identity = await sdk.createEphemeralWebIdentity();
@@ -255,7 +276,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 
@@ -267,7 +288,7 @@ const summary = await checkRuntime();
 const observedAt = performance.now(), residentBytes = process.memoryUsage().rss;
 const memory = createTelemetryBatchPipeline({ now: () => observedAt });
 try {
-  check(memory.publish([{ timestamp: observedAt, residentBytes, quality: 'observed' }]).ok, 'Actual Node process memory batch failed admission');
+  check(memory.publishResidentKiBy([{ timestamp: observedAt, residentKiBy: residentBytes / 1024, quality: 'observed' }]).ok, 'Actual Node process memory conversion failed admission');
   memory.runtime.flush(); check(memory.state().residentBytes === residentBytes && memory.state().quality === 'observed', 'Actual Node memory reading lost meaning');
   memory.connection.stop(); check(memory.state().count === 0, 'Actual Node telemetry state survived stop');
   summary.actualNodeMemoryBatch = true;

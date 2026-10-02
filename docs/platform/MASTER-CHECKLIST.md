@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 40 completed with recorded evidence; 232 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 41 completed with recorded evidence; 231 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -87,7 +87,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **M03 — Rich input schemas.** Model contacts, pen, key transitions, text/IME composition, wheels and relative motion without collapsing events into replaceable samples.
 - [ ] **M04 — Binary/document resources.** Define chunked bounded blobs, text/documents and typed asset references; size, integrity, content type and cancellation are verified.
 - [ ] **M05 — Media/surface descriptions.** Define tracks, render targets, codecs, capture/output properties and geometry; unsupported resources cannot advertise a working route.
-- [ ] **M06 — Units and conversions.** Validate unit representation and explicit converters, scale/offset, precision and error budgets; incompatible measurements fail without silent normalization.
+- [x] **M06 — Units and conversions.** Validate unit representation and explicit converters, scale/offset, precision and error budgets; incompatible measurements fail without silent normalization. [Unit-conversion evidence](UNITS-QA-2026-10-02.md).
 - [ ] **M07 — Calibration and quality.** Promote needed calibration revision, uncertainty, faults and stale/unavailable state into validated contracts; fixtures preserve producer meaning.
 - [ ] **M08 — Clock and observation provenance.** Define remote clock identity, offset uncertainty, drift, capture/receipt timestamps and processor lineage; unsupported clock comparisons are rejected.
 - [ ] **M09 — Device health/resources.** Model battery, charging, thermal, firmware, connectivity and hardware faults as truthful readiness/telemetry with supported resource limits.

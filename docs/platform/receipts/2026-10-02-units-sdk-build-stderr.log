@@ -1,0 +1,2 @@
+error: a9439a8e7916f47cbf578692d964533a25a1e25d^{commit}: expected commit type, but the object dereferences to tree type
+fatal: Needed a single revision

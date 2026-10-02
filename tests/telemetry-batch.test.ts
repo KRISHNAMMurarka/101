@@ -57,3 +57,32 @@ test('owner denial and runtime expiry do not deliver or retain a batch', () => {
     now = 1100; expired.runtime.flush(); assert.equal(expired.state().count, 0);
   } finally { expired.runtime.close(); }
 });
+
+test('explicit KiBy publication converts before the authorized By route and keeps provenance', () => {
+  const pipeline = createTelemetryBatchPipeline({ now: () => 1000 });
+  try {
+    assert.equal(pipeline.start.ok, true);
+    const publish = pipeline as typeof pipeline & { publishResidentKiBy(input: unknown): { ok: boolean } };
+    assert.equal(publish.publishResidentKiBy([{ timestamp: 1000, residentKiBy: 64.5, quality: 'observed' }]).ok, true);
+    pipeline.runtime.flush();
+    assert.equal(pipeline.state().residentBytes, 66048);
+    assert.equal(pipeline.state().quality, 'observed');
+    const state = pipeline.state() as typeof pipeline.state extends () => infer R ? R & { provenance?: { conversion?: { sourceUnit: string; targetUnit: string; scale: number } } } : never;
+    assert.deepEqual(state.provenance?.conversion && {
+      sourceUnit: state.provenance.conversion.sourceUnit,
+      targetUnit: state.provenance.conversion.targetUnit,
+      scale: state.provenance.conversion.scale,
+    }, { sourceUnit: 'KiBy', targetUnit: 'By', scale: 1024 });
+    for (const value of [
+      [{ timestamp: 1000, residentKiBy: 1000000001 }],
+      [{ timestamp: 1000, residentKiBy: 1, residentBytes: 1024 }],
+      [{ timestamp: 1000, residentKiBy: NaN }],
+    ]) {
+      assert.throws(() => publish.publishResidentKiBy(value));
+      pipeline.runtime.flush();
+      assert.equal(pipeline.state().residentBytes, 66048);
+    }
+    pipeline.connection.stop();
+    assert.equal((pipeline.state() as typeof state).provenance, undefined);
+  } finally { pipeline.runtime.close(); }
+});

@@ -240,6 +240,31 @@ callback return supplies `unverified` evidence. Trusted providers can report ack
 or observation through `context.reportEvidence()`. Only independent feedback should establish
 an observed effect. The example's separate simulated state read demonstrates this distinction.
 
+## Explicit measurement conversion
+
+`createUnitConverter(sourceSchema, targetSchema, { decimalPlaces,
+maxAbsoluteError })` is an opt-in processor primitive for numeric scalar and
+vector schemas. Source and target must have the same shape, components and
+reference frame. It recognizes reviewed pairs within temperature (`Cel`, `K`),
+length (`m`, `cm`, `mm`), angle (`rad`, `deg`), time (`s`, `ms`), mass (`kg`, `g`)
+and information (`By`, `KiBy`). Dimensionless `1` and structurally valid unknown
+unit tokens convert only to themselves. No route or wire packet invokes it
+automatically. `parseUnitToken()` validates conversion spelling without
+changing descriptor/1's accepted unit strings. `schemasCompatible()` still
+requires exact units.
+
+The converter validates complete source/target ranges, output decimal precision,
+transformed source resolution and a conservative absolute error budget before it
+can be used. Each call validates input and rounded output against their schemas.
+Its immutable metadata states scale, offset, precision and numeric error bound;
+that bound covers declared quantization and arithmetic, not sensor calibration
+or physical measurement accuracy. A processor must retain its own calibration
+and quality evidence. The [resident memory example](../../examples/device-pipelines/telemetry-batch.ts)
+offers `publishResidentKiBy()` as an explicit `KiBy` to `By` path and carries the
+conversion metadata in provenance. Its normal `publish()` accepts declared
+bytes. [M06 evidence](UNITS-QA-2026-10-02.md) is local model/runtime and installed
+SDK evidence, not a physical device claim.
+
 Workspace packages expose TypeScript source for the repository's existing tools.
 `npm run build:sdk -- HEAD` separately compiles an explicit immutable revision/tree
 into five local ESM tarballs under a fresh ignored `release/sdk-*` directory.

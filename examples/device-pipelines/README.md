@@ -89,6 +89,12 @@ try {
 } finally { batch.runtime.close(); }
 ```
 
+For an explicitly converted source, call `publishResidentKiBy([{ timestamp,
+residentKiBy, quality }])` on a version 2 pipeline. It validates the `KiBy`
+batch, converts to the declared `By` sink with explicit decimal precision and
+an error budget, and retains the conversion map in observation provenance. It
+does not infer units from a number or change normal route compatibility.
+
 Timestamp members retain the application's clock domain. Remote structured samples
 and events negotiate `json/2`; outer observation timestamps translate separately.
 The wire and full runtime observation/options envelopes each have an independent

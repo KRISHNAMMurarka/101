@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 12,
+  "revision": 13,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6188,6 +6188,32 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "explicit-units-2026-10-02",
+      "revision": "containing implementation commit, base bba4e7ed93ecd3b5159916377c3eb339abf2ba7f; immutable SDK producer tree a9439a8e7916f47cbf578692d964533a25a1e25d and exact tool/source hashes in receipts",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "M06"
+      ],
+      "paths": [
+        "docs/platform/UNITS-QA-2026-10-02.md",
+        "docs/platform/receipts/2026-10-02-units-sdk-build.json",
+        "docs/platform/receipts/2026-10-02-units-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-02-units-sdk-consumer-commands.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; installed Node actual process-memory conversion and Chromium149.0.7827.55/Firefox151.0/WebKit26.5 packed API consumers; no physical sensor or WebRTC",
+      "reproduction": "Focused unit/telemetry RED-GREEN regressions and model/schema/boundary checks in QA; node tools/build-sdk.mjs a9439a8e7916f47cbf578692d964533a25a1e25d; node tools/qa-sdk-consumer.mjs release/sdk-43FJwL/manifest.json; exact candidate repository gates",
+      "scope": "M06 only: opt-in canonical conversion-unit validation with descriptor/1 compatibility, reviewed affine numeric maps, explicit decimal precision/error bounds, immutable options/provenance, rejected incompatible frame/dimension/range/resolution and authorized KiBy-to-By telemetry consumer. No M02/M07/M08/P03/native/physical/support/full-release promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -6418,7 +6444,8 @@
     {
       "id": "M06",
       "records": [
-        "pending-M06"
+        "pending-M06",
+        "explicit-units-2026-10-02"
       ],
       "dependencies": [
         "C01",
