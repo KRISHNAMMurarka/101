@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 25,
+  "revision": 26,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -4461,6 +4461,30 @@
       "equipment": [
         "Clean target toolchains; release signing identities where required"
       ]
+    },
+    {
+      "id": "sdk-external-consumer-current-2026-10-03",
+      "revision": "f6bef544dae6571daab3e306b2bca1aa4a16ce43",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-03-sdk-distribution-manifest.json",
+        "docs/platform/receipts/2026-10-03-sdk-consumer.json",
+        "docs/platform/receipts/2026-10-03-sdk-consumer-node22.json"
+      ],
+      "environment": "macOS 26.5.2; Node 22.13.0/npm 10.9.2 and Node 24.14.0/npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1; Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5. Node 22.13.0 darwin-arm64 official archive SHA-256 bc1e374e7393e2f4b20e5bbc157d02e9b1fb2c634b2f992136b38fb8ca2023b7 verified before use.",
+      "reproduction": "Download Node 22.13.0 darwin-arm64 and SHASUMS256.txt from https://nodejs.org/dist/v22.13.0/; verify archive SHA-256; run node tools/qa-sdk-consumer.mjs release/sdk-lGlaIn/manifest.json with Node 22.13.0 and Node 24.14.0 separately.",
+      "scope": "Two fresh offline consumers outside the repository installed the same five exact tarballs without workspace links. Each passed strict NodeNext and Bundler declarations with TypeScript 5.9.3, compiled ESM examples on ordinary Node, closed package/export/schema checks and installed-package browser runs in Chromium, Firefox and WebKit. This closes the release contract's declared Node 22.13.0 and 24.14.0 external-consumer matrix only; native-language packages, wider toolchains, physical transport and public release stay separate.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-K02",
@@ -9699,7 +9723,8 @@
       "id": "K02",
       "records": [
         "pending-K02",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "sdk-external-consumer-current-2026-10-03"
       ],
       "dependencies": [],
       "equipment": [
