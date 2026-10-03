@@ -38,6 +38,44 @@ test("a HID chooser result arriving after stop is discarded", async () => {
   assert.equal(device.opens, 0);
 });
 
+test("stopping during HID open closes the late device", async () => {
+  const device = new FakeHIDDevice();
+  let finishOpen!: () => void;
+  device.open = async () => { await new Promise<void>((resolve) => { finishOpen = resolve; }); device.opened = true; };
+  const manager: HIDManager101 = { async getDevices() { return []; }, async requestDevice() { return [device]; } };
+  const adapter = new WebHIDAdapter({ manager, device, filters: [{ vendorId: 0x101 }], mapping: { reportId: 1,
+    controls: [{ kind: "action", name: "trigger", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const starting = adapter.start(() => {});
+  await adapter.stop();
+  finishOpen();
+  await assert.rejects(starting, /no longer active/i);
+  assert.equal(device.opened, false);
+});
+
+test("HID retry waits for stale open cleanup", async () => {
+  const device = new FakeHIDDevice();
+  let finishFirst!: () => void;
+  let opens = 0;
+  device.open = async () => {
+    opens++;
+    if (opens === 1) await new Promise<void>((resolve) => { finishFirst = resolve; });
+    device.opened = true;
+  };
+  const manager: HIDManager101 = { async getDevices() { return []; }, async requestDevice() { return [device]; } };
+  const adapter = new WebHIDAdapter({ manager, device, filters: [{ vendorId: 0x101 }], mapping: { reportId: 1,
+    controls: [{ kind: "action", name: "trigger", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const first = adapter.start(() => {});
+  await adapter.stop();
+  const retry = adapter.start(() => {});
+  const openedBeforeCleanup = opens;
+  finishFirst();
+  await assert.rejects(first, /no longer active/i);
+  await retry;
+  assert.equal(openedBeforeCleanup, 1);
+  assert.equal(device.opened, true);
+  await adapter.stop();
+});
+
 test("WebHID keeps chooser permission explicit and emits mapped reports", async () => {
   const device = new FakeHIDDevice();
   let prompts = 0;

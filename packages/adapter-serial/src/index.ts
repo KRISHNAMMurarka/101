@@ -49,6 +49,8 @@ export class WebSerialAdapter implements InputAdapter {
   private readTask?: Promise<void>;
   private active = false;
   private selectionGeneration = 0;
+  private activationGeneration = 0;
+  private activationTask?: Promise<void>;
 
   constructor(options: WebSerialAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("Web Serial requires exactly one mapping or decoder");
@@ -74,7 +76,7 @@ export class WebSerialAdapter implements InputAdapter {
     const generation = ++this.selectionGeneration;
     const port = await manager.requestPort(this.options.filters?.length ? { filters: this.options.filters } : undefined);
     if (generation !== this.selectionGeneration) throw new Error("Serial selection is no longer active");
-    if (this.active) await this.attach(port);
+    if (this.active) await this.activate(port, this.activationGeneration);
     else { this.port = port; this.report(); }
     return port;
   }
@@ -82,17 +84,20 @@ export class WebSerialAdapter implements InputAdapter {
   async start(emit: InputFrameListener) {
     this.emit = emit;
     this.active = true;
+    const generation = ++this.activationGeneration;
     this.manager ??= serialManager();
     if (!this.port && this.manager) {
       const granted = await this.manager.getPorts();
+      if (!this.active || generation !== this.activationGeneration) throw new Error("Serial start is no longer active");
       this.port = granted.find((port) => this.matches(port));
     }
-    if (this.port) await this.attach(this.port);
+    if (this.port) await this.activate(this.port, generation);
     this.report();
   }
 
   async stop() {
     this.selectionGeneration++;
+    this.activationGeneration++;
     this.active = false;
     try { await this.reader?.cancel(); } catch { /* Port may already be gone. */ }
     await this.readTask;
@@ -111,9 +116,23 @@ export class WebSerialAdapter implements InputAdapter {
     try { await writer.write(bytes); } finally { writer.releaseLock(); }
   }
 
-  private async attach(port: SerialPort101) {
+  private activate(port: SerialPort101, generation: number): Promise<void> {
+    const previous = this.activationTask;
+    const task = previous ? previous.catch(() => {}).then(() => this.attach(port, generation)) : this.attach(port, generation);
+    this.activationTask = task;
+    void task.then(() => { if (this.activationTask === task) this.activationTask = undefined; },
+      () => { if (this.activationTask === task) this.activationTask = undefined; });
+    return task;
+  }
+
+  private async attach(port: SerialPort101, generation: number) {
+    if (!this.active || generation !== this.activationGeneration) throw new Error("Serial start is no longer active");
     this.port = port;
     if (!port.readable && !port.writable) await port.open(this.options.open);
+    if (!this.active || generation !== this.activationGeneration) {
+      if (port.readable || port.writable) { try { await port.close(); } catch { /* The port may already be gone. */ } }
+      throw new Error("Serial start is no longer active");
+    }
     if (!port.readable) throw new Error("Serial port did not provide a readable stream");
     this.emitter = new HardwareFrameEmitter(`serial-${safeId(label(port.getInfo()))}`, this.playerId, this.source, this.decoder);
     this.readTask = this.readLoop(port);

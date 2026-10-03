@@ -51,6 +51,8 @@ export class WebHIDAdapter implements InputAdapter {
   private emit?: InputFrameListener;
   private active = false;
   private selectionGeneration = 0;
+  private activationGeneration = 0;
+  private activationTask?: Promise<void>;
 
   constructor(options: WebHIDAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("WebHID requires exactly one mapping or decoder");
@@ -76,7 +78,7 @@ export class WebHIDAdapter implements InputAdapter {
     const [device] = await manager.requestDevice({ filters: this.filters });
     if (generation !== this.selectionGeneration) throw new Error("HID selection is no longer active");
     if (!device) throw new Error("No HID device was selected");
-    if (this.active) await this.attach(device);
+    if (this.active) await this.activate(device, this.activationGeneration);
     else { this.device = device; this.report(); }
     return device;
   }
@@ -84,17 +86,20 @@ export class WebHIDAdapter implements InputAdapter {
   async start(emit: InputFrameListener) {
     this.emit = emit;
     this.active = true;
+    const generation = ++this.activationGeneration;
     this.manager ??= hidManager();
     if (!this.device && this.manager) {
       const granted = await this.manager.getDevices();
+      if (!this.active || generation !== this.activationGeneration) throw new Error("HID start is no longer active");
       this.device = granted.find((device) => this.filters.some((filter) => matches(device, filter)));
     }
-    if (this.device) await this.attach(this.device);
+    if (this.device) await this.activate(this.device, generation);
     this.report();
   }
 
   async stop() {
     this.selectionGeneration++;
+    this.activationGeneration++;
     this.active = false;
     const device = this.device;
     if (device) device.removeEventListener("inputreport", this.onInputReport);
@@ -112,10 +117,24 @@ export class WebHIDAdapter implements InputAdapter {
     await this.device.sendReport(reportId, data);
   }
 
-  private async attach(device: HIDDevice101) {
+  private activate(device: HIDDevice101, generation: number): Promise<void> {
+    const previous = this.activationTask;
+    const task = previous ? previous.catch(() => {}).then(() => this.attach(device, generation)) : this.attach(device, generation);
+    this.activationTask = task;
+    void task.then(() => { if (this.activationTask === task) this.activationTask = undefined; },
+      () => { if (this.activationTask === task) this.activationTask = undefined; });
+    return task;
+  }
+
+  private async attach(device: HIDDevice101, generation: number) {
+    if (!this.active || generation !== this.activationGeneration) throw new Error("HID start is no longer active");
     if (this.device && this.device !== device) this.device.removeEventListener("inputreport", this.onInputReport);
     this.device = device;
     if (!device.opened) await device.open();
+    if (!this.active || generation !== this.activationGeneration) {
+      if (device.opened) { try { await device.close(); } catch { /* The device may already be gone. */ } }
+      throw new Error("HID start is no longer active");
+    }
     device.removeEventListener("inputreport", this.onInputReport);
     device.addEventListener("inputreport", this.onInputReport);
     this.manager?.removeEventListener?.("disconnect", this.onDeviceDisconnected);

@@ -54,6 +54,8 @@ export class WebBluetoothAdapter implements InputAdapter {
   private emit?: InputFrameListener;
   private active = false;
   private selectionGeneration = 0;
+  private activationGeneration = 0;
+  private activationTask?: Promise<void>;
 
   constructor(options: WebBluetoothAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("Web Bluetooth requires exactly one mapping or decoder");
@@ -80,7 +82,7 @@ export class WebBluetoothAdapter implements InputAdapter {
       optionalServices: this.options.optionalServices,
     });
     if (generation !== this.selectionGeneration) throw new Error("Bluetooth selection is no longer active");
-    if (this.active) await this.attach(device);
+    if (this.active) await this.activate(device, this.activationGeneration);
     else { this.device = device; this.report(); }
     return device;
   }
@@ -88,17 +90,20 @@ export class WebBluetoothAdapter implements InputAdapter {
   async start(emit: InputFrameListener) {
     this.emit = emit;
     this.active = true;
+    const generation = ++this.activationGeneration;
     this.manager ??= bluetoothManager();
     if (!this.device && this.manager?.getDevices) {
       const granted = await this.manager.getDevices();
+      if (!this.active || generation !== this.activationGeneration) throw new Error("Bluetooth start is no longer active");
       this.device = granted.find((device) => this.matches(device));
     }
-    if (this.device) await this.attach(this.device);
+    if (this.device) await this.activate(this.device, generation);
     this.report();
   }
 
   async stop() {
     this.selectionGeneration++;
+    this.activationGeneration++;
     this.active = false;
     const characteristic = this.characteristic;
     characteristic?.removeEventListener("characteristicvaluechanged", this.onValue);
@@ -120,17 +125,41 @@ export class WebBluetoothAdapter implements InputAdapter {
     throw new Error("Bluetooth characteristic is not writable");
   }
 
-  private async attach(device: BluetoothDevice101) {
+  private activate(device: BluetoothDevice101, generation: number): Promise<void> {
+    const previous = this.activationTask;
+    const task = previous ? previous.catch(() => {}).then(() => this.attach(device, generation)) : this.attach(device, generation);
+    this.activationTask = task;
+    void task.then(() => { if (this.activationTask === task) this.activationTask = undefined; },
+      () => { if (this.activationTask === task) this.activationTask = undefined; });
+    return task;
+  }
+
+  private async attach(device: BluetoothDevice101, generation: number) {
+    if (!this.active || generation !== this.activationGeneration) throw new Error("Bluetooth start is no longer active");
     if (!device.gatt) throw new Error("Selected Bluetooth device has no GATT server");
     this.device = device;
+    const current = () => this.active && generation === this.activationGeneration;
+    const requireCurrent = () => {
+      if (current()) return;
+      device.gatt?.disconnect();
+      throw new Error("Bluetooth start is no longer active");
+    };
     const server = device.gatt.connected ? device.gatt : await device.gatt.connect();
+    requireCurrent();
     const service = await server.getPrimaryService(this.options.service);
+    requireCurrent();
     const characteristic = await service.getCharacteristic(this.options.characteristic);
+    requireCurrent();
     if (this.characteristic && this.characteristic !== characteristic) this.characteristic.removeEventListener("characteristicvaluechanged", this.onValue);
+    await characteristic.startNotifications();
+    if (!current()) {
+      try { await characteristic.stopNotifications(); } catch { /* The device may already be gone. */ }
+      device.gatt.disconnect();
+      throw new Error("Bluetooth start is no longer active");
+    }
     this.characteristic = characteristic;
     characteristic.removeEventListener("characteristicvaluechanged", this.onValue);
     characteristic.addEventListener("characteristicvaluechanged", this.onValue);
-    await characteristic.startNotifications();
     device.removeEventListener("gattserverdisconnected", this.onGattDisconnected);
     device.addEventListener("gattserverdisconnected", this.onGattDisconnected);
     this.emitter = new HardwareFrameEmitter(`bluetooth-${safeId(device.id)}`, this.playerId, this.source, this.decoder);

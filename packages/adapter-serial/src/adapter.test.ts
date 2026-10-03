@@ -53,6 +53,46 @@ test("a Serial chooser result arriving after stop is discarded", async () => {
   assert.equal(port.opens, 0);
 });
 
+test("stopping during Serial open closes the late port", async () => {
+  const port = new FakeSerialPort();
+  let finishOpen!: () => void;
+  const open = port.open.bind(port);
+  port.open = async () => { await new Promise<void>((resolve) => { finishOpen = resolve; }); await open(); };
+  const manager: SerialManager101 = { async getPorts() { return []; }, async requestPort() { return port; } };
+  const adapter = new WebSerialAdapter({ manager, port, open: { baudRate: 115200 }, framer: new FixedLengthByteFramer(2),
+    mapping: { controls: [{ kind: "action", name: "buttonA", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const starting = adapter.start(() => {});
+  await adapter.stop();
+  finishOpen();
+  await assert.rejects(starting, /no longer active/i);
+  assert.equal(port.readable, null);
+});
+
+test("Serial retry waits for stale port cleanup", async () => {
+  const port = new FakeSerialPort();
+  let finishFirst!: () => void;
+  let opens = 0;
+  const open = port.open.bind(port);
+  port.open = async () => {
+    opens++;
+    if (opens === 1) await new Promise<void>((resolve) => { finishFirst = resolve; });
+    await open();
+  };
+  const manager: SerialManager101 = { async getPorts() { return []; }, async requestPort() { return port; } };
+  const adapter = new WebSerialAdapter({ manager, port, open: { baudRate: 115200 }, framer: new FixedLengthByteFramer(2),
+    mapping: { controls: [{ kind: "action", name: "buttonA", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const first = adapter.start(() => {});
+  await adapter.stop();
+  const retry = adapter.start(() => {});
+  const openedBeforeCleanup = opens;
+  finishFirst();
+  await assert.rejects(first, /no longer active/i);
+  await retry;
+  assert.equal(openedBeforeCleanup, 1);
+  assert.ok(port.readable);
+  await adapter.stop();
+});
+
 test("Web Serial keeps chooser permission explicit and frames split input", async () => {
   const port = new FakeSerialPort();
   let prompts = 0;

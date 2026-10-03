@@ -44,6 +44,52 @@ test("a Bluetooth chooser result arriving after stop is discarded", async () => 
   assert.equal(gatt.connected, false);
 });
 
+test("stopping during Bluetooth connect disconnects the late device", async () => {
+  const characteristic = new FakeCharacteristic();
+  const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };
+  let finishConnect!: () => void;
+  const gatt: BluetoothGATTServer101 = { connected: false, async connect() {
+    await new Promise<void>((resolve) => { finishConnect = resolve; }); this.connected = true; return this;
+  }, disconnect() { this.connected = false; }, async getPrimaryService() { return service; } };
+  const device: BluetoothDevice101 = Object.assign(new EventTarget(), { id: "ble-101", name: "101 Sensor", gatt });
+  const manager: BluetoothManager101 = { async requestDevice() { return device; } };
+  const adapter = new WebBluetoothAdapter({ manager, device, service: "101-service", characteristic: "101-input", filters: [{ namePrefix: "101" }],
+    mapping: { controls: [{ kind: "axis", name: "steer", offset: 0, valueType: "u8", inputCenter: 128 }] } });
+  const starting = adapter.start(() => {});
+  await adapter.stop();
+  finishConnect();
+  await assert.rejects(starting, /no longer active/i);
+  assert.equal(gatt.connected, false);
+  assert.equal(characteristic.notifying, false);
+});
+
+test("Bluetooth retry waits for stale connect cleanup", async () => {
+  const characteristic = new FakeCharacteristic();
+  const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };
+  let finishFirst!: () => void;
+  let connects = 0;
+  const gatt: BluetoothGATTServer101 = { connected: false, async connect() {
+    connects++;
+    if (connects === 1) await new Promise<void>((resolve) => { finishFirst = resolve; });
+    this.connected = true; return this;
+  }, disconnect() { this.connected = false; }, async getPrimaryService() { return service; } };
+  const device: BluetoothDevice101 = Object.assign(new EventTarget(), { id: "ble-101", name: "101 Sensor", gatt });
+  const manager: BluetoothManager101 = { async requestDevice() { return device; } };
+  const adapter = new WebBluetoothAdapter({ manager, device, service: "101-service", characteristic: "101-input", filters: [{ namePrefix: "101" }],
+    mapping: { controls: [{ kind: "axis", name: "steer", offset: 0, valueType: "u8", inputCenter: 128 }] } });
+  const first = adapter.start(() => {});
+  await adapter.stop();
+  const retry = adapter.start(() => {});
+  const connectedBeforeCleanup = connects;
+  finishFirst();
+  await assert.rejects(first, /no longer active/i);
+  await retry;
+  assert.equal(connectedBeforeCleanup, 1);
+  assert.equal(gatt.connected, true);
+  assert.equal(characteristic.notifying, true);
+  await adapter.stop();
+});
+
 test("Web Bluetooth prompts only on request and consumes GATT notifications", async () => {
   const characteristic = new FakeCharacteristic();
   const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };
