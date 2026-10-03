@@ -53,6 +53,7 @@ export class WebBluetoothAdapter implements InputAdapter {
   private emitter?: HardwareFrameEmitter;
   private emit?: InputFrameListener;
   private active = false;
+  private selectionGeneration = 0;
 
   constructor(options: WebBluetoothAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("Web Bluetooth requires exactly one mapping or decoder");
@@ -73,10 +74,12 @@ export class WebBluetoothAdapter implements InputAdapter {
     const manager = this.manager ?? bluetoothManager();
     if (!manager) throw new Error("Web Bluetooth is unavailable in this browser");
     if (!secureContext()) throw new Error("Web Bluetooth requires a secure context");
+    const generation = ++this.selectionGeneration;
     const device = await manager.requestDevice({
       ...(this.options.acceptAllDevices ? { acceptAllDevices: true } : { filters: this.options.filters }),
       optionalServices: this.options.optionalServices,
     });
+    if (generation !== this.selectionGeneration) throw new Error("Bluetooth selection is no longer active");
     if (this.active) await this.attach(device);
     else { this.device = device; this.report(); }
     return device;
@@ -95,6 +98,7 @@ export class WebBluetoothAdapter implements InputAdapter {
   }
 
   async stop() {
+    this.selectionGeneration++;
     this.active = false;
     const characteristic = this.characteristic;
     characteristic?.removeEventListener("characteristicvaluechanged", this.onValue);

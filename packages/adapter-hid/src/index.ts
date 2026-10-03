@@ -50,6 +50,7 @@ export class WebHIDAdapter implements InputAdapter {
   private emitter?: HardwareFrameEmitter;
   private emit?: InputFrameListener;
   private active = false;
+  private selectionGeneration = 0;
 
   constructor(options: WebHIDAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("WebHID requires exactly one mapping or decoder");
@@ -71,7 +72,9 @@ export class WebHIDAdapter implements InputAdapter {
     const manager = this.manager ?? hidManager();
     if (!manager) throw new Error("WebHID is unavailable in this browser");
     if (!secureContext()) throw new Error("WebHID requires a secure context");
+    const generation = ++this.selectionGeneration;
     const [device] = await manager.requestDevice({ filters: this.filters });
+    if (generation !== this.selectionGeneration) throw new Error("HID selection is no longer active");
     if (!device) throw new Error("No HID device was selected");
     if (this.active) await this.attach(device);
     else { this.device = device; this.report(); }
@@ -91,6 +94,7 @@ export class WebHIDAdapter implements InputAdapter {
   }
 
   async stop() {
+    this.selectionGeneration++;
     this.active = false;
     const device = this.device;
     if (device) device.removeEventListener("inputreport", this.onInputReport);

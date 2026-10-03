@@ -25,6 +25,25 @@ test("selecting Bluetooth before bus registration starts notifications only afte
   await adapter.stop();
 });
 
+test("a Bluetooth chooser result arriving after stop is discarded", async () => {
+  const characteristic = new FakeCharacteristic();
+  const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };
+  const gatt: BluetoothGATTServer101 = { connected: false, async connect() { this.connected = true; return this; }, disconnect() { this.connected = false; }, async getPrimaryService() { return service; } };
+  const device: BluetoothDevice101 = Object.assign(new EventTarget(), { id: "ble-101", name: "101 Sensor", gatt });
+  let choose!: (device: BluetoothDevice101) => void;
+  const manager: BluetoothManager101 = { requestDevice() {
+    return new Promise<BluetoothDevice101>((resolve) => { choose = resolve; });
+  } };
+  const adapter = new WebBluetoothAdapter({ manager, service: "101-service", characteristic: "101-input", filters: [{ namePrefix: "101" }],
+    mapping: { controls: [{ kind: "axis", name: "steer", offset: 0, valueType: "u8", inputCenter: 128 }] } });
+  const selection = adapter.requestDevice();
+  await adapter.stop();
+  choose(device);
+  await assert.rejects(selection, /no longer active/i);
+  assert.equal(adapter.status.permission, "prompt");
+  assert.equal(gatt.connected, false);
+});
+
 test("Web Bluetooth prompts only on request and consumes GATT notifications", async () => {
   const characteristic = new FakeCharacteristic();
   const service: BluetoothService101 = { async getCharacteristic() { return characteristic; } };

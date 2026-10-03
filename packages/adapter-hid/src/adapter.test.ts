@@ -22,6 +22,22 @@ test("selecting HID before bus registration opens only after start", async () =>
   await adapter.stop();
 });
 
+test("a HID chooser result arriving after stop is discarded", async () => {
+  const device = new FakeHIDDevice();
+  let choose!: (devices: HIDDevice101[]) => void;
+  const manager: HIDManager101 = { async getDevices() { return []; }, requestDevice() {
+    return new Promise<HIDDevice101[]>((resolve) => { choose = resolve; });
+  } };
+  const adapter = new WebHIDAdapter({ manager, filters: [{ vendorId: 0x101 }], mapping: { reportId: 1,
+    controls: [{ kind: "action", name: "trigger", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const selection = adapter.requestDevice();
+  await adapter.stop();
+  choose([device]);
+  await assert.rejects(selection, /no longer active/i);
+  assert.equal(adapter.status.permission, "prompt");
+  assert.equal(device.opens, 0);
+});
+
 test("WebHID keeps chooser permission explicit and emits mapped reports", async () => {
   const device = new FakeHIDDevice();
   let prompts = 0;

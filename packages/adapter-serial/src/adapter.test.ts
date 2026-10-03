@@ -37,6 +37,22 @@ test("selecting Serial before bus registration opens only after start", async ()
   await adapter.stop();
 });
 
+test("a Serial chooser result arriving after stop is discarded", async () => {
+  const port = new FakeSerialPort();
+  let choose!: (port: SerialPort101) => void;
+  const manager: SerialManager101 = { async getPorts() { return []; }, requestPort() {
+    return new Promise<SerialPort101>((resolve) => { choose = resolve; });
+  } };
+  const adapter = new WebSerialAdapter({ manager, open: { baudRate: 115200 }, framer: new FixedLengthByteFramer(2),
+    mapping: { controls: [{ kind: "action", name: "buttonA", offset: 0, valueType: "u8", threshold: 1 }] } });
+  const selection = adapter.requestPort();
+  await adapter.stop();
+  choose(port);
+  await assert.rejects(selection, /no longer active/i);
+  assert.equal(adapter.status.permission, "prompt");
+  assert.equal(port.opens, 0);
+});
+
 test("Web Serial keeps chooser permission explicit and frames split input", async () => {
   const port = new FakeSerialPort();
   let prompts = 0;

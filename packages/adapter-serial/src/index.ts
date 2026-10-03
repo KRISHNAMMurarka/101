@@ -48,6 +48,7 @@ export class WebSerialAdapter implements InputAdapter {
   private reader?: ReadableStreamDefaultReader<Uint8Array>;
   private readTask?: Promise<void>;
   private active = false;
+  private selectionGeneration = 0;
 
   constructor(options: WebSerialAdapterOptions) {
     if ((!options.mapping && !options.decoder) || (options.mapping && options.decoder)) throw new Error("Web Serial requires exactly one mapping or decoder");
@@ -70,7 +71,9 @@ export class WebSerialAdapter implements InputAdapter {
     const manager = this.manager ?? serialManager();
     if (!manager) throw new Error("Web Serial is unavailable in this browser");
     if (!secureContext()) throw new Error("Web Serial requires a secure context");
+    const generation = ++this.selectionGeneration;
     const port = await manager.requestPort(this.options.filters?.length ? { filters: this.options.filters } : undefined);
+    if (generation !== this.selectionGeneration) throw new Error("Serial selection is no longer active");
     if (this.active) await this.attach(port);
     else { this.port = port; this.report(); }
     return port;
@@ -89,6 +92,7 @@ export class WebSerialAdapter implements InputAdapter {
   }
 
   async stop() {
+    this.selectionGeneration++;
     this.active = false;
     try { await this.reader?.cancel(); } catch { /* Port may already be gone. */ }
     await this.readTask;
