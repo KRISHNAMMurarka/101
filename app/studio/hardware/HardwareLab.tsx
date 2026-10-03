@@ -27,6 +27,10 @@ const GENERIC_MAPPING: HardwareReportMapping = { controls: [
 export default function HardwareLab() {
   const busRef = useRef(new InputBus());
   const adapters = useRef(new Map<HardwareKind, ConnectableAdapter>());
+  const pending = useRef(new Set<HardwareKind>());
+  const pendingAdapters = useRef(new Set<ConnectableAdapter>());
+  const mounted = useRef(false);
+  const [selecting, setSelecting] = useState<HardwareKind[]>([]);
   const [latest, setLatest] = useState<InputFrame>();
   const [error, setError] = useState("");
   const [hidVendor, setHidVendor] = useState("0x0101");
@@ -37,40 +41,72 @@ export default function HardwareLab() {
   const [statuses, setStatuses] = useState<Record<HardwareKind, HardwareCapabilityStatus>>(INITIAL_STATUSES);
 
   useEffect(() => {
+    mounted.current = true;
     const bus = busRef.current;
+    const selectingAdapters = pendingAdapters.current;
+    const activeAdapters = adapters.current;
     const unsubscribe = bus.subscribe((frame) => setLatest(frame));
     const capabilityTimer = window.setTimeout(() => setStatuses(detectCapabilities()), 0);
-    return () => { window.clearTimeout(capabilityTimer); unsubscribe(); void bus.destroy(); };
+    return () => {
+      mounted.current = false;
+      window.clearTimeout(capabilityTimer);
+      unsubscribe();
+      for (const adapter of selectingAdapters) void adapter.stop();
+      selectingAdapters.clear();
+      activeAdapters.clear();
+      void bus.destroy();
+    };
   }, []);
 
-  const setStatus = (kind: HardwareKind) => (status: HardwareCapabilityStatus) => setStatuses((current) => ({ ...current, [kind]: status }));
-
   const connect = async (kind: HardwareKind) => {
+    if (!mounted.current || pending.current.has(kind)) return;
+    pending.current.add(kind);
+    setSelecting([...pending.current]);
     setError("");
     let adapter: ConnectableAdapter | undefined;
+    let registered = false;
     try {
       await disconnect(kind);
+      if (!mounted.current) return;
+      const onStatus = (status: HardwareCapabilityStatus) => {
+        if (mounted.current && adapters.current.get(kind) === adapter) {
+          setStatuses((current) => ({ ...current, [kind]: status }));
+        }
+      };
       if (kind === "hid") {
         const vendorId = parseInteger(hidVendor, 65_535, "HID vendor ID");
-        adapter = new WebHIDAdapter({ filters: [{ vendorId }], mapping: GENERIC_MAPPING, onStatus: setStatus(kind) });
+        adapter = new WebHIDAdapter({ filters: [{ vendorId }], mapping: GENERIC_MAPPING, onStatus });
         adapters.current.set(kind, adapter);
+        pendingAdapters.current.add(adapter);
         await adapter.requestDevice?.();
       } else if (kind === "bluetooth") {
         if (!blePrefix.trim() || !bleService.trim() || !bleCharacteristic.trim()) throw new Error("Bluetooth name prefix, service, and characteristic are required");
-        adapter = new WebBluetoothAdapter({ filters: [{ namePrefix: blePrefix.trim() }], service: bleService.trim(), characteristic: bleCharacteristic.trim(), mapping: GENERIC_MAPPING, onStatus: setStatus(kind) });
+        adapter = new WebBluetoothAdapter({ filters: [{ namePrefix: blePrefix.trim() }], service: bleService.trim(), characteristic: bleCharacteristic.trim(), mapping: GENERIC_MAPPING, onStatus });
         adapters.current.set(kind, adapter);
+        pendingAdapters.current.add(adapter);
         await adapter.requestDevice?.();
       } else {
         const rate = parseInteger(baudRate, 20_000_000, "baud rate");
-        adapter = new WebSerialAdapter({ open: { baudRate: rate }, framer: new FixedLengthByteFramer(4), mapping: GENERIC_MAPPING, onStatus: setStatus(kind) });
+        adapter = new WebSerialAdapter({ open: { baudRate: rate }, framer: new FixedLengthByteFramer(4), mapping: GENERIC_MAPPING, onStatus });
         adapters.current.set(kind, adapter);
+        pendingAdapters.current.add(adapter);
         await adapter.requestPort?.();
       }
+      if (!mounted.current || adapters.current.get(kind) !== adapter) return;
+      pendingAdapters.current.delete(adapter);
+      registered = true;
       await busRef.current.register(adapter);
     } catch (cause) {
-      adapters.current.delete(kind);
-      await adapter?.stop();
-      setError(cause instanceof Error ? cause.message : `Unable to connect ${kind}`);
+      if (adapter && adapters.current.get(kind) === adapter) adapters.current.delete(kind);
+      if (adapter) {
+        pendingAdapters.current.delete(adapter);
+        if (registered) await busRef.current.unregister(adapter);
+        else await adapter.stop();
+      }
+      if (mounted.current) setError(cause instanceof Error ? cause.message : `Unable to connect ${kind}`);
+    } finally {
+      pending.current.delete(kind);
+      if (mounted.current) setSelecting([...pending.current]);
     }
   };
 
@@ -79,7 +115,7 @@ export default function HardwareLab() {
     if (!adapter) return;
     adapters.current.delete(kind);
     await busRef.current.unregister(adapter);
-    setStatuses((current) => ({ ...current, [kind]: { ...current[kind], connected: false } }));
+    if (mounted.current) setStatuses((current) => ({ ...current, [kind]: { ...current[kind], connected: false } }));
   };
 
   return (
@@ -95,15 +131,15 @@ export default function HardwareLab() {
       </section>
       {error && <p className="hardware-error" role="alert">{error}</p>}
       <section className="hardware-grid">
-        <HardwareCard kind="hid" title="WebHID" description="USB or Bluetooth HID reports. The browser chooser limits access to the vendor you specify." status={statuses.hid} onConnect={() => void connect("hid")} onDisconnect={() => void disconnect("hid")}>
+        <HardwareCard kind="hid" title="WebHID" description="USB or Bluetooth HID reports. The browser chooser limits access to the vendor you specify." status={statuses.hid} selecting={selecting.includes("hid")} onConnect={() => void connect("hid")} onDisconnect={() => void disconnect("hid")}>
           <label>Vendor ID<input value={hidVendor} onChange={(event) => setHidVendor(event.target.value)} inputMode="text" /></label>
         </HardwareCard>
-        <HardwareCard kind="bluetooth" title="Web Bluetooth" description="BLE GATT notifications from one declared service and characteristic. No background scan is performed." status={statuses.bluetooth} onConnect={() => void connect("bluetooth")} onDisconnect={() => void disconnect("bluetooth")}>
+        <HardwareCard kind="bluetooth" title="Web Bluetooth" description="BLE GATT notifications from one declared service and characteristic. No background scan is performed." status={statuses.bluetooth} selecting={selecting.includes("bluetooth")} onConnect={() => void connect("bluetooth")} onDisconnect={() => void disconnect("bluetooth")}>
           <label>Device name prefix<input value={blePrefix} onChange={(event) => setBlePrefix(event.target.value)} /></label>
           <label>Service UUID<input value={bleService} onChange={(event) => setBleService(event.target.value)} /></label>
           <label>Input characteristic UUID<input value={bleCharacteristic} onChange={(event) => setBleCharacteristic(event.target.value)} /></label>
         </HardwareCard>
-        <HardwareCard kind="serial" title="Web Serial" description="Arduino/ESP32-style serial bytes. This sample reads fixed four-byte packets with bounded buffering." status={statuses.serial} onConnect={() => void connect("serial")} onDisconnect={() => void disconnect("serial")}>
+        <HardwareCard kind="serial" title="Web Serial" description="Arduino/ESP32-style serial bytes. This sample reads fixed four-byte packets with bounded buffering." status={statuses.serial} selecting={selecting.includes("serial")} onConnect={() => void connect("serial")} onDisconnect={() => void disconnect("serial")}>
           <label>Baud rate<input value={baudRate} onChange={(event) => setBaudRate(event.target.value)} inputMode="numeric" /></label>
         </HardwareCard>
       </section>
@@ -116,12 +152,12 @@ export default function HardwareLab() {
   );
 }
 
-function HardwareCard({ kind, title, description, status, onConnect, onDisconnect, children }: { kind: HardwareKind; title: string; description: string; status: HardwareCapabilityStatus; onConnect(): void; onDisconnect(): void; children: React.ReactNode }) {
+function HardwareCard({ kind, title, description, status, selecting, onConnect, onDisconnect, children }: { kind: HardwareKind; title: string; description: string; status: HardwareCapabilityStatus; selecting: boolean; onConnect(): void; onDisconnect(): void; children: React.ReactNode }) {
   return <article className={`hardware-card ${status.connected ? "connected" : ""}`}>
-    <div className="hardware-card-head"><span>{kind.toUpperCase()}</span><i>{status.supported ? status.connected ? "CONNECTED" : "AVAILABLE" : "UNSUPPORTED"}</i></div>
+    <div className="hardware-card-head"><span>{kind.toUpperCase()}</span><i>{status.supported ? selecting ? "SELECTING" : status.connected ? "CONNECTED" : "AVAILABLE" : "UNSUPPORTED"}</i></div>
     <h2>{title}</h2><p>{description}</p><div className="hardware-fields">{children}</div>
     <dl><div><dt>SECURE CONTEXT</dt><dd>{status.secureContext ? "YES" : "NO"}</dd></div><div><dt>PERMISSION</dt><dd>{status.permission.toUpperCase()}</dd></div></dl>
-    <button disabled={!status.supported || !status.secureContext} onClick={status.connected ? onDisconnect : onConnect}>{status.connected ? "DISCONNECT" : `SELECT ${kind.toUpperCase()} DEVICE`}</button>
+    <button disabled={!status.supported || !status.secureContext || selecting} onClick={status.connected ? onDisconnect : onConnect}>{selecting ? "SELECTING DEVICE…" : status.connected ? "DISCONNECT" : `SELECT ${kind.toUpperCase()} DEVICE`}</button>
   </article>;
 }
 
