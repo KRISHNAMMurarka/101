@@ -21,6 +21,12 @@ test("camera constraints select an explicit device and otherwise permit the defa
   assert.equal(cameraConstraints().facingMode, "user");
 });
 
+test("retry falls back to an available camera after the selected one disappears", () => {
+  assert.deepEqual(cameraConstraints("webcam", [device("webcam")]).deviceId, { exact: "webcam" });
+  assert.equal(cameraConstraints("removed-webcam", [device("replacement")]).deviceId, undefined);
+  assert.deepEqual(cameraConstraints("removed-webcam", []).deviceId, { exact: "removed-webcam" });
+});
+
 test("enumeration filters out microphones and safely reports no available camera", async (t) => {
   const original = Object.getOwnPropertyDescriptor(globalThis, "navigator");
   t.after(() => { if (original) Object.defineProperty(globalThis, "navigator", original); else Reflect.deleteProperty(globalThis, "navigator"); });

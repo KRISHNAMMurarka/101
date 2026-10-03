@@ -16,9 +16,10 @@ export function describeCamera(device: Pick<MediaDeviceInfo, "label">): string {
   return label;
 }
 
-export function cameraConstraints(deviceId?: string): MediaTrackConstraints {
+export function cameraConstraints(deviceId?: string, available?: ReadonlyArray<Pick<MediaDeviceInfo, "deviceId">>): MediaTrackConstraints {
+  const selected = deviceId && (!available?.length || available.some((camera) => camera.deviceId === deviceId)) ? deviceId : "";
   return {
-    ...(deviceId ? { deviceId: { exact: deviceId } } : { facingMode: "user" }),
+    ...(selected ? { deviceId: { exact: selected } } : { facingMode: "user" }),
     width: { ideal: 960 }, height: { ideal: 720 },
   };
 }

@@ -17,6 +17,7 @@ export type CameraFailure =
   | "denied"
   | "no-camera"
   | "in-use"
+  | "lost"
   | "unsupported"
   | "insecure-context"
   | "model-failed"
@@ -34,6 +35,10 @@ export const CAMERA_FAILURE_COPY: Readonly<Record<CameraFailure, { readonly prob
   "in-use": {
     problem: "Another app is using the camera.",
     fix: "Close it — a video call, usually — then try again.",
+  },
+  lost: {
+    problem: "The camera stopped working.",
+    fix: "Check that it is connected, then try again or play with the keyboard.",
   },
   unsupported: {
     problem: "This browser can't open a camera.",
@@ -62,7 +67,7 @@ export const CAMERA_FAILURE_COPY: Readonly<Record<CameraFailure, { readonly prob
  * back.
  */
 export class CameraLostError extends Error {
-  readonly failure: CameraFailure = "unknown";
+  readonly failure: CameraFailure = "lost";
 
   constructor(message = "The camera stopped") {
     super(message);
@@ -72,7 +77,7 @@ export class CameraLostError extends Error {
 
 /** Which failure this is, from whatever the browser threw. */
 export function classifyCameraFailure(cause: unknown): CameraFailure {
-  if (cause instanceof CameraLostError) return "in-use";
+  if (cause instanceof CameraLostError) return "lost";
   if (cause instanceof DOMException || (cause instanceof Error && cause.name)) {
     switch (cause.name) {
       // SecurityError is a denial in every browser that still emits it.

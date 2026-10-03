@@ -65,6 +65,7 @@ export default function CameraSetup({
   const [state, dispatch] = useReducer(advanceSetup, kind, INITIAL_SETUP);
   const [reading, setReading] = useState<PlacementReading | undefined>(undefined);
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([]);
+  const camerasRef = useRef(cameras);
   const [deviceId, setDeviceId] = useState("");
   const [cameraReady, setCameraReady] = useState(false);
   const [slowAttempt, setSlowAttempt] = useState(0);
@@ -83,6 +84,7 @@ export default function CameraSetup({
   const people = Number.isFinite(maxPeople) ? Math.max(1, Math.min(4, Math.round(maxPeople))) : 1;
 
   useEffect(() => { stateRef.current = state; }, [state]);
+  useEffect(() => { camerasRef.current = cameras; }, [cameras]);
   useEffect(() => { headingRef.current?.focus({ preventScroll: true }); }, [state.step]);
   useEffect(() => {
     if (!state.attempt || cameraReady || state.failure) return;
@@ -160,7 +162,7 @@ export default function CameraSetup({
       dispatch({ type: "camera-failed", failure: describeCameraFailure(cause).failure });
       clearCameraPlan(sessionId);
     };
-    const common = { video, mirror: true, constraints: cameraConstraints(deviceId), onError: fail, onCameraLost: fail };
+    const common = { video, mirror: true, constraints: cameraConstraints(deviceId, camerasRef.current), onError: fail, onCameraLost: fail };
     const adapter = kind === "body"
       ? new BrowserCameraAdapter({ ...common, maxPeople: people, onDiagnostics })
       : new BrowserHandAdapter({ ...common, onDiagnostics });
@@ -172,7 +174,7 @@ export default function CameraSetup({
       setCameras(devices);
       const selected = (video.srcObject as MediaStream | null)?.getVideoTracks()[0]?.getSettings().deviceId;
       completedPlanRef.current = {
-        ...(selected ? { deviceId: selected } : deviceId ? { deviceId } : {}),
+        ...(selected ? { deviceId: selected } : {}),
         ...(adapter instanceof BrowserCameraAdapter ? { poseModel: adapter.trackingProfile.poseModel } : {}),
       };
       setCameraReady(true);

@@ -41,7 +41,8 @@ test("a camera taken away while it was working is not silence", () => {
   // a call. Without their own error they are indistinguishable from someone who walked out of shot,
   // and the check waits forever for a person who cannot come back.
   const lost = new CameraLostError();
-  assert.equal(classifyCameraFailure(lost), "in-use");
+  assert.equal(classifyCameraFailure(lost), "lost");
+  assert.match(describeCameraFailure(lost).problem, /stopped/i);
   assert.match(describeCameraFailure(lost).fix, /try again/i);
 });
 
