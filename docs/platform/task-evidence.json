@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 24,
+  "revision": 25,
   "baseline": "26f4eaf",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -4417,6 +4417,30 @@
       "equipment": [
         "Both physical phones; person/two people; real cameras; watches; screen reader"
       ]
+    },
+    {
+      "id": "sdk-distribution-current-2026-10-03",
+      "revision": "f6bef544dae6571daab3e306b2bca1aa4a16ce43",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-03-sdk-distribution-manifest.json",
+        "docs/platform/receipts/2026-10-03-sdk-consumer.json"
+      ],
+      "environment": "macOS 26.5.2; Node 24.14.0, npm 11.9.0, TypeScript 5.9.3; Playwright 1.61.1 with Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5",
+      "reproduction": "node tools/build-sdk.mjs f6bef54; node tools/qa-sdk-consumer.mjs <printed release/sdk-*/manifest.json>",
+      "scope": "Five source-bound @101 0.1.0 ESM tarballs contain compiled JavaScript, declarations, public schema/example exports, licenses and explicit module maps. A separate offline consumer installed their exact bytes, compiled strict NodeNext and Bundler declarations and ran examples in Node 24 and three browser engines. K01 package-build scope only; Node 22.13 support floor and K02 remain open.",
+      "failure": "Node 22.13.0 toolchain unavailable on this host; no minimum-engine or wider support acceptance is inferred.",
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-K01",
@@ -9663,7 +9687,8 @@
       "id": "K01",
       "records": [
         "pending-K01",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "sdk-distribution-current-2026-10-03"
       ],
       "dependencies": [],
       "equipment": [

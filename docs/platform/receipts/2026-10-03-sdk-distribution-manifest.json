@@ -1,0 +1,711 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "revision": "f6bef544dae6571daab3e306b2bca1aa4a16ce43",
+    "tree": "f3478ad2a56906b0078ee9c9e4f54dc79cfb71ac",
+    "sha256": {
+      "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+      "examples/device-pipelines/media-description.ts": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a",
+      "examples/device-pipelines/pointer.ts": "ae2171d1011d215fa3b838010d99ebee46df3f08d3503b6a72388eecad670f93",
+      "examples/device-pipelines/resource-documents.ts": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595",
+      "examples/device-pipelines/rich-input.ts": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19",
+      "examples/device-pipelines/run.ts": "a3f9bbda7112c76bf8355d424f49b773856b4c8dddced60fd8bd1371e8c377c8",
+      "examples/device-pipelines/sensor-feedback.ts": "d1aa1e0d47ef558b08c0aa45f02aeebaaf6f79075cf8c242edf73e8472e0a1f5",
+      "examples/device-pipelines/spatial-joints.ts": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339",
+      "examples/device-pipelines/telemetry-batch.ts": "5ff7e2ec03b2b582186f14449b226082b9ca6d55a98cd746575296d379b3f9a7",
+      "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+      "packages/connect/package.json": "b6cc88b216e9b672d01c7595db7a99e58e03aebeefb7106d0a0611062bdab59a",
+      "packages/connect/src/index.ts": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545",
+      "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/index.ts": "383c60a8a4228b4ddd6df2950aa7c9925a922740e77e734324c641cb8fef8456",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+      "packages/device-runtime/src/index.ts": "b42b2c1acc2d64dec929d72d3615a48b8334ea7fd1a97da8f9042d116a7aebcd",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/runtime.ts": "11474ad18089f53e1c1ac90643d31887151fb9fc086514e426d884bb702f691c",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/types.ts": "5c1a86190362a0bdde3fedb72ffbd9e2100ca739c603e165eef11689b1438d0b",
+      "packages/device-web/package.json": "6944da1082082ab4db143a24ad567fae043dd102675b4b2ef52658974bbe6b53",
+      "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+      "packages/device-web/src/binding.ts": "6e454f2883b01ac43c678ffef6c9069f6bb217a0899b2380744f286a5fe36378",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+      "packages/device-web/src/index.ts": "95a131c65fc206970dca759a416c5126508bc306a59b851ff98f0544185c4786",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "2688edb98298da7a968e5fbe60c11c1c481dd1efb07830cd5fe0e038462ec4f4",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+      "schemas/device-descriptor.schema.json": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+    }
+  },
+  "environment": {
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3"
+  },
+  "builderSha256": "b9290b2027215eb30bd2ec68a1419f1f461c2e93ccae8d3aed1f25d9b5240a66",
+  "outputDir": "/Users/km/Desktop/games/101/release/sdk-lGlaIn",
+  "packages": [
+    {
+      "name": "@101/device-model",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/packages/device-model",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/tarballs/101-device-model-0.1.0.tgz",
+      "sha256": "a21f3d5bb61643b2bae0338398151a089e94add06b52a26ce4ec762580310824",
+      "bytes": 35938,
+      "files": [
+        {
+          "path": "dist/descriptor-schema.d.ts",
+          "size": 3401,
+          "sha256": "51d31276a175d108345f75c745dd9c1a43fd4990998944dad15f8bbb9f982b92"
+        },
+        {
+          "path": "dist/descriptor-schema.js",
+          "size": 8162,
+          "sha256": "535705ed76be926b816d856600d0db75a9b39af11135444e1c313948777a5a79"
+        },
+        {
+          "path": "dist/descriptor.d.ts",
+          "size": 3592,
+          "sha256": "2ffa2dc657dfbb52eb0a9ed53d917e50c501ae4aa510cde290c857f40d6a650d"
+        },
+        {
+          "path": "dist/descriptor.js",
+          "size": 24125,
+          "sha256": "e14c9599750838b1e7c1e241d3fa51fbe4c0c7827669437b0658e17f6bfe8990"
+        },
+        {
+          "path": "dist/discovery.d.ts",
+          "size": 1880,
+          "sha256": "c59d3a0fb86d77314a553b15f1242fa3bbc5c58c75928652c5e948c007b2a798"
+        },
+        {
+          "path": "dist/discovery.js",
+          "size": 5111,
+          "sha256": "4a3ccbdf8744ff56af7e01874017db87e08b616388f9a8de86e1f3e33a8f37c2"
+        },
+        {
+          "path": "dist/evolution.d.ts",
+          "size": 425,
+          "sha256": "2987200bf3310910fa1c1cf694326162d53f85b61b5ade6189abe505e240674a"
+        },
+        {
+          "path": "dist/evolution.js",
+          "size": 2253,
+          "sha256": "a49b25452877d574c3a665b465f6f8fe65bb8427801b04c7d63de7e02811eb28"
+        },
+        {
+          "path": "dist/health.d.ts",
+          "size": 1784,
+          "sha256": "bb79765c4c009c0403b7aab0108b9916c0334106b7706e560302778a3f0003ac"
+        },
+        {
+          "path": "dist/health.js",
+          "size": 6256,
+          "sha256": "0d9ce75d403bfa85cbb81157e476a36746674af7bf013fde899ad534f38c0bc8"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 2563,
+          "sha256": "1a515ae8ea67313b662c29ba568326417a049883304be97755b5ecc4591d8072"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 1115,
+          "sha256": "7efd25973cffc54ac519ccb5d7c7719024a958f88222959c2d7e66b004396e8c"
+        },
+        {
+          "path": "dist/media.d.ts",
+          "size": 2584,
+          "sha256": "35e9165e0fbd5ccefe551fc3e8b96359914386bdc35e257cae9984a6a494b6a2"
+        },
+        {
+          "path": "dist/media.js",
+          "size": 11199,
+          "sha256": "d8db21eef297561a500a4614d7d8dd489479b68caf26b79c1e3da4e99a8bc4d5"
+        },
+        {
+          "path": "dist/observation-timing.d.ts",
+          "size": 1166,
+          "sha256": "cedb0c132b64f19baab0d6b17acc6d87eb4ed5bd05140cd425ce0cf772d1d2f3"
+        },
+        {
+          "path": "dist/observation-timing.js",
+          "size": 5301,
+          "sha256": "28dbbbf1b846e597c002af9f85a5d5f50675825eeeb49a212ae58232a9ba53b8"
+        },
+        {
+          "path": "dist/quality.d.ts",
+          "size": 686,
+          "sha256": "dfe4626d0d5cbf23cd7f1547b79d9c8d1de643f69a8cb796fb7de944e64f9b54"
+        },
+        {
+          "path": "dist/quality.js",
+          "size": 3139,
+          "sha256": "299904bf947aa5a9a25f6a2cbcea0cd08fb9478e3f51e3c919331baf6f64f69c"
+        },
+        {
+          "path": "dist/remote-clock.d.ts",
+          "size": 1316,
+          "sha256": "56af79eca909f9d3e6ee3f33f01e52aef8fbf57486012f1aaa30ecf3a7b50c7b"
+        },
+        {
+          "path": "dist/remote-clock.js",
+          "size": 5370,
+          "sha256": "467aa9104421d953cbc7aab2ca2e97dbc47aabfba04af4fdec45cebdf214dd8c"
+        },
+        {
+          "path": "dist/resource.d.ts",
+          "size": 924,
+          "sha256": "37dae09fec9b1caf7eb6cc9e10e4cd7a6c3de12bbec9db762ba6cafccf35065a"
+        },
+        {
+          "path": "dist/resource.js",
+          "size": 4067,
+          "sha256": "95b0e15dff6713cb166cf82b2781b4d1d8e7f876f44cdff7fb452d93c4ed91ea"
+        },
+        {
+          "path": "dist/sample.d.ts",
+          "size": 277,
+          "sha256": "822eb2e6d5c06d24f436c15dda3d47879bd9859184a67b729cc61c2dde8602b5"
+        },
+        {
+          "path": "dist/sample.js",
+          "size": 17800,
+          "sha256": "9d891374f30c2fc7586b4b86ac0223326f01948d4e19e70b0f65e342e11d4110"
+        },
+        {
+          "path": "dist/spatial.d.ts",
+          "size": 1603,
+          "sha256": "08bb798556790d4c5454f587db3f763bf0776e3ff762fb7403b71b7759ccb5e2"
+        },
+        {
+          "path": "dist/spatial.js",
+          "size": 7536,
+          "sha256": "2a8333262ef2d38510a8fc460017dbc57d292b3af023e0d6d6307f7912623481"
+        },
+        {
+          "path": "dist/units.d.ts",
+          "size": 984,
+          "sha256": "cb926e8904ea7828cae4e76b53227d977d04d3aa69a5d0c4a85c9cb7a252f5b0"
+        },
+        {
+          "path": "dist/units.js",
+          "size": 6564,
+          "sha256": "ed0c2c863eab11af0922d4e6c2e1b00a413fbdfcf784452ffcd715a42f9fd687"
+        },
+        {
+          "path": "dist/wot.d.ts",
+          "size": 2102,
+          "sha256": "7f0cccc22db03052de4e5cc34792639f8f682062142656deeda81cae1f5b7885"
+        },
+        {
+          "path": "dist/wot.js",
+          "size": 8510,
+          "sha256": "d85408a3b1b896f39b38c51ff00ac03b798a40bd591b425ab168e8bd1bc99a99"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 567,
+          "sha256": "3d0c6ec31cea209480e7670581c3ee603a3f1972de5c47e5aaf52f23a4dd6cfd"
+        },
+        {
+          "path": "README.md",
+          "size": 2658,
+          "sha256": "10572d511600299e322c8f1057542f1a4c1824b032ee02a90189b3ce8ebded6c"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 20096,
+          "sha256": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-runtime",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/packages/device-runtime",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/tarballs/101-device-runtime-0.1.0.tgz",
+      "sha256": "f2f512197c5616444f8f92c3e2e2e0a08686ad3f791e23cb685073d4da282491",
+      "bytes": 14349,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 584,
+          "sha256": "478bd9f345c9b0adbdc2498e1cc2ec00e9bc15b74872f5379e9d4822decf43c7"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 266,
+          "sha256": "c1377057f31b7164fa5effbf040d17219b7427c06ae1fc909c71b33a689e9aa4"
+        },
+        {
+          "path": "dist/lease.d.ts",
+          "size": 378,
+          "sha256": "c145d2d3f6fe9416f8bb458bedd628ea02faa7fe2af7681680edddf586c62b0e"
+        },
+        {
+          "path": "dist/lease.js",
+          "size": 933,
+          "sha256": "3cbfbc21d551cb0a6fc3a1358d2f3e850d315b3a8285176ca119890bd2f6f376"
+        },
+        {
+          "path": "dist/resource.d.ts",
+          "size": 1413,
+          "sha256": "a1025acd3f44efa71dde350d7afcd3b8f242ebf2091c1b4ed8352608407fd866"
+        },
+        {
+          "path": "dist/resource.js",
+          "size": 7443,
+          "sha256": "c172aeb574a812c3646942da47796169f7dab4882f2078c56cbedfb2a4508017"
+        },
+        {
+          "path": "dist/runtime.d.ts",
+          "size": 3865,
+          "sha256": "b9287855a2fb5abc67ea069f3ca251713bd65b7259bcfd7f398cdcce47c8f697"
+        },
+        {
+          "path": "dist/runtime.js",
+          "size": 28058,
+          "sha256": "e91ebc697de9b7acd6e645f8341350c774873299f2125144c04dca54205ed8cf"
+        },
+        {
+          "path": "dist/scheduler.d.ts",
+          "size": 1853,
+          "sha256": "85c1d458e07a3f92d766290f337158023715badb4fec2b44d0b1ae817af96c47"
+        },
+        {
+          "path": "dist/scheduler.js",
+          "size": 5493,
+          "sha256": "0b093321fc7bf2ae75dcca460c99b6fbc606046fab57db2205f42a245d5f1517"
+        },
+        {
+          "path": "dist/types.d.ts",
+          "size": 4045,
+          "sha256": "d0306862e8a02c1f0dddea6cbf2b6cdf6b3b8bc73b7a3fa2ad0e86ddae115260"
+        },
+        {
+          "path": "dist/types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 541,
+          "sha256": "31f8850b4f30e8d2d5098f29fb3b18012d034e24712392dc2a89d03632c9c854"
+        },
+        {
+          "path": "README.md",
+          "size": 2334,
+          "sha256": "4f302b45bf55b8efc45d246e83b1da32067127efd290d96e29df3fad74d810d4"
+        }
+      ]
+    },
+    {
+      "name": "@101/transport-webrtc",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/packages/transport-webrtc",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/tarballs/101-transport-webrtc-0.1.0.tgz",
+      "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+      "bytes": 6529,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 228,
+          "sha256": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 47,
+          "sha256": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c"
+        },
+        {
+          "path": "dist/peer.d.ts",
+          "size": 2753,
+          "sha256": "2323982bfa4bb1dc3cf51e2e00803057f5a20dc4cdbf56b585c8618282062274"
+        },
+        {
+          "path": "dist/peer.js",
+          "size": 14486,
+          "sha256": "d76d9a4067b68ab60205058dfef6ba2d28202f309523e04b6adec42a09dceea6"
+        },
+        {
+          "path": "dist/ports.d.ts",
+          "size": 1784,
+          "sha256": "2e265404c5b3d297b2c1f7a743313ebeeed003d0ba32a7d3567531f347b2f186"
+        },
+        {
+          "path": "dist/ports.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 487,
+          "sha256": "65d390bbf31a1c217ab9b7f65af1880650801f410e36a3ac2046f69357095c81"
+        },
+        {
+          "path": "README.md",
+          "size": 2352,
+          "sha256": "4af007a2d554a17c97e56368f37dc12f84116941de640aad9f302727ffb7fd23"
+        }
+      ]
+    },
+    {
+      "name": "@101/device-web",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/packages/device-web",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/tarballs/101-device-web-0.1.0.tgz",
+      "sha256": "d5d5286e922afc12a532b64667700685497cfcf138448d207840487b918102c7",
+      "bytes": 31418,
+      "files": [
+        {
+          "path": "dist/authenticated-peer.d.ts",
+          "size": 2478,
+          "sha256": "9e9d6eee8b115ee32eb7c1b69c22069419490932056a3f4dd4d8ad81b27bfd5f"
+        },
+        {
+          "path": "dist/authenticated-peer.js",
+          "size": 18726,
+          "sha256": "b94e54dde2b4cfed869fef7b87dbc2b9e774b13c8a005eb783145545d11b0c6f"
+        },
+        {
+          "path": "dist/binding.d.ts",
+          "size": 4069,
+          "sha256": "df82e27d2353f9d5f3a19f6fb8ec680bde0b45012c8fbf08bb4b3ce956a5a833"
+        },
+        {
+          "path": "dist/binding.js",
+          "size": 30013,
+          "sha256": "c4c46b08f8bb188895204646d6c5a30bf4beef8dd9daedb82bc89726b10b1610"
+        },
+        {
+          "path": "dist/identity-format.d.ts",
+          "size": 621,
+          "sha256": "d1ecf4fd510739f384f52e01e8d0d9bac2fa255fd94b2d20fa43309392fdc23e"
+        },
+        {
+          "path": "dist/identity-format.js",
+          "size": 3638,
+          "sha256": "cb8544fddaf3f523904382fea41b532551ed45d0898d7c0f45e79d0d4bc6d25a"
+        },
+        {
+          "path": "dist/identity-types.d.ts",
+          "size": 718,
+          "sha256": "d319bfe6410d55220bbc437b1130c8780867f711c2bc8223b8771d991108d0a0"
+        },
+        {
+          "path": "dist/identity-types.js",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "dist/index.d.ts",
+          "size": 1721,
+          "sha256": "a12e296efa15749418d427596f0aa60fdd2a264130a1b94c440143f327e1a9b7"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 929,
+          "sha256": "15ff85e4a9135c1e1e9646efab568b3894845de143ee0fc205d2de1057f75b27"
+        },
+        {
+          "path": "dist/invitation.d.ts",
+          "size": 1328,
+          "sha256": "c6ccf0226aaac5193f5702858eedfa4b6157e25522d977981288779e22baddda"
+        },
+        {
+          "path": "dist/invitation.js",
+          "size": 4830,
+          "sha256": "0cf9ebdb0dde8f20fd6dd9f8c7cbdfbaf31300857db05b3a656974a871d3f737"
+        },
+        {
+          "path": "dist/manual-peer.d.ts",
+          "size": 568,
+          "sha256": "b81ba7f069c533fdf32d1e570b80d887f98902e5bce71d1d0bc6f3e73b5fc0e9"
+        },
+        {
+          "path": "dist/manual-peer.js",
+          "size": 2006,
+          "sha256": "7181d40f4c5ba19c1635026edaf0ab323a7a69bd081fc93b19c438fa63d4098b"
+        },
+        {
+          "path": "dist/native-peer.d.ts",
+          "size": 2334,
+          "sha256": "f95d08d55a34b664d77cfc7c4fbc93f8680cc9b5a05c5aa2957588c501c1c659"
+        },
+        {
+          "path": "dist/native-peer.js",
+          "size": 11790,
+          "sha256": "8856c6595fa79f8babc15bee248256ee928d9725119ce03a4141e11bd26141df"
+        },
+        {
+          "path": "dist/pointer-driver.d.ts",
+          "size": 2275,
+          "sha256": "9dd9d5ec4a5159988b0fdf6fc752e40d9b6c9bbfd16c92db5c391d76d4cf009a"
+        },
+        {
+          "path": "dist/pointer-driver.js",
+          "size": 9240,
+          "sha256": "c160c55b2624bc9e2143aa415f7cb484251b07b42112b8f934d2eb067b97e9bc"
+        },
+        {
+          "path": "dist/pointer-provider.d.ts",
+          "size": 1250,
+          "sha256": "f261f27fd9f09690857992911b6b48630f849957353acfee9f930acf37a545bc"
+        },
+        {
+          "path": "dist/pointer-provider.js",
+          "size": 3211,
+          "sha256": "38489baade948fa49e3cc0dfc64198117543c001b53e95767b8f14cf36d2766c"
+        },
+        {
+          "path": "dist/web-identity.d.ts",
+          "size": 716,
+          "sha256": "b1489c4b544f485a6df768770048f3fca7010224f1333a219df68ce4abd203c1"
+        },
+        {
+          "path": "dist/web-identity.js",
+          "size": 15725,
+          "sha256": "7a14c9f90606a2b668a6385118cce91065c5f48234cd97a47ab950e66a3a2afc"
+        },
+        {
+          "path": "dist/wire.d.ts",
+          "size": 1712,
+          "sha256": "01332afa53219736d711bb38ad6e36b7163f9a2c8085bd0e0b058351a71ece82"
+        },
+        {
+          "path": "dist/wire.js",
+          "size": 11458,
+          "sha256": "64583fc29d567022af584484dd23e4e4afc68231d7052b97dcf6b36b067e4b36"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 607,
+          "sha256": "2e394c7f2af437fbd27caedea803f2c73a3a0c427c87abb7126daf0c7f65e9c0"
+        },
+        {
+          "path": "README.md",
+          "size": 2315,
+          "sha256": "c2e3c074f1e4a080ed731d6c21f46b73abab40521f4d222d51b3eaa6057fe6ca"
+        }
+      ]
+    },
+    {
+      "name": "@101/connect",
+      "version": "0.1.0",
+      "directory": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/packages/connect",
+      "tarball": "/Users/km/Desktop/games/101/release/sdk-lGlaIn/tarballs/101-connect-0.1.0.tgz",
+      "sha256": "5130287a7c88b237369b3908304ca58663899ba864ff9cf0a4a872359fd9a026",
+      "bytes": 25153,
+      "files": [
+        {
+          "path": "dist/index.d.ts",
+          "size": 323,
+          "sha256": "68548aa88928e55221c310979c6f567dbcc0f7a81af1488de6684864535cd545"
+        },
+        {
+          "path": "dist/index.js",
+          "size": 164,
+          "sha256": "b36746339bb1e96e7d9aabaca015025f16b02218a182f1a686c747072c7021fe"
+        },
+        {
+          "path": "examples/media-description.d.ts",
+          "size": 379,
+          "sha256": "b1e9a9ea7fa541e22f2b6678c784708f412c8ddae252d5dc88f2560ab1d96320"
+        },
+        {
+          "path": "examples/media-description.js",
+          "size": 2702,
+          "sha256": "07f8ed0b4ce4f6ab3c1340b396c9ca2f3bfa659f68848716bc3a5b39e1d9faf2"
+        },
+        {
+          "path": "examples/media-description.ts",
+          "size": 2600,
+          "sha256": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a"
+        },
+        {
+          "path": "examples/pointer.d.ts",
+          "size": 1297,
+          "sha256": "2047eac875e2d943785925f264e3fa2f957fbc8a4daa9a5240204ddb9df32362"
+        },
+        {
+          "path": "examples/pointer.js",
+          "size": 3917,
+          "sha256": "8522ab280e2e81738c3689d8f870b7c2d8191dda9ae6044c5a727497bc1aa463"
+        },
+        {
+          "path": "examples/pointer.ts",
+          "size": 4115,
+          "sha256": "ae2171d1011d215fa3b838010d99ebee46df3f08d3503b6a72388eecad670f93"
+        },
+        {
+          "path": "examples/resource-documents.d.ts",
+          "size": 313,
+          "sha256": "32d3e9a6de25b0e3bacab62eb576fd0cb51f147caa455f7193729c25ca43c451"
+        },
+        {
+          "path": "examples/resource-documents.js",
+          "size": 2981,
+          "sha256": "08a1f92ff712e6877315b11fa72371e7931855bf44c393c9a0a0fcd30dbc6473"
+        },
+        {
+          "path": "examples/resource-documents.ts",
+          "size": 2969,
+          "sha256": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595"
+        },
+        {
+          "path": "examples/rich-input.d.ts",
+          "size": 2134,
+          "sha256": "8eb4c560ace6b22d2617b0e49ea3418990a9d4157b8156cbe1f4b951b15a6868"
+        },
+        {
+          "path": "examples/rich-input.js",
+          "size": 6640,
+          "sha256": "e22114fd7bd4f9d1f96304dcea8b02f9245fe3a91a166d7d98f2b4c898308684"
+        },
+        {
+          "path": "examples/rich-input.ts",
+          "size": 6989,
+          "sha256": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19"
+        },
+        {
+          "path": "examples/run.d.ts",
+          "size": 11,
+          "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881"
+        },
+        {
+          "path": "examples/run.js",
+          "size": 881,
+          "sha256": "205e46b1d7a4dff26f00c414b7bfe3b33e0515b8c21d8580b4d9829b60227b3a"
+        },
+        {
+          "path": "examples/run.ts",
+          "size": 866,
+          "sha256": "a3f9bbda7112c76bf8355d424f49b773856b4c8dddced60fd8bd1371e8c377c8"
+        },
+        {
+          "path": "examples/sensor-feedback.d.ts",
+          "size": 2255,
+          "sha256": "3d1d86bf48a6fb73deb4f26d8b62202ed3c89fb81e3fe2366508f48892f1c9b6"
+        },
+        {
+          "path": "examples/sensor-feedback.js",
+          "size": 9231,
+          "sha256": "344ebabf1cade114202e3ea0d4b712e67d1aeecf09c47e4d4cbcb42036172bda"
+        },
+        {
+          "path": "examples/sensor-feedback.ts",
+          "size": 9111,
+          "sha256": "d1aa1e0d47ef558b08c0aa45f02aeebaaf6f79075cf8c242edf73e8472e0a1f5"
+        },
+        {
+          "path": "examples/spatial-joints.d.ts",
+          "size": 1449,
+          "sha256": "db3f770fb2364a288d1d5f7dc1a48bc546733cec30f5e2c556c1be2777def52c"
+        },
+        {
+          "path": "examples/spatial-joints.js",
+          "size": 4830,
+          "sha256": "e876e9d85fff2eb257b6c63bc6e7a35c6b432bacb81ffe99aa31197beaa24396"
+        },
+        {
+          "path": "examples/spatial-joints.ts",
+          "size": 5197,
+          "sha256": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339"
+        },
+        {
+          "path": "examples/telemetry-batch.d.ts",
+          "size": 2048,
+          "sha256": "fb4aef17d3fe5297b3bc0d6d96e5bac3d27ca96b03b3279a981658ecdd693f9a"
+        },
+        {
+          "path": "examples/telemetry-batch.js",
+          "size": 6692,
+          "sha256": "f58f3b668ca79a78426dc928693e76b48d1d158b0a5ad07d24e9377225e64d41"
+        },
+        {
+          "path": "examples/telemetry-batch.ts",
+          "size": 7061,
+          "sha256": "5ff7e2ec03b2b582186f14449b226082b9ca6d55a98cd746575296d379b3f9a7"
+        },
+        {
+          "path": "examples/threshold.d.ts",
+          "size": 590,
+          "sha256": "5fed13c008ae58b242cfc08e73670d4edcb53c501d04e14818de1b1ebb25d9ef"
+        },
+        {
+          "path": "examples/threshold.js",
+          "size": 1062,
+          "sha256": "6b6d2c0364b1c34d088de53b89c7c8028e624cb893b923de3fef4e6e27c2f159"
+        },
+        {
+          "path": "examples/threshold.ts",
+          "size": 1136,
+          "sha256": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793"
+        },
+        {
+          "path": "LICENSE",
+          "size": 1073,
+          "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+        },
+        {
+          "path": "package.json",
+          "size": 1925,
+          "sha256": "95fc82a1ebb90399d17a50f1ded8bc579ea9aab16d6ba03666dda4547b24124b"
+        },
+        {
+          "path": "README.md",
+          "size": 3071,
+          "sha256": "fe1e97c1154ccf7ee44961565b2d80ad3248c4e05335ef33e2ea25f87240d680"
+        },
+        {
+          "path": "schema/device-descriptor.json",
+          "size": 20096,
+          "sha256": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+        }
+      ]
+    }
+  ]
+}

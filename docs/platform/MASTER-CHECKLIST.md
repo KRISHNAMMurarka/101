@@ -4,7 +4,7 @@ Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 53 completed with recorded evidence; 219 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 54 completed with recorded evidence; 218 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -361,7 +361,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 ### K — Distributable SDK and application release artifacts
 
-- [ ] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution.
+- [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Current source and packed consumer evidence](receipts/2026-10-03-sdk-consumer.json).
 - [ ] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains.
 - [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata.
 - [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
