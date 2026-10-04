@@ -147,6 +147,11 @@ async function collect(source, destination, metadata = []) {
 async function inspectArtifact(path) {
   let files = 0, bytes = 0;
   async function visit(current) {
+    const segments = relative(path, current).split(/[\\/]/);
+    if (segments.some((segment) => /^(?:\.env(?:\..*)?|\.npmrc|\.git|\.ssh|node_modules|receipts|credentials?\.json|secrets?\.json|google-services\.json|GoogleService-Info\.plist)$/i.test(segment)
+      || /\.(?:pem|p12|mobileprovision|key)$/i.test(segment))) {
+      throw new Error(`Artifact contains a private or development file: ${relative(path, current)}`);
+    }
     const info = await lstat(current);
     if (info.isFile()) { files++; bytes += info.size; }
     else if (info.isDirectory()) {

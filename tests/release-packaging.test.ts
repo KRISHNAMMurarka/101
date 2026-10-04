@@ -107,6 +107,19 @@ test('a missing required attribution leaves no distributable web artifact', () =
   } finally { f.close(); }
 });
 
+test('packaging rejects credentials accidentally emitted into an artifact', () => {
+  const f = fixture();
+  try {
+    mkdirSync(join(f.root, 'dist/client'), { recursive: true });
+    writeFileSync(join(f.root, 'dist/client/.env.production'), 'PRIVATE_TOKEN=fixture');
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    const { path, value } = f.manifests()[0];
+    assert.deepEqual(value.produced, []);
+    assert.equal(existsSync(resolve(path, '..', 'web')), false);
+  } finally { f.close(); }
+});
+
 test('release mode blocks debug and intermediate targets before invoking their producer', () => {
   const f = fixture();
   try {
