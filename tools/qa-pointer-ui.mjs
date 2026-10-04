@@ -103,6 +103,7 @@ try {
   await source.keyboard.up('Space');
   await receiver.setViewportSize({ width: 700, height: 700 }); const resized = await near(0.52, 0.5, false);
   await sourcePad.focus(); const latencies = [];
+  const workloadStartedAt = performance.now();
   for (let index = 0; index < 80; index++) {
     const x = index % 2 === 0 ? 0.54 : 0.52;
     await source.keyboard.press(index % 2 === 0 ? 'ArrowRight' : 'ArrowLeft');
@@ -111,6 +112,7 @@ try {
     latencies.push({ minMs: Math.max(0, state.renderedAt - state.latest), maxMs: state.renderedAt - state.earliest, uncertaintyMs: state.uncertaintyMs });
     await source.waitForTimeout(20);
   }
+  const workloadElapsedMs = performance.now() - workloadStartedAt;
   const widths = await Promise.all([source, receiver].map(page => page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))));
   assert.ok(widths.every(value => value.document <= value.viewport));
   await evidence.screenshot(receiver, 'receiver-active');
@@ -150,7 +152,8 @@ try {
     browser: name, version: browser.version(), environment: { node: process.versions.node, playwright: '1.61.1' },
     result: { consentChecks, rejectionChecks, visibilityCheck, storeCleanup, identityReloadPreserved: true, identityRemovalReleases: true, freshKeyReenrolled, narrowInput, narrowWidths, narrowReachability,
       begin, downRight, upLeft, upRight, downLeft, recontact, keyPress, keyRelease, blurRelease, resized, replacement, widths,
-      timing: { count: latencies.length, minP50Ms: percentile(latencies.map(value => value.minMs), 0.5), maxP50Ms: percentile(latencies.map(value => value.maxMs), 0.5),
+      timing: { count: latencies.length, workloadElapsedMs, observedDeliveryHz: latencies.length * 1000 / workloadElapsedMs,
+        minP50Ms: percentile(latencies.map(value => value.minMs), 0.5), maxP50Ms: percentile(latencies.map(value => value.maxMs), 0.5),
         maxP95Ms: percentile(latencies.map(value => value.maxMs), 0.95), maxP99Ms: percentile(latencies.map(value => value.maxMs), 0.99), maxMs: Math.max(...latencies.map(value => value.maxMs)),
         maxClockUncertaintyMs: Math.max(...latencies.map(value => value.uncertaintyMs)), samples: latencies }, errors } });
 } catch (error) {

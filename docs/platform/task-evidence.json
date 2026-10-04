@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 33,
+  "revision": 34,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3579,23 +3579,27 @@
       ]
     },
     {
-      "id": "pending-F01",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "pointer-workload-profile-2026-10-05",
+      "revision": "containing commit based b26f26a",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "F01"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/RELEASE-CONTRACT.md",
+        "tools/qa-pointer-ui.mjs"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Define measured workload/SLO profiles. Set supported route/device/session counts, sample/event/media rates and latency/loss/skew budgets before making performance claims.",
-      "scope": "F01 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "Local Mac macOS 26.5.2; Node 24.14.0, Playwright 1.61.1, Chromium 149.0.7827.55; production build from b26f26a2538b56b70898f87cb574ac16881f8cc9, dist/server/index.js SHA-256 d621fbe18ec0a2b0bdf8afb3902fbee77670d88f522f53962bf83e30cb39930e; QA script SHA-256 a0d3f0a9a5559f99899095ac5c06258ec7c7311c4208815ddb44fcf88a6e5358",
+      "reproduction": "npm run build; PORT=3003 npm run start; node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:3003/pointer-lab; node tools/audit-platform-records.mjs; required repository commit gates. Measured browser receipt: 80/80 positions in 2829.987 ms (28.269/s), conservative upper P50/P95/P99 4.972/11.705/13.196 ms, maximum 21.937 ms, maximum clock uncertainty 0.565 ms, no page errors",
+      "scope": "F01 sets zero current supported capacity because no catalog row is accepted, and defines bounded P1 local-browser and P2 physical-phone candidate profiles with explicit endpoint/route/session counts, position/contact/media rates, latency, loss and clock/skew budgets. P1 has a measured local JS-capture-to-DOM workload; P2 is a prospective SLO, not a physical result. No 60 Hz throughput, impaired-network, energy/thermal or finger-to-pixel support claim is made",
       "failure": null,
       "equipment": [
-        "Exact supported workload hosts; energy/thermal instrumentation"
+        "Local macOS host with Chromium for P1; P2 physical phones and energy/thermal instrumentation remain qualification dependencies"
       ]
     },
     {
@@ -9336,7 +9340,7 @@
     {
       "id": "F01",
       "records": [
-        "pending-F01"
+        "pointer-workload-profile-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

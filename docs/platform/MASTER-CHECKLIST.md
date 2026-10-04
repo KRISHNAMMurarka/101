@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 60 completed with recorded evidence; 212 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 61 completed with recorded evidence; 211 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -295,7 +295,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### F — Performance, latency, workload limits and reliability
 
-- [ ] **F01 — Define measured workload/SLO profiles.** Set supported route/device/session counts, sample/event/media rates and latency/loss/skew budgets before making performance claims.
+- [x] **F01 — Define measured workload/SLO profiles.** Set supported route/device/session counts, sample/event/media rates and latency/loss/skew budgets before making performance claims. [Workload contract](RELEASE-CONTRACT.md#workload-and-performance-profiles).
 - [ ] **F02 — Instrument capture-to-output timing.** Capture, processing, encoding, transit, decoding and sink/render yield P50/P95/P99 with clock uncertainty; displayed ping is not finger-to-pixel evidence.
 - [ ] **F03 — Measure full payload cost.** Record encoded bytes, transport overhead, packets/rate, quantization error and resource negotiations for each fast profile.
 - [ ] **F04 — Optimize demonstrated bottlenecks.** Compare cadence, coalescing, compact codecs, copy/allocation and processing placement against reproducible workloads; preserve transitions and security checks.
