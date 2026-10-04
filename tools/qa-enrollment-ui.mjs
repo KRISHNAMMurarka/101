@@ -128,7 +128,10 @@ export async function savedKeyId(page, databaseName) {
 }
 
 export async function keyboardClick(page, button) {
-  await button.focus(); await page.keyboard.press('Tab'); await page.keyboard.press('Shift+Tab');
+  const safari = page.context().browser()?.browserType().name() === 'webkit';
+  await button.focus();
+  await page.keyboard.press(safari ? 'Alt+Shift+Tab' : 'Shift+Tab');
+  await page.keyboard.press(safari ? 'Alt+Tab' : 'Tab');
   assert.equal(await button.evaluate(element => document.activeElement === element), true, 'owner control is independently keyboard focusable');
   const visible = await button.evaluate(element => { const style = getComputedStyle(element);
     return parseFloat(style.outlineWidth) > 0 && style.outlineStyle !== 'none' || style.boxShadow !== 'none'; });
