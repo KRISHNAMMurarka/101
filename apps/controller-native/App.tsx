@@ -435,7 +435,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
         />
       )}
 
-      {!playing ? <View style={{ paddingHorizontal: space.lg, paddingBottom: space.sm }}>
+      {!playing ? <View style={{ paddingHorizontal: space.lg, paddingBottom: Platform.OS === "android" ? GESTURE_INSET + space.sm : space.sm }}>
         <Button label="Open pointer lab" wide onPress={() => { void disconnect().then(onOpenPointerLab); }} />
       </View> : null}
 
