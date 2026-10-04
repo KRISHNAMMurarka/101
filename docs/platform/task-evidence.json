@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 32,
+  "revision": 33,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -4046,24 +4046,28 @@
       ]
     },
     {
-      "id": "pending-Q12",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "support-status-reconciliation-2026-10-05",
+      "revision": "containing commit based 3c79523",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "Q12"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "tools/audit-platform-records.mjs",
+        "tests/platform-records.test.ts",
+        "docs/platform/support-catalog.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Reconcile support status from receipts. Source, contract, emulator/runtime and physical evidence stay separate; outdated or failed rows cannot advertise current release support.",
-      "scope": "Q12 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2, Node 24.14.0; 27 current catalog rows (1 embedded, 2 historical, 23 candidate, 1 unknown), none accepted",
+      "reproduction": "node --experimental-strip-types --test tests/platform-records.test.ts (10 pass); node tools/audit-platform-records.mjs; required repository gates on containing candidate. New regressions failed before repair for omitted current failed receipt and cited pending receipt; a failure bound to a different target does not block this target",
+      "scope": "Q12 catalog reconciliation: implementation, contract, runtime and physical references stay distinct; accepted rows require current passing row-bound exact-target evidence for each required level and completed qualifications. A current failed/unavailable receipt for the same target blocks acceptance even when omitted from the row, and cited pending/failed receipts cannot advertise support. The real catalog remains unaccepted; no new physical or release-support claim is made",
       "failure": null,
-      "equipment": [
-        "Actual runtime/physical/assistive combination per qualification"
-      ]
+      "equipment": []
     },
     {
       "id": "pending-Q13",
@@ -9568,7 +9572,7 @@
     {
       "id": "Q12",
       "records": [
-        "pending-Q12"
+        "support-status-reconciliation-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

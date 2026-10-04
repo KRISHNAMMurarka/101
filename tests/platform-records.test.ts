@@ -99,3 +99,33 @@ test('passing evidence cannot close tasks after its receipt links or evidence le
   assert.ok(errors.some(error => error.includes('receipt paths')));
   assert.ok(errors.some(error => error.includes('evidence levels')));
 });
+
+test('a current failed receipt for the accepted target blocks support even when omitted from its evidence list', () => {
+  const input = fixture();
+  const row = input.catalog.rows[0];
+  row.accepted = true;
+  row.status = 'qualified';
+  row.requiredLevels = ['implementation', 'contract', 'runtime'];
+  input.evidence.records[0].historical = false;
+  assert.deepEqual(auditPlatformRecords(input), []);
+  const failure = { ...input.evidence.records[0], id: 'new-failure', result: 'fail',
+    failure: 'Current runtime reproduction failed', levels: ['runtime'],
+    supportTargets: { embedded: structuredClone(row.target) } };
+  input.evidence.records.push(failure);
+  assert.ok(auditPlatformRecords(input).some(error => error.includes('embedded') && error.includes('current fail receipt')));
+  failure.supportTargets.embedded.runtimeVersion = 'older-version';
+  assert.deepEqual(auditPlatformRecords(input), [], 'a failure for a different target must not block this version');
+});
+
+test('an accepted row cannot cite failed or pending records as support evidence', () => {
+  const input = fixture();
+  const row = input.catalog.rows[0];
+  row.accepted = true;
+  row.status = 'qualified';
+  row.requiredLevels = ['implementation', 'contract', 'runtime'];
+  input.evidence.records[0].historical = false;
+  const pending = { ...input.evidence.records[0], id: 'pending-probe', result: 'pending', levels: ['runtime'] };
+  input.evidence.records.push(pending);
+  row.evidence.runtime.push(pending.id);
+  assert.ok(auditPlatformRecords(input).some(error => error.includes('pending-probe') && error.includes('passing')));
+});

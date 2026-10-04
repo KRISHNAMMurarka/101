@@ -67,6 +67,11 @@ export function auditPlatformRecords({ checklist, catalog, evidence, exists }) {
       if (!canonical.has(task)) errors.push(`${row.id}: unknown qualification ${task}`);
       else if (row.accepted && !canonical.get(task)) errors.push(`${row.id}: open qualification ${task}`);
     }
+    if (row.accepted) for (const record of records.values()) {
+      if (!record.historical && ['fail', 'unavailable'].includes(record.result) && record.supportRows?.includes(row.id) &&
+          (!record.supportTargets?.[row.id] || isDeepStrictEqual(record.supportTargets[row.id], row.target)))
+        errors.push(`${row.id}: current ${record.result} receipt ${record.id} blocks acceptance`);
+    }
     for (const level of levels) {
       if (!Array.isArray(row.evidence[level])) { errors.push(`${row.id}: missing ${level} level`); continue; }
       if (row.accepted && row.requiredLevels?.includes(level) && !row.evidence[level].some(ref => records.get(ref)?.result === 'pass' && !records.get(ref)?.historical))
@@ -76,6 +81,7 @@ export function auditPlatformRecords({ checklist, catalog, evidence, exists }) {
         if (!record) errors.push(`${row.id}: absent evidence ${ref}`);
         else {
           if (!record.levels.includes(level)) errors.push(`${row.id}: ${ref} does not prove ${level}`);
+          if (row.accepted && record.result !== 'pass') errors.push(`${row.id}: ${ref} is not passing support evidence`);
           if (row.accepted && record.historical) errors.push(`${row.id}: historical receipt cannot prove current acceptance`);
           if (row.accepted && !record.supportRows?.includes(row.id)) errors.push(`${row.id}: ${ref} is not bound to support row`);
           if (row.accepted && !isDeepStrictEqual(record.supportTargets?.[row.id], row.target)) errors.push(`${row.id}: ${ref} target identity changed or absent`);
