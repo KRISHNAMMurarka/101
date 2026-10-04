@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 26,
-  "baseline": "26f4eaf",
+  "revision": 27,
+  "baseline": "8ab4c23",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
     {
@@ -6017,6 +6017,32 @@
       "supportTargets": {}
     },
     {
+      "id": "pointer-physical-android-2026-10-05",
+      "result": "pass",
+      "levels": [
+        "runtime",
+        "physical"
+      ],
+      "tasks": [
+        "T07",
+        "T08"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md"
+      ],
+      "scope": "T07 generic Android native source to browser application sink: verified endpoint code, mutual owner approval, both ADB-injected diagonal touch movements and contact/release. Partial T08 Android evidence only; human finger interaction, native pad scroll, iPhone, resize/no-anchor and physical latency remain unqualified",
+      "reproduction": "Install Android Release APK, run fresh local browser production build on port 3002, complete manual invitation/offer/answer and matching-code approvals, allow pointer for one minute, inject both pad diagonals with adb input swipe using updated bounds, observe browser marker and contact attributes. Old receiver regression fails at 150 ms silence; fixed receiver accepts a fresh packet and releases at 501 ms silence",
+      "revision": "containing commit based 8ab4c23; native APK SHA256 94e286dd0abe169bea79a8ab25f27ff86a4f6eb044aaa0f9aeee1634a1065fa4; browser build 6a1e9cc508104f9d",
+      "historical": false,
+      "environment": "OnePlus IV2201 Android 13; macOS 26.5.2, Node 24.14.0, Playwright 1.61.1 Chromium; local WebRTC",
+      "equipment": [
+        "Physical Android source and local browser sink; physical iPhone remains for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [],
+      "supportTargets": {}
+    },
+    {
       "id": "threat-model-2026-10-02",
       "revision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
       "result": "pass",
@@ -7029,6 +7055,7 @@
         "pointer-ui-webkit-failed-2026-10-02",
         "pointer-native-partial-2026-10-02",
         "pointer-native-touch-unqualified-2026-10-02",
+        "pointer-physical-android-2026-10-05",
         "native-source-2026-10-02",
         "endpoint-enrollment-ui-2026-10-02"
       ],
@@ -7053,7 +7080,8 @@
         "pointer-ui-chromium-2026-10-02",
         "pointer-ui-webkit-failed-2026-10-02",
         "pointer-native-partial-2026-10-02",
-        "pointer-native-touch-unqualified-2026-10-02"
+        "pointer-native-touch-unqualified-2026-10-02",
+        "pointer-physical-android-2026-10-05"
       ],
       "dependencies": [
         "C01",

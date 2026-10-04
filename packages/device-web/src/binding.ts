@@ -80,6 +80,11 @@ interface ReceiveSlot {
   codec: WireCodec; maxHz: number; maxAgeMs: number; ready: boolean; lastSequence: number; lastOperation: number;
   lastReceivedAt: number; grantExpiresAt: number;
 }
+// Packet maxAgeMs still rejects stale values; a brief scheduling gap must not retire the route.
+const MIN_ROUTE_SILENCE_MS = 500;
+function silentRoute(entry: ReceiveSlot, now: number): boolean {
+  return now - entry.lastReceivedAt > Math.max(entry.maxAgeMs, MIN_ROUTE_SILENCE_MS);
+}
 
 /** Incoming packets address approved private slots, never embedded registration handles. */
 export class RemoteResourceReceiver {
@@ -203,7 +208,7 @@ export class RemoteResourceReceiver {
     if (packet.type === 'bind') return;
     const entry = this.slots.get(packet.slot); if (!entry) return;
     if (packet.type === 'stop') { this.remove(packet.slot, packet.reason, false); return; }
-    if (now >= entry.grantExpiresAt || now - entry.lastReceivedAt > entry.maxAgeMs) { this.remove(entry.slot, 'expired'); return; }
+    if (now >= entry.grantExpiresAt || silentRoute(entry, now)) { this.remove(entry.slot, 'expired'); return; }
     if (packet.type === 'ready') {
       if (entry.ready || packet.maxHz !== entry.maxHz || packet.maxAgeMs !== entry.maxAgeMs) { this.remove(packet.slot, 'incompatible'); return; }
       this.runtime.setReadiness(entry.source, 'available');
@@ -247,7 +252,7 @@ export class RemoteResourceReceiver {
     if (this.stopped || !this.authorized()) return;
     const now = this.localTime(); if (now === undefined) return;
     for (const entry of [...this.slots.values()]) {
-      if (now >= entry.grantExpiresAt || now - entry.lastReceivedAt > entry.maxAgeMs || entry.ready && !entry.connection.renew(this.identity.principalId).ok)
+      if (now >= entry.grantExpiresAt || silentRoute(entry, now) || entry.ready && !entry.connection.renew(this.identity.principalId).ok)
         this.remove(entry.slot, 'expired');
     }
     if (this.stopped) return;

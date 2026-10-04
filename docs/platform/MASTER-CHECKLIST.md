@@ -1,10 +1,10 @@
 # SDK and system master checklist
 
-Updated: **4 October 2026**. Source baseline: **`32e0e37`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **5 October 2026**. Source baseline: **`8ab4c23`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 56 completed with recorded evidence; 216 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 57 completed with recorded evidence; 215 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -103,7 +103,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **T04 — Bind remote resources to authenticated peers.** Remote packets cannot choose arbitrary source IDs, sink registrations, sessions or permissions; cross-peer and cross-session fixtures fail. [SDK evidence](SDK.md#bind-a-remote-provider).
 - [x] **T05 — Implement general wire codecs.** Use a versioned readable baseline and selected compact profiles; arbitrary sensor values retain units/ranges and are not encoded as game axes. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
 - [x] **T06 — Implement sample/event/control scheduling.** Apply freshness, sequences, epochs, deadlines, deduplication and bounded send queues; button edges and relative deltas survive loss policy correctly. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
-- [ ] **T07 — Implement generic browser/native provider binding.** A phone source and browser application sink use the new SDK end to end rather than a special game role.
+- [x] **T07 — Implement generic browser/native provider binding.** A phone source and browser application sink use the new SDK end to end rather than a special game role. [Physical Android and browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#5-october-2026-physical-android-update).
 - [ ] **T08 — Prove physical phone → browser pointer.** Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.
 - [x] **T09 — Implement a compatible 101 application bridge.** Map approved typed resources to game controls/roles explicitly; new platform packages never import game code. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
 - [x] **T10 — Verify disconnect and reconnect generations.** Loss releases held output; stale packets/commands cannot enter replacement routes; reconnect renegotiates ownership and formats. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).

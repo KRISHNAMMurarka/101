@@ -172,7 +172,7 @@ test('reliable saturation stops held state instead of queuing unbounded edges', 
   const h = harness(); h.approve('contact'); h.publisher.publish('contact', true); h.receiver.tick();
   h.setNow(102); h.phone.blocked.add('reliable'); assert.equal(h.publisher.publish('contact', false), false);
   assert.equal(h.publisher.status().pending, 0); assert.equal(h.publisher.status().active, 0);
-  h.setNow(201); h.receiver.tick(); assert.equal(h.released(), 1); assert.equal(h.receiver.status().active, 0);
+  h.setNow(601); h.receiver.tick(); assert.equal(h.released(), 1); assert.equal(h.receiver.status().active, 0);
 });
 test('reordered latest and duplicate reliable events do not refresh liveness', () => {
   const h = harness(); h.approve(); h.approve('contact'); h.phone.hold = true;
@@ -181,7 +181,7 @@ test('reordered latest and duplicate reliable events do not refresh liveness', (
   for (const frame of [...frames].reverse()) h.host.deliver(frame); h.receiver.tick();
   assert.deepEqual(h.received.map(value => value.value), [{ x: 0.9, y: 0.9 }, true]);
   h.setNow(210); for (const frame of frames) h.host.deliver(frame); h.receiver.tick();
-  h.setNow(221); h.receiver.tick(); assert.equal(h.released(), 2);
+  h.setNow(621); h.receiver.tick(); assert.equal(h.released(), 2);
 });
 test('unsynchronized, future and expired remote captures cannot reach an application', () => {
   const h = harness(); h.approve(); h.phone.hold = true; h.publisher.publish('position', { x: 0.1, y: 0.1 });
@@ -198,6 +198,20 @@ test('stop during pending ready is terminal and old callbacks cannot resurrect o
   assert.equal(h.receiver.approve({ capability: 'position', sink: h.sinks.get('position')!, sinkDevice: device(true), sinkCapability: 'position',
     grant: { expiresAt: 10000, maxAgeMs: 100, maxHz: 60 } }), undefined);
   assert.equal(h.host.listeners.size, 0); assert.equal(h.host.states.size, 0);
+});
+test('a brief packet gap does not expire an active route before a fresh sample arrives', () => {
+  const h = harness({ grant: { expiresAt: 10000, maxAgeMs: 100, maxHz: 60 } });
+  assert.equal(h.approve('position', 'normalized-pointer/1'), 1);
+  h.setNow(250); h.receiver.tick();
+  assert.equal(h.receiver.status().active, 1);
+  assert.equal(h.publisher.publish('position', { x: 0.4, y: 0.6 }), true);
+  h.receiver.tick(); h.runtime.flush();
+  const value = h.received.at(-1)?.value as { x: number; y: number } | undefined;
+  assert.ok(value && Math.abs(value.x - 0.4) < 1e-6 && Math.abs(value.y - 0.6) < 1e-6);
+  h.setNow(751); h.receiver.tick();
+  assert.equal(h.receiver.status().active, 0);
+  assert.equal(h.released(), 1);
+  h.receiver.stop(); h.publisher.stop(); h.runtime.close();
 });
 test('slow receiver cancellation invalidates late effects and bounded route queues recover', async () => {
   let finish: (() => void) | undefined, applied = 0, context: DeliveryContext | undefined;
@@ -241,9 +255,9 @@ test('reliable cadence queue is bounded and expires without replaying stale edge
   second.publisher.publish('contact', false); second.setNow(201); second.publisher.tick(); second.receiver.tick();
   assert.deepEqual(second.received.map(value => value.value), [true]); assert.equal(second.released(), 1); assert.equal(second.publisher.status().pending, 0);
 });
-test('deadman expiry is checked on receive and cannot be revived before a host flush', () => {
+test('deadman expiry after sustained silence is checked on receive before a host flush', () => {
   const h = harness(); h.approve(); h.publisher.publish('position', { x: 0.2, y: 0.2 }); h.receiver.tick();
-  h.setNow(201); h.publisher.publish('position', { x: 0.9, y: 0.9 }); h.runtime.flush();
+  h.setNow(601); h.publisher.publish('position', { x: 0.9, y: 0.9 }); h.runtime.flush();
   assert.deepEqual(h.received.map(value => value.value), [{ x: 0.2, y: 0.2 }]); assert.equal(h.released(), 1);
 });
 test('a matched invalid clock exchange releases held output immediately', () => {
@@ -300,7 +314,7 @@ test('jitter retains fresh replacement state while delayed stale packets cannot 
   const first = h.phone.queue.shift()!, second = h.phone.queue.shift()!;
   h.setNow(145); h.host.deliver(second); h.host.deliver(first); h.receiver.tick();
   assert.deepEqual(h.received[0].value, { x: 0.8, y: 0.2 });
-  h.setNow(246); h.host.deliver(second); h.runtime.flush(); h.receiver.tick(); assert.equal(h.released(), 1); assert.equal(h.received.length, 1);
+  h.setNow(646); h.host.deliver(second); h.runtime.flush(); h.receiver.tick(); assert.equal(h.released(), 1); assert.equal(h.received.length, 1);
 });
 test('publisher readiness queries are capability-specific and disappear on slot loss', () => {
   const h = harness();
