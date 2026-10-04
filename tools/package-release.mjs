@@ -8,8 +8,10 @@
 //   node tools/package-release.mjs --release web hub  # required production targets
 
 import { execFile } from "node:child_process";
+import { createHash } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
-import { dirname, join, relative } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
@@ -83,8 +85,8 @@ for (const target of selected) {
       throw new Error(`${target.profile} target is unavailable for release packaging; an installable production target is required`);
     }
     const artifact = await target.build();
-    produced.push({ target: target.name, profile: target.profile, artifact });
-    console.log(`  ok  ${artifact}`);
+    produced.push({ target: target.name, profile: target.profile, ...artifact });
+    console.log(`  ok  ${artifact.artifact}`);
   } catch (error) {
     const reason = firstMeaningfulLine(error);
     skipped.push({ target: target.name, profile: target.profile, reason });
@@ -93,8 +95,11 @@ for (const target of selected) {
 }
 
 const manifest = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   version: JSON.parse(await readFile(join(ROOT, "package.json"), "utf8")).version,
+  source: await sourceProvenance(),
+  environment: { node: process.versions.node, npm: (await run("npm", ["--version"])).stdout.trim(), platform: process.platform, arch: process.arch },
+  builderSha256: await fileSha256(fileURLToPath(import.meta.url)),
   mode,
   requiredTargets: mode === "release" ? selected.map((target) => target.name) : [],
   status: mode === "diagnostic" ? "diagnostic" : skipped.length ? "incomplete" : "complete",
@@ -136,16 +141,17 @@ async function collect(source, destination, metadata = []) {
       await mkdir(dirname(join(to, path)), { recursive: true });
       await cp(join(ROOT, path), join(to, path), { errorOnExist: true, force: false });
     }
-    await inspectArtifact(to);
-    return relative(ROOT, to).replaceAll("\\", "/");
+    const fingerprint = await inspectArtifact(to, true);
+    return { artifact: relative(ROOT, to).replaceAll("\\", "/"), ...fingerprint };
   } catch (error) {
     await rm(to, { recursive: true, force: true });
     throw error;
   }
 }
 
-async function inspectArtifact(path) {
+async function inspectArtifact(path, fingerprint = false) {
   let files = 0, bytes = 0;
+  const contents = [];
   async function visit(current) {
     const segments = relative(path, current).split(/[\\/]/);
     if (segments.some((segment) => /^(?:\.env(?:\..*)?|\.npmrc|\.git|\.ssh|node_modules|receipts|credentials?\.json|secrets?\.json|google-services\.json|GoogleService-Info\.plist)$/i.test(segment)
@@ -153,13 +159,46 @@ async function inspectArtifact(path) {
       throw new Error(`Artifact contains a private or development file: ${relative(path, current)}`);
     }
     const info = await lstat(current);
-    if (info.isFile()) { files++; bytes += info.size; }
+    if (info.isFile()) {
+      files++; bytes += info.size;
+      if (fingerprint) contents.push({
+        path: (current === path ? basename(current) : relative(path, current)).replaceAll("\\", "/"),
+        bytes: info.size,
+        sha256: await fileSha256(current),
+      });
+    }
     else if (info.isDirectory()) {
       for (const entry of await readdir(current)) await visit(join(current, entry));
     } else throw new Error("Artifact contains a symlink or unsupported file type");
   }
   await visit(path);
   if (!files || !bytes) throw new Error("Artifact has no nonempty regular files");
+  if (!fingerprint) return;
+  contents.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+  const digest = createHash("sha256");
+  for (const entry of contents) digest.update(JSON.stringify(entry) + "\n");
+  return { bytes, sha256: digest.digest("hex"), contents };
+}
+
+async function fileSha256(path) {
+  const digest = createHash("sha256");
+  for await (const chunk of createReadStream(path)) digest.update(chunk);
+  return digest.digest("hex");
+}
+
+async function sourceProvenance() {
+  let revision = null, tree = null, workingTreeClean = null;
+  try {
+    const gitRoot = (await run("git", ["rev-parse", "--show-toplevel"], { cwd: ROOT })).stdout.trim();
+    if (resolve(gitRoot) === resolve(ROOT)) {
+      revision = (await run("git", ["rev-parse", "HEAD"], { cwd: ROOT })).stdout.trim();
+      tree = (await run("git", ["rev-parse", "HEAD^{tree}"], { cwd: ROOT })).stdout.trim();
+      workingTreeClean = !(await run("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: ROOT })).stdout.trim();
+    }
+  } catch { /* A fixture or source archive may have no Git history. */ }
+  let packageLockSha256 = null;
+  try { packageLockSha256 = await fileSha256(join(ROOT, "package-lock.json")); } catch { /* Lockfile not present. */ }
+  return { revision, tree, workingTreeClean, packageLockSha256 };
 }
 
 function firstMeaningfulLine(error) {

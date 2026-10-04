@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -91,6 +92,28 @@ test('the web release artifact carries its license, model attribution and locked
       'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
       assert.equal(readFileSync(join(artifact, path), 'utf8'), `fixture ${path}`);
     }
+  } finally { f.close(); }
+});
+
+test('the release manifest fingerprints copied files and records provenance honestly', () => {
+  const f = fixture();
+  try {
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const manifest = f.manifests()[0].value;
+    const artifact = manifest.produced[0];
+    const license = artifact.contents?.find((entry: { path: string }) => entry.path === 'LICENSE');
+    assert.equal(license?.bytes, Buffer.byteLength('fixture LICENSE'));
+    assert.equal(license?.sha256, createHash('sha256').update('fixture LICENSE').digest('hex'));
+    assert.ok(artifact.contents.some((entry: { path: string }) => entry.path === 'server/index.js'));
+    assert.equal(artifact.bytes, artifact.contents.reduce((sum: number, entry: { bytes: number }) => sum + entry.bytes, 0));
+    const digest = createHash('sha256');
+    for (const entry of artifact.contents) digest.update(JSON.stringify(entry) + '\n');
+    assert.equal(artifact.sha256, digest.digest('hex'));
+    assert.ok(artifact.bytes > license.bytes);
+    assert.match(manifest.builderSha256 ?? '', /^[0-9a-f]{64}$/);
+    assert.equal(manifest.source?.workingTreeClean, null, 'a fixture outside Git cannot claim a clean revision');
+    assert.equal(manifest.releaseAccepted, false);
   } finally { f.close(); }
 });
 
