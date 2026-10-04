@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 58 completed with recorded evidence; 214 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 59 completed with recorded evidence; 213 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -320,7 +320,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **Q08 — Qualify physical supported devices.** Each declared phone/tablet/desktop/watch/TV/gateway/peripheral profile passes its real input/output, permissions, lifecycle and feedback cases.
 - [ ] **Q09 — Qualify real assistive-technology journeys.** Named screen reader/browser and any supported assistive hardware complete consent, control, stop and recovery flows.
 - [ ] **Q10 — Qualify clean install/upgrade/offline scenarios.** SDK consumers and shipped apps work without monorepo links, dev servers or stale caches; rollback retains valid state.
-- [ ] **Q11 — Automate local/CI gates and target selection.** Required targets fail on missing preconditions/errors; only explicitly optional targets may produce a reported skip.
+- [x] **Q11 — Automate local/CI gates and target selection.** Required targets fail on missing preconditions/errors; only explicitly optional targets may produce a reported skip. [Gate evidence](task-evidence.json).
 - [ ] **Q12 — Reconcile support status from receipts.** Source, contract, emulator/runtime and physical evidence stay separate; outdated or failed rows cannot advertise current release support.
 - [ ] **Q13 — Freeze and requalify the final candidate.** All applicable suites use one exact revision/build/profile matrix; changes reopen affected rows and repeated flakes are resolved.
 

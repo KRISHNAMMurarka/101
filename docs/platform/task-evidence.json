@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 31,
+  "revision": 32,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -4019,23 +4019,30 @@
       ]
     },
     {
-      "id": "pending-Q11",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "required-local-ci-gates-2026-10-05",
+      "revision": "containing commit based 4a85d8f",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "Q11"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        ".github/workflows/ci.yml",
+        ".github/workflows/checks.yml",
+        "tools/check-watchos-build.mjs",
+        "tests/check-watchos-build.test.ts"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Automate local/CI gates and target selection. Required targets fail on missing preconditions/errors; only explicitly optional targets may produce a reported skip.",
-      "scope": "Q11 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2, Node 24.14.0, Xcode watchOS SDK 26.5; CI workflows defined for Ubuntu and macOS runners but not run remotely under local-only policy",
+      "reproduction": "node --experimental-strip-types --test tests/check-watchos-build.test.ts (missing SDK required exit 1, explicit --optional reported skip exit 0); npm run watch:ios:check (real watchOS SDK app-shell compile); required repository gates, native:typecheck/native:test and platform-record audit on containing candidate",
+      "scope": "Q11 local and CI target automation: web gates require a fresh build for rendered tests; portable native typecheck/tests and evidence audit are selected in CI; watchOS CI uses a required SDK check that fails if the SDK is absent, while only an explicit --optional local probe may skip. Existing Wear Gradle and release-mode packaging fail missing required prerequisites. No remote CI result or final hardware qualification is claimed",
       "failure": null,
       "equipment": [
-        "Actual runtime/physical/assistive combination per qualification"
+        "Local Xcode watchOS SDK for positive compile; isolated PATH fixture for missing-SDK checks"
       ]
     },
     {
@@ -9551,7 +9558,7 @@
     {
       "id": "Q11",
       "records": [
-        "pending-Q11"
+        "required-local-ci-gates-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

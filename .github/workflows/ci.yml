@@ -17,6 +17,9 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
+      - run: npm run native:typecheck
+      - run: npm run native:test
+      - run: node tools/audit-platform-records.mjs
       - run: npm run license:inventory
       - run: git diff --exit-code THIRD_PARTY_LICENSES.json
       - run: npm run audit:production

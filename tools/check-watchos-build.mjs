@@ -8,7 +8,8 @@
 //
 // It needs the watchOS SDK from Xcode, but deliberately not an installed watchOS simulator
 // runtime, so it stays runnable on a machine that has not downloaded several gigabytes of
-// platform support. Where the SDK is absent it skips with a clear message instead of failing.
+// platform support. CI uses the default required target; local callers may explicitly request
+// an optional probe when they do not have Xcode's watchOS platform installed.
 
 import { execFile } from "node:child_process";
 import { mkdtemp, readdir } from "node:fs/promises";
@@ -19,11 +20,20 @@ import { promisify } from "node:util";
 const run = promisify(execFile);
 const ROOT = new URL("../apps/watch-ios/", import.meta.url).pathname;
 const TARGET = "arm64_32-apple-watchos10.0";
+const optional = process.argv.length === 3 && process.argv[2] === "--optional";
+if (process.argv.length > (optional ? 3 : 2)) {
+  console.error("Usage: node tools/check-watchos-build.mjs [--optional]");
+  process.exit(1);
+}
 
 const sdk = await watchOSSDK();
 if (!sdk) {
-  console.log("SKIP: no watchOS SDK is installed. Install the watchOS platform in Xcode to run this check.");
-  process.exit(0);
+  if (optional) {
+    console.log("SKIP (optional): no watchOS SDK is installed. Install the watchOS platform in Xcode to run this check.");
+    process.exit(0);
+  }
+  console.error("The watchOS SDK is required. Install the watchOS platform in Xcode to run this check.");
+  process.exit(1);
 }
 console.log(`Using watchOS SDK: ${sdk}`);
 
