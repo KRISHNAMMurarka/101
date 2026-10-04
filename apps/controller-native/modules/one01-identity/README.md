@@ -70,9 +70,17 @@ approaches. The reproducible command is:
 node --experimental-strip-types apps/controller-native/modules/one01-identity/qa/ios-storage.mjs
 ```
 
-Actual Expo bridge invocation, physical endpoint qualification, lock-state
-behavior and hardware protection remain unverified. Simulator/Node evidence does
-not promote those claims. No generated native app project was changed.
+The 5 October 2026 physical iPhone 16 Pro check (iOS 26.6.2) found that
+Keychain returned `kSecAttrKeyType` as `NSNumber(73)`. The old String-only
+metadata check rejected a key that had been created, and later load failed too.
+The signed local Release build with the numeric-or-string metadata check loaded
+that same saved key through the actual Expo bridge; the native lab displayed
+“Saved local identity is ready.” The focused Swift regression covers the
+observed numeric representation and rejects a wrong value. The installed app
+binary SHA256 was `fbb71b63dfd2d9ef0feaefc126b2273f23738ac01b42fe0eb238531c51f7102c4c`.
+Full physical sign/verify, removal/rotation lifecycle, lock-state behavior,
+hardware protection and iPhone pointer pairing remain unverified. No generated
+native app project was changed.
 
 Platform references: [Apple Security keys](https://developer.apple.com/documentation/security/keys),
 [Android Keystore](https://developer.android.com/privacy-and-security/keystore),

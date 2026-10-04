@@ -38,6 +38,13 @@ final class One01IdentityStore {
     [kSecClass as String: kSecClassKey, kSecAttrApplicationTag as String: tag]
   }
 
+  /** iOS may bridge numeric Security attributes as NSNumber instead of String. */
+  static func matchesStoredAttribute(_ value: Any?, expected: CFString) -> Bool {
+    if let string = value as? String { return string == expected as String }
+    if let number = value as? NSNumber { return number.stringValue == expected as String }
+    return false
+  }
+
   private func checkedKey() throws -> OwnedKey? {
     var request = query
     request[kSecReturnRef as String] = true
@@ -49,8 +56,8 @@ final class One01IdentityStore {
     guard status == errSecSuccess, let attributes = result as? [String: Any],
       let rawKey = attributes[kSecValueRef as String], CFGetTypeID(rawKey as CFTypeRef) == SecKeyGetTypeID(),
       attributes[kSecAttrAccessible as String] as? String == kSecAttrAccessibleWhenUnlockedThisDeviceOnly as String,
-      attributes[kSecAttrKeyType as String] as? String == kSecAttrKeyTypeECSECPrimeRandom as String,
-      attributes[kSecAttrKeyClass as String] as? String == kSecAttrKeyClassPrivate as String,
+      Self.matchesStoredAttribute(attributes[kSecAttrKeyType as String], expected: kSecAttrKeyTypeECSECPrimeRandom),
+      Self.matchesStoredAttribute(attributes[kSecAttrKeyClass as String], expected: kSecAttrKeyClassPrivate),
       (attributes[kSecAttrKeySizeInBits as String] as? NSNumber)?.intValue == 256
     else { throw One01IdentityError.storageFailure }
     let key = rawKey as! SecKey

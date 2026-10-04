@@ -11,6 +11,13 @@ struct IdentityProducerFixture {
   }
 
   static func main() throws {
+    // Physical iOS Keychain returns the EC key type as NSNumber(73), not String("73").
+    guard One01IdentityStore.matchesStoredAttribute(NSNumber(value: 73), expected: kSecAttrKeyTypeECSECPrimeRandom),
+      One01IdentityStore.matchesStoredAttribute("73", expected: kSecAttrKeyTypeECSECPrimeRandom),
+      One01IdentityStore.matchesStoredAttribute(NSNumber(value: 1), expected: kSecAttrKeyClassPrivate),
+      !One01IdentityStore.matchesStoredAttribute(NSNumber(value: 72), expected: kSecAttrKeyTypeECSECPrimeRandom),
+      !One01IdentityStore.matchesStoredAttribute(nil, expected: kSecAttrKeyTypeECSECPrimeRandom)
+    else { throw One01IdentityError.invalidKey }
     let message = Data("101 native producer interoperability".utf8)
     var error: Unmanaged<CFError>?
     let attributes: [String: Any] = [
