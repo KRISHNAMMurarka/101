@@ -4607,6 +4607,35 @@
       ]
     },
     {
+      "id": "browser-pwa-release-2026-10-04",
+      "revision": "containing evidence commit; source base e0e16846eca9bc622dd7704095cdd7fdcab6aa50 and exact source/build hashes in receipt",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-04-browser-pwa-release.json",
+        "tools/qa-pwa-upgrade.mjs",
+        "tools/qa-browser.mjs",
+        "tests/service-worker.test.ts",
+        "tests/rendered-html.test.mjs"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0; Chromium 149.0.7827.55 via Playwright 1.61.1; local production package and server",
+      "reproduction": "npm run package:release -- --release web; npm run qa:offline; node tools/qa-pwa-upgrade.mjs release/package-mAUDi0/web release/package-FOcuwC/web; exact repository commit gate",
+      "scope": "K07 local browser release assets: packed production web target, current one-build offline controller, actual two-build Chromium worker update with old active/new offline rooms, data/secret cache exclusion, local origin, response headers, six camera runtime files. Physical installed-PWA G15, independent security S16 and final G17 remain separate.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": [
+        "web-pwa-chromium-2026-10-04"
+      ]
+    },
+    {
       "id": "pending-K08",
       "revision": "26f4eaf",
       "result": "pending",
@@ -9774,7 +9803,8 @@
     {
       "id": "K07",
       "records": [
-        "pending-K07"
+        "pending-K07",
+        "browser-pwa-release-2026-10-04"
       ],
       "dependencies": [],
       "equipment": [

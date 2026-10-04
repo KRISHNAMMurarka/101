@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 4,
+  "revision": 5,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -285,6 +285,59 @@
         "implementation",
         "contract",
         "runtime"
+      ]
+    },
+    {
+      "id": "web-pwa-chromium-2026-10-04",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "desktop browser",
+        "transport": "local same-origin HTTP",
+        "connector": "101 Link browser PWA",
+        "connectorVersion": "0.1.0; worker cache 0731be446e4cd749",
+        "profiles": [
+          "controller offline shell",
+          "two-build service-worker update"
+        ],
+        "resources": [
+          "packaged production browser assets",
+          "local camera models and WASM runtime"
+        ],
+        "unavailable": [
+          "physical installed-PWA upgrade acceptance",
+          "final reference-app release acceptance"
+        ]
+      },
+      "qualificationTasks": [
+        "K07",
+        "G15",
+        "G17"
+      ],
+      "evidence": {
+        "implementation": [
+          "browser-pwa-release-2026-10-04"
+        ],
+        "contract": [
+          "browser-pwa-release-2026-10-04"
+        ],
+        "runtime": [
+          "browser-pwa-release-2026-10-04"
+        ],
+        "physical": []
+      },
+      "limitations": [
+        "K07 local artifact acceptance only; physical installed-PWA and full app release remain open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
       ]
     },
     {

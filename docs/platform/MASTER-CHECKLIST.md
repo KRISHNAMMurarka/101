@@ -1,10 +1,10 @@
 # SDK and system master checklist
 
-Updated: **2 October 2026**. Source baseline: **`32e0e37`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **4 October 2026**. Source baseline: **`32e0e37`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 55 completed with recorded evidence; 217 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 56 completed with recorded evidence; 216 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -367,7 +367,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.
 - [ ] **K06 — Produce desktop installers.** macOS, Windows and Linux packages have required platform signing/notarization where applicable plus target-OS install/update/uninstall receipts.
-- [ ] **K07 — Produce browser/PWA release assets.** Offline/update/cache/security and runtime asset availability pass production builds with no hidden development origin requirement.
+- [x] **K07 — Produce browser/PWA release assets.** Offline/update/cache/security and runtime asset availability pass production builds with no hidden development origin requirement. [Packaged browser and two-build evidence](receipts/2026-10-04-browser-pwa-release.json); physical installed-PWA acceptance remains G15.
 - [x] **K08 — Repair required-target packaging semantics.** `tools/package-release.mjs` gets a release mode that fails missing required targets; debug/skipped artifacts cannot report an accepted release. [Required-target packaging evidence](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
 - [ ] **K09 — Complete redistribution licenses.** Synchronize notices/inventories with the lockfile and include licenses/assets/model attribution and supported third-party distribution terms.
 - [ ] **K10 — Create artifact provenance/manifests.** Exact revision, build/profile versions, hashes, sizes, toolchains, licenses and provenance identify every package/binary.

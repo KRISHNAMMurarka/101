@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseRevision": "e0e16846eca9bc622dd7704095cdd7fdcab6aa50",
+  "sourceId": "4d4cf6876b26ebb25c0ebea42af3e410",
+  "qaScriptSha256": "aee4485d4e30dc7d2d9e000082a0a71e82bb58f07af31647a9be41c2a0d6b396",
+  "environment": {
+    "os": "macOS 26.5.2 arm64",
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "browser": "Chromium 149.0.7827.55 via Playwright 1.61.1"
+  },
+  "artifact": {
+    "path": "release/package-FOcuwC/web",
+    "manifestPath": "release/package-FOcuwC/manifest.json",
+    "manifestSha256": "f0c3bd1b723f96bea123621790d79492d4a63326dbf7f0ab49766c314eda96c7",
+    "serviceWorkerSha256": "71ab5c3f045c35c02c89de1975b074b77c710182c0ba1c2ed1a28edf2eeca682",
+    "cacheId": "0731be446e4cd749",
+    "packagingComplete": true,
+    "releaseAccepted": false
+  },
+  "upgradeFrom": {
+    "path": "release/package-mAUDi0/web",
+    "cacheId": "656f1caac0253858"
+  },
+  "checks": [
+    {
+      "command": "npm run package:release -- --release web",
+      "result": "pass",
+      "detail": "Production web target built and copied; one required target produced, none skipped."
+    },
+    {
+      "command": "npm run qa:offline",
+      "result": "pass",
+      "detail": "Fresh production server, controller worker install and offline room reopen; six body/hand model and SIMD/non-SIMD runtime files served with expected MIME and nonzero size; live origin, referrer, MIME-sniffing and frame headers checked."
+    },
+    {
+      "command": "node tools/qa-pwa-upgrade.mjs release/package-mAUDi0/web release/package-FOcuwC/web",
+      "result": "pass",
+      "detail": "Actual Chromium origin installed the older worker, kept old active assets and a different room available offline while the new worker waited, activated the new worker after old clients closed, reopened another room offline, and did not cache a room data response."
+    },
+    {
+      "command": "node --test tests/rendered-html.test.mjs; npm run test:unit",
+      "result": "pass",
+      "detail": "Offline shell contains no baked-in localhost:3000 origin; worker VM covers incomplete update rollback and secret exclusion."
+    }
+  ],
+  "limitations": [
+    "Desktop Chromium and local production packaging only; installed physical-phone PWA upgrade remains G15.",
+    "These checks cover browser artifact behavior and scoped cache/privacy controls, not independent security validation S16 or final release acceptance G17."
+  ]
+}
