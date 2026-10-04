@@ -248,13 +248,29 @@ async function auditKeyboard(browser, baseURL) {
 
 async function auditOffline(browser, baseURL) {
   const failures = [];
-  const response = await fetch(`${baseURL}/mediapipe/wasm/vision_wasm_internal.wasm`, { method: "HEAD" });
-  if (response.headers.get("content-type") !== "application/wasm") {
-    failures.push(`camera model runtime: expected application/wasm, got ${response.headers.get("content-type")}`);
-  }
+  const controllerResponse = await fetch(`${baseURL}/controller?session=ROOM1`);
+  if (controllerResponse.headers.get("referrer-policy") !== "no-referrer") failures.push("controller must suppress pairing-link referrers");
+  if (controllerResponse.headers.get("x-content-type-options") !== "nosniff") failures.push("controller must disable MIME sniffing");
+  if (!controllerResponse.headers.get("content-security-policy")?.includes("frame-ancestors 'none'")) failures.push("controller must reject embedding");
+  const runtimeAssets = [
+    ["/models/pose_landmarker_lite.task", "application/octet-stream"],
+    ["/models/hand_landmarker.task", "application/octet-stream"],
+    ["/mediapipe/wasm/vision_wasm_internal.js", "application/javascript"],
+    ["/mediapipe/wasm/vision_wasm_internal.wasm", "application/wasm"],
+    ["/mediapipe/wasm/vision_wasm_nosimd_internal.js", "application/javascript"],
+    ["/mediapipe/wasm/vision_wasm_nosimd_internal.wasm", "application/wasm"],
+  ];
+  await Promise.all(runtimeAssets.map(async ([path, type]) => {
+    const response = await fetch(`${baseURL}${path}`, { method: "HEAD" });
+    if (!response.ok || !response.headers.get("content-type")?.startsWith(type) || Number(response.headers.get("content-length")) <= 0) {
+      failures.push(`${path}: missing or invalid production runtime asset (${response.status}, ${response.headers.get("content-type")})`);
+    }
+  }));
   const { context, page } = await newPage(browser, 390, 844);
   try {
     await visit(page, baseURL, "/controller?session=ROOM1");
+    const image = await page.locator('meta[property="og:image"]').getAttribute("content");
+    if (image !== `${baseURL}/og.png`) failures.push(`controller social image uses ${image} instead of the production origin`);
     await page.evaluate(() => navigator.serviceWorker.ready);
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));

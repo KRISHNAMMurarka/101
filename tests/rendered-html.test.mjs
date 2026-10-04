@@ -1,9 +1,17 @@
 import assert from "node:assert/strict";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import { execFileSync } from "node:child_process";
 
 const root = new URL("../", import.meta.url);
+
+test("the packaged offline controller has no development-origin social image", async () => {
+  const staticDir = new URL("dist/client/_next/static/", root);
+  const shells = (await readdir(staticDir)).filter((name) => /^controller-shell-[0-9a-f]+\.html$/.test(name));
+  assert.equal(shells.length, 1);
+  const html = await readFile(new URL(shells[0], staticDir), "utf8");
+  assert.doesNotMatch(html, /localhost:3000/);
+});
 
 async function render(path = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);

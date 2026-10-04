@@ -39,9 +39,18 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  const image = new URL("/og.png", `${protocol}://${host}`).toString();
+  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host");
+  // A direct local server uses HTTP; a TLS proxy supplies its public scheme explicitly.
+  const protocol = requestHeaders.get("x-forwarded-proto") === "https" ? "https" : "http";
+  let image = "/og.png";
+  if (host) {
+    try {
+      const origin = new URL(`${protocol}://${host}`);
+      if (origin.host === host && origin.pathname === "/" && !origin.username && !origin.password) {
+        image = new URL("/og.png", origin).toString();
+      }
+    } catch { /* An invalid Host must not break the page or become a social image URL. */ }
+  }
 
   return (
     <html lang="en">
