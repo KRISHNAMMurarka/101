@@ -1,6 +1,6 @@
 # SDK and system master checklist
 
-Updated: **5 October 2026**. Source baseline: **`8ab4c23`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **5 October 2026**. Source baseline: **`7b4abbb`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
@@ -104,7 +104,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **T05 — Implement general wire codecs.** Use a versioned readable baseline and selected compact profiles; arbitrary sensor values retain units/ranges and are not encoded as game axes. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
 - [x] **T06 — Implement sample/event/control scheduling.** Apply freshness, sequences, epochs, deadlines, deduplication and bounded send queues; button edges and relative deltas survive loss policy correctly. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
 - [x] **T07 — Implement generic browser/native provider binding.** A phone source and browser application sink use the new SDK end to end rather than a special game role. [Physical Android and browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#5-october-2026-physical-android-update).
-- [ ] **T08 — Prove physical phone → browser pointer.** Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.
+- [ ] **T08 — Prove physical phone → browser pointer.** Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency. [Partial Android evidence](POINTER-PROVIDER-QA-2026-10-02.md#5-october-2026-physical-android-update).
 - [x] **T09 — Implement a compatible 101 application bridge.** Map approved typed resources to game controls/roles explicitly; new platform packages never import game code. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
 - [x] **T10 — Verify disconnect and reconnect generations.** Loss releases held output; stale packets/commands cannot enter replacement routes; reconnect renegotiates ownership and formats. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
 - [x] **T11 — Add network impairment tests.** Loss, jitter, reordering, duplicates, queue saturation and slow receivers retain bounded memory and visible recovery. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).

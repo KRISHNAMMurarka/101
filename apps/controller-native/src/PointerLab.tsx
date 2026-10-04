@@ -50,6 +50,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
   const [answered, setAnswered] = useState(false);
   const [details, setDetails] = useState(true);
   const [contact, setContact] = useState(false);
+  const [padActive, setPadActive] = useState(false);
 
   const stop = useCallback((message?: string, clearTarget = true) => {
     generation.current++;
@@ -64,7 +65,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
     }
     if (clearTarget) reviewedTarget.current = undefined;
     if (mounted.current) {
-      setActive(false); setReady(false); setBusy(false); setAnswered(false); setContact(false); setOffer(''); setAnswer('');
+      setActive(false); setReady(false); setBusy(false); setAnswered(false); setContact(false); setPadActive(false); setOffer(''); setAnswer('');
       setDigest(''); setConfirmed(false);
       if (clearTarget) { setReviewed(undefined); setInvitation(''); }
       if (message) setStatus(message);
@@ -343,11 +344,11 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
       else driver[action](id, touch.locationX, touch.locationY, pad.current.width, pad.current.height);
     }
   };
-  const release = () => { input()?.release(); setContact(false); };
+  const release = () => { input()?.release(); setContact(false); setPadActive(false); };
   const text = { color: t.text };
   const field = { color: t.text, backgroundColor: t.surface, borderColor: t.line, borderWidth: 1, borderRadius: 12, padding: space.sm, minHeight: 80 };
   return (
-    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 44 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 44 }} keyboardShouldPersistTaps="handled" scrollEnabled={!padActive}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
         <Text style={[type.title, text]}>Pointer lab</Text>
         <Button label="Close" onPress={() => { stop(); onClose(); }} />
@@ -413,8 +414,8 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         onLayout={event => { const { width, height } = event.nativeEvent.layout; pad.current = { width, height }; }}
         onStartShouldSetResponder={() => ready} onMoveShouldSetResponder={() => ready}
         onResponderTerminationRequest={() => true} onResponderTerminate={release}
-        onTouchStart={event => touches(event, 'begin')} onTouchMove={event => touches(event, 'move')}
-        onTouchEnd={event => touches(event, 'end')} onTouchCancel={release}
+        onTouchStart={event => { if (ready) setPadActive(true); touches(event, 'begin'); }} onTouchMove={event => touches(event, 'move')}
+        onTouchEnd={event => { touches(event, 'end'); setPadActive(event.nativeEvent.touches.length > 0); }} onTouchCancel={release}
         style={{ minHeight: 250, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: ready ? t.lineStrong : t.line, backgroundColor: contact ? t.surfacePressed : t.surface, alignItems: 'center', justifyContent: 'center', opacity: ready ? 1 : 0.5 }}
       >
         <Text pointerEvents="none" style={[type.title, text]}>{ready ? 'Slide to move' : 'Waiting for receiver approval'}</Text>

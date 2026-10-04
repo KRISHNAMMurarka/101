@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 27,
-  "baseline": "8ab4c23",
+  "revision": 28,
+  "baseline": "7b4abbb",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
     {
@@ -6043,6 +6043,31 @@
       "supportTargets": {}
     },
     {
+      "id": "pointer-pad-stable-android-2026-10-05",
+      "result": "pass",
+      "levels": [
+        "runtime",
+        "physical"
+      ],
+      "tasks": [
+        "T08"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md"
+      ],
+      "scope": "Partial T08 Android check: two ADB-injected diagonals move the browser application pointer with contact/release, the pad remains stationary during each touch and page scrolling recovers after release. Human finger interaction, iPhone, resize/no-anchor and physical capture-to-render latency remain unqualified",
+      "reproduction": "Install Android Release APK on OnePlus IV2201, pair approved native source with local browser receiver, allow pointer for one minute, inject both diagonal pad swipes and compare pad bounds plus browser marker/contact before and after, then swipe outside pad after release to verify page scrolling",
+      "revision": "containing commit based 7b4abbb; native APK SHA256 69836113ec8b6b32ef13c485065af0bbb16e6f00437ae8fc40a1934c75874c86; browser build 6a1e9cc508104f9d",
+      "historical": false,
+      "environment": "OnePlus IV2201 Android 13 over USB; macOS 26.5.2, Node 24.14.0, Playwright 1.61.1 Chromium; local WebRTC",
+      "equipment": [
+        "Physical Android source and local browser sink; physical iPhone remains for T08/T14"
+      ],
+      "failure": null,
+      "supportRows": [],
+      "supportTargets": {}
+    },
+    {
       "id": "threat-model-2026-10-02",
       "revision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
       "result": "pass",
@@ -7081,7 +7106,8 @@
         "pointer-ui-webkit-failed-2026-10-02",
         "pointer-native-partial-2026-10-02",
         "pointer-native-touch-unqualified-2026-10-02",
-        "pointer-physical-android-2026-10-05"
+        "pointer-physical-android-2026-10-05",
+        "pointer-pad-stable-android-2026-10-05"
       ],
       "dependencies": [
         "C01",
