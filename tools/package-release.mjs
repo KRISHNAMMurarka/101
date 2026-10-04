@@ -21,6 +21,20 @@ const WEB_METADATA = [
   "LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.json", "THIRD_PARTY_RUST_LICENSES.json",
   "third_party/APACHE-2.0.txt", "docs/vision.md",
 ];
+const WEB_GENERATED_FILES = new Set([
+  "client/.assetsignore", "client/.vite/manifest.json", "client/_headers", "client/icons/101-link.svg",
+  "client/link.webmanifest", "client/manifest.webmanifest", "client/og.png", "client/sw.js",
+  "client/vinext-client-entry-manifest.json", "client/models/hand_landmarker.task", "client/models/pose_landmarker_lite.task",
+  "client/mediapipe/wasm/vision_wasm_internal.js", "client/mediapipe/wasm/vision_wasm_internal.wasm",
+  "client/mediapipe/wasm/vision_wasm_nosimd_internal.js", "client/mediapipe/wasm/vision_wasm_nosimd_internal.wasm",
+  "server/.vite/manifest.json", "server/BUILD_ID", "server/index.js", "server/wrangler.json",
+  "server/__vite_rsc_assets_manifest.js", "server/vinext-client-assets.js", "server/vinext-externals.json", "server/vinext-server.json",
+  "server/ssr/index.js", "server/ssr/__vite_rsc_assets_manifest.js", "server/ssr/vinext-client-assets.js", "server/ssr/vinext-server.json",
+]);
+const WEB_GENERATED_PATTERNS = [
+  /^client\/_next\/static\/.+\.(?:js|css|woff2|html)(?:\.(?:br|gz|zst))?$/,
+  /^server\/(?:ssr\/)?_next\/static\/.+\.(?:js|css|woff2)$/,
+];
 
 const TARGETS = [
   {
@@ -142,6 +156,14 @@ async function collect(source, destination, metadata = []) {
       await cp(join(ROOT, path), join(to, path), { errorOnExist: true, force: false });
     }
     const fingerprint = await inspectArtifact(to, true);
+    if (destination === "web") {
+      for (const entry of fingerprint.contents) {
+        if (!WEB_METADATA.includes(entry.path) && !WEB_GENERATED_FILES.has(entry.path)
+          && !WEB_GENERATED_PATTERNS.some((pattern) => pattern.test(entry.path))) {
+          throw new Error(`Unexpected web artifact file: ${entry.path}`);
+        }
+      }
+    }
     return { artifact: relative(ROOT, to).replaceAll("\\", "/"), ...fingerprint };
   } catch (error) {
     await rm(to, { recursive: true, force: true });
