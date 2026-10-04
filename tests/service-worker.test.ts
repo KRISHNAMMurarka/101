@@ -170,3 +170,16 @@ test("pairing secrets and signalling requests never enter a build cache", async 
   browser.setOnline(false);
   await assert.rejects(active.request(secret, "navigate"));
 });
+
+test("controller data requests and unrelated same-origin responses are never cached", async () => {
+  const browser = harness();
+  const active = browser.worker("v1");
+  await active.lifecycle("install");
+  const dataRequest = "/controller?session=private&_rsc=stream";
+  const unrelatedRequest = "/account?token=private";
+  await active.request(dataRequest);
+  await active.request(unrelatedRequest);
+  const cache = await browser.caches.open("101-link-v1");
+  assert.equal(await cache.match(dataRequest), undefined);
+  assert.equal(await cache.match(unrelatedRequest), undefined);
+});

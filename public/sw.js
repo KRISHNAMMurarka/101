@@ -64,6 +64,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // The worker controls a document, not just its static files. RSC payloads and future
+  // same-origin data routes may contain room or account data, so only declared build assets
+  // are eligible for the offline cache.
+  if (!IMMUTABLE.test(url.pathname) && !PRECACHE.includes(`${url.pathname}${url.search}`)) return;
+
   // Only content-hashed files may be answered from cache without checking the network. Everything
   // else is served fast and refreshed behind the player, so an update lands on the next launch
   // instead of never.
