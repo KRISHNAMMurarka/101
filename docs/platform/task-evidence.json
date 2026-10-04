@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 30,
+  "revision": 31,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -6081,13 +6081,13 @@
         "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
         "apps/controller-native/modules/one01-identity/README.md"
       ],
-      "scope": "Partial physical iPhone T08: signed app persisted identity ready, fresh browser receiver invitation reviewed with matching intended application/session, native WebRTC offer created. Offer/answer transfer, verified endpoint, owner consent and pointer behavior not completed because iPhone Mirroring input did not reliably reach controls before invitation expiry",
-      "reproduction": "On physical iPhone 16 Pro with iPhone Mirroring, open signed 101 Link Pointer Lab, paste a fresh local Chromium receiver invitation, review intended application/session and choose Connect. Observe Copy this offer; stop the session without receiver permission after transfer cannot be completed",
-      "revision": "containing commit based e1d516b; installed iPhone Release binary SHA256 fbb71b63dfd2d9ef0feaefc126b2273f23738ac01b42fe0eb238531c51f7102c4c",
+      "scope": "Partial physical iPhone T08: signed app persisted identity ready, fresh browser receiver invitation reviewed with matching intended application/session, native WebRTC offer created. Updated short-screen layout exposes Copy offer and answer controls without scrolling; app reports offer copied. Offer/answer transfer, verified endpoint, owner consent and pointer behavior remain unqualified because the copied offer did not reach the Mac clipboard",
+      "reproduction": "On physical iPhone 16 Pro with iPhone Mirroring, install the signed Release candidate, open 101 Link Pointer Lab, paste a fresh local Chromium receiver invitation, review intended application/session and choose Connect. Observe Copy offer and answer controls without scrolling; tap Copy offer and observe Offer copied. Mac pbpaste and AppleScript clipboard reads remain empty",
+      "revision": "containing commit based 4291507; installed iPhone Release JS bundle SHA256 5aa4cda21b8493b91977640af80708935d1f342f17148767f5ba2d2009d0d340",
       "historical": false,
       "environment": "Physical iPhone 16 Pro iOS 26.6.2, existing Apple Personal Team signed Release app, macOS 26.5.2 iPhone Mirroring, local Playwright Chromium 149.0.7827.55 receiver",
       "equipment": [
-        "Usable iPhone Mirroring input or person operating the physical iPhone for remaining pairing and touch acceptance"
+        "Offer transfer from iPhone to local browser receiver and human-finger interaction for remaining T08 acceptance"
       ],
       "failure": null,
       "supportRows": [],

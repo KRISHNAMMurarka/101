@@ -366,27 +366,35 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         </View>
       </View>
       <Text accessibilityRole="text" accessibilityLiveRegion="polite" style={[type.body, text]}>{status}</Text>
-      <Text style={[type.action, text]}>Receiver invitation</Text>
-      <Text style={[type.body, { color: t.muted }]}>On the receiver, create a fresh invitation for its application and session. Paste it here, then review the target before connecting.</Text>
-      <TextInput accessibilityLabel="Paste receiver invitation" value={invitation} multiline maxLength={2048}
-        autoCorrect={false} autoCapitalize="none" editable={!active && !busy && identityState !== 'loading'}
-        onChangeText={value => {
-          reviewedTarget.current = undefined; setReviewed(undefined); setInvitation(value);
-          setStatus('Review this invitation before choosing the receiver.');
-        }} style={[field, { maxHeight: 140 }]} />
-      <Button label="Review invitation" onPress={reviewInvitation}
-        disabled={active || busy || identityState === 'loading' || !invitation.trim()} />
+      {!active && <>
+        <Text style={[type.action, text]}>Receiver invitation</Text>
+        <Text style={[type.body, { color: t.muted }]}>On the receiver, create a fresh invitation for its application and session. Paste it here, then review the target before connecting.</Text>
+        <TextInput accessibilityLabel="Paste receiver invitation" value={invitation} multiline maxLength={2048}
+          autoCorrect={false} autoCapitalize="none" editable={!busy && identityState !== 'loading'}
+          onChangeText={value => {
+            reviewedTarget.current = undefined; setReviewed(undefined); setInvitation(value);
+            setStatus('Review this invitation before choosing the receiver.');
+          }} style={[field, { maxHeight: 140 }]} />
+        <Button label="Review invitation" onPress={reviewInvitation}
+          disabled={busy || identityState === 'loading' || !invitation.trim()} />
+      </>}
       {reviewed && <View style={{ gap: space.sm }}>
         <Text selectable accessibilityLabel="Reviewed receiver application" style={[type.body, text]}>Application: {reviewed.applicationId}</Text>
         <Text selectable accessibilityLabel="Reviewed receiver session" style={[type.body, text]}>Session: {reviewed.sessionId}</Text>
-        <Text style={[type.body, { color: t.muted }]}>Connect only if these are the application and session you intend to control. A pasted invitation alone does not allow a connection.</Text>
+        {!active && <Text style={[type.body, { color: t.muted }]}>Connect only if these are the application and session you intend to control. A pasted invitation alone does not allow a connection.</Text>}
       </View>}
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>
-        <Button label="Connect to this receiver" onPress={() => { void start(); }}
-          disabled={busy || active || identityState !== 'available' || !reviewed}
-          tone={identityState === 'available' && !active ? 'strong' : 'quiet'} />
+        {!active && <Button label="Connect to this receiver" onPress={() => { void start(); }}
+          disabled={busy || identityState !== 'available' || !reviewed}
+          tone={identityState === 'available' ? 'strong' : 'quiet'} />}
         <Button label="Stop" onPress={() => stop('Stopped. Review a fresh receiver invitation when you are ready.')} disabled={!active} />
       </View>
+      {!!offer && <View style={{ gap: space.sm }}>
+        <Button label="Copy offer" onPress={() => { void copy(); }} />
+        <Text style={[type.action, text]}>Answer code</Text>
+        <TextInput accessibilityLabel="Paste complete answer code" value={answer} onChangeText={setAnswer} multiline maxLength={65536} autoCorrect={false} autoCapitalize="none" style={[field, { maxHeight: 140 }]} editable={!busy && !answered} />
+        <Button label="Connect answer" onPress={() => { void accept(); }} disabled={busy || !answer.trim() || answered} />
+      </View>}
       <Button label={details ? 'Hide pairing details' : 'Show pairing details'} onPress={() => setDetails(value => !value)} />
       {details && <View style={{ gap: space.sm }}>
         <Text style={[type.body, { color: t.muted }]}>Transfer the offer to the receiver that created your reviewed invitation, then paste its complete answer below.</Text>
@@ -394,10 +402,6 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         {!!offer && <>
           <Text style={[type.action, text]}>Offer code</Text>
           <TextInput accessibilityLabel="Offer code, select to copy manually" value={offer} editable={false} multiline selectTextOnFocus style={[field, { maxHeight: 120 }]} />
-          <Button label="Copy offer" onPress={() => { void copy(); }} />
-          <Text style={[type.action, text]}>Answer code</Text>
-          <TextInput accessibilityLabel="Paste complete answer code" value={answer} onChangeText={setAnswer} multiline maxLength={65536} autoCorrect={false} autoCapitalize="none" style={[field, { maxHeight: 140 }]} editable={!busy && !answered} />
-          <Button label="Connect answer" onPress={() => { void accept(); }} disabled={busy || !answer.trim() || answered} />
         </>}
       </View>}
       {!!digest && <View style={{ gap: space.sm }}>
