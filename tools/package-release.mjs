@@ -15,6 +15,10 @@ import { promisify } from "node:util";
 
 const run = promisify(execFile);
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
+const WEB_METADATA = [
+  "LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.json", "THIRD_PARTY_RUST_LICENSES.json",
+  "third_party/APACHE-2.0.txt", "docs/vision.md",
+];
 
 const TARGETS = [
   {
@@ -23,7 +27,7 @@ const TARGETS = [
     description: "Standalone browser build of the launcher, all ten games and the Labs",
     async build() {
       await npm("build");
-      return collect("dist", "web");
+      return collect("dist", "web", WEB_METADATA);
     },
   },
   {
@@ -120,13 +124,18 @@ async function npm(script) {
   await run("npm", ["run", script], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
 }
 
-async function collect(source, destination) {
+async function collect(source, destination, metadata = []) {
   const from = join(ROOT, source);
   const to = join(OUT, destination);
   try {
     await inspectArtifact(from);
     await mkdir(dirname(to), { recursive: true });
     await cp(from, to, { recursive: true, errorOnExist: true, force: false });
+    for (const path of metadata) {
+      if (!(await lstat(join(ROOT, path))).isFile()) throw new Error(`Required metadata is not a regular file: ${path}`);
+      await mkdir(dirname(join(to, path)), { recursive: true });
+      await cp(join(ROOT, path), join(to, path), { errorOnExist: true, force: false });
+    }
     await inspectArtifact(to);
     return relative(ROOT, to).replaceAll("\\", "/");
   } catch (error) {

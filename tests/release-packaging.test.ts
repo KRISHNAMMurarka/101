@@ -25,6 +25,11 @@ function fixture(states: Record<string, string> = {}) {
     if (state === 'symlink') { writeFileSync('private-fixture.txt', 'outside artifact'); symlinkSync(process.cwd() + '/private-fixture.txt', path); }
     else writeFileSync(path, 'production-path fixture bytes for ' + target);
   `);
+  for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
+    'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
+    mkdirSync(resolve(root, path, '..'), { recursive: true });
+    writeFileSync(join(root, path), `fixture ${path}`);
+  }
   mkdirSync(join(root, 'release/sdk-existing'), { recursive: true });
   writeFileSync(join(root, 'release/sdk-existing/keep.tgz'), 'prior immutable artifact');
   return { root,
@@ -73,6 +78,32 @@ test('complete production packaging is distinct from release acceptance', () => 
     assert.deepEqual(manifest.requiredTargets, ['hub', 'web']);
     assert.ok(manifest.produced.every((entry: { profile: string }) => entry.profile === 'production'));
     assert.deepEqual(manifest.skipped, []);
+  } finally { f.close(); }
+});
+
+test('the web release artifact carries its license, model attribution and locked inventories', () => {
+  const f = fixture();
+  try {
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const artifact = resolve(f.manifests()[0].path, '..', 'web');
+    for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
+      'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
+      assert.equal(readFileSync(join(artifact, path), 'utf8'), `fixture ${path}`);
+    }
+  } finally { f.close(); }
+});
+
+test('a missing required attribution leaves no distributable web artifact', () => {
+  const f = fixture();
+  try {
+    rmSync(join(f.root, 'third_party/APACHE-2.0.txt'));
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    const { path, value } = f.manifests()[0];
+    assert.equal(value.packagingComplete, false);
+    assert.deepEqual(value.produced, []);
+    assert.equal(existsSync(resolve(path, '..', 'web')), false);
   } finally { f.close(); }
 });
 

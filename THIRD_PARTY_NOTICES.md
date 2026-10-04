@@ -13,15 +13,15 @@
 | Expo | 57.0.12 | MIT | Native app build/runtime and device-module foundation |
 | React Native WebRTC | 124.0.8 | MIT | Native peer-to-peer controller DataChannels |
 | Expo Camera / Sensors / Haptics / Secure Store | 57.0.x | MIT | QR scan, local motion, haptic feedback and device identity storage |
-| pako | 3.0.1 | MIT | Native decoding of compact manual pairing descriptions |
+| pako | 3.0.1 | MIT AND Zlib | Native decoding of compact manual pairing descriptions |
 | base64-js | 1.5.1 | MIT | Native pairing-ticket binary encoding |
 | QRCode | 1.5.4 | MIT | Local pairing-ticket QR generation |
 | Tauri | 2.11.5 | MIT OR Apache-2.0 | Desktop 101 Hub application shell |
 | Axum | 0.8.9 | MIT | Native local Hub HTTP signaling service |
 | mdns-sd | 0.21.0 | MIT OR Apache-2.0 | Strict-local DNS-SD service advertisement |
-| Vite | 8.0.13 | MIT | Build tooling |
-| vinext | 1.0.0-beta.2 | MIT | Browser application runtime/build integration |
-| Cloudflare Vite plugin | 1.37.1 | MIT | Hosted preview adapter |
+| Vite | 8.0.16 | MIT | Build tooling |
+| vinext | 1.0.0-beta.5 | MIT | Browser application runtime/build integration |
+| Cloudflare Vite plugin | 1.37.1 | MIT | Browser build adapter |
 | MediaPipe Tasks Vision | 1.0.1 | Apache-2.0 | Bundled browser pose/hand inference and WebAssembly runtime |
 | BlazePose GHUM Pose Landmarker Lite model | float16 bundle, revision 1 | Apache-2.0 | Bundled single-person 33-landmark pose model |
 | MediaPipe Hand Landmarker model | float16 bundle, revision 1 | Apache-2.0 | Bundled 21-landmark hand model |
