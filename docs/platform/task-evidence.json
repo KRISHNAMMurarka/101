@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 28,
-  "baseline": "7b4abbb",
+  "revision": 29,
+  "baseline": "576202b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
     {
@@ -6068,6 +6068,34 @@
       "supportTargets": {}
     },
     {
+      "id": "relative-trackpad-current-2026-10-05",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I02"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "packages/device-web/src/pointer-driver.ts",
+        "packages/device-web/src/pointer-driver.test.ts"
+      ],
+      "scope": "I02 application pointer profile: recoverable normalized target across coalescing/rejection, anchor-free lift/recontact and source resize; current Chromium paired-source runtime. Physical iPhone and human-finger T08 qualification are separate",
+      "reproduction": "node --experimental-strip-types --test packages/device-web/src/pointer-driver.test.ts (14 pass); node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:3003/pointer-lab on local production build (all four diagonals, recontact, receiver resize, 80 mapped latency samples, no page errors)",
+      "revision": "containing commit based 576202b; pointer-driver SHA256 33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d; dist/server/index.js SHA256 e1e82642b232381bbc0329bfd18cad2efa3b29805d5a6e0c4c1ab400e9e7a9e0",
+      "historical": false,
+      "environment": "macOS 26.5.2, Node 24.14.0, Playwright Chromium 149.0.7827.55; actual local WebRTC source and receiver",
+      "equipment": [
+        "Local browser source and receiver; physical Android movement is separately recorded under T08"
+      ],
+      "failure": null,
+      "supportRows": [],
+      "supportTargets": {}
+    },
+    {
       "id": "threat-model-2026-10-02",
       "revision": "4af38ec01c8f1097c4bd5061476ce0c51ae73304",
       "result": "pass",
@@ -7844,7 +7872,8 @@
         "pending-I02",
         "pointer-provider-2026-10-02",
         "pointer-ui-chromium-2026-10-02",
-        "pointer-native-touch-unqualified-2026-10-02"
+        "pointer-native-touch-unqualified-2026-10-02",
+        "relative-trackpad-current-2026-10-05"
       ],
       "dependencies": [
         "M01",

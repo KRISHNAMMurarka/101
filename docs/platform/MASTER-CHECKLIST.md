@@ -1,10 +1,10 @@
 # SDK and system master checklist
 
-Updated: **5 October 2026**. Source baseline: **`7b4abbb`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 57 completed with recorded evidence; 215 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 58 completed with recorded evidence; 214 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -166,7 +166,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 ### I — Human controls, relative motion and output feedback
 
 - [ ] **I01 — Define reusable input profiles.** Pointer, keyboard, text, gamepad, touch, pen and accessibility resources declare event/sample semantics and supported control operations.
-- [ ] **I02 — Implement smooth relative trackpad input.** Accumulate bounded unsent deltas or publish recoverable targets; no coalescing loses movement, and lift/recontact introduces no anchor or jump.
+- [x] **I02 — Implement smooth relative trackpad input.** Accumulate bounded unsent deltas or publish recoverable targets; no coalescing loses movement, and lift/recontact introduces no anchor or jump. [Pointer driver and current browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#relative-trackpad-acceptance--5-october-2026).
 - [ ] **I03 — Implement click/drag/scroll gestures.** Tap, press, drag, wheel and multi-finger scrolling have clear cancellation, pointer capture, rate and reliable transition behavior.
 - [ ] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons.
 - [ ] **I05 — Implement keyboard/text composition.** Key-down/up, modifiers, repeats, layouts and IME/text composition remain distinct; disconnect releases keys without corrupting text.
