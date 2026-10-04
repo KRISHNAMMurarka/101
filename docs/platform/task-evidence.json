@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 29,
-  "baseline": "576202b",
+  "revision": 30,
+  "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
     {
@@ -6068,6 +6068,32 @@
       "supportTargets": {}
     },
     {
+      "id": "pointer-iphone-offer-partial-2026-10-05",
+      "result": "pass",
+      "levels": [
+        "runtime",
+        "physical"
+      ],
+      "tasks": [
+        "T08"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md",
+        "apps/controller-native/modules/one01-identity/README.md"
+      ],
+      "scope": "Partial physical iPhone T08: signed app persisted identity ready, fresh browser receiver invitation reviewed with matching intended application/session, native WebRTC offer created. Offer/answer transfer, verified endpoint, owner consent and pointer behavior not completed because iPhone Mirroring input did not reliably reach controls before invitation expiry",
+      "reproduction": "On physical iPhone 16 Pro with iPhone Mirroring, open signed 101 Link Pointer Lab, paste a fresh local Chromium receiver invitation, review intended application/session and choose Connect. Observe Copy this offer; stop the session without receiver permission after transfer cannot be completed",
+      "revision": "containing commit based e1d516b; installed iPhone Release binary SHA256 fbb71b63dfd2d9ef0feaefc126b2273f23738ac01b42fe0eb238531c51f7102c4c",
+      "historical": false,
+      "environment": "Physical iPhone 16 Pro iOS 26.6.2, existing Apple Personal Team signed Release app, macOS 26.5.2 iPhone Mirroring, local Playwright Chromium 149.0.7827.55 receiver",
+      "equipment": [
+        "Usable iPhone Mirroring input or person operating the physical iPhone for remaining pairing and touch acceptance"
+      ],
+      "failure": null,
+      "supportRows": [],
+      "supportTargets": {}
+    },
+    {
       "id": "relative-trackpad-current-2026-10-05",
       "result": "pass",
       "levels": [
@@ -7135,7 +7161,8 @@
         "pointer-native-partial-2026-10-02",
         "pointer-native-touch-unqualified-2026-10-02",
         "pointer-physical-android-2026-10-05",
-        "pointer-pad-stable-android-2026-10-05"
+        "pointer-pad-stable-android-2026-10-05",
+        "pointer-iphone-offer-partial-2026-10-05"
       ],
       "dependencies": [
         "C01",
