@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 42,
+  "revision": 43,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2833,24 +2833,29 @@
       ]
     },
     {
-      "id": "pending-R04",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "workload-requirements-2026-10-05",
+      "revision": "containing R04 commit, base c57c55c; immutable SDK producer tree 6ed67251e0611f1a6878b932a48328ba9dd2299e",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "R04"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/workload.test.ts",
+        "docs/platform/receipts/2026-10-05-r04-workload-requirements.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Declare workload requirements. Application/processor runtime, assets, resources, privacy, compute budget and restart/snapshot compatibility are validated before placement.",
-      "scope": "R04 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no two-host physical qualification",
+      "reproduction": "node --test --experimental-strip-types packages/device-model/src/workload.test.ts; node tools/build-sdk.mjs 6ed67251e0611f1a6878b932a48328ba9dd2299e; node tools/qa-sdk-consumer.mjs release/sdk-Y17LiP/manifest.json; exact candidate repository gates",
+      "scope": "R04 only: inert workload requirements validate app and processor runtime declarations, processor pins, asset references, resource permissions, privacy, aggregate budgets and cold/snapshot compatibility fallback. Actual embedded temperature descriptors and packed consumers pass. Host placement, code/asset byte checks, runtime quotas, snapshot serialization and two-host qualification remain separate.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-R05",
@@ -8808,7 +8813,7 @@
     {
       "id": "R04",
       "records": [
-        "pending-R04"
+        "workload-requirements-2026-10-05"
       ],
       "dependencies": [
         "M01",

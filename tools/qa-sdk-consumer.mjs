@@ -196,6 +196,8 @@ import { validateProcessorGraph } from '@101/device-model';
 import type { ProcessorGraphPlan } from '@101/device-model';
 import { planRouteGroup } from '@101/device-model';
 import type { RouteGroupPlan } from '@101/device-model';
+import { parseWorkloadRequirements } from '@101/device-model';
+import type { WorkloadRequirements } from '@101/device-model';
 import { createScalarCalibrationProcessor, createScalarConversionProcessor, createMovingAverageProcessor } from '@101/device-model';
 import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
 import { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from '@101/device-model';
@@ -236,7 +238,8 @@ const pointer = createPointerPipeline({ width: 500, height: 1000 });
 const sensor = createSensorFeedbackPipeline({ feedback: false });
 const graph: ProcessorGraphPlan = sensor.graphPlan;
 const group: RouteGroupPlan = sensor.groupPlan;
-void [validateProcessorGraph, graph, planRouteGroup, group];
+let workload: WorkloadRequirements | undefined;
+void [validateProcessorGraph, graph, planRouteGroup, group, parseWorkloadRequirements, workload];
 const scalar = { type: 'scalar', unit: 'Cel', min: -40, max: 125 } as const;
 const calibratedOptions: CalibrationOptions = { id: 'example:calibration', version: '1.0.0', configurationRevision: 1,
   gain: 1, offset: 0, absoluteErrorBound: 0.1 };
@@ -368,7 +371,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -472,6 +475,26 @@ export async function checkRuntime() {
       routeGroup.groupPlan.requiredOperations.map(item => item.operation).join(',') === 'subscribe,write,subscribe,invoke' &&
       routeGroup.groupPlan.members[1].safeState.mode === 'authorized-command',
       'Packed route-group contract failed');
+    const resourceDevices = routeGroup.graphPlan.nodes.filter(node => node.kind === 'resource').map(node => node.device);
+    const localRuntime = { platform: 'node', minimumVersion: '24.0.0' };
+    const workloadInput = { schemaVersion: 1, id: 'example:packed-workload', version: '1.0.0',
+      application: { codeSha256: 'c'.repeat(64), runtime: localRuntime,
+        budget: { maxComputeMs: 5, maxMemoryBytes: 65536 } },
+      processors: [{ id: processorManifest.id, version: processorManifest.version,
+        codeSha256: processorManifest.codeSha256, runtime: localRuntime }],
+      assets: [], resources: [
+        { deviceId: 'demo-thermometer', capability: 'temperature', operation: 'subscribe', required: true },
+        { deviceId: 'simulated-relay', capability: 'set-state', operation: 'invoke', required: true }],
+      privacy: { mode: 'local-only', purpose: null, destinations: [], retention: 'none' },
+      budget: { maxComputeMs: 10, maxMemoryBytes: 131072 }, restart: { mode: 'cold' } };
+    const requirements = model.parseWorkloadRequirements(workloadInput,
+      { devices: resourceDevices, processors: [processorManifest] });
+    let underbudgetRejected = false;
+    try { model.parseWorkloadRequirements({ ...workloadInput,
+      budget: { maxComputeMs: 9, maxMemoryBytes: 131072 } },
+      { devices: resourceDevices, processors: [processorManifest] }); } catch { underbudgetRejected = true; }
+    check(requirements.resources.length === 2 && requirements.processors[0].manifest.codeSha256 === processorPin &&
+      underbudgetRejected, 'Packed workload requirements failed');
   } finally { routeGroup.runtime.close(); }
   let crossClockRejected = false;
   try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }

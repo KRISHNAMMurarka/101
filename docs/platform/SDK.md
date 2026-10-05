@@ -378,6 +378,27 @@ embedded temperature example validates its two real routes in this form before
 it starts them in dependency order. R02 and R03 still own preparation,
 activation, dispatch, observation and recovery on real hosts.
 
+## Workload requirements
+
+`parseWorkloadRequirements(manifest, { devices, processors })` validates an
+inert schema-1 workload declaration before any placement decision. It names a
+pinned application build and minimum runtime, exact pinned processor manifests
+and their runtimes, asset references, resource operations, privacy scope,
+aggregate compute/memory budget and restart policy. Resource operations must
+exist in reviewed device descriptors. Required processor assets must appear
+with identical kind, size, media type and digest. The aggregate budget cannot
+understate the application plus declared processor budgets. Local-only
+processors cannot be promoted to explicit sharing by the workload.
+
+Cold restart is explicit. A snapshot declaration binds its format version to
+the exact application code pin, requires processor reset on resume and names a
+cold-restart fallback for incompatibility. The parser does not load code or
+assets, authenticate a device, obtain consent, enforce compute quotas, select
+a host or serialize state. A placement host must verify bytes and runtime
+eligibility separately under R05/R06. The packed consumer validates a workload
+against the actual embedded temperature descriptors and a pinned processor
+manifest; physical two-host operation remains unqualified.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

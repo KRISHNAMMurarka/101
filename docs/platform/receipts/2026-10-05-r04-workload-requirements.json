@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "R04",
+  "result": "pass",
+  "sourceTree": "6ed67251e0611f1a6878b932a48328ba9dd2299e",
+  "sdkArtifact": "release/sdk-Y17LiP/manifest.json",
+  "sdkManifestSha256": "a35fffe753827d6ed13a487ecc63fd4da10a74ea48b1089266c4e4d52d7b9832",
+  "consumerQaToolSha256": "a047c8bc88e5e6fba6c7a247950006132d858a2bfa0f898066bf8073d722ed94",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused workload manifest tests: 6 passed, including first observed missing-export failure",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "R04 only: closed workload requirements validate application and processor runtime declarations, exact processor pins, required asset references, declared resource permissions, privacy locality, aggregate compute/memory budget and explicit cold or snapshot compatibility fallback. Packed consumer uses actual embedded temperature descriptors. Code/asset byte verification, grants, host eligibility/placement, runtime quota enforcement, state serialization and two-host operation remain separate.",
+  "published": false
+}
