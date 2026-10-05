@@ -26,19 +26,18 @@ export function generateSessionId() {
 }
 
 /**
- * Resolved once per document and then held, so every caller and every re-render sees one code —
- * and so `getSnapshot` below returns a stable reference, which is what useSyncExternalStore
- * requires to avoid an infinite render loop.
+ * Held across routes until a valid explicit URL chooses a different room. The snapshot stays
+ * stable for the same URL, as useSyncExternalStore requires.
  */
 let resolved: string | null = null;
 
 function resolveSessionId(): string {
-  if (resolved) return resolved;
-
   const requested = new URLSearchParams(window.location.search).get("session")?.trim();
   if (requested && SHAPE.test(requested)) {
+    if (resolved === requested) return resolved;
     resolved = requested;
   } else {
+    if (resolved) return resolved;
     let stored: string | null = null;
     try {
       const candidate = window.localStorage.getItem(KEY);
@@ -57,7 +56,7 @@ function resolveSessionId(): string {
   return resolved;
 }
 
-/** The code never changes within a document, so nothing ever needs to be notified. */
+/** Route mounts resolve their current URL; the chosen room does not change on its own. */
 const subscribe = () => () => {};
 
 /**

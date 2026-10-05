@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "tasks": [
+    "D09",
+    "S15",
+    "B05"
+  ],
+  "acceptance": "Bounded pairing recovery repairs only; all three checklist items remain open",
+  "sourceTree": "88d257b90cd4c11d79faa16fd23873ae27fdbbc3",
+  "sourceSha256": {
+    "app/Launcher.tsx": "c15e04feffd2494c75f17585a2642a521ed7397bd79dba88895ced2a57fe37ff",
+    "app/lib/session-id.ts": "07a46104b13577469869414775a4912a2281d0929c689c0c7e2b603a94d68496",
+    "tools/qa-host-sessions.mjs": "e811b15b06756a41d3e7f7af81d90dedfe95166327599844cf1c7e8aeac688a9",
+    "apps/controller-native/App.tsx": "f52b3e3d2c6a3952d3f67ee5c6b09f23ad7e2ea0a8290f6d6ddfc8349618e649",
+    "apps/controller-native/src/saved-pairing.ts": "fdd102c3b01cda0ac0308e1d07bb08b81f0d745af778a4dbd90f414f4ec79dda",
+    "apps/controller-native/src/saved-pairing.test.ts": "945436d718b3772dcdd56c6bdda20fe61e5cbb26038191e33a51a64fe94eb5d2",
+    "apps/controller-native/src/pairing-code.ts": "3c8bd796b0f6893ed85f9891fd97f21c729e592884c74ec562f6881555ef2506",
+    "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69"
+  },
+  "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; native bundles are compilation only",
+  "regressions": [
+    {
+      "case": "Independent Launcher owners inherited the same React useId room",
+      "observedRed": "Actual two native Chromium contexts shared a room, causing a correct Hub owner conflict",
+      "artifact": "/tmp/101-host-sessions-red.err",
+      "sha256": "52f11369fa65d754a12fecb43e20874ee3259057af6d6731741a492d124ebd97"
+    },
+    {
+      "case": "Cached browser room overrode explicit client navigation URL",
+      "observedRed": "Independent review: Devices followed by actual same-document Vinext navigation left the old room despite a valid explicit query",
+      "resolution": "Check current valid URL before the shared cached room; integrated browser check includes same-document navigation"
+    },
+    {
+      "case": "Expired saved native ticket remained readable",
+      "observedRed": "Original keychain read semantics extracted unchanged; faithful encodePairingTicket producer at its expiration returned the credential instead of null",
+      "artifact": "/tmp/101-saved-pairing-red.log",
+      "sha256": "071f24ae5df303fcde059579f73fd9806246b19434d0f8b2eaaae87d3a70b63d"
+    }
+  ],
+  "browser": {
+    "result": "pass",
+    "engine": "149.0.7827.55",
+    "sourceSha256": {
+      "app/Launcher.tsx": "c15e04feffd2494c75f17585a2642a521ed7397bd79dba88895ced2a57fe37ff",
+      "app/lib/session-id.ts": "07a46104b13577469869414775a4912a2281d0929c689c0c7e2b603a94d68496",
+      "tools/qa-host-sessions.mjs": "e811b15b06756a41d3e7f7af81d90dedfe95166327599844cf1c7e8aeac688a9"
+    },
+    "checks": [
+      "independent-owner-rooms",
+      "real-selected-hub-connect",
+      "reload-room",
+      "shared-devices-room",
+      "explicit-url-room",
+      "explicit-client-navigation-room",
+      "zero-page-errors",
+      "zero-foreign-requests"
+    ]
+  },
+  "native": {
+    "regressionTests": 8,
+    "passed": 8,
+    "port": "Explicit in-memory async SecureStore port; real installed native pairing parser and protocol producer, no actual keychain claim",
+    "checks": [
+      "valid input remains inert",
+      "expired and malformed input removed at next read",
+      "expiry after awaited read",
+      "failed cleanup rejects credential",
+      "unavailable read or invalid clock preserves bytes",
+      "serialized replacement survives old cleanup",
+      "failed persistence leaves live connection unaffected",
+      "eight-operation ceiling and recovery"
+    ],
+    "typecheck": {
+      "result": "pass",
+      "log": "/tmp/101-saved-pairing-native-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "export": {
+      "result": "pass",
+      "output": "/tmp/101-native-saved-pairing-export",
+      "metadata": {
+        "version": 0,
+        "bundler": "metro",
+        "fileMetadata": {
+          "android": {
+            "bundle": "_expo/static/js/android/AppEntry-53da4919cdf988004ba9e1b75500a990.hbc",
+            "assets": [
+              {
+                "path": "assets/a49df39daad85e39b69a6d73bde02d16",
+                "ext": "wav"
+              }
+            ]
+          },
+          "ios": {
+            "bundle": "_expo/static/js/ios/AppEntry-7f62a26ead201f470229ce28c4c8e809.hbc",
+            "assets": [
+              {
+                "path": "assets/a49df39daad85e39b69a6d73bde02d16",
+                "ext": "wav"
+              }
+            ]
+          }
+        }
+      },
+      "sha256": {
+        "metadata.json": "d35dd625dde0d199f27dce2e5d5be81c7479d08baa179d2550b0cd8aeacfb419",
+        "_expo/static/js/android/AppEntry-53da4919cdf988004ba9e1b75500a990.hbc": "0d8d9ae1bc4725c198acf38445eaa5ac0883af9935e2a84aac9bb73bca3bffe7",
+        "_expo/static/js/ios/AppEntry-7f62a26ead201f470229ce28c4c8e809.hbc": "bd5cb8cf9bf71772788eaa4624c18d1dedf96b5e138a99237e6593b7d201e7cf"
+      }
+    }
+  },
+  "review": {
+    "agent": "sdk_wave_review",
+    "sourceTree": "88d257b90cd4c11d79faa16fd23873ae27fdbbc3",
+    "result": "clear after same-document navigation repair",
+    "independentNativeTests": 8
+  },
+  "limits": [
+    "Random room naming reduces collisions; a room code grants no authority and the Hub still rejects unrelated owner conflicts",
+    "A single native process store owns this key; no cross-process SecureStore atomicity claim",
+    "Failed keychain removal retains rejected bytes and retries on a future read",
+    "Physical iPhone/Android execution, every lifecycle path, desktop replay cleanup and full D09/S15/B05 qualification remain open"
+  ],
+  "reproduction": [
+    "node tools/qa-host-sessions.mjs <owned loopback application origin>",
+    "node --test apps/controller-native/src/saved-pairing.test.ts",
+    "npm run native:typecheck",
+    "EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 expo export --platform all --output-dir <owned temporary output>"
+  ],
+  "repositoryGates": "Exact final candidate gate tree, results and fresh build identity are recorded in the owning local commit message; this source receipt precedes metadata-only edits"
+}

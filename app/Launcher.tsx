@@ -7,7 +7,6 @@ import {
   useCallback,
   useDeferredValue,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -18,6 +17,7 @@ import type { InputSource } from "@101/input";
 import { GamePoster } from "./components/GamePoster";
 import { Icon } from "./components/Icon";
 import { useLocalDevice } from "./lib/local-capabilities";
+import { useSessionId } from "./lib/session-id";
 import {
   CATALOG_INPUT_LABELS,
   catalogLaunchHref,
@@ -52,13 +52,7 @@ export default function Launcher({
   const pairingTriggerRef = useRef<HTMLButtonElement>(null);
   const pageFocusSettleFrameRef = useRef<number | null>(null);
   const { sources: localSources } = useLocalDevice();
-  const instanceId = useId();
-  const generatedSessionId = `101${instanceId.replace(/[^a-z0-9]/gi, "").toUpperCase()}LAB`.slice(0, 6).padEnd(6, "X");
-  const [sessionId] = useState(() => {
-    if (typeof window === "undefined") return generatedSessionId;
-    const requested = new URLSearchParams(window.location.search).get("session")?.trim();
-    return requested && /^[A-Z0-9-]{4,128}$/i.test(requested) ? requested : generatedSessionId;
-  });
+  const sessionId = useSessionId();
 
 
   // The server passes the complete catalog through the production server/client boundary. The
@@ -230,7 +224,7 @@ export default function Launcher({
                     Play {featured.name.replace(/ 101$/, "")} <Icon name="arrow" size={16} />
                   </Link>
                 )}
-                <button ref={pairingTriggerRef} className="text-button" onClick={() => setPairingOpen(true)}>
+                <button ref={pairingTriggerRef} className="text-button" disabled={!sessionId} onClick={() => setPairingOpen(true)}>
                   Try a second-screen controller
                 </button>
               </div>
@@ -378,7 +372,7 @@ export default function Launcher({
         <div><Link href="/devices">Devices</Link><Link href="/studio">Developers</Link></div>
       </footer>
 
-      {pairingOpen && <PairingPanel sessionId={sessionId} returnFocusTo={pairingTriggerRef} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
+      {pairingOpen && sessionId && <PairingPanel sessionId={sessionId} returnFocusTo={pairingTriggerRef} onClose={() => setPairingOpen(false)} onOpenController={() => setPairingOpen(false)} />}
     </main>
   );
 }

@@ -32,6 +32,7 @@ import { ControllerSpeaker } from "./src/controller-speaker";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
 import { ticketFromInput } from "./src/pairing-code";
+import { createSavedPairingStore } from "./src/saved-pairing";
 import { pinchDistance, zoomFromPinch } from "./src/scanner-controls";
 import { DARK_SURFACE, radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
@@ -39,7 +40,7 @@ import privateCue from "./assets/private-cue.wav";
 import PointerLab from "./src/PointerLab";
 
 const DEVICE_ID_KEY = "101-link-device-id-v1";
-const LAST_PAIRING_KEY = "101-link-last-pairing-v1";
+const savedPairing = createSavedPairingStore(SecureStore);
 
 /**
  * Room for the system gesture bar under the bottom-anchored controls.
@@ -908,30 +909,19 @@ function Readout({ theme, readout, calibration }: {
  * `expo-secure-store` is keychain-backed on iOS and throws `KeyChainException: A required
  * entitlement isn't present` wherever the app has no keychain entitlement — including any build
  * made with signing disabled, which is how simulator builds are produced here. Convenience is not
- * worth a working link, so both writes swallow their failure.
+ * worth a working link, so storage failures do not fail the live session. Expired or malformed
+ * saved tickets are rejected and removed at the next read when the keychain permits removal.
  */
 async function rememberPairing(ticket: string) {
-  try {
-    await SecureStore.setItemAsync(LAST_PAIRING_KEY, ticket);
-  } catch {
-    // Nothing to do: the session is already up, and the next launch simply starts fresh.
-  }
+  await savedPairing.remember(ticket);
 }
 
 async function forgetPairing() {
-  try {
-    await SecureStore.deleteItemAsync(LAST_PAIRING_KEY);
-  } catch {
-    // Same reasoning: failing to forget must not fail the thing the player asked for.
-  }
+  await savedPairing.forget();
 }
 
 async function readSavedPairing() {
-  try {
-    return await SecureStore.getItemAsync(LAST_PAIRING_KEY);
-  } catch {
-    return null;
-  }
+  return savedPairing.read();
 }
 
 function clamp(value: number) {
