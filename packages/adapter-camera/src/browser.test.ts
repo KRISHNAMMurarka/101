@@ -3,7 +3,7 @@ import test, { type TestContext } from "node:test";
 import type { InputFrame } from "@101/input";
 import type { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 import type { PoseLandmark } from "@101/vision";
-import { BrowserCameraAdapter, BrowserHandAdapter, CameraLostError, MediaPipePoseBackend, type PoseVisionBackend } from "./index.ts";
+import { BrowserCameraAdapter, BrowserHandAdapter, CameraLostError, MediaPipePoseBackend, MediaPipeHandBackend, type PoseVisionBackend } from "./index.ts";
 
 function replaceGlobal(t: TestContext, name: string, value: unknown) {
   const before = Object.getOwnPropertyDescriptor(globalThis, name);
@@ -60,6 +60,19 @@ test("the MediaPipe producer returns every pose with its matching metric landmar
   assert.equal(people.length, 2);
   assert.equal(people[0]![11]!.x, .14);
   assert.ok(Math.abs(people[1]![11]!.world!.x + .09) < 1e-10);
+});
+
+test("missing hand category does not fabricate handedness or landmark certainty", () => {
+  const backend = new MediaPipeHandBackend();
+  const landmarks = Array.from({ length: 21 }, () => ({ x: .5, y: .5, z: 0 }));
+  (backend as unknown as { landmarker: unknown }).landmarker = { detectForVideo: () => ({
+    landmarks: [landmarks], worldLandmarks: [], handedness: [], handednesses: [],
+  }) };
+  const [hand] = backend.detect({} as HTMLVideoElement, 1);
+  assert.equal(hand!.handedness, "unknown");
+  assert.equal(hand!.confidence, 0);
+  assert.equal(hand!.landmarks[0]!.visibility, 0);
+  assert.equal(Object.hasOwn(hand!.landmarks[0]!, "world"), false);
 });
 
 for (const kind of ["pose", "hand"] as const) {

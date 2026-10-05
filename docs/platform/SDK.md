@@ -448,6 +448,82 @@ input throws before a valid output is emitted. These are opt-in library
 processors: a host still declares graph edges, pins reviewed processor code,
 authorizes resources and propagates failed outputs through its runtime.
 
+## Independent landmark processors
+
+`@101/vision` is included in the local SDK tarball set and re-exported by
+`@101/connect`. It contains the existing pure pose, hand, skeleton and gesture
+algorithms plus validated observation processors. It imports neither games nor
+MediaPipe; importing it requests no camera permission, opens no sensor, fetches
+no model and starts no timer. Camera acquisition and inference remain in the
+camera adapter and `use-camera-input.ts`.
+
+`projectPoseLandmarkerResult` and `projectHandLandmarkerResult` project the consumed
+MediaPipe result fields and are shared by the actual camera backend and independent
+caller. Pass pose `landmarks/worldLandmarks` or hand
+`landmarks/worldLandmarks/handedness`, rather than masks or the deprecated duplicate
+handedness array. They accept at most four poses or two hands, each with exactly
+33 or 21 image points and either a matching complete metric array or none.
+Malformed, partial, oversized, nonfinite or unknown fields are rejected without
+invoking getters. Missing pose visibility and missing hand category scores remain
+zero. The hand adapter's `confidence` and copied point `visibility` carry the
+handedness category score; they do not establish detection accuracy or individual
+point visibility. No absent metric coordinates are invented.
+
+`parsePoseObservation` and `parseHandObservation` accept one explicitly selected
+subject. Both require `subjectId`, `frameId`, nonempty blob model `AssetReference`,
+`quality` (`valid/stale/unavailable`) and observation `timing`. Pose `landmarks`
+contain 33 points or an empty loss frame; hand `hand` is one tracked hand or null
+and `frameAspect` is 0.01–100. Image x/y and relative z predictions retain values
+outside the image within ±8; model-local metric coordinates retain metres within
+±100. Pose metric origin is the hip midpoint; hand metric origin is the wrist.
+Frame names do not establish camera calibration or an absolute shared world frame.
+Model references record provenance; the caller must independently verify actual
+asset bytes and acquire permission for inference. Inputs and outputs are deep
+immutable snapshots bounded by the model's 64 KiB JSON limit.
+
+```ts
+import { createPoseLandmarkProcessor, createHandLandmarkProcessor } from '@101/connect';
+const bounds = { version: '1', configurationRevision: 1,
+  maxGapMs: 100, maxWindowMs: 2000, maxFrames: 64 };
+const pose = createPoseLandmarkProcessor({ ...bounds, id: 'app:pose',
+  classifier: { autoCalibrationFrames: 2, smoothing: 0.5 } });
+const hand = createHandLandmarkProcessor({ ...bounds, id: 'app:hand',
+  classifier: { stableFrames: 2, smoothing: 1, historyMs: 500 } });
+// process(observation, processedClockStamp), then reset() on loss, revoke or stop.
+```
+
+The processors reuse `PoseClassifier` and `HandGestureClassifier`. Legacy game
+adapters retain their existing classifier and mapping configuration. These
+independent processors require an unmapped common capture/receipt clock and
+increasing capture times; append their version/configuration to processing lineage;
+and retain the oldest contributing capture for classification/filter history.
+`signals.timestamp` is the current input capture, while output `timing` is the
+conservative freshness envelope for derived signals. Retention is explicitly
+bounded by `maxGapMs/maxWindowMs` (1–60000 ms each) and `maxFrames` (1–128).
+Subject, image frame, model reference, clock, aspect or upstream configuration
+changes reset state. Pose calibration frames and hand stabilization frames are
+integers in 1–120 and cannot exceed `maxFrames`; hand history is 420 ms through
+`maxWindowMs` (default 1250 ms). Smoothing is in (0, 1].
+
+Missing input, declared stale/unavailable quality, insufficient mean pose core
+visibility (the existing classifier policy) or zero hand category certainty return `unavailable`, release every
+classified action and reset. Pose calibration pending returns `calibrating`.
+`pose.calibrateNeutral(observation)` explicitly resets/sets neutral and consumes
+that frame; the next processed frame must be newer. Malformed input, unsupported
+clock comparison or invalid processing timing throws and resets before recovery.
+Absence without a frame is not detectable: the owner must call `reset()` on loss,
+revocation and stop. Heuristic gestures do not supply accuracy certification.
+
+`runVisionExample` from `@101/connect/examples/vision` is a complete independent
+caller using synthetic geometry in the installed producer shapes. Its model
+references identify the committed pose-lite and hand `.task` assets by byte length
+and SHA-256; tests compare those exact local assets. The landmark-only SDK package
+contains no model/WASM binaries and performs no inference or download. Provision
+those assets and their distribution terms separately when implementing inference.
+Fixtures demonstrate neutral calibration, metric preservation, gesture stabilization,
+loss and recovery. Physical accuracy, multi-person identity, camera lifecycle,
+asset redistribution and performance qualification remain P09/G/K09 work.
+
 ## Physical motion processors
 
 `parseMotionMeasurement`, `createMotionUnitProcessor`, `createMotionCalibrationProcessor`

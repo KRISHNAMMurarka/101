@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 84 completed with recorded evidence; 188 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 85 completed with recorded evidence; 187 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -231,7 +231,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **P01 — Define processor manifests/registry.** Input/output schemas, units/frames, version, configuration, state/reset, asset/license and compute/privacy budgets resolve to pinned trusted code. [Contract](SDK.md#processor-manifests-and-trusted-registry) and [packed consumer receipt](receipts/2026-10-05-p01-processor-manifest.json).
 - [x] **P02 — Implement graph validation.** Match typed ports and permissions; reject undeclared conversion, invalid cycles and unbounded feedback; explicit delayed feedback gets its own bounded tests. [Contract](SDK.md#processor-graph-validation) and [packed consumer receipt](receipts/2026-10-05-p02-processor-graph.json).
 - [x] **P03 — Implement calibration/conversion/filter processors.** Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset. [Contract](SDK.md#scalar-measurement-processors) and [packed consumer receipt](receipts/2026-10-05-p03-measurement-processors.json).
-- [ ] **P04 — Extract pose/hand/gesture processors.** Existing camera algorithms become independent typed consumers with faithful producer fixtures, assets, calibration and quality behavior.
+- [x] **P04 — Extract pose/hand/gesture processors.** Existing camera algorithms become independent typed consumers with faithful producer fixtures, assets, calibration and quality behavior. [Contract](SDK.md#independent-landmark-processors) and [packed consumer receipt](receipts/2026-10-05-p04-landmark-processors.json).
 - [x] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps. [Contract](SDK.md#physical-motion-processors) and [packed consumer receipt](receipts/2026-10-05-p05-motion-processors.json).
 - [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware.
 - [x] **P07 — Implement generic mapping/threshold/resampling processors.** Hysteresis, deadzones, event edges and sample rates are configured and tested without adding device/game special cases. [Contract](SDK.md#generic-mapping-and-sample-rate-processors) and [packed consumer receipt](receipts/2026-10-05-p07-generic-processors.json).
@@ -361,8 +361,8 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 ### K — Distributable SDK and application release artifacts
 
-- [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Current source and packed consumer evidence](receipts/2026-10-03-sdk-consumer.json).
-- [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json).
+- [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Original packed consumer evidence](receipts/2026-10-03-sdk-consumer.json) and [current six-package requalification](receipts/2026-10-05-p04-landmark-processors.json).
+- [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json). [Current six-package Node22/24 requalification](receipts/2026-10-05-p04-landmark-processors.json).
 - [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata.
 - [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.

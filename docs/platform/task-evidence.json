@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 59,
+  "revision": 60,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7081,6 +7081,36 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "landmark-processors-2026-10-05",
+      "revision": "containing P04 commit, base905c0f7; immutable SDK producer tree 4c6dd5b3dd5f5a737c02eee7f21fa185a2543e43",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "P04",
+        "K01",
+        "K02"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/vision/src/processors.test.ts",
+        "packages/adapter-camera/src/browser.test.ts",
+        "tests/vision-example.test.ts",
+        "tests/sdk-distribution.test.ts",
+        "docs/platform/receipts/2026-10-05-p04-landmark-processors.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; same packed consumer JavaScript also runs on Node22.13.0; Chromium149.0.7827.55, Firefox151.0 and WebKit26.5; MediaPipe1.0.1 producer shape review; no physical inference qualification",
+      "reproduction": "node --test packages/vision/src/processors.test.ts packages/vision/src/vision.test.ts packages/adapter-camera/src/browser.test.ts packages/adapter-camera/src/adapter.test.ts tests/vision-example.test.ts tests/device-platform-boundary.test.ts; node tools/build-sdk.mjs 4c6dd5b3dd5f5a737c02eee7f21fa185a2543e43; node tools/qa-sdk-consumer.mjs release/sdk-EaExGg/manifest.json; Node22 packed runtime command in receipt; exact candidate AGENTS.md commit gates",
+      "scope": "P04: existing pure pose/hand/gesture algorithms are externally packaged as @101/vision and facade exports, with strict bounded observations, model asset provenance, calibration, quality/loss/reset and conservative capture lineage. Independent faithful synthetic MediaPipe geometry runs through shared camera projection and packed Node22/24 and Chromium/Firefox/WebKit consumers. Six-package K01/K02 JavaScript source/distribution and external-consumer checks are current. No camera inference, model/WASM redistribution, physical accuracy, multi-person identity, sensor lifecycle or P09 qualification; no support-row promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8997,7 +9027,8 @@
     {
       "id": "P04",
       "records": [
-        "pending-P04"
+        "pending-P04",
+        "landmark-processors-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -10234,7 +10265,8 @@
       "records": [
         "pending-K01",
         "sdk-distributions-2026-10-02",
-        "sdk-distribution-current-2026-10-03"
+        "sdk-distribution-current-2026-10-03",
+        "landmark-processors-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
@@ -10246,7 +10278,8 @@
       "records": [
         "pending-K02",
         "sdk-distributions-2026-10-02",
-        "sdk-external-consumer-current-2026-10-03"
+        "sdk-external-consumer-current-2026-10-03",
+        "landmark-processors-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

@@ -761,3 +761,4 @@ export * from "./placement.ts";
  * Drawing a body over the picture it was found in.
  */
 export * from "./overlay.ts";
+export * from "./processors.ts";

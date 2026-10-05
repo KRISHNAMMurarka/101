@@ -9,7 +9,7 @@ test("public device facade exposes embedded and peer-bound resources without a g
   assert.equal(typeof parseDeviceDescriptor, "function");
   assert.equal(DEVICE_DESCRIPTOR_SCHEMA.$schema, "http://json-schema.org/draft-07/schema#");
   for (const implementation of [RemoteResourcePublisher, RemoteResourceReceiver, PeerDataTransport]) assert.equal(typeof implementation, "function");
-  const packages = ["device-model", "device-runtime", "device-web", "transport-webrtc", "connect"];
+  const packages = ["device-model", "device-runtime", "device-web", "transport-webrtc", "vision", "connect"];
   const publicNames = packages.map(name => `@101/${name}`);
   for (const name of packages) {
     const root = new URL(`../packages/${name}/`, import.meta.url);

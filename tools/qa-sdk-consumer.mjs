@@ -9,7 +9,7 @@ import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/connect'];
+const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/vision', '@101/connect'];
 const input = process.argv[2];
 const work = mkdtempSync('/tmp/101-sdk-consumer-');
 const receiptPath = join(work, 'receipt.json');
@@ -70,7 +70,7 @@ function sourceBoundManifest(path) {
     assert.equal(blob.status, 0, `Source hash path is absent from immutable tree: ${path}`);
     assert.equal(createHash('sha256').update(blob.stdout).digest('hex'), digest, `Immutable source hash mismatch: ${path}`);
   }
-  assert.deepEqual(manifest.packages.map(item => item.name).sort(), [...names].sort(), 'Manifest must contain exactly the five general SDK packages');
+  assert.deepEqual(manifest.packages.map(item => item.name).sort(), [...names].sort(), 'Manifest must contain exactly the declared general SDK packages');
   for (const item of manifest.packages) {
     assert.ok(isAbsolute(item.tarball) && isAbsolute(item.directory), 'Artifact paths must be absolute');
     assert.ok(within(output, realpathSync(item.tarball)) && within(output, realpathSync(item.directory)), 'Artifact escaped the owned output directory');
@@ -105,7 +105,7 @@ function installAndAudit(manifest) {
   const nodeModules = join(work, 'node_modules');
   const complete = files(nodeModules);
   assert.deepEqual(readdirSync(nodeModules).sort(), ['.package-lock.json', '@101'], 'Consumer installed undeclared top-level content');
-  assert.deepEqual(readdirSync(join(nodeModules, '@101')).sort(), names.map(name => name.slice('@101/'.length)).sort(), 'Consumer must install exactly five packages');
+  assert.deepEqual(readdirSync(join(nodeModules, '@101')).sort(), names.map(name => name.slice('@101/'.length)).sort(), 'Consumer must install exactly the declared packages');
   const lock = JSON.parse(readFileSync(join(work, 'package-lock.json'), 'utf8'));
   assert.deepEqual(Object.keys(lock.packages).sort(), ['', ...names.map(name => `node_modules/${name}`)].sort(), 'Lockfile contains undeclared or nested dependencies');
   const installed = new Map();
@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -172,6 +172,9 @@ import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import { createSpatialJointPipeline, runSpatialJointExample } from '@101/connect/examples/spatial-joints';
 import { runMotionExample } from '@101/connect/examples/motion';
+import { runVisionExample } from '@101/connect/examples/vision';
+import { createPoseLandmarkProcessor as directPoseProcessor, parsePoseObservation } from '@101/vision';
+import type { LandmarkProcessorResult, PoseSignals } from '@101/vision';
 import { createRichInputPipeline, runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -300,7 +303,9 @@ const spatialConversion: SpatialPoseConverter = createSpatialPoseConverter({ typ
   { type: 'pose', frame: { ...spatialFrame, id: 'fixture:target', unit: 'cm' }, extent: 100 }, spatialOptions);
 const spatial = createSpatialJointPipeline({ now: () => 1000 });
 spatial.runtime.close();
-void [runSpatialJointExample().publication, spatialConversion.metadata.unitScale, runMotionExample().smoothed];
+const landmarkResult: LandmarkProcessorResult<PoseSignals> = runVisionExample().poseNeutral;
+void [runSpatialJointExample().publication, spatialConversion.metadata.unitScale, runMotionExample().smoothed,
+  landmarkResult.signals.calibrated, directPoseProcessor, parsePoseObservation];
 const richInput = createRichInputPipeline({ now: () => 1000 });
 richInput.runtime.close();
 void runRichInputExample().events;
@@ -385,6 +390,7 @@ import * as sdk from '@101/connect';
 import * as model from '@101/device-model';
 import * as runtime from '@101/device-runtime';
 import * as web from '@101/device-web';
+import * as vision from '@101/vision';
 import { PeerDataTransport } from '@101/transport-webrtc';
 import { application, phone, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
@@ -392,6 +398,7 @@ import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
 import { runSpatialJointExample } from '@101/connect/examples/spatial-joints';
 import { runMotionExample } from '@101/connect/examples/motion';
+import { runVisionExample } from '@101/connect/examples/vision';
 import { runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -438,6 +445,15 @@ export async function checkRuntime() {
     { type: 'scalar', unit: 's', min: 0, max: 1 }, { decimalPlaces: 2, maxAbsoluteError: 0.01 }); }
   catch { incompatibleRejected = true; }
   check(incompatibleRejected, 'Packed incompatible dimensions were converted');
+  const landmarks = runVisionExample();
+  check(sdk.createPoseLandmarkProcessor === vision.createPoseLandmarkProcessor && sdk.createHandLandmarkProcessor === vision.createHandLandmarkProcessor &&
+    sdk.projectPoseLandmarkerResult === vision.projectPoseLandmarkerResult && landmarks.projectedPose.length === 33 &&
+    landmarks.projectedHand.landmarks.length === 21 && landmarks.poseCalibrating.status === 'calibrating' &&
+    landmarks.poseNeutral.status === 'valid' && landmarks.poseMoved.signals.axes.bodyX > .3 &&
+    landmarks.poseMoved.signals.landmarks[11].world.x === landmarks.projectedPose[11].world.x &&
+    landmarks.poseLost.status === 'unavailable' && landmarks.poseRestarted.status === 'calibrating' &&
+    landmarks.handStable.signals.gestures.openPalm && landmarks.handStable.timing.capture.at === 1000 &&
+    landmarks.handLost.status === 'unavailable' && !landmarks.handRestarted.signals.gestures.openPalm, 'Packed vision processors failed');
   const motion = runMotionExample();
   check(sdk.createMotionUnitProcessor === model.createMotionUnitProcessor &&
     sdk.createMotionCalibrationProcessor === model.createMotionCalibrationProcessor &&
@@ -891,7 +907,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, motionProcessors: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, discoveryEvidence: true, invitationLink: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, motionProcessors: true, visionProcessors: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, discoveryEvidence: true, invitationLink: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 
@@ -911,7 +927,7 @@ try {
 const modelSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/device-model/schema/device-descriptor.json')), 'utf8'));
 const facadeSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/connect/schema/device-descriptor.json')), 'utf8'));
 check(JSON.stringify(modelSchema) === JSON.stringify(facadeSchema) && JSON.stringify(modelSchema) === JSON.stringify(model.DEVICE_DESCRIPTOR_SCHEMA), 'Public packed schema assets differ from runtime schema');
-for (const name of ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/connect']) {
+for (const name of ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/vision', '@101/connect']) {
   check(import.meta.resolve(name).endsWith('/dist/index.js'), 'Package root does not resolve to JavaScript');
   for (const suffix of ['/src/index.ts', '/dist/index.js', '/package.json']) {
     let rejected = false;
@@ -923,8 +939,8 @@ const print = console.log;
 let entryResult;
 try { console.log = value => { entryResult = JSON.parse(value); }; await import('@101/connect/examples/run'); }
 finally { console.log = print; }
-check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.motion?.measurements?.length === 5 && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
-console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 15, packedRunEntry: true }));
+check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.motion?.measurements?.length === 5 && entryResult?.vision?.handLost?.status === 'unavailable' && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
+console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 18, packedRunEntry: true }));
 `;
   const path = join(work, 'runtime-check.mjs');
   writeFileSync(path, source);

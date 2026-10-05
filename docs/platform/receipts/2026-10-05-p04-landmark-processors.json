@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "P04",
+    "K01",
+    "K02"
+  ],
+  "result": "pass",
+  "sourceTree": "4c6dd5b3dd5f5a737c02eee7f21fa185a2543e43",
+  "sdkArtifact": "release/sdk-EaExGg/manifest.json",
+  "sdkManifestSha256": "eebe4b8cdd15f2d9ca2b4cff0f8dde378efb05e36883eeafedb11b3289a65fc4",
+  "consumerQaToolSha256": "b1f217de19bd71f6d7946ab6abbd8a0b74329d5c4f1084a366626df100b536ec",
+  "startedAt": "2026-10-05T07:21:04.764Z",
+  "finishedAt": "2026-10-05T07:21:29.069Z",
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 6,
+      "files": 185,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "visionProcessors": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "visionProcessors": true
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "visionProcessors": true
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "visionProcessors": true
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass"
+    }
+  ],
+  "node22": {
+    "version": "v22.13.0",
+    "binarySha256": "5c79f8e198fd2456ea6660aaa6be218f9f44747f2306c7d0f5f97b087b2f2dfc",
+    "fixtureSha256": "c73cc64f1e03764e0641dd30874b487584524414ed07b36bf1de41e7b231eaad",
+    "command": "/tmp/101-node22-qa/node-v22.13.0-darwin-arm64/bin/node --no-experimental-strip-types /tmp/101-sdk-consumer-6f0LIe/runtime-check.mjs",
+    "scope": "Same byte-audited six-package external installation used by Node24; packed JavaScript only, no TypeScript stripping. Browser cases reused from the unchanged green Node24 harness; not a second Node22 installation.",
+    "result": "pass",
+    "summary": {
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    }
+  },
+  "sourceHashes": {
+    "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+    "packages/vision/src/processors.test.ts": "7a8f453d370d1ae6f15ef329531c91c3b50cab15829a30ee443cd4716a3ed279",
+    "packages/adapter-camera/src/index.ts": "ceb4ed2764b7ccc07c3b3d12e99c0e9d780f6379beec408cfb6ae59a5bc52383",
+    "packages/adapter-camera/src/browser.test.ts": "ea2ca08ceedd5e7ab2fafffefc05e4446d6071f681e498bdc08fbdf78ce403e7",
+    "examples/device-pipelines/vision.ts": "89572355b84e08998793dd1f2df9d6c86d1931de37837e7ffdb4c6aa47d03cb4",
+    "tests/vision-example.test.ts": "a0d28e70b0f3527df5e201e12d144637af0d6782ea3958fab57c7f687f813721",
+    "public/models/pose_landmarker_lite.task": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+    "public/models/hand_landmarker.task": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1"
+  },
+  "regressions": {
+    "processorTests": 9,
+    "passed": 9,
+    "redObserved": [
+      "Missing independent processor exports before implementation",
+      "Missing hand category yielded confidence1 rather than0 in actual camera backend",
+      "Per-joint intake cutoff rejected a pose accepted by the existing mean core visibility policy"
+    ],
+    "producer": "Installed @mediapipe/tasks-vision1.0.1 uses plain landmark/category objects; source projection is shared with camera backend"
+  },
+  "scope": "P04: existing pure pose/hand/gesture algorithms are externally packaged as @101/vision and facade exports, with strict bounded observations, model asset provenance, calibration, quality/loss/reset and conservative capture lineage. Independent faithful synthetic MediaPipe geometry runs through shared camera projection and packed Node22/24 and Chromium/Firefox/WebKit consumers. Six-package K01/K02 JavaScript source/distribution and external-consumer checks are current. No camera inference, model/WASM redistribution, physical accuracy, multi-person identity, sensor lifecycle or P09 qualification; no support-row promotion.",
+  "published": false
+}

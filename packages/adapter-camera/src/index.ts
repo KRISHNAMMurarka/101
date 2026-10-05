@@ -8,6 +8,8 @@ import {
   mirrorHand,
   mirrorPose,
   PoseClassifier,
+  projectPoseLandmarkerResult,
+  projectHandLandmarkerResult,
   type HandGestureClassifierOptions,
   type HandSignals,
   type PoseClassifierOptions,
@@ -330,15 +332,7 @@ export class MediaPipePoseBackend implements PoseVisionBackend {
     const safeTimestamp = Math.max(this.lastTimestamp + 1, Math.round(timestamp));
     this.lastTimestamp = safeTimestamp;
     const result = this.landmarker.detectForVideo(video, safeTimestamp);
-    return result.landmarks.map((pose, person) => {
-      const world = result.worldLandmarks?.[person];
-      return pose.map((landmark, index) => ({
-        x: landmark.x, y: landmark.y, z: landmark.z,
-        visibility: landmark.visibility ?? 0,
-        // The installed web API exposes visibility, but does not expose per-joint presence.
-        ...(world?.[index] ? { world: { x: world[index]!.x, y: world[index]!.y, z: world[index]!.z } } : {}),
-      }));
-    });
+    return projectPoseLandmarkerResult({ landmarks: result.landmarks, worldLandmarks: result.worldLandmarks });
   }
 
   close() {
@@ -406,28 +400,8 @@ export class MediaPipeHandBackend implements HandVisionBackend {
     const safeTimestamp = Math.max(this.lastTimestamp + 1, Math.round(timestamp));
     this.lastTimestamp = safeTimestamp;
     const result = this.landmarker.detectForVideo(video, safeTimestamp);
-    return result.landmarks.map((landmarks, index): TrackedHand => {
-      const category = result.handedness[index]?.[0];
-      const label = category?.categoryName.toLowerCase();
-      const world = result.worldLandmarks?.[index];
-      return {
-        handedness: label === "left" || label === "right" ? label : "unknown",
-        confidence: category?.score ?? 1,
-        landmarks: landmarks.map((landmark, point) => ({
-          x: landmark.x,
-          y: landmark.y,
-          z: landmark.z,
-          world: world?.[point] ? { x: world[point]!.x, y: world[point]!.y, z: world[point]!.z } : undefined,
-          /*
-           * The hand model reports no per-point visibility, so a curled or occluded finger arrives
-           * as a confident coordinate. `visibility` here is the model's confidence in the hand as a
-           * whole, which is at least honest about what it is: a property of the detection, not of
-           * the individual point. It gives callers something to threshold on instead of nothing.
-           */
-          visibility: category?.score ?? 1,
-        })),
-      };
-    });
+    return projectHandLandmarkerResult({ landmarks: result.landmarks,
+      worldLandmarks: result.worldLandmarks, handedness: result.handedness });
   }
 
   close() {
