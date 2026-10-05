@@ -1,5 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { expoAngularVelocity } from "./motion-axes.ts";
+
+test("native gyro projection preserves Expo iOS physical device axes", () => {
+  // expo-sensors 57.0.2 native modules: iOS alpha=z,beta=y,gamma=x;
+  // Android alpha=x,beta=y,gamma=z. Values are degrees per second.
+  const ios = { alpha: 180, beta: -90, gamma: 45, timestamp: 1.24 };
+  assert.deepEqual(expoAngularVelocity(ios, "ios"), [45, -90, 180]);
+});
+
+test("native gyro projection preserves Expo Android physical device axes", () => {
+  const android = { alpha: 45, beta: -90, gamma: 180, timestamp: 1.25 };
+  assert.deepEqual(expoAngularVelocity(android, "android"), [45, -90, 180]);
+});
 
 /**
  * The sample-rate readout is a diagnostic people calibrate against, so it must never state a

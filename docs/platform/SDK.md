@@ -448,6 +448,61 @@ input throws before a valid output is emitted. These are opt-in library
 processors: a host still declares graph edges, pins reviewed processor code,
 authorizes resources and propagates failed outputs through its runtime.
 
+## Physical motion processors
+
+`parseMotionMeasurement`, `createMotionUnitProcessor`, `createMotionCalibrationProcessor`
+and `createMotionSmoothingProcessor` are independent, synchronous APIs from
+`@101/device-model` and `@101/connect`. The existing `@101/motion` game pipeline
+uses the same extracted quaternion math; its sensitivity, deadzone, gestures and
+control mapping remain a separate layer.
+
+A `MotionMeasurement` carries an `xyzw` quaternion, acceleration and angular-rate
+three-vectors, explicit units (`m/s2` or standard `g`, `rad/s` or `deg/s`),
+`deviceFrame`, `referenceFrame`, `accelerationKind` (`linear` or `including-gravity`),
+producer `calibrationRevision` (0 means unverified), and validated observation timing.
+Orientation maps device axes into the named reference; the two vectors remain in
+device axes. Equal labels/units do not establish identical physical frames or grant
+resource access. Inputs are copied/frozen; missing components, nonfinite values,
+unknown fields/units, vectors outside ±1e6 and quaternion norms more than 0.001
+from unity are rejected. Float32 quaternion rounding is normalized within that bound.
+
+The unit processor uses explicit factors 9.80665 for standard `g` and π/180 for
+degrees. It preserves gravity inclusion, axes, calibration generation, capture clock
+and remote mapping, and appends its configuration to timing lineage. It neither
+estimates gravity nor applies game sensitivity. The calibration processor requires
+matching device/source reference frames, applies inverse-neutral attitude, names a
+new reference frame, and preserves the physical vectors and producer generation.
+
+Smoothing requires canonical SI units and an unmapped common capture/receipt clock.
+It keeps one prior state, uses an explicitly chosen `alpha` in (0, 1], and blends
+quaternions in the shortest hemisphere. `maxGapMs` and `maxWindowMs` each bound
+retention to 1–60000 ms. Output retains the oldest contributing capture rather than
+relabeling filtered history as fresh. Clock/frame/gravity/calibration/upstream
+configuration changes restart the state. Duplicate/reversed timestamps, invalid
+values and processing-time errors throw and reset before recovery. Call `reset()`
+on source loss, revocation or stop; absence cannot be inferred without an input.
+The filter supplies no sensor accuracy or uncertainty certification.
+
+```ts
+import { runMotionExample } from '@101/connect/examples/motion';
+const { measurements, calibrated, smoothed, restarted } = runMotionExample();
+```
+
+This complete caller uses labeled synthetic fixtures shaped like browser events,
+installed Expo iOS/Android measurements, and decoded watchOS/Wear OS payloads.
+It explicitly projects their different rotation-rate field orders, converts native
+seconds to milliseconds, and takes the oldest component capture when summarizing
+an assembled fixture. It preserves separate device/reference/clock identities;
+it does not establish simultaneous sampling or platform frame equivalence. Keep
+component observations separate when their individual times are needed. These
+fixture/packed-consumer checks qualify processor behavior, not physical sensors,
+watch connectivity, sensor fusion, gesture accuracy or performance (P09).
+
+The native controller uses a separate Expo projection matching the installed
+57.0.2 native sources: iOS rotation-rate fields are `gamma/beta/alpha` for x/y/z;
+Android fields are `alpha/beta/gamma`. Both preserve degrees per second before
+the game pipeline. Browser rotation rates use `beta/gamma/alpha`.
+
 ## Generic mapping and sample-rate processors
 
 `createDeadzoneMapper()` converts a declared scalar range to dimensionless

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "task": "P05",
+  "result": "pass",
+  "sourceTree": "bd3e6aee89514b44fd34c673127ac2ac7d6df0f7",
+  "sdkArtifact": "release/sdk-olrJkw/manifest.json",
+  "sdkManifestSha256": "cd2b6a694884650b5e13212acf4f752d59bb23f60287d9825adc045576218bd7",
+  "consumerQaToolSha256": "8e2665019b9a791cd74b28e37c2849a276f7e6046a7d4e284813a80ecd74471e",
+  "startedAt": "2026-10-05T06:52:39.349Z",
+  "finishedAt": "2026-10-05T06:53:28.684Z",
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 5,
+      "files": 163,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "motionProcessors": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "motionProcessors": true
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "motionProcessors": true
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "motionProcessors": true
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass"
+    }
+  ],
+  "sourceHashes": {
+    "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+    "packages/device-model/src/motion-processors.test.ts": "39e31fe698f18b1856932543864b83d4bef9860e8e9549e737449c8f27a38077",
+    "apps/controller-native/src/motion-axes.ts": "6d7353fa47fd0689095fb80a60411726bdfc4650c6d4af9be86549b7e4c91e1f",
+    "apps/controller-native/src/motion-controller.ts": "a909a80737438e9d045acc97e98f6ef468345a69e73b960f20eaebdae6039b3f",
+    "apps/controller-native/src/motion-controller.test.ts": "cb1aae421a6b80eacd62fbf3dad742b94f4e366c8b2bb7aeb071670059c1ef8e",
+    "examples/device-pipelines/motion.ts": "302412a8adee1cf7ad4ae82f78e65b3a6f99d00d07e2e6211a11aee80a5c8d81",
+    "node_modules/expo-sensors/ios/DeviceMotionModule.swift": "2cb8d8e370af572a9f2f64b26717f01be581c97e79c7cfad73217dc4988f50f9",
+    "node_modules/expo-sensors/android/src/main/java/expo/modules/sensors/modules/DeviceMotionModule.kt": "00af43de1e34635988345e46487aa676a9c0c2904bda0352408f9ad6c4e6ece6"
+  },
+  "regressions": {
+    "focusedTests": 17,
+    "passed": 17,
+    "redObserved": [
+      "Missing processor exports before implementation",
+      "alpha=1 capture age: 0 instead of90 before fix",
+      "Expo iOS xyz: [-90,45,180] instead of[45,-90,180] before fix",
+      "Expo Android xyz: [-90,180,45] instead of[45,-90,180] before fix"
+    ],
+    "nativeTypecheck": "pass"
+  },
+  "scope": "P05 independent physical motion parsing, explicit SI unit conversion, attitude neutral calibration and bounded EMA preserve device vectors, source frames/calibration and contributing capture timing. Faithful synthetic browser/Expo/watch fixtures run through offline packed Node and three browser consumers; native gyro projection follows installed Expo 57.0.2 field axes. Game sensitivity/deadzones/gestures remain separate. No physical sensor accuracy, connectivity, thermal/performance or P09 qualification; no support-row promotion.",
+  "published": false
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 58,
+  "revision": 59,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -34,7 +34,7 @@
       ],
       "environment": "Recorded single-process Node foundation; exact historical toolchain not recorded in this receipt; current harness Node 24.14.0/macOS 26.5.2 is separate",
       "reproduction": "npm run example:devices; repository gates listed in foundation QA",
-      "scope": "Embedded-only foundation H01–H12; 503 unit/31 rendered checks, no remote or physical claim",
+      "scope": "Embedded-only foundation H01\u2013H12; 503 unit/31 rendered checks, no remote or physical claim",
       "failure": null,
       "equipment": [],
       "supportRows": [
@@ -68,7 +68,7 @@
       ],
       "environment": "Per-case exact environments/revisions in chronological QA; mixed Mac browsers, simulators, iPhone 16 Pro and OnePlus IV2201 Android 13",
       "reproduction": "Per-case commands and performed actions in chronological QA; do not rerun as a substituted current acceptance",
-      "scope": "Only J01–J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
+      "scope": "Only J01\u2013J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
       "failure": null,
       "equipment": [
         "Recorded devices only; no current support implication"
@@ -591,7 +591,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Prove physical phone → browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
+      "reproduction": "Prove physical phone \u2192 browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
       "scope": "T08 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2336,7 +2336,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I²C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
+      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I\u00b2C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
       "scope": "A15 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2396,7 +2396,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Apple Watch → iPhone → host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Apple Watch \u2192 iPhone \u2192 host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
       "scope": "W02 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2416,7 +2416,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Wear OS → Android → host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Wear OS \u2192 Android \u2192 host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
       "scope": "W03 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -3176,7 +3176,7 @@
       ],
       "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
       "reproduction": "node tools/build-sdk.mjs c4a7af9f64b60da762b7fb70fd19d9395a3f0e40; node tools/qa-sdk-consumer.mjs release/sdk-MrMDTB/manifest.json; exact candidate repository gates",
-      "scope": "E02 complete inert recipe v1 syntax for resources, processor pins/configuration, routes, owner permission requests, surfaces and style tokens. Two working simulated consumers, one direct and one processor-backed, run from the offline packed SDK. Generic resolution, consent lifecycle and adaptive rendering remain E03–E05; no physical or live service claim.",
+      "scope": "E02 complete inert recipe v1 syntax for resources, processor pins/configuration, routes, owner permission requests, surfaces and style tokens. Two working simulated consumers, one direct and one processor-backed, run from the offline packed SDK. Generic resolution, consent lifecycle and adaptive rendering remain E03\u2013E05; no physical or live service claim.",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -4624,7 +4624,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4× CPU slowdown meet recorded budgets.",
+      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4\u00d7 CPU slowdown meet recorded budgets.",
       "scope": "G14 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5425,7 +5425,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Publication-ready candidate is accepted. K/O and L01–L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
+      "reproduction": "Publication-ready candidate is accepted. K/O and L01\u2013L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
       "scope": "Z05 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5445,7 +5445,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Published system is verified. Authorized L06–L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
+      "reproduction": "Published system is verified. Authorized L06\u2013L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
       "scope": "Z06 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5482,7 +5482,7 @@
       ],
       "environment": "Node 24.14.0/npm 11.9.0/TypeScript 5.9.3; macOS 26.5.2 (25F84)",
       "reproduction": "node tools/audit-platform-records.mjs; node --experimental-strip-types --test tests/platform-records.test.ts; full repository gates in receipt",
-      "scope": "C01–C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
+      "scope": "C01\u2013C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -7051,6 +7051,33 @@
       "environment": "Node 24.14.0; npm 11.9.0; TypeScript 5.9.3",
       "reproduction": "node tools/build-sdk.mjs e313ca46579ba9c7b2537fff25b3d610d1e49555; node --test tests/sdk-distribution.test.ts; required repository gates",
       "scope": "Partial provenance manifest improvement for five immutable JS SDK tarballs only: explicit package license accompanies existing exact source, builder and per-package/file fingerprints. Other release targets and platform binaries remain open; this does not close K10.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "motion-processors-2026-10-05",
+      "revision": "containing P05 commit, base ac9b0b2; immutable SDK producer tree bd3e6aee89514b44fd34c673127ac2ac7d6df0f7",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "P05"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-model/src/motion-processors.test.ts",
+        "tests/motion-example.test.ts",
+        "apps/controller-native/src/motion-controller.test.ts",
+        "docs/platform/receipts/2026-10-05-p05-motion-processors.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; packed Node, Chromium149.0.7827.55, Firefox151.0 and WebKit26.5; installed Expo sensors57.0.2 producer source review; no physical sensor qualification",
+      "reproduction": "node --test packages/device-model/src/motion-processors.test.ts packages/motion/src/motion.test.ts tests/motion-example.test.ts apps/controller-native/src/motion-controller.test.ts; npm run native:typecheck; node tools/build-sdk.mjs bd3e6aee89514b44fd34c673127ac2ac7d6df0f7; node tools/qa-sdk-consumer.mjs release/sdk-olrJkw/manifest.json; exact candidate AGENTS.md repository gates",
+      "scope": "P05 independent physical motion parsing, explicit SI unit conversion, attitude neutral calibration and bounded EMA preserve device vectors, source frames/calibration and contributing capture timing. Faithful synthetic browser/Expo/watch fixtures run through offline packed Node and three browser consumers; native gyro projection follows installed Expo 57.0.2 field axes. Game sensitivity/deadzones/gestures remain separate. No physical sensor accuracy, connectivity, thermal/performance or P09 qualification; no support-row promotion.",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -8983,7 +9010,8 @@
     {
       "id": "P05",
       "records": [
-        "pending-P05"
+        "pending-P05",
+        "motion-processors-2026-10-05"
       ],
       "dependencies": [
         "M01",

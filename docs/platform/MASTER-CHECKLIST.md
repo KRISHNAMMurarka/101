@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 83 completed with recorded evidence; 189 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 84 completed with recorded evidence; 188 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -232,7 +232,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **P02 — Implement graph validation.** Match typed ports and permissions; reject undeclared conversion, invalid cycles and unbounded feedback; explicit delayed feedback gets its own bounded tests. [Contract](SDK.md#processor-graph-validation) and [packed consumer receipt](receipts/2026-10-05-p02-processor-graph.json).
 - [x] **P03 — Implement calibration/conversion/filter processors.** Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset. [Contract](SDK.md#scalar-measurement-processors) and [packed consumer receipt](receipts/2026-10-05-p03-measurement-processors.json).
 - [ ] **P04 — Extract pose/hand/gesture processors.** Existing camera algorithms become independent typed consumers with faithful producer fixtures, assets, calibration and quality behavior.
-- [ ] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps.
+- [x] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps. [Contract](SDK.md#physical-motion-processors) and [packed consumer receipt](receipts/2026-10-05-p05-motion-processors.json).
 - [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware.
 - [x] **P07 — Implement generic mapping/threshold/resampling processors.** Hysteresis, deadzones, event edges and sample rates are configured and tested without adding device/game special cases. [Contract](SDK.md#generic-mapping-and-sample-rate-processors) and [packed consumer receipt](receipts/2026-10-05-p07-generic-processors.json).
 - [x] **P08 — Implement processor failure/restart propagation.** Loss, exception, timeout and revoked inputs invalidate derived outputs, clear dependent commands and reset state deterministically. [Runtime behavior](SDK.md#processor-failure-and-restart-propagation) and [packed consumer receipt](receipts/2026-10-05-p08-processor-failure.json).

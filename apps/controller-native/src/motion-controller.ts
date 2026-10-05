@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
 import { DeviceMotion, type DeviceMotionMeasurement } from "expo-sensors";
+import { expoAngularVelocity } from "./motion-axes";
 
 import {
   MotionGestureRecognizer,
@@ -93,7 +94,7 @@ export class NativeMotionController {
         measurement.orientation,
       ),
       acceleration: [acceleration.x ?? 0, acceleration.y ?? 0, acceleration.z ?? 0],
-      angularVelocity: [rate.beta ?? 0, rate.gamma ?? 0, rate.alpha ?? 0],
+      angularVelocity: expoAngularVelocity(rate, Platform.OS),
     };
     this.latestRaw = raw;
     const filtered = this.pipeline.process(raw);
