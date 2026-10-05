@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 63 completed with recorded evidence; 209 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 64 completed with recorded evidence; 208 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -279,7 +279,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### U — Finished product UI and accessibility
 
-- [ ] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery.
+- [x] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery. [Product architecture contract](RELEASE-CONTRACT.md#product-information-architecture).
 - [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions.
 - [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths.
 - [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users.

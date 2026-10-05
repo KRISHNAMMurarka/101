@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 36,
+  "revision": 37,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3324,24 +3324,24 @@
       ]
     },
     {
-      "id": "pending-U01",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "product-information-architecture-2026-10-05",
+      "revision": "containing U01 contract commit, base 2bd1066",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "contract"
+      ],
       "tasks": [
         "U01"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/RELEASE-CONTRACT.md"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Finalize information architecture. Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery.",
-      "scope": "U01 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "Static contract and actual route review on macOS 26.5.2 at base 2bd1066; no new player surface or hardware qualification claimed",
+      "reproduction": "Compare app/components/AppShell.tsx, app/devices/DevicesView.tsx, app/studio/StudioRail.tsx and current routes with the U01 object, surface, permission, navigation and recovery tables; node tools/audit-platform-records.mjs; exact candidate repository commit gates",
+      "scope": "U01 contract only: every requested surface has a job, object, actor, action boundary, entry/exit and recovery model. Current routes are distinguished from target routes; U02-U13 implementation, accessibility and physical qualification remain open.",
       "failure": null,
-      "equipment": [
-        "Supported form factors, keyboard and named screen reader"
-      ]
+      "equipment": []
     },
     {
       "id": "pending-U02",
@@ -9150,7 +9150,7 @@
     {
       "id": "U01",
       "records": [
-        "pending-U01"
+        "product-information-architecture-2026-10-05"
       ],
       "dependencies": [
         "C01",
