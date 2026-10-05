@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 66,
+  "revision": 67,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7284,6 +7284,60 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "pointer-human-android-failed-2026-10-05",
+      "revision": "b5de50344fb98ca0af7e86369551262c527c8ff2; native APK 69836113ec8b6b32ef13c485065af0bbb16e6f00437ae8fc40a1934c75874c86; browser build b175f0c3f9b8567e",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime",
+        "physical"
+      ],
+      "tasks": [
+        "T08"
+      ],
+      "paths": [
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md"
+      ],
+      "environment": "OnePlus IV2201 Android13 wireless ADB; standalone Chromium149.0.7827.55; local WebRTC",
+      "reproduction": "Pair native Android with owned local receiver, compare full codes, confirm both owners and allow one-minute pointer; human slides on pad and reports lag, reversal and border jumps. Position-sequence-only observer captured 267 points.",
+      "scope": "Partial T08 failure: physical connection established but human rejects pointer usability. JS timing excludes physical acquisition/display; contact-only states were omitted by observer. No acceptance promotion.",
+      "failure": "Human reports lag and jumps; normalized direction/position discontinuities recorded.",
+      "equipment": [
+        "Physical Android and human finger; iPhone remains separately required"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "pointer-coordinate-repair-2026-10-05",
+      "revision": "0f16ba732b72bf516399502a572950d62edb3641; immutable source tree 9af36bff553274e62ace8c4ce9a0a7b644b32826; native APK b266832cef961ccb98a303cc10c7e91a5b1ea9735185482f0178ab11b61f9972; browser build aee48ff10c3d60c2",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "T08"
+      ],
+      "paths": [
+        "apps/controller-native/src/PointerLab.tsx",
+        "apps/controller-native/src/pointer-touch.ts",
+        "apps/controller-native/src/pointer-touch.test.ts",
+        "app/pointer-lab/PointerLab.tsx",
+        "tools/qa-pointer-ui.mjs",
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md"
+      ],
+      "environment": "OnePlus IV2201 Android13 installed arm64 Release; macOS26.5.2, Node24.14.0, Playwright1.61.1, standalone Chromium149.0.7827.55; offline Gradle JDK21",
+      "reproduction": "Caller and driver tests (16 pass); native:typecheck; offline Android assembleRelease/install/hash readback; actual paired qa-pointer-ui.mjs Chromium receiver with paused polling regression; exact AGENTS.md gates (978 unit,33 rendered, fresh build).",
+      "scope": "Partial T08 repair: stable root-coordinate relative deltas, child hit-test exclusion, pad responder ownership and immediate authenticated browser receive/render. Old caller and old built UI regressions fail; candidate tests pass. Physical repetitions contain separate touchpanel activity and do not qualify all diagonals, smoothness, contact/recontact, resize, physical latency or iPhone. Manual-only updated-build attempt completed enrollment but timed out waiting for readiness without granting pointer permission. No support-row or checkbox promotion.",
+      "failure": null,
+      "equipment": [
+        "Physical Android; uninterrupted human/manual check and iPhone remain for T08/T14"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -7739,7 +7793,9 @@
         "pointer-native-touch-unqualified-2026-10-02",
         "pointer-physical-android-2026-10-05",
         "pointer-pad-stable-android-2026-10-05",
-        "pointer-iphone-offer-partial-2026-10-05"
+        "pointer-iphone-offer-partial-2026-10-05",
+        "pointer-human-android-failed-2026-10-05",
+        "pointer-coordinate-repair-2026-10-05"
       ],
       "dependencies": [
         "C01",
