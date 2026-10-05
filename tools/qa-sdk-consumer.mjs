@@ -7,6 +7,7 @@ import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathS
 import { createServer } from 'node:http';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import Ajv from 'ajv';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/vision', '@101/connect'];
@@ -23,11 +24,11 @@ function redact(value) {
     .replace(/(?:^|\n)(?:v=0|[aimc]=(?:fingerprint|ice-|candidate|IN IP|application|audio|video)[^\n]*)[^]*?(?=\n\n|$)/g, '\n[redacted SDP]');
 }
 
-function run(label, executable, args, cwd = work) {
+function run(label, executable, args, cwd = work, expectedStatus = 0) {
   const env = { ...process.env, NODE_OPTIONS: '', NODE_PATH: '', npm_config_registry: 'http://127.0.0.1:9', npm_config_cache: join(work, '.npm-cache') };
   const result = spawnSync(executable, args, { cwd, env, encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   logs.push({ label, executable, args, cwd, status: result.status, stdout: redact(result.stdout ?? ''), stderr: redact(result.stderr ?? ''), error: result.error?.message });
-  assert.equal(result.status, 0, `${label} failed (${result.status ?? result.error?.code ?? 'unknown'}): ${redact(result.stderr || result.stdout || result.error?.message || '').slice(0, 1200)}`);
+  assert.equal(result.status, expectedStatus, `${label} returned ${result.status ?? result.error?.code ?? 'unknown'}, expected ${expectedStatus}: ${redact(result.stderr || result.stdout || result.error?.message || '').slice(0, 1200)}`);
   return result.stdout;
 }
 
@@ -1324,6 +1325,20 @@ function executeDeviceScaffold(manifest) {
     ['--experimental-strip-types', join(root, 'tools/create-device-project.mjs'), 'room-sensor', target]);
   const project = JSON.parse(readFileSync(join(target, 'package.json'), 'utf8'));
   assert.equal(project.dependencies['@101/connect'], manifest.packages.find(item => item.name === '@101/connect')?.version);
+  const guidance = JSON.parse(readFileSync(join(target, 'device-guidance.json'), 'utf8'));
+  const guidanceSchema = JSON.parse(readFileSync(join(target, 'device-guidance.schema.json'), 'utf8'));
+  const validateGuidance = new Ajv({ allErrors: true }).compile(guidanceSchema);
+  assert.equal(validateGuidance(guidance), true, JSON.stringify(validateGuidance.errors));
+  assert.equal(validateGuidance({ ...guidance, execute: 'grant all' }), false, 'Guidance schema must reject unknown instructions');
+  assert.equal(guidance.project.package, project.name);
+  assert.equal(guidance.project.dependency.name, '@101/connect');
+  assert.equal(guidance.project.dependency.version, project.dependencies['@101/connect']);
+  for (const file of guidance.files) {
+    assert.ok(file.path && !isAbsolute(file.path) && !file.path.split('/').includes('..'), 'Guidance path must remain project-relative');
+    assert.ok(lstatSync(join(target, file.path)).isFile(), `Guidance references missing file: ${file.path}`);
+  }
+  assert.equal(guidance.files.find(file => file.path === 'src/devices.json')?.schemaReference,
+    '@101/connect/schema/device-descriptor.json');
   const processor = JSON.parse(readFileSync(join(target, 'processor.manifest.json'), 'utf8'));
   assert.equal(processor.codeSha256, hash(join(target, 'src/processor.ts')));
   const packed = JSON.parse(run('device-project-typescript-pack', 'npm',
@@ -1335,12 +1350,41 @@ function executeDeviceScaffold(manifest) {
   run('device-project-offline-install', 'npm',
     ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund',
       ...manifest.packages.map(item => item.tarball), typescriptTarball], target);
+  const descriptorSchema = JSON.parse(readFileSync(join(target, 'node_modules/@101/connect/schema/device-descriptor.json'), 'utf8'));
+  const validateDescriptor = new Ajv({ allErrors: true }).compile(descriptorSchema);
+  for (const device of JSON.parse(readFileSync(join(target, 'src/devices.json'), 'utf8')))
+    assert.equal(validateDescriptor(device), true, JSON.stringify(validateDescriptor.errors));
+  const validation = JSON.parse(run('device-project-validate', process.execPath, ['scripts/validate.mjs'], target).trim());
+  assert.deepEqual(validation, { status: 'pass', recipeId: 'room-sensor:temperature-display',
+    processorId: processor.id, processorPin: processor.codeSha256 });
+  for (const [name, path, mutate] of [
+    ['unknown-recipe-field', 'src/recipe.json', bytes => JSON.stringify({ ...JSON.parse(bytes), execute: 'grant all' })],
+    ['changed-processor-source', 'src/processor.ts', bytes => bytes + '\n// changed after review\n'],
+    ['incompatible-selected-device', 'src/devices.json', bytes => {
+      const devices = JSON.parse(bytes); devices[0].capabilities[0].semantic = 'other:temperature';
+      return JSON.stringify(devices);
+    }],
+  ]) {
+    const asset = join(target, path), original = readFileSync(asset, 'utf8');
+    try {
+      writeFileSync(asset, mutate(original));
+      run(`device-project-reject:${name}`, process.execPath, ['scripts/validate.mjs'], target, 1);
+    } finally { writeFileSync(asset, original); }
+  }
   run('device-project-build-and-tests', 'npm', ['test'], target);
+  for (const asset of ['devices.json', 'recipe.json'])
+    assert.deepEqual(JSON.parse(readFileSync(join(target, 'dist', asset), 'utf8')),
+      JSON.parse(readFileSync(join(target, 'src', asset), 'utf8')), `Compiled asset values differ: ${asset}`);
   const output = JSON.parse(run('device-project-caller', process.execPath, ['src/index.mjs'], target).trim());
   assert.deepEqual(output, { reading: 31, switchOn: true });
   receipt.checks.push({ name: 'generated-device-project', status: 'pass', source: paths.map(path => ({
     path, sha256: hash(join(root, path)),
   })), project: target, processorPin: processor.codeSha256, typescriptTarballSha256: hash(typescriptTarball),
+  guidance: { schema: 'device-guidance.schema.json', sha256: hash(join(target, 'device-guidance.json')),
+    generatedAssets: ['device-guidance.json', 'device-guidance.schema.json', 'src/devices.json', 'src/recipe.json', 'scripts/validate.mjs']
+      .map(path => ({ path, sha256: hash(join(target, path)) })),
+    validation, rejectedAssets: ['unknown-recipe-field', 'changed-processor-source', 'incompatible-selected-device'],
+    tests: 'processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks' },
   isolation: 'SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server' });
 }
 

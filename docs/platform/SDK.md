@@ -483,14 +483,29 @@ assumes that cancellation undoes a physical effect.
 ## Scaffold a local SDK project
 
 `npm run create:device -- room-sensor /path/to/new-project` creates a new
-standalone project. Its typed connector declares a Celsius source and local
-display sink, authorizes only the selected registrations and owner operations,
+standalone project. Its typed connector resolves the emitted Celsius source,
+local display descriptors and complete `src/recipe.json`, authorizes only the selected registrations and owner operations,
 and releases the display on stop. Its processor has a manifest pinned to the
 generated source bytes. The caller registers that reviewed local processor,
 routes a simulated reading, runs it and closes the route. The generated test
-checks the pin, result and release.
+checks the pin, result, release and exact host authorization boundary.
 
-Supply the five matching local SDK tarballs from `npm run build:sdk -- <revision>`
+`device-guidance.json` gives tools versioned package/runtime information, file
+roles, public validator contracts, commands and trust boundaries. Its closed
+Draft-07 schema is `device-guidance.schema.json`; the descriptor editor schema
+comes from `@101/connect/schema/device-descriptor.json`. Guidance strings are
+explanatory data. The connector, caller and validator never interpret them as
+code, shell commands or permission grants.
+
+`npm run validate` reads fixed asset paths, calls `parseDeviceDescriptor`,
+`parseRecipe`, `parseProcessorManifest` and `resolveRecipe`, and checks the
+processor source hash. `npm test` validates, compiles, then checks the complete
+local route and processor lifecycle. It also verifies that changed processor
+pins reject and hostile guidance text has no effect in fresh caller/validator
+processes. Recipe permissions remain requests; the host authorizes concrete
+registrations, principal, application, session and operations.
+
+Supply the six matching local SDK tarballs from `npm run build:sdk -- <revision>`
 to the generated project's npm install. The project lists TypeScript 5.9.3
 as a development tool; run `npm test` after installing it. The
 [packed consumer check](receipts/2026-10-05-e06-device-scaffold.json) generates
