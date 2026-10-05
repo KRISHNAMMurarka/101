@@ -198,6 +198,8 @@ import { planRouteGroup } from '@101/device-model';
 import type { RouteGroupPlan } from '@101/device-model';
 import { createScalarCalibrationProcessor, createScalarConversionProcessor, createMovingAverageProcessor } from '@101/device-model';
 import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
+import { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from '@101/device-model';
+import type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdgeProcessor, LatestResampler } from '@101/device-model';
 import { createProcessorRegistry } from '@101/device-runtime';
 import type { ResolvedProcessor } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
@@ -250,6 +252,17 @@ const measured: MeasurementFrame = { report: { status: 'valid', value: 30, calib
   timing: { capture: { clockId: 'sensor', at: 100 }, receipt: { clockId: 'sensor', at: 101 }, mapping: null, processors: [] } };
 void filtered.process(converted.process(calibrated.process(measured, { clockId: 'sensor', at: 102 }),
   { clockId: 'sensor', at: 103 }), { clockId: 'sensor', at: 104 });
+const angle = { type: 'scalar', unit: 'deg', min: -90, max: 90 } as const;
+const deadzoneOptions: DeadzoneOptions = { id: 'example:deadzone', version: '1.0.0', configurationRevision: 1,
+  center: 0, halfSpan: 90, deadzone: 0.2 };
+const edgeOptions: HysteresisOptions = { id: 'example:edge', version: '1.0.0', configurationRevision: 1,
+  onAt: 30, offAt: 20 };
+const resampleOptions: ResamplerOptions = { id: 'example:resample', version: '1.0.0', configurationRevision: 1,
+  periodMs: 20, maxAgeMs: 50 };
+const deadzoneMapper = createDeadzoneMapper(angle, deadzoneOptions);
+const edgeDetector: HysteresisEdgeProcessor = createHysteresisEdgeProcessor(angle, edgeOptions);
+const latestSampler: LatestResampler = createLatestResampler(angle, resampleOptions);
+void [deadzoneMapper, edgeDetector, latestSampler];
 const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
 const telemetry = createTelemetryBatchPipeline({ now: () => 1000 });
 const migrated = upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }]);
@@ -355,7 +368,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -429,6 +442,24 @@ export async function checkRuntime() {
     timing: { capture: { clockId: 'sensor', at: 110 }, receipt: { clockId: 'sensor', at: 111 }, mapping: null, processors: [] } },
     { clockId: 'sensor', at: 112 });
   check(stale.report.status === 'stale', 'Packed filter did not clear state on stale input');
+  const angleSchema = { type: 'scalar', unit: 'deg', min: -90, max: 90 };
+  const angleFrame = value => ({ report: { status: 'valid', value, calibration: { revision: 1 },
+    uncertainty: { absoluteErrorBound: 1, unit: 'deg' }, faults: [] },
+    timing: { capture: { clockId: 'sensor', at: 200 }, receipt: { clockId: 'sensor', at: 201 }, mapping: null, processors: [] } });
+  const mappedAngle = model.createDeadzoneMapper(angleSchema,
+    { id: 'example:deadzone', version: '1.0.0', configurationRevision: 1, center: 0, halfSpan: 90, deadzone: 0.2 })
+    .process(angleFrame(54), { clockId: 'sensor', at: 202 });
+  const angleEdge = model.createHysteresisEdgeProcessor(angleSchema,
+    { id: 'example:edge', version: '1.0.0', configurationRevision: 1, onAt: 30, offAt: 20 });
+  const sampler = model.createLatestResampler(angleSchema,
+    { id: 'example:resample', version: '1.0.0', configurationRevision: 1, periodMs: 20, maxAgeMs: 50 });
+  sampler.push(angleFrame(54));
+  const sampledAngle = sampler.sample({ clockId: 'sensor', at: 202 });
+  check(mappedAngle.report.status === 'valid' && Math.abs(mappedAngle.report.value - 0.5) < 1e-12 &&
+    mappedAngle.report.uncertainty.unit === '1' && angleEdge.evaluate(angleFrame(54),
+      { clockId: 'sensor', at: 202 })?.value === true && sampledAngle?.report.value === 54 &&
+    sampler.sample({ clockId: 'sensor', at: 210 }) === undefined,
+    'Packed generic mapping, edge and resampling contract failed');
   const timing = model.parseObservationTiming({ capture: { clockId: 'source-clock', at: 100 },
     receipt: { clockId: 'source-clock', at: 110 }, mapping: null, processors: [] });
   check(model.observationAgeBounds(timing).latestMs === 10 &&

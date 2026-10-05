@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "P07",
+  "result": "pass",
+  "sourceTree": "702782126f29d37d5b3f3a22aaa3246924cdc285",
+  "sdkArtifact": "release/sdk-kMwkVl/manifest.json",
+  "sdkManifestSha256": "2e746b1227fe50a30181e2e74f51158410016d5a63e4e4a181b0d79402fad7d0",
+  "consumerQaToolSha256": "8cab3150ad4bbe42655eb463a0e0d5cba22b5473e282a723878d201171cce524",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused generic processor tests: 7 passed, including first observed missing-export failure",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "P07 only: generic scalar deadzone mapping, uncertainty-aware hysteresis event edges and bounded latest-value resampling retain calibration/quality/capture timing and declare output units. Fixtures cover boundaries, rate/age limits, stale and invalid input, clock order, explicit reset and calibration/upstream changes. Runtime graph wiring, output invalidation and physical sensor accuracy remain separate.",
+  "published": false
+}

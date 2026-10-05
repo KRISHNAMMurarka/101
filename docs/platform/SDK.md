@@ -334,6 +334,30 @@ input throws before a valid output is emitted. These are opt-in library
 processors: a host still declares graph edges, pins reviewed processor code,
 authorizes resources and propagates failed outputs through its runtime.
 
+## Generic mapping and sample-rate processors
+
+`createDeadzoneMapper()` converts a declared scalar range to dimensionless
+`[-1, 1]` with a continuous, centered deadzone. It rejects a configuration
+that cannot cover the source schema and scales the producer's absolute error
+bound conservatively. The returned dimensionless measurement keeps calibration
+revision and capture timing, with a new processor step. The source unit remains
+in the configured input schema; no route infers this mapping automatically.
+
+`createHysteresisEdgeProcessor()` emits a boolean event only when the reading's
+entire declared uncertainty interval crosses its configured on or off limit.
+In-band readings retain state without emitting a duplicate edge. It resets on
+stale/invalid input, reordered or incomparable capture clocks, changed
+calibration, upstream reconfiguration and explicit `reset()`.
+
+`createLatestResampler()` holds the latest valid scalar sample and emits at no
+more than one output per configured period. Each output retains the actual
+source capture stamp, quality and uncertainty; a maximum source age prevents
+replaying an old reading. Stale/invalid or reordered input and configuration
+changes clear held state. The caller must invalidate downstream outputs when
+these processors return no event/sample; P08 owns runtime failure propagation.
+The packed SDK checks these independent algorithms in Node and three browser
+engines without assuming a particular device or game.
+
 ## Route-group contracts
 
 `planRouteGroup(contract, descriptors)` validates a bounded schema-1 collection

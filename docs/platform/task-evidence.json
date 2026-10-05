@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 41,
+  "revision": 42,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2682,24 +2682,29 @@
       ]
     },
     {
-      "id": "pending-P07",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "generic-mapping-processors-2026-10-05",
+      "revision": "containing P07 commit, base 1fca2ab; immutable SDK producer tree 702782126f29d37d5b3f3a22aaa3246924cdc285",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P07"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/generic-processors.test.ts",
+        "docs/platform/receipts/2026-10-05-p07-generic-processors.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement generic mapping/threshold/resampling processors. Hysteresis, deadzones, event edges and sample rates are configured and tested without adding device/game special cases.",
-      "scope": "P07 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical sensor qualification",
+      "reproduction": "node --test --experimental-strip-types packages/device-model/src/generic-processors.test.ts; node tools/build-sdk.mjs 702782126f29d37d5b3f3a22aaa3246924cdc285; node tools/qa-sdk-consumer.mjs release/sdk-kMwkVl/manifest.json; exact candidate repository gates",
+      "scope": "P07 only: generic scalar deadzone mapping, uncertainty-aware hysteresis edges and bounded latest-value resampling with configured output period/source age, immutable timing and quality, stale/invalid reset and calibration/upstream reconfiguration fixtures. Physical sensor accuracy and runtime failure propagation remain separate.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-P08",
@@ -8706,7 +8711,7 @@
     {
       "id": "P07",
       "records": [
-        "pending-P07"
+        "generic-mapping-processors-2026-10-05"
       ],
       "dependencies": [
         "M01",

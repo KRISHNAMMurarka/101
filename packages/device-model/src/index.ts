@@ -21,6 +21,8 @@ export { parseMeasurementReport } from './quality.ts';
 export type { MeasurementFault, MeasurementReport } from './quality.ts';
 export { createScalarCalibrationProcessor, createScalarConversionProcessor, createMovingAverageProcessor } from './measurement-processors.ts';
 export type { MeasurementFrame, ProcessorIdentity, CalibrationOptions, ConversionOptions, MovingAverageOptions, ScalarMeasurementProcessor } from './measurement-processors.ts';
+export { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from './generic-processors.ts';
+export type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdge, HysteresisEdgeProcessor, LatestResampler } from './generic-processors.ts';
 export { parseObservationTiming, observationAgeBounds, compareClockStamps } from './observation-timing.ts';
 export type { ClockStamp, CaptureMapping, ProcessorTimingStep, ObservationTiming } from './observation-timing.ts';
 export { parseDeviceHealthReport, assessDeviceHealth } from './health.ts';
