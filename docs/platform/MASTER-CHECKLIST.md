@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 67 completed with recorded evidence; 205 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 68 completed with recorded evidence; 204 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -241,7 +241,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### R — Route groups, compute placement and handoff
 
-- [ ] **R01 — Define route-group contracts.** Required/optional members, startup order, consent, compensation, safe-state and partial failure are explicit.
+- [x] **R01 — Define route-group contracts.** Required/optional members, startup order, consent, compensation, safe-state and partial failure are explicit. [Contract](SDK.md#route-group-contracts) and [packed consumer receipt](receipts/2026-10-05-r01-route-group.json).
 - [ ] **R02 — Implement group preparation/activation.** Prepare grants/leases before activating required outputs; a failed member releases preparation without claiming to undo physical effects.
 - [ ] **R03 — Implement group recovery/cancellation.** Lost optional/required members degrade, pause or stop by policy; no orphan subscriptions, leases or queued commands remain.
 - [ ] **R04 — Declare workload requirements.** Application/processor runtime, assets, resources, privacy, compute budget and restart/snapshot compatibility are validated before placement.

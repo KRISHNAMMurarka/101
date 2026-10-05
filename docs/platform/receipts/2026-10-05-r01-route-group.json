@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "R01",
+  "result": "pass",
+  "sourceTree": "fa41f8026d282d391291fcba8f693b36d45e83e3",
+  "sdkArtifact": "release/sdk-Jg59S8/manifest.json",
+  "sdkManifestSha256": "9a35c57ed39cfa51a5b111f2421b920ddea4e6d924cd6abe85131cdea385818c",
+  "consumerQaToolSha256": "831926619db1fa2d00e783952f17dfc93af2a96521db2bfceca8cebcc69ab440",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused contract and actual sensor-caller tests: 21 passed, including first observed missing-export failure",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "R01 only: bounded route-group declaration validates concrete typed source/sink operations, required/optional members, stable startup dependencies, both-owner consent requirements, release-only compensation, typed safe-state policy and stop/degrade partial failure. The embedded Celsius example validates its two real routes before activation. This plan does not obtain grants, implement atomic preparation, dispatch a safe command, undo physical effects or qualify two-host recovery.",
+  "published": false
+}

@@ -334,6 +334,26 @@ input throws before a valid output is emitted. These are opt-in library
 processors: a host still declares graph edges, pins reviewed processor code,
 authorizes resources and propagates failed outputs through its runtime.
 
+## Route-group contracts
+
+`planRouteGroup(contract, descriptors)` validates a bounded schema-1 collection
+of named routes against concrete device descriptors. Each route declares whether
+it is required, exact source and sink operations, a startup dependency list,
+both owners' consent requirement and its purpose. The plan returns a stable
+dependency order and the operations that an executor must request; these are
+declarations, not grants. It rejects duplicate routes, incompatible typed
+capabilities, undeclared permissions, cycles and an optional prerequisite of a
+required route when optional loss is supposed to permit continued operation.
+
+Every member declares how prepared grants and started routes are released after
+failure. That compensation does not undo physical effects. Safe-state policy is
+either provider release or a typed command value that requires fresh owner
+authority; neither claims a verified physical state. Required loss stops the
+group; optional loss explicitly chooses stop or degraded continuation. The
+embedded temperature example validates its two real routes in this form before
+it starts them in dependency order. R02 and R03 still own preparation,
+activation, dispatch, observation and recovery on real hosts.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

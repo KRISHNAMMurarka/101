@@ -38,3 +38,5 @@ export { parseProcessorManifest } from './processor-manifest.ts';
 export type { ProcessorAsset, ProcessorManifest, ProcessorPort } from './processor-manifest.ts';
 export { validateProcessorGraph } from './processor-graph.ts';
 export type { ProcessorGraphNode, ProcessorGraphEndpoint, ProcessorGraphEdge, ProcessorGraphPlan, ProcessorFeedbackBound } from './processor-graph.ts';
+export { planRouteGroup } from './route-group.ts';
+export type { RouteGroupEndpoint, RouteGroupMember, RouteGroupPlan } from './route-group.ts';

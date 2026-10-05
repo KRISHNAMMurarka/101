@@ -24,6 +24,9 @@ test('the sensor feedback caller validates its typed graph before registering ro
   try {
     assert.deepEqual(example.graphPlan.executionOrder, ['sensor', 'threshold', 'relay']);
     assert.deepEqual(example.graphPlan.requiredOperations.map(({ operation }) => operation), ['subscribe', 'invoke']);
+    assert.deepEqual(example.groupPlan.startupOrder, ['measure', 'actuate']);
+    assert.deepEqual(example.groupPlan.requiredOperations.map(({ operation }) => operation),
+      ['subscribe', 'write', 'subscribe', 'invoke']);
   } finally { example.runtime.close(); }
 });
 

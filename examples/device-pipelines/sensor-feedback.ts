@@ -1,4 +1,4 @@
-import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming, validateProcessorGraph } from '@101/connect';
+import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming, planRouteGroup, validateProcessorGraph } from '@101/connect';
 import type { Authorize, DeliveryContext, DeviceCapability, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, ProcessorManifest, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
@@ -63,6 +63,21 @@ const graphPlan = validateProcessorGraph({
     { from: { node: 'threshold', port: 'switch' }, to: { node: 'relay', port: 'set-state' } },
   ],
 });
+
+const groupPlan = planRouteGroup({ schemaVersion: 1, id: 'example:temperature-feedback', members: [
+  { id: 'measure', required: true,
+    from: { deviceId: thermometer.id, capability: 'temperature', operation: 'subscribe' },
+    to: { deviceId: thresholdDevice.id, capability: 'temperature-input', operation: 'write' },
+    startAfter: [], consent: { purpose: 'Local temperature feedback', sourceOwner: 'required', sinkOwner: 'required' },
+    compensation: { prepared: 'release-grant', active: 'stop-route', physicalEffects: 'not-undone' },
+    safeState: { mode: 'provider-release' } },
+  { id: 'actuate', required: true,
+    from: { deviceId: thresholdDevice.id, capability: 'relay-state', operation: 'subscribe' },
+    to: { deviceId: relay.id, capability: 'set-state', operation: 'invoke' },
+    startAfter: ['measure'], consent: { purpose: 'Local temperature feedback', sourceOwner: 'required', sinkOwner: 'required' },
+    compensation: { prepared: 'release-grant', active: 'stop-route', physicalEffects: 'not-undone' },
+    safeState: { mode: 'authorized-command', value: false, authority: 'fresh-owner-grant' } },
+], failure: { required: 'stop-all', optional: 'continue-degraded' } }, [thermometer, thresholdDevice, relay]);
 
 /** Explicit two-leg processor wiring. All output and feedback here are simulated. */
 export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
@@ -141,7 +156,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
   const downstream = runtime.route({ from: derived, to: relaySink, ...identity });
   const outputStart = downstream.start();
   return {
-    graphPlan, runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
+    graphPlan, groupPlan, runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
     publishTemperature(value: unknown, publication?: PublishOptions) { return runtime.publish(sensor, value, publication); },
     publishReport(input: unknown) {
       const report = parseMeasurementReport(input, temperatureCapability.value);
