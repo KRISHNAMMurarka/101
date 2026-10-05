@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "I06",
+    "K01",
+    "K02"
+  ],
+  "result": "pass",
+  "sourceRevision": "8f0f1370e82a2e45b700bb36c4d512d98f6e9c18",
+  "sourceTree": "1660c3d5050890122539449e749b53625dae3b09",
+  "sdkArtifact": "release/sdk-VvSWUq/manifest.json",
+  "sdkManifestSha256": "4af2ff01b0d6143682554dff0c86a2ef6309c3c2b34a31ebcefe27a401cb3999",
+  "consumerQaToolSha256": "4c7d54ef3cdc85c5ab3c727d6eaa846436b8f50be80bc06c49a73e844b47f26f",
+  "startedAt": "2026-10-05T12:29:21.187Z",
+  "finishedAt": "2026-10-05T12:29:56.867Z",
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 6,
+      "files": 207
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass"
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass"
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "inputDetailsExample": "pass: pen pressure/tilt, signed rotary delta, calibrated gamepad axis/trigger, hat direction and button release",
+      "inputProfileCount": 9
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "inputDetailsExample": "pass: pen pressure/tilt, signed rotary delta, calibrated gamepad axis/trigger, hat direction and button release",
+      "inputProfileCount": 9
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "inputDetailsExample": "pass: pen pressure/tilt, signed rotary delta, calibrated gamepad axis/trigger, hat direction and button release",
+      "inputProfileCount": 9
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "inputDetailsExample": "pass: pen pressure/tilt, signed rotary delta, calibrated gamepad axis/trigger, hat direction and button release",
+      "inputProfileCount": 9
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass"
+    }
+  ],
+  "node22": {
+    "version": "v22.13.0",
+    "binarySha256": "5c79f8e198fd2456ea6660aaa6be218f9f44747f2306c7d0f5f97b087b2f2dfc",
+    "runtimeFixtureSha256": "014b2e633640e9449cd2c0e1bda5ff1efda7590f7ca1e9aa1fe1bd15c53a8c34",
+    "command": "/tmp/101-node22-qa/node-v22.13.0-darwin-arm64/bin/node --no-experimental-strip-types /tmp/101-sdk-consumer-boEgl3/runtime-check.mjs",
+    "result": "pass",
+    "output": {
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    }
+  },
+  "commitGates": {
+    "typescript": "pass",
+    "lint": "pass with pre-existing native ref warning",
+    "unit": {
+      "pass": 975,
+      "fail": 0
+    },
+    "freshBuild": "pass",
+    "rendered": {
+      "pass": 33,
+      "fail": 0
+    }
+  },
+  "scope": "Pure SDK pen pressure/tilt/twist and zero-pressure release, fractional signed rotary/encoder counts with detent calibration, and gamepad axes/deadzones, triggers, hats, button edges and held-state release. Seven focused processor tests plus six-package offline consumer assertions passed on Node22/24 and Chromium/Firefox/WebKit. Synthetic signals only; physical pen, crown, gamepad, browser source acquisition, ergonomics and support-row qualification were not exercised."
+}

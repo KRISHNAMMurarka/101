@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 63,
+  "revision": 64,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7199,6 +7199,35 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "input-details-2026-10-05",
+      "revision": "8f0f1370e82a2e45b700bb36c4d512d98f6e9c18; immutable SDK producer tree 1660c3d5050890122539449e749b53625dae3b09",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I06",
+        "K01",
+        "K02"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-model/src/input-details.test.ts",
+        "examples/device-pipelines/input-details.ts",
+        "tests/sdk-distribution.test.ts",
+        "docs/platform/receipts/2026-10-05-i06-input-details.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; same packed consumer on Node22.13.0; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; synthetic pen, rotary and gamepad signals only",
+      "reproduction": "node --test packages/device-model/src/input-details.test.ts; node tools/build-sdk.mjs 1660c3d5050890122539449e749b53625dae3b09; node tools/qa-sdk-consumer.mjs release/sdk-VvSWUq/manifest.json; Node22 packed runtime command in receipt; exact candidate AGENTS.md gates",
+      "scope": "I06 pure calibrated processors preserve pressure/tilt/twist and lift reset; signed fractional crown/encoder deltas; trigger ranges, hats, deadzoned axes and button edges/release. Offline six-package K01/K02 consumer passed Node22/24 and Chromium/Firefox/WebKit. No physical hardware, browser input acquisition, ergonomics or support-row promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8447,7 +8476,8 @@
     {
       "id": "I06",
       "records": [
-        "pending-I06"
+        "pending-I06",
+        "input-details-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -10360,7 +10390,8 @@
         "landmark-processors-2026-10-05",
         "keyboard-text-2026-10-05",
         "touch-contacts-2026-10-05",
-        "surface-gestures-2026-10-05"
+        "surface-gestures-2026-10-05",
+        "input-details-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
@@ -10376,7 +10407,8 @@
         "landmark-processors-2026-10-05",
         "keyboard-text-2026-10-05",
         "touch-contacts-2026-10-05",
-        "surface-gestures-2026-10-05"
+        "surface-gestures-2026-10-05",
+        "input-details-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
