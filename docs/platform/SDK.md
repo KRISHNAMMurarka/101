@@ -332,10 +332,22 @@ run a direct application pointer route and a two-leg room-control route. The
 room-control host binds its pinned temperature processor, authorizes the two
 declared resource legs, produces one simulated relay command and records
 separate observed feedback. The declaration
-does not discover devices, load code, grant access or render a UI. General
-resource and processor resolution is E03; consent and execution lifecycle are
-E04; adaptive rendering is E05. Consumers must obtain fresh host grants before
+does not discover devices, load code, grant access or render a UI. Static
+resolution is described below; consent and execution lifecycle are E04, and
+adaptive rendering is E05. Consumers must obtain fresh host grants before
 running any selected recipe.
+
+`resolveRecipe(recipe, { devices, processors, selections })` checks explicit
+logical-resource selections against current descriptor semantics, schema
+versions and declared operations. It matches processors by exact ID, version
+and SHA-256, validates configuration and route port schemas, and returns an
+acyclic plan with the owner operations to request. An unselected or incompatible
+resource returns a structured issue and candidate device/capability choices
+marked compatible or incompatible; it never silently picks one. A missing
+processor pin or invalid configuration also returns an issue. The resolver
+only handles inert manifests and descriptors: the host still verifies installed
+code bytes through its processor registry, checks actual readiness, obtains
+fresh grants and starts routes under E04. No recipe text executes code.
 
 ## Processor failure and restart propagation
 

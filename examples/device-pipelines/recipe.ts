@@ -1,7 +1,7 @@
-import { parseRecipe } from '@101/connect';
+import { parseRecipe, resolveRecipe } from '@101/connect';
 import type { AuthorizationRequest } from '@101/connect';
-import { createSensorFeedbackPipeline } from './sensor-feedback.ts';
-import { createPointerPipeline } from './pointer.ts';
+import { createSensorFeedbackPipeline, relay, thermometer, thresholdManifest } from './sensor-feedback.ts';
+import { application, createPointerPipeline, phone } from './pointer.ts';
 
 /** A readable declaration. It contains no code, identity proof or owner grant. */
 export const roomControlRecipe = parseRecipe({
@@ -50,7 +50,12 @@ export const pointerRecipe = parseRecipe({
 });
 
 export function runDirectRecipeExample() {
-  const operations = pointerRecipe.permissions;
+  const resolution = resolveRecipe(pointerRecipe, { devices: [phone, application], processors: [], selections: {
+    touch: { deviceId: phone.id, capability: 'position' },
+    surface: { deviceId: application.id, capability: 'position' },
+  } });
+  if (!resolution.ok) throw new Error(`Selected pointer recipe is incompatible: ${resolution.issues.map(item => item.message).join('; ')}`);
+  const operations = resolution.value.requiredOperations;
   const pipeline = createPointerPipeline({ authorize(request) {
     const selected = request.principalId === 'first-owner' && request.applicationId === 'pointer-example' &&
       request.sessionId === 'embedded-demo' && request.source.deviceId === 'demo-touch-surface' &&
@@ -73,12 +78,16 @@ export function runDirectRecipeExample() {
 
 /** This known host binds the recipe to a pinned local simulator; generic resolution is E03. */
 export function runRecipeExample() {
-  const processor = roomControlRecipe.processors[0];
-  if (!processor || processor.manifest.codeSha256 !==
-      'dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793' ||
-      processor.configuration.onAt !== 30 || processor.configuration.offAt !== 28)
+  const resolution = resolveRecipe(roomControlRecipe, { devices: [thermometer, relay],
+    processors: [thresholdManifest], selections: {
+      sensor: { deviceId: thermometer.id, capability: 'temperature' },
+      relay: { deviceId: relay.id, capability: 'set-state' },
+    } });
+  if (!resolution.ok) throw new Error(`Selected room recipe is incompatible: ${resolution.issues.map(item => item.message).join('; ')}`);
+  const processor = resolution.value.processors[0];
+  if (!processor || processor.configuration.onAt !== 30 || processor.configuration.offAt !== 28)
     throw new Error('The local simulator does not implement the selected processor pin/configuration');
-  const permission = (route: string, side: 'from' | 'to') => roomControlRecipe.permissions
+  const permission = (route: string, side: 'from' | 'to') => resolution.value.requiredOperations
     .find(item => item.route === route && item.side === side)?.operation;
   const allowed = (request: Readonly<AuthorizationRequest>) => {
     if (request.principalId !== 'example-owner' || request.applicationId !== 'sensor-example' ||

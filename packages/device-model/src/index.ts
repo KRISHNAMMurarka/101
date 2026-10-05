@@ -47,3 +47,6 @@ export type { WorkloadRuntime, WorkloadBudget, WorkloadResource, WorkloadRequire
 export { parseRecipe } from './recipe.ts';
 export type { Recipe, RecipeResource, RecipeProcessor, RecipeRoute, RecipeEndpoint,
   RecipePermission, RecipeStyle, RecipeComponent, RecipeSurface } from './recipe.ts';
+export { resolveRecipe } from './recipe-resolver.ts';
+export type { RecipeSelection, RecipeAlternative, RecipeResolutionIssue, ResolvedRecipe,
+  RecipeResolution } from './recipe-resolver.ts';

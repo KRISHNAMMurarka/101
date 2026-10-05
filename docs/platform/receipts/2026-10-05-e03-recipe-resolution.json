@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "task": "E03",
+  "result": "pass",
+  "sourceTree": "39a8f4334c465aeaadfc3d069390a94556403967",
+  "sdkArtifact": "release/sdk-pMKxuz/manifest.json",
+  "sdkManifestSha256": "7542219f8b2f5bd771270f41ce76e1b8dde05b0759cf69bd8c465fe7faf74fae",
+  "consumerQaToolSha256": "e382dbbe349fcb607fb10b17ac22f00e01915b3dc5de270e003e40995358abe3",
+  "resolverSourceSha256": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Explicit source/sink selections resolve only matching semantics, schema revisions, permissions and compatible route value/delivery policies",
+    "Missing or wrong selections return structured issues with candidate device/capability alternatives; no implicit selection occurs",
+    "Processor ID/version/SHA-256 pin and configuration must match an installed inert manifest; wrong pin and malformed configuration reject",
+    "Environment getters are not invoked; deeper valid descriptor schemas remain accepted; read/property routes and processor routes are covered",
+    "Immutable-tree SDK installed offline in a clean external consumer; strict NodeNext/Bundler types and packed Node, Chromium, Firefox and WebKit checks pass"
+  ],
+  "scope": "E03 static recipe resolution against host-supplied descriptors and processor manifests. It returns an acyclic route plan and owner operation requests without loading processor code, choosing a device, granting access or starting a route. The host must verify installed code bytes, current readiness and consent in E04. Examples remain embedded simulations; no physical or remote service claim.",
+  "published": false
+}

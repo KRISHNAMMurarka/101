@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 53,
+  "revision": 54,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3200,6 +3200,34 @@
       "equipment": [
         "Clean external consumer/toolchain"
       ]
+    },
+    {
+      "id": "recipe-resolution-2026-10-05",
+      "revision": "containing E03 commit, base 9376183; immutable SDK producer tree 39a8f4334c465aeaadfc3d069390a94556403967",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E03"
+      ],
+      "paths": [
+        "packages/device-model/src/recipe-resolver.ts",
+        "packages/device-model/src/recipe-resolver.test.ts",
+        "examples/device-pipelines/recipe.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-e03-recipe-resolution.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
+      "reproduction": "node tools/build-sdk.mjs 39a8f4334c465aeaadfc3d069390a94556403967; node tools/qa-sdk-consumer.mjs release/sdk-pMKxuz/manifest.json; exact candidate repository gates",
+      "scope": "E03 static host-selected resource and exact processor-manifest resolution, configuration and route compatibility, actionable alternatives and owner-operation plan. Inert declarations only: byte verification, live readiness, consent, execution and UI rendering are separate E04/E05 work.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-E03",
@@ -9130,6 +9158,7 @@
     {
       "id": "E03",
       "records": [
+        "recipe-resolution-2026-10-05",
         "pending-E03"
       ],
       "dependencies": [

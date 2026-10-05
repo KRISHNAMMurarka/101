@@ -16,7 +16,7 @@ const relayStateCapability: DeviceCapability = {
   value: { type: 'boolean' }, delivery: { mode: 'reliable', maxAgeMs: 500 }, permissions: ['subscribe'],
 };
 
-const thermometer: DeviceDescriptor = {
+export const thermometer: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-thermometer', label: 'Room temperature', revision: 1,
   adapter: { id: 'example:embedded-temperature', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [temperatureCapability],
@@ -31,13 +31,13 @@ const thresholdDevice: DeviceDescriptor = {
   ],
 };
 
-const relay: DeviceDescriptor = {
+export const relay: DeviceDescriptor = {
   schemaVersion: 1, id: 'simulated-relay', label: 'Simulated relay', revision: 1,
   adapter: { id: 'example:embedded-relay', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [{ ...relayStateCapability, id: 'set-state', kind: 'command', permissions: ['invoke'], ownership: { mode: 'exclusive' } }],
 };
 
-const thresholdManifest: ProcessorManifest = {
+export const thresholdManifest: ProcessorManifest = {
   schemaVersion: 1, id: 'example:temperature-threshold', version: '1.0.0',
   codeSha256: 'dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793',
   inputs: [{ id: 'temperature', value: temperatureCapability.value }],

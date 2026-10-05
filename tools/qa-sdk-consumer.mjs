@@ -166,7 +166,7 @@ import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
 import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
-import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
+import { application, createPointerPipeline, phone, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
@@ -175,8 +175,8 @@ import { createRichInputPipeline, runRichInputExample } from '@101/connect/examp
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
 import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
-import { parseRecipe } from '@101/device-model';
-import type { Recipe } from '@101/device-model';
+import { parseRecipe, resolveRecipe } from '@101/device-model';
+import type { Recipe, RecipeResolution } from '@101/device-model';
 import { parseMediaManifest, planMediaBinding } from '@101/device-model';
 import type { MediaManifest, MediaBindingResult } from '@101/device-model';
 import { parseMeasurementReport } from '@101/device-model';
@@ -321,7 +321,9 @@ const mediaResult: MediaBindingResult = planMediaBinding(described, 'media:missi
   target: { resourceId: 'media:surface', registrationId: 'surface', state: 'available', codecs: [], geometry: { widthPx: 640, heightPx: 480, pixelRatio: 1 } } });
 void [mediaResult, runMediaDescriptionExample().workingRoute];
 const declaredRecipe: Readonly<Recipe> = parseRecipe(roomControlRecipe);
-void [declaredRecipe, parseRecipe(pointerRecipe), runRecipeExample().observed, runDirectRecipeExample().released];
+const selectedRecipe: RecipeResolution = resolveRecipe(pointerRecipe, { devices: [phone, application], processors: [], selections: {
+  touch: { deviceId: phone.id, capability: 'position' }, surface: { deviceId: application.id, capability: 'position' } } });
+void [declaredRecipe, selectedRecipe, runRecipeExample().observed, runDirectRecipeExample().released];
 const qualityReport: MeasurementReport = parseMeasurementReport({ status: 'valid', value: 31.25,
   calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
   { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
@@ -381,7 +383,7 @@ import * as model from '@101/device-model';
 import * as runtime from '@101/device-runtime';
 import * as web from '@101/device-web';
 import { PeerDataTransport } from '@101/transport-webrtc';
-import { runPointerExample } from '@101/connect/examples/pointer';
+import { application, phone, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
 import { createTelemetryBatchPipeline, runTelemetryBatchExample, upgradeTelemetryBatchV1 } from '@101/connect/examples/telemetry-batch';
@@ -395,7 +397,7 @@ import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExam
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.resolveRecipe === model.resolveRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -446,6 +448,11 @@ export async function checkRuntime() {
     recipe.surfaces[0].components.length === 3 && directRecipe.processors.length === 0 &&
     directResult.position.x === 200 && directResult.position.y === 400 && directResult.released === 1,
     'Packed recipe declarations/examples failed');
+  const unresolved = model.resolveRecipe(pointerRecipe, { devices: [phone, application], processors: [], selections: {
+    surface: { deviceId: application.id, capability: 'position' } } });
+  check(!unresolved.ok && unresolved.issues[0].code === 'resource-unselected' &&
+    unresolved.issues[0].alternatives?.some(item => item.deviceId === phone.id && item.compatible),
+    'Packed recipe resolver omitted a compatible explicit selection alternative');
   const measurementReport = model.parseMeasurementReport({ status: 'valid', value: 31.25,
     calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
     { type: 'scalar', unit: 'Cel', min: -40, max: 125 });

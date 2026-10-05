@@ -10,13 +10,13 @@ const positionCapability: DeviceCapability = {
   delivery: { mode: 'latest', maxHz: 60, maxAgeMs: 1000 }, permissions: ['subscribe'],
 };
 
-const phone: DeviceDescriptor = {
+export const phone: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-touch-surface', label: 'Touch surface', revision: 1,
   adapter: { id: 'example:embedded-touch', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [positionCapability],
 };
 
-const application: DeviceDescriptor = {
+export const application: DeviceDescriptor = {
   schemaVersion: 1, id: 'demo-application-surface', label: 'Application pointer', revision: 1,
   adapter: { id: 'example:embedded-surface', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [{
