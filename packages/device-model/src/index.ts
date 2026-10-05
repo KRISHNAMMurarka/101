@@ -44,3 +44,6 @@ export { planRouteGroup } from './route-group.ts';
 export type { RouteGroupEndpoint, RouteGroupMember, RouteGroupPlan } from './route-group.ts';
 export { parseWorkloadRequirements } from './workload.ts';
 export type { WorkloadRuntime, WorkloadBudget, WorkloadResource, WorkloadRequirements } from './workload.ts';
+export { parseRecipe } from './recipe.ts';
+export type { Recipe, RecipeResource, RecipeProcessor, RecipeRoute, RecipeEndpoint,
+  RecipePermission, RecipeStyle, RecipeComponent, RecipeSurface } from './recipe.ts';

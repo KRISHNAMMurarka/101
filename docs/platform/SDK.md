@@ -314,6 +314,29 @@ bounded scheduler exists. The Celsius threshold example validates its real
 source, processor and relay declarations before registering routes. The packed
 SDK consumer checks that plan in Node, Chromium, Firefox and WebKit.
 
+## Declarative recipe v1
+
+`parseRecipe(unknown)` returns a frozen, JSON-only declaration with an exact
+`schemaVersion: 1`, namespaced recipe ID and semantic IDs, and a pinned
+processor ID/version/SHA-256. Each logical resource selects a source or sink
+semantic and schema version; processor configuration is inert JSON. Named
+routes connect resource `value` ports or named processor ports. Every resource
+leg has one explicit owner-required operation and human-readable purpose.
+Surfaces contain text, value and action components; named styles allow only
+normal/muted/caution tones and comfortable/compact density. Unknown fields,
+getters, executable values, missing permissions and dangling references fail
+closed within the descriptor parser's JSON bounds.
+
+The [complete recipe examples](../../examples/device-pipelines/recipe.ts)
+run a direct application pointer route and a two-leg room-control route. The
+room-control host binds its pinned temperature processor, authorizes the two
+declared resource legs, produces one simulated relay command and records
+separate observed feedback. The declaration
+does not discover devices, load code, grant access or render a UI. General
+resource and processor resolution is E03; consent and execution lifecycle are
+E04; adaptive rendering is E05. Consumers must obtain fresh host grants before
+running any selected recipe.
+
 ## Processor failure and restart propagation
 
 `createProcessorFailureController({ plan, runtime, bindings, now })` revalidates

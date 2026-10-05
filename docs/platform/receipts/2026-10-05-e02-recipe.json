@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "task": "E02",
+  "result": "pass",
+  "sourceTree": "c4a7af9f64b60da762b7fb70fd19d9395a3f0e40",
+  "sdkArtifact": "release/sdk-MrMDTB/manifest.json",
+  "sdkManifestSha256": "b6595281b5d93f6cea760cec3e215b90b54e79bc13003085174d5bdb07672376",
+  "consumerQaToolSha256": "be81a54407d96c7a72a321844f7307baddce941cb25f08d24df26d9252fe90c0",
+  "recipeExampleSha256": "f6d4b00e026c29d0ac248d9209f0c8abab17a35ef77d0b27cf6f303e24c22ce4",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Recipe v1 parser preserves immutable bounded JSON declarations and rejects unknown fields, getters, executable values, unpinned processor, missing owner operations and dangling references",
+    "Direct pointer and pinned two-leg temperature-to-relay recipes execute through a known local host with explicit resource grants",
+    "Immutable-tree SDK tarballs install offline into a clean external consumer and pass strict NodeNext/Bundler types",
+    "Packed recipe examples and negative package-subpath checks pass in Node, Chromium, Firefox and WebKit"
+  ],
+  "scope": "E02 defines the versioned inert syntax for logical resources, pinned processors, routes, permission requests, surfaces and style tokens. Two complete embedded simulations execute through host-owned bindings; the declaration cannot load code, grant access or render UI. Generic resource/processor resolution, consent lifecycle and adaptive component rendering remain E03–E05. No physical or remote service claim.",
+  "published": false
+}

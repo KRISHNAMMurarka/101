@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'rich-input', 'resource-documents', 'media-description', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|rich-input|resource-documents|media-description|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -174,6 +174,9 @@ import { createSpatialJointPipeline, runSpatialJointExample } from '@101/connect
 import { createRichInputPipeline, runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
+import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
+import { parseRecipe } from '@101/device-model';
+import type { Recipe } from '@101/device-model';
 import { parseMediaManifest, planMediaBinding } from '@101/device-model';
 import type { MediaManifest, MediaBindingResult } from '@101/device-model';
 import { parseMeasurementReport } from '@101/device-model';
@@ -317,6 +320,8 @@ const mediaResult: MediaBindingResult = planMediaBinding(described, 'media:missi
   resourceId: 'media:missing', registrationId: 'missing', state: 'unavailable', codecs: [], video: { widthPx: 640, heightPx: 480, frameRateHz: 30 } },
   target: { resourceId: 'media:surface', registrationId: 'surface', state: 'available', codecs: [], geometry: { widthPx: 640, heightPx: 480, pixelRatio: 1 } } });
 void [mediaResult, runMediaDescriptionExample().workingRoute];
+const declaredRecipe: Readonly<Recipe> = parseRecipe(roomControlRecipe);
+void [declaredRecipe, parseRecipe(pointerRecipe), runRecipeExample().observed, runDirectRecipeExample().released];
 const qualityReport: MeasurementReport = parseMeasurementReport({ status: 'valid', value: 31.25,
   calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
   { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
@@ -384,12 +389,13 @@ import { runSpatialJointExample } from '@101/connect/examples/spatial-joints';
 import { runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
+import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
 `;
 
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -434,6 +440,12 @@ export async function checkRuntime() {
   check(resourceDocuments.kind === 'embedded-simulated-resource' && resourceDocuments.text === 'Hello from a bounded resource.' && resourceDocuments.documentTitle === '101 resource example' && resourceDocuments.denied && resourceDocuments.corrupted && resourceDocuments.cancelled, 'Packed resource document example failed');
   const mediaDescription = runMediaDescriptionExample();
   check(mediaDescription.codec === 'video/vp8' && mediaDescription.widthPx === 640 && mediaDescription.heightPx === 480 && mediaDescription.unavailableMicrophone && mediaDescription.unsupportedCodec && mediaDescription.workingRoute === false, 'Packed media description example failed');
+  const recipe = model.parseRecipe(roomControlRecipe), recipeResult = runRecipeExample();
+  const directRecipe = model.parseRecipe(pointerRecipe), directResult = runDirectRecipeExample();
+  check(recipe.id === 'example:room-control' && recipeResult.commands === 1 && recipeResult.observed &&
+    recipe.surfaces[0].components.length === 3 && directRecipe.processors.length === 0 &&
+    directResult.position.x === 200 && directResult.position.y === 400 && directResult.released === 1,
+    'Packed recipe declarations/examples failed');
   const measurementReport = model.parseMeasurementReport({ status: 'valid', value: 31.25,
     calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
     { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
@@ -867,7 +879,7 @@ const print = console.log;
 let entryResult;
 try { console.log = value => { entryResult = JSON.parse(value); }; await import('@101/connect/examples/run'); }
 finally { console.log = print; }
-check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false, 'Packed examples/run entry failed');
+check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
 console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 15, packedRunEntry: true }));
 `;
   const path = join(work, 'runtime-check.mjs');

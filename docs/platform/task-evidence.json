@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 52,
+  "revision": 53,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3152,6 +3152,34 @@
       "equipment": [
         "Clean external consumer/toolchain"
       ]
+    },
+    {
+      "id": "recipe-syntax-2026-10-05",
+      "revision": "containing E02 commit, base 1cb0f17; immutable SDK producer tree c4a7af9f64b60da762b7fb70fd19d9395a3f0e40",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E02"
+      ],
+      "paths": [
+        "packages/device-model/src/recipe.ts",
+        "packages/device-model/src/recipe.test.ts",
+        "examples/device-pipelines/recipe.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-e02-recipe.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
+      "reproduction": "node tools/build-sdk.mjs c4a7af9f64b60da762b7fb70fd19d9395a3f0e40; node tools/qa-sdk-consumer.mjs release/sdk-MrMDTB/manifest.json; exact candidate repository gates",
+      "scope": "E02 complete inert recipe v1 syntax for resources, processor pins/configuration, routes, owner permission requests, surfaces and style tokens. Two working simulated consumers, one direct and one processor-backed, run from the offline packed SDK. Generic resolution, consent lifecycle and adaptive rendering remain E03–E05; no physical or live service claim.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-E02",
@@ -9087,6 +9115,7 @@
     {
       "id": "E02",
       "records": [
+        "recipe-syntax-2026-10-05",
         "pending-E02"
       ],
       "dependencies": [

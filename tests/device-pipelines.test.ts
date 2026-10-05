@@ -4,8 +4,16 @@ import test from 'node:test';
 import { createPointerPipeline, runPointerExample } from '../examples/device-pipelines/pointer.ts';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '../examples/device-pipelines/sensor-feedback.ts';
 import { createTemperatureThreshold } from '../examples/device-pipelines/threshold.ts';
+import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '../examples/device-pipelines/recipe.ts';
 import { createProcessorRegistry, parseObservationTiming, observationAgeBounds } from '@101/connect';
 import type { AuthorizationRequest } from '@101/connect';
+
+test('the declared room recipe runs only through the selected local host binding', () => {
+  assert.deepEqual(roomControlRecipe.routes.map(route => route.id), ['measure', 'actuate']);
+  assert.deepEqual(runRecipeExample(), { recipeId: 'example:room-control', surface: 'room', commands: 1, observed: true });
+  assert.equal(pointerRecipe.processors.length, 0);
+  assert.deepEqual(runDirectRecipeExample(), { recipeId: 'example:pointer-view', position: { x: 200, y: 400 }, released: 1 });
+});
 
 test('the pointer example maps normalized coordinates to the destination dimensions', () => {
   assert.deepEqual(runPointerExample().position, { x: 200, y: 400 });
