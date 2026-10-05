@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 101 completed with recorded evidence; 171 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 102 completed with recorded evidence; 170 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -173,7 +173,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **I06 — Implement pen/rotary/gamepad details.** Pressure/tilt, crown/encoder deltas, triggers, hats, axes and button edges preserve profile-specific ranges and calibration. [Calibrated processors and packed consumer evidence](receipts/2026-10-05-i06-input-details.json); physical device qualification remains separate.
 - [x] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls. [Measured decks and browser runtime evidence](receipts/2026-10-05-i07-responsive-controls.json); physical native accessibility and ergonomics remain separate.
 - [ ] **I08 — Implement haptic output profiles.** Declared patterns, intensity/duration limits, unsupported-device fallback and physical distinguishability are tested.
-- [ ] **I09 — Implement input ownership and transfer UI.** Current owner retains control during a second request; consent, partition assignment and release produce visible, recoverable outcomes. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
+- [x] **I09 — Implement input ownership and transfer UI.** Current owner retains control during a second request; consent, partition assignment and release produce visible, recoverable outcomes. [SDK, UI and actual browser connection evidence](receipts/2026-10-06-input-ownership.json); physical ergonomics and native/OS qualification remain separate.
 - [ ] **I10 — Verify handedness and ergonomic layouts.** Thumb reach, both hands, short landscape, safe insets and simultaneous inputs are physically tested across claimed form factors.
 - [ ] **I11 — Support accessible input/output profiles.** Qualify selected switch/assistive HID and tactile/Braille resources plus keyboard equivalents; do not detect assistive technology to hide choices.
 - [ ] **I12 — Prove release safety across all inputs.** Blur, hide, unmount, disconnect, role change, deadman expiry and process loss leave no held pointer/key/button state.

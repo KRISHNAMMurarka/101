@@ -20,6 +20,7 @@ export const STUDIO_TOOLS: readonly StudioTool[] = [
   { href: "/studio/vision", label: "Camera", icon: "camera-face", blurb: "Check hand, body and face tracking, and how fast it runs" },
   { href: "/studio/network", label: "Pairing", icon: "bluetooth", blurb: "Connect two devices by hand, with no network discovery" },
   { href: "/studio/inspector", label: "SDK Inspector", icon: "custom", blurb: "Inspect resource readiness, route grants, queues and redacted SDK errors" },
+  { href: "/studio/ownership", label: "Ownership", icon: "touch", blurb: "Request control, review a transfer and release declared input partitions" },
   { href: "/pointer-lab", label: "Pointer", icon: "touch", blurb: "Connect a touch pad to an independent application surface" },
   { href: "/studio/controller", label: "Controller", icon: "gamepad", blurb: "Design a controller layout and try it on a real phone" },
   { href: "/studio/hardware", label: "Hardware", icon: "custom", blurb: "Connect a USB, Bluetooth or serial device" },

@@ -6,6 +6,7 @@ import { AuthenticatedResourcePeer, PeerDataTransport, PointerResourceProvider, 
 import type { PointerSourceDriver, Observation, ReceiverInvitation } from '@101/connect';
 import { createRemotePointerSurface } from '@/examples/device-pipelines/remote-pointer';
 import { useEndpointIdentity } from '@/app/components/use-endpoint-identity';
+import { createConnectionOwnership } from '@/app/lib/connection-ownership';
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -36,7 +37,9 @@ export default function PointerLab() {
   const [busy, setBusy] = useState(false);
   const invitation = useRef<ReceiverInvitation | undefined>(undefined);
   const identity = useEndpointIdentity(`101.endpoint-identity.v1:pointer-${role}`);
-  const sessionRef = useRef<Session | null>(null);
+  const ownership = useRef(createConnectionOwnership<Session>());
+  const [ownerSnapshot, setOwnerSnapshot] = useState<Snapshot>(EMPTY);
+  const [hasCandidate, setHasCandidate] = useState(false);
   const generation = useRef(0);
   const padRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<HTMLSpanElement>(null);
@@ -44,8 +47,7 @@ export default function PointerLab() {
 
   const stop = useCallback((update = true) => {
     generation.current++;
-    const session = sessionRef.current; sessionRef.current = null;
-    session?.dispose();
+    ownership.current.clear(); setHasCandidate(false); setOwnerSnapshot(EMPTY);
     invitation.current = undefined;
     if (update) { setBusy(false); setSnapshot({ ...EMPTY, stopped: true }); setLocalCode(''); setInvitationCode('');
       setInvitationLink(''); setInvitationQr(''); setReviewed(undefined); setMessage('Stopped. Create a fresh invitation to continue.'); }
@@ -55,6 +57,9 @@ export default function PointerLab() {
       if (!window.location.hash.startsWith('#invite=')) return;
       const incoming = window.location.href;
       window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search);
+      if (ownership.current.current()) {
+        setSourceInvitation(incoming); setMessage('An invitation arrived. Stop the current pointer and choose Send pointer to review it.'); return;
+      }
       stop(); setRole('source'); setSourceInvitation(incoming); setSnapshot(EMPTY);
       setMessage('Review the receiver application and session before connecting.');
     };
@@ -71,7 +76,7 @@ export default function PointerLab() {
     return () => { current = false; };
   }, [invitationLink]);
   useEffect(() => {
-    const blur = () => { sessionRef.current?.provider?.driver()?.release(); };
+    const blur = () => { ownership.current.current()?.provider?.driver()?.release(); };
     const visibility = () => { if (document.hidden) stop(); };
     const leave = () => stop(false);
     window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', leave);
@@ -83,39 +88,59 @@ export default function PointerLab() {
       const { width, height } = entries[0].contentRect;
       if (width <= 0 || height <= 0) return;
       receiverSize.current = { width, height };
-      const surface = sessionRef.current?.surface;
-      if (surface) { surface.resize(width, height); setSnapshot(current => ({ ...current, ...surface.state() })); }
+      for (const session of [ownership.current.current(), ownership.current.pending()]) session?.surface?.resize(width, height);
+      const surface = ownership.current.current()?.surface;
+      if (surface) setOwnerSnapshot(current => ({ ...current, ...surface.state() }));
     });
     observer.observe(element); return () => observer.disconnect();
   }, [role]);
   useLayoutEffect(() => {
     // Receiver-clock DOM commit callback. This is not physical display/photon timing.
-    if (markerRef.current && snapshot.capture) markerRef.current.dataset.renderedAt = String(performance.now());
-  }, [snapshot]);
+    if (markerRef.current && ownerSnapshot.capture) markerRef.current.dataset.renderedAt = String(performance.now());
+  }, [ownerSnapshot]);
 
   const install = (peer: PeerDataTransport, auth: AuthenticatedResourcePeer, target: ReceiverInvitation, provider?: PointerResourceProvider, surface?: Surface, capture?: () => Capture | undefined): Session => {
+    const session: Session = { peer, auth, invitation: target, confirmed: false, admitted: false, epoch: target.epoch, provider, surface, capture, dispose() {
+      clearInterval(timer); detachInput(); detach(); provider?.stop(); surface?.stop(); auth.stop(); void peer.disconnect();
+    } };
+    const owned = () => ownership.current.current() === session || ownership.current.pending() === session;
+    const retire = (reason: string) => {
+      const wasSelected = ownership.current.selected() === session;
+      ownership.current.retire(session);
+      setHasCandidate(!!ownership.current.pending());
+      if (!ownership.current.current()) setOwnerSnapshot(EMPTY);
+      if (wasSelected) { setSnapshot({ ...EMPTY, stopped: true }); setMessage(reason); }
+    };
     const update = () => {
-      if (sessionRef.current?.peer !== peer) return;
+      if (!owned()) return;
       const receiver = surface?.receiver.status(), source = provider?.status(), input = provider?.driver()?.state();
       const authentication = auth.status();
-      if (!sessionRef.current?.admitted && !receiverInvitationCurrent(target, Date.now())) { stop(); setMessage('Invitation expired. Create a fresh invitation on the receiver.'); return; }
+      if (!session.admitted && !receiverInvitationCurrent(target, Date.now())) { retire('Invitation expired. Create a fresh invitation on the receiver.'); return; }
       const next: Snapshot = { ...EMPTY, ...(surface?.state() ?? {}), ...(input ? { contact: input.contact } : {}), ...(surface?.state().position ? { capture: capture?.() } : {}),
         described: !!surface?.receiver.description(), active: receiver?.active ?? 0, clockReady: receiver?.clockReady ?? false,
-        comparison: authentication.comparisonDigest, confirmed: sessionRef.current?.confirmed, enrolled: authentication.phase === 'active',
+        comparison: authentication.comparisonDigest, confirmed: session.confirmed, enrolled: authentication.phase === 'active',
         ready: source?.ready ?? false, stopped: authentication.phase === 'stopped' || (receiver?.stopped ?? source?.stopped ?? false) || !!receiver && ['expired', 'overload', 'unavailable', 'incompatible'].includes(receiver.reason) };
+      if (next.stopped) { retire('Connection stopped. Start a fresh connection to continue.'); return; }
+      // The source owner already chose this reviewed target when creating its offer.
+      // Wait for independently granted resources before moving the local input pad.
+      if (provider && source?.ready && ownership.current.pending() === session) {
+        if (!ownership.current.activate(session, () => true)) return;
+        setHasCandidate(false);
+      }
+      if (ownership.current.current() === session) setOwnerSnapshot(current => JSON.stringify(current) === JSON.stringify(next) ? current : next);
+      if (ownership.current.selected() !== session) return;
       setSnapshot(current => JSON.stringify(current) === JSON.stringify(next) ? current : next);
-      if (next.stopped) { stop(); setMessage('Connection stopped. Start a fresh connection to continue.'); }
-      else if (source?.ready) setMessage('Move on the pad. Arrows move; hold Space to press.');
+      if (source?.ready) setMessage('Move on the pad. Arrows move; hold Space to press.');
       else if (receiver?.active === 2) setMessage('Pointer allowed for one minute. Stop releases it immediately.');
       else if (authentication.phase === 'awaiting-enrollment') setMessage(next.confirmed ? 'Waiting for the other screen to confirm the matching code.' : 'Compare every character of the code on both screens, then confirm only if they match.');
       else if (authentication.phase === 'active') setMessage(provider ? 'Connection verified. Allow pointer on the receiving screen.' : 'Connection verified. Choose Allow pointer to use this source.');
     };
     const detach = auth.onStateChange(state => {
-      if (sessionRef.current?.peer !== peer) return;
+      if (!owned()) return;
       if (state === 'failed' || state === 'disconnected') { setMessage('Connection lost. Start a fresh connection.'); update(); }
       else if (state === 'connected') {
-        if (!receiverInvitationCurrent(target, Date.now())) { stop(); setMessage('Invitation expired before enrollment completed. Create a fresh invitation.'); return; }
-        sessionRef.current.admitted = true;
+        if (!receiverInvitationCurrent(target, Date.now())) { retire('Invitation expired before enrollment completed. Create a fresh invitation.'); return; }
+        session.admitted = true;
         setMessage('Connection verified. The receiver can now select its resources.');
       }
     });
@@ -123,22 +148,25 @@ export default function PointerLab() {
     // Deliver and render immediately; the timer still owns pending/rate-limited
     // delivery, clock probes and expiry when no packets arrive.
     const detachInput = surface ? auth.onData(() => {
-      if (sessionRef.current?.peer !== peer) return;
+      if (!owned()) return;
       surface.tick(); update();
     }) : () => {};
     const timer = window.setInterval(() => {
-      const selected = sessionRef.current; if (selected?.peer !== peer) return;
-      if (!selected.admitted && !receiverInvitationCurrent(target, Date.now())) { stop(); setMessage('Invitation expired. Create a fresh invitation.'); return; }
-      auth.tick(); if (sessionRef.current !== selected) return;
+      if (!owned()) return;
+      if (!session.admitted && !receiverInvitationCurrent(target, Date.now())) { retire('Invitation expired. Create a fresh invitation.'); return; }
+      auth.tick(); if (!owned()) return;
       provider?.tick(); surface?.tick(); update();
     }, 10);
-    const session: Session = { peer, auth, invitation: target, confirmed: false, admitted: false, epoch: target.epoch, provider, surface, capture, dispose() {
-      clearInterval(timer); detachInput(); detach(); provider?.stop(); surface?.stop(); auth.stop(); void peer.disconnect();
-    } };
-    sessionRef.current = session; return session;
+    ownership.current.stage(session); setHasCandidate(true); return session;
+  };
+  const cancelCandidate = () => {
+    generation.current++; ownership.current.discard(); setHasCandidate(false); setBusy(false);
+    invitation.current = undefined; setInvitationCode(''); setInvitationLink(''); setInvitationQr(''); setLocalCode(''); setRemoteCode('');
+    setSnapshot(ownership.current.current() ? ownerSnapshot : EMPTY);
+    setMessage(ownership.current.current() ? 'New request cancelled. The current pointer remains active.' : 'Request cancelled. Create a fresh invitation to continue.');
   };
   const createInvitation = () => {
-    stop(false); setSnapshot(EMPTY); setLocalCode(''); setRemoteCode('');
+    generation.current++; ownership.current.discard(); setHasCandidate(false); setSnapshot(ownership.current.current() ? ownerSnapshot : EMPTY); setLocalCode(''); setRemoteCode('');
     if (!identity.identity) { setMessage('Create or reload your local identity first.'); return; }
     try {
       const value = createReceiverInvitation({ applicationId: 'independent-pointer-surface', sessionId: newSessionId(), now: Date.now(), randomBytes: webEndpointCrypto.randomBytes });
@@ -152,7 +180,7 @@ export default function PointerLab() {
     catch { setReviewed(undefined); setMessage('Use a complete fresh receiver invitation. Check that both device clocks agree.'); }
   };
   const createOffer = async () => {
-    stop(false); setSnapshot(EMPTY); setLocalCode(''); setBusy(true); setMessage('Preparing a local offer…');
+    generation.current++; ownership.current.discard(); setHasCandidate(false); setSnapshot(EMPTY); setLocalCode(''); setBusy(true); setMessage('Preparing a local offer…');
     const id = generation.current, target = reviewed, key = identity.identity;
     try {
       if (!target || !key || !receiverInvitationCurrent(target, Date.now())) throw new Error();
@@ -164,12 +192,12 @@ export default function PointerLab() {
       install(peer, auth, target, provider);
       const description = await peer.createOffer(); if (generation.current !== id) return;
       setLocalCode(encodeManualPeerCode(target.epoch, description)); setMessage('Copy the offer to the receiving screen, then paste its answer here.');
-    } catch { if (generation.current === id) { stop(); setMessage('Could not prepare an offer. Check the invitation, local identity and WebRTC availability, then try again.'); } }
+    } catch { if (generation.current === id) { ownership.current.discard(); setHasCandidate(false); setSnapshot(ownership.current.current() ? ownerSnapshot : EMPTY); setMessage('Could not prepare an offer. The current pointer is unchanged. Review a fresh invitation and try again.'); } }
     finally { if (generation.current === id) setBusy(false); }
   };
   const acceptOffer = async () => {
     const target = invitation.current, key = identity.identity;
-    stop(false); setSnapshot(EMPTY); setLocalCode(''); setBusy(true);
+    generation.current++; ownership.current.discard(); setHasCandidate(false); setSnapshot(EMPTY); setLocalCode(''); setBusy(true);
     const id = generation.current;
     try {
       if (!target || !key || !receiverInvitationCurrent(target, Date.now())) throw new Error();
@@ -190,33 +218,38 @@ export default function PointerLab() {
       setInvitationQr(''); setMessage('Preparing a local answer…');
       const answer = await peer.acceptOffer(code.description); if (generation.current !== id) return;
       setLocalCode(encodeManualPeerCode(code.epoch, answer)); setMessage('Copy this answer to the source, then compare the connection codes on both screens.');
-    } catch { if (generation.current === id) { stop(); setMessage('Could not use this offer. Create a fresh invitation and use its matching complete offer.'); } }
+    } catch { if (generation.current === id) { ownership.current.discard(); setHasCandidate(false); setSnapshot(ownership.current.current() ? ownerSnapshot : EMPTY); setMessage('Could not use this offer. The current pointer is unchanged. Create a fresh invitation and use its matching complete offer.'); } }
     finally { if (generation.current === id) setBusy(false); }
   };
   const acceptAnswer = async () => {
-    const session = sessionRef.current, id = generation.current;
+    const session = ownership.current.pending(), id = generation.current;
     if (!session?.provider) return;
     setBusy(true);
     try {
       const code = decodeManualPeerCode(remoteCode, 'answer', session.epoch);
       await session.peer.acceptAnswer(code.description); if (generation.current !== id) return;
       setMessage('Answer accepted. Wait for the verified comparison code on both screens.');
-    } catch { if (generation.current === id) { stop(); setMessage('Could not use this answer. Create a fresh invitation and transfer its complete codes.'); } }
+    } catch { if (generation.current === id) { ownership.current.discard(session); setHasCandidate(false); setSnapshot(ownership.current.current() ? ownerSnapshot : EMPTY); setMessage('Could not use this answer. The current pointer is unchanged. Review a fresh invitation and transfer its complete codes.'); } }
     finally { if (generation.current === id) setBusy(false); }
   };
   const confirm = () => {
-    const selected = sessionRef.current, displayed = snapshot.comparison;
-    if (selected && !selected.admitted && !receiverInvitationCurrent(selected.invitation, Date.now())) { stop(); setMessage('Invitation expired. Create a fresh invitation.'); return; }
+    const selected = ownership.current.selected(), displayed = snapshot.comparison;
+    if (selected && !selected.admitted && !receiverInvitationCurrent(selected.invitation, Date.now())) { ownership.current.discard(selected); setHasCandidate(false); setMessage('Invitation expired. Create a fresh invitation.'); return; }
     if (!selected || !displayed || !selected.auth.confirmEnrollment(displayed)) { setMessage('The comparison expired. Create a fresh invitation.'); return; }
     selected.confirmed = true; setSnapshot(previous => ({ ...previous, confirmed: true }));
     setMessage('Confirmed here. Waiting for the other screen to confirm.');
   };
   const select = () => {
-    const surface = sessionRef.current?.surface;
-    if (!surface?.select()) { setMessage('Pointer could not be allowed. Start a fresh connection.'); return; }
+    const selected = ownership.current.pending();
+    if (!selected?.surface) return;
+    setOwnerSnapshot(EMPTY);
+    if (!ownership.current.activate(selected, () => selected.surface!.select())) {
+      setHasCandidate(!!ownership.current.pending()); setOwnerSnapshot(EMPTY); setSnapshot({ ...EMPTY, stopped: true }); setMessage('Pointer could not be allowed. Control is released. Create a fresh invitation and try again.'); return;
+    }
+    setHasCandidate(false);
     setMessage('Pointer allowed for one minute.');
   };
-  const driver = (): PointerSourceDriver | undefined => sessionRef.current?.provider?.driver();
+  const driver = (): PointerSourceDriver | undefined => ownership.current.current()?.provider?.driver();
   const touch = (event: PointerEvent<HTMLDivElement>, phase: 'begin' | 'move' | 'end') => {
     const input = driver(); if (!input) return;
     const pad = event.currentTarget, rect = pad.getBoundingClientRect();
@@ -259,22 +292,24 @@ export default function PointerLab() {
       <p>Only confirm while you can compare the other screen directly. A matching code verifies this connection; it does not identify a person or account.</p>
       <button onClick={confirm} disabled={snapshot.confirmed || snapshot.enrolled || snapshot.stopped}>Codes match — allow connection</button>
     </div> : null}
-    {role === 'receiver' ? <button className={styles.primary} onClick={select} disabled={!snapshot.described || !snapshot.clockReady || snapshot.active > 0 || snapshot.stopped}>Allow pointer for one minute</button> : null}
+    {role === 'receiver' ? <button className={styles.primary} onClick={select} disabled={!hasCandidate || !snapshot.described || !snapshot.clockReady || snapshot.active > 0 || snapshot.stopped}>{ownerSnapshot.active > 0 ? 'Transfer pointer for one minute' : 'Allow pointer for one minute'}</button> : null}
+    {hasCandidate || invitationCode ? <button onClick={cancelCandidate}>Cancel new request</button> : null}
+    {(ownerSnapshot.ready || ownerSnapshot.active > 0) && (hasCandidate || invitationCode) ? <p>Current pointer remains active while you review the new request. Transfer releases it before allowing the new source.</p> : null}
     <div ref={padRef} className={`${styles.pad} ${role === 'source' ? styles.source : ''}`} role={role === 'source' ? 'group' : 'img'}
       aria-label={role === 'source' ? 'Touch pad. Arrow keys move, Space presses, Escape releases.' : 'Application pointer surface'}
-      tabIndex={role === 'source' ? 0 : undefined} data-contact={snapshot.contact} data-ready={snapshot.ready || snapshot.active === 2}
+      tabIndex={role === 'source' ? 0 : undefined} data-contact={ownerSnapshot.contact} data-ready={ownerSnapshot.ready || ownerSnapshot.active === 2}
       onPointerDown={event => touch(event, 'begin')} onPointerMove={event => touch(event, 'move')}
       onPointerUp={event => touch(event, 'end')} onPointerCancel={event => touch(event, 'end')} onLostPointerCapture={event => touch(event, 'end')}
       onKeyDown={event => key(event, true)} onKeyUp={event => key(event, false)} onBlur={() => driver()?.release()}>
-      {role === 'receiver' && snapshot.position ? <span ref={markerRef} className={styles.marker} data-testid='application-pointer'
-        data-sequence={snapshot.capture?.sequence} data-capture-earliest={snapshot.capture?.earliest} data-capture-latest={snapshot.capture?.latest}
-        data-received-at={snapshot.capture?.receivedAt} data-uncertainty-ms={snapshot.capture?.uncertaintyMs} style={{ left: snapshot.position.x, top: snapshot.position.y }} /> :
-        <span className={styles.padLabel}>{role === 'source' ? (snapshot.ready ? 'Move anywhere on the pad' : 'Connect and allow pointer to begin') : 'Your pointer will appear here'}</span>}
+      {role === 'receiver' && ownerSnapshot.position ? <span ref={markerRef} className={styles.marker} data-testid='application-pointer'
+        data-sequence={ownerSnapshot.capture?.sequence} data-capture-earliest={ownerSnapshot.capture?.earliest} data-capture-latest={ownerSnapshot.capture?.latest}
+        data-received-at={ownerSnapshot.capture?.receivedAt} data-uncertainty-ms={ownerSnapshot.capture?.uncertaintyMs} style={{ left: ownerSnapshot.position.x, top: ownerSnapshot.position.y }} /> :
+        <span className={styles.padLabel}>{role === 'source' ? (ownerSnapshot.ready ? 'Move anywhere on the pad' : 'Connect and allow pointer to begin') : 'Your pointer will appear here'}</span>}
     </div>
     {role === 'source' ? <div className={styles.controls} aria-label='Pointer controls'>
-      <button onClick={() => driver()?.nudge(-0.02, 0)} disabled={!snapshot.ready}>Left</button><button onClick={() => driver()?.nudge(0, -0.02)} disabled={!snapshot.ready}>Up</button>
-      <button onClick={() => driver()?.nudge(0, 0.02)} disabled={!snapshot.ready}>Down</button><button onClick={() => driver()?.nudge(0.02, 0)} disabled={!snapshot.ready}>Right</button>
-      <button aria-pressed={snapshot.contact} onClick={() => { const input = driver(); input?.setContact(!input.state().contact); }} disabled={!snapshot.ready}>Press / release</button>
+      <button onClick={() => driver()?.nudge(-0.02, 0)} disabled={!ownerSnapshot.ready}>Left</button><button onClick={() => driver()?.nudge(0, -0.02)} disabled={!ownerSnapshot.ready}>Up</button>
+      <button onClick={() => driver()?.nudge(0, 0.02)} disabled={!ownerSnapshot.ready}>Down</button><button onClick={() => driver()?.nudge(0.02, 0)} disabled={!ownerSnapshot.ready}>Right</button>
+      <button aria-pressed={ownerSnapshot.contact} onClick={() => { const input = driver(); input?.setContact(!input.state().contact); }} disabled={!ownerSnapshot.ready}>Press / release</button>
     </div> : null}
     <details className={styles.pairing} open={!snapshot.ready && snapshot.active === 0}><summary>Local pairing</summary>
       <p>Use a receiver invitation, then exchange offer and answer. Both owners compare the verified connection code before any resources are shared.</p>

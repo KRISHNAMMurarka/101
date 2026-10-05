@@ -43,6 +43,9 @@ export type { IndexedDbOwnerDataStorage } from './owner-data-storage.ts';
 export { createTrustedConnectorProfileRegistry, createProfileConnector } from './profile-connector.ts';
 export type { TrustedConnectorProfileRegistration, ConnectorProfileRequest, ReviewedConnectorProfileBinding, TrustedConnectorProfileRegistry, ConnectorDecoder, ConnectorDecodeContext, ConnectorDecodedOutput, ConnectorProfileSample, ConnectorCaptureHandle, ConnectorWriteContext, ProfileConnectorOptions, ProfileConnector } from './profile-connector.ts';
 
+export { INPUT_OWNERSHIP_PROFILE, INPUT_OWNERSHIP_LIMITS, createInputOwnershipController } from './input-ownership.ts';
+export type { InputOwnershipController, InputOwnershipOptions, InputOwnershipSource, InputOwnershipDestination, InputOwnershipResource, InputOwnershipSnapshot, InputOwnershipRequest, InputOwnershipOwner, InputOwnershipResult, InputOwnershipFailure } from './input-ownership.ts';
+
 export { createLocalPackageCatalog } from './package-catalog.ts';
 export type { LocalPackageCatalog, LocalPackageCatalogOptions, LocalPackageCatalogRole, LocalPackageCatalogAction, LocalPackageCatalogStatus, LocalPackageCatalogFailure, LocalPackageCatalogResult, LocalPackageCatalogWriteGuard, LocalPackageCatalogStorage, LocalPackageCatalogTrust, LocalPackageCatalogOwnerTrust, LocalPackageCatalogScope, LocalPackageCatalogApproval, LocalPackageCatalogReleaseSummary, LocalPackageCatalogSnapshot } from './package-catalog.ts';
 export type { ProcessorInstallationWriteGuard, ProcessorInstallationStorage, ProcessorPublisherTrust, ProcessorInstallationAction, ProcessorInstallationScope, ProcessorInstallationApproval, ProcessorInstallationFailure, ProcessorInstallationResult, ProcessorInstallationPackage, ProcessorInstallationSnapshot, ReviewedProcessorActivationRequest, ProcessorExtensionActivation, ProcessorInstallation, ProcessorInstallationOptions } from './processor-installation.ts';
