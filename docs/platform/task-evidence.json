@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 56,
+  "revision": 57,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3832,6 +3832,30 @@
       "equipment": [
         "Exact supported workload hosts; energy/thermal instrumentation"
       ]
+    },
+    {
+      "id": "pointer-cost-2026-10-05",
+      "revision": "containing F03 commit, base 4ea6bec; source and build SHA-256 in receipt",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "F03"
+      ],
+      "paths": [
+        "tools/qa-pointer-ui.mjs",
+        "docs/platform/RELEASE-CONTRACT.md",
+        "docs/platform/receipts/2026-10-05-f03-pointer-cost.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0; Playwright 1.61.1; Chromium 149.0.7827.55; authenticated local two-context WebRTC application pointer route",
+      "reproduction": "QA_POINTER_COST=1 node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:3003/pointer-lab; node --experimental-strip-types --test packages/device-web/src/wire.test.ts; exact candidate repository gates",
+      "scope": "The sole compact fast profile, normalized-pointer/1, measured 80 real local position deliveries: 48-byte sample payload, total application bytes and selected ICE-pair bytes/packets/rate, contact/clock overhead, actual position/contact negotiation, and precision fixtures. The selected-pair delta cannot isolate IP/link headers; physical, relay and 60 Hz capacity claims remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-F03",
@@ -9600,6 +9624,7 @@
     {
       "id": "F03",
       "records": [
+        "pointer-cost-2026-10-05",
         "pending-F03"
       ],
       "dependencies": [],

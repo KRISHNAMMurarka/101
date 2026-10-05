@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "task": "F03",
+  "result": "pass",
+  "sourceRevision": "4ea6bec48eaf9dbbe5ce5955fa029ef69a16771d",
+  "sourceSha256": {
+    "tools/qa-pointer-ui.mjs": "4ecf4f69d354f6ad48ffa7f4ddc0c14f1a80cc1e02250439932df3e4f96f9d89",
+    "app/pointer-lab/PointerLab.tsx": "f3ab5f9dab31959c9a0dcff56d24d1d6bc45059aea9aa6fe877430f090e7879d",
+    "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+    "dist/server/index.js": "4e6cda5c03cf2c662269f56be9233f8f2b677afa65cc617666a984af240d903b"
+  },
+  "environment": {
+    "os": "macOS 26.5.2 arm64",
+    "node": "24.14.0",
+    "playwright": "1.61.1",
+    "browser": "Chromium 149.0.7827.55",
+    "topology": "two independent local browser contexts, authenticated WebRTC data channels, one application pointer receiver"
+  },
+  "reproduction": [
+    "PORT=3003 npm run start",
+    "QA_POINTER_COST=1 node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:3003/pointer-lab",
+    "node --experimental-strip-types --test packages/device-web/src/wire.test.ts"
+  ],
+  "workload": {
+    "durationMs": 2820.7466249999998,
+    "observedPositionDeliveries": 80,
+    "observedPositionHz": 28.36128537422251,
+    "applicationMessages": 134,
+    "applicationPayloadBytes": 14882,
+    "applicationPayloadBytesPerSecond": 5275.908111739743,
+    "selectedIcePairBytesSent": 21656,
+    "selectedIcePairPacketsSent": 134,
+    "selectedIcePairBytesPerSecond": 7677.399950802033,
+    "selectedIcePairPacketsPerSecond": 47.505153001822706,
+    "selectedIcePairBytesBeyondApplicationPayload": 6774,
+    "messageKinds": {
+      "normalizedPointerSamples": {
+        "count": 80,
+        "bytes": 3840,
+        "bytesEach": 48
+      },
+      "reliableJsonContactEvents": {
+        "count": 51,
+        "bytes": 10506
+      },
+      "jsonClockMessages": {
+        "count": 3,
+        "bytes": 536
+      }
+    },
+    "negotiation": {
+      "position": {
+        "codec": "normalized-pointer/1",
+        "bindBytes": 222,
+        "maxHz": 60,
+        "maxAgeMs": 100
+      },
+      "contact": {
+        "codec": "json/1",
+        "bindBytes": 207,
+        "maxHz": 60,
+        "maxAgeMs": 100
+      }
+    },
+    "maxObservedNormalizedCoordinateError": 0,
+    "precisionFixture": {
+      "points": 14,
+      "maxAbsoluteError": 2.960464473567015e-8,
+      "requiredMaximum": 2.9802322387695312e-8,
+      "oneSampleCompactBytes": 48,
+      "sameSampleJsonBytes": 172
+    }
+  },
+  "limits": "The selected ICE-pair delta includes data-channel transport/control traffic and is not a breakdown of SCTP, DTLS, IP or link-layer bytes. This local Chromium result does not qualify physical phone, relay, impaired-network or sustained 60 Hz cost. Browser instrumentation records byte counts and packet metadata, never signaling payloads or private sample values.",
+  "verification": {
+    "typecheck": "pass",
+    "lint": "pass, one pre-existing native ref warning",
+    "unit": {
+      "passed": 905,
+      "failed": 0
+    },
+    "renderedHtml": {
+      "passed": 33,
+      "failed": 0
+    },
+    "freshBuild": "pass",
+    "wireCodec": {
+      "passed": 9,
+      "failed": 0
+    },
+    "checklistAudit": "pass",
+    "firefoxDefaultPointerQa": "pass after Chromium-only measurement mode was isolated"
+  },
+  "exploratoryFailure": "An initial all-browser measurement run stopped the Firefox route during the workload. The added traffic/stat collection was then limited to opt-in Chromium; the ordinary Firefox pointer QA passed. No Firefox byte-cost claim is made."
+}

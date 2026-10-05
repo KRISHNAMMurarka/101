@@ -4,17 +4,61 @@ import { assertControlReachability, assertReloadPersistence, assertReloadUnmount
   exerciseEnrollmentFailures, exerciseHiddenBeforeApproval, exchangeOffer, keyboardClick, observeActualIdentityDatabases, observeActualPeers,
   redactedDiagnostics, reviewTarget, savedKeyId, timeout } from './qa-enrollment-ui.mjs';
 const name = process.argv[2] ?? 'chromium';
+const costMode = process.env.QA_POINTER_COST === '1';
+if (costMode && name !== 'chromium') throw new Error('Pointer traffic measurement is qualified for Chromium only');
 const target = new URL(process.argv[3] ?? 'http://localhost:3001/pointer-lab');
 if (!['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) || target.pathname !== '/pointer-lab') throw new Error('Use the local pointer lab');
 const browserType = { chromium, webkit, firefox }[name]; if (!browserType) throw new Error('Choose chromium, webkit or firefox');
 const evidence = createUiEvidence(`pointer-ui-${name}`, target, ['tools/qa-pointer-ui.mjs']);
 let browser, stage = 'browser startup';
 const pages = [];
+function observeTraffic(context) {
+  return context.addInitScript(() => {
+    window.__qaPointerTraffic = [];
+    const send = RTCDataChannel.prototype.send;
+    RTCDataChannel.prototype.send = function (data) {
+      const result = send.call(this, data);
+      const bytes = typeof data === 'string' ? new TextEncoder().encode(data).byteLength : data?.byteLength;
+      if (!Number.isSafeInteger(bytes)) return result;
+      let packet;
+      if (typeof data === 'string') {
+        try { packet = JSON.parse(data); } catch { return result; }
+        if (packet?.protocol !== 'connect') return result;
+      } else if (data instanceof ArrayBuffer && data.byteLength >= 2 && new DataView(data).getUint16(0) === 0x434e) {
+        packet = { type: 'sample', codec: 'normalized-pointer/1' };
+      } else return result;
+      if (window.__qaPointerTraffic.length < 2000) window.__qaPointerTraffic.push({
+        type: packet.type, codec: packet.codec, bytes, channel: this.label,
+        ...(packet.type === 'bind' ? { capability: packet.capability, maxHz: packet.maxHz, maxAgeMs: packet.maxAgeMs } : {}),
+      });
+      return result;
+    };
+  });
+}
+async function trafficSnapshot(page) {
+  return page.evaluate(async () => {
+    const peer = window.__qaPointerPeers?.findLast(value => value.connectionState === 'connected');
+    if (!peer) throw new Error('No connected pointer peer for traffic measurement');
+    const stats = [...(await peer.getStats()).values()];
+    const transport = stats.find(value => value.type === 'transport' && value.selectedCandidatePairId);
+    const pairs = stats.filter(value => value.type === 'candidate-pair' && value.state === 'succeeded');
+    const pair = pairs.find(value => value.id === transport?.selectedCandidatePairId) ?? pairs.find(value => value.nominated);
+    return { traffic: [...window.__qaPointerTraffic], pair: pair ? {
+      bytesSent: pair.bytesSent, bytesReceived: pair.bytesReceived,
+      packetsSent: pair.packetsSent, packetsReceived: pair.packetsReceived,
+    } : undefined };
+  });
+}
+function delta(after, before, key) {
+  const current = after?.[key], previous = before?.[key];
+  return Number.isSafeInteger(current) && Number.isSafeInteger(previous) && current >= previous ? current - previous : undefined;
+}
 try {
   browser = await browserType.launch({ headless: true });
   const sourceContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
   const receiverContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
   await Promise.all([observeActualPeers(sourceContext), observeActualPeers(receiverContext), observeActualIdentityDatabases(sourceContext), observeActualIdentityDatabases(receiverContext)]);
+  if (costMode) await Promise.all([observeTraffic(sourceContext), observeTraffic(receiverContext)]);
   const source = await sourceContext.newPage(), receiver = await receiverContext.newPage();
   pages.push(source, receiver);
   const errors = []; for (const page of [source, receiver]) page.on('pageerror', error => errors.push(error.name));
@@ -103,16 +147,51 @@ try {
   await source.keyboard.up('Space');
   await receiver.setViewportSize({ width: 700, height: 700 }); const resized = await near(0.52, 0.5, false);
   await sourcePad.focus(); const latencies = [];
+  const trafficBefore = costMode ? await trafficSnapshot(source) : undefined;
   const workloadStartedAt = performance.now();
+  let maxCoordinateError = 0;
   for (let index = 0; index < 80; index++) {
     const x = index % 2 === 0 ? 0.54 : 0.52;
     await source.keyboard.press(index % 2 === 0 ? 'ArrowRight' : 'ArrowLeft');
     const state = await near(x, 0.5, false);
+    maxCoordinateError = Math.max(maxCoordinateError, Math.abs(state.x - x), Math.abs(state.y - 0.5));
     assert.ok(state.earliest <= state.latest && state.latest <= state.receivedAt && state.receivedAt <= state.renderedAt);
     latencies.push({ minMs: Math.max(0, state.renderedAt - state.latest), maxMs: state.renderedAt - state.earliest, uncertaintyMs: state.uncertaintyMs });
     await source.waitForTimeout(20);
   }
   const workloadElapsedMs = performance.now() - workloadStartedAt;
+  let trafficCost;
+  if (costMode && trafficBefore) {
+    const trafficAfter = await trafficSnapshot(source);
+    const receiverTrafficAfter = await trafficSnapshot(receiver);
+    const sentDuringWorkload = trafficAfter.traffic.slice(trafficBefore.traffic.length);
+    const positionTraffic = sentDuringWorkload.filter(packet => packet.type === 'sample' && packet.codec === 'normalized-pointer/1');
+    assert.ok(positionTraffic.length >= latencies.length, `every observed position has a compact application packet (${positionTraffic.length}/${latencies.length}; captured ${sentDuringWorkload.length})`);
+    assert.ok(positionTraffic.every(packet => packet.bytes === 48), 'pointer sample payload remains 48 bytes');
+    const negotiated = receiverTrafficAfter.traffic.filter(packet => packet.type === 'bind');
+    assert.ok(negotiated.some(packet => packet.capability === 'position' && packet.codec === 'normalized-pointer/1' && packet.maxHz === 60 && packet.maxAgeMs === 100),
+      'actual position route negotiated compact codec and declared rate/age bounds');
+    assert.ok(negotiated.some(packet => packet.capability === 'contact' && packet.codec === 'json/1'),
+      'actual contact route negotiated reliable JSON');
+    const payloadBytes = sentDuringWorkload.reduce((total, packet) => total + packet.bytes, 0);
+    const pairBytesSent = delta(trafficAfter.pair, trafficBefore.pair, 'bytesSent');
+    const pairPacketsSent = delta(trafficAfter.pair, trafficBefore.pair, 'packetsSent');
+    assert.ok(pairBytesSent !== undefined && pairBytesSent >= payloadBytes && pairPacketsSent !== undefined,
+      'selected ICE pair must expose complete transport byte and packet deltas');
+    trafficCost = { workloadMessages: sentDuringWorkload.length, payloadBytes, positionMessages: positionTraffic.length,
+      positionPayloadBytes: positionTraffic.reduce((total, packet) => total + packet.bytes, 0),
+      selectedPairBytesSent: pairBytesSent, selectedPairPacketsSent: pairPacketsSent,
+      selectedPairBytesBeyondApplicationPayload: pairBytesSent === undefined ? undefined : pairBytesSent - payloadBytes,
+      applicationPayloadBytesPerSecond: payloadBytes * 1000 / workloadElapsedMs,
+      selectedPairBytesPerSecond: pairBytesSent === undefined ? undefined : pairBytesSent * 1000 / workloadElapsedMs,
+      selectedPairPacketsPerSecond: pairPacketsSent === undefined ? undefined : pairPacketsSent * 1000 / workloadElapsedMs,
+      maxObservedCoordinateError: maxCoordinateError,
+      negotiated: negotiated.filter(packet => packet.capability === 'position' || packet.capability === 'contact').slice(-2),
+      messageKinds: Object.fromEntries([...new Set(sentDuringWorkload.map(packet => `${packet.type}:${packet.codec ?? 'json/1'}`))]
+        .map(kind => { const packets = sentDuringWorkload.filter(packet => `${packet.type}:${packet.codec ?? 'json/1'}` === kind);
+          return [kind, { count: packets.length, bytes: packets.reduce((total, packet) => total + packet.bytes, 0) }]; })),
+    };
+  }
   const widths = await Promise.all([source, receiver].map(page => page.evaluate(() => ({ viewport: innerWidth, document: document.documentElement.scrollWidth }))));
   assert.ok(widths.every(value => value.document <= value.viewport));
   await evidence.screenshot(receiver, 'receiver-active');
@@ -152,6 +231,7 @@ try {
     browser: name, version: browser.version(), environment: { node: process.versions.node, playwright: '1.61.1' },
     result: { consentChecks, rejectionChecks, visibilityCheck, storeCleanup, identityReloadPreserved: true, identityRemovalReleases: true, freshKeyReenrolled, narrowInput, narrowWidths, narrowReachability,
       begin, downRight, upLeft, upRight, downLeft, recontact, keyPress, keyRelease, blurRelease, resized, replacement, widths,
+      ...(trafficCost ? { trafficCost } : {}),
       timing: { count: latencies.length, workloadElapsedMs, observedDeliveryHz: latencies.length * 1000 / workloadElapsedMs,
         minP50Ms: percentile(latencies.map(value => value.minMs), 0.5), maxP50Ms: percentile(latencies.map(value => value.maxMs), 0.5),
         maxP95Ms: percentile(latencies.map(value => value.maxMs), 0.95), maxP99Ms: percentile(latencies.map(value => value.maxMs), 0.99), maxMs: Math.max(...latencies.map(value => value.maxMs)),
