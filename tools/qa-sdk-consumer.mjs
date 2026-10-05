@@ -202,8 +202,8 @@ import { createScalarCalibrationProcessor, createScalarConversionProcessor, crea
 import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
 import { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from '@101/device-model';
 import type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdgeProcessor, LatestResampler } from '@101/device-model';
-import { createProcessorRegistry } from '@101/device-runtime';
-import type { ResolvedProcessor } from '@101/device-runtime';
+import { createProcessorRegistry, createPlacementScheduler } from '@101/device-runtime';
+import type { ResolvedProcessor, PlacementScheduler, PlacementResult, PlacementAuthorityRequest } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -219,8 +219,12 @@ const inputProfile: InputProfile = getInputProfile(INPUT_PROFILE_IDS[0]);
 void inputProfile;
 const manifestParser: (input: unknown) => Readonly<ProcessorManifest> = parseProcessorManifest;
 const registryFactory: typeof createProcessorRegistry = createProcessorRegistry;
+const placementFactory: typeof createPlacementScheduler = createPlacementScheduler;
+let placement: PlacementScheduler | undefined;
+let placementResult: PlacementResult | undefined;
+let placementAuthority: PlacementAuthorityRequest | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, placement, placementResult, placementAuthority, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -371,7 +375,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -495,6 +499,26 @@ export async function checkRuntime() {
       { devices: resourceDevices, processors: [processorManifest] }); } catch { underbudgetRejected = true; }
     check(requirements.resources.length === 2 && requirements.processors[0].manifest.codeSha256 === processorPin &&
       underbudgetRejected, 'Packed workload requirements failed');
+    const host = { id: 'eligible', runtimes: [{ platform: 'node', version: '24.14.0' }],
+      applications: [{ id: workloadInput.id, version: workloadInput.version,
+        codeSha256: workloadInput.application.codeSha256 }],
+      processors: [{ id: processorManifest.id, version: processorManifest.version, codeSha256: processorPin }],
+      assets: [], resources: [
+        { deviceId: 'demo-thermometer', capability: 'temperature', operation: 'subscribe', ownerId: 'sensor-owner' },
+        { deviceId: 'simulated-relay', capability: 'set-state', operation: 'invoke', ownerId: 'relay-owner' }],
+      sharingDestinations: [], quota: { maxComputeMs: 10, maxMemoryBytes: 131072, maxWorkloads: 1 } };
+    const principal = { principalId: 'packed-consumer', applicationId: workloadInput.id, sessionId: 'session-1' };
+    const placement = runtime.createPlacementScheduler({ context: { devices: resourceDevices, processors: [processorManifest] },
+      hosts: [{ ...host, id: 'old', runtimes: [{ platform: 'node', version: '23.0.0' }] }, host],
+      isAuthorized: request => request.ownerId === 'sensor-owner' || request.ownerId === 'relay-owner' });
+    const selected = placement.place(workloadInput, principal);
+    check(selected.ok && selected.placement.hostId === 'eligible' && selected.placement.resources.length === 2 &&
+      !placement.place(workloadInput, principal).ok, 'Packed placement selection or quota failed');
+    check(selected.ok && placement.release(selected.placement.id) && placement.place(workloadInput, principal).ok,
+      'Packed placement release failed');
+    const denied = runtime.createPlacementScheduler({ context: { devices: resourceDevices, processors: [processorManifest] },
+      hosts: [host], isAuthorized: request => request.ownerId !== 'sensor-owner' });
+    check(denied.place(workloadInput, principal).ok === false, 'Packed owner denial was accepted');
   } finally { routeGroup.runtime.close(); }
   let crossClockRejected = false;
   try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }

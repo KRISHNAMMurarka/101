@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "task": "R05",
+  "result": "pass",
+  "sourceTree": "66a5e64d4296235ea1ab4bcea8cc0f0ffec32fdb",
+  "sdkArtifact": "release/sdk-iWeiml/manifest.json",
+  "sdkManifestSha256": "286433079d8d8e4f4549f90f52f1ecfe3f1989306408ddc5552f53aede5bee8e",
+  "consumerQaToolSha256": "63da5e7d8b4e2b6b4bcd24c73a7956f9ed17eab9fe518f1641d45d063cab4e29",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused placement tests: 6 passed after first observed missing-export failure",
+    "Exact candidate repository unit suite: 851 passed",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "R05 local scheduler: revalidate workload and principal, select from trusted host inventories by exact installed pins, assets, minimum runtime, sharing and required resources; check existing owner grant scopes; reserve aggregate compute/memory/workload quotas and release once. Embedded temperature reference workload and two inventory candidates pass. Host authentication, byte verification, grant lifecycle, execution, host loss, physical two-host qualification and handoff remain separate.",
+  "published": false
+}

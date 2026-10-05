@@ -8,3 +8,5 @@ export { chunkResource, readVerifiedResource, ResourceTransferError } from './re
 export type { ResourceChunk, ResourceReadScope, ResourceReadRequest, ResourceReadGrant, ReadVerifiedResourceOptions } from './resource.ts';
 export { createProcessorRegistry } from './processor-registry.ts';
 export type { ProcessorFrame, ProcessorImplementation, ProcessorRequest, ResolvedProcessor, TrustedProcessorRegistration } from './processor-registry.ts';
+export { createPlacementScheduler } from './placement.ts';
+export type { Placement, PlacementAuthorityRequest, PlacementPrincipal, PlacementResource, PlacementResult, PlacementScheduler, PlacementSchedulerOptions } from './placement.ts';

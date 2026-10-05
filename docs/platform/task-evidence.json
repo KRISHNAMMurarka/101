@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 43,
+  "revision": 44,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2858,24 +2858,29 @@
       "supportRows": []
     },
     {
-      "id": "pending-R05",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "authorized-placement-2026-10-05",
+      "revision": "containing R05 commit, base 8f8b486; immutable SDK producer tree 66a5e64d4296235ea1ab4bcea8cc0f0ffec32fdb",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "R05"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-runtime/src/placement.test.ts",
+        "docs/platform/receipts/2026-10-05-r05-placement.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement an authorized placement scheduler. Select an eligible host, respect quotas and resource ownership, and reject an incompatible or unauthorized runtime.",
-      "scope": "R05 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical two-host execution",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/placement.test.ts; node tools/build-sdk.mjs 66a5e64d4296235ea1ab4bcea8cc0f0ffec32fdb; node tools/qa-sdk-consumer.mjs release/sdk-iWeiml/manifest.json; exact candidate repository gates",
+      "scope": "R05 local scheduler: workload/principal validation, trusted host inventory, exact installed pins and assets, minimum runtime, sharing, required/optional resource owner checks, quota reservation and release. Actual embedded temperature workload with two inventory candidates and packed consumers pass. Host authentication, byte loading, grant lifecycle, physical two-host execution and handoff remain separate.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-R06",
@@ -8828,7 +8833,7 @@
     {
       "id": "R05",
       "records": [
-        "pending-R05"
+        "authorized-placement-2026-10-05"
       ],
       "dependencies": [
         "M01",

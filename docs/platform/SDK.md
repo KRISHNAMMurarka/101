@@ -394,10 +394,31 @@ Cold restart is explicit. A snapshot declaration binds its format version to
 the exact application code pin, requires processor reset on resume and names a
 cold-restart fallback for incompatibility. The parser does not load code or
 assets, authenticate a device, obtain consent, enforce compute quotas, select
-a host or serialize state. A placement host must verify bytes and runtime
-eligibility separately under R05/R06. The packed consumer validates a workload
+a host or serialize state. Placement and byte verification are separate runtime
+steps under R05/R06. The packed consumer validates a workload
 against the actual embedded temperature descriptors and a pinned processor
 manifest; physical two-host operation remains unqualified.
+
+## Authorized placement reservation
+
+`createPlacementScheduler({ context, hosts, isAuthorized })` accepts a trusted,
+current host inventory and a read-only check for existing resource-owner grants.
+`place(workload, principal)` revalidates the workload against the reviewed
+device and processor context. In inventory order it selects a host with the
+declared application and processor code pins, matching asset references,
+minimum runtimes, required resources and sharing destinations. It checks
+compute, memory and concurrent-workload quotas before asking the owner checker
+about each host-scoped resource operation. Missing or denied optional resources
+are reported as omitted; required denial rejects that candidate. A successful
+selection reserves the declared budget until `release(placementId)`; release is
+idempotent. Invalid manifests, principal scope and host inventories reject.
+
+The scheduler does not establish host trust, verify installed bytes, issue or
+renew grants, launch an application, serialize state or react to host loss.
+Those remain obligations of the trusted orchestrator and later runtime steps.
+The packed consumer tests deterministic selection, owner denial and quota
+release against the embedded temperature workload. Physical two-host execution
+and handoff remain under R09.
 
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
