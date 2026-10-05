@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 34,
+  "revision": 35,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2919,24 +2919,24 @@
       ]
     },
     {
-      "id": "pending-B01",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "storage-retention-contract-2026-10-05",
+      "revision": "containing B01 contract commit, base 131e272",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "contract"
+      ],
       "tasks": [
         "B01"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/RELEASE-CONTRACT.md"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Define data retention and storage contracts. Decide what is persisted for identity, grants, profiles, configuration and telemetry; default live routes create no recorded history.",
-      "scope": "B01 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "Static source and contract review on macOS 26.5.2 at base 131e272; no persistent storage qualification claimed",
+      "reproduction": "Review browser/native/desktop identity, pairing, preference, replay and route stores against the B01 storage table; node tools/audit-platform-records.mjs; exact candidate repository commit gates",
+      "scope": "B01 contract only: explicit per-purpose storage, owner, retention, expiry, grant non-restoration, zero default live recording and opt-in telemetry/audit limits. Current native expired-ticket cleanup and desktop replay expiry/delete gaps remain open under B02/B05/S15/V11; no persistent service or physical qualification claim",
       "failure": null,
-      "equipment": [
-        "Disposable scoped storage harness"
-      ]
+      "equipment": []
     },
     {
       "id": "pending-B02",
@@ -8864,7 +8864,7 @@
     {
       "id": "B01",
       "records": [
-        "pending-B01"
+        "storage-retention-contract-2026-10-05"
       ],
       "dependencies": [
         "M01",

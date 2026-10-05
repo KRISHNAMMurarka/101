@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 61 completed with recorded evidence; 211 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 62 completed with recorded evidence; 210 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -253,7 +253,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### B — Opted-in history, persistent state and jobs
 
-- [ ] **B01 — Define data retention and storage contracts.** Decide what is persisted for identity, grants, profiles, configuration and telemetry; default live routes create no recorded history.
+- [x] **B01 — Define data retention and storage contracts.** Decide what is persisted for identity, grants, profiles, configuration and telemetry; default live routes create no recorded history. [Storage contract](RELEASE-CONTRACT.md#data-retention-and-storage-contract).
 - [ ] **B02 — Implement bounded telemetry/history.** Opted-in batching, expiry, backpressure, quotas and offline upload preserve source time/quality without starving live controls.
 - [ ] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority.
 - [ ] **B04 — Implement durable job evidence where required.** Print/recording/long-running tasks have ownership, idempotency, cancellation and restart state appropriate to their profile.
