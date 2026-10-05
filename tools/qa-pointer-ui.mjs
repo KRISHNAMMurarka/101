@@ -58,6 +58,14 @@ try {
   const sourceContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
   const receiverContext = await browser.newContext({ viewport: { width: 1280, height: 960 }, reducedMotion: 'reduce' });
   await Promise.all([observeActualPeers(sourceContext), observeActualPeers(receiverContext), observeActualIdentityDatabases(sourceContext), observeActualIdentityDatabases(receiverContext)]);
+  await receiverContext.addInitScript(() => {
+    window.__qaPointerPollingPaused = false;
+    const interval = window.setInterval.bind(window);
+    window.setInterval = (callback, delay, ...args) => typeof callback !== 'function' ? interval(callback, delay, ...args) : interval(() => {
+      if (delay === 10 && window.__qaPointerPollingPaused) return;
+      if (typeof callback === 'function') callback(...args);
+    }, delay);
+  });
   if (costMode) await Promise.all([observeTraffic(sourceContext), observeTraffic(receiverContext)]);
   const source = await sourceContext.newPage(), receiver = await receiverContext.newPage();
   pages.push(source, receiver);
@@ -128,6 +136,12 @@ try {
     return point();
   }
   await pair(); stage = 'actual pointer and keyboard resource delivery'; await near(0.5, 0.5, false);
+  stage = 'incoming pointer renders without waiting for the receiver polling timer';
+  await receiver.evaluate(() => { window.__qaPointerPollingPaused = true; });
+  await sourcePad.focus(); await source.keyboard.press('ArrowRight');
+  await near(0.52, 0.5, false);
+  await receiver.evaluate(() => { window.__qaPointerPollingPaused = false; });
+  await source.keyboard.press('ArrowLeft'); await near(0.5, 0.5, false);
   let bounds = await sourcePad.boundingBox();
   const padPoint = (x, y) => ({ x: bounds.x + bounds.width * x, y: bounds.y + bounds.height * y });
   let anchor = padPoint(0.2, 0.3); await source.mouse.move(anchor.x, anchor.y); await source.mouse.down();

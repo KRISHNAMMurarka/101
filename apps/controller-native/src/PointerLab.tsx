@@ -10,6 +10,7 @@ import {
 import { createNativeIdentityStore, nativeEndpointCrypto } from './native-identity.ts';
 import { space, type, useTheme } from './theme.ts';
 import { Button } from './ui.tsx';
+import { applyPointerTouches } from './pointer-touch.ts';
 
 type Session = {
   generation: number; epoch: string; invitation: ReceiverInvitation;
@@ -17,10 +18,6 @@ type Session = {
   timer?: ReturnType<typeof setInterval>; detach: (() => void)[]; answered: boolean; confirmed: boolean; admitted: boolean;
   statsPending: boolean; lastStatsAt: number; missingStats: number;
 };
-function touchId(value: unknown): number | undefined {
-  const id = typeof value === 'number' ? value : typeof value === 'string' && /^\d+$/.test(value) ? Number(value) : NaN;
-  return Number.isSafeInteger(id) && id >= 0 ? id : undefined;
-}
 
 /** Local general pointer source, deliberately initiating its own native RTC channels. */
 export default function PointerLab({ onClose }: { onClose: () => void }) {
@@ -338,11 +335,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
   };
   const touches = (event: NativeSyntheticEvent<NativeTouchEvent>, action: 'begin' | 'move' | 'end') => {
     const driver = input(); if (!driver) return;
-    for (const touch of event.nativeEvent.changedTouches) {
-      const id = touchId(touch.identifier); if (id === undefined) continue;
-      if (action === 'end') driver.end(id);
-      else driver[action](id, touch.locationX, touch.locationY, pad.current.width, pad.current.height);
-    }
+    applyPointerTouches(driver, event.nativeEvent.changedTouches, action, pad.current);
   };
   const release = () => { input()?.release(); setContact(false); setPadActive(false); };
   const text = { color: t.text };
@@ -413,11 +406,12 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         {confirmed && <Text accessibilityLiveRegion="polite" style={[type.body, text]}>You allowed this matching code. Both owners must allow the connection before pointer control can be selected.</Text>}
       </View>}
       <View
+        pointerEvents="box-only"
         accessible accessibilityLabel="Relative touch pad. Slide to move the pointer and lift to release. Direction buttons below provide the same movement."
         accessibilityState={{ disabled: !ready }}
         onLayout={event => { const { width, height } = event.nativeEvent.layout; pad.current = { width, height }; }}
         onStartShouldSetResponder={() => ready} onMoveShouldSetResponder={() => ready}
-        onResponderTerminationRequest={() => true} onResponderTerminate={release}
+        onResponderTerminationRequest={() => false} onResponderTerminate={release}
         onTouchStart={event => { if (ready) setPadActive(true); touches(event, 'begin'); }} onTouchMove={event => touches(event, 'move')}
         onTouchEnd={event => { touches(event, 'end'); setPadActive(event.nativeEvent.touches.length > 0); }} onTouchCancel={release}
         style={{ minHeight: 250, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: ready ? t.lineStrong : t.line, backgroundColor: contact ? t.surfacePressed : t.surface, alignItems: 'center', justifyContent: 'center', opacity: ready ? 1 : 0.5 }}

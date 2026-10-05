@@ -119,6 +119,13 @@ export default function PointerLab() {
         setMessage('Connection verified. The receiver can now select its resources.');
       }
     });
+    // The receiver queues validated observations before this subscription runs.
+    // Deliver and render immediately; the timer still owns pending/rate-limited
+    // delivery, clock probes and expiry when no packets arrive.
+    const detachInput = surface ? auth.onData(() => {
+      if (sessionRef.current?.peer !== peer) return;
+      surface.tick(); update();
+    }) : () => {};
     const timer = window.setInterval(() => {
       const selected = sessionRef.current; if (selected?.peer !== peer) return;
       if (!selected.admitted && !receiverInvitationCurrent(target, Date.now())) { stop(); setMessage('Invitation expired. Create a fresh invitation.'); return; }
@@ -126,7 +133,7 @@ export default function PointerLab() {
       provider?.tick(); surface?.tick(); update();
     }, 10);
     const session: Session = { peer, auth, invitation: target, confirmed: false, admitted: false, epoch: target.epoch, provider, surface, capture, dispose() {
-      clearInterval(timer); detach(); provider?.stop(); surface?.stop(); auth.stop(); void peer.disconnect();
+      clearInterval(timer); detachInput(); detach(); provider?.stop(); surface?.stop(); auth.stop(); void peer.disconnect();
     } };
     sessionRef.current = session; return session;
   };
