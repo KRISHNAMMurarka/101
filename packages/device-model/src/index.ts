@@ -32,3 +32,5 @@ export type { DiscoveryStage, DiscoveryScope, DiscoveryEvidence, DiscoveryRecove
   DiscoveryCandidate, DiscoveryAssessment, DiscoveryReceiptVerifier } from './discovery.ts';
 export { INPUT_PROFILE_IDS, getInputProfile } from './input-profile.ts';
 export type { InputProfile, InputProfileId } from './input-profile.ts';
+export { parseProcessorManifest } from './processor-manifest.ts';
+export type { ProcessorAsset, ProcessorManifest, ProcessorPort } from './processor-manifest.ts';

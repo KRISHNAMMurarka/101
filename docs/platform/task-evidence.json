@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 37,
+  "revision": 38,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2544,24 +2544,31 @@
       ]
     },
     {
-      "id": "pending-P01",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "processor-manifest-registry-2026-10-05",
+      "revision": "containing P01 commit, base bf52eb9; immutable SDK producer tree 34f759272e2dd1f5a7836077b851d8216154be28",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P01"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/processor-manifest.test.ts",
+        "packages/device-runtime/src/processor-registry.test.ts",
+        "tests/device-pipelines.test.ts",
+        "docs/platform/receipts/2026-10-05-p01-processor-manifest.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Define processor manifests/registry. Input/output schemas, units/frames, version, configuration, state/reset, asset/license and compute/privacy budgets resolve to pinned trusted code.",
-      "scope": "P01 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical sensor qualification",
+      "reproduction": "node --experimental-strip-types --test packages/device-model/src/processor-manifest.test.ts packages/device-runtime/src/processor-registry.test.ts tests/device-pipelines.test.ts; node tools/build-sdk.mjs 34f759272e2dd1f5a7836077b851d8216154be28; node tools/qa-sdk-consumer.mjs release/sdk-eLmLNX/manifest.json; exact candidate repository gates",
+      "scope": "P01 only: bounded versioned manifest, code/source digest and per-asset license pins, host-trusted registry with exact lookup and validated configuration/I-O, real Celsius threshold source caller and clean packed SDK consumers. The host binds factory code to reviewed bytes; no remote code execution, grant, measured budget enforcement or physical processor qualification. P02/P08/P09/S14 remain open.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-P02",
@@ -8604,7 +8611,7 @@
     {
       "id": "P01",
       "records": [
-        "pending-P01"
+        "processor-manifest-registry-2026-10-05"
       ],
       "dependencies": [
         "M01",

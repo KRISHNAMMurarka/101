@@ -6,3 +6,5 @@ export type * from "./types.ts";
 export type { Evidence, EffectEvidence, HandlerResult, OperationRecord, OperationState, Result } from "./scheduler.ts";
 export { chunkResource, readVerifiedResource, ResourceTransferError } from './resource.ts';
 export type { ResourceChunk, ResourceReadScope, ResourceReadRequest, ResourceReadGrant, ReadVerifiedResourceOptions } from './resource.ts';
+export { createProcessorRegistry } from './processor-registry.ts';
+export type { ProcessorFrame, ProcessorImplementation, ProcessorRequest, ResolvedProcessor, TrustedProcessorRegistration } from './processor-registry.ts';

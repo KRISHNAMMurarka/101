@@ -190,6 +190,10 @@ import { parseDiscoveryCandidate, assessDiscoveryCandidate } from '@101/device-m
 import type { DiscoveryCandidate, DiscoveryAssessment, DiscoveryScope } from '@101/device-model';
 import { getInputProfile, INPUT_PROFILE_IDS } from '@101/device-model';
 import type { InputProfile } from '@101/device-model';
+import { parseProcessorManifest } from '@101/device-model';
+import type { ProcessorManifest } from '@101/device-model';
+import { createProcessorRegistry } from '@101/device-runtime';
+import type { ResolvedProcessor } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -203,6 +207,10 @@ import '@101/transport-webrtc/dist/peer.js';
 const descriptor: DeviceDescriptor = parseDeviceDescriptor({ schemaVersion: 1, id: 'external-fixture', label: 'External fixture', revision: 1, adapter: { id: 'example:fixture', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [] });
 const inputProfile: InputProfile = getInputProfile(INPUT_PROFILE_IDS[0]);
 void inputProfile;
+const manifestParser: (input: unknown) => Readonly<ProcessorManifest> = parseProcessorManifest;
+const registryFactory: typeof createProcessorRegistry = createProcessorRegistry;
+let resolvedProcessor: ResolvedProcessor | undefined;
+void [manifestParser, registryFactory, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -323,8 +331,25 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
+  const processorSource = new TextEncoder().encode('packed-reviewed-processor');
+  const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
+    byte => byte.toString(16).padStart(2, '0')).join('');
+  const processorManifest = model.parseProcessorManifest({ schemaVersion: 1, id: 'example:packed-processor',
+    version: '1.0.0', codeSha256: processorPin,
+    inputs: [{ id: 'temperature', value: { type: 'scalar', unit: 'Cel', min: -40, max: 125 } }],
+    outputs: [{ id: 'switch', value: { type: 'boolean' } }],
+    configuration: { type: 'record', fields: { threshold: { type: 'scalar', unit: 'Cel', min: -40, max: 125 } } },
+    state: { mode: 'stateless' }, assets: [], license: 'MIT',
+    budgets: { maxComputeMs: 5, maxMemoryBytes: 65536, privacy: 'local-only' } });
+  const processorRegistry = sdk.createProcessorRegistry();
+  await processorRegistry.registerTrusted({ manifest: processorManifest, source: processorSource,
+    factory: configuration => ({ process: inputs => ({ switch: inputs.temperature >= configuration.threshold }), reset() {} }) });
+  const processor = processorRegistry.resolve({ id: processorManifest.id, version: processorManifest.version,
+    codeSha256: processorPin, configuration: { threshold: 30 } });
+  check(processor.process({ temperature: 31 }).switch === true &&
+    processor.process({ temperature: 29 }).switch === false, 'Packed processor registry did not validate and run the pinned factory');
   const shareInvitation = web.createReceiverInvitation({ applicationId: 'packed', sessionId: 'session', now: 100,
     randomBytes: length => new Uint8Array(length).fill(5) });
   const link = web.encodeReceiverInvitationLink(shareInvitation, 'https://example.com/pointer-lab');

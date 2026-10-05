@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { createPointerPipeline, runPointerExample } from '../examples/device-pipelines/pointer.ts';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '../examples/device-pipelines/sensor-feedback.ts';
 import { createTemperatureThreshold } from '../examples/device-pipelines/threshold.ts';
-import { parseObservationTiming, observationAgeBounds } from '@101/connect';
+import { createProcessorRegistry, parseObservationTiming, observationAgeBounds } from '@101/connect';
 import type { AuthorizationRequest } from '@101/connect';
 
 test('the pointer example maps normalized coordinates to the destination dimensions', () => {
@@ -200,6 +201,41 @@ test('hysteresis emits stable set-state commands with monotonic operation IDs', 
   assert.equal(threshold.evaluate(29), undefined);
   assert.equal(threshold.evaluate(31.25), true);
   assert.throws(() => createTemperatureThreshold({ unit: 'K', onAt: 30, offAt: 28, revision: 1 }), RangeError);
+});
+
+test('the reviewed threshold source resolves through the pinned processor registry', async () => {
+  const registry = createProcessorRegistry();
+  const manifest = {
+    schemaVersion: 1, id: 'example:temperature-threshold', version: '1.0.0',
+    codeSha256: 'dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793',
+    inputs: [{ id: 'temperature', value: { type: 'scalar', unit: 'Cel', min: -40, max: 125 } }],
+    outputs: [{ id: 'switch', value: { type: 'boolean' } }],
+    configuration: { type: 'record', fields: {
+      onAt: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
+      offAt: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
+    } },
+    state: { mode: 'resettable', resetOn: ['input-loss', 'stop', 'reconfigure'] },
+    assets: [], license: 'MIT',
+    budgets: { maxComputeMs: 5, maxMemoryBytes: 65536, privacy: 'local-only' },
+  };
+  await registry.registerTrusted({ manifest,
+    source: readFileSync(new URL('../examples/device-pipelines/threshold.ts', import.meta.url)),
+    factory(configuration) {
+      const { onAt, offAt } = configuration as { onAt: number; offAt: number };
+      const threshold = createTemperatureThreshold({ unit: 'Cel', onAt, offAt, revision: 1 });
+      return { process(inputs) {
+        const next = threshold.evaluate(inputs.temperature as number);
+        return next === undefined ? undefined : { switch: next };
+      }, reset() { threshold.reset(); } };
+    },
+  });
+  const processor = registry.resolve({ id: manifest.id, version: manifest.version,
+    codeSha256: manifest.codeSha256, configuration: { onAt: 30, offAt: 28 } });
+  assert.deepEqual(processor.process({ temperature: 31 }), { switch: true });
+  assert.equal(processor.process({ temperature: 29 }), undefined);
+  assert.deepEqual(processor.process({ temperature: 27 }), { switch: false });
+  processor.reset();
+  assert.equal(processor.process({ temperature: 29 }), undefined);
 });
 
 test('a rejected output admission does not suppress a later authorized set-state command', () => {

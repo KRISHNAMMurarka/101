@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "task": "P01",
+  "result": "pass",
+  "sourceTree": "34f759272e2dd1f5a7836077b851d8216154be28",
+  "thresholdSourceSha256": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+  "sdkArtifact": "release/sdk-eLmLNX/manifest.json",
+  "sdkManifestSha256": "ed77c60a982357b1b28700a832a7bebde7f914a2ed145204258e1724486ec195",
+  "consumerQaToolSha256": "ec5e577183ce0acb78a397e9e668c6dc6c6db371ddb9138699d7411e800a6a3c",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused manifest, registry and actual threshold tests: 20 passed",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "Closed processor manifest, pinned host registry, validated configuration and I/O, actual Celsius threshold first caller and packed public SDK consumer. Source-byte digest does not attest an arbitrary factory; the trusted host must bind factory code to reviewed bytes. Budgets and reset policy are declared here; graph validation, isolation, enforcement and physical accuracy remain open.",
+  "published": false
+}

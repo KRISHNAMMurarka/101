@@ -266,6 +266,33 @@ provenance, and the embedded temperature processor appends its versioned
 configuration step. The interval does not certify the producer's capture claim
 or physical end-to-end latency.
 
+## Processor manifests and trusted registry
+
+`parseProcessorManifest()` accepts a closed, bounded schema-1 declaration with
+an exact ID, version and lowercase SHA-256 code pin; named input/output value
+schemas (including units and frames); a record configuration schema; stateless
+or explicit input-loss/stop/reconfigure reset behavior; pinned asset references
+with individual licenses; a code license; and declared compute, memory and
+privacy budgets. The manifest is
+inert. It neither imports code nor grants access to a device, asset or network.
+
+`createProcessorRegistry()` is populated by trusted host code, not remote
+descriptions. Registration verifies the supplied reviewed source bytes against
+the manifest pin. The host must bind the supplied factory to those same vetted
+bytes; a digest of accompanying bytes cannot prove what an arbitrary function
+executes. Resolution requires the exact ID, version and pin and validates the
+configuration. Each call validates named input and output values against the
+manifest. The caller must invoke `reset()` on input loss, stop and reconfigure
+for a resettable processor. Compute/memory declarations are not runtime quotas,
+and `explicit-sharing` is not a sharing grant. P02, P08, P09 and S14 retain graph,
+failure, measured-budget and isolation acceptance.
+
+The current first caller registers the existing Celsius threshold implementation
+using the reviewed `threshold.ts` source pin, exercises hysteresis and reset,
+and rejects changed bytes. The packed public model/runtime/facade API is also
+checked in a clean external consumer. This proves the registry contract, not
+physical sensor accuracy or an installed third-party processor.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp
