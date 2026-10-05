@@ -9,8 +9,10 @@ export interface RouteGroupController {
   prepare(): Result<Readonly<{ prepared: readonly string[]; omittedOptional: readonly string[] }>>;
   activate(): Result<Readonly<{ active: readonly string[]; omittedOptional: readonly string[] }>>;
   start(): Result<Readonly<{ active: readonly string[]; omittedOptional: readonly string[] }>>;
+  /** Recreate every route with fresh authority after a policy pause; adopt the returned controller. */
+  resume(): Result<RouteGroupController>;
   stop(reason?: string): void;
-  status(): Readonly<{ state: 'idle' | 'prepared' | 'active' | 'closed'; omittedOptional: readonly string[] }>;
+  status(): Readonly<{ state: 'idle' | 'prepared' | 'active' | 'paused' | 'closed'; omittedOptional: readonly string[] }>;
 }
 
 /** Coordinates host-created routes; their concrete endpoint bindings still require host authority. */
@@ -18,6 +20,8 @@ export function createRouteGroupController(
   contract: unknown, devices: unknown, connect: (member: Readonly<RouteGroupMember>) => Connection,
 ): RouteGroupController {
   const plan = planRouteGroup(contract, devices);
+  const pinnedContract = Object.freeze({ schemaVersion: 1, id: plan.id, members: plan.members,
+    failure: plan.failure, recovery: plan.recovery });
   if (typeof connect !== 'function') throw new DeviceValidationError('route-group-connect', '$.connect');
   const byId = new Map<string, Connection>(), identities = new Set<Connection>();
   try {
@@ -27,7 +31,7 @@ export function createRouteGroupController(
       try { idle = route?.status?.().state === 'idle'; } catch { /* Invalid host route. */ }
       if (!route || typeof route.id !== 'string' || identities.has(route) ||
           typeof route.prepare !== 'function' || typeof route.activate !== 'function' ||
-          typeof route.stop !== 'function' || typeof route.status !== 'function' ||
+          typeof route.stop !== 'function' || typeof route.status !== 'function' || typeof route.onClose !== 'function' ||
           !idle) {
         if (route && typeof route.stop === 'function') {
           try { route.stop('construction-failed'); } catch { /* Continue releasing prior routes. */ }
@@ -44,14 +48,38 @@ export function createRouteGroupController(
   }
   const members = new Map(plan.members.map(member => [member.id, member]));
   const omitted = new Set<string>();
-  let state: 'idle' | 'prepared' | 'active' | 'closed' = 'idle', busy = false;
+  let state: 'idle' | 'prepared' | 'active' | 'paused' | 'closed' = 'idle', busy = false;
   const ordered = plan.startupOrder.map(id => ({ member: members.get(id)!, route: byId.get(id)! }));
+  const unsubscribe: Array<() => void> = [];
   const omission = () => Object.freeze(plan.startupOrder.filter(id => omitted.has(id)));
-  function stop(reason = 'group-stopped'): void {
-    if (state === 'closed') return;
-    state = 'closed';
+  function releaseRoutes(reason: string, next: 'paused' | 'closed'): void {
+    if (state === 'closed' || state === 'paused' && next === 'paused') return;
+    const wasPaused = state === 'paused';
+    state = next;
+    if (wasPaused) return;
+    for (const remove of unsubscribe.splice(0)) {
+      try { remove(); } catch { /* Continue releasing the members. */ }
+    }
     for (const { route } of [...ordered].reverse()) {
       try { route.stop(reason); } catch { /* Continue releasing the remaining members. */ }
+    }
+  }
+  function stop(reason = 'group-stopped'): void { releaseRoutes(reason, 'closed'); }
+  function pause(reason: string): void { releaseRoutes(reason, 'paused'); }
+  function onLost(id: string): void {
+    if (state !== 'active' || omitted.has(id)) return;
+    const member = members.get(id)!;
+    const policy = member.required ? plan.recovery.required : plan.recovery.optional;
+    if (policy === 'pause') { pause('member-lost'); return; }
+    if (policy === 'stop-all') {
+      stop('member-lost');
+      return;
+    }
+    omitted.add(id);
+    for (const { member: dependent, route } of ordered) {
+      if (omitted.has(dependent.id) || !dependent.startAfter.some(prerequisite => omitted.has(prerequisite))) continue;
+      omitted.add(dependent.id);
+      try { route.stop('dependency-lost'); } catch { stop('dependency-stop-failed'); return; }
     }
   }
   function abort(reason: string): { ok: false; reason: string } { stop('group-failed'); return failure(reason); }
@@ -116,6 +144,17 @@ export function createRouteGroupController(
           return abort('required-lost');
       } catch { return abort('required-lost'); }
       state = 'active';
+      for (const { member, route } of ordered) {
+        if (state !== 'active') break;
+        if (omitted.has(member.id)) continue;
+        try {
+          const remove = route.onClose(() => onLost(member.id));
+          if (state === 'active' && !omitted.has(member.id)) unsubscribe.push(remove);
+          else remove();
+        }
+        catch { return abort('close-observer-failed'); }
+      }
+      if (state !== 'active') return failure('member-lost');
       return success(Object.freeze({ active: Object.freeze(plan.startupOrder.filter(id => !omitted.has(id))),
         omittedOptional: omission() }));
     } finally { busy = false; }
@@ -124,6 +163,16 @@ export function createRouteGroupController(
     start(): ReturnType<RouteGroupController['start']> {
       const ready = prepare();
       return ready.ok ? activate() : ready;
+    },
+    resume(): Result<RouteGroupController> {
+      if (state !== 'paused') return failure('invalid-state');
+      try {
+        const replacement = createRouteGroupController(pinnedContract, devices, connect);
+        const started = replacement.start();
+        if (!started.ok) return failure(started.reason);
+        state = 'closed';
+        return success(replacement);
+      } catch { return failure('recovery-failed'); }
     },
     stop,
     status() { return Object.freeze({ state, omittedOptional: omission() }); },

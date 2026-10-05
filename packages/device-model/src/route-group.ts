@@ -18,6 +18,7 @@ export interface RouteGroupMember {
 export interface RouteGroupPlan {
   readonly id: string; readonly members: readonly RouteGroupMember[];
   readonly failure: Readonly<{ required: 'stop-all'; optional: 'continue-degraded' | 'stop-all' }>;
+  readonly recovery: Readonly<{ required: 'stop-all' | 'pause'; optional: 'continue-degraded' | 'stop-all' | 'pause' }>;
   readonly startupOrder: readonly string[];
   /** Declarations to request from resource owners; never grants. */
   readonly requiredOperations: readonly Readonly<{ member: string; side: 'source' | 'sink';
@@ -118,7 +119,8 @@ function parseMember(input: unknown, path: string, devices: ReadonlyMap<string, 
 /** Validate an inert multi-route contract; startup, grants and physical effects belong to the host. */
 export function planRouteGroup(input: unknown, deviceInputs: unknown): Readonly<RouteGroupPlan> {
   const value = object(snapshotJson(input), '$');
-  exact(value, ['schemaVersion', 'id', 'members', 'failure'], '$');
+  exact(value, value.recovery === undefined ? ['schemaVersion', 'id', 'members', 'failure'] :
+    ['schemaVersion', 'id', 'members', 'failure', 'recovery'], '$');
   if (value.schemaVersion !== 1) fail('route-group-version', '$.schemaVersion');
   const id = text(value.id, '$.id');
   if (!/^[A-Za-z][A-Za-z0-9._-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/.test(id)) fail('route-group-id', '$.id');
@@ -133,6 +135,11 @@ export function planRouteGroup(input: unknown, deviceInputs: unknown): Readonly<
   exact(failure, ['required', 'optional'], '$.failure');
   if (failure.required !== 'stop-all' || failure.optional !== 'continue-degraded' && failure.optional !== 'stop-all')
     fail('route-group-failure', '$.failure');
+  const recovery = value.recovery === undefined ? failure : object(value.recovery, '$.recovery');
+  if (value.recovery !== undefined) exact(recovery, ['required', 'optional'], '$.recovery');
+  if (recovery.required !== 'stop-all' && recovery.required !== 'pause' ||
+      recovery.optional !== 'continue-degraded' && recovery.optional !== 'stop-all' && recovery.optional !== 'pause')
+    fail('route-group-recovery', '$.recovery');
   const successors = new Map(members.map(member => [member.id, [] as string[]]));
   const degree = new Map(members.map(member => [member.id, member.startAfter.length]));
   for (const member of members) for (const prerequisite of member.startAfter) {
@@ -151,7 +158,8 @@ export function planRouteGroup(input: unknown, deviceInputs: unknown): Readonly<
     }
   }
   if (startupOrder.length !== members.length) fail('route-group-cycle', '$.members');
-  if (failure.optional === 'continue-degraded') for (const member of members.filter(item => item.required)) {
+  if (failure.optional === 'continue-degraded' || recovery.optional === 'continue-degraded')
+    for (const member of members.filter(item => item.required)) {
     const visited = new Set<string>(), pending = [...member.startAfter];
     for (let at = 0; at < pending.length; at += 1) {
       const prerequisite = pending[at]!;
@@ -161,7 +169,7 @@ export function planRouteGroup(input: unknown, deviceInputs: unknown): Readonly<
       if (!dependency.required) fail('route-group-required-depends-on-optional', `$.members.${member.id}.startAfter`);
       pending.push(...dependency.startAfter);
     }
-  }
+    }
   const routes = new Set<string>();
   for (const member of members) {
     const key = [member.from.deviceId, member.from.capability, member.to.deviceId, member.to.capability].join('\0');
@@ -175,5 +183,7 @@ export function planRouteGroup(input: unknown, deviceInputs: unknown): Readonly<
       capability: member.to.capability, operation: member.to.operation, purpose: member.consent.purpose }),
   ]));
   return Object.freeze({ id, members, failure: Object.freeze({ required: 'stop-all', optional: failure.optional as 'continue-degraded' | 'stop-all' }),
+    recovery: Object.freeze({ required: recovery.required as 'stop-all' | 'pause',
+      optional: recovery.optional as 'continue-degraded' | 'stop-all' | 'pause' }),
     startupOrder: Object.freeze(startupOrder), requiredOperations });
 }

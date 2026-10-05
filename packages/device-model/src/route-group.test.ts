@@ -54,6 +54,15 @@ test('optional member may degrade only when no required member depends on it', (
   const unsafe = { ...contract, members: [{ ...contract.members[0], required: false }, contract.members[1]] };
   assert.throws(() => plan!(unsafe, devices), model.DeviceValidationError);
   assert.doesNotThrow(() => plan!({ ...unsafe, failure: { required: 'stop-all', optional: 'stop-all' } }, devices));
+  assert.throws(() => plan!({ ...unsafe, failure: { required: 'stop-all', optional: 'stop-all' },
+    recovery: { required: 'pause', optional: 'continue-degraded' } }, devices), model.DeviceValidationError);
+});
+
+test('later-loss policy can pause for a fresh authorized attempt', () => {
+  const result = plan!({ ...contract, recovery: { required: 'pause', optional: 'pause' } }, devices);
+  assert.deepEqual(result.recovery, { required: 'pause', optional: 'pause' });
+  assert.throws(() => plan!({ ...contract, recovery: { required: 'continue-degraded', optional: 'pause' } }, devices),
+    model.DeviceValidationError);
 });
 
 test('missing consent, unsafe compensation and untyped safe command fail closed', () => {

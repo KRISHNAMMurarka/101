@@ -386,8 +386,19 @@ failure. Compensation does not undo physical effects. Safe-state policy is
 either provider release or a typed command value that requires fresh owner
 authority; the controller does not dispatch that command or claim a verified
 physical state. The embedded temperature example supplies the concrete two-leg
-contract; packed consumer tests bind and activate both routes. Later route loss
-and cross-host recovery remain R03/R09 work.
+contract; packed consumer tests bind and activate both routes.
+
+An optional `recovery` block selects what happens after an active route closes:
+`{ required: 'stop-all' | 'pause', optional: 'continue-degraded' | 'stop-all' | 'pause' }`.
+Without it, the controller uses the startup `failure` policy. A degraded group
+closes optional dependents and records them in `status().omittedOptional`; a
+required loss or stop-all policy closes every remaining route. Pause also closes
+every route and cancels its queued commands. `resume()` returns a newly prepared
+and activated controller with fresh host-created routes and owner grants; callers
+must adopt that returned controller. A failed resume leaves the original group
+paused. Recovered routes do not replay prior commands or claim that earlier
+physical effects were undone. Cross-host recovery and measured handoff remain
+R09 work.
 
 ## Workload requirements
 

@@ -516,13 +516,20 @@ export async function checkRuntime() {
         apply() { deliveries.push('actuate'); }, release() { releases.push('actuate'); } });
       for (const handle of [sensorHandle, derivedHandle, processorHandle, relayHandle])
         groupRuntime.setReadiness(handle, 'available');
-      const group = runtime.createRouteGroupController({ schemaVersion: 1, id: routeGroup.groupPlan.id,
-        members: routeGroup.groupPlan.members, failure: routeGroup.groupPlan.failure },
-        [sensorDeviceForGroup, thresholdDeviceForGroup, relayDeviceForGroup], member => groupRuntime.route({
+      const groupRoutes = new Map();
+      const connectGroupMember = member => {
+        const route = groupRuntime.route({
           from: member.id === 'measure' ? sensorHandle : derivedHandle,
           to: member.id === 'measure' ? processorHandle : relayHandle,
           principalId: 'packed-owner', applicationId: 'packed-group', sessionId: 'packed-local',
-        }));
+        });
+        groupRoutes.set(member.id, route);
+        return route;
+      };
+      const groupContract = { schemaVersion: 1, id: routeGroup.groupPlan.id,
+        members: routeGroup.groupPlan.members, failure: routeGroup.groupPlan.failure };
+      const groupDevices = [sensorDeviceForGroup, thresholdDeviceForGroup, relayDeviceForGroup];
+      const group = runtime.createRouteGroupController(groupContract, groupDevices, connectGroupMember);
       check(group.prepare().ok && grants.join(',') === 'temperature-threshold,simulated-relay',
         'Packed group did not prepare both owner grants');
       groupRuntime.publish(sensorHandle, 30); groupRuntime.flush();
@@ -532,6 +539,20 @@ export async function checkRuntime() {
       check(deliveries.join(',') === 'measure,actuate', 'Packed group did not deliver both ordered routes');
       group.stop();
       check(releases.join(',') === 'actuate,measure', 'Packed group did not compensate active routes in reverse order');
+      const pausing = runtime.createRouteGroupController({ ...groupContract,
+        recovery: { required: 'pause', optional: 'pause' } }, groupDevices, connectGroupMember);
+      check(pausing.start().ok, 'Packed group pause fixture did not start');
+      const oldOutput = groupRoutes.get('actuate');
+      check(groupRuntime.publish(derivedHandle, true, { operationId: '2', deadline: 500 }).ok,
+        'Packed group did not queue a reliable command');
+      groupRuntime.revoke(groupRoutes.get('measure'));
+      check(pausing.status().state === 'paused' && oldOutput.status().state === 'closed' &&
+        oldOutput.operations().find(item => item.id === '2')?.state === 'cancelled',
+        'Packed group loss did not pause and cancel a queued command');
+      const resumedGroup = pausing.resume();
+      check(resumedGroup.ok && resumedGroup.value.status().state === 'active' &&
+        groupRoutes.get('actuate') !== oldOutput, 'Packed group did not resume with fresh routes and grants');
+      resumedGroup.value.stop(); pausing.stop();
     } finally { groupRuntime.close(); }
     const localRuntime = { platform: 'node', minimumVersion: '24.0.0' };
     const workloadInput = { schemaVersion: 1, id: 'example:packed-workload', version: '1.0.0',

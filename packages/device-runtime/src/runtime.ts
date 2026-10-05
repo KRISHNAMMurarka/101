@@ -304,6 +304,7 @@ class EmbeddedConnection implements Connection {
   readonly id: string;
   private readonly request: RouteRequest;
   private state: "idle" | "prepared" | "active" | "closed" = "idle";
+  private readonly closeListeners = new Set<(reason: string) => void>();
   private reason?: string;
   private starting = false;
   private source?: Registration;
@@ -398,8 +399,19 @@ class EmbeddedConnection implements Connection {
     if (prepared) this.runtime.releasePrepared(this, this.leaseKey);
     for (const controller of this.inFlight.values()) controller.abort();
     this.inFlight.clear(); this.latestBusy = false;
+    const listeners = [...this.closeListeners]; this.closeListeners.clear();
+    for (const listener of listeners) try { listener(reason); } catch { /* A listener cannot reopen a closed route. */ }
     if (active) try { this.sink!.provider!.release(reason, Object.freeze({ routeId: this.id, partition: this.request.partition })); }
     catch { /* Authority is already revoked; release failures cannot reopen it. */ }
+  }
+  onClose(listener: (reason: string) => void): () => void {
+    if (typeof listener !== 'function') throw new TypeError('Close listener required');
+    if (this.state === 'closed') {
+      try { listener(this.reason ?? 'closed'); } catch { /* Already closed. */ }
+      return () => {};
+    }
+    this.closeListeners.add(listener);
+    return () => { this.closeListeners.delete(listener); };
   }
   status(): ReturnType<Connection["status"]> {
     return Object.freeze({ state: this.state, reason: this.reason, pending: this.latest.size + this.queue.pending });

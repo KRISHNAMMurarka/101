@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "task": "R03",
+  "requalifiedTasks": ["R01", "R02"],
+  "result": "pass",
+  "sourceTree": "47a0427d62ba252e196c135ce92dca1b9536b475",
+  "sdkArtifact": "release/sdk-oxDQsR/manifest.json",
+  "sdkManifestSha256": "4658a83f03c7d6305f18770c6109fbf025c3d5fb39d2b5468cc35749c11fbcc5",
+  "consumerQaToolSha256": "f7399326156affa7618c9b05da2e48b513a8b40b2e51606b90307229eef6de59",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Required and optional loss regressions failed on the old controller, then passed with terminal route notifications",
+    "Focused tests requalify R01 contract and R02 preparation/activation, and cover stop-all, degraded optional dependents, pause and fresh authorized resume with queued command cancellation",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed",
+    "Exact candidate repository gates: TypeScript, lint, unit, fresh build and rendered HTML passed"
+  ],
+  "scope": "R03 local embedded recovery/cancellation only. Terminal connection events close groups on required or stop-all loss, degrade optional branches with dependent cancellation, or pause all routes by explicit recovery policy. Pause releases subscriptions, leases and queued commands; resume creates new routes with fresh grants and returns a new controller for the host to adopt. No command replay, physical rollback or two-host recovery is claimed.",
+  "published": false
+}

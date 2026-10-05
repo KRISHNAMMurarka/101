@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 47,
+  "revision": 48,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2821,24 +2821,36 @@
       "supportRows": []
     },
     {
-      "id": "pending-R03",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "route-group-recovery-2026-10-05",
+      "revision": "containing R03 commit, base 0e60122; immutable SDK producer tree 47a0427d62ba252e196c135ce92dca1b9536b475",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
+        "R01",
+        "R02",
         "R03"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "packages/device-model/src/route-group.ts",
+        "packages/device-model/src/route-group.test.ts",
+        "packages/device-runtime/src/route-group-runtime.ts",
+        "packages/device-runtime/src/route-group-runtime.test.ts",
+        "packages/device-runtime/src/runtime.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-r03-route-group-recovery.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement group recovery/cancellation. Lost optional/required members degrade, pause or stop by policy; no orphan subscriptions, leases or queued commands remain.",
-      "scope": "R03 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium, Firefox and WebKit; local embedded host only",
+      "reproduction": "node --test --experimental-strip-types packages/device-model/src/route-group.test.ts packages/device-runtime/src/runtime.test.ts packages/device-runtime/src/route-group-runtime.test.ts; node tools/build-sdk.mjs 47a0427d62ba252e196c135ce92dca1b9536b475; node tools/qa-sdk-consumer.mjs release/sdk-oxDQsR/manifest.json; exact candidate repository gates",
+      "scope": "R03 local embedded group lifecycle and current R01/R02 requalification: the extended contract preserves prior routes, and preparation/activation pass their regressions and packed consumer checks on the same SDK tree. Terminal connection events trigger required stop, optional degradation including transitive dependent cancellation, optional stop-all or policy pause. Paused groups close all routes and queued work; resume returns a fresh controller after renewed grants and leases, without replaying commands or claiming physical rollback. Cross-host loss and measured handoff remain R09.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "workload-requirements-2026-10-05",
@@ -8791,7 +8803,8 @@
     {
       "id": "R01",
       "records": [
-        "route-group-contract-2026-10-05"
+        "route-group-contract-2026-10-05",
+        "route-group-recovery-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -8806,7 +8819,8 @@
     {
       "id": "R02",
       "records": [
-        "route-group-activation-2026-10-05"
+        "route-group-activation-2026-10-05",
+        "route-group-recovery-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -8821,7 +8835,7 @@
     {
       "id": "R03",
       "records": [
-        "pending-R03"
+        "route-group-recovery-2026-10-05"
       ],
       "dependencies": [
         "M01",

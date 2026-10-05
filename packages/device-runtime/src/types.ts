@@ -53,6 +53,8 @@ export interface Connection {
   /** Recheck authority and activate a prepared connection. */
   activate(): Result;
   start(): Result; stop(reason?: string): void; renew(principalId: string): Result;
+  /** Observe terminal route loss after its queues and lease have been released. */
+  onClose(listener: (reason: string) => void): () => void;
   status(): Readonly<{ state: "idle" | "prepared" | "active" | "closed"; reason?: string; pending: number }>;
   limits(): Readonly<{ maxHz: number; maxAgeMs: number; expiresAt: number }> | undefined;
   operations(): readonly OperationRecord[];

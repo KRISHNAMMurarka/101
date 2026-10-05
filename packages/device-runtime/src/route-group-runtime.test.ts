@@ -162,3 +162,90 @@ test('a host that starts a route during construction is rejected and stopped', (
   assert.deepEqual(h.released, ['actuate']);
   h.runtime.close();
 });
+
+test('required route loss stops the group and cancels queued dependent commands', () => {
+  const h = fixture(() => true);
+  const group = createGroup!(contract, [sensor, processor, relay], h.connect);
+  assert.equal(group.start().ok, true);
+  assert.equal(h.runtime.publish(h.derived, true, { operationId: '1', deadline: 500 }).ok, true);
+  assert.equal(h.connections.get('actuate')!.status().pending, 1);
+  h.runtime.revoke(h.connections.get('measure')!);
+  assert.equal(group.status().state, 'closed');
+  assert.equal(h.connections.get('actuate')!.status().state, 'closed');
+  assert.equal(h.connections.get('actuate')!.operations()[0].state, 'cancelled');
+  assert.equal(h.runtime.route({ from: h.derived, to: h.output,
+    principalId: 'owner', applicationId: 'example:feedback', sessionId: 'local' }).start().ok, true);
+  h.runtime.close();
+});
+
+test('optional route loss degrades and releases its lease without stopping required routes', () => {
+  const h = fixture(() => true);
+  const optional = { ...contract, members: [contract.members[0], { ...contract.members[1], required: false }] };
+  const group = createGroup!(optional, [sensor, processor, relay], h.connect);
+  assert.equal(group.start().ok, true);
+  h.runtime.revoke(h.connections.get('actuate')!);
+  assert.deepEqual(group.status(), { state: 'active', omittedOptional: ['actuate'] });
+  assert.equal(h.connections.get('measure')!.status().state, 'active');
+  assert.equal(h.runtime.route({ from: h.derived, to: h.output,
+    principalId: 'owner', applicationId: 'example:feedback', sessionId: 'local' }).start().ok, true);
+  group.stop(); h.runtime.close();
+});
+
+test('pause policy closes every route and resume obtains fresh routes and grants', () => {
+  const h = fixture(() => true);
+  const pausing = { ...contract, recovery: { required: 'pause', optional: 'pause' } };
+  const group = createGroup!(pausing, [sensor, processor, relay], h.connect);
+  assert.equal(group.start().ok, true);
+  assert.equal(h.runtime.publish(h.derived, true, { operationId: '1', deadline: 500 }).ok, true);
+  const oldOutput = h.connections.get('actuate')!;
+  h.runtime.revoke(h.connections.get('measure')!);
+  assert.equal(group.status().state, 'paused');
+  assert.equal(oldOutput.status().state, 'closed');
+  assert.equal(oldOutput.operations()[0].state, 'cancelled');
+  const resumed = group.resume();
+  assert.equal(resumed.ok, true);
+  if (!resumed.ok) throw new Error('Expected a fresh group');
+  assert.equal(resumed.value.status().state, 'active');
+  assert.notEqual(h.connections.get('actuate'), oldOutput);
+  assert.equal(h.grants.length, 8);
+  assert.deepEqual(group.resume(), { ok: false, reason: 'invalid-state' });
+  resumed.value.stop();
+  group.stop(); h.runtime.close();
+});
+
+test('stop-all recovery policy closes a required dependent when an optional input is lost', () => {
+  const h = fixture(() => true);
+  const stopAll = { ...contract, members: [{ ...contract.members[0], required: false }, contract.members[1]],
+    failure: { required: 'stop-all', optional: 'stop-all' },
+    recovery: { required: 'stop-all', optional: 'stop-all' } };
+  const group = createGroup!(stopAll, [sensor, processor, relay], h.connect);
+  assert.equal(group.start().ok, true);
+  h.runtime.setReadiness(h.source, 'unavailable');
+  assert.equal(group.status().state, 'closed');
+  assert.equal(h.connections.get('actuate')!.status().state, 'closed');
+  assert.deepEqual(h.released, ['actuate', 'measure']);
+  h.runtime.close();
+});
+
+test('degraded recovery stops transitive optional dependents and releases their leases', () => {
+  const h = fixture(() => true);
+  const spare = { ...relay, id: 'spare-relay' };
+  const spareSink = h.runtime.registerSink({ device: spare, capability: 'set-state',
+    apply() { h.delivered.push('spare'); }, release() { h.released.push('spare'); } });
+  h.runtime.setReadiness(spareSink, 'available');
+  const extra = { ...contract.members[1], id: 'spare', required: false,
+    to: { deviceId: 'spare-relay', capability: 'set-state', operation: 'invoke' }, startAfter: ['actuate'] };
+  const degraded = { ...contract, members: [contract.members[0], { ...contract.members[1], required: false }, extra] };
+  const spareRoute = h.runtime.route({ from: h.derived, to: spareSink,
+    principalId: 'owner', applicationId: 'example:feedback', sessionId: 'local' });
+  const group = createGroup!(degraded, [sensor, processor, relay, spare], member =>
+    member.id === 'spare' ? spareRoute : h.connect(member));
+  assert.equal(group.start().ok, true);
+  h.runtime.revoke(h.connections.get('actuate')!);
+  assert.deepEqual(group.status(), { state: 'active', omittedOptional: ['actuate', 'spare'] });
+  assert.equal(spareRoute.status().state, 'closed');
+  assert.equal(h.connections.get('measure')!.status().state, 'active');
+  assert.equal(h.runtime.route({ from: h.derived, to: spareSink,
+    principalId: 'owner', applicationId: 'example:feedback', sessionId: 'local' }).start().ok, true);
+  group.stop(); h.runtime.close();
+});
