@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 51,
+  "revision": 52,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3801,6 +3801,29 @@
       "equipment": [
         "Exact supported workload hosts; energy/thermal instrumentation"
       ]
+    },
+    {
+      "id": "embedded-bounds-2026-10-05",
+      "revision": "containing F07 local stress commit, base 25e02e8; QA tool SHA-256 f5fb63120d50fa8010705e20dd70895a277b03623089e7ebe7e46869feef5955",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "F07"
+      ],
+      "paths": [
+        "tools/qa-runtime-bounds.mjs",
+        "docs/platform/receipts/2026-10-05-f07-embedded-bounds.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0 with --expose-gc; embedded runtime local only",
+      "reproduction": "node --expose-gc tools/qa-runtime-bounds.mjs; exact candidate repository gates",
+      "scope": "Partial F07 embedded Node implementation bounds: 32 subscriber fan-out, 20,000 coalesced publications, 64 reliable operations, four hanging providers, hostile payload rejection and cancellation. WebRTC/native buffers, physical targets and supported workload capacity remain unqualified; F07 stays open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-F07",
@@ -9502,6 +9525,7 @@
     {
       "id": "F07",
       "records": [
+        "embedded-bounds-2026-10-05",
         "pending-F07"
       ],
       "dependencies": [],

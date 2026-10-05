@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "task": "F07",
+  "result": "pass",
+  "scope": "Partial F07 implementation/runtime evidence for the embedded Node device runtime only. One source fan-out reaches its 32-subscriber ceiling; 20,000 latest publications retain one slot per route and add no sustained heap growth above the 8 MiB guard; invalid payloads are rejected; 1,000 reliable events saturate a 64-operation queue and revocation cancels accepted work; four hanging providers consume the configured pending-delivery ceiling, abort on loss, and release admission only after settlement. This does not qualify WebRTC/native queues, supported capacity tiers, physical targets or a release workload. F07 remains open.",
+  "baseRevision": "25e02e8",
+  "qaToolSha256": "f5fb63120d50fa8010705e20dd70895a277b03623089e7ebe7e46869feef5955",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0 with --expose-gc; embedded runtime source imported locally; no network or device",
+  "reproduction": "node --expose-gc tools/qa-runtime-bounds.mjs",
+  "checks": {
+    "fanout": {
+      "routes": 32,
+      "publications": 20000,
+      "delivered": 32,
+      "heapBaseline": 9089392,
+      "heapAfterShortBurst": 9192592,
+      "heapAfterLongBurst": 9186160,
+      "retainedGrowthBytes": -6432,
+      "guardBytes": 8388608
+    },
+    "reliableQueue": {
+      "queueLimit": 64,
+      "accepted": 64,
+      "rejected": 936,
+      "cancelled": 64
+    },
+    "hangingProviders": {
+      "pendingProviderLimit": 4,
+      "initialCalls": 4,
+      "callsAfterRelease": 5,
+      "abortedContexts": 4,
+      "liveReplacementEffects": 1
+    }
+  },
+  "published": false
+}
