@@ -243,6 +243,16 @@ test("server-renders the dynamic Controller Lab", async () => {
   assert.match(html, /LATEST NORMALIZED FRAME/);
 });
 
+test('server-renders independent SDK inspection controls and recovery', async () => {
+  const response = await render('/studio/inspector');
+  const html = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(html, /Inspect the route/);
+  for (const label of ['Allow grant', 'Deny grant', 'Revoke grant', 'Reset runtime', 'Close runtime',
+    'Current resource graph', 'Bounded queue and sink evidence', 'Probe unsupported version', 'Redacted trace']) assert.ok(html.includes(label));
+  assert.match(html, /sample values, device labels and identity fields are excluded/);
+});
+
 test("server-renders optional specialist hardware with honest capability state", async () => {
   const response = await render("/studio/hardware");
   const html = await response.text();

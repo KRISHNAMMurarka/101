@@ -1,10 +1,10 @@
 # SDK and system master checklist
 
-Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 91 completed with recorded evidence; 181 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 94 completed with recorded evidence; 178 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -255,7 +255,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 - [x] **B01 — Define data retention and storage contracts.** Decide what is persisted for identity, grants, profiles, configuration and telemetry; default live routes create no recorded history. [Storage contract](RELEASE-CONTRACT.md#data-retention-and-storage-contract).
 - [ ] **B02 — Implement bounded telemetry/history.** Opted-in batching, expiry, backpressure, quotas and offline upload preserve source time/quality without starving live controls.
-- [ ] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority.
+- [x] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority. [SDK contract and local runtime evidence](receipts/2026-10-06-b03-settings-storage.json).
 - [ ] **B04 — Implement durable job evidence where required.** Print/recording/long-running tasks have ownership, idempotency, cancellation and restart state appropriate to their profile.
 - [ ] **B05 — Implement export/deletion and secret separation.** Authorized export omits credentials; deletion/expiry removes opted-in data and leaves policy-required redacted audit evidence only.
 - [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes.
@@ -269,8 +269,8 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **E05 — Implement UI/control description library.** Reusable boxes, text, controls, layout, styles and animation adapt to measured screens and input modes while retaining focus and accessibility.
 - [x] **E06 — Build project/connector/processor scaffolding.** Generated projects include schemas, permissions, lifecycle, tests and a running caller; clean generated consumers compile and execute. [Generator and packed consumer evidence](SDK.md#scaffold-a-local-sdk-project).
 - [x] **E07 — Provide simulator and fault-injection tools.** Developers replay bounded typed samples, simulate devices, revoke permissions and inject disconnect/loss without physical hardware. [Contract](SDK.md#local-device-simulator) and [packed consumer receipt](receipts/2026-10-05-e07-simulator.json).
-- [ ] **E08 — Provide developer inspection tools.** Studio explains graph, readiness, grants, queues, traces and version errors; personal payloads/secrets are redacted.
-- [ ] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101.
+- [x] **E08 — Provide developer inspection tools.** Studio explains graph, readiness, grants, queues, traces and version errors; personal payloads/secrets are redacted. [SDK contract and local runtime evidence](receipts/2026-10-06-e08-sdk-inspector.json).
+- [x] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101. [SDK contract and local runtime evidence](receipts/2026-10-06-e09-conformance.json).
 - [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation.
 - [ ] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access.
 - [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior.

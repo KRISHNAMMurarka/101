@@ -920,6 +920,43 @@ parser-only finite-number, relational, byte, depth and plain-object constraints.
 | Unresolved deliveries across the runtime | Default 256; configurable 1–4096 |
 | Ownership lease | Default 1500 ms; configurable 1–30000 ms |
 
+## Versioned owner settings
+
+`createSettingsStore({ ownerId, storage, availableDevices, minimumRevision? })` saves preferences and reviewed profile selections under `101.settings:<ownerId>`. The `SettingsStorage` port supplies `read` and an atomic `compareAndSwap`; `createIndexedDbSettingsStorage(indexedDB, databaseName)` implements both with actual local IndexedDB transactions. Call `close()` when its owning application unmounts. A store has no connection to route authorization, identity creation or secret storage.
+
+```ts
+import { createSettingsStore, createIndexedDbSettingsStorage } from '@101/connect';
+const storage = createIndexedDbSettingsStorage(indexedDB, 'my-owner-settings');
+const settings = createSettingsStore({ ownerId: 'owner', storage, availableDevices: () => [] });
+const loaded = await settings.load();
+if (loaded.ok) await settings.save(loaded.value.revision, {
+  preferences: { theme: 'system', handedness: 'right', motion: 'reduce' }, profiles: [],
+});
+storage.close();
+```
+
+Documents are bounded immutable JSON: version 2, owner, monotonic revision, three preferences and at most eight selections. Each selection has a local ID, device ID, profile ID/revision and finite scalar calibration (`scale`, `offset`). These choices cannot add code, grants, invitations, credentials or live payloads. A stale revision or simultaneous write returns `conflict`, preserving the accepted record. Storage failure returns `unavailable` without backend messages.
+
+The declared version 1 has `theme` and `handedness`; loading it atomically adds `motion: 'system'` and increments the revision. Unknown future versions, malformed records and foreign owners are preserved and return fixed failures. `availableDevices` is trusted current inventory; load atomically prunes selections for absent devices. `removeDevice` removes a selected device explicitly. `reset` explicitly discards this owner's choices, can recover corrupt/future data, preserves recognizable foreign records and advances known revisions.
+
+An in-process high-water mark rejects older records. Supply `minimumRevision` from a trusted boundary outside the restored settings backup to detect rollback after restart. Without that floor, an older valid preferences backup may load in a fresh process; it still supplies no authority. This SDK format does not migrate the legacy controller localStorage or desktop Hub settings file, and supplies no cross-device sync or configuration backup service. The packed `settings-storage` example defaults to simulated storage; the B03 browser receipt separately verifies actual IndexedDB persistence, concurrent transactions, migration, recovery and isolation.
+
+## Runtime inspector
+
+`createRuntimeInspector(options)` owns a public `DeviceRuntime` wrapper and exposes `snapshot()` and `close()`. Register resources, route and publish through `inspector.runtime`; host authorization, leases, schema validation and delivery stay in the runtime. `snapshot()` reports local resource/route aliases, readiness, schema/value/delivery summaries, requested operations, grant outcomes, queue bounds, negotiated limits, operation evidence and bounded action/error traces. `traceCapacity` defaults to 32 (maximum 256); `maxTrackedRoutes` defaults to 32 (maximum 128). Closed routes are retired before the route limit rejects further active work.
+
+Reports exclude descriptor IDs and labels, principals, applications, sessions, samples, provenance, arbitrary exception messages and arbitrary stop reasons. Operation IDs become local aliases; diagnostics use an allowlist of fixed codes. Snapshot data is immutable. Ambiguous stale admission can report readiness `unknown`; explicitly set readiness to recover a known state. Closing releases all owned routes/resources and subscriptions. This is an explicitly owned runtime, not a global observer of other applications.
+
+Studio's `/studio/inspector` runs the independent SDK with a typed event source and command sink. Keyboard actions exercise deny/allow/revoke, readiness loss/recovery, queue saturation/flush, observed local effects, schema/version rejection, expiry and teardown/reset. The fixture clock is explicit and its local effect supplies no physical-device qualification.
+
+## Independent extension conformance
+
+`runConnectorConformance(candidate, fixture)` and `runProcessorConformance(registration, fixture)` run outside 101 through public imports. Connector candidates provide reviewed source/sink descriptors and an explicit trusted factory implementing start/send/apply/release/stop, plus feedback for command evidence. The host hooks publish through an actual embedded runtime and instrument observable local effects and owned resources. Fixtures contain at least two distinct valid values and one invalid value. The current connector suite covers streaming unpartitioned resources with compatible delivery modes.
+
+Checks exercise manifests/schemas, denied and revoked resource grants, exact admission results, every supplied vector, reliable ordering/overflow or latest coalescing/rate limits, dispatch versus acknowledgement/observed evidence, disconnect, stop and idempotent cleanup. Processor checks use the trusted registry's exact source hash pin, invalid configuration/input rejection, caller-authored output vectors, fresh replay and each declared reset cause. The public `conformance` example includes healthy candidates and deliberate resource-leak/reset failures.
+
+Reports contain fixed check IDs, passed/failed/not-applicable outcomes, limits and limitations; they exclude payloads and private exception text. Limits are 32 fixture cases, 256 callbacks, 128 instrumented resources, one-second async waits and 1 MiB reviewed processor source. A passing report proves only the supplied deterministic fixtures for trusted in-process code. Synchronous hangs cannot be preempted, memory and uninstrumented resources are unmeasured, and physical behavior or plugin isolation still require their own qualification. Manifests and descriptions never load or select executable factories.
+
 ## Publication and scheduling
 
 `publish(handle, value, options?)` returns `{ ok: true, value: { accepted, rejected } }` or

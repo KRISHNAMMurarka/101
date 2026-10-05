@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 68,
+  "revision": 69,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7363,6 +7363,78 @@
         "Manual lift/recontact, complete Android acceptance and iPhone remain required for T08/T14"
       ],
       "supportRows": []
+    },
+    {
+      "id": "b03-local-sdk-2026-10-06",
+      "revision": "947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B03"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-b03-settings-storage.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node --experimental-strip-types --test packages/device-runtime/src/settings-store.test.ts; node tools/qa-settings-storage.mjs <fresh packed consumer directory>; node tools/build-sdk.mjs 947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354; node tools/qa-sdk-consumer.mjs <new manifest.json>; required exact candidate repository gates",
+      "scope": "Owner-scoped SDK preferences and profile choices only: declared v1/v2 migration, atomic actual IndexedDB writes, fresh installs, corruption/future preservation, explicit recovery, trusted rollback floor, concurrent conflicts and absent-device pruning. Records contain no identities, grants, secrets or live samples. Legacy native/Hub/browser preference migration, cross-device backup/sync and physical storage qualification remain separate.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "e08-local-sdk-2026-10-06",
+      "revision": "947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E08"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-e08-sdk-inspector.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node --experimental-strip-types --test packages/device-runtime/src/inspector.test.ts; fresh npm run build; QA_BASE_URL=http://localhost:<owned-port> node tools/qa-sdk-inspector.mjs; node tools/build-sdk.mjs 947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354; node tools/qa-sdk-consumer.mjs <new manifest.json>; required exact candidate repository gates",
+      "scope": "Public owned SDK runtime inspector and Studio graph/readiness/grant/queue/evidence/trace/schema-version diagnostics, bounded redacted immutable snapshots, keyboard recovery and390px layout, real typed fixture lifecycle in Chromium/WebKit. No global observation of other applications or physical qualification.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "e09-local-sdk-2026-10-06",
+      "revision": "947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E09"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-e09-conformance.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node --experimental-strip-types --test packages/device-runtime/src/conformance.test.ts; runConformanceExample from installed @101/connect/examples/conformance; node tools/build-sdk.mjs 947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354; node tools/qa-sdk-consumer.mjs <new manifest.json>; required exact candidate repository gates",
+      "scope": "Independent public trusted-in-process connector/processor conformance SDK: manifest/schema, exact pinned trusted factory, denied/revoked permission, reliable/latest delivery bounds, every supplied vector, command feedback, active stop/disconnect/immediate release and deterministic reset evidence. No physical-device, synchronous preemption, memory/resource instrumentation completeness or plugin-isolation certification.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9545,7 +9617,8 @@
     {
       "id": "B03",
       "records": [
-        "pending-B03"
+        "pending-B03",
+        "b03-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9703,7 +9776,8 @@
     {
       "id": "E08",
       "records": [
-        "pending-E08"
+        "pending-E08",
+        "e08-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9717,7 +9791,8 @@
     {
       "id": "E09",
       "records": [
-        "pending-E09"
+        "pending-E09",
+        "e09-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",

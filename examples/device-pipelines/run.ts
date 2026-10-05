@@ -10,6 +10,8 @@ import { runRichInputExample } from './rich-input.ts';
 import { runResourceDocumentExample } from './resource-documents.ts';
 import { runMediaDescriptionExample } from './media-description.ts';
 import { runDirectRecipeExample, runRecipeExample } from './recipe.ts';
+import { runConformanceExample } from './conformance.ts';
+import { runSettingsStorageExample } from './settings-storage.ts';
 
 console.log(JSON.stringify({
   pointer: runPointerExample(),
@@ -26,4 +28,6 @@ console.log(JSON.stringify({
   mediaDescription: runMediaDescriptionExample(),
   recipe: runRecipeExample(),
   directRecipe: runDirectRecipeExample(),
+  conformance: await runConformanceExample(),
+  settingsStorage: await runSettingsStorageExample(),
 }, null, 2));

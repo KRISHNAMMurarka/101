@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "sourceTree": "947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354",
+  "sdkArtifact": "release/sdk-rDw2Cl/manifest.json",
+  "sdkManifestSha256": "8dc99fb81ad6552ce43fcc10e2ac9dc2ab4985a26edf9915df3cc00d2c911dec",
+  "consumerQaToolSha256": "d8415129705b78d7d251be5a1a53a41030cce924d1976588252b7c6802a690fb",
+  "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+  "packedChecks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 6,
+      "files": 219,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass",
+      "source": [
+        {
+          "path": "packages/devkit/src/device-scaffold.ts",
+          "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+        },
+        {
+          "path": "tools/create-device-project.mjs",
+          "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+        }
+      ],
+      "project": "/tmp/101-sdk-consumer-eUzbC2/generated-device-project",
+      "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+      "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "guidance": {
+        "schema": "device-guidance.schema.json",
+        "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+        "generatedAssets": [
+          {
+            "path": "device-guidance.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+          },
+          {
+            "path": "device-guidance.schema.json",
+            "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+          },
+          {
+            "path": "src/devices.json",
+            "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+          },
+          {
+            "path": "src/recipe.json",
+            "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+          },
+          {
+            "path": "scripts/validate.mjs",
+            "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+          }
+        ],
+        "validation": {
+          "status": "pass",
+          "recipeId": "room-sensor:temperature-display",
+          "processorId": "room-sensor:threshold",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+        },
+        "rejectedAssets": [
+          "unknown-recipe-field",
+          "changed-processor-source",
+          "incompatible-selected-device"
+        ],
+        "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+      },
+      "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouch": true,
+        "independentRelease": true,
+        "capturedOutsideBounds": true,
+        "resizeCancellation": true,
+        "orientationCancellation": true,
+        "disconnectCaptureRelease": true,
+        "unmountCaptureRelease": true
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouchScroll": true,
+        "cancellation": true
+      }
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass",
+      "package": "@example/temperature-band-processor",
+      "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+      "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "operations": [
+        "subscribe",
+        "invoke"
+      ]
+    }
+  ],
+  "review": {
+    "initialTree": "798a99cdc6ea2c5ee79e4fec57877c2becdabd7d",
+    "finalTree": "947c0ef2c5a0b271c8c8876b8fe1eb0bd84fc354",
+    "result": "no outstanding material risk in targeted corrections"
+  },
+  "published": false,
+  "task": "B03",
+  "scope": "Owner-scoped SDK preferences and profile choices only: declared v1/v2 migration, atomic actual IndexedDB writes, fresh installs, corruption/future preservation, explicit recovery, trusted rollback floor, concurrent conflicts and absent-device pruning. Records contain no identities, grants, secrets or live samples. Legacy native/Hub/browser preference migration, cross-device backup/sync and physical storage qualification remain separate.",
+  "focusedUnitTests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "regressions": [
+    {
+      "case": "backend TypeError and foreign reset",
+      "old": "corrupt classification and overwriting foreign record",
+      "new": "unavailable and preserved wrong-owner row",
+      "redTests": 2
+    },
+    {
+      "case": "oversized schema-valid envelope",
+      "old": "4204-byte record accepted then unreadable",
+      "new": "invalid before CAS, no persisted row",
+      "redTests": 1
+    }
+  ],
+  "indexedDbBrowserChecks": [
+    {
+      "engine": "chromium",
+      "version": "149.0.7827.55",
+      "checks": {
+        "durableReload": true,
+        "atomicCompareAndSwap": true,
+        "migration": true,
+        "corruptionRecovery": true,
+        "futurePreservation": true,
+        "trustedRollbackFloor": true,
+        "ownerIsolation": true,
+        "removedDevicePruning": true,
+        "authorityRejected": true,
+        "retiredDatabase": true,
+        "injectedStorageDenial": true
+      },
+      "pageErrors": 0
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "checks": {
+        "durableReload": true,
+        "atomicCompareAndSwap": true,
+        "migration": true,
+        "corruptionRecovery": true,
+        "futurePreservation": true,
+        "trustedRollbackFloor": true,
+        "ownerIsolation": true,
+        "removedDevicePruning": true,
+        "authorityRejected": true,
+        "retiredDatabase": true,
+        "injectedStorageDenial": true
+      },
+      "pageErrors": 0
+    }
+  ],
+  "storageQaToolSha256": "bbf36ee3063e198706087a8582c2badc001470b756f586bd6c5b689a9b290a32"
+}

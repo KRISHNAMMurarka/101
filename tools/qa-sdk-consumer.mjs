@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -159,7 +159,7 @@ function installAndAudit(manifest) {
 
 const typeConsumer = String.raw`
 import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, createProcessorFailureController, createRecipeSession, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
-  decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
+  decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto, createSettingsStore, createIndexedDbSettingsStorage, createRuntimeInspector, runConnectorConformance, runProcessorConformance } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
@@ -188,6 +188,8 @@ import { createRichInputPipeline, runRichInputExample } from '@101/connect/examp
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
 import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
+import { runConformanceExample } from '@101/connect/examples/conformance';
+import { runSettingsStorageExample } from '@101/connect/examples/settings-storage';
 import { parseRecipe, resolveRecipe } from '@101/device-model';
 import type { Recipe, RecipeResolution } from '@101/device-model';
 import { parseMediaManifest, planMediaBinding } from '@101/device-model';
@@ -339,6 +341,8 @@ async function resourceConsumer(): Promise<Readonly<AssetReference>> {
   return parseAssetReference(reference);
 }
 void resourceConsumer;
+void [runConformanceExample, runSettingsStorageExample];
+void [createSettingsStore, createIndexedDbSettingsStorage, createRuntimeInspector, runConnectorConformance, runProcessorConformance];
 const described: MediaManifest = parseMediaManifest({ schemaVersion: 1, id: 'media:empty-output', tracks: [],
   renderTargets: [{ type: 'render-target', id: 'media:surface', media: 'video', geometry: { widthPx: 640, heightPx: 480, pixelRatio: 1 } }] });
 const mediaResult: MediaBindingResult = planMediaBinding(described, 'media:missing', 'media:surface', { source: {
@@ -426,6 +430,8 @@ import { runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
 import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
+import { runConformanceExample } from '@101/connect/examples/conformance';
+import { runSettingsStorageExample } from '@101/connect/examples/settings-storage';
 `;
 
 const runtimeChecks = String.raw`
@@ -436,6 +442,11 @@ export async function checkRuntime() {
   check(sdk.TouchContactSourceDriver === web.TouchContactSourceDriver && sdk.mountTouchContactSource === web.mountTouchContactSource, 'Touch public identity differs');
   check(sdk.GestureSourceDriver === web.GestureSourceDriver && sdk.mountGestureSource === web.mountGestureSource, 'Gesture public identity differs');
   check(sdk.createPenDetailProcessor === model.createPenDetailProcessor && sdk.createRotaryDeltaProcessor === model.createRotaryDeltaProcessor && sdk.createGamepadDetailProcessor === model.createGamepadDetailProcessor, 'Input detail public identity differs');
+  check(sdk.createSettingsStore === runtime.createSettingsStore && sdk.createIndexedDbSettingsStorage === runtime.createIndexedDbSettingsStorage && sdk.createRuntimeInspector === runtime.createRuntimeInspector && sdk.runConnectorConformance === runtime.runConnectorConformance && sdk.runProcessorConformance === runtime.runProcessorConformance, 'New runtime facade identity differs');
+  const settingsStorage = await runSettingsStorageExample();
+  check(settingsStorage.simulatedStorage && settingsStorage.fresh && settingsStorage.saved && settingsStorage.reloaded && settingsStorage.authorityRejected && settingsStorage.removedDevicePruned && settingsStorage.reset, 'Packed settings example failed');
+  const conformance = await runConformanceExample();
+  check(conformance.healthyConnector.outcome === 'passed' && conformance.healthyProcessor.outcome === 'passed' && conformance.brokenConnector.outcome === 'failed' && conformance.brokenProcessor.outcome === 'failed', 'Packed conformance failed to distinguish healthy and faulty extensions');
   const inputDetails = runInputDetailsExample();
   check(inputDetails.contact.pressure === 0.5 && inputDetails.contact.tiltX === 10 && inputDetails.turn.delta === -0.75 && inputDetails.active.axes[0] === 1 && Math.abs(inputDetails.active.triggers[0].value - 0.75) < 1e-12 && inputDetails.active.hats[0].direction === 'northeast' && inputDetails.disconnected.buttons[0].pressed === false, 'Packed pen, rotary or gamepad detail processing failed');
   const touchContacts = runTouchContactsExample();
