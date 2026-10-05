@@ -10,10 +10,11 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
-import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile } from "node:fs/promises";
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import * as zlib from "node:zlib";
 
 const run = promisify(execFile);
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
@@ -163,11 +164,39 @@ async function collect(source, destination, metadata = []) {
           throw new Error(`Unexpected web artifact file: ${entry.path}`);
         }
       }
+      await auditWebContents(to, fingerprint.contents);
     }
     return { artifact: relative(ROOT, to).replaceAll("\\", "/"), ...fingerprint };
   } catch (error) {
     await rm(to, { recursive: true, force: true });
     throw error;
+  }
+}
+
+async function auditWebContents(directory, contents) {
+  const paths = new Set(contents.map((entry) => entry.path));
+  const localPaths = new Set([resolve(ROOT), await realpath(ROOT)]);
+  for (const { path } of contents) {
+    const bytes = await readFile(join(directory, path));
+    const compressed = /\.(br|gz|zst)$/.exec(path);
+    if (compressed) {
+      const plainPath = path.slice(0, -compressed[0].length);
+      if (!paths.has(plainPath)) throw new Error(`Compressed web asset has no plain sibling: ${path}`);
+      const decoder = compressed[1] === "br" ? zlib.brotliDecompressSync
+        : compressed[1] === "gz" ? zlib.gunzipSync : zlib.zstdDecompressSync;
+      // The plain sibling is scanned on runtimes without a Zstandard decoder.
+      if (decoder) {
+        const plain = await readFile(join(directory, plainPath));
+        try {
+          if (!decoder(bytes, { maxOutputLength: plain.length + 1 }).equals(plain)) throw new Error();
+        } catch { throw new Error(`Compressed web asset differs from its plain sibling: ${path}`); }
+      }
+      continue;
+    }
+    const text = bytes.toString("utf8");
+    if (/-----BEGIN (?:ENCRYPTED |RSA |EC |OPENSSH )?PRIVATE KEY-----/.test(text) ||
+      [...localPaths].some((localPath) => text.includes(localPath)))
+      throw new Error(`Web artifact contains private key text or a local source path: ${path}`);
   }
 }
 

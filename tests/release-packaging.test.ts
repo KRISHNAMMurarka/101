@@ -15,6 +15,7 @@ function fixture(states: Record<string, string> = {}) {
   writeFileSync(join(root, 'emit.mjs'), `
     import { appendFileSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
+    import { gzipSync } from 'node:zlib';
     const target = process.argv[2], state = ${JSON.stringify(states)}[target] ?? 'ok';
     appendFileSync('invoked.log', target + '\\n');
     if (state === 'fail') { console.error('fixture toolchain unavailable'); process.exit(7); }
@@ -24,7 +25,14 @@ function fixture(states: Record<string, string> = {}) {
     const path = paths[target]; mkdirSync(dirname(path), { recursive: true });
     if (state === 'empty') process.exit(0);
     if (state === 'symlink') { writeFileSync('private-fixture.txt', 'outside artifact'); symlinkSync(process.cwd() + '/private-fixture.txt', path); }
+    else if (state === 'private-key-content') writeFileSync(path, '-----BEGIN PRIVATE KEY-----\\nfixture\\n-----END PRIVATE KEY-----');
+    else if (state === 'local-path-content') writeFileSync(path, 'workspace: ' + process.cwd());
     else writeFileSync(path, 'production-path fixture bytes for ' + target);
+    if (state === 'mismatched-compression' && target === 'web') {
+      mkdirSync('dist/client/_next/static', { recursive: true });
+      writeFileSync('dist/client/_next/static/fixture.js', 'public asset');
+      writeFileSync('dist/client/_next/static/fixture.js.gz', gzipSync('different private payload'));
+    }
   `);
   for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
     'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
@@ -135,6 +143,30 @@ test('packaging rejects credentials accidentally emitted into an artifact', () =
   try {
     mkdirSync(join(f.root, 'dist/client'), { recursive: true });
     writeFileSync(join(f.root, 'dist/client/.env.production'), 'PRIVATE_TOKEN=fixture');
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    const { path, value } = f.manifests()[0];
+    assert.deepEqual(value.produced, []);
+    assert.equal(existsSync(resolve(path, '..', 'web')), false);
+  } finally { f.close(); }
+});
+
+test('release packaging rejects private key text and local workspace paths inside allowed files', () => {
+  for (const state of ['private-key-content', 'local-path-content']) {
+    const f = fixture({ web: state });
+    try {
+      const result = f.run(['--release', 'web']);
+      assert.equal(result.status, 1, state + ': ' + result.stdout + result.stderr);
+      const { path, value } = f.manifests()[0];
+      assert.deepEqual(value.produced, []);
+      assert.equal(existsSync(resolve(path, '..', 'web')), false);
+    } finally { f.close(); }
+  }
+});
+
+test('web packaging rejects compressed assets that differ from their plain sibling', () => {
+  const f = fixture({ web: 'mismatched-compression' });
+  try {
     const result = f.run(['--release', 'web']);
     assert.equal(result.status, 1, result.stdout + result.stderr);
     const { path, value } = f.manifests()[0];
