@@ -35,4 +35,14 @@ export { createApplicationViews } from './application-views.ts';
 export type { ApplicationViewRequest, ApplicationViewDefinition, ApplicationViewOutput, ApplicationViewHandle, AttachApplicationViewResult, ApplicationViewsOptions, ApplicationViews } from './application-views.ts';
 
 export { createProcessorInstallation } from './processor-installation.ts';
+export { createOwnerDataController, OWNER_DATA_PROFILE, OWNER_DATA_LIMITS } from './owner-data.ts';
+export type { OwnerDataStorage, OwnerDataController, OwnerDataOptions, OwnerDataScope, OwnerDataGrant, OwnerDataSelection, OwnerDataPorts, OwnerDataResult, OwnerDataExportPage, OwnerDataDeletion, OwnerDataAudit, OwnerDataFailure } from './owner-data.ts';
+export { createIndexedDbOwnerDataStorage } from './owner-data-storage.ts';
+export type { IndexedDbOwnerDataStorage } from './owner-data-storage.ts';
+
+export { createTrustedConnectorProfileRegistry, createProfileConnector } from './profile-connector.ts';
+export type { TrustedConnectorProfileRegistration, ConnectorProfileRequest, ReviewedConnectorProfileBinding, TrustedConnectorProfileRegistry, ConnectorDecoder, ConnectorDecodeContext, ConnectorDecodedOutput, ConnectorProfileSample, ConnectorCaptureHandle, ConnectorWriteContext, ProfileConnectorOptions, ProfileConnector } from './profile-connector.ts';
+
+export { createLocalPackageCatalog } from './package-catalog.ts';
+export type { LocalPackageCatalog, LocalPackageCatalogOptions, LocalPackageCatalogRole, LocalPackageCatalogAction, LocalPackageCatalogStatus, LocalPackageCatalogFailure, LocalPackageCatalogResult, LocalPackageCatalogWriteGuard, LocalPackageCatalogStorage, LocalPackageCatalogTrust, LocalPackageCatalogOwnerTrust, LocalPackageCatalogScope, LocalPackageCatalogApproval, LocalPackageCatalogReleaseSummary, LocalPackageCatalogSnapshot } from './package-catalog.ts';
 export type { ProcessorInstallationWriteGuard, ProcessorInstallationStorage, ProcessorPublisherTrust, ProcessorInstallationAction, ProcessorInstallationScope, ProcessorInstallationApproval, ProcessorInstallationFailure, ProcessorInstallationResult, ProcessorInstallationPackage, ProcessorInstallationSnapshot, ReviewedProcessorActivationRequest, ProcessorExtensionActivation, ProcessorInstallation, ProcessorInstallationOptions } from './processor-installation.ts';

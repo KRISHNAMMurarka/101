@@ -30,9 +30,9 @@ const roles: SessionRole[] = [
 
 test("assigns compatible devices deterministically and prefers stronger capabilities", () => {
   const session = new LocalSession("TEST01", 1);
-  session.configureGame("orbitalcrew", roles);
   session.register({ id: "touch-first", label: "Touch", capabilities: { touch: true }, lastSeenAt: 10 });
   session.register({ id: "motion-second", label: "Motion", capabilities: { touch: true, gyroscope: true }, lastSeenAt: 11 });
+  session.configureGame("orbitalcrew", roles);
 
   assert.equal(session.assignmentForRole("pilot")?.deviceId, "motion-second");
   assert.equal(session.assignmentForRole("weapons")?.deviceId, "touch-first");
@@ -55,6 +55,48 @@ test("keeps devices connected while changing games and reconfigures roles", () =
   assert.equal(session.devices.get("phone")?.connectedAt, firstConnectedAt);
   assert.equal(session.assignmentForDevice("phone")?.gameId, "second");
   assert.equal(session.assignmentForDevice("phone")?.roleId, "reactor");
+});
+
+test("retains current owners when a newly offered role comes first", () => {
+  const session = new LocalSession("OWNERS", 1);
+  session.configureGame("owned-input", [roles[1]!]);
+  session.register({ id: "owner", label: "Owner", capabilities: { touch: true }, lastSeenAt: 10 });
+  const assignedAt = session.assignmentForRole("weapons")?.assignedAt;
+  const added: SessionRole = { ...roles[1]!, id: "new-slot", playerId: "new-player" };
+  session.configureGame("owned-input", [added, roles[1]!]);
+  assert.equal(session.assignmentForRole("weapons")?.deviceId, "owner");
+  assert.equal(session.assignmentForRole("weapons")?.assignedAt, assignedAt);
+  assert.equal(session.assignmentForRole("new-slot"), undefined);
+  session.register({ id: "candidate", label: "Candidate", capabilities: { touch: true }, lastSeenAt: 11 });
+  assert.equal(session.assignmentForRole("weapons")?.deviceId, "owner");
+  assert.equal(session.assignmentForRole("new-slot")?.deviceId, "candidate");
+  assert.equal(session.assign("candidate", "weapons"), true);
+  assert.equal(session.assignmentForRole("weapons")?.deviceId, "candidate");
+  assert.equal(session.assignmentForRole("new-slot")?.deviceId, "owner");
+  session.remove("candidate");
+  assert.equal(session.assignmentForRole("weapons"), undefined);
+  assert.equal(session.assignmentForRole("new-slot")?.deviceId, "owner");
+});
+
+test("retains current host input when a stronger second controller joins", async () => {
+  const transport = new MemoryTransport(), frames: InputFrame[] = [];
+  const selected = { ...roles[1]!, preferredCapabilities: ["gyroscope"] as const };
+  const host = new SessionHost({ gameId: "owned-input", roles: [selected], transport,
+    onFrame: value => frames.push(value), deviceTimeoutMs: 60_000 });
+  await host.start();
+  try {
+    transport.emit({ channel: "control", payload: { type: "hello", version: PROTOCOL_VERSION,
+      deviceId: "owner", device: "Owner", capabilities: { touch: true } } });
+    transport.emit({ channel: "realtime", payload: frame("owner", "untrusted-player") });
+    transport.emit({ channel: "control", payload: { type: "hello", version: PROTOCOL_VERSION,
+      deviceId: "candidate", device: "Candidate", capabilities: { touch: true, gyroscope: true } } });
+    transport.emit({ channel: "realtime", payload: frame("owner", "untrusted-player") });
+    transport.emit({ channel: "realtime", payload: frame("candidate", "untrusted-player") });
+    assert.equal(host.session.assignmentForRole("weapons")?.deviceId, "owner");
+    assert.deepEqual(frames.map(value => [value.deviceId, value.playerId, value.actions.fire]),
+      [["owner", "role-weapons", true], ["owner", "role-weapons", true]]);
+    assert.ok(transport.reliable.some(value => value.type === "player.wait" && value.deviceId === "candidate"));
+  } finally { await host.stop(); }
 });
 
 test("session layout clones isolate nested interactions from sources, snapshots, and sent configurations", async () => {

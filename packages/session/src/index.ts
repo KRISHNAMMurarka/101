@@ -226,13 +226,23 @@ export class LocalSession {
       this.assignments.set(deviceId, createAssignment(deviceId, this.currentGameId, role, old?.roleId === role.id ? old.assignedAt : Date.now()));
     }
 
+    // An offered capability or another role must not take control from a compatible owner.
+    // Explicit pins are applied first; fill only genuinely vacant roles afterward.
+    for (const old of previous.values()) {
+      const role = rolesById.get(old.roleId), device = this.devices.get(old.deviceId);
+      if (!role || !device || occupiedRoles.has(role.id) || occupiedDevices.has(device.id)
+        || !isRoleCompatible(role, device.capabilities)) continue;
+      occupiedRoles.add(role.id);
+      occupiedDevices.add(device.id);
+      this.assignments.set(device.id, createAssignment(device.id, this.currentGameId, role, old.assignedAt));
+    }
+
     const unassigned = [...this.devices.values()].filter((device) => !occupiedDevices.has(device.id));
     for (const role of this.roles) {
       if (occupiedRoles.has(role.id)) continue;
       const candidates = unassigned
         .filter((device) => isRoleCompatible(role, device.capabilities))
         .sort((a, b) => capabilityScore(role, b.capabilities) - capabilityScore(role, a.capabilities)
-          || Number(previous.get(b.id)?.roleId === role.id) - Number(previous.get(a.id)?.roleId === role.id)
           || a.connectedAt - b.connectedAt
           || a.id.localeCompare(b.id));
       const device = candidates[0];

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 73,
+  "revision": 74,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7635,6 +7635,111 @@
         "Disposable loopback Hub and native Chromium; async keychain test port; local native compiler; no physical device"
       ],
       "supportRows": []
+    },
+    {
+      "id": "e11-profiles-data-catalog-2026-10-06",
+      "revision": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; no physical phone/gateway claim",
+      "reproduction": "node tools/build-sdk.mjs <immutable source tree>; node tools/qa-sdk-consumer.mjs <SDK manifest>; node tools/qa-connector-profiles.mjs <fresh packed consumer>; node tools/qa-owner-data.mjs --sdk-root <fresh packed consumer>; node tools/qa-package-catalog.mjs --sdk-root <fresh packed consumer> --sdk-manifest <SDK manifest>; node --test packages/session/src/session.test.ts",
+      "scope": "Complete local submission/review/status/version/conflict workflow for the signed reviewed processor profile. Actual publication is governed by later release tasks and remains unauthorized; broader package types are unqualified.",
+      "failure": null,
+      "equipment": [
+        "Clean offline installed SDK; owned Node process/private filesystem; local native-browser APIs; no physical phone/gateway"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "a01-profiles-data-catalog-2026-10-06",
+      "revision": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; no physical phone/gateway claim",
+      "reproduction": "node tools/build-sdk.mjs <immutable source tree>; node tools/qa-sdk-consumer.mjs <SDK manifest>; node tools/qa-connector-profiles.mjs <fresh packed consumer>; node tools/qa-owner-data.mjs --sdk-root <fresh packed consumer>; node tools/qa-package-catalog.mjs --sdk-root <fresh packed consumer> --sdk-manifest <SDK manifest>; node --test packages/session/src/session.test.ts",
+      "scope": "PARTIAL: versioned reviewed manifest and bounded JSONL runtime with a genuine Node-process RSS profile. Required representative physical protocol gateway/target receipt is absent; A01 stays open.",
+      "failure": null,
+      "equipment": [
+        "Clean offline installed SDK; owned Node process/private filesystem; local native-browser APIs; no physical phone/gateway"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "b05-profiles-data-catalog-2026-10-06",
+      "revision": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; no physical phone/gateway claim",
+      "reproduction": "node tools/build-sdk.mjs <immutable source tree>; node tools/qa-sdk-consumer.mjs <SDK manifest>; node tools/qa-connector-profiles.mjs <fresh packed consumer>; node tools/qa-owner-data.mjs --sdk-root <fresh packed consumer>; node tools/qa-package-catalog.mjs --sdk-root <fresh packed consumer> --sdk-manifest <SDK manifest>; node --test packages/session/src/session.test.ts",
+      "scope": "PARTIAL: managed owner telemetry/settings/local artifacts and registered derived copies with authorized export, transactional deletion/expiry, separate identity and redacted audit. Legacy stores/desktop replay, unmanaged or uploaded copies, backup/sync, native and forensic erase remain open.",
+      "failure": null,
+      "equipment": [
+        "Clean offline installed SDK; owned Node process/private filesystem; local native-browser APIs; no physical phone/gateway"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "i09-profiles-data-catalog-2026-10-06",
+      "revision": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; no physical phone/gateway claim",
+      "reproduction": "node tools/build-sdk.mjs <immutable source tree>; node tools/qa-sdk-consumer.mjs <SDK manifest>; node tools/qa-connector-profiles.mjs <fresh packed consumer>; node tools/qa-owner-data.mjs --sdk-root <fresh packed consumer>; node tools/qa-package-catalog.mjs --sdk-root <fresh packed consumer> --sdk-manifest <SDK manifest>; node --test packages/session/src/session.test.ts",
+      "scope": "PARTIAL: generic LocalSession/SessionHost retention only. Compatible current owners survive stronger hello capabilities and newly offered roles; explicit pins still transfer. Full visible ownership/consent/partition flow and remote multi-peer candidate handling remain open.",
+      "failure": null,
+      "equipment": [
+        "Clean offline installed SDK; owned Node process/private filesystem; local native-browser APIs; no physical phone/gateway"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8932,7 +9037,8 @@
     {
       "id": "I09",
       "records": [
-        "pending-I09"
+        "pending-I09",
+        "i09-profiles-data-catalog-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9167,7 +9273,8 @@
     {
       "id": "A01",
       "records": [
-        "pending-A01"
+        "pending-A01",
+        "a01-profiles-data-catalog-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9855,7 +9962,8 @@
       "id": "B05",
       "records": [
         "pending-B05",
-        "pairing-recovery-2026-10-06"
+        "pairing-recovery-2026-10-06",
+        "b05-profiles-data-catalog-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -10031,7 +10139,8 @@
     {
       "id": "E11",
       "records": [
-        "pending-E11"
+        "pending-E11",
+        "e11-profiles-data-catalog-2026-10-06"
       ],
       "dependencies": [
         "M01",

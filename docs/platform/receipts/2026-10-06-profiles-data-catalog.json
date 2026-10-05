@@ -1,0 +1,1241 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "tasks": [
+    "E11",
+    "A01",
+    "B05",
+    "I09"
+  ],
+  "acceptance": {
+    "E11": "Complete local submission/review/status/version/conflict workflow for the signed reviewed processor profile. Actual publication is governed by later release tasks and remains unauthorized; broader package types are unqualified.",
+    "A01": "PARTIAL: versioned reviewed manifest and bounded JSONL runtime with a genuine Node-process RSS profile. Required representative physical protocol gateway/target receipt is absent; A01 stays open.",
+    "B05": "PARTIAL: managed owner telemetry/settings/local artifacts and registered derived copies with authorized export, transactional deletion/expiry, separate identity and redacted audit. Legacy stores/desktop replay, unmanaged or uploaded copies, backup/sync, native and forensic erase remain open.",
+    "I09": "PARTIAL: generic LocalSession/SessionHost retention only. Compatible current owners survive stronger hello capabilities and newly offered roles; explicit pins still transfer. Full visible ownership/consent/partition flow and remote multi-peer candidate handling remain open."
+  },
+  "sourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+  "sourceSha256": {
+    "examples/device-profiles/consumer.mjs": "bd557067f63623f1ed04c86cb0ea4c54720db574243bf2ca26aaf762fd7e1fdf",
+    "examples/device-profiles/node-memory-producer.mjs": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+    "examples/device-profiles/node-memory-profile.ts": "ff08423b6648b6f7d77443ecb853c5e9935381c939465ce42b0bd7ad1b18049d",
+    "examples/owner-data/consumer.mjs": "b26d8f14c9646ab85fd2e22c7e81bfd7bc17be938b470c05ba450460802f8e34",
+    "examples/owner-data/filesystem-storage.mjs": "b54d87f2d3a378a02a5c292bf9cbebdca8ca57ee4a35db2a3ddf7411157d621a",
+    "examples/package-catalog/consumer.mjs": "fdf965850377cdcdcb7a53c890668d5fa9f72e2286296eb61f80b7ad763506eb",
+    "examples/package-catalog/filesystem-storage.mjs": "887509e0456910b47f90b4e8650e5011858fdeccdccdbfa7aebc91c61109de9c",
+    "packages/device-model/src/connector-profile.test.ts": "efc16ebea4a4a8788c0ed8d85355104e376dfc3432dc8eff7910618aedb59b0a",
+    "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+    "packages/device-model/src/index.ts": "34b451b0a3a133e94f9c2ef89d7ea2bcabe9739102e10590abcd538b37b65e87",
+    "packages/device-model/src/package-catalog.test.ts": "2af67a6d66a2db267939715f9403117f46444d5b87ee81f3bc2eba920045dc11",
+    "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+    "packages/device-runtime/src/index.ts": "5071299829b5060869c0b91c4227e05bbcb21ea4dfb60f065a1de219edbf982a",
+    "packages/device-runtime/src/owner-data-storage.test.ts": "143b81f8483638d8013283841c1feb595cd13b2018c8c7d673441cc5c80069c8",
+    "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+    "packages/device-runtime/src/owner-data.test.ts": "080739bc2458779525f35c1cb516dd21315cf3fa563424891483cefe7ef0fdd2",
+    "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+    "packages/device-runtime/src/package-catalog.test.ts": "3486281d5b373bf637c7f0aaf68099695dd78e3ad67fc8293a7b10ad0aa06721",
+    "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+    "packages/device-runtime/src/profile-connector.test.ts": "7dd4137c4d12aefcd53775d014a20f7fb3351bb7fe4129dfe2405e99ae7293b9",
+    "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+    "packages/session/src/index.ts": "9428e31a1e41c0b26ea053ffbc5d59b19da2ca17fab29e82fde5a6ec9c9c96f6",
+    "packages/session/src/session.test.ts": "2a0d241b2e300fb2035934d9fb2ff4abd68e0c1348c7caf3da02763735f8b29a",
+    "tools/qa-connector-profiles.mjs": "a68752ec28a77855e04ea63862f926afd41d13afcd57db6d56da26b4a5a3dbb2",
+    "tools/qa-owner-data.mjs": "ffdfdabb30d4081d603da41136c511a1c159fcbec7aa2bf4b287753ebbaafa59",
+    "tools/qa-package-catalog.mjs": "720f85d36941f5b3d86886aa13f3e3bb907e78d4c347d18d475eaac7f998b27a"
+  },
+  "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; no physical phone/gateway claim",
+  "sdk": {
+    "manifest": "release/sdk-D6sRZt/manifest.json",
+    "manifestSha256": "2140dc87defb28c0ac477aa314b8a158cbf39600fcaf7ee34b30c755f3fe55b6",
+    "sourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+    "environment": {
+      "node": "24.14.0",
+      "npm": "11.9.0",
+      "typescript": "5.9.3"
+    },
+    "packages": [
+      {
+        "name": "@101/device-model",
+        "version": "0.1.0",
+        "sha256": "bc28a8759bbd5b217004934734d2687bf58b30cf048c5c107567ffed75f96302"
+      },
+      {
+        "name": "@101/device-runtime",
+        "version": "0.1.0",
+        "sha256": "b45c9a6fe23ce3f7adda96bc759557639af272e43e7ab584969cd9c96dff713c"
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "version": "0.1.0",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688"
+      },
+      {
+        "name": "@101/transport-websocket",
+        "version": "0.1.0",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62"
+      },
+      {
+        "name": "@101/device-web",
+        "version": "0.1.0",
+        "sha256": "d193d433842ed7290d21b8bbc3d52a000a0a94d359e405faec49db1ff0995540"
+      },
+      {
+        "name": "@101/vision",
+        "version": "0.1.0",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62"
+      },
+      {
+        "name": "@101/connect",
+        "version": "0.1.0",
+        "sha256": "e75a63081e83378245e669e528fb17d2eb741aef90df3a684e29609f453e4b6e"
+      }
+    ],
+    "consumer": "/tmp/101-sdk-consumer-K3dcNy",
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass",
+        "packages": 7,
+        "files": 275,
+        "symlinks": 0,
+        "aliases": 0
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass"
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass",
+        "version": "149.0.7827.55"
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass",
+        "version": "151.0"
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass",
+        "version": "26.5"
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass"
+      }
+    ]
+  },
+  "profiles": {
+    "schemaVersion": 1,
+    "status": "pass",
+    "createdAt": "2026-10-05T23:16:56.012Z",
+    "environment": {
+      "node": "v24.14.0"
+    },
+    "consumer": "/private/tmp/101-sdk-consumer-K3dcNy",
+    "sourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+    "sourceSha256": {
+      "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "packages/device-model/src/connector-profile.test.ts": "efc16ebea4a4a8788c0ed8d85355104e376dfc3432dc8eff7910618aedb59b0a",
+      "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "packages/device-runtime/src/profile-connector.test.ts": "7dd4137c4d12aefcd53775d014a20f7fb3351bb7fe4129dfe2405e99ae7293b9",
+      "examples/device-profiles/node-memory-profile.ts": "ff08423b6648b6f7d77443ecb853c5e9935381c939465ce42b0bd7ad1b18049d",
+      "examples/device-profiles/node-memory-producer.mjs": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "examples/device-profiles/consumer.mjs": "bd557067f63623f1ed04c86cb0ea4c54720db574243bf2ca26aaf762fd7e1fdf",
+      "tools/qa-connector-profiles.mjs": "a68752ec28a77855e04ea63862f926afd41d13afcd57db6d56da26b4a5a3dbb2"
+    },
+    "publicEsmResolutions": {
+      "connect": "file:///private/tmp/101-sdk-consumer-K3dcNy/node_modules/@101/connect/dist/index.js",
+      "device-model": "file:///private/tmp/101-sdk-consumer-K3dcNy/node_modules/@101/device-model/dist/index.js",
+      "device-runtime": "file:///private/tmp/101-sdk-consumer-K3dcNy/node_modules/@101/device-runtime/dist/index.js"
+    },
+    "callerFiles": {
+      "consumer.mjs": "58f46f6731dced573b38067da269ece1a6fc13bb59a57ad5c68e0759107e9f3a",
+      "node-memory-profile.js": "a5e106219c7696c1c9498506e38a78173747c557d25dc3954b9c995c36859f9e",
+      "node-memory-producer.mjs": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+    },
+    "result": {
+      "kind": "actual-node-rss",
+      "sourceSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "profile": {
+        "id": "example:node-memory",
+        "version": "1.0.0"
+      },
+      "readings": [
+        {
+          "value": 44974080,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 24.4535
+          },
+          "quality": "valid",
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "host-receipt:4207",
+            "at": 84.698584
+          }
+        },
+        {
+          "value": 44974080,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 75.588959
+          },
+          "quality": "valid",
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "host-receipt:4207",
+            "at": 135.737042
+          }
+        },
+        {
+          "value": 44974080,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 127.712084
+          },
+          "quality": "valid",
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "host-receipt:4207",
+            "at": 187.901584
+          }
+        }
+      ],
+      "stateReadings": [
+        {
+          "value": true,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 24.4535
+          }
+        },
+        {
+          "value": true,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 75.588959
+          }
+        },
+        {
+          "value": true,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 127.712084
+          }
+        },
+        {
+          "value": false,
+          "sourceTime": {
+            "clockId": "node-rss:4209",
+            "at": 130.19175
+          }
+        }
+      ],
+      "inputFrames": 7,
+      "writes": 2,
+      "enabledEvidence": {
+        "handlerResult": "returned",
+        "effectEvidence": "observed"
+      },
+      "checks": {
+        "verifiedReviewedBytes": true,
+        "fixedFactoryAndProcess": true,
+        "separateObservedFacts": true,
+        "deniedBeforeGrant": true,
+        "actualTargetAckAndStateReading": true,
+        "reliableStateResourcePublicRoute": true,
+        "sourceClockPreserved": true,
+        "hostReceiptClockSeparate": true,
+        "calibrationAndQualityPreserved": true,
+        "stalledWriteDoesNotBlockLiveRss": true,
+        "finitePendingAndWriteReservations": true,
+        "revokedSignal": true,
+        "declaredSafeFalseObserved": true,
+        "oldCaptureRejected": true,
+        "closePermanent": true
+      },
+      "limits": {
+        "framing": {
+          "kind": "jsonl",
+          "maxFrameBytes": 4096,
+          "maxChunkBytes": 8192,
+          "maxFramesPerPush": 16
+        },
+        "budgets": {
+          "maxBufferedBytes": 4096,
+          "maxOutputsPerFrame": 8,
+          "maxPendingCommands": 4,
+          "maxCommandBytes": 1024,
+          "callbackTimeoutMs": 1000
+        },
+        "retainedReadings": 32,
+        "ignoredAbortWriteRemainsReserved": true,
+        "safeState": "bounded-best-effort-no-physical-rollback-claim"
+      }
+    }
+  },
+  "ownerData": {
+    "result": "pass",
+    "scope": "PARTIAL managed-owner-data/1; actual owned SDK stores and registered local recipient only; no legacy/unmanaged/native/remote/forensic-erase qualification",
+    "work": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-owner-data-Y5RJeT",
+    "sourceSha256": {
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/owner-data.test.ts": "080739bc2458779525f35c1cb516dd21315cf3fa563424891483cefe7ef0fdd2",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/owner-data-storage.test.ts": "143b81f8483638d8013283841c1feb595cd13b2018c8c7d673441cc5c80069c8",
+      "examples/owner-data/consumer.mjs": "b26d8f14c9646ab85fd2e22c7e81bfd7bc17be938b470c05ba450460802f8e34",
+      "examples/owner-data/filesystem-storage.mjs": "b54d87f2d3a378a02a5c292bf9cbebdca8ca57ee4a35db2a3ddf7411157d621a",
+      "tools/qa-owner-data.mjs": "ffdfdabb30d4081d603da41136c511a1c159fcbec7aa2bf4b287753ebbaafa59"
+    },
+    "filesystem": {
+      "phases": [
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "seed",
+            "measured": 224641024,
+            "duplicateCopied": 0,
+            "artifactSha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6",
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 349.505291
+                    },
+                    "quality": "observed",
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "values": {
+                      "measured": 224641024
+                    }
+                  }
+                ]
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "dark",
+                      "handedness": "right",
+                      "motion": "reduce"
+                    },
+                    "profiles": [
+                      {
+                        "id": "owner-choice",
+                        "deviceId": "example-device",
+                        "profileId": "example:reviewed-layout",
+                        "profileRevision": 1,
+                        "calibration": {
+                          "scale": 1,
+                          "offset": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": [
+                  {
+                    "idempotencyKey": "owned-artifact",
+                    "applicationId": "example:owner-artifact",
+                    "profileId": "101:local-artifact",
+                    "profileRevision": 1,
+                    "destinationId": "owner-local-artifacts",
+                    "historicalOutcome": "completed",
+                    "requiresReview": false,
+                    "createdAt": 1000,
+                    "updatedAt": 1000,
+                    "evidence": "verified-local-artifact",
+                    "output": {
+                      "id": "artifact:owned-artifact",
+                      "kind": "blob",
+                      "mediaType": "application/octet-stream",
+                      "byteLength": 29,
+                      "sha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6"
+                    },
+                    "bytesBase64": "UkVWSUVXRUQgTE9DQUwgQVJUSUZBQ1QgREFUQQo="
+                  }
+                ]
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 349.505291
+                    },
+                    "quality": "observed",
+                    "values": {
+                      "measured": 224641024
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry",
+              "artifacts"
+            ],
+            "copies": 1,
+            "auditRows": 0,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "inspect",
+            "automaticWork": 0,
+            "restoredAuthority": false,
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 349.505291
+                    },
+                    "quality": "observed",
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "values": {
+                      "measured": 224641024
+                    }
+                  }
+                ]
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "dark",
+                      "handedness": "right",
+                      "motion": "reduce"
+                    },
+                    "profiles": [
+                      {
+                        "id": "owner-choice",
+                        "deviceId": "example-device",
+                        "profileId": "example:reviewed-layout",
+                        "profileRevision": 1,
+                        "calibration": {
+                          "scale": 1,
+                          "offset": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": [
+                  {
+                    "idempotencyKey": "owned-artifact",
+                    "applicationId": "example:owner-artifact",
+                    "profileId": "101:local-artifact",
+                    "profileRevision": 1,
+                    "destinationId": "owner-local-artifacts",
+                    "historicalOutcome": "completed",
+                    "requiresReview": false,
+                    "createdAt": 1000,
+                    "updatedAt": 1000,
+                    "evidence": "verified-local-artifact",
+                    "output": {
+                      "id": "artifact:owned-artifact",
+                      "kind": "blob",
+                      "mediaType": "application/octet-stream",
+                      "byteLength": 29,
+                      "sha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6"
+                    },
+                    "bytesBase64": "UkVWSUVXRUQgTE9DQUwgQVJUSUZBQ1QgREFUQQo="
+                  }
+                ]
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 349.505291
+                    },
+                    "quality": "observed",
+                    "values": {
+                      "measured": 224641024
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry",
+              "artifacts"
+            ],
+            "copies": 1,
+            "auditRows": 0,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "begin",
+            "deletion": {
+              "operationId": "9ed2f38f-f9be-4e70-a0a0-8eb579c33b19",
+              "kinds": [
+                "telemetry",
+                "settings",
+                "artifacts",
+                "copies"
+              ],
+              "state": "pending",
+              "completedStages": 0,
+              "startedAt": 1000,
+              "updatedAt": 1000,
+              "removed": {
+                "telemetry": 0,
+                "settings": 0,
+                "artifacts": 0,
+                "copies": 0
+              }
+            },
+            "retired": 1,
+            "independentRoute": {
+              "deniedWithoutGrant": true,
+              "alreadyIssuedLocalEffects": 1,
+              "queuedEffectsFenced": true,
+              "deliveryAborted": true,
+              "undoClaim": false
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry",
+              "artifacts"
+            ],
+            "copies": 1,
+            "auditRows": 1,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "stage",
+            "deletion": {
+              "operationId": "9ed2f38f-f9be-4e70-a0a0-8eb579c33b19",
+              "kinds": [
+                "telemetry",
+                "settings",
+                "artifacts",
+                "copies"
+              ],
+              "state": "pending",
+              "completedStages": 1,
+              "startedAt": 1000,
+              "updatedAt": 1000,
+              "removed": {
+                "telemetry": 1,
+                "settings": 0,
+                "artifacts": 0,
+                "copies": 0
+              }
+            },
+            "restoredAuthority": false
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "artifacts"
+            ],
+            "copies": 1,
+            "auditRows": 1,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "resume",
+            "deletion": {
+              "operationId": "9ed2f38f-f9be-4e70-a0a0-8eb579c33b19",
+              "kinds": [
+                "telemetry",
+                "settings",
+                "artifacts",
+                "copies"
+              ],
+              "state": "completed",
+              "completedStages": 4,
+              "startedAt": 1000,
+              "updatedAt": 1000,
+              "removed": {
+                "telemetry": 1,
+                "settings": 1,
+                "artifacts": 1,
+                "copies": 1
+              }
+            },
+            "restoredAuthority": false,
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": []
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "system",
+                      "handedness": "right",
+                      "motion": "system"
+                    },
+                    "profiles": []
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": []
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": []
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [],
+            "copies": 0,
+            "auditRows": 1,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        }
+      ],
+      "expiryPhases": [
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "seed",
+            "measured": 223772672,
+            "duplicateCopied": 0,
+            "artifactSha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6",
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 319.109125
+                    },
+                    "quality": "observed",
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "values": {
+                      "measured": 223772672
+                    }
+                  }
+                ]
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "dark",
+                      "handedness": "right",
+                      "motion": "reduce"
+                    },
+                    "profiles": [
+                      {
+                        "id": "owner-choice",
+                        "deviceId": "example-device",
+                        "profileId": "example:reviewed-layout",
+                        "profileRevision": 1,
+                        "calibration": {
+                          "scale": 1,
+                          "offset": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": [
+                  {
+                    "idempotencyKey": "owned-artifact",
+                    "applicationId": "example:owner-artifact",
+                    "profileId": "101:local-artifact",
+                    "profileRevision": 1,
+                    "destinationId": "owner-local-artifacts",
+                    "historicalOutcome": "completed",
+                    "requiresReview": false,
+                    "createdAt": 1000,
+                    "updatedAt": 1000,
+                    "evidence": "verified-local-artifact",
+                    "output": {
+                      "id": "artifact:owned-artifact",
+                      "kind": "blob",
+                      "mediaType": "application/octet-stream",
+                      "byteLength": 29,
+                      "sha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6"
+                    },
+                    "bytesBase64": "UkVWSUVXRUQgTE9DQUwgQVJUSUZBQ1QgREFUQQo="
+                  }
+                ]
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": [
+                  {
+                    "id": 1,
+                    "resourceId": "example:owner-measurement",
+                    "schemaVersion": 1,
+                    "ingestedAt": 1000,
+                    "expiresAt": 6000,
+                    "sourceTime": {
+                      "clockId": "owner:monotonic",
+                      "at": 319.109125
+                    },
+                    "quality": "observed",
+                    "values": {
+                      "measured": 223772672
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry",
+              "artifacts"
+            ],
+            "copies": 1,
+            "auditRows": 0,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "expiry",
+            "swept": {
+              "telemetryRemoved": 1,
+              "artifactsRemoved": 1,
+              "copiesRemoved": 1
+            },
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": []
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "dark",
+                      "handedness": "right",
+                      "motion": "reduce"
+                    },
+                    "profiles": [
+                      {
+                        "id": "owner-choice",
+                        "deviceId": "example-device",
+                        "profileId": "example:reviewed-layout",
+                        "profileRevision": 1,
+                        "calibration": {
+                          "scale": 1,
+                          "offset": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": []
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": []
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry"
+            ],
+            "copies": 0,
+            "auditRows": 2,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        },
+        {
+          "result": {
+            "profile": "managed-owner-data/1",
+            "phase": "audit-expiry",
+            "swept": {
+              "telemetryRemoved": 0,
+              "artifactsRemoved": 0,
+              "copiesRemoved": 0
+            },
+            "exported": {
+              "telemetry": {
+                "profile": "managed-owner-data/1",
+                "kind": "telemetry",
+                "records": []
+              },
+              "settings": {
+                "profile": "managed-owner-data/1",
+                "kind": "settings",
+                "records": [
+                  {
+                    "preferences": {
+                      "theme": "dark",
+                      "handedness": "right",
+                      "motion": "reduce"
+                    },
+                    "profiles": [
+                      {
+                        "id": "owner-choice",
+                        "deviceId": "example-device",
+                        "profileId": "example:reviewed-layout",
+                        "profileRevision": 1,
+                        "calibration": {
+                          "scale": 1,
+                          "offset": 0
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              "artifacts": {
+                "profile": "managed-owner-data/1",
+                "kind": "artifacts",
+                "records": []
+              },
+              "copies": {
+                "profile": "managed-owner-data/1",
+                "kind": "copies",
+                "records": []
+              }
+            }
+          },
+          "proof": {
+            "dataKinds": [
+              "settings",
+              "telemetry"
+            ],
+            "copies": 0,
+            "auditRows": 0,
+            "onlyRedactedAudit": true,
+            "noPrivateReason": true
+          }
+        }
+      ],
+      "genuineBlockedLockPreservedStage": true,
+      "processRestart": true
+    },
+    "browsers": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "seedRows": 1,
+        "artifactSha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6",
+        "operationId": "0d040b0c-2b4c-4e65-aa4f-0cf415c7f8a5",
+        "adapterProof": {
+          "state": "rejected",
+          "mutated": false,
+          "elapsedMs": 0.20000004768371582
+        },
+        "atomicClose": {
+          "accepted": false,
+          "absent": true
+        },
+        "capacityProof": {
+          "accepted": 8,
+          "rejected": 1
+        },
+        "late": {
+          "accepted": false,
+          "signalAborted": true,
+          "lateTelemetryAccepted": false,
+          "lateArtifactAccepted": false,
+          "artifactSignalAborted": true
+        },
+        "identityProof": {
+          "current": true,
+          "verified": true
+        },
+        "independentRoute": {
+          "deniedWithoutGrant": true,
+          "alreadyIssuedLocalEffects": 1,
+          "queuedEffectsFenced": true,
+          "deliveryAborted": true,
+          "undoClaim": false
+        },
+        "processRestart": true,
+        "complete": true
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "seedRows": 1,
+        "artifactSha256": "589b9126e341f7d806d5c94bf54e6a8a650ecc99cf3724733547ea36bc664bc6",
+        "operationId": "16e24cab-c17a-4486-937b-64be1559cf80",
+        "adapterProof": {
+          "state": "rejected",
+          "mutated": false,
+          "elapsedMs": 1
+        },
+        "atomicClose": {
+          "accepted": false,
+          "absent": true
+        },
+        "capacityProof": {
+          "accepted": 8,
+          "rejected": 1
+        },
+        "late": {
+          "accepted": false,
+          "signalAborted": true,
+          "lateTelemetryAccepted": false,
+          "lateArtifactAccepted": false,
+          "artifactSignalAborted": true
+        },
+        "identityProof": {
+          "current": true,
+          "verified": true
+        },
+        "independentRoute": {
+          "deniedWithoutGrant": true,
+          "alreadyIssuedLocalEffects": 1,
+          "queuedEffectsFenced": true,
+          "deliveryAborted": true,
+          "undoClaim": false
+        },
+        "processRestart": true,
+        "complete": true
+      }
+    ]
+  },
+  "catalog": {
+    "result": "pass",
+    "profile": "local-reviewed-processor-catalog/1",
+    "node": "v24.14.0",
+    "publicResolution": "installed-packed-sdk",
+    "cleanProcesses": 4,
+    "separatelyProvisionedMinimumRevision": 4,
+    "externalCheckpointRollbackExcluded": true,
+    "separateProcessAtomicCas": true,
+    "noPublicationOrResourceAuthority": true,
+    "disposableStorageRemoved": true,
+    "phases": [
+      {
+        "phase": "submit",
+        "revision": 1,
+        "storageKey": "101:package-catalog:catalog-owner",
+        "authorTestsPassed": true,
+        "submittedWithoutApproval": true,
+        "inertSubmission": true,
+        "exactResubmissionIdempotent": true
+      },
+      {
+        "phase": "review",
+        "revision": 2,
+        "independentlyExecuted": true,
+        "fixtureDistinctFromAuthor": true,
+        "approvedCurrentRecord": true
+      },
+      {
+        "phase": "restart",
+        "revision": 2,
+        "historicalReviewRestored": true,
+        "freshReadAuthorityRequired": true,
+        "noSigningCredentialSupplied": true,
+        "noSourceModuleImported": true,
+        "noGrantOrExecutableStateRestored": true
+      },
+      {
+        "phase": "negatives",
+        "revision": 4,
+        "changedVersionConflict": true,
+        "forgedReviewerDenied": true,
+        "tamperDenied": true,
+        "provisionedFloorRollbackDenied": true,
+        "trustRevocationCurrent": true,
+        "staleReadDenied": true,
+        "executableMetadataRejected": true,
+        "removalDropsSourceKeepsTombstone": true
+      }
+    ],
+    "sourceSha256": {
+      "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+      "packages/device-model/src/package-catalog.test.ts": "2af67a6d66a2db267939715f9403117f46444d5b87ee81f3bc2eba920045dc11",
+      "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+      "packages/device-runtime/src/package-catalog.test.ts": "3486281d5b373bf637c7f0aaf68099695dd78e3ad67fc8293a7b10ad0aa06721",
+      "examples/package-catalog/consumer.mjs": "fdf965850377cdcdcb7a53c890668d5fa9f72e2286296eb61f80b7ad763506eb",
+      "examples/package-catalog/filesystem-storage.mjs": "887509e0456910b47f90b4e8650e5011858fdeccdccdbfa7aebc91c61109de9c",
+      "tools/qa-package-catalog.mjs": "720f85d36941f5b3d86886aa13f3e3bb907e78d4c347d18d475eaac7f998b27a"
+    }
+  },
+  "regressions": {
+    "artifacts": [
+      {
+        "path": "/tmp/101-owner-data-lease-clock-review.log",
+        "sha256": "b882aa36953fad9d25c6889b078dabfd4e27d00b1bb95f42259a9b7e83912e2e"
+      },
+      {
+        "path": "/tmp/101-owner-data-activation-worker-red.log",
+        "sha256": "af4a19bc7debdb05fd7f723d0152ce864636e039536d49667a97e697d8c97cb5"
+      },
+      {
+        "path": "/tmp/101-owner-data-retired-callback-red.log",
+        "sha256": "6f00f80dda4a90d03f47862be91e7b7f6f4e1bdeb8c4b599e4014b7092aa0529"
+      },
+      {
+        "path": "/tmp/101-owner-data-producer-guard-worker-red.log",
+        "sha256": "974a485938b77ceca0d7e8a257f9a3332e9ba0a9d95be350b606eff3fa10dfed"
+      },
+      {
+        "path": "/tmp/101-owner-data-grant-idb-worker-red.log",
+        "sha256": "16c4422460b8abf8998941de3579048378bf0019b7d56c16f3d2fe947fb2687a"
+      },
+      {
+        "path": "/tmp/101-owner-data-late-native-commit-worker-red.log",
+        "sha256": "3a17e40fadb5e2e5d0c09a0b4fb0999a83d500529299ccfc76e772306f10695a"
+      },
+      {
+        "path": "/tmp/101-owner-data-grant-idb-worker-green.log",
+        "sha256": "ebc6fdbed5d5a2f9d0b5aa5c9c0b8a28c7e82e620242d1b527dd3f409dc86537"
+      },
+      {
+        "path": "/tmp/101-owner-data-port-idb-worker-green.log",
+        "sha256": "6ee27ff1630065f273588148abeed1bd4f8f336e240d4a88450a11f3a7bf2d7c"
+      },
+      {
+        "path": "/tmp/101-owner-data-review-final-unit.log",
+        "sha256": "22ca3ea9f3f248c2b831db9753a18c8a210ae5de1f24704a0e67fcd8e243ed0a"
+      },
+      {
+        "path": "/tmp/101-session-owner-retention-red.log",
+        "sha256": "cda273ea309041b28a38cfa6788fe109d4b5a45102a0a0ac99816d3fdfc025d5"
+      },
+      {
+        "path": "/tmp/101-session-owner-retention-green.log",
+        "sha256": "a4465b09813f7515973d4f1ea7491774a8742e4ad267667cf4b73e9d6ff86508"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/lifecycle-red.log",
+        "sha256": "17036030506a16a2ba2c06eb024b7f74d139ca4553aeb12bab507f856f57d50c"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/resource-array-red.log",
+        "sha256": "0c8489aecf022784403d7a402d1c54a2ddb227749888694fdf8daef1c9ca619a"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/cleanup-queue-red.log",
+        "sha256": "0514b00dc5153d49037879ee3cfaa69267ca66d8a98839b6fb8149f78b8d1b1f"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/watchdog-red.log",
+        "sha256": "af785e910945d09595361a8508c9305367a75a26c23098b2833d009f0db5fa2f"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/ack-clock-red.log",
+        "sha256": "9697103006729935e3796505644bd84f1d0a93967d95bfaac69fb79d1bfcae7b"
+      },
+      {
+        "path": "/tmp/101-connector-profiles-worker/reliable-feedback-public-red.log",
+        "sha256": "d348cfb1588c89f965bdd64f4f10cf01b08ff8a15dbe39678977296e5ea9529b"
+      }
+    ],
+    "cases": [
+      "Clock callback closed or revoked during writer activation: success and retained timer; now rejected without owned resources",
+      "Authority callback retired its own port yet mutation committed; now fenced",
+      "Artifact producer guard revoked after its predicate: exact genuine job bytes committed; now false with bytes preserved",
+      "Owner grant or explicit port closed between native IndexedDB mutation and commit: cancelled writes persisted; now abort the actual engine transaction",
+      "New preferred controller and newly offered role displaced current compatible owner; now retain owner and real frame delivery",
+      "Connector invalidation/cleanup/identity arrays/watchdog/source-clock/reliable state publication regressions observed and repaired"
+    ]
+  },
+  "review": {
+    "A01": {
+      "reviewer": "root, independent from b02_telemetry",
+      "sourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "clear, bounded source review and exact packed genuine RSS caller"
+    },
+    "E11": {
+      "reviewer": "root, independent from author sdk_wave_review",
+      "sourceTree": "252032974c5961ebdb71f590d1a7ac3f274f9101",
+      "sourceSha256": {
+        "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+        "packages/device-model/src/package-catalog.test.ts": "2af67a6d66a2db267939715f9403117f46444d5b87ee81f3bc2eba920045dc11",
+        "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+        "packages/device-runtime/src/package-catalog.test.ts": "3486281d5b373bf637c7f0aaf68099695dd78e3ad67fc8293a7b10ad0aa06721",
+        "examples/package-catalog/consumer.mjs": "fdf965850377cdcdcb7a53c890668d5fa9f72e2286296eb61f80b7ad763506eb",
+        "examples/package-catalog/filesystem-storage.mjs": "887509e0456910b47f90b4e8650e5011858fdeccdccdbfa7aebc91c61109de9c",
+        "tools/qa-package-catalog.mjs": "720f85d36941f5b3d86886aa13f3e3bb907e78d4c347d18d475eaac7f998b27a"
+      },
+      "result": "clear; exact combined packed workflow also passed",
+      "inspected": [
+        "closed immutable schemas and signed publisher submissions",
+        "independent separately provisioned reviewer evidence and exact content bindings",
+        "no imports/factories/resource grants from stored records",
+        "fresh scoped operation approval, post-await fences, bounded CAS and captured source bytes",
+        "current publisher/reviewer/owner keys and externally provisioned floors",
+        "immutable versions, tombstones, review/supersession/revocation/removal",
+        "private local filesystem storage and cooperating-process atomic CAS"
+      ],
+      "limits": [
+        "trusted currentness/signing/storage ports are host-owned",
+        "no untrusted-code isolation or physical/live-publication acceptance",
+        "coordinated rollback of the external checkpoint excluded"
+      ]
+    },
+    "B05": {
+      "reviewer": "b02_telemetry, independent from b04_job_design",
+      "sourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+      "result": "clear after lease and transaction guard repairs",
+      "filesystem": {
+        "accepted": false,
+        "aborted": true,
+        "persisted": false
+      },
+      "nativeIndexedDb": {
+        "engine": "149.0.7827.55",
+        "accepted": false,
+        "persisted": false,
+        "grantAborted": true,
+        "portAborted": true,
+        "pageErrors": []
+      },
+      "activationRegressions": 2,
+      "archive": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-b05-repaired-review.zi4qoonb"
+    },
+    "I09": {
+      "reviewer": "b02_telemetry, independent from root",
+      "sourceTree": "1c852d3862baf85fe9fb641484d39b520f06881b",
+      "result": "clear; actual host regressions and incompatible hello/explicit transfer/removed role/expiry boundaries passed",
+      "focusedSuite": 16,
+      "archive": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-session-retention-review.paomsbgz"
+    }
+  },
+  "limits": [
+    "No outward publication, service, deploy, push or preview URL",
+    "No phone/gateway, physical actuator, calibration accuracy or Node engine-floor qualification",
+    "Trusted synchronous decoder/writer/reviewer code is not isolated or preempted",
+    "Deletion and safe-state dispatch do not undo already issued external effects",
+    "Catalog rollback protection requires a separately provisioned current minimum revision; coordinated checkpoint rollback is excluded"
+  ],
+  "reproduction": [
+    "node tools/build-sdk.mjs <immutable source tree>",
+    "node tools/qa-sdk-consumer.mjs <SDK manifest>",
+    "node tools/qa-connector-profiles.mjs <fresh packed consumer>",
+    "node tools/qa-owner-data.mjs --sdk-root <fresh packed consumer>",
+    "node tools/qa-package-catalog.mjs --sdk-root <fresh packed consumer> --sdk-manifest <SDK manifest>",
+    "node --test packages/session/src/session.test.ts"
+  ],
+  "repositoryGates": "Exact final candidate tree, green gate counts and fresh build identity are recorded in the owning local commit message; source receipt precedes metadata-only edits"
+}

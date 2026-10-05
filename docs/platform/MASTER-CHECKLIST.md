@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 100 completed with recorded evidence; 172 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 101 completed with recorded evidence; 171 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -173,7 +173,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **I06 — Implement pen/rotary/gamepad details.** Pressure/tilt, crown/encoder deltas, triggers, hats, axes and button edges preserve profile-specific ranges and calibration. [Calibrated processors and packed consumer evidence](receipts/2026-10-05-i06-input-details.json); physical device qualification remains separate.
 - [x] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls. [Measured decks and browser runtime evidence](receipts/2026-10-05-i07-responsive-controls.json); physical native accessibility and ergonomics remain separate.
 - [ ] **I08 — Implement haptic output profiles.** Declared patterns, intensity/duration limits, unsupported-device fallback and physical distinguishability are tested.
-- [ ] **I09 — Implement input ownership and transfer UI.** Current owner retains control during a second request; consent, partition assignment and release produce visible, recoverable outcomes.
+- [ ] **I09 — Implement input ownership and transfer UI.** Current owner retains control during a second request; consent, partition assignment and release produce visible, recoverable outcomes. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
 - [ ] **I10 — Verify handedness and ergonomic layouts.** Thumb reach, both hands, short landscape, safe insets and simultaneous inputs are physically tested across claimed form factors.
 - [ ] **I11 — Support accessible input/output profiles.** Qualify selected switch/assistive HID and tactile/Braille resources plus keyboard equivalents; do not detect assistive technology to hide choices.
 - [ ] **I12 — Prove release safety across all inputs.** Blur, hide, unmount, disconnect, role change, deadman expiry and process loss leave no held pointer/key/button state.
@@ -197,7 +197,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 Each connector row closes only after its first working profile, protocol fixtures and representative physical receipt pass Q requirements. Additional supported profiles create their own qualification rows.
 
-- [ ] **A01 — Define connector/device-profile manifests.** Identity filters, framing/decoder, resources, units, permissions, calibration, commands, safe-state and feedback levels are versioned and reviewed.
+- [ ] **A01 — Define connector/device-profile manifests.** Identity filters, framing/decoder, resources, units, permissions, calibration, commands, safe-state and feedback levels are versioned and reviewed. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
 - [ ] **A02 — Implement selected HID/USB profiles.** Reuse existing framing where valid; selected keyboard/controller/sensor reports and output writes expose general resources with attach/denial/unplug tests.
 - [ ] **A03 — Implement selected BLE/vendor profiles.** Services/characteristics, notification/write behavior, permissions, packet validation and reconnection preserve resource semantics.
 - [ ] **A04 — Implement serial/Modbus gateway profiles.** Framing, register meaning, scaling, CRC/errors, bounded retries and serial/TCP identity are explicit rather than guessed from raw bytes.
@@ -257,7 +257,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **B02 — Implement bounded telemetry/history.** Opted-in batching, expiry, backpressure, quotas and offline upload preserve source time/quality without starving live controls. [SDK contract and local runtime evidence](receipts/2026-10-06-history-jobs-controls.json).
 - [x] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority. [SDK contract and local runtime evidence](receipts/2026-10-06-b03-settings-storage.json).
 - [x] **B04 — Implement durable job evidence where required.** Print/recording/long-running tasks have ownership, idempotency, cancellation and restart state appropriate to their profile. [SDK contract and local runtime evidence](receipts/2026-10-06-history-jobs-controls.json).
-- [ ] **B05 — Implement export/deletion and secret separation.** Authorized export omits credentials; deletion/expiry removes opted-in data and leaves policy-required redacted audit evidence only.
+- [ ] **B05 — Implement export/deletion and secret separation.** Authorized export omits credentials; deletion/expiry removes opted-in data and leaves policy-required redacted audit evidence only. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
 - [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes.
 
 ### E — Developer syntax, recipes, tools and extension ecosystem
@@ -272,7 +272,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **E08 — Provide developer inspection tools.** Studio explains graph, readiness, grants, queues, traces and version errors; personal payloads/secrets are redacted. [SDK contract and local runtime evidence](receipts/2026-10-06-e08-sdk-inspector.json).
 - [x] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101. [SDK contract and local runtime evidence](receipts/2026-10-06-e09-conformance.json).
 - [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
-- [ ] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access.
+- [x] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access. [Local signed package workflow and packed runtime evidence](receipts/2026-10-06-profiles-data-catalog.json).
 - [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior.
 - [ ] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency.
 - [x] **E14 — Provide machine-readable developer guidance.** Schemas, complete example recipes, package manifests and contextual instructions let developers/AI tools generate validated projects; explanatory text cannot grant privileges or execute code. [Generated guidance and fresh consumer evidence](receipts/2026-10-05-e14-developer-guidance.json).
