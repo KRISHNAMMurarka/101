@@ -19,7 +19,7 @@ test('immutable general SDK packs compiled public contracts and licenses without
         `Stage the current SDK producer before the immutable pack contract: ${path}`);
     }
     assert.deepEqual(result.packages.map((item: { name: string }) => item.name).sort(),
-      ['@101/connect', '@101/device-model', '@101/device-runtime', '@101/device-web', '@101/transport-webrtc', '@101/vision']);
+      ['@101/connect', '@101/device-model', '@101/device-runtime', '@101/device-web', '@101/transport-webrtc', '@101/transport-websocket', '@101/vision']);
     for (const item of result.packages) {
       assert.equal(item.license, 'MIT', `${item.name} must declare its license in the provenance manifest`);
       const archive = readFileSync(item.tarball);

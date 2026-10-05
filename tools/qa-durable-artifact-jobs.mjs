@@ -9,7 +9,7 @@ const consumer = realpathSync(resolve(process.argv[2] ?? ''));
 assert.ok(consumer.startsWith(join(realpathSync('/tmp'), '101-sdk-consumer-')), 'Use an owned external packed SDK consumer');
 const packed = JSON.parse(readFileSync(join(consumer, 'receipt.json'), 'utf8'));
 assert.equal(packed.status, 'pass', 'The packed SDK consumer must have passed');
-const names = ['device-model', 'device-runtime', 'transport-webrtc', 'device-web', 'vision', 'connect'];
+const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const imports = Object.fromEntries(names.map(name => [`@101/${name}`, `/@101/${name}/dist/index.js`]));
 imports['@101/connect/examples/durable-artifact-jobs'] = '/@101/connect/examples/durable-artifact-jobs.js';
 const html = `<!doctype html><meta charset="utf-8"><title>Local durable artifact job QA</title>
@@ -20,7 +20,7 @@ globalThis.artifactSdk = sdk; globalThis.runArtifactExample = runDurableArtifact
 const server = createServer((request, response) => {
   const path = new URL(request.url, 'http://127.0.0.1').pathname;
   if (path === '/') { response.setHeader('Content-Type', 'text/html'); response.end(html); return; }
-  if (!/^\/@101\/(device-model|device-runtime|transport-webrtc|device-web|vision|connect)\/dist\/[a-z0-9-]+\.js$/.test(path) &&
+  if (!/^\/@101\/(device-model|device-runtime|transport-webrtc|transport-websocket|device-web|vision|connect)\/dist\/[a-z0-9-]+\.js$/.test(path) &&
     path !== '/@101/connect/examples/durable-artifact-jobs.js') { response.writeHead(404); response.end(); return; }
   try { response.setHeader('Content-Type', 'text/javascript'); response.end(readFileSync(join(consumer, 'node_modules', path))); }
   catch { response.writeHead(404); response.end(); }

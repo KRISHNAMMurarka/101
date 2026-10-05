@@ -7,6 +7,7 @@
   "dependencies": {
     "@101/device-model": "0.1.0",
     "@101/device-runtime": "0.1.0",
-    "@101/transport-webrtc": "0.1.0"
+    "@101/transport-webrtc": "0.1.0",
+    "@101/transport-websocket": "0.1.0"
   }
 }

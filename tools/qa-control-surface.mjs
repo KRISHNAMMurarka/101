@@ -9,7 +9,7 @@ const consumer = realpathSync(resolve(process.argv[2] ?? ''));
 assert.ok(consumer.startsWith(join(realpathSync('/tmp'), '101-sdk-consumer-')), 'Use an owned external packed SDK consumer');
 const packed = JSON.parse(readFileSync(join(consumer, 'receipt.json'), 'utf8'));
 assert.equal(packed.status, 'pass');
-const names = ['device-model', 'device-runtime', 'transport-webrtc', 'device-web', 'vision', 'connect'];
+const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const imports = Object.fromEntries(names.map(name => [`@101/${name}`, `/@101/${name}/dist/index.js`]));
 imports['@101/connect/examples/control-surface'] = '/@101/connect/examples/control-surface.js';
 const html = `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local control surface QA</title>
@@ -33,7 +33,7 @@ globalThis.ready = true;
 const server = createServer((request, response) => {
   const path = new URL(request.url, 'http://127.0.0.1').pathname;
   if (path === '/') { response.setHeader('Content-Type', 'text/html'); response.end(html); return; }
-  if (!/^\/@101\/(device-model|device-runtime|transport-webrtc|device-web|vision|connect)\/(dist|examples)\/[a-z0-9-]+\.js$/.test(path)) {
+  if (!/^\/@101\/(device-model|device-runtime|transport-webrtc|transport-websocket|device-web|vision|connect)\/(dist|examples)\/[a-z0-9-]+\.js$/.test(path)) {
     response.writeHead(404); response.end(); return;
   }
   try { response.setHeader('Content-Type', 'text/javascript'); response.end(readFileSync(join(consumer, 'node_modules', path))); }

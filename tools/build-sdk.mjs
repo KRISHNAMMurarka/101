@@ -7,8 +7,8 @@ import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 
 const root = resolve(import.meta.dirname, '..');
-const names = ['device-model', 'device-runtime', 'transport-webrtc', 'device-web', 'vision', 'connect'];
-const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'run'];
+const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
+const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'run'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
@@ -29,6 +29,7 @@ function readme(name, version) {
     'device-model': 'Bounded immutable device descriptions, signal schemas and conservative remote clocks.',
     'device-runtime': 'Embedded concrete-resource registration, trusted host authorization, leases, bounded delivery and operation evidence.',
     'transport-webrtc': 'Raw bounded reliable/disposable WebRTC lanes and immutable negotiated session bindings. Transport alone does not authorize resources.',
+    'transport-websocket': 'Bounded secure WebSocket lanes with explicit delivery negotiation and immutable connection bindings. Endpoint proof and owner resource grants are separate.',
     'device-web': 'Authenticated endpoint peers, explicit identity stores, remote-resource binding, pointer providers and selected-surface keyboard/text events.',
     vision: 'Independent landmark observation parsers and bounded pose/hand gesture classifiers. Camera inference, WASM and model assets are supplied separately by the caller.',
     connect: 'Game-independent public facade for the current 101 device model, embedded runtime, authenticated resource bridge, pointer provider and keyboard/text source.',

@@ -11,7 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2] ?? 'chromium';
 const browserType = { chromium, firefox, webkit }[name];
 if (!browserType) throw new Error('Expected chromium, firefox or webkit');
-const aliases = Object.fromEntries(['connect', 'device-model', 'device-runtime', 'device-web', 'transport-webrtc']
+const aliases = Object.fromEntries(['connect', 'device-model', 'device-runtime', 'device-web', 'transport-webrtc', 'transport-websocket', 'vision']
   .map(value => [`@101/${value}`, resolve(root, `packages/${value}/src/index.ts`)]));
 const modules = new Map(), fingerprints = {};
 function modulePath(path) { return `/modules/${relative(root, path).replaceAll('\\', '/')}`; }

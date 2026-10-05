@@ -15,7 +15,7 @@ export function createUiEvidence(name, target, extraFiles = []) {
   const paths = { stdout: `${prefix}.stdout.json`, stderr: `${prefix}.stderr.json` };
   writeFileSync(paths.stdout, '', { flag: 'wx' }); writeFileSync(paths.stderr, '', { flag: 'wx' });
   const sourceSha256 = {};
-  for (const directory of ['packages/device-model/src', 'packages/device-runtime/src', 'packages/device-web/src', 'packages/transport-webrtc/src', 'packages/connect/src', 'app/pointer-lab']) {
+  for (const directory of ['packages/device-model/src', 'packages/device-runtime/src', 'packages/device-web/src', 'packages/transport-webrtc/src', 'packages/transport-websocket/src', 'packages/connect/src', 'app/pointer-lab']) {
     for (const file of readdirSync(resolve(root, directory))) if (/\.(?:ts|tsx|css)$/.test(file) && !file.includes('.test.')) {
       const path = resolve(root, directory, file); sourceSha256[relative(root, path)] = hashFile(path);
     }

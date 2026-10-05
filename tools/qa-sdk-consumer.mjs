@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import Ajv from 'ajv';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/vision', '@101/connect'];
+const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/transport-websocket', '@101/device-web', '@101/vision', '@101/connect'];
 const input = process.argv[2];
 const work = mkdtempSync('/tmp/101-sdk-consumer-');
 const receiptPath = join(work, 'receipt.json');
@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -167,6 +167,9 @@ import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
 import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController, RecipeSession } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
+import { SecureWebSocketTransport as DirectWebSocketTransport, WSS_SUBPROTOCOL } from '@101/transport-websocket';
+import { SecureWebSocketTransport } from '@101/connect';
+import type { WebSocketLimits, WebSocketSessionBinding, SecureWebSocketOptions, WebSocketPort } from '@101/transport-websocket';
 import { application, createPointerPipeline, phone, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
@@ -192,6 +195,8 @@ import { runConformanceExample } from '@101/connect/examples/conformance';
 import { createMemoryTelemetryHistory } from '@101/connect/examples/telemetry-history';
 import { createControlSurfaceExample } from '@101/connect/examples/control-surface';
 import { runDurableArtifactJobsExample } from '@101/connect/examples/durable-artifact-jobs';
+import { createApplicationViewsExample } from '@101/connect/examples/application-views';
+import { createSecureWebSocketPeer } from '@101/connect/examples/secure-websocket';
 import { runSettingsStorageExample } from '@101/connect/examples/settings-storage';
 import { parseRecipe, resolveRecipe } from '@101/device-model';
 import type { Recipe, RecipeResolution } from '@101/device-model';
@@ -235,6 +240,8 @@ import facadeSchema from '@101/connect/schema/device-descriptor.json' with { typ
 import '@101/connect/src/index.ts';
 // @ts-expect-error Compiled internals are not public package subpaths.
 import '@101/transport-webrtc/dist/peer.js';
+// @ts-expect-error WebSocket implementation paths stay private.
+import '@101/transport-websocket/dist/peer.js';
 const descriptor: DeviceDescriptor = parseDeviceDescriptor({ schemaVersion: 1, id: 'external-fixture', label: 'External fixture', revision: 1, adapter: { id: 'example:fixture', version: '1.0.0' }, runtime: { platform: 'embedded' }, capabilities: [] });
 const inputProfile: InputProfile = getInputProfile(INPUT_PROFILE_IDS[0]);
 void inputProfile;
@@ -265,6 +272,15 @@ const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
 const peer: PeerDataTransport = new DirectTransport({ initiator: false });
 const direct: DirectTransport = new PeerDataTransport({ initiator: false });
+const applicationViewExampleFactory: typeof createApplicationViewsExample = createApplicationViewsExample;
+const secureWebSocketExampleFactory: typeof createSecureWebSocketPeer = createSecureWebSocketPeer;
+void [applicationViewExampleFactory, secureWebSocketExampleFactory];
+const websocketFactory: typeof DirectWebSocketTransport = SecureWebSocketTransport;
+let websocketOptions: SecureWebSocketOptions | undefined;
+let websocketLimits: WebSocketLimits | undefined;
+let websocketBinding: WebSocketSessionBinding | undefined;
+let websocketPort: WebSocketPort | undefined;
+void [websocketFactory, websocketOptions, websocketLimits, websocketBinding, websocketPort, WSS_SUBPROTOCOL];
 const identity: Promise<EndpointIdentity> = identityFactory();
 const invitation: ReceiverInvitation = createReceiverInvitation({ applicationId: 'fixture', sessionId: 'fixture', now: 0, randomBytes: length => new Uint8Array(length) });
 const invitationLink: string = encodeReceiverInvitationLink(invitation, 'https://example.com/pointer-lab');
@@ -418,6 +434,7 @@ import * as runtime from '@101/device-runtime';
 import * as web from '@101/device-web';
 import * as vision from '@101/vision';
 import { PeerDataTransport } from '@101/transport-webrtc';
+import { SecureWebSocketTransport, WSS_SUBPROTOCOL } from '@101/transport-websocket';
 import { application, phone, runPointerExample } from '@101/connect/examples/pointer';
 import { createSensorFeedbackPipeline, runSensorFeedbackExample } from '@101/connect/examples/sensor-feedback';
 import { createTemperatureThreshold } from '@101/connect/examples/threshold';
@@ -440,6 +457,7 @@ import { runSettingsStorageExample } from '@101/connect/examples/settings-storag
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
+  check(sdk.SecureWebSocketTransport === SecureWebSocketTransport && sdk.WSS_SUBPROTOCOL === WSS_SUBPROTOCOL && WSS_SUBPROTOCOL === '101-resource-wss-1', 'Public secure WebSocket exports differ from the independent package');
   check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createRecipeSession === runtime.createRecipeSession && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.resolveRecipe === model.resolveRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(sdk.KeyboardTextSourceDriver === web.KeyboardTextSourceDriver && sdk.mountKeyboardTextSource === web.mountKeyboardTextSource, 'Keyboard public identity differs');
   check(sdk.TouchContactSourceDriver === web.TouchContactSourceDriver && sdk.mountTouchContactSource === web.mountTouchContactSource, 'Touch public identity differs');
@@ -976,7 +994,7 @@ try {
 const modelSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/device-model/schema/device-descriptor.json')), 'utf8'));
 const facadeSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@101/connect/schema/device-descriptor.json')), 'utf8'));
 check(JSON.stringify(modelSchema) === JSON.stringify(facadeSchema) && JSON.stringify(modelSchema) === JSON.stringify(model.DEVICE_DESCRIPTOR_SCHEMA), 'Public packed schema assets differ from runtime schema');
-for (const name of ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/device-web', '@101/vision', '@101/connect']) {
+for (const name of ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/transport-websocket', '@101/device-web', '@101/vision', '@101/connect']) {
   check(import.meta.resolve(name).endsWith('/dist/index.js'), 'Package root does not resolve to JavaScript');
   for (const suffix of ['/src/index.ts', '/dist/index.js', '/package.json']) {
     let rejected = false;
@@ -1129,7 +1147,7 @@ export function finishGestureBrowser() {
 export async function checkBrowser() {
   check(globalThis.isSecureContext && !!globalThis.crypto?.subtle, 'Loopback browser WebCrypto is unavailable');
   const summary = await checkRuntime();
-  for (const name of ['@101/connect/src/index.ts', '@101/transport-webrtc/dist/peer.js']) {
+  for (const name of ['@101/connect/src/index.ts', '@101/transport-webrtc/dist/peer.js', '@101/transport-websocket/dist/peer.js']) {
     let rejected = false;
     try { await import(name); } catch { rejected = true; }
     check(rejected, 'Private browser package subpath resolved');

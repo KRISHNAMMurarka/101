@@ -202,7 +202,7 @@ function inventory(directory, base = directory) {
 /** The caller must already have audited/installed its source-bound SDK tarballs offline. */
 export async function runTelemetryHistoryBrowserChecks({ consumerDirectory, engines = ['chromium'] }) {
   const consumer = realpathSync(consumerDirectory), served = new Map(), imports = {}, installed = [];
-  for (const name of ['device-model', 'device-runtime', 'transport-webrtc', 'device-web', 'vision', 'connect']) {
+  for (const name of ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect']) {
     const directory = join(consumer, 'node_modules', '@101', name);
     assert.ok(lstatSync(directory).isDirectory() && !lstatSync(directory).isSymbolicLink(), 'Consumer packages must be installed without workspace links');
     assert.ok(contained(consumer, realpathSync(directory)), 'Installed package escaped its consumer directory');

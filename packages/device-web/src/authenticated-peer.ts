@@ -1,5 +1,7 @@
 import { snapshotJson } from '@101/device-model';
 import { PeerDataTransport } from '@101/transport-webrtc';
+import { SecureWebSocketTransport } from '@101/transport-websocket';
+import type { WebSocketSessionBinding } from '@101/transport-websocket';
 import type { PeerLane, PeerSessionBinding, PeerState } from '@101/transport-webrtc';
 import type { ResourcePeer } from './binding.ts';
 import type { EndpointCrypto, EndpointIdentity } from './identity-types.ts';
@@ -20,7 +22,7 @@ export interface AuthenticatedPeerScope {
   readonly localKeyId: string; readonly remoteKeyId: string; readonly transcriptDigest: string;
 }
 export interface AuthenticatedPeerOptions {
-  transport: PeerDataTransport; identity: EndpointIdentity; crypto: EndpointCrypto;
+  transport: PeerDataTransport | SecureWebSocketTransport; identity: EndpointIdentity; crypto: EndpointCrypto;
   epoch: string; applicationId: string; sessionId: string; role: Role; now: () => number;
   timeoutMs?: number; expectedRemoteKeyId?: string;
 }
@@ -74,7 +76,7 @@ function proofMessage(transcript: string, hello: Hello): Uint8Array { return tex
 
 /** An owned authentication gate. Raw resource packets cannot establish trust. */
 export class AuthenticatedResourcePeer implements ResourcePeer {
-  readonly #raw: PeerDataTransport;
+  readonly #raw: PeerDataTransport | SecureWebSocketTransport;
   readonly #identity: EndpointIdentity;
   readonly #crypto: EndpointCrypto;
   readonly #options: Readonly<AuthenticatedPeerOptions>;
@@ -83,7 +85,7 @@ export class AuthenticatedResourcePeer implements ResourcePeer {
   readonly #states = new Set<(state: PeerState) => void>();
   #state: PeerState = 'connecting';
   #stopped = false; #reason = 'waiting-for-transport';
-  #binding?: PeerSessionBinding; #startedAt?: number; #lastNow = -Infinity;
+  #binding?: PeerSessionBinding | WebSocketSessionBinding; #startedAt?: number; #lastNow = -Infinity;
   #local?: Hello; #remote?: Hello; #remoteProof?: string; #remoteFinish?: string;
   #transcript?: string; #digest?: string; #scope?: AuthenticatedPeerScope;
   #proving = false; #verifying = false;
@@ -92,7 +94,7 @@ export class AuthenticatedResourcePeer implements ResourcePeer {
   #currencyPending = false; #lastCurrencyAt = -Infinity; #lastCurrencyAttempt = -Infinity;
 
   constructor(options: AuthenticatedPeerOptions) {
-    if (!(options.transport instanceof PeerDataTransport) || !hex(options.epoch, 16) || !id(options.applicationId) || !id(options.sessionId) ||
+    if (!(options.transport instanceof PeerDataTransport) && !(options.transport instanceof SecureWebSocketTransport) || !hex(options.epoch, 16) || !id(options.applicationId) || !id(options.sessionId) ||
       options.role !== 'source' && options.role !== 'receiver' || typeof options.now !== 'function' || !time(options.now()) ||
       !hex(options.identity.keyId, 32) || options.expectedRemoteKeyId !== undefined && !hex(options.expectedRemoteKeyId, 32) ||
       options.timeoutMs !== undefined && (!Number.isSafeInteger(options.timeoutMs) || options.timeoutMs < 1000 || options.timeoutMs > 60000))
@@ -168,7 +170,7 @@ export class AuthenticatedResourcePeer implements ResourcePeer {
       applicationId: this.#options.applicationId, sessionId: this.#options.sessionId, role: this.#options.role,
       party: binding.initiator ? 'offerer' : 'answerer', keyId, publicKey: bytesToHex(point), nonce: bytesToHex(nonce), ttlMs: this.#options.timeoutMs ?? 60000 });
     // Validate all advertised fingerprints before sending any endpoint assertion.
-    fingerprints(binding.offer.sdp); fingerprints(binding.answer.sdp);
+    if (!('kind' in binding)) { fingerprints(binding.offer.sdp); fingerprints(binding.answer.sdp); }
     if (this.sendControl(this.#local)) this.#lastHelloAt = this.now()!;
     this.advance();
   }
@@ -224,13 +226,25 @@ export class AuthenticatedResourcePeer implements ResourcePeer {
   private async prove(): Promise<void> {
     const local = this.#local!, remote = this.#remote!, binding = this.#binding!;
     const remotePoint = hexToBytes(remote.publicKey, 65);
-    const [remoteId, offerHash, answerHash] = await Promise.all([endpointKeyId(remotePoint, this.#crypto),
-      this.#crypto.sha256(new TextEncoder().encode(binding.offer.sdp)), this.#crypto.sha256(new TextEncoder().encode(binding.answer.sdp))]);
+    const remoteId = await endpointKeyId(remotePoint, this.#crypto);
     if (!this.alive()) return;
-    if (remoteId !== remote.keyId || offerHash.length !== 32 || answerHash.length !== 32 || local.nonce === remote.nonce) throw new TypeError('Invalid endpoint');
+    if (remoteId !== remote.keyId || local.nonce === remote.nonce) throw new TypeError('Invalid endpoint');
     const offerer = binding.initiator ? local : remote, answerer = binding.initiator ? remote : local;
-    const transcript = JSON.stringify(['101.endpoint-transcript/1', this.#options.epoch, this.#options.applicationId, this.#options.sessionId,
-      bytesToHex(offerHash), bytesToHex(answerHash), fingerprints(binding.offer.sdp), fingerprints(binding.answer.sdp), participant(offerer), participant(answerer)]);
+    let transcript: string;
+    if ('kind' in binding) {
+      // WSS has no SDP or DTLS assertion. Its separate proof binds the direct
+      // TLS endpoint, actual socket negotiation, delivery bounds and fresh tag.
+      transcript = JSON.stringify(['101.endpoint-wss-transcript/1', this.#options.epoch, this.#options.applicationId, this.#options.sessionId,
+        binding.endpoint, binding.subprotocol, binding.clientHello, binding.serverHello, binding.limits, binding.connectionTag,
+        participant(offerer), participant(answerer)]);
+    } else {
+      const [offerHash, answerHash] = await Promise.all([
+        this.#crypto.sha256(new TextEncoder().encode(binding.offer.sdp)), this.#crypto.sha256(new TextEncoder().encode(binding.answer.sdp))]);
+      if (!this.alive()) return;
+      if (offerHash.length !== 32 || answerHash.length !== 32) throw new TypeError('Invalid endpoint');
+      transcript = JSON.stringify(['101.endpoint-transcript/1', this.#options.epoch, this.#options.applicationId, this.#options.sessionId,
+        bytesToHex(offerHash), bytesToHex(answerHash), fingerprints(binding.offer.sdp), fingerprints(binding.answer.sdp), participant(offerer), participant(answerer)]);
+    }
     const digest = await this.#crypto.sha256(new TextEncoder().encode(transcript)); if (!this.alive()) return;
     if (digest.length !== 32) throw new TypeError('Invalid transcript digest');
     this.#transcript = transcript; this.#digest = bytesToHex(digest);

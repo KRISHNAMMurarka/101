@@ -27,3 +27,5 @@ export type { GestureTransition, GestureWheel, GestureSurface, GestureSourceOpti
 export { gestureSourceDescriptor, mountGestureSource } from './gesture-source.ts';
 export { mountControlSurface } from './control-surface.ts';
 export type { ControlSurfaceOptions, MountedControlSurface, SurfaceControlEvent, SurfaceControlContext, SurfaceControlCallback } from './control-surface.ts';
+export { mountApplicationViewCanvas } from './application-view-canvas.ts';
+export type { ApplicationCanvasGeometry, ApplicationCanvasView, ApplicationCanvasOptions } from './application-view-canvas.ts';

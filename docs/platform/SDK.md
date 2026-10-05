@@ -504,7 +504,7 @@ pins reject and hostile guidance text has no effect in fresh caller/validator
 processes. Recipe permissions remain requests; the host authorizes concrete
 registrations, principal, application, session and operations.
 
-Supply the six matching local SDK tarballs from `npm run build:sdk -- <revision>`
+Supply the seven matching local SDK tarballs from `npm run build:sdk -- <revision>`
 to the generated project's npm install. The project lists TypeScript 5.9.3
 as a development tool; run `npm test` after installing it. The
 [packed consumer check](receipts/2026-10-05-e06-device-scaffold.json) generates
@@ -1222,13 +1222,13 @@ consumer QA tool SHA-256 is `466a52bb295cf1da6bd6c95f7f7f542f1d3938ccf75d4300648
 
 Workspace packages expose TypeScript source for the repository's existing tools.
 `npm run build:sdk -- HEAD` separately compiles an explicit immutable revision/tree
-into five local ESM tarballs under a fresh ignored `release/sdk-*` directory.
+into seven local ESM tarballs under a fresh ignored `release/sdk-*` directory.
 The manifests define JavaScript/type roots, schema subpaths and facade example
 subpaths. They include MIT licenses, public readmes and compiled/source examples;
 private implementation subpaths and install scripts are absent. Workspace exports
 and app/native dependencies retain their existing source contract.
 
-Install all five matching tarballs outside this repository with
+Install all seven matching tarballs outside this repository with
 `npm install --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/tarballs/*.tgz`.
 Then run `node node_modules/@101/connect/examples/run.js` with ordinary Node.
 Verify the actual artifact set with
@@ -1250,5 +1250,35 @@ release mode rejects those profiles. Default mode remains a diagnostic report.
 Every manifest records `releaseAccepted: false`; successful packaging alone
 does not establish signing, installation, support or publication approval. See
 [required-target QA](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
+
+## Secure WebSocket fallback
+
+`@101/transport-websocket` and the facade export `SecureWebSocketTransport`, `WSS_SUBPROTOCOL` and their public types. The selected direct fallback is explicit: the host supplies a canonical `wss:` endpoint, a current identity, a new connection epoch and separate resource approvals. User info, query/fragment fields and control characters are rejected. The browser default uses native `WebSocket`; a server port is a trusted adapter from the host's own TLS listener. Supplying a port does not establish that TLS occurred.
+
+`createSecureWebSocketPeer` in the public `@101/connect/examples/secure-websocket` subpath creates the raw transport and `AuthenticatedResourcePeer`. `start`, caller-scheduled `tick` and `stop` own this instance. Identity creation, timers, automatic reconnect and resource grants are absent. Each replacement requires a fresh instance/epoch, endpoint enrollment and owner resource selection. A pinned endpoint key or bilateral comparison establishes endpoint proof; invitation possession supplies no resource permission.
+
+Both lanes negotiate `ordered-bounded/1` over one socket. Defaults permit 69,632 payload bytes, 131,072 native buffered bytes for reliable admission and 16,384 for latest admission; hard ceilings are 131,072/262,144/65,536 respectively. Admission includes the 39-byte frame and UTF-8 payload bytes, with reliable headroom and no additional raw queue. Negotiation is limited to eight controls, 4 KiB per control and five seconds. Endpoint, subprotocol, both actual hello messages, selected limits, connection tag and participants enter the separate `101.endpoint-wss-transcript/1` signed proof. WebRTC retains its original SDP/fingerprint transcript.
+
+Local admission cannot recall bytes already handed to a socket. The resource binder keeps source-clock mapping, maximum age, operation deadlines, latest replacement, reliable replay protection and silence release. Late data cannot restore a retired route. [Transport and view evidence](receipts/2026-10-06-transports-views.json) records the actual packed Chromium/Node path in both directions, a 700 ms stalled receiver, saturation, loss release and replacement enrollment. The browser uses an isolated localhost certificate exception; independent Node checks verify CA and hostname success/failure. Relay, two-network and physical-phone acceptance remain open.
+
+## Local HTTPS coordinator
+
+`@101/hub-server` exports `createHttpsCoordinator`, `createCoordinatorFetcher`, `HTTPS_COORDINATOR_LIMITS` and their option/enrollment types. This is the selected `provisioned-loopback-node-mtls/1` rendezvous profile, separate from the seven browser SDK packages. The server binds only `127.0.0.1` and requires TLS 1.3, a matching valid server certificate/key with that IP SAN, a trusted client CA, exact HTTPS origins and unique provisioned certificate-to-principal/device enrollments. Native certificate verification plus current enrollment fingerprint/validity governs every request.
+
+Authenticated creation, invitation join, host rotation, private offer/answer, reconnect and departure reuse the public pairing clients. Host and peer requests need their role bearer and authenticated principal; copying a bearer to another enrolled principal fails. Device identity comes from enrollment. The host sees only its session's peers and a peer can read only its own offer. Endpoint overrides and forwarded-header authority are rejected. Rendezvous permission grants no device resource access.
+
+The finite ceilings include 64 enrollments, sixteen origins/sessions, four sessions per principal, eight peers per session, sixteen peers per principal, 32 total sockets, 32 requests per principal per second, four pending caller requests, 401,024 request/response bytes and ten-minute sessions. `createCoordinatorFetcher` verifies CA/hostname, permits only its configured origin/endpoint, rejects redirects and closes its owned agent/requests. `stop` destroys accepted sockets and ephemeral authority; stopped coordinators cannot restart. Credentials are host supplied and never emitted by the public example or receipt.
+
+`examples/coordinator/https-coordinator.ts` is the real provisioned Node caller. `node --experimental-strip-types tools/qa-https-coordinator.mjs` exercises disposable local certificates and the normal public exports. Its generated offer/answer proves private signaling, without claiming a WebRTC/media session. Browser client certificates, accounts, enrollment/key lifecycle, persistent directories, relay and phone/two-network qualification remain separate.
+
+## Independent application views
+
+`createApplicationViews` owns one caller-scheduled synchronous application engine. `tick` advances it once, snapshots bounded inert state, then evaluates each active view projection once regardless of display count. Each view declares a value schema; only its validated projection reaches an output. The full simulation snapshot stays with trusted host projection code. Projection and rendering callbacks are trusted code, with no extension sandbox claim.
+
+`attach({ viewId, outputId, principalId, apply, release })` binds concrete source/destination registrations, application/session, view, output and principal before asking the host for source-owner and output-owner consent. Default denial, unknown views, duplicate outputs and exhausted quotas create no route. Sixteen views and sixteen outputs are allowed, with one queued latest frame per route and 32 pending deliveries total. The private snapshot has the model's 64 KiB/depth bounds; each delivered observation/options envelope must fit the runtime's 4 KiB bound. Grants last at most sixty seconds, output leases thirty seconds, maximum age one second and rate 120 Hz. `handle.renew()` obtains fresh host approval; `handle.stop`, principal `revoke`, expiry and application `stop` retire owned routes. A broken clock/engine stops all views; a broken projection retires only that view.
+
+`mountApplicationViewCanvas` is the independently authorized local Canvas2D adapter. It measures with `ResizeObserver`, coalesces geometry changes into one owned animation frame, caps each backing/staging canvas at 1,048,576 pixels and stages synchronous rendering before rechecking current delivery authority for the visible copy. The host supplies accessible labels and a trusted synchronous drawing callback. Stop clears visible/private retained frames and disconnects the observer/cancels animation work. Mounting the same canvas twice is rejected.
+
+The public `@101/connect/examples/application-views` caller supplies two common displays and a separately approved owner display from one simulation. Actual packed Chromium/WebKit checks cover canvas pixels, private projection denial, resize, memory bounds, revocation during staging, expiry, renderer failure and teardown. This local typed-frame profile does not claim capture/encoded media, physical monitor behavior or cross-host streaming.
 
 Verification: [foundation QA record](FOUNDATION-QA-2026-10-01.md).

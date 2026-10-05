@@ -1,0 +1,776 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "tasks": [
+    "T12",
+    "S05",
+    "V08"
+  ],
+  "sourceTree": "613ddc2b73d65fb57b6ac647d48ca51920444517",
+  "sdkSourceTree": "3ef657000ae8d601210e9b44aa40cdf07de3645e",
+  "sdkArtifact": "release/sdk-I55zVc/manifest.json",
+  "sdkManifestSha256": "270bf6eade99238d0205cc3894d84387a1c97268e0abd0d6570c760099f10b2a",
+  "sourceSha256": {
+    "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+    "packages/transport-websocket/src/ports.ts": "dad33fdd5d3fdeafd5386bc75edcc65400cdfd52d4e79d5f452478a575e7a366",
+    "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+    "packages/hub-server/src/https-coordinator.ts": "014a500f6e37e96620ae807e97cb3d1bb819e41f7300d690c3d39ab6140b1af8",
+    "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+    "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+    "examples/coordinator/https-coordinator.ts": "c11ec852705c8662b5f0a3fa12ba96b1e313c797ba1568d9245a216c5eb1d04f",
+    "examples/device-pipelines/secure-websocket.ts": "14e72579ab90c3812a5405af58c0481464bf5e0e772e9fb6a5a3f1ffce997d47",
+    "examples/device-pipelines/application-views.ts": "ba33d4fb441f5b41bdf0435e58a501d0d68ddd98e2723abc9d294bffc33a4036",
+    "tools/qa-sdk-consumer.mjs": "b7d7a24bbf2d9538429a677c2a0efe369f814ff1d8e84d7a8324b621415848a7",
+    "tools/qa-secure-websocket.mjs": "ef6716cdab93bc3d5d60e9749a371661c5e8a18ac6990f99565ceef6902d2561",
+    "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528",
+    "tools/qa-application-views.mjs": "8e701b6dd81d669fd949e2107920cbf5a641ee965013c17fb173edcca2076386",
+    "tools/qa-authenticated-peer.mjs": "ef600142edd4a35c379237d776204c3bff120795a7465959ff4ae8f859cf4b4d"
+  },
+  "sdkProducerConsistency": "Every manifest source SHA-256 matches the corrected candidate; coordinator repairs are outside the seven-package SDK producer closure.",
+  "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+  "packedChecks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 7,
+      "files": 259,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass",
+      "source": [
+        {
+          "path": "packages/devkit/src/device-scaffold.ts",
+          "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+        },
+        {
+          "path": "tools/create-device-project.mjs",
+          "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+        }
+      ],
+      "project": "/tmp/101-sdk-consumer-qFBgPU/generated-device-project",
+      "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+      "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "guidance": {
+        "schema": "device-guidance.schema.json",
+        "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+        "generatedAssets": [
+          {
+            "path": "device-guidance.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+          },
+          {
+            "path": "device-guidance.schema.json",
+            "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+          },
+          {
+            "path": "src/devices.json",
+            "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+          },
+          {
+            "path": "src/recipe.json",
+            "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+          },
+          {
+            "path": "scripts/validate.mjs",
+            "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+          }
+        ],
+        "validation": {
+          "status": "pass",
+          "recipeId": "room-sensor:temperature-display",
+          "processorId": "room-sensor:threshold",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+        },
+        "rejectedAssets": [
+          "unknown-recipe-field",
+          "changed-processor-source",
+          "incompatible-selected-device"
+        ],
+        "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+      },
+      "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouch": true,
+        "independentRelease": true,
+        "capturedOutsideBounds": true,
+        "resizeCancellation": true,
+        "orientationCancellation": true,
+        "disconnectCaptureRelease": true,
+        "unmountCaptureRelease": true
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouchScroll": true,
+        "cancellation": true
+      }
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass",
+      "package": "@example/temperature-band-processor",
+      "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+      "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "operations": [
+        "subscribe",
+        "invoke"
+      ]
+    }
+  ],
+  "scopes": {
+    "T12": "SecureWebSocketTransport ordered-bounded/1 raw peer with canonical WSS endpoint, fixed subprotocol, bounded deadline/hello confirmation, real UTF-8 bufferedAmount admission, reliable headroom, latest drop and stale generation fences. Separate signed 101.endpoint-wss-transcript/1 binding and public first-caller example require endpoint pin or bilateral owner comparison plus fresh resource grants. Actual packed Chromium/independent Node TLS, wrong CA/hostname/pin, unilateral enrollment, paused receive/silence release, replacement and loss checks pass. Browser certificate exception is disclosed; physical phones, relay/global support and automatic transport selection remain open.",
+    "S05": "Opt-in provisioned-loopback-node-mtls/1 coordinator on 127.0.0.1 with TLS1.3, startup key/certificate/CA/origin/enrollment validation, current client certificate and enrolled principal checks, role-bound private rendezvous and bounded bodies/responses/sessions/sockets/rate. Genuine TLS tests and public caller exercise create/join, offer/answer, rotation/leave, rejected origins/certificates, principal privacy, shutdown, aggregate serialized-response admission and reentrant caller capacity. No browser certificate provisioning, account/key lifecycle, actual WebRTC/media, relay, phones or two-network qualification.",
+    "V08": "Independent authorized local typed-frame Canvas2D views from one caller-driven authoritative engine: private immutable bounded snapshot, per-view projections, exact principal/app/session/output grants, independent leases/revocation/failure isolation and current-delivery fences. Public packed example and Chromium/WebKit exercise shared/owner views, native keyboard approval, genuine Canvas pixels/ResizeObserver, bounded staging surfaces, reentrant revocation, expiry, independent stop and teardown. Trusted renderer/projection code is not sandboxed; encoded video/capture, cross-host streaming and physical displays remain open."
+  },
+  "focusedUnitTests": {
+    "passed": 61,
+    "failed": 0,
+    "groups": {
+      "websocketAuthenticationAndViewsAndBoundary": 40,
+      "httpsCoordinator": 21
+    }
+  },
+  "secureWebSocket": {
+    "scope": "direct disposable localhost TLS; actual Node SDK application/provider and native Chromium WebSocket SDK caller; generated input, no phones/relay/global compatibility",
+    "browserCertificateTrust": "isolated Playwright localhost certificate exception; separate Node CA and hostname validation checks",
+    "consumer": "/private/tmp/101-sdk-consumer-qFBgPU",
+    "work": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-wss-browser-JHHu1z",
+    "node": "v24.14.0",
+    "sourceSha256": {
+      "packages/transport-websocket/src/ports.ts": "dad33fdd5d3fdeafd5386bc75edcc65400cdfd52d4e79d5f452478a575e7a366",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "examples/device-pipelines/secure-websocket.ts": "14e72579ab90c3812a5405af58c0481464bf5e0e772e9fb6a5a3f1ffce997d47",
+      "tools/qa-secure-websocket.mjs": "ef6716cdab93bc3d5d60e9749a371661c5e8a18ac6990f99565ceef6902d2561"
+    },
+    "artifactSha256": {
+      "@101/device-model": "dc2a85ad3fa2e0d47d03819b9d2e02d596aaaf472d880c38cfcfd3a14f291d82",
+      "@101/device-runtime": "1a46beac30c1f3bcb1ca5fdfac5d24e72240c1af25ec2291e2ed0e5e44c80123",
+      "@101/transport-webrtc": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c",
+      "@101/transport-websocket": "165168bb0be292cbcfe646060f560c1142e8f15b55a94e36b13cd34bd269dad1",
+      "@101/device-web": "3db7b3d766cb1a5e49a90afe89fe1840bbb916a7eb3605b5c39d5dc9d998c6ee",
+      "@101/vision": "725a27d7cd06d205f3592a6697cba4bf57c9a82ecf3157131a73d1aa5cd07e6f",
+      "@101/connect": "1c1299f9bd8d49cdf679c2ecf9453d967b624426ae6d3e0b7f8c959798cf7584"
+    },
+    "checks": [
+      "owned CA validated WSS succeeds",
+      "untrusted TLS fails before SDK negotiation",
+      "trusted CA with wrong hostname fails",
+      "wrong pinned endpoint has zero resource authority",
+      "unilateral enrollment leaves resources closed",
+      "browser provider reaches independently authorized Node application over real TLS",
+      "real paused WSS receive releases held state; delayed interactive bytes cannot restore retired routes",
+      "fresh replacement re-enrolls and re-grants; independent browser app renders opposite diagonal and current geometry",
+      "zero browser page errors"
+    ],
+    "trials": [
+      {
+        "name": "native browser bufferedAmount admission",
+        "accepted": 15,
+        "latestBytes": 15945,
+        "reliable": true,
+        "finalBytes": 16000,
+        "pending": 0,
+        "limits": {
+          "maxMessageBytes": 69632,
+          "reliableBufferLimit": 131072,
+          "latestBufferLimit": 16384
+        }
+      },
+      {
+        "name": "deadline and silence release",
+        "contact": false,
+        "releases": 2
+      },
+      {
+        "name": "loss releases and revokes",
+        "releases": 2,
+        "scope": false
+      }
+    ],
+    "browser": {
+      "name": "chromium",
+      "version": "149.0.7827.55"
+    },
+    "status": "pass"
+  },
+  "httpsCoordinator": {
+    "result": "pass",
+    "profile": "provisioned-loopback-node-mtls/1",
+    "node": "v24.14.0",
+    "publicExportResolution": "normal-package",
+    "implementationSha256": "014a500f6e37e96620ae807e97cb3d1bb819e41f7300d690c3d39ab6140b1af8",
+    "checks": [
+      "public-hub-exports",
+      "public-first-caller-create-join-private-signaling-rotation-leave",
+      "actual-loopback-tls13",
+      "missing-client-certificate",
+      "tls12-rejected",
+      "expired-client-certificate",
+      "unenrolled-client-rejected",
+      "origin-denied-7",
+      "origin-denied-8",
+      "origin-denied-9",
+      "origin-denials-did-not-create-session",
+      "private-principal-and-error-boundary",
+      "caller-no-cross-origin-credential-forwarding",
+      "shutdown-closes-listener-and-authority",
+      "shutdown-prevents-authority-restart"
+    ],
+    "limits": {
+      "enrollments": 64,
+      "origins": 16,
+      "connections": 32,
+      "sessions": 16,
+      "sessionsPerPrincipal": 4,
+      "peersPerSession": 8,
+      "peersPerPrincipal": 16,
+      "requestsPerSecond": 32,
+      "callerPendingRequests": 4,
+      "requestBytes": 401024,
+      "responseBytes": 401024,
+      "signalCharacters": 400000,
+      "sessionTtlMs": 600000,
+      "requestTimeoutMs": 5000,
+      "headersTimeoutMs": 3000
+    },
+    "disposableCredentialsRemoved": true,
+    "excluded": [
+      "browser-client-cert-provisioning",
+      "account-or-key-lifecycle",
+      "resource-grants",
+      "WebRTC-media-negotiation",
+      "relay",
+      "phones",
+      "two-network-topology"
+    ]
+  },
+  "applicationViews": {
+    "qaToolSha256": "8e701b6dd81d669fd949e2107920cbf5a641ee965013c17fb173edcca2076386",
+    "checks": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "status": "pass",
+        "checks": [
+          "one-authoritative-engine-two-displays",
+          "default-and-foreign-owner-denial",
+          "private-projection-isolation",
+          "native-canvas-pixels",
+          "resize-and-one-megapixel-backing-cap",
+          "reentrant-revocation-before-visible-copy",
+          "expiry-clear",
+          "renderer-failure-isolation",
+          "stop-observer-frame-teardown",
+          "keyboard-approval",
+          "narrow-layout"
+        ],
+        "screenshot": "/private/tmp/101-sdk-consumer-qFBgPU/application-views-chromium.png"
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "status": "pass",
+        "checks": [
+          "one-authoritative-engine-two-displays",
+          "default-and-foreign-owner-denial",
+          "private-projection-isolation",
+          "native-canvas-pixels",
+          "resize-and-one-megapixel-backing-cap",
+          "reentrant-revocation-before-visible-copy",
+          "expiry-clear",
+          "renderer-failure-isolation",
+          "stop-observer-frame-teardown",
+          "keyboard-approval",
+          "narrow-layout"
+        ],
+        "screenshot": "/private/tmp/101-sdk-consumer-qFBgPU/application-views-webkit.png"
+      }
+    ],
+    "limits": [
+      "local Canvas2D typed-frame profile",
+      "generated application state; no phone or physical display qualification",
+      "host owns projection and synchronous renderer code",
+      "no capture/encoded-media or cross-host transport claim"
+    ],
+    "visualReview": "390px WebKit screenshot reviewed: readable monochrome controls, blue shared game canvas, owner canvas retired and cleared, correct common-active/owner-unavailable status; no overflow"
+  },
+  "rtcRegression": {
+    "scope": "local real-browser two-page independent persisted endpoint keys; actual WebRTC transcript proof, bilateral owner comparison, application owner pointer selection, generated pointer/contact delivery and loss release; no UI, physical input, native signature or account identity qualification",
+    "browser": "chromium",
+    "version": "149.0.7827.55",
+    "node": "24.14.0",
+    "playwright": "1.61.1",
+    "sourceSha256": {
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/device-model/src/index.ts": "7b33524a4662806cbcdca75dde5442b99b143c8e4557122e0b61ee2f2ddba01f",
+      "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+      "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+      "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+      "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+      "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/binding.ts": "026a1f433093abeadaea019331eb455c7ed310b139794e60f8950461a0c6da8f",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "examples/device-pipelines/remote-pointer.ts": "603f8e765437e0fa33b303823119d0a10649f38d5b42aaf77ae23868b54d2da5",
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+      "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+      "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+      "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+      "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+      "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+      "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a",
+      "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+      "packages/device-web/src/index.ts": "1dcc069ae0b0b7537b41e0cefe4a88ea663a63b021f7a25d4503a5b7012a0691",
+      "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+      "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+      "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+      "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+      "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+      "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+      "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-runtime/src/index.ts": "15f460e694a66890f9c4b90818f893ecfd844498c4280a507f8e007c6d7369d0",
+      "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+      "packages/device-runtime/src/runtime.ts": "b9a4f8859a6915252846651a142ab63bd1ee1a288edfdecc6f10ad5e71e23109",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+      "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+      "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+      "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+      "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+      "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+      "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+      "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+      "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+      "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "tools/qa-authenticated-peer.mjs": "ef600142edd4a35c379237d776204c3bff120795a7465959ff4ae8f859cf4b4d"
+    },
+    "checks": [
+      "receiver persisted identity survives page reload",
+      "source persisted identity survives page reload",
+      "wrong expected application: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+      "wrong expected session: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+      "tampered accepted answer SDP: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+      "valid owner enrollment, transport disconnect: pre-auth descriptor/sample admission blocked and raw premature packets dropped",
+      "valid owner enrollment, endpoint key removal: pre-auth descriptor/sample admission blocked and raw premature packets dropped"
+    ],
+    "trials": [
+      {
+        "name": "wrong expected application",
+        "expected": "RED authentication"
+      },
+      {
+        "name": "wrong expected session",
+        "expected": "RED authentication"
+      },
+      {
+        "name": "tampered accepted answer SDP",
+        "expected": "RED authentication"
+      },
+      {
+        "name": "valid owner enrollment, transport disconnect",
+        "expected": "GREEN authentication and application routes",
+        "matchingOwnerDigest": true,
+        "unilateralEnrollmentBlocked": true,
+        "states": [
+          {
+            "contact": true,
+            "releases": 0,
+            "position": {
+              "x": 80.0000011920929,
+              "y": 160.0000023841858
+            }
+          },
+          {
+            "contact": false,
+            "releases": 0,
+            "position": {
+              "x": 320.0000047683716,
+              "y": 40.00000059604645
+            }
+          }
+        ],
+        "resized": {
+          "contact": false,
+          "releases": 0,
+          "position": {
+            "x": 800.000011920929,
+            "y": 100.00000149011612
+          }
+        },
+        "ended": [
+          {
+            "phase": "stopped",
+            "reason": "transport-ended",
+            "scopeAbsent": true,
+            "lateAdmission": false,
+            "state": {
+              "positionAbsent": true,
+              "contact": false,
+              "releases": 2
+            }
+          },
+          {
+            "phase": "stopped",
+            "reason": "transport-ended",
+            "scopeAbsent": true,
+            "lateAdmission": false
+          }
+        ]
+      },
+      {
+        "name": "valid owner enrollment, endpoint key removal",
+        "expected": "GREEN authentication and application routes",
+        "matchingOwnerDigest": true,
+        "unilateralEnrollmentBlocked": true,
+        "states": [
+          {
+            "contact": true,
+            "releases": 0,
+            "position": {
+              "x": 80.0000011920929,
+              "y": 160.0000023841858
+            }
+          },
+          {
+            "contact": false,
+            "releases": 0,
+            "position": {
+              "x": 320.0000047683716,
+              "y": 40.00000059604645
+            }
+          }
+        ],
+        "resized": {
+          "contact": false,
+          "releases": 0,
+          "position": {
+            "x": 800.000011920929,
+            "y": 100.00000149011612
+          }
+        },
+        "ended": [
+          {
+            "phase": "stopped",
+            "reason": "transport-ended",
+            "scopeAbsent": true,
+            "lateAdmission": false,
+            "state": {
+              "positionAbsent": true,
+              "contact": false,
+              "releases": 2
+            }
+          },
+          {
+            "phase": "stopped",
+            "reason": "identity-unavailable",
+            "scopeAbsent": true,
+            "lateAdmission": false
+          }
+        ]
+      }
+    ],
+    "status": "passed"
+  },
+  "review": {
+    "initialTrees": [
+      "d8561a349c02f203c1b77514c8b8bc0a24af4b26",
+      "3ef657000ae8d601210e9b44aa40cdf07de3645e"
+    ],
+    "finalTree": "613ddc2b73d65fb57b6ac647d48ca51920444517",
+    "result": "No outstanding material findings in selected scopes; genuine TLS reproductions independently rerun after coordinator repairs."
+  },
+  "regressions": [
+    {
+      "task": "T12",
+      "case": "cancelled or expired negotiation",
+      "old": "socket creation continued after cancellation; late hello connected after deadline",
+      "new": "generation and deadline checked before callback effects; transport fails closed"
+    },
+    {
+      "task": "T12",
+      "case": "canonical endpoint controls",
+      "old": "control-containing endpoint accepted",
+      "new": "raw and encoded controls rejected before socket construction"
+    },
+    {
+      "task": "T12",
+      "case": "public fallback export",
+      "old": "SecureWebSocketTransport undefined at public facade",
+      "new": "same raw transport identity exposed from standalone package and facade"
+    },
+    {
+      "task": "V08",
+      "case": "engine elapsed time after attachment clock read",
+      "old": "second engine elapsedMs 10 instead of20",
+      "new": "independent lastStepAt preserves authoritative engine timing"
+    },
+    {
+      "task": "V08",
+      "case": "async engine rejection",
+      "old": "unhandled private promise rejection",
+      "new": "unsupported async step retires engine and consumes rejection"
+    },
+    {
+      "task": "S05",
+      "case": "aggregate retained host list",
+      "old": "two250000-byte answers admitted; unreadable500233-byte response exceeded401024 ceiling",
+      "new": "second answer429 without state mutation; escaped bytes, peer metadata and complete response widths admitted before retention"
+    },
+    {
+      "task": "S05",
+      "case": "reentrant Headers conversion",
+      "old": "five caller requests admitted against four-request ceiling; close during conversion still dispatched",
+      "new": "capacity reserved before conversion; exactly four admitted and post-close zero dispatch"
+    }
+  ],
+  "requiredCommitGates": [
+    "npx tsc --noEmit",
+    "npm run lint",
+    "npm run test:unit",
+    "npm run build",
+    "node --test tests/rendered-html.test.mjs"
+  ],
+  "physicalQualification": "Deferred by user; no physical support row accepted. Node22 minimum runtime is not newly qualified by Node24 checks.",
+  "published": false
+}

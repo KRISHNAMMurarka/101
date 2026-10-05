@@ -11,7 +11,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const engine = process.argv[2] ?? 'chromium';
 const browserType = { chromium, firefox, webkit }[engine];
 if (!browserType) throw new Error('Expected chromium, firefox or webkit');
-const aliases = Object.fromEntries(['connect', 'device-model', 'device-runtime', 'device-web', 'transport-webrtc']
+const aliases = Object.fromEntries(['connect', 'device-model', 'device-runtime', 'device-web', 'transport-webrtc', 'transport-websocket', 'vision']
   .map(name => [`@101/${name}`, resolve(root, `packages/${name}/src/index.ts`)]));
 const modules = new Map(), sourceSha256 = {};
 function collect(path) {

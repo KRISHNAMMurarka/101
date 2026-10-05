@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 97 completed with recorded evidence; 175 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 100 completed with recorded evidence; 172 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -108,7 +108,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **T09 — Implement a compatible 101 application bridge.** Map approved typed resources to game controls/roles explicitly; new platform packages never import game code. [Pointer provider evidence](POINTER-PROVIDER-QA-2026-10-02.md).
 - [x] **T10 — Verify disconnect and reconnect generations.** Loss releases held output; stale packets/commands cannot enter replacement routes; reconnect renegotiates ownership and formats. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
 - [x] **T11 — Add network impairment tests.** Loss, jitter, reordering, duplicates, queue saturation and slow receivers retain bounded memory and visible recovery. [Resource binding evidence](RESOURCE-BINDING-QA-2026-10-02.md).
-- [ ] **T12 — Implement a secure WebSocket fallback.** Negotiate its delivery behavior and bounds; late interactive data is discarded instead of accumulating behind old messages.
+- [x] **T12 — Implement a secure WebSocket fallback.** Negotiate its delivery behavior and bounds; late interactive data is discarded instead of accumulating behind old messages. [Local implementation and runtime evidence](receipts/2026-10-06-transports-views.json).
 - [ ] **T13 — Compare optional transport candidates.** Benchmark WebTransport/native QUIC only with a justified caller; retain or reject each using supported-runtime, security and end-to-end measurements.
 - [ ] **T14 — Close stage 2 compatibility acceptance.** Non-game physical pointer, permissions, ownership, loss/reconnect and existing game/controller tests pass on one exact candidate.
 
@@ -130,7 +130,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **S02 — Implement endpoint identities and key storage.** Use established cryptographic/OS facilities; test enrollment, key loss, rotation, revocation and copied identity rejection.
 - [ ] **S03 — Implement owner consent and scoped grants.** Bind source/destination, principal/app/session, operation, direction, rate, expiry and peer endpoint; deny unsupported scope.
 - [ ] **S04 — Implement encrypted authenticated remote channels.** Verify peer binding and certificate/key failures; document the actual trust topology rather than assuming encryption grants access.
-- [ ] **S05 — Build the HTTPS coordinator locally.** Authenticated create/join, restricted origins, private rendezvous and startup configuration checks pass disposable integration tests.
+- [x] **S05 — Build the HTTPS coordinator locally.** Authenticated create/join, restricted origins, private rendezvous and startup configuration checks pass disposable integration tests. [Local implementation and runtime evidence](receipts/2026-10-06-transports-views.json).
 - [ ] **S06 — Implement membership/invitation lifecycle.** Expiring invitations, removal, reconnect and lost-device recovery cannot expose another participant's resources.
 - [ ] **S07 — Implement direct and relay negotiation.** ICE/TURN or authenticated gateway fallback uses scoped short-lived credentials and records the selected path.
 - [ ] **S08 — Prove two-network and relay-required sessions.** Physical endpoints on different networks connect, recover and revoke access; direct-only LAN tests cannot close this row.
@@ -187,7 +187,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **V05 — Implement camera selection and controls.** Camera ownership, supported focus/exposure/zoom/PTZ, switching, denial, unplug and retry expose only verified controls.
 - [ ] **V06 — Implement adaptive encoded video.** Codec negotiation, bitrate/resolution changes, slow receivers, missing codecs and loss recover without unbounded buffers.
 - [ ] **V07 — Implement screen/application streaming.** Capture consent, selected surface, resize, cursor/input mapping, privacy and capture-stop behave correctly.
-- [ ] **V08 — Implement independent render views.** One authoritative application/simulation supplies multiple authorized displays without creating duplicate engines or leaking private view state.
+- [x] **V08 — Implement independent render views.** One authoritative application/simulation supplies multiple authorized displays without creating duplicate engines or leaking private view state. [Local implementation and runtime evidence](receipts/2026-10-06-transports-views.json).
 - [ ] **V09 — Implement output sharing policies.** Audio mix/duck/exclusive, camera observers and app layers/regions are explicit policies with conflict and transfer tests.
 - [ ] **V10 — Implement synchronization and uncertainty handling.** Audio/video/display clocks declare skew budgets; excessive drift/uncertainty degrades visibly instead of inventing synchronization.
 - [ ] **V11 — Implement bounded recording/playback when enabled.** Consent, retention, seek, export, storage quotas and deletion are tested; live routing does not automatically record streams.

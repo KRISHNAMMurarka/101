@@ -251,3 +251,110 @@ test('a stalled identity currency check retires idle resources within its freshn
   assert.equal(f.a.status().phase, 'stopped');
   f.stop();
 });
+
+// Real endpoint cryptography over the documented native WebSocket port surface.
+// This fixture qualifies protocol rules; the TLS/browser tool supplies transport evidence.
+class WssSocket {
+  readyState = 1; protocol = '101-resource-wss-1'; binaryType = 'arraybuffer'; bufferedAmount = 0;
+  onopen: ((event: unknown) => void) | null = null; onclose: ((event: unknown) => void) | null = null;
+  onerror: ((event: unknown) => void) | null = null; onmessage: ((event: { data: unknown }) => void) | null = null;
+  target?: WssSocket; queue: (() => void)[];
+  constructor(queue: (() => void)[]) { this.queue = queue; }
+  send(data: string | ArrayBuffer | Uint8Array<ArrayBuffer>) {
+    if (this.readyState !== 1) throw new Error('socket closed');
+    const copy = typeof data === 'string' ? data : data instanceof Uint8Array ? new Uint8Array(data).buffer : data.slice(0);
+    this.queue.push(() => this.target?.onmessage?.({ data: copy }));
+  }
+  close() { this.readyState = 3; this.onclose?.({}); }
+}
+async function wssFixture(options: { pinned?: boolean; applicationId?: string; sessionId?: string; epoch?: string; keyId?: string;
+  identities?: Awaited<ReturnType<typeof identityFixture>>[]; cryptos?: EndpointCrypto[] } = {}) {
+  const { SecureWebSocketTransport } = await import('@101/transport-websocket');
+  const queue: (() => void)[] = [], left = new WssSocket(queue), right = new WssSocket(queue); left.target = right; right.target = left;
+  let now = 100;
+  const aRaw = new SecureWebSocketTransport({ endpoint: 'wss://localhost/connect', side: 'client', createSocket: () => left, now: () => now });
+  const bRaw = new SecureWebSocketTransport({ endpoint: 'wss://localhost/connect', side: 'server', socket: right, now: () => now });
+  await aRaw.connect(); await bRaw.connect();
+  const identities = options.identities ?? await Promise.all([identityFixture(), identityFixture()]);
+  const scope = { epoch: 'c'.repeat(32), applicationId: 'wss-pointer', sessionId: 'wss-session', now: () => now };
+  const a = new AuthenticatedResourcePeer({ transport: aRaw, identity: identities[0].identity, crypto: options.cryptos?.[0] ?? crypto, ...scope, role: 'source',
+    expectedRemoteKeyId: options.keyId ?? (options.pinned ? identities[1].identity.keyId : undefined) });
+  const b = new AuthenticatedResourcePeer({ transport: bRaw, identity: identities[1].identity, crypto: options.cryptos?.[1] ?? crypto, ...scope,
+    applicationId: options.applicationId ?? scope.applicationId, sessionId: options.sessionId ?? scope.sessionId,
+    epoch: options.epoch ?? scope.epoch, role: 'receiver', expectedRemoteKeyId: options.pinned ? identities[0].identity.keyId : undefined });
+  const pump = async (condition: () => boolean) => {
+    for (let turn = 0; turn < 2000 && !condition(); turn++) {
+      aRaw.tick(); bRaw.tick(); a.tick(); b.tick(); while (queue.length) queue.shift()!();
+      await new Promise<void>(resolve => setImmediate(resolve));
+    }
+    assert.ok(condition(), JSON.stringify([a.status(), b.status()]));
+  };
+  return { a, b, aRaw, bRaw, identities, pump, queue, time: () => now, setTime(value: number) { now = value; }, stop() { a.stop(); b.stop(); } };
+}
+
+test('WSS endpoint enrollment protects the same typed resource path without diagnostic authority', async () => {
+  const f = await wssFixture(); const values: unknown[] = []; f.b.onData((_lane, value) => values.push(value));
+  assert.equal(f.a.send('disposable', 'premature'), false);
+  await f.pump(() => f.a.status().phase === 'awaiting-enrollment' && f.b.status().phase === 'awaiting-enrollment');
+  assert.equal(f.a.status().comparisonDigest, f.b.status().comparisonDigest);
+  f.a.confirmEnrollment(f.a.status().comparisonDigest!);
+  assert.equal(f.a.send('reliable', 'unilateral'), false); assert.equal(authenticatedPeerScope(f.a), undefined);
+  f.b.confirmEnrollment(f.b.status().comparisonDigest!); await f.pump(() => f.a.state === 'connected' && f.b.state === 'connected');
+  assert.equal(authenticatedPeerScope({ ...f.a }), undefined);
+  const provider = new PointerResourceProvider({ peer: f.a, epoch: 'c'.repeat(32), clockId: 'source-clock', now: f.time, platform: 'wss-fixture', available: () => true });
+  const surface = createRemotePointerSurface({ peer: f.b, epoch: 'c'.repeat(32), principalId: 'owner', applicationId: 'wss-pointer',
+    sessionId: 'wss-session', clockId: 'receiver-clock', now: f.time, width: 400, height: 200 });
+  await f.pump(() => { provider.tick(); surface.tick(); return !!surface.receiver.description(); }); assert.equal(surface.select(), true);
+  await f.pump(() => { provider.tick(); surface.tick(); return !!provider.driver() && !!surface.state().position; });
+  f.setTime(120); provider.driver()!.nudge(0.2, -0.3); provider.driver()!.setContact(true);
+  await f.pump(() => { provider.tick(); surface.tick(); return surface.state().contact && !!surface.state().position; });
+  assert.ok(Math.abs(surface.state().position!.x - 280) < 0.001 && Math.abs(surface.state().position!.y - 40) < 0.001);
+  f.setTime(150);
+  f.a.send('disposable', JSON.stringify({ protocol: 'connect', version: 1, type: 'sample', epoch: 'c'.repeat(32), slot: 1, sequence: 99, capturedAt: 1, value: { x: 0.1, y: 0.1 } }));
+  while (f.queue.length) f.queue.shift()!(); surface.tick(); assert.ok(Math.abs(surface.state().position!.x - 280) < 0.001 && Math.abs(surface.state().position!.y - 40) < 0.001);
+  f.identities[0].lose(); assert.equal(surface.state().contact, true); // Local source loss cannot recall the socket's remote state.
+  f.setTime(700); surface.tick(); assert.equal(surface.state().contact, false); assert.equal(surface.state().position, undefined);
+  provider.stop(); surface.stop(); f.stop();
+});
+
+test('WSS actual key pins and exact application/session/epoch scopes fail closed', async () => {
+  const pinned = await wssFixture({ pinned: true }); await pinned.pump(() => pinned.a.state === 'connected' && pinned.b.state === 'connected');
+  assert.equal(authenticatedPeerScope(pinned.a)?.remoteKeyId, pinned.identities[1].identity.keyId); pinned.stop();
+  for (const options of [{ applicationId: 'another-app' }, { sessionId: 'another-session' }, { epoch: 'd'.repeat(32) }, { keyId: '0'.repeat(64) }]) {
+    const f = await wssFixture(options); await f.pump(() => f.a.state === 'failed' || f.b.state === 'failed');
+    assert.equal(authenticatedPeerScope(f.a), undefined); assert.equal(authenticatedPeerScope(f.b), undefined); f.stop();
+  }
+});
+
+test('WSS reconnect and clock rollback retire old authenticated authority', async () => {
+  const f = await wssFixture({ pinned: true }); await f.pump(() => f.a.state === 'connected' && f.b.state === 'connected');
+  const binding = f.aRaw.sessionBinding(); await f.aRaw.disconnect(); assert.equal(authenticatedPeerScope(f.a), undefined);
+  assert.equal(f.aRaw.isCurrentSession(binding), false); assert.equal(f.a.send('reliable', 'stale grant'), false);
+  f.setTime(99); f.b.tick(); assert.equal(authenticatedPeerScope(f.b), undefined); f.stop();
+});
+
+
+test('fresh WSS negotiation defeats proof replay even when auth challenges and scope are reused', async () => {
+  const identities = await Promise.all([identityFixture(), identityFixture()]);
+  const original = identities[0].identity.sign;
+  let captured: Uint8Array | undefined;
+  identities[0].identity.sign = async message => { captured = await original(message); return captured; };
+  const cryptos = [11, 22].map(byte => ({ ...crypto, randomBytes(length: number) { return new Uint8Array(length).fill(byte); } }));
+  const first = await wssFixture({ identities, cryptos, pinned: true });
+  await first.pump(() => first.a.state === 'connected' && first.b.state === 'connected'); first.stop();
+  assert.ok(captured);
+  identities[0].identity.sign = async () => new Uint8Array(captured!);
+  const replacement = await wssFixture({ identities, cryptos, pinned: true });
+  await replacement.pump(() => replacement.a.state === 'failed');
+  assert.equal(authenticatedPeerScope(replacement.a), undefined); assert.equal(authenticatedPeerScope(replacement.b), undefined); replacement.stop();
+});
+
+test('WSS cancellation during a cryptographic await cannot issue a late scope', async () => {
+  const identities = await Promise.all([identityFixture(), identityFixture()]); const original = identities[0].identity.sign;
+  let entered = false, release: () => void = () => {};
+  const deferred = new Promise<void>(resolve => { release = resolve; });
+  identities[0].identity.sign = async message => { entered = true; await deferred; return original(message); };
+  const f = await wssFixture({ identities, pinned: true }); await f.pump(() => entered); f.a.stop(); release();
+  await new Promise<void>(resolve => setImmediate(resolve));
+  assert.equal(authenticatedPeerScope(f.a), undefined); assert.equal(f.a.send('reliable', 'late proof'), false); f.stop();
+});

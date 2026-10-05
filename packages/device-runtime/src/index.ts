@@ -31,3 +31,5 @@ export type { RuntimeInspector, RuntimeInspectorOptions, InspectorAction, Inspec
 export * from './telemetry-history.ts';
 export * from './telemetry-storage.ts';
 export * from './durable-artifact-jobs.ts';
+export { createApplicationViews } from './application-views.ts';
+export type { ApplicationViewRequest, ApplicationViewDefinition, ApplicationViewOutput, ApplicationViewHandle, AttachApplicationViewResult, ApplicationViewsOptions, ApplicationViews } from './application-views.ts';

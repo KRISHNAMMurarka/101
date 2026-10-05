@@ -182,3 +182,6 @@ function applyCors(response: ServerResponse, origin: string) {
   response.setHeader("Cache-Control", "no-store");
 }
 function formatHost(host: string) { return host.includes(":") && !host.startsWith("[") ? `[${host}]` : host; }
+
+export { createHttpsCoordinator, createCoordinatorFetcher, HTTPS_COORDINATOR_LIMITS } from './https-coordinator.ts';
+export type { HttpsCoordinatorOptions, CoordinatorEnrollment, CoordinatorFetcherOptions } from './https-coordinator.ts';
