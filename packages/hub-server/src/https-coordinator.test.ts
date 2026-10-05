@@ -422,3 +422,14 @@ test("caller releases reservations after invalid conversions and keeps all four 
     assert.ok(responses.every((response) => response.status === 200));
   } finally { caller.close(); await coordinator.stop(); }
 });
+
+test("TLS caller explicitly omits ambient credentials and rejects cookie-bearing modes", async () => {
+  const coordinator = createHttpsCoordinator(config());
+  const endpoint = await coordinator.start();
+  const caller = client(endpoint, 0);
+  try {
+    assert.equal((await caller.fetch(`${endpoint}/v1/health`, { credentials: "omit", redirect: "manual" })).status, 200);
+    for (const credentials of ["include", "same-origin"] as const)
+      await assert.rejects(() => caller.fetch(`${endpoint}/v1/health`, { credentials }));
+  } finally { caller.close(); await coordinator.stop(); }
+});

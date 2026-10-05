@@ -296,8 +296,9 @@ export function createCoordinatorFetcher(options: CoordinatorFetcherOptions): { 
       if (typeof input !== "string" && !(input instanceof URL)) throw new Error("Coordinator caller requires a URL");
       const target = new URL(input);
       if (target.origin !== endpoint || target.username || target.password || target.hash || target.search || !target.pathname.startsWith("/v1/")) throw new Error("Coordinator caller rejects destination");
-      const requestValues = ownData(init, ["method", "headers", "body", "signal", "redirect"]);
+      const requestValues = ownData(init, ["method", "headers", "body", "signal", "redirect", "credentials"]);
       if (requestValues.redirect !== undefined && requestValues.redirect !== "manual") throw new Error("Coordinator caller rejects redirects");
+      if (requestValues.credentials !== undefined && requestValues.credentials !== "omit") throw new Error("Coordinator caller rejects ambient credentials");
       const method = requestValues.method ?? "GET";
       if (typeof method !== "string" || !["GET", "POST", "PUT", "DELETE", "OPTIONS"].includes(method)) throw new Error("Coordinator caller rejects method");
       const headers = new Headers(requestValues.headers as HeadersInit | undefined);

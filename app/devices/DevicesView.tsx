@@ -1,10 +1,11 @@
 "use client";
 
 import QRCode from "qrcode";
+import { HostConnectionReview } from "../components/HostConnectionReview";
 import { useEffect, useState } from "react";
 
 import { Icon } from "../components/Icon";
-import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser-link";
+import { type BrowserPairingInfo } from "../lib/browser-link";
 import { CATALOG_INPUT_LABELS } from "../lib/catalog";
 import { useLocalDevice } from "../lib/local-capabilities";
 import { useSessionId } from "../lib/session-id";
@@ -27,26 +28,14 @@ export default function DevicesView() {
   const { capabilities, sources, shape } = useLocalDevice();
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
-  const [hubError, setHubError] = useState("");
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!sessionId) return;
     let current = true;
-    getBrowserHostTransport(sessionId)
-      .preparePairing()
-      .then(async (info) => {
-        const image = await QRCode.toDataURL(info.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#d8d8d8" } });
-        if (!current) return;
-        setPairing(info);
-        setQrCode(image);
-        setHubError("");
-      })
-      .catch(() => {
-        if (current) setHubError("The connection is unavailable. Try again in a moment.");
-      });
+    if (pairing) void QRCode.toDataURL(pairing.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#d8d8d8" } })
+      .then(image => { if (current) setQrCode(image); }).catch(() => { if (current) setQrCode(""); });
     return () => { current = false; };
-  }, [sessionId]);
+  }, [pairing]);
 
   const controllerUrl = pairing?.controllerUrl ?? (sessionId ? `/controller?session=${sessionId}` : "");
 
@@ -96,13 +85,14 @@ export default function DevicesView() {
           </div>
         </div>
 
+        {sessionId && <HostConnectionReview sessionId={sessionId} onReady={info => { setQrCode(""); setPairing(info); }} />}
         <div className="pair-body">
-          {qrCode ? (
+          {pairing && qrCode ? (
             /* A generated data URL, rendered directly; it never leaves the local browser. */
             /* eslint-disable-next-line @next/next/no-img-element */
             <img className="pairing-qr" src={qrCode} alt="Scan this code to connect a controller" />
           ) : (
-            <div className="pairing-qr pending"><span>{hubError ? "Not ready" : "Preparing…"}</span></div>
+            <div className="pairing-qr pending"><span>{pairing ? "Preparing…" : "Choose an address"}</span></div>
           )}
 
           <ol className="pair-steps">
@@ -115,10 +105,9 @@ export default function DevicesView() {
         <div className="session-code"><span>Room code</span><strong>{sessionId ?? "······"}</strong></div>
         <div className="pair-link">
           <code>{controllerUrl || "preparing…"}</code>
-          <button onClick={copy} disabled={!controllerUrl}>{copied ? "Copied" : "Copy"}</button>
+          <button style={{ minHeight: 44 }} onClick={copy} disabled={!controllerUrl}>{copied ? "Copied" : "Copy"}</button>
         </div>
 
-        {hubError && <p className="pairing-error">Can&apos;t reach this computer&apos;s connection service. Make sure both devices are on the same Wi-Fi, then reload.</p>}
         {pairing && <p className="pairing-ready">Ready to connect</p>}
 
         <div className="pair-actions">

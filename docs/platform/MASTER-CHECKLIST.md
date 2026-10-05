@@ -122,7 +122,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks.
 - [ ] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible.
 - [ ] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning.
-- [ ] **D09 — Secure discovery metadata/links.** Bound parsing and rate, reject unrestricted URL fetching, redirects/credential forwarding and identity spoofing; discovery grants no operation.
+- [ ] **D09 — Secure discovery metadata/links.** Bound parsing and rate, reject unrestricted URL fetching, redirects/credential forwarding and identity spoofing; discovery grants no operation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 
 ### S — Security, identity and global sessions
 
@@ -271,7 +271,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **E07 — Provide simulator and fault-injection tools.** Developers replay bounded typed samples, simulate devices, revoke permissions and inject disconnect/loss without physical hardware. [Contract](SDK.md#local-device-simulator) and [packed consumer receipt](receipts/2026-10-05-e07-simulator.json).
 - [x] **E08 — Provide developer inspection tools.** Studio explains graph, readiness, grants, queues, traces and version errors; personal payloads/secrets are redacted. [SDK contract and local runtime evidence](receipts/2026-10-06-e08-sdk-inspector.json).
 - [x] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101. [SDK contract and local runtime evidence](receipts/2026-10-06-e09-conformance.json).
-- [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation.
+- [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 - [ ] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access.
 - [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior.
 - [ ] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency.

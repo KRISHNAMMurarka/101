@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "tasks": [
+    "D09",
+    "E10"
+  ],
+  "acceptance": "Bounded partial implementations; both checklist items remain open",
+  "sourceTree": "3bedd91323d8a1f82bdf6090ff5cc52ffe8f34fc",
+  "sourceSha256": {
+    "app/Launcher.tsx": "faa3388e1da696bb57a7543fbf1a187e69aca8b7362b354abf4cc6e0c80c4fc2",
+    "app/components/HostConnectionReview.tsx": "5662dfd41e3c5765ae174016ce2e18f1f7239d344600b05dbf82caf4145b1231",
+    "app/components/PreGame.tsx": "60b69f84d1e1b74509f1a5d3ab9a647e88c8abeada104f4d8fe20423f275b8b5",
+    "app/controller/Controller.tsx": "87ded010765a41794610af35475e57379210d2ba75b2a1ba932751639e6abb59",
+    "app/controller/controller-route.test.ts": "72069d2918efa75a29c63a61121ff8b83ebe7cfea73c96b7762f96e93f276b1f",
+    "app/controller/controller-route.ts": "65e42c8c3ee15cf800fa063a25c0dfaa20e97972744af97c0b071d405b9bacf1",
+    "app/devices/DevicesView.tsx": "242fa0a6f0bc8f1c504b69353250b6d1bbed60777e81d04439b7b4694dfc3c28",
+    "app/lib/browser-link.test.ts": "65edc07c82e94705f0cc2ba2d45a20bc39402bd73a16fa73e1742f20a15c91a8",
+    "app/lib/browser-link.ts": "392484b56057fb4aeaf192dd9db87c6a4ec8db90dda38ee6508355bf29ced8cf",
+    "app/lib/host-endpoint-review.test.ts": "c464552d28fd0f65297e91f03e6bcb06f3d788be3dd72d2e5030d979555540fa",
+    "app/lib/host-endpoint-review.ts": "4d350852261695d06372ccae3898d970238bbcb87286145d06e4da32d962c8b8",
+    "apps/controller-native/App.tsx": "6808b7ec674c461bd8ac665a9c09be4f89f1f906babe13e6fae159a4162fdf7f",
+    "apps/controller-native/src/controller-session.test.ts": "26232686ed369cf350dcf7951967c1bbf52541ba819e819881633e53c77be583",
+    "apps/controller-native/src/controller-session.ts": "ab8ac7b83a66ff9401e16aa9cf1c987a512407a036e736e58269852131e49cfa",
+    "apps/controller-native/src/pairing-code.test.ts": "18a2b235fe7dae9fcb30379d930e7a76cc2ecd420d84ff55ccd2eb6440a607fe",
+    "apps/controller-native/src/pairing-code.ts": "3c8bd796b0f6893ed85f9891fd97f21c729e592884c74ec562f6881555ef2506",
+    "examples/extension-installation/consumer.mjs": "09edc001241692349539e2ca40e1f5b6a46a6bedf42a0a5bead99aacaf7b2e90",
+    "examples/extension-installation/filesystem-storage.mjs": "ae8a87add626f825922dbdd6b361853334d90b8c4b3bfc5b00e6928a9ea673ce",
+    "examples/extension-installation/temperature-band-v2.mjs": "9bee907c87a6b5621a5d145bcca277838e7d8cfc8082fc156c05ca18826beca8",
+    "packages/device-model/src/extension-release.test.ts": "5404d796c72bda983651e76a85aec7046a18b9d75723e5fcbd29431ce440a765",
+    "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+    "packages/device-model/src/index.ts": "cba7057b14d131faea26fb21984833fdbdee99d565ef47700468f26af79c5270",
+    "packages/device-runtime/src/index.ts": "6add8db5480a08c7696e89e93806c3845e9f2745d10af6d8b8d98fe51948d719",
+    "packages/device-runtime/src/processor-installation.test.ts": "e49f60c8d03f5529f70221dc48d4c1718c5ff2e08ab94494a3a0f8aa78a5999e",
+    "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+    "packages/hub-server/src/https-coordinator.test.ts": "2485fa9ffb3ba597388e897d05f4e2b1413159bbb32e2eade1ddfe62c86c9dbb",
+    "packages/hub-server/src/https-coordinator.ts": "b59ee930091aa876643b617b55865c0c79cc7d4a083c995d10d9f2924922730f",
+    "packages/hub-server/src/server.test.ts": "6e0b8ca908ad9cdef11b8742f8824d82bee0fd08a911fb2e74618b3c9ca6652c",
+    "packages/pairing/src/http-signaling.test.ts": "df887f07a5f16bb408145aeb3e2baad0b7ef7251e312cecfb42b6177098ee723",
+    "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+    "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+    "packages/pairing/src/intake.test.ts": "590dc070429880cc3987e78e478d37bb86e1917cc2ababfe84d1af3710dbd125",
+    "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+    "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+    "packages/protocol/src/pairing-input.test.ts": "30c236ba17cd4e24e39bfdd5c40fd20a9b50f23420d499dbbd824308377dd1b6",
+    "tools/qa-extension-installation.mjs": "9ddc6637aa3714738d656af83f9a623139922f3607939d9ec502d9e08bdef04a",
+    "tools/qa-pairing-boundaries.mjs": "b8ed0d8f7eab13fd24273bad367e7eafa56b9593f9e01c310c85f42e5f857b62",
+    "tools/qa-pairing-intake.mjs": "b0f921e567e76b8794506469c9709b5b7045c568b9a40d3a778505735df0023f"
+  },
+  "sdkSourceTree": "a5013056c29918c98e513480a5ef1e47a673f293",
+  "sdkArtifact": "release/sdk-qCI3P9/manifest.json",
+  "sdkManifestSha256": "bb4b793951862279289a750cbca8cdd617fd5cea4896ad75bb426dbcf3dce78f",
+  "sdkProducerConsistency": "Every SDK manifest producer source hash equals this corrected candidate; later native/legacy HTTP caller changes are outside the seven-package closure.",
+  "environment": {
+    "primary": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1",
+    "workers": "Selected isolated host/extension checks used Node24.19.0; final public distribution and root proofs use Node24.14.0",
+    "engines": [
+      {
+        "name": "chromium",
+        "version": "149.0.7827.55"
+      },
+      {
+        "name": "webkit",
+        "version": "26.5"
+      }
+    ]
+  },
+  "profiles": {
+    "D09": "Closed bounded legacy HTTP pairing review and native caller lifecycle; no cryptographic endpoint authentication",
+    "E10": "reviewed-processor-extension/1; signed inert source records plus independently conformed explicit trusted local factory; no untrusted code isolation"
+  },
+  "packedChecks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 7,
+      "files": 263,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass"
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55"
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0"
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5"
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass"
+    }
+  ],
+  "packedReceipt": {
+    "path": "/tmp/101-sdk-consumer-Hoerq2/receipt.json",
+    "sha256": "2618419a1c9ca10bb823cc09e360ae2e08dc7145f40d51bf4cd394b58e6f1b88"
+  },
+  "pairedHttpBoundaryRuntime": {
+    "sourceSha256": {
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "tools/qa-pairing-boundaries.mjs": "b8ed0d8f7eab13fd24273bad367e7eafa56b9593f9e01c310c85f42e5f857b62",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/hub-server/src/index.ts": "b69980d53eb1c0821bd44d4a9e433d89ca98ab1d679fc62d41b7f470c3dcb6af",
+      "packages/hub-server/src/https-coordinator.ts": "b59ee930091aa876643b617b55865c0c79cc7d4a083c995d10d9f2924922730f"
+    },
+    "artifactKind": "source-bound compiled public package entries; not packed or native qualification",
+    "artifactSha256": {
+      "packages/pairing/src/index.js": "facc1af39665397262ab91becf8085883b1c08686abe1db320432622822b6924",
+      "packages/protocol/src/index.js": "262c0fd609d43d3030fb9cb2576298cec3e26478a8279a5077853881d04c894b",
+      "packages/transport-webrtc/src/index.js": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c",
+      "packages/transport-webrtc/src/peer.js": "d76d9a4067b68ab60205058dfef6ba2d28202f309523e04b6adec42a09dceea6",
+      "packages/input/src/index.js": "138fc3aa449f07057d879aec0c475b1d1ca340c67badffe5b69616b2cc811a5d",
+      "packages/pairing/src/http-signaling.js": "d3de2a9eda35b75e985ef65bb805b1b9376397300a0af622c94c2cd2343fca31",
+      "packages/pairing/src/intake.js": "c59e66106da2d3ff612544c7ad91c24f0049448f29187d12dc77e2da59f7f04f",
+      "packages/hub-server/src/index.js": "e57e05ef590c1e6ce0c22b3192b0388afb9e447ca24dedc0b9995b170a9443d6",
+      "packages/hub-server/src/https-coordinator.js": "d454647d5f55308d9216b6a253cfd3aaedf4ae237e11a947fffb1cc1abc73532"
+    },
+    "node": {
+      "healthy": true,
+      "redirectRecipients": 0,
+      "stalledDeadlineMs": 2502.1631660000003
+    },
+    "browser": {
+      "blocked": {
+        "same": true,
+        "cross": true,
+        "oversize": true,
+        "peers": true,
+        "substitute": true,
+        "stall": true
+      },
+      "deadlineMs": 2502.4000000953674,
+      "healthy": true,
+      "ambientCookiePresent": true
+    },
+    "requestCount": 10,
+    "ambientCookiesForwarded": false,
+    "pageErrors": [],
+    "limits": {
+      "pendingRequests": 4,
+      "deadlineMs": 2500,
+      "burst": 128,
+      "requestsPerSecond": 32,
+      "requestBytes": 1048576,
+      "responseBytes": 1048576,
+      "responseChunks": 4096,
+      "peers": 64,
+      "signalCharacters": 400000
+    },
+    "claims": {
+      "endpointAuthentication": false,
+      "resourceOperationGrant": false,
+      "nativeRuntime": false,
+      "fullD09": false
+    }
+  },
+  "applicationBrowserUI": {
+    "result": "pass",
+    "scope": "actual local Controller and three host UI surfaces with a real disposable Hub; browser-generated keyboard input; no native/phone/cryptographic legacy endpoint qualification",
+    "sourceSha256": {
+      "app/controller/Controller.tsx": "87ded010765a41794610af35475e57379210d2ba75b2a1ba932751639e6abb59",
+      "app/controller/controller-route.ts": "65e42c8c3ee15cf800fa063a25c0dfaa20e97972744af97c0b071d405b9bacf1",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "app/lib/browser-link.ts": "392484b56057fb4aeaf192dd9db87c6a4ec8db90dda38ee6508355bf29ced8cf",
+      "app/lib/host-endpoint-review.ts": "4d350852261695d06372ccae3898d970238bbcb87286145d06e4da32d962c8b8",
+      "app/components/HostConnectionReview.tsx": "5662dfd41e3c5765ae174016ce2e18f1f7239d344600b05dbf82caf4145b1231",
+      "app/Launcher.tsx": "faa3388e1da696bb57a7543fbf1a187e69aca8b7362b354abf4cc6e0c80c4fc2",
+      "app/devices/DevicesView.tsx": "242fa0a6f0bc8f1c504b69353250b6d1bbed60777e81d04439b7b4694dfc3c28",
+      "app/components/PreGame.tsx": "60b69f84d1e1b74509f1a5d3ab9a647e88c8abeada104f4d8fe20423f275b8b5",
+      "tools/qa-pairing-intake.mjs": "b0f921e567e76b8794506469c9709b5b7045c568b9a40d3a778505735df0023f"
+    },
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "hostSurfaces": [
+          "/",
+          "/devices",
+          "/games/echomaze"
+        ],
+        "checks": [
+          "inert-arrival",
+          "inert-cancel",
+          "native-keyboard-approval",
+          "selected-session-only",
+          "history-needs-fresh-approval",
+          "stop-polling",
+          "duplicate-link-denied",
+          "paste-recovery-review",
+          "390px-no-overflow",
+          "44px-control",
+          "three-inert-host-surfaces",
+          "read-only-health-review",
+          "explicit-host-connect",
+          "host-change-address-focus",
+          "zero-page-errors",
+          "zero-foreign-requests"
+        ],
+        "screenshot": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-pairing-intake-4WQd02/chromium-review.png"
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "hostSurfaces": [
+          "/",
+          "/devices",
+          "/games/echomaze"
+        ],
+        "checks": [
+          "inert-arrival",
+          "inert-cancel",
+          "native-keyboard-approval",
+          "selected-session-only",
+          "history-needs-fresh-approval",
+          "stop-polling",
+          "duplicate-link-denied",
+          "paste-recovery-review",
+          "390px-no-overflow",
+          "44px-control",
+          "three-inert-host-surfaces",
+          "read-only-health-review",
+          "explicit-host-connect",
+          "host-change-address-focus",
+          "zero-page-errors",
+          "zero-foreign-requests"
+        ],
+        "screenshot": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-pairing-intake-4WQd02/webkit-review.png"
+      }
+    ],
+    "rawReceiptSha256": "41cc6f1ea281aa3459570f7f1249b90453a90ddc59ad6b8d6e6546860ab39b2e",
+    "fixtureIsolation": "Each independent browser engine/surface uses an explicit unique URL room. An independent engine without the first owner authority was observed correctly receiving409 when a useId-generated room collided. Default Launcher room recovery remains a separate existing product concern."
+  },
+  "reviewedExtensionPackedRuntime": {
+    "result": "pass",
+    "profile": "reviewed-processor-extension/1",
+    "node": "v24.14.0",
+    "publicResolution": "installed-packed-sdk",
+    "cleanProcesses": 4,
+    "separateProcessAtomicCas": true,
+    "phases": [
+      {
+        "phase": "install",
+        "profile": "reviewed-processor-extension/1",
+        "installedRealBytes": true,
+        "inactive": true,
+        "idempotent": true
+      },
+      {
+        "phase": "activate-and-close",
+        "realActivation": true,
+        "selectedHistoryPersisted": true,
+        "ownedAuthorityRetiredBeforeExit": true
+      },
+      {
+        "phase": "reload",
+        "inactiveAfterCleanProcessRestart": true,
+        "realBytesAndSignatureReverified": true,
+        "deniedFreshApproval": true
+      },
+      {
+        "phase": "lifecycle",
+        "profile": "reviewed-processor-extension/1",
+        "verifiedBeforeFixedReviewedImports": true,
+        "observedEffects": [
+          true,
+          true,
+          true
+        ],
+        "updateStrictBoundary": true,
+        "explicitRollback": true,
+        "oldQueuedEffectsCancelled": true,
+        "deniedRoute": true,
+        "revokeAndRemoveFenced": true,
+        "freshRouteApprovals": 9,
+        "excluded": [
+          "untrusted-code-activation",
+          "sandbox",
+          "connectors-native-dependencies",
+          "publisher-account-lifecycle",
+          "physical-device-effects"
+        ]
+      }
+    ],
+    "implementationSha256": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+    "disposableStorageRemoved": true
+  },
+  "failedResolverCleanup": {
+    "result": "pass",
+    "case": "unavailable public ESM package resolver",
+    "exitCode": 1,
+    "ownedTemporaryDirectoriesRemaining": 0
+  },
+  "nativeBuild": {
+    "result": "pass",
+    "scope": "Current source TypeScript and local iOS/Android Hermes bundling only; no installed app/Expo fetch/native RTC execution or physical device qualification",
+    "sourceSha256": {
+      "apps/controller-native/App.tsx": "6808b7ec674c461bd8ac665a9c09be4f89f1f906babe13e6fae159a4162fdf7f",
+      "apps/controller-native/src/controller-session.test.ts": "26232686ed369cf350dcf7951967c1bbf52541ba819e819881633e53c77be583",
+      "apps/controller-native/src/controller-session.ts": "ab8ac7b83a66ff9401e16aa9cf1c987a512407a036e736e58269852131e49cfa",
+      "apps/controller-native/src/pairing-code.test.ts": "18a2b235fe7dae9fcb30379d930e7a76cc2ecd420d84ff55ccd2eb6440a607fe",
+      "apps/controller-native/src/pairing-code.ts": "3c8bd796b0f6893ed85f9891fd97f21c729e592884c74ec562f6881555ef2506"
+    },
+    "output": "/tmp/101-native-pairing-export-final",
+    "metadata": {
+      "version": 0,
+      "bundler": "metro",
+      "fileMetadata": {
+        "android": {
+          "bundle": "_expo/static/js/android/AppEntry-6c36cc3d62246b95f9161c411c8f3bd9.hbc",
+          "assets": [
+            {
+              "path": "assets/a49df39daad85e39b69a6d73bde02d16",
+              "ext": "wav"
+            }
+          ]
+        },
+        "ios": {
+          "bundle": "_expo/static/js/ios/AppEntry-41c9769ef1970691a537911eb9a6b1f2.hbc",
+          "assets": [
+            {
+              "path": "assets/a49df39daad85e39b69a6d73bde02d16",
+              "ext": "wav"
+            }
+          ]
+        }
+      }
+    },
+    "files": {
+      "metadata.json": "176e6b7ce18dcf5c685bb93c2407d6c744264d4915422c19f6e895fb9c65abb5",
+      "assets/a49df39daad85e39b69a6d73bde02d16": "fdfe248df3f3e72afcf923b6a2689f852127e9eab77eea4f602de4e786e8a3f4",
+      "_expo/static/js/ios/AppEntry-41c9769ef1970691a537911eb9a6b1f2.hbc": "3569db4f46b30e00ec3d39601dea8b7940128350b9d9c7c676f2afce90b2a6b2",
+      "_expo/static/js/android/AppEntry-6c36cc3d62246b95f9161c411c8f3bd9.hbc": "c09ccf681609ba67f3145a77615d147beeaa275b71162f4de7a2723cee358702"
+    }
+  },
+  "regressions": [
+    {
+      "name": "HTTP and ticket boundaries",
+      "observedRed": "oversized/unclosed ticket inputs, redirects, stream-work overflow, private binding retarget, dot peer path normalization and empty-response close previously admitted",
+      "proof": "Public core regressions; actual Node/browser recipient count0, healthy real-Hub roundtrip and approximately2.5s stalled deadline"
+    },
+    {
+      "name": "Immutable intake",
+      "observedRed": "accessor-backed expiry snapshot and same scan after explicit cancellation",
+      "proof": "Own-data snapshot before evaluation; external clear resets dedup while retaining rate budget"
+    },
+    {
+      "name": "Native cancellation and replacement",
+      "observedRed": "cancel before attachment joined; old disconnect erased replacement; synchronous state callback admitted dispatch and retained late unsubscribers",
+      "proof": "Eight actual-class/real-Hub regressions with explicit unavailable Expo/native RTC ports; native factory remains dormant"
+    },
+    {
+      "name": "Browser history approval",
+      "observedRed": "A\u2192B\u2192A reused old approval and issued second join without approval",
+      "proof": "Route-owned remount plus actual browser Back/Forward; counts1\u21921\u21921 until fresh approval, then2"
+    },
+    {
+      "name": "Desktop producer envelopes",
+      "observedRed": "actual Rust Health version2 extra closed fields rejected; initial loopback claim rotated retained LAN ticket then rejected it",
+      "proof": "Exact bounded v1/v2 envelopes; genuine broker claim uses separately reviewed phone endpoint before rotation"
+    },
+    {
+      "name": "Extension cross-controller read",
+      "observedRed": "read-release awaiting approval returned630source bytes after another controller revoked it",
+      "proof": "Current captured storage revision plus second authority guard; genuine filesystem CAS conflict with no source returned; regressions for revoke/remove/publisher"
+    },
+    {
+      "name": "Extension finite budgets and cleanup",
+      "observedRed": "ninth handle admitted; revoked conformance continued callbacks; reset failure retained authority/private error",
+      "proof": "Closed finite admission, current guard per callback and fixed error retirement"
+    },
+    {
+      "name": "Browser connection review target",
+      "observedRed": "actual rendered Connect target was40px",
+      "proof": "Current Connect/Cancel >=44px, native browser keyboard input,390px no overflow"
+    },
+    {
+      "name": "Packed ESM resolution and failure cleanup",
+      "observedRed": "CommonJS resolver rejected import-only public exports; missing public package left owned resolver temporary directory",
+      "proof": "Actual public import.meta.resolve from offline consumer; finally cleanup; four clean extension processes and separate CAS contenders"
+    }
+  ],
+  "review": {
+    "E10": "Independent immutable c515\u2192291dee2 review; stale-read finding reproduced and corrected actual filesystem proof green; timer and public ESM resolver corrections reviewed separately",
+    "D09": "Independent frozen root caller review; A\u2192B\u2192A and native cancellation/reentrancy findings reproduced and corrected. Final3bedd913 archived native four callback/attachment regressions4/4 green; root eight actual-class/real-Hub regressions8/8 green. Selected legacy HTTP scope only.",
+    "host": "Independent actual Rust producer mismatch and LAN ticket rotation regressions fixed; no additional material static issue in selected scope"
+  },
+  "reproduction": [
+    "node --experimental-strip-types tools/qa-pairing-boundaries.mjs",
+    "node --experimental-strip-types tools/qa-pairing-intake.mjs <current-local-application-loopback-origin>",
+    "node --experimental-strip-types --test apps/controller-native/src/controller-session.test.ts",
+    "node tools/build-sdk.mjs a5013056c29918c98e513480a5ef1e47a673f293",
+    "node tools/qa-sdk-consumer.mjs release/sdk-qCI3P9/manifest.json",
+    "node tools/qa-extension-installation.mjs --sdk-root /tmp/101-sdk-consumer-Hoerq2",
+    "npm run native:typecheck",
+    "EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 expo export --platform all --output-dir <owned-temporary-output>"
+  ],
+  "commitGates": "Required exact final candidate tree, counts, build and results recorded in local Git commit body; no stale build qualifies rendered tests",
+  "limits": [
+    "D09 remains open for authenticated legacy endpoint/discovery identity and broader discovery profiles.",
+    "E10 remains open for untrusted code isolation, synchronous hang preemption, publisher-wide catalog policy and connector/native/dependency/asset profiles.",
+    "No phone/native adapter/desktop binary/physical network effect qualification; device testing is deferred by user.",
+    "Node24.14 is the current final runtime proof; no new minimum Node22 acceptance claim.",
+    "Host callbacks/storage are reviewed trusted ports; imported factories must be independently bound to fixed reviewed bytes and route cleanup.",
+    "No publish/deploy/push/preview URL/third-party service or remote work."
+  ]
+}

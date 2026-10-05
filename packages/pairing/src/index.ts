@@ -10,6 +10,11 @@ import {
   type RealtimeMessage,
   type StatefulLinkTransport,
 } from "@101/protocol";
+import { assertSignalingPeerCount, SignalingRequestError } from './http-signaling.ts';
+export { HttpHostSignalingClient, HttpControllerSignalingClient, createHttpSignalingSession, HTTP_SIGNALING_LIMITS } from './http-signaling.ts';
+export type { HttpSignalingOptions, HttpSignalingSessionOptions } from './http-signaling.ts';
+export { createPairingIntake } from './intake.ts';
+export type { PairingCandidate, PairingIntakeResult } from './intake.ts';
 
 /** Ceiling for signaling retry backoff. Long enough to stop hammering, short enough to recover. */
 const MAX_RETRY_BACKOFF_MS = 10_000;
@@ -50,12 +55,14 @@ export interface CreatedSignalingSession {
 }
 
 export interface HostSignalingClient {
+  cancelPending?(): void;
   listPeers(): Promise<readonly HostPeerSignal[]>;
   publishOffer(peerId: string, generation: number, offer: string): Promise<void>;
   resetPeer(peerId: string): Promise<void>;
 }
 
 export interface ControllerSignalingClient {
+  cancelPending?(): void;
   join(device: PairingDevice): Promise<ControllerLease>;
   getOffer(lease: ControllerLease): Promise<ControllerOfferSignal>;
   publishAnswer(lease: ControllerLease, generation: number, answer: string): Promise<void>;
@@ -292,53 +299,6 @@ export class BrokerControllerSignalingClient implements ControllerSignalingClien
   async leave(value: ControllerLease) { this.broker.leave(this.ticket.sessionId, value.peerId, value.peerToken); }
 }
 
-export class HttpHostSignalingClient implements HostSignalingClient {
-  private readonly endpoint: string;
-  private readonly sessionId: string;
-  private readonly hostToken: string;
-  private readonly fetcher: typeof fetch;
-  constructor(endpoint: string, sessionId: string, hostToken: string, fetcher: typeof fetch = fetch) {
-    this.endpoint = endpoint.replace(/\/$/, "");
-    this.sessionId = sessionId;
-    this.hostToken = hostToken;
-    this.fetcher = fetcher;
-  }
-  async listPeers() { return requestJson<HostPeerSignal[]>(this.fetcher, this.url("peers"), this.hostToken); }
-  async publishOffer(peerId: string, generation: number, offer: string) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(peerId)}/offer`), this.hostToken, "PUT", { generation, offer }); }
-  async resetPeer(peerId: string) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(peerId)}/reconnect`), this.hostToken, "POST"); }
-  private url(path: string) { return `${this.endpoint}/v1/sessions/${encodeURIComponent(this.sessionId)}/host/${path}`; }
-}
-
-export class HttpControllerSignalingClient implements ControllerSignalingClient {
-  private readonly ticket: PairingTicket;
-  private readonly fetcher: typeof fetch;
-  constructor(ticket: PairingTicket, fetcher: typeof fetch = fetch) {
-    this.ticket = ticket;
-    this.fetcher = fetcher;
-  }
-  async join(device: PairingDevice) { return requestJson<ControllerLease>(this.fetcher, this.url("peers"), this.ticket.joinToken, "POST", device); }
-  async getOffer(value: ControllerLease) { return requestJson<ControllerOfferSignal>(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/offer`), value.peerToken); }
-  async publishAnswer(value: ControllerLease, generation: number, answer: string) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/answer`), value.peerToken, "PUT", { generation, answer }); }
-  async requestReconnect(value: ControllerLease) { return requestJson<ControllerLease>(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}/reconnect`), value.peerToken, "POST"); }
-  async leave(value: ControllerLease) { await requestJson(this.fetcher, this.url(`peers/${encodeURIComponent(value.peerId)}`), value.peerToken, "DELETE"); }
-  private url(path: string) { return `${this.ticket.endpoint}/v1/sessions/${encodeURIComponent(this.ticket.sessionId)}/${path}`; }
-}
-
-export async function createHttpSignalingSession(endpoint: string, sessionId: string, options: { hostName?: string; ttlMs?: number; advertisedEndpoint?: string; hostToken?: string; fetcher?: typeof fetch } = {}) {
-  const normalized = endpoint.replace(/\/$/, "");
-  const fetcher = options.fetcher ?? fetch;
-  const response = await fetcher(`${normalized}/v1/sessions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.hostToken ? { Authorization: `Bearer ${options.hostToken}` } : {}),
-    },
-    body: JSON.stringify({ sessionId, hostName: options.hostName, ttlMs: options.ttlMs, endpoint: options.advertisedEndpoint ?? normalized }),
-  });
-  if (!response.ok) throw new Error(`101 Hub session creation failed (${response.status})`);
-  return response.json() as Promise<CreatedSignalingSession>;
-}
-
 export interface AutomaticPairingHostOptions {
   signaling: HostSignalingClient;
   transport: MultiplexLinkTransport;
@@ -396,6 +356,7 @@ export class AutomaticPairingHost {
   async stop() {
     this.active = false;
     this.lifecycleRevision += 1;
+    this.options.signaling.cancelPending?.();
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
     await this.syncing?.catch(() => undefined);
@@ -438,6 +399,7 @@ export class AutomaticPairingHost {
     if (!this.isCurrent(revision)) return;
     const peers = await this.options.signaling.listPeers();
     if (!this.isCurrent(revision)) return;
+    assertSignalingPeerCount(peers);
     const live = new Set(peers.map((peer) => peer.peerId));
     for (const peerId of this.pendingResets) if (!live.has(peerId)) this.pendingResets.delete(peerId);
     for (const peerId of this.connections.keys()) {
@@ -678,6 +640,7 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
   async disconnect() {
     this.active = false;
     this.lifecycleRevision += 1;
+    this.options.signaling.cancelPending?.();
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
     await this.syncing?.catch(() => undefined);
@@ -931,25 +894,6 @@ export class SignaledLinkTransport implements StatefulLinkTransport {
 
 function toError(cause: unknown) {
   return cause instanceof Error ? cause : new Error(String(cause));
-}
-
-async function requestJson<Value = unknown>(fetcher: typeof fetch, url: string, token: string, method = "GET", body?: unknown): Promise<Value> {
-  const response = await fetcher(url, {
-    method,
-    headers: { Authorization: `Bearer ${token}`, ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-  });
-  if (!response.ok) throw new SignalingRequestError(response.status);
-  if (response.status === 204) return undefined as Value;
-  return response.json() as Promise<Value>;
-}
-
-class SignalingRequestError extends Error {
-  readonly status: number;
-  constructor(status: number) {
-    super(`101 signaling request failed (${status})`);
-    this.status = status;
-  }
 }
 
 function isMissingPeerError(cause: unknown) {

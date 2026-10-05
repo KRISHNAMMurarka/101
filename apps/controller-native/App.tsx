@@ -23,6 +23,7 @@ import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 
 import type { ControllerLayout, LinkState } from "@101/protocol";
+import { createPairingIntake, type PairingCandidate } from "@101/pairing";
 
 import { ControllerPanel, type ControllerActions } from "./src/controls";
 import { ControllerSession, type ControllerAssignment } from "./src/controller-session";
@@ -72,6 +73,10 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const speaker = useMemo(() => new ControllerSpeaker(privateAudioPlayer), [privateAudioPlayer]);
   const [deviceId, setDeviceId] = useState("");
   const [pairingInput, setPairingInput] = useState("");
+  const [pairReview, setPairReview] = useState<PairingCandidate>();
+  const [connectionPending, setConnectionPending] = useState(false);
+  const pairIntake = useRef<ReturnType<typeof createPairingIntake> | null>(null);
+  if (pairIntake.current === null) pairIntake.current = createPairingIntake({ parse: ticketFromInput });
   const [manualAnswer, setManualAnswer] = useState("");
   const [linkState, setLinkState] = useState<LinkState>("idle");
   const [layout, setLayout] = useState<ControllerLayout>(DEFAULT_PRESET.layout);
@@ -101,6 +106,9 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const sessionRef = useRef<ControllerSession | undefined>(undefined);
   const motionRef = useRef<NativeMotionController | undefined>(undefined);
   const readoutRenderedAt = useRef(0);
+  const connectBusy = useRef(false);
+  const connectRevision = useRef(0);
+  const cancelPendingConnect = useCallback(() => { connectRevision.current++; }, []);
 
   const haptic = useCallback(async (pattern: "tap" | "impact" | "warning") => {
     if (pattern === "tap") await Haptics.selectionAsync();
@@ -124,6 +132,8 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   }, []);
 
   const connect = useCallback(async (value: string) => {
+    if (connectBusy.current) return;
+    if (value.length > 400_000) { setError("That code is too large. Open a new connection link on the game screen."); return; }
     const input = value.trim();
     // Returning silently here made Connect look like a dead button: nothing moved, nothing
     // explained itself, and the only way to tell an empty field from a broken app was a debugger.
@@ -138,25 +148,65 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     setError(undefined);
     setManualAnswer("");
     setLinkState("connecting");
+    connectBusy.current = true;
+    setConnectionPending(true);
+    const expected = ++connectRevision.current;
     try {
       if (input.startsWith("101C2.") || input.startsWith("101J2.")) {
         const answer = await sessionRef.current.connectManual(input);
+        if (expected !== connectRevision.current) return;
         setManualAnswer(answer);
         await forgetPairing();
       } else {
         await sessionRef.current.connect(input);
+        if (expected !== connectRevision.current) return;
         // Remembering the pairing is a convenience for next launch. It used to sit inside this
         // try block, so a keychain write failing *after* a successful connection reported the
         // whole pairing as failed — the player was connected and being told they were not.
         await rememberPairing(input);
       }
+      if (expected !== connectRevision.current) return;
       setPairingInput(input);
       setCodeEntryOpen(false);
     } catch (reason) {
+      if (expected !== connectRevision.current) return;
       setError(connectionErrorMessage(reason));
       setLinkState("failed");
+    } finally {
+      connectBusy.current = false;
+      setConnectionPending(false);
     }
   }, []);
+
+  const reviewPairing = useCallback((input: string, source: PairingCandidate["source"]) => {
+    const result = pairIntake.current!.receive(input, source);
+    if (result.status === "unchanged" || result.status === "rate-limited") return;
+    if (result.status === "review") {
+      setPairingInput(result.candidate.input);
+      setPairReview(result.candidate);
+      setError(undefined);
+    } else {
+      setPairReview(undefined);
+      setError(result.status === "expired" ? "This code expired. Open a new one on the game screen." : "That connection link could not be read. Scan or paste a new one.");
+    }
+  }, []);
+
+  const requestConnection = () => {
+    if (pairingInput.length <= 400_000 && /^(101C2|101J2)\./.test(pairingInput.trim())) void connect(pairingInput);
+    else reviewPairing(pairingInput, "paste");
+  };
+
+  const approvePairing = () => {
+    if (connectBusy.current || !pairReview) return;
+    if (!pairIntake.current!.approve(pairReview)) {
+      setPairReview(undefined);
+      setError("That connection expired. Open a new one on the game screen.");
+      return;
+    }
+    const input = pairReview.input;
+    setPairReview(undefined);
+    void connect(input);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -251,6 +301,8 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     session.useLocalLayout(DEFAULT_PRESET.layout);
 
     let active = true;
+    const intakeAtLaunch = pairIntake.current!;
+    const initialRevision = intakeAtLaunch.revision;
     void (async () => {
       const initialUrl = await Linking.getInitialURL();
       // This line used to be an unguarded keychain read directly after the launch URL was
@@ -258,15 +310,13 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       // function rejected, and `connect` below never ran — so a deep link that had arrived
       // perfectly well was dropped one line after it was read, on iOS only.
       const saved = await readSavedPairing();
-      const candidate = initialUrl?.includes("pair") ? initialUrl : saved;
-      if (active && candidate) {
-        setPairingInput(candidate);
-        await connect(candidate);
+      const candidate = initialUrl ?? saved;
+      if (active && intakeAtLaunch.revision === initialRevision && candidate) {
+        reviewPairing(candidate, initialUrl ? "link" : "saved");
       }
-    })();
+    })().catch(() => { if (active) setError("The saved connection could not be read. Scan or paste a new one."); });
     const link = Linking.addEventListener("url", ({ url }) => {
-      setPairingInput(url);
-      void connect(url);
+      if (active) reviewPairing(url, "link");
     });
     const appState = AppState.addEventListener("change", (state) => {
       setAppActive(state === "active");
@@ -279,6 +329,8 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     });
     return () => {
       active = false;
+      cancelPendingConnect();
+      pairIntake.current!.clear();
       link.remove();
       appState.remove();
       motion.stop();
@@ -286,7 +338,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       sessionRef.current = undefined;
       motionRef.current = undefined;
     };
-  }, [connect, deviceId, haptic, speaker]);
+  }, [cancelPendingConnect, deviceId, haptic, reviewPairing, speaker]);
 
   useEffect(() => {
     sessionRef.current?.setSpeakerReady(
@@ -338,6 +390,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const openScanner = async () => {
     const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
     if (permission.granted) {
+      pairIntake.current!.clear();
       scanClaimedRef.current = false;
       pinchRef.current = undefined;
       setScannerZoom(0);
@@ -350,12 +403,10 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
 
   const acceptScan = (data: string) => {
     if (scanClaimedRef.current) return;
-    try {
-      // Camera callbacks can report unrelated QR codes repeatedly. Keep the camera open until
-      // the code is an unexpired, integrity-checked 101 Link ticket.
-      ticketFromInput(data);
-    } catch (reason) {
-      setScannerMessage(reason instanceof Error && /expired/i.test(reason.message)
+    const result = pairIntake.current!.receive(data, "scan");
+    if (result.status === "unchanged" || result.status === "rate-limited") return;
+    if (result.status !== "review") {
+      setScannerMessage(result.status === "expired"
         ? "This code expired. Open a new one on the game screen."
         : "That isn't a 101 Link code. Keep scanning.");
       return;
@@ -363,8 +414,9 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     scanClaimedRef.current = true;
     setScannerOpen(false);
     setScannerTorch(false);
-    setPairingInput(data);
-    void connect(data);
+    setPairingInput(result.candidate.input);
+    setPairReview(result.candidate);
+    setError(undefined);
   };
 
   const updateScannerPinch = (touches: readonly { pageX: number; pageY: number }[]) => {
@@ -382,6 +434,9 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   };
 
   const disconnect = async () => {
+    cancelPendingConnect();
+    pairIntake.current!.clear();
+    setPairReview(undefined);
     await sessionRef.current?.disconnect();
     await forgetPairing();
     setHostControlled(false);
@@ -428,12 +483,27 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
           onScan={() => void openScanner()}
           onOpenCodeEntry={() => { setCodeEntryOpen(true); setError(undefined); }}
           onCancelCodeEntry={() => setCodeEntryOpen(false)}
-          onChangeCode={setPairingInput}
-          onConnect={() => void connect(pairingInput)}
+          onChangeCode={(value) => { pairIntake.current!.clear(); setPairReview(undefined); setPairingInput(value); }}
+          onConnect={requestConnection}
           onCopyAnswer={() => { void Clipboard.setStringAsync(manualAnswer); void haptic("tap"); }}
           onCancelConnection={() => void disconnect()}
         />
       )}
+
+      <Modal visible={Boolean(pairReview)} transparent animationType="none" onRequestClose={() => { pairIntake.current!.clear(); setPairReview(undefined); }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: space.lg }}>
+          <View accessibilityViewIsModal style={{ gap: space.md }}>
+            <Text accessibilityRole="header" style={[type.display, { color: t.text }]}>Connect to this host?</Text>
+            <Text style={[type.body, { color: t.text }]}>{pairReview?.ticket.hostName || "101 host"}</Text>
+            <Text style={[type.body, { color: t.text }]}>{pairReview?.ticket.endpoint}</Text>
+            <Text style={[type.body, { color: t.muted }]}>The name and address come from the connection link. Check them against your game screen.</Text>
+            <Button label="Connect" wide tone="strong" disabled={connectionPending} onPress={approvePairing} />
+            <Button label="Cancel" wide tone="bare" onPress={() => { pairIntake.current!.clear(); setPairReview(undefined); }} />
+          </View>
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
 
       {!playing ? <View style={{ paddingHorizontal: space.lg, paddingBottom: Platform.OS === "android" ? GESTURE_INSET + space.sm : space.sm }}>
         <Button label="Open pointer lab" wide onPress={() => { void disconnect().then(onOpenPointerLab); }} />

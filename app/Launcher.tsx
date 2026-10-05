@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import QRCode from "qrcode";
+import { HostConnectionReview } from "./components/HostConnectionReview";
 import {
   useCallback,
   useDeferredValue,
@@ -11,7 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { getBrowserHostTransport, type BrowserPairingInfo } from "./lib/browser-link";
+import { type BrowserPairingInfo } from "./lib/browser-link";
 import type { InputSource } from "@101/input";
 
 import { GamePoster } from "./components/GamePoster";
@@ -575,7 +576,6 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
   const [copied, setCopied] = useState(false);
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
-  const [hubError, setHubError] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const controllerUrl = `/controller?session=${sessionId}`;
@@ -593,20 +593,10 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
 
   useEffect(() => {
     let current = true;
-    getBrowserHostTransport(sessionId).preparePairing().then(async (info) => {
-      // Large modules and a full quiet zone scan more reliably from a bright display. The grey
-      // background emits less light than white while retaining strong contrast with black.
-      const image = await QRCode.toDataURL(info.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M",
-        color: { dark: "#000000", light: "#d8d8d8" } });
-      if (!current) return;
-      setPairing(info);
-      setQrCode(image);
-      setHubError("");
-    }).catch((error) => {
-      if (current) setHubError(error instanceof Error ? error.message : "Local Hub unavailable");
-    });
+    if (pairing) void QRCode.toDataURL(pairing.controllerUrl, { width: 640, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#d8d8d8" } })
+      .then(image => { if (current) setQrCode(image); }).catch(() => { if (current) setQrCode(""); });
     return () => { current = false; };
-  }, [sessionId]);
+  }, [pairing]);
 
   const copy = async () => {
     await navigator.clipboard?.writeText(pairing?.controllerUrl ?? new URL(controllerUrl, window.location.origin).toString());
@@ -622,16 +612,16 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
       onCancel={(event) => { event.preventDefault(); onClose(); }}
       onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <section className="pairing-panel">
-        <button ref={closeRef} className="close-button" onClick={onClose} aria-label="Close">×</button>
+        <button ref={closeRef} className="close-button" style={{ minWidth: 44, minHeight: 44 }} onClick={onClose} aria-label="Close">×</button>
         <p className="eyebrow">Add a controller</p>
         <h2 id="pairing-title">Scan once. Control every game.</h2>
         <p className="panel-intro">Scan the code with your phone. Its screen becomes a controller, and the buttons change to match whatever you are playing.</p>
+        <HostConnectionReview sessionId={sessionId} onReady={info => { setQrCode(""); setPairing(info); }} />
         {/* A generated data URL is intentionally rendered directly; it never leaves the local browser. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {qrCode ? <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} /> : <div className="pairing-qr pending"><span>{hubError ? "HUB OFFLINE" : "PREPARING QR"}</span></div>}
+        {pairing && qrCode ? <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} /> : <div className="pairing-qr pending"><span>{pairing ? "PREPARING QR" : "CHOOSE AN ADDRESS"}</span></div>}
         <div className="session-code"><span>Room code</span><strong>{sessionId}</strong></div>
-        <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
-        {hubError && <p className="pairing-error">Couldn&apos;t reach the other devices on this network. Check that this device is online, then try again.</p>}
+        <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button style={{ minHeight: 44 }} onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
         <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
       </section>
     </dialog>

@@ -16,12 +16,12 @@ import {
   type DeckCluster,
   type PlacedControl,
 } from "@101/link-controller";
-import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
+import { HttpControllerSignalingClient, SignaledLinkTransport, createPairingIntake, type PairingCandidate } from "@101/pairing";
 import {
   BroadcastChannelTransport,
   INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
-  decodePairingTicket,
+  parsePairingInput,
   type ControllerElement,
   type ControllerLayout,
   type LinkTransport,
@@ -95,7 +95,12 @@ function subscribeHandedness(notify: () => void) {
 
 export default function Controller(renderedRoute: ControllerRoute) {
   const routeSearch = useSyncExternalStore<string | undefined>(subscribeRouteSearch, currentRouteSearch, unknownClientSnapshot);
-  const { session, pairCode, ready: routeReady } = resolveControllerRoute(renderedRoute, routeSearch);
+  // A different visit retires the complete connection owner before a previous URL can be reused.
+  return <ControllerVisit key={routeSearch ?? "server"} renderedRoute={renderedRoute} routeSearch={routeSearch} />;
+}
+
+function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: ControllerRoute; routeSearch: string | undefined }) {
+  const { session, pairCode, invalidPair, ready: routeReady } = resolveControllerRoute(renderedRoute, routeSearch);
   const savedHandedness = useSyncExternalStore<Handedness | undefined>(subscribeHandedness, storedHandedness, unknownClientSnapshot);
   const [connected, setConnected] = useState(false);
   const [assigned, setAssigned] = useState(false);
@@ -104,6 +109,12 @@ export default function Controller(renderedRoute: ControllerRoute) {
   const [online, setOnline] = useState(true);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent>();
   const [pairEntry, setPairEntry] = useState("");
+  const [pairReview, setPairReview] = useState<PairingCandidate>();
+  const [approvedPair, setApprovedPair] = useState<{ candidate: PairingCandidate; route: string | undefined }>();
+  const pairIntake = useRef<ReturnType<typeof createPairingIntake> | null>(null);
+  if (pairIntake.current === null) pairIntake.current = createPairingIntake({ parse: parsePairingInput });
+  const approvedTicket = approvedPair?.route === routeSearch ? approvedPair?.candidate.ticket : undefined;
+  const selectedSession = approvedTicket?.sessionId ?? session;
   const [deviceId] = useState(() => {
     if (typeof window === "undefined") return "";
     const standalone = window.matchMedia("(display-mode: standalone)").matches;
@@ -138,6 +149,21 @@ export default function Controller(renderedRoute: ControllerRoute) {
   const configurationRef = useRef("");
   const lastHostMessageAt = useRef(0);
   const sequence = useRef(0);
+
+  useEffect(() => {
+    if (!routeReady) return;
+    let active = true;
+    const intake = pairIntake.current!;
+    intake.clear();
+    const result = pairCode && !invalidPair ? intake.receive(pairCode, "link") : undefined;
+    queueMicrotask(() => {
+      if (!active) return;
+      setPairReview(result?.status === "review" ? result.candidate : undefined);
+      if (invalidPair || result && result.status !== "review")
+        setReadout({ values: {}, tone: "critical", message: "That connection link could not be read. Paste a new one." });
+    });
+    return () => { active = false; intake.clear(); };
+  }, [invalidPair, pairCode, routeReady, routeSearch]);
 
   useEffect(() => { layoutRef.current = layout; }, [layout]);
 
@@ -209,7 +235,7 @@ export default function Controller(renderedRoute: ControllerRoute) {
 
   useEffect(() => {
     // A cached shell carries its build-time room. Never connect until the live URL is available.
-    if (!deviceId || !routeReady) return;
+    if (!deviceId || !routeReady || !approvedTicket && (invalidPair || pairCode)) return;
     const capabilities = {
       touch: true,
       haptics: "vibrate" in navigator,
@@ -219,12 +245,12 @@ export default function Controller(renderedRoute: ControllerRoute) {
     };
     let transport: LinkTransport;
     try {
-      transport = pairCode
+      transport = approvedTicket
         ? new SignaledLinkTransport({
-            signaling: new HttpControllerSignalingClient(decodePairingTicket(pairCode)),
+            signaling: new HttpControllerSignalingClient(approvedTicket),
             device: { deviceId, label: "101 Link browser controller", capabilities },
           })
-        : new BroadcastChannelTransport(session);
+        : new BroadcastChannelTransport(selectedSession);
     } catch {
       queueMicrotask(() => setReadout({ values: {}, tone: "critical", message: "That connection link could not be read. Scan or paste it again." }));
       return;
@@ -368,7 +394,7 @@ export default function Controller(renderedRoute: ControllerRoute) {
       transportRef.current = null;
       announceRef.current = () => undefined;
     };
-  }, [deviceId, pairCode, publishSnapshot, routeReady, session]);
+  }, [approvedTicket, deviceId, invalidPair, pairCode, publishSnapshot, routeReady, selectedSession]);
 
   const setActions = useCallback((values: Record<string, boolean | number>, owner?: string) => {
     const snapshot = inputRef.current!.setActions(values, owner);
@@ -487,20 +513,22 @@ export default function Controller(renderedRoute: ControllerRoute) {
   };
 
   const connectPairing = () => {
-    try {
-      const value = pairEntry.trim();
-      const code = value.startsWith("http://") || value.startsWith("https://")
-        ? new URL(value).searchParams.get("pair")
-        : value;
-      if (!code) throw new Error("Paste a 101 pairing ticket or URL");
-      const ticket = decodePairingTicket(code);
-      const target = new URL("/controller", window.location.origin);
-      target.searchParams.set("pair", code);
-      target.searchParams.set("session", ticket.sessionId);
-      window.location.assign(target);
-    } catch {
+    const result = pairIntake.current!.receive(pairEntry, "paste");
+    if (result.status === "review") setPairReview(result.candidate);
+    else {
+      setPairReview(undefined);
       setReadout({ values: {}, tone: "critical", message: "That connection link could not be read. Scan or paste it again." });
     }
+  };
+
+  const approvePairing = () => {
+    if (!pairReview || !pairIntake.current!.approve(pairReview)) {
+      setPairReview(undefined);
+      setReadout({ values: {}, tone: "warning", message: "That connection expired. Open a new link on the game screen." });
+      return;
+    }
+    setApprovedPair({ candidate: pairReview, route: routeSearch });
+    setPairReview(undefined);
   };
 
   const roleClass = assignment.role.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
@@ -520,9 +548,20 @@ export default function Controller(renderedRoute: ControllerRoute) {
         )}
       </header>
       <section className="controller-session">
-        <span>Room</span><strong>{session}</strong>
+        <span>Room</span><strong>{selectedSession}</strong>
         <small>{connected ? assigned ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : `${assignment.gameId.toUpperCase()} · WAITING FOR ROLE` : "Open a 101 game on the host"}</small>
       </section>
+
+      {pairReview && <section className="link-runtime" aria-labelledby="pairing-review-title">
+        <h2 id="pairing-review-title">Connect to this host?</h2>
+        <p>{pairReview.ticket.hostName || "101 host"}</p>
+        <p style={{ overflowWrap: "anywhere" }}>{pairReview.ticket.endpoint}</p>
+        <p>The name and address come from the connection link. Check them against your game screen.</p>
+        <div className="link-runtime-actions">
+          <button style={{ minHeight: 44 }} onClick={approvePairing}>Connect</button>
+          <button style={{ minHeight: 44 }} onClick={() => { pairIntake.current!.clear(); setPairReview(undefined); }}>Cancel</button>
+        </div>
+      </section>}
 
       <details className="link-runtime">
         <summary><span className={connected ? "runtime-dot online" : "runtime-dot"} />{connected ? "Connected" : online ? "Connect to a game" : "No network connection"}</summary>
@@ -530,9 +569,17 @@ export default function Controller(renderedRoute: ControllerRoute) {
           {installPrompt && <button onClick={install}>INSTALL 101 LINK</button>}
           <label>
             <span>Connection link</span>
-            <input value={pairEntry} onChange={(event) => setPairEntry(event.target.value)} placeholder="Paste connection link" autoCapitalize="off" autoCorrect="off" />
+            <input maxLength={8192} value={pairEntry} onChange={(event) => { pairIntake.current!.clear(); setPairReview(undefined); setPairEntry(event.target.value); }} placeholder="Paste connection link" autoCapitalize="off" autoCorrect="off" />
           </label>
-          <button onClick={connectPairing} disabled={!pairEntry.trim()}>CONNECT TO HOST</button>
+          <button onClick={connectPairing} disabled={!pairEntry.trim()}>REVIEW CONNECTION</button>
+          {approvedTicket && <button onClick={() => {
+            pairIntake.current!.clear();
+            setPairReview(undefined);
+            setApprovedPair(undefined);
+            setConnected(false);
+            setAssigned(false);
+            setReadout({ values: {}, tone: "normal", message: "Connection stopped. Review a link to connect again." });
+          }}>STOP CONNECTION</button>}
           <p>You can reopen an installed controller offline. Connect to the game to play.</p>
         </div>
       </details>

@@ -86,7 +86,7 @@ test("browser host reload resumes with stored authority while unauthenticated ca
     Object.defineProperty(globalThis, "document", { configurable: true, value: { title: "Reload Test" } });
 
     first = new BrowserHostTransport("RELOAD101");
-    const initial = await first.preparePairing();
+    const initial = await first.preparePairing(endpoint);
     const initialAuthority = storedHostToken(storage);
     assert.ok(initialAuthority);
     await closeBrowserHost(first);
@@ -103,7 +103,7 @@ test("browser host reload resumes with stored authority while unauthenticated ca
     assert.equal(deniedBody.includes(initial.ticket.joinToken), false);
 
     reloaded = new BrowserHostTransport("RELOAD101");
-    const resumed = await reloaded.preparePairing();
+    const resumed = await reloaded.preparePairing(endpoint);
     const rotatedAuthority = storedHostToken(storage);
     assert.ok(rotatedAuthority);
     assert.notEqual(rotatedAuthority, initialAuthority);
@@ -127,7 +127,7 @@ test("browser host reload resumes with stored authority while unauthenticated ca
   }
 });
 
-test("browser pairing uses the Hub's advertised address when another interface is link-local", async () => {
+test("browser pairing uses an explicitly reviewed advertised phone address without retargeting the selected Hub", async () => {
   const advertisedHost = "192.0.2.25";
   const server = new LocalHubServer({ host: "127.0.0.1", port: 0, advertisedHost });
   const advertisedEndpoint = await server.start();
@@ -148,14 +148,17 @@ test("browser pairing uses the Hub's advertised address when another interface i
       configurable: true,
       value: ((input: RequestInfo | URL, init?: RequestInit) => {
         if (String(input) === `${requestedEndpoint}/v1/health`) {
-          return Promise.resolve(new Response(JSON.stringify({ endpoint: advertisedEndpoint, addresses: ["169.254.114.128", advertisedHost] }), { status: 200 }));
+          return Promise.resolve(new Response(JSON.stringify({ service: "101-hub", version: 1, endpoint: advertisedEndpoint, addresses: ["169.254.114.128", advertisedHost] }), { status: 200 }));
         }
         return realFetch(input, init);
       }) satisfies typeof fetch,
     });
 
     host = new BrowserHostTransport("LAN101");
-    const pairing = await host.preparePairing();
+    const reviewed = await host.reviewEndpoint(requestedEndpoint);
+    assert.ok(reviewed.phoneEndpoints.includes(advertisedEndpoint));
+    const pairing = await host.preparePairing(requestedEndpoint, { phoneEndpoint: advertisedEndpoint });
+    assert.equal(pairing.hubEndpoint, requestedEndpoint);
     assert.equal(pairing.ticket.endpoint, advertisedEndpoint);
     assert.equal(new URL(pairing.controllerUrl).hostname, advertisedHost);
   } finally {
@@ -204,14 +207,14 @@ test("desktop launcher fragment hands session authority to the browser exactly o
     host = new BrowserHostTransport("DESKTOP101");
     assert.equal(location.hash, "", "the bearer fragment must be erased before session networking");
     assert.equal(replacedUrl, `/${search}`);
-    const claimedAuthority = await waitForStoredHostToken(storage);
-    assert.notEqual(claimedAuthority, desktopCreated.hostToken,
-      "the fragment authority must rotate into origin-local storage without waiting for game launch");
-    const resumed = await host.preparePairing();
+    assert.equal(storedHostToken(storage), undefined,
+      "the fragment remains in memory until explicit selected-address approval");
+    assert.deepEqual(await new HttpHostSignalingClient(endpoint, "DESKTOP101", desktopCreated.hostToken).listPeers(), [],
+      "an inert fragment does not claim or rotate the original authority");
+    const resumed = await host.preparePairing(endpoint);
     const rotatedAuthority = storedHostToken(storage);
     assert.ok(rotatedAuthority);
     assert.notEqual(rotatedAuthority, desktopCreated.hostToken);
-    assert.notEqual(rotatedAuthority, claimedAuthority);
     assert.equal(resumed.ticket.joinToken, desktopCreated.ticket.joinToken);
     assert.equal(resumed.controllerUrl.includes(desktopCreated.hostToken), false, "host authority must never enter the controller QR URL");
     await assert.rejects(
@@ -227,7 +230,7 @@ test("desktop launcher fragment hands session authority to the browser exactly o
     host = undefined;
     location.hash = `#101-host-session=DESKTOP101&101-host-token=${desktopCreated.hostToken}&101-host-hub=${encodeURIComponent(endpoint)}`;
     host = new BrowserHostTransport("DESKTOP101");
-    const reopened = await host.preparePairing();
+    const reopened = await host.preparePairing(endpoint);
     assert.equal(reopened.ticket.sessionId, "DESKTOP101");
     assert.notEqual(storedHostToken(storage), rotatedAuthority,
       "reopening the one-time Desktop URL must fall back to the browser's rotated authority");
@@ -269,7 +272,7 @@ test("browser rejects a desktop authority fragment bound to another session", as
 
     host = new BrowserHostTransport("BOUND101");
     assert.equal(location.hash, "");
-    await assert.rejects(() => host!.preparePairing(), /409/);
+    await assert.rejects(() => host!.preparePairing(endpoint), /409/);
     assert.equal(storedHostToken(storage), undefined);
     assert.deepEqual(
       await new HttpHostSignalingClient(endpoint, "BOUND101", desktopCreated.hostToken).listPeers(),
@@ -286,7 +289,7 @@ test("browser rejects a desktop authority fragment bound to another session", as
   }
 });
 
-test("desktop authority survives a failed immediate claim and transient health failure", async () => {
+test("desktop authority survives a failed explicitly approved claim and transient health failure", async () => {
   const server = new LocalHubServer({ host: "127.0.0.1", port: 0 });
   const endpoint = await server.start();
   const desktopCreated = await createRemoteHubSession(endpoint, "RETRY101");
@@ -331,11 +334,13 @@ test("desktop authority survives a failed immediate claim and transient health f
     });
 
     host = new BrowserHostTransport("RETRY101");
-    await assert.rejects(() => host!.preparePairing(), /503/);
+    await assert.rejects(() => host!.preparePairing(endpoint), /connection is unavailable/i);
+    assert.equal(rejectClaimOnce, true, "failed health review never dispatches a claim");
+    await assert.rejects(() => host!.preparePairing(endpoint), /temporary handoff failure/);
     assert.equal(storedHostToken(storage), undefined,
       "a failed claim must retain authority in memory rather than persist the unrotated token");
 
-    const resumed = await host.preparePairing();
+    const resumed = await host.preparePairing(endpoint);
     assert.equal(resumed.ticket.sessionId, "RETRY101");
     assert.notEqual(storedHostToken(storage), desktopCreated.hostToken);
   } finally {
@@ -407,13 +412,4 @@ function storedHostToken(storage: Storage) {
 
 async function closeBrowserHost(host: BrowserHostTransport) {
   await (host as unknown as { closeIfUnused(): Promise<void> }).closeIfUnused();
-}
-
-async function waitForStoredHostToken(storage: Storage) {
-  for (let attempt = 0; attempt < 50; attempt += 1) {
-    const hostToken = storedHostToken(storage);
-    if (hostToken) return hostToken;
-    await new Promise<void>((resolve) => setTimeout(resolve, 2));
-  }
-  throw new Error("Desktop host authority was not claimed into browser storage");
 }

@@ -10,6 +10,7 @@ import {
   type StatefulLinkTransport,
 } from "@101/protocol";
 import type { InputSource } from "@101/input";
+import { fetch as nativeFetch } from "expo/fetch";
 
 import { NativeWebRTCTransport } from "./native-webrtc";
 import { ticketFromInput } from "./pairing-code";
@@ -48,6 +49,7 @@ export class ControllerSession {
   private assignment?: ControllerAssignment;
   private waitingForRole = false;
   private sequence = 0;
+  private lifecycleRevision = 0;
   private readonly configurationGate = new ControllerConfigurationGate();
   private readonly speakerGate = new ControllerSpeakerGate();
 
@@ -58,9 +60,18 @@ export class ControllerSession {
   ) {}
 
   async connect(input: string) {
-    await this.disconnect();
+    const revision = ++this.lifecycleRevision;
+    await this.clearConnection(revision);
+    this.requireCurrent(revision);
     const ticket = ticketFromInput(input);
-    const signaling = new HttpControllerSignalingClient(ticket);
+    // Expo's native adapter enforces manual redirects and omitted cookies for signaling.
+    const fetcher = nativeFetch as unknown as typeof fetch;
+    const signaling = new HttpControllerSignalingClient(ticket, (input, init) => {
+      // The immutable client's leave retires its own lease after cancellation. Every other
+      // request still needs this session owner, including dispatch after a reentrant state event.
+      if (init?.method !== "DELETE") this.requireCurrent(revision);
+      return fetcher(input, init);
+    });
     const transport = new SignaledLinkTransport({
       signaling,
       device: {
@@ -80,48 +91,80 @@ export class ControllerSession {
       transportFactory: () => new NativeWebRTCTransport(),
       pollIntervalMs: 650,
     });
-    this.attachTransport(transport);
+    this.requireCurrent(revision);
     try {
+      this.attachTransport(transport, revision);
+      this.requireCurrent(revision, transport);
       await transport.connect();
+      this.requireCurrent(revision, transport);
     } catch (error) {
-      this.events.error(connectionErrorMessage(error));
-      await this.disconnect();
+      if (this.isCurrent(revision, transport)) this.events.error(connectionErrorMessage(error));
+      if (this.isCurrent(revision, transport)) await this.disconnect();
+      else await transport.disconnect();
       throw error;
     }
     return ticket;
   }
 
   async connectManual(offer: string) {
-    await this.disconnect();
+    const revision = ++this.lifecycleRevision;
+    await this.clearConnection(revision);
+    this.requireCurrent(revision);
     const transport = new NativeWebRTCTransport();
-    this.attachTransport(transport);
+    this.requireCurrent(revision);
     try {
+      this.attachTransport(transport, revision);
+      this.requireCurrent(revision, transport);
       await transport.connect();
-      return await transport.acceptOfferCode(offer);
+      this.requireCurrent(revision, transport);
+      const answer = await transport.acceptOfferCode(offer);
+      this.requireCurrent(revision, transport);
+      return answer;
     } catch (error) {
-      this.events.error(connectionErrorMessage(error));
-      await this.disconnect();
+      if (this.isCurrent(revision, transport)) this.events.error(connectionErrorMessage(error));
+      if (this.isCurrent(revision, transport)) await this.disconnect();
+      else await transport.disconnect();
       throw error;
     }
   }
 
   async disconnect() {
-    if (this.heartbeat) clearInterval(this.heartbeat);
-    this.heartbeat = undefined;
-    this.removeMessage?.();
-    this.removeState?.();
-    this.removeError?.();
+    const revision = ++this.lifecycleRevision;
+    await this.clearConnection(revision);
+  }
+
+  private async clearConnection(revision: number) {
+    // Detach the owned transport before awaiting it: a replacement may attach while its leave
+    // request is still pending, and this cleanup must never erase that new connection.
+    const transport = this.transport;
+    const removeMessage = this.removeMessage;
+    const removeState = this.removeState;
+    const removeError = this.removeError;
+    this.transport = undefined;
     this.removeMessage = undefined;
     this.removeState = undefined;
     this.removeError = undefined;
-    await this.transport?.disconnect();
-    this.transport = undefined;
+    if (this.heartbeat) clearInterval(this.heartbeat);
+    this.heartbeat = undefined;
+    removeMessage?.();
+    removeState?.();
+    removeError?.();
     this.assignment = undefined;
     this.waitingForRole = false;
     this.configurationGate.reset();
-    this.events.speakerReset();
-    this.events.assignment(undefined);
-    this.events.hostState({});
+    const disconnected = transport?.disconnect();
+    if (this.isCurrent(revision)) this.events.speakerReset();
+    if (this.isCurrent(revision)) this.events.assignment(undefined);
+    if (this.isCurrent(revision)) this.events.hostState({});
+    await disconnected;
+  }
+
+  private isCurrent(revision: number, transport?: StatefulLinkTransport) {
+    return revision === this.lifecycleRevision && (!transport || this.transport === transport);
+  }
+
+  private requireCurrent(revision: number, transport?: StatefulLinkTransport) {
+    if (!this.isCurrent(revision, transport)) throw new Error("Connection cancelled");
   }
 
   setSpeakerReady(ready: boolean) {
@@ -202,9 +245,10 @@ export class ControllerSession {
     if (this.currentLayout) this.sendSnapshot(this.model.snapshot(), "touch");
   }
 
-  private attachTransport(transport: StatefulLinkTransport) {
+  private attachTransport(transport: StatefulLinkTransport, revision: number) {
     this.transport = transport;
-    this.removeMessage = transport.onMessage((message) => {
+    const removeMessage = transport.onMessage((message) => {
+      if (!this.isCurrent(revision, transport)) return;
       if (message.channel === "control") this.handleControl(message.payload);
       if (message.channel === "realtime" && "type" in message.payload && message.payload.deviceId === this.deviceId) {
         if (message.payload.type === "haptic") this.events.haptic(message.payload.pattern);
@@ -213,15 +257,23 @@ export class ControllerSession {
         }
       }
     });
-    this.removeState = transport.onStateChange((state) => {
+    if (!this.isCurrent(revision, transport)) { removeMessage(); return; }
+    this.removeMessage = removeMessage;
+    const removeState = transport.onStateChange((state) => {
+      if (!this.isCurrent(revision, transport)) return;
       this.events.state(state);
-      if (state === "connected") this.onConnected();
+      if (this.isCurrent(revision, transport) && state === "connected") this.onConnected();
     });
+    if (!this.isCurrent(revision, transport)) { removeState(); return; }
+    this.removeState = removeState;
     // Signaling failures the transport recovers from. Without this the outage was invisible until
     // it surfaced as an unhandled-rejection toast; now the controller can explain itself.
-    this.removeError = withErrorChannel(transport)?.onError(() => {
+    const removeError = withErrorChannel(transport)?.onError(() => {
+      if (!this.isCurrent(revision, transport)) return;
       this.events.error("Connection interrupted. Retrying on this Wi-Fi…");
     });
+    if (!this.isCurrent(revision, transport)) { removeError?.(); return; }
+    this.removeError = removeError;
   }
 
   private sendHello() {

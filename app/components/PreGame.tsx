@@ -1,6 +1,7 @@
 "use client";
 
 import QRCode from "qrcode";
+import { HostConnectionReview } from "./HostConnectionReview";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -11,7 +12,7 @@ import type { GameManifest } from "@101/sdk";
 import CameraSetup from "./camera/CameraSetup";
 import { GamePoster } from "./GamePoster";
 import { Icon } from "./Icon";
-import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser-link";
+import { type BrowserPairingInfo } from "../lib/browser-link";
 import { CATALOG_INPUT_LABELS, playableWithSources } from "../lib/catalog";
 import type { CameraKind } from "../lib/camera-plan";
 import { recallCameraSetup } from "../lib/camera-setup";
@@ -209,29 +210,14 @@ export default function PreGame({
 function PairingBlock({ sessionId }: { sessionId: string | null }) {
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
-  const [failed, setFailed] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!sessionId) return;
     let current = true;
-    getBrowserHostTransport(sessionId)
-      .preparePairing()
-      .then(async (info) => {
-        // The QR library needs literal hex, not a CSS variable; these mirror --ink and --paper.
-        const image = await QRCode.toDataURL(info.controllerUrl, { width: 280, margin: 2, errorCorrectionLevel: "M", color: { dark: "#0a0a0a", light: "#f2f2f2" } });
-        if (!current) return;
-        setPairing(info);
-        setQrCode(image);
-        setFailed(false);
-      })
-      .catch((error) => {
-        if (!current) return;
-        console.warn("101 pairing unavailable", error);
-        setFailed(true);
-      });
+    if (pairing) void QRCode.toDataURL(pairing.controllerUrl, { width: 280, margin: 4, errorCorrectionLevel: "M", color: { dark: "#0a0a0a", light: "#f2f2f2" } })
+      .then(image => { if (current) setQrCode(image); }).catch(() => { if (current) setQrCode(""); });
     return () => { current = false; };
-  }, [sessionId]);
+  }, [pairing]);
 
   const url = pairing?.controllerUrl ?? (sessionId ? `/controller?session=${sessionId}` : "");
 
@@ -244,13 +230,14 @@ function PairingBlock({ sessionId }: { sessionId: string | null }) {
 
   return (
     <section className="pre-game-pairing">
+      {sessionId && <HostConnectionReview sessionId={sessionId} onReady={info => { setQrCode(""); setPairing(info); }} />}
       <div className="pair-body">
-        {qrCode ? (
+        {pairing && qrCode ? (
           /* A generated data URL, rendered directly; it never leaves this browser. */
           /* eslint-disable-next-line @next/next/no-img-element */
           <img className="pairing-qr" src={qrCode} alt={`Code for room ${sessionId}`} />
         ) : (
-          <div className="pairing-qr pending"><span>{failed ? "Not ready" : "Preparing…"}</span></div>
+          <div className="pairing-qr pending"><span>{pairing ? "Preparing…" : "Choose an address"}</span></div>
         )}
         <ol className="pair-steps">
           <li>Put both devices on the same Wi-Fi.</li>
@@ -262,9 +249,8 @@ function PairingBlock({ sessionId }: { sessionId: string | null }) {
       <div className="session-code"><span>Room code</span><strong>{sessionId ?? "······"}</strong></div>
       <div className="pair-link">
         <code>{url || "preparing…"}</code>
-        <button onClick={copy} disabled={!url}>{copied ? "Copied" : "Copy"}</button>
+        <button style={{ minHeight: 44 }} onClick={copy} disabled={!url}>{copied ? "Copied" : "Copy"}</button>
       </div>
-      {failed && <p className="pairing-error">Can&apos;t reach the other devices on this network. Check that this device is online, then try again.</p>}
     </section>
   );
 }

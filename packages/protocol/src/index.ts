@@ -574,15 +574,54 @@ export function encodePairingTicket(ticket: PairingTicket) {
 }
 
 export function decodePairingTicket(code: string, now = Date.now()) {
+  pairingInputBound(code, 4096);
+  if (!Number.isSafeInteger(now) || now < 0) throw new Error("Invalid pairing clock");
   const normalized = code.trim();
   if (normalized.length > 4096 || !normalized.startsWith("101L2.")) throw new Error("Invalid 101 LAN pairing ticket");
   const encoded = normalized.slice(6);
-  const envelope = JSON.parse(new TextDecoder().decode(fromBase64Url(encoded))) as Partial<PairingTicketEnvelope>;
+  const envelope = pairingOwnData(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(fromBase64Url(encoded))), [...PAIRING_TICKET_FIELDS, 'checksum']);
   const { checksum: receivedChecksum, ...candidate } = envelope;
   const parsed = parsePairingTicket(candidate);
   if (receivedChecksum !== checksum(JSON.stringify(parsed))) throw new Error("Pairing ticket failed integrity validation");
   if (parsed.expiresAt <= now) throw new Error("Pairing ticket has expired");
+  if (parsed.expiresAt - now > 86_400_000) throw new Error("Pairing ticket lifetime exceeds the allowed size");
   return parsed;
+}
+
+/** Extracts an inert code without invoking a browser or native base64 provider. */
+export function pairingCodeFromInput(input: string): string {
+  pairingInputBound(input, 8192);
+  const value = input.trim();
+  if (value.startsWith('101L2.')) { pairingInputBound(input, 4096); return value; }
+  if (/[\p{Cc}\\]/u.test(input)) throw new Error('Invalid pairing link');
+  let url: URL;
+  try { url = new URL(value); } catch { throw new Error('Invalid pairing link'); }
+  if (url.username || url.password || url.hash) throw new Error('Invalid pairing link');
+  const native = url.protocol === 'oneohone:' && url.hostname === 'pair' && !url.port && (url.pathname === '' || url.pathname === '/');
+  const web = (url.protocol === 'http:' || url.protocol === 'https:') && url.pathname === '/controller';
+  if (!native && !web) throw new Error('Invalid pairing link');
+  const key = native ? 'ticket' : 'pair';
+  for (const name of url.searchParams.keys()) {
+    if (!(native ? ['ticket'] : ['pair', 'session']).includes(name) || url.searchParams.getAll(name).length !== 1) throw new Error('Invalid pairing link parameters');
+  }
+  const code = url.searchParams.get(key);
+  if (!code || !code.startsWith('101L2.')) throw new Error('Invalid pairing link');
+  pairingInputBound(code, 4096);
+  const session = url.searchParams.get('session');
+  if (session !== null && !/^[A-Z0-9-]{4,128}$/i.test(session)) throw new Error('Invalid pairing session');
+  return code;
+}
+
+/** Parsing grants no endpoint identity, network dispatch or resource operation. */
+export function parsePairingInput(input: string, now = Date.now()): Readonly<PairingTicket> {
+  const code = pairingCodeFromInput(input);
+  const ticket = decodePairingTicket(code, now);
+  const value = input.trim();
+  if (!value.startsWith('101L2.')) {
+    const session = new URL(value).searchParams.get('session');
+    if (session !== null && session !== ticket.sessionId) throw new Error('Pairing link session mismatch');
+  }
+  return ticket;
 }
 
 export function createControllerPairingUrl(controllerBaseUrl: string, ticket: PairingTicket) {
@@ -1223,18 +1262,39 @@ function checksum(value: string) {
 }
 
 function parsePairingTicket(input: unknown): PairingTicket {
-  if (!isRecord(input) || input.version !== PAIRING_TICKET_VERSION || input.transport !== "webrtc") throw new Error("Unsupported 101 LAN pairing ticket");
-  const sessionId = requiredText(input.sessionId, "sessionId", 128);
+  const value = pairingOwnData(input, PAIRING_TICKET_FIELDS);
+  if (value.version !== PAIRING_TICKET_VERSION || value.transport !== "webrtc") throw new Error("Unsupported 101 LAN pairing ticket");
+  const sessionId = requiredText(value.sessionId, "sessionId", 128);
   if (!/^[A-Z0-9-]{4,128}$/i.test(sessionId)) throw new Error("Invalid pairing session id");
-  const joinToken = requiredText(input.joinToken, "joinToken", 256);
+  const joinToken = requiredText(value.joinToken, "joinToken", 256);
   if (!/^[A-Za-z0-9_-]{32,256}$/.test(joinToken)) throw new Error("Invalid pairing join token");
-  const endpoint = requiredText(input.endpoint, "endpoint", 2048);
+  const endpoint = requiredText(value.endpoint, "endpoint", 2048);
+  if (/[\p{Cc} %\\]/u.test(endpoint) || !/^[a-z]+:\/\/[^/?#]+\/?$/i.test(endpoint)) throw new Error('Invalid pairing endpoint');
   const url = new URL(endpoint);
-  if ((url.protocol !== "http:" && url.protocol !== "https:") || url.username || url.password || url.hash) throw new Error("Invalid pairing endpoint");
-  const expiresAt = requiredFinite(input.expiresAt, "expiresAt");
+  if ((url.protocol !== "http:" && url.protocol !== "https:") || url.username || url.password || url.hash || url.search || url.pathname !== '/') throw new Error("Invalid pairing endpoint");
+  const expiresAt = requiredFinite(value.expiresAt, "expiresAt");
   if (!Number.isSafeInteger(expiresAt) || expiresAt <= 0) throw new Error("Invalid pairing expiration");
-  const hostName = input.hostName === undefined ? undefined : requiredText(input.hostName, "hostName", 128);
-  return { version: PAIRING_TICKET_VERSION, sessionId, endpoint: url.toString().replace(/\/$/, ""), joinToken, expiresAt, ...(hostName ? { hostName } : {}), transport: "webrtc" };
+  const hostName = value.hostName === undefined ? undefined : requiredText(value.hostName, "hostName", 128);
+  if (hostName && /\p{Cc}/u.test(hostName)) throw new Error('Invalid pairing host name');
+  return Object.freeze({ version: PAIRING_TICKET_VERSION, sessionId, endpoint: url.origin, joinToken, expiresAt, ...(hostName ? { hostName } : {}), transport: "webrtc" });
+}
+
+const PAIRING_TICKET_FIELDS = ['version', 'sessionId', 'endpoint', 'joinToken', 'expiresAt', 'hostName', 'transport'] as const;
+function pairingOwnData(input: unknown, allowed: readonly string[]): Record<string, unknown> {
+  if (!isRecord(input) || ![null, Object.prototype].includes(Object.getPrototypeOf(input))) throw new Error('Invalid pairing record');
+  const keys = Reflect.ownKeys(input);
+  if (keys.length > allowed.length) throw new Error('Invalid pairing record');
+  const result: Record<string, unknown> = {};
+  for (const key of keys) {
+    if (typeof key !== 'string' || !allowed.includes(key)) throw new Error('Invalid pairing record');
+    const descriptor = Object.getOwnPropertyDescriptor(input, key);
+    if (!descriptor || !('value' in descriptor) || !descriptor.enumerable) throw new Error('Invalid pairing record');
+    result[key] = descriptor.value;
+  }
+  return result;
+}
+function pairingInputBound(input: unknown, maximum: number): asserts input is string {
+  if (typeof input !== 'string' || input.length > maximum || new TextEncoder().encode(input).byteLength > maximum) throw new Error('Pairing input exceeds the allowed size');
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

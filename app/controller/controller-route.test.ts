@@ -39,3 +39,8 @@ test("an absent or invalid live room falls back without reusing cached pairing a
     });
   }
 });
+
+test("duplicate or oversized pairing query input fails closed before transport selection", () => {
+  for (const search of ["?session=ROOM&pair=one&pair=two", `?pair=${"a".repeat(8193)}`, "?pair="])
+    assert.equal(resolveControllerRoute({ session: "CACHED" }, search).invalidPair, true);
+});

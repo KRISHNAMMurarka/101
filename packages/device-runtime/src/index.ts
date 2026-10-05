@@ -33,3 +33,6 @@ export * from './telemetry-storage.ts';
 export * from './durable-artifact-jobs.ts';
 export { createApplicationViews } from './application-views.ts';
 export type { ApplicationViewRequest, ApplicationViewDefinition, ApplicationViewOutput, ApplicationViewHandle, AttachApplicationViewResult, ApplicationViewsOptions, ApplicationViews } from './application-views.ts';
+
+export { createProcessorInstallation } from './processor-installation.ts';
+export type { ProcessorInstallationWriteGuard, ProcessorInstallationStorage, ProcessorPublisherTrust, ProcessorInstallationAction, ProcessorInstallationScope, ProcessorInstallationApproval, ProcessorInstallationFailure, ProcessorInstallationResult, ProcessorInstallationPackage, ProcessorInstallationSnapshot, ReviewedProcessorActivationRequest, ProcessorExtensionActivation, ProcessorInstallation, ProcessorInstallationOptions } from './processor-installation.ts';

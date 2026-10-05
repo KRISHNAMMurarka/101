@@ -58,3 +58,6 @@ export type { RecipeSelection, RecipeAlternative, RecipeResolutionIssue, Resolve
   RecipeResolution } from './recipe-resolver.ts';
 export { parseControlSurface, surfaceColumnCount, surfaceControlValueValid } from './control-surface.ts';
 export type { ControlSurface, ControlSurfaceStyle, SurfaceNode, SurfaceLeaf, SurfaceControl } from './control-surface.ts';
+
+export { PROCESSOR_EXTENSION_PROFILE, PROCESSOR_EXTENSION_LIMITS, parseProcessorExtensionRelease, processorExtensionSigningBytes, processorExtensionManifestSha256, verifyProcessorExtensionRelease } from './extension-release.ts';
+export type { UnsignedProcessorExtensionRelease, ProcessorExtensionRelease } from './extension-release.ts';
