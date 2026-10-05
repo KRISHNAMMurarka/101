@@ -20,3 +20,5 @@ export { createReceiverInvitation, decodeReceiverInvitation, decodeReceiverInvit
 export type { ReceiverInvitation } from './invitation.ts';
 export { KeyboardTextSourceDriver, keyboardTextSourceDescriptor, mountKeyboardTextSource } from './keyboard-text-driver.ts';
 export type { KeyTransition, TextComposition, KeyboardTextSourceOptions } from './keyboard-text-driver.ts';
+export { TouchContactSourceDriver, touchContactSourceDescriptor, mountTouchContactSource } from './touch-contact-driver.ts';
+export type { TouchContact, TouchContactSourceOptions } from './touch-contact-driver.ts';

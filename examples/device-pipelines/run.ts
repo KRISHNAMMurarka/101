@@ -4,6 +4,7 @@ import { runTelemetryBatchExample } from './telemetry-batch.ts';
 import { runSpatialJointExample } from './spatial-joints.ts';
 import { runMotionExample } from './motion.ts';
 import { runVisionExample } from './vision.ts';
+import { runTouchContactsExample } from './touch-contacts.ts';
 import { runKeyboardTextExample } from './keyboard-text.ts';
 import { runRichInputExample } from './rich-input.ts';
 import { runResourceDocumentExample } from './resource-documents.ts';
@@ -20,6 +21,7 @@ console.log(JSON.stringify({
   vision: runVisionExample(),
   richInput: runRichInputExample(),
   keyboardText: runKeyboardTextExample(),
+  touchContacts: runTouchContactsExample(),
   resourceDocuments: await runResourceDocumentExample(),
   mediaDescription: runMediaDescriptionExample(),
   recipe: runRecipeExample(),

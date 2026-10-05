@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 61,
+  "revision": 62,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7140,6 +7140,35 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "touch-contacts-2026-10-05",
+      "revision": "containing I04 commit, base4673b1a; immutable SDK producer tree 6928efef01f12a3d35362e99f33358dec80fe4ad",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I04",
+        "K01",
+        "K02"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-web/src/touch-contact-driver.test.ts",
+        "tests/touch-contacts-example.test.ts",
+        "tests/sdk-distribution.test.ts",
+        "docs/platform/receipts/2026-10-05-i04-touch-contacts.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; same packed consumer on Node22.13.0; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; protocol-generated browser touch, no physical fingers",
+      "reproduction": "14 focused touch source/caller tests with red-green lifecycle regressions; node tools/build-sdk.mjs 6928efef01f12a3d35362e99f33358dec80fe4ad; node tools/qa-sdk-consumer.mjs release/sdk-e5YmsS/manifest.json; Node22 command in receipt; exact candidate AGENTS.md gates",
+      "scope": "I04 independent browser contact source: stable IDs, simultaneous ownership, independent release, cancellation/orientation/geometry changes and fresh-down recovery. Real runtime reliable caller and six packed packages pass Node22/24 and three engines; active native capture and simultaneous contacts verified in Chromium. No physical device/ergonomic or support-row promotion. K01/K02 requalified.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8359,7 +8388,8 @@
     {
       "id": "I04",
       "records": [
-        "pending-I04"
+        "pending-I04",
+        "touch-contacts-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -10297,7 +10327,8 @@
         "sdk-distributions-2026-10-02",
         "sdk-distribution-current-2026-10-03",
         "landmark-processors-2026-10-05",
-        "keyboard-text-2026-10-05"
+        "keyboard-text-2026-10-05",
+        "touch-contacts-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
@@ -10311,7 +10342,8 @@
         "sdk-distributions-2026-10-02",
         "sdk-external-consumer-current-2026-10-03",
         "landmark-processors-2026-10-05",
-        "keyboard-text-2026-10-05"
+        "keyboard-text-2026-10-05",
+        "touch-contacts-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

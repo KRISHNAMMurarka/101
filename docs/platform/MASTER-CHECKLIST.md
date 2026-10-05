@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 86 completed with recorded evidence; 186 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 87 completed with recorded evidence; 185 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -168,7 +168,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **I01 — Define reusable input profiles.** Pointer, keyboard, text, gamepad, touch, pen and accessibility resources declare event/sample semantics and supported control operations. [Profile contract](SDK.md#input-profiles) and [packed consumer evidence](receipts/2026-10-05-i01-input-profiles.json).
 - [x] **I02 — Implement smooth relative trackpad input.** Accumulate bounded unsent deltas or publish recoverable targets; no coalescing loses movement, and lift/recontact introduces no anchor or jump. [Pointer driver and current browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#relative-trackpad-acceptance--5-october-2026).
 - [ ] **I03 — Implement click/drag/scroll gestures.** Tap, press, drag, wheel and multi-finger scrolling have clear cancellation, pointer capture, rate and reliable transition behavior.
-- [ ] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons.
+- [x] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons. [Independent browser source and packed runtime evidence](receipts/2026-10-05-i04-touch-contacts.json); physical device/ergonomic qualification remains separate.
 - [x] **I05 — Implement keyboard/text composition.** Key-down/up, modifiers, repeats, layouts and IME/text composition remain distinct; disconnect releases keys without corrupting text. [Browser source and independent packed caller evidence](receipts/2026-10-05-i05-keyboard-text.json); physical OS input-method/layout qualification remains separate.
 - [ ] **I06 — Implement pen/rotary/gamepad details.** Pressure/tilt, crown/encoder deltas, triggers, hats, axes and button edges preserve profile-specific ranges and calibration.
 - [ ] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls.

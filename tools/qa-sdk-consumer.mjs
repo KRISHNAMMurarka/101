@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -175,6 +175,9 @@ import { runMotionExample } from '@101/connect/examples/motion';
 import { runVisionExample } from '@101/connect/examples/vision';
 import { createPoseLandmarkProcessor as directPoseProcessor, parsePoseObservation } from '@101/vision';
 import type { LandmarkProcessorResult, PoseSignals } from '@101/vision';
+import { createTouchContactsPipeline, runTouchContactsExample } from '@101/connect/examples/touch-contacts';
+import { TouchContactSourceDriver, mountTouchContactSource, touchContactSourceDescriptor } from '@101/connect';
+import type { TouchContact } from '@101/connect';
 import { createRichInputPipeline, runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -306,6 +309,10 @@ spatial.runtime.close();
 const landmarkResult: LandmarkProcessorResult<PoseSignals> = runVisionExample().poseNeutral;
 void [runSpatialJointExample().publication, spatialConversion.metadata.unitScale, runMotionExample().smoothed,
   landmarkResult.signals.calibrated, directPoseProcessor, parsePoseObservation];
+const touch = createTouchContactsPipeline({ now: () => 1000 });
+const touchValue: TouchContact = { id: 'typed', phase: 'down', position: { x: 0, y: 0 }, primary: true };
+touch.driver.contact(touchValue); touch.stop();
+void [TouchContactSourceDriver, mountTouchContactSource, touchContactSourceDescriptor, runTouchContactsExample().simultaneous];
 const richInput = createRichInputPipeline({ now: () => 1000 });
 richInput.runtime.close();
 void runRichInputExample().events;
@@ -400,6 +407,7 @@ import { runSpatialJointExample } from '@101/connect/examples/spatial-joints';
 import { runMotionExample } from '@101/connect/examples/motion';
 import { runVisionExample } from '@101/connect/examples/vision';
 import { createKeyboardTextPipeline, runKeyboardTextExample } from '@101/connect/examples/keyboard-text';
+import { createTouchContactsPipeline, runTouchContactsExample } from '@101/connect/examples/touch-contacts';
 import { runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -411,6 +419,9 @@ function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
   check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createRecipeSession === runtime.createRecipeSession && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.resolveRecipe === model.resolveRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(sdk.KeyboardTextSourceDriver === web.KeyboardTextSourceDriver && sdk.mountKeyboardTextSource === web.mountKeyboardTextSource, 'Keyboard public identity differs');
+  check(sdk.TouchContactSourceDriver === web.TouchContactSourceDriver && sdk.mountTouchContactSource === web.mountTouchContactSource, 'Touch public identity differs');
+  const touchContacts = runTouchContactsExample();
+  check(touchContacts.simultaneous.contacts.length === 2 && touchContacts.oneReleased.contacts.length === 1 && touchContacts.oneReleased.contacts[0].id === 'right' && touchContacts.cancelled.contacts.length === 0 && touchContacts.disconnected.contacts.length === 0 && touchContacts.stopped, 'Independent contacts lost ownership or release');
   const keyboardText = runKeyboardTextExample();
   check(keyboardText.beforeCommit === 'z' && keyboardText.released.text === 'zन' && keyboardText.released.heldKeys === 0 && keyboardText.released.composition === '' && keyboardText.disconnected.text === 'zन' && keyboardText.disconnected.heldKeys === 0 && keyboardText.stopped, 'Keyboard reliable pipeline corrupted committed text or held input');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
@@ -911,7 +922,7 @@ export async function checkRuntime() {
   check(sdk.authenticatedPeerScope(authenticated) === undefined && web.authenticatedPeerScope(authenticated) === undefined, 'Idle transport incorrectly has authenticated provenance');
   authenticated.stop();
   await transport.disconnect();
-  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, motionProcessors: true, visionProcessors: true, keyboardTextSource: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, discoveryEvidence: true, invitationLink: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
+  return { embeddedPointer: true, embeddedSensorFeedback: true, threshold: true, structuredBatch: true, explicitBatchMigration: true, explicitUnitConversion: true, motionProcessors: true, visionProcessors: true, keyboardTextSource: true, touchContactSource: true, richInputEvents: true, resourceDocuments: true, mediaDescription: true, measurementQuality: true, observationTiming: true, deviceHealth: true, descriptorEvolution: true, discoveryEvidence: true, invitationLink: true, operationSemantics: true, moduleIdentity: true, webCryptoSignVerify: true, invitationExpiry: true, directTransportAcceptedByFacade: true, physicalWebRTC: 'not-exercised' };
 }
 `;
 
@@ -943,7 +954,7 @@ const print = console.log;
 let entryResult;
 try { console.log = value => { entryResult = JSON.parse(value); }; await import('@101/connect/examples/run'); }
 finally { console.log = print; }
-check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.motion?.measurements?.length === 5 && entryResult?.vision?.handLost?.status === 'unavailable' && entryResult?.keyboardText?.disconnected?.text === 'zन' && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
+check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.motion?.measurements?.length === 5 && entryResult?.vision?.handLost?.status === 'unavailable' && entryResult?.touchContacts?.cancelled?.contacts?.length === 0 && entryResult?.keyboardText?.disconnected?.text === 'zन' && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
 console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 18, packedRunEntry: true }));
 `;
   const path = join(work, 'runtime-check.mjs');
@@ -1018,6 +1029,40 @@ export async function finishKeyboardBrowserCheck() {
   pipeline.stop(); target.remove(); other.remove(); keyboardFixture = undefined;
   return { trustedKeyboardRepeatAndModifiers: true, focusRelease: true, syntheticCompositionProtocol: true, unmountRelease: true, nativeOSIME: 'not-exercised' };
 }
+let touchFixture;
+export function setupTouchBrowser() {
+  const target = document.createElement('div'); target.id = 'sdk-touch-target';
+  target.style.cssText = 'position:fixed;left:40px;top:40px;width:320px;height:200px;touch-action:none;background:#ddd';
+  document.body.append(target);
+  const inputs = [];
+  for (const type of ['pointerdown', 'pointermove', 'pointerup', 'pointercancel']) target.addEventListener(type, event => {
+    if (inputs.length < 128) inputs.push({ type, id: event.pointerId, trusted: event.isTrusted, pointerType: event.pointerType });
+  });
+  const pipeline = createTouchContactsPipeline({ now: () => performance.now() });
+  touchFixture = { target, pipeline, inputs, dispose: pipeline.mount(target) };
+}
+export async function touchBrowserState() {
+  const { target, pipeline, inputs } = touchFixture;
+  for (let step = 0; step < 128; step++) {
+    pipeline.tick();
+    if (pipeline.connection.status().pending === 0) return { ...pipeline.state(), inputs: [...inputs],
+      captures: [...new Set(inputs.map(input => input.id))].filter(id => target.hasPointerCapture(id)), stopped: pipeline.driver.state().stopped };
+    await new Promise(resolve => setTimeout(resolve, 2));
+  }
+  throw new Error('Touch reliable queue did not settle');
+}
+export async function cancelTouchBrowser(kind) {
+  const { target, pipeline, dispose } = touchFixture;
+  if (kind === 'resize') { target.style.width = '280px'; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); }
+  else if (kind === 'orientation') window.dispatchEvent(new Event('orientationchange'));
+  else if (kind === 'disconnect') pipeline.connection.stop('browser-disconnected');
+  else if (kind === 'unmount') dispose();
+  return touchBrowserState();
+}
+export function finishTouchBrowser() {
+  const { target, pipeline, dispose } = touchFixture;
+  dispose(); pipeline.stop(); target.remove(); touchFixture = undefined;
+}
 export async function checkBrowser() {
   check(globalThis.isSecureContext && !!globalThis.crypto?.subtle, 'Loopback browser WebCrypto is unavailable');
   const summary = await checkRuntime();
@@ -1075,7 +1120,7 @@ export async function checkBrowser() {
       const errors = [];
       try {
         browser = await engines[name].launch({ headless: true, timeout: 30000 });
-        context = await browser.newContext();
+        context = await browser.newContext({ hasTouch: true });
         const page = await context.newPage();
         page.on('pageerror', error => errors.push(redact(error.message)));
         page.on('console', message => { if (message.type() === 'error') errors.push(redact(message.text())); });
@@ -1099,8 +1144,59 @@ export async function checkBrowser() {
         await page.keyboard.down('ArrowLeft'); await page.locator('#sdk-keyboard-other').focus();
         const keyboardBrowser = await page.evaluate(async () => (await import('/browser-check.mjs')).finishKeyboardBrowserCheck());
         await page.keyboard.up('ArrowLeft');
+        await page.evaluate(async () => (await import('/browser-check.mjs')).setupTouchBrowser());
+        await page.touchscreen.tap(200, 140);
+        const touchTap = await page.evaluate(async () => (await import('/browser-check.mjs')).touchBrowserState());
+        assert.equal(touchTap.contacts.length, 0);
+        assert.equal(touchTap.captures.length, 0);
+        assert.deepEqual(touchTap.events.map(event => event.phase), ['down', 'up']);
+        assert.equal(touchTap.events[0].id, touchTap.events[1].id);
+        assert.ok(touchTap.inputs.every(input => input.trusted && input.pointerType === 'touch'));
+        assert.ok(Math.abs(touchTap.events[0].position.x - 0.5) < 0.01 && Math.abs(touchTap.events[0].position.y - 0.5) < 0.01);
+        await page.evaluate(async () => (await import('/browser-check.mjs')).finishTouchBrowser());
+        const touchBrowser = { trustedSingleContact: true, stableContactId: true, nativePointerCapture: 'not-observed-while-held', physicalFingers: 'not-exercised' };
+        if (name === 'chromium') {
+          const cdp = await context.newCDPSession(page);
+          const points = [{ id: 1, x: 120, y: 100 }, { id: 2, x: 280, y: 180 }];
+          const send = (type, touchPoints) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints });
+          const state = () => page.evaluate(async () => (await import('/browser-check.mjs')).touchBrowserState());
+          try {
+            await page.evaluate(async () => (await import('/browser-check.mjs')).setupTouchBrowser());
+            await send('touchStart', points); let active = await state();
+            assert.equal(active.contacts.length, 2); assert.equal(active.captures.length, 2);
+            assert.equal(new Set(active.contacts.map(contact => contact.id)).size, 2);
+            const ids = active.contacts.map(contact => contact.id);
+            await send('touchMove', [{ ...points[0], x: 20 }, { ...points[1], x: 400 }]); active = await state();
+            assert.deepEqual(active.contacts.map(contact => contact.id), ids);
+            assert.deepEqual(active.contacts.map(contact => contact.position.x), [0, 1]);
+            // CDP touchEnd names the contacts being lifted; leave the second contact held.
+            await send('touchEnd', [{ ...points[0], x: 20 }]); active = await state();
+            assert.equal(active.contacts.length, 1); assert.equal(active.contacts[0].id, ids[1]);
+            await send('touchCancel', []); active = await state();
+            assert.equal(active.contacts.length, 0); assert.equal(active.captures.length, 0);
+            assert.ok(active.inputs.every(input => input.trusted && input.pointerType === 'touch'));
+            await page.evaluate(async () => (await import('/browser-check.mjs')).finishTouchBrowser());
+            for (const kind of ['resize', 'orientation', 'disconnect', 'unmount']) {
+              await page.evaluate(async () => (await import('/browser-check.mjs')).setupTouchBrowser());
+              await send('touchStart', points); active = await state(); assert.equal(active.captures.length, 2);
+              const cleared = await page.evaluate(async kind => (await import('/browser-check.mjs')).cancelTouchBrowser(kind), kind);
+              assert.equal(cleared.contacts.length, 0, kind + ' retained contacts');
+              assert.equal(cleared.captures.length, 0, kind + ' retained capture');
+              await send('touchMove', points.map(point => ({ ...point, x: point.x + 10 })));
+              active = await state(); assert.equal(active.contacts.length, 0, kind + ' revived contacts');
+              await send('touchEnd', []);
+              if (kind === 'resize' || kind === 'orientation') {
+                await send('touchStart', points); active = await state(); assert.equal(active.contacts.length, 2);
+                await send('touchEnd', []); await state();
+              }
+              await page.evaluate(async () => (await import('/browser-check.mjs')).finishTouchBrowser());
+            }
+            Object.assign(touchBrowser, { nativePointerCapture: true, trustedProtocolMultiTouch: true, independentRelease: true, capturedOutsideBounds: true,
+              resizeCancellation: true, orientationCancellation: true, disconnectCaptureRelease: true, unmountCaptureRelease: true });
+          } finally { await cdp.detach(); }
+        }
         assert.deepEqual(errors, [], 'Browser produced errors');
-        results.push({ name: `packed-browser:${name}`, status: 'pass', version: browser.version(), ...summary, keyboardBrowser });
+        results.push({ name: `packed-browser:${name}`, status: 'pass', version: browser.version(), ...summary, keyboardBrowser, touchBrowser });
       } catch (error) {
         results.push({ name: `packed-browser:${name}`, status: 'fail', version: browser?.version(), failure: { name: error.name, message: redact(error.message) }, errors });
       } finally {

@@ -182,6 +182,35 @@ down/up pair or accumulate deltas. A key label never becomes text, and an IME
 `end` never becomes a `commit` automatically. All values are closed, bounded
 immutable snapshots; resource permission remains a separate host decision.
 
+### Independent browser touch contacts
+
+`TouchContactSourceDriver`, `touchContactSourceDescriptor()` and
+`mountTouchContactSource(target, driver)` are public through `@101/device-web`
+and `@101/connect`. The source derives its reliable contact capability from
+`app:touch/1`. Mount an idle driver on one host-selected surface with
+`touch-action: none`; mouse and pen events do not become touch contacts. Each
+accepted down receives a new local ID, normalized measured coordinates and a
+primary flag preserved for its lifetime. Up, cancel and lost capture release
+only that contact. At most 32 simultaneous contacts are held.
+
+The host supplies a monotonic clock and an admission callback. Invalid values,
+clock regression and rejected publications stop the driver and cancel owned
+contacts. `release()` cancels held contacts and allows fresh downs; `stop()` is
+terminal. ResizeObserver geometry changes, orientation, blur, hidden documents
+and pagehide cancel contacts. Moves cannot revive canceled IDs. Disposal removes
+listeners and immediately releases native pointer capture, including during a
+publication callback. Hosts must dispose on route loss and clear sink ownership
+when a route closes, since closed routes cannot deliver cancel events.
+
+The [independent touch example](../../examples/device-pipelines/touch-contacts.ts)
+uses a registration-scoped grant, a reliable route, a ten-second lease, bounded
+event history and independent contact ownership. Its mounted surface disposes
+on disconnect. Continuing hosts own a loop calling `tick()`; default grants
+expire after 60 seconds. Packed browser QA exercises trusted single-contact
+input in three engines and protocol-generated simultaneous contacts in Chromium,
+including native capture, separate release, cancellation and geometry changes.
+This evidence does not qualify physical fingers or native device ergonomics.
+
 ### Browser keyboard and text source
 
 `KeyboardTextSourceDriver`, `keyboardTextSourceDescriptor()` and
