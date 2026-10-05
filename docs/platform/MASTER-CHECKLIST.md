@@ -372,7 +372,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [ ] **K09 — Complete redistribution licenses.** Synchronize notices/inventories with the lockfile and include licenses/assets/model attribution and supported third-party distribution terms.
 - [ ] **K10 — Create artifact provenance/manifests.** Exact revision, build/profile versions, hashes, sizes, toolchains, licenses and provenance identify every package/binary.
 - [ ] **K11 — Verify reproducible build/upgrade rollback.** Clean build inputs and installation migrations are repeatable; corrupt/partial updates fail safely and retain a recoverable accepted version.
-- [ ] **K12 — Audit release artifact contents.** Packed files contain required runtime assets/docs and no development secrets, local credentials, private receipts or unintended files.
+- [ ] **K12 — Audit release artifact contents.** Packed files contain required runtime assets/docs and no development secrets, local credentials, private receipts or unintended files. [Partial web and SDK audit](receipts/2026-10-05-k12-web-sdk-contents.json).
 
 ### O — Self-hosted/global operator readiness
 

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "task": "K12",
+  "result": "pass",
+  "scope": "Partial artifact-content audit of the production web package and five local JavaScript SDK tarballs only. Native installables, desktop installers, redistribution terms and final release acceptance remain open; K12 is not complete.",
+  "sourceRevision": "9de1ae82700a14d67179066104e99c5919b25123",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; local build and npm pack only",
+  "web": {
+    "manifest": "release/package-uJtQ9h/manifest.json",
+    "manifestSha256": "3c13a290328c6fe3aa9477ff1091c6cd4a427a9e7d46a06603d23ecb3be83def",
+    "artifactSha256": "92fbb244adb484e372177f2e31a284d77ecc652e3881aa94f337581f29a2c128",
+    "files": 445,
+    "bytes": 53860714,
+    "requiredAssetsChecked": 12,
+    "checks": "Manifest source revision and clean tree matched; every copied file size and SHA256 matched; required model, WASM, worker, server and license/notice assets were present; private filenames, private-key PEM markers and the local workspace path were absent. Brotli, gzip and Zstandard assets decoded to their plain siblings on this Node 24 run."
+  },
+  "sdk": {
+    "manifest": "release/sdk-Ws17FT/manifest.json",
+    "manifestSha256": "0576bb91c2cc5eead4c47c9afd4f24f2bfd82590950b84523763a5a8960246c9",
+    "packages": 5,
+    "files": 155,
+    "checks": "Each tarball SHA256 matched its manifest; extracted file paths, sizes and SHA256 values matched every package inventory with no extra files or links; each package carried LICENSE, README.md and package.json; no private-key PEM marker or local workspace path was found."
+  },
+  "regression": "Both embedded private-key text and a local workspace path in an otherwise allowed web file, plus a mismatched compressed asset, were accepted by the previous packager and rejected by the candidate; 14/14 focused packaging tests pass.",
+  "gates": "npx tsc --noEmit; npm run lint (0 errors, one existing warning); npm run test:unit (907/907); node --test tests/rendered-html.test.mjs (33/33); node tools/audit-platform-records.mjs",
+  "published": false
+}

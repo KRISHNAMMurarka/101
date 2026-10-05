@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 57,
+  "revision": 58,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -5007,6 +5007,30 @@
       "equipment": [
         "Clean target toolchains; release signing identities where required"
       ]
+    },
+    {
+      "id": "web-sdk-contents-2026-10-05",
+      "revision": "9de1ae8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K12"
+      ],
+      "paths": [
+        "tools/package-release.mjs",
+        "tests/release-packaging.test.ts",
+        "docs/platform/receipts/2026-10-05-k12-web-sdk-contents.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0; local production web package and five SDK tarballs",
+      "reproduction": "node tools/package-release.mjs --release web; node tools/build-sdk.mjs 9de1ae8; inspect extracted tarballs and package inventories against manifest SHA256 values; exact candidate repository gates",
+      "scope": "Partial K12 web/JavaScript SDK artifact-content audit: 445 web files and 155 SDK files had exact manifest fingerprints, required runtime assets and metadata; content guards reject embedded private-key markers, local workspace paths and mismatched compressed web assets. Native/desktop installables and final release artifact set remain unqualified; K12 stays open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-O01",
@@ -10249,7 +10273,8 @@
       "id": "K12",
       "records": [
         "pending-K12",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "web-sdk-contents-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
