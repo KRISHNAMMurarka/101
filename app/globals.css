@@ -2374,6 +2374,24 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 }
 .dynamic-controller-deck[data-swipe-only="true"] .dynamic-surface[data-active="true"] > b { opacity: 1; }
 
+/* The deck reports its own measured space. An embedded dock can be narrow or short while the
+   viewport is wide, so viewport queries alone cannot keep its controls reachable. */
+.dynamic-controller-deck[data-input-mode="fine"] { --key-min: clamp(44px, 17cqw, 72px); }
+.dynamic-controller-deck[data-surface-short="true"] { --deck-gap: 6px; --pad-max: 176px; --bar-h: 48px; }
+.dynamic-controller-deck[data-surface-size="wide"][data-surface-short="true"] { --key-max: 72px; }
+.dynamic-controller-deck[data-surface-size="narrow"]:not([data-swipe-only="true"]) {
+  --pad-min: 144px;
+  --surface-min: 132px;
+  grid-template-areas: "center" "left" "right";
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  min-height: auto;
+  flex: none;
+}
+.dynamic-controller-deck[data-surface-size="narrow"][data-input-mode="fine"] { --pad-min: 132px; }
+.dynamic-controller-deck[data-surface-size="narrow"] .deck-cluster { width: 100%; }
+
 
 
 /* ── Camera setup ─────────────────────────────────────────────────────────────

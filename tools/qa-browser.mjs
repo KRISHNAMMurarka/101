@@ -9,8 +9,8 @@ import { chromium, firefox, webkit } from "playwright";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const mode = process.argv[2];
-if (!["layout", "keyboard", "growth", "offline", "engines"].includes(mode)) {
-  console.error("Usage: node tools/qa-browser.mjs <layout|keyboard|growth|offline|engines>");
+if (!["layout", "controller", "keyboard", "growth", "offline", "engines"].includes(mode)) {
+  console.error("Usage: node tools/qa-browser.mjs <layout|controller|keyboard|growth|offline|engines>");
   process.exit(2);
 }
 if (!existsSync(join(root, "dist/server/index.js"))) {
@@ -31,7 +31,9 @@ let browser;
 try {
   const baseURL = process.env.QA_BASE_URL ?? await startServer();
   browser = await chromium.launch({ headless: true });
-  const failures = mode === "layout"
+  const failures = mode === "controller"
+    ? await auditControllerDeck(browser, baseURL)
+    : mode === "layout"
     ? await auditLayout(browser, baseURL)
     : mode === "growth"
       ? await auditGrowth(browser, baseURL)
@@ -40,7 +42,9 @@ try {
         : mode === "engines"
           ? await auditEngines(baseURL)
           : await auditKeyboard(browser, baseURL);
-  console.log(`${mode}: ${failures.length ? "FAIL" : "PASS"} (${routes.length} routes${mode === "layout" ? ` × ${viewports.length} viewports` : ""})`);
+  const scope = mode === "controller" ? "3 presets × 4 viewports, swipe, keyboard, resize and fine pointer"
+    : `${routes.length} routes${mode === "layout" ? ` × ${viewports.length} viewports` : ""}`;
+  console.log(`${mode}: ${failures.length ? "FAIL" : "PASS"} (${scope})`);
   for (const failure of failures) console.error(`  ${failure}`);
   if (failures.length) process.exitCode = 1;
 } finally {
@@ -152,6 +156,110 @@ async function auditLayout(browser, baseURL) {
     await context.close();
     console.log(`layout: ${width}×${height} checked`);
   }
+  failures.push(...await auditControllerDeck(browser, baseURL));
+  return failures;
+}
+
+async function auditControllerDeck(browser, baseURL) {
+  const failures = [];
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: "reduce" });
+  let fineContext;
+  try {
+    const lab = await context.newPage();
+    await visit(lab, baseURL, "/studio/controller");
+    const controller = await context.newPage();
+    await visit(controller, baseURL, "/controller?session=CTRL01");
+    await controller.locator(".dynamic-control").first().waitFor({ timeout: 15000 });
+    for (const [preset, count] of [["classic", 2], ["reactor", 3], ["gamepad", 7]]) {
+      await lab.getByRole("button", { name: preset, exact: true }).click();
+      await controller.waitForFunction(expected => document.querySelectorAll(".dynamic-control").length === expected, count);
+      for (const [width, height, size] of [[282, 860, "narrow"], [390, 844, "regular"], [568, 320, "regular"], [920, 580, "wide"]]) {
+        await controller.setViewportSize({ width, height });
+        await controller.waitForFunction(expected => document.querySelector(".dynamic-controller-deck")?.getAttribute("data-surface-size") === expected, size);
+        const geometry = await controller.evaluate(() => {
+          const controls = [...document.querySelectorAll(".dynamic-control")];
+          const rects = controls.map(element => element.getBoundingClientRect());
+          const overflow = Math.max(document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            ...rects.map(rect => Math.max(-rect.left, rect.right - innerWidth, rect.bottom - innerHeight)));
+          let overlaps = 0;
+          for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) {
+            if (Math.min(rects[i].right, rects[j].right) - Math.max(rects[i].left, rects[j].left) > 3
+              && Math.min(rects[i].bottom, rects[j].bottom) - Math.max(rects[i].top, rects[j].top) > 3) overlaps++;
+          }
+          const inaccessible = controls.filter(element => !element.querySelector("button,input,[role='button'],[role='slider']")).length;
+          return { overflow: Math.ceil(overflow), overlaps, inaccessible };
+        });
+        if (geometry.overflow > 2 || geometry.overlaps || geometry.inaccessible)
+          failures.push(`controller ${preset} ${width}×${height}: ${JSON.stringify(geometry)}`);
+      }
+      await controller.setViewportSize({ width: 390, height: 844 });
+      if (preset === "classic") {
+        const up = controller.locator(".dynamic-dpad button.up");
+        await up.focus();
+        await controller.keyboard.down("Space");
+        if (await up.getAttribute("data-active") !== "true") failures.push("controller d-pad keyboard press did not engage");
+        await controller.keyboard.up("Space");
+        if (await up.getAttribute("data-active") !== "false") failures.push("controller d-pad keyboard release did not clear");
+      } else if (preset === "reactor") {
+        const slider = controller.locator(".dynamic-slider input");
+        await slider.focus();
+        const before = Number(await slider.inputValue());
+        await controller.keyboard.press("ArrowRight");
+        if (Number(await slider.inputValue()) <= before) failures.push("controller slider keyboard step did not advance");
+      } else {
+        const toggle = controller.locator(".dynamic-action[aria-pressed]");
+        await toggle.focus();
+        await controller.keyboard.press("Enter");
+        if (await toggle.getAttribute("aria-pressed") !== "true") failures.push("controller toggle keyboard activate did not engage");
+        await controller.keyboard.press("Enter");
+        if (await toggle.getAttribute("aria-pressed") !== "false") failures.push("controller toggle keyboard activate did not release");
+        const stick = controller.locator(".dynamic-control[data-control='joystick'] button");
+        await stick.focus();
+        await controller.keyboard.down("ArrowRight");
+        if (await stick.getAttribute("data-active") !== "true") failures.push("controller joystick keyboard direction did not engage");
+        await controller.setViewportSize({ width: 568, height: 320 });
+        if (await stick.getAttribute("data-active") !== "true") failures.push("controller resize lost a held joystick");
+        await controller.keyboard.up("ArrowRight");
+        if (await stick.getAttribute("data-active") !== "false") failures.push("controller joystick keyboard release did not clear");
+      }
+    }
+    await lab.getByRole("textbox", { name: "Controller layout JSON" }).fill(JSON.stringify({
+      title: "Swipe control",
+      layout: [{ type: "touch-surface", action: "aim", pressAction: "fire", label: "Swipe" }],
+    }));
+    await lab.getByRole("button", { name: /Validate \+ apply layout/ }).click();
+    await controller.waitForFunction(() => document.querySelector(".dynamic-control")?.getAttribute("data-control") === "touch-surface"
+      && document.querySelectorAll(".dynamic-control").length === 1);
+    for (const [width, height, size] of [[282, 860, "narrow"], [568, 320, "regular"]]) {
+      await controller.setViewportSize({ width, height });
+      await controller.waitForFunction(expected => document.querySelector(".dynamic-controller-deck")?.getAttribute("data-surface-size") === expected, size);
+      const outside = await controller.locator(".dynamic-control").evaluate(element => {
+        const rect = element.getBoundingClientRect();
+        return rect.left < -2 || rect.right > innerWidth + 2 || rect.bottom > innerHeight + 2;
+      });
+      if (outside) failures.push(`controller swipe ${width}×${height}: control outside visible area`);
+    }
+    const swipe = controller.locator(".dynamic-control[data-control='touch-surface'] button");
+    await swipe.focus();
+    await controller.keyboard.down("ArrowRight");
+    if (await swipe.getAttribute("data-active") !== "true") failures.push("controller swipe keyboard direction did not engage");
+    await controller.keyboard.up("ArrowRight");
+    if (await swipe.getAttribute("data-active") !== "false") failures.push("controller swipe keyboard release did not clear");
+    fineContext = await browser.newContext({ viewport: { width: 1280, height: 800 }, hasTouch: false, reducedMotion: "reduce" });
+    const fineLab = await fineContext.newPage();
+    await visit(fineLab, baseURL, "/studio/controller");
+    const fineController = await fineContext.newPage();
+    await visit(fineController, baseURL, "/controller?session=CTRL01");
+    await fineController.locator(".dynamic-control").first().waitFor({ timeout: 15000 });
+    await fineController.waitForFunction(() => document.querySelector(".dynamic-controller-deck")?.getAttribute("data-input-mode") === "fine");
+    const fineButton = fineController.locator(".dynamic-action").first();
+    await fineButton.focus();
+    await fineController.keyboard.down("Enter");
+    if (await fineButton.getAttribute("data-active") !== "true") failures.push("controller fine-pointer keyboard press did not engage");
+    await fineController.keyboard.up("Enter");
+    if (await fineButton.getAttribute("data-active") !== "false") failures.push("controller fine-pointer keyboard release did not clear");
+  } catch (error) { failures.push(`controller deck runtime: ${error.message}`); }
+  finally { await fineContext?.close(); await context.close(); }
   return failures;
 }
 

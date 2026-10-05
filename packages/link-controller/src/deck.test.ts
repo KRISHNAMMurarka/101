@@ -4,7 +4,25 @@ import { existsSync, readdirSync } from "node:fs";
 
 import type { ControllerElement } from "@101/protocol";
 
-import { clusterWeight, planControllerDeck } from "./index.ts";
+import { clusterWeight, describeControllerSurface, planControllerDeck } from "./index.ts";
+
+test("measured controller surfaces preserve touch targets and classify compact and wide areas", () => {
+  assert.deepEqual(describeControllerSurface({ width: 280, height: 600, inputMode: "coarse" }), {
+    size: "narrow", short: false, minimumTarget: 48, inputMode: "coarse",
+  });
+  assert.deepEqual(describeControllerSurface({ width: 568, height: 236, inputMode: "coarse" }), {
+    size: "regular", short: true, minimumTarget: 48, inputMode: "coarse",
+  });
+  assert.deepEqual(describeControllerSurface({ width: 920, height: 580, inputMode: "fine" }), {
+    size: "wide", short: false, minimumTarget: 44, inputMode: "fine",
+  });
+  assert.deepEqual(describeControllerSurface({ width: 920, height: 502, inputMode: "fine" }), {
+    size: "wide", short: true, minimumTarget: 44, inputMode: "fine",
+  });
+  assert.deepEqual(describeControllerSurface({ width: Number.NaN, height: -1, inputMode: "fine" }), {
+    size: "narrow", short: true, minimumTarget: 44, inputMode: "fine",
+  });
+});
 
 const button = (action: string, extra: Partial<ControllerElement> = {}) =>
   ({ type: "button", action, label: action.toUpperCase(), ...extra }) as ControllerElement;

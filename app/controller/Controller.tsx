@@ -8,6 +8,7 @@ import {
   normalizeJoystick,
   type ControllerInputSnapshot,
   defaultControlSide,
+  describeControllerSurface,
   planControllerDeck,
   readDpadDirection,
   DPAD_DIRECTIONS,
@@ -651,6 +652,35 @@ export function DynamicControllerDeck({
    * can.
    */
   const plan = planControllerDeck(elements, { authoredHandedness, playerHandedness });
+  const deckRef = useRef<HTMLElement>(null);
+  const [surface, setSurfaceProfile] = useState(() => describeControllerSurface({ width: 375, height: 600, inputMode: "coarse" }));
+
+  useEffect(() => {
+    const deck = deckRef.current;
+    if (!deck) return;
+    const coarse = window.matchMedia("(any-pointer: coarse)");
+    const measure = () => {
+      const bounds = deck.getBoundingClientRect();
+      // The deck may grow to scroll its controls. Its own height is then content height, not the
+      // space available to play, so use the visible area below its top edge instead.
+      const height = Math.max(0, (window.visualViewport?.height ?? window.innerHeight) - Math.max(0, bounds.top));
+      const next = describeControllerSurface({ width: bounds.width, height, inputMode: coarse.matches ? "coarse" : "fine" });
+      setSurfaceProfile((current) => current.size === next.size && current.short === next.short && current.inputMode === next.inputMode
+        ? current : next);
+    };
+    const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measure);
+    observer?.observe(deck);
+    window.addEventListener("resize", measure);
+    window.visualViewport?.addEventListener("resize", measure);
+    coarse.addEventListener("change", measure);
+    measure();
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", measure);
+      window.visualViewport?.removeEventListener("resize", measure);
+      coarse.removeEventListener("change", measure);
+    };
+  }, []);
 
   const renderControl = (placed: PlacedControl, index: number) => {
     const element = placed.element;
@@ -699,8 +729,12 @@ export function DynamicControllerDeck({
 
   return (
     <section
+      ref={deckRef}
       className="dynamic-controller-deck"
       aria-label="Role controller"
+      data-surface-size={surface.size}
+      data-surface-short={surface.short ? "true" : "false"}
+      data-input-mode={surface.inputMode}
       data-swipe-only={elements.length === 1 && elements[0]?.type === "touch-surface" && elements[0].pressAction ? "true" : undefined}
       style={{
         "--left-track": plan.left.count ? `${plan.left.weight}fr` : "0px",

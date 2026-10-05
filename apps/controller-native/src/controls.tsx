@@ -12,6 +12,7 @@ import {
 
 import {
   ControllerActionGesture,
+  describeControllerSurface,
   normalizeJoystick,
   resolveControllerSide,
 } from "@101/link-controller";
@@ -27,9 +28,8 @@ import { radius, space, type, useLayout, useTheme, type Theme } from "./theme.ts
  * expect. A stick is a physical object: it should be the same comfortable size on every device,
  * and the extra space on a larger screen belongs to the margins.
  */
-function useStickSize() {
-  const { landscape, compact } = useLayout();
-  return compact || landscape ? 168 : 208;
+function stickSize(compact: boolean) {
+  return compact ? 168 : 208;
 }
 
 export interface ControllerActions {
@@ -52,7 +52,11 @@ export interface ControllerActions {
  */
 export function ControllerPanel({ layout, controls }: { layout: ControllerLayout; controls: ControllerActions }) {
   const t = useTheme();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const { landscape } = useLayout();
+  const [surfaceWidth, setSurfaceWidth] = useState(windowWidth);
+  const surface = describeControllerSurface({ width: surfaceWidth, height: windowHeight, inputMode: "coarse" });
+  const compact = landscape || surface.size === "narrow" || surface.short;
   const authoredHandedness = layout.handedness ?? "right";
   const [handednessOverride, setHandednessOverride] = useState<{
     layout: ControllerLayout;
@@ -97,12 +101,12 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
   const left = entries.filter((entry) => entry.side === "left");
   const center = entries.filter((entry) => entry.side === "center");
   const right = entries.filter((entry) => entry.side === "right");
-  const wide = landscape && left.length > 0 && right.length > 0;
+  const wide = landscape && surface.size !== "narrow" && left.length > 0 && right.length > 0;
 
   type Entry = (typeof entries)[number];
   const render = ({ element, index }: Entry, style?: ViewStyle) => (
     <View key={`${element.type}-${element.action}-${index}`} style={style ?? slotStyle(element)}>
-      <Control element={element} theme={t} controls={controls} />
+      <Control element={element} theme={t} controls={controls} compact={compact} minimumTarget={surface.minimumTarget} />
     </View>
   );
 
@@ -111,7 +115,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
     const thumb = sideEntries.filter(({ element }) => element.zone !== "shoulder" && element.zone !== "index");
     const thumbPads = thumb.filter(({ element }) => isPad(element));
     const thumbActions = thumb.filter(({ element }) => !isPad(element));
-    const nestedThumbs = landscape && thumbPads.length > 0 && thumbActions.length > 0;
+    const nestedThumbs = wide && thumbPads.length > 0 && thumbActions.length > 0;
     const compactActionGrid = nestedThumbs
       && thumbActions.length > 1
       && thumbActions.every(({ element }) => (element.span ?? 2) <= 2);
@@ -127,7 +131,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
         {actionContent}
       </View>
     ) : thumb.length ? <View style={styles.grid}>{thumb.map((entry) => render(entry))}</View> : null;
-    if (landscape && upper.length && thumbContent) {
+    if (wide && upper.length && thumbContent) {
       const upperContent = <View style={styles.upperColumn}>{upper.map((entry) => render(entry, styles.upperSlot))}</View>;
       return (
         <View style={styles.landscapeSideRow}>
@@ -156,7 +160,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
   };
 
   return (
-    <View style={{ gap: space.md }}>
+    <View onLayout={(event) => setSurfaceWidth(event.nativeEvent.layout.width)} style={{ gap: space.md }}>
       {!singleSwipe && <View style={[styles.panelMeta, !landscape && styles.panelMetaPortrait]}>
         {layout.motion ? (
           <Text style={[type.label, !landscape && styles.portraitMotionLabel, { color: t.faint }]}>
@@ -170,7 +174,7 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
           onTouchStart={() => { swapTouchActive.current = true; }}
           onTouchEnd={swapSides}
           onTouchCancel={() => { swapTouchActive.current = false; }}
-          style={[styles.handedness, { borderColor: t.line, backgroundColor: t.surface }]}
+          style={[styles.handedness, { minHeight: surface.minimumTarget, borderColor: t.line, backgroundColor: t.surface }]}
         >
           <Text style={[type.label, { color: t.muted }]}>
             {playerHandedness.toUpperCase()}-HANDED · SWAP SIDES
@@ -186,20 +190,27 @@ export function ControllerPanel({ layout, controls }: { layout: ControllerLayout
   );
 }
 
-function Control({ element, theme, controls }: { element: ControllerElement; theme: Theme; controls: ControllerActions }) {
+function Control({ element, theme, controls, compact, minimumTarget }: {
+  element: ControllerElement;
+  theme: Theme;
+  controls: ControllerActions;
+  compact: boolean;
+  minimumTarget: number;
+}) {
   if (element.type === "button" || element.type === "shoulder") {
-    return <DigitalActionControl element={element} theme={theme} controls={controls} />;
+    return <DigitalActionControl element={element} theme={theme} controls={controls} compact={compact} minimumTarget={minimumTarget} />;
   }
   if (element.type === "trigger" || element.type === "analog-button") {
-    return <AnalogActionControl element={element} theme={theme} controls={controls} />;
+    return <AnalogActionControl element={element} theme={theme} controls={controls} compact={compact} />;
   }
   if (element.type === "slider") {
-    return <SliderControl element={element} theme={theme} update={controls.axis} />;
+    return <SliderControl element={element} theme={theme} minimumTarget={minimumTarget} update={controls.axis} />;
   }
   return (
     <VectorControl
       element={element}
       theme={theme}
+      compact={compact}
       update={controls.vector}
       setSurface={controls.surface}
     />
@@ -216,12 +227,15 @@ function DigitalActionControl({
   element,
   theme,
   controls,
+  compact,
+  minimumTarget,
 }: {
   element: Extract<ControllerElement, { type: "button" | "shoulder" }>;
   theme: Theme;
   controls: ControllerActions;
+  compact: boolean;
+  minimumTarget: number;
 }) {
-  const { landscape } = useLayout();
   const owner = `${element.type}:${element.action}:${useId()}`;
   const [pressed, setPressed] = useState(false);
   const primary = element.type === "button" && element.emphasis === "primary";
@@ -230,8 +244,15 @@ function DigitalActionControl({
     emit: (values) => controls.actions(values, owner),
     onActiveChange: setPressed,
   }), [controls, element, owner]);
-  useEffect(() => () => gesture.cancel(), [gesture]);
+  const accessibilityRelease = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (accessibilityRelease.current !== null) clearTimeout(accessibilityRelease.current);
+    accessibilityRelease.current = null;
+    gesture.cancel();
+  }, [gesture]);
   const press = () => {
+    if (accessibilityRelease.current !== null) clearTimeout(accessibilityRelease.current);
+    accessibilityRelease.current = null;
     controls.localHaptic();
     gesture.press();
   };
@@ -241,13 +262,29 @@ function DigitalActionControl({
       accessibilityRole="button"
       accessibilityLabel={element.label}
       accessibilityState={{ selected: pressed }}
+      accessibilityActions={[{ name: "activate", label: element.label }]}
+      onAccessibilityAction={(event) => {
+        if (event.nativeEvent.actionName !== "activate") return;
+        // Accessibility activation is a complete tap. Running the same gesture interpreter keeps
+        // toggle, chord, and double-tap semantics aligned with touch, and release prevents a
+        // momentary action from sticking after VoiceOver/TalkBack activation.
+        controls.localHaptic();
+        if (accessibilityRelease.current !== null) clearTimeout(accessibilityRelease.current);
+        gesture.press();
+        if (element.interaction?.type === "hold") {
+          accessibilityRelease.current = setTimeout(() => {
+            accessibilityRelease.current = null;
+            gesture.release();
+          }, (element.interaction.thresholdMs ?? 450) + 1);
+        } else gesture.release();
+      }}
       onTouchStart={press}
       onTouchEnd={() => gesture.release()}
       onTouchCancel={() => gesture.cancel()}
       style={[
         styles.button,
         element.type === "shoulder" && styles.shoulder,
-        actionSizeStyle(element.size, landscape),
+        actionSizeStyle(element.size, compact, minimumTarget),
         {
           // Emphasis is carried by the edge, never by an inverted fill. A, B, X and Y are peers
           // on a gamepad, so a solid white A would shout over its own siblings; the one inverted
@@ -277,12 +314,13 @@ function AnalogActionControl({
   element,
   theme,
   controls,
+  compact,
 }: {
   element: Extract<ControllerElement, { type: "trigger" | "analog-button" }>;
   theme: Theme;
   controls: ControllerActions;
+  compact: boolean;
 }) {
-  const { landscape } = useLayout();
   const owner = `${element.type}:${element.action}:${useId()}`;
   const [height, setHeight] = useState(1);
   const [value, setValue] = useState(0);
@@ -306,6 +344,17 @@ function AnalogActionControl({
         accessibilityLabel={element.label}
         accessibilityRole="adjustable"
         accessibilityValue={{ min: 0, max: 1, now: value }}
+        accessibilityActions={[...adjustmentActions, { name: "release", label: "Release trigger" }]}
+        onAccessibilityAction={(event) => {
+          if (event.nativeEvent.actionName === "release") {
+            release();
+            return;
+          }
+          const next = adjustRange(value, event.nativeEvent.actionName, 0, 1, .05);
+          if (next === null) return;
+          setValue(next);
+          controls.action(element.action, next, owner);
+        }}
         onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
         onTouchStart={(event) => {
           controls.localHaptic();
@@ -317,7 +366,7 @@ function AnalogActionControl({
         style={[
           styles.analog,
           element.type === "analog-button" && styles.analogButton,
-          analogSizeStyle(element.size, landscape),
+          analogSizeStyle(element.size, compact),
           { backgroundColor: theme.surface, borderColor: value > 0 ? theme.lineStrong : theme.line },
         ]}
       >
@@ -333,17 +382,19 @@ function AnalogActionControl({
 function VectorControl({
   element,
   theme,
+  compact,
   update,
   setSurface,
 }: {
   element: Extract<ControllerElement, { type: "joystick" | "dpad" | "touch-surface" }>;
   theme: Theme;
+  compact: boolean;
   update(name: string, x: number, y: number): void;
   setSurface(vectorAction: string, pressAction: string, x: number, y: number, held: boolean): void;
 }) {
   const mode = element.type;
   const label = element.label ?? element.type.toUpperCase();
-  const stick = useStickSize();
+  const stick = stickSize(compact);
   const { height: screenHeight } = useWindowDimensions();
   const [size, setSize] = useState({ width: 1, height: 1 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -396,8 +447,31 @@ function VectorControl({
     <View style={[styles.vectorWrap, mode === "touch-surface" && styles.touchWrap]}>
       <Text style={[type.label, { color: theme.faint }]}>{label.toUpperCase()}</Text>
       <View
+        accessible
         accessibilityLabel={label}
         accessibilityRole="adjustable"
+        accessibilityValue={{ text: `${label}: horizontal ${position.x.toFixed(2)}, vertical ${position.y.toFixed(2)}` }}
+        accessibilityActions={element.type === "touch-surface" && element.pressAction
+          ? [...vectorAccessibilityActions, { name: "activate", label: "Press surface" }]
+          : vectorAccessibilityActions}
+        onAccessibilityAction={(event) => {
+          const action = event.nativeEvent.actionName;
+          if (action === "center" || action === "release") {
+            release();
+            return;
+          }
+          if (mode === "touch-surface" && action === "activate" && element.pressAction) {
+            setSurface(element.action, element.pressAction, position.x, position.y, true);
+            setSurface(element.action, element.pressAction, position.x, position.y, false);
+            return;
+          }
+          const direction = vectorActionDirection(action);
+          if (!direction) return;
+          const next = mode === "dpad"
+            ? direction
+            : { x: position.x + direction.x * .25, y: position.y + direction.y * .25 };
+          move((next.x + 1) * size.width / 2, (next.y + 1) * size.height / 2);
+        }}
         onLayout={onLayout}
         style={[
           styles.vectorPad,
@@ -445,10 +519,12 @@ function VectorControl({
 function SliderControl({
   element,
   theme,
+  minimumTarget,
   update,
 }: {
   element: Extract<ControllerElement, { type: "slider" }>;
   theme: Theme;
+  minimumTarget: number;
   update(name: string, value: number): void;
 }) {
   const min = element.min ?? -1;
@@ -478,10 +554,19 @@ function SliderControl({
         <Text style={[type.label, { color: theme.text }]}>{value.toFixed(2)}</Text>
       </View>
       <View
+        accessible
         accessibilityLabel={element.label}
         accessibilityRole="adjustable"
+        accessibilityValue={{ min, max, now: value }}
+        accessibilityActions={adjustmentActions}
+        onAccessibilityAction={(event) => {
+          const next = adjustRange(value, event.nativeEvent.actionName, min, max, step);
+          if (next === null) return;
+          setValue(next);
+          update(element.action, next);
+        }}
         onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
-        style={[styles.slider, { backgroundColor: theme.surface, borderColor: theme.line }]}
+        style={[styles.slider, { minHeight: minimumTarget, backgroundColor: theme.surface, borderColor: theme.line }]}
         {...responder.panHandlers}
       >
         <View style={[styles.sliderFill, { backgroundColor: theme.text, width: `${ratio * 100}%` }]} />
@@ -586,6 +671,40 @@ function clamp01(value: number) {
   return Math.max(0, Math.min(1, Number.isFinite(value) ? value : 0));
 }
 
+const adjustmentActions = [
+  { name: "increment", label: "Increase" },
+  { name: "decrement", label: "Decrease" },
+] as const;
+
+const vectorAccessibilityActions = [
+  { name: "center", label: "Center and release" },
+  { name: "release", label: "Release control" },
+  { name: "moveUp", label: "Move up" },
+  { name: "moveDown", label: "Move down" },
+  { name: "moveLeft", label: "Move left" },
+  { name: "moveRight", label: "Move right" },
+  { name: "increment", label: "Move right" },
+  { name: "decrement", label: "Move left" },
+] as const;
+
+function adjustRange(value: number, action: string, min: number, max: number, step: number) {
+  const delta = action === "increment" ? step : action === "decrement" ? -step : 0;
+  if (delta === 0) return null;
+  return Math.max(min, Math.min(max, Number((value + delta).toPrecision(12))));
+}
+
+function vectorActionDirection(action: string) {
+  switch (action) {
+    case "moveUp": return { x: 0, y: -1 };
+    case "moveDown": return { x: 0, y: 1 };
+    case "moveLeft":
+    case "decrement": return { x: -1, y: 0 };
+    case "moveRight":
+    case "increment": return { x: 1, y: 0 };
+    default: return null;
+  }
+}
+
 function slotStyle(element: ControllerElement): ViewStyle {
   const span = element.span === undefined ? undefined : Math.max(1, Math.min(4, element.span));
   if (span !== undefined) {
@@ -608,16 +727,16 @@ function slotStyle(element: ControllerElement): ViewStyle {
   };
 }
 
-function actionSizeStyle(size: ControllerElement["size"], landscape: boolean): ViewStyle | undefined {
-  if (landscape) return { minHeight: size === "large" ? 80 : size === "medium" ? 70 : 58 };
+function actionSizeStyle(size: ControllerElement["size"], compact: boolean, minimumTarget: number): ViewStyle | undefined {
+  if (compact) return { minHeight: Math.max(minimumTarget, size === "large" ? 80 : size === "medium" ? 70 : 58) };
   if (size === "small") return { minHeight: 64 };
   if (size === "medium") return { minHeight: 96 };
   if (size === "large") return { minHeight: 128 };
   return undefined;
 }
 
-function analogSizeStyle(size: ControllerElement["size"], landscape: boolean): ViewStyle | undefined {
-  if (landscape) return { height: size === "large" ? 96 : size === "medium" ? 78 : 64 };
+function analogSizeStyle(size: ControllerElement["size"], compact: boolean): ViewStyle | undefined {
+  if (compact) return { height: size === "large" ? 96 : size === "medium" ? 78 : 64 };
   if (size === "small") return { height: 96 };
   if (size === "medium") return { height: 144 };
   if (size === "large") return { height: 184 };

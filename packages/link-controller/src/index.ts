@@ -330,14 +330,30 @@ function clampRange(value: number, min: number, max: number, fallback: number) {
  * stretched auto rows, every control's aspect ratio was a function of how much chrome happened to be
  * on screen: adding a status row changed the shape of the d-pad.
  *
- * So the arrangement is computed from the elements alone, never from available height, and the
- * result is three clusters of three groups. A renderer lays out clusters; it does not decide
- * placement. This is also the only shape this repo can test — `node --experimental-strip-types`
- * cannot import a .tsx file, but it already imports every game's roles.ts.
+ * Element placement is independent of dimensions; surface measurements classify how renderers
+ * should reflow and size those clusters without changing actions or ownership.
  */
 
 export type DeckSide = "left" | "center" | "right";
 export type DeckGroup = "bars" | "pads" | "keys";
+
+export interface ControllerSurfaceMeasurement {
+  readonly width: number;
+  readonly height: number;
+  readonly inputMode: "coarse" | "fine";
+}
+
+/** Classify the measured control area, never the whole window or an assistive-technology signal. */
+export function describeControllerSurface({ width, height, inputMode }: ControllerSurfaceMeasurement) {
+  const safeWidth = Number.isFinite(width) ? Math.max(0, width) : 0;
+  const safeHeight = Number.isFinite(height) ? Math.max(0, height) : 0;
+  return {
+    size: safeWidth < 320 ? "narrow" : safeWidth >= 720 ? "wide" : "regular",
+    short: safeHeight < 560,
+    minimumTarget: inputMode === "coarse" ? 48 : 44,
+    inputMode,
+  } as const;
+}
 
 export interface PlacedControl {
   readonly element: ControllerElement;
