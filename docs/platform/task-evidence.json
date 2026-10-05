@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 49,
+  "revision": 50,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2707,24 +2707,32 @@
       "supportRows": []
     },
     {
-      "id": "pending-P08",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "processor-failure-2026-10-05",
+      "revision": "containing P08 commit, base f180632; immutable SDK producer tree 3544506d6e9ca54c4af8ac69312427818992113f",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P08"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "packages/device-runtime/src/processor-failure.ts",
+        "packages/device-runtime/src/processor-failure.test.ts",
+        "packages/device-runtime/src/index.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-p08-processor-failure.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement processor failure/restart propagation. Loss, exception, timeout and revoked inputs invalidate derived outputs, clear dependent commands and reset state deterministically.",
-      "scope": "P08 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; local two-stage embedded graph and packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical processor qualification",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/processor-failure.test.ts; node tools/build-sdk.mjs 3544506d6e9ca54c4af8ac69312427818992113f; node tools/qa-sdk-consumer.mjs release/sdk-xdhshr/manifest.json; exact candidate repository gates",
+      "scope": "P08 route-backed acyclic processor graph runtime: loss, route revocation, exception and finite compute overrun invalidate descendant derived sources, close dependent routes, cancel queued commands and reset state. Fresh authorized routes and a new controller restart without replay. Feedback execution is rejected, hung synchronous code requires S14 isolation, and measured performance remains P09.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-P09",
@@ -8772,7 +8780,7 @@
     {
       "id": "P08",
       "records": [
-        "pending-P08"
+        "processor-failure-2026-10-05"
       ],
       "dependencies": [
         "M01",

@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 76 completed with recorded evidence; 196 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 77 completed with recorded evidence; 195 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -235,7 +235,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps.
 - [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware.
 - [x] **P07 — Implement generic mapping/threshold/resampling processors.** Hysteresis, deadzones, event edges and sample rates are configured and tested without adding device/game special cases. [Contract](SDK.md#generic-mapping-and-sample-rate-processors) and [packed consumer receipt](receipts/2026-10-05-p07-generic-processors.json).
-- [ ] **P08 — Implement processor failure/restart propagation.** Loss, exception, timeout and revoked inputs invalidate derived outputs, clear dependent commands and reset state deterministically.
+- [x] **P08 — Implement processor failure/restart propagation.** Loss, exception, timeout and revoked inputs invalidate derived outputs, clear dependent commands and reset state deterministically. [Runtime behavior](SDK.md#processor-failure-and-restart-propagation) and [packed consumer receipt](receipts/2026-10-05-p08-processor-failure.json).
 - [ ] **P09 — Qualify processor performance and accuracy.** Record input conditions, quality thresholds, precision, CPU/memory/thermal and model/asset versions on supported targets.
 - [ ] **P10 — Add independent third-party processor example.** A separate consumer installs a pinned processor using declared permissions; incompatible schemas and privilege escalation fail.
 

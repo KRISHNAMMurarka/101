@@ -18,3 +18,5 @@ export { createRouteGroupController } from './route-group-runtime.ts';
 export type { RouteGroupController } from './route-group-runtime.ts';
 export { createWorkloadHandoff } from './workload-handoff.ts';
 export type { HandoffEpoch, HandoffHost, HandoffResult, WorkloadHandoff, WorkloadHandoffOptions } from './workload-handoff.ts';
+export { createProcessorFailureController } from './processor-failure.ts';
+export type { ProcessorFailureBinding, ProcessorFailureController, ProcessorFailureOptions, ProcessorRunResult } from './processor-failure.ts';

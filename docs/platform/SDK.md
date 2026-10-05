@@ -282,10 +282,11 @@ the manifest pin. The host must bind the supplied factory to those same vetted
 bytes; a digest of accompanying bytes cannot prove what an arbitrary function
 executes. Resolution requires the exact ID, version and pin and validates the
 configuration. Each call validates named input and output values against the
-manifest. The caller must invoke `reset()` on input loss, stop and reconfigure
-for a resettable processor. Compute/memory declarations are not runtime quotas,
-and `explicit-sharing` is not a sharing grant. P02, P08, P09 and S14 retain graph,
-failure, measured-budget and isolation acceptance.
+manifest. Direct registry callers must invoke `reset()` on input loss, stop and
+reconfigure for a resettable processor; the route-backed failure controller
+does this for bound graph nodes. Compute/memory declarations are not runtime
+quotas, and `explicit-sharing` is not a sharing grant. P09 and S14 retain
+measured-budget and isolation acceptance.
 
 The current first caller registers the existing Celsius threshold implementation
 using the reviewed `threshold.ts` source pin, exercises hysteresis and reset,
@@ -308,10 +309,36 @@ each node lies on a source-to-sink path. Ordinary edges form an acyclic
 execution order. Feedback is allowed only between processors with positive
 delay, maximum age, pending count and iteration count under fixed ceilings;
 missing or zero bounds fail validation. This is an inert plan, not a feedback
-scheduler: any executor must enforce those ceilings and reset/release on loss
-under P08. The Celsius threshold example validates its real source, processor
-and relay declarations before registering routes. The packed SDK consumer
-checks that plan in Node, Chromium, Firefox and WebKit.
+scheduler: the route-backed failure controller rejects feedback graphs until a
+bounded scheduler exists. The Celsius threshold example validates its real
+source, processor and relay declarations before registering routes. The packed
+SDK consumer checks that plan in Node, Chromium, Firefox and WebKit.
+
+## Processor failure and restart propagation
+
+`createProcessorFailureController({ plan, runtime, bindings, now })` revalidates
+an acyclic graph and binds each processor to its resolved manifest, one active
+input route per port and one host-owned derived source per output port. `run()`
+checks current route authority, executes the processor, measures elapsed
+compute time against its manifest budget and publishes through the embedded
+runtime. Missing, invalid or rejected output fails closed. A processor may
+return no frame when it has no new event.
+
+Input route closure, explicit loss, an exception or a finite compute overrun
+invalidates every downstream processor. The controller first fences those
+stages, then marks their derived sources unavailable, closes input routes and
+resets their state. The runtime closes dependent routes and cancels queued
+commands; it does not claim to undo earlier physical effects. A reset error
+leaves the stage failed. Recovery creates a new controller with fresh active
+routes and grants. It never replays the prior output or command.
+
+Elapsed-time checks reject an over-budget result after the synchronous call
+returns; they cannot interrupt code that never returns. Isolation and measured
+processor budgets remain S14/P09. The local two-processor test covers loss,
+exception, overrun, revocation and restart; the packed consumer exercises the
+reviewed temperature processor with queued-command cancellation in Node and
+three browsers. Feedback graph execution remains unsupported and is rejected
+before binding.
 
 ## Scalar measurement processors
 
@@ -354,7 +381,8 @@ more than one output per configured period. Each output retains the actual
 source capture stamp, quality and uncertainty; a maximum source age prevents
 replaying an old reading. Stale/invalid or reordered input and configuration
 changes clear held state. The caller must invalidate downstream outputs when
-these processors return no event/sample; P08 owns runtime failure propagation.
+these processors return no event/sample; a bound failure controller propagates
+runtime loss and failure through their dependent routes.
 The packed SDK checks these independent algorithms in Node and three browser
 engines without assuming a particular device or game.
 

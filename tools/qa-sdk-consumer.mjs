@@ -157,13 +157,13 @@ function installAndAudit(manifest) {
 }
 
 const typeConsumer = String.raw`
-import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
+import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, createProcessorFailureController, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
   decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
-import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost } from '@101/device-runtime';
+import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
@@ -225,6 +225,7 @@ const restoreFactory: typeof restoreApplicationSnapshot = restoreApplicationSnap
 const simulatorFactory: typeof createDeviceSimulator = createDeviceSimulator;
 const routeGroupFactory: typeof createRouteGroupController = createRouteGroupController;
 const handoffFactory: typeof createWorkloadHandoff = createWorkloadHandoff;
+const processorFailureFactory: typeof createProcessorFailureController = createProcessorFailureController;
 let placement: PlacementScheduler | undefined;
 let placementResult: PlacementResult | undefined;
 let placementAuthority: PlacementAuthorityRequest | undefined;
@@ -235,8 +236,9 @@ let simulatorEvent: SimulatorEvent | undefined;
 let routeGroupController: RouteGroupController | undefined;
 let workloadHandoff: WorkloadHandoff | undefined;
 let handoffHost: HandoffHost | undefined;
+let processorFailureController: ProcessorFailureController | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, routeGroupFactory, handoffFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, routeGroupController, workloadHandoff, handoffHost, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, routeGroupFactory, handoffFactory, processorFailureFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, routeGroupController, workloadHandoff, handoffHost, processorFailureController, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -387,7 +389,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -769,6 +771,24 @@ export async function checkRuntime() {
     check(healthPipeline.publishHealth({ ...health, connectivity: 'offline' }).readiness === 'unavailable' &&
       healthPipeline.downstream.operations()[0].state === 'cancelled', 'Packed health loss left pending command');
   } finally { healthPipeline.runtime.close(); }
+  const failurePipeline = createSensorFeedbackPipeline({ now: () => 100 });
+  try {
+    const failurePlan = model.validateProcessorGraph({ schemaVersion: 1,
+      nodes: failurePipeline.graphPlan.nodes.map(node => node.id === 'threshold'
+        ? { id: node.id, kind: 'processor', manifest: processorManifest } : node),
+      edges: failurePipeline.graphPlan.edges });
+    const failureController = runtime.createProcessorFailureController({ plan: failurePlan,
+      runtime: failurePipeline.runtime, now: () => 100, bindings: [{ node: 'threshold', processor,
+        outputs: { switch: failurePipeline.derived }, inputRoutes: [failurePipeline.upstream] }] });
+    check(failureController.run('threshold', { temperature: 31 },
+      { switch: { operationId: '1', deadline: 500 } }).ok &&
+      failurePipeline.downstream.status().pending === 1,
+    'Packed processor failure controller did not queue the validated derived command');
+    failurePipeline.runtime.revoke(failurePipeline.upstream);
+    check(failureController.status('threshold').state === 'failed' &&
+      failurePipeline.downstream.operations()[0].state === 'cancelled',
+    'Packed input revocation left processor output or command authoritative');
+  } finally { failurePipeline.runtime.close(); }
   let healthNow = 100;
   const expiringPipeline = createSensorFeedbackPipeline({ now: () => healthNow });
   try {

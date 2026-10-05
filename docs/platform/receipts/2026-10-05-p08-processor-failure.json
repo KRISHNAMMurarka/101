@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "task": "P08",
+  "result": "pass",
+  "sourceTree": "3544506d6e9ca54c4af8ac69312427818992113f",
+  "sdkArtifact": "release/sdk-xdhshr/manifest.json",
+  "sdkManifestSha256": "6789b90a37115d036e460ce42eada215a0b28a540d2c7c80b323311b6654baa1",
+  "consumerQaToolSha256": "73198cb19cb93be6fce5c6b5b738f732647ae6473d0e07bc1210fa65acd0eeba",
+  "processorFailureSourceSha256": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+  "processorFailureTestSha256": "745e3fac520beb2fec57baa2220ed5681be7fb65e641471fbbe266dc1f36ab3e",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused processor failure tests: 4 passed after first observed missing-export failure",
+    "Two-stage embedded graph: input loss/revocation closed dependent routes, cancelled queued command and reset both stages",
+    "Exception and finite compute overrun rejected derived output; fresh route restart did not replay old command",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "P08 route-backed acyclic processor graphs: validated binding, current input route checks, synchronous execution with finite elapsed-budget rejection, derived output publication, descendant invalidation, queued-command cancellation and deterministic reset. Recovery requires fresh authorized routes and a new controller; no previous command is replayed. Feedback execution rejects before binding; a nonreturning synchronous processor needs S14 isolation and measured budgets remain P09. Local embedded and packed browser/Node evidence only.",
+  "published": false
+}
