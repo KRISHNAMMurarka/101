@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 35,
+  "revision": 36,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -1559,24 +1559,29 @@
       ]
     },
     {
-      "id": "pending-I01",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "input-profiles-2026-10-05",
+      "revision": "containing I01 commit, base c46747b; immutable SDK producer tree 891b31fe139d2e9c0809e312f3ae4690e940b721",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "I01"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/input-profile.test.ts",
+        "docs/platform/receipts/2026-10-05-i01-input-profiles.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Define reusable input profiles. Pointer, keyboard, text, gamepad, touch, pen and accessibility resources declare event/sample semantics and supported control operations.",
-      "scope": "I01 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node and Chromium 149.0.7827.55, Firefox 151.0, WebKit 26.5; no physical input device qualification",
+      "reproduction": "node --experimental-strip-types --test tests/game-pointer-bridge.test.ts packages/device-model/src/input-profile.test.ts packages/device-web/src/pointer-provider.test.ts (17/17); node tools/build-sdk.mjs 891b31fe139d2e9c0809e312f3ae4690e940b721; node tools/qa-sdk-consumer.mjs release/sdk-QPg55n/manifest.json; exact candidate repository gates",
+      "scope": "I01 only: seven bounded versioned source templates declare sample/event semantics, source subscribe and sink write operations; current pointer source consumes a fresh copy of its template with 100 ms contact age retained. Nonpointer profiles are declarations, not physical/provider/sink support or permission claims. I03/I06/I11 and hardware qualification remain open.",
       "failure": null,
-      "equipment": [
-        "Touch/keyboard/pen/controller/assistive devices for claimed profiles; person for ergonomics"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-I02",
@@ -7898,7 +7903,7 @@
     {
       "id": "I01",
       "records": [
-        "pending-I01"
+        "input-profiles-2026-10-05"
       ],
       "dependencies": [
         "M01",

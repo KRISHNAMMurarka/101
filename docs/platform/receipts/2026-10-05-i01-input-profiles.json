@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "task": "I01",
+  "result": "pass",
+  "source": {
+    "baseRevision": "c46747b",
+    "immutableSdkProducerTree": "891b31fe139d2e9c0809e312f3ae4690e940b721",
+    "profileSourceSha256": "d24f36dc6304387d84a1a4aa9c44ce5a87904fd9552dd8a000b01b813e4d3332",
+    "pointerProviderSha256": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a"
+  },
+  "environment": {
+    "os": "macOS 26.5.2 arm64",
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "browsers": {
+      "chromium": "149.0.7827.55",
+      "firefox": "151.0",
+      "webkit": "26.5"
+    }
+  },
+  "verification": {
+    "red": "Focused new catalog tests failed because getInputProfile was absent; the pointer age regression then failed at 1000 instead of the existing 100 ms",
+    "intermediateFailure": "The first full unit gate caught frozen pointer capabilities breaking a caller that clones and edits a descriptor to test semantic rejection. The provider now deep-clones its template per call.",
+    "green": "Focused catalog, pointer-provider and game-pointer bridge unit tests: 17 passed, 0 failed",
+    "sdkManifest": "release/sdk-QPg55n/manifest.json",
+    "sdkManifestSha256": "d5856b8f4080ba7de11627057a8a01b9925f46b793543583ee0c07687f68662b",
+    "externalConsumerReceiptSha256": "cf2c972beb100ce0efca7508421485cbee4ebc042776fe58fe417ccce242eb9f",
+    "externalConsumer": "Offline five-package install with 121 audited files; strict NodeNext/Bundler declarations, ordinary Node import, Chromium/Firefox/WebKit packed runtime checks all passed. The consumer verifies the new public profile exports and pointer template."
+  },
+  "scope": "Seven versioned source profile templates declare sample/event delivery and subscribe/write operations; the existing pointer provider consumes its template. Other templates are declarations only and do not imply OS permission, actual control inventory, physical device support or sink implementation."
+}

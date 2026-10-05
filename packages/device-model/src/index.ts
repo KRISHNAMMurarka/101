@@ -30,3 +30,5 @@ export type { WoTBindings, WoTForm, WoTAffordance, WoTThingDescription } from '.
 export { parseDiscoveryCandidate, assessDiscoveryCandidate } from './discovery.ts';
 export type { DiscoveryStage, DiscoveryScope, DiscoveryEvidence, DiscoveryRecovery,
   DiscoveryCandidate, DiscoveryAssessment, DiscoveryReceiptVerifier } from './discovery.ts';
+export { INPUT_PROFILE_IDS, getInputProfile } from './input-profile.ts';
+export type { InputProfile, InputProfileId } from './input-profile.ts';

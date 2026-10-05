@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 62 completed with recorded evidence; 210 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 63 completed with recorded evidence; 209 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -165,7 +165,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 ### I — Human controls, relative motion and output feedback
 
-- [ ] **I01 — Define reusable input profiles.** Pointer, keyboard, text, gamepad, touch, pen and accessibility resources declare event/sample semantics and supported control operations.
+- [x] **I01 — Define reusable input profiles.** Pointer, keyboard, text, gamepad, touch, pen and accessibility resources declare event/sample semantics and supported control operations. [Profile contract](SDK.md#input-profiles) and [packed consumer evidence](receipts/2026-10-05-i01-input-profiles.json).
 - [x] **I02 — Implement smooth relative trackpad input.** Accumulate bounded unsent deltas or publish recoverable targets; no coalescing loses movement, and lift/recontact introduces no anchor or jump. [Pointer driver and current browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#relative-trackpad-acceptance--5-october-2026).
 - [ ] **I03 — Implement click/drag/scroll gestures.** Tap, press, drag, wheel and multi-finger scrolling have clear cancellation, pointer capture, rate and reliable transition behavior.
 - [ ] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons.

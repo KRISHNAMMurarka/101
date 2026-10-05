@@ -1,3 +1,4 @@
+import { getInputProfile } from '@101/device-model';
 import type { DeviceDescriptor } from '@101/device-model';
 import { RemoteResourcePublisher } from './binding.ts';
 import type { ResourcePeer } from './binding.ts';
@@ -6,13 +7,8 @@ import { PointerSourceDriver } from './pointer-driver.ts';
 /** Application pointer profile. Declaration describes the source's selected API, not OS injection. */
 export function pointerSourceDescriptor(platform = 'provider-selected-by-host'): DeviceDescriptor {
   return { schemaVersion: 1, id: 'touch-surface', label: 'Touch surface', revision: 1,
-    adapter: { id: 'app:touch-surface', version: '1.0.0' }, runtime: { platform }, capabilities: [
-      { id: 'position', semantic: 'app:pointer-position/1', schemaVersion: 1, kind: 'sample',
-        value: { type: 'vector', components: ['x', 'y'], unit: '1', frame: 'surface-normalized', min: 0, max: 1 },
-        delivery: { mode: 'latest', maxHz: 60, maxAgeMs: 100 }, permissions: ['subscribe'] },
-      { id: 'contact', semantic: 'app:pointer-contact/1', schemaVersion: 1, kind: 'event', value: { type: 'boolean' },
-        delivery: { mode: 'reliable', maxAgeMs: 100 }, permissions: ['subscribe'] },
-    ] };
+    adapter: { id: 'app:touch-surface', version: '1.0.0' }, runtime: { platform },
+    capabilities: getInputProfile('app:pointer/1').capabilities.map(capability => structuredClone(capability)) };
 }
 export interface PointerResourceProviderOptions {
   peer: ResourcePeer; epoch: string; clockId: string; now: () => number; platform: string;

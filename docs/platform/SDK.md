@@ -181,6 +181,32 @@ capability with reliable delivery, even inside bounded records or arrays.
 down/up pair or accumulate deltas. A key label never becomes text, and an IME
 `end` never becomes a `commit` automatically. All values are closed, bounded
 immutable snapshots; resource permission remains a separate host decision.
+
+### Input profiles
+
+`getInputProfile(id)` supplies reusable, validated source capability templates.
+Every template declares `subscribe` for a source and `sinkOperations[id] = write`
+for a separately authorized destination; the destination must advertise a
+compatible value and delivery policy. These declarations never assert that a
+specific OS API, device, control or permission is available. The host probes
+and enrolls actual resources before exposing them.
+
+| Profile | Signals and delivery | Control meaning |
+| --- | --- | --- |
+| `app:pointer/1` | Normalized absolute position: latest, 60/s, 100 ms age; contact: reliable event, 100 ms age | Application surface position and press/release; the current pointer provider uses this template. It is not OS pointer injection. |
+| `app:keyboard/1` | Version 2 key transition: reliable event, 1000 ms age | Physical code, logical key, modifiers, repeat and up/down remain distinct. Text insertion is separate. |
+| `app:text/1` | Version 2 composition: reliable event, 1000 ms age | Start/update/end/commit phases are explicit; ending composition does not commit text. |
+| `app:gamepad/1` | Up to 16 normalized axes: latest, 60/s, 100 ms age; one of 32 declared button IDs with pressed/pressure: reliable event, 1000 ms age | A provider must probe the actual axis/button inventory and map only offered controls. These template ceilings do not imply 16 axes or 32 buttons exist. |
+| `app:touch/1` | Version 2 contact transition: reliable event, 1000 ms age | Stable contact ID and down/move/up/cancel survive separately; no coalescing of edges. |
+| `app:pen/1` | Version 2 pen transition: reliable event, 1000 ms age | Contact, pressure, tilt and twist retain declared bounds and phases. |
+| `app:switch/1` | One of 16 declared switch channels with active state: reliable event, 1000 ms age | Generic switch input; a caller must offer equivalent keyboard controls. There is no assistive-technology detection or physical HID support claim. |
+
+The template describes source semantics and destination operation, not a route
+grant. Each signal needs its own compatible sink, owner consent and lifecycle.
+Loss, unmount and revocation release held output. Wheel and relative pointer
+events use the existing version 2 rich input schemas when a provider actually
+offers them; click/drag/scroll gestures, detailed gamepad/pen handling and
+physical assistive support remain I03/I06/I11 work.
 The [embedded rich-input example](../../examples/device-pipelines/rich-input.ts)
 uses six separately authorized routes and DOM-shaped simulated events. Actual
 browser/native input provider availability and physical behavior are not
