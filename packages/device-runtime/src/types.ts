@@ -48,8 +48,12 @@ export interface RouteRequest {
 }
 export interface Connection {
   readonly id: string;
+  /** Reserve current grant and owner lease without subscribing or dispatching. */
+  prepare(): Result;
+  /** Recheck authority and activate a prepared connection. */
+  activate(): Result;
   start(): Result; stop(reason?: string): void; renew(principalId: string): Result;
-  status(): Readonly<{ state: "idle" | "active" | "closed"; reason?: string; pending: number }>;
+  status(): Readonly<{ state: "idle" | "prepared" | "active" | "closed"; reason?: string; pending: number }>;
   limits(): Readonly<{ maxHz: number; maxAgeMs: number; expiresAt: number }> | undefined;
   operations(): readonly OperationRecord[];
 }

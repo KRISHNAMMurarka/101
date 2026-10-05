@@ -157,13 +157,13 @@ function installAndAudit(manifest) {
 }
 
 const typeConsumer = String.raw`
-import { createDeviceRuntime, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
+import { createDeviceRuntime, createRouteGroupController, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
   decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
-import type { EffectEvidence, HandlerResult, RouteRequest } from '@101/device-runtime';
+import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
@@ -223,6 +223,7 @@ const placementFactory: typeof createPlacementScheduler = createPlacementSchedul
 const snapshotFactory: typeof createApplicationSnapshot = createApplicationSnapshot;
 const restoreFactory: typeof restoreApplicationSnapshot = restoreApplicationSnapshot;
 const simulatorFactory: typeof createDeviceSimulator = createDeviceSimulator;
+const routeGroupFactory: typeof createRouteGroupController = createRouteGroupController;
 let placement: PlacementScheduler | undefined;
 let placementResult: PlacementResult | undefined;
 let placementAuthority: PlacementAuthorityRequest | undefined;
@@ -230,8 +231,9 @@ let applicationSnapshot: ApplicationSnapshot | undefined;
 let snapshotResult: SnapshotRestoreResult | undefined;
 let simulator: DeviceSimulator | undefined;
 let simulatorEvent: SimulatorEvent | undefined;
+let routeGroupController: RouteGroupController | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, routeGroupFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, routeGroupController, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -382,7 +384,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -487,6 +489,50 @@ export async function checkRuntime() {
       routeGroup.groupPlan.members[1].safeState.mode === 'authorized-command',
       'Packed route-group contract failed');
     const resourceDevices = routeGroup.graphPlan.nodes.filter(node => node.kind === 'resource').map(node => node.device);
+    const sensorDeviceForGroup = resourceDevices.find(device => device.id === 'demo-thermometer');
+    const relayDeviceForGroup = resourceDevices.find(device => device.id === 'simulated-relay');
+    const thresholdDeviceForGroup = { ...sensorDeviceForGroup, id: 'temperature-threshold',
+      capabilities: [
+        { ...sensorDeviceForGroup.capabilities[0], id: 'temperature-input', kind: 'property',
+          permissions: ['write'], ownership: { mode: 'observe' } },
+        { id: 'relay-state', semantic: relayDeviceForGroup.capabilities[0].semantic,
+          schemaVersion: relayDeviceForGroup.capabilities[0].schemaVersion, kind: 'event',
+          value: relayDeviceForGroup.capabilities[0].value, delivery: relayDeviceForGroup.capabilities[0].delivery,
+          permissions: ['subscribe'] },
+      ] };
+    const grants = [], deliveries = [], releases = [];
+    const groupRuntime = runtime.createDeviceRuntime({ now: () => 0, authorize(request) {
+      grants.push(request.sink.deviceId);
+      return { expiresAt: 10000, maxAgeMs: 1000, maxHz: 10 };
+    } });
+    try {
+      const sensorHandle = groupRuntime.registerSource({ device: sensorDeviceForGroup, capability: 'temperature' });
+      const derivedHandle = groupRuntime.registerSource({ device: thresholdDeviceForGroup, capability: 'relay-state' });
+      const processorHandle = groupRuntime.registerSink({ device: thresholdDeviceForGroup, capability: 'temperature-input',
+        apply() { deliveries.push('measure'); groupRuntime.publish(derivedHandle, true,
+          { operationId: '1', deadline: 500 }); },
+        release() { releases.push('measure'); } });
+      const relayHandle = groupRuntime.registerSink({ device: relayDeviceForGroup, capability: 'set-state',
+        apply() { deliveries.push('actuate'); }, release() { releases.push('actuate'); } });
+      for (const handle of [sensorHandle, derivedHandle, processorHandle, relayHandle])
+        groupRuntime.setReadiness(handle, 'available');
+      const group = runtime.createRouteGroupController({ schemaVersion: 1, id: routeGroup.groupPlan.id,
+        members: routeGroup.groupPlan.members, failure: routeGroup.groupPlan.failure },
+        [sensorDeviceForGroup, thresholdDeviceForGroup, relayDeviceForGroup], member => groupRuntime.route({
+          from: member.id === 'measure' ? sensorHandle : derivedHandle,
+          to: member.id === 'measure' ? processorHandle : relayHandle,
+          principalId: 'packed-owner', applicationId: 'packed-group', sessionId: 'packed-local',
+        }));
+      check(group.prepare().ok && grants.join(',') === 'temperature-threshold,simulated-relay',
+        'Packed group did not prepare both owner grants');
+      groupRuntime.publish(sensorHandle, 30); groupRuntime.flush();
+      check(deliveries.length === 0, 'Packed group delivered input before activation');
+      check(group.activate().ok && grants.length === 4, 'Packed group failed authority recheck or activation');
+      groupRuntime.publish(sensorHandle, 31); groupRuntime.flush(); groupRuntime.flush();
+      check(deliveries.join(',') === 'measure,actuate', 'Packed group did not deliver both ordered routes');
+      group.stop();
+      check(releases.join(',') === 'actuate,measure', 'Packed group did not compensate active routes in reverse order');
+    } finally { groupRuntime.close(); }
     const localRuntime = { platform: 'node', minimumVersion: '24.0.0' };
     const workloadInput = { schemaVersion: 1, id: 'example:packed-workload', version: '1.0.0',
       application: { codeSha256: 'c'.repeat(64), runtime: localRuntime,

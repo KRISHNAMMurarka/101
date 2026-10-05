@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 46,
+  "revision": 47,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2793,24 +2793,32 @@
       "supportRows": []
     },
     {
-      "id": "pending-R02",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "route-group-activation-2026-10-05",
+      "revision": "containing R02 commit, base 68b3d90; immutable SDK producer tree 2fbed9fc244bad28637f79d61055f646de331fbf",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "R02"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "packages/device-runtime/src/route-group-runtime.ts",
+        "packages/device-runtime/src/route-group-runtime.test.ts",
+        "packages/device-runtime/src/runtime.test.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-r02-route-group-activation.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement group preparation/activation. Prepare grants/leases before activating required outputs; a failed member releases preparation without claiming to undo physical effects.",
-      "scope": "R02 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium, Firefox and WebKit; local embedded host only",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/runtime.test.ts packages/device-runtime/src/route-group-runtime.test.ts; node tools/build-sdk.mjs 2fbed9fc244bad28637f79d61055f646de331fbf; node tools/qa-sdk-consumer.mjs release/sdk-w2Jj4z/manifest.json; exact candidate repository gates",
+      "scope": "R02 only: local embedded routes reserve current owner authorization, lease and capacity without delivery, then recheck authority and activate in dependency order. Required preparation or activation failure closes all members; optional failure follows stop/degraded policy. Prepared rollback has no sink effect; active compensation stops routes but does not undo physical effects. Packed consumers bind the concrete two-leg temperature feedback contract. Automatic recovery after later loss, safe-command dispatch and two-host physical qualification remain open.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-R03",
@@ -8798,7 +8806,7 @@
     {
       "id": "R02",
       "records": [
-        "pending-R02"
+        "route-group-activation-2026-10-05"
       ],
       "dependencies": [
         "M01",

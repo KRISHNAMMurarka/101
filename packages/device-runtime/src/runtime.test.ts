@@ -32,6 +32,43 @@ function harness(options: { command?: boolean; authorize?: (request: Readonly<Au
   return { runtime, source, sink, request, connection, received, releases: () => releases, setNow: (value: number) => { now = value; } };
 }
 
+test('preparation reserves owner lease without activating delivery or physical release', () => {
+  const h = harness();
+  assert.equal(typeof h.connection.prepare, 'function');
+  assert.equal(typeof h.connection.activate, 'function');
+  assert.deepEqual(h.connection.prepare(), { ok: true, value: undefined });
+  assert.equal(h.connection.status().state, 'prepared');
+  const competitor = h.runtime.route(h.request);
+  assert.deepEqual(competitor.start(), { ok: false, reason: 'busy' });
+  h.runtime.publish(h.source, { x: 0.1, y: 0.2 }); h.runtime.flush();
+  assert.equal(h.received.length, 0);
+  assert.equal(h.releases(), 0);
+  assert.equal(h.connection.activate().ok, true);
+  h.runtime.publish(h.source, { x: 0.3, y: 0.4 }); h.runtime.flush();
+  assert.equal(h.received.length, 1);
+  h.connection.stop();
+  assert.equal(h.releases(), 1);
+  assert.equal(competitor.start().ok, true);
+  h.runtime.close();
+});
+
+test('prepared routes release leases on expiry, endpoint loss and runtime close without sink effects', () => {
+  for (const loss of ['expiry', 'endpoint', 'close']) {
+    const h = harness();
+    assert.equal(h.connection.prepare().ok, true);
+    if (loss === 'expiry') { h.setNow(1600); h.runtime.flush(); }
+    else if (loss === 'endpoint') h.runtime.setReadiness(h.source, 'unavailable');
+    else h.runtime.close();
+    assert.equal(h.connection.status().state, 'closed');
+    assert.equal(h.releases(), 0);
+    if (loss !== 'close') {
+      if (loss === 'endpoint') h.runtime.setReadiness(h.source, 'available');
+      assert.equal(h.runtime.route(h.request).start().ok, true);
+      h.runtime.close();
+    }
+  }
+});
+
 test("routes bind both resource operations and reject denied or forged authority", () => {
   let request: Readonly<AuthorizationRequest> | undefined;
   const h = harness({ authorize: (value) => { request = value; return undefined; } });

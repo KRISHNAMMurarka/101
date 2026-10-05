@@ -14,3 +14,5 @@ export { createApplicationSnapshot, restoreApplicationSnapshot } from './applica
 export type { ApplicationSnapshot, SnapshotRestoreResult } from './application-snapshot.ts';
 export { createDeviceSimulator } from './simulator.ts';
 export type { DeviceSimulator, SimulatorEvent } from './simulator.ts';
+export { createRouteGroupController } from './route-group-runtime.ts';
+export type { RouteGroupController } from './route-group-runtime.ts';

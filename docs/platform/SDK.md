@@ -369,14 +369,25 @@ declarations, not grants. It rejects duplicate routes, incompatible typed
 capabilities, undeclared permissions, cycles and an optional prerequisite of a
 required route when optional loss is supposed to permit continued operation.
 
+`createRouteGroupController(contract, descriptors, connect)` accepts that
+contract and a host callback that binds each planned member to a concrete
+`Connection`. All endpoints must be ready when `prepare()` runs. Preparation
+reserves each route's current owner grant, lease and capacity without subscribing
+or dispatching. `activate()` rechecks authority and readiness, then starts the
+prepared routes in dependency order; `start()` runs both phases. A required
+failure stops every member in reverse order. Optional failure follows the plan's
+stop or degraded policy, including dependent members. `stop()` releases prepared
+routes without invoking their sink release callback and stops active routes with
+that callback. The callback must bind the planned endpoints to host-owned
+registration handles; the controller never treats descriptor text as authority.
+
 Every member declares how prepared grants and started routes are released after
-failure. That compensation does not undo physical effects. Safe-state policy is
+failure. Compensation does not undo physical effects. Safe-state policy is
 either provider release or a typed command value that requires fresh owner
-authority; neither claims a verified physical state. Required loss stops the
-group; optional loss explicitly chooses stop or degraded continuation. The
-embedded temperature example validates its two real routes in this form before
-it starts them in dependency order. R02 and R03 still own preparation,
-activation, dispatch, observation and recovery on real hosts.
+authority; the controller does not dispatch that command or claim a verified
+physical state. The embedded temperature example supplies the concrete two-leg
+contract; packed consumer tests bind and activate both routes. Later route loss
+and cross-host recovery remain R03/R09 work.
 
 ## Workload requirements
 

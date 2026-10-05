@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 73 completed with recorded evidence; 199 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 74 completed with recorded evidence; 198 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -242,7 +242,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### R — Route groups, compute placement and handoff
 
 - [x] **R01 — Define route-group contracts.** Required/optional members, startup order, consent, compensation, safe-state and partial failure are explicit. [Contract](SDK.md#route-group-contracts) and [packed consumer receipt](receipts/2026-10-05-r01-route-group.json).
-- [ ] **R02 — Implement group preparation/activation.** Prepare grants/leases before activating required outputs; a failed member releases preparation without claiming to undo physical effects.
+- [x] **R02 — Implement group preparation/activation.** Prepare grants/leases before activating required outputs; a failed member releases preparation without claiming to undo physical effects. [Runtime API](SDK.md#route-group-contracts) and [packed consumer receipt](receipts/2026-10-05-r02-route-group-activation.json).
 - [ ] **R03 — Implement group recovery/cancellation.** Lost optional/required members degrade, pause or stop by policy; no orphan subscriptions, leases or queued commands remain.
 - [x] **R04 — Declare workload requirements.** Application/processor runtime, assets, resources, privacy, compute budget and restart/snapshot compatibility are validated before placement. [Contract](SDK.md#workload-requirements) and [packed consumer receipt](receipts/2026-10-05-r04-workload-requirements.json).
 - [x] **R05 — Implement an authorized placement scheduler.** Select an eligible host, respect quotas and resource ownership, and reject an incompatible or unauthorized runtime. [Contract](SDK.md#authorized-placement-reservation) and [packed consumer receipt](receipts/2026-10-05-r05-placement.json).

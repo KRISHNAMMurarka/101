@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "task": "R02",
+  "result": "pass",
+  "sourceTree": "2fbed9fc244bad28637f79d61055f646de331fbf",
+  "sdkArtifact": "release/sdk-w2Jj4z/manifest.json",
+  "sdkManifestSha256": "7f968918f583761a52aee8d3da54154dd5824f322a392f4e5c7b4ba5f2a4fa67",
+  "consumerQaToolSha256": "facd0d59d6fe741a80ae92ec2503c4fb6908aba2083482cfd84fec732f70436a",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused runtime and route-group tests: 33 passed; old implementation first failed on missing preparation API",
+    "Initial packed QA rejected the fixture's nonnumeric reliable operation ID; corrected fixture uses ID 1 and final candidate passes",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed",
+    "Exact candidate repository gates: TypeScript, lint, unit, fresh build and rendered HTML passed"
+  ],
+  "scope": "R02 local embedded route group preparation and activation only. All members reserve current grants, leases and capacity before activation, with fresh authority checks at activation. Failed required preparation releases without sink physical-release callbacks; failed activation stops already active routes in reverse order. Optional members follow declared degradation policy. Physical effects are not undone. R03 later-loss recovery, safe-command dispatch and R09 two-host qualification remain open.",
+  "published": false
+}

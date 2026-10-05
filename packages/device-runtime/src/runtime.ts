@@ -44,6 +44,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
   private readonly registry = new WeakMap<EndpointHandle, Registration>();
   private readonly entries = new Set<Registration>();
   private readonly active = new Set<EmbeddedConnection>();
+  private readonly prepared = new Set<EmbeddedConnection>();
   private readonly connections = new WeakSet<Connection>();
   private readonly leases = new LeaseBook();
   private readonly now: () => number;
@@ -121,6 +122,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     if (readiness !== "available") {
       entry.propertySnapshot = undefined;
       for (const route of [...entry.routes]) route.stop(readiness);
+      for (const route of [...this.prepared]) if (route.references(handle)) route.stop(readiness);
     }
     return success();
   }
@@ -134,6 +136,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     // Remove first so reentrant provider callbacks cannot reconnect this endpoint.
     this.registry.delete(handle); this.entries.delete(entry);
     for (const route of [...entry.routes]) route.stop("unregistered");
+    for (const route of [...this.prepared]) if (route.references(handle)) route.stop("unregistered");
     return success();
   }
   route(request: RouteRequest): Connection {
@@ -141,7 +144,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.connections.add(route);
     return route;
   }
-  activate(route: EmbeddedConnection, request: RouteRequest): Result<{ source: Registration; sink: Registration;
+  reserve(route: EmbeddedConnection, request: RouteRequest, phase: 'prepare' | 'activate'): Result<{ source: Registration; sink: Registration;
     sourceOperation: "read" | "subscribe"; readSnapshot?: Observation;
     grant: RouteGrant; now: number; leaseKey?: string }> {
     if (this.closed) return failure("closed");
@@ -162,7 +165,12 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.sweep(now);
     if (this.closed || this.entry(request.from) !== source || this.entry(request.to) !== sink) return failure("unknown-endpoint");
     if (source.readiness !== "available" || sink.readiness !== "available") return failure("unavailable");
-    if (this.active.size >= this.maxRoutes || source.routes.size >= this.maxSubscribers) return failure("capacity");
+    const wasPrepared = this.prepared.has(route);
+    if (phase === 'prepare' ? wasPrepared || route.status().state !== 'idle' :
+      route.status().state !== (wasPrepared ? 'prepared' : 'idle')) return failure('unavailable');
+    if (this.active.size + this.prepared.size - (wasPrepared ? 1 : 0) >= this.maxRoutes ||
+        source.routes.size + [...this.prepared].filter(item => item.referencesSource(source.handle)).length - (wasPrepared ? 1 : 0) >= this.maxSubscribers)
+      return failure("capacity");
     const authorization: AuthorizationRequest = Object.freeze({ principalId: request.principalId, applicationId: request.applicationId,
       sessionId: request.sessionId, source: reference(source), sink: reference(sink),
       sourceOperation,
@@ -177,7 +185,8 @@ export class EmbeddedRuntime implements DeviceRuntime {
     try { now = this.time(); } catch { return failure("invalid-clock"); }
     this.sweep(now);
     if (this.closed || this.entry(request.from) !== source || this.entry(request.to) !== sink ||
-      source.readiness !== "available" || sink.readiness !== "available" || grant.expiresAt <= now || route.status().state !== "idle") return failure("unavailable");
+      source.readiness !== "available" || sink.readiness !== "available" || grant.expiresAt <= now ||
+      route.status().state !== (wasPrepared ? 'prepared' : 'idle') || this.prepared.has(route) !== wasPrepared) return failure("unavailable");
     if (request.constraints !== undefined) {
       const constraints = parseGrant(request.constraints, now);
       if (!constraints) return failure("invalid-constraints");
@@ -191,8 +200,19 @@ export class EmbeddedRuntime implements DeviceRuntime {
     const leaseKey = ownership?.mode === "observe" ? undefined : `${sink.handle.id}:${request.partition ?? ""}`;
     const expiresAt = Math.min(grant.expiresAt, now + (request.leaseMs ?? 1500));
     if (leaseKey && !this.leases.claim(leaseKey, route.id, expiresAt, now)) return failure("busy");
-    this.active.add(route); source.routes.add(route); sink.routes.add(route);
+    if (phase === 'prepare') this.prepared.add(route);
+    else {
+      if (wasPrepared) this.prepared.delete(route);
+      this.active.add(route); source.routes.add(route); sink.routes.add(route);
+    }
     return success({ source, sink, sourceOperation, ...(readSnapshot ? { readSnapshot } : {}), grant, now, leaseKey });
+  }
+  activate(route: EmbeddedConnection, request: RouteRequest): ReturnType<EmbeddedRuntime['reserve']> {
+    return this.reserve(route, request, 'activate');
+  }
+  releasePrepared(route: EmbeddedConnection, leaseKey?: string): void {
+    this.prepared.delete(route);
+    if (leaseKey) this.leases.release(leaseKey, route.id);
   }
   detach(route: EmbeddedConnection, source: Registration, sink: Registration, leaseKey?: string): void {
     this.active.delete(route); source.routes.delete(route); sink.routes.delete(route);
@@ -207,6 +227,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
   private sweep(now: number): void {
     for (const entry of [...this.entries]) this.expireReadiness(entry, now);
     for (const route of [...this.active]) route.check(now);
+    for (const route of [...this.prepared]) route.check(now);
   }
 
   publish(source: EndpointHandle, input: unknown, options: PublishOptions = {}): Result<{ accepted: number; rejected: number }> {
@@ -261,7 +282,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
       const now = this.time();
       this.sweep(now);
       // Freeze this flush's work before calling any provider. Derived work is a later turn.
-      const work = [...this.active].flatMap((route) => route.prepare(now));
+      const work = [...this.active].flatMap((route) => route.prepareDelivery(now));
       for (const dispatch of work) dispatch();
     }
     catch { this.close(); }
@@ -271,6 +292,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
   close(): void {
     if (this.closed) return;
     this.closed = true;
+    for (const route of [...this.prepared]) route.stop("runtime-closed");
     for (const route of [...this.active]) route.stop("runtime-closed");
     for (const entry of this.entries) this.registry.delete(entry.handle);
     this.entries.clear(); this.leases.clear();
@@ -281,7 +303,7 @@ class EmbeddedConnection implements Connection {
   private readonly runtime: EmbeddedRuntime;
   readonly id: string;
   private readonly request: RouteRequest;
-  private state: "idle" | "active" | "closed" = "idle";
+  private state: "idle" | "prepared" | "active" | "closed" = "idle";
   private reason?: string;
   private starting = false;
   private source?: Registration;
@@ -309,13 +331,44 @@ class EmbeddedConnection implements Connection {
     this.leaseMs = bound(request.leaseMs, 1500, 30000);
     this.queue = new OperationQueue(request.queueCapacity);
   }
+  references(handle: EndpointHandle): boolean { return this.request.from === handle || this.request.to === handle; }
+  referencesSource(handle: EndpointHandle): boolean { return this.request.from === handle; }
+  prepare(): Result {
+    if (this.state !== 'idle' || this.starting) return failure(this.state === 'prepared' ? 'already-prepared' : 'closed');
+    this.starting = true;
+    try {
+      const result = this.runtime.reserve(this, this.request, 'prepare');
+      if (!result.ok) { this.reason = result.reason; return result; }
+      const { source, sink, grant, now, leaseKey } = result.value;
+      this.source = source; this.sink = sink; this.grant = grant; this.leaseKey = leaseKey;
+      this.expiresAt = Math.min(grant.expiresAt, now + this.leaseMs);
+      this.state = 'prepared'; this.reason = undefined;
+      return success();
+    } finally { this.starting = false; }
+  }
+  activate(): Result {
+    if (this.state !== 'prepared' || this.starting) return failure(this.state === 'active' ? 'already-active' : 'not-prepared');
+    this.starting = true;
+    try {
+      const result = this.runtime.activate(this, this.request);
+      if (!result.ok) { this.stop(result.reason); return result; }
+      this.becomeActive(result.value);
+      return success();
+    } finally { this.starting = false; }
+  }
   start(): Result {
+    if (this.state === 'prepared') return this.activate();
     if (this.state !== "idle" || this.starting) return failure(this.state === "active" ? "already-active" : "closed");
     this.starting = true;
     try {
       const result = this.runtime.activate(this, this.request);
       if (!result.ok) { this.reason = result.reason; return result; }
-      const { source, sink, sourceOperation, readSnapshot, grant, now, leaseKey } = result.value;
+      this.becomeActive(result.value);
+      return success();
+    } finally { this.starting = false; }
+  }
+  private becomeActive({ source, sink, sourceOperation, readSnapshot, grant, now, leaseKey }:
+    Extract<ReturnType<EmbeddedRuntime['activate']>, { ok: true }>['value']): void {
       this.source = source; this.sink = sink; this.grant = grant; this.leaseKey = leaseKey;
       this.oneShot = sourceOperation === "read";
       this.expiresAt = Math.min(grant.expiresAt, now + this.leaseMs);
@@ -324,8 +377,6 @@ class EmbeddedConnection implements Connection {
         sink.capability.delivery.mode === "latest" ? sink.capability.delivery.maxHz : 1000);
       this.state = "active"; this.reason = undefined; this.generation++;
       if (readSnapshot) this.latest.offer(readSnapshot, readSnapshot.receivedAt);
-      return success();
-    } finally { this.starting = false; }
   }
   renew(principalId: string): Result {
     if (this.state !== "active" || principalId !== this.request.principalId) return failure("not-owner");
@@ -340,9 +391,11 @@ class EmbeddedConnection implements Connection {
   stop(reason = "stopped"): void {
     if (this.state === "closed") return;
     const active = this.state === "active";
+    const prepared = this.state === 'prepared';
     this.state = "closed"; this.reason = reason;
     this.latest.clear(); this.queue.clear();
     if (active) this.runtime.detach(this, this.source!, this.sink!, this.leaseKey);
+    if (prepared) this.runtime.releasePrepared(this, this.leaseKey);
     for (const controller of this.inFlight.values()) controller.abort();
     this.inFlight.clear(); this.latestBusy = false;
     if (active) try { this.sink!.provider!.release(reason, Object.freeze({ routeId: this.id, partition: this.request.partition })); }
@@ -359,11 +412,12 @@ class EmbeddedConnection implements Connection {
   }
   operations(): ReturnType<Connection["operations"]> { return this.queue.records(); }
   check(now: number): void {
-    if (this.state !== "active") return;
+    if (this.state !== "active" && this.state !== 'prepared') return;
     this.runtime.expireReadiness(this.source!, now);
     this.runtime.expireReadiness(this.sink!, now);
-    if (this.state !== "active") return;
+    if (this.state !== "active" && this.state !== 'prepared') return;
     if (now >= this.expiresAt || now >= this.grant!.expiresAt) { this.stop("expired"); return; }
+    if (this.state === 'prepared') return;
     for (const id of this.queue.expire(now)) this.inFlight.get(id)?.abort();
     this.queue.purge(now);
   }
@@ -377,7 +431,7 @@ class EmbeddedConnection implements Connection {
     if (options.deadline! > observation.timestamp + this.maxAgeMs) return failure("invalid-deadline");
     return this.queue.admit(options.operationId!, options.deadline!, observation, now);
   }
-  prepare(now: number): (() => void)[] {
+  prepareDelivery(now: number): (() => void)[] {
     this.check(now);
     if (this.state !== "active") return [];
     if (this.source!.capability.delivery.mode === "latest") {
