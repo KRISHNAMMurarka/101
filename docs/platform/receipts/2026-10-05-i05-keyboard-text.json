@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "I05",
+    "K01",
+    "K02"
+  ],
+  "result": "pass",
+  "sourceTree": "b501ab919782aee3eac4d8f122a8b2dfed904c7a",
+  "sdkArtifact": "release/sdk-bitcUh/manifest.json",
+  "sdkManifestSha256": "2af6ee74d2cc76dfc3b84014ff6260913608f0be3037037ee8761d717eaa5324",
+  "consumerQaToolSha256": "2cb287d25b2da3b908082e62bbc17470599f024e7f23eadc4d24e20592b68c7c",
+  "startedAt": "2026-10-05T08:00:36.978Z",
+  "finishedAt": "2026-10-05T08:00:53.696Z",
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 6,
+      "files": 190,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass",
+      "source": [
+        {
+          "path": "packages/devkit/src/device-scaffold.ts",
+          "sha256": "b8806e5f3fe275bd3eef5d837b782bb5d30122ca34047f9fc2c8526795ac5aa5"
+        },
+        {
+          "path": "tools/create-device-project.mjs",
+          "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+        }
+      ],
+      "project": "/tmp/101-sdk-consumer-3Jaue5/generated-device-project",
+      "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+      "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      }
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      }
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      }
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass",
+      "package": "@example/temperature-band-processor",
+      "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+      "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "operations": [
+        "subscribe",
+        "invoke"
+      ]
+    }
+  ],
+  "rawReceipt": {
+    "path": "/tmp/101-sdk-consumer-3Jaue5/receipt.json",
+    "sha256": "aec087fea58e332554bafb5f15c7720b646c43b5ef582e1335c8bd6f7b18a88f"
+  },
+  "producerSourceSha256": {
+    "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+    "examples/device-pipelines/keyboard-text.ts": "8db1342210bb90ff7ea4d2b45e85ca5f90d2568732bda86df59f753130b94649",
+    "examples/device-pipelines/media-description.ts": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a",
+    "examples/device-pipelines/motion.ts": "302412a8adee1cf7ad4ae82f78e65b3a6f99d00d07e2e6211a11aee80a5c8d81",
+    "examples/device-pipelines/pointer.ts": "84d26be002a324bce16899055a7fbbc5ff368fbec6e4bdf28771d47c86dc77f3",
+    "examples/device-pipelines/recipe.ts": "6e1a459ed62fccedb14bcdb96799b4b4ba5568e99815abe66e77c01030a9b2a3",
+    "examples/device-pipelines/resource-documents.ts": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595",
+    "examples/device-pipelines/rich-input.ts": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19",
+    "examples/device-pipelines/run.ts": "988c9b49da0606540c3793bdbb5c0d630d2d63d494bf01ec0adb184d443ede05",
+    "examples/device-pipelines/sensor-feedback.ts": "ecaf0a3cb6d77746faf99f006c81a7f4b608006ab2212d55e8700e9c9ab0b1db",
+    "examples/device-pipelines/spatial-joints.ts": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339",
+    "examples/device-pipelines/telemetry-batch.ts": "5ff7e2ec03b2b582186f14449b226082b9ca6d55a98cd746575296d379b3f9a7",
+    "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+    "examples/device-pipelines/vision.ts": "89572355b84e08998793dd1f2df9d6c86d1931de37837e7ffdb4c6aa47d03cb4",
+    "packages/connect/package.json": "2c06997ce6639fc487f741576413c778efb68424eba149caec26c0f128f863c2",
+    "packages/connect/src/index.ts": "b42440b03e3f0f99bc3c4877296418b329a81aa8d08af03106fba45a78361f0a",
+    "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+    "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+    "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+    "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+    "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+    "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+    "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+    "packages/device-model/src/index.ts": "1e3488a325de10f4e01cf3e36662e739fef4429928a98150df8b8275d864b47f",
+    "packages/device-model/src/input-profile.ts": "d24f36dc6304387d84a1a4aa9c44ce5a87904fd9552dd8a000b01b813e4d3332",
+    "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+    "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+    "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+    "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+    "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+    "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+    "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+    "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+    "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+    "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+    "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+    "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+    "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+    "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+    "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+    "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+    "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+    "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+    "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+    "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+    "packages/device-runtime/src/index.ts": "a44bbabc83cf9d3d83e708de8df167faf7b391cfaa988a359b75fec6ee99dc81",
+    "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+    "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+    "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+    "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+    "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+    "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+    "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+    "packages/device-runtime/src/runtime.ts": "b9a4f8859a6915252846651a142ab63bd1ee1a288edfdecc6f10ad5e71e23109",
+    "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+    "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+    "packages/device-runtime/src/types.ts": "55e30210bc03c8a84b7a2e523436133b21d6ac1aca2dc2f838695a0f078257b0",
+    "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+    "packages/device-web/package.json": "6944da1082082ab4db143a24ad567fae043dd102675b4b2ef52658974bbe6b53",
+    "packages/device-web/src/authenticated-peer.ts": "de169f05edfb313ee1c862ec3c0ea223da8114a5e3ace40d5ac1ab7460c74797",
+    "packages/device-web/src/binding.ts": "026a1f433093abeadaea019331eb455c7ed310b139794e60f8950461a0c6da8f",
+    "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+    "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+    "packages/device-web/src/index.ts": "2e22d0b75fad3e6ed62a43dd20f5f88230d2064bf907765683862d867a2786de",
+    "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+    "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+    "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+    "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+    "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+    "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+    "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+    "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+    "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+    "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+    "packages/vision/package.json": "2b5c919919a5cd13542250d6a0321e165716e2c3c5bbe873eccf2aa88270b704",
+    "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+    "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+    "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+    "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+    "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+    "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+    "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+    "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a",
+    "schemas/device-descriptor.schema.json": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+  },
+  "node22MinimumRuntime": {
+    "version": "v22.13.0",
+    "binary": "/tmp/101-node22-qa/node-v22.13.0-darwin-arm64/bin/node",
+    "binarySha256": "5c79f8e198fd2456ea6660aaa6be218f9f44747f2306c7d0f5f97b087b2f2dfc",
+    "command": "node --no-experimental-strip-types /tmp/101-sdk-consumer-3Jaue5/runtime-check.mjs",
+    "runtimeFixtureSha256": "84464ad3a2dddd04120bc16a09dfdd58fa1b99c62c6d84eabfa7f4087c673f90",
+    "result": "pass",
+    "summary": {
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true
+    },
+    "installationScope": "Reuses the byte-audited six-package clean consumer installed by Node24; no second Node22 install. Browser engines are the unchanged Node24-driven run."
+  },
+  "regressionEvidence": [
+    {
+      "test": "Standalone driver key/layout/repeat and separate composition/release tests",
+      "before": "Missing public driver: assertion expected function, received undefined",
+      "after": "12 focused source/caller tests pass"
+    },
+    {
+      "test": "Delayed release",
+      "before": "Expected capture [1,5000], received [1,1]",
+      "after": "External release reads current clock"
+    },
+    {
+      "test": "Nested cleanup release",
+      "before": "Expected down/up/down, received down/up/down/up",
+      "after": "Reentrant release coalesced"
+    },
+    {
+      "test": "Duplicate final composition after end",
+      "before": "Expected one commit, received two",
+      "after": "Ended committed session retained until new ordinary input/key/composition"
+    },
+    {
+      "test": "Default caller clock",
+      "before": "Expected ab, received a",
+      "after": "Default performance.now permits successive reliable dispatch"
+    },
+    {
+      "test": "Continuing host lease",
+      "before": "Default1500ms lease stopped at2600ms",
+      "after": "Explicit10000ms lease, caller tick renews within authority deadline"
+    },
+    {
+      "test": "Scoped reliable example",
+      "before": "Missing operationId/deadline prevented committed text",
+      "after": "Monotonic per-capability operationId and bounded deadline; denial/loss tested"
+    },
+    {
+      "test": "Rejected reliable publication",
+      "before": "Full text queue left both routes active and could retain held input",
+      "after": "Publication rejection closes both routes before future dispatch; committed text preserved"
+    },
+    {
+      "test": "Bounded diagnostic history",
+      "before": "Expected140 committed characters, received128 when log hit its limit",
+      "after": "Rolling last128 diagnostic events do not block text"
+    }
+  ],
+  "supersededQualificationFailure": {
+    "sourceTree": "8fa6691eb463d99268200e670d7b0ca0586c824e",
+    "qaToolSha256": "198b9e2726f2ce1c560fa3648d63cac27d318bcd421b298d99f842a1a320a6dd",
+    "startedAt": "2026-10-05T07:50:04.744Z",
+    "finishedAt": "2026-10-05T07:50:19.533Z",
+    "result": "fail",
+    "failure": {
+      "name": "AssertionError",
+      "message": "Packed browser qualification failed: packed-browser:chromium, packed-browser:firefox, packed-browser:webkit"
+    },
+    "browserChecks": [
+      {
+        "name": "packed-browser:chromium",
+        "status": "fail",
+        "version": "149.0.7827.55",
+        "failure": {
+          "name": "AssertionError",
+          "message": "Trusted keyboard input was lost or inferred twice\n\n'aa' !== 'AA'\n"
+        },
+        "errors": []
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "fail",
+        "version": "151.0",
+        "failure": {
+          "name": "AssertionError",
+          "message": "Trusted keyboard input was lost or inferred twice\n\n'aa' !== 'AA'\n"
+        },
+        "errors": []
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "fail",
+        "version": "26.5",
+        "failure": {
+          "name": "AssertionError",
+          "message": "Trusted keyboard input was lost or inferred twice\n\n'aa' !== 'AA'\n"
+        },
+        "errors": []
+      }
+    ],
+    "cause": "Fixture requested literal a with Shift, which Playwright inserts lowercase; fixture now presses physical KeyA. No source behavior changed for this correction."
+  },
+  "scope": [
+    "Browser/embedded keyboard and insertion/composition provider from app:keyboard/1 and app:text/1",
+    "Trusted browser repeats/modifier/layout labels; synthetic composition protocol before/after final input; reliable sink cancellation and disconnect preserve committed text",
+    "Deep immutable bounded key/text values; 64 held keys,2048 codepoint schema and separate runtime byte budgets; fail closed on invalid data/clock/publisher",
+    "No input listeners or timers on import; explicit surface mount, blur/focusout/pagehide/visibility release and disposer cleanup"
+  ],
+  "limitations": [
+    "Synthetic composition protocol is not physical OS IME qualification; no physical layout, native/global keyboard, editing document replication or hardware ergonomics claim",
+    "Input insertion events with null data or editing/deletion/undo/newline are outside insertion contract; no clipboard acquisition",
+    "Publisher success is admission only; sink release is required when cleanup cannot traverse a lost route",
+    "No support-row promotion or change to physical qualification rows"
+  ],
+  "supersededCommitGateFailure": {
+    "sourceTree": "75f0e376f6edc47a2b98f69447321a70d4a7daf8",
+    "gate": "lint",
+    "result": "fail",
+    "failure": "Two prefer-const errors in reentrant driver regression tests; production lint had no errors. Corrected to typed const declarations. Existing native PointerLab warning remains. Other gates on this superseded candidate: tsc/native tsc/build passed,940 unit passed."
+  }
+}

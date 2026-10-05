@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 85 completed with recorded evidence; 187 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 86 completed with recorded evidence; 186 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -169,7 +169,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **I02 — Implement smooth relative trackpad input.** Accumulate bounded unsent deltas or publish recoverable targets; no coalescing loses movement, and lift/recontact introduces no anchor or jump. [Pointer driver and current browser evidence](POINTER-PROVIDER-QA-2026-10-02.md#relative-trackpad-acceptance--5-october-2026).
 - [ ] **I03 — Implement click/drag/scroll gestures.** Tap, press, drag, wheel and multi-finger scrolling have clear cancellation, pointer capture, rate and reliable transition behavior.
 - [ ] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons.
-- [ ] **I05 — Implement keyboard/text composition.** Key-down/up, modifiers, repeats, layouts and IME/text composition remain distinct; disconnect releases keys without corrupting text.
+- [x] **I05 — Implement keyboard/text composition.** Key-down/up, modifiers, repeats, layouts and IME/text composition remain distinct; disconnect releases keys without corrupting text. [Browser source and independent packed caller evidence](receipts/2026-10-05-i05-keyboard-text.json); physical OS input-method/layout qualification remains separate.
 - [ ] **I06 — Implement pen/rotary/gamepad details.** Pressure/tilt, crown/encoder deltas, triggers, hats, axes and button edges preserve profile-specific ranges and calibration.
 - [ ] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls.
 - [ ] **I08 — Implement haptic output profiles.** Declared patterns, intensity/duration limits, unsupported-device fallback and physical distinguishability are tested.
@@ -361,8 +361,8 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 ### K — Distributable SDK and application release artifacts
 
-- [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Original packed consumer evidence](receipts/2026-10-03-sdk-consumer.json) and [current six-package requalification](receipts/2026-10-05-p04-landmark-processors.json).
-- [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json). [Current six-package Node22/24 requalification](receipts/2026-10-05-p04-landmark-processors.json).
+- [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Original packed consumer evidence](receipts/2026-10-03-sdk-consumer.json) and [current six-package requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
+- [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json). [Current six-package Node22/24 requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
 - [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata.
 - [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.

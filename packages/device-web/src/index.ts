@@ -18,3 +18,5 @@ export { bytesToHex, hexToBytes, derToP1363, p1363ToDer, endpointKeyId } from '.
 export { createReceiverInvitation, decodeReceiverInvitation, decodeReceiverInvitationInput,
   encodeReceiverInvitation, encodeReceiverInvitationLink, receiverInvitationCurrent } from './invitation.ts';
 export type { ReceiverInvitation } from './invitation.ts';
+export { KeyboardTextSourceDriver, keyboardTextSourceDescriptor, mountKeyboardTextSource } from './keyboard-text-driver.ts';
+export type { KeyTransition, TextComposition, KeyboardTextSourceOptions } from './keyboard-text-driver.ts';

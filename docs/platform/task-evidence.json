@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 60,
+  "revision": 61,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7111,6 +7111,35 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "keyboard-text-2026-10-05",
+      "revision": "containing I05 commit, base4d2c555; immutable SDK producer tree b501ab919782aee3eac4d8f122a8b2dfed904c7a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I05",
+        "K01",
+        "K02"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "packages/device-web/src/keyboard-text-driver.test.ts",
+        "tests/keyboard-text-example.test.ts",
+        "tests/sdk-distribution.test.ts",
+        "docs/platform/receipts/2026-10-05-i05-keyboard-text.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; same packed consumer JavaScript also runs on Node22.13.0; Chromium149.0.7827.55, Firefox151.0, WebKit26.5; trusted browser keyboard and synthetic composition protocol, no physical OS IME qualification",
+      "reproduction": "node --test packages/device-web/src/keyboard-text-driver.test.ts tests/keyboard-text-example.test.ts; node tools/build-sdk.mjs b501ab919782aee3eac4d8f122a8b2dfed904c7a; node tools/qa-sdk-consumer.mjs release/sdk-bitcUh/manifest.json; Node22 packed runtime command in receipt; exact candidate AGENTS.md commit gates",
+      "scope": "I05: independent selected-surface browser keyboard/text provider preserves physical code, layout key, modifiers, repeats and key transitions separately from start/update/end/commit. Bounded immutable reliable events, monotonic host clock, cancellation and route/sink release preserve committed text. Real runtime caller and six packed packages pass Node22/24 and three browser engines with trusted keyboard/focus/unmount and explicit synthetic composition fixtures. No native/global injection, physical layout/OS IME or full editing replication; K01/K02 requalified without support-row promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8343,7 +8372,8 @@
     {
       "id": "I05",
       "records": [
-        "pending-I05"
+        "pending-I05",
+        "keyboard-text-2026-10-05"
       ],
       "dependencies": [
         "M01",
@@ -10266,7 +10296,8 @@
         "pending-K01",
         "sdk-distributions-2026-10-02",
         "sdk-distribution-current-2026-10-03",
-        "landmark-processors-2026-10-05"
+        "landmark-processors-2026-10-05",
+        "keyboard-text-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [
@@ -10279,7 +10310,8 @@
         "pending-K02",
         "sdk-distributions-2026-10-02",
         "sdk-external-consumer-current-2026-10-03",
-        "landmark-processors-2026-10-05"
+        "landmark-processors-2026-10-05",
+        "keyboard-text-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

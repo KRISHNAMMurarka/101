@@ -182,6 +182,59 @@ down/up pair or accumulate deltas. A key label never becomes text, and an IME
 `end` never becomes a `commit` automatically. All values are closed, bounded
 immutable snapshots; resource permission remains a separate host decision.
 
+### Browser keyboard and text source
+
+`KeyboardTextSourceDriver`, `keyboardTextSourceDescriptor()` and
+`mountKeyboardTextSource(target, driver)` are public through `@101/device-web`
+and `@101/connect`. The descriptor derives two separate reliable source
+capabilities from `app:keyboard/1` and `app:text/1`; each needs an independently
+authorized compatible sink. Mount only a surface selected by the host. It
+retains native focus and editing behavior and never cancels browser defaults.
+The module acquires no input or timers on import.
+
+Key events preserve `code`, layout-dependent `key`, location, modifiers,
+repeat, up/down and `isComposing`. A missing DOM code/label is explicitly
+`Unidentified`; this does not identify a physical key. No key label is turned
+into text. Composition start/update/end retain one bounded local identity.
+Only an insertion `input` event carrying data can commit text: `insertText`,
+`insertFromComposition`, paste, drop or replacement. Intermediate composing
+input, deletion, null data and `beforeinput` do not commit. An `end` never
+commits. Final composition input can arrive before or after `end`; repeated
+`insertFromComposition` for that same session is suppressed. A new ordinary
+key/start retires the previous ended session. IDs are local to one driver
+lifetime, and ordinary insertion events receive separate identities. This is
+an insertion/composition stream, not an editor operation or document replica;
+selection, deletion, undo, clipboard acquisition and newline editing need a
+separate editing contract.
+
+At most 64 keys are held and text is bounded by the profile to 2048 Unicode
+code points. Runtime/wire envelope byte limits still apply independently; the
+source never truncates or replays rejected text. Invalid data, clock regression,
+publisher rejection or exception stop the driver. `release()` clears held keys
+and cancels pending composition with an empty `end`; it never manufactures a
+commit. External release samples the current host clock, and cleanup during a
+callback uses the last validated capture time. Reentrant cleanup is coalesced.
+DOM blur, focus leaving the selected surface, pagehide and hidden document
+release input. The mount disposer removes listeners and stops input. Hosts
+must call it on unmount and stop the driver on route/transport loss. Because a
+closed route cannot deliver cleanup, the sink's own release handler must clear
+held keys and preview while preserving committed text.
+
+The [independent keyboard/text example](../../examples/device-pipelines/keyboard-text.ts)
+uses the real runtime with concrete registration-scoped grants, two reliable
+routes, ten-second leases and sink release. It retains the latest 128 diagnostic
+events independently of committed text (8192 code points maximum). Publication
+rejection, stopped source or consumer text overflow closes both routes; existing
+committed text remains available. A
+continuing caller owns a loop calling `tick()` to renew and dispatch; each
+flush delivers at most one event per route and respects its rate budget.
+The example's default grants expire after 60 seconds. Stopping preserves the
+consumer's committed text. Its deterministic producer fixtures demonstrate
+layout labels, repeats, composition and disconnect; packed browser QA additionally
+uses trusted keyboard input and focus/unmount plus synthetic composition
+protocol events. These checks do not qualify physical keyboard layouts,
+platform input methods or native/global keyboard capture.
+
 ### Input profiles
 
 `getInputProfile(id)` supplies reusable, validated source capability templates.
