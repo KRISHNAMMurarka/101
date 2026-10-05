@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { lstatSync, mkdtempSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
+import { lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -985,6 +985,45 @@ async function distribution(path) {
   compileConsumer();
   executeNode();
   await executeBrowsers(installed);
+  executeExternalProcessor(manifest);
+}
+
+function executeExternalProcessor(manifest) {
+  const sourceDirectory = join(work, 'external-processor-package');
+  mkdirSync(sourceDirectory);
+  function immutableFile(name) {
+    const path = `examples/external-processor/${name}`;
+    const result = spawnSync('git', ['cat-file', 'blob', `${manifest.source.tree}:${path}`],
+      { cwd: root, timeout: 10000, maxBuffer: 1024 * 1024 });
+    assert.equal(result.status, 0, `External processor source absent from immutable tree: ${path}`);
+    return result.stdout;
+  }
+  for (const name of ['package.json', 'manifest.json', 'processor.mjs', 'LICENSE'])
+    writeFileSync(join(sourceDirectory, name), immutableFile(name));
+  const packageMetadata = JSON.parse(readFileSync(join(sourceDirectory, 'package.json'), 'utf8'));
+  assert.equal(packageMetadata.name, '@example/temperature-band-processor');
+  const packed = JSON.parse(run('external-processor-pack', 'npm',
+    ['pack', '--json', '--offline', '--ignore-scripts', '--pack-destination', work], sourceDirectory));
+  assert.equal(packed.length, 1);
+  assert.equal(packed[0].name, packageMetadata.name);
+  const tarball = join(work, packed[0].filename);
+  run('external-processor-offline-install', 'npm',
+    ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', tarball]);
+  const installedSource = join(work, 'node_modules', '@example', 'temperature-band-processor', 'processor.mjs');
+  assert.equal(hash(installedSource), hash(join(sourceDirectory, 'processor.mjs')),
+    'External processor installed code differs from pinned source bytes');
+  assert.equal(hash(join(work, 'node_modules', '@example', 'temperature-band-processor', 'LICENSE')),
+    hash(join(sourceDirectory, 'LICENSE')), 'External processor license is missing or changed');
+  writeFileSync(join(work, 'external-processor-consumer.mjs'), immutableFile('consumer.mjs'));
+  const outcome = JSON.parse(run('external-processor-consumer', process.execPath,
+    ['external-processor-consumer.mjs']).trim());
+  assert.equal(outcome.status, 'pass');
+  assert.equal(outcome.installedProcessor, 'example:temperature-band', 'Unexpected external processor identity');
+  assert.equal(outcome.pin, hash(installedSource));
+  assert.equal(outcome.deniedPrincipal && outcome.incompatibleSchemaRejected && outcome.staleCommandCancelled, true);
+  receipt.checks.push({ name: 'external-processor-offline-consumer', status: 'pass',
+    package: packageMetadata.name, tarballSha256: hash(tarball), codeSha256: hash(installedSource),
+    operations: outcome.declaredOperations });
 }
 
 function baseline() {

@@ -340,6 +340,23 @@ reviewed temperature processor with queued-command cancellation in Node and
 three browsers. Feedback graph execution remains unsupported and is rejected
 before binding.
 
+## Independent processor package example
+
+`examples/external-processor/` is a standalone local npm package containing a
+pure temperature-band processor, a pinned manifest and its license. The SDK
+consumer QA copies that package and a separate consumer from the same immutable
+Git tree, packs and installs both it and the five SDK packages offline, then
+verifies the installed code bytes against the manifest pin. The consumer uses
+the public registry, graph validator, failure controller and two host-granted
+routes to drive a simulated relay. The graph declares `subscribe` and `invoke`;
+the host grants only the two exact source/sink operations for its owner. An
+altered code artifact, incompatible output schema, invalid configuration and
+an unapproved principal fail; input revocation cancels a queued command.
+
+This is an independent local Node consumer and package-integrity example.
+Third-party publisher identity, isolated execution, physical devices and
+cross-target performance remain separate qualification work.
+
 ## Scalar measurement processors
 
 `createScalarCalibrationProcessor()`, `createScalarConversionProcessor()` and

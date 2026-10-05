@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 50,
+  "revision": 51,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2755,24 +2755,34 @@
       ]
     },
     {
-      "id": "pending-P10",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "external-processor-2026-10-05",
+      "revision": "containing P10 commit, base fcebea1; immutable SDK producer tree 0a8b0ab96f219a369378533762e39abef77df796",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P10"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "examples/external-processor/package.json",
+        "examples/external-processor/processor.mjs",
+        "examples/external-processor/manifest.json",
+        "examples/external-processor/LICENSE",
+        "examples/external-processor/consumer.mjs",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-p10-external-processor.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Add independent third-party processor example. A separate consumer installs a pinned processor using declared permissions; incompatible schemas and privilege escalation fail.",
-      "scope": "P10 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; independent local Node package installed offline, SDK consumer checks in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical target",
+      "reproduction": "node tools/build-sdk.mjs 0a8b0ab96f219a369378533762e39abef77df796; node tools/qa-sdk-consumer.mjs release/sdk-4bIrGG/manifest.json; exact candidate repository gates",
+      "scope": "P10 immutable-tree external package installed offline into a separate Node consumer with SDK tarballs. The host verifies installed processor bytes against its manifest pin and grants only declared subscribe/invoke routes; code tamper, incompatible schema, bad configuration and unapproved principal fail. Input revocation cancels a queued command. No publisher identity, remote registry, physical target, isolated execution or performance claim.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "route-group-contract-2026-10-05",
@@ -8806,7 +8816,7 @@
     {
       "id": "P10",
       "records": [
-        "pending-P10"
+        "external-processor-2026-10-05"
       ],
       "dependencies": [
         "M01",

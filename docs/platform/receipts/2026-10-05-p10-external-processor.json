@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "task": "P10",
+  "result": "pass",
+  "sourceTree": "0a8b0ab96f219a369378533762e39abef77df796",
+  "sdkArtifact": "release/sdk-4bIrGG/manifest.json",
+  "sdkManifestSha256": "07a4971daf05d35385a65589e4f8283c9d381e1c18be1cb5fca878f1cd6da69e",
+  "consumerQaToolSha256": "a303448f1783ced45543bd8998e9aa07e8e2459b5507b7d9a42630bed6c6d625",
+  "externalPackage": "@example/temperature-band-processor@1.0.0",
+  "externalTarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+  "externalCodeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+  "externalManifestSha256": "71855286c4a42f808a6bd79cdddfb819fcfb460eeabdcaed7f73919e1945105e",
+  "externalConsumerSha256": "cf09a3d01d11957fdf0d8d95e9f46560ca038f197dfced3956ec093d52a4df06",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Immutable-tree package and separate consumer packed and installed offline without scripts: passed",
+    "Installed processor code/license match source bytes and manifest code pin: passed",
+    "Declared subscribe/invoke operations drive local simulated relay through host-owned grants: passed",
+    "Changed code, incompatible output schema, invalid configuration and unapproved principal: rejected",
+    "Input revocation cancelled queued derived command; packed SDK Node, Chromium, Firefox and WebKit checks: passed"
+  ],
+  "scope": "P10 independent local Node processor package and consumer, installed from exact immutable tree alongside offline SDK tarballs. Its pure factory is bound to verified bytes by the host; the graph declares source subscription and relay invocation, while host authorization grants only the named owner and resource operations. Negative cases reject schema mismatch, code tamper, bad configuration and unauthorized principal; route loss cancels a pending command. No third-party publisher identity, remote registry, isolated execution, physical target or performance claim.",
+  "published": false
+}

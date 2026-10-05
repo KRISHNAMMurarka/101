@@ -1,0 +1,15 @@
+{
+  "name": "@example/temperature-band-processor",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "processor.mjs",
+    "manifest.json"
+  ],
+  "exports": {
+    ".": "./processor.mjs",
+    "./manifest.json": "./manifest.json"
+  }
+}
