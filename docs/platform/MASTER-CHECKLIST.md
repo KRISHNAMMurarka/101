@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 66 completed with recorded evidence; 206 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 67 completed with recorded evidence; 205 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -230,7 +230,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 - [x] **P01 — Define processor manifests/registry.** Input/output schemas, units/frames, version, configuration, state/reset, asset/license and compute/privacy budgets resolve to pinned trusted code. [Contract](SDK.md#processor-manifests-and-trusted-registry) and [packed consumer receipt](receipts/2026-10-05-p01-processor-manifest.json).
 - [x] **P02 — Implement graph validation.** Match typed ports and permissions; reject undeclared conversion, invalid cycles and unbounded feedback; explicit delayed feedback gets its own bounded tests. [Contract](SDK.md#processor-graph-validation) and [packed consumer receipt](receipts/2026-10-05-p02-processor-graph.json).
-- [ ] **P03 — Implement calibration/conversion/filter processors.** Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset.
+- [x] **P03 — Implement calibration/conversion/filter processors.** Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset. [Contract](SDK.md#scalar-measurement-processors) and [packed consumer receipt](receipts/2026-10-05-p03-measurement-processors.json).
 - [ ] **P04 — Extract pose/hand/gesture processors.** Existing camera algorithms become independent typed consumers with faithful producer fixtures, assets, calibration and quality behavior.
 - [ ] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps.
 - [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware.

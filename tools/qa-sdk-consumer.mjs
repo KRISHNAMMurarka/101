@@ -194,6 +194,8 @@ import { parseProcessorManifest } from '@101/device-model';
 import type { ProcessorManifest } from '@101/device-model';
 import { validateProcessorGraph } from '@101/device-model';
 import type { ProcessorGraphPlan } from '@101/device-model';
+import { createScalarCalibrationProcessor, createScalarConversionProcessor, createMovingAverageProcessor } from '@101/device-model';
+import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
 import { createProcessorRegistry } from '@101/device-runtime';
 import type { ResolvedProcessor } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
@@ -230,6 +232,21 @@ const pointer = createPointerPipeline({ width: 500, height: 1000 });
 const sensor = createSensorFeedbackPipeline({ feedback: false });
 const graph: ProcessorGraphPlan = sensor.graphPlan;
 void [validateProcessorGraph, graph];
+const scalar = { type: 'scalar', unit: 'Cel', min: -40, max: 125 } as const;
+const calibratedOptions: CalibrationOptions = { id: 'example:calibration', version: '1.0.0', configurationRevision: 1,
+  gain: 1, offset: 0, absoluteErrorBound: 0.1 };
+const convertedOptions: ConversionOptions = { id: 'example:conversion', version: '1.0.0', configurationRevision: 1,
+  decimalPlaces: 2, maxAbsoluteError: 0.00501 };
+const filteredOptions: MovingAverageOptions = { id: 'example:filter', version: '1.0.0', configurationRevision: 1,
+  windowSize: 2, maxGapMs: 20 };
+const calibrated = createScalarCalibrationProcessor(scalar, scalar, calibratedOptions);
+const converted = createScalarConversionProcessor(scalar, { type: 'scalar', unit: 'K', min: 0, max: 400 }, convertedOptions);
+const filtered = createMovingAverageProcessor({ type: 'scalar', unit: 'K', min: 0, max: 400 }, filteredOptions);
+const measured: MeasurementFrame = { report: { status: 'valid', value: 30, calibration: { revision: 7 },
+  uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
+  timing: { capture: { clockId: 'sensor', at: 100 }, receipt: { clockId: 'sensor', at: 101 }, mapping: null, processors: [] } };
+void filtered.process(converted.process(calibrated.process(measured, { clockId: 'sensor', at: 102 }),
+  { clockId: 'sensor', at: 103 }), { clockId: 'sensor', at: 104 });
 const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
 const telemetry = createTelemetryBatchPipeline({ now: () => 1000 });
 const migrated = upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }]);
@@ -335,7 +352,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -385,6 +402,30 @@ export async function checkRuntime() {
     { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
   check(measurementReport.status === 'valid' && measurementReport.calibration.revision === 7 &&
     runSensorFeedbackExample().lastReport?.status === 'valid', 'Packed measurement quality contract failed');
+  const scalarSchema = { type: 'scalar', unit: 'Cel', min: -40, max: 125 };
+  const kelvinSchema = { type: 'scalar', unit: 'K', min: 0, max: 400 };
+  const processorFrame = { report: measurementReport,
+    timing: { capture: { clockId: 'sensor', at: 100 }, receipt: { clockId: 'sensor', at: 101 }, mapping: null, processors: [] } };
+  const calibration = model.createScalarCalibrationProcessor(scalarSchema, scalarSchema,
+    { id: 'example:calibration', version: '1.0.0', configurationRevision: 1,
+      gain: 1, offset: 1, absoluteErrorBound: 0.25 });
+  const converter = model.createScalarConversionProcessor(scalarSchema, kelvinSchema,
+    { id: 'example:conversion', version: '1.0.0', configurationRevision: 1,
+      decimalPlaces: 2, maxAbsoluteError: 0.00501 });
+  const filter = model.createMovingAverageProcessor(kelvinSchema,
+    { id: 'example:filter', version: '1.0.0', configurationRevision: 1,
+      windowSize: 2, maxGapMs: 20 });
+  const corrected = calibration.process(processorFrame, { clockId: 'sensor', at: 102 });
+  const converted = converter.process(corrected, { clockId: 'sensor', at: 103 });
+  const filtered = filter.process(converted, { clockId: 'sensor', at: 104 });
+  check(filtered.report.status === 'valid' && filtered.report.value === 305.4 &&
+    filtered.report.uncertainty.unit === 'K' && filtered.report.uncertainty.absoluteErrorBound > 0.75 &&
+    filtered.timing.capture.at === 100 && filtered.timing.processors.length === 3,
+    'Packed calibration/conversion/filter processor contract failed');
+  const stale = filter.process({ report: { status: 'stale', faults: [{ code: 'sensor:late' }] },
+    timing: { capture: { clockId: 'sensor', at: 110 }, receipt: { clockId: 'sensor', at: 111 }, mapping: null, processors: [] } },
+    { clockId: 'sensor', at: 112 });
+  check(stale.report.status === 'stale', 'Packed filter did not clear state on stale input');
   const timing = model.parseObservationTiming({ capture: { clockId: 'source-clock', at: 100 },
     receipt: { clockId: 'source-clock', at: 110 }, mapping: null, processors: [] });
   check(model.observationAgeBounds(timing).latestMs === 10 &&

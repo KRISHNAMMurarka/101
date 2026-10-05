@@ -313,6 +313,27 @@ under P08. The Celsius threshold example validates its real source, processor
 and relay declarations before registering routes. The packed SDK consumer
 checks that plan in Node, Chromium, Firefox and WebKit.
 
+## Scalar measurement processors
+
+`createScalarCalibrationProcessor()`, `createScalarConversionProcessor()` and
+`createMovingAverageProcessor()` take validated scalar measurement reports with
+capture/receipt timing. Each call names the processing clock stamp and appends a
+versioned configuration step. Calibration applies declared gain, offset and an
+additional absolute error bound without changing the producer calibration
+revision. Conversion uses the explicit unit converter and scales the incoming
+error bound, then adds its conservative conversion bound. Neither operation
+certifies physical sensor accuracy.
+
+The bounded moving average accepts same-clock captures, retains the oldest
+capture in its output window and does not assume independent sensor errors. It
+resets on stale/unavailable or malformed input, changed calibration revision or
+upstream processor configuration, incomparable clocks, nonmonotonic capture,
+excessive gaps and explicit `reset()`. A transform that exceeds its declared
+range/error bound returns `unavailable` with `processor:saturation`; invalid
+input throws before a valid output is emitted. These are opt-in library
+processors: a host still declares graph edges, pins reviewed processor code,
+authorizes resources and propagates failed outputs through its runtime.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

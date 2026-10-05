@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 39,
+  "revision": 40,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2597,24 +2597,29 @@
       "supportRows": []
     },
     {
-      "id": "pending-P03",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "scalar-measurement-processors-2026-10-05",
+      "revision": "containing P03 commit, base 4d672e9; immutable SDK producer tree ab5693a76bb8f534b51abd4fdf63c1ebefce9151",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P03"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/measurement-processors.test.ts",
+        "docs/platform/receipts/2026-10-05-p03-measurement-processors.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement calibration/conversion/filter processors. Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset.",
-      "scope": "P03 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical sensor qualification",
+      "reproduction": "node --test --experimental-strip-types packages/device-model/src/measurement-processors.test.ts; node tools/build-sdk.mjs ab5693a76bb8f534b51abd4fdf63c1ebefce9151; node tools/qa-sdk-consumer.mjs release/sdk-wBHpcK/manifest.json; exact candidate repository gates",
+      "scope": "P03 only: selected scalar affine calibration, explicit unit conversion and bounded moving average preserve units, conservative uncertainty and capture/processing timing; saturation, invalid/stale inputs, clock mismatch and deterministic reset have fixtures. Physical calibration, graph wiring, processor budget enforcement and runtime failure propagation remain separate.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-P04",
@@ -8643,7 +8648,7 @@
     {
       "id": "P03",
       "records": [
-        "pending-P03"
+        "scalar-measurement-processors-2026-10-05"
       ],
       "dependencies": [
         "M01",

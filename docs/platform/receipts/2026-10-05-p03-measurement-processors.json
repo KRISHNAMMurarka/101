@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "task": "P03",
+  "result": "pass",
+  "sourceTree": "ab5693a76bb8f534b51abd4fdf63c1ebefce9151",
+  "sdkArtifact": "release/sdk-wBHpcK/manifest.json",
+  "sdkManifestSha256": "c807aa8801dcdef1c2c025c9aa1ad77170db51828a08e6382c5c20dc4059eb0c",
+  "consumerQaToolSha256": "76c19bd275c5909c9eec377cfe71d571ec10e5741e97d788f8bed5594927a286",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused scalar processor tests: 8 passed, including first observed missing-export failure",
+    "Repository gates: TypeScript, ESLint (zero errors, one pre-existing native warning), 826 unit tests, local build and 33 rendered tests passed",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "P03 selected scalar calibration, explicit unit conversion and bounded moving average preserve measurement units, producer calibration revision, conservative absolute uncertainty and capture/processing timing. Fixtures cover saturation, malformed input, stale input, explicit reset, upstream reconfiguration, clock mismatch and gaps. This does not certify physical calibration, automatically connect a graph, enforce processor budgets or propagate runtime failures (P08).",
+  "published": false
+}
