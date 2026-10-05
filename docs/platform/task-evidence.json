@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 45,
+  "revision": 46,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3208,24 +3208,29 @@
       ]
     },
     {
-      "id": "pending-E07",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "device-simulator-2026-10-05",
+      "revision": "containing E07 commit, base 5c50733; immutable SDK producer tree 8958d530db5ff679d458b969449678a7ef421e45",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "E07"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-runtime/src/simulator.test.ts",
+        "docs/platform/receipts/2026-10-05-e07-simulator.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Provide simulator and fault-injection tools. Developers replay bounded typed samples, simulate devices, revoke permissions and inject disconnect/loss without physical hardware.",
-      "scope": "E07 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical device qualification",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/simulator.test.ts; node tools/build-sdk.mjs 8958d530db5ff679d458b969449678a7ef421e45; node tools/qa-sdk-consumer.mjs release/sdk-kkyPNS/manifest.json; exact candidate repository gates",
+      "scope": "E07 local developer simulator: bounded prevalidated replay of typed samples over actual embedded runtime registrations and authorization; mock grants, revocation, endpoint disconnect/reconnect, source loss, queued-delivery clearing and bounded simulated effects. Actual embedded temperature descriptor runs in clean packed consumers. Physical device and transport qualification remain separate.",
       "failure": null,
-      "equipment": [
-        "Clean external consumer/toolchain"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-E08",
@@ -9081,7 +9086,7 @@
     {
       "id": "E07",
       "records": [
-        "pending-E07"
+        "device-simulator-2026-10-05"
       ],
       "dependencies": [
         "M01",

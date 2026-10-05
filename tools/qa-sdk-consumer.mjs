@@ -202,8 +202,8 @@ import { createScalarCalibrationProcessor, createScalarConversionProcessor, crea
 import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
 import { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from '@101/device-model';
 import type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdgeProcessor, LatestResampler } from '@101/device-model';
-import { createProcessorRegistry, createPlacementScheduler, createApplicationSnapshot, restoreApplicationSnapshot } from '@101/device-runtime';
-import type { ResolvedProcessor, PlacementScheduler, PlacementResult, PlacementAuthorityRequest, ApplicationSnapshot, SnapshotRestoreResult } from '@101/device-runtime';
+import { createProcessorRegistry, createPlacementScheduler, createApplicationSnapshot, restoreApplicationSnapshot, createDeviceSimulator } from '@101/device-runtime';
+import type { ResolvedProcessor, PlacementScheduler, PlacementResult, PlacementAuthorityRequest, ApplicationSnapshot, SnapshotRestoreResult, DeviceSimulator, SimulatorEvent } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -222,13 +222,16 @@ const registryFactory: typeof createProcessorRegistry = createProcessorRegistry;
 const placementFactory: typeof createPlacementScheduler = createPlacementScheduler;
 const snapshotFactory: typeof createApplicationSnapshot = createApplicationSnapshot;
 const restoreFactory: typeof restoreApplicationSnapshot = restoreApplicationSnapshot;
+const simulatorFactory: typeof createDeviceSimulator = createDeviceSimulator;
 let placement: PlacementScheduler | undefined;
 let placementResult: PlacementResult | undefined;
 let placementAuthority: PlacementAuthorityRequest | undefined;
 let applicationSnapshot: ApplicationSnapshot | undefined;
 let snapshotResult: SnapshotRestoreResult | undefined;
+let simulator: DeviceSimulator | undefined;
+let simulatorEvent: SimulatorEvent | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -379,7 +382,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -543,6 +546,27 @@ export async function checkRuntime() {
     check(resumed.ok && resumed.state.count === 2 && resumed.processorState === 'reset-on-resume' &&
       !missingAsset.ok && missingAsset.alternative === 'install-assets-then-cold-restart' &&
       !changedFormat.ok && changedFormat.alternative === 'cold-restart', 'Packed snapshot compatibility failed');
+    const sensorDevice = resourceDevices.find(device => device.id === 'demo-thermometer');
+    const dashboardDevice = { ...sensorDevice, id: 'simulated-dashboard',
+      capabilities: [{ ...sensorDevice.capabilities[0], id: 'temperature-input', kind: 'property',
+        permissions: ['write'], ownership: { mode: 'exclusive' } }] };
+    const simulation = runtime.createDeviceSimulator({
+      sources: [{ id: 'sensor', device: sensorDevice, capability: 'temperature' }],
+      sinks: [{ id: 'dashboard', device: dashboardDevice, capability: 'temperature-input' }],
+      routes: [{ id: 'route', from: 'sensor', to: 'dashboard', principalId: 'owner',
+        applicationId: 'example:simulation', sessionId: 'local-test' }],
+    });
+    try {
+      const results = simulation.replay([{ at: 0, kind: 'grant', routeId: 'route' },
+        { at: 0, kind: 'connect', routeId: 'route' },
+        { at: 10, kind: 'sample', sourceId: 'sensor', value: 31 }, { at: 10, kind: 'flush' },
+        { at: 20, kind: 'loss', sourceId: 'sensor' }, { at: 30, kind: 'reconnect', endpointId: 'sensor' },
+        { at: 30, kind: 'connect', routeId: 'route' }]);
+      const events = simulation.events();
+      check(results.slice(0, -1).every(item => item.ok) && !results.at(-1).ok &&
+        events[0]?.kind === 'delivery' && events[0]?.value === 31 &&
+        events[1]?.kind === 'release' && events[1]?.reason === 'stale', 'Packed simulator replay/fault injection failed');
+    } finally { simulation.close(); }
   } finally { routeGroup.runtime.close(); }
   let crossClockRejected = false;
   try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "E07",
+  "result": "pass",
+  "sourceTree": "8958d530db5ff679d458b969449678a7ef421e45",
+  "sdkArtifact": "release/sdk-kkyPNS/manifest.json",
+  "sdkManifestSha256": "f0c927e67a315d4c2c6eae6eceb41291a828c52715837c39d24a23a8899f050d",
+  "consumerQaToolSha256": "0453160383d5e4067af8b55ab080db3a86d1ac2dd6e0f4bdf8e5ac22a4d6c5e5",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused simulator tests: 5 passed after first observed missing-export failure",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "E07 local developer simulator: bounded prevalidated replay of typed samples over actual embedded runtime registrations and authorization; mock grants, revocation, endpoint disconnect/reconnect, source loss, queued-delivery clearing and bounded simulated effects. Actual embedded temperature descriptor runs in clean packed consumers. This does not establish physical-device or transport qualification.",
+  "published": false
+}

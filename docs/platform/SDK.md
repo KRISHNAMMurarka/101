@@ -441,6 +441,23 @@ state continuity, rejection and nonmutation. The packed consumer checks this
 contract in Node and three browser engines. Transport authentication, host
 code-byte verification, pausing and single-authority transfer remain separate.
 
+## Local device simulator
+
+`createDeviceSimulator({ sources, sinks, routes })` runs reviewed descriptors
+through the same typed, authorized embedded runtime used by applications.
+`replay(steps)` accepts at most 256 closed JSON steps with nondecreasing integer
+times. Steps can grant a simulated route, connect it, publish a typed sample,
+flush delivery, revoke, disconnect/reconnect an endpoint or mark source input
+stale. The entire script is validated before any step runs. Unknown resources
+and invalid samples fail without reaching a sink. `events()` returns at most
+256 simulated deliveries/releases; `close()` releases runtime ownership.
+
+Grants in this tool are test controls, not real owner consent. Disconnect and
+input loss clear those controls and require a new grant and route generation.
+The packed consumer replays the embedded temperature descriptor in Node and
+Chromium, Firefox and WebKit. No physical device or transport is simulated as
+a qualified hardware result.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp
