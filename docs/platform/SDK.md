@@ -448,8 +448,7 @@ room-control host binds its pinned temperature processor, authorizes the two
 declared resource legs, produces one simulated relay command and records
 separate observed feedback. The declaration
 does not discover devices, load code, grant access or render a UI. Static
-resolution and consent-gated execution are described below; adaptive rendering
-remains E05. Consumers must obtain fresh host grants before
+resolution and consent-gated execution are described below; reusable control descriptions are documented below. Consumers must obtain fresh host grants before
 running any selected recipe.
 
 `resolveRecipe(recipe, { devices, processors, selections })` checks explicit
@@ -919,6 +918,32 @@ parser-only finite-number, relational, byte, depth and plain-object constraints.
 | Reliable records per route | Default 64; configurable 1–256 |
 | Unresolved deliveries across the runtime | Default 256; configurable 1–4096 |
 | Ownership lease | Default 1500 ms; configurable 1–30000 ms |
+
+## Reusable control surfaces
+
+`parseControlSurface` validates immutable `ControlSurface/1` descriptions separately from Recipe/1. Boxes contain one layer of text, labeled readouts, activation buttons, toggles, sliders and native choices. Descriptions contain no executable code, resource permissions, HTML, links or arbitrary CSS. Limits are 32 KiB, 64 total nodes, 32 top-level nodes/children per box, eight semantic styles and sixteen choices. Slider bounds and initial values must fit a finite step grid with at most 10,000 intervals.
+
+`mountControlSurface({ container, description, onControl, callbackTimeoutMs? })` renders native HTML with labels, readable fixed statuses, visible keyboard focus and 44-pixel targets. All controls initially remain unavailable. The host explicitly calls `setEnabled` after obtaining a current grant, and disables controls on revocation. `onControl(event, { signal })` receives validated ID/kind/value/sequence input. A successful callback means input handling finished; it does not establish resource permission or physical effects. The independent `control-surface` packed example separately authorizes four typed runtime routes into a local application.
+
+State choices retain at most one latest queued input per control. Pending activation buttons reject duplicates while retaining focus. Callback rejection or timeout restores the accepted state and exposes a retry. Timeout defaults to two seconds, configurable from 100 to 10,000 ms; revocation, replacement and close abort pending signals and fence late completion. `setValue` updates declared state without emission; `setText` only updates bounded readouts as literal text. `close()` removes owned listeners, observer, DOM and timers.
+
+ResizeObserver measures the container and selects one to four columns without reordering controls or losing focus. Monochrome normal/muted/caution tokens, comfortable/compact spacing and optional 120-ms feedback styles support dark mode, forced colors and reduced motion. Keyboard and pointer use the same native controls. This library supplies reusable primitives; phone ergonomic acceptance, screen-reader journeys and all-platform reference application flows remain their separate U/G qualification rows.
+
+## Opted-in telemetry history
+
+`createTelemetryHistory({ ownerId, storage, trustedNow, authorize, limits? })` is independent of live runtime queues. An explicit `requestCapture` requires an exact owner/resource/schema-version/selected-fields/purpose/destination/deadline grant. It returns an opaque in-memory handle; `enqueue` synchronously snapshots a bounded observation and returns backpressure without waiting for storage. Capture defaults off. Supported fields are closed scalar/boolean/enum records, with selected calibration/processor/conversion provenance. Original source clock, time and quality are preserved; trusted ingestion time controls retention.
+
+`createIndexedDbTelemetryStorage({ databaseName, indexedDB? })` atomically updates one bounded owner envelope. `flush` commits at most sixteen rows / 32 KiB per call. Hard ceilings are sixteen pending rows / 64 KiB, 256 retained rows / 1 MiB, 4 KiB per row, sixteen handles per action and seven-day retention; defaults retain 24 hours. Oldest rows are evicted at the configured quota. Expiry is applied on subsequent history execution; hosts can schedule `sweep` with an owned timer. Invalid storage or a backwards/nonfinite clock retires authority. Close storage and history on unmount.
+
+Uploading requires a separate exact `requestUpload` grant and trusted uploader closure. One batch runs at a time with bounded timeout, retries/backoff, stable batch IDs and exact ACK validation. Credentials remain inside the closure, absent from storage/export. A reopened history retains rows but restores no capture/upload handles or automatic forwarding. A new grant is required. `exportPage` and owner-local `delete` are bounded; deletion changes the stored epoch to fence delayed writes/ACKs. Remote recipient deletion, audit retention, backup and cross-device sync remain B05/B06 work. The packed memory example preserves actual process RSS and its producer clock; browser proof uses genuine IndexedDB and a local-only unavailable recipient followed by ACK while a real independent command route still delivers.
+
+## Durable local artifact jobs
+
+`createDurableArtifactJobStore({ ownerId, storage, authorize, now? })` implements the selected `101:local-artifact/1` profile. Requests pin application, destination, idempotency key, input asset SHA-256 and bounded progress units. It retains at most eight jobs, four attempts per job, 64 progress units, 64 KiB owner document/input and 4 KiB output. Execution lasts at most sixty seconds. Grant deadline/current-check/signal fields must be own data properties; accessors are rejected and captured values cannot extend authority. `submit` preserves idempotency; changed requests conflict. `start` verifies supplied input bytes and obtains fresh host authority. Attempts expose an AbortSignal plus `progress`, `commit` and `fail`.
+
+`createIndexedDbArtifactJobStorage(indexedDB, databaseName)` supplies atomic compare-and-swap with a current-authority/signal guard at the write. Output bytes, asset reference and completion evidence commit in the same owner transaction. Cancellation, revocation, expiry and generations fence late writes. No external artifact write is claimed atomic. Reopening accepted/running work requires explicit owner review, current input and a fresh grant through `restartReviewed`; work never replays automatically. Historical attempts retain their outcomes. Corrupt/future/foreign documents are preserved; `recoverStorageReviewed` permits explicit recovery only for this owner's unreadable records, never erases healthy history or a recognizable foreign owner. A backwards clock retires authority. `readOutput` obtains separate fresh authority and verifies retained bytes; `close` retires signals synchronously and records owned interruption asynchronously.
+
+The packed `durable-artifact-jobs` caller runs an actual authorized `kind: job` route, yields through bounded chunk generation, commits a local artifact, then independently verifies retained bytes and SHA-256 before recording observed local evidence. A duplicate request reads the same artifact without dispatch. This is evidence for that selected local profile; printer dispatch, recording profiles, physical effects and their device/runtime acceptance remain A13/V11/G scope.
 
 ## Versioned owner settings
 

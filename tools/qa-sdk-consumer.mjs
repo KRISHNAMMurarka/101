@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -189,6 +189,9 @@ import { runResourceDocumentExample } from '@101/connect/examples/resource-docum
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
 import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExample } from '@101/connect/examples/recipe';
 import { runConformanceExample } from '@101/connect/examples/conformance';
+import { createMemoryTelemetryHistory } from '@101/connect/examples/telemetry-history';
+import { createControlSurfaceExample } from '@101/connect/examples/control-surface';
+import { runDurableArtifactJobsExample } from '@101/connect/examples/durable-artifact-jobs';
 import { runSettingsStorageExample } from '@101/connect/examples/settings-storage';
 import { parseRecipe, resolveRecipe } from '@101/device-model';
 import type { Recipe, RecipeResolution } from '@101/device-model';
@@ -341,7 +344,7 @@ async function resourceConsumer(): Promise<Readonly<AssetReference>> {
   return parseAssetReference(reference);
 }
 void resourceConsumer;
-void [runConformanceExample, runSettingsStorageExample];
+void [runConformanceExample, runSettingsStorageExample, createMemoryTelemetryHistory, createControlSurfaceExample, runDurableArtifactJobsExample];
 void [createSettingsStore, createIndexedDbSettingsStorage, createRuntimeInspector, runConnectorConformance, runProcessorConformance];
 const described: MediaManifest = parseMediaManifest({ schemaVersion: 1, id: 'media:empty-output', tracks: [],
   renderTargets: [{ type: 'render-target', id: 'media:surface', media: 'video', geometry: { widthPx: 640, heightPx: 480, pixelRatio: 1 } }] });

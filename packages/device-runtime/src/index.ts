@@ -28,3 +28,6 @@ export { runConnectorConformance, runProcessorConformance } from './conformance.
 export type { ConformanceCheck, ConformanceReport, ConformanceEndpoint, ConnectorConformanceHost, ConnectorConformanceAdapter, TrustedConnectorCandidate, ConnectorConformanceFixture, ProcessorConformanceFixture } from './conformance.ts';
 export { createRuntimeInspector, InspectorDiagnosticError } from './inspector.ts';
 export type { RuntimeInspector, RuntimeInspectorOptions, InspectorAction, InspectorGrant, InspectorTrace, InspectorResource, InspectorRoute, InspectorSnapshot } from './inspector.ts';
+export * from './telemetry-history.ts';
+export * from './telemetry-storage.ts';
+export * from './durable-artifact-jobs.ts';

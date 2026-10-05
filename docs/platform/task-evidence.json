@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 69,
+  "revision": 70,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7435,6 +7435,78 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "b02-local-sdk-2026-10-06",
+      "revision": "12a0a8a154ec75c700292e8691644e7f745c7178",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B02"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-history-jobs-controls.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node tools/build-sdk.mjs 12a0a8a154ec75c700292e8691644e7f745c7178; node tools/qa-sdk-consumer.mjs <new manifest>; node tools/qa-telemetry-history.mjs <fresh packed consumer>; focused unit regressions and required exact candidate repository gates",
+      "scope": "Owner-scoped opted-in bounded scalar/boolean/enum telemetry history, independent synchronous enqueue, genuine IndexedDB atomic persistence, selected source clock/time/quality/provenance, quotas/expiry/backpressure and separately granted bounded upload/retry/ACK using a local-only unavailable recipient. No restored grants, automatic forwarding, remote recipient deletion, audit retention, backup or cross-device sync claim; B05/B06 remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "b04-local-sdk-2026-10-06",
+      "revision": "12a0a8a154ec75c700292e8691644e7f745c7178",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B04"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-history-jobs-controls.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node tools/build-sdk.mjs 12a0a8a154ec75c700292e8691644e7f745c7178; node tools/qa-sdk-consumer.mjs <new manifest>; node tools/qa-durable-artifact-jobs.mjs <fresh packed consumer>; focused unit regressions and required exact candidate repository gates",
+      "scope": "Durable evidence for selected 101:local-artifact/1 jobs: owner/idempotency/input pins, bounded progress/attempts, fresh grant/current/deadline checks, cancellation and review-required restart, atomic retained output bytes and receipt, independent retained hash verification. Genuine IndexedDB and public kind:job caller exercised; printer, recording and physical effect qualification remain A13/V11/G scope.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "e05-local-sdk-2026-10-06",
+      "revision": "12a0a8a154ec75c700292e8691644e7f745c7178",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E05"
+      ],
+      "paths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-history-jobs-controls.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55, Firefox151.0, WebKit26.5",
+      "reproduction": "node tools/build-sdk.mjs 12a0a8a154ec75c700292e8691644e7f745c7178; node tools/qa-sdk-consumer.mjs <new manifest>; node tools/qa-control-surface.mjs <fresh packed consumer>; focused unit regressions and required exact candidate repository gates",
+      "scope": "ControlSurface/1 bounded inert description/parser and native HTML renderer for boxes, text, labeled readouts, buttons, toggles, sliders and choices. Measured layout and native keyboard/pointer/touch input, focus, 44px targets, monochrome styles, reduced motion, bounded async retry/coalescing and lifecycle teardown. Public caller uses four explicitly approved typed runtime routes. Physical ergonomics, screen-reader journeys and full reference app flows remain U/G scope.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9603,7 +9675,8 @@
     {
       "id": "B02",
       "records": [
-        "pending-B02"
+        "pending-B02",
+        "b02-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9632,7 +9705,8 @@
     {
       "id": "B04",
       "records": [
-        "pending-B04"
+        "pending-B04",
+        "b04-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -9733,7 +9807,8 @@
     {
       "id": "E05",
       "records": [
-        "pending-E05"
+        "pending-E05",
+        "e05-local-sdk-2026-10-06"
       ],
       "dependencies": [
         "M01",

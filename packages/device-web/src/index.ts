@@ -25,3 +25,5 @@ export type { TouchContact, TouchContactSourceOptions } from './touch-contact-dr
 export { GestureSourceDriver, GESTURE_TRANSITION_SCHEMA, GESTURE_WHEEL_SCHEMA } from './gesture-driver.ts';
 export type { GestureTransition, GestureWheel, GestureSurface, GestureSourceOptions } from './gesture-driver.ts';
 export { gestureSourceDescriptor, mountGestureSource } from './gesture-source.ts';
+export { mountControlSurface } from './control-surface.ts';
+export type { ControlSurfaceOptions, MountedControlSurface, SurfaceControlEvent, SurfaceControlContext, SurfaceControlCallback } from './control-surface.ts';

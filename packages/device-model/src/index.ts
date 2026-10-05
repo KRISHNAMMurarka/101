@@ -56,3 +56,5 @@ export type { Recipe, RecipeResource, RecipeProcessor, RecipeRoute, RecipeEndpoi
 export { resolveRecipe } from './recipe-resolver.ts';
 export type { RecipeSelection, RecipeAlternative, RecipeResolutionIssue, ResolvedRecipe,
   RecipeResolution } from './recipe-resolver.ts';
+export { parseControlSurface, surfaceColumnCount, surfaceControlValueValid } from './control-surface.ts';
+export type { ControlSurface, ControlSurfaceStyle, SurfaceNode, SurfaceLeaf, SurfaceControl } from './control-surface.ts';
