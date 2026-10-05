@@ -293,6 +293,26 @@ and rejects changed bytes. The packed public model/runtime/facade API is also
 checked in a clean external consumer. This proves the registry contract, not
 physical sensor accuracy or an installed third-party processor.
 
+## Processor graph validation
+
+`validateProcessorGraph()` snapshots a bounded schema-1 graph of concrete resource
+descriptors and processor manifests. Each edge names an existing output and
+input port. Their complete value schemas must match, including units, frames
+and ranges; an undeclared converter never appears by inference. Resource
+sources must declare `subscribe`, while property sinks require `write` and
+command/job sinks require `invoke`. The returned requirements are not grants;
+the runtime still obtains owner authority for each route.
+
+Processor inputs have one producer, all declared ports are connected, and
+each node lies on a source-to-sink path. Ordinary edges form an acyclic
+execution order. Feedback is allowed only between processors with positive
+delay, maximum age, pending count and iteration count under fixed ceilings;
+missing or zero bounds fail validation. This is an inert plan, not a feedback
+scheduler: any executor must enforce those ceilings and reset/release on loss
+under P08. The Celsius threshold example validates its real source, processor
+and relay declarations before registering routes. The packed SDK consumer
+checks that plan in Node, Chromium, Firefox and WebKit.
+
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2
 adapter validates each version and labels migrated readings `unverified`. Timestamp

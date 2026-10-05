@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 38,
+  "revision": 39,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2571,24 +2571,30 @@
       "supportRows": []
     },
     {
-      "id": "pending-P02",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "processor-graph-validation-2026-10-05",
+      "revision": "containing P02 commit, base 4f29e47; immutable SDK producer tree 0de1cbb8d67fa56d4c76ba4f7b1cc4f2f590a078",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "P02"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-model/src/processor-graph.test.ts",
+        "tests/device-pipelines.test.ts",
+        "docs/platform/receipts/2026-10-05-p02-processor-graph.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement graph validation. Match typed ports and permissions; reject undeclared conversion, invalid cycles and unbounded feedback; explicit delayed feedback gets its own bounded tests.",
-      "scope": "P02 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical sensor qualification",
+      "reproduction": "node --experimental-strip-types --test packages/device-model/src/processor-graph.test.ts tests/device-pipelines.test.ts; node tools/build-sdk.mjs 0de1cbb8d67fa56d4c76ba4f7b1cc4f2f590a078; node tools/qa-sdk-consumer.mjs release/sdk-jM7JEP/manifest.json; exact candidate repository gates",
+      "scope": "P02 only: versioned bounded graph validator checks typed ports, resource permission declarations, no implicit conversion, fan-in/disconnected nodes, ordinary cycles and bounded delayed feedback declarations; actual Celsius caller and packed consumers pass. Runtime grant enforcement, feedback scheduling, processor failure propagation and physical qualification remain separate.",
       "failure": null,
-      "equipment": [
-        "Documented sensor/camera inputs; supported execution targets"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-P03",
@@ -8624,7 +8630,7 @@
     {
       "id": "P02",
       "records": [
-        "pending-P02"
+        "processor-graph-validation-2026-10-05"
       ],
       "dependencies": [
         "M01",

@@ -1,5 +1,5 @@
-import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming } from '@101/connect';
-import type { Authorize, DeliveryContext, DeviceCapability, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, PublishOptions } from '@101/connect';
+import { assessDeviceHealth, createDeviceRuntime, parseDeviceHealthReport, parseMeasurementReport, parseObservationTiming, validateProcessorGraph } from '@101/connect';
+import type { Authorize, DeliveryContext, DeviceCapability, DeviceDescriptor, DeviceHealthReport, JsonObject, MeasurementReport, ProcessorManifest, PublishOptions } from '@101/connect';
 import { createTemperatureThreshold } from './threshold.ts';
 
 interface SensorOptions { feedback?: boolean; now?: () => number; authorize?: Authorize }
@@ -36,6 +36,33 @@ const relay: DeviceDescriptor = {
   adapter: { id: 'example:embedded-relay', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [{ ...relayStateCapability, id: 'set-state', kind: 'command', permissions: ['invoke'], ownership: { mode: 'exclusive' } }],
 };
+
+const thresholdManifest: ProcessorManifest = {
+  schemaVersion: 1, id: 'example:temperature-threshold', version: '1.0.0',
+  codeSha256: 'dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793',
+  inputs: [{ id: 'temperature', value: temperatureCapability.value }],
+  outputs: [{ id: 'switch', value: relayStateCapability.value }],
+  configuration: { type: 'record', fields: {
+    onAt: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
+    offAt: { type: 'scalar', unit: 'Cel', min: -40, max: 125 },
+  } },
+  state: { mode: 'resettable', resetOn: ['input-loss', 'stop', 'reconfigure'] },
+  assets: [], license: 'MIT',
+  budgets: { maxComputeMs: 5, maxMemoryBytes: 65536, privacy: 'local-only' },
+};
+
+const graphPlan = validateProcessorGraph({
+  schemaVersion: 1,
+  nodes: [
+    { id: 'sensor', kind: 'resource', direction: 'source', device: thermometer, capability: 'temperature' },
+    { id: 'threshold', kind: 'processor', manifest: thresholdManifest },
+    { id: 'relay', kind: 'resource', direction: 'sink', device: relay, capability: 'set-state' },
+  ],
+  edges: [
+    { from: { node: 'sensor', port: 'temperature' }, to: { node: 'threshold', port: 'temperature' } },
+    { from: { node: 'threshold', port: 'switch' }, to: { node: 'relay', port: 'set-state' } },
+  ],
+});
 
 /** Explicit two-leg processor wiring. All output and feedback here are simulated. */
 export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
@@ -114,7 +141,7 @@ export function createSensorFeedbackPipeline(options: SensorOptions = {}) {
   const downstream = runtime.route({ from: derived, to: relaySink, ...identity });
   const outputStart = downstream.start();
   return {
-    runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
+    graphPlan, runtime, sensor, derived, processorSink, relaySink, upstream, downstream, inputStart, outputStart,
     publishTemperature(value: unknown, publication?: PublishOptions) { return runtime.publish(sensor, value, publication); },
     publishReport(input: unknown) {
       const report = parseMeasurementReport(input, temperatureCapability.value);

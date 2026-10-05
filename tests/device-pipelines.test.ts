@@ -19,6 +19,14 @@ test('the pointer example maps normalized coordinates to the destination dimensi
   example.runtime.close();
 });
 
+test('the sensor feedback caller validates its typed graph before registering routes', () => {
+  const example = createSensorFeedbackPipeline();
+  try {
+    assert.deepEqual(example.graphPlan.executionOrder, ['sensor', 'threshold', 'relay']);
+    assert.deepEqual(example.graphPlan.requiredOperations.map(({ operation }) => operation), ['subscribe', 'invoke']);
+  } finally { example.runtime.close(); }
+});
+
 test('an exclusive pointer is busy until its current owner releases it', () => {
   const example = createPointerPipeline();
   const other = example.runtime.route({

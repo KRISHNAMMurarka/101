@@ -34,3 +34,5 @@ export { INPUT_PROFILE_IDS, getInputProfile } from './input-profile.ts';
 export type { InputProfile, InputProfileId } from './input-profile.ts';
 export { parseProcessorManifest } from './processor-manifest.ts';
 export type { ProcessorAsset, ProcessorManifest, ProcessorPort } from './processor-manifest.ts';
+export { validateProcessorGraph } from './processor-graph.ts';
+export type { ProcessorGraphNode, ProcessorGraphEndpoint, ProcessorGraphEdge, ProcessorGraphPlan, ProcessorFeedbackBound } from './processor-graph.ts';

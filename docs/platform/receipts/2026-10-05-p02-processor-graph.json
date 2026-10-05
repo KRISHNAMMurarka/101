@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "P02",
+  "result": "pass",
+  "sourceTree": "0de1cbb8d67fa56d4c76ba4f7b1cc4f2f590a078",
+  "sdkArtifact": "release/sdk-jM7JEP/manifest.json",
+  "sdkManifestSha256": "695a0102bd49bf2e4f9a83921c88d891d91fa88ffaebcdce07c990a771a23661",
+  "consumerQaToolSha256": "7a56c5de358431ae9a3eb62cf7203d3009ecf4bf7b0971326bbb92ee538c42e5",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused graph and actual sensor-pipeline tests: 19 passed",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "Schema-1 graph validation checks exact typed ports, declared resource operations, single-producer inputs, source-to-sink coverage, acyclic ordinary edges and bounded delayed feedback declarations. The embedded Celsius threshold caller validates its graph before route registration. The plan does not grant resources, schedule feedback, enforce processor budgets or qualify physical sensor accuracy.",
+  "published": false
+}

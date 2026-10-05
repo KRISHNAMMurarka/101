@@ -192,6 +192,8 @@ import { getInputProfile, INPUT_PROFILE_IDS } from '@101/device-model';
 import type { InputProfile } from '@101/device-model';
 import { parseProcessorManifest } from '@101/device-model';
 import type { ProcessorManifest } from '@101/device-model';
+import { validateProcessorGraph } from '@101/device-model';
+import type { ProcessorGraphPlan } from '@101/device-model';
 import { createProcessorRegistry } from '@101/device-runtime';
 import type { ResolvedProcessor } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
@@ -226,6 +228,8 @@ async function authenticated() {
 }
 const pointer = createPointerPipeline({ width: 500, height: 1000 });
 const sensor = createSensorFeedbackPipeline({ feedback: false });
+const graph: ProcessorGraphPlan = sensor.graphPlan;
+void [validateProcessorGraph, graph];
 const threshold = createTemperatureThreshold({ unit: 'Cel', onAt: 30, offAt: 28, revision: 1 });
 const telemetry = createTelemetryBatchPipeline({ now: () => 1000 });
 const migrated = upgradeTelemetryBatchV1([{ timestamp: 1000, residentBytes: 65536 }]);
@@ -331,7 +335,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -489,6 +493,9 @@ export async function checkRuntime() {
   } finally { jobRuntime.close(); }
   const healthPipeline = createSensorFeedbackPipeline({ now: () => 100 });
   try {
+    check(healthPipeline.graphPlan.executionOrder.join(',') === 'sensor,threshold,relay' &&
+      healthPipeline.graphPlan.requiredOperations.map(item => item.operation).join(',') === 'subscribe,invoke',
+      'Packed sensor caller did not validate its typed processor graph');
     check(healthPipeline.publishHealth(health).readiness === 'available', 'Packed health caller denied available resource');
     healthPipeline.publishTemperature(31.25); healthPipeline.runtime.flush();
     check(healthPipeline.downstream.status().pending === 1, 'Packed health fixture did not queue output');
