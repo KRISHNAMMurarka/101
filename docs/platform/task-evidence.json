@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 48,
+  "revision": 49,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2928,24 +2928,32 @@
       "supportRows": []
     },
     {
-      "id": "pending-R07",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "workload-handoff-2026-10-05",
+      "revision": "containing R07 commit, base 1b466e9; immutable SDK producer tree 099c808884b2e6bac5b2ad314d7c64fd42a6d2a7",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "R07"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "packages/device-runtime/src/workload-handoff.ts",
+        "packages/device-runtime/src/workload-handoff.test.ts",
+        "packages/device-runtime/src/index.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-r07-workload-handoff.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement pause/transfer/resume handoff. New route epochs and ownership leave one authoritative host; interrupted transfer recovers without dual simulation or stale commands.",
-      "scope": "R07 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; two separate local embedded hosts and packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical cross-host execution",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/workload-handoff.test.ts; node tools/build-sdk.mjs 099c808884b2e6bac5b2ad314d7c64fd42a6d2a7; node tools/qa-sdk-consumer.mjs release/sdk-bAROSR/manifest.json; exact candidate repository gates",
+      "scope": "R07 trusted host-adapter local handoff: pause/capture, validated snapshot and asset bytes, effect-free target staging, source retirement, new target route epoch and resume. Abort and cancellation fence old authority; recovery restores the source under a newer epoch after in-flight callbacks acknowledge. Failed recovery remains paused. Two embedded hosts reject queued stale commands; packed temperature workload passes. Host authentication, remote transport, installed code-byte checks, admission and physical R09 qualification remain separate.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-R08",
@@ -8895,7 +8903,7 @@
     {
       "id": "R07",
       "records": [
-        "pending-R07"
+        "workload-handoff-2026-10-05"
       ],
       "dependencies": [
         "M01",

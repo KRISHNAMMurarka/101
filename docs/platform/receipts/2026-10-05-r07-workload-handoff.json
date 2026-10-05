@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "task": "R07",
+  "result": "pass",
+  "sourceTree": "099c808884b2e6bac5b2ad314d7c64fd42a6d2a7",
+  "sdkArtifact": "release/sdk-bAROSR/manifest.json",
+  "sdkManifestSha256": "79a9aadf74717d8d475706684f20e80cfa11071e361423794f1ca0fb665f1f29",
+  "consumerQaToolSha256": "d9c20dd67cfbe093cef2655fbe912dae93007a63f0cf966c9267f16f0d405164",
+  "handoffSourceSha256": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+  "handoffTestSha256": "381f88dcf2e6cb5ea114680a95cfc379a4b0f8ce732bfdace807c65163b66ccb",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused handoff tests: 9 passed after first observed missing-export failure",
+    "Two separate embedded hosts: source queued command cancelled; only new target epoch dispatched",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "R07 trusted-adapter local handoff: source epoch is fenced before pause; versioned snapshot and required asset bytes are verified before target staging; source retirement precedes target authority. Cancellation or failure fences the target and restores source under a newer epoch after in-flight retirement or activation acknowledgement. Invalid snapshot, failed abort or failed recovery leaves no authority. Repeated handoff and embedded queued-command tests pass. Host authentication, remote transport, installed code-byte verification, target admission and physical cross-host qualification remain separate R09 work.",
+  "published": false
+}

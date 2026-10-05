@@ -16,3 +16,5 @@ export { createDeviceSimulator } from './simulator.ts';
 export type { DeviceSimulator, SimulatorEvent } from './simulator.ts';
 export { createRouteGroupController } from './route-group-runtime.ts';
 export type { RouteGroupController } from './route-group-runtime.ts';
+export { createWorkloadHandoff } from './workload-handoff.ts';
+export type { HandoffEpoch, HandoffHost, HandoffResult, WorkloadHandoff, WorkloadHandoffOptions } from './workload-handoff.ts';

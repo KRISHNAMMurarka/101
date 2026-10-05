@@ -460,8 +460,38 @@ then-cold-restart alternative. A cold-only workload cannot resume a capsule.
 The state validator must be side-effect free; the application applies state
 only after a successful result. The reference counter application tests exact
 state continuity, rejection and nonmutation. The packed consumer checks this
-contract in Node and three browser engines. Transport authentication, host
-code-byte verification, pausing and single-authority transfer remain separate.
+contract in Node and three browser engines. Transport authentication and host
+code-byte verification remain separate.
+
+## Workload handoff
+
+`createWorkloadHandoff({ workload, context, source, validateState })` coordinates
+a snapshot-capable application between trusted `HandoffHost` adapters. The
+caller supplies an already admitted source and target; each adapter owns its
+routes and checks `HandoffEpoch.isCurrent()` before every simulation turn and
+command dispatch, including queued work. `authority()` provides the initial
+source epoch. Host callbacks must be scoped to the supplied epoch so a late
+stop or abort cannot retire a newer run.
+
+`transfer(target)` revokes the source epoch before pausing it, captures the
+versioned application snapshot, verifies the target's asset bytes and state,
+and stages the target without effects. It waits for source retirement before
+granting the target a new epoch and resuming. A failed or cancelled transfer
+revokes the target, waits for any in-progress source stop or target resume to
+acknowledge, and restores the source from the verified snapshot under another
+new epoch. Cancellation during target staging can recover immediately; any
+late stage completion receives an epoch-scoped abort. If abort or source
+restoration fails, status is `paused` and neither host has authority. A host
+callback that never acknowledges can leave transfer pending with both epochs
+fenced; the orchestrator must handle that host failure.
+
+The local reference exercises two separate embedded hosts, queued-command
+cancellation, repeated transfer and interruption recovery in unit tests, and
+the temperature workload through the packed SDK consumer in Node and three
+browsers. This API does not authenticate hosts, transfer credentials, verify
+installed application code bytes or reserve target capacity. The orchestrator
+must use authorized placement and host-owned grants; live cross-host
+qualification remains R09.
 
 ## Local device simulator
 

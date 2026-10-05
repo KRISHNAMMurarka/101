@@ -157,13 +157,13 @@ function installAndAudit(manifest) {
 }
 
 const typeConsumer = String.raw`
-import { createDeviceRuntime, createRouteGroupController, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
+import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
   decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
-import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController } from '@101/device-runtime';
+import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { createPointerPipeline, runPointerExample } from '@101/connect/examples/pointer';
@@ -224,6 +224,7 @@ const snapshotFactory: typeof createApplicationSnapshot = createApplicationSnaps
 const restoreFactory: typeof restoreApplicationSnapshot = restoreApplicationSnapshot;
 const simulatorFactory: typeof createDeviceSimulator = createDeviceSimulator;
 const routeGroupFactory: typeof createRouteGroupController = createRouteGroupController;
+const handoffFactory: typeof createWorkloadHandoff = createWorkloadHandoff;
 let placement: PlacementScheduler | undefined;
 let placementResult: PlacementResult | undefined;
 let placementAuthority: PlacementAuthorityRequest | undefined;
@@ -232,8 +233,10 @@ let snapshotResult: SnapshotRestoreResult | undefined;
 let simulator: DeviceSimulator | undefined;
 let simulatorEvent: SimulatorEvent | undefined;
 let routeGroupController: RouteGroupController | undefined;
+let workloadHandoff: WorkloadHandoff | undefined;
+let handoffHost: HandoffHost | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, routeGroupFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, routeGroupController, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, simulatorFactory, routeGroupFactory, handoffFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, simulator, simulatorEvent, routeGroupController, workloadHandoff, handoffHost, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -384,7 +387,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -613,6 +616,26 @@ export async function checkRuntime() {
     check(resumed.ok && resumed.state.count === 2 && resumed.processorState === 'reset-on-resume' &&
       !missingAsset.ok && missingAsset.alternative === 'install-assets-then-cold-restart' &&
       !changedFormat.ok && changedFormat.alternative === 'cold-restart', 'Packed snapshot compatibility failed');
+    let sourceRunning = true, targetRunning = false, targetState;
+    const handoffAssets = [{ reference: asset, bytes: assetBytes }];
+    const handoffSource = { id: 'old', assets: handoffAssets,
+      pause(epoch) { check(!epoch.isCurrent(), 'Source epoch remained authoritative during pause');
+        sourceRunning = false; return { count: 2, lastTemperature: 31 }; },
+      stage() {}, resume(epoch) { check(epoch.isCurrent(), 'Source rollback epoch was not current'); sourceRunning = true; },
+      stop() { sourceRunning = false; }, abort() { sourceRunning = false; } };
+    const handoffTarget = { id: selected.placement.hostId, assets: handoffAssets,
+      pause() { targetRunning = false; return targetState; },
+      stage(state, epoch) { check(!epoch.isCurrent(), 'Target staged with active authority'); targetState = state; },
+      resume(epoch) { check(epoch.isCurrent(), 'Target resumed before ownership transfer'); targetRunning = true; },
+      stop() { targetRunning = false; }, abort() { targetRunning = false; } };
+    const handoff = runtime.createWorkloadHandoff({ workload: snapshotWorkload,
+      context: { devices: resourceDevices, processors: [processorManifest] }, source: handoffSource, validateState });
+    const oldAuthority = handoff.authority();
+    const handoffResult = await handoff.transfer(handoffTarget);
+    check(handoffResult.ok && handoffResult.epoch === 2 && !oldAuthority.isCurrent() &&
+      handoff.authority().isCurrent() && handoff.status().hostId === handoffTarget.id &&
+      !sourceRunning && targetRunning && targetState.count === 2,
+      'Packed handoff did not fence old commands and resume exact state on the selected host');
     const sensorDevice = resourceDevices.find(device => device.id === 'demo-thermometer');
     const dashboardDevice = { ...sensorDevice, id: 'simulated-dashboard',
       capabilities: [{ ...sensorDevice.capabilities[0], id: 'temperature-input', kind: 'property',
