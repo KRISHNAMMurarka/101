@@ -301,18 +301,27 @@ and enrolls actual resources before exposing them.
 | `app:pointer/1` | Normalized absolute position: latest, 60/s, 100 ms age; contact: reliable event, 100 ms age | Application surface position and press/release; the current pointer provider uses this template. It is not OS pointer injection. |
 | `app:keyboard/1` | Version 2 key transition: reliable event, 1000 ms age | Physical code, logical key, modifiers, repeat and up/down remain distinct. Text insertion is separate. |
 | `app:text/1` | Version 2 composition: reliable event, 1000 ms age | Start/update/end/commit phases are explicit; ending composition does not commit text. |
-| `app:gamepad/1` | Up to 16 normalized axes: latest, 60/s, 100 ms age; one of 32 declared button IDs with pressed/pressure: reliable event, 1000 ms age | A provider must probe the actual axis/button inventory and map only offered controls. These template ceilings do not imply 16 axes or 32 buttons exist. |
+| `app:gamepad/1` | Up to 16 normalized axes and calibrated trigger values: latest, 60/s, 100 ms age; one of 32 declared button IDs with pressed/pressure and up to 16 hat directions: reliable events, 1000 ms age | A provider probes actual axes/buttons and declares trigger and hat mappings. Button and hat edges remain distinct from analog samples. Template ceilings imply no physical inventory. |
 | `app:touch/1` | Version 2 contact transition: reliable event, 1000 ms age | Stable contact ID and down/move/up/cancel survive separately; no coalescing of edges. |
 | `app:gesture/1` | Gesture transition and version 2 wheel: reliable events, 1000 ms age; normalized position: latest, 60/s, 100 ms age | Selected-surface tap, press, drag and multi-contact scroll; wheel units and modifiers stay explicit. |
 | `app:pen/1` | Version 2 pen transition: reliable event, 1000 ms age | Contact, pressure, tilt and twist retain declared bounds and phases. |
+| `app:rotary/1` | Signed detent delta: reliable event, 1000 ms age | Crown/encoder counts use an explicit counts-per-detent calibration; fractional and reverse turns remain distinct events. |
 | `app:switch/1` | One of 16 declared switch channels with active state: reliable event, 1000 ms age | Generic switch input; a caller must offer equivalent keyboard controls. There is no assistive-technology detection or physical HID support claim. |
 
 The template describes source semantics and destination operation, not a route
 grant. Each signal needs its own compatible sink, owner consent and lifecycle.
 Loss, unmount and revocation release held output. Wheel and relative pointer
 events use the existing version 2 rich input schemas when a provider actually
-offers them. Detailed gamepad/pen handling and physical assistive support
-remain I06/I11 work.
+offers them. The [input detail example](../../examples/device-pipelines/input-details.ts)
+uses synthetic producer values with `createPenDetailProcessor`,
+`createRotaryDeltaProcessor` and `createGamepadDetailProcessor`. Pen pressure
+range and tilt/twist offsets, rotary counts per detent, and probed gamepad
+axis ranges/deadzones and optional raw trigger ranges are explicit calibration inputs. Invalid ranges fail
+instead of saturating silently. Gamepad processing preserves analog trigger
+values, emits only changed button/hat edges, and `release()` emits held-state
+releases on disconnect. Hosts must still probe real hardware, authorize each
+route and stop/release on loss; this example does not qualify physical pen,
+crown, encoder or gamepad behavior. Physical assistive support remains I11 work.
 The [embedded rich-input example](../../examples/device-pipelines/rich-input.ts)
 uses six separately authorized routes and DOM-shaped simulated events. Actual
 browser/native input provider availability and physical behavior are not

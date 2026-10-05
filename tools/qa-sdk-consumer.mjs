@@ -132,7 +132,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -148,7 +148,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -181,6 +181,8 @@ import type { TouchContact } from '@101/connect';
 import { createGesturePipeline, runGestureExample } from '@101/connect/examples/gestures';
 import { GestureSourceDriver, mountGestureSource, gestureSourceDescriptor } from '@101/connect';
 import type { GestureTransition, GestureWheel } from '@101/connect';
+import { runInputDetailsExample } from '@101/connect/examples/input-details';
+import { createPenDetailProcessor, createRotaryDeltaProcessor, createGamepadDetailProcessor } from '@101/connect';
 import { createRichInputPipeline, runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -321,6 +323,7 @@ const gestureValue: GestureTransition = { gestureId: 1, kind: 'tap', phase: 'end
 const wheelValue: GestureWheel = { x: 0, y: 1, z: 0, mode: 'pixel', modifiers: { shift: false, control: false, alt: false, meta: false } };
 gestures.driver.wheel(wheelValue); gestures.stop();
 void [GestureSourceDriver, mountGestureSource, gestureSourceDescriptor, gestureValue, runGestureExample().transitions];
+void [createPenDetailProcessor, createRotaryDeltaProcessor, createGamepadDetailProcessor, runInputDetailsExample().turn];
 const richInput = createRichInputPipeline({ now: () => 1000 });
 richInput.runtime.close();
 void runRichInputExample().events;
@@ -417,6 +420,7 @@ import { runVisionExample } from '@101/connect/examples/vision';
 import { createKeyboardTextPipeline, runKeyboardTextExample } from '@101/connect/examples/keyboard-text';
 import { createTouchContactsPipeline, runTouchContactsExample } from '@101/connect/examples/touch-contacts';
 import { createGesturePipeline, runGestureExample } from '@101/connect/examples/gestures';
+import { runInputDetailsExample } from '@101/connect/examples/input-details';
 import { runRichInputExample } from '@101/connect/examples/rich-input';
 import { runResourceDocumentExample } from '@101/connect/examples/resource-documents';
 import { runMediaDescriptionExample } from '@101/connect/examples/media-description';
@@ -430,13 +434,16 @@ export async function checkRuntime() {
   check(sdk.KeyboardTextSourceDriver === web.KeyboardTextSourceDriver && sdk.mountKeyboardTextSource === web.mountKeyboardTextSource, 'Keyboard public identity differs');
   check(sdk.TouchContactSourceDriver === web.TouchContactSourceDriver && sdk.mountTouchContactSource === web.mountTouchContactSource, 'Touch public identity differs');
   check(sdk.GestureSourceDriver === web.GestureSourceDriver && sdk.mountGestureSource === web.mountGestureSource, 'Gesture public identity differs');
+  check(sdk.createPenDetailProcessor === model.createPenDetailProcessor && sdk.createRotaryDeltaProcessor === model.createRotaryDeltaProcessor && sdk.createGamepadDetailProcessor === model.createGamepadDetailProcessor, 'Input detail public identity differs');
+  const inputDetails = runInputDetailsExample();
+  check(inputDetails.contact.pressure === 0.5 && inputDetails.contact.tiltX === 10 && inputDetails.turn.delta === -0.75 && inputDetails.active.axes[0] === 1 && Math.abs(inputDetails.active.triggers[0].value - 0.75) < 1e-12 && inputDetails.active.hats[0].direction === 'northeast' && inputDetails.disconnected.buttons[0].pressed === false, 'Packed pen, rotary or gamepad detail processing failed');
   const touchContacts = runTouchContactsExample();
   check(touchContacts.simultaneous.contacts.length === 2 && touchContacts.oneReleased.contacts.length === 1 && touchContacts.oneReleased.contacts[0].id === 'right' && touchContacts.cancelled.contacts.length === 0 && touchContacts.disconnected.contacts.length === 0 && touchContacts.stopped, 'Independent contacts lost ownership or release');
   const gestures = runGestureExample();
   check(gestures.transitions.map(value => value.kind + ':' + value.phase).join(',') === 'tap:end,press:start,press:end,scroll:start,scroll:cancel' && gestures.wheels[0]?.mode === 'line' && gestures.beforeStop.heldGestures === 0 && gestures.afterStop.heldGestures === 0 && gestures.stopped, 'Gesture transitions or wheel input lost ownership or release');
   const keyboardText = runKeyboardTextExample();
   check(keyboardText.beforeCommit === 'z' && keyboardText.released.text === 'zन' && keyboardText.released.heldKeys === 0 && keyboardText.released.composition === '' && keyboardText.disconnected.text === 'zन' && keyboardText.disconnected.heldKeys === 0 && keyboardText.stopped, 'Keyboard reliable pipeline corrupted committed text or held input');
-  check(model.INPUT_PROFILE_IDS.length === 8 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest' && model.getInputProfile('app:gesture/1').capabilities[0].delivery.mode === 'reliable', 'Packed input profile contract failed');
+  check(model.INPUT_PROFILE_IDS.length === 9 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest' && model.getInputProfile('app:gesture/1').capabilities[0].delivery.mode === 'reliable' && model.getInputProfile('app:rotary/1').capabilities[0].delivery.mode === 'reliable', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
     byte => byte.toString(16).padStart(2, '0')).join('');

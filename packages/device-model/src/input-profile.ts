@@ -3,7 +3,7 @@ import type { DeviceCapability, ValueSchema } from './descriptor.ts';
 
 export const INPUT_PROFILE_IDS = Object.freeze([
   'app:pointer/1', 'app:keyboard/1', 'app:text/1', 'app:gamepad/1',
-  'app:touch/1', 'app:pen/1', 'app:switch/1', 'app:gesture/1',
+  'app:touch/1', 'app:pen/1', 'app:rotary/1', 'app:switch/1', 'app:gesture/1',
 ] as const);
 export type InputProfileId = typeof INPUT_PROFILE_IDS[number];
 
@@ -44,9 +44,22 @@ const profiles = new Map<InputProfileId, InputProfile>([
       id: { type: 'enum', values: Array.from({ length: 32 }, (_, index) => `button-${index}`) },
       pressed: { type: 'boolean' }, pressure: { type: 'scalar', unit: '1', min: 0, max: 1 },
     } }, 'event'),
+    signal('trigger', 'app:gamepad-trigger/1', { type: 'record', fields: {
+      id: { type: 'enum', values: Array.from({ length: 32 }, (_, index) => `button-${index}`) },
+      value: { type: 'scalar', unit: '1', min: 0, max: 1 },
+    } }, 'sample'),
+    signal('hat', 'app:gamepad-hat/1', { type: 'record', fields: {
+      id: { type: 'enum', values: Array.from({ length: 16 }, (_, index) => `hat-${index}`) },
+      direction: { type: 'enum', values: ['center', 'north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'] },
+    } }, 'event'),
   ]),
   profile('app:touch/1', [signal('contact', 'app:touch-contact/1', { type: 'contact', frame: 'surface-normalized' }, 'event', 2)]),
   profile('app:pen/1', [signal('pen', 'app:pen-contact/1', { type: 'pen', frame: 'surface-normalized' }, 'event', 2)]),
+  profile('app:rotary/1', [signal('delta', 'app:rotary-delta/1', { type: 'record', fields: {
+    source: { type: 'enum', values: ['crown', 'encoder'] },
+    delta: { type: 'scalar', unit: '1', min: -1024, max: 1024 },
+    unit: { type: 'enum', values: ['detent'] },
+  } }, 'event')]),
   profile('app:switch/1', [signal('switch', 'app:switch-transition/1', { type: 'record', fields: {
     channel: { type: 'enum', values: Array.from({ length: 16 }, (_, index) => `switch-${index}`) },
     active: { type: 'boolean' },

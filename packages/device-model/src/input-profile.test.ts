@@ -13,17 +13,17 @@ type Catalog = {
 
 const catalog = model as Catalog;
 
-test('input profiles declare the eight bounded source families and reject unknown support', () => {
+test('input profiles declare the nine bounded source families and reject unknown support', () => {
   assert.equal(typeof catalog.getInputProfile, 'function');
   assert.deepEqual(catalog.INPUT_PROFILE_IDS, [
     'app:pointer/1', 'app:keyboard/1', 'app:text/1', 'app:gamepad/1',
-    'app:touch/1', 'app:pen/1', 'app:switch/1', 'app:gesture/1',
+    'app:touch/1', 'app:pen/1', 'app:rotary/1', 'app:switch/1', 'app:gesture/1',
   ]);
   assert.throws(() => catalog.getInputProfile!('app:unknown/1'), /Unknown input profile/);
 });
 
 test('each profile is a valid source descriptor with explicit sink operations and bounded delivery', () => {
-  assert.equal(catalog.INPUT_PROFILE_IDS?.length, 8);
+  assert.equal(catalog.INPUT_PROFILE_IDS?.length, 9);
   for (const id of catalog.INPUT_PROFILE_IDS ?? []) {
     const profile = catalog.getInputProfile!(id);
     const parsed = model.parseDeviceDescriptor({ schemaVersion: 1, id: 'profile-source', label: 'Profile source', revision: 1,
@@ -47,8 +47,8 @@ test('pointer, gamepad and edge-bearing profiles keep their distinct semantics',
   assert.equal((pointer.capabilities[1]?.delivery as { maxAgeMs?: number })?.maxAgeMs, 100);
   const gamepad = catalog.getInputProfile!('app:gamepad/1');
   assert.deepEqual(gamepad.capabilities.map(value => [value.id, value.kind, value.delivery.mode]),
-    [['axes', 'sample', 'latest'], ['button', 'event', 'reliable']]);
-  for (const id of ['app:keyboard/1', 'app:text/1', 'app:touch/1', 'app:pen/1', 'app:switch/1']) {
+    [['axes', 'sample', 'latest'], ['button', 'event', 'reliable'], ['trigger', 'sample', 'latest'], ['hat', 'event', 'reliable']]);
+  for (const id of ['app:keyboard/1', 'app:text/1', 'app:touch/1', 'app:pen/1', 'app:rotary/1', 'app:switch/1']) {
     assert.ok(catalog.getInputProfile!(id).capabilities.every(value => value.kind === 'event' && value.delivery.mode === 'reliable'));
   }
   const gesture = catalog.getInputProfile!('app:gesture/1');

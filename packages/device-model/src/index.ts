@@ -40,6 +40,8 @@ export type { DiscoveryStage, DiscoveryScope, DiscoveryEvidence, DiscoveryRecove
   DiscoveryCandidate, DiscoveryAssessment, DiscoveryReceiptVerifier } from './discovery.ts';
 export { INPUT_PROFILE_IDS, getInputProfile } from './input-profile.ts';
 export type { InputProfile, InputProfileId } from './input-profile.ts';
+export { createPenDetailProcessor, createRotaryDeltaProcessor, createGamepadDetailProcessor } from './input-details.ts';
+export type { PenCalibration, RawPenDetail, GamepadAxisCalibration, GamepadTriggerCalibration, GamepadDetailConfig, RawGamepadDetail } from './input-details.ts';
 export { parseProcessorManifest } from './processor-manifest.ts';
 export type { ProcessorAsset, ProcessorManifest, ProcessorPort } from './processor-manifest.ts';
 export { validateProcessorGraph } from './processor-graph.ts';
