@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, type NativeTouchEvent, type NativeSyntheticEvent } from 'react-native';
+import { AppState, Platform, Pressable, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, useWindowDimensions, View, type NativeTouchEvent, type NativeSyntheticEvent } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { RTCPeerConnection, RTCSessionDescription } from 'react-native-webrtc';
 import {
@@ -22,6 +22,7 @@ type Session = {
 /** Local general pointer source, deliberately initiating its own native RTC channels. */
 export default function PointerLab({ onClose }: { onClose: () => void }) {
   const t = useTheme();
+  const viewport = useWindowDimensions();
   const mounted = useRef(false);
   const foreground = useRef(AppState.currentState === 'active');
   const generation = useRef(0);
@@ -47,7 +48,6 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
   const [answered, setAnswered] = useState(false);
   const [details, setDetails] = useState(true);
   const [contact, setContact] = useState(false);
-  const [padActive, setPadActive] = useState(false);
 
   const stop = useCallback((message?: string, clearTarget = true) => {
     generation.current++;
@@ -62,7 +62,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
     }
     if (clearTarget) reviewedTarget.current = undefined;
     if (mounted.current) {
-      setActive(false); setReady(false); setBusy(false); setAnswered(false); setContact(false); setPadActive(false); setOffer(''); setAnswer('');
+      setActive(false); setReady(false); setBusy(false); setAnswered(false); setContact(false); setOffer(''); setAnswer('');
       setDigest(''); setConfirmed(false);
       if (clearTarget) { setReviewed(undefined); setInvitation(''); }
       if (message) setStatus(message);
@@ -337,11 +337,51 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
     const driver = input(); if (!driver) return;
     applyPointerTouches(driver, event.nativeEvent.changedTouches, action, pad.current);
   };
-  const release = () => { input()?.release(); setContact(false); setPadActive(false); };
+  const release = () => { input()?.release(); setContact(false); };
   const text = { color: t.text };
   const field = { color: t.text, backgroundColor: t.surface, borderColor: t.line, borderWidth: 1, borderRadius: 12, padding: space.sm, minHeight: 80 };
+  // Before approval, controls scroll with setup. While ready, they have no
+  // scrolling ancestor; genuine cancellation still releases the driver.
+  const controls = (
+      <View style={{ padding: space.lg, paddingBottom: 28, gap: space.sm, flexShrink: 1 }}>
+      <View
+        pointerEvents="box-only"
+        accessible accessibilityLabel="Relative touch pad. Slide to move the pointer and lift to release. Direction buttons below provide the same movement."
+        accessibilityState={{ disabled: !ready }}
+        onLayout={event => { const { width, height } = event.nativeEvent.layout; pad.current = { width, height }; }}
+        onStartShouldSetResponder={() => ready} onMoveShouldSetResponder={() => ready}
+        onResponderTerminationRequest={() => false} onResponderTerminate={release}
+        onTouchStart={event => touches(event, 'begin')} onTouchMove={event => touches(event, 'move')}
+        onTouchEnd={event => touches(event, 'end')} onTouchCancel={release}
+        style={{ height: Math.min(250, Math.max(100, viewport.height * 0.3)), minHeight: 64, flexShrink: 1, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: ready ? t.lineStrong : t.line, backgroundColor: contact ? t.surfacePressed : t.surface, alignItems: 'center', justifyContent: 'center', opacity: ready ? 1 : 0.5 }}
+      >
+        <Text pointerEvents="none" style={[type.title, text]}>{ready ? 'Slide to move' : 'Waiting for receiver approval'}</Text>
+        <Text pointerEvents="none" style={[type.body, { color: t.muted }]}>{contact ? 'Touch held' : 'Lift to release'}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: space.sm }}>
+        {([['Left', -0.025, 0], ['Up', 0, -0.025], ['Down', 0, 0.025], ['Right', 0.025, 0]] as const).map(([label, dx, dy]) =>
+          <Pressable key={label} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: !ready }}
+            onPress={() => input()?.nudge(dx, dy)} disabled={!ready}
+            style={({ pressed }) => ({ flex: 1, minHeight: 48, borderRadius: 26, paddingHorizontal: space.sm,
+              justifyContent: 'center', alignItems: 'center', borderWidth: StyleSheet.hairlineWidth * 2, borderColor: t.line,
+              backgroundColor: pressed ? t.surfacePressed : t.surface, opacity: ready ? 1 : 0.4 })}>
+            <Text style={[type.action, text]}>{label}</Text>
+          </Pressable>)}
+      </View>
+      <View style={{ flexDirection: 'row', gap: space.sm }}>
+      <Pressable accessibilityRole="button" accessibilityLabel="Hold contact, release to lift. Activate to toggle contact." accessibilityActions={[{ name: 'activate', label: 'Toggle contact' }]}
+        onAccessibilityAction={event => { if (event.nativeEvent.actionName === 'activate') { const driver = input(); if (driver) driver.setContact(!driver.state().contact); } }} accessibilityState={{ disabled: !ready, selected: contact }} disabled={!ready}
+        onPressIn={() => input()?.setContact(true)} onPressOut={release}
+        style={({ pressed }) => ({ flex: 1, minHeight: 52, borderRadius: 26, padding: space.md, alignItems: 'center', backgroundColor: pressed ? t.surfacePressed : t.surface, borderWidth: 1, borderColor: t.line, opacity: ready ? 1 : 0.5 })}>
+        <Text style={[type.action, text]}>Hold contact</Text>
+      </Pressable>
+      {ready && <Button label="Stop" onPress={() => stop('Stopped. Review a fresh receiver invitation when you are ready.')} />}
+      </View>
+      </View>
+  );
   return (
-    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: 44 }} keyboardShouldPersistTaps="handled" scrollEnabled={!padActive}>
+    <SafeAreaView style={{ flex: 1, maxHeight: viewport.height - (Platform.OS === 'android' ? (StatusBar.currentHeight ?? 0) + 44 : 0), backgroundColor: t.bg, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: space.lg, gap: space.md, paddingBottom: space.lg }} keyboardShouldPersistTaps="handled">
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
         <Text style={[type.title, text]}>Pointer lab</Text>
         <Button label="Close" onPress={() => { stop(); onClose(); }} />
@@ -380,7 +420,7 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
         {!active && <Button label="Connect to this receiver" onPress={() => { void start(); }}
           disabled={busy || identityState !== 'available' || !reviewed}
           tone={identityState === 'available' ? 'strong' : 'quiet'} />}
-        <Button label="Stop" onPress={() => stop('Stopped. Review a fresh receiver invitation when you are ready.')} disabled={!active} />
+        {!ready && <Button label="Stop" onPress={() => stop('Stopped. Review a fresh receiver invitation when you are ready.')} disabled={!active} />}
       </View>
       {!!offer && <View style={{ gap: space.sm }}>
         <Button label="Copy offer" onPress={() => { void copy(); }} />
@@ -405,30 +445,9 @@ export default function PointerLab({ onClose }: { onClose: () => void }) {
           disabled={!active || busy || confirmed} tone={confirmed ? 'quiet' : 'strong'} />
         {confirmed && <Text accessibilityLiveRegion="polite" style={[type.body, text]}>You allowed this matching code. Both owners must allow the connection before pointer control can be selected.</Text>}
       </View>}
-      <View
-        pointerEvents="box-only"
-        accessible accessibilityLabel="Relative touch pad. Slide to move the pointer and lift to release. Direction buttons below provide the same movement."
-        accessibilityState={{ disabled: !ready }}
-        onLayout={event => { const { width, height } = event.nativeEvent.layout; pad.current = { width, height }; }}
-        onStartShouldSetResponder={() => ready} onMoveShouldSetResponder={() => ready}
-        onResponderTerminationRequest={() => false} onResponderTerminate={release}
-        onTouchStart={event => { if (ready) setPadActive(true); touches(event, 'begin'); }} onTouchMove={event => touches(event, 'move')}
-        onTouchEnd={event => { touches(event, 'end'); setPadActive(event.nativeEvent.touches.length > 0); }} onTouchCancel={release}
-        style={{ minHeight: 250, borderRadius: 22, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: ready ? t.lineStrong : t.line, backgroundColor: contact ? t.surfacePressed : t.surface, alignItems: 'center', justifyContent: 'center', opacity: ready ? 1 : 0.5 }}
-      >
-        <Text pointerEvents="none" style={[type.title, text]}>{ready ? 'Slide to move' : 'Waiting for receiver approval'}</Text>
-        <Text pointerEvents="none" style={[type.body, { color: t.muted }]}>{contact ? 'Touch held' : 'Lift to release'}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: space.sm }}>
-        {([['Left', -0.025, 0], ['Up', 0, -0.025], ['Down', 0, 0.025], ['Right', 0.025, 0]] as const).map(([label, dx, dy]) =>
-          <Button key={label} label={label} onPress={() => input()?.nudge(dx, dy)} disabled={!ready} />)}
-      </View>
-      <Pressable accessibilityRole="button" accessibilityLabel="Hold contact, release to lift. Activate to toggle contact." accessibilityActions={[{ name: 'activate', label: 'Toggle contact' }]}
-        onAccessibilityAction={event => { if (event.nativeEvent.actionName === 'activate') { const driver = input(); if (driver) driver.setContact(!driver.state().contact); } }} accessibilityState={{ disabled: !ready, selected: contact }} disabled={!ready}
-        onPressIn={() => input()?.setContact(true)} onPressOut={release}
-        style={({ pressed }) => ({ minHeight: 52, borderRadius: 26, padding: space.md, alignItems: 'center', backgroundColor: pressed ? t.surfacePressed : t.surface, borderWidth: 1, borderColor: t.line, opacity: ready ? 1 : 0.5 })}>
-        <Text style={[type.action, text]}>Hold contact</Text>
-      </Pressable>
+      {!ready && controls}
     </ScrollView>
+      {ready && controls}
+    </SafeAreaView>
   );
 }

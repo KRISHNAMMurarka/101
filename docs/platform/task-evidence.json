@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 67,
+  "revision": 68,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7338,6 +7338,31 @@
         "Physical Android; uninterrupted human/manual check and iPhone remain for T08/T14"
       ],
       "supportRows": []
+    },
+    {
+      "id": "pointer-contact-scroll-repair-2026-10-05",
+      "revision": "dc2ed66 + PointerLab.tsx SHA256 b7a36749f272b8ff0ef446f128c41001a5ec18ba4db588361b622827496ee0b2; installed Android APK 2d186e4aed5a75745d662e398a95ada7d93323be54d50f4a0df9d3560b59b31e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "T08"
+      ],
+      "paths": [
+        "apps/controller-native/src/PointerLab.tsx",
+        "docs/platform/POINTER-PROVIDER-QA-2026-10-02.md"
+      ],
+      "environment": "OnePlus IV2201 Android13 arm64 Release; macOS26.5.2, Node24.14.0, standalone Chromium149.0.7827.55; offline Gradle JDK21",
+      "reproduction": "16 focused caller/driver tests; native:typecheck; offline assembleRelease; installed APK hash readback; actual bilateral native/Chromium enrollment and separate pointer consent; UIAutomator ready-pad ancestry and six named control bounds; ten-second receiver observation. Exact root commit gates required by AGENTS.md.",
+      "scope": "Partial T08 repair: ready controls have no native ScrollView ancestor, setup remains scrollable, named equivalents and Stop stay reachable. Old ready hierarchy regression fails; candidate passes on the phone. 338 held-contact observations span 7977.7ms without an intermediate false contact; no gestures injected after grant and no page errors. Explicit physical lift/recontact, complete diagonals, small-window/rotation, iPhone and physical touch-to-display latency remain unqualified. No checkbox or support-row promotion.",
+      "failure": null,
+      "equipment": [
+        "Manual lift/recontact, complete Android acceptance and iPhone remain required for T08/T14"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -7795,7 +7820,8 @@
         "pointer-pad-stable-android-2026-10-05",
         "pointer-iphone-offer-partial-2026-10-05",
         "pointer-human-android-failed-2026-10-05",
-        "pointer-coordinate-repair-2026-10-05"
+        "pointer-coordinate-repair-2026-10-05",
+        "pointer-contact-scroll-repair-2026-10-05"
       ],
       "dependencies": [
         "C01",
