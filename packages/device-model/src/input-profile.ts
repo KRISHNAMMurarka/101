@@ -3,7 +3,7 @@ import type { DeviceCapability, ValueSchema } from './descriptor.ts';
 
 export const INPUT_PROFILE_IDS = Object.freeze([
   'app:pointer/1', 'app:keyboard/1', 'app:text/1', 'app:gamepad/1',
-  'app:touch/1', 'app:pen/1', 'app:switch/1',
+  'app:touch/1', 'app:pen/1', 'app:switch/1', 'app:gesture/1',
 ] as const);
 export type InputProfileId = typeof INPUT_PROFILE_IDS[number];
 
@@ -51,6 +51,17 @@ const profiles = new Map<InputProfileId, InputProfile>([
     channel: { type: 'enum', values: Array.from({ length: 16 }, (_, index) => `switch-${index}`) },
     active: { type: 'boolean' },
   } }, 'event')]),
+  profile('app:gesture/1', [
+    signal('gesture', 'app:gesture-transition/1', { type: 'record', fields: {
+      gestureId: { type: 'scalar', unit: '1', min: 1, max: Number.MAX_SAFE_INTEGER },
+      kind: { type: 'enum', values: ['tap', 'press', 'drag', 'scroll'] },
+      phase: { type: 'enum', values: ['start', 'end', 'cancel'] },
+      position: { type: 'vector', components: ['x', 'y'], frame: 'surface-normalized', unit: '1', min: 0, max: 1 },
+    } }, 'event'),
+    signal('position', 'app:gesture-position/1', { type: 'vector', components: ['x', 'y'],
+      frame: 'surface-normalized', unit: '1', min: 0, max: 1 }, 'sample'),
+    signal('wheel', 'app:gesture-wheel/1', { type: 'wheel', maxDelta: 100000 }, 'event', 2),
+  ]),
 ].map(value => [value.id, value]));
 
 export function getInputProfile(id: string): InputProfile {

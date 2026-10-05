@@ -211,6 +211,29 @@ input in three engines and protocol-generated simultaneous contacts in Chromium,
 including native capture, separate release, cancellation and geometry changes.
 This evidence does not qualify physical fingers or native device ergonomics.
 
+### Selected-surface browser gestures
+
+`GestureSourceDriver`, `gestureSourceDescriptor()` and
+`mountGestureSource(target, driver)` are public through `@101/device-web` and
+`@101/connect`. The `app:gesture/1` profile has separate reliable gesture and
+wheel events plus a latest normalized position sample. A short released contact
+emits one tap. A held contact emits press start/end; movement beyond a measured
+pixel threshold emits drag start/end. Two or more contacts emit one scroll
+transition and bounded wheel deltas from centroid movement. Native wheel units
+(pixel, line or page) and modifiers remain explicit; unlike units never merge.
+
+The host chooses the surface, applies its touch-action/focus policy, supplies a
+monotonic clock and calls `tick()` from an owned loop while mounted so a held
+press reaches its deadline. Moves use a bounded sample rate; transition and
+wheel events retain reliable delivery. Capture loss, geometry/orientation
+change, blur, pagehide and unmount cancel held gestures and release pointer
+capture. `release()` permits a fresh gesture; `stop()` is terminal. A rejected
+publication stops the driver; consumers clear active gestures on route loss.
+The [gesture example](../../examples/device-pipelines/gestures.ts) authorizes
+three independent routes and demonstrates tap, press, scroll, wheel and
+disconnect. The input profile describes semantics, not global OS clicks or
+physical touch qualification.
+
 ### Browser keyboard and text source
 
 `KeyboardTextSourceDriver`, `keyboardTextSourceDescriptor()` and
@@ -280,6 +303,7 @@ and enrolls actual resources before exposing them.
 | `app:text/1` | Version 2 composition: reliable event, 1000 ms age | Start/update/end/commit phases are explicit; ending composition does not commit text. |
 | `app:gamepad/1` | Up to 16 normalized axes: latest, 60/s, 100 ms age; one of 32 declared button IDs with pressed/pressure: reliable event, 1000 ms age | A provider must probe the actual axis/button inventory and map only offered controls. These template ceilings do not imply 16 axes or 32 buttons exist. |
 | `app:touch/1` | Version 2 contact transition: reliable event, 1000 ms age | Stable contact ID and down/move/up/cancel survive separately; no coalescing of edges. |
+| `app:gesture/1` | Gesture transition and version 2 wheel: reliable events, 1000 ms age; normalized position: latest, 60/s, 100 ms age | Selected-surface tap, press, drag and multi-contact scroll; wheel units and modifiers stay explicit. |
 | `app:pen/1` | Version 2 pen transition: reliable event, 1000 ms age | Contact, pressure, tilt and twist retain declared bounds and phases. |
 | `app:switch/1` | One of 16 declared switch channels with active state: reliable event, 1000 ms age | Generic switch input; a caller must offer equivalent keyboard controls. There is no assistive-technology detection or physical HID support claim. |
 
@@ -287,8 +311,8 @@ The template describes source semantics and destination operation, not a route
 grant. Each signal needs its own compatible sink, owner consent and lifecycle.
 Loss, unmount and revocation release held output. Wheel and relative pointer
 events use the existing version 2 rich input schemas when a provider actually
-offers them; click/drag/scroll gestures, detailed gamepad/pen handling and
-physical assistive support remain I03/I06/I11 work.
+offers them. Detailed gamepad/pen handling and physical assistive support
+remain I06/I11 work.
 The [embedded rich-input example](../../examples/device-pipelines/rich-input.ts)
 uses six separately authorized routes and DOM-shaped simulated events. Actual
 browser/native input provider availability and physical behavior are not

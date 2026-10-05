@@ -22,3 +22,6 @@ export { KeyboardTextSourceDriver, keyboardTextSourceDescriptor, mountKeyboardTe
 export type { KeyTransition, TextComposition, KeyboardTextSourceOptions } from './keyboard-text-driver.ts';
 export { TouchContactSourceDriver, touchContactSourceDescriptor, mountTouchContactSource } from './touch-contact-driver.ts';
 export type { TouchContact, TouchContactSourceOptions } from './touch-contact-driver.ts';
+export { GestureSourceDriver, GESTURE_TRANSITION_SCHEMA, GESTURE_WHEEL_SCHEMA } from './gesture-driver.ts';
+export type { GestureTransition, GestureWheel, GestureSurface, GestureSourceOptions } from './gesture-driver.ts';
+export { gestureSourceDescriptor, mountGestureSource } from './gesture-source.ts';
