@@ -365,6 +365,25 @@ must still provide the user-facing consent UI, real provider registration,
 verified processor code and safe `release()` callbacks; the session never
 assumes that cancellation undoes a physical effect.
 
+## Scaffold a local SDK project
+
+`npm run create:device -- room-sensor /path/to/new-project` creates a new
+standalone project. Its typed connector declares a Celsius source and local
+display sink, authorizes only the selected registrations and owner operations,
+and releases the display on stop. Its processor has a manifest pinned to the
+generated source bytes. The caller registers that reviewed local processor,
+routes a simulated reading, runs it and closes the route. The generated test
+checks the pin, result and release.
+
+Supply the five matching local SDK tarballs from `npm run build:sdk -- <revision>`
+to the generated project's npm install. The project lists TypeScript 5.9.3
+as a development tool; run `npm test` after installing it. The
+[packed consumer check](receipts/2026-10-05-e06-device-scaffold.json) generates
+the project outside this repository, installs the packed SDK offline, compiles
+under strict NodeNext resolution and executes its tests and caller without
+workspace links. This is a local simulated connector and processor scaffold;
+it does not grant OS permissions or qualify physical hardware.
+
 ## Processor failure and restart propagation
 
 `createProcessorFailureController({ plan, runtime, bindings, now })` revalidates

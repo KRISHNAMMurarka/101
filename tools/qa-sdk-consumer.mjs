@@ -1028,9 +1028,44 @@ async function distribution(path) {
   const manifest = sourceBoundManifest(path);
   const installed = installAndAudit(manifest);
   compileConsumer();
+  executeDeviceScaffold(manifest);
   executeNode();
   await executeBrowsers(installed);
   executeExternalProcessor(manifest);
+}
+
+function executeDeviceScaffold(manifest) {
+  const paths = ['packages/devkit/src/device-scaffold.ts', 'tools/create-device-project.mjs'];
+  for (const path of paths) {
+    const blob = spawnSync('git', ['cat-file', 'blob', `${manifest.source.tree}:${path}`],
+      { cwd: root, timeout: 10000, maxBuffer: 1024 * 1024 });
+    assert.equal(blob.status, 0, `Scaffold source absent from immutable tree: ${path}`);
+    assert.equal(createHash('sha256').update(blob.stdout).digest('hex'), hash(join(root, path)),
+      `Scaffold source differs from immutable tree: ${path}`);
+  }
+  const target = join(work, 'generated-device-project');
+  run('device-project-generate', process.execPath,
+    ['--experimental-strip-types', join(root, 'tools/create-device-project.mjs'), 'room-sensor', target]);
+  const project = JSON.parse(readFileSync(join(target, 'package.json'), 'utf8'));
+  assert.equal(project.dependencies['@101/connect'], manifest.packages.find(item => item.name === '@101/connect')?.version);
+  const processor = JSON.parse(readFileSync(join(target, 'processor.manifest.json'), 'utf8'));
+  assert.equal(processor.codeSha256, hash(join(target, 'src/processor.ts')));
+  const packed = JSON.parse(run('device-project-typescript-pack', 'npm',
+    ['pack', '--json', '--offline', '--ignore-scripts', '--pack-destination', work,
+      join(root, 'node_modules/typescript')]));
+  assert.equal(packed.length, 1);
+  assert.equal(packed[0].name, 'typescript');
+  const typescriptTarball = join(work, packed[0].filename);
+  run('device-project-offline-install', 'npm',
+    ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund',
+      ...manifest.packages.map(item => item.tarball), typescriptTarball], target);
+  run('device-project-build-and-tests', 'npm', ['test'], target);
+  const output = JSON.parse(run('device-project-caller', process.execPath, ['src/index.mjs'], target).trim());
+  assert.deepEqual(output, { reading: 31, switchOn: true });
+  receipt.checks.push({ name: 'generated-device-project', status: 'pass', source: paths.map(path => ({
+    path, sha256: hash(join(root, path)),
+  })), project: target, processorPin: processor.codeSha256, typescriptTarballSha256: hash(typescriptTarball),
+  isolation: 'SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server' });
 }
 
 function executeExternalProcessor(manifest) {

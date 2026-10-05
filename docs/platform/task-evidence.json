@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 55,
+  "revision": 56,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3315,6 +3315,34 @@
       "equipment": [
         "Clean external consumer/toolchain"
       ]
+    },
+    {
+      "id": "device-scaffold-2026-10-05",
+      "revision": "containing E06 commit, base abfc382; immutable SDK producer tree a8cb4708d0b4839740528da03e5df83655d6c0d5",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E06"
+      ],
+      "paths": [
+        "packages/devkit/src/device-scaffold.ts",
+        "packages/devkit/src/device-scaffold.test.ts",
+        "tools/create-device-project.mjs",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-e06-device-scaffold.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
+      "reproduction": "node tools/build-sdk.mjs a8cb4708d0b4839740528da03e5df83655d6c0d5; node tools/qa-sdk-consumer.mjs release/sdk-PuD6Ie/manifest.json; exact candidate repository gates",
+      "scope": "E06 creates a standalone local project with typed connector source/sink schemas, concrete owner authorization, pinned processor manifest, stop/release lifecycle, tests and a running caller. Offline external consumer installs SDK and TypeScript tarballs in the generated project, then compiles and executes it. Physical hardware, OS permissions and extension sandboxing remain separate scope.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-E06",
@@ -9229,6 +9257,7 @@
     {
       "id": "E06",
       "records": [
+        "device-scaffold-2026-10-05",
         "pending-E06"
       ],
       "dependencies": [

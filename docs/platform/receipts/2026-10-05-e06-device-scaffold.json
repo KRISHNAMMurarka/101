@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "task": "E06",
+  "result": "pass",
+  "sourceTree": "a8cb4708d0b4839740528da03e5df83655d6c0d5",
+  "sdkArtifact": "release/sdk-PuD6Ie/manifest.json",
+  "sdkManifestSha256": "7d6cc90cee20c7304ed75ba9e6902f62efdaa577dce737ce54ece53f5fac3942",
+  "consumerQaToolSha256": "49e61d8b1dea511c53b90f08915007cdf4b27353e21b4efb3e246df137712644",
+  "scaffoldSourceSha256": "b8806e5f3fe275bd3eef5d837b782bb5d30122ca34047f9fc2c8526795ac5aa5",
+  "scaffoldCliSha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6",
+  "consumerReceipt": "/tmp/101-sdk-consumer-wzPm1q/receipt.json",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Generator rejects unsafe project IDs and writes a new project without overwriting an existing target",
+    "Generated source and sink descriptors declare compatible Celsius schemas and distinct subscribe/write permissions",
+    "Generated processor manifest pins the exact source bytes; registry checks those bytes before resolving a configuration",
+    "Generated caller executes an authorized simulated route and processor, then resets and releases held state",
+    "Isolated offline packed SDK consumer installs both SDK and TypeScript tarballs, compiles the generated connector and processor under strict NodeNext and runs npm test and the caller",
+    "Packed SDK consumer also passes its Node, Chromium, Firefox and WebKit checks"
+  ],
+  "scope": "One standalone generated project includes connector, processor, manifest, permissioned route, lifecycle, caller and tests. The isolated QA installs SDK and compiler from local tarballs into the generated project and uses no workspace links or dev server. No physical connector, OS grant, extension sandbox or public package installation is claimed.",
+  "published": false
+}

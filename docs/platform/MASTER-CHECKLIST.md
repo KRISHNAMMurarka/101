@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 81 completed with recorded evidence; 191 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 82 completed with recorded evidence; 190 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -267,7 +267,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **E03 — Implement recipe validation/resolution.** Resolve selected compatible resources and pinned processors; unknown/missing resources produce useful alternatives without automatic code execution. [Recipe resolution](SDK.md#declarative-recipe-v1).
 - [x] **E04 — Implement recipe consent/execution lifecycle.** Preview requested access, grant required legs, start/stop groups and recover after denied, expired, missing or failed members. [Recipe session lifecycle](SDK.md#declarative-recipe-v1).
 - [ ] **E05 — Implement UI/control description library.** Reusable boxes, text, controls, layout, styles and animation adapt to measured screens and input modes while retaining focus and accessibility.
-- [ ] **E06 — Build project/connector/processor scaffolding.** Generated projects include schemas, permissions, lifecycle, tests and a running caller; clean generated consumers compile and execute.
+- [x] **E06 — Build project/connector/processor scaffolding.** Generated projects include schemas, permissions, lifecycle, tests and a running caller; clean generated consumers compile and execute. [Generator and packed consumer evidence](SDK.md#scaffold-a-local-sdk-project).
 - [x] **E07 — Provide simulator and fault-injection tools.** Developers replay bounded typed samples, simulate devices, revoke permissions and inject disconnect/loss without physical hardware. [Contract](SDK.md#local-device-simulator) and [packed consumer receipt](receipts/2026-10-05-e07-simulator.json).
 - [ ] **E08 — Provide developer inspection tools.** Studio explains graph, readiness, grants, queues, traces and version errors; personal payloads/secrets are redacted.
 - [ ] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101.

@@ -26,6 +26,7 @@
     "qa:engines": "node tools/qa-browser.mjs engines",
     "typecheck": "tsc --noEmit",
     "create:game": "node --experimental-strip-types tools/create-101-game.mjs",
+    "create:device": "node --experimental-strip-types tools/create-device-project.mjs",
     "hub": "node --experimental-strip-types tools/hub-server.mjs",
     "native:start": "npm --workspace @101/controller-native run start",
     "native:android": "npm --workspace @101/controller-native run android",
