@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 64,
+  "revision": 65,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7228,6 +7228,34 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "responsive-controls-2026-10-05",
+      "revision": "46e049235291abc131e065c69032310fbc179172; immutable source tree b3fdb69d8cc6aba323894292f468d724a12a7b52",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I07"
+      ],
+      "paths": [
+        "packages/link-controller/src/deck.test.ts",
+        "app/controller/Controller.tsx",
+        "apps/controller-native/src/controls.tsx",
+        "tools/qa-browser.mjs",
+        "tests/native-controller-contract.test.ts",
+        "docs/platform/receipts/2026-10-05-i07-responsive-controls.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/TypeScript5.9.3/Playwright1.61.1/Chromium149.0.7827.55; real local browser host/controller; React Native compile/source review only",
+      "reproduction": "node --test packages/link-controller/src/deck.test.ts tests/native-controller-contract.test.ts; npm run native:typecheck; npm run native:test; npm run build; node tools/qa-browser.mjs controller; exact candidate AGENTS.md gates",
+      "scope": "I07 software implementation for existing controller descriptions. Browser deck measures its width and visible area; native panel measures width and uses window dimensions for available sizing. Coarse/fine target constraints, narrow reflow, short-area bounds and keyboard/native accessibility alternatives preserve every action. Physical native accessibility, screen-reader journeys, touch ergonomics and the full form-factor matrix were not exercised; I10, Q09 and U07 remain open. No support-row promotion.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8490,7 +8518,8 @@
     {
       "id": "I07",
       "records": [
-        "pending-I07"
+        "pending-I07",
+        "responsive-controls-2026-10-05"
       ],
       "dependencies": [
         "M01",

@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 89 completed with recorded evidence; 183 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 90 completed with recorded evidence; 182 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -171,7 +171,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **I04 — Implement independent multi-touch contacts.** Stable contact IDs, simultaneous actions, contact cancellation and orientation changes preserve intended ownership without stuck buttons. [Independent browser source and packed runtime evidence](receipts/2026-10-05-i04-touch-contacts.json); physical device/ergonomic qualification remains separate.
 - [x] **I05 — Implement keyboard/text composition.** Key-down/up, modifiers, repeats, layouts and IME/text composition remain distinct; disconnect releases keys without corrupting text. [Browser source and independent packed caller evidence](receipts/2026-10-05-i05-keyboard-text.json); physical OS input-method/layout qualification remains separate.
 - [x] **I06 — Implement pen/rotary/gamepad details.** Pressure/tilt, crown/encoder deltas, triggers, hats, axes and button edges preserve profile-specific ranges and calibration. [Calibrated processors and packed consumer evidence](receipts/2026-10-05-i06-input-details.json); physical device qualification remains separate.
-- [ ] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls.
+- [x] **I07 — Implement responsive control descriptions.** Pads, joysticks, sliders, toggles, gestures and buttons adapt to measured surface/input modes with equivalent accessible controls. [Measured decks and browser runtime evidence](receipts/2026-10-05-i07-responsive-controls.json); physical native accessibility and ergonomics remain separate.
 - [ ] **I08 — Implement haptic output profiles.** Declared patterns, intensity/duration limits, unsupported-device fallback and physical distinguishability are tested.
 - [ ] **I09 — Implement input ownership and transfer UI.** Current owner retains control during a second request; consent, partition assignment and release produce visible, recoverable outcomes.
 - [ ] **I10 — Verify handedness and ergonomic layouts.** Thumb reach, both hands, short landscape, safe insets and simultaneous inputs are physically tested across claimed form factors.

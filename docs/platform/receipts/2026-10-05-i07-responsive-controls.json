@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "I07"
+  ],
+  "result": "pass",
+  "sourceRevision": "46e049235291abc131e065c69032310fbc179172",
+  "sourceTree": "b3fdb69d8cc6aba323894292f468d724a12a7b52",
+  "applicationBuild": "a402da951e13dbc1",
+  "verifiedAt": "2026-10-05T16:34:46Z",
+  "sourceSha256": {
+    "tools/qa-browser.mjs": "3a828e9477fb82743f3620d2f4e1c1f7d1a94f7dfd61043656b1f00cf259bb4e",
+    "app/controller/Controller.tsx": "2210e287833fbd44481a1d48d118530f4aab61658b67c8474b82179dd1e11835",
+    "apps/controller-native/src/controls.tsx": "c0544457dd71bad4725c5057ec147ee13fdd1c40e0a628d082b1cccbe4bf2f1a",
+    "packages/link-controller/src/index.ts": "c8b8862aa31ce3a4508921563d577c502d495fa491f5348e1daf7075824f0512"
+  },
+  "environment": {
+    "os": "macOS26.5.2 arm64",
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "chromium": "149.0.7827.55",
+    "reducedMotion": "reduce"
+  },
+  "checks": [
+    {
+      "command": "node --test packages/link-controller/src/deck.test.ts",
+      "result": "pass",
+      "pass": 13,
+      "scope": "Measured narrow/regular/wide and short areas, invalid dimensions, touch/fine target limits; all shipped descriptions retain controls and handedness topology"
+    },
+    {
+      "command": "node tools/qa-browser.mjs controller",
+      "result": "pass",
+      "scope": "Real local Studio host and browser controller; classic/reactor/gamepad each at 282×860,390×844,568×320,920×580; no overlap or visible-area overflow and each control has a focusable equivalent; swipe at narrow and short landscape; coarse/fine input modes; dpad/slider/toggle/joystick/swipe keyboard behavior, resize while joystick held, release"
+    },
+    {
+      "command": "npm run native:typecheck",
+      "result": "pass",
+      "scope": "Native measured-width sizing and digital/analog/vector/slider accessibility actions compile against installed React Native types; no native runtime accessibility claim"
+    },
+    {
+      "command": "npm run native:test",
+      "result": "pass",
+      "pass": 29,
+      "scope": "Existing pure native lifecycle/codec/motion/watch checks; no native TSX rendering"
+    },
+    {
+      "command": "node --test tests/native-controller-contract.test.ts",
+      "result": "pass",
+      "pass": 15,
+      "scope": "Native source contracts including raw-touch buttons and retained responder ownership"
+    }
+  ],
+  "commitGates": {
+    "typescript": "pass",
+    "lint": "pass with pre-existing native ref warning",
+    "unit": {
+      "pass": 976,
+      "fail": 0
+    },
+    "freshBuild": "pass",
+    "rendered": {
+      "pass": 33,
+      "fail": 0
+    }
+  },
+  "regressions": [
+    {
+      "name": "wide short gamepad area",
+      "observedFailure": "920×580 control bottom reached 616px in the initial runtime check",
+      "repair": "Measured short-area classification and bounded wide-short key size",
+      "verification": "Final browser geometry checks require every control bottom <= viewport height + 2px"
+    },
+    {
+      "name": "native raw touch callback contract",
+      "observedFailure": "Existing regression expected onTouchStart={press}; inline takeover wrapper failed",
+      "repair": "Timer cancellation moved into press while raw touch wiring remains explicit",
+      "verification": "15 native controller contract tests and final 976-test gate pass"
+    }
+  ],
+  "independentReview": {
+    "result": "no concrete findings",
+    "scope": "Read-only diff review, including final raw-touch correction"
+  },
+  "scope": "I07 software implementation for existing controller descriptions. Browser deck measures its width and visible area; native panel measures width and uses window dimensions for available sizing. Coarse/fine target constraints, narrow reflow, short-area bounds and keyboard/native accessibility alternatives preserve every action. Physical native accessibility, screen-reader journeys, touch ergonomics and the full form-factor matrix were not exercised; I10, Q09 and U07 remain open. No support-row promotion."
+}
