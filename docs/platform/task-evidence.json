@@ -7004,6 +7004,31 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "k09-js-inventory-2026-10-05",
+      "revision": "candidate based on 382632b7b29bdf4d77502eed4396847b4010bca4; exact source tree and package hashes in receipt",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K09"
+      ],
+      "paths": [
+        "tools/package-release.mjs",
+        "tests/release-packaging.test.ts",
+        "docs/platform/receipts/2026-10-05-k09-js-inventory.json"
+      ],
+      "environment": "Node 24.14.0; npm 11.9.0; local production web package",
+      "reproduction": "node --test tests/release-packaging.test.ts (15/15; stale version/license/missing/extra inventory rejected); npm run package:release -- --release web (1052 lockfile entries matched, production artifact produced); required repository gates",
+      "scope": "Partial JavaScript license inventory synchronization only. Complete redistribution terms, license texts/assets and model attribution remain open; this evidence does not close K09.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -10240,7 +10265,8 @@
     {
       "id": "K09",
       "records": [
-        "pending-K09"
+        "pending-K09",
+        "k09-js-inventory-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

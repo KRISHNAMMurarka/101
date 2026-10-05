@@ -6,12 +6,18 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 
+const fixtureLicenseInventory = JSON.stringify({ schemaVersion: 1, generatedFrom: 'package-lock.json',
+  packages: [{ name: 'runtime-fixture', version: '1.0.0', license: 'MIT' }] }, null, 2) + '\n';
+
 function fixture(states: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), '101-package-contract-'));
   mkdirSync(join(root, 'tools'));
   copyFileSync(resolve(import.meta.dirname, '../tools/package-release.mjs'), join(root, 'tools/package-release.mjs'));
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'local-packaging-fixture', version: '0.1.0', private: true,
     scripts: { build: 'node emit.mjs web', 'desktop:app': 'node emit.mjs hub', 'native:export': 'node emit.mjs link', 'watch:wear:build': 'node emit.mjs wear' } }));
+  writeFileSync(join(root, 'package-lock.json'), JSON.stringify({ packages: {
+    'node_modules/runtime-fixture': { version: '1.0.0', license: 'MIT' },
+  } }));
   writeFileSync(join(root, 'emit.mjs'), `
     import { appendFileSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
@@ -37,7 +43,7 @@ function fixture(states: Record<string, string> = {}) {
   for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
     'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
     mkdirSync(resolve(root, path, '..'), { recursive: true });
-    writeFileSync(join(root, path), `fixture ${path}`);
+    writeFileSync(join(root, path), path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory : `fixture ${path}`);
   }
   mkdirSync(join(root, 'release/sdk-existing'), { recursive: true });
   writeFileSync(join(root, 'release/sdk-existing/keep.tgz'), 'prior immutable artifact');
@@ -98,7 +104,7 @@ test('the web release artifact carries its license, model attribution and locked
     const artifact = resolve(f.manifests()[0].path, '..', 'web');
     for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
       'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
-      assert.equal(readFileSync(join(artifact, path), 'utf8'), `fixture ${path}`);
+      assert.equal(readFileSync(join(artifact, path), 'utf8'), path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory : `fixture ${path}`);
     }
   } finally { f.close(); }
 });
@@ -136,6 +142,25 @@ test('a missing required attribution leaves no distributable web artifact', () =
     assert.deepEqual(value.produced, []);
     assert.equal(existsSync(resolve(path, '..', 'web')), false);
   } finally { f.close(); }
+});
+
+test('a stale JavaScript license inventory cannot be packaged as a release', () => {
+  for (const drift of ['version', 'license', 'missing', 'extra']) {
+    const f = fixture();
+    try {
+      const inventory = JSON.parse(fixtureLicenseInventory);
+      if (drift === 'version') inventory.packages[0].version = '0.9.0';
+      if (drift === 'license') inventory.packages[0].license = 'Apache-2.0';
+      if (drift === 'missing') inventory.packages = [];
+      if (drift === 'extra') inventory.packages.push({ name: 'not-locked', version: '1.0.0', license: 'MIT' });
+      writeFileSync(join(f.root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(inventory));
+      const result = f.run(['--release', 'web']);
+      assert.equal(result.status, 1, `${drift}: ${result.stdout}${result.stderr}`);
+      const { path, value } = f.manifests()[0];
+      assert.deepEqual(value.produced, []);
+      assert.equal(existsSync(resolve(path, '..', 'web')), false);
+    } finally { f.close(); }
+  }
 });
 
 test('packaging rejects credentials accidentally emitted into an artifact', () => {

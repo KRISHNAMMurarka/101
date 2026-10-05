@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "task": "K09",
+  "result": "pass",
+  "scope": "Partial implementation/runtime evidence: web release packaging compares every JavaScript lockfile package name, version and license with THIRD_PARTY_LICENSES.json, rejecting missing, extra, stale-version and stale-license entries before building. Full redistribution terms, complete license texts/assets and model attribution remain open; K09 is not complete.",
+  "sourceRevision": "382632b7b29bdf4d77502eed4396847b4010bca4",
+  "sourceTree": "6b764275e91c728cb99ac35314517dc1f78de4c3",
+  "sourceTreeWasClean": false,
+  "environment": "Node 24.14.0; npm 11.9.0; local production web packaging",
+  "inventory": {
+    "path": "THIRD_PARTY_LICENSES.json",
+    "entries": 1052,
+    "packageLockSha256": "c3eb91dcc14e6aba20b0321a28f49165f234a3fdb8f7339f4e84d00d5e5feeb5"
+  },
+  "package": {
+    "manifest": "release/package-suN9sB/manifest.json",
+    "manifestSha256": "4d762ae4a5a0a5043c1824ec238496c59c1f6f2f46c11b8b9191cff505114280",
+    "artifact": "release/package-suN9sB/web",
+    "artifactSha256": "60ff0460195114c653993c3a33747c1427e54f64939ae374dd95ce2a2f4a7a73",
+    "files": 445,
+    "bytes": 53860714
+  },
+  "regression": "Before implementation, the stale-version test failed: the web artifact was produced despite the inventory version mismatch (14/15 focused tests passed). After implementation, node --test tests/release-packaging.test.ts passed 15/15, including version, license, missing and extra inventory drift. The real production web target packaged successfully with all 1052 lockfile inventory entries matching.",
+  "gates": "npx tsc --noEmit; npm run lint (0 errors, one existing warning); npm run test:unit (908/908); node --test tests/rendered-html.test.mjs (33/33); node tools/audit-platform-records.mjs",
+  "published": false
+}
