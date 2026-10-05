@@ -7029,6 +7029,31 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "k10-sdk-manifest-2026-10-05",
+      "revision": "immutable source tree e313ca46579ba9c7b2537fff25b3d610d1e49555; manifest and source hashes in receipt",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K10"
+      ],
+      "paths": [
+        "tools/build-sdk.mjs",
+        "tests/sdk-distribution.test.ts",
+        "docs/platform/receipts/2026-10-05-k10-sdk-manifest.json"
+      ],
+      "environment": "Node 24.14.0; npm 11.9.0; TypeScript 5.9.3",
+      "reproduction": "node tools/build-sdk.mjs e313ca46579ba9c7b2537fff25b3d610d1e49555; node --test tests/sdk-distribution.test.ts; required repository gates",
+      "scope": "Partial provenance manifest improvement for five immutable JS SDK tarballs only: explicit package license accompanies existing exact source, builder and per-package/file fingerprints. Other release targets and platform binaries remain open; this does not close K10.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -10277,7 +10302,8 @@
       "id": "K10",
       "records": [
         "pending-K10",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "k10-sdk-manifest-2026-10-05"
       ],
       "dependencies": [],
       "equipment": [

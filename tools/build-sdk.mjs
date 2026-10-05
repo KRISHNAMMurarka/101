@@ -120,7 +120,7 @@ try {
       return { path: file.path, size: readFileSync(path).length, sha256: fileHash(path) };
     }).sort((a, b) => a.path.localeCompare(b.path));
     const tarball = join(tarballs, packed[0].filename);
-    packages.push({ name: original.name, version: original.version, directory, tarball,
+    packages.push({ name: original.name, version: original.version, license: original.license, directory, tarball,
       sha256: fileHash(tarball), bytes: readFileSync(tarball).length, files: inventory });
   }
   const result = { schemaVersion: 1, source: { revision, tree, sha256: sourceSha256 },

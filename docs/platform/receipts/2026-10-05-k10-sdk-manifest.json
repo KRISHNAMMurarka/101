@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "task": "K10",
+  "result": "pass",
+  "scope": "Partial SDK distribution manifest evidence: five immutable JavaScript SDK tarballs identify name, version, MIT license, byte size and SHA-256, with per-file hashes, exact source tree and source-file hashes, builder hash, Node/npm/TypeScript versions. Other release targets, native installers and platform binaries remain open; K10 is not complete.",
+  "sourceTree": "e313ca46579ba9c7b2537fff25b3d610d1e49555",
+  "manifest": "release/sdk-tsoukB/manifest.json",
+  "manifestSha256": "5047378e3dddc0347fac545abffb23839ff10871389e62ce7dc36f5fa0b2515b",
+  "builderSha256": "8a3f8c5b0db7e4b5c37ee153e29c1c3a8551fcdeed27957b21ee9b7dcb687d83",
+  "environment": "Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; immutable Git tree build",
+  "packages": [
+    { "name": "@101/device-model", "version": "0.1.0", "license": "MIT", "sha256": "14e8c6c9b6d7006e3fca98b075928d687c0f68d4350bc5b62f0d80a8a0e334d7", "bytes": 55393, "files": 52 },
+    { "name": "@101/device-runtime", "version": "0.1.0", "license": "MIT", "sha256": "80de856696635f8239a8c3b8bce67a85334979da2ce34c7ebe5d3bd363e31e78", "bytes": 32009, "files": 31 },
+    { "name": "@101/transport-webrtc", "version": "0.1.0", "license": "MIT", "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688", "bytes": 6529, "files": 9 },
+    { "name": "@101/device-web", "version": "0.1.0", "license": "MIT", "sha256": "a6928e9dea83af72037519fdc6fb9bfc0d717ac748ac1450b7787aa3a9492ab8", "bytes": 31400, "files": 27 },
+    { "name": "@101/connect", "version": "0.1.0", "license": "MIT", "sha256": "d095dfc892ba1b364ba452fa5165684b93889db549e8760bd121614dc5d35c71", "bytes": 29879, "files": 36 }
+  ],
+  "reproduction": "node tools/build-sdk.mjs e313ca46579ba9c7b2537fff25b3d610d1e49555; node --test tests/sdk-distribution.test.ts (old manifest failed the new MIT assertion; updated manifest passes and repeated tarballs are byte-identical)",
+  "published": false
+}
