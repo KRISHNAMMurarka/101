@@ -333,8 +333,8 @@ room-control host binds its pinned temperature processor, authorizes the two
 declared resource legs, produces one simulated relay command and records
 separate observed feedback. The declaration
 does not discover devices, load code, grant access or render a UI. Static
-resolution is described below; consent and execution lifecycle are E04, and
-adaptive rendering is E05. Consumers must obtain fresh host grants before
+resolution and consent-gated execution are described below; adaptive rendering
+remains E05. Consumers must obtain fresh host grants before
 running any selected recipe.
 
 `resolveRecipe(recipe, { devices, processors, selections })` checks explicit
@@ -348,6 +348,22 @@ processor pin or invalid configuration also returns an issue. The resolver
 only handles inert manifests and descriptors: the host still verifies installed
 code bytes through its processor registry, checks actual readiness, obtains
 fresh grants and starts routes under E04. No recipe text executes code.
+
+`createRecipeSession(recipe, { runtime, identity, getEnvironment,
+requestConsent, bind })` runs that lifecycle on host-owned registrations.
+`preview()` rereads current selections and returns the resolver's plan or
+structured issues. `start()` rereads them again, shows the selected resources,
+purposes and exact requested operations to `requestConsent()`, then binds
+existing registrations only after approval. Its route-group coordinator
+prepares every required leg before activation and rechecks the runtime grant
+during activation. A denied decision opens no route; failed preparation stops
+reserved routes. Required member loss pauses and releases the group. Calling
+`start()` again obtains a fresh inventory, consent and grants; missing
+selection, failed binding, revoked grant and expired lease remain recoverable.
+`stop()` is terminal and fences a late asynchronous consent result. The host
+must still provide the user-facing consent UI, real provider registration,
+verified processor code and safe `release()` callbacks; the session never
+assumes that cancellation undoes a physical effect.
 
 ## Processor failure and restart propagation
 

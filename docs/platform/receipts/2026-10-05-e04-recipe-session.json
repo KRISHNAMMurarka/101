@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "task": "E04",
+  "result": "pass",
+  "sourceTree": "6d934a07b9ff32b3c1ee8902558e26cbd67d6f59",
+  "sdkArtifact": "release/sdk-Jxc90l/manifest.json",
+  "sdkManifestSha256": "56260391350787360890ccde8801ba630e12e05bc98c0b9ac8dbacb3687a2a3c",
+  "consumerQaToolSha256": "c987c98412eef339f79e49ced3e5eaa67ba8f17d1c5209421e2e0246f720f754",
+  "sessionSourceSha256": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Consent preview lists selected resources and exact operations before route creation; rejection causes zero grant requests",
+    "Required direct and processor-backed legs reserve and recheck runtime grants before activation; downstream denial stops prepared routes",
+    "Missing selections, failed host binding, denied or expired grants and required member loss retry with fresh resolution, consent and route authority",
+    "Terminal stop releases output and fences an asynchronous late consent response",
+    "Offline packed SDK consumer checks TypeScript declarations and executes the consent-gated route in Node, Chromium, Firefox and WebKit"
+  ],
+  "scope": "E04 host-owned recipe session lifecycle for embedded routes. It uses static resolution, an explicit consent callback and the existing route-group controller; every attempt rereads inventory and obtains fresh runtime grants. Simulated direct and two-leg processor routes cover start, failure, loss, retry and stop. Host UI, real provider registration, processor byte verification and physical effects remain separate obligations; cancellation cannot undo an effect already performed.",
+  "published": false
+}

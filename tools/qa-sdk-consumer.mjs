@@ -157,13 +157,13 @@ function installAndAudit(manifest) {
 }
 
 const typeConsumer = String.raw`
-import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, createProcessorFailureController, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
+import { createDeviceRuntime, createRouteGroupController, createWorkloadHandoff, createProcessorFailureController, createRecipeSession, PeerDataTransport, AuthenticatedResourcePeer, createReceiverInvitation,
   decodeReceiverInvitationInput, encodeReceiverInvitationLink, createEphemeralWebIdentity, webEndpointCrypto } from '@101/connect';
 import type { DeviceDescriptor, DeviceRuntime, EndpointIdentity, ReceiverInvitation, AuthenticatedPeerOptions } from '@101/connect';
 import { DeviceValidationError, createUnitConverter, createSpatialPoseConverter, parseDeviceDescriptor, parseUnitToken } from '@101/device-model';
 import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, UnitConverter, UnitConverterOptions } from '@101/device-model';
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
-import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController } from '@101/device-runtime';
+import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController, RecipeSession } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { application, createPointerPipeline, phone, runPointerExample } from '@101/connect/examples/pointer';
@@ -323,7 +323,9 @@ void [mediaResult, runMediaDescriptionExample().workingRoute];
 const declaredRecipe: Readonly<Recipe> = parseRecipe(roomControlRecipe);
 const selectedRecipe: RecipeResolution = resolveRecipe(pointerRecipe, { devices: [phone, application], processors: [], selections: {
   touch: { deviceId: phone.id, capability: 'position' }, surface: { deviceId: application.id, capability: 'position' } } });
-void [declaredRecipe, selectedRecipe, runRecipeExample().observed, runDirectRecipeExample().released];
+const recipeSessionFactory: typeof createRecipeSession = createRecipeSession;
+let recipeSession: RecipeSession | undefined;
+void [declaredRecipe, selectedRecipe, recipeSessionFactory, recipeSession, runRecipeExample().observed, runDirectRecipeExample().released];
 const qualityReport: MeasurementReport = parseMeasurementReport({ status: 'valid', value: 31.25,
   calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
   { type: 'scalar', unit: 'Cel', min: -40, max: 125 });
@@ -397,7 +399,7 @@ import { pointerRecipe, roomControlRecipe, runDirectRecipeExample, runRecipeExam
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.resolveRecipe === model.resolveRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createRouteGroupController === runtime.createRouteGroupController && sdk.createWorkloadHandoff === runtime.createWorkloadHandoff && sdk.createProcessorFailureController === runtime.createProcessorFailureController && sdk.createRecipeSession === runtime.createRecipeSession && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.parseRecipe === model.parseRecipe && sdk.resolveRecipe === model.resolveRecipe && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.createDeviceSimulator === runtime.createDeviceSimulator && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -453,6 +455,30 @@ export async function checkRuntime() {
   check(!unresolved.ok && unresolved.issues[0].code === 'resource-unselected' &&
     unresolved.issues[0].alternatives?.some(item => item.deviceId === phone.id && item.compatible),
     'Packed recipe resolver omitted a compatible explicit selection alternative');
+  let recipeGrants = 0, recipeEffects = 0, recipeReleases = 0;
+  const recipeRuntime = runtime.createDeviceRuntime({ now: () => 0, authorize() {
+    recipeGrants++; return { expiresAt: 1000, maxAgeMs: 1000, maxHz: 60 };
+  } });
+  const recipeSource = recipeRuntime.registerSource({ device: phone, capability: 'position' });
+  const recipeSink = recipeRuntime.registerSink({ device: application, capability: 'position',
+    apply(_observation, context) { if (context.isCurrent()) recipeEffects++; }, release() { recipeReleases++; } });
+  recipeRuntime.setReadiness(recipeSource, 'available'); recipeRuntime.setReadiness(recipeSink, 'available');
+  const recipeSession = runtime.createRecipeSession(pointerRecipe, {
+    runtime: recipeRuntime, identity: { principalId: 'owner', applicationId: 'packed-recipe', sessionId: 'local' },
+    getEnvironment: () => ({ devices: [phone, application], processors: [], selections: {
+      touch: { deviceId: phone.id, capability: 'position' }, surface: { deviceId: application.id, capability: 'position' } } }),
+    requestConsent: preview => preview.requiredOperations.length === 2,
+    bind: reference => reference.node === 'touch'
+      ? { device: phone, capability: 'position', handle: recipeSource }
+      : { device: application, capability: 'position', handle: recipeSink },
+  });
+  try {
+    check((await recipeSession.start()).ok && recipeGrants === 2, 'Packed recipe session failed consent or fresh grants');
+    recipeRuntime.publish(recipeSource, { x: 0.2, y: 0.8 }); recipeRuntime.flush();
+    check(recipeEffects === 1, 'Packed recipe route did not deliver');
+    recipeSession.stop();
+    check(recipeReleases === 1, 'Packed recipe stop did not release output');
+  } finally { recipeRuntime.close(); }
   const measurementReport = model.parseMeasurementReport({ status: 'valid', value: 31.25,
     calibration: { revision: 7 }, uncertainty: { absoluteErrorBound: 0.5, unit: 'Cel' }, faults: [] },
     { type: 'scalar', unit: 'Cel', min: -40, max: 125 });

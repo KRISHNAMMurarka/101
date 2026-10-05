@@ -22,7 +22,7 @@ export const thermometer: DeviceDescriptor = {
   capabilities: [temperatureCapability],
 };
 
-const thresholdDevice: DeviceDescriptor = {
+export const thresholdDevice: DeviceDescriptor = {
   schemaVersion: 1, id: 'temperature-threshold', label: 'Temperature threshold', revision: 1,
   adapter: { id: 'example:threshold', version: '1.0.0' }, runtime: { platform: 'embedded-simulation' },
   capabilities: [

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 54,
+  "revision": 55,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -3248,6 +3248,33 @@
       "equipment": [
         "Clean external consumer/toolchain"
       ]
+    },
+    {
+      "id": "recipe-session-2026-10-05",
+      "revision": "containing E04 commit, base ad815ef; immutable SDK producer tree 6d934a07b9ff32b3c1ee8902558e26cbd67d6f59",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E04"
+      ],
+      "paths": [
+        "packages/device-runtime/src/recipe-session.ts",
+        "packages/device-runtime/src/recipe-session.test.ts",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-05-e04-recipe-session.json"
+      ],
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
+      "reproduction": "node tools/build-sdk.mjs 6d934a07b9ff32b3c1ee8902558e26cbd67d6f59; node tools/qa-sdk-consumer.mjs release/sdk-Jxc90l/manifest.json; exact candidate repository gates",
+      "scope": "E04 embedded recipe session re-resolves current selections, previews owner operations, awaits consent, prepares/activates required route groups and retries after denial, expiry, missing bindings or required-member loss with fresh grants. Stop fences late approval. Physical UI and effects remain separate E05/U/Q scope.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-E04",
@@ -9173,6 +9200,7 @@
     {
       "id": "E04",
       "records": [
+        "recipe-session-2026-10-05",
         "pending-E04"
       ],
       "dependencies": [

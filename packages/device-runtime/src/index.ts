@@ -20,3 +20,5 @@ export { createWorkloadHandoff } from './workload-handoff.ts';
 export type { HandoffEpoch, HandoffHost, HandoffResult, WorkloadHandoff, WorkloadHandoffOptions } from './workload-handoff.ts';
 export { createProcessorFailureController } from './processor-failure.ts';
 export type { ProcessorFailureBinding, ProcessorFailureController, ProcessorFailureOptions, ProcessorRunResult } from './processor-failure.ts';
+export { createRecipeSession } from './recipe-session.ts';
+export type { RecipeEndpointBinding, RecipeConsentPreview, RecipeSessionOptions, RecipeSession } from './recipe-session.ts';
