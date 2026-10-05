@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 90 completed with recorded evidence; 182 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 91 completed with recorded evidence; 181 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -275,7 +275,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access.
 - [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior.
 - [ ] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency.
-- [ ] **E14 — Provide machine-readable developer guidance.** Schemas, complete example recipes, package manifests and contextual instructions let developers/AI tools generate validated projects; explanatory text cannot grant privileges or execute code.
+- [x] **E14 — Provide machine-readable developer guidance.** Schemas, complete example recipes, package manifests and contextual instructions let developers/AI tools generate validated projects; explanatory text cannot grant privileges or execute code. [Generated guidance and fresh consumer evidence](receipts/2026-10-05-e14-developer-guidance.json).
 
 ### U — Finished product UI and accessibility
 

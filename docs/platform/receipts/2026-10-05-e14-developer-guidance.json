@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    "E14"
+  ],
+  "result": "pass",
+  "sourceRevision": "3fadd26c2c92e39003461f9a88074434101e8be3",
+  "sourceTree": "3979ddad8144abe4ff3ddeb373b5c41f2ecf38bd",
+  "verifiedAt": "2026-10-05T17:01:31.845830Z",
+  "sourceSha256": {
+    "packages/devkit/src/device-scaffold.ts": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d",
+    "packages/devkit/src/device-scaffold.test.ts": "1295f52910ed8a5492d8e9ac0e716a74f856d1a82801af9d4a0e5329fcaff147",
+    "tools/create-device-project.mjs": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6",
+    "tools/qa-sdk-consumer.mjs": "5fe2537c6d5558d6c6c4d468e53a9a0f9bc7e3a2edfc6566e144b534415c36cf"
+  },
+  "environment": {
+    "os": "macOS26.5.2 arm64",
+    "node": "v24.14.0",
+    "additionalGeneratedConsumerNode": "v22.13.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1"
+  },
+  "checks": [
+    {
+      "command": "node --experimental-strip-types --test packages/devkit/src/device-scaffold.test.ts",
+      "result": "pass",
+      "pass": 2,
+      "scope": "Generated file contract, exact processor pin and safe project identifiers"
+    },
+    {
+      "command": "node tools/build-sdk.mjs 3979ddad8144abe4ff3ddeb373b5c41f2ecf38bd",
+      "result": "pass",
+      "manifest": "release/sdk-WwHzfE/manifest.json",
+      "manifestSha256": "db09a99d296a6ab5fb0aea2d06c0f8ebb5b341d99fc55e892bd2e2cf90b89c9e"
+    },
+    {
+      "command": "node tools/qa-sdk-consumer.mjs release/sdk-WwHzfE/manifest.json",
+      "result": "pass",
+      "rawReceipt": "/tmp/101-sdk-consumer-grcVKn/receipt.json",
+      "rawReceiptSha256": "9119f7c156bad3105152460ea4df5eb0da1832eb1df1c79bd491b37e9678fe94",
+      "scope": "Fresh outside-repository offline install, strict NodeNext/Bundler imports, six SDK packages, Node and Chromium149.0.7827.55/Firefox151.0/WebKit26.5; generated validation, compile, six runtime tests and caller"
+    },
+    {
+      "command": "PATH=<local Node22.13 bin>:$PATH npm test",
+      "result": "pass",
+      "pass": 6,
+      "scope": "Same fresh standalone generated project; validation, TS compilation and all six runtime checks on declared minimum Node22.13"
+    }
+  ],
+  "generatedProject": {
+    "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+    "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+    "guidance": {
+      "schema": "device-guidance.schema.json",
+      "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+      "generatedAssets": [
+        {
+          "path": "device-guidance.json",
+          "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+        },
+        {
+          "path": "device-guidance.schema.json",
+          "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+        },
+        {
+          "path": "src/devices.json",
+          "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+        },
+        {
+          "path": "src/recipe.json",
+          "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+        },
+        {
+          "path": "scripts/validate.mjs",
+          "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+        }
+      ],
+      "validation": {
+        "status": "pass",
+        "recipeId": "room-sensor:temperature-display",
+        "processorId": "room-sensor:threshold",
+        "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+      },
+      "rejectedAssets": [
+        "unknown-recipe-field",
+        "changed-processor-source",
+        "incompatible-selected-device"
+      ],
+      "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+    },
+    "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+  },
+  "commitGates": {
+    "typescript": "pass",
+    "lint": "pass with pre-existing native ref warning",
+    "unit": {
+      "pass": 976,
+      "fail": 0
+    },
+    "freshBuild": "pass",
+    "applicationBuild": "b175f0c3f9b8567e",
+    "rendered": {
+      "pass": 33,
+      "fail": 0
+    }
+  },
+  "regressions": [
+    {
+      "name": "Generated strict consumer compilation",
+      "observedFailure": "Standalone tsc reported closure endpoint narrowing errors and an undefined identity spread",
+      "repair": "Resolved endpoint snapshots and explicit fixed route identity",
+      "verification": "Fresh offline consumer compilation and six runtime tests pass"
+    },
+    {
+      "name": "Compiled JSON asset fixture",
+      "observedFailure": "QA byte-hash comparison rejected TypeScript formatted copies despite matching values",
+      "repair": "Compare parsed JSON values; actual compiled connector imports and runs emitted assets",
+      "verification": "Final offline SDK QA passes; changed source pin, unknown recipe field and incompatible selected device still reject"
+    }
+  ],
+  "independentReview": {
+    "result": "no actionable findings",
+    "scope": "Read-only E14 diff and targeted final JSON assertion review"
+  },
+  "scope": "E14 for the existing local TypeScript/Node device SDK scaffolder: versioned closed guidance schema, emitted descriptor and complete direct-route recipe assets, pinned processor, package/runtime/file/validator/command context, explicit fixed-path validation and executable caller. Guidance text is never interpreted for imports, command execution or authorization. Node24 and Node22.13 generated consumers and the six-package offline SDK consumer pass; physical hardware, language bindings, extension installation/publication and the full external-app matrix remain separate. No support-row promotion."
+}
