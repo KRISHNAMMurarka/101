@@ -202,8 +202,8 @@ import { createScalarCalibrationProcessor, createScalarConversionProcessor, crea
 import type { MeasurementFrame, CalibrationOptions, ConversionOptions, MovingAverageOptions } from '@101/device-model';
 import { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResampler } from '@101/device-model';
 import type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdgeProcessor, LatestResampler } from '@101/device-model';
-import { createProcessorRegistry, createPlacementScheduler } from '@101/device-runtime';
-import type { ResolvedProcessor, PlacementScheduler, PlacementResult, PlacementAuthorityRequest } from '@101/device-runtime';
+import { createProcessorRegistry, createPlacementScheduler, createApplicationSnapshot, restoreApplicationSnapshot } from '@101/device-runtime';
+import type { ResolvedProcessor, PlacementScheduler, PlacementResult, PlacementAuthorityRequest, ApplicationSnapshot, SnapshotRestoreResult } from '@101/device-runtime';
 import { createAssetReference, parseAssetReference } from '@101/device-model';
 import type { AssetReference } from '@101/device-model';
 import { chunkResource, readVerifiedResource } from '@101/device-runtime';
@@ -220,11 +220,15 @@ void inputProfile;
 const manifestParser: (input: unknown) => Readonly<ProcessorManifest> = parseProcessorManifest;
 const registryFactory: typeof createProcessorRegistry = createProcessorRegistry;
 const placementFactory: typeof createPlacementScheduler = createPlacementScheduler;
+const snapshotFactory: typeof createApplicationSnapshot = createApplicationSnapshot;
+const restoreFactory: typeof restoreApplicationSnapshot = restoreApplicationSnapshot;
 let placement: PlacementScheduler | undefined;
 let placementResult: PlacementResult | undefined;
 let placementAuthority: PlacementAuthorityRequest | undefined;
+let applicationSnapshot: ApplicationSnapshot | undefined;
+let snapshotResult: SnapshotRestoreResult | undefined;
 let resolvedProcessor: ResolvedProcessor | undefined;
-void [manifestParser, registryFactory, placementFactory, placement, placementResult, placementAuthority, resolvedProcessor];
+void [manifestParser, registryFactory, placementFactory, snapshotFactory, restoreFactory, placement, placementResult, placementAuthority, applicationSnapshot, snapshotResult, resolvedProcessor];
 const runtime: DeviceRuntime = createDeviceRuntime({ now: () => 0, clockDomain: 'external-fixture', authorize: () => undefined });
 const runtimeFactory: typeof createDeviceRuntime = directRuntime;
 const identityFactory: typeof createEphemeralWebIdentity = directIdentity;
@@ -375,7 +379,7 @@ import { runMediaDescriptionExample } from '@101/connect/examples/media-descript
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
-  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
+  check(sdk.PeerDataTransport === PeerDataTransport && sdk.createDeviceRuntime === runtime.createDeviceRuntime && sdk.createUnitConverter === model.createUnitConverter && sdk.createSpatialPoseConverter === model.createSpatialPoseConverter && sdk.createScalarCalibrationProcessor === model.createScalarCalibrationProcessor && sdk.createScalarConversionProcessor === model.createScalarConversionProcessor && sdk.createMovingAverageProcessor === model.createMovingAverageProcessor && sdk.createDeadzoneMapper === model.createDeadzoneMapper && sdk.createHysteresisEdgeProcessor === model.createHysteresisEdgeProcessor && sdk.createLatestResampler === model.createLatestResampler && sdk.createAssetReference === model.createAssetReference && sdk.readVerifiedResource === runtime.readVerifiedResource && sdk.parseMediaManifest === model.parseMediaManifest && sdk.parseMeasurementReport === model.parseMeasurementReport && sdk.parseObservationTiming === model.parseObservationTiming && sdk.parseDeviceHealthReport === model.parseDeviceHealthReport && sdk.assessDeviceHealth === model.assessDeviceHealth && sdk.planDescriptorEvolution === model.planDescriptorEvolution && sdk.exportWoTThingDescription === model.exportWoTThingDescription && sdk.importWoTThingDescription === model.importWoTThingDescription && sdk.parseDiscoveryCandidate === model.parseDiscoveryCandidate && sdk.assessDiscoveryCandidate === model.assessDiscoveryCandidate && sdk.getInputProfile === model.getInputProfile && sdk.INPUT_PROFILE_IDS === model.INPUT_PROFILE_IDS && sdk.parseProcessorManifest === model.parseProcessorManifest && sdk.validateProcessorGraph === model.validateProcessorGraph && sdk.planRouteGroup === model.planRouteGroup && sdk.parseWorkloadRequirements === model.parseWorkloadRequirements && sdk.createProcessorRegistry === runtime.createProcessorRegistry && sdk.createPlacementScheduler === runtime.createPlacementScheduler && sdk.createApplicationSnapshot === runtime.createApplicationSnapshot && sdk.restoreApplicationSnapshot === runtime.restoreApplicationSnapshot && sdk.encodeReceiverInvitationLink === web.encodeReceiverInvitationLink && sdk.decodeReceiverInvitationInput === web.decodeReceiverInvitationInput && sdk.DeviceValidationError === model.DeviceValidationError && sdk.AuthenticatedResourcePeer === web.AuthenticatedResourcePeer, 'Public facade module identity differs from direct packages');
   check(model.INPUT_PROFILE_IDS.length === 7 && model.getInputProfile('app:pointer/1').capabilities[0].delivery.mode === 'latest', 'Packed input profile contract failed');
   const processorSource = new TextEncoder().encode('packed-reviewed-processor');
   const processorPin = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', processorSource)),
@@ -519,6 +523,26 @@ export async function checkRuntime() {
     const denied = runtime.createPlacementScheduler({ context: { devices: resourceDevices, processors: [processorManifest] },
       hosts: [host], isAuthorized: request => request.ownerId !== 'sensor-owner' });
     check(denied.place(workloadInput, principal).ok === false, 'Packed owner denial was accepted');
+    const assetBytes = new TextEncoder().encode('{"calibration":1}');
+    const asset = await model.createAssetReference('example:calibration', 'text', assetBytes);
+    const snapshotWorkload = { ...workloadInput, assets: [asset], restart: { mode: 'snapshot', formatVersion: 2,
+      applicationCodeSha256: workloadInput.application.codeSha256,
+      processorState: 'reset-on-resume', onIncompatible: 'cold-restart' } };
+    const snapshot = runtime.createApplicationSnapshot(snapshotWorkload,
+      { devices: resourceDevices, processors: [processorManifest] }, { count: 2, lastTemperature: 31 });
+    const validateState = state => state !== null && typeof state === 'object' && !Array.isArray(state) &&
+      state.count === 2 && state.lastTemperature === 31;
+    const resumed = await runtime.restoreApplicationSnapshot(snapshotWorkload,
+      { devices: resourceDevices, processors: [processorManifest] }, snapshot,
+      [{ reference: asset, bytes: assetBytes }], validateState);
+    const missingAsset = await runtime.restoreApplicationSnapshot(snapshotWorkload,
+      { devices: resourceDevices, processors: [processorManifest] }, snapshot, [], validateState);
+    const changedFormat = await runtime.restoreApplicationSnapshot(snapshotWorkload,
+      { devices: resourceDevices, processors: [processorManifest] }, { ...snapshot, formatVersion: 3 },
+      [{ reference: asset, bytes: assetBytes }], validateState);
+    check(resumed.ok && resumed.state.count === 2 && resumed.processorState === 'reset-on-resume' &&
+      !missingAsset.ok && missingAsset.alternative === 'install-assets-then-cold-restart' &&
+      !changedFormat.ok && changedFormat.alternative === 'cold-restart', 'Packed snapshot compatibility failed');
   } finally { routeGroup.runtime.close(); }
   let crossClockRejected = false;
   try { model.compareClockStamps(timing.capture, { clockId: 'other-clock', at: 110 }); } catch { crossClockRejected = true; }

@@ -394,7 +394,7 @@ Cold restart is explicit. A snapshot declaration binds its format version to
 the exact application code pin, requires processor reset on resume and names a
 cold-restart fallback for incompatibility. The parser does not load code or
 assets, authenticate a device, obtain consent, enforce compute quotas, select
-a host or serialize state. Placement and byte verification are separate runtime
+a host or serialize state. Placement and snapshot asset checks are separate runtime
 steps under R05/R06. The packed consumer validates a workload
 against the actual embedded temperature descriptors and a pinned processor
 manifest; physical two-host operation remains unqualified.
@@ -419,6 +419,27 @@ Those remain obligations of the trusted orchestrator and later runtime steps.
 The packed consumer tests deterministic selection, owner denial and quota
 release against the embedded temperature workload. Physical two-host execution
 and handoff remain under R09.
+
+## Versioned application snapshots
+
+`createApplicationSnapshot(workload, context, state)` copies bounded JSON state
+from an application whose workload declares snapshot restart. The capsule binds
+the application id, version and code digest, the declared format version and
+asset references. It explicitly resets processor internals on resume. The
+caller must first pause application mutation; active routes, grants, commands
+and processor state are not serialized.
+
+`restoreApplicationSnapshot(workload, context, capsule, availableAssets,
+validateState)` revalidates the workload and capsule, asks the application to
+check its own state schema, and hashes the bytes of every required asset before
+returning frozen state. Incompatible identity, format or state returns a cold
+restart alternative. Absent or changed asset bytes return an install-assets-
+then-cold-restart alternative. A cold-only workload cannot resume a capsule.
+The state validator must be side-effect free; the application applies state
+only after a successful result. The reference counter application tests exact
+state continuity, rejection and nonmutation. The packed consumer checks this
+contract in Node and three browser engines. Transport authentication, host
+code-byte verification, pausing and single-authority transfer remain separate.
 
 The [telemetry batch](../../examples/device-pipelines/telemetry-batch.ts) declares
 timestamped resident-memory readings and optional v2 quality. Its explicit v1→v2

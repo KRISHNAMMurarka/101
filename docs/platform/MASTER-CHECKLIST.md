@@ -4,7 +4,7 @@ Updated: **5 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 71 completed with recorded evidence; 201 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 72 completed with recorded evidence; 200 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -246,7 +246,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **R03 — Implement group recovery/cancellation.** Lost optional/required members degrade, pause or stop by policy; no orphan subscriptions, leases or queued commands remain.
 - [x] **R04 — Declare workload requirements.** Application/processor runtime, assets, resources, privacy, compute budget and restart/snapshot compatibility are validated before placement. [Contract](SDK.md#workload-requirements) and [packed consumer receipt](receipts/2026-10-05-r04-workload-requirements.json).
 - [x] **R05 — Implement an authorized placement scheduler.** Select an eligible host, respect quotas and resource ownership, and reject an incompatible or unauthorized runtime. [Contract](SDK.md#authorized-placement-reservation) and [packed consumer receipt](receipts/2026-10-05-r05-placement.json).
-- [ ] **R06 — Implement versioned application snapshots.** A reference application serializes tested state; incompatible snapshots and absent assets fail with explicit restart alternatives.
+- [x] **R06 — Implement versioned application snapshots.** A reference application serializes tested state; incompatible snapshots and absent assets fail with explicit restart alternatives. [Contract](SDK.md#versioned-application-snapshots) and [packed consumer receipt](receipts/2026-10-05-r06-application-snapshot.json).
 - [ ] **R07 — Implement pause/transfer/resume handoff.** New route epochs and ownership leave one authoritative host; interrupted transfer recovers without dual simulation or stale commands.
 - [ ] **R08 — Implement hosted/streamed application integration.** Launch, input targets and media views authenticate to a real provider; metadata alone does not count as remote execution.
 - [ ] **R09 — Qualify cross-host workloads.** Shared input/output groups and a supported live handoff pass permissions, disconnect, loss, snapshot version and measured recovery checks.

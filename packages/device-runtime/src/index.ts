@@ -10,3 +10,5 @@ export { createProcessorRegistry } from './processor-registry.ts';
 export type { ProcessorFrame, ProcessorImplementation, ProcessorRequest, ResolvedProcessor, TrustedProcessorRegistration } from './processor-registry.ts';
 export { createPlacementScheduler } from './placement.ts';
 export type { Placement, PlacementAuthorityRequest, PlacementPrincipal, PlacementResource, PlacementResult, PlacementScheduler, PlacementSchedulerOptions } from './placement.ts';
+export { createApplicationSnapshot, restoreApplicationSnapshot } from './application-snapshot.ts';
+export type { ApplicationSnapshot, SnapshotRestoreResult } from './application-snapshot.ts';

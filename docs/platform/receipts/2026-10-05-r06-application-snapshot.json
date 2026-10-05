@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "task": "R06",
+  "result": "pass",
+  "sourceTree": "37cacd3381f8689fc7373259546feb746d9c99c7",
+  "sdkArtifact": "release/sdk-7Z30S9/manifest.json",
+  "sdkManifestSha256": "d3728964d29980f1a855ba656f493bb6f9c210b550db2c439ce8c40dfbb516ba",
+  "consumerQaToolSha256": "b2e62ccb72fc13dd7b6757865e084f7e77917786f9f0d7ad2e8a1c7d3b105539",
+  "environment": "macOS 26.5.2 arm64; Node 24.14.0; npm 11.9.0; TypeScript 5.9.3; Playwright 1.61.1",
+  "checks": [
+    "Focused snapshot tests: 5 passed after first observed missing-export failure",
+    "Offline five-package install and strict NodeNext/Bundler consumer types: passed",
+    "Packed Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5 consumer runs: passed"
+  ],
+  "scope": "R06 local application state capsule: bounded JSON capture, exact application code/version and format binding, processor reset marker, app-owned state validation, required asset byte verification and explicit cold restart or install-assets-then-cold-restart result. Reference counter state resumes without mutating source; packed consumer validates the temperature workload. Active routes, code-byte verification, authenticated transfer and physical two-host operation remain separate.",
+  "published": false
+}

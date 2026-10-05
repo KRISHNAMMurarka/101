@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 44,
+  "revision": 45,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -2883,24 +2883,29 @@
       "supportRows": []
     },
     {
-      "id": "pending-R06",
-      "revision": "26f4eaf",
-      "result": "pending",
+      "id": "application-snapshot-2026-10-05",
+      "revision": "containing R06 commit, base 98c0ce3; immutable SDK producer tree 37cacd3381f8689fc7373259546feb746d9c99c7",
+      "result": "pass",
       "historical": false,
-      "levels": [],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
       "tasks": [
         "R06"
       ],
       "paths": [
-        "docs/platform/MASTER-CHECKLIST.md"
+        "docs/platform/SDK.md",
+        "packages/device-runtime/src/application-snapshot.test.ts",
+        "docs/platform/receipts/2026-10-05-r06-application-snapshot.json"
       ],
-      "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Implement versioned application snapshots. A reference application serializes tested state; incompatible snapshots and absent assets fail with explicit restart alternatives.",
-      "scope": "R06 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
+      "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; packed consumer in Node, Chromium 149.0.7827.55, Firefox 151.0 and WebKit 26.5; no physical two-host execution",
+      "reproduction": "node --test --experimental-strip-types packages/device-runtime/src/application-snapshot.test.ts; node tools/build-sdk.mjs 37cacd3381f8689fc7373259546feb746d9c99c7; node tools/qa-sdk-consumer.mjs release/sdk-7Z30S9/manifest.json; exact candidate repository gates",
+      "scope": "R06 local versioned application snapshot: bounded app-owned JSON, app identity/code/format binding, processor reset semantics, state schema validation, required asset byte verification and explicit recovery alternatives. Stateful reference fixture restores counts without mutating the source; packed consumers pass. Active routes, code-byte verification, authenticated transfer and physical two-host execution remain separate.",
       "failure": null,
-      "equipment": [
-        "Two eligible independent hosts and actual reference workload"
-      ]
+      "equipment": [],
+      "supportRows": []
     },
     {
       "id": "pending-R07",
@@ -8848,7 +8853,7 @@
     {
       "id": "R06",
       "records": [
-        "pending-R06"
+        "application-snapshot-2026-10-05"
       ],
       "dependencies": [
         "M01",
