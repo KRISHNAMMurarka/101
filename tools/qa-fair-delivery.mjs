@@ -15,24 +15,31 @@ const receipt = JSON.parse(readFileSync(join(consumer, 'receipt.json'), 'utf8'))
 assert.equal(receipt.status, 'pass');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const sourcePath = 'packages/device-runtime/src/runtime.ts';
-const sourceSha256 = hash(readFileSync(join(root, sourcePath)));
+const sourcePins = Object.fromEntries([sourcePath, 'packages/device-runtime/src/types.ts'].map(path =>
+  [path, hash(readFileSync(join(root, path)))]));
 // Allow the old pack only for the explicitly requested before-fix regression.
 if (!process.argv.includes('--old-regression')) {
-  assert.equal(sourceSha256, receipt.source.sha256[sourcePath]);
-  assert.equal(sourceSha256, hash(execFileSync('git', ['cat-file', 'blob', `${receipt.source.tree}:${sourcePath}`], { cwd: root })));
+  for (const [path, pin] of Object.entries(sourcePins)) {
+    assert.equal(pin, receipt.source.sha256[path]);
+    assert.equal(pin, hash(execFileSync('git', ['cat-file', 'blob', `${receipt.source.tree}:${path}`], { cwd: root })));
+  }
 }
 const manifestBytes = readFileSync(receipt.manifest.path);
 assert.equal(hash(manifestBytes), receipt.manifest.sha256);
 const manifest = JSON.parse(manifestBytes);
-for (const name of ['device-model', 'device-runtime', 'connect']) {
+assert.equal(manifest.source.tree, receipt.source.tree);
+assert.equal(manifest.packages.length, 7);
+for (const name of ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect']) {
   const pkg = manifest.packages.find(value => value.name === '@101/' + name);
-  assert.ok(pkg && Array.isArray(pkg.files));
+  assert.ok(pkg && Array.isArray(pkg.files) && pkg.files.length > 0 && pkg.files.length <= 1024);
   const directory = join(consumer, 'node_modules/@101', name);
   assert.equal(lstatSync(directory).isSymbolicLink(), false);
+  assert.equal(realpathSync(directory), directory);
   for (const file of pkg.files) {
     const path = resolve(directory, file.path);
     assert.ok(path.startsWith(directory + '/'));
     assert.equal(lstatSync(path).isSymbolicLink(), false);
+    assert.equal(realpathSync(path), path);
     assert.equal(hash(readFileSync(path)), file.sha256);
   }
 }
@@ -75,8 +82,38 @@ async function run(reliable,recipients,slots,rounds){
   return{delivery:reliable?'reliable':'latest',recipients,sourceGroups:sources.length,slots,rounds,deliveries:counts.reduce((a,b)=>a+b,0),minimum:Math.min(...counts),maximum:Math.max(...counts),peakPending:peak,releases};
  }finally{runtime.close();for(const finish of finishes.splice(0))finish();}
 }
+async function runScoped(reliable,failed){
+ let now=0,operation=0,effects=0,sequence=0;const approved=new Map(),held=[],routes=[];
+ const scope={principalId:'scope-owner',applicationId:'scope-app',sessionId:'scope-session'};
+ const scopeKey=r=>JSON.stringify([r.principalId,r.applicationId,r.sessionId]);
+ let sourceId='';
+ const runtime=createDeviceRuntime({now:()=>now,maxPendingDeliveries:4,maxPendingDeliveriesPerScope:1,
+  authorize:r=>r.source.registrationId===sourceId&&approved.get(r.sink.registrationId)===scopeKey(r)&&r.sourceOperation==='subscribe'&&r.sinkOperation===(reliable?'invoke':'write')?{expiresAt:10000,maxAgeMs:5000,maxHz:100}:undefined});
+ const source=runtime.registerSource({device:device('scoped-source',reliable),capability:'signal'});sourceId=source.id;runtime.setReadiness(source,'available');
+ function route(selected,slow){
+  const sink=runtime.registerSink({device:device('scoped-sink-'+(++sequence),reliable,true),capability:'signal',
+   apply(o,c){assert.equal(o.value,true);assert.equal(c.isCurrent(),true);if(!slow){effects++;return;}
+    return new Promise((resolve,reject)=>held.push({context:c,finish:()=>failed?reject(Error('retired provider failure')):resolve()}));},release(){}});
+  runtime.setReadiness(sink,'available');const request={from:source,to:sink,...selected,queueCapacity:4};
+  assert.equal(runtime.route(request).start().ok,false);approved.set(sink.id,scopeKey(selected));
+  const result=runtime.route(request);assert.equal(result.start().ok,true);routes.push(result);return result;
+ }
+ function publish(){now+=20;assert.equal(runtime.publish(source,true,reliable?{operationId:String(++operation),deadline:now+1000}:{}).ok,true);runtime.flush();}
+ try{
+  const first=route(scope,true);route(scope,true);route(scope,true);
+  route({...scope,principalId:'another-owner'},false);route({...scope,applicationId:'another-app'},false);route({...scope,sessionId:'another-session'},false);
+  publish();assert.equal(held.length,1,'one exact authorized scope cannot occupy every global slot');assert.equal(effects,3);
+  first.stop('replacement');assert.equal(held[0].context.signal.aborted,true);assert.equal(held[0].context.isCurrent(),false);
+  publish();assert.equal(held.length,1,'retirement retains actual unsettled scope reservation');assert.equal(effects,6);
+  held[0].finish();await new Promise(resolve=>setImmediate(resolve));publish();assert.equal(held.length,2);assert.equal(effects,9);
+  runtime.close();for(const entry of held)entry.finish();await new Promise(resolve=>setImmediate(resolve));
+  assert.ok(routes.every(route=>route.status().state==='closed'&&route.status().pending===0));
+  return{delivery:reliable?'reliable':'latest',originalProviderResult:failed?'rejected':'returned',globalCap:4,scopeCap:1,otherScopes:3,otherEffects:effects,successorInvocations:held.length-1,retiredScopeHeldUntilRawSettlement:true};
+ }finally{runtime.close();for(const entry of held)entry.finish();}
+}
 const workloads=[await run(false,6,2,12),await run(true,6,2,12),await run(false,128,4,64)];
-console.log(JSON.stringify({status:'pass',node:process.versions.node,workloads,checks:['exact-host-approval','bounded-global-pending','no-starvation-under-completing-provider-contention','balanced-recipient-service','reliable-and-latest','route-and-release-teardown']}));
+const scopedWorkloads=[];for(const reliable of [false,true])for(const failed of [false,true])scopedWorkloads.push(await runScoped(reliable,failed));
+console.log(JSON.stringify({status:'pass',node:process.versions.node,workloads,scopedWorkloads,checks:['exact-host-approval','bounded-global-pending','no-starvation-under-completing-provider-contention','balanced-recipient-service','reliable-and-latest','route-and-release-teardown','exact-scope-cap','no-slot-release-on-logical-retirement','raw-settlement-allows-current-successor']}));
 `;
 const callerPath = join(consumer, 'fair-delivery-caller.mjs');
 writeFileSync(callerPath, caller);
@@ -84,10 +121,11 @@ const proof = JSON.parse(execFileSync(process.execPath, ['--no-experimental-stri
   encoding: 'utf8', timeout: 30000, maxBuffer: 1024 * 1024, cwd: consumer,
   env: { ...process.env, NODE_PATH: '', NODE_OPTIONS: '' } }));
 const result = { ...proof, sourceTree: receipt.source.tree, sourceSha256: receipt.source.sha256[sourcePath],
+  sourcePins: Object.fromEntries(Object.keys(sourcePins).map(path => [path, receipt.source.sha256[path]])),
   manifest: receipt.manifest,
   qaToolSha256: hash(readFileSync(import.meta.filename)),
   limitations: ['Cooperating local JavaScript providers; callback CPU is not sandboxed.',
-    'Providers retaining every global slot indefinitely can still block admission.',
+    'Omitted scope cap preserves the global policy; enough independently authorized scopes can still occupy every global slot.',
     'No physical, network, browser scheduling or per-tenant CPU/byte quota qualification.'] };
 writeFileSync(join(consumer, 'fair-delivery-receipt.json'), JSON.stringify(result, null, 2) + '\n');
 console.log(JSON.stringify(result, null, 2));

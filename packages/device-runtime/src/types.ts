@@ -62,6 +62,8 @@ export interface Connection {
 export interface RuntimeOptions {
   now?: () => number; clockDomain?: string; authorize: Authorize;
   maxRoutes?: number; maxSubscribers?: number; maxRegistrations?: number; maxPendingDeliveries?: number;
+  /** Outstanding raw provider work per exact principal/application/session tuple; defaults to the global cap. */
+  maxPendingDeliveriesPerScope?: number;
 }
 export interface DeviceRuntime {
   readonly clockDomain: string;

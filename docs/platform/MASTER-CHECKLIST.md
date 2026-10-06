@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 103 completed with recorded evidence; 169 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 104 completed with recorded evidence; 168 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -120,7 +120,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal.
 - [ ] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features.
 - [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
-- [ ] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible.
+- [x] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible. [Reviewed profile and fresh installed caller evidence](receipts/2026-10-06-backup-resolution-scope.json).
 - [ ] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning.
 - [ ] **D09 — Secure discovery metadata/links.** Bound parsing and rate, reject unrestricted URL fetching, redirects/credential forwarding and identity spoofing; discovery grants no operation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 
@@ -258,7 +258,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority. [SDK contract and local runtime evidence](receipts/2026-10-06-b03-settings-storage.json).
 - [x] **B04 — Implement durable job evidence where required.** Print/recording/long-running tasks have ownership, idempotency, cancellation and restart state appropriate to their profile. [SDK contract and local runtime evidence](receipts/2026-10-06-history-jobs-controls.json).
 - [ ] **B05 — Implement export/deletion and secret separation.** Authorized export omits credentials; deletion/expiry removes opted-in data and leaves policy-required redacted audit evidence only. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
-- [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes.
+- [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes. [Bounded local recovery evidence](receipts/2026-10-06-backup-resolution-scope.json); remaining scope stays open.
 
 ### E — Developer syntax, recipes, tools and extension ecosystem
 
@@ -299,7 +299,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **F02 — Instrument capture-to-output timing.** Capture, processing, encoding, transit, decoding and sink/render yield P50/P95/P99 with clock uncertainty; displayed ping is not finger-to-pixel evidence. [Selected instrumentation and packed runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); physical/network qualification remains separate.
 - [x] **F03 — Measure full payload cost.** Record encoded bytes, transport overhead, packets/rate, quantization error and resource negotiations for each fast profile. [Pointer profile measurement](receipts/2026-10-05-f03-pointer-cost.json).
 - [ ] **F04 — Optimize demonstrated bottlenecks.** Compare cadence, coalescing, compact codecs, copy/allocation and processing placement against reproducible workloads; preserve transitions and security checks.
-- [ ] **F05 — Implement fair scheduling/quotas.** One resource, session or slow recipient cannot monopolize controls; per-scope CPU/bytes/work limits remain bounded under contention. [Bounded local build and runtime evidence](receipts/2026-10-06-media-haptics-scheduling.json); remaining scope stays open.
+- [ ] **F05 — Implement fair scheduling/quotas.** One resource, session or slow recipient cannot monopolize controls; per-scope CPU/bytes/work limits remain bounded under contention. [Bounded local build and runtime evidence](receipts/2026-10-06-media-haptics-scheduling.json); remaining scope stays open. [Authorized-scope pending-work evidence](receipts/2026-10-06-backup-resolution-scope.json).
 - [ ] **F06 — Verify clock/drift and synchronization limits.** Simulated offset/drift and real devices validate age/skew decisions; uncertain clocks degrade honestly.
 - [ ] **F07 — Verify memory/queue/fan-out limits.** Burst, hostile, hanging-provider, overload and cancellation workloads remain within declared bounds and release resources.
 - [ ] **F08 — Run large graph/session load tests.** Scale by subscribed edges rather than unrestricted mesh; test published capacity tiers, tenant isolation and graceful overload.

@@ -1522,3 +1522,61 @@ boundary. The serial 64-frame Node/three-browser workload is instrumentation
 evidence, not a throughput or network benchmark. JS capture excludes physical
 acquisition, and a frame callback does not prove display photon time. Physical
 phone, assistive, thermal and impaired-network qualification remains separate.
+
+## Reviewed resolution of unknown devices
+
+`createProfileResolutionController` connects an explicitly verified discovery
+observation to a host-reviewed connector profile. Configure the expected discovery
+scope, trusted observation verifier, existing profile registry and at most eight
+exact profile/version/code-hash pins. `observe` retains bounded observed facts;
+`request` exposes the reviewed resources, units, calibration and command semantics;
+`decide` returns an opaque current choice. `createConnector` creates an inactive
+connector. Its explicit `start` and each runtime resource grant are separate actions.
+Profile selection grants neither endpoint identity nor resource access.
+
+Unknown, unsupported, review, selection and expiry remain visible in `snapshot`.
+An unsupported or cancelled review preserves a valid incumbent. A new observation,
+removal, verifier loss, expiry, clear or close retires its owned connector. Observation
+and review last at most thirty seconds; one controller owns one pending review,
+one choice and one connector, with at most sixty-four lifetime connector creations.
+The genuine Node RSS caller is `examples/device-profiles/manual-resolution.mjs`;
+`node tools/qa-profile-resolution.mjs --sdk-root INSTALLED_CONSUMER` verifies it
+against immutable local SDK files. This establishes reviewed declarations for a
+selected producer; live inventory, OS choosers and general hardware support need
+their separate qualification.
+
+## Local managed-owner backup and reviewed recovery
+
+`createOwnerBackupController` supplies a `managedStorage` port to the existing
+owner-data controller. The `managed-owner-backup/1` envelope maintains the current
+epoch, data revision, retained deletion/audit floor and two local recovery archives.
+Archives contain genuine managed producer state and content hashes, never live
+recording authority. Their retention ends at the earliest included producer or
+audit deadline, capped at seven days. Archive expiry is checked through validation,
+host callbacks, the actual storage commit guard and final return.
+
+`backup`, `readBackup`, `inspect`, `sweep`, `migrateReviewed` and `restoreReviewed`
+require exact current owner approval. Restore requires the exact archive hash and
+current damaged state; healthy state, missing/corrupt outer fences and stale
+archives fail closed. Successful recovery advances the epoch and fences old ports.
+Unfinished artifact jobs become interrupted and require fresh review; completed
+outputs retain verified bytes and their historical evidence. `retireOwned` retires
+host-owned work synchronously; it cannot undo an already issued external effect.
+The archive ceiling is 128 KiB each; managed data fits 1.5 MiB and the entire owner
+document 2 MiB. Metadata CRC detects accidental corruption; archive SHA-256 checks
+content integrity. Neither authenticates a malicious filesystem host. Registered
+recipient copies, remote storage and unmanaged/native/desktop recovery are excluded.
+Run `node tools/qa-owner-backup.mjs --sdk-root INSTALLED_CONSUMER` for the selected
+filesystem and IndexedDB first callers.
+
+## Pending delivery limits by authorized scope
+
+`RuntimeOptions.maxPendingDeliveriesPerScope` optionally bounds actual pending
+provider work for the exact principal/application/session tuple. Select an integer
+from one to `maxPendingDeliveries`; omission preserves the existing global policy.
+Logical cancellation or route replacement retains its reservation until the raw
+provider result settles. Other approved scopes can use remaining global capacity.
+The existing rotating recipient order applies to both reliable and latest delivery.
+This is a work-admission bound for cooperating providers; it does not sandbox
+callback CPU or enforce byte quotas, and enough distinct approved scopes can still
+occupy the global capacity. F05 remains partial.

@@ -54,6 +54,8 @@ export class EmbeddedRuntime implements DeviceRuntime {
   private readonly maxRoutes: number;
   private readonly maxSubscribers: number;
   private readonly maxPendingDeliveries: number;
+  private readonly maxPendingDeliveriesPerScope: number;
+  private readonly pendingDeliveriesByScope = new Map<string, number>();
   private pendingDeliveries = 0;
   private registrationId = 0;
   private routeId = 0;
@@ -72,6 +74,7 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.maxRoutes = bound(options.maxRoutes, 128, 128);
     this.maxSubscribers = bound(options.maxSubscribers, 32, 32);
     this.maxPendingDeliveries = bound(options.maxPendingDeliveries, 256, 4096);
+    this.maxPendingDeliveriesPerScope = bound(options.maxPendingDeliveriesPerScope, this.maxPendingDeliveries, this.maxPendingDeliveries);
   }
 
   time(): number {
@@ -219,11 +222,17 @@ export class EmbeddedRuntime implements DeviceRuntime {
     if (leaseKey) this.leases.release(leaseKey, route.id);
   }
   renewLease(key: string, owner: string, expiry: number, now: number): boolean { return this.leases.renew(key, owner, expiry, now); }
-  reserveDelivery(): boolean {
-    if (this.closed || this.pendingDeliveries >= this.maxPendingDeliveries) return false;
-    this.pendingDeliveries++; return true;
+  reserveDelivery(scope: string): boolean {
+    const pending = this.pendingDeliveriesByScope.get(scope) ?? 0;
+    if (!scope || this.closed || this.pendingDeliveries >= this.maxPendingDeliveries || pending >= this.maxPendingDeliveriesPerScope) return false;
+    this.pendingDeliveries++; this.pendingDeliveriesByScope.set(scope, pending + 1); return true;
   }
-  releaseDelivery(): void { this.pendingDeliveries--; }
+  releaseDelivery(scope: string): void {
+    const pending = this.pendingDeliveriesByScope.get(scope)!;
+    if (pending === 1) this.pendingDeliveriesByScope.delete(scope);
+    else this.pendingDeliveriesByScope.set(scope, pending - 1);
+    this.pendingDeliveries--;
+  }
   private sweep(now: number): void {
     for (const entry of [...this.entries]) this.expireReadiness(entry, now);
     for (const route of [...this.active]) route.check(now);
@@ -332,9 +341,12 @@ class EmbeddedConnection implements Connection {
   private oneShot = false;
   private maxAgeMs = 0;
   private maxHz = 1;
+  private readonly deliveryScope: string;
 
   constructor(runtime: EmbeddedRuntime, id: string, request: RouteRequest) {
     this.runtime = runtime; this.id = id; this.request = { ...request };
+    const identities = [this.request.principalId, this.request.applicationId, this.request.sessionId];
+    this.deliveryScope = identities.every(identifier) ? JSON.stringify(identities) : '';
     if (request.constraints !== undefined) {
       try { this.request.constraints = snapshotJson(request.constraints) as unknown as RouteGrant; }
       catch { this.request.constraints = {} as RouteGrant; }
@@ -457,10 +469,10 @@ class EmbeddedConnection implements Connection {
     this.check(now);
     if (this.state !== "active") return [];
     if (this.source!.capability.delivery.mode === "latest") {
-      if (this.latestBusy || !this.latest.size || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery()) return [];
+      if (this.latestBusy || !this.latest.size || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery(this.deliveryScope)) return [];
       const observation = this.latest.take(now, this.maxAgeMs);
       if (!observation) {
-        this.runtime.releaseDelivery();
+        this.runtime.releaseDelivery(this.deliveryScope);
         if (this.oneShot) this.stop("stale");
         return [];
       }
@@ -468,21 +480,21 @@ class EmbeddedConnection implements Connection {
       return [() => this.dispatch(observation)];
     } else {
       const capacity = this.request.queueCapacity ?? 64;
-      if (this.inFlight.size >= capacity || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery()) return [];
+      if (this.inFlight.size >= capacity || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery(this.deliveryScope)) return [];
       const operation = this.queue.next(now);
-      if (!operation) { this.runtime.releaseDelivery(); return []; }
+      if (!operation) { this.runtime.releaseDelivery(this.deliveryScope); return []; }
       this.lastDispatch = now;
       return [() => this.dispatch(operation.value, operation.id, operation.deadline)];
     }
   }
   private dispatch(observation: Observation, operationId?: string, deadline?: number): void {
     let now: number;
-    try { now = this.runtime.time(); } catch { this.runtime.releaseDelivery(); return; }
+    try { now = this.runtime.time(); } catch { this.runtime.releaseDelivery(this.deliveryScope); return; }
     this.check(now);
     if (this.state !== "active" || (deadline !== undefined && now >= deadline) || now - observation.timestamp > this.maxAgeMs) {
       if (operationId) this.queue.settle(operationId, "expired");
       else this.latestBusy = false;
-      this.runtime.releaseDelivery(); return;
+      this.runtime.releaseDelivery(this.deliveryScope); return;
     }
     const controller = new AbortController();
     const key = operationId ?? "latest", generation = this.generation;
@@ -498,7 +510,7 @@ class EmbeddedConnection implements Connection {
         if (operationId && ["dispatched", "unverified", "target-acknowledged", "observed"].includes(evidence)) this.queue.evidence(operationId, evidence);
       } });
     const complete = (failed: boolean): void => {
-      this.runtime.releaseDelivery();
+      this.runtime.releaseDelivery(this.deliveryScope);
       this.inFlight.delete(key); if (!operationId) this.latestBusy = false;
       if (operationId) {
         this.queue.settle(operationId, failed ? "failed" : "unverified");

@@ -1,0 +1,1852 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "3edd5a782d241beab11abb87b75481634e4acc66",
+  "sourceTree": "0a0c43cad5f82439fb73bcbbcc25d92fe70b712b",
+  "sourceSha256": {
+    "examples/device-profiles/manual-resolution.mjs": "bc628c12659bd4952b238eef4c39698248ed8ce001fdaf535982bebf9892da95",
+    "examples/owner-backup/consumer.mjs": "a447649e46235942305b89f480ebf2cb88acb46fb3cf03bf55c014a43f8b3073",
+    "packages/device-runtime/src/index.ts": "6c3791fe691e25757ff5cd1e8ff06709b0ab301ef1be38c095ecb19282b2f53f",
+    "packages/device-runtime/src/owner-backup.test.ts": "310522997d13f42f4f8e5732393e892a279fc532b8c3e21d8d329f20b4f442cd",
+    "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+    "packages/device-runtime/src/profile-resolution.test.ts": "f297924b24adbe358397376109cae13ac99485a4ad62422e1bc174cb971485e1",
+    "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+    "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+    "packages/device-runtime/src/scope-delivery.test.ts": "5dc71459e90b96d3df3ac41b6b0307b285c1423d4377c59b2baac06490eaa0ed",
+    "packages/device-runtime/src/types.ts": "22f83720f88b29aad75dbd69cda69592f1efe0cb792470c1eead5720112bfb03",
+    "tools/qa-fair-delivery.mjs": "86835efba97442826e6bd189da90adb2d53ddc741cae31474ba771ed2207361d",
+    "tools/qa-owner-backup.mjs": "b644d15737977772488bf2a9bd574ffaac43a063895f9ba22f6203e1b2d47913",
+    "tools/qa-profile-resolution.mjs": "4638b3e97758f0ef436df0dc456b4545b4ce18d9f7c7397002bb9ec5b88bbff4"
+  },
+  "taskDisposition": {
+    "D07": "complete: canonical reviewed-profile OR branch",
+    "B06": "partial: managed-owner-backup/1 local filesystem and IndexedDB",
+    "F05": "partial: exact authorized scope pending-work cap"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 104,
+    "open": 168
+  },
+  "environment": {
+    "os": "macOS26.5.2arm64",
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "expo": "57.0.12",
+    "nativeStrictTypeScript": "5.9.3",
+    "workerD07SourceNode": "24.19.0"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "release/sdk-pgffCb/manifest.json",
+      "sha256": "9802474df083475cee98eb606cbfa71cb7b9f2503f274e3847040f02bcb5ac57",
+      "bytes": 72097
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-xczrmz/receipt.json",
+      "sha256": "0a6142f5e67f8673529ca8e64262ad3579ecaef83d26446626e1e7e98cd8f1f9",
+      "bytes": 28840
+    },
+    "sourceFiles": 135,
+    "packageCount": 7,
+    "installedFiles": 301,
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass",
+        "packages": 7,
+        "files": 302,
+        "symlinks": 0,
+        "aliases": 0
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass",
+        "source": [
+          {
+            "path": "packages/devkit/src/device-scaffold.ts",
+            "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+          },
+          {
+            "path": "tools/create-device-project.mjs",
+            "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+          }
+        ],
+        "project": "/tmp/101-sdk-consumer-xczrmz/generated-device-project",
+        "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+        "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+        "guidance": {
+          "schema": "device-guidance.schema.json",
+          "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+          "generatedAssets": [
+            {
+              "path": "device-guidance.json",
+              "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+            },
+            {
+              "path": "device-guidance.schema.json",
+              "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+            },
+            {
+              "path": "src/devices.json",
+              "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+            },
+            {
+              "path": "src/recipe.json",
+              "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+            },
+            {
+              "path": "scripts/validate.mjs",
+              "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+            }
+          ],
+          "validation": {
+            "status": "pass",
+            "recipeId": "room-sensor:temperature-display",
+            "processorId": "room-sensor:threshold",
+            "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+          },
+          "rejectedAssets": [
+            "unknown-recipe-field",
+            "changed-processor-source",
+            "incompatible-selected-device"
+          ],
+          "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+        },
+        "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "actualNodeMemoryBatch": true,
+        "publicSchemas": true,
+        "privateSubpathsRejected": 18,
+        "packedRunEntry": true
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass",
+        "version": "149.0.7827.55",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouch": true,
+          "independentRelease": true,
+          "capturedOutsideBounds": true,
+          "resizeCancellation": true,
+          "orientationCancellation": true,
+          "disconnectCaptureRelease": true,
+          "unmountCaptureRelease": true
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouchScroll": true,
+          "cancellation": true
+        }
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass",
+        "version": "151.0",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass",
+        "version": "26.5",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass",
+        "package": "@example/temperature-band-processor",
+        "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+        "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+        "operations": [
+          "subscribe",
+          "invoke"
+        ]
+      }
+    ],
+    "finalProductionSourceEquivalence": {
+      "path": "/tmp/101-backup-resolution-scope-final-source-equivalence.json",
+      "sha256": "f6116ada7bce02a6d90375b8a050401973b9c3f4d8abd54d9394cbdac4fb4542",
+      "bytes": 16024,
+      "matchedSourceFiles": 135
+    }
+  },
+  "profileResolution": {
+    "proof": {
+      "kind": "actual-node-rss-explicit-profile-resolution",
+      "sourceSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "publicEsm": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/connect/dist/index.js",
+      "steps": [
+        {
+          "action": "Observe owned process",
+          "state": "unknown",
+          "outcome": "observed",
+          "current": null,
+          "semantics": [],
+          "pending": null
+        },
+        {
+          "action": "Unsupported profile remains visible",
+          "state": "unsupported",
+          "outcome": "unsupported",
+          "current": null,
+          "semantics": [],
+          "pending": null
+        },
+        {
+          "action": "Review exact pinned semantics",
+          "state": "reviewing",
+          "outcome": "requested",
+          "current": null,
+          "semantics": [],
+          "pending": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          }
+        },
+        {
+          "action": "Cancel inert review",
+          "state": "unknown",
+          "outcome": "cancelled",
+          "current": null,
+          "semantics": [],
+          "pending": null
+        },
+        {
+          "action": "Choose reviewed profile",
+          "state": "selected",
+          "outcome": "selected",
+          "current": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          },
+          "semantics": [
+            {
+              "id": "resident",
+              "semantic": "example:resident-memory",
+              "direction": "source",
+              "value": {
+                "type": "scalar",
+                "unit": "By",
+                "min": 0,
+                "max": 9007199254740991
+              },
+              "calibration": {
+                "revision": 1,
+                "unit": "By",
+                "maxAbsoluteErrorBound": 0
+              }
+            },
+            {
+              "id": "enabled",
+              "semantic": "example:sampling-enabled",
+              "direction": "source",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            },
+            {
+              "id": "sampling",
+              "semantic": "example:sampling-enabled",
+              "direction": "sink",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            }
+          ],
+          "pending": null
+        },
+        {
+          "action": "Profile choice supplies no resource grant",
+          "state": "selected",
+          "outcome": "selected",
+          "current": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          },
+          "semantics": [
+            {
+              "id": "resident",
+              "semantic": "example:resident-memory",
+              "direction": "source",
+              "value": {
+                "type": "scalar",
+                "unit": "By",
+                "min": 0,
+                "max": 9007199254740991
+              },
+              "calibration": {
+                "revision": 1,
+                "unit": "By",
+                "maxAbsoluteErrorBound": 0
+              }
+            },
+            {
+              "id": "enabled",
+              "semantic": "example:sampling-enabled",
+              "direction": "source",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            },
+            {
+              "id": "sampling",
+              "semantic": "example:sampling-enabled",
+              "direction": "sink",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            }
+          ],
+          "pending": null
+        },
+        {
+          "action": "Cancel keeps current valid profile",
+          "state": "selected",
+          "outcome": "cancelled",
+          "current": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          },
+          "semantics": [
+            {
+              "id": "resident",
+              "semantic": "example:resident-memory",
+              "direction": "source",
+              "value": {
+                "type": "scalar",
+                "unit": "By",
+                "min": 0,
+                "max": 9007199254740991
+              },
+              "calibration": {
+                "revision": 1,
+                "unit": "By",
+                "maxAbsoluteErrorBound": 0
+              }
+            },
+            {
+              "id": "enabled",
+              "semantic": "example:sampling-enabled",
+              "direction": "source",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            },
+            {
+              "id": "sampling",
+              "semantic": "example:sampling-enabled",
+              "direction": "sink",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            }
+          ],
+          "pending": null
+        },
+        {
+          "action": "Unsupported review keeps current valid profile",
+          "state": "selected",
+          "outcome": "unsupported",
+          "current": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          },
+          "semantics": [
+            {
+              "id": "resident",
+              "semantic": "example:resident-memory",
+              "direction": "source",
+              "value": {
+                "type": "scalar",
+                "unit": "By",
+                "min": 0,
+                "max": 9007199254740991
+              },
+              "calibration": {
+                "revision": 1,
+                "unit": "By",
+                "maxAbsoluteErrorBound": 0
+              }
+            },
+            {
+              "id": "enabled",
+              "semantic": "example:sampling-enabled",
+              "direction": "source",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            },
+            {
+              "id": "sampling",
+              "semantic": "example:sampling-enabled",
+              "direction": "sink",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            }
+          ],
+          "pending": null
+        },
+        {
+          "action": "Explicit replacement retires prior connector",
+          "state": "selected",
+          "outcome": "selected",
+          "current": {
+            "id": "example:node-memory",
+            "version": "1.0.0",
+            "codeSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+          },
+          "semantics": [
+            {
+              "id": "resident",
+              "semantic": "example:resident-memory",
+              "direction": "source",
+              "value": {
+                "type": "scalar",
+                "unit": "By",
+                "min": 0,
+                "max": 9007199254740991
+              },
+              "calibration": {
+                "revision": 1,
+                "unit": "By",
+                "maxAbsoluteErrorBound": 0
+              }
+            },
+            {
+              "id": "enabled",
+              "semantic": "example:sampling-enabled",
+              "direction": "source",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            },
+            {
+              "id": "sampling",
+              "semantic": "example:sampling-enabled",
+              "direction": "sink",
+              "value": {
+                "type": "boolean"
+              },
+              "calibration": null
+            }
+          ],
+          "pending": null
+        },
+        {
+          "action": "Expiry retires the current choice",
+          "state": "expired",
+          "outcome": "expired",
+          "current": null,
+          "semantics": [],
+          "pending": null
+        },
+        {
+          "action": "Close clears local resolution",
+          "state": "closed",
+          "outcome": "closed",
+          "current": null,
+          "semantics": [],
+          "pending": null
+        }
+      ],
+      "readings": [
+        {
+          "value": 45154304,
+          "quality": "valid",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 19.068917
+          },
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "profile-host:14579",
+            "at": 104.029458
+          }
+        },
+        {
+          "value": 45154304,
+          "quality": "valid",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 71.217042
+          },
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "profile-host:14579",
+            "at": 156.117208
+          }
+        },
+        {
+          "value": 45154304,
+          "quality": "valid",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 123.347709
+          },
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "profile-host:14579",
+            "at": 208.228208
+          }
+        },
+        {
+          "value": 45154304,
+          "quality": "valid",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 173.529584
+          },
+          "calibration": {
+            "revision": 1,
+            "unit": "By",
+            "absoluteErrorBound": 0
+          },
+          "receipt": {
+            "clockId": "profile-host:14579",
+            "at": 258.448291
+          }
+        }
+      ],
+      "samples": [
+        {
+          "resourceId": "resident",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 14.41275
+          },
+          "receivedAt": 99.748666,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "enabled",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 14.41275
+          },
+          "receivedAt": 99.748666,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "resident",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 19.068917
+          },
+          "receivedAt": 104.029458,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "enabled",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 19.068917
+          },
+          "receivedAt": 104.029458,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "resident",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 71.217042
+          },
+          "receivedAt": 156.117208,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "enabled",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 71.217042
+          },
+          "receivedAt": 156.117208,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "resident",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 123.347709
+          },
+          "receivedAt": 208.228208,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "enabled",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 123.347709
+          },
+          "receivedAt": 208.228208,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "resident",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 173.529584
+          },
+          "receivedAt": 258.448291,
+          "quality": "valid"
+        },
+        {
+          "resourceId": "enabled",
+          "sourceTime": {
+            "clockId": "node-rss:14586",
+            "at": 173.529584
+          },
+          "receivedAt": 258.448291,
+          "quality": "valid"
+        }
+      ],
+      "factories": 1,
+      "writes": 2,
+      "cleanups": 1,
+      "checks": {
+        "fixedVerifiedFactoryAndChildBytes": true,
+        "unknownWithoutAutomaticSemantics": true,
+        "unsupportedVisible": true,
+        "reviewInertUntilExplicitStart": true,
+        "separateResourceGrants": true,
+        "actualRssProducerAndObservedCommand": true,
+        "sourceTimeCalibrationAndQualityPreserved": true,
+        "cancelAndUnsupportedRetainCurrent": true,
+        "replacementClosesPreviousBeforeCreation": true,
+        "retiredCaptureRejected": true,
+        "existingA01CleanupOnly": true,
+        "quietExpiryClosesOwnedConnector": true,
+        "permanentClose": true
+      },
+      "limits": {
+        "retainedReadings": 32,
+        "retainedSamples": 32,
+        "visibleSteps": 16,
+        "observationMs": 2000,
+        "scope": "Owned local Node process; scripted explicit review, not human/OS chooser or physical gateway qualification",
+        "cleanup": "A01 bounded best-effort dispatch, not a physical rollback claim"
+      }
+    },
+    "externalCallerSha256": {
+      "manual-resolution.mjs": "61549c25fffffd32e85c6b90e05232f07d68f06efd368310abf24bbb54fe649c",
+      "node-memory-producer.mjs": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "node-memory-profile.js": "a5e106219c7696c1c9498506e38a78173747c557d25dc3954b9c995c36859f9e",
+      "public-resolution.mjs": "9bfe58162d9adedd8f8bd058c63254f3f2fe73961b71554b3984bdfe0f5af71f"
+    },
+    "currentSourceSha256": {
+      "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "packages/device-runtime/src/profile-resolution.test.ts": "f297924b24adbe358397376109cae13ac99485a4ad62422e1bc174cb971485e1",
+      "examples/device-profiles/manual-resolution.mjs": "bc628c12659bd4952b238eef4c39698248ed8ce001fdaf535982bebf9892da95",
+      "tools/qa-profile-resolution.mjs": "4638b3e97758f0ef436df0dc456b4545b4ce18d9f7c7397002bb9ec5b88bbff4",
+      "examples/device-profiles/node-memory-profile.ts": "ff08423b6648b6f7d77443ecb853c5e9935381c939465ce42b0bd7ad1b18049d",
+      "examples/device-profiles/node-memory-producer.mjs": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b"
+    },
+    "publicEsmResolutions": [
+      {
+        "name": "device-model",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/device-model/dist/index.js"
+      },
+      {
+        "name": "device-runtime",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/device-runtime/dist/index.js"
+      },
+      {
+        "name": "transport-webrtc",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/transport-webrtc/dist/index.js"
+      },
+      {
+        "name": "transport-websocket",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/transport-websocket/dist/index.js"
+      },
+      {
+        "name": "device-web",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/device-web/dist/index.js"
+      },
+      {
+        "name": "vision",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/vision/dist/index.js"
+      },
+      {
+        "name": "connect",
+        "url": "file:///private/tmp/101-sdk-consumer-xczrmz/node_modules/@101/connect/dist/index.js"
+      }
+    ],
+    "independentProbe": {
+      "result": "pass",
+      "node": "v24.14.0",
+      "sourceSha256": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "checks": [
+        {
+          "kind": "verifier-loss",
+          "closed": true,
+          "current": false,
+          "timerArmed": false,
+          "samples": 0,
+          "writes": 0,
+          "outcome": "removed"
+        },
+        {
+          "kind": "clock-clear",
+          "closed": true,
+          "current": false,
+          "timerArmed": false,
+          "samples": 0,
+          "writes": 0,
+          "outcome": "unknown"
+        },
+        {
+          "kind": "verifier-clear",
+          "closed": true,
+          "current": false,
+          "timerArmed": false,
+          "samples": 0,
+          "writes": 0,
+          "outcome": "unknown"
+        },
+        {
+          "kind": "retirement-clear",
+          "closed": true,
+          "current": false,
+          "timerArmed": false,
+          "samples": 0,
+          "writes": 0,
+          "outcome": "unknown"
+        }
+      ]
+    },
+    "acceptance": "A trusted reviewed profile establishes declared semantics through explicit current choice. Unknown/unsupported remain visible. This satisfies the canonical OR branch without arbitrary manual configuration or physical/general hardware compatibility."
+  },
+  "ownerBackup": {
+    "profile": "managed-owner-backup/1",
+    "filesystem": {
+      "cleanProcesses": 9,
+      "originalRunning": true,
+      "phases": [
+        {
+          "phase": "seed-crash",
+          "profile": "managed-owner-backup/1",
+          "captured": {
+            "backupId": "current-snapshot",
+            "reference": {
+              "id": "backup:current-snapshot",
+              "kind": "blob",
+              "mediaType": "application/octet-stream",
+              "byteLength": 2683,
+              "sha256": "af4d41706a649a33aa85ec58de366353810d2ae981b94d890e9be152fa002ba9"
+            },
+            "createdAt": 1000,
+            "expiresAt": 6000,
+            "epoch": 1,
+            "dataRevision": 12
+          },
+          "measured": 226983936,
+          "outputSha256": "089e8f02cc8b6aae43821ad6418fe50674c63857453559db1c4293e0614a8b27",
+          "sourceTime": {
+            "at": 443.326833,
+            "clockId": "example:source-clock"
+          },
+          "quality": "observed"
+        },
+        {
+          "phase": "inspect",
+          "inspection": {
+            "epoch": 1,
+            "dataRevision": 12,
+            "archives": [
+              {
+                "backupId": "current-snapshot",
+                "reference": {
+                  "id": "backup:current-snapshot",
+                  "kind": "blob",
+                  "mediaType": "application/octet-stream",
+                  "byteLength": 2683,
+                  "sha256": "af4d41706a649a33aa85ec58de366353810d2ae981b94d890e9be152fa002ba9"
+                },
+                "createdAt": 1000,
+                "expiresAt": 6000,
+                "epoch": 1,
+                "dataRevision": 12
+              }
+            ]
+          },
+          "reference": {
+            "id": "backup:current-snapshot",
+            "kind": "blob",
+            "mediaType": "application/octet-stream",
+            "byteLength": 2683,
+            "sha256": "af4d41706a649a33aa85ec58de366353810d2ae981b94d890e9be152fa002ba9"
+          },
+          "restoredAuthority": false,
+          "automaticWork": 0
+        },
+        {
+          "phase": "restore",
+          "restored": {
+            "epoch": 2,
+            "dataRevision": 13
+          }
+        },
+        {
+          "phase": "reopen-restored",
+          "restoredAuthority": false,
+          "automaticWork": 0,
+          "sourceTime": {
+            "clockId": "example:source-clock",
+            "at": 443.326833
+          },
+          "quality": "observed",
+          "measured": 226983936,
+          "outputSha256": "089e8f02cc8b6aae43821ad6418fe50674c63857453559db1c4293e0614a8b27",
+          "evidence": "verified-local-artifact",
+          "physicalEffect": "unverified"
+        }
+      ],
+      "migration": [
+        {
+          "phase": "legacy-seed",
+          "producer": "managed-owner-data/1",
+          "measured": 224837632
+        },
+        {
+          "phase": "migrate",
+          "migrated": {
+            "epoch": 1,
+            "dataRevision": 11
+          },
+          "captured": {
+            "backupId": "current-snapshot",
+            "reference": {
+              "id": "backup:current-snapshot",
+              "kind": "blob",
+              "mediaType": "application/octet-stream",
+              "byteLength": 2626,
+              "sha256": "4f81f7b6305f5799438d8e71199032771f4957b82f20a2e2cc2f499e9bfc9507"
+            },
+            "createdAt": 1000,
+            "expiresAt": 6000,
+            "epoch": 1,
+            "dataRevision": 11
+          }
+        },
+        {
+          "phase": "inspect",
+          "inspection": {
+            "epoch": 1,
+            "dataRevision": 11,
+            "archives": [
+              {
+                "backupId": "current-snapshot",
+                "reference": {
+                  "id": "backup:current-snapshot",
+                  "kind": "blob",
+                  "mediaType": "application/octet-stream",
+                  "byteLength": 2626,
+                  "sha256": "4f81f7b6305f5799438d8e71199032771f4957b82f20a2e2cc2f499e9bfc9507"
+                },
+                "createdAt": 1000,
+                "expiresAt": 6000,
+                "epoch": 1,
+                "dataRevision": 11
+              }
+            ]
+          },
+          "reference": {
+            "id": "backup:current-snapshot",
+            "kind": "blob",
+            "mediaType": "application/octet-stream",
+            "byteLength": 2626,
+            "sha256": "4f81f7b6305f5799438d8e71199032771f4957b82f20a2e2cc2f499e9bfc9507"
+          },
+          "restoredAuthority": false,
+          "automaticWork": 0
+        }
+      ],
+      "expiry": {
+        "phase": "expiry",
+        "removed": 1
+      }
+    },
+    "browsers": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "processRestart": true,
+        "restored": {
+          "phase": "restore",
+          "restored": {
+            "epoch": 2,
+            "dataRevision": 13
+          }
+        },
+        "fenced": {
+          "settingsAccepted": false,
+          "historyAccepted": false,
+          "signalAborted": true
+        },
+        "grantAbort": {
+          "accepted": false,
+          "grantAborted": true,
+          "unchanged": true
+        },
+        "competing": [
+          {
+            "ok": true,
+            "value": {
+              "epoch": 2,
+              "dataRevision": 12
+            }
+          },
+          {
+            "ok": false,
+            "reason": "conflict"
+          }
+        ],
+        "pageErrors": 0,
+        "foreignRequests": 0
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "processRestart": true,
+        "restored": {
+          "phase": "restore",
+          "restored": {
+            "epoch": 2,
+            "dataRevision": 13
+          }
+        },
+        "fenced": {
+          "settingsAccepted": false,
+          "historyAccepted": false,
+          "signalAborted": true
+        },
+        "grantAbort": {
+          "accepted": false,
+          "grantAborted": true,
+          "unchanged": true
+        },
+        "competing": [
+          {
+            "ok": true,
+            "value": {
+              "epoch": 2,
+              "dataRevision": 12
+            }
+          },
+          {
+            "ok": false,
+            "reason": "conflict"
+          }
+        ],
+        "pageErrors": 0,
+        "foreignRequests": 0
+      }
+    ],
+    "publicResolution": "installed-sdk-public-exports",
+    "sourceSha256": {
+      "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "packages/device-runtime/src/owner-backup.test.ts": "310522997d13f42f4f8e5732393e892a279fc532b8c3e21d8d329f20b4f442cd",
+      "examples/owner-backup/consumer.mjs": "a447649e46235942305b89f480ebf2cb88acb46fb3cf03bf55c014a43f8b3073",
+      "tools/qa-owner-backup.mjs": "b644d15737977772488bf2a9bd574ffaac43a063895f9ba22f6203e1b2d47913",
+      "examples/owner-data/filesystem-storage.mjs": "b54d87f2d3a378a02a5c292bf9cbebdca8ca57ee4a35db2a3ddf7411157d621a"
+    },
+    "limits": {
+      "archives": 2,
+      "archiveBytes": 131072,
+      "managedBytes": 1572864,
+      "ownerBytes": 2097152,
+      "operationMs": 5000,
+      "authorizationMs": 1000,
+      "grantMs": 60000,
+      "retentionCeilingMs": 604800000
+    },
+    "exclusions": [
+      "missing-or-corrupt-outer-fence-recovery",
+      "registered-recipient-copies",
+      "remote-storage",
+      "legacy-native-desktop",
+      "unmanaged-backup-copies",
+      "malicious-filesystem-host-tamper-resistance",
+      "restored-live-authority",
+      "physical-effect"
+    ],
+    "integrityBoundary": "Metadata CRC32 detects accidental corruption. Native SHA-256 verifies archive content. Neither authenticates a malicious storage host."
+  },
+  "fairDelivery": {
+    "status": "pass",
+    "node": "24.14.0",
+    "workloads": [
+      {
+        "delivery": "latest",
+        "recipients": 6,
+        "sourceGroups": 1,
+        "slots": 2,
+        "rounds": 12,
+        "deliveries": 24,
+        "minimum": 4,
+        "maximum": 4,
+        "peakPending": 2,
+        "releases": 6
+      },
+      {
+        "delivery": "reliable",
+        "recipients": 6,
+        "sourceGroups": 1,
+        "slots": 2,
+        "rounds": 12,
+        "deliveries": 24,
+        "minimum": 4,
+        "maximum": 4,
+        "peakPending": 2,
+        "releases": 6
+      },
+      {
+        "delivery": "latest",
+        "recipients": 128,
+        "sourceGroups": 4,
+        "slots": 4,
+        "rounds": 64,
+        "deliveries": 256,
+        "minimum": 2,
+        "maximum": 2,
+        "peakPending": 4,
+        "releases": 128
+      }
+    ],
+    "scopedWorkloads": [
+      {
+        "delivery": "latest",
+        "originalProviderResult": "returned",
+        "globalCap": 4,
+        "scopeCap": 1,
+        "otherScopes": 3,
+        "otherEffects": 9,
+        "successorInvocations": 1,
+        "retiredScopeHeldUntilRawSettlement": true
+      },
+      {
+        "delivery": "latest",
+        "originalProviderResult": "rejected",
+        "globalCap": 4,
+        "scopeCap": 1,
+        "otherScopes": 3,
+        "otherEffects": 9,
+        "successorInvocations": 1,
+        "retiredScopeHeldUntilRawSettlement": true
+      },
+      {
+        "delivery": "reliable",
+        "originalProviderResult": "returned",
+        "globalCap": 4,
+        "scopeCap": 1,
+        "otherScopes": 3,
+        "otherEffects": 9,
+        "successorInvocations": 1,
+        "retiredScopeHeldUntilRawSettlement": true
+      },
+      {
+        "delivery": "reliable",
+        "originalProviderResult": "rejected",
+        "globalCap": 4,
+        "scopeCap": 1,
+        "otherScopes": 3,
+        "otherEffects": 9,
+        "successorInvocations": 1,
+        "retiredScopeHeldUntilRawSettlement": true
+      }
+    ],
+    "checks": [
+      "exact-host-approval",
+      "bounded-global-pending",
+      "no-starvation-under-completing-provider-contention",
+      "balanced-recipient-service",
+      "reliable-and-latest",
+      "route-and-release-teardown",
+      "exact-scope-cap",
+      "no-slot-release-on-logical-retirement",
+      "raw-settlement-allows-current-successor"
+    ],
+    "sourceTree": "0a0c43cad5f82439fb73bcbbcc25d92fe70b712b",
+    "sourceSha256": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+    "sourcePins": {
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/types.ts": "22f83720f88b29aad75dbd69cda69592f1efe0cb792470c1eead5720112bfb03"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-pgffCb/manifest.json",
+      "sha256": "9802474df083475cee98eb606cbfa71cb7b9f2503f274e3847040f02bcb5ac57"
+    },
+    "qaToolSha256": "86835efba97442826e6bd189da90adb2d53ddc741cae31474ba771ed2207361d",
+    "limitations": [
+      "Cooperating local JavaScript providers; callback CPU is not sandboxed.",
+      "Omitted scope cap preserves the global policy; enough independently authorized scopes can still occupy every global slot.",
+      "No physical, network, browser scheduling or per-tenant CPU/byte quota qualification."
+    ]
+  },
+  "affectedPathPreservation": {
+    "media": {
+      "receipt": {
+        "path": "/tmp/101-backup-resolution-scope-packed-media.json",
+        "sha256": "900194e34b37d1a7e2103eaf2c7c19c6c170f8d33d37a4c8c58bbf3f93abd338",
+        "bytes": 33321
+      },
+      "engines": [
+        {
+          "engine": "chromium",
+          "checks": [
+            "both-separate-owner-decisions-before-native-capture",
+            "actual-runtime-native-track-decoded-authorized-pixels",
+            "separate-denied-recipient-no-output",
+            "two-current-recipient-routes-one-native-capture",
+            "revoke-one-preserves-other-and-caller-container",
+            "staged-native-draw-reentrant-revoke-no-visible-copy",
+            "current-activation-expiry-owned-timer-with-quiet-native-callbacks",
+            "native-dom-callback-close-no-late-owned-allocation",
+            "fresh-renewal-cannot-extend-opening-ceiling-earlier-timer-and-denial",
+            "invalid-clock-closes-live-native-output-permanently",
+            "shared-capture-thirty-second-ceiling-survives-later-recipient-grant",
+            "fresh-owner-age-narrowing-before-native-pixel-copy",
+            "native-staging-callback-age-fence-before-visible-copy",
+            "late-current-source-denial-honest-status",
+            "late-native-copy-age-retirement-without-active-detached-output",
+            "sdk-native-track-video-frame-raf-teardown-source-borrowed",
+            "reentrant-owner-callback-close-before-capture",
+            "actual-native-play-late-resolution-never-reactivates",
+            "opaque-source-and-request-bound-grant-replay-denial",
+            "one-megapixel-two-source-four-output-bounds-before-native-work",
+            "two-unsettled-native-play-attempt-cap-reserved-before-callback",
+            "abort-signal-retires-real-native-open-before-late-resolution",
+            "two-second-open-deadline-retains-bounded-unsettled-slot-and-cleans-native-resources",
+            "failed-native-open-honest-status-and-cleanup",
+            "fresh-explicit-retry-after-failed-open",
+            "native-track-end-retires-route-and-output"
+          ],
+          "nativeFormat": "supported",
+          "pageErrors": [],
+          "foreignRequests": [],
+          "version": "149.0.7827.55",
+          "status": "pass"
+        },
+        {
+          "engine": "webkit",
+          "checks": [
+            "both-separate-owner-decisions-before-native-capture",
+            "honest-missing-native-format-unsupported",
+            "sdk-native-track-video-frame-raf-teardown-source-borrowed",
+            "reentrant-owner-callback-close-before-capture",
+            "actual-native-play-late-resolution-never-reactivates",
+            "opaque-source-and-request-bound-grant-replay-denial",
+            "one-megapixel-two-source-four-output-bounds-before-native-work",
+            "two-unsettled-native-play-attempt-cap-reserved-before-callback",
+            "abort-signal-retires-real-native-open-before-late-resolution",
+            "two-second-open-deadline-retains-bounded-unsettled-slot-and-cleans-native-resources",
+            "failed-native-open-honest-status-and-cleanup",
+            "fresh-explicit-retry-after-failed-open"
+          ],
+          "nativeFormat": "unsupported-missing-native-frame-rate",
+          "pageErrors": [],
+          "foreignRequests": [],
+          "version": "26.5",
+          "status": "pass"
+        }
+      ],
+      "scope": "Chromium native positive/WebKit honest missing-frameRate unsupported path, no physical media proof"
+    },
+    "haptics": {
+      "receipt": {
+        "path": "/tmp/101-backup-resolution-scope-packed-haptic.json",
+        "sha256": "dab52449056adb35bca64d6cba4a0c0db4134ef0b6747219ba380b424313c795",
+        "bytes": 2560
+      },
+      "browsers": [
+        {
+          "engine": "chromium",
+          "version": "149.0.7827.55",
+          "result": {
+            "supported": true,
+            "checks": [
+              "no-current-approval-no-api",
+              "actual-browser-api-result-unverified",
+              "replay-no-repeat",
+              "revoke-no-api",
+              "expire-no-api",
+              "wrong-session-no-api",
+              "expo-preset-only-no-physical-claim"
+            ],
+            "apiReturns": [
+              true,
+              true
+            ],
+            "requested": [
+              [
+                15
+              ],
+              0
+            ],
+            "physicalVibration": "unverified",
+            "nativeBridge": "unqualified"
+          },
+          "pageErrors": 0,
+          "foreignRequests": 0
+        },
+        {
+          "engine": "webkit",
+          "version": "26.5",
+          "result": {
+            "supported": false,
+            "checks": [
+              "no-current-approval-no-api",
+              "actual-missing-api-fallback",
+              "revoke-no-api",
+              "expire-no-api",
+              "wrong-session-no-api",
+              "expo-preset-only-no-physical-claim"
+            ],
+            "apiReturns": [],
+            "requested": [],
+            "physicalVibration": "unverified",
+            "nativeBridge": "unqualified"
+          },
+          "pageErrors": 0,
+          "foreignRequests": 0
+        }
+      ],
+      "scope": "Actual browser API acceptance/missing API; no physical vibration"
+    },
+    "timing": {
+      "receipt": {
+        "path": "/tmp/101-backup-resolution-scope-packed-timing.json",
+        "sha256": "2176b8f17e63b64e0fe5764b7722bc8812696d447982e1cd909e7bd8e1f8b09b",
+        "bytes": 8842
+      },
+      "scope": "Offline compiled public SDK and native local MessagePorts; actual Node output and browser DOM commit/frame boundary. No physical phone, network, throughput or photon evidence."
+    },
+    "native": {
+      "status": "pass",
+      "sourceTree": "0a0c43cad5f82439fb73bcbbcc25d92fe70b712b",
+      "scope": "Local iOS/Android JavaScript bundle and source-map byte reachability; installation/native bridge/hardware remain unverified",
+      "node": "24.14.0",
+      "expo": "57.0.12",
+      "offline": true,
+      "platforms": [
+        {
+          "platform": "ios",
+          "map": "/tmp/101-backup-resolution-scope-native-bundle/_expo/static/js/ios/AppEntry-d522374316e6a32cf5878396e494ce24.js.map",
+          "mapSha256": "5bbc428dfe7af00cccc1a667f0647e7f56902700054abc4116203f6fec397ae8",
+          "js": "/tmp/101-backup-resolution-scope-native-bundle/_expo/static/js/ios/AppEntry-d522374316e6a32cf5878396e494ce24.js",
+          "jsSha256": "df960dad004dcc678d68220474efc2677a5f573a0667f77f6babc8958a1a1e17",
+          "matches": [
+            {
+              "path": "apps/controller-native/App.tsx",
+              "source": "/apps/controller-native/App.tsx",
+              "sha256": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+              "exact": true
+            },
+            {
+              "path": "apps/controller-native/src/controller-haptics.ts",
+              "source": "/apps/controller-native/src/controller-haptics.ts",
+              "sha256": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/haptic-profile.ts",
+              "source": "/packages/device-model/src/haptic-profile.ts",
+              "sha256": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/haptic-output.ts",
+              "source": "/packages/device-runtime/src/haptic-output.ts",
+              "sha256": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/runtime.ts",
+              "source": "/packages/device-runtime/src/runtime.ts",
+              "sha256": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/application-media.ts",
+              "source": "/packages/device-web/src/application-media.ts",
+              "sha256": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/media-grants.ts",
+              "source": "/packages/device-runtime/src/media-grants.ts",
+              "sha256": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/index.ts",
+              "source": "/packages/device-model/src/index.ts",
+              "sha256": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "6c3791fe691e25757ff5cd1e8ff06709b0ab301ef1be38c095ecb19282b2f53f",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/index.ts",
+              "source": "/packages/device-web/src/index.ts",
+              "sha256": "64a5c3c4dc1f318aa1562aca5a59b05957b3e772e54fb16d6b1766f8f794728c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/owner-backup.ts",
+              "source": "/packages/device-runtime/src/owner-backup.ts",
+              "sha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/profile-resolution.ts",
+              "source": "/packages/device-runtime/src/profile-resolution.ts",
+              "sha256": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "6c3791fe691e25757ff5cd1e8ff06709b0ab301ef1be38c095ecb19282b2f53f",
+              "exact": true
+            }
+          ]
+        },
+        {
+          "platform": "android",
+          "map": "/tmp/101-backup-resolution-scope-native-bundle/_expo/static/js/android/AppEntry-fd7fbcfe288473fedc78750bbe1efda4.js.map",
+          "mapSha256": "f6c2693368543d64ab2f34d5f53604cba432c62a1ac15272996010a5e34bc67a",
+          "js": "/tmp/101-backup-resolution-scope-native-bundle/_expo/static/js/android/AppEntry-fd7fbcfe288473fedc78750bbe1efda4.js",
+          "jsSha256": "23a216f7d724070c75857728b4741c161861f27cf25b0d068f94bb6ecd67a4b7",
+          "matches": [
+            {
+              "path": "apps/controller-native/App.tsx",
+              "source": "/apps/controller-native/App.tsx",
+              "sha256": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+              "exact": true
+            },
+            {
+              "path": "apps/controller-native/src/controller-haptics.ts",
+              "source": "/apps/controller-native/src/controller-haptics.ts",
+              "sha256": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/haptic-profile.ts",
+              "source": "/packages/device-model/src/haptic-profile.ts",
+              "sha256": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/haptic-output.ts",
+              "source": "/packages/device-runtime/src/haptic-output.ts",
+              "sha256": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/runtime.ts",
+              "source": "/packages/device-runtime/src/runtime.ts",
+              "sha256": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/application-media.ts",
+              "source": "/packages/device-web/src/application-media.ts",
+              "sha256": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/media-grants.ts",
+              "source": "/packages/device-runtime/src/media-grants.ts",
+              "sha256": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/index.ts",
+              "source": "/packages/device-model/src/index.ts",
+              "sha256": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "6c3791fe691e25757ff5cd1e8ff06709b0ab301ef1be38c095ecb19282b2f53f",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/index.ts",
+              "source": "/packages/device-web/src/index.ts",
+              "sha256": "64a5c3c4dc1f318aa1562aca5a59b05957b3e772e54fb16d6b1766f8f794728c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/owner-backup.ts",
+              "source": "/packages/device-runtime/src/owner-backup.ts",
+              "sha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/profile-resolution.ts",
+              "source": "/packages/device-runtime/src/profile-resolution.ts",
+              "sha256": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "6c3791fe691e25757ff5cd1e8ff06709b0ab301ef1be38c095ecb19282b2f53f",
+              "exact": true
+            }
+          ]
+        }
+      ]
+    },
+    "nativeStrict": {
+      "path": "/tmp/101-backup-resolution-scope-native-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "result": "pass",
+      "exitCode": 0,
+      "command": "node node_modules/typescript/bin/tsc --noEmit -p apps/controller-native/tsconfig.json"
+    }
+  },
+  "review": {
+    "result": "clear",
+    "profileResolution": {
+      "runtimeTree": "1c8ced2fce26ea72e406cdadd39dc383d0d613d2",
+      "finalQaTree": "0a0c43cad5f82439fb73bcbbcc25d92fe70b712b",
+      "reviewer": "independent B06 author",
+      "probe": {
+        "path": "/tmp/101-d07-risk-probe.json",
+        "sha256": "e4b55d3605473fc59c47d6dd322bf49ad20f8b5183d4313622f59a407d4d3fec",
+        "bytes": 883
+      }
+    },
+    "ownerBackup": {
+      "finding": "P2 archive expiry could cross validation or retireOwned and expose/commit expired producer data",
+      "originalSourceSha256": "371e18156c6862739f264075e7ddf7bfa672e0168be39dc803de417f143ee060",
+      "repairedSourceSha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "repairedTree": "663a48a6fa325b5ded526b22fe21baa402b39e0e",
+      "independentChecks": [
+        {
+          "sourceSha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+          "now": 1100,
+          "expiry": 1100,
+          "result": "expired"
+        },
+        {
+          "sourceSha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+          "now": 1100,
+          "expiry": 1100,
+          "result": "expired"
+        },
+        {
+          "sourceSha256": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+          "now": 1100,
+          "expiry": 1100,
+          "result": "expired",
+          "unchanged": true
+        }
+      ]
+    },
+    "fairDelivery": {
+      "tree": "f629f046d1401de2246873ee624eb630e13797ea",
+      "sourceSha256": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "node": "v24.14.0",
+      "results": [
+        {
+          "reliable": false,
+          "rejection": false,
+          "status": "pass",
+          "checks": [
+            "frozen-unissued-retirement-releases-original-scope",
+            "same-scope-successor-blocked-by-actual-held-work",
+            "other-scope-uses-released-frozen-slot",
+            "close-retains-actual-raw-work",
+            "actual-raw-provider-settlement-deletes-idle-scope"
+          ]
+        },
+        {
+          "reliable": false,
+          "rejection": true,
+          "status": "pass",
+          "checks": [
+            "frozen-unissued-retirement-releases-original-scope",
+            "same-scope-successor-blocked-by-actual-held-work",
+            "other-scope-uses-released-frozen-slot",
+            "close-retains-actual-raw-work",
+            "actual-raw-provider-settlement-deletes-idle-scope"
+          ]
+        },
+        {
+          "reliable": true,
+          "rejection": false,
+          "status": "pass",
+          "checks": [
+            "frozen-unissued-retirement-releases-original-scope",
+            "same-scope-successor-blocked-by-actual-held-work",
+            "other-scope-uses-released-frozen-slot",
+            "close-retains-actual-raw-work",
+            "actual-raw-provider-settlement-deletes-idle-scope"
+          ]
+        },
+        {
+          "reliable": true,
+          "rejection": true,
+          "status": "pass",
+          "checks": [
+            "frozen-unissued-retirement-releases-original-scope",
+            "same-scope-successor-blocked-by-actual-held-work",
+            "other-scope-uses-released-frozen-slot",
+            "close-retains-actual-raw-work",
+            "actual-raw-provider-settlement-deletes-idle-scope"
+          ]
+        }
+      ]
+    }
+  },
+  "regressions": {
+    "focused": {
+      "path": "/tmp/101-backup-resolution-scope-final-focused.log",
+      "sha256": "e37d5f506750bf38293d13c97cb1954e0a42d3854b68788902b311da8e9b0206",
+      "bytes": 3809,
+      "passed": 36,
+      "failed": 0,
+      "skipped": 0
+    },
+    "red": [
+      {
+        "path": "/tmp/101-scope-delivery-original-red.log",
+        "sha256": "05b866585d4da72019fd8adf934d7df824f5226f2a48d0767c4205055037883a",
+        "bytes": 2072
+      },
+      {
+        "path": "/tmp/101-scope-delivery-packed-original-red.log",
+        "sha256": "93621f23b679c937ff3209a8c687cdf25c8c42ffd4bd1976c1662af5a21c65e0",
+        "bytes": 3272
+      },
+      {
+        "path": "/tmp/101-b06-old-copy-red.log",
+        "sha256": "65aa085acfbba32455b14dab6c9779c7189887233a3815d720cdb9a63932a7cb",
+        "bytes": 950
+      },
+      {
+        "path": "/tmp/101-b06-fence-integrity-red.log",
+        "sha256": "d49d5051fbef98bf4312b9c42c9cd240808d97be9ab8348598e2b52500ce7858",
+        "bytes": 934
+      },
+      {
+        "path": "/tmp/101-b06-healthy-recovery-red.log",
+        "sha256": "e16b3d31f4826fdbd5923788e4efc15c121417e3bd1a6656369992a1f9380408",
+        "bytes": 1199
+      },
+      {
+        "path": "/tmp/101-b06-invalid-clock-lifetime-red.log",
+        "sha256": "82c9a50b4c52b6c04ef32db942c61b3108bc57ddddf4da205a1c9095f3dce48e",
+        "bytes": 2073
+      },
+      {
+        "path": "/tmp/101-b06-inner-audit-floor-red.log",
+        "sha256": "69c2ea375ae7ee696b359f839f78ab8dd1d2fd4563160b275285b761d5cebd5e",
+        "bytes": 968
+      },
+      {
+        "path": "/tmp/101-profile-resolution-original-red.log",
+        "sha256": "d6dd91ea319a80bdf8be602b5a1fdf8f316b6dd12839933f343a55007260174e",
+        "bytes": 1603
+      },
+      {
+        "path": "/tmp/101-profile-resolution-expiry-return-red.log",
+        "sha256": "d6eaf380ad61024fea66868bd471aa6a30fe077acc35aa15b96164cf54a82174",
+        "bytes": 1687
+      },
+      {
+        "path": "/tmp/101-backup-final-expiry-red.log",
+        "sha256": "5a868aa1809c489fea1b4dd11b9469fd963879f1d8d372843fc15860b9e92454",
+        "bytes": 19718
+      },
+      {
+        "path": "/tmp/101-owner-backup-read-expiry-red.json",
+        "sha256": "1c7d6082bdd640e2a67137400c225b6fd5de526e557faa313f7ed80f7de64d1b",
+        "bytes": 434
+      },
+      {
+        "path": "/tmp/101-owner-backup-restore-expiry-red.json",
+        "sha256": "d6e4335f412c222c37425a0b3cb3b61756bd63db4a31ebb6e9529af131f75b8c",
+        "bytes": 434
+      }
+    ],
+    "historicalBaseline": "Raw-copy B06 baseline uses genuine old producer envelopes; it demonstrates insufficient restore semantics, not a B05 defect claim."
+  },
+  "runtimeReceipts": {
+    "backup": {
+      "path": "/tmp/101-backup-resolution-scope-packed-backup.json",
+      "sha256": "6c7f6ee38ac26eacc149eb13fcfe44d463f00f810c81d28e5b373ec0f25f94e2",
+      "bytes": 8879
+    },
+    "resolution": {
+      "path": "/tmp/101-backup-resolution-scope-packed-resolution.json",
+      "sha256": "9b20b3d71dda9005d2dafaa691b586a663716dbb949aa89b2d7c19f1874a333c",
+      "bytes": 10351
+    },
+    "fair": {
+      "path": "/tmp/101-backup-resolution-scope-packed-fair.json",
+      "sha256": "dd8bc26dc7785f731d75f091b772ed04a894128acf4bcb1b56f7f8bc61d38371",
+      "bytes": 3167
+    },
+    "media": {
+      "path": "/tmp/101-backup-resolution-scope-packed-media.json",
+      "sha256": "900194e34b37d1a7e2103eaf2c7c19c6c170f8d33d37a4c8c58bbf3f93abd338",
+      "bytes": 33321
+    },
+    "haptic": {
+      "path": "/tmp/101-backup-resolution-scope-packed-haptic.json",
+      "sha256": "dab52449056adb35bca64d6cba4a0c0db4134ef0b6747219ba380b424313c795",
+      "bytes": 2560
+    },
+    "timing": {
+      "path": "/tmp/101-backup-resolution-scope-packed-timing.json",
+      "sha256": "2176b8f17e63b64e0fe5764b7722bc8812696d447982e1cd909e7bd8e1f8b09b",
+      "bytes": 8842
+    }
+  },
+  "qaAdapterChanges": {
+    "backup": "Immutable example/filesystem adapter copied outside SDK into owned external consumer; ordinary ESM, no installed hooks/type stripping. Exact CLI and seven package listed-file/source/manifest/realpath/hash fences; seed-crash cleans only own resolver then deliberately exits while producer job remains running.",
+    "resolution": "Immutable exact first caller/producer copied outside SDK; only known local TS-profile import rewritten to its compiled JS. Ordinary ESM. Exact seven package listed-file/source/manifest/realpath/hash fences.",
+    "tempRoot": "Installed guards use canonical /tmp, matching qa-sdk-consumer producer; macOS tmpdir points elsewhere. Initial harness refusal retained separately; no arbitrary directory acceptance."
+  },
+  "requiredCommitGates": [
+    "npx tsc --noEmit",
+    "npm run lint",
+    "npm run test:unit",
+    "npm run build",
+    "node --test tests/rendered-html.test.mjs"
+  ],
+  "gateEvidence": "Integrating commit records exact final candidate tree, gate counts/logs and fresh build ID after metadata freeze.",
+  "limitations": [
+    "B06 and F05 remain open; no support-row promotion.",
+    "Physical phone/Mirroring/Mac pointer/OS permissions/hardware/assistive checks deferred per user.",
+    "D07 establishes reviewed declared semantics, not authentication, live inventory, OS chooser or general unknown-hardware compatibility.",
+    "B06 excludes remote storage, registered recipient copies, missing/corrupt outer-fence restoration and legacy/native/desktop/unmanaged backup recovery.",
+    "Per-scope pending work does not sandbox callback CPU or provide byte quotas; enough distinct authorized scopes can occupy all global slots.",
+    "Native proof is iOS/Android JavaScript/source-map byte reachability, not Hermes/install/bridge/physical acceptance.",
+    "No push/publish/deploy/preview URL/third-party service or remote network qualification."
+  ],
+  "published": false,
+  "candidateTestTypeRepair": {
+    "path": "packages/device-runtime/src/owner-backup.test.ts",
+    "sha256": "2183fb52d3315f5563a11559f9c90c72bd92d94fd6f755bb4bad9be5659f2db7",
+    "change": "Check genuine telemetry result.ok directly; its enqueue/flush result has no value property. Assertion behavior unchanged; production source, SDK build inputs and external runtime caller inputs remain byte-identical. Final exact candidate gates include this corrected test.",
+    "redLog": "/tmp/101-backup-resolution-scope-gate-types-test-shape-red.log"
+  }
+}

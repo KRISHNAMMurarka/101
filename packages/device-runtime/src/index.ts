@@ -54,3 +54,9 @@ export { intersectMediaRouteGrants } from './media-grants.ts';
 
 export { createHapticOutputController, createBrowserHapticBackend } from './haptic-output.ts';
 export type { HapticBackendOutcome, HapticOutcome, HapticBackend, HapticOutputEvidence, HapticOutputOptions, HapticOutputController } from './haptic-output.ts';
+
+export { OWNER_BACKUP_PROFILE, OWNER_BACKUP_LIMITS, createOwnerBackupController } from './owner-backup.ts';
+export type { OwnerBackupFailure, OwnerBackupResult, OwnerBackupScope, OwnerBackupGrant, OwnerBackupReceipt, OwnerBackupRequest, OwnerBackupOptions, OwnerBackupController } from './owner-backup.ts';
+
+export { PROFILE_RESOLUTION_LIMITS, createProfileResolutionController } from './profile-resolution.ts';
+export type { ProfileObservationHandle, ProfileReviewHandle, ProfileChoiceHandle, ProfileResolutionOptions, ProfileResolutionFailure, ProfileResolutionResult, ProfileResolutionSelection, ProfileResolutionSnapshot, ProfileResolutionController } from './profile-resolution.ts';
