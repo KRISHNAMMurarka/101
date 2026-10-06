@@ -1,0 +1,585 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-software-scopes;required-commit-gates-pending",
+  "base": "dfd057e049413babe1897908880f7777d9745416",
+  "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+  "sourceSha256": {
+    "THIRD_PARTY_LICENSES.json": "98551c6d56d4fd8ed2bd557baa78cc4f34716c889957dfb5a81966b74b878f23",
+    "docs/platform/SDK.md": "f9e39e220b3578d144691ec9d2507d404bb3c69f46a56da454393efe4da61423",
+    "package-lock.json": "d39d5eebc624daaaa3ef31ff8507ecfff8f6225a62c25ef61ed95b2a495afa8e",
+    "packages/hub-server/package.json": "674cac05cf63db3467fefb27ac23496b4cb84342ee6bf8fae46da412d865c05b",
+    "packages/device-web/src/browser-gamepad.ts": "5a37dbda32710578540299b428e22cf25eaebe5f7a94d0fcb86c8304b9ee44cf",
+    "packages/device-web/src/browser-gamepad.test.ts": "35a5c5ade857b9045e0856cd134e420f8db66a088e6e6ab5bc047664728968ab",
+    "examples/browser-resources/gamepad.ts": "d461bd8ac0b9873736c355f08c2f6ec42d9a010f9543ca397a418adf507d0c0e",
+    "tools/qa-browser-gamepad.mjs": "3497b9724649ee82296e4b8dffeae7f86ac63dbe7f216f565335b33c483a2de1",
+    "packages/device-web/src/index.ts": "bd7e712fda9ba3a81de8dd3efaf292a92135c5535b0ebf18f157438ed343be50",
+    "packages/device-web/src/browser-microphone.ts": "434b51e569ffb86edb2a6145608c4eb6480e2ce5ab37d3e0f07e29a1537ef639",
+    "packages/device-web/src/browser-microphone.test.ts": "4e573d20b8b16c9912ed6855e14ed93dd33722243fea37083552e189c7fe14c8",
+    "examples/browser-resources/microphone.ts": "8307623076902bf6211f2aeed05f23007d7ef5baf716862eba6fb122878724ff",
+    "tools/qa-browser-microphone.mjs": "14cb5cc44ce427353ff5d47ac6be8485fd77d5c5118be74d36e317a2baaded3c",
+    "docs/platform/RELEASE-CONTRACT.md": "fe02e502979f80628144ad7b2df582bbc126d8c4a122968eb0c089a0bb9cc86e",
+    "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+    "packages/hub-server/src/loopback-relay.test.ts": "c27692356fe20ee85b6d8bf742584af6846fb85612db72fcc6f895c7b9b720ef",
+    "examples/coordinator/loopback-relay.ts": "dcabb43d80aa8283cc149fe70c150993185520cad3e0891d1faa7ffc891bb8a0",
+    "tools/qa-loopback-relay.mjs": "f1d70d31924250d1d985bb8ced63e821fb9062a1aef9159102b28587f9b9bc9b",
+    "packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
+    "packages/device-web/src/browser-camera.ts": "bcc9b4cacf238b8a499e3acc80c0715391d096f58c0625a149561fcaddd6680f",
+    "packages/device-web/src/browser-camera.test.ts": "f038cad4a84627c2acf329f9ce29d7ba2c1b54b70bc51fa860e29b9214781f81",
+    "examples/browser-resources/camera.ts": "8ab1b5914002bb4178f197220fb3582c77524b5ca4c1d16da4f987cf6d9a8016",
+    "tools/qa-browser-camera.mjs": "9318b8e681bf85f5a586a8da17372a78a4e6ee07cfaf8d2d362afd00ff856b54",
+    "examples/coordinator/disposable-stack.mjs": "dc601b2b9531229316d23f5580b71e9154daea91df57f7d8076e4da5a220d915",
+    "tests/disposable-stack.test.ts": "8ad3071882e93a1f2044cab924d0f5b774adc74f839a2218b800eabfb537ed28",
+    "tools/disposable-stack.mjs": "33baeb2dc9eefe9542af26fab5f5c3aad15e7b753b2d228298e32415303e1d9c",
+    "tools/qa-disposable-stack.mjs": "895c299d49b8f902089ae5f67b63d936daabd4eae9d3eb48ae8a7318159527ae"
+  },
+  "taskDisposition": {
+    "N02": "open: selected providers built; full resources and physical qualification remain",
+    "D03": "open: physical/browser chooser qualification remains",
+    "V01": "open: selected owned software media only",
+    "O02": "open: selected implementation verified; exact full commit gates pending",
+    "S07": "open: selected implementation verified; exact full commit gates pending"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 113,
+    "open": 159
+  },
+  "camera": {
+    "scope": "Selected media:camera-rgba8/1 provider built: exact issued video selection and capture approval, native decoded frame callback to bounded 8x8 RGBA8, independent SDK source/sink grants and actual lifecycle retirement. 29 focused tests plus four fresh normal-installed Chromium/WebKit pages use owned Canvas.captureStream decoded red-to-blue pixels. Physical acquisition, permission UI/enforcement, capture-clock mapping and whole N02/D03/V01 acceptance remain open.",
+    "packet": {
+      "path": "/tmp/101-browser-camera-frozen-pins.json",
+      "sha256": "55bb5904d44d03ee9148d5f305c3463084871521917258888c26f452be7bd0dd"
+    },
+    "review": {
+      "path": "/tmp/101-browser-camera-independent-review.json",
+      "sha256": "e84ba2ba968d07615263191cfa87cfe68b3b664bf89201e38d327a1653a61b76"
+    },
+    "sourcePins": {
+      "packages/device-web/src/browser-camera.ts": "bcc9b4cacf238b8a499e3acc80c0715391d096f58c0625a149561fcaddd6680f",
+      "packages/device-web/src/browser-camera.test.ts": "f038cad4a84627c2acf329f9ce29d7ba2c1b54b70bc51fa860e29b9214781f81",
+      "examples/browser-resources/camera.ts": "8ab1b5914002bb4178f197220fb3582c77524b5ca4c1d16da4f987cf6d9a8016",
+      "tools/qa-browser-camera.mjs": "9318b8e681bf85f5a586a8da17372a78a4e6ee07cfaf8d2d362afd00ff856b54"
+    },
+    "focusedTests": 29,
+    "limits": {
+      "selectedDevices": 8,
+      "nativeInventory": 32,
+      "attemptsLifetime": 64,
+      "rawPending": 1,
+      "openMs": 5000,
+      "captureMs": 30000,
+      "raster": "8x8 RGBA8: eight rows of32 integer channels=256bytes",
+      "nativeGeometryMax": "1280x720",
+      "maxHz": 10,
+      "samples": 300,
+      "nativeFrameCallbackAttempts": 600,
+      "latest": 1,
+      "listeners": 12,
+      "expiryTimers": 1
+    },
+    "retainedRegressionPins": {
+      "/tmp/101-camera-feature-red.log": "ec3609fd84564bbffb111434cf77e9deb17bd6402bafdd80583ac7bd259e51e5",
+      "/tmp/101-camera-draft-before-regressions.ts": "50049e7033094b6d1aa6941fe0d00c79788f3c97a2bff1bffcb24d17e5b499c3",
+      "/tmp/101-camera-lifecycle-draft-red.log": "2aac73d76ecfd7d0a8a984cdc938964c00085cd52ad8c4812bdd72bb0aff69ed",
+      "/tmp/101-camera-focused-first.log": "b4b8ea69ad9ec9bf499ef033d7715794638528baba9cad23f99cc2572798de27",
+      "/tmp/101-camera-strict-first.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-camera-lint-first.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-camera-source-first.json": "ef359c903ef7de8215341c16db819a2ad0cb8026943ec7b2dcb4b396395ea513",
+      "/tmp/101-camera-source-first.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-camera-test-hook.mjs": "82eb0885d3be2831433317c3d29064fe0d1a430b05829712e71b6037ca93034b",
+      "/tmp/101-camera-tsconfig.json": "54b38126cc043b5255e0c060f00b64487b4c904715e046855e6e1299a12d9961",
+      "/tmp/101-browser-camera-root-hook.json": "e9dc1a9021db1df5f76626611c2d9f3bc02376092c18669c0efc393aee8ff0a4"
+    },
+    "physicalCameraQualified": false,
+    "nativePermissionEnforcementQualified": false,
+    "defaultUserMediaAcquisitions": 0,
+    "captureTimeKnown": false,
+    "clockMappingEstablished": false
+  },
+  "disposableStack": {
+    "scope": "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit.",
+    "packet": {
+      "path": "/tmp/101-disposable-stack-frozen-pins.json",
+      "sha256": "021c7494576326304667a10c3321fd8b14ac487bc09ae74ad2817e6e7bd28103"
+    },
+    "review": {
+      "path": "/tmp/101-disposable-stack-independent-review.json",
+      "sha256": "c99c4e91434b8b56eeea3596ef1d35bc03b69bb0d2ad5be9e57798ee6a51723d"
+    },
+    "sourcePins": {
+      "examples/coordinator/disposable-stack.mjs": "dc601b2b9531229316d23f5580b71e9154daea91df57f7d8076e4da5a220d915",
+      "tests/disposable-stack.test.ts": "8ad3071882e93a1f2044cab924d0f5b774adc74f839a2218b800eabfb537ed28",
+      "tools/disposable-stack.mjs": "33baeb2dc9eefe9542af26fab5f5c3aad15e7b753b2d228298e32415303e1d9c",
+      "tools/qa-disposable-stack.mjs": "895c299d49b8f902089ae5f67b63d936daabd4eae9d3eb48ae8a7318159527ae"
+    },
+    "focusedTests": 9,
+    "retainedProofPins": {
+      "/tmp/101-disposable-stack-feature-red.log": "14f256d826d08e0501f091adcfe0c6740fd46c82d7709a0366ce941599287b60",
+      "/tmp/101-disposable-stack-lint-first.log": "3ef0ef09a31045571b65a25541e0185f7bab8986518bc109aa3a099c64cb09b2",
+      "/tmp/101-disposable-stack-source-first.err": "3b1541b5281a2f3d84ad8489617b38054868ea2639a810c50f50532c418c383b",
+      "/tmp/101-disposable-stack-key-mode-red-source-pins.json": "403d1ec633cf5e8e2a4c25026be8347a1a7bbbafe6d513b69a8a60a54ed1a1a4",
+      "/tmp/101-disposable-stack-focused-first.log": "e929ead6ea5474803f01250edc9bbe0fe7601a0bc8bd62df1c9158a312061a1c",
+      "/tmp/101-disposable-stack-focused-final.log": "2f28db4526e10c352f0a386f369cf1c5abb272f6d23a82842e4f23db0f36ad1d",
+      "/tmp/101-disposable-stack-repaired-focused-final.log": "9662a5bcf8f25407c0f755f99ec2f1caaac714a72ad77db470ff0bf06b5416d0",
+      "/tmp/101-disposable-stack-repaired-strict-final.log": "15629c8219dc3df3d7b7cdd0881d7c32a45b77903f577b6fc98b1a0ee428e98c",
+      "/tmp/101-disposable-stack-repaired-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-disposable-stack-source-final-green.json": "c873cd3b523e82b49dda4a71964ba045cfe728f051c6662927bf9175fb98ab1f",
+      "/tmp/101-disposable-stack-source-final-green.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-disposable-stack-mixed-final-green.json": "5a442c3f6ee59e38446c617f826a1609e7358c213063282766b07fadb0cdd6db",
+      "/tmp/101-disposable-stack-mixed-final-green.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-disposable-stack-source-green.json": "b8262037839bc2911686b5a689b36e690592446604939afc167f86f49969c137",
+      "/tmp/101-disposable-stack-mixed-first.json": "923352c1f2e88b57ec7c7cf4afcafd657aca56a045811715e6e9c6037a0d8944"
+    },
+    "currentProof": {
+      "path": "/tmp/101-camera-stack-root-disposable.json",
+      "sha256": "ea3f32e3875a0d5af1e65ecce023f70cd535535ac4633dd8e36fae6e750969e5"
+    },
+    "checks": [
+      "simultaneously live actual mTLS coordinator/directory/gateway; independent grants/denials/revocation/current typed effects and fresh-owner recovery",
+      "SIGTERM retires both native listeners and actual client work before exact newly owned PKI removal",
+      "remaining overall15s native budget expires both components; no replacement or success",
+      "closed CLI rejects input before native bind or fixture allocation"
+    ],
+    "resolvedSourceSha256": {
+      "examples/coordinator/disposable-stack.mjs": "dc601b2b9531229316d23f5580b71e9154daea91df57f7d8076e4da5a220d915",
+      "packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+      "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528"
+    },
+    "sourceClosureBoundToTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+    "installedHubClaim": false,
+    "nativeLibrary": {
+      "version": "8.21.0",
+      "sha256": {
+        "LICENSE": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+        "README.md": "bb979132f3cbff08ce47f36d041e18071f8f534d01f591c0b129ba7abf1e480e",
+        "browser.js": "010da44addea1d88b2b732540c3f1fd0cbcb28926b96623d4c64222e0ead2d0e",
+        "index.js": "924564d5be26d59b9682c4263f68320e48dde7240bd2d1ad17ec305537429dd2",
+        "lib/buffer-util.js": "8b0a45739132f82e25ea13163780abf547ccfe989267f3eb7abb475beec92da3",
+        "lib/constants.js": "391e823142b8b370e55a2fd32b022deaf03b8415c56000009674ebc86a0b4f86",
+        "lib/event-target.js": "c45d3c6e12d170c860c0c3f1a050aa0f864d9806632b609a1e607d675aba128c",
+        "lib/extension.js": "852564f0f6b460287043803eae732666fb5610f676874354fc89f06aa4e986ed",
+        "lib/limiter.js": "e0469d4b83f6ba764b15f80e1766b75c136fbff68f048f4c050f0b1c7f065f69",
+        "lib/permessage-deflate.js": "02c31796f0132a335d4efe7b7adcebadbb69543a1ce65ae04aaccc3530e27ab9",
+        "lib/receiver.js": "4879edbf8e48d04d09783cf9c04b5e25f5a448247bb01279438ded2899747220",
+        "lib/sender.js": "d0791d30c3defd44dcabbddb879a901c757993fea2c00a7ffea01d53b23b4b77",
+        "lib/stream.js": "a56fcb6e2b152097ee820b6f5410b1f71e59819b45d08d9f8bda588fe39070ec",
+        "lib/subprotocol.js": "be3f6323d6f549568577dcba9004c1479d95c65a7abb0fe0c582875b9fac0b7c",
+        "lib/validation.js": "41ce8e83d0d434132e1704895fedb91f6703a701b42d91c80954ab29b2845593",
+        "lib/websocket-server.js": "29029a4d346800c792300df153df2007e9805d9d7b67b0883f9730b64f25b1c8",
+        "lib/websocket.js": "48fdb0f54c1f8ce580d3cfa2908fe7d96fe18f06f9d82306950441cb09b5db26",
+        "package.json": "584ce6e7516587ba249dc910b0c04e2753f6b3f451fc3a5bc324f7735bdacc71",
+        "wrapper.mjs": "fe154662301fd558f935f9c217fccbe7a7dac02ff39e648a000589403ff27c7f"
+      }
+    },
+    "exercise": {
+      "profile": "disposable-coordinator-directory-gateway/1",
+      "result": "pass",
+      "checks": [
+        "both native components simultaneously current",
+        "native mTLS coordinator health while gateway active",
+        "rendezvous membership and configured catalog grant no visibility",
+        "separate current host directory approval exposes only selected software resource",
+        "relay admission denial issues no native client or typed effect",
+        "separate current authenticated relay resource publication",
+        "source subscribe denial causes zero new typed effects",
+        "separate current authenticated relay resource publication",
+        "sink write denial causes zero new typed effects",
+        "separate current authenticated relay resource publication",
+        "explicit source+sink owners admit software integer",
+        "metadata withdrawal removes visibility",
+        "metadata withdrawal alone does not revoke independently current resource owners",
+        "source owner withdrawal releases actual route and fences late samples",
+        "separate current authenticated relay resource publication",
+        "explicit source+sink owners admit software integer",
+        "separate sink owner revocation releases actual route and fences late samples",
+        "actual component and owned client raw retirement settled",
+        "both native components simultaneously current",
+        "fresh controller restores no old coordinator bearer authority",
+        "fresh gateway restores no prior relay bearer or pair",
+        "native mTLS coordinator health while gateway active",
+        "rendezvous membership and configured catalog grant no visibility",
+        "separate current host directory approval exposes only selected software resource",
+        "separate current authenticated relay resource publication",
+        "explicit source+sink owners admit software integer",
+        "source owner withdrawal releases actual route and fences late samples",
+        "fresh gateway identity and fresh explicit owners recover typed service",
+        "actual component and owned client raw retirement settled"
+      ],
+      "actualControllerGenerations": 2,
+      "attemptedControllerGenerations": 2,
+      "actualSoftwareEffects": 4,
+      "sinkReleases": 3,
+      "exactRouteApprovals": 3,
+      "actualNativeSocketAttempts": 30,
+      "observedWaitTurns": 18,
+      "serviceOwnedMs": 567.903167,
+      "sourceClock": "node-source-monotonic",
+      "gatewayPlaintextTrust": true,
+      "resourceGrantsFromConfigurationOrMetadataOrRelay": false,
+      "cleanup": {
+        "nativeContexts": 0,
+        "pendingClients": 0,
+        "timers": 0,
+        "temporaryCredentialsRemoved": true
+      },
+      "physicalQualification": false
+    },
+    "childOutcomes": [
+      {
+        "argument": "--exercise",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "sentinelUnchanged": true,
+        "ownedFixtureRootsRemoved": true
+      },
+      {
+        "argument": "--serve",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "sentinelUnchanged": true,
+        "ownedFixtureRootsRemoved": true
+      },
+      {
+        "argument": "--serve",
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "sentinelUnchanged": true,
+        "ownedFixtureRootsRemoved": true
+      },
+      {
+        "argument": "--invalid",
+        "exit": {
+          "code": 2,
+          "signal": null
+        },
+        "sentinelUnchanged": true,
+        "ownedFixtureRootsRemoved": true
+      }
+    ],
+    "ownedNativeContexts": 0,
+    "scopeBoundaries": {
+      "storage": "ephemeral",
+      "gatewayPlaintextTrust": true,
+      "resourceGrantsFromConfigurationOrDirectoryOrRelay": false,
+      "physicalQualification": false,
+      "remoteInternetTurnServiceInstallPersistentOrSigkillQualification": false,
+      "fixtureProvisioningSeparateFromNativeServiceBudget": true
+    }
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-tt71E2/manifest.json",
+      "sha256": "de8b4747dd901ca41ca920fa1e9e2ce4179bbff9f393015d2baf1404018f4829"
+    },
+    "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+    "packages": 7,
+    "productionSourcePins": 148,
+    "packedFiles": 328,
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-Q6xaoo/receipt.json",
+      "sha256": "c7e05096a1fa1214ea33bfcf25172289fc8e32c9543496a98e08602ef968f950"
+    },
+    "consumerChecks": 10,
+    "installedHub": false
+  },
+  "currentBrowserProviders": {
+    "gamepad": {
+      "proof": {
+        "path": "/tmp/101-camera-stack-root-gamepad.json",
+        "sha256": "7926c375ea0d837d2b13c915def73572d7c20424aab793923543edff1c12f21d"
+      },
+      "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "callerTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "sourcePins": 148,
+      "installedFiles": 328,
+      "declarations": 170,
+      "nativePages": [
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "native-availability-no-pad-or-denial",
+            "inert-default-no-sources-grants-scheduler",
+            "explicit-failed-selection-and-retry",
+            "native-negative-clean-close",
+            "separately-labeled-software-fixture-typed-resource-routing",
+            "fixture-exact-provenance",
+            "fixture-revoke-neutral-sink-release-and-cleanup"
+          ],
+          "requestedGamepadPolicy": "self"
+        },
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "native-availability-no-pad-or-denial",
+            "inert-default-no-sources-grants-scheduler",
+            "explicit-failed-selection-and-retry",
+            "native-negative-clean-close",
+            "separately-labeled-software-fixture-typed-resource-routing",
+            "fixture-exact-provenance",
+            "fixture-revoke-neutral-sink-release-and-cleanup"
+          ],
+          "requestedGamepadPolicy": "deny"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "native-availability-no-pad-or-denial",
+            "inert-default-no-sources-grants-scheduler",
+            "explicit-failed-selection-and-retry",
+            "native-negative-clean-close",
+            "separately-labeled-software-fixture-typed-resource-routing",
+            "fixture-exact-provenance",
+            "fixture-revoke-neutral-sink-release-and-cleanup"
+          ],
+          "requestedGamepadPolicy": "self"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "native-availability-no-pad-or-denial",
+            "inert-default-no-sources-grants-scheduler",
+            "explicit-failed-selection-and-retry",
+            "native-negative-clean-close",
+            "separately-labeled-software-fixture-typed-resource-routing",
+            "fixture-exact-provenance",
+            "fixture-revoke-neutral-sink-release-and-cleanup"
+          ],
+          "requestedGamepadPolicy": "deny"
+        }
+      ],
+      "cleanup": {
+        "browsers": 0,
+        "contexts": 0,
+        "ownedListeners": 0,
+        "timers": 0,
+        "callbacks": 0,
+        "loopbackServers": 0,
+        "ownedDirectories": 0
+      }
+    },
+    "microphone": {
+      "proof": {
+        "path": "/tmp/101-camera-stack-root-microphone.json",
+        "sha256": "d0ce820626d3017e2232c8f183a3bdaa5c9ada0dd4fdb582471e68aef8545c5b"
+      },
+      "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "callerTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "sourcePins": 148,
+      "installedFiles": 328,
+      "declarations": 170,
+      "nativePages": [
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "recognized-policy-readback-before-any-getUserMedia-negative",
+            "native-constraint-rejection-distinct-from-policy-enforcement",
+            "actual-owned-native-audio-stream-analyser-tone",
+            "native-digital-tone-to-silence-change",
+            "separate-typed-SDK-route-and-capture-grants",
+            "unmapped-context-and-JS-provenance",
+            "revoke-releases-actual-sink-and-owned-native-cleanup"
+          ],
+          "requestedMicrophonePolicy": "self"
+        },
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "recognized-policy-readback-before-any-getUserMedia-negative",
+            "native-constraint-rejection-distinct-from-policy-enforcement",
+            "actual-owned-native-audio-stream-analyser-tone",
+            "native-digital-tone-to-silence-change",
+            "separate-typed-SDK-route-and-capture-grants",
+            "unmapped-context-and-JS-provenance",
+            "revoke-releases-actual-sink-and-owned-native-cleanup"
+          ],
+          "requestedMicrophonePolicy": "deny"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "recognized-policy-readback-before-any-getUserMedia-negative",
+            "native-constraint-rejection-distinct-from-policy-enforcement",
+            "actual-owned-native-audio-stream-analyser-tone",
+            "native-digital-tone-to-silence-change",
+            "separate-typed-SDK-route-and-capture-grants",
+            "unmapped-context-and-JS-provenance",
+            "revoke-releases-actual-sink-and-owned-native-cleanup"
+          ],
+          "requestedMicrophonePolicy": "self"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "recognized-policy-readback-before-any-getUserMedia-negative",
+            "native-constraint-rejection-distinct-from-policy-enforcement",
+            "actual-owned-native-audio-stream-analyser-tone",
+            "native-digital-tone-to-silence-change",
+            "separate-typed-SDK-route-and-capture-grants",
+            "unmapped-context-and-JS-provenance",
+            "revoke-releases-actual-sink-and-owned-native-cleanup"
+          ],
+          "requestedMicrophonePolicy": "deny"
+        }
+      ],
+      "cleanup": {
+        "browsers": 0,
+        "contexts": 0,
+        "ownedListeners": 0,
+        "timers": 0,
+        "callbacks": 0,
+        "loopbackServers": 0,
+        "ownedDirectories": 0
+      }
+    },
+    "camera": {
+      "proof": {
+        "path": "/tmp/101-camera-stack-root-camera.json",
+        "sha256": "43b2900d3615012d91fc6e7e4a5417309f271ada9c300107a331d8ac4279bfa5"
+      },
+      "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "callerTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "sourcePins": 148,
+      "installedFiles": 328,
+      "declarations": 170,
+      "nativePages": [
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "actual-policy-readback-only-zero-default-acquisitions",
+            "actual-owned-canvas-stream-decoded-RGBA8",
+            "native-red-to-blue-change-through-typed-SDK-route",
+            "separate-capture-and-resource-grants",
+            "unmapped-decoded-media-and-JS-provenance",
+            "revoke-releases-held-sink-and-owned-native-cleanup"
+          ],
+          "requestedCameraPolicy": "self"
+        },
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "actual-policy-readback-only-zero-default-acquisitions",
+            "actual-owned-canvas-stream-decoded-RGBA8",
+            "native-red-to-blue-change-through-typed-SDK-route",
+            "separate-capture-and-resource-grants",
+            "unmapped-decoded-media-and-JS-provenance",
+            "revoke-releases-held-sink-and-owned-native-cleanup"
+          ],
+          "requestedCameraPolicy": "deny"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "actual-policy-readback-only-zero-default-acquisitions",
+            "actual-owned-canvas-stream-decoded-RGBA8",
+            "native-red-to-blue-change-through-typed-SDK-route",
+            "separate-capture-and-resource-grants",
+            "unmapped-decoded-media-and-JS-provenance",
+            "revoke-releases-held-sink-and-owned-native-cleanup"
+          ],
+          "requestedCameraPolicy": "self"
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-facade-identity",
+            "inert-native-default-no-issued-selection-or-grants",
+            "actual-policy-readback-only-zero-default-acquisitions",
+            "actual-owned-canvas-stream-decoded-RGBA8",
+            "native-red-to-blue-change-through-typed-SDK-route",
+            "separate-capture-and-resource-grants",
+            "unmapped-decoded-media-and-JS-provenance",
+            "revoke-releases-held-sink-and-owned-native-cleanup"
+          ],
+          "requestedCameraPolicy": "deny"
+        }
+      ],
+      "cleanup": {
+        "browsers": 0,
+        "contexts": 0,
+        "ownedListeners": 0,
+        "timers": 0,
+        "callbacks": 0,
+        "loopbackServers": 0,
+        "ownedDirectories": 0
+      }
+    }
+  },
+  "installedIndependentReview": {
+    "path": "/tmp/101-camera-stack-installed-independent-addendum.json",
+    "sha256": "0bd767860dfdd4b779869e620a6d072c579c11d155d6864bc2e32fa5de72ce99"
+  },
+  "requiredGates": {
+    "currentCandidate": "not run after camera/stack integration; no full unit/build/rendered pass claimed",
+    "priorRedCandidatesRetained": [
+      {
+        "path": "/tmp/101-gamepad-relay-first-failed-gates.json",
+        "sha256": "64ac2d6bd5f970f907f9e747e6fa13436bcd828b251f4a72a19da1bb47e142b8"
+      },
+      {
+        "path": "/tmp/101-gamepad-relay-second-failed-gates.json",
+        "sha256": "af74a2e2d25adfa434bb31754f0f0dcd51198084ae689b3ec37b91a6da3bf882"
+      }
+    ],
+    "classification": {
+      "path": "/tmp/101-gamepad-relay-failed-gates-independent-addendum.json",
+      "sha256": "2bdeb45eabeb6a0ee6f20e673358e5cb3033d0cfc4336a1c53e71e4f10640dad"
+    },
+    "commitAllowed": false
+  },
+  "boundaries": [
+    "Owned local software only; no phones, OS pointer, user/general clipboard or physical acquisition",
+    "Gateway is trusted with plaintext; no Internet, TURN or two-network claim",
+    "O02 OpenSSL provisioning is separately bounded outside the overall 15-second native service budget",
+    "No publication, deployment, remote, account authorization, native sandbox, persistent installation or SIGKILL-cleanup claim"
+  ]
+}

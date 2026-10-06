@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedFrom": "package-lock.json",
-  "lockSha256": "fdb02fca5164f5f43d9563df29154f48f7f2aa844959ed5b6a097f2709d2c516",
+  "lockSha256": "d39d5eebc624daaaa3ef31ff8507ecfff8f6225a62c25ef61ed95b2a495afa8e",
   "packages": [
     {
       "name": "@alloc/quick-lru",

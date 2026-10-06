@@ -3,6 +3,7 @@
 import Link from "next/link";
 import QRCode from "qrcode";
 import { HostConnectionReview } from "./components/HostConnectionReview";
+import { PairingLink } from "./components/PairingLink";
 import {
   useCallback,
   useDeferredValue,
@@ -567,7 +568,6 @@ function CatalogSpacer({
 }
 
 function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: { sessionId: string; returnFocusTo: React.RefObject<HTMLButtonElement | null>; onClose: () => void; onOpenController: () => void }) {
-  const [copied, setCopied] = useState(false);
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -592,12 +592,6 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
     return () => { current = false; };
   }, [pairing]);
 
-  const copy = async () => {
-    await navigator.clipboard?.writeText(pairing?.controllerUrl ?? new URL(controllerUrl, window.location.origin).toString());
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
-  };
-
   return (
     // The dialog is also the dimmed layer, so pressing outside the panel lands on it. That is a
     // pointer shortcut; Escape and the Close button are the keyboard ways out.
@@ -613,10 +607,10 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
         <HostConnectionReview sessionId={sessionId} onReady={info => { setQrCode(""); setPairing(info); }} />
         {/* A generated data URL is intentionally rendered directly; it never leaves the local browser. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {pairing && qrCode ? <img className="pairing-qr" src={qrCode} alt={`QR code for local session ${sessionId}`} /> : <div className="pairing-qr pending"><span>{pairing ? "PREPARING QR" : "CHOOSE AN ADDRESS"}</span></div>}
+        {pairing && qrCode ? <img className="pairing-qr" src={qrCode} alt={`Code for room ${sessionId}`} /> : <div className="pairing-qr pending"><span>{pairing ? "Preparing code…" : "Choose an address"}</span></div>}
         <div className="session-code"><span>Room code</span><strong>{sessionId}</strong></div>
-        <div className="pair-link"><code>{pairing?.controllerUrl ?? controllerUrl}</code><button style={{ minHeight: 44 }} onClick={copy}>{copied ? "Copied" : "Copy"}</button></div>
-        <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>Open 101 Link ↗</a>
+        <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.ticket.expiresAt} />
+        <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>{pairing ? "Open controller" : "Open controller on this screen"} ↗</a>
       </section>
     </dialog>
   );

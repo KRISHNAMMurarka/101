@@ -202,3 +202,6 @@ export type { GatewayInventoryApprovalRequest, GatewayInventoryApproval, Gateway
 
 export { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_PROFILE, HOSTED_APPLICATION_LIMITS, HOSTED_APPLICATION_SOURCE_SHA256 } from './hosted-application.ts';
 export type { HostedApplicationOptions, HostedApplicationApprovalRequest, HostedApplicationApproval, HostedApplicationEpoch, HostedApplicationState, HostedApplicationFrame, HostedApplicationFailure, HostedApplicationResult, HostedApplication } from './hosted-application.ts';
+
+export { AUTHENTICATED_LOOPBACK_RELAY_PROFILE, AUTHENTICATED_LOOPBACK_RELAY_LIMITS, createAuthenticatedLoopbackRelay, connectAuthenticatedRelay } from './loopback-relay.ts';
+export type { RelayEnrollment, AuthenticatedLoopbackRelayOptions, RelayPairRequest, RelayApprovalRequest, RelayApproval, RelayAuthorize, RelayCredential, AuthenticatedRelayClientOptions, AuthenticatedRelayClient } from './loopback-relay.ts';

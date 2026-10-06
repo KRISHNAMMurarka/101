@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-software;exact-required-commit-gates-pending",
+  "base": "dfd057e049413babe1897908880f7777d9745416",
+  "sourceTree": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+  "sourceSha256": {
+    "docs/platform/SDK.md": "a85e8f2e0cddda95842ce79e1325f23610eae3d8a41cb5bcd434e5064c2801a9",
+    "examples/runtime-recovery/runtime-recovery.ts": "76bd6c8522309741b058a269c8e09d9c49b00706b87d57165b84995e81c3accf",
+    "tests/runtime-recovery.test.ts": "f3ae90ab5f13545075c0577f91efd0ecbcafcf1db581db340a551c6d3313ade3",
+    "examples/runtime-recovery/consumer.mjs": "afc14dcb3d005f216d1945aceba4ca88fb557c497b415e03c700217c5dde2f5c",
+    "tools/qa-runtime-recovery.mjs": "bdc590f7293baad009d9bafdf912185082408b41fcff73f61dc50f3442c1c1ed",
+    "examples/reference-apps/applications.ts": "ab479f106c1350968050b952229b10308a59e0f7b7191529880e798dc15d5dd1",
+    "tests/reference-apps.test.ts": "cfdde4b5e80fb2b3075729a7190d6efbbdad5b577d20f1ce03eb92b96f03ce05",
+    "tools/generate-sdk-reference-apps.mjs": "7b0454f8c184ac149e661699d81034b2c407cdef378a27fd55bc4c07dd711144",
+    "tools/qa-sdk-reference-apps.mjs": "471b01b940ecd813a11d7cb43a3be92e1082c7e2d46f88b8a7e4ca645376d92e"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-tt71E2/manifest.json",
+      "sha256": "de8b4747dd901ca41ca920fa1e9e2ce4179bbff9f393015d2baf1404018f4829"
+    },
+    "immutableProducerTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+    "producerPins": 148,
+    "packedFiles": 328,
+    "currentSourceByteEquivalence": true,
+    "packages": 7,
+    "installedHub": false
+  },
+  "referenceApps": {
+    "packet": {
+      "path": "/tmp/101-reference-apps-held-input-repaired-pins.json",
+      "sha256": "f8caefd4432f05c2fd9ef47f0c3ce85ac320c38a9a39792b754ca3a43d400445"
+    },
+    "originalPacket": {
+      "path": "/tmp/101-reference-apps-frozen-pins.json",
+      "sha256": "ccc639eb933c333e978267594cdbdc61f16fe8ecd34012f7fec1f5208aaaf9ff"
+    },
+    "originalFindings": {
+      "path": "/tmp/101-reference-apps-independent-review.json",
+      "sha256": "f0c571b5dc0eac21d78a5e793a1239047b8d2a47eb190677105897e86dbeea14"
+    },
+    "repairedReview": {
+      "path": "/tmp/101-reference-apps-held-input-repaired-independent-review.json",
+      "sha256": "c74e92f3db1edeb80d5841417f0094dba1d21d6da20488e17c638569396e4b04"
+    },
+    "currentProof": {
+      "path": "/tmp/101-build-wave-root-reference-apps.json",
+      "sha256": "87797f9903e93105121ab860a76f8378b969088d0e5611dafc497b04e5368913"
+    },
+    "focusedTests": 12,
+    "strictTypes": "worker strict/noUncheckedIndexedAccess0; current exact broad gate pending",
+    "projects": [
+      "pointer",
+      "sensor-dashboard",
+      "appliance-remote",
+      "media-sharing",
+      "collaborative-controls"
+    ],
+    "journeys": [
+      {
+        "application": "pointer",
+        "browser": "chromium",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "Space-Shift+Tab-other-control-release-clears-held-sink",
+          "keyboard-blur-preserves-native-captured-pointer",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "pointer",
+        "browser": "webkit",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "Space-Shift+Tab-other-control-release-clears-held-sink",
+          "keyboard-blur-preserves-native-captured-pointer",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "sensor-dashboard",
+        "browser": "chromium",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "sensor-dashboard",
+        "browser": "webkit",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "appliance-remote",
+        "browser": "chromium",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "appliance-remote",
+        "browser": "webkit",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "media-sharing",
+        "browser": "chromium",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "media-sharing",
+        "browser": "webkit",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "collaborative-controls",
+        "browser": "chromium",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "native-drag-outside-release-clears-partition",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      },
+      {
+        "application": "collaborative-controls",
+        "browser": "webkit",
+        "checks": [
+          "inert-before-two-independent-approvals",
+          "decline-grants-none",
+          "actual-selected-interactive-job",
+          "native-drag-outside-release-clears-partition",
+          "revoke-releases-current-effects",
+          "fresh-explicit-retry-or-honest-media-unsupported",
+          "native-keyboard-controls-visible-focus",
+          "closed-runtime-native-and-UI-lifetime"
+        ]
+      }
+    ],
+    "generatedFilePins": 1690,
+    "ordinaryPublicResolutionProjects": 5,
+    "readableBoundsRepair": {
+      "oldActualGeneratedReadme": {
+        "path": "/tmp/101-reference-readme-old-actual.json",
+        "sha256": "26af39e1f533f1135aab0d8d5bebad07300be74f77c3f0da51342225d07d97ba"
+      },
+      "oldRegression": {
+        "path": "/tmp/101-reference-readme-old-regression.mjs",
+        "sha256": "0bb55dd96be1e50b9fe7f91d110dc2b50d3cc9856e258a871016b0d3b906f52f"
+      },
+      "oldRed": {
+        "path": "/tmp/101-reference-readme-old-red.log",
+        "sha256": "9f11c28533960f01e7abe53ab9f193dabbf11325f209051f61feaf7c6d239376"
+      },
+      "current": "ordinary reliable queue1; collaborative queue4; actual generated instructions checked"
+    },
+    "inputRegressions": {
+      "keyboard": {
+        "path": "/tmp/101-reference-pointer-final-selector-red.err",
+        "sha256": "a0b523657cb0cf1e16f53ab05fcd2b2beb6afd2fe5303883fe4af625d54f9150"
+      },
+      "outsideRelease": {
+        "path": "/tmp/101-reference-collaborative-final-selector-red.err",
+        "sha256": "d58bc8a6a70b67617d35ff14f14fb4f404deceaecc9f95479ca3ec90accb3b4c"
+      },
+      "remainingManualCaptureLoss": {
+        "qualified": false,
+        "case": "Manual native capture release while the physical-shaped browser button remains down",
+        "proofs": [
+          "/tmp/101-reference-collaborative-native-capture-actual-loss-red.err",
+          "/tmp/101-reference-collaborative-flush-green.err",
+          "/tmp/101-reference-collaborative-native-trace.err",
+          "/tmp/101-reference-collaborative-native-delivery-trace.err"
+        ],
+        "facts": [
+          "Actual native gotpointercapture and lostpointercapture were both asserted before testing the sink.",
+          "The matching producer pointer ID was current; the driver reported contact:false and lastAdmission:true.",
+          "A100ms receiver polling assertion failed on uninstrumented runs.",
+          "A separate instrumented run delivered actual false with current DeliveryContext in both engines (Chromium source1018.9→sink1019.4; WebKit1075→1169). It uses extra trusted host clock reads and is not substituted as qualification of the final source.",
+          "The failed extra runtime.flush approach and all temporary tracing were discarded; final source is the narrow original finding repair."
+        ],
+        "decision": "Do not claim a settled cause, deterministic100ms end-to-end neutral delivery, wider core defect or completed manual-loss qualification. The final QA receipt explicitly sets manualCaptureLossQualified:false; strict probe sources remain separately preserved."
+      }
+    },
+    "cleanup": {
+      "ownedProjects": 0,
+      "negativeConsumers": 0,
+      "launchers": 0,
+      "browsers": 0,
+      "contexts": 0,
+      "defaultUserMediaOpens": 0
+    },
+    "limitations": [
+      "Actual owned software timer observations and authored software lamp model, no physical sensor or appliance qualification.",
+      "Same-page local independent approval and partition workflow, no remote people or account authentication.",
+      "Actual canvas capture/decode positive only in Chromium; WebKit missing native frame format is explicitly unsupported, never a successful media producer.",
+      "No camera, microphone, screen, physical device, OS cursor, clipboard, general native UI, remote service or network support claim.",
+      "Native media source time is the existing provider transport/capture provenance; application JavaScript projection/retrieval time is not hardware acquisition or cross-clock mapping.",
+      "Trusted same-host synchronous code, standard browser native cleanup and close promises are cooperative; no hostile host sandbox or never-settling-code isolation claim."
+    ]
+  },
+  "runtimeRecovery": {
+    "packet": {
+      "path": "/tmp/101-runtime-recovery-frozen-pins.json",
+      "sha256": "cd2e8da6d403415e6dbe0940853995abb16777cb7ea498ffe903eb8ab9b0da5a"
+    },
+    "originalReview": {
+      "path": "/tmp/101-runtime-recovery-independent-review.json",
+      "sha256": "8dd74ee16a08f512d80790afc495c07474a5705cbc03205e8c7d2419780ebba5"
+    },
+    "currentProof": {
+      "path": "/tmp/101-build-wave-root-runtime-recovery.json",
+      "sha256": "d9c9ce4a6da3d280792d0cf3da8690635e889e525ff525db0056132e8bb48826"
+    },
+    "focusedTests": 6,
+    "strictTypes": "worker strict/noUncheckedIndexedAccess0;129 source files;checkJs:false; current exact broad gate pending",
+    "actualSourceClosure": {
+      "file:///Users/km/Desktop/games/101/examples/runtime-recovery/consumer.mjs": "afc14dcb3d005f216d1945aceba4ca88fb557c497b415e03c700217c5dde2f5c",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
+      "file:///Users/km/Desktop/games/101/packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "file:///Users/km/Desktop/games/101/packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "file:///Users/km/Desktop/games/101/packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "file:///Users/km/Desktop/games/101/packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "file:///Users/km/Desktop/games/101/packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "file:///Users/km/Desktop/games/101/packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+      "file:///Users/km/Desktop/games/101/tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528",
+      "file:///Users/km/Desktop/games/101/examples/runtime-recovery/runtime-recovery.ts": "76bd6c8522309741b058a269c8e09d9c49b00706b87d57165b84995e81c3accf"
+    },
+    "paths": [
+      {
+        "path": "direct-wss",
+        "generations": 4,
+        "checks": 53,
+        "sourceClock": "recovery-source-monotonic",
+        "receiverClock": "recovery-target-monotonic",
+        "providerClock": "node-performance.now",
+        "cleanup": {
+          "nativeContexts": 0,
+          "rawWrites": 0,
+          "temporaryCredentialsRemoved": true
+        }
+      },
+      {
+        "path": "authenticated-loopback-relay",
+        "generations": 4,
+        "checks": 53,
+        "sourceClock": "recovery-source-monotonic",
+        "receiverClock": "recovery-target-monotonic",
+        "providerClock": "node-performance.now",
+        "cleanup": {
+          "nativeContexts": 0,
+          "rawWrites": 0,
+          "temporaryCredentialsRemoved": true
+        }
+      },
+      {
+        "path": "native-webrtc",
+        "generations": 4,
+        "checks": 53,
+        "sourceClock": "recovery-source-monotonic (actual runner)",
+        "receiverClock": "recovery-target-monotonic (actual runner)",
+        "providerClock": "browser-performance.now",
+        "cleanup": {
+          "peerConnections": 0,
+          "dataChannels": 0,
+          "pendingPairs": 0,
+          "ownedTimer": false
+        }
+      }
+    ],
+    "clockLabelRepair": {
+      "oldActualProof": {
+        "path": "/tmp/101-runtime-recovery-installed-green.json",
+        "sha256": "730f2fa6fec2cf8da790e915ca91252e30a2495b182f3c9d1a68e53f82ecb6bb"
+      },
+      "oldRegression": {
+        "path": "/tmp/101-runtime-recovery-clock-old-regression.mjs",
+        "sha256": "3eea3cee8cd0f7a8f922884a1ab032cd4a4517a7ee2d0ef2b523f3264c4d3862"
+      },
+      "oldRed": {
+        "path": "/tmp/101-runtime-recovery-clock-old-red.log",
+        "sha256": "a5575d7906df9d9d11b1432b764e293f36f6b9bd3fdf00eb1b52b53fadb55905"
+      },
+      "current": "wire source/receiver IDs and descriptive provider origin recorded separately"
+    },
+    "bounds": {
+      "perModuleRealmConcurrentRunner": 1,
+      "perTrialMs": 4000,
+      "perNativePathLogicalLifetimeMs": 15000,
+      "nativePathsIncludingFeaturePrefix": 4,
+      "totalLogicalNativeWindowsMs": 60000,
+      "certificateProvisioning": "separate fixed21 OpenSSL calls per Node fixture, timeout10000ms each; three fixtures including prefix",
+      "currentRoutesPerTrial": 2,
+      "registrationsPerTrial": 4,
+      "rawTargetReservationsPerTrial": 2,
+      "capturedPacketsPerPath": 2,
+      "capturedBytesPerPacket": 1024,
+      "latestOffersPerTrial": 64,
+      "reliableOffersPerTrial": 8,
+      "checksPerTrial": 32,
+      "receiptBytesPerTrial": 16384,
+      "qaReceiptBytes": 262144,
+      "socketAttemptsPerNodePath": 128,
+      "httpBrowserSockets": 16,
+      "httpRequests": 1024,
+      "settlement": "logical deadlines never release held raw Promise/native callback/host-observer reservations; actual settlement may outlive logical deadline"
+    },
+    "truth": {
+      "softwareSenderAdmissionRefusal": true,
+      "softwareHostCallbackDelay": true,
+      "currentResourceArgumentsReplay": true,
+      "outerWireReplayQualification": false,
+      "actualIpLoss": false,
+      "mediaRecoveryQualification": false,
+      "physicalInput": false,
+      "oneTrustedRtcRealm": true,
+      "twoPageIsolation": false,
+      "gatewayPlaintextTrusted": true,
+      "installedHubClaim": false,
+      "broaderF09Open": true
+    },
+    "ownedNativeContexts": 0
+  },
+  "integrationReview": {
+    "path": "/tmp/101-build-wave-independent-addendum.json",
+    "sha256": "04a56db20e0a42b290a49b2032aedb580b8e92261563a761f608f6cefde184a3"
+  },
+  "taskDisposition": {
+    "E13": "open; built and selected software-qualified; exact gates/commit pending",
+    "F09": "open; selected software host impairments and native disconnect only; full IP/media/physical matrix remains",
+    "I12": "open; manual native capture-loss100ms remains unqualified"
+  },
+  "requiredGates": {
+    "status": "not run on this later integrated candidate; prior exact full unit failures retained",
+    "prior": {
+      "path": "/tmp/101-gamepad-relay-second-failed-gates.json",
+      "sha256": "af74a2e2d25adfa434bb31754f0f0dcd51198084ae689b3ec37b91a6da3bf882"
+    },
+    "commitAllowed": false
+  },
+  "limitations": [
+    "No user device, OS cursor, camera, microphone or general clipboard access",
+    "No physical/IP impairment/media recovery/full F09 or global I12 release-safety qualification",
+    "Actual native WebRTC peers have separate identities in one owned trusted realm; no two-page/sandbox claim",
+    "Gateway plaintext trust and source Hub/coordinator modules remain explicit",
+    "Owned media-sharing format unsupported in WebKit is recovery evidence, not a decoded-media success",
+    "Exact required full gates and integration commit remain pending"
+  ]
+}

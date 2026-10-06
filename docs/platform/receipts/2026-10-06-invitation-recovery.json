@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-software-ui-scope;full-commit-gates-pending",
+  "base": "dfd057e049413babe1897908880f7777d9745416",
+  "sourceTree": "8e8b03b6f18517e6bfe376e2d215efcd37187608",
+  "sourceSha256": {
+    "app/lib/invitation-copy.ts": "da82101fd8c3cec3ee6d2f1adcb0a4f2b6475d82df3976158c86aa4ee5d429c8",
+    "app/lib/invitation-copy.test.ts": "5099bcdebd7eec91c570fd5274a33d229819b50388c7d28cd2dd4d3e7f6ccac4",
+    "app/components/PairingLink.tsx": "6d8254e53b6d6311bedc16308137d95193768d5a7f2b7f986ccbe1424d276900",
+    "app/components/HostConnectionReview.tsx": "37564e0417f3e647587815da6d0b18853fcc7a18d324ade29cc37ced69e47f7c",
+    "app/components/PreGame.tsx": "43fe4270294312daca99f4a73ef1cda04c1ccc71dd9410af9efc3b32686ac543",
+    "app/Launcher.tsx": "5a5461ecb0526f0f9b7a7aae773e490f290b7664855b41c85bf79629521cad35",
+    "app/globals.css": "38894593a8cab5530773207f33b996c7bfb288d1cb1cf66883d28140f6aa8ee6",
+    "tools/qa-invitation-copy.mjs": "dbbe605c9066b8a9495fb06498e0c7b4e7293bf86b28bb9287c92bf9c10866c6"
+  },
+  "oldActualRegression": {
+    "path": "/tmp/101-invitation-copy-old-red.log",
+    "sha256": "15191a15f692b60f1855727425de9f6cc20cbdb9bba8941751157842ea81984d"
+  },
+  "oldActualSource": {
+    "path": "/tmp/101-invitation-copy-old-snapshot.json",
+    "sha256": "d9687e7033329824490c2b04a7ca051e6f3af098e51c7a6950c5fa79e5bff754"
+  },
+  "helperRed": {
+    "path": "/tmp/101-invitation-copy-helper-red.log",
+    "sha256": "4fac93ac6231e03777607f540d036e95f2d00665629910afb09db24bbc0fb096"
+  },
+  "helperBeforeFix": {
+    "path": "/tmp/101-invitation-copy-helper-before-fix.ts",
+    "sha256": "e568d2aab7f183e579e3257fb49d8f48915c53ebd424be135fcbfc70c43d2b8f"
+  },
+  "focused": {
+    "path": "/tmp/101-invitation-copy-helper-green.log",
+    "sha256": "46dee31871e4c2697287ea8cb9b5f3af19b2bed6e25053b3585d481abf171a1f"
+  },
+  "focusedTests": 9,
+  "scopedLint": {
+    "path": "/tmp/101-invitation-copy-scoped-lint-final-qa.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scopedLintDiagnostics": 0,
+  "ui": {
+    "path": "/tmp/101-invitation-copy-ui-option-tab.json",
+    "sha256": "9f83c3225680cce1997beb677690aa52956c9e2a366e81d498101efe0ab63a79"
+  },
+  "browsers": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "checks": [
+        "initial no invitation, no copy or host activation",
+        "missing software clipboard gives selected manual-copy recovery",
+        "software native rejection is caught without raw error",
+        "throwing software native getter has recoverable manual selection",
+        "actual settled software Promise alone announces Copied",
+        "held software write reserves slot across replacement; old settlement restores no Copied",
+        "actual React unmount fences late software completion; fresh view recovers",
+        "native Tab button focus and visible outline",
+        "actual browser expiry timer withdraws code/link and offers explicit Connect recovery",
+        "explicit fresh issued software invitation and copy recover after expiry",
+        "320px reflow in both themes",
+        "actual React expiry timers retired and no page errors"
+      ],
+      "keyboardNavigation": "Tab",
+      "clipboardIsSoftwareDouble": true,
+      "hostIsSoftwareDouble": true,
+      "clipboardNativeWrites": 0,
+      "physicalPhonePairingQualified": false
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "checks": [
+        "initial no invitation, no copy or host activation",
+        "missing software clipboard gives selected manual-copy recovery",
+        "software native rejection is caught without raw error",
+        "throwing software native getter has recoverable manual selection",
+        "actual settled software Promise alone announces Copied",
+        "held software write reserves slot across replacement; old settlement restores no Copied",
+        "actual React unmount fences late software completion; fresh view recovers",
+        "native Alt+Tab button focus and visible outline",
+        "actual browser expiry timer withdraws code/link and offers explicit Connect recovery",
+        "explicit fresh issued software invitation and copy recover after expiry",
+        "320px reflow in both themes",
+        "actual React expiry timers retired and no page errors"
+      ],
+      "keyboardNavigation": "Alt+Tab",
+      "clipboardIsSoftwareDouble": true,
+      "hostIsSoftwareDouble": true,
+      "clipboardNativeWrites": 0,
+      "physicalPhonePairingQualified": false
+    }
+  ],
+  "compiler": {
+    "node": "v24.14.0",
+    "vite": "8.0.16",
+    "typescript": "5.9.3",
+    "dependencySha256": {
+      "/Users/km/Desktop/games/101/node_modules/react/cjs/react-jsx-runtime.production.js": "1e46f15002696985e80c61d47aaa30dabb03c954270a690f5f7dfbbacfa9002b",
+      "/Users/km/Desktop/games/101/node_modules/react/jsx-runtime.js": "b392951a77d0a2e6a6bd017e49d768481ae5b63c4109c6c31f622cf7b2433edc",
+      "/Users/km/Desktop/games/101/node_modules/react/cjs/react.production.js": "d348b80a78c8ea0bd02b1990c7b7b514f5c276f9e74fee6e3976297585385961",
+      "/Users/km/Desktop/games/101/node_modules/react/index.js": "60caffdecbdc5db3bc4ec4e83df9488345ccb271d07533b9210bf5750918d97e",
+      "/Users/km/Desktop/games/101/node_modules/scheduler/cjs/scheduler.production.js": "679adff761d31e9426604f80c0e99be44a3e6f4c6834b0218ecf0312a67c171f",
+      "/Users/km/Desktop/games/101/node_modules/scheduler/index.js": "145965504d60007bc25486ab930b0367867dcd5d579ccd343c148d69349a7cfb",
+      "/Users/km/Desktop/games/101/node_modules/react-dom/cjs/react-dom.production.js": "291e0682e8b69643e8e213b6bc13849527fdd97800fef587d5be7b4a8f6a58ca",
+      "/Users/km/Desktop/games/101/node_modules/react-dom/index.js": "ba1a3e33489f868371561777607e3ee5091df0f7ea3f1a10f789d6b86e4c1505",
+      "/Users/km/Desktop/games/101/node_modules/react-dom/cjs/react-dom-client.production.js": "6cf4932e0c20a4572ae395035ca2e512a42d7d49c1a659fa73d6197069c28df0",
+      "/Users/km/Desktop/games/101/node_modules/react-dom/client.js": "00e348ab3d6bc2eef908345d0bc4e008c95bcfecec060dfda5c4967953761396",
+      "/Users/km/Desktop/games/101/app/lib/invitation-copy.ts": "da82101fd8c3cec3ee6d2f1adcb0a4f2b6475d82df3976158c86aa4ee5d429c8",
+      "/Users/km/Desktop/games/101/app/components/PairingLink.tsx": "6d8254e53b6d6311bedc16308137d95193768d5a7f2b7f986ccbe1424d276900",
+      "/Users/km/Desktop/games/101/app/lib/host-endpoint-review.ts": "4d350852261695d06372ccae3898d970238bbcb87286145d06e4da32d962c8b8",
+      "/Users/km/Desktop/games/101/app/components/HostConnectionReview.tsx": "37564e0417f3e647587815da6d0b18853fcc7a18d324ade29cc37ced69e47f7c"
+    },
+    "virtualInputs": [
+      "\u0000rolldown/runtime.js",
+      "\u0000owned-host-port",
+      "\u0000invitation-ui-fixture.tsx"
+    ],
+    "bundleSha256": "2b0f2670c598f3a1f52fde401b9111cff23d42d93bcd39c39553d1c9e638b408",
+    "fixtureSha256": "bc47a2cc241d2273e010b42768b8937c2cbc86cfcf5c90e0e59633d52959cb82",
+    "hostPortSha256": "bba90ae3c352e2c546902db0d6a86808aa3f6620840e561bdd9c98c1ec5d869c"
+  },
+  "limits": {
+    "pendingWritePerMountedComponent": 1,
+    "heldNativeWriteReservation": "through actual Promise settlement; logical withdrawal/unmount cannot cancel a started native write",
+    "ownedExpiryTimerPerHostReview": 1,
+    "automaticReconnects": 0,
+    "automaticClipboardAccess": 0
+  },
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "servers": 0,
+    "ownedUiTimers": 0
+  },
+  "retainedFixtureFailures": [
+    {
+      "path": "/tmp/101-invitation-copy-ui-first.err",
+      "sha256": "1fb5b34aacb0555b6fc19aa3da815316229ffda8eb8835a3c8c243821493a4ef"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-second.err",
+      "sha256": "3ffe40e944f504937364f3e8572dff57485dbef05893d77d7feeed7089232880"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-third.err",
+      "sha256": "f5d04a2ffd143cf285247a671f5b611c3bc2b13d8b5a68b4f87b478689e69a83"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-fourth.err",
+      "sha256": "53eb87fff3ea677fb3c35d752ed74aaa52605771036917f160ad09bfbba4ae65"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-held-diagnostic.err",
+      "sha256": "5689acbf1ad9a9f92b193ccf9ce6c8177e05e6c38f4e2bd65a86042239c4cd6e"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-utf8.err",
+      "sha256": "37c73c26c822c1902a71bec56ed1e737e3df1c01f64479f5ce164db595ba2e01"
+    },
+    {
+      "path": "/tmp/101-invitation-copy-ui-keyboard-diagnostic.err",
+      "sha256": "1bf1951b2d383f277d8f2a39b5e31d3a202d7d785cf4d1e92d343aa5ed3635f5"
+    }
+  ],
+  "fixtureCorrections": [
+    "absent esbuild import replaced with installed Vite8.0.16/TypeScript5.9.3",
+    "actual absolute Vite virtual-entry and single-format array output respected",
+    "HTML charset=utf-8 corrected actual mojibake diagnostic; no production copy label/test deadline changed",
+    "native WebKit Option+Tab tested after actual default Tab body-focus observation; no false standard-Tab claim"
+  ],
+  "independentReview": {
+    "path": "/tmp/101-invitation-copy-independent-review.json",
+    "sha256": "2556bccb392aa5f0153ceba59adb2f52331490bd9cef21c8b768ee283dfd4600"
+  },
+  "taskDisposition": {
+    "U05": "open; selected setup wording and manual-copy controls built",
+    "U10": "open; selected unavailable/denied/pending/replaced/unmounted/expired/fresh-recovery cases pass",
+    "D02": "open; selected invitation presentation/recovery only"
+  },
+  "requiredGates": {
+    "status": "not run on this later candidate; prior exact full unit gates remain red and retained",
+    "prior": {
+      "path": "/tmp/101-gamepad-relay-second-failed-gates.json",
+      "sha256": "af74a2e2d25adfa434bb31754f0f0dcd51198084ae689b3ec37b91a6da3bf882"
+    },
+    "commitAllowed": false
+  },
+  "limitations": [
+    "No native/general clipboard accessed; native clipboard permission/write qualification remains open",
+    "Host method results are explicit software fixtures; no pairing protocol/native connection/hardware or whole U05/U10 claim",
+    "PreGame/Launcher bindings are source-pinned; composed fixture is not a completed production-route walkthrough",
+    "Chromium Tab; actual WebKit default excludes buttons, native Option+Tab verified. No OS/Safari preference changes.",
+    "No full U05/U10/D02 product matrix, real permission prompt, screen-reader, native/physical device or global clipboard concurrency qualification"
+  ]
+}

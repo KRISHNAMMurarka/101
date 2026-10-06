@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 14,
+  "revision": 18,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2549,6 +2549,467 @@
         "No accepted release capacity promotion",
         "Latest coalescing may discard intermediate state; issued cancelled effects can be uncertain",
         "No network/media/physical/capture-to-output/RSS/thermal/battery/SLO/all-platform guarantee"
+      ]
+    },
+    {
+      "id": "browser-gamepad-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Owned Chromium/WebKit headless pages",
+        "runtimeVersion": "Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned local software only",
+        "transport": "Local public SDK routes",
+        "connector": "selected-browser-gamepad",
+        "connectorVersion": "0.1.0; exact source/installed pins in receipt",
+        "profiles": [
+          "app:gamepad/1"
+        ],
+        "resources": [
+          "N02 partial selected Gamepad provider;19 focused tests+4 installed Chromium/WebKit pages: actual native empty/Chromium policy-denied observations and separately labeled input fixtures. No physical controls, vibration, hardware capture clock or complete N02."
+        ],
+        "unavailable": [
+          "physical-gamepad-positive",
+          "user-device-access",
+          "OS-dialog",
+          "user-UI",
+          "OS-pointer",
+          "haptics",
+          "trigger-or-hat-inference",
+          "hardware-capture-freshness",
+          "clock-mapping",
+          "browser-identity-authentication",
+          "cross-process-or-remote",
+          "account-authorization",
+          "general-hardware-support"
+        ]
+      },
+      "qualificationTasks": [
+        "N02"
+      ],
+      "evidence": {
+        "implementation": [
+          "n02-selected-browser-gamepad-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "contract": [
+          "n02-selected-browser-gamepad-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "runtime": [
+          "n02-selected-browser-gamepad-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "physical-gamepad-positive",
+        "user-device-access",
+        "OS-dialog",
+        "user-UI",
+        "OS-pointer",
+        "haptics",
+        "trigger-or-hat-inference",
+        "hardware-capture-freshness",
+        "clock-mapping",
+        "browser-identity-authentication",
+        "cross-process-or-remote",
+        "account-authorization",
+        "general-hardware-support"
+      ]
+    },
+    {
+      "id": "browser-microphone-envelope-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Owned Chromium/WebKit headless pages",
+        "runtimeVersion": "Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned local software only",
+        "transport": "Local public SDK routes",
+        "connector": "selected-microphone-envelope",
+        "connectorVersion": "0.1.0; exact source/installed pins in receipt",
+        "profiles": [
+          "media:microphone-envelope/1"
+        ],
+        "resources": [
+          "N02 partial exact selected microphone-envelope provider;21 focused tests+4 actual installed owned oscillator/stream/analyser tone-to-silence SDK grant/release/cleanup pages. Known denied policy READBACK plus actual OverconstrainedError constraint rejection remains distinct from enforcement; WebKit policy unknown causes0default opens. No microphone hardware, acoustic calibration, speaker, PCM/capture-clock or full media/browser qualification."
+        ],
+        "unavailable": [
+          "Physical microphone and native permission UI/enforcement remain unqualified",
+          "No physical acquisition timestamp/freshness/clock mapping, PCM/playback, acoustic calibration or user-device access",
+          "Chromium exact nonexistent ID rejects OverconstrainedError as constraints; denied policy readback does not prove enforcement; WebKit policy unknown causes zero default opens",
+          "Trusted owned software fixture and ordinary installed SDK only; no cross-realm, native host sandbox or whole N02/V01 claim",
+          "Required exact full commit gates remain pending; selected runtime evidence alone does not close the checklist"
+        ]
+      },
+      "qualificationTasks": [
+        "N02"
+      ],
+      "evidence": {
+        "implementation": [
+          "n02-selected-microphone-envelope-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "contract": [
+          "n02-selected-microphone-envelope-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "runtime": [
+          "n02-selected-microphone-envelope-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Physical microphone and native permission UI/enforcement remain unqualified",
+        "No physical acquisition timestamp/freshness/clock mapping, PCM/playback, acoustic calibration or user-device access",
+        "Chromium exact nonexistent ID rejects OverconstrainedError as constraints; denied policy readback does not prove enforcement; WebKit policy unknown causes zero default opens",
+        "Trusted owned software fixture and ordinary installed SDK only; no cross-realm, native host sandbox or whole N02/V01 claim",
+        "Required exact full commit gates remain pending; selected runtime evidence alone does not close the checklist"
+      ]
+    },
+    {
+      "id": "authenticated-loopback-gateway-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js with native ws",
+        "runtimeVersion": "24.14.0 / ws8.21.0",
+        "formFactor": "Owned local software only",
+        "transport": "Native TLS1.3/mTLS two-leg gateway and direct WSS",
+        "connector": "authenticated-loopback-gateway/1",
+        "connectorVersion": "0.1.0; exact source/installed pins in receipt",
+        "profiles": [
+          "authenticated-loopback-gateway/1"
+        ],
+        "resources": [
+          "Built selected software scope, pending exact full commit gates and commit: authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open."
+        ],
+        "unavailable": [
+          "Trusted gateway terminates both TLS legs; no end-to-end payload privacy or OS sandbox",
+          "No Internet/TURN/two-network/physical or packed hub artifact",
+          "Accepted service capacity remains zero"
+        ]
+      },
+      "qualificationTasks": [
+        "S07"
+      ],
+      "evidence": {
+        "implementation": [
+          "s07-authenticated-loopback-gateway-2026-10-06"
+        ],
+        "contract": [
+          "s07-authenticated-loopback-gateway-2026-10-06"
+        ],
+        "runtime": [
+          "s07-authenticated-loopback-gateway-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Trusted gateway terminates both TLS legs; no end-to-end payload privacy or OS sandbox",
+        "No Internet/TURN/two-network/physical or packed hub artifact",
+        "Accepted service capacity remains zero",
+        "Required exact full commit gates and committed candidate pending"
+      ]
+    },
+    {
+      "id": "browser-camera-raster-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Owned Chromium/WebKit headless pages",
+        "runtimeVersion": "Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned local software only",
+        "transport": "Local public SDK raster routes",
+        "connector": "selected-browser-camera",
+        "connectorVersion": "0.1.0; exact source/installed pins in receipt",
+        "profiles": [
+          "media:camera-rgba8/1"
+        ],
+        "resources": [
+          "Selected media:camera-rgba8/1 provider built: exact issued video selection and capture approval, native decoded frame callback to bounded 8x8 RGBA8, independent SDK source/sink grants and actual lifecycle retirement. 29 focused tests plus four fresh normal-installed Chromium/WebKit pages use owned Canvas.captureStream decoded red-to-blue pixels. Physical acquisition, permission UI/enforcement, capture-clock mapping and whole N02/D03/V01 acceptance remain open."
+        ],
+        "unavailable": [
+          "Physical camera and native permission UI/enforcement",
+          "Acquisition clock/freshness/clock mapping",
+          "Full N02/D03/V01 browser/media matrix",
+          "Required exact full commit gates and committed candidate"
+        ]
+      },
+      "qualificationTasks": [
+        "N02",
+        "V01"
+      ],
+      "evidence": {
+        "implementation": [
+          "n02-browser-camera-raster-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "contract": [
+          "n02-browser-camera-raster-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "runtime": [
+          "n02-browser-camera-raster-2026-10-06",
+          "n02-current-installed-browser-resources-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Physical camera and native permission UI/enforcement",
+        "Acquisition clock/freshness/clock mapping",
+        "Full N02/D03/V01 browser/media matrix",
+        "Required exact full commit gates and committed candidate"
+      ]
+    },
+    {
+      "id": "disposable-local-stack-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js with native ws and OpenSSL fixture provisioning",
+        "runtimeVersion": "24.14.0 / ws8.21.0",
+        "formFactor": "Owned local software only",
+        "transport": "Simultaneously live loopback TLS1.3/mTLS coordinator/directory and WSS gateway",
+        "connector": "disposable-coordinator-directory-gateway/1",
+        "connectorVersion": "0.1.0; exact source/installed pins in receipt",
+        "profiles": [
+          "disposable-coordinator-directory-gateway/1"
+        ],
+        "resources": [
+          "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit."
+        ],
+        "unavailable": [
+          "Packed hub artifact",
+          "Internet/TURN/two-network/physical service",
+          "Persistent install, OS sandbox, people/account authorization",
+          "SIGKILL cleanup",
+          "Required exact full commit gates and committed candidate"
+        ]
+      },
+      "qualificationTasks": [
+        "O02"
+      ],
+      "evidence": {
+        "implementation": [
+          "o02-disposable-local-stack-2026-10-06"
+        ],
+        "contract": [
+          "o02-disposable-local-stack-2026-10-06"
+        ],
+        "runtime": [
+          "o02-disposable-local-stack-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Packed hub artifact",
+        "Internet/TURN/two-network/physical service",
+        "Persistent install, OS sandbox, people/account authorization",
+        "SIGKILL cleanup",
+        "Required exact full commit gates and committed candidate"
+      ]
+    },
+    {
+      "id": "invitation-copy-expiry-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Owned React/DOM Chromium and WebKit pages",
+        "runtimeVersion": "Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned 320px local UI software fixture",
+        "transport": "Owned loopback HTML; software clipboard/host responses",
+        "connector": "invitation-copy-expiry",
+        "connectorVersion": "Exact source8 and compiler14 byte pins in receipt",
+        "profiles": [
+          "invitation-copy-expiry/1"
+        ],
+        "resources": [
+          "Shared PreGame/Launcher invitation copying no longer falsely announces success when access is absent or denied; manual selection, per-component pending reservation, late completion fencing and explicit expiry/Connect recovery are built. Nine plain-TS regressions and two owned React/DOM pages (12 checks each) pass with software clipboard/host ports. Native clipboard, actual production-route walkthrough, physical pairing and whole task matrix remain unqualified; exact commit gates pending."
+        ],
+        "unavailable": [
+          "Native/general clipboard permission/write qualification",
+          "Production-route and physical pairing walkthrough",
+          "Full U05/U10/D02 and accessibility/support matrix",
+          "WebKit standard-Tab button navigation; actual Option+Tab only",
+          "Exact green full commit gates and committed candidate"
+        ]
+      },
+      "qualificationTasks": [
+        "U10"
+      ],
+      "evidence": {
+        "implementation": [
+          "u10-invitation-copy-expiry-2026-10-06"
+        ],
+        "contract": [
+          "u10-invitation-copy-expiry-2026-10-06"
+        ],
+        "runtime": [
+          "u10-invitation-copy-expiry-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "No native/general clipboard accessed; native clipboard permission/write qualification remains open",
+        "Host method results are explicit software fixtures; no pairing protocol/native connection/hardware or whole U05/U10 claim",
+        "PreGame/Launcher bindings are source-pinned; composed fixture is not a completed production-route walkthrough"
+      ]
+    },
+    {
+      "id": "independent-reference-apps-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node external compilation + owned Chromium/WebKit",
+        "runtimeVersion": "Node24.14.0 / Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned software fixture",
+        "transport": "Independent application runtime;owned loopback assets",
+        "connector": "independent-reference-apps",
+        "connectorVersion": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+        "profiles": [
+          "independent-reference-apps/1"
+        ],
+        "resources": [
+          "Five complete external projects use ordinary installed public SDK packages and readable local instructions. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and two software collaborative controls pass76 checks/10 Chromium-WebKit journeys. Reproduced keyboard-focus and native outside-release defects are repaired; strict manual capture-loss100ms remains unqualified. Exact broad gates and commit pending."
+        ],
+        "unavailable": [
+          "Physical sensor/appliance/camera/OS cursor",
+          "Remote participant authentication",
+          "Strict manual capture-loss100ms and full I12/U matrix",
+          "WebKit decoded media format in this selected fixture",
+          "Exact green required gates and committed candidate"
+        ]
+      },
+      "qualificationTasks": [
+        "E13"
+      ],
+      "evidence": {
+        "implementation": [
+          "e13-independent-reference-apps-2026-10-06"
+        ],
+        "contract": [
+          "e13-independent-reference-apps-2026-10-06"
+        ],
+        "runtime": [
+          "e13-independent-reference-apps-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Physical sensor/appliance/camera/OS cursor",
+        "Remote participant authentication",
+        "Strict manual capture-loss100ms and full I12/U matrix",
+        "WebKit decoded media format in this selected fixture",
+        "Exact green required gates and committed candidate"
+      ]
+    },
+    {
+      "id": "software-resource-recovery-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node mTLS WebSocket/source Hub + owned Chromium WebRTC",
+        "runtimeVersion": "Node24.14.0 / Chromium149.0.7827.55 / WebKit26.5",
+        "formFactor": "Owned software fixture",
+        "transport": "Direct mTLS WebSocket / trusted authenticated gateway / native WebRTC,iceServers[]",
+        "connector": "software-resource-recovery",
+        "connectorVersion": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+        "profiles": [
+          "software-resource-recovery/1"
+        ],
+        "resources": [
+          "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Full F09 matrix and exact broad gates/commit remain open."
+        ],
+        "unavailable": [
+          "Actual IP packet loss/congestion or media recovery",
+          "Physical input/endpoints/two-network sessions",
+          "Outer wire replay and full S09 qualification",
+          "Two-page isolation and installed Hub",
+          "Total native-memory/walltime guarantee",
+          "Exact green required gates and committed candidate"
+        ]
+      },
+      "qualificationTasks": [
+        "F09"
+      ],
+      "evidence": {
+        "implementation": [
+          "f09-software-resource-recovery-2026-10-06"
+        ],
+        "contract": [
+          "f09-software-resource-recovery-2026-10-06"
+        ],
+        "runtime": [
+          "f09-software-resource-recovery-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Actual IP packet loss/congestion or media recovery",
+        "Physical input/endpoints/two-network sessions",
+        "Outer wire replay and full S09 qualification",
+        "Two-page isolation and installed Hub",
+        "Total native-memory/walltime guarantee",
+        "Exact green required gates and committed candidate"
       ]
     }
   ]

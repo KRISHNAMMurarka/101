@@ -149,16 +149,19 @@ availability, physical-device or Internet capacity measurements.
 | Private rendezvous | 16 sessions total, 4 sessions per principal, 8 peers per session, 16 peers per principal; session TTL at most 600,000 ms | Persistent sessions or automatic authority restoration |
 | Coordinator HTTP | 401,024 bytes per request/response; 400,000 signaling characters; request timeout 5,000 ms and header timeout 3,000 ms | Unlimited signaling, arbitrary URL/proxy forwarding or a payload archive |
 | Private directory | 32 provisioned catalog resources; 16 visible resources and 8 members per session; 8 capability selections per resource; 8,192-byte requests, 65,536-byte responses, 60,000-ms directory TTL | Visibility as a resource-operation grant or unrestricted device scanning |
-| Gateway/TURN relay | Disabled: zero relay sessions, bytes and allocated credentials; relay configuration fails closed | Direct/relay fallback, two-network service and relay bandwidth/latency claims |
+| Relay in `fixed-coordinator-directory/1` operator configuration | Disabled: zero relay sessions, bytes and allocated credentials; relay configuration fails closed | Combined coordinator/directory/relay harness and Internet/TURN hosting |
+| Separate `authenticated-loopback-gateway/1` | 8 enrollments, 4 pairs, 12 native connections, 16 lifetime allocation attempts, 1 pending allocation; 15,000-ms credential/service lifetime; 3,000-ms pair wait/handshake; 8,192-byte messages, 4 queued messages/leg, 1 unsettled raw write/leg, 16,384 buffered bytes/leg, 262,144 traffic bytes/pair | End-to-end payload encryption, operator sandbox, public enrollment, two physical networks and relay throughput/latency qualification |
 | Explicit identity replacement | 16 lifecycle attempts, one pending operation; replacement startup requests teardown after 5,000 ms; actual native teardown retains its reservation until settlement | OS key storage, in-place live migration, persistent account recovery or fleet rotation |
 
 These values come from `HTTPS_COORDINATOR_LIMITS`, `PRIVATE_DIRECTORY_LIMITS`
-and `OPERATOR_IDENTITY_LIFECYCLE_LIMITS`. The [local startup/harness
+`OPERATOR_IDENTITY_LIFECYCLE_LIMITS` and the separately selected
+`AUTHENTICATED_LOOPBACK_RELAY_LIMITS`. The [local startup/harness
 receipt](receipts/2026-10-06-operator-filesystem-artifact.json) records genuine
 mTLS startup, directory access, quota rejection and teardown. Configuration
-selects the fixed ceilings; it cannot increase them. Future relay or storage
-providers must establish their own explicit admission, traffic, expiry, failure
-and cleanup budgets before becoming enabled options.
+selects the fixed ceilings; it cannot increase them. The separate gateway has its own explicit admission, traffic, expiry, failure
+and native-settlement budgets. It does not enable relay in the existing operator
+configuration. Future providers must establish those budgets before becoming
+enabled options.
 
 The operator is trusted to provision the server/CA/client identities, enrollment
 snapshot, exact origin list and private catalog. The coordinator terminates mTLS

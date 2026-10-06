@@ -40,3 +40,12 @@ export type { InvitationEndpoint, InvitationReviewHandle, InvitationConnectionHa
 
 export { createBrowserChooserController, BROWSER_CHOOSER_LIMITS } from './browser-chooser.ts';
 export type { BrowserChooserKind, BrowserHidFilter, BrowserBluetoothFilter, BrowserSerialFilter, BrowserChooserDeclaration, BrowserChooserScope, BrowserChooserResource, BrowserChooserRequest, BrowserChooserCaptureRequest, BrowserChooserCaptureGrant, BrowserChooserContext, BrowserChooserNativeSelection, BrowserChooserCaptureLease, BrowserChooserCaptureContext, BrowserChooserAdapterBinding, BrowserChooserEnvironment, BrowserChooserOptions, BrowserChooserSelection, BrowserChooserReason, BrowserChooserResult, BrowserChooserOption, BrowserChooserSnapshot, BrowserChooserController } from './browser-chooser.ts';
+
+export { createBrowserGamepadProvider, BROWSER_GAMEPAD_LIMITS } from './browser-gamepad.ts';
+export type { BrowserGamepadOptions, BrowserGamepadEnvironment, BrowserGamepadInventory, BrowserGamepadSelection, BrowserGamepadCaptureRequest, BrowserGamepadCaptureGrant, BrowserGamepadActivation, BrowserGamepadFailure, BrowserGamepadResult, BrowserGamepadProvider } from './browser-gamepad.ts';
+
+export { createBrowserMicrophoneProvider, BROWSER_MICROPHONE_LIMITS } from './browser-microphone.ts';
+export type { BrowserMicrophoneOptions, BrowserMicrophoneEnvironment, BrowserMicrophoneSelection, BrowserMicrophoneInventory, BrowserMicrophoneCaptureRequest, BrowserMicrophoneCaptureGrant, BrowserMicrophoneActivation, BrowserMicrophoneFailure, BrowserMicrophoneResult, BrowserMicrophoneProvider } from './browser-microphone.ts';
+
+export { createBrowserCameraProvider, BROWSER_CAMERA_LIMITS } from './browser-camera.ts';
+export type { BrowserCameraOptions, BrowserCameraEnvironment, BrowserCameraSelection, BrowserCameraInventory, BrowserCameraCaptureRequest, BrowserCameraCaptureGrant, BrowserCameraActivation, BrowserCameraFailure, BrowserCameraResult, BrowserCameraProvider, BrowserCameraFrame } from './browser-camera.ts';

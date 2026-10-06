@@ -527,6 +527,7 @@ canvas:focus-visible, .gravity-stage:focus-visible { outline-offset: -3px; }
 .session-code i, .session-readout i { padding: 5px 7px; background: var(--acid); color: var(--ink); font: normal 850 11px var(--font-mono); letter-spacing: .1em; }
 .pair-link { margin: 10px 0; display: flex; border: 1px solid var(--line); }
 .pair-link code { overflow: hidden; flex: 1; padding: 14px; color: var(--faint); font: 11px var(--font-mono); text-overflow: ellipsis; white-space: nowrap; }
+.pair-link input { flex: 1; min-width: 0; width: 0; padding: 14px; border: 0; border-radius: 0; background: transparent; color: var(--paper); font: 11px var(--font-mono); }
 .pair-link button { width: 78px; border: 0; border-left: 1px solid var(--line); background: var(--panel); font-size: 11px; font-weight: 750; cursor: pointer; }
 .full-button { width: 100%; }
 .pairing-error, .pairing-ready { margin: 11px 0; padding: 10px 12px; border: 1px solid var(--line-strong); color: var(--muted); font: 650 11px/1.5 var(--font-mono); }

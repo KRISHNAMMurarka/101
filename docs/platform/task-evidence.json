@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 87,
+  "revision": 92,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8842,6 +8842,290 @@
       "supportRows": [
         "subscribed-runtime-load-tiers-2026-10-06"
       ]
+    },
+    {
+      "id": "n02-selected-browser-gamepad-2026-10-06",
+      "revision": "afc912ef81423eafdfd95aae3cdd284f9963b653",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-browser-gateway.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; exact Chromium149.0.7827.55/WebKit26.5 and ws8.21.0 readback; owned local software only",
+      "reproduction": "node tools/qa-browser-gamepad.mjs --installed /Users/km/Desktop/games/101/release/sdk-VxqMZq/manifest.json /tmp/101-sdk-consumer-FqmLhb afc912ef81423eafdfd95aae3cdd284f9963b653",
+      "scope": "N02 partial selected Gamepad provider;19 focused tests+4 installed Chromium/WebKit pages: actual native empty/Chromium policy-denied observations and separately labeled input fixtures. No physical controls, vibration, hardware capture clock or complete N02.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI required"
+      ],
+      "supportRows": [
+        "browser-gamepad-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "n02-selected-microphone-envelope-2026-10-06",
+      "revision": "afc912ef81423eafdfd95aae3cdd284f9963b653",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-browser-gateway.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; exact Chromium149.0.7827.55/WebKit26.5 and ws8.21.0 readback; owned local software only",
+      "reproduction": "node tools/qa-browser-microphone.mjs --installed /Users/km/Desktop/games/101/release/sdk-VxqMZq/manifest.json /tmp/101-sdk-consumer-FqmLhb f29aad1893a1604e11a03d30d27627e2989613b8",
+      "scope": "N02 partial exact selected microphone-envelope provider;21 focused tests+4 actual installed owned oscillator/stream/analyser tone-to-silence SDK grant/release/cleanup pages. Known denied policy READBACK plus actual OverconstrainedError constraint rejection remains distinct from enforcement; WebKit policy unknown causes0default opens. No microphone hardware, acoustic calibration, speaker, PCM/capture-clock or full media/browser qualification.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI required"
+      ],
+      "supportRows": [
+        "browser-microphone-envelope-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "s07-authenticated-loopback-gateway-2026-10-06",
+      "revision": "afc912ef81423eafdfd95aae3cdd284f9963b653",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-browser-gateway.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; exact Chromium149.0.7827.55/WebKit26.5 and ws8.21.0 readback; owned local software only",
+      "reproduction": "node tools/qa-loopback-relay.mjs --sdk-root /tmp/101-sdk-consumer-FqmLhb",
+      "scope": "partial pending exact candidate commit gates: selected selected authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI required"
+      ],
+      "supportRows": [
+        "authenticated-loopback-gateway-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "browser-gateway-required-gates-failed-2026-10-06",
+      "revision": "ff29e5948c5e69943406c8d63484ca70fa496e82",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S07",
+        "N15",
+        "N16",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-browser-gateway.json"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0; exact source afc912ef81423eafdfd95aae3cdd284f9963b653; owned local private-native resources only",
+      "reproduction": "Required exact candidate commands in retained gate receipt; npm run test:unit with bounded transparent private-child event diagnostics; original unchanged full gate also retained.",
+      "scope": "Exact integration commit gates remain red: types and lint pass;1731/1738 unit pass,1private AppKit readiness failure and6unchanged scoped SSH assertion failures. Build/rendered not run. New Gamepad19/microphone21/relay14 focused tests and actual selected local proofs remain separately scoped passing evidence; no checklist/support closure.",
+      "failure": "Private AppKit valid ready observed3715.785ms after spawn exceeds fixed2500ms; eventual native cleanup cleared/released true and exit0. Six private SSH assertions fail before their expected result/metadata boundary; their precise event cause remains unestablished. No source, assertion, timeout or discovery relaxation; both failed exact receipts/logs retained.",
+      "equipment": [
+        "Owned private named pasteboard and disposable loopback SSH native helpers; no user/general clipboard, phone, UI or remote"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "n02-browser-camera-raster-2026-10-06",
+      "revision": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "V01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-camera-stack.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TypeScript5.9.3; owned headless Chromium149.0.7827.55/WebKit26.5 and ws8.21.0; immutable source and current installed closure",
+      "reproduction": "node tools/qa-browser-camera.mjs --installed release/sdk-tt71E2/manifest.json /tmp/101-sdk-consumer-Q6xaoo 18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "scope": "Selected media:camera-rgba8/1 provider built: exact issued video selection and capture approval, native decoded frame callback to bounded 8x8 RGBA8, independent SDK source/sink grants and actual lifecycle retirement. 29 focused tests plus four fresh normal-installed Chromium/WebKit pages use owned Canvas.captureStream decoded red-to-blue pixels. Physical acquisition, permission UI/enforcement, capture-clock mapping and whole N02/D03/V01 acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI"
+      ],
+      "supportRows": [
+        "browser-camera-raster-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "o02-disposable-local-stack-2026-10-06",
+      "revision": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-camera-stack.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TypeScript5.9.3; owned headless Chromium149.0.7827.55/WebKit26.5 and ws8.21.0; immutable source and current installed closure",
+      "reproduction": "node tools/qa-disposable-stack.mjs --sdk-root /tmp/101-sdk-consumer-Q6xaoo",
+      "scope": "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI"
+      ],
+      "supportRows": [
+        "disposable-local-stack-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "n02-current-installed-browser-resources-2026-10-06",
+      "revision": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-camera-stack.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TypeScript5.9.3; owned headless Chromium149.0.7827.55/WebKit26.5 and ws8.21.0; immutable source and current installed closure",
+      "reproduction": "node tools/qa-browser-{gamepad,microphone,camera}.mjs --installed release/sdk-tt71E2/manifest.json /tmp/101-sdk-consumer-Q6xaoo 18f549eb1f057669a2e2e676d2b8fd9e84b53d6b (each separately); exact commands and byte pins in linked receipt",
+      "scope": "Fresh camera-inclusive seven-package SDK has 148 immutable production source pins and 328 closed packed/installed files; ten clean-consumer checks pass. Gamepad, microphone and camera each pass four actual owned Chromium/WebKit pages through ordinary installed public facades with 170 declaration pins. Hardware and full browser/media support remain unqualified; no checklist closure.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable loopback/native software resources; no physical device or user UI"
+      ],
+      "supportRows": [
+        "browser-gamepad-software-2026-10-06",
+        "browser-microphone-envelope-software-2026-10-06",
+        "browser-camera-raster-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "u10-invitation-copy-expiry-2026-10-06",
+      "revision": "8e8b03b6f18517e6bfe376e2d215efcd37187608",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U05",
+        "U10",
+        "D02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-invitation-recovery.json"
+      ],
+      "environment": "macOS26.5.2; Node24.14.0/Vite8.0.16/TypeScript5.9.3; Chromium149.0.7827.55/WebKit26.5; owned loopback React/DOM with explicit software-only clipboard/host ports",
+      "reproduction": "node --experimental-strip-types --test app/lib/invitation-copy.test.ts; node tools/qa-invitation-copy.mjs",
+      "scope": "Shared PreGame/Launcher invitation copying no longer falsely announces success when access is absent or denied; manual selection, per-component pending reservation, late completion fencing and explicit expiry/Connect recovery are built. Nine plain-TS regressions and two owned React/DOM pages (12 checks each) pass with software clipboard/host ports. Native clipboard, actual production-route walkthrough, physical pairing and whole task matrix remain unqualified; exact commit gates pending.",
+      "failure": null,
+      "equipment": [
+        "Owned headless pages only; no user/general clipboard, OS pointer, user UI, native host request or physical phone"
+      ],
+      "supportRows": [
+        "invitation-copy-expiry-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "e13-independent-reference-apps-2026-10-06",
+      "revision": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-reference-recovery.json"
+      ],
+      "environment": "macOS26.5.2;Node24.14.0/TypeScript5.9.3;owned Chromium149.0.7827.55/WebKit26.5;immutable ordinary installed seven-package SDK18f",
+      "reproduction": "node tools/qa-sdk-reference-apps.mjs --installed MANIFEST CLEAN_CONSUMER",
+      "scope": "Five complete external projects use ordinary installed public SDK packages and readable local instructions. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and two software collaborative controls pass76 checks/10 Chromium-WebKit journeys. Reproduced keyboard-focus and native outside-release defects are repaired; strict manual capture-loss100ms remains unqualified. Exact broad gates and commit pending.",
+      "failure": null,
+      "equipment": [
+        "Owned software fixtures/headless contexts/private loopback native peers only; no user hardware"
+      ],
+      "supportRows": [
+        "independent-reference-apps-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "f09-software-resource-recovery-2026-10-06",
+      "revision": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "F09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-reference-recovery.json"
+      ],
+      "environment": "macOS26.5.2;Node24.14.0/TypeScript5.9.3;owned Chromium149.0.7827.55/WebKit26.5;immutable ordinary installed seven-package SDK18f",
+      "reproduction": "node tools/qa-runtime-recovery.mjs --sdk-root CLEAN_CONSUMER",
+      "scope": "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Full F09 matrix and exact broad gates/commit remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned software fixtures/headless contexts/private loopback native peers only; no user hardware"
+      ],
+      "supportRows": [
+        "software-resource-recovery-2026-10-06"
+      ]
     }
   ],
   "tasks": [
@@ -9419,7 +9703,8 @@
       "id": "D02",
       "records": [
         "pending-D02",
-        "d02-invitation-connection-partial-2026-10-06"
+        "d02-invitation-connection-partial-2026-10-06",
+        "u10-invitation-copy-expiry-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -9631,7 +9916,9 @@
     {
       "id": "S07",
       "records": [
-        "pending-S07"
+        "pending-S07",
+        "s07-authenticated-loopback-gateway-2026-10-06",
+        "browser-gateway-required-gates-failed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -9807,7 +10094,11 @@
       "id": "N02",
       "records": [
         "pending-N02",
-        "pointer-provider-2026-10-02"
+        "pointer-provider-2026-10-02",
+        "n02-selected-browser-gamepad-2026-10-06",
+        "n02-selected-microphone-envelope-2026-10-06",
+        "n02-browser-camera-raster-2026-10-06",
+        "n02-current-installed-browser-resources-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10009,7 +10300,8 @@
       "id": "N15",
       "records": [
         "pending-N15",
-        "n15-built-partial-2026-10-06"
+        "n15-built-partial-2026-10-06",
+        "browser-gateway-required-gates-failed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10027,7 +10319,8 @@
         "pending-N16",
         "n16-owned-filesystem-partial-2026-10-06",
         "n16-built-partial-2026-10-06",
-        "n16-installed-clipboard-readiness-failed-2026-10-06"
+        "n16-installed-clipboard-readiness-failed-2026-10-06",
+        "browser-gateway-required-gates-failed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10213,7 +10506,8 @@
       "id": "V01",
       "records": [
         "pending-V01",
-        "v01-media-haptics-scheduling-partial-2026-10-06"
+        "v01-media-haptics-scheduling-partial-2026-10-06",
+        "n02-browser-camera-raster-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11295,7 +11589,8 @@
     {
       "id": "E13",
       "records": [
-        "pending-E13"
+        "pending-E13",
+        "e13-independent-reference-apps-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11388,7 +11683,8 @@
     {
       "id": "U05",
       "records": [
-        "pending-U05"
+        "pending-U05",
+        "u10-invitation-copy-expiry-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11463,7 +11759,8 @@
     {
       "id": "U10",
       "records": [
-        "pending-U10"
+        "pending-U10",
+        "u10-invitation-copy-expiry-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11616,7 +11913,8 @@
     {
       "id": "F09",
       "records": [
-        "pending-F09"
+        "pending-F09",
+        "f09-software-resource-recovery-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [
@@ -11782,7 +12080,8 @@
     {
       "id": "Q13",
       "records": [
-        "pending-Q13"
+        "pending-Q13",
+        "browser-gateway-required-gates-failed-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [
@@ -12222,7 +12521,8 @@
       "id": "O02",
       "records": [
         "pending-O02",
-        "o02-disposable-local-partial-2026-10-06"
+        "o02-disposable-local-partial-2026-10-06",
+        "o02-disposable-local-stack-2026-10-06"
       ],
       "dependencies": [
         "S01"

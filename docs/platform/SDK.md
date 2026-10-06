@@ -633,6 +633,42 @@ This is an independent local Node consumer and package-integrity example.
 Third-party publisher identity, isolated execution, physical devices and
 cross-target performance remain separate qualification work.
 
+## Five independent reference applications
+
+`node tools/generate-sdk-reference-apps.mjs IMMUTABLE_MANIFEST CLEAN_CONSUMER`
+generates five complete projects in a fresh owned temporary directory. Each
+contains readable instructions, TypeScript source, strictly compiled ES2022
+output, the exact seven installed SDK packages, a closed asset inventory and a
+Node loopback launcher. No install, remote service, game engine or monorepo
+runtime import is required. Run `node serve.mjs` inside the selected project;
+stop its launcher explicitly when finished.
+
+The pointer application accepts native pad/key input and moves its own cursor.
+The sensor dashboard charts the actual lateness of its browser timer. The
+appliance remote invokes an authored software lamp and separately observes its
+state. Media sharing captures and decodes the application's own drawing, with
+truthful unavailable-format recovery. Collaborative controls use two local
+producers with independently approved partitions and explicit request, decline,
+cancel and transfer. These software producers establish no physical sensor,
+appliance, user-camera, remote-person identity or OS cursor qualification.
+
+Source and destination approval are separate; each activation lasts at most
+thirty seconds. Stop, expiry, withdrawal, hide, blur and teardown retire owned
+input/routes/native output, and retry requires fresh approvals. A held provider
+Promise retains its reservation through actual settlement. Ordinary application
+delivery uses one reliable queue entry; collaborative ownership routes allow
+four. The generated instructions report these limits per profile. Pointer key
+release after focus traversal and captured pointer release outside a button have
+actual browser regressions. Strict manual capture-loss delivery within 100 ms
+remains unqualified; the broader release-safety and UI matrices remain open.
+
+Run `node tools/qa-sdk-reference-apps.mjs --installed IMMUTABLE_MANIFEST
+CLEAN_CONSUMER` for fresh generated external projects and owned Chromium/WebKit
+journeys. Append `--application pointer` or `--application collaborative-controls`
+for the affected journeys. The check verifies immutable SDK inputs, ordinary
+public ESM resolution, generated file bytes, explicit software/native-media
+provenance and final owned-context cleanup.
+
 ## Scalar measurement processors
 
 `createScalarCalibrationProcessor()`, `createScalarConversionProcessor()` and
@@ -1094,6 +1130,43 @@ immutable seven-package SDK, verifies all source and installed file hashes, and
 executes ordinary public JavaScript imports without loader aliases. The named
 macOS/Node software tiers are local qualification; accepted release capacity,
 other platforms, media, networks and physical devices require separate evidence.
+
+## Selected software transport recovery
+
+`examples/runtime-recovery/runtime-recovery.ts` runs the fixed
+`software-resource-recovery/1` workload through actual issued endpoint peers.
+Both resource owners separately approve the pointer position/contact routes.
+The reviewed fixture supplies native close and deliberate sender-admission or
+callback impairments; it supplies no resource authority. Copied peer metadata,
+wrong epochs, retired native owner signals and incomplete fixture methods fail
+before taking ownership of the supplied pair.
+
+The caller exercises direct mTLS WebSocket, the authenticated local gateway and
+native WebRTC. Each path uses four fresh generations for owner withdrawal,
+grant/lease expiry, native disconnect and explicitly approved recovery. Reliable
+contact edges reach the actual SDK sink; a held sink Promise settles after
+withdrawal without restoring output. Re-sending genuine resource arguments tests
+receiver sequence/epoch rejection. It does not qualify outer transport replay,
+IP packet loss, media recovery or physical input.
+
+Each trial allows two routes, four registrations, two raw deliveries, sixty-four
+latest offers, eight reliable offers, two captured packets of at most 1 KiB,
+thirty-two checks and a 16 KiB receipt. One module-realm runner reservation remains
+held through actual raw/native and asynchronous host-observer settlement. Trial
+admission lasts four seconds; each native path has a fifteen-second logical
+lifetime. Native credential provisioning has separately bounded OpenSSL calls;
+logical cancellation does not establish an overall wall-time or native-memory
+ceiling. Source/receiver wire clock IDs are `recovery-source-monotonic` and
+`recovery-target-monotonic`; their provider origin is recorded separately.
+
+Run `node tools/qa-runtime-recovery.mjs --source`, or
+`node tools/qa-runtime-recovery.mjs --sdk-root CLEAN_CONSUMER` after the ordinary
+offline SDK consumer check. The installed mode verifies the exact immutable SDK
+manifest and package bytes, resolves public ESM exports before source hooks, and
+uses explicitly identified source Hub/coordinator/gateway modules. WebRTC uses
+two native peers and distinct ephemeral identities in one owned trusted browser
+realm with no ICE servers. The gateway sees application plaintext. Installed Hub,
+two-page isolation, internet/physical paths and the wider F09 matrix remain open.
 
 ## Local device simulator
 
@@ -1557,7 +1630,7 @@ does not establish signing, installation, support or publication approval. See
 
 Both lanes negotiate `ordered-bounded/1` over one socket. Defaults permit 69,632 payload bytes, 131,072 native buffered bytes for reliable admission and 16,384 for latest admission; hard ceilings are 131,072/262,144/65,536 respectively. Admission includes the 39-byte frame and UTF-8 payload bytes, with reliable headroom and no additional raw queue. Negotiation is limited to eight controls, 4 KiB per control and five seconds. Endpoint, subprotocol, both actual hello messages, selected limits, connection tag and participants enter the separate `101.endpoint-wss-transcript/1` signed proof. WebRTC retains its original SDP/fingerprint transcript.
 
-Local admission cannot recall bytes already handed to a socket. The resource binder keeps source-clock mapping, maximum age, operation deadlines, latest replacement, reliable replay protection and silence release. Late data cannot restore a retired route. [Transport and view evidence](receipts/2026-10-06-transports-views.json) records the actual packed Chromium/Node path in both directions, a 700 ms stalled receiver, saturation, loss release and replacement enrollment. The browser uses an isolated localhost certificate exception; independent Node checks verify CA and hostname success/failure. Relay, two-network and physical-phone acceptance remain open.
+Local admission cannot recall bytes already handed to a socket. The resource binder keeps source-clock mapping, maximum age, operation deadlines, latest replacement, reliable replay protection and silence release. Late data cannot restore a retired route. [Transport and view evidence](receipts/2026-10-06-transports-views.json) records the actual packed Chromium/Node path in both directions, a 700 ms stalled receiver, saturation, loss release and replacement enrollment. The browser uses an isolated localhost certificate exception; independent Node checks verify CA and hostname success/failure. The selected local authenticated gateway path is described below. Two-network and physical-phone acceptance remain open.
 
 ## Local HTTPS coordinator
 
@@ -1568,6 +1641,61 @@ Authenticated creation, invitation join, host rotation, private offer/answer, re
 The finite ceilings include 64 enrollments, sixteen origins/sessions, four sessions per principal, eight peers per session, sixteen peers per principal, 32 total sockets, 32 requests per principal per second, four pending caller requests, 401,024 request/response bytes and ten-minute sessions. `createCoordinatorFetcher` verifies CA/hostname, permits only its configured origin/endpoint, rejects redirects and closes its owned agent/requests. `stop` destroys accepted sockets and ephemeral authority; stopped coordinators cannot restart. Credentials are host supplied and never emitted by the public example or receipt.
 
 `examples/coordinator/https-coordinator.ts` is the real provisioned Node caller. `node --experimental-strip-types tools/qa-https-coordinator.mjs` exercises disposable local certificates and the normal public exports. Its generated offer/answer proves private signaling, without claiming a WebRTC/media session. Browser client certificates, accounts, enrollment/key lifecycle, persistent directories, relay and phone/two-network qualification remain separate.
+
+## Authenticated local relay
+
+`@101/hub-server` exports `createAuthenticatedLoopbackRelay`,
+`connectAuthenticatedRelay`, `AUTHENTICATED_LOOPBACK_RELAY_PROFILE` and
+`AUTHENTICATED_LOOPBACK_RELAY_LIMITS`. The selected
+`authenticated-loopback-gateway/1` profile binds a provisioned Node gateway to
+`127.0.0.1` on an ephemeral port. It requires native TLS 1.3/mTLS, exact HTTPS
+origin, current certificates and unique certificate/principal/device/endpoint-key
+enrollments. The client validates the CA, host and exact gateway certificate
+before sending its bearer, then proves the pinned gateway endpoint key through
+the existing signed WSS transcript.
+
+Creation validates inert configuration. `start()` opens the owned listener;
+`issuePair(request, authorize)` requests independent current owner approvals
+for the source and receiver. Each approval binds its exact frozen request,
+principal, role, application/session, epoch, certificate pins, gateway endpoint,
+purpose and expiry. Two separate random 256-bit credentials bind those fields
+and are consumed once. A gateway credential authorizes this connection only;
+source subscription and sink writing need separate public SDK resource grants.
+
+Connect both roles concurrently with `connectAuthenticatedRelay`. A client is
+ready only after a bounded authenticated gateway acknowledgment binds the actual
+leg transcript to the pair, role, epoch and application/session. The selected
+path receipt records the endpoint, gateway certificate/key pins, transcript and
+`plaintextGateway: true`. Each leg terminates at the trusted gateway; its
+operator can inspect or modify the forwarded resource payload. This profile
+provides no end-to-end payload encryption or operator sandbox.
+
+The fixed ceilings are eight enrollments, four pairs, twelve native connections,
+sixteen lifetime allocation attempts and one pending allocation. Credentials and
+service lifetime are limited to fifteen seconds; pairing and handshake each have
+a three-second bound. Per leg, messages are at most 8,192 bytes, queues hold at
+most four messages, one raw write may be unsettled and total buffered admission
+is at most 16,384 bytes. Pair traffic is at most 262,144 bytes. These admission
+ceilings are not throughput or network-latency guarantees. One stalled pair
+cannot consume another pair's queue or restore retired authority.
+
+`revokePair()` and `stop()` retire authority immediately; socket and raw-write
+reservations persist until their native completion. Already issued writes may
+have an uncertain effect and cannot be recalled. Replacement needs a fresh
+instance, gateway identity, pair credentials and resource approvals. There is no
+automatic downgrade, scanning, redirect, query-token forwarding or reconnect.
+
+`examples/coordinator/loopback-relay.ts` exercises typed resource delivery and
+independent denial/release through the public exports.
+`node tools/qa-loopback-relay.mjs --source` uses disposable local certificates,
+actual native gateway legs and a separately selected direct WSS path for
+comparison. `--sdk-root CLEAN_CONSUMER` uses the seven normally installed SDK
+packages while retaining source-bound hub, pairing, protocol and input APIs;
+the hub is not a packed SDK package. Both modes remove their owned software
+fixtures. Internet/TURN hosting, account enrollment, two physical networks,
+phones and relay performance qualification remain open. The existing
+`fixed-coordinator-directory/1` operator configuration still disables relay;
+a combined operator harness is separate O02 work.
 
 ## Independent application views
 
@@ -1936,6 +2064,105 @@ availability and permission boundaries without presenting a chooser. Physical
 selection, permission dialogs, disappearance and camera/audio adapter execution
 remain unqualified; D03 stays open.
 
+## Selected browser microphone envelopes
+
+`createBrowserMicrophoneProvider` and `BROWSER_MICROPHONE_LIMITS` are public
+`@101/device-web` and facade exports. Construction is inert. `inspect()` returns
+opaque current handles for at most eight observed audio inputs, omitting empty,
+`default` and `communications` IDs. `start(handle, { purpose })` requires an exact
+current owner/application/session capture approval with the same frozen request,
+an intrinsic abort signal and an absolute expiry of at most thirty seconds.
+It requests only that native device ID; browser/OS consent remains independent.
+If the browser conceals device IDs before permission, inventory stays empty;
+this selected profile does not bootstrap access through generic default capture.
+
+The provider validates a single live audio track and the returned native device
+ID. An owned AudioContext, stream source and fixed 256-sample analyser publish a
+typed `{ rms, peak, sampleCount, sampleRateHz }` envelope at an admission ceiling
+of 20 Hz. No source connects to the speaker destination. This is dimensionless
+digital amplitude, with no acoustic calibration, raw PCM export or audio playback.
+Capture approval supplies no route permission: source subscription and sink
+writing require independent current SDK resource grants.
+
+SDK timestamps describe JavaScript analyser retrieval in `runtime.clockDomain`.
+The AudioContext position and generation remain separate provenance with
+`captureTimeKnown: false` and `clockMappingEstablished: false`; they do not
+establish microphone acquisition time or cross-device synchronization.
+
+At most one native inspection/open/resume/cleanup may be unsettled. Selection
+and capture last at most thirty seconds; logical opening is bounded to five
+seconds, with sixty-four lifetime attempts, six hundred polls and one latest
+256-sample buffer. Blur, hide, page exit, device change, track end/mute, owner or
+capture revocation, expiry and invalid clock retire the source and release its
+sink. Retry needs fresh inspection, capture approval and resource grants.
+`close()` awaits actual native settlement; an unresolvable native promise can
+keep it pending after logical cancellation. Trusted factory/removal failures do
+not establish native cleanup or a host sandbox.
+
+`examples/browser-resources/microphone.ts` is the public caller.
+`tools/qa-browser-microphone.mjs --source`, or
+`--installed MANIFEST CLEAN_CONSUMER CALLER_TREE`, distinguishes native policy
+readback from an explicitly owned oscillator/stream/analyser fixture. Unknown
+policy remains inert; a native denial probe requires recognized denied policy.
+The owned digital producer supplies no physical microphone or acoustic evidence.
+Actual browser outcomes must be read from the exact receipt. Camera providers,
+audio output, physical permission/loss, media tracks and full N02/V01 remain open.
+
+## Selected browser gamepad resources
+
+`createBrowserGamepadProvider` is an inert browser provider exported by
+`@101/device-web` and `@101/connect`. `inspect()` returns the actual observed
+slot, axis count and button count; it does not choose a device. Call
+`select(index)` for an opaque handle bound to that controller, observed
+connection generation and exact inventory. Native reconnect, reindexing,
+inventory change and stop invalidate the handle. This is browser observation,
+not physical device authentication.
+
+`start(selection, { purpose })` asks `authorizeCapture` for the exact request
+object, an intrinsic `AbortSignal` and an absolute expiry at most thirty seconds
+away. The request binds owner, application, session, purpose, index and declared
+resources. Capture permission and each SDK source subscription/sink write
+permission are independent. Returned source handles require normal explicit
+routes; selecting a pad never starts a game or grants control of an output.
+
+The provider declares only observed normalized axes and numbered button edges.
+It reuses `createGamepadDetailProcessor` with zero deadzone and no inferred
+trigger, hat, touched-state, mapping or haptic capability. Button pressure
+accompanies pressed-state transitions; continuous analog button sampling is
+absent. Observation timestamps use the caller's JavaScript polling clock, which
+must match `runtime.clockDomain`. Original `Gamepad.timestamp` remains
+last-update provenance with `captureTimeKnown: false` and
+`clockMappingEstablished: false`; polling does not establish hardware capture
+freshness.
+
+Blur, hide, page exit, disconnect, revoke, expiry, invalid clocks and stop retire
+the selected sources and cancel owned listeners, animation work and expiry
+timers. Unregistering sources releases separately authorized held sink effects;
+the provider does not invent a native neutral sample. Retry needs fresh explicit
+selection, capture consent and SDK route grants. Bounds are eight slots,
+sixteen axes, thirty-two buttons, sixty-four controller attempts, 1,800 polls
+per activation, thirty-three samples per poll and at most one animation request
+plus one expiry timer. The declared sixty-per-second ceiling is not a measured
+hardware delivery guarantee. Injected `environment` functions are synchronous
+trusted host code for separately labeled software fixtures.
+
+`examples/browser-resources/gamepad.ts` supplies a standalone public API caller
+with explicit capture and route approvals. `tools/qa-browser-gamepad.mjs`
+checks owned Chromium and WebKit pages without opening a device dialog. Actual
+empty/denied native inventories and injected positive logic fixtures have
+separate evidence. Chromium's policy-denied result is observed; an empty
+WebKit inventory does not establish policy enforcement. Physical positive
+input, hardware loss/permission behavior and remaining browser providers stay
+unqualified; N02 remains open.
+
+Run `node tools/qa-browser-gamepad.mjs --installed MANIFEST CLEAN_CONSUMER
+CALLER_TREE` after `tools/qa-sdk-consumer.mjs` passes for that manifest. This mode
+compiles only the example against installed declarations, checks exact source,
+tarball and installed-file hashes, and serves the ordinary installed JavaScript
+to the owned browser pages. `--source` is a separate public-source check and
+does not qualify packed bytes. Neither mode counts injected fixture input as
+physical gamepad evidence.
+
 ## Scoped macOS LocalOnly discovery
 
 `createNativeDiscoveryController` implements `macos-local-only-dns-sd/1`.
@@ -2028,7 +2255,7 @@ earlier retirement. A `removed` event confirms listener teardown and removal of
 the newly owned credentials directory. The command accepts no user credentials,
 paths or remote endpoint. It preserves unrelated files. Synchronous credential
 generation precedes the listener lifetime; force killing the process has no
-cleanup guarantee. The relay dependency remains unavailable, so O02 stays open.
+cleanup guarantee. This coordinator/directory harness does not start the separately selected authenticated gateway; the combined dependency harness remains O02 work.
 
 ## Scoped disposable filesystem resources
 
@@ -2156,6 +2383,83 @@ while retaining the actual child reservation until close. Reconnect provisions
 fresh host identity and fresh approvals. The installed ordinary public SDK
 caller verifies the selected metadata profile; broader terminal operations,
 remote hosts, other platforms and the full N15 qualification remain open.
+
+## Selected browser camera raster
+
+`createBrowserCameraProvider` is an inert public browser provider. `inspect()`
+issues opaque choices for exact, nonempty video-input IDs; empty inventory can
+mean the browser has concealed IDs before permission. It does not acquire a
+default camera to discover an ID. A choice expires after thirty seconds and
+cannot be transferred to a different provider or inventory generation.
+
+`start(choice, { purpose })` requires a same-request capture approval bound to
+the owner, application, session, purpose, exact native ID and generation. The
+approval contains an intrinsic AbortSignal and an absolute deadline of at most
+thirty seconds. Native acquisition requests that exact video input with no
+audio. Independent SDK source-subscription and sink-write approval remains
+necessary before routing pixels.
+
+The `camera-frame` resource uses `media:camera-rgba8/1`: `{ format: 'rgba8',
+width: 8, height: 8, rows }`, with eight rows of thirty-two integer channels.
+Each copied raster contains 256 pixel bytes. An owned Canvas2D scales the full
+decoded video into this fixed raster; this profile provides no crop, camera
+controls, encoded video, orientation or colour-calibration contract. Native
+video is limited to 1,280 × 720 pixels. Decoded frames require
+`requestVideoFrameCallback`; no timer invents a decoded-frame observation.
+JavaScript retrieval time, native media position and presented-frame count are
+separate provenance. Physical capture time, freshness and clock mapping remain
+unqualified.
+
+The provider bounds eight choices from thirty-two inventory records,
+sixty-four attempts, one active source or unsettled native setup, a five-second
+logical open, thirty-second capture, 300 samples at a ceiling of ten per second,
+600 issued frame callbacks, one pending callback and one expiry timer. These
+are admission limits, not measured camera performance. Stop, owner revocation,
+loss, mute, hide, blur and expiry release the SDK source and held destination.
+Late acquisition/play and native frame work retain their reservations until
+actual settlement. An unreturned frame token or failed cooperative factory
+cleanup retains a truthful failure or pending reservation.
+
+`examples/browser-resources/camera.ts` composes the public provider and grants.
+Its explicit owned-canvas fixture produces actual native stream and decoded
+pixels; it does not qualify a physical camera. The browser QA default path
+performs availability/policy readback with zero native camera opens. Physical
+selection, permission enforcement, camera controls and complete N02/D03/V01
+qualification remain open.
+
+## Disposable coordinator, directory and gateway stack
+
+`node tools/disposable-stack.mjs --exercise` creates, exercises and removes a
+new local stack. `--serve` keeps that owned stack available for its remaining
+native service budget; SIGINT/SIGTERM requests teardown. Both modes accept no
+endpoint, credential, filesystem path or live configuration. The source example
+exports `runDisposableStack({ mode, signal, onEvent })`; it is not a packed Hub
+distribution.
+
+`disposable-coordinator-directory-gateway/1` composes the existing mTLS HTTPS
+coordinator and private directory with the separate authenticated WSS gateway.
+The existing operator configuration still disables relay. Both listeners run
+concurrently during the exercise. Directory visibility, gateway admission,
+source subscription and destination write are separate approvals. The exercise
+checks denials, four typed software effects, withdrawal and fresh owner/endpoint
+identity, epoch and resource grants across at most two generations. It reuses
+the newly owned TLS fixture certificates; this is not certificate rotation.
+The trusted gateway can see plaintext.
+
+Only a fresh private directory and its fixed generated keys are used: directory
+mode 0700 and eleven key files mode 0600 before any bind. Native service ownership
+has a total fifteen-second budget from the first bind attempt. Existing bounded
+synchronous OpenSSL provisioning is separate from that budget. The harness
+bounds four pending/live relay clients, four sequential pairs per generation,
+128 owned native socket attempts, thirty-two checks and a 16 KiB receipt.
+
+Cancellation fences new work. Cleanup waits for actual component/client socket
+close and issued write callbacks before removing only the new keys and releasing
+the run reservation. A held observer cannot delay native retirement; its actual
+settlement still retains the invocation reservation. The QA reads key modes,
+checks former listener ports, and verifies an unrelated sentinel is untouched.
+SIGKILL, host loss, remote deployment, physical endpoints, persistent accounts
+and an installed Hub remain outside this software example.
 
 ## Explicit browser connection task
 

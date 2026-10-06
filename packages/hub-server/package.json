@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
+    "@101/connect": "0.1.0",
     "@101/device-model": "0.1.0",
     "@101/pairing": "0.1.0",
-    "@101/protocol": "0.1.0"
+    "@101/protocol": "0.1.0",
+    "ws": "8.21.0"
   },
   "exports": "./src/index.ts"
 }

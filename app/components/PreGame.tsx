@@ -2,6 +2,7 @@
 
 import QRCode from "qrcode";
 import { HostConnectionReview } from "./HostConnectionReview";
+import { PairingLink } from "./PairingLink";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -210,7 +211,6 @@ export default function PreGame({
 function PairingBlock({ sessionId }: { sessionId: string | null }) {
   const [pairing, setPairing] = useState<BrowserPairingInfo>();
   const [qrCode, setQrCode] = useState("");
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let current = true;
@@ -218,15 +218,6 @@ function PairingBlock({ sessionId }: { sessionId: string | null }) {
       .then(image => { if (current) setQrCode(image); }).catch(() => { if (current) setQrCode(""); });
     return () => { current = false; };
   }, [pairing]);
-
-  const url = pairing?.controllerUrl ?? (sessionId ? `/controller?session=${sessionId}` : "");
-
-  const copy = async () => {
-    if (!url) return;
-    await navigator.clipboard?.writeText(new URL(url, window.location.origin).toString());
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1400);
-  };
 
   return (
     <section className="pre-game-pairing">
@@ -247,10 +238,7 @@ function PairingBlock({ sessionId }: { sessionId: string | null }) {
       </div>
 
       <div className="session-code"><span>Room code</span><strong>{sessionId ?? "······"}</strong></div>
-      <div className="pair-link">
-        <code>{url || "preparing…"}</code>
-        <button style={{ minHeight: 44 }} onClick={copy} disabled={!url}>{copied ? "Copied" : "Copy"}</button>
-      </div>
+      <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.ticket.expiresAt} />
     </section>
   );
 }

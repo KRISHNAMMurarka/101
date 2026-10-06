@@ -14,19 +14,20 @@ export function HostConnectionReview({ sessionId, onReady }: { sessionId: string
   const [phoneEndpoint, setPhoneEndpoint] = useState("");
   const [phase, setPhase] = useState<"review" | "checking" | "checked" | "connecting" | "ready" | "failed">("review");
   const [message, setMessage] = useState("");
+  const [expiresAt, setExpiresAt] = useState<number>();
   useEffect(() => { ready.current = onReady; }, [onReady]);
   useEffect(() => {
     const hints = readBrowserHubCandidates();
     // Browser storage and URL hints are discovered after hydration; they do not initiate requests.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCandidates(hints); setAddress(hints[0]?.endpoint ?? "");
-    setReview(undefined); setPhase("review"); setMessage(""); ready.current(undefined);
+    setReview(undefined); setPhase("review"); setMessage(""); ready.current(undefined); setExpiresAt(undefined);
     return () => { generation.current += 1; pending.current?.abort(); };
   }, [sessionId]);
 
   const reset = (next = address) => {
     generation.current += 1; pending.current?.abort(); pending.current = undefined;
-    setAddress(next); setReview(undefined); setPhoneEndpoint(""); setPhase("review"); setMessage(""); ready.current(undefined);
+    setAddress(next); setReview(undefined); setPhoneEndpoint(""); setPhase("review"); setMessage(""); ready.current(undefined); setExpiresAt(undefined);
   };
   const check = async () => {
     reset();
@@ -48,13 +49,24 @@ export function HostConnectionReview({ sessionId, onReady }: { sessionId: string
     try {
       const info = await getBrowserHostTransport(sessionId).preparePairing(review.endpoint, { phoneEndpoint, signal: controller.signal });
       if (revision !== generation.current || controller.signal.aborted) return;
-      setPhase("ready"); setMessage("Connected. The code below uses the address you selected."); ready.current(info);
+      setPhase("ready"); setExpiresAt(info.ticket.expiresAt); setMessage("Connected. The code below uses the address you selected."); ready.current(info);
     } catch {
       if (revision !== generation.current || controller.signal.aborted) return;
       setPhase("failed"); setMessage("Couldn’t connect. Check the address again and try once more.");
     } finally { if (revision === generation.current) pending.current = undefined; }
   };
   const busy = phase === "checking" || phase === "connecting";
+  useEffect(() => {
+    if (phase !== 'ready' || expiresAt === undefined) return;
+    const revision = generation.current;
+    const expiry = setTimeout(() => {
+      if (revision !== generation.current) return;
+      generation.current++;
+      ready.current(undefined); setExpiresAt(undefined); setPhase('checked');
+      setMessage('This code has expired. Connect again to make a new one.');
+    }, Math.max(0, expiresAt - Date.now()));
+    return () => clearTimeout(expiry);
+  }, [phase, expiresAt]);
   useEffect(() => {
     if (!busy && focusAfterCancel.current) { focusAfterCancel.current = false; field.current?.focus(); }
   }, [busy]);

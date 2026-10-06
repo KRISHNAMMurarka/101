@@ -1,0 +1,1011 @@
+{
+  "schemaVersion": 1,
+  "result": "pass-selected-local-runtime-scopes;required-commit-gates-fail",
+  "date": "2026-10-06",
+  "base": "dfd057e049413babe1897908880f7777d9745416",
+  "sourceTree": "afc912ef81423eafdfd95aae3cdd284f9963b653",
+  "sourceSha256": {
+    "THIRD_PARTY_LICENSES.json": "98551c6d56d4fd8ed2bd557baa78cc4f34716c889957dfb5a81966b74b878f23",
+    "docs/platform/SDK.md": "2d83dbbdfa1ca315f03826fed95dc00cb92eaf49c4567f10d1129e3d62a07653",
+    "package-lock.json": "d39d5eebc624daaaa3ef31ff8507ecfff8f6225a62c25ef61ed95b2a495afa8e",
+    "packages/hub-server/package.json": "674cac05cf63db3467fefb27ac23496b4cb84342ee6bf8fae46da412d865c05b",
+    "packages/device-web/src/browser-gamepad.ts": "5a37dbda32710578540299b428e22cf25eaebe5f7a94d0fcb86c8304b9ee44cf",
+    "packages/device-web/src/browser-gamepad.test.ts": "35a5c5ade857b9045e0856cd134e420f8db66a088e6e6ab5bc047664728968ab",
+    "examples/browser-resources/gamepad.ts": "d461bd8ac0b9873736c355f08c2f6ec42d9a010f9543ca397a418adf507d0c0e",
+    "tools/qa-browser-gamepad.mjs": "3497b9724649ee82296e4b8dffeae7f86ac63dbe7f216f565335b33c483a2de1",
+    "packages/device-web/src/index.ts": "5005a5b0a0fbabd30748fcdf505e1520ab6ed9b62aaadfd7531ed8b03fcbc716",
+    "packages/device-web/src/browser-microphone.ts": "434b51e569ffb86edb2a6145608c4eb6480e2ce5ab37d3e0f07e29a1537ef639",
+    "packages/device-web/src/browser-microphone.test.ts": "4e573d20b8b16c9912ed6855e14ed93dd33722243fea37083552e189c7fe14c8",
+    "examples/browser-resources/microphone.ts": "8307623076902bf6211f2aeed05f23007d7ef5baf716862eba6fb122878724ff",
+    "tools/qa-browser-microphone.mjs": "14cb5cc44ce427353ff5d47ac6be8485fd77d5c5118be74d36e317a2baaded3c",
+    "docs/platform/RELEASE-CONTRACT.md": "fe02e502979f80628144ad7b2df582bbc126d8c4a122968eb0c089a0bb9cc86e",
+    "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+    "packages/hub-server/src/loopback-relay.test.ts": "c27692356fe20ee85b6d8bf742584af6846fb85612db72fcc6f895c7b9b720ef",
+    "examples/coordinator/loopback-relay.ts": "dcabb43d80aa8283cc149fe70c150993185520cad3e0891d1faa7ffc891bb8a0",
+    "tools/qa-loopback-relay.mjs": "f1d70d31924250d1d985bb8ced63e821fb9062a1aef9159102b28587f9b9bc9b",
+    "packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe"
+  },
+  "taskDisposition": {
+    "S07": "partial pending exact candidate commit gates: selected selected authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open.",
+    "N02": "partial: selected browser Gamepad and exact microphone-envelope providers built and qualified against ordinary installed seven-package SDK on owned Chromium149/WebKit26.5 pages. Gamepad default hardware inventory is empty; Chromium policy deny observed, WebKit enforcement unqualified. Microphone positive uses an explicit owned digital audio producer; denied Chromium readback yields constraint rejection, not policy-enforcement proof. Camera, further browser resources and physical capture/permission/loss/full N02 remain open."
+  },
+  "tally": {
+    "total": 272,
+    "completed": 113,
+    "open": 159
+  },
+  "gamepad": {
+    "packet": {
+      "path": "/tmp/101-browser-gamepad-repaired-pins.json",
+      "sha256": "ac9e6b18c8244665636de9e89bf0b5d3ead685632e60e73214b0d76f77adaaa5",
+      "bytes": 45958
+    },
+    "coreReview": {
+      "path": "/tmp/101-browser-gamepad-repaired-independent-review.json",
+      "sha256": "668c0abf9f35164e7fdd9628f6bf1931988954b77f65b81ab53921850681e7a3",
+      "bytes": 26368
+    },
+    "rootBatchReview": {
+      "path": "/tmp/101-browser-gamepad-root-batch-independent-review.json",
+      "sha256": "afeff5becf0b700009131fba413c3489230bd825149e4ab47a5a307e71e1b1e2",
+      "bytes": 3428
+    },
+    "sourcePins": {
+      "packages/device-web/src/browser-gamepad.ts": "5a37dbda32710578540299b428e22cf25eaebe5f7a94d0fcb86c8304b9ee44cf",
+      "packages/device-web/src/browser-gamepad.test.ts": "35a5c5ade857b9045e0856cd134e420f8db66a088e6e6ab5bc047664728968ab",
+      "examples/browser-resources/gamepad.ts": "d461bd8ac0b9873736c355f08c2f6ec42d9a010f9543ca397a418adf507d0c0e",
+      "tools/qa-browser-gamepad.mjs": "201b075634596c45d5424af69ea944f50932afa3cbe9374bfc20993505d6314b"
+    },
+    "rootQaSha256": "3497b9724649ee82296e4b8dffeae7f86ac63dbe7f216f565335b33c483a2de1",
+    "focusedTests": 19,
+    "actualInstalledProof": {
+      "path": "/tmp/101-gamepad-relay-root-gamepad-current.json",
+      "sha256": "64f131ca18a42837c18f96ff3900dedf2168bd50b133258dda1652016956bc46",
+      "bytes": 99846
+    },
+    "nativePages": 4,
+    "nativeNegativeChecks": 20,
+    "labeledFixtureChecks": 12,
+    "nativeResults": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "native": {
+          "available": true,
+          "outcome": "empty",
+          "slots": 4
+        }
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "native": {
+          "available": true,
+          "outcome": "denied",
+          "slots": 0
+        }
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "native": {
+          "available": true,
+          "outcome": "empty",
+          "slots": 0
+        }
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "native": {
+          "available": true,
+          "outcome": "empty",
+          "slots": 0
+        }
+      }
+    ],
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0
+    },
+    "limits": {
+      "slots": 8,
+      "axes": 16,
+      "buttons": 32,
+      "attemptsPerController": 64,
+      "pollsPerActivation": 1800,
+      "samplesPerPoll": 33,
+      "maxHz": 60,
+      "captureMs": 30000,
+      "listeners": 7,
+      "providerQueuedSamples": 0,
+      "raf": 1,
+      "expiryTimers": 1,
+      "exampleReliableQueue": 32,
+      "examplePendingDeliverySlots": 1
+    },
+    "timing": "SDK timestamp is JavaScript poll observation in runtime.clockDomain. Original Gamepad.timestamp remains Gamepad last-update provenance with captureTimeKnown:false and clockMappingEstablished:false. No hardware acquisition or clock conversion claimed.",
+    "excluded": [
+      "physical-gamepad-positive",
+      "user-device-access",
+      "OS-dialog",
+      "user-UI",
+      "OS-pointer",
+      "haptics",
+      "trigger-or-hat-inference",
+      "hardware-capture-freshness",
+      "clock-mapping",
+      "browser-identity-authentication",
+      "cross-process-or-remote",
+      "account-authorization",
+      "general-hardware-support"
+    ]
+  },
+  "microphone": {
+    "packet": {
+      "path": "/tmp/101-microphone-constraint-repaired-pins.json",
+      "sha256": "ddd022edac8f3d232dcd8916167ef369ed962912c1f1adc913151cb6aa19e325",
+      "bytes": 40105
+    },
+    "staticReview": {
+      "path": "/tmp/101-microphone-constraint-repaired-independent-review.json",
+      "sha256": "107f8a113cc08489dff1580f5369c50936ca3ea4f26eabc93e41fc210c64a6eb",
+      "bytes": 7364
+    },
+    "installedReview": {
+      "path": "/tmp/101-microphone-installed-independent-addendum.json",
+      "sha256": "fdfed2d01f0effde2d77b8dad2040be84548cdad39ba437d3de23efac7d6ec69",
+      "bytes": 8337
+    },
+    "sourcePins": {
+      "packages/device-web/src/browser-microphone.ts": "434b51e569ffb86edb2a6145608c4eb6480e2ce5ab37d3e0f07e29a1537ef639",
+      "packages/device-web/src/browser-microphone.test.ts": "4e573d20b8b16c9912ed6855e14ed93dd33722243fea37083552e189c7fe14c8",
+      "examples/browser-resources/microphone.ts": "8307623076902bf6211f2aeed05f23007d7ef5baf716862eba6fb122878724ff",
+      "tools/qa-browser-microphone.mjs": "14cb5cc44ce427353ff5d47ac6be8485fd77d5c5118be74d36e317a2baaded3c"
+    },
+    "focusedTests": 21,
+    "actualInstalledProof": {
+      "path": "/tmp/101-gamepad-relay-root-microphone.json",
+      "sha256": "5f6c22412fec187d258e79edf1d6b85b54bb3ea3e1c35c1d513fa145fc2e6759",
+      "bytes": 107636
+    },
+    "nativePages": 4,
+    "nativeResults": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "requestedPolicy": "self",
+        "native": {
+          "mediaDevicesAvailable": true,
+          "policyFeatureRecognized": true,
+          "policyDenied": false,
+          "defaultNativeOpens": 0,
+          "nativeDenied": false,
+          "nativePolicyDenialQualified": false,
+          "nativeRejection": "not-issued"
+        },
+        "digitalFixture": {
+          "result": "pass",
+          "positiveHardwareEvidence": false,
+          "cleanup": {
+            "provider": {
+              "phase": "closed",
+              "reason": "closed",
+              "attempts": 2,
+              "selectionGeneration": 1,
+              "activeSources": 0,
+              "rawPending": 0,
+              "cleanupPending": 0,
+              "cleanupFailures": 0,
+              "listeners": 0,
+              "polls": 0,
+              "pollArmed": false,
+              "expiryArmed": false
+            },
+            "producerState": "closed",
+            "consumerState": "closed",
+            "tracksEnded": true
+          }
+        }
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "requestedPolicy": "deny",
+        "native": {
+          "mediaDevicesAvailable": true,
+          "policyFeatureRecognized": true,
+          "policyDenied": true,
+          "defaultNativeOpens": 1,
+          "nativeDenied": false,
+          "nativePolicyDenialQualified": false,
+          "nativeRejection": "constraints"
+        },
+        "digitalFixture": {
+          "result": "pass",
+          "positiveHardwareEvidence": false,
+          "cleanup": {
+            "provider": {
+              "phase": "closed",
+              "reason": "closed",
+              "attempts": 2,
+              "selectionGeneration": 1,
+              "activeSources": 0,
+              "rawPending": 0,
+              "cleanupPending": 0,
+              "cleanupFailures": 0,
+              "listeners": 0,
+              "polls": 0,
+              "pollArmed": false,
+              "expiryArmed": false
+            },
+            "producerState": "closed",
+            "consumerState": "closed",
+            "tracksEnded": true
+          }
+        }
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "requestedPolicy": "self",
+        "native": {
+          "mediaDevicesAvailable": true,
+          "policyFeatureRecognized": false,
+          "policyDenied": false,
+          "defaultNativeOpens": 0,
+          "nativeDenied": false,
+          "nativePolicyDenialQualified": false,
+          "nativeRejection": "not-issued"
+        },
+        "digitalFixture": {
+          "result": "pass",
+          "positiveHardwareEvidence": false,
+          "cleanup": {
+            "provider": {
+              "phase": "closed",
+              "reason": "closed",
+              "attempts": 2,
+              "selectionGeneration": 1,
+              "activeSources": 0,
+              "rawPending": 0,
+              "cleanupPending": 0,
+              "cleanupFailures": 0,
+              "listeners": 0,
+              "polls": 0,
+              "pollArmed": false,
+              "expiryArmed": false
+            },
+            "producerState": "closed",
+            "consumerState": "closed",
+            "tracksEnded": true
+          }
+        }
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "requestedPolicy": "deny",
+        "native": {
+          "mediaDevicesAvailable": true,
+          "policyFeatureRecognized": false,
+          "policyDenied": false,
+          "defaultNativeOpens": 0,
+          "nativeDenied": false,
+          "nativePolicyDenialQualified": false,
+          "nativeRejection": "not-issued"
+        },
+        "digitalFixture": {
+          "result": "pass",
+          "positiveHardwareEvidence": false,
+          "cleanup": {
+            "provider": {
+              "phase": "closed",
+              "reason": "closed",
+              "attempts": 2,
+              "selectionGeneration": 1,
+              "activeSources": 0,
+              "rawPending": 0,
+              "cleanupPending": 0,
+              "cleanupFailures": 0,
+              "listeners": 0,
+              "polls": 0,
+              "pollArmed": false,
+              "expiryArmed": false
+            },
+            "producerState": "closed",
+            "consumerState": "closed",
+            "tracksEnded": true
+          }
+        }
+      }
+    ],
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0
+    },
+    "limits": {
+      "selectedDevices": 8,
+      "nativeInventory": 32,
+      "lifetimeAttempts": 64,
+      "rawPending": 1,
+      "captureMs": 30000,
+      "openMs": 5000,
+      "polls": 600,
+      "maxHz": 20,
+      "float32Samples": 256,
+      "latest": 1,
+      "listeners": 10,
+      "pollTimers": 1,
+      "expiryTimers": 1
+    },
+    "clockAndData": {
+      "values": "RMS/peak digital unit1, sampleCount256, context sampleRateHz only. No PCM/speaker/acoustic/SPL/calibration.",
+      "source": "AudioContext.currentTime/contextId are unmapped context provenance; SDK timestamp is JS retrieval. captureTimeKnown=false, clockMappingEstablished=false."
+    },
+    "omissions": [
+      "N02/V01 remain open; no row closure or physical microphone/native browser provider qualification.",
+      "No camera, physical acquisition timestamp/freshness/clock mapping, PCM/playback, calibration, user device/OS prompt, cross-realm support, native buffer/host sandbox claim.",
+      "No deadline increase, retry loop, fake microphone permission/device launch flags or fallback positive.",
+      "No broad gates, SDK pack, shared edits, primary writes, staging, commit, remotes/services or hardware interactions."
+    ],
+    "policyEnforcementQualified": false,
+    "physicalMicrophoneQualified": false
+  },
+  "relay": {
+    "packet": {
+      "path": "/tmp/101-loopback-relay-raw-settlement-fixed-pins.json",
+      "sha256": "179d7252e32f85563db130fbac61db052f0958b3179bcae3153d8d13d92dae4a",
+      "bytes": 30870
+    },
+    "review": {
+      "path": "/tmp/101-loopback-relay-raw-settlement-fixed-independent-review.json",
+      "sha256": "5e08791f160ea1e7e9549dc47be5ffabd0cf5bac90c64293915b37a1715e59d6",
+      "bytes": 13421
+    },
+    "literalAcceptance": {
+      "row": "S07 — Implement direct and relay negotiation. ICE/TURN or authenticated gateway fallback uses scoped short-lived credentials and records the selected path.",
+      "reference": "docs/platform/MASTER-CHECKLIST.md:135; completion policy lines9–17",
+      "decision": "Complete selected authenticated-loopback-gateway/1 software deliverable is eligible once root integrates this exact repair and links current public proof/required gates/commit.",
+      "basis": "Literal authenticated gateway alternative works with two actual TLS1.3/mTLS legs, exact short-lived one-use role credentials, ready/current pair scope and path transcript records. Actual direct WSS negotiation separately records direct-wss. No missing physical or Internet deliverable in S07; S08 explicitly requires two-network physical sessions.",
+      "exclusions": [
+        "S08/Internet/TURN/cross-network/physical remain unqualified.",
+        "Gateway terminates trusted plaintext; no end-to-end private payload claim.",
+        "Identity persistence/account lifecycle and resource grants remain independently scoped.",
+        "Node hub is source-bound; seven installed SDK packages are qualified separately, no installed hub artifact claim."
+      ]
+    },
+    "sourcePins": {
+      "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+      "packages/hub-server/src/loopback-relay.test.ts": "c27692356fe20ee85b6d8bf742584af6846fb85612db72fcc6f895c7b9b720ef",
+      "examples/coordinator/loopback-relay.ts": "dcabb43d80aa8283cc149fe70c150993185520cad3e0891d1faa7ffc891bb8a0",
+      "tools/qa-loopback-relay.mjs": "f1d70d31924250d1d985bb8ced63e821fb9062a1aef9159102b28587f9b9bc9b"
+    },
+    "focusedNativeTests": 14,
+    "actualCurrentMixedProof": {
+      "path": "/tmp/101-gamepad-relay-root-relay.json",
+      "sha256": "fc0f06723f0371eff527bf3b4b90c56df93795418050c20e1c2e0c8350d088a2",
+      "bytes": 12041
+    },
+    "sourceClosureBoundToCallerTree": {
+      "packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+      "examples/coordinator/loopback-relay.ts": "dcabb43d80aa8283cc149fe70c150993185520cad3e0891d1faa7ffc891bb8a0",
+      "examples/device-pipelines/secure-websocket.ts": "14e72579ab90c3812a5405af58c0481464bf5e0e772e9fb6a5a3f1ffce997d47"
+    },
+    "nativeLibrary": {
+      "version": "8.21.0",
+      "sha256": {
+        "LICENSE": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+        "README.md": "bb979132f3cbff08ce47f36d041e18071f8f534d01f591c0b129ba7abf1e480e",
+        "browser.js": "010da44addea1d88b2b732540c3f1fd0cbcb28926b96623d4c64222e0ead2d0e",
+        "index.js": "924564d5be26d59b9682c4263f68320e48dde7240bd2d1ad17ec305537429dd2",
+        "lib/buffer-util.js": "8b0a45739132f82e25ea13163780abf547ccfe989267f3eb7abb475beec92da3",
+        "lib/constants.js": "391e823142b8b370e55a2fd32b022deaf03b8415c56000009674ebc86a0b4f86",
+        "lib/event-target.js": "c45d3c6e12d170c860c0c3f1a050aa0f864d9806632b609a1e607d675aba128c",
+        "lib/extension.js": "852564f0f6b460287043803eae732666fb5610f676874354fc89f06aa4e986ed",
+        "lib/limiter.js": "e0469d4b83f6ba764b15f80e1766b75c136fbff68f048f4c050f0b1c7f065f69",
+        "lib/permessage-deflate.js": "02c31796f0132a335d4efe7b7adcebadbb69543a1ce65ae04aaccc3530e27ab9",
+        "lib/receiver.js": "4879edbf8e48d04d09783cf9c04b5e25f5a448247bb01279438ded2899747220",
+        "lib/sender.js": "d0791d30c3defd44dcabbddb879a901c757993fea2c00a7ffea01d53b23b4b77",
+        "lib/stream.js": "a56fcb6e2b152097ee820b6f5410b1f71e59819b45d08d9f8bda588fe39070ec",
+        "lib/subprotocol.js": "be3f6323d6f549568577dcba9004c1479d95c65a7abb0fe0c582875b9fac0b7c",
+        "lib/validation.js": "41ce8e83d0d434132e1704895fedb91f6703a701b42d91c80954ab29b2845593",
+        "lib/websocket-server.js": "29029a4d346800c792300df153df2007e9805d9d7b67b0883f9730b64f25b1c8",
+        "lib/websocket.js": "48fdb0f54c1f8ce580d3cfa2908fe7d96fe18f06f9d82306950441cb09b5db26",
+        "package.json": "584ce6e7516587ba249dc910b0c04e2753f6b3f451fc3a5bc324f7735bdacc71",
+        "wrapper.mjs": "fe154662301fd558f935f9c217fccbe7a7dac02ff39e648a000589403ff27c7f"
+      },
+      "files": 19
+    },
+    "checks": 15,
+    "effects": 2,
+    "sinkReleases": 1,
+    "selectedPath": "authenticated-loopback-relay",
+    "selection": [
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "253d92d8dfc8a7155544179c559b936f",
+        "epoch": "72388406947c86c6a8fb732d3e18dd50",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "3b59c81dcc1b520c26198a45dd57f7a1da579748480e8176fe2a5e38dbfa5f92",
+        "plaintextGateway": true
+      },
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "253d92d8dfc8a7155544179c559b936f",
+        "epoch": "72388406947c86c6a8fb732d3e18dd50",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "dc91f783651a6e53d494ac1bdd070e28e0d2a9fffa492fc604f79616e33e7e31",
+        "plaintextGateway": true
+      },
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "46661d8b1cb5624fc61a33647b58fa19",
+        "epoch": "daddca391f83e49eea751a7b865c36e5",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "f4304a10d9046a9869c2dbd207437a5881058be92570b9905226891ad6c4d97c",
+        "plaintextGateway": true
+      },
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "46661d8b1cb5624fc61a33647b58fa19",
+        "epoch": "daddca391f83e49eea751a7b865c36e5",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "d10259e78e64f30733ca0bbabca92a3ce924407b8cf2fafc061021acd0665235",
+        "plaintextGateway": true
+      },
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "b6f69349ce9c31486f5acea9d36cbc70",
+        "epoch": "5afae25000dfa6332b645e2c29186336",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "6fcb7a677fb48a4ec2c37314d5324e81180172ad63a027e3cbce2685ab4e474b",
+        "plaintextGateway": true
+      },
+      {
+        "profile": "authenticated-loopback-gateway/1",
+        "selectedPath": "authenticated-loopback-relay",
+        "pairId": "b6f69349ce9c31486f5acea9d36cbc70",
+        "epoch": "5afae25000dfa6332b645e2c29186336",
+        "endpoint": "wss://127.0.0.1:61547/v1/relay",
+        "gatewayKeyId": "a74d2cbdc8c8f183a6663d311a8257e3caf777455ffa0429d33ac879cea0f62d",
+        "gatewayCertificateFingerprint": "7B:B5:F1:65:4D:D3:25:9A:0B:6E:F1:B5:30:96:90:7C:E8:0E:9C:5C:33:D5:72:EC:FD:44:B0:8E:57:B6:BC:CC",
+        "transcriptDigest": "ebbdfe6ce0facb5c80b070bbbc70c0017913900e5e58eb5f847cd2dc02a04e57",
+        "plaintextGateway": true
+      }
+    ],
+    "directSelection": {
+      "selectedPath": "direct-wss",
+      "plaintextGateway": false,
+      "profile": "wss-data/1",
+      "epoch": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "transcriptDigest": "33a4d7c7afc199220c6e5b800e46db392a095a15b62bef3d4f3d42c229586be0"
+    },
+    "resourceGrantsFromRelay": false,
+    "endToEndPayloadProtection": false,
+    "cleanup": {
+      "profile": "authenticated-loopback-gateway/1",
+      "phase": "stopped",
+      "selectedPath": "authenticated-loopback-relay",
+      "plaintextGateway": true,
+      "pairs": 0,
+      "attempts": 3,
+      "allocating": false,
+      "nativeConnections": 0,
+      "pendingRaw": 0,
+      "queuedMessages": 0,
+      "queuedBytes": 0,
+      "retiredPairs": 3,
+      "applicationBytes": 4199,
+      "timers": 0,
+      "limits": {
+        "enrollments": 8,
+        "pairs": 4,
+        "connections": 12,
+        "lifetimeAttempts": 16,
+        "pendingAllocations": 1,
+        "credentialTtlMs": 15000,
+        "serviceLifetimeMs": 15000,
+        "pairWaitMs": 3000,
+        "handshakeMs": 3000,
+        "messageBytes": 8192,
+        "queuedMessagesPerLeg": 4,
+        "rawWritesPerLeg": 1,
+        "bufferedBytesPerLeg": 16384,
+        "pairTrafficBytes": 262144
+      }
+    },
+    "fixtureKeyDirectoryRemoved": true,
+    "ownedNativeContexts": 0,
+    "limits": {
+      "enrollments": 8,
+      "pairs": 4,
+      "connections": 12,
+      "lifetimeAttempts": 16,
+      "pendingAllocations": 1,
+      "credentialTtlMs": 15000,
+      "serviceLifetimeMs": 15000,
+      "pairWaitMs": 3000,
+      "handshakeMs": 3000,
+      "messageBytes": 8192,
+      "queuedMessagesPerLeg": 4,
+      "rawWritesPerLeg": 1,
+      "bufferedBytesPerLeg": 16384,
+      "pairTrafficBytes": 262144
+    },
+    "scope": {
+      "hubResolution": "real-public-source-barrel",
+      "mixedSdkResolution": "unchanged-byte-verified-seven-installed-packages",
+      "installedHubClaim": false,
+      "native": "Node24.14.0-installed-ws8.21.0-actual-TLS1.3-mTLS-loopback",
+      "gatewayPlaintextTrust": true,
+      "resourceGrantsFromRelay": false,
+      "endToEndPayloadProtection": false,
+      "InternetTurnS08PhysicalQualification": false,
+      "S07Disposition": "selected-local-build-implemented-qualified-full-row-remains-partial"
+    }
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-VxqMZq/manifest.json",
+      "sha256": "c8c5ab8b178ec70bb64c1604bf1d684d13f93c6d4ee4da32ce1f217d5ffc06f4",
+      "bytes": 78148
+    },
+    "sourceTree": "f29aad1893a1604e11a03d30d27627e2989613b8",
+    "packages": 7,
+    "sourcePins": 147,
+    "packedFiles": 326,
+    "installedFilesVerified": 326,
+    "cleanConsumer": {
+      "path": "/tmp/101-sdk-consumer-FqmLhb/receipt.json",
+      "sha256": "3d368f54002b5c83ab67bebbefd992d41ac45ce8ee977c097175b13f70ff179f",
+      "bytes": 30342
+    },
+    "consumerChecks": 10,
+    "hubPacked": false
+  },
+  "preservedFailures": {
+    "gamepad": {
+      "classification": {
+        "feature": "actual old API missing selected typed provider",
+        "listener": "partial trusted native-listener installation retained two owned observers before repair",
+        "clock": "throwing trusted observation clock escaped actual animation callback before narrow containment",
+        "firstFocused": "fixture needed both runtime flush rounds for one delivery slot; reindex classification changed to lost",
+        "firstCompiler": "fixture callback void/required undefined and overly broad native Gamepad assertion corrected"
+      },
+      "evidence": [
+        {
+          "path": "/tmp/101-browser-gamepad-feature-red.log",
+          "sha256": "db7718add41a4421f91d0d07316fc9f1c466a5c21ccd5abad5a6fd240a0e14d1",
+          "bytes": 1143
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-focused-first.log",
+          "sha256": "b34e2996e57b2bc5a29261ead1cbb5a7d925ab36345bb10833b5fa13c9ba6b37",
+          "bytes": 9296
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-source-first.err",
+          "sha256": "131c0154c103145ea6a50f9abad0feed5124e71c5de133b15df1965fded5988c",
+          "bytes": 3984
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-listener-cleanup-red.log",
+          "sha256": "12ea8e68dcd7218cefe80a59cf3cdc2b5b02179198971b91fb882e7500b9027f",
+          "bytes": 1020
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-pre-listener-fix.ts",
+          "sha256": "4a945f4f75f37303b16861b9a1e0c37be72113be565ec4bf764e8135dc44d8a8",
+          "bytes": 21887
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-clock-throw-red.log",
+          "sha256": "7a9fcfe7eda418a725c1125b4d6383c3950b131bc19e9914af2ac7ab557ecda5",
+          "bytes": 2167
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-pre-clock-fix.ts",
+          "sha256": "859e162c0a2e44c6c8c835395539b502b852eab7d3ceacbb24b3ae6ff4f79c1d",
+          "bytes": 22281
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-focused-frozen.log",
+          "sha256": "a14b97b3171de22263e33aed3cae3e8bc94368da86734c78eee0e6f34f91ce2f",
+          "bytes": 1983
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-types-frozen.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-lint-frozen.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-source-frozen.json",
+          "sha256": "5490485aa2c93b49d90730d02c2f33386ae9d41dfdcc3224a3a55e746c3255de",
+          "bytes": 29406
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-source-frozen.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-tsconfig.json",
+          "sha256": "98c70acce5335a54f27d30458b64062c9d0655453f1583b93a092d3af9d20f0e",
+          "bytes": 5898
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-test-hook.mjs",
+          "sha256": "60473824565c6a498380ebedf172b92379d58d811e3b6a4245260974cf725129",
+          "bytes": 411
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-frozen-pins.json",
+          "sha256": "68b59187b7742b6ae5b16483b97bccd1c113f5568980fcce0a307395601b8c81",
+          "bytes": 23133
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-independent-review.json",
+          "sha256": "6dee0b97de216b8383ed84f29fff8afc70a6599a556d4d05935954ce8d398d91",
+          "bytes": 21802
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-independent-review-corrected.json",
+          "sha256": "fdbbe610dc50dd84e0a9ea123b31ed3420309864234afd040d2f8673b02be30d",
+          "bytes": 22215
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-partial-install-independent-probe.mjs",
+          "sha256": "0f01c82db999cb746a06466067c7ad2afdae2c5a91d4f15791118c98c5cfb389",
+          "bytes": 2318
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-partial-install-independent-red.log",
+          "sha256": "e9b489ecbaa7deb3ab03a594a3a426cca9f90daa0b385d26638ff33b5aaea09d",
+          "bytes": 1338
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-partial-install-worker-red.log",
+          "sha256": "e9b489ecbaa7deb3ab03a594a3a426cca9f90daa0b385d26638ff33b5aaea09d",
+          "bytes": 1338
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-pre-reviewed-install-fix.ts",
+          "sha256": "40b7c3b3d672fd5799f1d6734bc76621edbdd2c4118dcb8d129e3c395cfa2cdd",
+          "bytes": 22340
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-install-then-throw-red.log",
+          "sha256": "10092f7bcd11ce1d5d35befd0a85f32cee60b976d9aa0555eb216adf357310f2",
+          "bytes": 1061
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-install-green.log",
+          "sha256": "cc6550e64fdebab4d5efa807e55b26f88853e82b4a4037e4a284d6b89342e539",
+          "bytes": 318
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-partial-install-worker-green-probe.mjs",
+          "sha256": "132e693cc7ec608b6e747e8a20c0a093b3d647f069ec1d9a51e61f476da14162",
+          "bytes": 2334
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-partial-install-worker-green.log",
+          "sha256": "b8aef9726f98192a19e713f8ee0b414792e5d57c7f679d7827153ea0d18d2929",
+          "bytes": 628
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-focused-green.log",
+          "sha256": "75c4305341a076d010c6bf4ec8f1b64fa47431c2687b4b676c52c0bdab4ab4d5",
+          "bytes": 2088
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-types-green.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-lint-green.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-source-green.json",
+          "sha256": "08644790fd59a77e99050fe778314ced472348d7a09276389face50e91a01772",
+          "bytes": 29406
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-reviewed-source-green.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-browser-gamepad-review-preservation.json",
+          "sha256": "92282cc404367f4bb743c71c5f53f054c36a6249700830159e6d7cd2974de28b",
+          "bytes": 2242
+        }
+      ],
+      "rootResolutionDebugging": {
+        "path": "/tmp/101-gamepad-installed-resolution-debugging.json",
+        "sha256": "b59e6ab5cadcadb05eee3b6b358c556f4f5f2d737e38ee6a240960ceead48e57",
+        "bytes": 15024
+      },
+      "rootFirstInstalledFailure": {
+        "path": "/tmp/101-gamepad-relay-root-gamepad-first.err",
+        "sha256": "0937bb12482f617f4f8e632229edc840c5154faa5133291248d3c5cd41318c90",
+        "bytes": 619
+      },
+      "originalIndependentBlocker": {
+        "path": "/tmp/101-browser-gamepad-independent-review-corrected.json",
+        "sha256": "fdbbe610dc50dd84e0a9ea123b31ed3420309864234afd040d2f8673b02be30d",
+        "bytes": 22215
+      }
+    },
+    "microphone": {
+      "originalPacket": {
+        "path": "/tmp/101-microphone-frozen-pins.json",
+        "sha256": "fd31d1068391e7ffca1e664443d68cc867cf3bea380b6f56da2a1e38f1a8039d",
+        "bytes": 35324
+      },
+      "regressions": [
+        {
+          "name": "Missing typed selected microphone provider",
+          "red": "/tmp/101-microphone-feature-red.log",
+          "green": "/tmp/101-microphone-focused-first.log"
+        },
+        {
+          "name": "Granted mismatch open must retire listeners and selection",
+          "red": "/tmp/101-microphone-open-failure-listener-red.log",
+          "green": "/tmp/101-microphone-open-failure-listener-green.log"
+        },
+        {
+          "name": "Stop during actual SDK readiness removes pending source authority",
+          "red": "/tmp/101-microphone-readiness-retire-red.log",
+          "green": "/tmp/101-microphone-readiness-retire-green.log"
+        },
+        {
+          "name": "Default Node unavailable native API remains unsupported",
+          "red": "/tmp/101-microphone-node-unsupported-red.log",
+          "green": "/tmp/101-microphone-node-unsupported-green.log"
+        },
+        {
+          "name": "Unknown native policy feature does not issue capture",
+          "red": "/tmp/101-microphone-policy-guard-red.log",
+          "green": "/tmp/101-microphone-policy-focused-final.log",
+          "qualification": "Software policy seam only; no native or hardware acquisition."
+        },
+        {
+          "name": "Faithful native OverconstrainedError on recognized denied policy is constraints, not enforcement denial",
+          "red": "/tmp/101-microphone-constraint-classification-red.log",
+          "green": "/tmp/101-microphone-constraint-focused-green.log",
+          "qualification": "Error shape pinned to actual Chromium149 root-owned native receipt; regression itself software-only."
+        }
+      ],
+      "rootExactSourceFailure": {
+        "path": "/tmp/101-gamepad-relay-root-microphone-source-first.err",
+        "sha256": "423f09e44bb303ecd0e693f228a5853eea8d6986f93fda1dd68f8830994f8bfe",
+        "bytes": 859
+      },
+      "actualDeniedError": {
+        "path": "/tmp/101-microphone-denied-error-probe.json",
+        "sha256": "f94779a04655a642a478c99747673bb736b14c0463fc925f9e45d723fcf90d2a",
+        "bytes": 284
+      },
+      "readOnlyNativePolicy": {
+        "path": "/tmp/101-microphone-policy-introspection.json",
+        "sha256": "7be7f5bc5b67c1f666e34f0debd01064f03bf45e5cb409f6a409915c71d39a56",
+        "bytes": 1124
+      },
+      "preProducerBootstrap": {
+        "path": "/tmp/101-microphone-root-bootstrap-probe.json",
+        "sha256": "24d0d54754e3dc4863cec7112ad27383c1decb68d3460e969e93bc37ddbdea6f",
+        "bytes": 894
+      },
+      "classification": "Original native failures unqualified; standalone AudioContext settlement does not prove provider pipeline. Root actual OverconstrainedError diagnosis repairs helper classification; no policy-enforcement claim."
+    },
+    "relay": {
+      "originalPacket": {
+        "path": "/tmp/101-loopback-relay-frozen-pins.json",
+        "sha256": "8d8ad26e1d3690963dc847933053119d54f4e644195ac12ac1f94db5df116df6",
+        "bytes": 23777
+      },
+      "firstPinRepair": {
+        "path": "/tmp/101-loopback-relay-gateway-pin-fixed-pins.json",
+        "sha256": "d46f4b8deb54be9efbc951d3b01290f21cb753afbc081ed2a9764943ef0bf795",
+        "bytes": 26681
+      },
+      "originalDisclosureBlocker": {
+        "path": "/tmp/101-loopback-relay-independent-review.json",
+        "sha256": "e621283c117d0e7e5995bcfa6672c7565a93581aaee870e19c604b166b8ea6bf",
+        "bytes": 12582
+      },
+      "actualRawBlocker": {
+        "path": "/tmp/101-loopback-relay-gateway-pin-fixed-independent-review.json",
+        "sha256": "8d4bf5f0fe5257c9fe4d4fb689fc046389d4bfbf37513f4855b4323a6244d1e5",
+        "bytes": 13722
+      },
+      "currentProofs": [
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-direct-green.log",
+          "sha256": "a5a4d1531e4333725766bf649d825d1e2fa4d3edf3de9ef3e408eb2abf5be887",
+          "bytes": 220
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-focused-green.log",
+          "sha256": "a8697dd1b2e72e8333df33a4c501f1aeb8e0b8641cfc4f78a309f37b8d4a320e",
+          "bytes": 1653
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-strict-final.log",
+          "sha256": "a267e6f1a2a7626e7bf122309a450d544a4cd7b14f0417b3ff8d8a58db70435d",
+          "bytes": 239
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-lint-green.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-worker-independent-green.log",
+          "sha256": "975bcf56ad71571af952ff9cd2b2f826b9f23abaf09ee467b90f3915ceb5d8d8",
+          "bytes": 846
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-source-final.json",
+          "sha256": "e723eb0bc0628c8fce596298b2780915210488fe1e4d1f9eb8d03cf0e3114fa0",
+          "bytes": 23975
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-source-final.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-mixed-final.json",
+          "sha256": "1a26c15e233b3703143ec308b5c4d57d98cff822fa216a6c0fd60cee040cd6bd",
+          "bytes": 11920
+        },
+        {
+          "path": "/tmp/101-loopback-relay-raw-settlement-mixed-final.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ],
+      "retained": {
+        "/tmp/101-loopback-relay-pin-raw-settlement-independent-probe.mjs": "561b45d80ffff0be0e66cee2f516c36b3c78b6f60d043b8104747917f80383ea",
+        "/tmp/101-loopback-relay-pin-raw-settlement-independent.log": "fd147c0bfd201e2d8554ce26729c7a558067880cf043afae549a20c2044ef7d8",
+        "/tmp/101-loopback-relay-raw-settlement-worker-red.log": "35b4421b97ee7fac442609248d5747d5b1b9f3c0f3b8f80a26b9ed07fe5e1153",
+        "/tmp/101-loopback-relay-raw-settlement-worker-green.log": "ff2c94f6da17ae8e465614f1b4ecf34d90c01642bd4352121059669dfff102e1",
+        "/tmp/101-loopback-relay-raw-settlement-strict-green.log": "cdda4f220c386f0da01403380726c00acbd1821cd0be2bd9a70a1777abe03bff",
+        "/tmp/101-loopback-relay-raw-settlement-before/pins.json": "47a222fd034fc01d5ec8e15ef757d115dd77926b851eebe3e26bbe4bfaa6261e",
+        "/tmp/101-loopback-relay-gateway-pin-fixed-pins.json": "d46f4b8deb54be9efbc951d3b01290f21cb753afbc081ed2a9764943ef0bf795",
+        "/tmp/101-loopback-relay-frozen-pins.json": "8d8ad26e1d3690963dc847933053119d54f4e644195ac12ac1f94db5df116df6"
+      },
+      "pinRepairRetained": {
+        "/tmp/101-loopback-relay-gateway-pin-independent-probe.mjs": "d30fbf9550d8d2b9335df2bf0aff58599bef903107be2177e30fd1fb6a91afdd",
+        "/tmp/101-loopback-relay-gateway-pin-independent-red.log": "aa6032e8518927d65ce9a6cfe15dfa0e8b1ff7b4eabb87fd110c2fb7d013aa0a",
+        "/tmp/101-loopback-relay-gateway-pin-worker-red.log": "b045a6596ae13e4980e7f7dd18a7cd264d187694ee6d456d991aac249621ca5c",
+        "/tmp/101-loopback-relay-gateway-pin-before/pins.json": "0177c1492e66bbb0f0fc147aa766a4cb199b97a23ded70c5dccc758ac4f44a48",
+        "/tmp/101-loopback-relay-gateway-pin-worker-green.log": "225cd8546e8036bc91d34ff32419ba789c91ec7ba4474408e1fc48545090c8ce",
+        "/tmp/101-loopback-relay-gateway-pin-strict-green.log": "f805e34e018d6c4994df2bedc6a0541dcef37eb65601cd2e9f85ef6d97d49503"
+      }
+    }
+  },
+  "license": {
+    "inventory": {
+      "path": "THIRD_PARTY_LICENSES.json",
+      "sha256": "98551c6d56d4fd8ed2bd557baa78cc4f34716c889957dfb5a81966b74b878f23",
+      "bytes": 1182403
+    },
+    "reason": "Only lock SHA changed for two direct hub dependencies already installed locally; inventory/text coverage remains incomplete and K09 open.",
+    "nativeWsLicense": {
+      "path": "node_modules/ws/LICENSE",
+      "sha256": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+      "bytes": 1183
+    }
+  },
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-gamepad-relay-final-gates.json",
+    "firstFailedExactCandidate": {
+      "path": "/tmp/101-gamepad-relay-first-failed-gates.json",
+      "sha256": "64ac2d6bd5f970f907f9e747e6fa13436bcd828b251f4a72a19da1bb47e142b8"
+    },
+    "startupInvestigation": {
+      "observation": "The first exact broad unit gate had two setup failures at the unchanged private AppKit helper ready boundary (1736/1738 pass). Their original startup event cause was not captured and remains unestablished. No timeout, startup behavior, fixture, assertion or unit discovery was changed.",
+      "unchangedPrivateNativeStartup": {
+        "path": "/tmp/101-private-clipboard-startup-diagnostic.json",
+        "sha256": "cfb10ff8ea8bb60131053b2c42d79db89da0501318fe98c548fa84f851c586ae"
+      },
+      "exactTwoFailedTests": {
+        "path": "/tmp/101-private-clipboard-exact-focused-diagnostic.log",
+        "sha256": "4f1f8fa21b0df4ab06c20eab2210557fae210e7947f2fa48ee97a54d5c4e3180"
+      },
+      "focusedNativeEvents": {
+        "path": "/tmp/101-private-clipboard-child-events-18232.json",
+        "sha256": "71e3c9e261b6ae8162e790108f09982185d6c983f8140af3ac81c104d7a32c8e"
+      },
+      "boundedTransparentSpawnDiagnostics": {
+        "path": "/tmp/101-private-clipboard-child-diagnostic.mjs",
+        "sha256": "22aafe3a87c0d226db780a1a30cf8c57f05d08609588e36ccf848ad8d2556835"
+      },
+      "results": "Five actual private native starts and both exact failed tests passed; all owned native children exited and reported private board cleanup. These observations do not identify or prove a startup bug fixed.",
+      "nextGate": "No retry/warm-up/timeout/test relaxation is treated as a repair or support evidence. Build work continues, commits and checklist closure remain pending a passing exact required gate.",
+      "recurringNativeEvents": {
+        "path": "/tmp/101-private-clipboard-child-events-78663.json",
+        "sha256": "a8631fbd97434ff7ef4ab048d612b20a47bd80f691c3a6d15b754a5192cf0c4c"
+      },
+      "observedRecurrence": "The first private native child produced valid ready at3715.785ms, beyond fixed2500ms. No stderr/spawn/stdin/malformed-frame error was observed; native closed cleared/released true and exit0. Exact internal AppKit/loader delay remains unmeasured. The broad gate also had six unchanged scoped SSH assertions fail before expected native metadata/result boundaries; their event-level cause is not established."
+    },
+    "secondFailedExactCandidate": {
+      "path": "/tmp/101-gamepad-relay-second-failed-gates.json",
+      "sha256": "af74a2e2d25adfa434bb31754f0f0dcd51198084ae689b3ec37b91a6da3bf882"
+    },
+    "observed": {
+      "types": "pass",
+      "lint": "pass;one pre-existing ref warning",
+      "unit": {
+        "tests": 1738,
+        "pass": 1731,
+        "fail": 7
+      },
+      "build": "not-run",
+      "rendered": "not-run"
+    }
+  },
+  "boundaries": [
+    "S07 selected software deliverable only; S08 and other security/native/service release acceptance remains independently open",
+    "N02 selected Gamepad/microphone software slices only; remaining camera/browser/physical permissions and V01 remain open",
+    "No accepted support/capacity promotion; no hardware capture clock, native microphone/gamepad/camera positive qualification",
+    "No user UI/Mirroring/OS pointer/clipboard, device operation, publish/deploy/push/preview URL/third-party service or remote access; owned loopback software only"
+  ]
+}
