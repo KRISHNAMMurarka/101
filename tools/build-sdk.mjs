@@ -13,6 +13,8 @@ examples.push({ name: 'media-recording', source: 'examples/browser-resources/med
 examples.push({ name: 'recording-owner-data', source: 'examples/browser-resources/recording-owner-data.ts' });
 examples.push({ name: 'hid-switch', source: 'examples/browser-resources/hid-switch.ts' });
 examples.push({ name: 'serial-switch', source: 'examples/browser-resources/serial-switch.ts' });
+examples.push({ name: 'screen-preview', source: 'examples/browser-resources/screen-preview.ts' });
+examples.push({ name: 'ble-switch', source: 'examples/browser-resources/ble-switch.ts' });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();

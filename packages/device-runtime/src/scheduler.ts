@@ -92,7 +92,10 @@ export class OperationQueue<T> {
     const entry = this.entries.get(id);
     if (!entry) return;
     const previous = EVIDENCE_RANK[entry.state as Evidence] ?? 0;
-    if (EVIDENCE_RANK[evidence] > previous) entry.state = evidence;
+    // A late issued/returned report preserves history, not renewed work. Stronger
+    // target acknowledgement/observation can still update actual effect evidence.
+    const retired = entry.settled && !(entry.state in EVIDENCE_RANK);
+    if (EVIDENCE_RANK[evidence] > previous && (!retired || evidence === "target-acknowledged" || evidence === "observed")) entry.state = evidence;
     if (evidence !== "unverified" && EFFECT_RANK[evidence] > EFFECT_RANK[entry.effectEvidence])
       entry.effectEvidence = evidence;
   }

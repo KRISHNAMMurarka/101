@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "localOnly": true,
+  "base": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+  "candidateSourceTree": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "requiredGates": {
+    "status": "pending-before-local-commit",
+    "recordPath": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
+    "localCommitEvidenceRef": "refs/codex/evidence/2026-10-07-screen-ble/source-commit",
+    "scope": "All five gates must pass against the final frozen canonical candidate before its local commit. Current software proof binds its own earlier producer tree; no prior gates are reused as current gates."
+  },
+  "preservation": {
+    "path": "/tmp/101-screen-ble-haptic-software-preservation.json",
+    "sha256": "0c6ed97a944383e6b7c47fc4d203f753dc236e375f532b6059de30b6894beb03",
+    "bundleRef": "refs/codex/evidence/2026-10-07-screen-ble/current-software-bundle",
+    "artifacts": 696
+  },
+  "installedSdk": {
+    "path": "/tmp/101-screen-ble-haptic-sdk.json",
+    "sha256": "1e302d6c9d39b1dad31f1bb615637c79e3eb96fc377af0f5c0c417753ce31d3f",
+    "actualProducerTree": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+    "sourceFiles": 168,
+    "installedFiles": 377,
+    "packages": 7,
+    "consumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-pKuUqo/manifest.json",
+      "sha256": "5c1a64130e3eb5dd3da55e93dbc72d92ee38a6f93cbb93bb8f7f707deadd5933"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-lthVVD/receipt.json",
+      "sha256": "69ef5b9e67c95b49a7be3036c0b149927e40804ee8f29c012aa3121035f4f643"
+    },
+    "scope": "Ordinary offline seven-package installed public JS/declarations/examples; no source loader/alias in the installed positive caller."
+  },
+  "profile": "reviewed-browser-ble-switch/1",
+  "sourceSha256": {
+    "packages/device-web/src/browser-ble-switch.ts": "60468b379bb9ce0992a9ae9a2a47462381d3f812bc0fb7db2819a63c0164d40f",
+    "packages/device-web/src/browser-ble-switch.test.ts": "3934930f4d9f9e1dc9d4e18ae8db8678992d3bd73397dcb9f3f815d0948723e2",
+    "examples/browser-resources/ble-switch.ts": "1a537b3579be48b7c6b09daa220aa7675662c0760c676e3d2a94dbedeaf53e4d",
+    "tools/qa-browser-ble-switch.mjs": "c117aae4ad09d67c581d849576e75936b4e38d711a6885d278972dd1ecb2a4be"
+  },
+  "originalPublicAbsence": {
+    "path": "/tmp/101-ble-switch-old-installed-public.json",
+    "sha256": "23eab3a31c7373ff22c93c76dbe5a25d3f7ded1f85cf2efad56658e3ceccc93d"
+  },
+  "originalFocused": {
+    "path": "/tmp/101-ble-switch-original-focused.json",
+    "sha256": "ed8f9759af87e62cf7edd474bae8f835a3c34eb9427090d476bc1f3a0c7fc275"
+  },
+  "originalTypesFailure": {
+    "path": "/tmp/101-ble-switch-original-software.json",
+    "sha256": "55a26aacd546daa57ce9685501d1fbf159c82f8ee1662fc3f3d18ff20e5d241a"
+  },
+  "repairPacket": {
+    "path": "/tmp/101-browser-ble-switch-source-v2-ready.json",
+    "sha256": "85607c0de2af71be84dd9779aea712cbdde7d51f24ccdb7fdfe3d1f5a23bff22"
+  },
+  "focused": {
+    "path": "/tmp/101-ble-switch-v2-focused.json",
+    "sha256": "4812b22cfca19bddc0792224591ff42176a9f24372b6a729539fbdeb97838de2",
+    "tests": 28,
+    "passCount": 28,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 120,
+    "actualTree": "6d3dbfed2ba087e92bf10763bdcad1d2626b819b"
+  },
+  "staticChecks": {
+    "path": "/tmp/101-screen-ble-haptic-types-lint-v2.json",
+    "sha256": "9baeb4decf7a712221da0094e0067853139e56d086c26a7e87b27412a5db9b02"
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-ble-switch-v2-source-browser.json",
+    "sha256": "64d3eceaf1e38ab48f09d519c645aa090f53bcd8d60efa43c398c7fb741d4414",
+    "runs": 4,
+    "checksPerRun": 15
+  },
+  "installedBrowser": {
+    "path": "/tmp/101-ble-switch-installed-browser.json",
+    "sha256": "2844a51d153f298101bfb96276a90e1406affd1e30454c9775245250f432dcee",
+    "runs": 4,
+    "checksPerRun": 15
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-browser-ble-switch-source-independent-review.json",
+    "sha256": "77fc104e2af3617f81b53b5ec5fdefd1d2fddcff8704c34cce7f1ba070073873",
+    "scope": "Passive exact v1/v2 four-path source review; original9/19 and corrected28/0 remain distinct. Later types/browser/installed executions occurred after this source verdict."
+  },
+  "contract": [
+    "Explicit required-service native chooser under current activation; private selection generation and a reviewed canonical service/characteristic/revision. No getDevices, auto-selection, reads, writes, vendor/identity inference or stored native identifiers.",
+    "Exact capture consent and intrinsic owner/grant signals remain separate from actual runtime subscribe/write grants. Initially connected foreign servers are refused without acquiring or disconnecting them; wrong native returned handles clean only the original issued server.",
+    "Native GATT prototype/getter relationships and all9boolean properties are accepted only while current. Real EventTarget/DataView exact1byte0/1 maps to app:switch/1 switch-0; malformed or oversized bytes retire held state before publication.",
+    "One logical action/one data call/one cleanup chain hold actual issued native Promise settlements. Logical timeout/Stop cannot release raw reservations; prepublished idempotent async close waits late cleanup, stop failure still disconnects and quarantines.",
+    "Positive software QA uses an owned native Worker with trusted software GATT ports and genuine public runtime. Native API/policy/activation negatives open0real choosers. JavaScript notification retrieval time is not peripheral capture time or a mapped hardware clock."
+  ],
+  "limits": {
+    "devices": 1,
+    "sources": 1,
+    "characteristics": 1,
+    "attempts": 64,
+    "captureMs": 30000,
+    "logicalWaitMs": 5000,
+    "frameBytes": 1,
+    "maxHz": 20,
+    "burst": 4,
+    "framesPerCapture": 600,
+    "reliableQueue": 8,
+    "rawOperationTokens": 3,
+    "nativeDataAndCleanupPending": 2,
+    "listeners": 7,
+    "expiryTimers": 1,
+    "nativeWaitTimers": 1,
+    "WorkerPending": 1
+  },
+  "cleanup": {
+    "sourceBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "pages": 0,
+      "launchPending": 0,
+      "loopbackServerListening": false,
+      "nativeHttpSockets": 0,
+      "inflightRequests": 0,
+      "callerDirectoryRemoved": true,
+      "installedConsumerRetained": true,
+      "errors": []
+    },
+    "installedBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "pages": 0,
+      "launchPending": 0,
+      "loopbackServerListening": false,
+      "nativeHttpSockets": 0,
+      "inflightRequests": 0,
+      "callerDirectoryRemoved": true,
+      "installedConsumerRetained": true,
+      "errors": []
+    },
+    "browserRadioInternalQuiescenceMeasured": false
+  },
+  "remaining": [
+    "Whole N02/A03 scope",
+    "Native permissioned browser BLE chooser/radio/peripheral and actual vendor firmware qualification",
+    "Output writes/general BLE profiles/reconnect transport security",
+    "Physical capture latency and native internal buffer/RSS/quiescence"
+  ]
+}

@@ -81,6 +81,7 @@ export function createHapticOutputController(options: HapticOutputOptions): Hapt
       if (started === undefined || !current(context)) { busy = false; return; }
       if (started < observation.timestamp || started - observation.timestamp >= HAPTIC_OUTPUT_LIMITS.maxAgeMs) { busy = false; row.outcome = 'expired'; return; }
       if (started - lastDispatch < 1000 / HAPTIC_OUTPUT_LIMITS.maxHz) { busy = false; row.outcome = 'rate-limited'; return; }
+      const dispatchAt = started;
       const generation = epoch;
       let resolve!: (outcome: HapticOutcome) => void;
       const result = new Promise<HapticOutcome>(done => { resolve = done; });
@@ -109,15 +110,25 @@ export function createHapticOutputController(options: HapticOutputOptions): Hapt
         entry.finish(outcome);
         if (outcome === 'unavailable') { available = false; runtime.setReadiness(endpoint!, 'unavailable'); }
       }
+      let dispatched = false;
+      function recordDispatch() {
+        if (dispatched) return;
+        dispatched = true; lastDispatch = dispatchAt; ownedRoute = context.routeId;
+        row.effect = 'dispatched'; context.reportEvidence('dispatched');
+        // Invoke is a trusted synchronous callout. Retirement may precede its
+        // returned Promise; classify the issued attempt first, then request stop.
+        // Clear ownedRoute before cancel so reentrant release/close cannot repeat it.
+        if (entry.finished || closed || generation !== epoch || !current(context)) stopApi();
+      }
       try {
         const returned = invoke.call(backend, preset);
         if (returned === 'busy' || returned === 'unavailable' || returned === 'cancelled') complete(returned);
         else {
-          lastDispatch = started; ownedRoute = context.routeId; row.effect = 'dispatched'; context.reportEvidence('dispatched');
+          recordDispatch();
           Promise.resolve(returned).then(value => complete(['api-returned', 'unavailable', 'busy', 'cancelled'].includes(value) ? value : 'api-rejected'), () => complete('api-rejected'));
         }
       } catch {
-        lastDispatch = started; ownedRoute = context.routeId; row.effect = 'dispatched'; context.reportEvidence('dispatched');
+        recordDispatch();
         complete('api-rejected');
       }
       const outcome = await result;

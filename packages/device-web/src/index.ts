@@ -79,3 +79,9 @@ export type { BrowserHidSwitchFailure, BrowserHidSwitchResult, BrowserHidSwitchP
 
 export { createBrowserSerialSwitchProvider, BROWSER_SERIAL_SWITCH_LIMITS } from './browser-serial-switch.ts';
 export type { BrowserSerialSwitchFailure, BrowserSerialSwitchResult, BrowserSerialSwitchProfile, NativeSerialSwitchPort, NativeSerialSwitchManager, BrowserSerialSwitchEnvironment, BrowserSerialSwitchSelection, BrowserSerialSwitchCaptureRequest, BrowserSerialSwitchCaptureGrant, BrowserSerialSwitchActivation, BrowserSerialSwitchOptions, BrowserSerialSwitchSnapshot, BrowserSerialSwitchProvider } from './browser-serial-switch.ts';
+
+export { createBrowserScreenPreviewProvider, BROWSER_SCREEN_PREVIEW_LIMITS } from './browser-screen-preview.ts';
+export type { BrowserScreenPreviewFrame, BrowserScreenPreviewFacts, BrowserScreenPreviewFailure, BrowserScreenPreviewResult, BrowserScreenPreviewCaptureRequest, BrowserScreenPreviewCaptureGrant, BrowserScreenPreviewActivation, BrowserScreenPreviewEnvironment, BrowserScreenPreviewOptions, BrowserScreenPreviewProvider } from './browser-screen-preview.ts';
+
+export { BROWSER_BLE_SWITCH_LIMITS, createBrowserBleSwitchProvider } from './browser-ble-switch.ts';
+export type { BrowserBleSwitchFailure, BrowserBleSwitchResult, BrowserBleSwitchProfile, NativeBleSwitchProperties, NativeBleSwitchCharacteristic, NativeBleSwitchService, NativeBleSwitchServer, NativeBleSwitchDevice, NativeBleSwitchManager, BrowserBleSwitchEnvironment, BrowserBleSwitchSelection, BrowserBleSwitchCaptureRequest, BrowserBleSwitchCaptureGrant, BrowserBleSwitchActivation, BrowserBleSwitchOptions, BrowserBleSwitchSnapshot, BrowserBleSwitchProvider } from './browser-ble-switch.ts';

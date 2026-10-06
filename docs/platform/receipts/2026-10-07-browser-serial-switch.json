@@ -137,13 +137,20 @@
     "scope": "Exact originalleaf/caller/QA source plus separate root test declaration repair10-pass byte/source metadata. Source/installed browser results and SDK pack are separate later root executions; reviewer ran none."
   },
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact final coherent candidate all5 AGENTS gates remain separate from these selected software results."
+    "status": "pass",
+    "path": "/tmp/101-browser-providers-sharing-exact-required-gates.json",
+    "sha256": "c8a29382854f2a9d386eb8e8cb760ec7d05a8ad0d0dac5581292150ccd5127c9",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+    "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+    "unitPass": 2005,
+    "renderedPass": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates ran against exact committed source/canonical tree9bbe. Historical native/SDK execution producers retain their own recorded source/build scopes. These postcommit documentation bytes are a later draft, not included in that tested tree."
   },
-  "sourceCommit": null,
+  "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
   "wholeChecklistItemsCompleted": [],
   "remaining": [
-    "Whole N02/A03 and general serial profile/decoder compatibility",
+    "Whole N02/A04 and general serial profile/decoder compatibility",
     "Physical chooser/UART reports/permissions/replug/firmware versions",
     "Phone/OS/peripheral and wider full support qualification"
   ],
@@ -156,5 +163,19 @@
     "indexBlob": "f1dee56c8f1e631862967961c9d0e137b44c418e",
     "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/serial-sharing-result-bundle",
     "scope": "All actual164-source/367packed-installed SDK tarballs/files and selected Serial source/tests/caller/QA/reviews/failures are retained in local Git. Actual producer source tree protected separately; ephemeral QA scratch intentionally deleted remains excluded."
+  },
+  "committedSourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+  "independentCandidateReview": {
+    "path": "/tmp/101-browser-providers-sharing-canonical-independent-review.json",
+    "sha256": "1e636d70a9f7de4f10bc3d794f66f4fac570ea2b47e3742b4ba0900e0131f8a4",
+    "scope": "Passive review of exact committed38-path9bbe candidate and scoped canonical evidence, all5 actual logs and immutable producer references; no new runtime execution."
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-browser-providers-sharing-final-build-preservation.json",
+    "sha256": "1b01d76dbf035ea500e6e25dc672fc9890626e46ac57a7c142336fe2c5e4fd0a",
+    "compiledFiles": 524,
+    "artifacts": 571,
+    "bundleRef": "refs/codex/evidence/2026-10-07-browser-providers-sharing/final-build-bundle",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24"
   }
 }

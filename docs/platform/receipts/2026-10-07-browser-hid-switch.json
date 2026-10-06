@@ -147,10 +147,17 @@
     "scope": "Recorded e0b117 provider/1be405 tests/original caller/QA and root hooks/162-source/362-packed-installed SDK bytes. Installed HID run finished after this passive verdict; no claim that reviewer executed it."
   },
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact coherent whole candidate AGENTS gates remain separate from these selected SDK/software results."
+    "status": "pass",
+    "path": "/tmp/101-browser-providers-sharing-exact-required-gates.json",
+    "sha256": "c8a29382854f2a9d386eb8e8cb760ec7d05a8ad0d0dac5581292150ccd5127c9",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+    "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+    "unitPass": 2005,
+    "renderedPass": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates ran against exact committed source/canonical tree9bbe. Historical native/SDK execution producers retain their own recorded source/build scopes. These postcommit documentation bytes are a later draft, not included in that tested tree."
   },
-  "sourceCommit": null,
+  "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
   "wholeChecklistItemsCompleted": [],
   "remaining": [
     "Whole N02/D03/A02/I11 scope",
@@ -173,5 +180,19 @@
     "oldSha256": "1be40557e0385d3913a918e951a4df8b6850ec25909613a08c95f8974b3b6317",
     "newSha256": "9b2bc27267490be5a3b198a087a489aad02d1e6304cf430b8d1a4af342dd88eb",
     "change": "Three self-referencing fixture declarations made const with their existing explicit ReturnType; counts/assertions/callbacks unchanged. Historical13/source/installed browser proof remains attached to its actual original test bytes. Exact final repository unit/types gates must cover new declarations."
+  },
+  "committedSourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+  "independentCandidateReview": {
+    "path": "/tmp/101-browser-providers-sharing-canonical-independent-review.json",
+    "sha256": "1e636d70a9f7de4f10bc3d794f66f4fac570ea2b47e3742b4ba0900e0131f8a4",
+    "scope": "Passive review of exact committed38-path9bbe candidate and scoped canonical evidence, all5 actual logs and immutable producer references; no new runtime execution."
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-browser-providers-sharing-final-build-preservation.json",
+    "sha256": "1b01d76dbf035ea500e6e25dc672fc9890626e46ac57a7c142336fe2c5e4fd0a",
+    "compiledFiles": 524,
+    "artifacts": 571,
+    "bundleRef": "refs/codex/evidence/2026-10-07-browser-providers-sharing/final-build-bundle",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24"
   }
 }

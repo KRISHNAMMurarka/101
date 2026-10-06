@@ -122,10 +122,17 @@
   ],
   "authorityScope": "One origin/browser-profile private purpose database app-player-settings-managed-v1 and fixed app-player-settings:this-browser identifier; no authenticated account/person claim, device/connector capture, grant persistence or general database discovery. Underlying SDK open-stores admits its declared managed kinds; this facade consumes only settings and denies export/copy/sweep.",
   "requiredGates": {
-    "status": "pending",
-    "scope": "All exact coherent source/canonical candidate AGENTS gates before local commit. This receipt preserves historical source/runtime producers rather than promoting physical/full-task support."
+    "status": "pass",
+    "path": "/tmp/101-browser-providers-sharing-exact-required-gates.json",
+    "sha256": "c8a29382854f2a9d386eb8e8cb760ec7d05a8ad0d0dac5581292150ccd5127c9",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+    "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+    "unitPass": 2005,
+    "renderedPass": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates ran against exact committed source/canonical tree9bbe. Historical native/SDK execution producers retain their own recorded source/build scopes. These postcommit documentation bytes are a later draft, not included in that tested tree."
   },
-  "sourceCommit": null,
+  "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
   "taskDisposition": {
     "U12": "PARTIAL/OPEN. Browser appearance management is built and locally software-qualified. Identity, permission/privacy administration, installed connectors/trusted publishers, general device removal, update/restore, native and full accessibility/physical flows remain open."
   },
@@ -222,5 +229,19 @@
       "sha256": "2f6f51c2ebc4bfa65c6f8216d9cc4303ab62618768cf152e30544aed4b0ac221"
     },
     "change": "Reuse existing Connections common page/header/panel/controls CSS with small select/programmatic-focus rules; unchanged storage/authority handlers and no budget/globalCSS changes."
+  },
+  "committedSourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+  "independentCandidateReview": {
+    "path": "/tmp/101-browser-providers-sharing-canonical-independent-review.json",
+    "sha256": "1e636d70a9f7de4f10bc3d794f66f4fac570ea2b47e3742b4ba0900e0131f8a4",
+    "scope": "Passive review of exact committed38-path9bbe candidate and scoped canonical evidence, all5 actual logs and immutable producer references; no new runtime execution."
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-browser-providers-sharing-final-build-preservation.json",
+    "sha256": "1b01d76dbf035ea500e6e25dc672fc9890626e46ac57a7c142336fe2c5e4fd0a",
+    "compiledFiles": 524,
+    "artifacts": 571,
+    "bundleRef": "refs/codex/evidence/2026-10-07-browser-providers-sharing/final-build-bundle",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24"
   }
 }

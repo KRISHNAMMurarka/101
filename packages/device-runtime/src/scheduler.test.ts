@@ -97,3 +97,17 @@ test("pinned evidence cannot be retired to admit another event", () => {
   queue.unpin("1", 1);
   assert.equal(queue.admit("2", 1000, "second", 1).ok, true);
 });
+
+
+test("late dispatch reports retain retirement while preserving issued effect evidence", () => {
+  for (const state of ['cancelled', 'expired', 'failed'] as const) {
+    const queue = new OperationQueue<string>(1);
+    assert.equal(queue.admit('1', 100, 'issued-command', 0).ok, true);
+    queue.next(0); queue.started('1'); queue.settle('1', state);
+    queue.evidence('1', 'dispatched'); queue.evidence('1', 'unverified');
+    assert.equal(queue.records()[0].state, state);
+    assert.equal(queue.records()[0].effectEvidence, 'dispatched');
+    assert.equal(queue.pending, 0);
+    assert.equal(queue.admit('1', 200, 'replay', 1).ok, false);
+  }
+});

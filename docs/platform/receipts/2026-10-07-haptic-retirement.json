@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "localOnly": true,
+  "base": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+  "candidateSourceTree": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "requiredGates": {
+    "status": "pending-before-local-commit",
+    "recordPath": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
+    "localCommitEvidenceRef": "refs/codex/evidence/2026-10-07-screen-ble/source-commit",
+    "scope": "All five gates must pass against the final frozen canonical candidate before its local commit. Current software proof binds its own earlier producer tree; no prior gates are reused as current gates."
+  },
+  "preservation": {
+    "path": "/tmp/101-screen-ble-haptic-software-preservation.json",
+    "sha256": "0c6ed97a944383e6b7c47fc4d203f753dc236e375f532b6059de30b6894beb03",
+    "bundleRef": "refs/codex/evidence/2026-10-07-screen-ble/current-software-bundle",
+    "artifacts": 696
+  },
+  "installedSdk": {
+    "path": "/tmp/101-screen-ble-haptic-sdk.json",
+    "sha256": "1e302d6c9d39b1dad31f1bb615637c79e3eb96fc377af0f5c0c417753ce31d3f",
+    "actualProducerTree": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+    "sourceFiles": 168,
+    "installedFiles": 377,
+    "packages": 7,
+    "consumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-pKuUqo/manifest.json",
+      "sha256": "5c1a64130e3eb5dd3da55e93dbc72d92ee38a6f93cbb93bb8f7f707deadd5933"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-lthVVD/receipt.json",
+      "sha256": "69ef5b9e67c95b49a7be3036c0b149927e40804ee8f29c012aa3121035f4f643"
+    },
+    "scope": "Ordinary offline seven-package installed public JS/declarations/examples; no source loader/alias in the installed positive caller."
+  },
+  "profile": "software-haptic-retirement/1",
+  "sourceSha256": {
+    "packages/device-runtime/src/haptic-output.ts": "434981d6f8cc995f6f3608aeda1831facb1065adaf200555981492b4eb658c38",
+    "packages/device-runtime/src/haptic-output.test.ts": "6481b74fd58ac6ae9801c8f8e6e375b4d8edcd2f02e8f2152a9aefe3205d7577",
+    "packages/device-runtime/src/scheduler.ts": "9fef5b5029c97cc90ff2c52511625700320c09985e0c753e7d52922273e76694",
+    "packages/device-runtime/src/scheduler.test.ts": "818776eda9a99dcd074be5563fabcf8221db486baa51596a55b3154a322a804f",
+    "tools/qa-haptic-retirement.mjs": "5ae7672e7d78b8af8dc623246ceedbc58eafecd6f571925de3b2efd8b2d07d4d"
+  },
+  "oldFixturePrerequisite": {
+    "path": "/tmp/101-haptic-retirement-old-fixture-prerequisite.json",
+    "sha256": "b8fb8330e8f957d8863e7b0b5e819af240e17d296ad92cb7f7b8e18b3dac43fe"
+  },
+  "oldHapticRegression": {
+    "path": "/tmp/101-haptic-retirement-two-numeric-old.json",
+    "sha256": "7208143f08121c8311695bb6362b6d62512e1eca4404069b0b238527eb6eb04d"
+  },
+  "firstNarrowFocusedFailure": {
+    "path": "/tmp/101-haptic-retirement-repaired-focused.json",
+    "sha256": "1e2c92798c2d283473ed4d7b65a8602007d28f22d138b7c50982e60049db1bd6"
+  },
+  "oldSchedulerRegression": {
+    "path": "/tmp/101-scheduler-retirement-old.json",
+    "sha256": "19c404beaf4caa0171589d8338bdafe79281a1af9ca36eb2cd6d7f62331c4aec"
+  },
+  "typesNarrowingFailure": {
+    "path": "/tmp/101-screen-ble-haptic-types-lint.json",
+    "sha256": "cb8aff8eae05666a25c824047f49ba9bd5ffcdb95a078de32a295d47802411da"
+  },
+  "focused": {
+    "path": "/tmp/101-haptic-retirement-final-focused.json",
+    "sha256": "2bfc87bcf27eccab1ade5e6fbcdfb196ee71bdd6c8519488164b0dc419d4052a",
+    "tests": 10,
+    "passCount": 10,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 41
+  },
+  "schedulerFocused": {
+    "path": "/tmp/101-scheduler-retirement-repaired-focused.json",
+    "sha256": "4828e42d72f8f2e400829ed4401c2cacf00633eea99bcde0240f0cc32f018848",
+    "tests": 8,
+    "passCount": 8,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 2,
+    "actualTree": "6d3dbfed2ba087e92bf10763bdcad1d2626b819b"
+  },
+  "staticChecks": {
+    "path": "/tmp/101-screen-ble-haptic-types-lint-v2.json",
+    "sha256": "9baeb4decf7a712221da0094e0067853139e56d086c26a7e87b27412a5db9b02"
+  },
+  "installedPublic": {
+    "path": "/tmp/101-haptic-retirement-installed-public.json",
+    "sha256": "6bd3ea174aad7956aea84b9a684bf42eff745ec32084afec7e1132406a68e82c",
+    "softwareCases": 7,
+    "issuedSoftwarePromises": 4,
+    "settledOwnedPromises": 7,
+    "hardwareCalls": 0
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-haptic-scheduler-retirement-independent-review.json",
+    "sha256": "1ecc0e0675cffc57a9f611b71b855ce72c5e51b432c2c3d11797d11bddd060c3"
+  },
+  "contract": [
+    "After trusted invoke returns an issued Promise/API return/throw, preserve dispatched/unverified history, register the issued route, and honor any synchronous route Stop/revoke/controller close with exactly one optional cancellation request. Synchronous refusals do not report dispatch or request cancellation.",
+    "Actual busy reservation stays held until the issued backend Promise settles even after logical expiry or retirement. Public close():void is synchronous retirement and makes no API/native quiescence guarantee; optional cancel is a request without physical acknowledgement.",
+    "The shared scheduler retains cancelled/expired/failed status on late dispatched/unverified evidence while keeping actual issued effectEvidence. Stronger existing target acknowledgement/observation may update historical evidence without restoring pending work, payloads, grants or replay authority.",
+    "Faithful real runtime operations use canonical positive numeric IDs. The first named-ID fixture failure is preserved as a prerequisite, not reported as the reproduced defect. No navigator.vibrate/native platform haptic backend is executed."
+  ],
+  "limits": {
+    "maxAgeMs": 100,
+    "maxHz": 10,
+    "queueCapacity": 1,
+    "maxInFlight": 1,
+    "maxRecords": 64
+  },
+  "cleanup": {
+    "ownedNodeChildren": 0,
+    "ownedDirectories": 0
+  },
+  "remaining": [
+    "Whole I08/F07/I12 qualification",
+    "Native/browser/Expo backend dispatch and physical distinguishability/intensity/duration/cancellation",
+    "Native/platform work or RSS/quiescence beyond software Promise settlement"
+  ]
+}

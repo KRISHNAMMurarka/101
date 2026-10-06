@@ -2961,3 +2961,28 @@ Capture is capped at 30 seconds, with one selected device/source/resource, one p
 Construction is inert; explicit `choose()` and a separate exact capture grant precede owned open/read. Real source and sink route approvals remain independent. An entire chunk of at most 32 bytes is copied and validated before effects. Capture is capped at 30 seconds, with 64 attempts, 600 bytes/chunks/frames, 20 frames per second and burst 4. No writes, arbitrary decoder, auto-selection or retained fragments are supplied. The example owns one queue of 8 and one pending delivery; unrelated host routes have separate bounds.
 
 The 500 ms read deadline retires authority without releasing actual native reservations. Cancellation, pending read settlement, reader lock release and owned port close are awaited in order. A never-settling trusted wrapper stays pending; failed cleanup quarantines further admission. Timestamps describe JavaScript read receipt. [Selected software evidence](receipts/2026-10-07-browser-serial-switch.json) distinguishes real ReadableStream/browser Worker effects through trusted software ports from native API negatives; physical UART, chooser permission and replug remain unqualified.
+
+## Bounded browser screen preview
+
+`createBrowserScreenPreviewProvider` is exported by `@101/device-web` and `@101/connect`. Its first caller is `examples/browser-resources/screen-preview.ts`. `start({purpose})` requires an exact synchronous capture grant and current browser gesture before fixed video-only `getDisplayMedia`; real resource route grants remain separate. It does not start capture on arrival or remember a selected surface.
+
+The resource is `media:screen-preview-rgba8/1`: an explicitly downsized 8×8 RGBA8 preview, 256 raster bytes within the actual 4 KiB runtime publication envelope. Native selected surface/cursor settings remain unknown when absent. Native decoded dimensions and JavaScript retrieval time are separate facts; neither proves hardware capture time. Resize, Stop, revoke, hide, loss and expiry release the preview and require fresh capture approval.
+
+One actual chooser/play task and owned native frame remain reserved through real settlement or cancellation. `close()` retires authority and awaits owned returned work; a never-settling factory remains pending and failed cleanup quarantines admission. The provider retains only a small sampling raster; native capture/decoder buffers are opaque. Trusted clock/environment factories are software seams, not a sandbox.
+
+[Selected software evidence](receipts/2026-10-07-browser-screen-preview.json) records 23 focused checks and owned Chromium/WebKit canvas-to-native-video-to-typed-preview checks. Default OS display choosers were never invoked. Native screen capture/permissions, encoded or HD streams, cursor/input mapping and physical freshness remain unqualified.
+
+
+## Reviewed browser BLE switch
+
+`createBrowserBleSwitchProvider` is exported by `@101/device-web` and `@101/connect`; its installed example is `@101/connect/examples/ble-switch`. Supply a reviewed canonical service/characteristic UUID pair and revision. `choose()` requires a current browser gesture and one explicit native device chooser; `start(selection,{purpose})` obtains a separate exact capture grant before connecting the selected initially disconnected GATT server. Runtime output routes still require their own resource grants. No native identifiers or vendor claims are retained.
+
+The selected read-only profile maps notifications of exactly one byte, 0 or 1, into `app:switch/1` channel `switch-0`. Invalid relationships, notification properties or bytes retire the source and release held output. Stop/revoke/loss requires fresh selection, consent and generation. One action, one native data operation and one cleanup chain remain reserved until actual returned work settles; `close()` is idempotent and waits that tracked work. Failed cleanup quarantines the provider. Native radio work beyond returned API settlement is not certified.
+
+The installed caller proof uses an owned Worker and explicitly trusted software GATT ports. It proves packaged public routing, denial, release and generation recovery, not peripheral or vendor compatibility. Notification time is JavaScript receipt time; hardware capture time remains unknown.
+
+## Haptic release during dispatch
+
+`createHapticOutputController` honors release or `close()` called synchronously inside a trusted backend's `invoke`: an issued attempt receives its one optional cancel request after its route is recorded. Synchronous refusals create no dispatched effect. The actual issued Promise keeps the backend busy until settlement; logical cancellation or the 100ms timeout cannot free it. `close():void` remains synchronous retirement, and optional cancellation requests do not prove physical cancellation.
+
+Late dispatched/unverified reports retain cancelled/expired/failed operation status and actual dispatched history. Existing stronger target acknowledgement/observation may update historical evidence without resuming work. The installed software proof uses genuine public runtime grants and held software Promises; native haptic dispatch and physical feedback are deferred.

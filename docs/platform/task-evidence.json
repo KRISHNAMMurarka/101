@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 116,
+  "revision": 119,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10782,10 +10782,122 @@
       ],
       "environment": "Owned macOS arm64 Node24.14.0/TypeScript5.9.3; offline7-package SDK164source/367packed-installed files; owned Chromium/WebKit Worker and genuine native ReadableStream through trusted software SerialPort.",
       "reproduction": "Actual ordinary installed public feature absence retained; first original test-only Node parameter-property parse failure retained and corrected without implementation/assertion changes. Corrected10/0skip source checks,4source/4installed browser runs and10cleanconsumer checks pass. Exact final all5candidate gates/local commit pending.",
-      "scope": "PARTIAL read-only explicit binary0/1 Serial switch and exact UART config; real native stream lifecycle/software transport/public resource routing. Native API/activation negatives only; no physical UART/permission dialog/general profiles or whole N02/A03 promotion.",
+      "scope": "PARTIAL read-only explicit binary0/1 Serial switch and exact UART config; real native stream lifecycle/software transport/public resource routing. Native API/activation negatives only; no physical UART/permission dialog/general profiles or whole N02/A04 promotion.",
       "failure": null,
       "equipment": [
         "Owned browser Worker/ReadableStream/trusted software SerialPort; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+      "revision": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U12",
+        "E10",
+        "F07",
+        "N02",
+        "U04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-appearance-settings.json",
+        "docs/platform/receipts/2026-10-07-browser-hid-switch.json",
+        "docs/platform/receipts/2026-10-07-browser-serial-switch.json",
+        "docs/platform/receipts/2026-10-07-connected-sharing.json",
+        "docs/platform/receipts/2026-10-07-extension-raw-reservation.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; exact frozen source/canonical tree9bbe; local types/full lint/fresh build/rendered34/fullunit2005. No physical or external actions.",
+      "reproduction": "All five AGENTS gates pass at unchanged committed tree;2005units/34rendered,zero fail/cancel/skip/todo. Fresh literal524compiled inputs and571 artifacts retained in local Git. Independent passive exact candidate review recorded.",
+      "scope": "PARTIAL software outcomes integrated locally. Existing actual SDK/native receipts retain their individual immutable source/build producers; no full-row/support promotion. Followup postcommit references and Serial A03\u2192A04 wording correction are later documentation bytes.",
+      "failure": null,
+      "equipment": [
+        "Owned software test/runtime fixtures; phone and other hardware checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "v07-browser-screen-preview-software-partial-2026-10-07",
+      "revision": "d2312afcbfebf9231c1029875551eb5140567d72",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "V07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-screen-preview.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0 and Chromium/WebKit; actual native owned digital Canvas.captureStream/video decode/raster, software ports and real public runtime, no OS capture.",
+      "reproduction": "Actual old installed public feature absence retained; original21PASS and lint/preflight failures retained; both actual old1FAIL regressions repaired. Corrected23/0skip/119loaded,type/scopedlint and4source browser cases\u00d78checks pass. Fresh168-source/377-file seven-package SDK/10consumer checks and4installed browser cases\u00d78checks now pass at8a678; final exact candidate gates remain required.",
+      "scope": "PARTIAL honestly downsized8x8 screen semantic and consent/lifecycle. Owned canvas/native decode does not establish native monitor/window capture, permission enforcement, HD/cursor mapping or full V07/N02 support.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browser digital canvas/native decode; no phone or real screen capture"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "n02-a03-browser-ble-switch-software-partial-2026-10-07",
+      "revision": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "A03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-ble-switch.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; ordinary compiled public seven-package SDK; browser versions and software fixtures pinned in actual receipts.",
+      "reproduction": "28focused/120loaded;types/scopedlint;4source+4installed Chromium/WebKit cases\u00d715checks; fresh168source/377packed seven-package consumer10. Final exact canonical commit gates still required.",
+      "scope": "PARTIAL reviewed one-byte BLE notification software profile, native API activation negatives and owned Worker through trusted software GATT. No radio/vendor/writes/whole N02/A03.",
+      "failure": null,
+      "equipment": [
+        "Owned software fixture/runtime; phone/peripheral/haptic checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "i08-haptic-retirement-software-partial-2026-10-07",
+      "revision": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I08",
+        "F07",
+        "I12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-haptic-retirement.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; ordinary compiled public seven-package SDK; browser versions and software fixtures pinned in actual receipts.",
+      "reproduction": "GenuineOLD2haptic +OLD1scheduler failures retained; final10haptic/41loaded and8scheduler/2loaded pass, strict/lint,7 ordinary installed software cases with4issued/7settled owned Promises and0hardwarecalls. Final exact canonical commit gates still required.",
+      "scope": "PARTIAL reentrant haptic retirement and late-dispatch scheduler repair. Cancel is an optional request; actual native quiescence, physical feedback and whole I08/F07/I12 remain unqualified.",
+      "failure": null,
+      "equipment": [
+        "Owned software fixture/runtime; phone/peripheral/haptic checks deferred"
       ],
       "supportRows": []
     }
@@ -11769,7 +11881,10 @@
         "n02-current-installed-browser-resources-2026-10-06",
         "v03-private-application-audio-installed-2026-10-06",
         "n02-reviewed-hid-switch-software-partial-2026-10-07",
-        "n02-reviewed-serial-switch-software-partial-2026-10-07"
+        "n02-reviewed-serial-switch-software-partial-2026-10-07",
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+        "v07-browser-screen-preview-software-partial-2026-10-07",
+        "n02-a03-browser-ble-switch-software-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12107,7 +12222,8 @@
       "id": "I08",
       "records": [
         "pending-I08",
-        "i08-media-haptics-scheduling-partial-2026-10-06"
+        "i08-media-haptics-scheduling-partial-2026-10-06",
+        "i08-haptic-retirement-software-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12163,7 +12279,8 @@
       "records": [
         "pending-I12",
         "pointer-provider-2026-10-02",
-        "pointer-ui-chromium-2026-10-02"
+        "pointer-ui-chromium-2026-10-02",
+        "i08-haptic-retirement-software-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12272,7 +12389,8 @@
     {
       "id": "V07",
       "records": [
-        "pending-V07"
+        "pending-V07",
+        "v07-browser-screen-preview-software-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12402,7 +12520,8 @@
     {
       "id": "A03",
       "records": [
-        "pending-A03"
+        "pending-A03",
+        "n02-a03-browser-ble-switch-software-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13238,7 +13357,8 @@
       "records": [
         "pending-E10",
         "pairing-extension-local-2026-10-06",
-        "extension-raw-reservation-built-partial-2026-10-07"
+        "extension-raw-reservation-built-partial-2026-10-07",
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13369,7 +13489,8 @@
       "records": [
         "pending-U04",
         "u04-built-partial-2026-10-06",
-        "u04-connected-page-sharing-partial-2026-10-07"
+        "u04-connected-page-sharing-partial-2026-10-07",
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13495,7 +13616,8 @@
       "records": [
         "pending-U12",
         "browser-appearance-settings-built-partial-2026-10-07",
-        "browser-appearance-budget-repair-partial-2026-10-07"
+        "browser-appearance-budget-repair-partial-2026-10-07",
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13598,7 +13720,9 @@
       "records": [
         "embedded-bounds-2026-10-05",
         "pending-F07",
-        "extension-raw-reservation-built-partial-2026-10-07"
+        "extension-raw-reservation-built-partial-2026-10-07",
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+        "i08-haptic-retirement-software-partial-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [

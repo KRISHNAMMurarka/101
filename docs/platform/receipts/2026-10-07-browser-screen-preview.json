@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "browser-screen-preview/1",
+  "localOnly": true,
+  "base": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+  "candidateSourceTree": "d2312afcbfebf9231c1029875551eb5140567d72",
+  "sourceSha256": {
+    "packages/device-web/src/browser-screen-preview.ts": "1a85af96aa77ecad652e5ed2707c17c7449c78161e65e7d4ed05fb65fbec7c9c",
+    "packages/device-web/src/browser-screen-preview.test.ts": "0a1d363da71ee0f5cc45c3a19296b67aecb61caba7df92dae27a2ad518a9cadd",
+    "examples/browser-resources/screen-preview.ts": "53e784f4918f551525b252161f71d4571ff2ab388956583f583ce8db88279192",
+    "tools/qa-browser-screen-preview.mjs": "005040394ae628bb158e82951fa7c90b81a2992826a5e04de8370bd8a194bf0c"
+  },
+  "oldPublicFeature": {
+    "path": "/tmp/101-screen-preview-old-installed-public.json",
+    "sha256": "0ad58fd3393a57f615d495825a94f9e42a7db20b415e277aada218581e08e2d3"
+  },
+  "originalSourceReviewBlock": {
+    "path": "/tmp/101-browser-screen-preview-source-independent-review.json",
+    "sha256": "01db5ee0e57a5b27e5532f612b853c387ebfb4adc90942cc52c09ad625dfb002"
+  },
+  "originalFocused": {
+    "path": "/tmp/101-screen-preview-original-focused.json",
+    "sha256": "2481a1d703283aad1f8e1b7f547356fb7712499eacebc53042dd7ad246adfae6",
+    "tests": 21,
+    "passCount": 21,
+    "loadedSourceFiles": 119
+  },
+  "preflightIndexGuardFailure": {
+    "path": "/tmp/101-screen-preview-software-preflight-index-lock.json",
+    "sha256": "d3290e49d60d6ba4f2b401b38a7180160e40cf1d1d95ab6a32f644275257c248"
+  },
+  "originalTypesLint": {
+    "path": "/tmp/101-screen-preview-original-software.json",
+    "sha256": "37754acaa794cb5f4c63bc1519913228922132680913e53b09440b52d34d98ad"
+  },
+  "oldLateRegistrationRegression": {
+    "path": "/tmp/101-screen-preview-late-registration-old.json",
+    "sha256": "06677df9b3e58be9eb95f65d2bd7e89d64ae589faf7106338e64d9d48ff1ba20"
+  },
+  "oldFinalClockRegression": {
+    "path": "/tmp/101-screen-preview-final-clock-expiry-old.json",
+    "sha256": "32961b6b10a93fb750afa8c8a7758184dc71f1e9e890457fd9be0e48241c565c"
+  },
+  "repairPacket": {
+    "path": "/tmp/101-browser-screen-preview-review-repairs-ready.json",
+    "sha256": "6fd76551058c062b58e52cdededa916d454dd4a9eeb77663f64e95e36a18aa4e"
+  },
+  "focused": {
+    "path": "/tmp/101-screen-preview-repaired-focused.json",
+    "sha256": "943195f5b45ca040b749db7473e3936a0d0bde08821b32fa063805f0e5cbe367",
+    "tests": 23,
+    "passCount": 23,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 119
+  },
+  "staticChecks": {
+    "path": "/tmp/101-screen-preview-repaired-software.json",
+    "sha256": "28d52e0a00cba51f9fd194244e14672cbc2c96d61b2babdd07d5cd1dbf178848"
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-screen-preview-repaired-source-browser.json",
+    "sha256": "3d86ef94947c97d98ac769cb82dce0529da58dbf4808f1f1acbb9d18077a4aa2",
+    "runs": 4,
+    "checksPerRun": 8,
+    "loadedSourceFiles": 123,
+    "scope": "Owned Chromium/WebKit native Canvas.captureStream -> native decoded video -> bounded RGBA8 -> genuine independently granted runtime -> native8x8 canvas readback; red/blue and resize-release. Actual API/policy readback negatives only; default getDisplayMedia0, no OS screen/permission positive."
+  },
+  "contract": [
+    "Explicit fixed video:true/audio:false display capture under a current gesture, after separate synchronous exact-request capture consent. Source/sink runtime route grants remain independent. Constructor is inert; no enumerate, remembered surface, audio or arbitrary capture constraints.",
+    "Selected native track settings and decoded-video dimensions are separate facts; absent surface/cursor facts remain unknown, labels are never identity. Resize/settings change retires the source before replacement pixels and requires fresh capture and route authority.",
+    "Distinct media:screen-preview-rgba8/1 is an honestly downsized8x8 raster with256 bytes; publication worst-value256B tested within actual4KiB runtime envelope. No camera alias, full-size pixel copy, encoded/HD stream or cursor injection.",
+    "One admission/raw start task retained until actual chooser/play and owned frame cancellation settle. Stop/revoke/hide/blur/ended/mute/expiry unregister current and late returned sources, stop only owned returned tracks, clear owned raster, and fence reentry. Async close is prepublished/idempotent; failed cleanup stays quarantined, not falsely quiescent.",
+    "Fresh absolute deadline clock after final trusted availability/activation observers precedes intrinsic owner/grant/generation fences and native issuance. The native API enforces transient activation; injected environment/clock are trusted software seams, not a sandbox.",
+    "Host JavaScript raster retrieval and decoded media time/presentedFrames retain separate provenance; hardware capture timestamp, physical freshness and clock mapping remain unknown."
+  ],
+  "limits": {
+    "attempts": 32,
+    "ownedAdmissionSlots": 1,
+    "rawStartTask": 1,
+    "nativeTracksCleanup": 8,
+    "captureMaxMs": 30000,
+    "openLogicalMs": 5000,
+    "width": 8,
+    "height": 8,
+    "rasterPayloadBytes": 256,
+    "runtimeEnvelopeLimitBytes": 4096,
+    "decodedDimensionMax": 8192,
+    "maxHz": 10,
+    "maxAgeMs": 250,
+    "samples": 300,
+    "frameCallbacks": 600,
+    "latest": 1,
+    "listeners": 12,
+    "expiryTimers": 1
+  },
+  "cleanup": {
+    "sourceBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0
+    },
+    "nativeInternalQuiescenceMeasured": false
+  },
+  "independentRepairReview": {
+    "path": "/tmp/101-browser-screen-preview-review-repairs-independent-review.json",
+    "sha256": "c8ba96d40ea14a2298cc8bdb13f9c46f032d4ee870ce4a9c984d36a76f476d7c",
+    "scope": "Passive exact corrected four source pins; verdict frozen before later root23/type/lint/browser executions. Original BLOCK and both actual old failures preserved separately."
+  },
+  "installedSdk": {
+    "path": "/tmp/101-screen-ble-haptic-sdk.json",
+    "sha256": "1e302d6c9d39b1dad31f1bb615637c79e3eb96fc377af0f5c0c417753ce31d3f",
+    "actualProducerTree": "8a678b539048921d7d7e5bc9f263bdfac2581c7e",
+    "sourceFiles": 168,
+    "installedFiles": 377,
+    "packages": 7,
+    "consumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-pKuUqo/manifest.json",
+      "sha256": "5c1a64130e3eb5dd3da55e93dbc72d92ee38a6f93cbb93bb8f7f707deadd5933"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-lthVVD/receipt.json",
+      "sha256": "69ef5b9e67c95b49a7be3036c0b149927e40804ee8f29c012aa3121035f4f643"
+    },
+    "scope": "Ordinary offline seven-package installed public JS/declarations/examples; no source loader/alias in the installed positive caller."
+  },
+  "requiredGates": {
+    "status": "pending-before-local-commit",
+    "recordPath": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
+    "localCommitEvidenceRef": "refs/codex/evidence/2026-10-07-screen-ble/source-commit",
+    "scope": "All five gates must pass against the final frozen canonical candidate before its local commit. Current software proof binds its own earlier producer tree; no prior gates are reused as current gates."
+  },
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "remaining": [
+    "Whole V07/N02/V01 scope",
+    "Native OS display chooser and actual monitor/window capture/permission enforcement",
+    "Encoded/HD streaming, cursor/input mapping and transported media",
+    "Physical capture freshness/scanout, native buffer/RSS/internal quiescence and broader browser/platform qualification"
+  ],
+  "originalHistoryPreservation": {
+    "path": "/tmp/101-screen-preview-original-history-preservation.json",
+    "sha256": "8d559d32909d9b226a8150317f7fe9909f9e071e8d8363b4e8d22084bc455674",
+    "bundleRef": "refs/codex/evidence/2026-10-07-screen-ble/original-history-bundle",
+    "artifactCount": 36
+  },
+  "installedBrowser": {
+    "path": "/tmp/101-screen-preview-installed-browser.json",
+    "sha256": "911ee1d8912c649f6e3b1142cd24e40692fdfe27d9a153745494134561de98d1",
+    "runs": 4,
+    "checksPerRun": 8,
+    "scope": "Installed public SDK and ordinary compiled example in Chromium/WebKit; owned native canvas producer/video decode/readback, resize retirement. Native monitor/window chooser and physical capture remain unqualified."
+  },
+  "currentSoftwarePreservation": {
+    "path": "/tmp/101-screen-ble-haptic-software-preservation.json",
+    "sha256": "0c6ed97a944383e6b7c47fc4d203f753dc236e375f532b6059de30b6894beb03",
+    "bundleRef": "refs/codex/evidence/2026-10-07-screen-ble/current-software-bundle",
+    "artifacts": 696
+  }
+}

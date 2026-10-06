@@ -70,10 +70,17 @@
     "sha256": "9312b4cc63327970d3e3e10b89575a17cca0bcb72a8a384b2521808580513dcd"
   },
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact coherent source/UI/canonical candidate requires all AGENTS gates before next local source commit; SDK/current20 runtime results retain actual pinned source scopes."
+    "status": "pass",
+    "path": "/tmp/101-browser-providers-sharing-exact-required-gates.json",
+    "sha256": "c8a29382854f2a9d386eb8e8cb760ec7d05a8ad0d0dac5581292150ccd5127c9",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+    "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
+    "unitPass": 2005,
+    "renderedPass": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates ran against exact committed source/canonical tree9bbe. Historical native/SDK execution producers retain their own recorded source/build scopes. These postcommit documentation bytes are a later draft, not included in that tested tree."
   },
-  "sourceCommit": null,
+  "sourceCommit": "cd27212f9e2d09fa786bf5673990793e278a1b53",
   "taskDisposition": {
     "E10": "PARTIAL/OPEN. Selected verified local extension asynchronous reservation fixed; broader extension/native/dependency/sandbox qualification remains open.",
     "F07": "PARTIAL/OPEN. One installer unresolved raw-operation workload now bounded; full resource/queue/fanout matrix remains open."
@@ -98,5 +105,19 @@
     "indexBlob": "77f8b75414cc2c458f558243601293ad8bc56148",
     "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/settings-hid-sdk-bundle",
     "scope": "Both actual installer160/357 and HID162/362 SDK source trees, tarballs/packed/ordinaryinstalled bytes and selected historical/current scripts/QA/failures are retained in local Git. Ephemeral compiler/native fixture scratch intentionally deleted by QA is excluded; no claim of retaining every generated scratch byte."
+  },
+  "committedSourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24",
+  "independentCandidateReview": {
+    "path": "/tmp/101-browser-providers-sharing-canonical-independent-review.json",
+    "sha256": "1e636d70a9f7de4f10bc3d794f66f4fac570ea2b47e3742b4ba0900e0131f8a4",
+    "scope": "Passive review of exact committed38-path9bbe candidate and scoped canonical evidence, all5 actual logs and immutable producer references; no new runtime execution."
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-browser-providers-sharing-final-build-preservation.json",
+    "sha256": "1b01d76dbf035ea500e6e25dc672fc9890626e46ac57a7c142336fe2c5e4fd0a",
+    "compiledFiles": 524,
+    "artifacts": 571,
+    "bundleRef": "refs/codex/evidence/2026-10-07-browser-providers-sharing/final-build-bundle",
+    "sourceTree": "9bbe06593e48d48a3989de748be4ddaeff755f24"
   }
 }
