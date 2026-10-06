@@ -437,6 +437,66 @@ The selected actual codec is VP8. VP9 effect qualification, a dedicated expiry
 fixture, interframe streaming, transported video, synchronization, hardware and
 the full V06 matrix remain open.
 
+## Output sharing policies
+
+`createOutputSharingController` reviews destination-owner policies and separate
+source/sink resource grants. `createBrowserOutputSharing` applies the accepted
+policy to private audio and owned raster outputs. Two slots per destination
+support mix, duck or exclusive audio, read-only camera observers, ordered app
+layers and disjoint left/right app regions. Failed review preserves the incumbent;
+accepted transfer retires old routes before fresh admission.
+
+The profile bounds eight sources, four destinations, eight routes, 64 attempts,
+32 policy changes, 128 effects and two actual pending reservations. Leases last
+at most one second inside a thirty-second controller lifetime; no permission
+is renewed automatically. Audio grants, selected camera ownership and original
+application-view contexts remain independent. Expiry, revoke and callback races
+are checked after upstream access, and close awaits issued work.
+
+The packaged `@101/connect/examples/output-sharing` caller uses approved private
+software oscillators, one canvas camera source and one application engine.
+Native half-alpha raster readback allows the observed one-byte quantization;
+source capture/PCM/scanout clocks remain unknown or unmapped. Run
+`node tools/qa-output-sharing.mjs --sdk-root INSTALLED_CONSUMER` for the selected
+profile. [Current software evidence](receipts/2026-10-06-output-sharing.json);
+hardware, physical capture/control and transported media remain separate.
+
+## Software media synchronization
+
+`createMediaSynchronizationController` compares independently approved audio
+and video observation routes in one declared display software clock. Return
+`offer()` directly from each real sink's `apply` so its delivery context stays
+retained until pairing, discard or actual effect settlement. The packaged
+`@101/connect/examples/media-synchronization` caller renders private PCM and
+raster observations without acquiring a user microphone, camera or speaker.
+
+The selected profile declares a 20 ms conservative skew budget and 5 ms clock
+uncertainty budget. Missing, unmapped, stale or excessive observations degrade
+the visible owned output; recovery needs fresh maps and three fresh pairs.
+Native capture time, caller video PTS and physical display scanout remain
+unknown. Source labels do not authenticate clocks. One actual effect and two
+live delivery contexts remain reserved through the returned Promise, including
+after logical cancellation. Stop with an intercepted already-issued held RAF
+callback remains unqualified. [Local evidence](receipts/2026-10-06-media-synchronization.json).
+
+## Opt-in application recording
+
+`createMediaRecording` stores selected raw 8×8 RGBA frames through an explicitly
+provided owner-data store. Live routing does not record automatically. Capture,
+playback, owner review, export and deletion require separate exact owner grants;
+opaque capture/playback handles and grants are never restored from storage.
+The packaged `@101/connect/examples/media-recording` caller uses its own canvas
+and local IndexedDB, with separate live source/sink authorization.
+
+The selected profile bounds four clips, 32 frames per clip, four pending frames
+and four frames per export page. Original source clock, sequence, quality and
+decoded media position remain distinct from host playback emission. Seek epochs
+and deletion epochs fence stale work. Retention and consent expiry retire output;
+raw storage operations remain reserved until actual settlement. Reviewed export
+returns copies: deletion cannot recall copies retained by the caller. Audio,
+encoded media, remote copies and physical acquisition remain separate profiles.
+[Local evidence](receipts/2026-10-06-media-recording.json).
+
 ## Private application audio
 
 `createBrowserApplicationAudio` and `BROWSER_APPLICATION_AUDIO_LIMITS` are public
@@ -2060,10 +2120,27 @@ outputs retain verified bytes and their historical evidence. `retireOwned` retir
 host-owned work synchronously; it cannot undo an already issued external effect.
 The archive ceiling is 128 KiB each; managed data fits 1.5 MiB and the entire owner
 document 2 MiB. Metadata CRC detects accidental corruption; archive SHA-256 checks
-content integrity. Neither authenticates a malicious filesystem host. Registered
-recipient copies, remote storage and unmanaged/native/desktop recovery are excluded.
-Run `node tools/qa-owner-backup.mjs --sdk-root INSTALLED_CONSUMER` for the selected
-filesystem and IndexedDB first callers.
+content integrity. Neither authenticates a malicious filesystem host.
+
+Registered local recipient copies require explicit `registeredCopies: 'include'`
+on backup, read-backup, reviewed migration or reviewed restore. Approval binds the
+exact all-registered-local count and content hash; a changed set fails closed.
+Omission keeps nonempty registered copies unsupported. Recovery preserves original
+record/batch hashes, source timestamps, quality and expiry, and restores no capture
+or upload handles. The earliest retained-copy deadline also bounds archive life
+and current approval. Remote storage and unmanaged/native/desktop recovery remain
+excluded.
+
+`close()` revokes authority synchronously and returns an idempotent Promise that
+waits for actual authorization and storage work to settle. A timed-out attempt
+keeps its reservation until that work finishes. Await `backup.close()` before
+closing the backing storage port; direct `managedStorage` transactions are included
+in cleanup and retain the backing engine's own quotas.
+
+Run `node tools/qa-owner-backup.mjs --sdk-root INSTALLED_CONSUMER` for the original
+filesystem and IndexedDB callers. The registered-copy caller is checked with
+`node tools/qa-owner-backup-copies.mjs --installed MANIFEST INSTALLED_CONSUMER CALLER_TREE`;
+its current qualification and limits remain in the checklist evidence.
 
 ## Pending delivery limits by authorized scope
 
@@ -2790,3 +2867,7 @@ The actual `examples/workspace-administration` public caller verifies typed
 delivery, independent owner denials, delegated-role limits, removal and native
 timer expiry. Durable accounts/team storage, cross-process identity, unmanaged
 host enforcement, installed distribution and full S17 qualification remain open.
+
+### Reference device inspection
+
+The reference `/devices` page can temporarily enroll one explicitly reviewed peer and inspect its self-reported resources. Both ends approve the complete verified digest. A separate approval enables up to four compatible subscribe-only scalar, boolean or vector previews for at most 30 seconds; commands and media are unavailable in this flow. Stop, removal, expiry, loss, hide and navigation retire previews; retry requires fresh enrollment and grants. Device descriptors establish compatibility, not access or physical identity. This selection is volatile and does not create an account or persistent device record. [Selected source UI evidence](receipts/2026-10-07-devices-enrolled-resources.json) records the local software journeys and remaining limits.

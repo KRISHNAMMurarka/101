@@ -14,7 +14,7 @@ test('the selected native agent IPC boundary exists', () => {
 // These exercise an actual fixed child and actual Unix-domain socket; no fake
 // replies or arbitrary producer/factory injection are part of this boundary.
 if (api) {
-  const { createScopedAgentIpc } = api;
+  const { createScopedAgentIpc, SCOPED_AGENT_IPC_LIMITS } = api;
   const signal = () => new AbortController();
   function setup(overrides: Partial<Parameters<typeof createScopedAgentIpc>[0]> = {}) {
     const owner = signal(), registration = signal(), read = signal();
@@ -131,11 +131,24 @@ if (api) {
     } finally { await h.controller.close(); }
   });
   test('quiet registration expiry retires native authority and frees pending/timers', async () => {
-    const h = setup({ authorizeRegistration(request) { return { request, signal: signal().signal, expiresAt: performance.now() + 150 }; } });
-    try { const start = await h.controller.start({ purpose: 'rss', version: 1 }); assert.ok(start.ok);
-      await new Promise(resolve => setTimeout(resolve, 200)); await h.controller.stop();
-      assert.equal((await h.controller.readRss(start.value, delivery())).ok, false);
+    let expiresAt = 0;
+    // One fixed grant covers the existing native ready allowance and an active
+    // tail. Startup is not required to finish within the 150 ms active tail.
+    const h = setup({ authorizeRegistration(request) {
+      expiresAt = performance.now() + SCOPED_AGENT_IPC_LIMITS.deadlineMs + 150;
+      return { request, signal: signal().signal, expiresAt };
+    } });
+    try { const start = await h.controller.start({ purpose: 'rss', version: 1 }); assert.ok(start.ok, JSON.stringify(start));
+      await new Promise(resolve => setTimeout(resolve, Math.max(0, expiresAt - performance.now())));
+      const cleanupDeadline = expiresAt + SCOPED_AGENT_IPC_LIMITS.killMs + SCOPED_AGENT_IPC_LIMITS.terminateMs;
+      while (!h.controller.status().cleanupVerified && performance.now() < cleanupDeadline) {
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      // No stop/read call may cause the cleanup being asserted here.
+      assert.ok(performance.now() >= expiresAt);
+      assert.equal(h.controller.status().phase, 'idle'); assert.equal(h.controller.status().cleanupVerified, true);
       assert.equal(h.controller.status().nativeChildren, 0); assert.equal(h.controller.status().nativePending, 0); assert.equal(h.controller.status().timers, 0);
+      assert.equal((await h.controller.readRss(start.value, delivery())).ok, false); assert.equal(h.controller.status().reads, 0);
     } finally { await h.controller.close(); }
   });
   test('approval must preserve exact frozen request and narrow finite expiry', async () => {

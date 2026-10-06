@@ -77,3 +77,11 @@ export { createWatchCompanionResources } from './watch-companion.ts';
 export type { WatchCompanionEnrollment, WatchCompanionRelaySnapshot, WatchCompanionBridge, WatchCompanionReportEvent,
   WatchCompanionResourceRequest, WatchCompanionResourceOwnerGrant, WatchCompanionResourcesOptions, WatchCompanionResources,
   WatchCompanionResult } from './watch-companion.ts';
+export { MEDIA_RECORDING_LIMITS, createMediaRecording } from './media-recording.ts';
+export type { MediaRecordingSource, MediaRecordingFrame, MediaRecordingSourceContext, MediaRecordingRequest, MediaRecordingGrant, MediaRecordingCaptureRequest, MediaRecordingPlaybackRequest, MediaRecordingReviewRequest, MediaRecordingExportRequest, MediaRecordingDeleteRequest, MediaRecordingOptions, MediaRecordingCaptureHandle, MediaRecordingPlaybackHandle, MediaRecordingFailure, MediaRecordingResult, MediaRecordingStoredFrame, MediaRecordingClip, MediaRecordingPlaybackFrame, MediaRecordingExportPage, MediaRecording } from './media-recording.ts';
+
+export { MEDIA_SYNCHRONIZATION_PROFILE, MEDIA_SYNCHRONIZATION_LIMITS, createMediaSynchronizationController } from './media-synchronization.ts';
+export type { MediaSynchronizationRole, MediaSynchronizationState, MediaSynchronizationReason, MediaSynchronizationSource, MediaSynchronizationPair, MediaSynchronizationEffectContext, MediaSynchronizationOptions, MediaSynchronizationSnapshot, MediaSynchronizationController } from './media-synchronization.ts';
+
+export { OUTPUT_SHARING_PROFILE, OUTPUT_SHARING_LIMITS, createOutputSharingController } from './output-sharing.ts';
+export type { OutputSharingKind, OutputSharingInput, OutputSharingPolicy, OutputSharingSource, OutputSharingSlot, OutputSharingDestination, OutputSharingPolicyRequest, OutputSharingPolicyGrant, OutputSharingResourceRequest, OutputSharingResourceGrant, OutputSharingFailure, OutputSharingResult, OutputSharingPlan, OutputSharingRoute, OutputSharingEffectContext, OutputSharingOptions, OutputSharingController } from './output-sharing.ts';

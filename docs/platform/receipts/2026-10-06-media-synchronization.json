@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-local-software-profile",
+  "base": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+  "producerTree": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+  "callerTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+  "sourceSha256": {
+    "packages/device-runtime/src/media-synchronization.ts": "b3401e2605b91554b763a0d9e420f0d1adfe6a5607bfa5ece1324ab46c92e12a",
+    "packages/device-runtime/src/media-synchronization.test.ts": "48fd8d4117c0c8e7c11cca676f74e7ba52b048e4bdad6e859fa5480e02c79ac8",
+    "examples/device-pipelines/media-synchronization.ts": "aa946248c8afa380ba3d4be69d99ee4ea17e30f559d9a64075d6565473997cd9",
+    "tools/qa-media-synchronization.mjs": "3c80bea3b149a14c0e138dce543daea0e20383d7a55501094b36fb815340d7c3"
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-media-synchronization-frozen-pins.json",
+    "sha256": "54e3b30068ed07389dccc553bc47ab36873c4a94c3fbc5a7a3dd22c13fb4e6ee"
+  },
+  "sourceNative": {
+    "path": "/tmp/101-media-synchronization-source-first.json",
+    "sha256": "7599a8002ae58233e2f8afa87903e2dc5dfa6c3429278576f935c7ffcb220a17"
+  },
+  "currentInstalled": {
+    "path": "/tmp/101-sharing-wire-stop-expiry-synchronization-installed.json",
+    "sha256": "318908017ad21931414996bac976f19948b07819807954fdb0ac01ca08f06111"
+  },
+  "installedMetadata": {
+    "path": "/tmp/101-sharing-wire-stop-expiry-synchronization-installed-metadata.json",
+    "sha256": "115b817adf84bbe631737aa9b33e2e203cdccb0761d167f822241e613ccda0c8"
+  },
+  "rootIntegration": {
+    "path": "/tmp/101-recording-sync-primary-integration.json",
+    "sha256": "aa861a8f9e5fc563127bd073b363e7cd994ca95610c82480dd45336a29d7fdf8"
+  },
+  "installedReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "sdk": {
+    "schemaVersion": 1,
+    "sourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/manifest.json",
+      "sha256": "84445225cec65a7a7a0fb594391d92065b8fbb45aaa3a576c15ea6516b76c969"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ISTXSt/receipt.json",
+      "sha256": "9ff615d9ce9c48d566912806d5657e7427a2e84b112eef4fb167bc5da25dba2b"
+    },
+    "consumerRoot": "/tmp/101-sdk-consumer-ISTXSt",
+    "packages": 7,
+    "sourcePins": 158,
+    "installedFiles": 352
+  },
+  "preservation": {
+    "path": "/tmp/101-recording-sync-build-preservation.json",
+    "sha256": "e0475450b72c171978290b946e5b5bb3c0f96a11e6b6f8c409715a93515ed4d8"
+  },
+  "scope": "Public software-media-observation-sync/1 controller and packaged caller: actual independently approved audio/video runtime observations, native MessagePort clock exchanges, conservative20ms skew/5ms uncertainty budgets, missing/unmapped/skew/age degradation and three fresh pair recovery, configured assumed-drift interval arithmetic, final intrinsic owner/context fencing and raw effect settlement.6 focused tests; source90 and current installed90 owned C/F/W checks with actual private256-frame OfflineAudioContext PCM and owned raster effects. A dedicated native drift-negative case is unqualified. Native capture/PTS/scanout mapping and physical synchronization remain unknown; held intercepted RAF-to-Stop is unqualified.",
+  "limitations": [
+    "Maps concern software retrieval/generation observations only; native capture, assigned media PTS and display scanout remain unknown.",
+    "No achieved AV synchronization, authenticated clock, speaker/camera/device acquisition or physical qualification.",
+    "The injected already-issued held RAF callback is released before Stop in current native fixture; held-callback-to-Stop remains unqualified."
+  ],
+  "requiredGates": {
+    "status": "pending",
+    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+    "earlierDocumentaryCandidate": {
+      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+    }
+  },
+  "taskDisposition": {
+    "V10": "open; selected software controller and installed caller built and locally qualified"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "acceptedSupportRows": 0,
+  "installedHistory": [
+    {
+      "historical": true,
+      "supersededBy": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+      "evidence": {
+        "callerTree": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+        "sdk": {
+          "schemaVersion": 1,
+          "sourceTree": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+          "manifest": {
+            "path": "/Users/km/Desktop/games/101/release/sdk-LenHDr/manifest.json",
+            "sha256": "41370def5171e3ef07583f79024b75ea1da2cb33dd4ce11d50a4f17e19009a1d"
+          },
+          "packages": 7,
+          "sourcePins": 155,
+          "installedFiles": 345,
+          "ordinaryConsumer": {
+            "path": "/tmp/101-sdk-consumer-IRfQYg/receipt.json",
+            "sha256": "709e2d60c6bad71a238f3257fe50c1eab3ed26f1716e1af8b71db75cbe3ed1c0"
+          },
+          "checks": 10,
+          "strictNodeNextAndBundler": true,
+          "sourceAliases": false,
+          "sdkTypeStripping": false
+        },
+        "currentInstalled": {
+          "path": "/tmp/101-recording-sync-synchronization-installed.json",
+          "sha256": "37cf877697fe4b726a8966d4a6a138adb795ea42b58e13eeb6e0f9dee1026dd5"
+        },
+        "requiredGates": {
+          "status": "not yet green; final integrated candidate gates required before commit",
+          "priorCandidateTree": "a3227392103016cee425289896281df9adf8d2aa",
+          "firstAttempt": {
+            "path": "/tmp/101-recording-sync-required-gates.json",
+            "sha256": "5e27fe20be4b32b388ca473cf9680ed2ae49019ae4a34766ceaa78241e065bfb"
+          },
+          "recoveryAttempt": {
+            "path": "/tmp/101-recording-sync-recovered-required-gates.json",
+            "sha256": "4b0474911758656c8bdd4d3b1a6d3f4fa3fc4f593bb1727cf140a305dcfbd5f5"
+          },
+          "holdAndFixture": {
+            "path": "/tmp/101-recording-sync-gate-hold-and-fixture.json",
+            "sha256": "c200d5960e986ad90b1db3061027e5ffba34fd06515b1e703629811e7b0b803a"
+          },
+          "scope": "Selected source/installed runtime checks passed at the recorded producer tree. Whole candidate unit attempts failed8 then1; build/rendered were not run. Native fixture corrections do not change production deadlines. Other native startup failures remain unqualified."
+        },
+        "installedMetadata": {
+          "path": "/tmp/101-recording-sync-synchronization-installed-metadata.json",
+          "sha256": "fb783e731a3fd7b86678fbcefa38d9137f81db72c61f3bf2cb685bf4f36ed38e"
+        },
+        "installedReview": {
+          "path": "/tmp/101-recording-sync-installed-independent-review.json",
+          "sha256": "e843020687b7bc9920fa2c3a35dd5ecb9353f231ffebad14c24cd506d78e7ac5"
+        }
+      }
+    }
+  ],
+  "packagedSourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+  "currentInstalledWave": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+  "currentInstalledReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "currentPreservation": {
+    "path": "/tmp/101-current-media-enrollment-preservation.json",
+    "sha256": "c5d51d92ba8ad5d4bbea02507b6f221d35b5a98558d58c2f4cb0ffb1830f9a47",
+    "artifacts": 2948,
+    "bytes": 86516018,
+    "oldBuiltArtifactsMatched": 503,
+    "historicalOrMissingPaths": 21,
+    "bundleTree": "0e02ef1340e33270adbaeba07c91179a8df57bc3",
+    "refs": "refs/codex/evidence/2026-10-07-media-enrollment",
+    "primaryTreeUnchanged": true
+  },
+  "integrationTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+  "callerByteEquivalence": {
+    "review": {
+      "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+      "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+    },
+    "meaning": "Exact caller/compiler/SDK byte audit establishes equivalence to the current integration source; actual execution revision is callerTree, not integrationTree."
+  }
+}

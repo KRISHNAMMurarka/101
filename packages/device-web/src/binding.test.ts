@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createDeviceRuntime } from '../../device-runtime/src/index.ts';
-import type { DeliveryContext, Observation, RouteGrant } from '../../device-runtime/src/types.ts';
+import type { Connection, DeliveryContext, Observation, RouteGrant } from '../../device-runtime/src/types.ts';
 import type { DeviceDescriptor } from '../../device-model/src/index.ts';
 import { observationAgeBounds, parseObservationTiming } from '../../device-model/src/index.ts';
 import { RemoteResourcePublisher, RemoteResourceReceiver } from './binding.ts';
@@ -296,6 +296,29 @@ test('reliable cadence queue is bounded and expires without replaying stale edge
   second.publisher.publish('contact', false); second.setNow(201); second.publisher.tick(); second.receiver.tick();
   assert.deepEqual(second.received.map(value => value.value), [true]); assert.equal(second.released(), 1); assert.equal(second.publisher.status().pending, 0);
 });
+test('publisher stop preserves its reason before owner expiry and records local expiry at the bound deadline', () => {
+  for (const at of [199, 200]) {
+    const h = harness({ grant: { expiresAt: 200, maxAgeMs: 100, maxHz: 60 } });
+    const route = h.runtime.route.bind(h.runtime); let connection: Connection | undefined;
+    h.runtime.route = request => { connection = route(request); return connection; };
+    try {
+      assert.equal(h.approve(), 1);
+      assert.equal(h.receiver.status().active, 1);
+      h.publisher.publish('position', { x: 0.25, y: 0.75 }); h.runtime.flush();
+      assert.equal(h.received.length, 1);
+      h.setNow(at); h.setAvailable(false);
+      // The actual public producer emits the stop; no receiver tick or host flush
+      // runs between crossing the deadline and receiving the native-shaped bytes.
+      h.publisher.tick();
+      assert.equal(h.receiver.status().active, 0);
+      assert.ok(connection);
+      assert.equal(connection.status().reason, at < 200 ? 'unavailable' : 'expired');
+      assert.equal(h.released(), 1);
+      h.runtime.flush(); assert.equal(h.received.length, 1);
+    } finally { h.publisher.stop(); h.receiver.stop(); h.runtime.close(); }
+  }
+});
+
 test('deadman expiry after sustained silence is checked on receive before a host flush', () => {
   const h = harness(); h.approve(); h.publisher.publish('position', { x: 0.2, y: 0.2 }); h.receiver.tick();
   h.setNow(601); h.publisher.publish('position', { x: 0.9, y: 0.9 }); h.runtime.flush();

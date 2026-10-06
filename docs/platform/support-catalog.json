@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 26,
+  "revision": 30,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3307,7 +3307,7 @@
         "formFactor": "Owned software fixture",
         "transport": "Private same-realm native WebCodecs application graph",
         "connector": "local-application-video-codec/1",
-        "connectorVersion": "e7d391c8db5213416a590f502c8fe033050a522f",
+        "connectorVersion": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
         "profiles": [
           "local-application-video-codec/1"
         ],
@@ -3348,6 +3348,168 @@
         "No user device/camera/screen/speaker, transported video, physical latency, browser internal memory/RSS or native quiescence qualification.",
         "Original prerequisite pixel failure is retained with cause unresolved; subsequent successful prefixes do not prove its repair.",
         "Trusted same-realm callbacks and host approvals are cooperative; duplicate native callback interception/malicious host is unqualified."
+      ]
+    },
+    {
+      "id": "media-synchronization-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned software fixture",
+        "runtimeVersion": "macOS26.5.2/arm64; Node24.14.0/TS5.9.3; owned Chromium/Firefox/WebKit engine labels; exact browser versions/binaries not recorded by synchronization QA; source/compiler declaration pins in receipts",
+        "formFactor": "Owned software fixture",
+        "transport": "Private same-realm application graph",
+        "connector": "software-media-observation-sync/1",
+        "connectorVersion": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+        "profiles": [
+          "software-media-observation-sync/1"
+        ],
+        "resources": [
+          "Public software-media-observation-sync/1 controller and packaged caller: actual independently approved audio/video runtime observations, native MessagePort clock exchanges, conservative20ms skew/5ms uncertainty budgets, missing/unmapped/skew/age degradation and three fresh pair recovery, configured assumed-drift interval arithmetic, final intrinsic owner/context fencing and raw effect settlement.6 focused tests; source90 and current installed90 owned C/F/W checks with actual private256-frame OfflineAudioContext PCM and owned raster effects. A dedicated native drift-negative case is unqualified. Native capture/PTS/scanout mapping and physical synchronization remain unknown; held intercepted RAF-to-Stop is unqualified."
+        ],
+        "unavailable": [
+          "Maps concern software retrieval/generation observations only; native capture, assigned media PTS and display scanout remain unknown.",
+          "No achieved AV synchronization, authenticated clock, speaker/camera/device acquisition or physical qualification.",
+          "The injected already-issued held RAF callback is released before Stop in current native fixture; held-callback-to-Stop remains unqualified."
+        ]
+      },
+      "qualificationTasks": [
+        "V10"
+      ],
+      "evidence": {
+        "implementation": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "contract": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "runtime": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Maps concern software retrieval/generation observations only; native capture, assigned media PTS and display scanout remain unknown.",
+        "No achieved AV synchronization, authenticated clock, speaker/camera/device acquisition or physical qualification.",
+        "The injected already-issued held RAF callback is released before Stop in current native fixture; held-callback-to-Stop remains unqualified."
+      ]
+    },
+    {
+      "id": "media-recording-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned software fixture",
+        "runtimeVersion": "macOS26.5.2/arm64; Node24.14.0/TS5.9.3; owned Chromium/WebKit versions recorded by recording QA; source/compiler declaration pins in receipts",
+        "formFactor": "Owned software fixture",
+        "transport": "Private same-realm application graph",
+        "connector": "application-rgba-recording/1",
+        "connectorVersion": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+        "profiles": [
+          "application-rgba-recording/1"
+        ],
+        "resources": [
+          "Public application-rgba-recording/1 controller and packaged caller: opt-in separate capture/playback/review/export/delete consent; actual routed8x8 RGBA32-frame clip, genuine33rd frame quota rejection,34th short-retention capture, four-clip bound, eight four-frame exports, seek0/16/31 retained pixels, native IndexedDB restart data-only and owner isolation, TTL quiet output release, final clock/revoke guards, delayed append/delete epoch and raw cancellation settlement.21 focused tests; source76 and current installed76 owned C/W checks. Original generic native failure remains unattributed; later diagnostic failure preserved; checkpoint correction removes an unjustified throughput minimum while retaining one fixed7s capture window. Audio/encoded/remote/physical profiles remain open."
+        ],
+        "unavailable": [
+          "Selected local raw8x8 RGBA profile only; no audio, encoded media, remote recording or physical acquisition qualification.",
+          "Source clock/sequence/quality and host playback emission remain distinct; no capture freshness or cross-device mapping is invented.",
+          "Exported byte copies are external and cannot be recalled by owner deletion.",
+          "Two earlier failed native runs stay retained; original generic phase remains unknown. Splitting checkpoints is a fixture assumption correction, not a core or throughput performance fix."
+        ]
+      },
+      "qualificationTasks": [
+        "V11"
+      ],
+      "evidence": {
+        "implementation": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "contract": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "runtime": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Selected local raw8x8 RGBA profile only; no audio, encoded media, remote recording or physical acquisition qualification.",
+        "Source clock/sequence/quality and host playback emission remain distinct; no capture freshness or cross-device mapping is invented.",
+        "Exported byte copies are external and cannot be recalled by owner deletion.",
+        "Two earlier failed native runs stay retained; original generic phase remains unknown. Splitting checkpoints is a fixture assumption correction, not a core or throughput performance fix."
+      ]
+    },
+    {
+      "id": "output-sharing-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned native software fixture",
+        "runtimeVersion": "macOS arm64; Node24.14.0/TypeScript5.9.3; actual installed Chromium149.0.7827.55/Firefox151.0/WebKit26.5; owned loopback/private software producers.",
+        "formFactor": "Owned software fixture",
+        "transport": "Private same-realm application graph",
+        "connector": "output-sharing-policy/1",
+        "connectorVersion": "d490ae23755102554b428f7ce00c199ab224459c",
+        "profiles": [
+          "output-sharing-policy/1"
+        ],
+        "resources": [
+          "audio mix with both real frequencies",
+          "audio duck with retained quieter background",
+          "audio exclusive with only selected frequency",
+          "read-only observers of one selected private camera source",
+          "one application engine with ordered layers",
+          "disjoint owned app regions"
+        ],
+        "unavailable": [
+          "host supplied policy/resource owner approvers and native/upstream accessors are trusted; no sandbox against malicious same-origin JS",
+          "owned software audio oscillator/canvas/application projection only; no user camera/mic/speaker/hardware/phone/OS permission/control qualification",
+          "source/native PCM/capture/scanout clocks remain unknown or explicitly unmapped; no achieved latency or bitrate/SLO claims",
+          "no encoded/remote transport policy or physical camera-control claim"
+        ]
+      },
+      "qualificationTasks": [
+        "V09"
+      ],
+      "evidence": {
+        "implementation": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "contract": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "runtime": [
+          "media-backup-current-installed-2026-10-07"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "host supplied policy/resource owner approvers and native/upstream accessors are trusted; no sandbox against malicious same-origin JS",
+        "owned software audio oscillator/canvas/application projection only; no user camera/mic/speaker/hardware/phone/OS permission/control qualification",
+        "source/native PCM/capture/scanout clocks remain unknown or explicitly unmapped; no achieved latency or bitrate/SLO claims",
+        "no encoded/remote transport policy or physical camera-control claim"
       ]
     }
   ]

@@ -220,7 +220,7 @@ export class RemoteResourceReceiver {
     }
     if (packet.type === 'bind') return;
     const entry = this.slots.get(packet.slot); if (!entry) return;
-    if (packet.type === 'stop') { this.remove(packet.slot, packet.reason, false); return; }
+    if (packet.type === 'stop') { this.remove(packet.slot, now >= entry.grantExpiresAt ? 'expired' : packet.reason, false); return; }
     if (now >= entry.grantExpiresAt || silentRoute(entry, now)) { this.remove(entry.slot, 'expired'); return; }
     if (packet.type === 'ready') {
       if (entry.ready || packet.maxHz !== entry.maxHz || packet.maxAgeMs !== entry.maxAgeMs) { this.remove(packet.slot, 'incompatible'); return; }

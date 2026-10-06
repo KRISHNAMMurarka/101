@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|media-recording|media-synchronization|output-sharing|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -167,6 +167,20 @@ import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
 import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController, RecipeSession } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
 import { createBrowserApplicationAudio, BROWSER_APPLICATION_AUDIO_LIMITS } from '@101/connect';
+import { OUTPUT_SHARING_PROFILE, OUTPUT_SHARING_LIMITS, createOutputSharingController, createBrowserOutputSharing } from '@101/connect';
+import { createOutputSharingExample } from '@101/connect/examples/output-sharing';
+import type { OutputSharingKind, OutputSharingInput, OutputSharingPolicy, OutputSharingSource, OutputSharingSlot, OutputSharingDestination, OutputSharingPolicyRequest, OutputSharingPolicyGrant, OutputSharingResourceRequest, OutputSharingResourceGrant, OutputSharingFailure, OutputSharingResult, OutputSharingPlan, OutputSharingRoute, OutputSharingEffectContext, OutputSharingOptions, OutputSharingController } from '@101/device-runtime';
+import type { BrowserOutputSharingSource, BrowserOutputSharingDestination, BrowserOutputSharingEnvironment, BrowserOutputSharingOptions, BrowserOutputSharingSnapshot, BrowserOutputSharing } from '@101/device-web';
+export type PublicOutputSharingDeclarations = [OutputSharingKind, OutputSharingInput, OutputSharingPolicy, OutputSharingSource, OutputSharingSlot, OutputSharingDestination, OutputSharingPolicyRequest, OutputSharingPolicyGrant, OutputSharingResourceRequest, OutputSharingResourceGrant, OutputSharingFailure, OutputSharingResult<undefined>, OutputSharingPlan, OutputSharingRoute, OutputSharingEffectContext, OutputSharingOptions, OutputSharingController];
+export type PublicBrowserOutputSharingDeclarations = [BrowserOutputSharingSource, BrowserOutputSharingDestination, BrowserOutputSharingEnvironment, BrowserOutputSharingOptions, BrowserOutputSharingSnapshot, BrowserOutputSharing];
+void [OUTPUT_SHARING_PROFILE, OUTPUT_SHARING_LIMITS, createOutputSharingController, createBrowserOutputSharing, createOutputSharingExample];
+import { createMediaRecording, MEDIA_RECORDING_LIMITS, createMediaSynchronizationController, MEDIA_SYNCHRONIZATION_PROFILE, MEDIA_SYNCHRONIZATION_LIMITS } from '@101/connect';
+import { runOwnedMediaRecordingFixture } from '@101/connect/examples/media-recording';
+import { createMediaSynchronizationExample } from '@101/connect/examples/media-synchronization';
+import type { MediaRecordingSource, MediaRecordingFrame, MediaRecordingSourceContext, MediaRecordingRequest, MediaRecordingGrant, MediaRecordingCaptureRequest, MediaRecordingPlaybackRequest, MediaRecordingReviewRequest, MediaRecordingExportRequest, MediaRecordingDeleteRequest, MediaRecordingOptions, MediaRecordingCaptureHandle, MediaRecordingPlaybackHandle, MediaRecordingFailure, MediaRecordingResult, MediaRecordingStoredFrame, MediaRecordingClip, MediaRecordingPlaybackFrame, MediaRecordingExportPage, MediaRecording, MediaSynchronizationRole, MediaSynchronizationState, MediaSynchronizationReason, MediaSynchronizationSource, MediaSynchronizationPair, MediaSynchronizationEffectContext, MediaSynchronizationOptions, MediaSynchronizationSnapshot, MediaSynchronizationController } from '@101/device-runtime';
+export type PublicMediaRecordingDeclarations = [MediaRecordingSource, MediaRecordingFrame, MediaRecordingSourceContext, MediaRecordingRequest, MediaRecordingGrant, MediaRecordingCaptureRequest, MediaRecordingPlaybackRequest, MediaRecordingReviewRequest, MediaRecordingExportRequest, MediaRecordingDeleteRequest, MediaRecordingOptions, MediaRecordingCaptureHandle, MediaRecordingPlaybackHandle, MediaRecordingFailure, MediaRecordingResult<undefined>, MediaRecordingStoredFrame, MediaRecordingClip, MediaRecordingPlaybackFrame, MediaRecordingExportPage, MediaRecording];
+export type PublicMediaSynchronizationDeclarations = [MediaSynchronizationRole, MediaSynchronizationState, MediaSynchronizationReason, MediaSynchronizationSource, MediaSynchronizationPair, MediaSynchronizationEffectContext, MediaSynchronizationOptions, MediaSynchronizationSnapshot, MediaSynchronizationController];
+void [createMediaRecording, MEDIA_RECORDING_LIMITS, createMediaSynchronizationController, MEDIA_SYNCHRONIZATION_PROFILE, MEDIA_SYNCHRONIZATION_LIMITS, runOwnedMediaRecordingFixture, createMediaSynchronizationExample];
 import { createBrowserApplicationVideoCodec, APPLICATION_VIDEO_CODEC_PROFILE, APPLICATION_VIDEO_CODEC_TIERS } from '@101/connect';
 import { createApplicationVideoCodecExample } from '@101/connect/examples/application-video-codec';
 import type { BrowserVideoCodec, BrowserVideoCodecGrantRequest, BrowserVideoCodecOwnerGrant, BrowserApplicationVideoCodecOptions, BrowserApplicationVideoCodecSource, BrowserApplicationVideoCodecSourceOptions, BrowserApplicationVideoCodecBindOptions, BrowserApplicationVideoCodecStatus, BrowserApplicationVideoCodecBinding, BrowserApplicationVideoCodec } from '@101/device-web';
@@ -452,6 +466,7 @@ function compileConsumer() {
 }
 
 const runtimeImports = String.raw`
+import { createOutputSharingExample } from '@101/connect/examples/output-sharing';
 import { createInvitationConnectionSource } from '@101/connect/examples/invitation-connection';
 import * as sdk from '@101/connect';
 import * as model from '@101/device-model';
@@ -482,6 +497,10 @@ import { runSettingsStorageExample } from '@101/connect/examples/settings-storag
 const runtimeChecks = String.raw`
 function check(value, message) { if (!value) throw new Error(message); }
 export async function checkRuntime() {
+  check(typeof sdk.createOutputSharingController === 'function' && sdk.createOutputSharingController === runtime.createOutputSharingController && sdk.OUTPUT_SHARING_PROFILE === runtime.OUTPUT_SHARING_PROFILE && sdk.OUTPUT_SHARING_LIMITS === runtime.OUTPUT_SHARING_LIMITS, 'Output sharing runtime exports differ');
+  check(typeof sdk.createBrowserOutputSharing === 'function' && sdk.createBrowserOutputSharing === web.createBrowserOutputSharing && typeof createOutputSharingExample === 'function', 'Output sharing browser/example exports differ');
+  check(typeof sdk.createMediaRecording === 'function' && sdk.createMediaRecording === runtime.createMediaRecording && sdk.MEDIA_RECORDING_LIMITS === runtime.MEDIA_RECORDING_LIMITS, 'Media recording public exports differ from the independent package');
+  check(typeof sdk.createMediaSynchronizationController === 'function' && sdk.createMediaSynchronizationController === runtime.createMediaSynchronizationController && sdk.MEDIA_SYNCHRONIZATION_PROFILE === runtime.MEDIA_SYNCHRONIZATION_PROFILE && sdk.MEDIA_SYNCHRONIZATION_LIMITS === runtime.MEDIA_SYNCHRONIZATION_LIMITS, 'Media synchronization public exports differ from the independent package');
   check(typeof sdk.createBrowserApplicationVideoCodec === 'function' && sdk.createBrowserApplicationVideoCodec === web.createBrowserApplicationVideoCodec && sdk.APPLICATION_VIDEO_CODEC_PROFILE === web.APPLICATION_VIDEO_CODEC_PROFILE && sdk.APPLICATION_VIDEO_CODEC_TIERS === web.APPLICATION_VIDEO_CODEC_TIERS, 'Private application video codec public exports differ from the independent package');
   check(typeof sdk.createBrowserApplicationAudio === 'function' && sdk.createBrowserApplicationAudio === web.createBrowserApplicationAudio && sdk.BROWSER_APPLICATION_AUDIO_LIMITS === web.BROWSER_APPLICATION_AUDIO_LIMITS, 'Private application audio public exports differ from the independent package');
   check(sdk.SecureWebSocketTransport === SecureWebSocketTransport && sdk.WSS_SUBPROTOCOL === WSS_SUBPROTOCOL && WSS_SUBPROTOCOL === '101-resource-wss-1', 'Public secure WebSocket exports differ from the independent package');

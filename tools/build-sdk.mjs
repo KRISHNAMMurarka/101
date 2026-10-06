@@ -8,7 +8,8 @@ import ts from 'typescript';
 
 const root = resolve(import.meta.dirname, '..');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
-const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'invitation-connection', 'run'];
+const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => ({ name, source: `examples/device-pipelines/${name}.ts` }));
+examples.push({ name: 'media-recording', source: 'examples/browser-resources/media-recording.ts' });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
@@ -48,7 +49,7 @@ const snapshot = mkdtempSync(join(tmpdir(), '101-sdk-source-'));
 let outputDir;
 try {
   const selectedPaths = [...names.map(name => `packages/${name}`), 'LICENSE', 'schemas/device-descriptor.schema.json',
-    ...examples.map(name => `examples/device-pipelines/${name}.ts`)];
+    ...examples.map(({ source }) => source)];
   const archive = execFileSync('git', ['archive', '--format=tar', tree, '--', ...selectedPaths], { cwd: root, maxBuffer: 16 * 1024 * 1024 });
   execFileSync('tar', ['-xf', '-', '-C', snapshot], { input: archive });
   const manifests = new Map(names.map(name => [name, JSON.parse(readFileSync(join(snapshot, `packages/${name}/package.json`), 'utf8'))]));
@@ -60,7 +61,7 @@ try {
     }
   }
   const roots = names.flatMap(name => files(join(snapshot, `packages/${name}/src`)).filter(path => path.endsWith('.ts') && !path.endsWith('.test.ts')));
-  roots.push(...examples.map(name => join(snapshot, `examples/device-pipelines/${name}.ts`)));
+  roots.push(...examples.map(({ source }) => join(snapshot, source)));
   const sourcePaths = [...roots, ...names.map(name => join(snapshot, `packages/${name}/package.json`)),
     join(snapshot, 'LICENSE'), join(snapshot, 'schemas/device-descriptor.schema.json')].sort();
   const sourceSha256 = Object.fromEntries(sourcePaths.map(path => [relative(snapshot, path).replaceAll(sep, '/'), fileHash(path)]));
@@ -96,9 +97,9 @@ try {
       exportMap['./schema/device-descriptor.json'] = './schema/device-descriptor.json'; publicFiles.push('schema');
     }
     if (name === 'connect') {
-      for (const example of examples) {
-        for (const extension of ['js', 'd.ts']) copy(join(compiled, `examples/device-pipelines/${example}.${extension}`), join(directory, `examples/${example}.${extension}`));
-        copy(join(snapshot, `examples/device-pipelines/${example}.ts`), join(directory, `examples/${example}.ts`));
+      for (const { name: example, source } of examples) {
+        for (const extension of ['js', 'd.ts']) copy(join(compiled, source.slice(0, -3) + '.' + extension), join(directory, `examples/${example}.${extension}`));
+        copy(join(snapshot, source), join(directory, `examples/${example}.ts`));
         exportMap[`./examples/${example}`] = { types: `./examples/${example}.d.ts`, import: `./examples/${example}.js` };
       }
       publicFiles.push('examples');

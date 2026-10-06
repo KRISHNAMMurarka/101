@@ -1,0 +1,527 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass-selected-local-source-ui-profile",
+  "profile": "devices-enrolled-input-inspection/1",
+  "localOnly": true,
+  "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+  "base": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+  "sourceSha256": {
+    "app/devices/enrolled-device.ts": "0da3da9cf347a2f0ee2d3d82e6b058827f82d087b9a9acc23232ce12016cc7f6",
+    "app/devices/enrolled-device.test.ts": "09ae0f2a53f9aa239eca0ae75f832fc9682de733274613796050e92e8cb528e0",
+    "app/devices/EnrolledDevices.tsx": "c23bac70d6c12d86758f8230e69b7a5c53e8c1c0794e9ebb2d33c9afd9cd68e2",
+    "app/devices/DevicesView.tsx": "51836be044b7ad6d4a72206500633b66ca325d78477f2183e00bd3a3a6948e40",
+    "app/devices/devices.css": "a5faaa3609d3f980e960d9ae466563efe2319168f4e0994009041fb1e915ce8d",
+    "tools/qa-devices-flow.mjs": "d587bca3f810c40e99ab3a256b63cbe1d38048996ef0bfd5485cf6d3c82d651c"
+  },
+  "actualNative": {
+    "record": {
+      "path": "/tmp/101-devices-enrollment-current-ui-deferred-focus.json",
+      "sha256": "1abd2626d21b4a1e47564648ea002038ad986cc2fc4b9ecf63cbc7835c4eeae4",
+      "bytes": 940
+    },
+    "receipt": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-viIMre/enrollment-receipt.json",
+      "sha256": "8010b430873a422bf1c4efdc4b47623de2546decff79cd054ec03a790d6bab1a",
+      "bytes": 8754
+    },
+    "stdout": {
+      "path": "/tmp/101-devices-enrollment-current-ui-deferred-focus.stdout",
+      "sha256": "a463b7373dad5fe1f7a2a9e55916bfff97eb774354a6e36cbd2076426b84f0f9",
+      "bytes": 8867
+    },
+    "stderr": {
+      "path": "/tmp/101-devices-enrollment-current-ui-deferred-focus.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "command": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "tools/qa-devices-flow.mjs",
+      "http://127.0.0.1:5173/",
+      "--enrollment-only"
+    ],
+    "exitCode": 0,
+    "durationMs": 94486,
+    "ownedDevServerClosed": true,
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "checks": [
+          "inert-arrival",
+          "actual-native-rtc-bilateral-whole-digest-enrollment",
+          "declared-resources-not-authority",
+          "unsupported-command-recovery",
+          "separate-source-and-exact-two-resource-preview-approvals",
+          "actual-timer-and-native-button-software-values",
+          "candidate-cancel-retains-incumbent-and-focus",
+          "actual-native-candidate-comparison-decline-retains-incumbent",
+          "invalid-offer-retains-current-values",
+          "cancel-removal-retains-connection-preview-and-focus",
+          "terminal-preview-stop-releases-held-values-and-source-slots",
+          "confirmed-removal-actual-peer-loss-and-no-retained-values",
+          "fresh-retry-new-comparison-and-resource-approval",
+          "absolute-preview-expiry-without-new-approval-or-input-access",
+          "actual-source-loss-and-explicit-recovery",
+          "keyboard-focus-responsive-reduced-motion",
+          "explicit-stop-closes-current-peer-preview-and-restores-focus",
+          "route-unmount-closes-owned-peer-and-preview"
+        ],
+        "softwareIssuerPeers": 5,
+        "cleanup": [
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          }
+        ],
+        "limits": {
+          "peers": "one current + one candidate",
+          "unsettledSetup": 1,
+          "resources": 4,
+          "previewMs": 30000,
+          "connectionMs": 60000
+        },
+        "source": "authored browser software timer/button with native RTC/P256, not hardware inventory",
+        "physical": false
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "checks": [
+          "inert-arrival",
+          "actual-native-rtc-bilateral-whole-digest-enrollment",
+          "declared-resources-not-authority",
+          "unsupported-command-recovery",
+          "separate-source-and-exact-two-resource-preview-approvals",
+          "actual-timer-and-native-button-software-values",
+          "candidate-cancel-retains-incumbent-and-focus",
+          "actual-native-candidate-comparison-decline-retains-incumbent",
+          "invalid-offer-retains-current-values",
+          "cancel-removal-retains-connection-preview-and-focus",
+          "terminal-preview-stop-releases-held-values-and-source-slots",
+          "confirmed-removal-actual-peer-loss-and-no-retained-values",
+          "fresh-retry-new-comparison-and-resource-approval",
+          "absolute-preview-expiry-without-new-approval-or-input-access",
+          "actual-source-loss-and-explicit-recovery",
+          "keyboard-focus-responsive-reduced-motion",
+          "explicit-stop-closes-current-peer-preview-and-restores-focus",
+          "route-unmount-closes-owned-peer-and-preview"
+        ],
+        "softwareIssuerPeers": 5,
+        "cleanup": [
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          },
+          {
+            "rawPending": 0,
+            "timerArmed": false,
+            "state": "disconnected",
+            "stopped": true,
+            "listeners": 0
+          }
+        ],
+        "limits": {
+          "peers": "one current + one candidate",
+          "unsettledSetup": 1,
+          "resources": 4,
+          "previewMs": 30000,
+          "connectionMs": 60000
+        },
+        "source": "authored browser software timer/button with native RTC/P256, not hardware inventory",
+        "physical": false
+      }
+    ]
+  },
+  "independentReview": {
+    "path": "/tmp/101-devices-enrollment-current-native-independent-review.json",
+    "sha256": "872908187d6b5d9bc0367e56be8663dd48b046404cae84443430cb0294b352f0"
+  },
+  "authorityAndLifecycle": [
+    "Inert helper construction and screenarrival attach no resource binding. Actual UI starts onlyafter explicit keyboardactivation and displays a taskscoped invitation.",
+    "Actual source publicentry/nativePeerDataTransport with iceServers[] and nativeP256 identities compares exact whole64hex digest on bothsides; neither invitation nor reportedconnectorlabel creates identity/resourceauthority.",
+    "Resourceinspection is descriptor-derived declaredmetadata. Command/job/property/media operations are not executed or misreported as physical capability.",
+    "Source publishing approval is independent of whole-digest enrollment; selected local preview approval is independent of both. QA observes zero binds beforeenrollment and two exact resourcebinds onlyafter own preview approval.",
+    "Helper current runtime authorization pins principal/application/session, source andsink device/revision/schema/capability, sinkregistration and firstobserved sourceregistration; only subscribe\u2192typedwrite previews on this owned screen.",
+    "Current observed validscalar/boolean softwareinputs set receiving; the nullprototype capture preserves a genuine __proto__ resource. Mere description doesnot set receiving.",
+    "One current andone candidate; cancelled/declined/invalid candidate leaves incumbent receiving/contactstate intact. Only explicitaccepted replacement retires incumbent beforeadmission.",
+    "Preview selection1..4 scalar/boolean/vector, max20Hz/max250ms age, immutable minimum of30s preview and60s connection. Stop/expiry releasesvalues, unregisterssinks andterminallystopsthe receiver; no oldhandle re-preview or automaticgrants/reconnect.",
+    "Cancel/removal/Stop increment lifetime revision/abort ownedrecord beforecleanup. Provisionaltask reservation happens before nativefactory/disconnect; unresolved rawsetup stays tracked, blocksreplacement until actualPromise settlement. setup deadline5s is logicalretirement, not freeing the issuedwork.",
+    "Confirmed exacthandle removal closes ownednativeRTC/auth/runtime and clearsvalues; cancelremoval retainscurrent. Actual remotepeer loss plus routeunmount/explicitStop native journeys are observed.",
+    "UI hides/pagehide/unmount retireownedcontroller withgeneration fencing; actualproof exercises explicitStop/unmount/source-loss/quietpreviewexpiry, not a separate hide/pagehide native case.",
+    "Returnfocus is armed beforecancel/Stop and afterexactsuccessfulRemove; waits absenttask andrawPending0, then consumes one-shot intent. Newaccepted currenthandle retainsinspectfocus precedence. CandidateCancel nativefocus RED is preserved and currentjourney verifies focusGREEN."
+  ],
+  "producer": {
+    "recipient": "Actual current /devices source application on root-owned loopback devserver; no SDK/global helper substituted for production recipient UI.",
+    "issuer": "Five authored same-context software timer/button sourcepages perengine. Blank fixed same-origin /__101_owned_software_source__ document avoids unrelated Reacthydration; actual publicsource APIs/nativeRTC/P256 and native keyboard Space generate/authenticate/bind/publish. No installedSDK or physicalproducer claim.",
+    "keyboard": "Current-locator trialaction only verifies nonactivating readiness; locatorfocus/activeElementcheck/nativeSpace remain actualaction. ExplicitStop andCancel/Keepfocus checked.",
+    "responsive": "Actual nooverflow checks at320/390/1280, visible action44px checks and actual reducedmotion computedstyle. Monochrome scopedCSS unchanged; no named screenreader/theme/nativeformfactor matrix implied.",
+    "inputScope": "Actual positive selectedscalar/boolean subscription preview; vector is supported/tested declared code path without a nativeUI positive here.",
+    "noResourcePermissionFromEnrollment": true,
+    "privateScope": "Same-browser ownedsoftware controlpersons, ephemeral cryptographickey lineage only; no account/human-person identity, LANhardware inventory, persistent savedenrollment or malicious-host isolation.",
+    "cleanupReadback": "Each issuerstop explicitly removes3 DOM listeners, detaches ownedauth subscription, stopspublisher/auth/timer, awaitsnativepeer.disconnect anddrains tracked rawPromises. Actual rawPending/timer/state readbacks prove these selectedport lifetimes.",
+    "listenerCounterLimit": "Returned listeners:0 is a literal fixture declaration after explicitremovals, not instrumented totalDOM/auth/browser/native listenermeasurement; do not label it nativeinternalzero.",
+    "nativeInternalLimit": "Peer state disconnected/stopPromises and context.close/browser.close completion are publicnative API settlement; no RTCengine internalquiescence, hardware or RSS proof."
+  },
+  "priorSourceQualification": {
+    "packet": {
+      "path": "/tmp/101-devices-enrollment-phase1-frozen-pins.json",
+      "sha256": "a062b1909a20640f6aeafbf3994db213d6673154a25e983aea4c4641055198f2",
+      "bytes": 12629
+    },
+    "sourceCopy": "/tmp/101-devices-enrollment-source-draft3-phase1",
+    "sourcePins": {
+      "app/devices/enrolled-device.ts": "0da3da9cf347a2f0ee2d3d82e6b058827f82d087b9a9acc23232ce12016cc7f6",
+      "app/devices/enrolled-device.test.ts": "09ae0f2a53f9aa239eca0ae75f832fc9682de733274613796050e92e8cb528e0",
+      "app/devices/EnrolledDevices.tsx": "7e678c00c6502c56bd7905cb3e24635e0e5d0a106ac93d8d2ace3baf370d9be9",
+      "app/devices/DevicesView.tsx": "51836be044b7ad6d4a72206500633b66ca325d78477f2183e00bd3a3a6948e40",
+      "app/devices/devices.css": "a5faaa3609d3f980e960d9ae466563efe2319168f4e0994009041fb1e915ce8d",
+      "tools/qa-devices-flow.mjs": "cb7945bc1dc0da0bf0b361d8bbd6215459994ec41cdffe474002e034d5b056a0"
+    },
+    "proofPins": {
+      "/tmp/101-devices-enrollment-proto-route-original-pins.json": "74538200d4087d588388d6b0cb99eda9afccdaf6b972bdc52648753061223cef",
+      "/tmp/101-devices-enrollment-phase1-focused-first.log": "ef7fe4671b6185cbc2803cf69536a1ab4b4971dec8b1128f693fb991ef0fc4e8",
+      "/tmp/101-devices-enrollment-phase1-focused-first.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-focused-green.log": "114538bfca5501c755ae59fcdfe46dfd424a494f5e8dcfab0a264801c0f90dcc",
+      "/tmp/101-devices-enrollment-phase1-focused-green.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-final-focused.log": "3f9d5dc60d0123687d5bb1d0f47040ca9fc3d6a057315ff2e1b2b67c2aec673c",
+      "/tmp/101-devices-enrollment-phase1-final-focused.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-strict-first.json": "d71c36248e46905d3b919ad702249b6e0264a2ba7f0d5f70c15a34e2e08b3cd1",
+      "/tmp/101-devices-enrollment-phase1-strict-first.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-strict-first.err": "99c930963d64cebd310288e32072b4f7ce92b343822d5113235c1eae3a2367c5",
+      "/tmp/101-devices-enrollment-phase1-strict-green.json": "51b941643af000b7e662047016869ed05f16e281c44bfc2dfe8c5876d69b1060",
+      "/tmp/101-devices-enrollment-phase1-strict-green.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-strict-green.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-typecheck.mjs": "5629f8f277de74d1f2bf0de086515aab7fb753b94e2e49aee0a45b0f357ffaf0",
+      "/tmp/101-devices-enrollment-phase1-typecheck-corrected.mjs": "72412175aed259ab0260a34a9d25af21aee5c22e88f86779e2d1e01ac3b8ae4a",
+      "/tmp/101-devices-enrollment-phase1-lint-first.log": "4b8b1e3ec323d3ae32d2263cff7065fcc162e2fa203be49db7e40244ca528bc1",
+      "/tmp/101-devices-enrollment-phase1-lint-first.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-lint-green.log": "acdbe21445a110a415a2bc39c1125edcbce0d07a525dbdabc90c0b68009ae83f",
+      "/tmp/101-devices-enrollment-phase1-lint-green.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-phase1-dependency-closure.json": "0b992495eab58bd0334e0011d5ea256fdb4450d69b0ac0f13303b6a040e8e39a",
+      "/tmp/101-devices-enrollment-source-preflight-independent-review.json": "b118457fe1bf785aabf09dc67fa7abf7b72afdfdc4765260ce1d086b7be5dbd6",
+      "/tmp/101-devices-enrollment-local-resolver.json": "137286b9d6120069983b77d79d612352a4fc4b65a7b5e3564fbf7110f9bb00bf",
+      "/tmp/101-devices-enrollment-proto-original-red.log": "da22432eb8f0076180d5958cd979a1aa391b0b2c205da3405c36379394b8a711",
+      "/tmp/101-devices-enrollment-proto-original-red.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-proto-route-original-red.log": "7a82514357c9541dac80ea1a17714e8844dd234e40b8781155a6acf2fbf909c1",
+      "/tmp/101-devices-enrollment-proto-route-original-red.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-proto-route-original-red-2.log": "dc60f85c0aa5ddcfb6c1b1b83578d79e6c60737d2ab00427dd7f9e3e716bc7b1",
+      "/tmp/101-devices-enrollment-proto-route-original-red-2.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-devices-enrollment-proto-route-original-red-3.log": "54e5734e43d75956069f04dedbd55aa7c6aa976ce82724127572ccf114c792ab",
+      "/tmp/101-devices-enrollment-proto-route-original-red-3.err": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "proofArtifactsMatched": 30,
+    "history": {
+      "draft2": {
+        "path": "/tmp/101-devices-enrollment-source-draft2.json",
+        "sha256": "15004b7e215a672c7bc59d7b9f7c831f3c58102aead77d7959e4931d7c86da96",
+        "sourceCopy": "/tmp/101-devices-enrollment-source-draft2"
+      },
+      "actualOriginalRed": {
+        "packet": "/tmp/101-devices-enrollment-proto-route-original-pins.json",
+        "sha256": "74538200d4087d588388d6b0cb99eda9afccdaf6b972bdc52648753061223cef",
+        "sourceCopy": "/tmp/101-devices-enrollment-proto-route-original-source"
+      },
+      "draft1": {
+        "path": "/tmp/101-devices-enrollment-source-draft1.json",
+        "sha256": "4407c9839a799abdb0f7c5d67df623c52194044a330e40731fec1b50ce725c3e",
+        "unchanged": "Original UI/QA preimages, all dependency pins, limits/design and unexecuted status remain preserved in draft1.",
+        "draftCorrection": "Closed selected-array count/data descriptors and an event-loop settlement checkpoint in the quota fixture; no observed failure or qualification claim."
+      }
+    },
+    "commands": {
+      "originalDictionaryRed": {
+        "command": "env -u NODE_ENV PATH=/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin:/usr/sbin:/sbin /Users/km/.nvm/versions/node/v24.14.0/bin/node --test --test-name-pattern=\"an enrolled preview retains a valid __proto__\" app/devices/enrolled-device.test.ts",
+        "exit": 1,
+        "stdout": "/tmp/101-devices-enrollment-proto-route-original-red-3.log",
+        "stderr": "/tmp/101-devices-enrollment-proto-route-original-red-3.err",
+        "oldCoreSha256": "66bbf6e751c5c378f5380d6596db22e2a6beb012a64b4ece22b190cfe6a78791",
+        "observed": "Actual public P-256 authenticated peer, publisher, receiver, runtime and separately chosen preview route delivered scalar42; preview receiving, Object.hasOwn(values, __proto__) false."
+      },
+      "focused": {
+        "command": "env -u NODE_ENV PATH=/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin:/usr/sbin:/sbin /Users/km/.nvm/versions/node/v24.14.0/bin/node --test app/devices/enrolled-device.test.ts",
+        "exit": 0,
+        "tests": 14,
+        "stdout": "/tmp/101-devices-enrollment-phase1-final-focused.log",
+        "stderr": "/tmp/101-devices-enrollment-phase1-final-focused.err"
+      },
+      "strict": {
+        "command": "env -u NODE_ENV PATH=/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin:/usr/sbin:/sbin /Users/km/.nvm/versions/node/v24.14.0/bin/node /tmp/101-devices-enrollment-phase1-typecheck-corrected.mjs",
+        "exit": 0,
+        "diagnostics": 0,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "includes": "Plain helper/test + both TSX files and actual imported closure; existing next-env.d.ts vinext compatibility declarations.",
+        "report": "/tmp/101-devices-enrollment-phase1-strict-green.json"
+      },
+      "lint": {
+        "command": "env -u NODE_ENV PATH=/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin:/usr/sbin:/sbin /Users/km/.nvm/versions/node/v24.14.0/bin/node node_modules/eslint/bin/eslint.js app/devices/enrolled-device.ts app/devices/enrolled-device.test.ts app/devices/EnrolledDevices.tsx app/devices/DevicesView.tsx app/devices/devices.css tools/qa-devices-flow.mjs",
+        "exit": 0,
+        "errors": 0,
+        "warnings": [
+          "CSS has no matching ESLint configuration; no CSS lint qualification."
+        ],
+        "stdout": "/tmp/101-devices-enrollment-phase1-lint-green.log",
+        "stderr": "/tmp/101-devices-enrollment-phase1-lint-green.err"
+      }
+    },
+    "dependencyClosure": {
+      "path": "/tmp/101-devices-enrollment-phase1-dependency-closure.json",
+      "sha256": "0b992495eab58bd0334e0011d5ea256fdb4450d69b0ac0f13303b6a040e8e39a",
+      "files": 138
+    },
+    "toolchain": {
+      "node": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "version": "24.14.0",
+      "sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+      "typescript": "5.9.3",
+      "NODE_ENV": "absent"
+    },
+    "interpretation": "14 focused GREEN and138-module strict/noUnchecked/UI/helper closure belong to historical phase1 bytes, including oldbinding6b02. Current source/native usesbindinge7f826; no substitution of historical typeclosure for a currentbroadgate."
+  },
+  "dictionaryRegression": {
+    "packet": {
+      "path": "/tmp/101-devices-enrollment-proto-route-original-pins.json",
+      "sha256": "74538200d4087d588388d6b0cb99eda9afccdaf6b972bdc52648753061223cef",
+      "bytes": 2067
+    },
+    "oldRedLog": {
+      "path": "/tmp/101-devices-enrollment-proto-route-original-red-3.log",
+      "sha256": "54e5734e43d75956069f04dedbd55aa7c6aa976ce82724127572ccf114c792ab",
+      "bytes": 923
+    },
+    "oldRedMeaning": "Actual publicP256/authenticated publisher/receiver/runtime selectedroute deliveredscalar42; old capture receivingtrue but Object.hasOwn(values,__proto__)false. Transport/channel ports were cooperative software, not nativeRTC. Narrow nullprototypecapture now exactcurrentunchangedhelper."
+  },
+  "oldBuiltMissingFeature": {
+    "record": {
+      "path": "/tmp/101-devices-enrollment-old-ui-feature-red.json",
+      "sha256": "3bfa7639cae6b84b454463e507c2a1326d75a7ac0f223b89218bece9c6241d80",
+      "bytes": 81904
+    },
+    "oldCandidateTree": "abb476a2a443a2856c05e41b14ed82e82eedc537",
+    "oldUiPins": {
+      "app/devices/DevicesView.tsx": "a19637b93aafbc9563c48e96b9e252e88408e87e03f3af7c5197f316ec413488",
+      "app/devices/devices.css": "1950c5c0e450ec0763105a1d27855f72d41c2b86f828c6dea611543f2e6d5bfd",
+      "app/devices/device-inspection.ts": "42b357018c0f108f0923b3d74b07fe52eb0f0ee26cdede6db546d07c376a1552",
+      "app/lib/browser-link.ts": "392484b56057fb4aeaf192dd9db87c6a4ec8db90dda38ee6508355bf29ced8cf",
+      "app/lib/host-endpoint-review.ts": "4d350852261695d06372ccae3898d970238bbcb87286145d06e4da32d962c8b8",
+      "app/components/HostConnectionReview.tsx": "37564e0417f3e647587815da6d0b18853fcc7a18d324ade29cc37ced69e47f7c"
+    },
+    "selectorHarness": {
+      "path": "/Users/km/.codex/worktrees/devices-enrollment/101/tools/qa-devices-flow.mjs",
+      "sha256": "cb7945bc1dc0da0bf0b361d8bbd6215459994ec41cdffe474002e034d5b056a0"
+    },
+    "selectorHarnessIsServedUi": false,
+    "preservedBuiltArtifactsMatched": 503,
+    "stdout": {
+      "path": "/tmp/101-devices-enrollment-old-ui-feature-red.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "stderr": {
+      "path": "/tmp/101-devices-enrollment-old-ui-feature-red.stderr",
+      "sha256": "623acd71955649bc7ee747c00cb04212db9844deb33950c2d795a35323e14b49",
+      "bytes": 764
+    },
+    "meaning": "Actual old builtDevices page missing enrollmentcontrol, producerCount0/exit1. The newselector is a harness, not servedoldUI/newfeature qualification."
+  },
+  "failureHistory": {
+    "staleCapturedHandleDiagnostic": {
+      "path": "/tmp/101-devices-enrollment-stale-handle-regression.json",
+      "sha256": "5a5a4bc9802d1248f2835ae15ac1e962b81ea83e12b11967aa183ff588839414",
+      "bytes": 1057
+    },
+    "earlierNativeFailures": [
+      {
+        "record": {
+          "path": "/tmp/101-devices-enrollment-current-ui.json",
+          "sha256": "9c9ed0109cf37641739ac1cbb8a917cc1f80ecc89f1dd42baa60e39f0d78a4cc",
+          "bytes": 910
+        },
+        "sourceTree": "76c77768e6d3e8af3563cafd81f2c80b3d1827a0",
+        "stdout": {
+          "path": "/tmp/101-devices-enrollment-current-ui.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr": {
+          "path": "/tmp/101-devices-enrollment-current-ui.stderr",
+          "sha256": "464e4a456ed2a5fdb2e0c14dd6b90062ffe228d1774ebf529ab6ab0ae3ff1959",
+          "bytes": 604
+        },
+        "classification": "Actual old capturedSSR handle remained disabled afterhydration; native producer count0, no enrollment qualification.",
+        "exitCode": 1
+      },
+      {
+        "record": {
+          "path": "/tmp/101-devices-enrollment-current-ui-fixed-locator.json",
+          "sha256": "0d36ab6b88d1d3e065c3b698d32b2007debdd7516fe07be72da561057944c790",
+          "bytes": 938
+        },
+        "sourceTree": "b1533c47f14865b0cff8c1d6286e684f16a26454",
+        "stdout": {
+          "path": "/tmp/101-devices-enrollment-current-ui-fixed-locator.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr": {
+          "path": "/tmp/101-devices-enrollment-current-ui-fixed-locator.stderr",
+          "sha256": "3577af8e3416ffa955e2d59e69d865a6cb398307a950745ea6a3b4f751209859",
+          "bytes": 3188
+        },
+        "classification": "Actual authoredsource fixture replaced a stillhydrating productbody; React/bodyharness failure, no complete bilateral enrollment proof.",
+        "exitCode": 1
+      },
+      {
+        "record": {
+          "path": "/tmp/101-devices-enrollment-current-ui-isolated-source.json",
+          "sha256": "41e74f3d68114abcb978eb27882205ab08a39a81604f3b2f5c1bbfa48a290f6d",
+          "bytes": 942
+        },
+        "sourceTree": "d7487c5a76c57f1070e12be8937b79d950c143fe",
+        "stdout": {
+          "path": "/tmp/101-devices-enrollment-current-ui-isolated-source.stdout",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "stderr": {
+          "path": "/tmp/101-devices-enrollment-current-ui-isolated-source.stderr",
+          "sha256": "c8f98ad8a66fc486aba9810e227ee53d8b6913a99fb3d7fb39681342156eb385",
+          "bytes": 578
+        },
+        "classification": "Actual Chromium candidateCancel Addfocus RED after incumbent scalar/boolean preview; previous contact assertion passed but laterjourneys unqualified.",
+        "exitCode": 1
+      }
+    ],
+    "scope": "All original actualfailures retain exit1/emptystdout andtheir phase-specific limits. Sourcefixture bodyhydration and SSRhandle errors are harness issues; candidateCancel focus is actual productionUI regression. Stop-specific originalfailure remains source-advisory, not falsely claimed nativeRED."
+  },
+  "priorReviews": {
+    "design": {
+      "path": "/tmp/101-devices-enrollment-design-independent-review.json",
+      "sha256": "ba5abaf6cf72037f831e4930da327688ab4867fbf539b15ca059c12ed0d367d4",
+      "bytes": 13054
+    },
+    "draft2": {
+      "path": "/tmp/101-devices-enrollment-source-preflight-independent-review.json",
+      "sha256": "b118457fe1bf785aabf09dc67fa7abf7b72afdfdc4765260ce1d086b7be5dbd6",
+      "bytes": 11908
+    },
+    "phase1": {
+      "path": "/tmp/101-devices-enrollment-phase1-independent-review.json",
+      "sha256": "5e9fe1591e1a1001e09659eeda60da29574449088b05a0e42b7238d6a4be3d1f",
+      "bytes": 39618
+    },
+    "currentLocator": {
+      "path": "/tmp/101-devices-enrollment-current-locator-independent-review.json",
+      "sha256": "892e0ff4d17d0f716fd6ae0a0d4ec38e462f003b0b3dda4decafa18235f9ecd1",
+      "bytes": 6066
+    },
+    "sourceIsolation": {
+      "path": "/tmp/101-devices-enrollment-source-isolation-independent-review.json",
+      "sha256": "a3da99c7a0701029b4e54a42fb677e62da8150577163dabbd30704abf6e6cc2f",
+      "bytes": 5300
+    },
+    "deferredFocus": {
+      "path": "/tmp/101-devices-enrollment-deferred-focus-independent-review.json",
+      "sha256": "5ab4afcc1bab9faa2abbff5cf9c0687514cfaf23d73a41b8b40b10e680358a01",
+      "bytes": 6520
+    },
+    "explicitStop": {
+      "path": "/tmp/101-devices-enrollment-explicit-stop-independent-review.json",
+      "sha256": "5159d9f4b64936dda11ed58bc0190453d8e8d25b65c9e7fccbf55697188cf182",
+      "bytes": 5174
+    }
+  },
+  "preservation": {
+    "path": "/tmp/101-current-media-enrollment-preservation.json",
+    "sha256": "c5d51d92ba8ad5d4bbea02507b6f221d35b5a98558d58c2f4cb0ffb1830f9a47",
+    "artifacts": 2948,
+    "bytes": 86516018,
+    "oldBuiltArtifactsMatched": 503,
+    "historicalOrMissingPaths": 21,
+    "bundleTree": "0e02ef1340e33270adbaeba07c91179a8df57bc3",
+    "refs": "refs/codex/evidence/2026-10-07-media-enrollment",
+    "primaryTreeUnchanged": true
+  },
+  "requiredGates": {
+    "status": "pending",
+    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+    "earlierDocumentaryCandidate": {
+      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+    }
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "taskDisposition": {
+    "U02": "OPEN. Added volatile bilateral manual enrollment, self-reported resource metadata, exact separate preview approvals, candidate recovery, removal and lifecycle. Actual18 journeys each Chromium149/WebKit26.5 passed. Persistent device/account identity, complete discovery/general operations and hardware/accessibility matrix remain open."
+  },
+  "limitations": [
+    "This native receipt is source-only current UI, not an ordinaryinstalledSDK UI or freshproductionbuild qualification.",
+    "The enrollment-only selector preserves legacyjourney code but does not rerun/qualify all22 legacychecks.",
+    "Broader U02 remainsopen: persistent/enrolled generaldevice inventory/account lifecycle, command/job/media/property privileges, scopedforget impact acrossgeneralconnections/grants, physicalchooser/formfactor/named-screenreader and fullsupportmatrix are not established.",
+    "Current final all-fivegates/commit disposition requires root gates; native36 and historicalfocused14 are not substitutes.",
+    "No storedcredentials/grants/identity restoration, networkscanning, phone/physicaldevice/manualOS UI or nativeinternalresourcezero qualification."
+  ]
+}

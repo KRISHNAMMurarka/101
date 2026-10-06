@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 100,
+  "revision": 105,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -34,7 +34,7 @@
       ],
       "environment": "Recorded single-process Node foundation; exact historical toolchain not recorded in this receipt; current harness Node 24.14.0/macOS 26.5.2 is separate",
       "reproduction": "npm run example:devices; repository gates listed in foundation QA",
-      "scope": "Embedded-only foundation H01–H12; 503 unit/31 rendered checks, no remote or physical claim",
+      "scope": "Embedded-only foundation H01\u2013H12; 503 unit/31 rendered checks, no remote or physical claim",
       "failure": null,
       "equipment": [],
       "supportRows": [
@@ -68,7 +68,7 @@
       ],
       "environment": "Per-case exact environments/revisions in chronological QA; mixed Mac browsers, simulators, iPhone 16 Pro and OnePlus IV2201 Android 13",
       "reproduction": "Per-case commands and performed actions in chronological QA; do not rerun as a substituted current acceptance",
-      "scope": "Only J01–J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
+      "scope": "Only J01\u2013J08 scopes: iPhone install/pair/reconnect; Android injected game/scanner smoke; laptop timings; watch build/simulator; desktop supporting checks",
       "failure": null,
       "equipment": [
         "Recorded devices only; no current support implication"
@@ -591,7 +591,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Prove physical phone → browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
+      "reproduction": "Prove physical phone \u2192 browser pointer. Test iPhone and Android sources, both diagonal directions, contact/release, resize and no anchor; measure capture-to-render latency.",
       "scope": "T08 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2336,7 +2336,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I²C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
+      "reproduction": "Qualify further gateway candidates. Research and record permitted first profiles for GPIO/I\u00b2C/SPI, NFC/RFID, legacy RF, HDMI-CEC, building automation, low-power radio and analog capture before implementation/support claims.",
       "scope": "A15 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2396,7 +2396,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Apple Watch → iPhone → host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Apple Watch \u2192 iPhone \u2192 host. Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.",
       "scope": "W02 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -2416,7 +2416,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Qualify physical Wear OS → Android → host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
+      "reproduction": "Qualify physical Wear OS \u2192 Android \u2192 host. Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.",
       "scope": "W03 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -3176,7 +3176,7 @@
       ],
       "environment": "macOS 26.5.2 arm64; Node 24.14.0/npm 11.9.0/TypeScript 5.9.3/Playwright 1.61.1; clean offline external SDK consumer in Node, Chromium, Firefox and WebKit",
       "reproduction": "node tools/build-sdk.mjs c4a7af9f64b60da762b7fb70fd19d9395a3f0e40; node tools/qa-sdk-consumer.mjs release/sdk-MrMDTB/manifest.json; exact candidate repository gates",
-      "scope": "E02 complete inert recipe v1 syntax for resources, processor pins/configuration, routes, owner permission requests, surfaces and style tokens. Two working simulated consumers, one direct and one processor-backed, run from the offline packed SDK. Generic resolution, consent lifecycle and adaptive rendering remain E03–E05; no physical or live service claim.",
+      "scope": "E02 complete inert recipe v1 syntax for resources, processor pins/configuration, routes, owner permission requests, surfaces and style tokens. Two working simulated consumers, one direct and one processor-backed, run from the offline packed SDK. Generic resolution, consent lifecycle and adaptive rendering remain E03\u2013E05; no physical or live service claim.",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -4624,7 +4624,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4× CPU slowdown meet recorded budgets.",
+      "reproduction": "Complete camera performance acceptance. Physical-phone body/hand 120-frame distributions and full laptop placement/gesture at 4\u00d7 CPU slowdown meet recorded budgets.",
       "scope": "G14 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5425,7 +5425,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Publication-ready candidate is accepted. K/O and L01–L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
+      "reproduction": "Publication-ready candidate is accepted. K/O and L01\u2013L05 have complete artifacts, provenance, licenses, docs, receipts and release decision; publishability is recorded independently from live status.",
       "scope": "Z05 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5445,7 +5445,7 @@
         "docs/platform/MASTER-CHECKLIST.md"
       ],
       "environment": "Not yet qualified; exact environment is required by the task before acceptance",
-      "reproduction": "Published system is verified. Authorized L06–L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
+      "reproduction": "Published system is verified. Authorized L06\u2013L07 results identify the actual distributed revision and live topology; the full requested scope is complete only when its required implementation and evidence rows close.",
       "scope": "Z06 exact acceptance as recorded in the master checklist; not implemented/qualified by this pending record",
       "failure": null,
       "equipment": [
@@ -5482,7 +5482,7 @@
       ],
       "environment": "Node 24.14.0/npm 11.9.0/TypeScript 5.9.3; macOS 26.5.2 (25F84)",
       "reproduction": "node tools/audit-platform-records.mjs; node --experimental-strip-types --test tests/platform-records.test.ts; full repository gates in receipt",
-      "scope": "C01–C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
+      "scope": "C01\u2013C08 contract/evidence deliverables and Q01 qualification template only; no physical SDK or release support",
       "failure": null,
       "equipment": [],
       "supportRows": []
@@ -7967,7 +7967,7 @@
       ],
       "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Expo57.0.12 native JS only; D07 worker original sourceNode24.19.0. Owned loopback/offline consumers.",
       "reproduction": "build-sdk 0a0c43cad5f82439fb73bcbbcc25d92fe70b712b; fresh qa-sdk-consumer; qa-owner-backup --sdk-root; qa-profile-resolution --sdk-root; qa-fair-delivery; affected packed media/haptic/timing checks; offline Expo native JS/source maps; exact commit gates.",
-      "scope": "PARTIAL exact principal/application/session pending-provider cap, including raw unresolved work through logical retirement and replacement; other approved tuples retain capacity. Latest/reliable × returned/rejected providers, fair rotation and default preservation. CPU/byte isolation and admission against many distinct approved scopes remain open.",
+      "scope": "PARTIAL exact principal/application/session pending-provider cap, including raw unresolved work through logical retirement and replacement; other approved tuples retain capacity. Latest/reliable \u00d7 returned/rejected providers, fair rotation and default preservation. CPU/byte isolation and admission against many distinct approved scopes remain open.",
       "failure": null,
       "equipment": [
         "Owned Mac; fresh offline installed seven-package SDK; genuine Node RSS producer and managed owner producers; actual filesystem and IndexedDB; headless owned loopback browsers"
@@ -10126,7 +10126,7 @@
     },
     {
       "id": "v06-private-application-video-codec-installed-2026-10-06",
-      "revision": "e7d391c8db5213416a590f502c8fe033050a522f",
+      "revision": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -10151,7 +10151,226 @@
       "supportRows": [
         "private-application-video-codec-software-2026-10-06"
       ],
-      "requiredGates": "pending exact integrated candidate"
+      "requiredGates": "all5 pass for committed source 44647ec9; later documentary candidate pending next software gates",
+      "priorRevision": "e7d391c8db5213416a590f502c8fe033050a522f",
+      "priorGateState": "pending exact integrated candidate",
+      "sourceIntegration": {
+        "schemaVersion": 1,
+        "status": "committed-locally-exact-candidate-gates-pass",
+        "commit": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+        "tree": "44647ec9c68d3fef63316f1889a48e70d53dee36",
+        "parent": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-application-video-codec-required-gates.json",
+          "sha256": "1ab7d902da075fa0be79bbcd0b02f0557003d7580449ff40a5cc5560b348417f"
+        },
+        "unit": {
+          "tests": 1865,
+          "pass": 1865,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass",
+        "freshBuild": "pass",
+        "tally": {
+          "total": 272,
+          "completed": 117,
+          "open": 155
+        },
+        "scope": "Selected application video codec software profile only; full V06 remains open. Later documentary reconciliation requires its next exact-candidate gates."
+      }
+    },
+    {
+      "id": "v10-media-synchronization-installed-2026-10-06",
+      "revision": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-media-synchronization.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2/arm64; Node24.14.0/TS5.9.3; owned Chromium/Firefox/WebKit engine labels; exact browser versions/binaries not recorded by synchronization QA; source/compiler declaration pins in receipts",
+      "reproduction": "node tools/qa-media-synchronization.mjs --sdk-root <clean-consumer>",
+      "scope": "Public software-media-observation-sync/1 controller and packaged caller: actual independently approved audio/video runtime observations, native MessagePort clock exchanges, conservative20ms skew/5ms uncertainty budgets, missing/unmapped/skew/age degradation and three fresh pair recovery, configured assumed-drift interval arithmetic, final intrinsic owner/context fencing and raw effect settlement.6 focused tests; source90 and current installed90 owned C/F/W checks with actual private256-frame OfflineAudioContext PCM and owned raster effects. A dedicated native drift-negative case is unqualified. Native capture/PTS/scanout mapping and physical synchronization remain unknown; held intercepted RAF-to-Stop is unqualified.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler/headless browser/private software media/storage fixtures; no user device/UI"
+      ],
+      "supportRows": [
+        "media-synchronization-software-2026-10-06"
+      ],
+      "requiredGates": "not yet green; prior a322 unit gates failed8 then1 (retained); corrected expiry fixture scoped checks passed, other native startup failures unqualified; final integrated exact candidate gates required before commit",
+      "supersededBy": "media-backup-current-installed-2026-10-07"
+    },
+    {
+      "id": "v11-media-recording-installed-2026-10-06",
+      "revision": "3b985e90aafd7bcdf4cfcc5f4ff35f15b0208c2f",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-media-recording.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2/arm64; Node24.14.0/TS5.9.3; owned Chromium/WebKit versions recorded by recording QA; source/compiler declaration pins in receipts",
+      "reproduction": "node tools/qa-media-recording.mjs --installed <manifest> <clean-consumer> <caller-tree>",
+      "scope": "Public application-rgba-recording/1 controller and packaged caller: opt-in separate capture/playback/review/export/delete consent; actual routed8x8 RGBA32-frame clip, genuine33rd frame quota rejection,34th short-retention capture, four-clip bound, eight four-frame exports, seek0/16/31 retained pixels, native IndexedDB restart data-only and owner isolation, TTL quiet output release, final clock/revoke guards, delayed append/delete epoch and raw cancellation settlement.21 focused tests; source76 and current installed76 owned C/W checks. Original generic native failure remains unattributed; later diagnostic failure preserved; checkpoint correction removes an unjustified throughput minimum while retaining one fixed7s capture window. Audio/encoded/remote/physical profiles remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler/headless browser/private software media/storage fixtures; no user device/UI"
+      ],
+      "supportRows": [
+        "media-recording-software-2026-10-06"
+      ],
+      "requiredGates": "not yet green; prior a322 unit gates failed8 then1 (retained); corrected expiry fixture scoped checks passed, other native startup failures unqualified; final integrated exact candidate gates required before commit",
+      "supersededBy": "media-backup-current-installed-2026-10-07"
+    },
+    {
+      "id": "v09-output-sharing-installed-2026-10-06",
+      "revision": "02ffe8b5d0e13dedf8609cf726f04bac5a23ba40",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-output-sharing.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64; Node24.14.0/TypeScript5.9.3; actual installed Chromium149.0.7827.55/Firefox151.0/WebKit26.5; owned loopback/private software producers.",
+      "reproduction": "Fresh build-sdk d490ae23755102554b428f7ce00c199ab224459c; ordinary qa-sdk-consumer10; recorded current installed caller commands and exact artifact hashes in receipt. Required candidate gates/local commit pending.",
+      "scope": "Implemented current installed software policy profile: actual93 checks across three named browsers, independent review and measured owned cleanup. Literal completion awaits exact gates/local source commit; hardware and broad SDK support unqualified.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac, private loopback/software producers and fresh offline SDK; no user phone/camera/mic/speaker"
+      ],
+      "supportRows": [
+        "output-sharing-software-2026-10-06"
+      ],
+      "supersededBy": "media-backup-current-installed-2026-10-07"
+    },
+    {
+      "id": "b06-registered-copies-installed-2026-10-06",
+      "revision": "02ffe8b5d0e13dedf8609cf726f04bac5a23ba40",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-owner-backup-copies.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Node24.14.0/TypeScript5.9.3; owned Mac; fresh offline7-package SDK; actual filesystem/RSS and headless native IndexedDB.",
+      "reproduction": "Fresh build-sdk d490ae23755102554b428f7ce00c199ab224459c; ordinary qa-sdk-consumer10; recorded current installed caller commands and exact artifact hashes in receipt. Required candidate gates/local commit pending.",
+      "scope": "PARTIAL registered-local-copy recovery, exact consent/hash/expiry/CAS/deletion fences and actual raw settlement. FS8+native Chromium queued-abort plus legacy FS/IDB current installed callers passed. Broader B06 remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac, private loopback/software producers and fresh offline SDK; no user phone/camera/mic/speaker"
+      ],
+      "supportRows": [],
+      "supersededBy": "media-backup-current-installed-2026-10-07"
+    },
+    {
+      "id": "media-backup-current-installed-2026-10-07",
+      "revision": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V09",
+        "V10",
+        "V11",
+        "B06",
+        "T10",
+        "T12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+        "docs/platform/receipts/2026-10-06-output-sharing.json",
+        "docs/platform/receipts/2026-10-06-media-recording.json",
+        "docs/platform/receipts/2026-10-06-media-synchronization.json",
+        "docs/platform/receipts/2026-10-06-owner-backup-copies.json"
+      ],
+      "environment": "macOS arm64; Node24.14.0/TS5.9.3; ordinary offline7-package SDK158source/352files; private native browsers/filesystem/WSS/software producers.",
+      "reproduction": "Pinned actual commands, complete producer/installed byte audit, native receipts and Git preservation in aggregate receipt. Fresh exact candidate gates/local commit pending.",
+      "scope": "Selected installed profiles: consumer10/WSS20/sync90/record76/sharing93/registeredcopiesFS8+nativequeuedIDBabort/legacyFS9+C/WnativeIDB. Exact local expiry-reason and QA complete native audio-observation corrections; failures retained. Broad qualifications open.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac and private loopback/software fixtures; phone/hardware tests deferred"
+      ],
+      "supportRows": [
+        "media-synchronization-software-2026-10-06",
+        "media-recording-software-2026-10-06",
+        "output-sharing-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "u02-enrolled-resources-partial-2026-10-07",
+      "revision": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-devices-enrolled-resources.json",
+        "app/devices/enrolled-device.ts",
+        "app/devices/EnrolledDevices.tsx",
+        "tools/qa-devices-flow.mjs"
+      ],
+      "environment": "Source-based real /devices UI; actual owned headless Chromium149.0.7827.55/WebKit26.5 native P256/RTC, isolated same-origin authored software source.",
+      "reproduction": "QA --enrolled-input against owned Vite; actual18journeys each engine,35sourcepins, actualcleanup/independent review in receipt. Phase1 focused14/strict138 historical, full integrated gates pending.",
+      "scope": "PARTIAL volatile add/inspect/approved scalar+boolean preview/removal/quietexpiry/loss/retry/Stop/unmount/responsivekeyboard journeys. Self-reported descriptions confer no authority. Source only, no installedUI/physical/persistent account/fullU02 claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac and private browser peers; phone/hardware tests deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -10648,7 +10867,8 @@
         "pending-T10",
         "resource-binding-2026-10-02",
         "resource-loopback-chromium-2026-10-02",
-        "resource-loopback-webkit-2026-10-02"
+        "resource-loopback-webkit-2026-10-02",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -10676,7 +10896,8 @@
       "id": "T12",
       "records": [
         "pending-T12",
-        "t12-local-sdk-2026-10-06"
+        "t12-local-sdk-2026-10-06",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -11662,7 +11883,9 @@
       "id": "V09",
       "records": [
         "pending-V09",
-        "v03-private-application-audio-installed-2026-10-06"
+        "v03-private-application-audio-installed-2026-10-06",
+        "v09-output-sharing-installed-2026-10-06",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -11677,7 +11900,9 @@
     {
       "id": "V10",
       "records": [
-        "pending-V10"
+        "pending-V10",
+        "v10-media-synchronization-installed-2026-10-06",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -11692,7 +11917,9 @@
     {
       "id": "V11",
       "records": [
-        "pending-V11"
+        "pending-V11",
+        "v11-media-recording-installed-2026-10-06",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12431,7 +12658,9 @@
       "id": "B06",
       "records": [
         "pending-B06",
-        "b06-backup-resolution-scope-partial-2026-10-06"
+        "b06-backup-resolution-scope-partial-2026-10-06",
+        "b06-registered-copies-installed-2026-10-06",
+        "media-backup-current-installed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12672,7 +12901,8 @@
       "id": "U02",
       "records": [
         "pending-U02",
-        "u02-browser-add-inspect-partial-2026-10-06"
+        "u02-browser-add-inspect-partial-2026-10-06",
+        "u02-enrolled-resources-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",

@@ -1,6 +1,6 @@
 # SDK and system master checklist
 
-Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
+Updated: **7 October 2026**. Source baseline: **`576202b`**. This is the canonical task ledger for the full platform vision and the 101 reference application.
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
@@ -188,9 +188,9 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **V06 — Implement adaptive encoded video.** Codec negotiation, bitrate/resolution changes, slow receivers, missing codecs and loss recover without unbounded buffers. [Built public controller, packaged caller and installed SDK evidence](receipts/2026-10-06-application-video-codec.json); remaining full scope and deferred physical checks stay open.
 - [ ] **V07 — Implement screen/application streaming.** Capture consent, selected surface, resize, cursor/input mapping, privacy and capture-stop behave correctly.
 - [x] **V08 — Implement independent render views.** One authoritative application/simulation supplies multiple authorized displays without creating duplicate engines or leaking private view state. [Local implementation and runtime evidence](receipts/2026-10-06-transports-views.json).
-- [ ] **V09 — Implement output sharing policies.** Audio mix/duck/exclusive, camera observers and app layers/regions are explicit policies with conflict and transfer tests.
-- [ ] **V10 — Implement synchronization and uncertainty handling.** Audio/video/display clocks declare skew budgets; excessive drift/uncertainty degrades visibly instead of inventing synchronization.
-- [ ] **V11 — Implement bounded recording/playback when enabled.** Consent, retention, seek, export, storage quotas and deletion are tested; live routing does not automatically record streams.
+- [ ] **V09 — Implement output sharing policies.** Audio mix/duck/exclusive, camera observers and app layers/regions are explicit policies with conflict and transfer tests. [Built public controller, packaged caller and current installed software evidence](receipts/2026-10-06-output-sharing.json); [Fresh installed SDK qualification and retained failure history](receipts/2026-10-07-media-backup-installed.json); exact gates and local commit remain pending.
+- [ ] **V10 — Implement synchronization and uncertainty handling.** Audio/video/display clocks declare skew budgets; excessive drift/uncertainty degrades visibly instead of inventing synchronization. [Built public controller, packaged caller and installed software evidence](receipts/2026-10-06-media-synchronization.json); broader scope and deferred physical checks remain open.
+- [ ] **V11 — Implement bounded recording/playback when enabled.** Consent, retention, seek, export, storage quotas and deletion are tested; live routing does not automatically record streams. [Built public controller, packaged caller and installed software evidence](receipts/2026-10-06-media-recording.json); broader scope and deferred physical checks remain open.
 - [ ] **V12 — Qualify media topologies and hardware.** Direct, relay and selected gateway/SFU paths record actual encryption trust, private-recipient isolation, quality, recovery and thermal behavior.
 
 ### A — Wired, IoT, appliance, legacy and robotics gateways
@@ -258,7 +258,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **B03 — Implement settings/profile storage migration.** Fresh install, upgrades, corruption, rollback and removed devices recover without restoring revoked authority. [SDK contract and local runtime evidence](receipts/2026-10-06-b03-settings-storage.json).
 - [x] **B04 — Implement durable job evidence where required.** Print/recording/long-running tasks have ownership, idempotency, cancellation and restart state appropriate to their profile. [SDK contract and local runtime evidence](receipts/2026-10-06-history-jobs-controls.json).
 - [ ] **B05 — Implement export/deletion and secret separation.** Authorized export omits credentials; deletion/expiry removes opted-in data and leaves policy-required redacted audit evidence only. [Bounded local build and runtime evidence](receipts/2026-10-06-profiles-data-catalog.json); remaining scope stays open.
-- [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes. [Bounded local recovery evidence](receipts/2026-10-06-backup-resolution-scope.json); remaining scope stays open.
+- [ ] **B06 — Verify persistent-state isolation/recovery.** Local/remote storage boundaries, backup/restore and migration fixtures retain integrity, owner scope and accurate historical outcomes. [Local recovery evidence](receipts/2026-10-06-backup-resolution-scope.json) and [registered-copy recovery/current installed evidence](receipts/2026-10-06-owner-backup-copies.json); remaining scope stays open.
 
 ### E — Developer syntax, recipes, tools and extension ecosystem
 
@@ -280,7 +280,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### U — Finished product UI and accessibility
 
 - [x] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery. [Product architecture contract](RELEASE-CONTRACT.md#product-information-architecture).
-- [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions. [Built browser add/inspect journey](receipts/2026-10-06-devices-add-inspect.json); enrolled resource/removal and full qualification remain open.
+- [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions. [Built browser add/inspect journey](receipts/2026-10-06-devices-add-inspect.json); [volatile enrolled resources, separate preview approval and removal](receipts/2026-10-07-devices-enrolled-resources.json) pass36 local software browser journeys; persistent/general operations and full qualification remain open.
 - [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users. [Bounded local build and exact evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
 - [ ] **U05 — Replace diagnostic product chrome.** Use device/task language and deliberate monochrome chrome; protocol, local labels, raw errors and constant status dots belong only where they help details/Studio.

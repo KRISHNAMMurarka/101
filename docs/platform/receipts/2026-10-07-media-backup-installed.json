@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass-selected-local-installed-profiles",
+  "localOnly": true,
+  "base": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+  "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+  "sdk": {
+    "schemaVersion": 1,
+    "sourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/manifest.json",
+      "sha256": "84445225cec65a7a7a0fb594391d92065b8fbb45aaa3a576c15ea6516b76c969"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ISTXSt/receipt.json",
+      "sha256": "9ff615d9ce9c48d566912806d5657e7427a2e84b112eef4fb167bc5da25dba2b"
+    },
+    "consumerRoot": "/tmp/101-sdk-consumer-ISTXSt",
+    "packages": 7,
+    "sourcePins": 158,
+    "installedFiles": 352
+  },
+  "byteEquivalence": {
+    "packages": 7,
+    "producerSourcePins": 158,
+    "matchedCurrentRootSourcePins": 158,
+    "matchedProducerGitPins": 158,
+    "matchedCurrentGitPins": 158,
+    "packedAndInstalledSdkFiles": 352,
+    "tarballAndMemberAndInstalledBytesMatched": true,
+    "sdkSymlinks": 0,
+    "sourceAliases": false,
+    "installedSdkTypeStripping": false,
+    "consumerChecks": 10,
+    "allConsumerChecksPass": true,
+    "consumerEnvironment": {
+      "node": "v24.14.0",
+      "npm": "11.9.0",
+      "typescript": "Version 5.9.3",
+      "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+      "playwright": "1.61.1"
+    },
+    "consumerFileCountScope": "The offline SDK inventory is352 package files plus npm .package-lock =353 at that check; the later explicit external-processor check adds four declared @example/temperature-band-processor files. These four are not additional SDK packages or artifacts.",
+    "packagesSha256": [
+      {
+        "name": "@101/device-model",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-device-model-0.1.0.tgz",
+        "sha256": "6f2b32f3514b270208af03a516fa1f5415202f7c3e15ef9948a53741262fbdcc",
+        "bytes": 83246
+      },
+      {
+        "name": "@101/device-runtime",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-device-runtime-0.1.0.tgz",
+        "sha256": "b0c6017f9ecb9c1ac89e2018430f80432c7aa8d1bf111e78f1d644a5318e2b0b",
+        "bytes": 162964
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-transport-webrtc-0.1.0.tgz",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+        "bytes": 6529
+      },
+      {
+        "name": "@101/transport-websocket",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-transport-websocket-0.1.0.tgz",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62",
+        "bytes": 7533
+      },
+      {
+        "name": "@101/device-web",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-device-web-0.1.0.tgz",
+        "sha256": "c8901f9abc64d8a592b24feeb695ef3f5a512c99fecdf8bc8ab03a3342f2ee56",
+        "bytes": 117301
+      },
+      {
+        "name": "@101/vision",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-vision-0.1.0.tgz",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62",
+        "bytes": 34919
+      },
+      {
+        "name": "@101/connect",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/tarballs/101-connect-0.1.0.tgz",
+        "sha256": "2974b63d5df6521b7cb3dfe3b693dfebe2210721803bcd3c02eaafda8ce1ce1e",
+        "bytes": 115270
+      }
+    ]
+  },
+  "proofs": {
+    "wire": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-wire-installed.json",
+      "sha256": "de36e41062792e999998daa01f76b4b9d7b6662c51200e308dce8c2b3d6d590f"
+    },
+    "synchronization": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-synchronization-installed.json",
+      "sha256": "318908017ad21931414996bac976f19948b07819807954fdb0ac01ca08f06111"
+    },
+    "recording": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-recording-installed.json",
+      "sha256": "58400a3fc1fb722ee71200dfbea3f5d41b03093c8e63e813b361419e53cde559"
+    },
+    "sharing": {
+      "path": "/tmp/101-output-sharing-complete-audio-observation-installed.json",
+      "sha256": "fe71a141be7ac1152626c0bb53b96b31e5f5a863007fb55f4ceeb3a0daaba545"
+    },
+    "copies": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-backup-installed.json",
+      "sha256": "6af8ad9f2aadc1d12d9e237d4d34a9c97a3b88edcdabbe949f4e0e9c4c806c49"
+    },
+    "legacyBackup": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-backup-legacy-installed.json",
+      "sha256": "adf843927f8b8740bcb3688f3bef80a46e02357546e018928b945704d33a3f9b"
+    }
+  },
+  "selectedChecks": {
+    "consumer": 10,
+    "wire": 20,
+    "synchronization": 90,
+    "recording": 76,
+    "sharing": 93,
+    "registeredCopiesFilesystem": 8,
+    "registeredCopiesNativeIdbQueuedAbort": true,
+    "legacyBackupFilesystem": 9,
+    "legacyBackupChromiumAndWebKitIdb": true
+  },
+  "independentReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "exactCommands": [
+    {
+      "name": "wire",
+      "path": "/tmp/101-sharing-wire-stop-expiry-wire-installed.json",
+      "sha256": "de36e41062792e999998daa01f76b4b9d7b6662c51200e308dce8c2b3d6d590f",
+      "bytes": 11656,
+      "metadata": {
+        "path": "/tmp/101-sharing-wire-stop-expiry-wire-installed-metadata.json",
+        "sha256": "b919c66794c277389b476992df224cea1b45fad7a396f25cdb5c734ed3735920"
+      },
+      "durationMs": 3852,
+      "exitCode": 0
+    },
+    {
+      "name": "synchronization",
+      "path": "/tmp/101-sharing-wire-stop-expiry-synchronization-installed.json",
+      "sha256": "318908017ad21931414996bac976f19948b07819807954fdb0ac01ca08f06111",
+      "bytes": 8244,
+      "metadata": {
+        "path": "/tmp/101-sharing-wire-stop-expiry-synchronization-installed-metadata.json",
+        "sha256": "115b817adf84bbe631737aa9b33e2e203cdccb0761d167f822241e613ccda0c8"
+      },
+      "durationMs": 18467,
+      "exitCode": 0
+    },
+    {
+      "name": "recording",
+      "path": "/tmp/101-sharing-wire-stop-expiry-recording-installed.json",
+      "sha256": "58400a3fc1fb722ee71200dfbea3f5d41b03093c8e63e813b361419e53cde559",
+      "bytes": 392524,
+      "metadata": {
+        "path": "/tmp/101-sharing-wire-stop-expiry-recording-installed-metadata.json",
+        "sha256": "0dc571c1451bef40952eb1ef104be984e6628ee0f52e23c3530fd13ea5693630"
+      },
+      "durationMs": 37044,
+      "exitCode": 0
+    },
+    {
+      "name": "backup",
+      "path": "/tmp/101-sharing-wire-stop-expiry-backup-installed.json",
+      "sha256": "6af8ad9f2aadc1d12d9e237d4d34a9c97a3b88edcdabbe949f4e0e9c4c806c49",
+      "bytes": 87919,
+      "metadata": {
+        "path": "/tmp/101-sharing-wire-stop-expiry-backup-installed-metadata.json",
+        "sha256": "81dea22084bc5b5f4210ed8d371be1c57443fe597006a625793a30960d006fd5"
+      },
+      "durationMs": 3899,
+      "exitCode": 0
+    },
+    {
+      "name": "backup-legacy",
+      "path": "/tmp/101-sharing-wire-stop-expiry-backup-legacy-installed.json",
+      "sha256": "adf843927f8b8740bcb3688f3bef80a46e02357546e018928b945704d33a3f9b",
+      "bytes": 8879,
+      "metadata": {
+        "path": "/tmp/101-sharing-wire-stop-expiry-backup-legacy-installed-metadata.json",
+        "sha256": "bcfcc237f3df3e84e774de1e8ddf805de59faf7ccd96838201eec4b507f16d19"
+      },
+      "durationMs": 8512,
+      "exitCode": 0
+    },
+    {
+      "name": "sharing",
+      "path": "/tmp/101-output-sharing-complete-audio-observation-installed.json",
+      "sha256": "fe71a141be7ac1152626c0bb53b96b31e5f5a863007fb55f4ceeb3a0daaba545",
+      "bytes": 11572,
+      "metadata": {
+        "path": "/tmp/101-output-sharing-complete-audio-observation-installed-metadata.json",
+        "sha256": "b902f5273a2fa7231a134a431228010fd6c3e22dee7d876c6bb5894b8de7c1a1"
+      },
+      "durationMs": 18383,
+      "exitCode": 0
+    }
+  ],
+  "environment": {
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "sharingBrowsers": [
+      "Chromium149.0.7827.55",
+      "Firefox151.0",
+      "WebKit26.5"
+    ],
+    "synchronizationEngineVersions": "Not recorded by its QA; not inferred from other proofs."
+  },
+  "currentBindingFix": {
+    "qualifiedSource": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-qualified-source.json",
+      "sha256": "8c5d6716304b4169cafab8ed7e1e7d0e5f1e13c33f2cfe550edeb76e9ebdae2d"
+    },
+    "review": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-independent-review.json",
+      "sha256": "4783739176d1e08b70a0e1ba0c0b003e42906ed4bfaa475574b64c077bf3020e"
+    },
+    "focusedChecks": 37,
+    "meaning": "A valid peer stop received at/after the local owner grant deadline retires as expired. Before expiry the peer reason is retained. Faithful actual runtime connection regression failed on the old implementation; no authority or deadline broadening."
+  },
+  "sharingQaObservation": {
+    "sourceSha256": "0e1381318f500ab0ba7adb57707116cd1db56853eb3054025068faf3050663c7",
+    "diagnostic": {
+      "path": "/tmp/101-output-sharing-audio-window-diagnostic.json",
+      "sha256": "1be49a117e99745b5e6af6a5a1355ff342bbaec46d7f21fd0f0c5a3167bf56b0"
+    },
+    "review": {
+      "path": "/tmp/101-output-sharing-complete-audio-observation-independent-review.json",
+      "sha256": "f6f56610676f86442f2f41c817e5372a1bd4c02e77dc9d2e5d9c9e1da76178c1"
+    },
+    "meaning": "Accept one complete RMS/FFT/current-stream/live-track/running-context record inside the original1500ms/40sample bound. Actual first Chromium duck observation at53.6ms failed unchanged ratios;108.9ms satisfied every original predicate. Original failed run remains failed. Production gains, policy and native assertions are unchanged."
+  },
+  "failedHistory": {
+    "firstCurrentSharing": {
+      "path": "/tmp/101-sharing-wire-stop-expiry-sharing-installed-metadata.json",
+      "sha256": "e3ac75c4031fe161cff953beda13de05aeea02172c00201d37acbbd133e7146a"
+    },
+    "duckOnlyDiagnostic": {
+      "path": "/tmp/101-output-sharing-duck-native-diagnostic.json",
+      "sha256": "3cc5dadd426027d89878b0eb42b1c7789745751b982b5b28f05a7906c028bdb0"
+    },
+    "completeAudioWindowDiagnostic": {
+      "path": "/tmp/101-output-sharing-audio-window-diagnostic.json",
+      "sha256": "1be49a117e99745b5e6af6a5a1355ff342bbaec46d7f21fd0f0c5a3167bf56b0"
+    },
+    "exactPriorCombinedGates": {
+      "path": "/tmp/101-sharing-backup-corrected-required-gates.json",
+      "sha256": "b2e72e839b78a0a496d151ec5c5c96789d58b5dbaa0f1643cd4fd9ed4bbaa125"
+    },
+    "meaning": "Original unmeasured sharing failure and prior wire retirement failure causes remain unknown. Measured later incomplete audio observation and faithful local-expiry reason regression provide separate specific repair evidence."
+  },
+  "preservation": {
+    "path": "/tmp/101-current-media-enrollment-preservation.json",
+    "sha256": "c5d51d92ba8ad5d4bbea02507b6f221d35b5a98558d58c2f4cb0ffb1830f9a47",
+    "artifacts": 2948,
+    "bytes": 86516018,
+    "oldBuiltArtifactsMatched": 503,
+    "historicalOrMissingPaths": 21,
+    "bundleTree": "0e02ef1340e33270adbaeba07c91179a8df57bc3",
+    "refs": "refs/codex/evidence/2026-10-07-media-enrollment",
+    "primaryTreeUnchanged": true
+  },
+  "requiredGates": {
+    "status": "pending",
+    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+    "earlierDocumentaryCandidate": {
+      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+    }
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "taskDisposition": {
+    "V09": "Policy implementation/native installed profile passed; literal row awaits exact gates and local source commit.",
+    "V10": "Selected software mapping profile built; native capture/scanout/PTS/drift and broader qualification open.",
+    "V11": "Selected software recording/seek/export/quota/TTL built; physical capture and full qualification open.",
+    "B06": "Registered-local-copy profile built; broad recovery/remote/unmanaged stores open.",
+    "T10": "Selected local installed authenticated WSS path; physical/network matrix open.",
+    "T12": "Selected local native application-frame replay tests; physical/network matrix open."
+  },
+  "limitations": [
+    "No fresh all-five-gate PASS or local commit claim; the prior abb unit gateFAILED remains immutable. Installed selection is not a fullunit substitute.",
+    "No wholeB06, V10/V11 media matrix, native hardware/capture, OS policy enforcement, actualIP loss, TLS ciphertext replay or malicioushost isolation qualification.",
+    "No native browser internalquiescence/RSS/SLO claim; zero counters cover declared actually-owned raw operations and finalizers.",
+    "U02 UI/enrollment work and root documentary reconciliation are outside this review.",
+    "Historical source/SDK proofs keep original bytes/counts/statuses; this report qualifies only the current7bf distribution and supplied newer sharingQA proof."
+  ]
+}

@@ -203,12 +203,71 @@
     "V06": "open; selected software controller and installed caller built and locally qualified"
   },
   "requiredGates": {
-    "status": "pending exact integrated candidate"
+    "status": "pass for committed source candidate",
+    "path": "/tmp/101-application-video-codec-required-gates.json",
+    "sha256": "1ab7d902da075fa0be79bbcd0b02f0557003d7580449ff40a5cc5560b348417f",
+    "tree": "44647ec9c68d3fef63316f1889a48e70d53dee36",
+    "unit": {
+      "tests": 1865,
+      "pass": 1865,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab warning",
+    "freshBuild": "pass"
   },
   "tally": {
     "total": 272,
     "completed": 117,
     "open": 155
   },
-  "acceptedSupportRows": 0
+  "acceptedSupportRows": 0,
+  "priorGateState": {
+    "status": "pending exact integrated candidate"
+  },
+  "sourceIntegration": {
+    "schemaVersion": 1,
+    "status": "committed-locally-exact-candidate-gates-pass",
+    "commit": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+    "tree": "44647ec9c68d3fef63316f1889a48e70d53dee36",
+    "parent": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
+    "localOnly": true,
+    "requiredGates": {
+      "path": "/tmp/101-application-video-codec-required-gates.json",
+      "sha256": "1ab7d902da075fa0be79bbcd0b02f0557003d7580449ff40a5cc5560b348417f"
+    },
+    "unit": {
+      "tests": 1865,
+      "pass": 1865,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass",
+    "freshBuild": "pass",
+    "tally": {
+      "total": 272,
+      "completed": 117,
+      "open": 155
+    },
+    "scope": "Selected application video codec software profile only; full V06 remains open. Later documentary reconciliation requires its next exact-candidate gates."
+  },
+  "laterDocumentaryCandidateGateState": "This source-commit reconciliation is a later documentary candidate; its exact gates remain pending next software batch."
 }

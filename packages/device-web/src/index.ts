@@ -70,3 +70,6 @@ export type {
   BrowserApplicationVideoCodecBinding,
   BrowserApplicationVideoCodec,
 } from './application-video-codec.ts';
+
+export { createBrowserOutputSharing } from './output-sharing.ts';
+export type { BrowserOutputSharingSource, BrowserOutputSharingDestination, BrowserOutputSharingEnvironment, BrowserOutputSharingOptions, BrowserOutputSharingSnapshot, BrowserOutputSharing } from './output-sharing.ts';

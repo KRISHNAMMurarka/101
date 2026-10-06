@@ -124,7 +124,7 @@ export async function runOwnerBackupExample(storage, phase = 'seed', options = {
     }
     throw Error('owner-backup-example:unknown-phase');
   } finally {
-    if (!retained) { history?.close(); await jobs?.close(); ports?.close(); data.close(); backup.close(); }
+    if (!retained) { history?.close(); await jobs?.close(); ports?.close(); data.close(); await backup.close(); }
   }
 }
 

@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+  "packagedSourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+  "callerTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+  "sdk": {
+    "schemaVersion": 1,
+    "sourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/manifest.json",
+      "sha256": "84445225cec65a7a7a0fb594391d92065b8fbb45aaa3a576c15ea6516b76c969"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ISTXSt/receipt.json",
+      "sha256": "9ff615d9ce9c48d566912806d5657e7427a2e84b112eef4fb167bc5da25dba2b"
+    },
+    "consumerRoot": "/tmp/101-sdk-consumer-ISTXSt",
+    "packages": 7,
+    "sourcePins": 158,
+    "installedFiles": 352
+  },
+  "requiredGates": {
+    "status": "pending",
+    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+    "earlierDocumentaryCandidate": {
+      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+    }
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "localOnly": true,
+  "profile": "managed-owner-backup/1 registered-local-copy inclusion",
+  "sourceSha256": {
+    "packages/device-runtime/src/owner-backup.ts": "d92bde00608d484e67594b7c79298d3cd4bed4da09dc0fc62e4d33728897e658",
+    "packages/device-runtime/src/owner-backup.test.ts": "1a89ffe489404ba401893d1f83f70ebc5dab23afd25d3860f23e0b3d4c0186b0",
+    "examples/owner-backup/registered-copies.mjs": "3ea8fec086b1a673bc7be9b3fc3d78bce1d12545dfe513472a44ab14878f78e8",
+    "tools/qa-owner-backup-copies.mjs": "7e7804458cf6166def663295010d59085ee1041a81ac281e9ebb02923232ef0e"
+  },
+  "legacyCallerSha256": {
+    "examples/owner-backup/consumer.mjs": "ce097be2353c594ef6a93f16047fb965cef347ad5ae02778f96e78392e35e923",
+    "tools/qa-owner-backup.mjs": "3841b28e1e5f5ac3240df50cbcd40ffe2b467035734734f9101d72c98286a663"
+  },
+  "taskDisposition": {
+    "B06": "PARTIAL: explicit registered-local copies and truthful raw settlement added; remote/unmanaged/native-user-store and broader recovery remain open."
+  },
+  "source": {
+    "packet": {
+      "path": "/tmp/101-owner-backup-copies-native-listener-final-pins.json",
+      "sha256": "88b7698ad528d21a9f7eeb36830dfc8cd4f27e515f749576bf93ad67d40ee827"
+    },
+    "review": {
+      "path": "/tmp/101-owner-backup-copies-native-listener-independent-review.json",
+      "sha256": "56e07e1eb705ab4edfc7c6e82db544a7d8e79ccd35f0a19bb78bf624e7377a1a"
+    },
+    "focused": 27,
+    "strictClosure": 116
+  },
+  "currentInstalled": {
+    "path": "/tmp/101-sharing-wire-stop-expiry-backup-installed.json",
+    "sha256": "6af8ad9f2aadc1d12d9e237d4d34a9c97a3b88edcdabbe949f4e0e9c4c806c49"
+  },
+  "scope": "Explicit include binds exact all-registered-local count/content hash. Original copy bytes, hashes, source clock/time, quality and expiry survive reviewed damaged-only recovery; owner/deletion/audit/epoch/CAS fences remain current. No capture/upload authority restored. Actual8 private filesystem callers include fresh-process recovery plus altered/foreign/stale/revoked/deleted/expired negatives. Genuine Chromium IndexedDB queued grant-abort now leaves storage unchanged and saves zero archives. Legacy filesystem and ordinary IndexedDB recovery callers passed against the same fresh SDK.",
+  "rawSettlement": "close revokes synchronously and awaits actual authorization and storage settlement, including direct managedStorage. Logical timeout retains its reservation until issued work settles. Four legacy close callsites now await cleanup before backing storage close.",
+  "regressions": {
+    "originalCopyAndSettlement": {
+      "path": "/tmp/101-owner-backup-copies-original-red.json",
+      "sha256": "c1acf84a8039bba9e500afeb67087d9e40d49300b1de21e28f413b79aaef6d1e"
+    },
+    "nativeLateWrite": {
+      "path": "/tmp/101-owner-backup-copies-signal-native-original-red-provenance.json",
+      "sha256": "3da3aa508240b1a8af7336b36b300c328a6ea675150a63758e133643eb95ee08"
+    },
+    "repair": "Captured native EventTarget listener methods and intrinsic AbortSignal state propagate revocation through the real awaited transaction."
+  },
+  "limitations": [
+    "full copy backup/recovery on native browser IndexedDB (only precise revocation-commit probe proved)",
+    "WebKit native copy abort probe",
+    "remote storage or remote-copy deletion",
+    "legacy/unmanaged/native-user-store recovery",
+    "whole B06 row",
+    "hardware"
+  ],
+  "installedHistory": [
+    {
+      "historical": true,
+      "supersededBy": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+      "evidence": {
+        "packagedSourceTree": "d490ae23755102554b428f7ce00c199ab224459c",
+        "callerTree": "02ffe8b5d0e13dedf8609cf726f04bac5a23ba40",
+        "sdk": {
+          "schemaVersion": 1,
+          "sourceTree": "d490ae23755102554b428f7ce00c199ab224459c",
+          "manifest": {
+            "path": "/Users/km/Desktop/games/101/release/sdk-iyGRXW/manifest.json",
+            "sha256": "213a2bb9a32fade7817199f7e02b72b23a6b5a72f551d2ed004e9da284b7ffbc"
+          },
+          "consumer": {
+            "path": "/tmp/101-sdk-consumer-Idrz3E/receipt.json",
+            "sha256": "116925038096454e8343202dded059bd99a5a7d9ffc5dd38ae09a28d7ad05f3a"
+          },
+          "consumerRoot": "/tmp/101-sdk-consumer-Idrz3E",
+          "packages": 7,
+          "sourcePins": 158,
+          "installedFiles": 352
+        },
+        "currentInstalled": {
+          "registeredCopies": {
+            "path": "/tmp/101-sharing-backup-backup-installed.json",
+            "sha256": "4ed05077d6e19a2132fee105a2914e994616daecb9ff0e2d4f5ea10c2ddcbaea"
+          },
+          "registeredCopiesMetadata": {
+            "path": "/tmp/101-sharing-backup-backup-installed-metadata.json",
+            "sha256": "5abc225d93b81f345f428bd8518ae5a428b92868ddc2a8da9294e9b75e01fa0c"
+          },
+          "legacy": {
+            "path": "/tmp/101-sharing-backup-backup-legacy-installed.json",
+            "sha256": "e4783b151b9e427174384ac81932c6a3e2b6bce447dce240500fed42e2e7bd6f"
+          },
+          "legacyMetadata": {
+            "path": "/tmp/101-sharing-backup-backup-legacy-installed-metadata.json",
+            "sha256": "4a353c9114c47dab1ad4be00c4203ba760ff7f40483f39cc2a1560482e91c07a"
+          },
+          "review": {
+            "path": "/tmp/101-sharing-backup-sdk-backup-installed-independent-review.json",
+            "sha256": "ccdd78413362cb37a9c1f38fdfabd0dbbb73ecceba91e8d2fcfa65d490f89c45"
+          }
+        },
+        "requiredGates": {
+          "status": "pending",
+          "scope": "Exact source candidate gates and local commit pending. Prior failed recording/synchronization gates and diagnostics remain preserved; native deadlines/assertions have not been relaxed."
+        }
+      }
+    }
+  ],
+  "currentInstalledWave": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+  "currentInstalledReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "currentPreservation": {
+    "path": "/tmp/101-current-media-enrollment-preservation.json",
+    "sha256": "c5d51d92ba8ad5d4bbea02507b6f221d35b5a98558d58c2f4cb0ffb1830f9a47",
+    "artifacts": 2948,
+    "bytes": 86516018,
+    "oldBuiltArtifactsMatched": 503,
+    "historicalOrMissingPaths": 21,
+    "bundleTree": "0e02ef1340e33270adbaeba07c91179a8df57bc3",
+    "refs": "refs/codex/evidence/2026-10-07-media-enrollment",
+    "primaryTreeUnchanged": true
+  },
+  "currentLegacyBackup": {
+    "path": "/tmp/101-sharing-wire-stop-expiry-backup-legacy-installed.json",
+    "sha256": "adf843927f8b8740bcb3688f3bef80a46e02357546e018928b945704d33a3f9b"
+  },
+  "integrationTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+  "installedMetadata": {
+    "path": "/tmp/101-sharing-wire-stop-expiry-backup-installed-metadata.json",
+    "sha256": "81dea22084bc5b5f4210ed8d371be1c57443fe597006a625793a30960d006fd5"
+  },
+  "installedReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "callerByteEquivalence": {
+    "review": {
+      "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+      "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+    },
+    "meaning": "Exact caller/compiler/SDK byte audit establishes equivalence to the current integration source; actual execution revision is callerTree, not integrationTree."
+  }
+}

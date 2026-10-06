@@ -10,6 +10,7 @@ import { getBrowserHostTransport, type BrowserPairingInfo } from "../lib/browser
 import { refreshLocalCameras, useLocalDevice } from "../lib/local-capabilities";
 import { useSessionId } from "../lib/session-id";
 import { createLinkedDeviceObserver, inspectLocalDevice, type InspectedDevice, type InspectedResource, type LinkedDeviceObserver, type LinkedDeviceSnapshot } from "./device-inspection";
+import EnrolledDevices from "./EnrolledDevices";
 import "./devices.css";
 
 const emptyDiscovery: LinkedDeviceSnapshot = Object.freeze({ sessionId: "", phase: "idle", reserved: false, timerArmed: false, devices: Object.freeze([]) });
@@ -131,6 +132,7 @@ export default function DevicesView() {
   return <main className="devices-page devices-flow">
     <header className="page-head"><p className="eyebrow">Devices</p><h1>What is connected</h1>
       <p className="page-intro">Inspect the inputs on this screen, find a linked controller, or prepare an invitation for another device.</p></header>
+    <EnrolledDevices key={sessionId} sessionId={sessionId ?? ""} />
     <article className="device-card" aria-labelledby="devices-local-title">
       <div className="device-card-head"><Icon name={local.shape === "computer" ? "keyboard" : "phone-motion"} size={24} /><div><h2 id="devices-local-title">This {local.shape}</h2><p>{local.sources.length ? "Local inputs to choose in an application" : "No local inputs found yet"}</p></div>
         <button className="outline-button devices-flow-button" onClick={event => inspect("local-device", event.currentTarget)}>Inspect this {local.shape}</button></div>

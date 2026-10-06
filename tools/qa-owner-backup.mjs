@@ -159,7 +159,7 @@ window.runBackup=async(name,phase)=>{const storage=api.createIndexedDbOwnerDataS
               const value = window.oldBackupWriter;
               try { return { settingsAccepted: (await value.settings.save(value.previous.value.revision, { preferences: value.previous.value.preferences, profiles: value.previous.value.profiles })).ok,
                 historyAccepted: (await value.history.flush()).ok, signalAborted: value.ports.signal.aborted }; }
-              finally { value.history.close(); value.data.close(); value.backup.close(); value.storage.close(); }
+              finally { value.history.close(); value.data.close(); await value.backup.close(); value.storage.close(); }
             });
             assert.deepEqual(fenced, { settingsAccepted: false, historyAccepted: false, signalAborted: true });
             const recovered = await page.evaluate(name => window.runBackup(name, 'reopen-restored'), database);
@@ -181,7 +181,7 @@ window.runBackup=async(name,phase)=>{const storage=api.createIndexedDbOwnerDataS
                 const result = await backup.restoreReviewed({ ...window.backupRequest, expectedSha256: capture.value.reference.sha256, retireOwned() {} });
                 armed = false; const after = await base.transact(owner, state => ({ state, result: JSON.stringify(state) }));
                 return { accepted: result.ok, grantAborted: authority.signal.aborted, unchanged: before === after };
-              } finally { backup.close(); base.close(); }
+              } finally { await backup.close(); base.close(); }
             }, database);
             assert.deepEqual(grantAbort, { accepted: false, grantAborted: true, unchanged: true });
             const raceDatabase = database + '-race';
@@ -199,7 +199,7 @@ window.runBackup=async(name,phase)=>{const storage=api.createIndexedDbOwnerDataS
                 availableDevices: () => ['example-device'], reviewedArtifacts: [{ applicationId: 'example:backup-artifact', destinationId: 'owner-local-artifacts', sha256: pin }],
                 authorize: async scope => { window.restoreReady = true; await gate; return { scope, expiresAt: scope.deadline, isCurrent: () => true }; } });
               window.competingRestore = backup.restoreReviewed({ ...window.backupRequest, expectedSha256: sha256, retireOwned() {} })
-                .finally(() => { backup.close(); storage.close(); });
+                .finally(async () => { await backup.close(); storage.close(); });
             }, { name: raceDatabase, sha256: raceSeed.captured.reference.sha256 });
             await Promise.all([page, other].map(tab => tab.waitForFunction(() => window.restoreReady === true)));
             const competing = await Promise.all([page, other].map(tab => tab.evaluate(async () => { window.releaseRestore(); return window.competingRestore; })));

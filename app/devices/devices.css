@@ -16,6 +16,16 @@
 .devices-flow-link-label { display: block; margin-top: var(--space-md); color: var(--muted); }
 .devices-flow-hidden-name { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .devices-flow button:focus-visible, .devices-flow a:focus-visible, .devices-flow input:focus-visible { outline: 2px solid var(--paper); outline-offset: 4px; }
+.devices-enrolled-task { margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--line); }
+.devices-enrolled-task p { color: var(--muted); line-height: 1.6; max-width: var(--measure); }
+.devices-enrolled-task textarea { display: block; box-sizing: border-box; width: 100%; min-width: 0; min-height: 100px; max-height: 240px; margin: var(--space-xs) 0 var(--space-sm); padding: var(--space-sm); border: 1px solid var(--line); background: var(--chrome); color: var(--paper); font: inherit; resize: vertical; overflow-wrap: anywhere; }
+.devices-enrolled-task textarea:focus-visible, .devices-enrolled-task h3:focus, .devices-enrolled-task h4:focus { outline: 2px solid var(--paper); outline-offset: 4px; }
+.devices-enrolled-task h3, .devices-enrolled-task h4 { margin: 0; overflow-wrap: anywhere; }
+.devices-enrolled-choice { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: 44px; min-width: 44px; color: var(--paper); }
+.devices-enrolled a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.devices-enrolled-choice input { min-width: 24px; min-height: 24px; accent-color: var(--paper); }
+.devices-enrollment-digest, .devices-enrolled-value { display: block; padding: var(--space-sm); border: 1px solid var(--line); color: var(--paper); background: var(--chrome); font-family: var(--font-mono, monospace); overflow-wrap: anywhere; }
+.devices-enrolled-removal { margin-top: var(--space-md); padding: var(--space-sm); border: 1px solid var(--line); }
 @media (max-width: 480px) {
   .devices-flow-list > li, .devices-flow-task-head { flex-direction: column; align-items: stretch; }
   .devices-flow-share { flex-wrap: wrap; }

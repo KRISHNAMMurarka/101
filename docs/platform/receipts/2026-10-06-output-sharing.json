@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "eb0157a62f8ddc6c695d601eb9c9af1cfd584ad0",
+  "packagedSourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+  "callerTree": "240dc98156c3d9034571a695499b5e796fff6ed1",
+  "sdk": {
+    "schemaVersion": 1,
+    "sourceTree": "7bf47e8bd70a300db2114088342c8456c79327e2",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/manifest.json",
+      "sha256": "84445225cec65a7a7a0fb594391d92065b8fbb45aaa3a576c15ea6516b76c969"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ISTXSt/receipt.json",
+      "sha256": "9ff615d9ce9c48d566912806d5657e7427a2e84b112eef4fb167bc5da25dba2b"
+    },
+    "consumerRoot": "/tmp/101-sdk-consumer-ISTXSt",
+    "packages": 7,
+    "sourcePins": 158,
+    "installedFiles": 352
+  },
+  "requiredGates": {
+    "status": "pending",
+    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+    "earlierDocumentaryCandidate": {
+      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+    }
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "localOnly": true,
+  "profile": "output-sharing-policy/1",
+  "sourceSha256": {
+    "packages/device-runtime/src/output-sharing.ts": "aff09175c6e3863aa73f0e70b1f6867bd5ea41cfdd199e0ab636c91b1a718d60",
+    "packages/device-runtime/src/output-sharing.test.ts": "282b7b09b4a959aa40c3a860fcae4b8a07355fc73a440fa05ab1a4b64aa9e363",
+    "packages/device-web/src/output-sharing.ts": "a9780671e7a7d6aeb5942defbd05cb4febb4655ae5ce057483170d45687a6be6",
+    "packages/device-web/src/output-sharing.test.ts": "1d37548858b51e333da4a01b72bca41ef2a904bb25a3db67ce56bf453e49e6ed",
+    "examples/device-pipelines/output-sharing.ts": "e93ddf346f2756522f38bc6bfa68141effcb7b656801742be2679d4e41aef859",
+    "tools/qa-output-sharing.mjs": "0e1381318f500ab0ba7adb57707116cd1db56853eb3054025068faf3050663c7"
+  },
+  "taskDisposition": {
+    "V09": "Implemented and current installed software profile passed; literal row remains open until exact gates and local source commit."
+  },
+  "environment": "macOS arm64; Node24.14.0/TypeScript5.9.3; actual installed Chromium149.0.7827.55/Firefox151.0/WebKit26.5; owned loopback/private software producers.",
+  "source": {
+    "packet": {
+      "path": "/tmp/101-output-sharing-frozen-pins.json",
+      "sha256": "3d1366be995925ffbfbc66cb1f92f9fd5bd09368b34fb3a7d2e3eb3ae0518f4b"
+    },
+    "review": {
+      "path": "/tmp/101-output-sharing-source-native-independent-review.json",
+      "sha256": "4b3cd608d2503d48aef1aa35700a8fe944bb90ccf03fbe2266632deef96419db"
+    },
+    "native": {
+      "path": "/tmp/101-output-sharing-source-stable-first.json",
+      "sha256": "d456ccca0a8e610c057397b884e4e011f407ddcd492d6c15ac68efc0bcbd35cf"
+    },
+    "checks": 90,
+    "browserVersions": "Historical source proof records engine labels only; no retrospective version qualification."
+  },
+  "currentInstalled": {
+    "path": "/tmp/101-output-sharing-complete-audio-observation-installed.json",
+    "sha256": "fe71a141be7ac1152626c0bb53b96b31e5f5a863007fb55f4ceeb3a0daaba545"
+  },
+  "policies": [
+    "audio mix with both real frequencies",
+    "audio duck with retained quieter background",
+    "audio exclusive with only selected frequency",
+    "read-only observers of one selected private camera source",
+    "one application engine with ordered layers",
+    "disjoint owned app regions"
+  ],
+  "authorization": "Destination-owner policy review plus separate exact source and sink approval. Failed policy/overlap review retains incumbent; accepted transfer retires old routes before fresh resource admission. Source/capture authority remains separate.",
+  "bounds": {
+    "sources": 8,
+    "destinations": 4,
+    "slotsPerDestination": 2,
+    "managedRoutes": 8,
+    "routeAttempts": 64,
+    "policyReviews": 32,
+    "authorizations": 64,
+    "effects": 128,
+    "rawReservations": 2,
+    "lifetimeMs": 30000,
+    "leaseMs": 1000,
+    "maxHz": 30,
+    "maxAgeMs": 250,
+    "enrollmentBytes": 32768,
+    "callerTicks": 64,
+    "cameraProducerDraws": 64,
+    "cameraProducerTimers": 1,
+    "cameraDrawIntervalMs": 100,
+    "nativeAudioContextsPerOwnedPage": 32,
+    "nativeLogicalFixtureMs": 15000,
+    "receiptBytesIncludingNewline": 16384
+  },
+  "cleanup": {
+    "processExited": true,
+    "browsers": 0,
+    "servers": 0,
+    "rawNativePromises": 0,
+    "providerPromises": 0,
+    "routes": 0,
+    "canvases": 0,
+    "contexts": 0,
+    "tracksLive": 0,
+    "ownedProducerTimers": 0,
+    "expiryTimers": 0,
+    "cameraFrameCallbacks": 0,
+    "listeners": 0,
+    "cleanupFailures": 0,
+    "borrowedSentinelPreserved": true,
+    "nativeInternalMemoryOrQuiescenceClaim": false
+  },
+  "regressions": "Real returned Connection after reentrant provisional retirement is closed; post-upstream joint plan/grant/time/intrinsic-signal fence rejects a private stream after expiry. Actual asynchronous work retains reservations.",
+  "history": {
+    "classification": {
+      "oldInstalledFeature": "genuine native private-audio positive prefix then expected absent new factories; feature absence not a runtime defect",
+      "initialDraftFailures": "strip-only syntax; wrong schema API arguments; ordinary alias primary missing export; not intended behavioral REDs",
+      "intendedBehaviorReds": "genuine SDK late Connection idle after provisional close; native-shaped SOFTWARE audio port returned private Stream after final observer clock expiry",
+      "fixtureSettlement": "two transfers initially demanded new admissions before prior provider Promises truly settled; bounded settlement observation corrected",
+      "nativeStartup": "paint before captureStream then awaited activation with no continuing producer; original and snapshot diagnostic failures retained; bounded64draw100ms producer timer repaired",
+      "foreignClock": "actual14 projection publication attempts rejected foreign-clock; new local retrieval observation retains original projection timestamp/sequence/quality as unmapped provenance",
+      "regions": "actual native RGBA64/255 and191/128; precision-perfect nominal192 assertion rejected; bound only half-alpha8bit quantization\u00b11 and wait both partitions",
+      "nativeClock": "original upstream-after-callback status fixture superseded; final genuine status observed before intentional callout, intrinsic consent afterwards; no claim native old-guard regression from upstream false"
+    },
+    "pins": {
+      "/tmp/101-output-sharing-source-ready.json": "cdd97cf123b22944be57773b8bdfba9a51f7b7f101821fb854716ebb325df4cb",
+      "/tmp/101-output-sharing-review-regressions-ready.json": "a8da8beed0283aedaecf39dc892da7ba85b185e323583ab26ec80891648bbdb4",
+      "/tmp/101-output-sharing-feature-old-installed.json": "ce00cc4fa49085a09005243d80bfda53770af2ab5c82587a4873c9ee57fbae5f",
+      "/tmp/101-output-sharing-feature-old-installed.err": "d950d6263c2fd2070bf5c21c4f356792c6b2d31af6a667fced4e2de166eb98c3",
+      "/tmp/101-output-sharing-feature-old-installed-provenance.json": "5ed926a587bb847b53b3039514c3050cfe150458095aa4477396f20b46ceb0c1",
+      "/tmp/101-output-sharing-feature-old-installed-run.json": "ca99d2be87decf415ee8e9cf7c8f39b482fd47d8c686deec22972e5047f9b8f1",
+      "/tmp/101-output-sharing-late-route-old-red.log": "ce2d6342969c975a2e3f5d079bd213672cd9f6583f696755505988458d8f1c76",
+      "/tmp/101-output-sharing-late-route-strip-repaired-old-red.log": "01957c7ce9c07dcb4c14280dde3330c8f0d053d7f5cc54f96f913d60ecd2ecd0",
+      "/tmp/101-output-sharing-late-route-old-diagnostic.log": "106676773b919ce37bfde292bba25850e6a4ca5083647d547f0a986d042f71fb",
+      "/tmp/101-output-sharing-upstream-clock-old-first.log": "db373e01427ac54cf258dd19adc8c31172294cdd04392181d6f9e6b360c6dafb",
+      "/tmp/101-output-sharing-phase2-resolver-blocked.json": "15166ca9d7991fd5eb2e5b1b5c876aff95e0ab83525c3eecf8e90bfa9081f7ed",
+      "/tmp/101-output-sharing-runtime-before-strip-syntax.ts": "026785011a4eca01bc30e84ed9071a6e4790879a6a97be1ff8c993d64e6793cb",
+      "/tmp/101-output-sharing-runtime-before-schema-args.ts": "60fef186c53ed99defac928234ab6aa56542e514afde743e799dc6fd2c044c44",
+      "/tmp/101-output-sharing-runtime-test-before-old-route-diagnostic.ts": "cc262059a6579ca7e5f3a6d00c2a390934926533c1b8107f42d98cc1d8ca5e7f",
+      "/tmp/101-output-sharing-late-route-intended-old-red.log": "3f82766ecf2a4660b7f2f40324906f1ca0420cece4dbd54beed4e5308c816865",
+      "/tmp/101-output-sharing-upstream-clock-intended-old-red.log": "4081baf028d693f0d3a7fd5c2b4e13e27de68a8281b7315a7f6c293d14c5906d",
+      "/tmp/101-output-sharing-runtime-intended-red.ts": "5543ad9d0ca841ca4b61520040ec25602a21cba1a985a75c849e5a8dc163edd7",
+      "/tmp/101-output-sharing-web-intended-red.ts": "be7f8d231d0f4e2c9e8c285a4086276c7f6237e072c1937f440e57138c169359",
+      "/tmp/101-output-sharing-focused-first.log": "4a2eab305e410b05e82fdbe8747fae74f1b77eb6381a287d141c328b3cc9292a",
+      "/tmp/101-output-sharing-runtime-test-before-settlement.ts": "65a7095dd28d68a9a8ca527313b9477c812b29fca089049d94c3333f9bc6b6d7",
+      "/tmp/101-output-sharing-focused-settlement-green.log": "44352b7bddb469efbd6a5e32a3d50429ccedeb55aeda203b2f365c7827664a84",
+      "/tmp/101-output-sharing-source-types-first.log": "bc7c9ba2783dd974b87b1c28a44a398da142a9a63108c4d071a1963150ef65bb",
+      "/tmp/101-output-sharing-lint-first.log": "8250fc6b506074dbd6a502a81b8e4dee48e2d2238e6d4c6426a44ac53d783f01",
+      "/tmp/101-output-sharing-web-before-strict.ts": "5c29e634b2629c1e3a93ce14994cc37a49d6cf73bf76fcbc20febc204c30446f",
+      "/tmp/101-output-sharing-focused-final.log": "98f1db86720ae50906db580e0406764379d04aee085be74bd4f3f72b9ee40e2c",
+      "/tmp/101-output-sharing-source-types-repaired.log": "777ee1fdc6c3a637140b9cc2baf3696578e4e4250948d70e570f7862bd40cd6a",
+      "/tmp/101-output-sharing-source-types-repaired.json": "34ff4de90ca284dad75a084543220d0c35ee230f833abd5ed7deca6c56987545",
+      "/tmp/101-output-sharing-lint-repaired.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-first.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-first.err": "d7aca1f3967e9ebae170098a57577c89798215ee198807ea52b01b5febcff160",
+      "/tmp/101-output-sharing-source-first-failed-pins.json": "77c2a061803f6b421e545c228bf2ee0f91962b68d87bd52c56fefda66d618a6c",
+      "/tmp/101-output-sharing-source-start-diagnostic.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-start-diagnostic.err": "d389375e5f5653dba9a37f87a78b32feca9bb31da2a2dc90d32af1075c0c547c",
+      "/tmp/101-output-sharing-source-start-diagnostic-pins.json": "73ec026e9fc120acace394dc3b656f6547a26993213126a3978f4c845078dd92",
+      "/tmp/101-output-sharing-example-before-camera-producer.ts": "c6b3f96764b0a375e3088e14e44f6451c1032c831324e46334408dbefc888a52",
+      "/tmp/101-output-sharing-qa-before-publication-diagnostic.mjs": "d8997be1539f1ae5234aa331bb4922a54792458472983acd00da1a7a37a827be",
+      "/tmp/101-output-sharing-source-camera-repaired-first.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-camera-repaired-first.err": "9cde20771ce84a608969ad4b91e1510f2e2a8a987e748af1593a2e82b3721464",
+      "/tmp/101-output-sharing-source-foreign-clock-red-pins.json": "7a79fedf20cd67161084cc1b2dfc76075d131a9c7fc7283334121524a8d3cd03",
+      "/tmp/101-output-sharing-source-types-local-clock.log": "777ee1fdc6c3a637140b9cc2baf3696578e4e4250948d70e570f7862bd40cd6a",
+      "/tmp/101-output-sharing-caller-qa-lint-local-clock.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-local-clock-first.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-local-clock-first.err": "a4267b8b7ccd4ef1311ab4ddb6a3fdfd798f8ce4e5a14551dd2f10d307d1bf0b",
+      "/tmp/101-output-sharing-source-region-first-pins.json": "ce8d8f3c3bd4db00494fb0bea932827dcc50320012d6fe6099adb2e5d17c862e",
+      "/tmp/101-output-sharing-qa-before-region-diagnostic.mjs": "c8cce806e6cb6bc3b1dcbd050d304bd0ce08b0fec55051f56e2b752f8fb95a48",
+      "/tmp/101-output-sharing-source-region-diagnostic.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-region-diagnostic.err": "649d2c7b6db02347bef38b78af7dba7a29dfafa9eef7ab623b72f1bca38ea3b6",
+      "/tmp/101-output-sharing-example-before-native-clock-observer.ts": "f383da7ef74385a1c18b8d576082ceeb07ca5a8d51c496366d9ec71507bd9689",
+      "/tmp/101-output-sharing-qa-before-8bit-region-acceptance.mjs": "a30a30e0336afbebb32847535c1f4c5b150c5e13a9c0f04feece83bec3287f84",
+      "/tmp/101-output-sharing-caller-qa-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "/tmp/101-output-sharing-source-preflight-pinned-review.json": "aeebc7c4575de59ef3e4a188a8e51f4760ce72a671f2c956d39e4ff7fbc8ae42",
+      "/tmp/101-output-sharing-root-hook-proposals-independent-review.json": "f4282733559da8d4ebb6123ac7694c15d44a50100280fe41ddfa9a9eeb1c1a02",
+      "/tmp/101-output-sharing-local-resolver.json": "13c84775bf5599e8fb0b09f87de4d7b59c5376569f6900700d22d7128a7fb421",
+      "/tmp/101-output-sharing-local-resolver-independent-review.json": "3554517ebd3b442b72436db946b8c6fc0685a7a1fbeb703c6b1e99674b6125e1",
+      "/tmp/101-output-sharing-root-isolated-hooks.json": "c149dd24d54da4914356de5dfaff5fb70f04ae48cd9c9fcba950582bd377e9b2"
+    },
+    "firstInstalledFailure": {
+      "path": "/tmp/101-sharing-backup-sharing-installed.err",
+      "sha256": "d33536e88a6c1ca0523870d60ced9e0f1a949f9022fb4160c409ff421e73ae6f"
+    },
+    "firstInstalledMetadata": {
+      "path": "/tmp/101-sharing-backup-sharing-installed-metadata.json",
+      "sha256": "80ce25a3a44b41ee2045727f264d15a49d8b572aa98f2eef21b45290c0f80a0a"
+    },
+    "freshAdmissionDelta": {
+      "path": "/tmp/101-output-sharing-qa-fresh-clock-admission-pins.json",
+      "sha256": "dcf191181a9b80ecb568a51584dfdf18c6d48afce86c21f10713765c838c5fca"
+    },
+    "freshAdmissionReview": {
+      "path": "/tmp/101-output-sharing-qa-fresh-clock-admission-independent-review.json",
+      "sha256": "4f8ace55b95cac5f733cf339bd71660ce98b684419141a075dedbeccbaef878c"
+    },
+    "postValidator": "Native child passed93; outer wrapper read browserVersion instead of actual version. Exact retained artifact validation repaired that metadata check without producer retry."
+  },
+  "limitations": [
+    "host supplied policy/resource owner approvers and native/upstream accessors are trusted; no sandbox against malicious same-origin JS",
+    "owned software audio oscillator/canvas/application projection only; no user camera/mic/speaker/hardware/phone/OS permission/control qualification",
+    "source/native PCM/capture/scanout clocks remain unknown or explicitly unmapped; no achieved latency or bitrate/SLO claims",
+    "no encoded/remote transport policy or physical camera-control claim"
+  ],
+  "testTypingCorrection": {
+    "path": "/tmp/101-output-sharing-root-test-types-correction.json",
+    "sha256": "368e3e12bcb277a9781e2c4a4f97ed6a77a6b28688c8972a2c7f80492cf18725"
+  },
+  "installedHistory": [
+    {
+      "historical": true,
+      "supersededBy": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+      "evidence": {
+        "packagedSourceTree": "d490ae23755102554b428f7ce00c199ab224459c",
+        "callerTree": "02ffe8b5d0e13dedf8609cf726f04bac5a23ba40",
+        "sdk": {
+          "schemaVersion": 1,
+          "sourceTree": "d490ae23755102554b428f7ce00c199ab224459c",
+          "manifest": {
+            "path": "/Users/km/Desktop/games/101/release/sdk-iyGRXW/manifest.json",
+            "sha256": "213a2bb9a32fade7817199f7e02b72b23a6b5a72f551d2ed004e9da284b7ffbc"
+          },
+          "consumer": {
+            "path": "/tmp/101-sdk-consumer-Idrz3E/receipt.json",
+            "sha256": "116925038096454e8343202dded059bd99a5a7d9ffc5dd38ae09a28d7ad05f3a"
+          },
+          "consumerRoot": "/tmp/101-sdk-consumer-Idrz3E",
+          "packages": 7,
+          "sourcePins": 158,
+          "installedFiles": 352
+        },
+        "currentInstalled": {
+          "proof": {
+            "path": "/tmp/101-sharing-backup-sharing-installed-repaired.json",
+            "sha256": "1270be0ec901fa62e0e4e6b6a3d8f1be6b0c9a0cd67f64a43ccb3a64d588adb5"
+          },
+          "metadata": {
+            "path": "/tmp/101-sharing-backup-sharing-installed-repaired-metadata.json",
+            "sha256": "4da6fbaa619e2c3a8dd4408fe8e082cb3715993c86681d4ce868eabd07c199d2"
+          },
+          "validation": {
+            "path": "/tmp/101-sharing-backup-sharing-installed-repaired-validation.json",
+            "sha256": "fe7a7cdf89e8fc6b2468d8c8d695fb683df281908a0596cf9411ae070960863b"
+          },
+          "review": {
+            "path": "/tmp/101-output-sharing-current-installed-independent-review.json",
+            "sha256": "90922bbf1ae43c124afeec1de8f6911cacfcf6761de1fabd920162f6912a8778"
+          },
+          "checks": 93,
+          "engines": [
+            {
+              "name": "chromium",
+              "version": "149.0.7827.55",
+              "checks": 31
+            },
+            {
+              "name": "firefox",
+              "version": "151.0",
+              "checks": 31
+            },
+            {
+              "name": "webkit",
+              "version": "26.5",
+              "checks": 31
+            }
+          ]
+        },
+        "requiredGates": {
+          "status": "pending",
+          "scope": "Exact source candidate gates and local commit pending. Prior failed recording/synchronization gates and diagnostics remain preserved; native deadlines/assertions have not been relaxed.",
+          "firstCurrentCandidateFailure": {
+            "path": "/tmp/101-sharing-backup-required-gates.json",
+            "sha256": "2c88c8c17def54f251816b221b63ed8cce9e0a2a144180def173c699979af537"
+          }
+        }
+      }
+    }
+  ],
+  "currentInstalledWave": "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+  "currentInstalledReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "currentPreservation": {
+    "path": "/tmp/101-current-media-enrollment-preservation.json",
+    "sha256": "c5d51d92ba8ad5d4bbea02507b6f221d35b5a98558d58c2f4cb0ffb1830f9a47",
+    "artifacts": 2948,
+    "bytes": 86516018,
+    "oldBuiltArtifactsMatched": 503,
+    "historicalOrMissingPaths": 21,
+    "bundleTree": "0e02ef1340e33270adbaeba07c91179a8df57bc3",
+    "refs": "refs/codex/evidence/2026-10-07-media-enrollment",
+    "primaryTreeUnchanged": true
+  },
+  "completeAudioObservation": {
+    "sourceSha256": "0e1381318f500ab0ba7adb57707116cd1db56853eb3054025068faf3050663c7",
+    "diagnostic": {
+      "path": "/tmp/101-output-sharing-audio-window-diagnostic.json",
+      "sha256": "1be49a117e99745b5e6af6a5a1355ff342bbaec46d7f21fd0f0c5a3167bf56b0"
+    },
+    "review": {
+      "path": "/tmp/101-output-sharing-complete-audio-observation-independent-review.json",
+      "sha256": "f6f56610676f86442f2f41c817e5372a1bd4c02e77dc9d2e5d9c9e1da76178c1"
+    },
+    "meaning": "Accept one complete RMS/FFT/current-stream/live-track/running-context record inside the original1500ms/40sample bound. Actual first Chromium duck observation at53.6ms failed unchanged ratios;108.9ms satisfied every original predicate. Original failed run remains failed. Production gains, policy and native assertions are unchanged."
+  },
+  "integrationTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+  "installedMetadata": {
+    "path": "/tmp/101-output-sharing-complete-audio-observation-installed-metadata.json",
+    "sha256": "b902f5273a2fa7231a134a431228010fd6c3e22dee7d876c6bb5894b8de7c1a1"
+  },
+  "installedReview": {
+    "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+    "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+  },
+  "callerByteEquivalence": {
+    "review": {
+      "path": "/tmp/101-media-backup-wire-current-installed-independent-review.json",
+      "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
+    },
+    "meaning": "Exact caller/compiler/SDK byte audit establishes equivalence to the current integration source; actual execution revision is callerTree, not integrationTree."
+  }
+}

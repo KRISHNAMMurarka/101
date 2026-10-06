@@ -42,6 +42,210 @@ function setup(overrides: Partial<OwnerBackupOptions> = {}, engine = memory()) {
     async ports() { return required(await data.openStores({ retireOwned() {} })); }, close() { data.close(); backup.close(); } };
 }
 const request = { backupId: 'snapshot-a', purpose: 'owner-recovery', destinationId: 'local-recovery' } as const;
+const copyRequest = { ...request, registeredCopies: 'include' } as const;
+
+async function seedRegisteredCopy(f: ReturnType<typeof setup>) {
+  const ports = await f.ports();
+  required(await createSettingsStore({ ownerId: 'owner-a', storage: ports.settings, availableDevices: () => [] }).save(0, choice));
+  const history = createTelemetryHistory({ ownerId: 'owner-a', storage: ports.telemetry, trustedNow: () => 1000,
+    authorize: scope => ({ scope, expiresAt: scope.expiresAt }), limits: { retentionMs: 5000 } });
+  try {
+    const capture = await history.requestCapture({ resourceId: 'example:copied-rss', schemaVersion: 1,
+      fields: ['rss'], provenanceFields: [], destinationId: 'local-history', purpose: 'owner-diagnostics', expiresAt: 51000,
+      schema: { type: 'record', fields: { rss: { type: 'scalar', unit: 'By', min: 0, max: Number.MAX_SAFE_INTEGER } } } });
+    assert.ok(capture.ok);
+    const rss = process.memoryUsage().rss, stamp = performance.now();
+    assert.ok(history.enqueue(capture.handle, { sourceTime: { clockId: 'owned-node-process-clock', at: stamp },
+      quality: 'observed', values: { rss } }).ok);
+    assert.ok((await history.flush()).ok);
+    const upload = await history.requestUpload({ resourceId: 'example:copied-rss', schemaVersion: 1, fields: ['rss'], provenanceFields: [],
+      destinationId: 'local-recipient', purpose: 'owner-local-copy', expiresAt: 51000 }, async batch => {
+      required(await f.data.storeLocalTelemetryCopy(batch, { purpose: 'owner-local-copy', destinationId: 'local-recipient' }));
+      return { batchId: batch.batchId, recordIds: batch.records.map(row => row.id) };
+    });
+    assert.ok(upload.ok); assert.ok((await history.pumpUpload(upload.handle)).ok);
+    return { rss, stamp };
+  } finally { history.close(); ports.close(); }
+}
+
+test('explicit registered-copy backup and damaged recovery preserve genuine producer bytes and require new copy consent', async () => {
+  const scopes: Parameters<OwnerBackupOptions['authorize']>[0][] = [];
+  const consent = new AbortController();
+  const f = setup({ authorize: scope => { scopes.push(scope); return { scope, expiresAt: scope.deadline, isCurrent: () => true, signal: consent.signal }; } });
+  try {
+    const actual = await seedRegisteredCopy(f);
+    assert.deepEqual(await f.backup.backup(request), { ok: false, reason: 'unsupported' });
+    const saved = required(await f.backup.backup(copyRequest));
+    assert.equal(saved.expiresAt, 6000);
+    const bytes = required(await f.backup.readBackup(copyRequest));
+    const payload = JSON.parse(new TextDecoder().decode(bytes.bytes));
+    assert.equal(payload.managed.copies.length, 1); assert.equal(payload.managed.copies[0].record.values.rss, actual.rss);
+    assert.equal(payload.managed.copies[0].record.sourceTime.at, actual.stamp);
+    const selected = scopes.find(scope => scope.action === 'backup')?.registeredCopies;
+    assert.equal(selected?.selection, 'all-registered-local'); assert.equal(selected?.count, 1);
+    assert.match(selected?.sha256 ?? '', /^[0-9a-f]{64}$/); assert.ok(Object.isFrozen(selected));
+    assert.deepEqual(await f.backup.readBackup(request), { ok: false, reason: 'unsupported' });
+    damageInner(f);
+    assert.deepEqual(await f.backup.restoreReviewed({ ...request, expectedSha256: saved.reference.sha256, retireOwned() {} }),
+      { ok: false, reason: 'unsupported' });
+    required(await f.backup.restoreReviewed({ ...copyRequest, expectedSha256: saved.reference.sha256, retireOwned: f.retireOwned }));
+    const copies = required(await f.data.exportPage({ kind: 'copies', purpose: 'review-restored-copies', destinationId: 'owner-download' }));
+    assert.deepEqual(copies.records, payload.managed.copies.map((copy: { record: unknown }) => copy.record));
+    const next = await f.ports();
+    const history = createTelemetryHistory({ ownerId: 'owner-a', storage: next.telemetry, trustedNow: () => 1000, authorize: () => undefined });
+    assert.equal(history.status().captureHandles, 0); assert.equal(history.status().uploadHandles, 0); history.close(); next.close();
+  } finally { f.close(); }
+});
+
+test('registered-copy approval requires exact selected content and a genuine current abort signal', async () => {
+  for (const fault of ['missing-signal', 'forged-signal', 'changed-selection', 'getter'] as const) {
+    let calls = 0;
+    const f = setup({ authorize: scope => {
+      const value = { scope, expiresAt: scope.deadline, isCurrent: () => true,
+        signal: new AbortController().signal };
+      if (fault === 'missing-signal') return { scope, expiresAt: scope.deadline, isCurrent: () => true };
+      if (fault === 'forged-signal') value.signal = Object.create(AbortSignal.prototype) as AbortSignal;
+      if (fault === 'changed-selection') value.scope = { ...scope, registeredCopies: { ...scope.registeredCopies!, count: 0 } };
+      if (fault === 'getter') Object.defineProperty(value, 'signal', { enumerable: true, get() { calls++; return new AbortController().signal; } });
+      return value;
+    } });
+    try {
+      await seedRegisteredCopy(f); const before = structuredClone(f.engine.values.get('owner-a'));
+      assert.deepEqual(await f.backup.backup(copyRequest), { ok: false, reason: 'denied' });
+      assert.deepEqual(f.engine.values.get('owner-a'), before); assert.equal(calls, 0);
+    } finally { f.close(); }
+  }
+});
+
+test('a selected copy grant cannot hide real revocation behind shadow signal properties', async () => {
+  const f = setup();
+  try {
+    await seedRegisteredCopy(f); const saved = required(await f.backup.backup(copyRequest)); damageInner(f);
+    Object.defineProperties(f.authority.signal, {
+      aborted: { value: false }, addEventListener: { value() {} },
+    });
+    let commits = 0; f.engine.before(() => { if (++commits === 2) f.authority.abort(); });
+    const before = structuredClone(f.engine.values.get('owner-a'));
+    assert.equal((await f.backup.restoreReviewed({ ...copyRequest, expectedSha256: saved.reference.sha256, retireOwned() {} })).ok, false);
+    assert.deepEqual(f.engine.values.get('owner-a'), before);
+  } finally { f.close(); }
+});
+
+test('queued selected-grant revocation reaches the actual composed storage abort signal', async () => {
+  const engine = memory(); let armed = false, release: () => void = () => {}, entered: () => void = () => {};
+  let nativeSignal: AbortSignal | undefined;
+  const held = new Promise<void>(resolve => { release = resolve; });
+  const entry = new Promise<void>(resolve => { entered = resolve; });
+  const storage: OwnerDataStorage = { async transact(owner, mutation, guard) {
+    const before = structuredClone(engine.values.get(owner)), next = mutation(before);
+    if (armed && (next.state as { archives: unknown[] }).archives.length > (before as { archives: unknown[] }).archives.length) {
+      nativeSignal = guard?.signal; entered(); await held;
+    }
+    return engine.storage.transact(owner, () => next, guard);
+  } };
+  const f = setup({}, { ...engine, storage });
+  try {
+    await seedRegisteredCopy(f);
+    Object.defineProperty(f.authority.signal, 'addEventListener', { value() {} });
+    armed = true; const awaiting = f.backup.backup(copyRequest); await entry;
+    queueMicrotask(() => f.authority.abort()); await Promise.resolve();
+    // This is actual intrinsic AbortSignal propagation at a held supplied-storage seam.
+    // It does not claim to prove an IndexedDB commit or persistence outcome.
+    assert.equal(nativeSignal?.aborted, true);
+    release(); assert.equal((await awaiting).ok, false);
+  } finally { release(); f.data.close(); await f.backup.close(); }
+});
+
+test('a timed-out storage operation retains busy and close completion until its actual returned work settles', async () => {
+  const engine = memory(); let release: () => void = () => {}, entered: () => void = () => {};
+  const entry = new Promise<void>(resolve => { entered = resolve; });
+  const held = new Promise<void>(resolve => { release = resolve; });
+  const storage: OwnerDataStorage = { async transact(owner, mutation, guard) {
+    entered(); await held; return engine.storage.transact(owner, mutation, guard);
+  } };
+  const authority = new AbortController();
+  const backup = api!.createOwnerBackupController({ ownerId: 'held-owner', storage, trustedNow: () => 1000,
+    authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true, signal: authority.signal }) });
+  let closeSettled = false;
+  try {
+    const waiting = backup.inspect({ purpose: 'held-inspection', destinationId: 'local-recovery' }); await entry;
+    assert.deepEqual(await waiting, { ok: false, reason: 'expired' });
+    assert.deepEqual(await backup.inspect({ purpose: 'second-inspection', destinationId: 'local-recovery' }), { ok: false, reason: 'busy' });
+    const closing = Promise.resolve(backup.close()).then(() => { closeSettled = true; });
+    await Promise.resolve(); await Promise.resolve(); assert.equal(closeSettled, false);
+    release(); await closing; assert.equal(closeSettled, true); assert.equal(engine.values.size, 0);
+  } finally { release(); await backup.close(); }
+});
+
+test('close also awaits raw work issued through the direct managed storage port', async () => {
+  const engine = memory(); let release: () => void = () => {}, entered: () => void = () => {};
+  let reentrantClose: Promise<void> | undefined;
+  const entry = new Promise<void>(resolve => { entered = resolve; });
+  const held = new Promise<void>(resolve => { release = resolve; });
+  const backup = api!.createOwnerBackupController({ ownerId: 'direct-held-owner', trustedNow: () => 1000,
+    storage: { async transact(owner, mutation, guard) {
+      guard?.signal.addEventListener('abort', () => { reentrantClose = backup.close(); }, { once: true });
+      entered(); await held; return engine.storage.transact(owner, mutation, guard);
+    } },
+    authorize: () => undefined });
+  const writing = backup.managedStorage.transact('direct-held-owner', () => { assert.fail('retired direct writer reached mutation'); });
+  const observedFailure = writing.then(() => assert.fail('retired direct write accepted'), () => {});
+  let settled = false;
+  try {
+    await entry;
+    const closing = Promise.resolve(backup.close()).then(() => { settled = true; });
+    assert.equal(backup.close(), backup.close()); assert.equal(reentrantClose, backup.close());
+    await Promise.resolve(); assert.equal(settled, false);
+    release(); await observedFailure; await closing; assert.equal(settled, true); assert.equal(engine.values.size, 0);
+  } finally { release(); await observedFailure; await backup.close(); }
+});
+
+test('an authorization timeout retains its actual approval work through busy and close settlement', async () => {
+  const engine = memory(); let release: () => void = () => {}, entered: () => void = () => {};
+  const entry = new Promise<void>(resolve => { entered = resolve; });
+  const held = new Promise<void>(resolve => { release = resolve; });
+  const f = setup({ authorize: async scope => { entered(); await held;
+    return { scope, expiresAt: scope.deadline, isCurrent: () => true, signal: new AbortController().signal };
+  } }, engine);
+  let settled = false;
+  try {
+    const ports = await f.ports(); ports.close();
+    const awaiting = f.backup.inspect({ purpose: 'held-approval', destinationId: 'local-recovery' }); await entry;
+    assert.deepEqual(await awaiting, { ok: false, reason: 'denied' });
+    assert.deepEqual(await f.backup.inspect({ purpose: 'second-approval', destinationId: 'local-recovery' }), { ok: false, reason: 'busy' });
+    const before = structuredClone(engine.values.get('owner-a'));
+    const closing = Promise.resolve(f.backup.close()).then(() => { settled = true; });
+    await Promise.resolve(); await Promise.resolve(); assert.equal(settled, false);
+    release(); await closing; assert.equal(settled, true); assert.deepEqual(engine.values.get('owner-a'), before);
+  } finally { release(); f.data.close(); await f.backup.close(); }
+});
+
+test('registered-copy archives refuse altered content, stale state, final revoke, deletion and expiry', async () => {
+  for (const fault of ['altered', 'foreign', 'stale', 'revoked', 'deleted', 'expired'] as const) {
+    const f = setup();
+    try {
+      await seedRegisteredCopy(f); const saved = required(await f.backup.backup(copyRequest));
+      if (fault === 'altered') {
+        const outer = f.engine.values.get('owner-a') as { managed: { copies: { record: { values: { rss: number } } }[] } };
+        outer.managed.copies[0]!.record.values.rss++;
+        assert.equal((await f.backup.backup({ ...copyRequest, backupId: 'altered' })).ok, false); continue;
+      }
+      if (fault === 'foreign') (f.engine.values.get('owner-a') as { ownerId: string }).ownerId = 'owner-b';
+      if (fault === 'stale') {
+        const ports = await f.ports(); required(await createSettingsStore({ ownerId: 'owner-a', storage: ports.settings, availableDevices: () => [] }).save(1, choice)); ports.close();
+      }
+      if (fault === 'deleted') {
+        const deletion = required(await f.data.beginDeletion({ kinds: ['copies'], purpose: 'owner-copy-delete' }));
+        required(await f.data.resumeDeletionReviewed(deletion.operationId));
+      }
+      if (fault === 'expired') f.time(6000);
+      if (fault === 'revoked') { damageInner(f); let commits = 0; f.engine.before(() => { if (++commits === 2) f.authority.abort(); }); }
+      const before = structuredClone(f.engine.values.get('owner-a'));
+      assert.equal((await f.backup.restoreReviewed({ ...copyRequest, expectedSha256: saved.reference.sha256, retireOwned() {} })).ok, false);
+      assert.deepEqual(f.engine.values.get('owner-a'), before);
+    } finally { f.close(); }
+  }
+});
 
 function damageInner(f: ReturnType<typeof setup>) {
   const outer = f.engine.values.get('owner-a') as { managed: { records: { settings?: string } } };
