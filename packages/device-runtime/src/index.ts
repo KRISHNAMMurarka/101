@@ -63,3 +63,9 @@ export type { ProfileObservationHandle, ProfileReviewHandle, ProfileChoiceHandle
 
 export { CAPABILITY_INVENTORY_LIMITS, createCapabilityInventory } from "./capability-inventory.ts";
 export type { CapabilityInventoryResource, CapabilityInventorySelection, CapabilityInventoryScope, CapabilityInventoryOptions, CapabilityInventoryProof, CapabilityInventoryReason, CapabilityInventoryRow, CapabilityInventorySnapshot, CapabilityInventoryResult, CapabilityInventoryController } from "./capability-inventory.ts";
+
+export { OPERATOR_HEALTH_PROFILE, OPERATOR_HEALTH_LIMITS, createOperatorHealthMonitor } from './operator-health.ts';
+export type { OperatorHealthKind, OperatorHealthSource, OperatorHealthScope, OperatorHealthGrant, OperatorHealthOptions, OperatorHealthReason, OperatorHealthResult, OperatorRuntimeMetrics, OperatorWssMetrics, OperatorSourceHealth, OperatorHealthSample, OperatorHealthSnapshot, OperatorHealthMonitor } from './operator-health.ts';
+
+export { NATIVE_DISCOVERY_PROFILE, NATIVE_DISCOVERY_LIMITS, createNativeDiscoveryController } from './native-discovery.ts';
+export type { NativeDiscoveryScope, NativeDiscoveryGrant, NativeDiscoveryService, NativeDiscoveryEvent, NativeDiscoveryOperation, NativeDiscoveryProvider, NativeDiscoveryOptions, NativeDiscoveryHandle, NativeDiscoveryRow, NativeDiscoverySnapshot, NativeDiscoveryResult, NativeDiscoveryController } from './native-discovery.ts';

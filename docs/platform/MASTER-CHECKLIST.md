@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 106 completed with recorded evidence; 166 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 107 completed with recorded evidence; 165 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -116,8 +116,8 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 - [x] **D01 — Define discovery candidate/evidence types.** Separate observed, identified, authenticated, authorized and ready states; each candidate has scope, expiry and a recovery path. [Scoped receipt and SDK consumer evidence](receipts/2026-10-02-d01-discovery.json).
 - [ ] **D02 — Integrate explicit invites and pairing.** QR, links, manual entry and enrolled-agent discovery identify the intended endpoint without turning an invitation into unlimited grants. [Bounded local TLS integration](receipts/2026-10-06-inventory-invitation-linux.json); enrolled-agent discovery and remaining qualification stay open.
-- [ ] **D03 — Integrate OS/browser choosers.** HID/BLE/serial/camera/audio selection remains permissioned; cancellation, denial, disappearance and retry produce recoverable states.
-- [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal.
+- [ ] **D03 — Integrate OS/browser choosers.** HID/BLE/serial/camera/audio selection remains permissioned; cancellation, denial, disappearance and retry produce recoverable states. [Built bounded chooser lifecycle and actual browser diagnostics](receipts/2026-10-06-chooser-discovery-health.json); physical chooser and bound camera/audio qualification remain open.
+- [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal. [Actual macOS LocalOnly build and runtime evidence](receipts/2026-10-06-chooser-discovery-health.json); broader LAN/other-platform qualification remains open.
 - [x] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features. [Selected actual runtime evidence](receipts/2026-10-06-inventory-invitation-linux.json).
 - [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [x] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible. [Reviewed profile and fresh installed caller evidence](receipts/2026-10-06-backup-resolution-scope.json).
@@ -378,7 +378,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 - [ ] **O01 — Define operator configuration and startup validation.** Identity, origins, storage, relay and quota requirements fail closed with readable recovery when missing or invalid.
 - [ ] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data.
-- [ ] **O03 — Implement redacted observability.** Health, traffic, route/queue load and faults are visible; credentials and private payloads are excluded from operator logs.
+- [x] **O03 — Implement redacted observability.** Health, traffic, route/queue load and faults are visible; credentials and private payloads are excluded from operator logs. [Selected actual runtime/traffic and fresh installed caller evidence](receipts/2026-10-06-chooser-discovery-health.json).
 - [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds.
 - [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access.
 - [ ] **O06 — Validate state backup/restore where required.** Restoring identity/configuration/history preserves ownership, revocation, retention and migration integrity.

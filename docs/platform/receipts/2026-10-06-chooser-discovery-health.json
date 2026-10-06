@@ -1,0 +1,983 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "e4aef5a209544b06244c7872be6f6dd730a43751",
+  "sourceTree": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+  "sourceSha256": {
+    "examples/browser-resources/chooser.ts": "9e2cc667c6083315fa32657221ac9ee9ea6bfcc05d3e140b8002baa64cb7157c",
+    "examples/native-discovery/consumer.mjs": "66f97ce751aa41f90e3fd8e8520ae70eb00e1250fe6df1d6892daf62997ac2ea",
+    "examples/native-discovery/macos-provider.c": "28493a742e241c4c750e6c04957f70f7e1f0b801f9ed6b57df69c33ada177d80",
+    "examples/native-discovery/process-port.mjs": "d818662c435bdd486cd0ecf312a200a0f27afc62afab94df5f830db1099acf98",
+    "examples/operator-health/consumer.mjs": "156e26017aba91fecf2d8a6a2424763fb93e35741e4a20dea58de957301fffa4",
+    "packages/device-runtime/src/index.ts": "0abec7fb30d1683ed7ad9a70895efc67fc332d744cfaa319ebb7fd8665e8135c",
+    "packages/device-runtime/src/native-discovery.test.ts": "2d95e2ede5c0f9dc497e4c0e9c285ba862e9044faf5f13f3d5e6ec3693f17225",
+    "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+    "packages/device-runtime/src/operator-health.test.ts": "7092f09f8ede80f68421080e184487b694d5b27df76bd15d88bf889026cdcac4",
+    "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+    "packages/device-web/src/browser-chooser.test.ts": "b6dc9d7148b48cca345236641c4af3f7b5a9c38607729c67c80d623fbae0cb7f",
+    "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+    "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+    "tools/qa-browser-chooser.mjs": "23fcb1aa2563177faa139856994bc4e38f3a58f46d090377bbd24a3b00ebead5",
+    "tools/qa-native-discovery.mjs": "3f760336a59902f4ebdc3d187989eea2a32dcb260f8f4308766324e268750db3",
+    "tools/qa-operator-health.mjs": "645784367b407acf3bc5e8954e65ad0e17e899cf709a9dad51f5a587299a37e9"
+  },
+  "taskDisposition": {
+    "O03": "complete: selected explicit redacted runtime/transport operator metadata with actual installed public TLS/RSS caller",
+    "D03": "partial: chooser/capture lifecycle implemented; real unactivated browser diagnostics passed; physical choosers and bound camera/audio execution deferred",
+    "D04": "partial: actual macOS LocalOnly DNS-SD software provider; broader LAN/other OS/physical scope unqualified"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 107,
+    "open": 165
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "Version 5.9.3",
+    "typescriptExecutable": "/Users/km/Desktop/games/101/node_modules/typescript/lib/tsc.js",
+    "playwright": "1.61.1",
+    "os": "macOS26.5.2arm64",
+    "expo": "57.0.12",
+    "nativeCompiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "release/sdk-gA7X5U/manifest.json",
+      "sha256": "7e99128a189bd13478bbc8f66c92b640506f912e094e310b8882132a4caf516e",
+      "bytes": 75221
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-w8qxOe/receipt.json",
+      "sha256": "fc68378315ff6e449ffaafd3b2e3543e6a4da7ea819450625c17177583221356",
+      "bytes": 29592
+    },
+    "packages": 7,
+    "sourceFiles": 141,
+    "packedFiles": 314,
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass",
+        "packages": 7,
+        "files": 315,
+        "symlinks": 0,
+        "aliases": 0
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass",
+        "source": [
+          {
+            "path": "packages/devkit/src/device-scaffold.ts",
+            "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+          },
+          {
+            "path": "tools/create-device-project.mjs",
+            "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+          }
+        ],
+        "project": "/tmp/101-sdk-consumer-w8qxOe/generated-device-project",
+        "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+        "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+        "guidance": {
+          "schema": "device-guidance.schema.json",
+          "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+          "generatedAssets": [
+            {
+              "path": "device-guidance.json",
+              "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+            },
+            {
+              "path": "device-guidance.schema.json",
+              "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+            },
+            {
+              "path": "src/devices.json",
+              "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+            },
+            {
+              "path": "src/recipe.json",
+              "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+            },
+            {
+              "path": "scripts/validate.mjs",
+              "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+            }
+          ],
+          "validation": {
+            "status": "pass",
+            "recipeId": "room-sensor:temperature-display",
+            "processorId": "room-sensor:threshold",
+            "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+          },
+          "rejectedAssets": [
+            "unknown-recipe-field",
+            "changed-processor-source",
+            "incompatible-selected-device"
+          ],
+          "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+        },
+        "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "actualNodeMemoryBatch": true,
+        "publicSchemas": true,
+        "privateSubpathsRejected": 18,
+        "packedRunEntry": true
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass",
+        "version": "149.0.7827.55",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouch": true,
+          "independentRelease": true,
+          "capturedOutsideBounds": true,
+          "resizeCancellation": true,
+          "orientationCancellation": true,
+          "disconnectCaptureRelease": true,
+          "unmountCaptureRelease": true
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouchScroll": true,
+          "cancellation": true
+        }
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass",
+        "version": "151.0",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass",
+        "version": "26.5",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass",
+        "package": "@example/temperature-band-processor",
+        "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+        "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+        "operations": [
+          "subscribe",
+          "invoke"
+        ]
+      }
+    ]
+  },
+  "focused": {
+    "tests": 52,
+    "pass": 52,
+    "fail": 0,
+    "skip": 0,
+    "split": {
+      "O03": 15,
+      "D03": 24,
+      "D04": 13
+    }
+  },
+  "operatorHealth": {
+    "profile": "selected-operator-health/1",
+    "checks": [
+      "actual TLSv1.3 and direct WSS session, supplied CA and hostname verified",
+      "exact metadata grant separate from denied actual resource route; real transport packet/drop counts only",
+      "actual Node RSS route and bounded reliable queue/capacity faults; no raw-work inference",
+      "real runtime revocation reflected while independent metadata remains active",
+      "metadata abort clears retained history/timer and preserves borrowed runtime/transport lifecycle"
+    ],
+    "samples": [
+      {
+        "state": "active",
+        "remainingStarts": 62,
+        "rawAuthorizations": 0,
+        "timerArmed": true,
+        "retainedBytes": 593,
+        "samples": [
+          {
+            "sequence": 1,
+            "sampledAt": 1791255906014,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 1,
+                  "activeRoutes": 0,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 0,
+                  "queuedOperations": 0,
+                  "knownQueueCapacity": 1,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 1,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "state": "active",
+        "remainingStarts": 62,
+        "rawAuthorizations": 0,
+        "timerArmed": true,
+        "retainedBytes": 1185,
+        "samples": [
+          {
+            "sequence": 1,
+            "sampledAt": 1791255906014,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 1,
+                  "activeRoutes": 0,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 0,
+                  "queuedOperations": 0,
+                  "knownQueueCapacity": 1,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 1,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          },
+          {
+            "sequence": 2,
+            "sampledAt": 1791255906128,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 3,
+                  "activeRoutes": 2,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 0,
+                  "queuedOperations": 2,
+                  "knownQueueCapacity": 4,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 2,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "state": "active",
+        "remainingStarts": 62,
+        "rawAuthorizations": 0,
+        "timerArmed": true,
+        "retainedBytes": 1777,
+        "samples": [
+          {
+            "sequence": 1,
+            "sampledAt": 1791255906014,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 1,
+                  "activeRoutes": 0,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 0,
+                  "queuedOperations": 0,
+                  "knownQueueCapacity": 1,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 1,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          },
+          {
+            "sequence": 2,
+            "sampledAt": 1791255906128,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 3,
+                  "activeRoutes": 2,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 0,
+                  "queuedOperations": 2,
+                  "knownQueueCapacity": 4,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 2,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          },
+          {
+            "sequence": 3,
+            "sampledAt": 1791255906241,
+            "sources": [
+              {
+                "source": "source-1",
+                "kind": "runtime-inspector",
+                "state": "available",
+                "metrics": {
+                  "kind": "runtime-inspector",
+                  "resources": 4,
+                  "availableResources": 4,
+                  "routes": 3,
+                  "activeRoutes": 0,
+                  "deniedRoutes": 1,
+                  "revokedRoutes": 2,
+                  "queuedOperations": 0,
+                  "knownQueueCapacity": 4,
+                  "unknownQueueRoutes": 0,
+                  "faultsInTrace": 2,
+                  "rawProviderWork": null
+                }
+              },
+              {
+                "source": "source-2",
+                "kind": "wss-transport",
+                "state": "available",
+                "metrics": {
+                  "kind": "wss-transport",
+                  "sentPackets": 1,
+                  "receivedPackets": 1,
+                  "droppedPackets": 1,
+                  "reportedPending": 0,
+                  "bufferedBytes": 0,
+                  "connectionState": "connected"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "terminal": {
+      "state": "revoked",
+      "remainingStarts": 62,
+      "rawAuthorizations": 0,
+      "timerArmed": false,
+      "retainedBytes": 2,
+      "samples": []
+    },
+    "scope": "Selected explicit Node operator metadata snapshots only. Packet counts are not byte rates or end-to-end application effects; raw provider work is unknown. No network relay/coordinator, physical health or credential logging."
+  },
+  "browserChooser": {
+    "browsers": [
+      {
+        "name": "chromium",
+        "version": "149.0.7827.55",
+        "checks": [
+          "ordinary-public-facade-identity",
+          "native-secure-loopback-unactivated-execution",
+          "inert-declared-options-no-authority",
+          "actual-native-api-availability-and-no-gesture-rejection",
+          "unbound-camera-audio-no-capture",
+          "explicit-retry-and-clean-close"
+        ],
+        "observed": {
+          "secureContext": true,
+          "transientActivation": false,
+          "nativeApis": {
+            "hid": true,
+            "bluetooth": true,
+            "serial": true
+          }
+        }
+      },
+      {
+        "name": "webkit",
+        "version": "26.5",
+        "checks": [
+          "ordinary-public-facade-identity",
+          "native-secure-loopback-unactivated-execution",
+          "inert-declared-options-no-authority",
+          "actual-native-api-availability-and-no-gesture-rejection",
+          "unbound-camera-audio-no-capture",
+          "explicit-retry-and-clean-close"
+        ],
+        "observed": {
+          "secureContext": true,
+          "transientActivation": false,
+          "nativeApis": {
+            "hid": false,
+            "bluetooth": false,
+            "serial": false
+          }
+        }
+      }
+    ],
+    "scope": "Real Chromium/WebKit public browser availability and missing activation negatives only; no selected physical hardware, camera/audio binding, native permission dialog, capture, authentication or resource operation grant. D03 remains partial."
+  },
+  "nativeDiscovery": {
+    "native": {
+      "sourceSha256": "28493a742e241c4c750e6c04957f70f7e1f0b801f9ed6b57df69c33ada177d80",
+      "executableSha256": "f54c7393b851293f624d7b6c01622cb1f6410b104b601b122b1c3bc9de583e1b",
+      "compilerArgs": [
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O2",
+        "/private/tmp/101-sdk-consumer-w8qxOe/native-discovery-caller/macos-provider.c",
+        "-o",
+        "/private/tmp/101-sdk-consumer-w8qxOe/native-discovery-caller/macos-provider"
+      ],
+      "linkage": "installed Apple libSystem DNS-SD",
+      "headerSha256": "f1595b03e36e39011d922a200f6f89014d7592d574acc320185b99c73fd337d6"
+    },
+    "proof": {
+      "kind": "actual-macos-local-only-dns-sd",
+      "profile": "macos-local-only-dns-sd/1",
+      "ownerRequests": 4,
+      "nativeOpened": 3,
+      "rawExited": 3,
+      "nativeFrames": [
+        {
+          "version": 1,
+          "type": "ready"
+        },
+        {
+          "version": 1,
+          "type": "resolved",
+          "interfaceIndex": 4294967295,
+          "name": "101-owned-89f07e83",
+          "serviceType": "_101l89f07e83._tcp",
+          "domain": "local.",
+          "target": "localhost.",
+          "port": 53125,
+          "txtHex": "0970726f66696c653d31"
+        },
+        {
+          "version": 1,
+          "type": "ready"
+        },
+        {
+          "version": 1,
+          "type": "resolved",
+          "interfaceIndex": 4294967295,
+          "name": "101-owned-89f07e83",
+          "serviceType": "_101l89f07e83._tcp",
+          "domain": "local.",
+          "target": "localhost.",
+          "port": 53125,
+          "txtHex": "0970726f66696c653d31"
+        },
+        {
+          "version": 1,
+          "type": "removed",
+          "interfaceIndex": 4294967295,
+          "name": "101-owned-89f07e83",
+          "serviceType": "_101l89f07e83._tcp",
+          "domain": "local."
+        },
+        {
+          "version": 1,
+          "type": "resolved",
+          "interfaceIndex": 4294967295,
+          "name": "101-owned-89f07e83",
+          "serviceType": "_101l89f07e83._tcp",
+          "domain": "local.",
+          "target": "localhost.",
+          "port": 53125,
+          "txtHex": "0970726f66696c653d31"
+        },
+        {
+          "version": 1,
+          "type": "ready"
+        },
+        {
+          "version": 1,
+          "type": "resolved",
+          "interfaceIndex": 4294967295,
+          "name": "101-owned-89f07e83",
+          "serviceType": "_101l89f07e83._tcp",
+          "domain": "local.",
+          "target": "localhost.",
+          "port": 53125,
+          "txtHex": "0970726f66696c653d31"
+        }
+      ],
+      "originalResolvedSha256": "d92036ccf570aed8a6ce66dbf45c96d315be94d9e45b80f82e467977421ca84b",
+      "steps": [
+        {
+          "action": "Denied fresh host grant",
+          "phase": "idle",
+          "count": 0,
+          "rawReservations": 0,
+          "timerArmed": false
+        },
+        {
+          "action": "Actual native callback observed",
+          "phase": "observing",
+          "count": 1,
+          "rawReservations": 1,
+          "timerArmed": true
+        },
+        {
+          "action": "Quiet observed receipt expiry",
+          "phase": "observing",
+          "count": 0,
+          "rawReservations": 1,
+          "timerArmed": true
+        },
+        {
+          "action": "Native registration deallocation withdraws row",
+          "phase": "observing",
+          "count": 0,
+          "rawReservations": 1,
+          "timerArmed": true
+        },
+        {
+          "action": "Owner grant revoked",
+          "phase": "stopped",
+          "count": 0,
+          "rawReservations": 0,
+          "timerArmed": false
+        },
+        {
+          "action": "Owned native process crash",
+          "phase": "unavailable",
+          "count": 0,
+          "rawReservations": 0,
+          "timerArmed": false
+        }
+      ],
+      "actualOwnedReply": {
+        "profile": "owned-software/1",
+        "tag": "89f07e83"
+      },
+      "checks": [
+        "inert constructor and denied start; native LocalOnly callback/port/TXT reaches public SDK",
+        "independently selected/authorized owned loopback software reply; observed metadata has no identity/capability/resource grant",
+        "quiet expiry; cancellation retains actual process reservation; explicit rescan obtains fresh owner grant/handle",
+        "real native withdrawal removes row and opaque handle",
+        "owner signal revocation fences late native frames and tracks actual exit",
+        "actual provider crash retires observations and cannot automatically restart",
+        "wrong owner exact grant denied; missing native host backend truthfully unsupported"
+      ],
+      "cleanup": {
+        "controllerClosed": true,
+        "noRawReservation": true
+      },
+      "scope": "Native LocalOnly authoritative DNS-SD records only. No LAN multicast, other platform, authenticated identity, advertised capability, optical/phone or discovery-derived resource permission."
+    },
+    "scope": "Actual macOS LocalOnly software DNS-SD provider and public Node SDK caller; no LAN multicast, phone, other platform, authenticated identity, inferred capability, automatic resource grant or general D04 qualification."
+  },
+  "nativeCompilation": {
+    "proof": {
+      "path": "/tmp/101-chooser-discovery-health-native-reachability.json",
+      "sha256": "776b9aff03e600bbf6f5d9f05aca60df7173c30de9cceef86b16d3691edc3a62",
+      "bytes": 10304
+    },
+    "platforms": [
+      {
+        "name": "ios",
+        "exactSources": 17,
+        "jsSha256": "6e0fe5869879b2c034cc1f19d62e348e13acba8e6e769d1fa6b6abda4a26eb31",
+        "mapSha256": "63c2c80736fca13189a0bd1c33cba69e36f9c84a62bc439e23ce944e8028f2b8"
+      },
+      {
+        "name": "android",
+        "exactSources": 17,
+        "jsSha256": "76c0709f4e8eca3af2144e3738851ce9804f334cf962634f14776acaf418118e",
+        "mapSha256": "d15364a52eb63e087660def1c66cf0140e07281145e5881346bad9cca7868633"
+      }
+    ],
+    "scope": "Local iOS/Android JavaScript bundle and source-map byte reachability; installation/native bridge/hardware remain unverified"
+  },
+  "integrationRepairs": {
+    "browserQaRoot": "Default fresh SDK producer uses /tmp, independent of macOS os.tmpdir. Kept canonical path/hash/tree fences; retained actual worker-tool RED then final installed GREEN.",
+    "nativeInvalidInputLaunch": "One fresh native invalid-input launch produced null status within the 1-second harness bound; the same executable returned64 on the retained narrow follow-up. Harness now gives the declared five-second native startup bound and includes signal/error diagnostics. Final fresh installed native receipt passed. Native producer/controller bytes unchanged."
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/101-browser-chooser-worker-pins.json",
+      "sha256": "8e319770a823086553e41afcd074b1c9f416b952a41aa654eadebbb51ac90513",
+      "bytes": 3614
+    },
+    {
+      "path": "/tmp/101-d04-frozen-pins.json",
+      "sha256": "e0bce04f2c1cbb10afb62a7ffd706b24929c1110029e495902405b5ab7e0de7d",
+      "bytes": 1060
+    },
+    {
+      "path": "/tmp/101-operator-health-independent-review.json",
+      "sha256": "8d0e4b0bcf028b2834f32082e796b1d2530f82f740225430013d0284206f2589",
+      "bytes": 6311
+    },
+    {
+      "path": "/tmp/101-browser-chooser-independent-review.json",
+      "sha256": "eb6cbdb36f8654f581b387c37bb6ed79f7e5089cac21f1211f1fe89efbf337ec",
+      "bytes": 1464
+    },
+    {
+      "path": "/tmp/101-native-discovery-independent-review.json",
+      "sha256": "c09141a2ccc78d88c50b594e00b58e2e6440104cd89f56bf9a836274758bc8ff",
+      "bytes": 8527
+    },
+    {
+      "path": "/tmp/101-operator-health-feature-red.log",
+      "sha256": "7d211681aeb25c7e11abc862c2764de87e64a91549054469c1670a67bcbc3536",
+      "bytes": 1145
+    },
+    {
+      "path": "/tmp/101-operator-health-authorization-red.log",
+      "sha256": "678012a2aa5b8a58ccab695313fa4dbb81b77500eaeb9f977dddc8d0193397e7",
+      "bytes": 1061
+    },
+    {
+      "path": "/tmp/101-operator-health-clock-unit-red.log",
+      "sha256": "a65299562c23ef814411fdf362a533b7f9d62b635bc8d5763cdd61733ba8d8a1",
+      "bytes": 928
+    },
+    {
+      "path": "/tmp/101-operator-health-replacement-unit-red.log",
+      "sha256": "9ecc8087dfd29885ecf13f9dc595fdedf057316ea14a161976cae8f594d4f212",
+      "bytes": 1078
+    },
+    {
+      "path": "/tmp/101-operator-health-final-expiry-unit-red.log",
+      "sha256": "8fdb44e5f03f01bbdf3514fab7337260cefe48d7c5ab0737bae0b9db5abc22b2",
+      "bytes": 1067
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-focused.log",
+      "sha256": "e0e7968de7dd651d4659ec7765ab63ed82972e608e280cfd1828ce58cde29c5b",
+      "bytes": 5354
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-packed-chooser-root-red.err",
+      "sha256": "ca91f258ec04a0d2e3d8f07e2c791d29c7ff66edad0a4ae0fbd76685709f94fb",
+      "bytes": 710
+    },
+    {
+      "path": "/tmp/101-native-discovery-first-launch-failure.err",
+      "sha256": "8a761088c23210ebd9d81b40e91a52e527593ccba7a7ac7d1628085e68777bbc",
+      "bytes": 622
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-packed-health.json",
+      "sha256": "1b9d4ee99eca8bead8dcd480e174d8154d229f5fea99a5fc5b7eec9e303c9ac1",
+      "bytes": 6361
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-packed-chooser.json",
+      "sha256": "c8e77262e1c82adcfa3820a94b169a9b5585ba8da3c1212109e0bdf74ff1668a",
+      "bytes": 51106
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-packed-discovery.json",
+      "sha256": "fb3baf45e30a2854d6acbb26008ea5febd1994784f4b69a47fe09d614b2b3c94",
+      "bytes": 5411
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-native-reachability.json",
+      "sha256": "776b9aff03e600bbf6f5d9f05aca60df7173c30de9cceef86b16d3691edc3a62",
+      "bytes": 10304
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-native-bundle.log",
+      "sha256": "a9ca6c063d4014d5b5fd8c7d5238945ef956ae5a1d392568ddda347a8ac49aaf",
+      "bytes": 1159
+    },
+    {
+      "path": "/tmp/101-chooser-discovery-health-native-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "commitGatePolicy": {
+    "scope": "This receipt records completed source/runtime checks. Before local commit, run all gates on the final candidate containing this metadata; gate outcomes are separately retained in the local exact-tree gate record.",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "logsPrefix": "/tmp/101-chooser-discovery-health-gate-"
+  },
+  "limitations": [
+    "No physical chooser, phone, OS pointer, native bridge/install, LAN discovery, relay/coordinator observability or all-platform claim.",
+    "Zero accepted release support rows; local candidate evidence does not publish or deploy anything."
+  ]
+}

@@ -1667,3 +1667,93 @@ a new producer identity and independent approval. Original producer time remains
 separate from the client receipt clock. The tested software sensor/command does
 not establish a physical sensor, MCU, general gateway, remote authentication,
 malicious-host sandbox or reversal of an already issued effect.
+
+## Permissioned browser selection
+
+`createBrowserChooserController` derives reviewed options and read/subscribe
+resources from selected descriptors. HID, Bluetooth and serial defaults call
+their native chooser with explicit bounded filters. Selection does not open a
+device, read input, connect GATT or authorize a resource operation. Camera and
+audio require a separately bound existing adapter lifecycle; an absent binding
+returns `adapter-unbound` without acquiring input.
+
+Call `choose(id)` from a current user gesture in a secure context. An opaque
+selection is bound to its controller and activation. `start(selection)` requires
+separate exact capture approval and a trusted adapter that checks the supplied
+context before effects and after awaits. Runtime resource grants remain separate.
+Cancel, denial, hiding, disappearance, expiry, stop and close retire owned leases;
+retry is explicit. Native promises and late cleanup retain their reservations
+until actual settlement. Limits are eight declarations, eight selected resources,
+four filters, eight services, sixty-four lifetime attempts, two native pending
+slots and one capture factory. Requests last at most five seconds and selections
+thirty seconds, using one expiry timer and a trusted progressing host clock.
+
+`examples/browser-resources/chooser.ts` is a real unactivated browser diagnostic.
+Run `node tools/qa-browser-chooser.mjs --sdk-root INSTALLED_CONSUMER` for ordinary
+public SDK imports in Chromium and WebKit. These checks establish actual API
+availability and permission boundaries without presenting a chooser. Physical
+selection, permission dialogs, disappearance and camera/audio adapter execution
+remain unqualified; D03 stays open.
+
+## Scoped macOS LocalOnly discovery
+
+`createNativeDiscoveryController` implements `macos-local-only-dns-sd/1`.
+Every explicit start needs fresh exact owner/application/session approval for one
+service type, `local.` and interface `0xffffffff`. The provisioned Node adapter
+launches the reviewed native C executable; every register, browse and resolve
+uses Apple's LocalOnly interface. It observes local authoritative software
+records without LAN multicast, address queries or remote URL fetching.
+
+Resolved observations are deduplicated by interface, name, type and domain.
+Only a bounded `localhost.` target, port and closed `profile=1` TXT record are
+accepted. An issued opaque handle can establish observed evidence only; TXT,
+labels and endpoint metadata establish no identity, capabilities or operation
+permission. Withdrawal, two-second receipt expiry, revocation, crash and stop
+remove current rows. Recovery needs a fresh grant and explicit start.
+
+The controller permits sixteen current candidates, eight native resolvers,
+sixty-four events per second, 512 TXT bytes, 16 KiB lifetime native output and
+thirty-two starts. Startup lasts at most five seconds and grants thirty seconds.
+One actual process remains reserved until native exit, including after logical
+cancellation. The host supplies a fixed executable path/hash; discovery data
+cannot choose a program. Trusted native host callbacks are cooperative.
+
+Run `node tools/qa-native-discovery.mjs --sdk-root INSTALLED_CONSUMER` for actual
+LocalOnly registration, resolve, withdrawal, quiet expiry, cancellation, owned
+process loss and a separately authorized loopback consumer. The selected Mac
+software provider works; LAN, other operating systems and physical discovery
+remain outside this evidence, so full D04 stays open.
+
+## Selected redacted operator health
+
+`createOperatorHealthMonitor` implements `selected-operator-health/1`. The host
+selects at most eight borrowed RuntimeInspector or WSS status callbacks. Inert
+construction reads no metadata. `start()` requires a fresh exact owner/operator/
+application/session/purpose and selected-source grant; it supplies no resource
+route permission. `sample()` explicitly reads metadata, with a 100 ms minimum
+cadence and no background polling.
+
+Reports retain fixed states and validated counts only. Private identifiers become
+local source aliases; descriptors, labels, values, credentials, operation IDs,
+provider messages and raw reasons never enter reports. Runtime output counts
+resources/readiness, routes/grants, queued operations, configured known queue
+capacity and faults in the bounded inspector trace. It reports raw provider work
+as `null`, because the public queue API cannot measure every unsettled operation.
+WSS output reports sent/received/dropped packet counters and buffered bytes, with
+an optional explicitly supplied connection state. Counters are sampled metadata,
+not byte rates, physical health or end-to-end application effects.
+
+History holds at most thirty-two samples or 32 KiB. The monitor permits sixty-four
+lifetime starts, one raw authorization and one timer. Approval must complete in
+one second; current grants last at most thirty seconds. Abort, currentness loss,
+host or wall-clock expiry, stop and close clear retained history and detach the
+grant. Logical cancellation retains an unresolved authorization reservation until
+actual settlement. The monitor never stops its borrowed runtime or transport;
+synchronous host callbacks are trusted cooperative code.
+
+`examples/operator-health/consumer.mjs` independently approves metadata and
+resource routes. Run `node --no-experimental-strip-types tools/qa-operator-health.mjs
+--sdk-root INSTALLED_CONSUMER` for actual TLS traffic, genuine Node RSS delivery,
+bounded queue/fault counts and revocation through ordinary public SDK imports.
+This selected O03 implementation does not qualify coordinator, relay, physical or
+all-platform observability.

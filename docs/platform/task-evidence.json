@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 79,
+  "revision": 80,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8055,6 +8055,88 @@
         "Owned Mac; fresh offline installed seven-package SDK; actual Node RSS producers; owned loopback TLS/headless browsers; existing local Linux ARM64 container runtime/cached image"
       ],
       "supportRows": []
+    },
+    {
+      "id": "o03-selected-operator-health-2026-10-06",
+      "revision": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-chooser-discovery-health.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64 Node24.14.0/npm11.9.0/TS5.9.3; Playwright1.61.1 Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Appleclang21 installed libSystem; offline Expo57.0.12 JS/maps only.",
+      "reproduction": "build-sdk aaf7f80125d31fc5739a1f2b06a76fd308a49568; fresh qa-sdk-consumer; qa-operator-health --sdk-root; qa-browser-chooser --sdk-root; qa-native-discovery --sdk-root; exact candidate commit gates as required.",
+      "scope": "complete: selected explicit redacted runtime/transport operator metadata with actual installed public TLS/RSS caller",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; owned loopback TLS and genuine Node RSS; actual LocalOnly native software records; headless unactivated browser contexts"
+      ],
+      "supportRows": [
+        "node-selected-operator-health-2026-10-06"
+      ]
+    },
+    {
+      "id": "d03-browser-chooser-partial-2026-10-06",
+      "revision": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-chooser-discovery-health.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64 Node24.14.0/npm11.9.0/TS5.9.3; Playwright1.61.1 Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Appleclang21 installed libSystem; offline Expo57.0.12 JS/maps only.",
+      "reproduction": "build-sdk aaf7f80125d31fc5739a1f2b06a76fd308a49568; fresh qa-sdk-consumer; qa-operator-health --sdk-root; qa-browser-chooser --sdk-root; qa-native-discovery --sdk-root; exact candidate commit gates as required.",
+      "scope": "partial: chooser/capture lifecycle implemented; real unactivated browser diagnostics passed; physical choosers and bound camera/audio execution deferred",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; owned loopback TLS and genuine Node RSS; actual LocalOnly native software records; headless unactivated browser contexts"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "d04-native-local-only-partial-2026-10-06",
+      "revision": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-chooser-discovery-health.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64 Node24.14.0/npm11.9.0/TS5.9.3; Playwright1.61.1 Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Appleclang21 installed libSystem; offline Expo57.0.12 JS/maps only.",
+      "reproduction": "build-sdk aaf7f80125d31fc5739a1f2b06a76fd308a49568; fresh qa-sdk-consumer; qa-operator-health --sdk-root; qa-browser-chooser --sdk-root; qa-native-discovery --sdk-root; exact candidate commit gates as required.",
+      "scope": "partial: actual macOS LocalOnly DNS-SD software provider; broader LAN/other OS/physical scope unqualified",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; owned loopback TLS and genuine Node RSS; actual LocalOnly native software records; headless unactivated browser contexts"
+      ],
+      "supportRows": [
+        "macos-local-only-discovery-2026-10-06"
+      ]
     }
   ],
   "tasks": [
@@ -8646,7 +8728,8 @@
     {
       "id": "D03",
       "records": [
-        "pending-D03"
+        "pending-D03",
+        "d03-browser-chooser-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -8660,7 +8743,8 @@
     {
       "id": "D04",
       "records": [
-        "pending-D04"
+        "pending-D04",
+        "d04-native-local-only-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11422,7 +11506,8 @@
     {
       "id": "O03",
       "records": [
-        "pending-O03"
+        "pending-O03",
+        "o03-selected-operator-health-2026-10-06"
       ],
       "dependencies": [
         "S01"

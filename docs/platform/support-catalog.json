@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 6,
+  "revision": 7,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -1544,6 +1544,111 @@
       "limitations": [
         "Only this selected software target and exact immutable local client are recorded. Final release acceptance remains separate.",
         "Original source clock and local receipt clock are separate; no implicit physical/cross-clock capture-age claim."
+      ]
+    },
+    {
+      "id": "node-selected-operator-health-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned Mac software operator",
+        "transport": "Owned local TLS1.3 WSS and in-process runtime",
+        "connector": "@101/connect",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "selected-operator-health/1"
+        ],
+        "resources": [
+          "Sampled runtime health/route/grant/queue/fault counts and WSS packet counts/buffered bytes"
+        ],
+        "unavailable": [
+          "Physical/all-platform/relay/coordinator health",
+          "Raw provider work",
+          "Traffic byte rates"
+        ]
+      },
+      "qualificationTasks": [
+        "O03",
+        "Q01",
+        "K01"
+      ],
+      "evidence": {
+        "implementation": [
+          "o03-selected-operator-health-2026-10-06"
+        ],
+        "contract": [
+          "o03-selected-operator-health-2026-10-06"
+        ],
+        "runtime": [
+          "o03-selected-operator-health-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "complete: selected explicit redacted runtime/transport operator metadata with actual installed public TLS/RSS caller",
+        "Only selected exact local software scope; final release acceptance remains separate."
+      ]
+    },
+    {
+      "id": "macos-local-only-discovery-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned Mac LocalOnly authoritative software records",
+        "transport": "Apple DNS-SD LocalOnly0xffffffff; separate explicitly approved127.0.0.1 caller",
+        "connector": "@101/connect",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "macos-local-only-dns-sd/1"
+        ],
+        "resources": [
+          "Observed LocalOnly service receipt/name/type/domain/localhost port; no identity or operation grant"
+        ],
+        "unavailable": [
+          "LAN multicast",
+          "Other OS providers",
+          "Physical discovery",
+          "Identity/capability/resource authorization"
+        ]
+      },
+      "qualificationTasks": [
+        "D04",
+        "Q01",
+        "K01"
+      ],
+      "evidence": {
+        "implementation": [
+          "d04-native-local-only-partial-2026-10-06"
+        ],
+        "contract": [
+          "d04-native-local-only-partial-2026-10-06"
+        ],
+        "runtime": [
+          "d04-native-local-only-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: actual macOS LocalOnly DNS-SD software provider; broader LAN/other OS/physical scope unqualified",
+        "Only selected exact local software scope; final release acceptance remains separate."
       ]
     }
   ]
