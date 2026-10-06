@@ -1757,3 +1757,69 @@ resource routes. Run `node --no-experimental-strip-types tools/qa-operator-healt
 bounded queue/fault counts and revocation through ordinary public SDK imports.
 This selected O03 implementation does not qualify coordinator, relay, physical or
 all-platform observability.
+
+## Validated local operator startup
+
+`prepareOperatorStartup` from `@101/hub-server` validates
+`operator-loopback-startup/1` without opening a listener. Its closed configuration
+requires current provisioned mTLS identity/enrollments, exact HTTPS origins,
+`127.0.0.1` and a selected port, a bounded owned directory catalog, explicit
+ephemeral storage with loss-on-stop acknowledgment, disabled relay, and the
+existing `fixed-coordinator-directory/1` ceilings. Unsupported persistence, relay
+or custom quotas fail with fixed readable recovery instructions.
+
+An accepted controller exposes `start()`, `stop()` and `snapshot()`. Concurrent
+start calls share one native bind. Credentials are checked again before and after
+binding. Stop retires the owner and its bearer authority; recovery needs a newly
+validated owner. Status exposes counts, limits and a local endpoint without
+credentials or personal catalog values. Configuration and session membership
+provide no resource grant: directory visibility still needs independent current
+owner approval. `examples/coordinator/operator-startup.ts` exercises actual mTLS
+admission, directory grant/removal, quota rejection and fresh-owner recovery.
+Its optional abort signal retires clients and listeners, prevents subsequent
+operations and awaits issued work teardown.
+
+For a disposable repository-source run on Node 24.14 with local OpenSSL, use
+`node tools/local-operator.mjs --exercise`. It creates temporary identities and
+exercises the actual coordinator and directory. `--serve` opens one ephemeral
+loopback listener for fifteen seconds after startup; Ctrl+C or SIGTERM requests
+earlier retirement. A `removed` event confirms listener teardown and removal of
+the newly owned credentials directory. The command accepts no user credentials,
+paths or remote endpoint. It preserves unrelated files. Synchronous credential
+generation precedes the listener lifetime; force killing the process has no
+cleanup guarantee. The relay dependency remains unavailable, so O02 stays open.
+
+## Scoped disposable filesystem resources
+
+`examples/filesystem-resources/adapter.mjs` exports
+`createOwnedFilesystemAdapter` and `OWNED_FILESYSTEM_LIMITS`. Explicit creation
+owns a new private temporary root; it accepts no existing user path. Select at
+most four reviewed ASCII `.txt` or `.json` leaf destinations. List, read, write
+and delete require current exact owner/application/session/action approval and a
+current runtime delivery context. A client action grant does not grant access to
+sensitive result data: the example uses a separately approved result-read route.
+
+Files hold at most 512 bytes and the root, including staged writes, at most 2 KiB.
+Native reads remain
+bounded even if a file grows. Writes stage an exclusive 0600 file and replace
+atomically; replacement and deletion require the expected SHA-256 value. A
+replacement needs room for both old and staged bytes; quota rejection preserves
+the original file. The adapter checks root identity, regular single-link files
+and `O_NOFOLLOW`. Its
+cooperative Node host remains trusted: pathname calls do not establish an
+`openat` sandbox against malicious same-user path substitution.
+
+One raw operation remains reserved through actual native settlement and staging
+cleanup, including after logical cancellation. There are sixty-four lifetime
+attempts, at most sixty-four native calls per operation, one timer and a 2.5-second
+maximum logical deadline. Revocation fences later work, acknowledgments and results. An already
+issued rename or unlink can still take effect; the result reports that
+uncertainty and requires a fresh authorized read to confirm it. `close()` waits
+for owned work and removes only selected files and its private root.
+
+Run `node tools/qa-filesystem-resources.mjs --sdk-root INSTALLED_CONSUMER
+--candidate-tree CALLER_TREE` for genuine Node filesystem effects through public
+SDK imports. The caller tree binds the new adapter/example/test/tool; unchanged
+SDK source and installed bytes retain their original artifact provenance. This
+selected implementation leaves clipboard, application control and general user
+files outside N16's current evidence.

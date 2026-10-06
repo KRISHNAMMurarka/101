@@ -187,3 +187,6 @@ export { createHttpsCoordinator, createCoordinatorFetcher, HTTPS_COORDINATOR_LIM
 export { createPrivateDirectoryClient } from './private-directory.ts';
 export type { ProvisionedDirectoryResource, PrivateDirectoryClientOptions } from './private-directory.ts';
 export type { HttpsCoordinatorOptions, CoordinatorEnrollment, CoordinatorFetcherOptions } from './https-coordinator.ts';
+
+export { OPERATOR_CONFIGURATION_PROFILE, prepareOperatorStartup } from './operator-configuration.ts';
+export type { OperatorConfiguration, OperatorConfigurationIssue, OperatorStartupSnapshot, OperatorStartupResult, OperatorStartupController } from './operator-configuration.ts';

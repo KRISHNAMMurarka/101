@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "3a853a5bef02c5cfcd5ffcb60c57f7a9e31e0b5a",
+  "sourceTree": "57ccdaeee8e65d5b90d843bd447c20dd64925b69",
+  "sourceSha256": {
+    "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+    "packages/hub-server/src/operator-configuration.test.ts": "4079bf4838bfd9248f348dae290df7cb3c968156619f2725a9ad408546eb5fe8",
+    "examples/coordinator/operator-startup.ts": "de5fa54dc6a1a853697ac386ed5c34585e9f90d04133defb36491350a17d996c",
+    "tools/qa-operator-startup.mjs": "5b7e5f91c6a6f90fca1e9c694990ffd2930f0c11e3f005be70c2345b177bbd13",
+    "packages/hub-server/src/index.ts": "4c0431eddbbfb0113318b4f870ec8de0cf71f3cfc1731d4c2ffe84c72473912a",
+    "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+    "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+    "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+    "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528",
+    "tools/local-operator.mjs": "681eef956398eddd0a477302b1fba6c5654708e750532244149dd64ea763b0db",
+    "tools/qa-local-operator.mjs": "68c801042bfb2a39bf4539f3dd2e8a4a95b29a8bbb599c658e37087ff17cd3a6",
+    "examples/filesystem-resources/adapter.mjs": "4736ccd48d992738ec945180da29413e83fabc4c28cd581eda59db58cd63c2c7",
+    "examples/filesystem-resources/consumer.mjs": "ec6bed3d1b3c4425c49faba603cd8d1e8e8e18307ba2cc7ea7d5543b8675ed6b",
+    "packages/device-runtime/src/filesystem-resources.test.ts": "26d75e59be0a8e0a9a1249400aeae88b30785326caec5e51932cf53a04db3df1",
+    "tools/qa-filesystem-resources.mjs": "d9af7d8f723d988615c4744fdd7819bdbe5d5979d5e3d6685471f76201bead51"
+  },
+  "taskDisposition": {
+    "O01": "complete: selected closed local Node operator startup validation and actual mTLS/directory caller",
+    "O02": "partial: disposable local coordinator/directory lifecycle works; relay remains unavailable",
+    "N16": "partial: actual confined Node filesystem operations and sensitive result grants; clipboard/application/user-path scope remains open",
+    "K04": "partial: actual offline arm64 Android Release build with local debug identity; intended signing and physical lifecycle qualification remain open"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 108,
+    "open": 164
+  },
+  "environment": {
+    "os": "macOS26.5.2arm64",
+    "node": "v24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "java": "Oracle25.0.2arm64",
+    "gradle": "9.3.1",
+    "expo": "57.0.12",
+    "reactNative": "0.86.2"
+  },
+  "operatorStartup": {
+    "profile": "operator-loopback-startup/1",
+    "focusedTests": 10,
+    "proof": {
+      "profile": "operator-loopback-startup/1",
+      "checks": [
+        "validation is inert before explicit start",
+        "selected storage/relay and effective server ceilings are truthful",
+        "configuration acceptance does not bypass exact origin admission",
+        "actual independently authenticated host create and peer join",
+        "configured catalog and rendezvous membership grant no directory visibility",
+        "explicit current host bearer allows only the provisioned directory resource",
+        "status excludes credentials and personal catalog bytes",
+        "explicit host metadata removal withdraws visibility",
+        "selected fixed per-principal session ceiling is actually enforced",
+        "stop retires owner and prevents restart",
+        "fresh explicit startup restores no previous bearer authority",
+        "fresh startup restores no old directory enrollments or member grants"
+      ],
+      "actualLocalTlsStartups": 2,
+      "independentlyAuthorizedDirectoryRows": 1,
+      "storage": "ephemeral",
+      "relay": "disabled",
+      "resourceGrantsFromConfiguration": false,
+      "shutdownDropsAuthority": true
+    },
+    "rejected": [
+      {
+        "code": "storage-unsupported",
+        "field": "storage",
+        "message": "Storage is unsupported or loss on stop has not been acknowledged.",
+        "recovery": "Select ephemeral storage and explicitly acknowledge that stop loses sessions, directory membership and bearer authority."
+      },
+      {
+        "code": "relay-unsupported",
+        "field": "relay",
+        "message": "Relay is unavailable in this local profile.",
+        "recovery": "Select disabled relay for this local profile; TURN and gateway relay are unavailable."
+      },
+      {
+        "code": "quotas-invalid",
+        "field": "quotas",
+        "message": "The required fixed admission ceilings were not selected.",
+        "recovery": "Select fixed-coordinator-directory/1; these are enforced admission ceilings, not resource permission."
+      },
+      {
+        "code": "origins-invalid",
+        "field": "origins",
+        "message": "Allowed origins are missing or invalid.",
+        "recovery": "Provide distinct exact HTTPS origins without paths, wildcards or embedded credentials."
+      }
+    ],
+    "effectiveRequirements": {
+      "identity": "provisioned-mtls",
+      "enrollmentCount": 5,
+      "originCount": 1,
+      "directoryResourceCount": 1,
+      "listener": "127.0.0.1",
+      "storage": "ephemeral",
+      "authorityLostOnStop": true,
+      "relay": "disabled",
+      "quotas": {
+        "coordinator": {
+          "enrollments": 64,
+          "origins": 16,
+          "connections": 32,
+          "sessions": 16,
+          "sessionsPerPrincipal": 4,
+          "peersPerSession": 8,
+          "peersPerPrincipal": 16,
+          "requestsPerSecond": 32,
+          "callerPendingRequests": 4,
+          "requestBytes": 401024,
+          "responseBytes": 401024,
+          "signalCharacters": 400000,
+          "sessionTtlMs": 600000,
+          "requestTimeoutMs": 5000,
+          "headersTimeoutMs": 3000
+        },
+        "directory": {
+          "catalogResources": 32,
+          "resourcesPerSession": 16,
+          "capabilitiesPerResource": 8,
+          "membersPerSession": 8,
+          "requestBytes": 8192,
+          "responseBytes": 65536,
+          "ttlMs": 60000
+        }
+      }
+    },
+    "resolution": "task-owned-real-source-barrels",
+    "independentReview": {
+      "path": "/tmp/101-operator-startup-independent-review.json",
+      "sha256": "807680ec2926af0725d216f6119b4c3daae625b9079cc98861427c0177f2ef18",
+      "bytes": 5370
+    },
+    "newCallerCancellationReview": {
+      "path": "/tmp/101-o02-independent-review.json",
+      "sha256": "2abe602f1f4963ea05959d3ff989ac26842d28f8c4166bd4d8964494e3d5ba47",
+      "bytes": 5942
+    }
+  },
+  "disposableHarness": {
+    "profile": "disposable-loopback-operator/1",
+    "checks": [
+      "actual mTLS create/join/directory grant/withdraw/quota and fresh-owner exercise; exact owned credentials removed",
+      "actual loopback listener and 0700/0600 temporary identity; SIGTERM closes listener and removes only owned directory",
+      "actual bounded 15-second lifetime expires and retires native listener and temporary identity",
+      "unknown CLI input rejected before temporary identity or listener allocation",
+      "abort at first actual exercise bind retires current owner, prevents later grants/replacement listener and suppresses success"
+    ],
+    "cancellation": {
+      "listeners": [
+        {
+          "port": 54612,
+          "signalAlreadyAborted": false
+        }
+      ],
+      "events": [
+        {
+          "event": "removed",
+          "reason": "cancelled",
+          "endpoints": [],
+          "temporaryCredentialsRemoved": true
+        }
+      ]
+    },
+    "lifetimeMs": 15000,
+    "relay": "disabled",
+    "sourceProof": {
+      "path": "/tmp/101-o02-source-green.json",
+      "sha256": "00e3d31a450934d49e0f2bcb89e4f85556c9379540eaeb8637d6fb00980f9a1e",
+      "bytes": 2192
+    },
+    "independentReview": {
+      "path": "/tmp/101-o02-independent-review.json",
+      "sha256": "2abe602f1f4963ea05959d3ff989ac26842d28f8c4166bd4d8964494e3d5ba47",
+      "bytes": 5942
+    },
+    "scope": "Selected disposable local coordinator/directory only. No persistent backend, TURN/gateway relay, container/service install, production deployment or SIGKILL cleanup claim."
+  },
+  "filesystem": {
+    "profile": "owned-node-filesystem/1",
+    "focusedTests": 16,
+    "checks": [
+      "runtime-denial-before-native-issue-1",
+      "separate-current-file-owner-approval-1",
+      "real-create-mode-and-independent-bytes-1",
+      "sensitive-result-requires-distinct-read-grant-1",
+      "selected-list-and-read-1",
+      "stale-delete-precondition-preserves-data-1",
+      "revoke-retains-real-staging-slot-and-fences-late-results-1",
+      "fresh-approved-cas-retry-1",
+      "issued-rename-is-uncertain-without-stale-ack-or-result-1",
+      "fresh-read-confirms-issued-effect-and-exact-delete-1",
+      "runtime-denial-before-native-issue-2",
+      "separate-current-file-owner-approval-2",
+      "real-create-mode-and-independent-bytes-2",
+      "sensitive-result-requires-distinct-read-grant-2",
+      "selected-list-and-read-2",
+      "stale-delete-precondition-preserves-data-2",
+      "revoke-retains-real-staging-slot-and-fences-late-results-2",
+      "fresh-approved-cas-retry-2",
+      "issued-rename-is-uncertain-without-stale-ack-or-result-2",
+      "fresh-read-confirms-issued-effect-and-exact-delete-2",
+      "fresh-owned-root-identity-session-and-new-grants",
+      "closed-adapters-reject-old-work",
+      "all-owned-roots-removed"
+    ],
+    "cleanup": [
+      {
+        "session": 1,
+        "removedOwnedRoot": true
+      },
+      {
+        "session": 2,
+        "removedOwnedRoot": true
+      }
+    ],
+    "limits": {
+      "destinations": 4,
+      "fileBytes": 512,
+      "rootBytes": 2048,
+      "attempts": 64,
+      "nativePending": 1,
+      "nativeCalls": 64,
+      "deadlineMs": 2500,
+      "clientBytes": 128,
+      "pendingClientOperations": 1,
+      "routeQueue": 1,
+      "resultRows": 1
+    },
+    "proofReceipts": [
+      {
+        "session": 1,
+        "selectedActions": [
+          "read",
+          "list",
+          "write",
+          "delete"
+        ],
+        "contentSha256": [
+          "150816fc3f2961f578faf2e894dd65f2791e720946158ed284c037e47161b911",
+          "b27b7bd1ba23d3baf741b16b3dbfafc62bcfe81687670a85d8b9e95dbfc6945d"
+        ],
+        "bytes": [
+          32,
+          28
+        ],
+        "nativeStatus": {
+          "closed": false,
+          "attempts": 11,
+          "rawPending": 0,
+          "timerArmed": false,
+          "nativeReadBytes": 372,
+          "issuedMutations": 4
+        },
+        "viewerCalls": 6,
+        "issuedCancellation": {
+          "reason": "cancelled",
+          "issuedMutation": true,
+          "acknowledgementReleased": false
+        }
+      },
+      {
+        "session": 2,
+        "selectedActions": [
+          "read",
+          "list",
+          "write",
+          "delete"
+        ],
+        "contentSha256": [
+          "150816fc3f2961f578faf2e894dd65f2791e720946158ed284c037e47161b911",
+          "b27b7bd1ba23d3baf741b16b3dbfafc62bcfe81687670a85d8b9e95dbfc6945d"
+        ],
+        "bytes": [
+          32,
+          28
+        ],
+        "nativeStatus": {
+          "closed": false,
+          "attempts": 11,
+          "rawPending": 0,
+          "timerArmed": false,
+          "nativeReadBytes": 372,
+          "issuedMutations": 4
+        },
+        "viewerCalls": 6,
+        "issuedCancellation": {
+          "reason": "cancelled",
+          "issuedMutation": true,
+          "acknowledgementReleased": false
+        }
+      }
+    ],
+    "installedProof": {
+      "path": "/tmp/101-filesystem-resources-installed-green.json",
+      "sha256": "f8e4655fc32f8efff97905b4837ba1cc61ae3a32a044121a6c17c12dc302d054",
+      "bytes": 54834
+    },
+    "independentReview": {
+      "path": "/tmp/101-filesystem-resources-independent-review.json",
+      "sha256": "8e4921b1ba1575b8d260ff6d422cc6381a2d95203af2fb8e0fd2c0979d223438",
+      "bytes": 5906
+    },
+    "rootQuota": "2048 bytes including staging; full-root replacement rejects without changing original; separate deletion enables retry",
+    "scope": "Actual Node read/list/write/delete inside two adapter-created disposable roots. Separate exact runtime invoke, owner-file action and sensitive result read approval. Logical cancellation does not undo issued rename/unlink. No arbitrary user paths, openat sandbox, clipboard, application control, physical qualification or malicious cooperative-host isolation."
+  },
+  "sdkDependencies": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-gA7X5U/manifest.json",
+      "sha256": "7e99128a189bd13478bbc8f66c92b640506f912e094e310b8882132a4caf516e",
+      "bytes": 75221
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-w8qxOe/receipt.json",
+      "sha256": "fc68378315ff6e449ffaafd3b2e3543e6a4da7ea819450625c17177583221356",
+      "bytes": 29592
+    },
+    "originalArtifactSourceTree": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+    "separateCallerTree": "e393c608cac67024dbc420b92aad6382f0a712ad",
+    "candidateDependencyBytesEqual": true,
+    "sourcePins": 141,
+    "packedFiles": 314,
+    "packages": 7,
+    "provenance": "Unchanged original artifacts; new immutable caller tree and all dependency/installed bytes are checked separately."
+  },
+  "android": {
+    "result": "pass",
+    "profile": "offline-arm64-release-debug-signed/1",
+    "artifact": {
+      "path": "/Users/km/Desktop/games/101/release/android-local-2VUtg3/app-release.apk",
+      "sha256": "ed9297acd121317e688bfe6c679af71d5587f19de0b3c20e9dc10bb9a3e12a8f",
+      "bytes": 50920386
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/android-local-2VUtg3/manifest.json",
+      "sha256": "46e0fab681a378e9b3a1926d26315cf7ac6a5782d670e10e8b7402fd6dd70bbb",
+      "bytes": 29640
+    },
+    "sourceBase": "3a853a5bef02c5cfcd5ffcb60c57f7a9e31e0b5a",
+    "exactCandidateMapSourceCount": 129,
+    "bundleSha256": "b4383633da4015b0bcc9f07519362bff09a3230a185f7627059ae4d75f2a112d",
+    "mapSha256": "c8efbe08c345e05aa1a63dc488e677371bed3f848f87fe3f413bdb439789042a",
+    "generatedSourceSha256": {
+      "build.gradle": "bdb916d3fe7085c9e9f3bb45bd5eacb97f5d2c5a2b2af965642f7d904739ca68",
+      "settings.gradle": "19fdd3e60300fced452e8f75e88bd9e3b58d28be56ad1ac3d0606b5f09056abb",
+      "gradle.properties": "d02b52da10bf3abb24279fd102df47694b8130a6b7fe6110cc47a9476ac8673c",
+      "gradle/wrapper/gradle-wrapper.properties": "a180163249c7252412ddaee1c7adcf59f6494b1183136f690fbd9a3b8aaed00e",
+      "app/build.gradle": "f7d40eea2f010894e53de1d7ec2690861d4a828c07b19791d0f1df7811f64f30",
+      "app/src/main/AndroidManifest.xml": "1694c9639083d117e73559fb786f77878b7587571b651310e82673bb67eaeb0e"
+    },
+    "metadata": {
+      "version": 3,
+      "artifactType": {
+        "type": "APK",
+        "kind": "Directory"
+      },
+      "applicationId": "com.oneohone.link",
+      "variantName": "release",
+      "elements": [
+        {
+          "type": "SINGLE",
+          "filters": [],
+          "attributes": [],
+          "versionCode": 1,
+          "versionName": "0.1.0",
+          "outputFile": "app-release.apk"
+        }
+      ],
+      "elementType": "File",
+      "baselineProfiles": [
+        {
+          "minApi": 28,
+          "maxApi": 30,
+          "baselineProfiles": [
+            "baselineProfiles/1/app-release.dm"
+          ]
+        },
+        {
+          "minApi": 31,
+          "maxApi": 2147483647,
+          "baselineProfiles": [
+            "baselineProfiles/0/app-release.dm"
+          ]
+        }
+      ],
+      "minSdkVersionForDexing": 24
+    },
+    "signing": {
+      "identity": "Android Debug",
+      "intendedReleaseIdentity": false,
+      "verification": "WARNING: A restricted method in java.lang.System has been called\nWARNING: java.lang.System::loadLibrary has been called by org.conscrypt.NativeLibraryUtil in an unnamed module (file:/Users/km/Library/Android/sdk/build-tools/36.0.0/lib/apksigner.jar)\nWARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module\nWARNING: Restricted methods will be blocked in a future release unless native access is enabled\n\nVerifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): true\nVerified using v3 scheme (APK Signature Scheme v3): false\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nSigner #1 certificate DN: CN=Android Debug, OU=Android, O=Unknown, L=Unknown, ST=Unknown, C=US\nSigner #1 certificate SHA-256 digest: fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c\nSigner #1 certificate SHA-1 digest: 5e8f16062ea3cd2c4a0d547876baa6f38cabf625\nSigner #1 certificate MD5 digest: 20f46148b72d8e5e5ca23d37a4f41490\nSigner #1 key algorithm: RSA\nSigner #1 key size (bits): 2048\nSigner #1 public key SHA-256 digest: 06104aa0b28fac286bae06b08313ac69c37c35a6462853db32d2ec5fa7b1ed0e\nSigner #1 public key SHA-1 digest: 88325602a013a12d5ac13516c609aa57ce9e2234\nSigner #1 public key MD5 digest: 49921988ad9941656cd9b95203196f17"
+    },
+    "command": "EXPO_OFFLINE=1 EXPO_NO_TELEMETRY=1 CI=1 ./gradlew assembleRelease --offline --no-daemon --console=plain --max-workers=2 -PreactNativeArchitectures=arm64-v8a",
+    "scope": "Actual offline arm64-v8a Android Release build with embedded Hermes bundle, exact repository map source equivalence and local debug signing only. No intended release identity, install/update/launch/deep-link/permission or physical qualification.",
+    "installPerformed": false,
+    "deviceInteraction": false,
+    "releaseAccepted": false
+  },
+  "regressions": [
+    {
+      "kind": "feature",
+      "log": {
+        "path": "/tmp/101-o02-feature-red.log",
+        "sha256": "ddb355187f24b4f2d687ee6c71c31ffc87f8c2fe460c746ef703922743950cf6",
+        "bytes": 685
+      }
+    },
+    {
+      "kind": "exercise-cancel",
+      "old": {
+        "path": "/tmp/101-o02-exercise-cancel-red.json",
+        "sha256": "fd5a60011d824fadaa33b79dbe3b8a17354d46150a109b19faba871328c0c829",
+        "bytes": 2324
+      },
+      "green": {
+        "path": "/tmp/101-o02-exercise-cancel-green.json",
+        "sha256": "f9fea14401f9ce654f4eb1ed81fe18aba274fbd8fac3e23bd5dcb2adcace6736",
+        "bytes": 1202
+      }
+    },
+    {
+      "kind": "native-filehandle-after-cancel",
+      "old": {
+        "path": "/tmp/101-filesystem-resources-late-open-red.log",
+        "sha256": "31be8b0abeb27e1af1a76272d0ee23cb662eec9ce7fb3104743ee3cf8ab47612",
+        "bytes": 1866
+      }
+    },
+    {
+      "kind": "native-root-staging-quota",
+      "old": {
+        "path": "/tmp/101-filesystem-root-quota-red.json",
+        "sha256": "2b136a422ebe139ec40549bf496f363771bd3acce164ab0ed42d2b1b4eae18b8",
+        "bytes": 2342
+      },
+      "unitOld": {
+        "path": "/tmp/101-filesystem-root-quota-unit-red.log",
+        "sha256": "1add6b3b454594c8343be0f8f1f39f0500b43cf7c988f00d0c3698b027744ad3",
+        "bytes": 961
+      },
+      "green": {
+        "path": "/tmp/101-filesystem-root-quota-green.json",
+        "sha256": "6505fc9979581df3a0f58fe04d71937b5116c38ceb9780d9e9addfde961dcba8",
+        "bytes": 2449
+      }
+    },
+    {
+      "kind": "installed-producer-root-guard",
+      "old": {
+        "path": "/tmp/101-filesystem-resources-installed-first.err",
+        "sha256": "52f6a93924b9dd70feec03d930f412af38add618b198c7e85192187ecb390213",
+        "bytes": 696
+      },
+      "repair": "Use the actual build-sdk producer /tmp consumer root instead of macOS per-user tmpdir; immutable source/installed guards unchanged."
+    }
+  ],
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-operator-filesystem-artifact-final-gates.json"
+  },
+  "boundaries": [
+    "Local software only; no publish/deploy/push/preview/remote service",
+    "Phone/native app/UI/OS pointer/global clipboard interaction deferred",
+    "O01 selection validates explicit ephemeral storage and disabled relay; it does not implement those unsupported backends",
+    "Cooperative Node host; no malicious same-user/openat sandbox or reversal of an issued syscall",
+    "Android debug signing is not intended release identity; no installation/update/cold launch/permission qualification"
+  ]
+}

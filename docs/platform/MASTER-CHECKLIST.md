@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 107 completed with recorded evidence; 165 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 108 completed with recorded evidence; 164 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -161,7 +161,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **N13 — Enforce OS lifecycle behavior.** Background, screen lock, battery saver, process termination and permission revocation follow OS rules and expose recovery; they do not fabricate continuous access.
 - [ ] **N14 — Qualify native agent IPC/update lifecycle.** Unauthorized local callers fail; crash/restart, agent version mismatch and upgrade release authority and recover predictably.
 - [ ] **N15 — Implement dedicated terminal/SSH connectors.** Verify host identity and scoped credentials; allowed sessions/operations, bounded output, cancellation, reconnect and audit pass a disposable local host test.
-- [ ] **N16 — Implement scoped clipboard/filesystem/app operations.** Explicit resource permissions, destination/path limits, sensitive-data handling and denied/revoked/cancelled operations pass an independent client test.
+- [ ] **N16 — Implement scoped clipboard/filesystem/app operations.** Explicit resource permissions, destination/path limits, sensitive-data handling and denied/revoked/cancelled operations pass an independent client test. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
 
 ### I — Human controls, relative motion and output feedback
 
@@ -364,7 +364,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Original packed consumer evidence](receipts/2026-10-03-sdk-consumer.json) and [current six-package requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
 - [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json). [Current six-package Node22/24 requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
 - [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
-- [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
+- [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.
 - [ ] **K06 — Produce desktop installers.** macOS, Windows and Linux packages have required platform signing/notarization where applicable plus target-OS install/update/uninstall receipts.
 - [x] **K07 — Produce browser/PWA release assets.** Offline/update/cache/security and runtime asset availability pass production builds with no hidden development origin requirement. [Packaged browser and two-build evidence](receipts/2026-10-04-browser-pwa-release.json); physical installed-PWA acceptance remains G15.
@@ -376,8 +376,8 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 ### O — Self-hosted/global operator readiness
 
-- [ ] **O01 — Define operator configuration and startup validation.** Identity, origins, storage, relay and quota requirements fail closed with readable recovery when missing or invalid.
-- [ ] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data.
+- [x] **O01 — Define operator configuration and startup validation.** Identity, origins, storage, relay and quota requirements fail closed with readable recovery when missing or invalid. [Selected startup validation evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
+- [ ] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
 - [x] **O03 — Implement redacted observability.** Health, traffic, route/queue load and faults are visible; credentials and private payloads are excluded from operator logs. [Selected actual runtime/traffic and fresh installed caller evidence](receipts/2026-10-06-chooser-discovery-health.json).
 - [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds.
 - [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access.
