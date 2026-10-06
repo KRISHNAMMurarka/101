@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 22,
+  "revision": 24,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3145,7 +3145,7 @@
         "formFactor": "Owned software fixture",
         "transport": "Private same-realm native application audio graph",
         "connector": "private-application-audio/1",
-        "connectorVersion": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+        "connectorVersion": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
         "profiles": [
           "private-application-audio/1"
         ],
@@ -3201,7 +3201,7 @@
         "formFactor": "Owned software fixture",
         "transport": "Private loopback authenticated native WSS",
         "connector": "direct-wss-wire-replay/1",
-        "connectorVersion": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+        "connectorVersion": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
         "profiles": [
           "direct-wss-wire-replay/1"
         ],
@@ -3240,6 +3240,59 @@
         "Actual101W application frame replay inside fresh valid TLS records; no TLS ciphertext/IP replay or network loss claim",
         "Derived schema/epoch/profile/timing mutations are separate from unchanged actual captures",
         "Node24.14 current; historical feature RED24.19 preserved; owned software/native sockets only"
+      ]
+    },
+    {
+      "id": "private-worker-media-control-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; two private Node Workers",
+        "runtimeVersion": "Node24.14.0/TypeScript5.9.3",
+        "formFactor": "Owned software fixture",
+        "transport": "Private Worker ports and verified resource chunks",
+        "connector": "private-worker-media-control/1",
+        "connectorVersion": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+        "profiles": [
+          "private-worker-media-control/1"
+        ],
+        "resources": [
+          "Built opt-in separate public media/control runtimes: actual 128x128 RGBA resources and contact effects in two private Workers; held media ACKs do not starve control. Latest replacement, slow/fast recipients, approved 64x64 adaptation/new epoch, verified chunk/hash/byte bounds, intrinsic owner/resource denials, raw retention through revoke/Stop, expiry release and actual Worker exit pass. Ordinary installed seven-package SDK149source/330files, strict275compiler declarations and7focused tests. Browser codecs/transport, cross-host clock mapping, physical latency and full V02 remain open."
+        ],
+        "unavailable": [
+          "Full V02 remains open: browser media, encoded/transported streams, cross-host clocks, physical capture/output and latency are unqualified.",
+          "512 KiB bounds caller buffer reservations; Worker old-heap setting is not process RSS or hostile-host isolation.",
+          "Denial prevents raster dispatch; actual Worker construction and authorized neutral contact release can still occur.",
+          "The shared-runtime negative is a deliberately unsafe caller composition, not a scheduler core defect."
+        ]
+      },
+      "qualificationTasks": [
+        "V02"
+      ],
+      "evidence": {
+        "implementation": [
+          "v02-private-worker-media-control-installed-2026-10-06"
+        ],
+        "contract": [
+          "v02-private-worker-media-control-installed-2026-10-06"
+        ],
+        "runtime": [
+          "v02-private-worker-media-control-installed-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Full V02 remains open: browser media, encoded/transported streams, cross-host clocks, physical capture/output and latency are unqualified.",
+        "512 KiB bounds caller buffer reservations; Worker old-heap setting is not process RSS or hostile-host isolation.",
+        "Denial prevents raster dispatch; actual Worker construction and authorized neutral contact release can still occur.",
+        "The shared-runtime negative is a deliberately unsafe caller composition, not a scheduler core defect."
       ]
     }
   ]

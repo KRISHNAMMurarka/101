@@ -181,7 +181,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 ### V — Audio, video, screens and multiple outputs
 
 - [ ] **V01 — Implement authorized media endpoints.** Camera, microphone, screen, application view and output tracks negotiate compatible formats and independent source/sink grants. [Bounded local build and runtime evidence](receipts/2026-10-06-media-haptics-scheduling.json); remaining scope stays open.
-- [ ] **V02 — Separate media and control scheduling.** Large frames, adaptation and slow subscribers cannot starve pointer/events; bounds and cancellation are independently tested.
+- [ ] **V02 — Separate media and control scheduling.** Large frames, adaptation and slow subscribers cannot starve pointer/events; bounds and cancellation are independently tested. [Built separate public-runtime caller and installed SDK evidence](receipts/2026-10-06-media-control.json); browser/transported media and broader qualification remain open.
 - [ ] **V03 — Implement audio capture/output routing.** Source and speaker/headphone destinations are explicit; private recipients, route changes, mute, volume and device loss are verified. [Built private application audio and current installed SDK evidence](receipts/2026-10-06-application-audio-replay.json); remaining full scope and deferred physical checks stay open.
 - [ ] **V04 — Support wired and wireless audio devices.** Microphone and playback capabilities are qualified separately; plug/unplug, Bluetooth route changes and latency/skew are recorded.
 - [ ] **V05 — Implement camera selection and controls.** Camera ownership, supported focus/exposure/zoom/PTZ, switching, denial, unplug and retry expose only verified controls.

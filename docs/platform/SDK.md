@@ -1196,6 +1196,29 @@ two native peers and distinct ephemeral identities in one owned trusted browser
 realm with no ICE servers. The gateway sees application plaintext. Installed Hub,
 two-page isolation, internet/physical paths and the wider F09 matrix remain open.
 
+## Separate media and control scheduling
+
+The [media/control caller](../../examples/media-control/media-control.ts) uses
+separate public `createDeviceRuntime` instances for media and contact events.
+Two private Node Workers hold authored RGBA frames while contact apply/release
+continues. Each media recipient has one latest waiting frame; a slow recipient
+cannot hold the other recipient's queue. Resolution adaptation needs fresh
+source and sink approval and a new format epoch.
+
+The caller uses verified public resource chunks with independent owner, route
+and resource grants. Stop, revoke and expiry release held contact state. Already
+issued work keeps its raw-operation and byte reservations until an actual Worker
+acknowledgement or exit; logical cancellation does not free those reservations.
+
+The selected profile bounds two Workers/recipients, 64 KiB frames, 4 KiB chunks,
+512 KiB of caller buffer reservations, sixty-four frame and control attempts,
+and ten seconds of lifetime. The buffer limit is not a process RSS guarantee.
+Run `node tools/qa-media-control.mjs --installed <manifest> <clean-consumer>
+<immutable-caller-tree>` to compile the external caller against the ordinary
+installed SDK and exercise its actual private Worker effects. It does not acquire
+user devices, open a network listener, or qualify browser codecs, transported
+media, physical latency or the full V02 matrix.
+
 ## Captured application-wire replay
 
 The [WSS replay caller](../../examples/wire-replay/wire-replay.ts) exercises

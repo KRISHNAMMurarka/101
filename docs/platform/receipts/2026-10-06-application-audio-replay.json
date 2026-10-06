@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-06",
-  "result": "built-selected-software-paths-current-installed-proof-pass-exact-broad-gates-pending",
+  "result": "selected-software-source-committed-locally-current-installed-and-exact-source-gates-pass",
   "base": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
   "sourceTree": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
   "sourceSha256": {
@@ -809,12 +809,71 @@
     "deviceChecks": "deferred by user"
   },
   "requiredGates": {
-    "status": "pending against exact integrated candidate; no new broad-gate or source-commit claim at receipt freeze"
+    "status": "pass for committed source candidate",
+    "path": "/tmp/101-audio-wire-required-gates.json",
+    "sha256": "5be8964d2b65a82e3534491c04e85d11c57c3af9392344fab70c30b6a678a5f4",
+    "tree": "3e21e4035361cb0b9db4643c304df67a49bc9a81",
+    "unit": {
+      "tests": 1853,
+      "pass": 1853,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab warning",
+    "freshBuild": "pass"
   },
   "tally": {
     "total": 272,
     "completed": 117,
     "open": 155
   },
-  "acceptedSupportRows": 0
+  "acceptedSupportRows": 0,
+  "priorGateState": {
+    "status": "pending against exact integrated candidate; no new broad-gate or source-commit claim at receipt freeze"
+  },
+  "sourceIntegration": {
+    "schemaVersion": 1,
+    "status": "committed-locally-exact-candidate-gates-pass",
+    "commit": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+    "tree": "3e21e4035361cb0b9db4643c304df67a49bc9a81",
+    "parent": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+    "localOnly": true,
+    "requiredGates": {
+      "path": "/tmp/101-audio-wire-required-gates.json",
+      "sha256": "5be8964d2b65a82e3534491c04e85d11c57c3af9392344fab70c30b6a678a5f4"
+    },
+    "unit": {
+      "tests": 1853,
+      "pass": 1853,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass",
+    "freshBuild": "pass",
+    "tally": {
+      "total": 272,
+      "completed": 117,
+      "open": 155
+    },
+    "canonicalReceiptScope": "Selected source/installed proofs froze before these exact gates; later receipt reconciliation must cite this commit/tree without broadening open rows.",
+    "documentaryCandidate": "This later source-commit reconciliation is staged for the next software batch; recorded gates verify committed tree3e21e403 only."
+  }
 }

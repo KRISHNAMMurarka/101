@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-local-software-profile",
+  "base": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+  "callerTree": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+  "producerTree": "31aa07e7778073ee391b9ca51ce2802f0e9737a3",
+  "sourceSha256": {
+    "examples/media-control/media-control.ts": "b4e7154a1228026897ee945f175e81c8b0ad73b5fb8a387aa9b0fae9c85feffb",
+    "examples/media-control/application-target.mjs": "964fe8da442545cd639875570cefaeec78fa1abd9ed4dceee8ccafd642284c6d",
+    "tests/media-control.test.ts": "9aa60a97a0216a639184137126965016a5120360a408ae800292c3934e913ac9",
+    "tools/qa-media-control.mjs": "f14ccc8c5413d029a6aa9e49cef04562c6c91f22279a8151d01acf804f0a869b"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-tjfI35/manifest.json",
+      "sha256": "a7f922d75321596046e35cb1672ae9ec66560f8ee0223caf128ff60ec29786cd"
+    },
+    "packages": 7,
+    "sourcePins": 149,
+    "installedFiles": 330,
+    "compilerDeclarationFiles": 275,
+    "ordinaryInstalled": true,
+    "sourceAliases": false
+  },
+  "checks": {
+    "unit": {
+      "exitCode": 0,
+      "pass": 7,
+      "log": "/tmp/101-media-control-focused-frozen.log"
+    },
+    "strict": {
+      "exitCode": 0,
+      "diagnostics": 0,
+      "strict": true,
+      "noUncheckedIndexedAccess": true,
+      "log": "/tmp/101-media-control-strict-frozen.log"
+    },
+    "lint": {
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 0,
+      "log": "/tmp/101-media-control-lint-frozen.log"
+    },
+    "sourceNative": {
+      "exitCode": 0,
+      "profiles": 5,
+      "receipt": "/tmp/101-media-control-source-frozen.json",
+      "stderr": "/tmp/101-media-control-source-frozen.err"
+    }
+  },
+  "installed": {
+    "path": "/tmp/101-media-control-current-installed.json",
+    "sha256": "243dd6026ea68149ebfb10c74b2c541f51c5aab9b578770df40bdabbb0bae68d"
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-media-control-frozen-pins.json",
+    "sha256": "6b280103a407fbbaef8c255f1b9ff8c0c58929aadf98d3a8c3dbde2ebb661c33"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-media-control-independent-review.json",
+    "sha256": "4c38b898d3c30de266c54889bf890bbfadba16633ab4c0bc2f0c14c2690ca923"
+  },
+  "installedReview": {
+    "path": "/tmp/101-media-control-installed-independent-review.json",
+    "sha256": "2d49c1a1c0921d347ea4aaba589b0eda6f74f9df339281d2a578e1969f4fdb93"
+  },
+  "preservation": {
+    "path": "/tmp/101-media-control-build-preservation.json",
+    "sha256": "810128d2a0ecf742c15c33227a67266d6980cd697c77c12dfc67ddab159eaad1"
+  },
+  "limits": {
+    "workers": 2,
+    "recipients": 2,
+    "frameBytes": 65536,
+    "chunkBytes": 4096,
+    "callerBufferBytes": 524288,
+    "frameAttempts": 64,
+    "controlAttempts": 64,
+    "lifetimeMs": 10000,
+    "latestPerRoute": 1,
+    "mediaPending": 2,
+    "controlPending": 1,
+    "workerOldHeapMiB": 16,
+    "startupMs": 2500,
+    "closeMs": 1000
+  },
+  "profiles": [
+    {
+      "case": "shared",
+      "status": "pass",
+      "reason": "intentional-shared-pending-cap-negative",
+      "frameAttempts": 2,
+      "controlAttempts": 2,
+      "peakCallerBytes": 458752,
+      "cleanup": {
+        "workersStarted": 2,
+        "workersExited": 2,
+        "rawOperations": 0,
+        "rawBytes": 0,
+        "timers": 0,
+        "listeners": 0
+      }
+    },
+    {
+      "case": "split",
+      "status": "pass",
+      "reason": "selected-owned-composition",
+      "frameAttempts": 10,
+      "controlAttempts": 7,
+      "peakCallerBytes": 524288,
+      "cleanup": {
+        "workersStarted": 2,
+        "workersExited": 2,
+        "rawOperations": 0,
+        "rawBytes": 0,
+        "timers": 0,
+        "listeners": 0
+      }
+    },
+    {
+      "case": "media-denied",
+      "status": "denied",
+      "reason": "media-denied",
+      "frameAttempts": 0,
+      "controlAttempts": 1,
+      "peakCallerBytes": 0,
+      "cleanup": {
+        "workersStarted": 2,
+        "workersExited": 2,
+        "rawOperations": 0,
+        "rawBytes": 0,
+        "timers": 0,
+        "listeners": 0
+      }
+    },
+    {
+      "case": "resource-denied",
+      "status": "failed",
+      "reason": "qualification-held-media",
+      "frameAttempts": 0,
+      "controlAttempts": 1,
+      "peakCallerBytes": 327680,
+      "cleanup": {
+        "workersStarted": 2,
+        "workersExited": 2,
+        "rawOperations": 0,
+        "rawBytes": 0,
+        "timers": 0,
+        "listeners": 0
+      }
+    },
+    {
+      "case": "owner-reentrant",
+      "status": "cancelled",
+      "reason": "cancelled",
+      "frameAttempts": 0,
+      "controlAttempts": 1,
+      "peakCallerBytes": 0,
+      "cleanup": {
+        "workersStarted": 2,
+        "workersExited": 2,
+        "rawOperations": 0,
+        "rawBytes": 0,
+        "timers": 0,
+        "listeners": 0
+      }
+    }
+  ],
+  "splitChecks": {
+    "controlDuringHeldMedia": true,
+    "latestReplacementObserved": true,
+    "slowFastIsolationObserved": true,
+    "adaptedFrameObserved": true,
+    "oldEpochAckActivated": false,
+    "corruptRejected": true,
+    "overbyteRejected": true,
+    "rawRetainedAfterRevoke": true,
+    "expiryReleasedControl": true
+  },
+  "retainedNegatives": {
+    "missingFeature": "/tmp/101-media-control-feature-red.log",
+    "intentionalSharedComposition": "/tmp/101-media-control-shared-native-red.log",
+    "declineStatus": "/tmp/101-media-control-denial-red.log",
+    "draftCompilerSpelling": "/tmp/101-media-control-shared-first-draft.log",
+    "draftReliableOperationContract": "/tmp/101-media-control-shared-first-native-failure.log",
+    "draftRuntimeRegistrationScope": "/tmp/101-media-control-source-first.err",
+    "draftDeclineStatus": "/tmp/101-media-control-source-scope-first.err"
+  },
+  "denialMeaning": "Denial prevents raster dispatch; actual Worker construction and authorized neutral contact release can still occur.",
+  "scope": "Built opt-in separate public media/control runtimes: actual 128x128 RGBA resources and contact effects in two private Workers; held media ACKs do not starve control. Latest replacement, slow/fast recipients, approved 64x64 adaptation/new epoch, verified chunk/hash/byte bounds, intrinsic owner/resource denials, raw retention through revoke/Stop, expiry release and actual Worker exit pass. Ordinary installed seven-package SDK149source/330files, strict275compiler declarations and7focused tests. Browser codecs/transport, cross-host clock mapping, physical latency and full V02 remain open.",
+  "limitations": [
+    "Full V02 remains open: browser media, encoded/transported streams, cross-host clocks, physical capture/output and latency are unqualified.",
+    "512 KiB bounds caller buffer reservations; Worker old-heap setting is not process RSS or hostile-host isolation.",
+    "Denial prevents raster dispatch; actual Worker construction and authorized neutral contact release can still occur.",
+    "The shared-runtime negative is a deliberately unsafe caller composition, not a scheduler core defect."
+  ],
+  "cleanup": {
+    "ownedProcesses": 0,
+    "ownedWorkers": 0,
+    "ownedServers": 0,
+    "scratchAbsent": true
+  },
+  "taskDisposition": {
+    "V02": "open; selected software composition built and locally qualified"
+  },
+  "requiredGates": {
+    "status": "pending exact integrated candidate"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "acceptedSupportRows": 0
+}

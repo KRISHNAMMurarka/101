@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 96,
+  "revision": 98,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -9923,7 +9923,7 @@
     },
     {
       "id": "v03-private-application-audio-installed-2026-10-06",
-      "revision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "revision": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9951,11 +9951,49 @@
       "supportRows": [
         "private-application-audio-software-2026-10-06"
       ],
-      "requiredGates": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate"
+      "requiredGates": "all5 pass for committedsource3e21e403; later documentarycandidate pending next software gates",
+      "priorRevision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "priorGateState": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate",
+      "sourceIntegration": {
+        "schemaVersion": 1,
+        "status": "committed-locally-exact-candidate-gates-pass",
+        "commit": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+        "tree": "3e21e4035361cb0b9db4643c304df67a49bc9a81",
+        "parent": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-audio-wire-required-gates.json",
+          "sha256": "5be8964d2b65a82e3534491c04e85d11c57c3af9392344fab70c30b6a678a5f4"
+        },
+        "unit": {
+          "tests": 1853,
+          "pass": 1853,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass",
+        "freshBuild": "pass",
+        "tally": {
+          "total": 272,
+          "completed": 117,
+          "open": 155
+        },
+        "canonicalReceiptScope": "Selected source/installed proofs froze before these exact gates; later receipt reconciliation must cite this commit/tree without broadening open rows.",
+        "documentaryCandidate": "This later source-commit reconciliation is staged for the next software batch; recorded gates verify committed tree3e21e403 only."
+      }
     },
     {
       "id": "s09-captured-wss-wire-replay-installed-2026-10-06",
-      "revision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "revision": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9980,7 +10018,74 @@
       "supportRows": [
         "captured-wss-wire-replay-software-2026-10-06"
       ],
-      "requiredGates": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate"
+      "requiredGates": "all5 pass for committedsource3e21e403; later documentarycandidate pending next software gates",
+      "priorRevision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "priorGateState": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate",
+      "sourceIntegration": {
+        "schemaVersion": 1,
+        "status": "committed-locally-exact-candidate-gates-pass",
+        "commit": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+        "tree": "3e21e4035361cb0b9db4643c304df67a49bc9a81",
+        "parent": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-audio-wire-required-gates.json",
+          "sha256": "5be8964d2b65a82e3534491c04e85d11c57c3af9392344fab70c30b6a678a5f4"
+        },
+        "unit": {
+          "tests": 1853,
+          "pass": 1853,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass",
+        "freshBuild": "pass",
+        "tally": {
+          "total": 272,
+          "completed": 117,
+          "open": 155
+        },
+        "canonicalReceiptScope": "Selected source/installed proofs froze before these exact gates; later receipt reconciliation must cite this commit/tree without broadening open rows.",
+        "documentaryCandidate": "This later source-commit reconciliation is staged for the next software batch; recorded gates verify committed tree3e21e403 only."
+      }
+    },
+    {
+      "id": "v02-private-worker-media-control-installed-2026-10-06",
+      "revision": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-media-control.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2/arm64; Node24.14.0/TypeScript5.9.3; ordinary installed SDK and two private Workers",
+      "reproduction": "node tools/qa-media-control.mjs --installed <hash-bound manifest> <clean-consumer> <immutable-caller-tree>",
+      "scope": "Built opt-in separate public media/control runtimes: actual 128x128 RGBA resources and contact effects in two private Workers; held media ACKs do not starve control. Latest replacement, slow/fast recipients, approved 64x64 adaptation/new epoch, verified chunk/hash/byte bounds, intrinsic owner/resource denials, raw retention through revoke/Stop, expiry release and actual Worker exit pass. Ordinary installed seven-package SDK149source/330files, strict275compiler declarations and7focused tests. Browser codecs/transport, cross-host clock mapping, physical latency and full V02 remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler and private native software Workers; no user device/UI"
+      ],
+      "supportRows": [
+        "private-worker-media-control-software-2026-10-06"
+      ],
+      "requiredGates": "pending exact integrated candidate"
     }
   ],
   "tasks": [
@@ -11381,7 +11486,8 @@
     {
       "id": "V02",
       "records": [
-        "pending-V02"
+        "pending-V02",
+        "v02-private-worker-media-control-installed-2026-10-06"
       ],
       "dependencies": [
         "M01",
