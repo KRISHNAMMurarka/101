@@ -1,0 +1,806 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "3a5a1714d69ba7368d1f3cdf216d9e2b090a95ea",
+  "sourceTree": "013e8771fe6e2db1057b8fe923ee9c3b37e03065",
+  "sourceSha256": {
+    "apps/controller-native/App.tsx": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+    "apps/controller-native/src/controller-haptics.test.ts": "d82b8e362b3b2d5bfd79f04b01c0e4a396019f250a6bd27a8a78ae4176b98831",
+    "apps/controller-native/src/controller-haptics.ts": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+    "examples/device-pipelines/application-media.ts": "83264015973fe3c49305ce42a7d76212ec1026ba19e9656743130e2b0f34cd7d",
+    "packages/device-model/src/haptic-profile.test.ts": "e1041a39657958e766d1254205ad92d4847052305b9b667ceb2139dcd2f8ed53",
+    "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+    "packages/device-model/src/index.ts": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+    "packages/device-runtime/src/fair-delivery.test.ts": "2ea65f6d0285b51996608133e5e3cf278be8d9271d31b54ad95957df3250ce3c",
+    "packages/device-runtime/src/haptic-output.test.ts": "64559298a476f38e5cef2b98c84f2bd2ce46595d19e68560bd30380e1038321d",
+    "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+    "packages/device-runtime/src/index.ts": "725e60bf4c56b84160492d1fd84af28c01850dd4f19a92fe8e9706daa3959782",
+    "packages/device-runtime/src/media-grants.test.ts": "b5c955ed72f8b8f9108cc99d4ab7860af2ab9a7d589ee2c5c2cc85d2d7848016",
+    "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+    "packages/device-runtime/src/runtime.ts": "6eafa42a90e4f725a42690cf7cb02590650e590c9aa1acee8debd8101e69523e",
+    "packages/device-web/src/application-media.test.ts": "266b774460d2b4327db00a2e882c57e651f52a8fbc7856475f0170e69b8c1008",
+    "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+    "packages/device-web/src/index.ts": "64a5c3c4dc1f318aa1562aca5a59b05957b3e772e54fb16d6b1766f8f794728c",
+    "tools/build-sdk.mjs": "f76dd124e39581d28fcb6e4df189c9bd6e4bac1eb02cab9cd1b4a347b12893b1",
+    "tools/qa-application-media.mjs": "90c70db10c6e95d25c968a32a1bb22d2f5d6a83ad3708059e35d14b3cc70bdfa",
+    "tools/qa-fair-delivery.mjs": "2122c0ce8d3da19f24bdd58ccedabfd8c6a576443c772577e34fa9e429da670f",
+    "tools/qa-haptic-output.mjs": "2fcf53584d7fe5b47bb3fc347e629124a7a57704066d08d07cf4941fc13bbb6d",
+    "tools/qa-sdk-consumer.mjs": "dde56170a925a40fe34b527e82ecee00d7a7f33f2bddeaa5e3a3124e21f83aae"
+  },
+  "taskDisposition": {
+    "V01": "partial: local application canvas to private browser outputs",
+    "I08": "partial: bounded preset backend and native App lifecycle",
+    "F05": "partial: turns under contention when providers complete"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 103,
+    "open": 169
+  },
+  "environment": {
+    "os": "macOS26.5.2 arm64",
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "expo": "57.0.12",
+    "expoHaptics": "57.0.1",
+    "nativeAstTestTypeScript": "6.0.3",
+    "nativeStrictTypeScript": "5.9.3"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "release/sdk-Rc9KGz/manifest.json",
+      "sha256": "1b021dba7cb35ac6c2194cae3f08b2ad39decc16704b1b7c5449c68f8f5fb66a",
+      "bytes": 71135
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-eddjNY/receipt.json",
+      "sha256": "d01069a3439155d266f96866341bdbcbac43adcdb4e65b35726d213484cba7ba",
+      "bytes": 28592
+    },
+    "sourceFiles": 133,
+    "packages": [
+      {
+        "name": "@101/device-model",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-device-model-0.1.0.tgz",
+        "sha256": "1beef7e2b4c67bcb47465828546dfe19fa422658ab5708c85ab3144a34d1a263",
+        "bytes": 77907
+      },
+      {
+        "name": "@101/device-runtime",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-device-runtime-0.1.0.tgz",
+        "sha256": "ce1cec3537ebd5775124b6c117b7e4214daeff901800954297e30032661c6b9d",
+        "bytes": 106573
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-transport-webrtc-0.1.0.tgz",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+        "bytes": 6529
+      },
+      {
+        "name": "@101/transport-websocket",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-transport-websocket-0.1.0.tgz",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62",
+        "bytes": 7533
+      },
+      {
+        "name": "@101/device-web",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-device-web-0.1.0.tgz",
+        "sha256": "f9706fbd7d132f2d3e3d963ae8f58d00bebd6023b9bf4d3e39097b31ca51cc35",
+        "bytes": 56589
+      },
+      {
+        "name": "@101/vision",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-vision-0.1.0.tgz",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62",
+        "bytes": 34919
+      },
+      {
+        "name": "@101/connect",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/tarballs/101-connect-0.1.0.tgz",
+        "sha256": "614ee7bd335df3a0240e20ac1f75d661a5334c4348af4bfe81d86043b176951d",
+        "bytes": 69169
+      }
+    ],
+    "ordinaryInstalledFiles": {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 7,
+      "files": 298,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass"
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass"
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass"
+      }
+    ],
+    "initialSupersededConsumer": {
+      "tree": "002e45faf6e2fe0dcfd8fcf59b0a422c66a6a2c9",
+      "receipt": {
+        "path": "/tmp/101-sdk-consumer-bYP5ka/receipt.json",
+        "sha256": "fbc339237a78f7e32965146810548303e29e1e521869fe1ffa1fe3754b2caa39",
+        "bytes": 28592
+      },
+      "status": "pass",
+      "scope": "Pre-review-repair package; current qualification uses the fresh consumer above"
+    }
+  },
+  "media": {
+    "profile": "local-application-video/1",
+    "proof": "ordinary-installed-sdk-public-import",
+    "qaToolSha256": "90c70db10c6e95d25c968a32a1bb22d2f5d6a83ad3708059e35d14b3cc70bdfa",
+    "browsers": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "status": "pass",
+        "nativeFormat": "supported",
+        "checks": [
+          "both-separate-owner-decisions-before-native-capture",
+          "actual-runtime-native-track-decoded-authorized-pixels",
+          "separate-denied-recipient-no-output",
+          "two-current-recipient-routes-one-native-capture",
+          "revoke-one-preserves-other-and-caller-container",
+          "staged-native-draw-reentrant-revoke-no-visible-copy",
+          "current-activation-expiry-owned-timer-with-quiet-native-callbacks",
+          "native-dom-callback-close-no-late-owned-allocation",
+          "fresh-renewal-cannot-extend-opening-ceiling-earlier-timer-and-denial",
+          "invalid-clock-closes-live-native-output-permanently",
+          "shared-capture-thirty-second-ceiling-survives-later-recipient-grant",
+          "fresh-owner-age-narrowing-before-native-pixel-copy",
+          "native-staging-callback-age-fence-before-visible-copy",
+          "late-current-source-denial-honest-status",
+          "late-native-copy-age-retirement-without-active-detached-output",
+          "sdk-native-track-video-frame-raf-teardown-source-borrowed",
+          "reentrant-owner-callback-close-before-capture",
+          "actual-native-play-late-resolution-never-reactivates",
+          "opaque-source-and-request-bound-grant-replay-denial",
+          "one-megapixel-two-source-four-output-bounds-before-native-work",
+          "two-unsettled-native-play-attempt-cap-reserved-before-callback",
+          "abort-signal-retires-real-native-open-before-late-resolution",
+          "two-second-open-deadline-retains-bounded-unsettled-slot-and-cleans-native-resources",
+          "failed-native-open-honest-status-and-cleanup",
+          "fresh-explicit-retry-after-failed-open",
+          "native-track-end-retires-route-and-output"
+        ],
+        "errors": [],
+        "foreign": []
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "status": "pass",
+        "nativeFormat": "unsupported-missing-native-frame-rate",
+        "checks": [
+          "both-separate-owner-decisions-before-native-capture",
+          "honest-missing-native-format-unsupported",
+          "sdk-native-track-video-frame-raf-teardown-source-borrowed",
+          "reentrant-owner-callback-close-before-capture",
+          "actual-native-play-late-resolution-never-reactivates",
+          "opaque-source-and-request-bound-grant-replay-denial",
+          "one-megapixel-two-source-four-output-bounds-before-native-work",
+          "two-unsettled-native-play-attempt-cap-reserved-before-callback",
+          "abort-signal-retires-real-native-open-before-late-resolution",
+          "two-second-open-deadline-retains-bounded-unsettled-slot-and-cleans-native-resources",
+          "failed-native-open-honest-status-and-cleanup",
+          "fresh-explicit-retry-after-failed-open"
+        ],
+        "errors": [],
+        "foreign": []
+      }
+    ],
+    "limits": [
+      "generated local application video only; separate current host source/sink grants",
+      "no camera/microphone/screen/RTC/phone/OS or encoded network claim",
+      "cooperative host isolation, not a same-origin sandbox",
+      "native browser buffering opaque; caps cover SDK-owned allocations and pending work"
+    ],
+    "receipt": {
+      "path": "/tmp/101-media-haptic-fair-packed-media.json",
+      "sha256": "1429d37cad5c83aa1e134aee4c3520ef32bcce31e88aab7f9b28259a32942715",
+      "bytes": 33069
+    },
+    "scope": "Native local canvas.captureStream and private video decode with current request-bound independent owners; borrowed canvas/container children retained. No raw track/pixel handle or control-wire serialization.",
+    "bounds": {
+      "sources": 2,
+      "outputs": 4,
+      "maxRequestedHz": 30,
+      "maxPixels": 1048576,
+      "unresolvedOpenAttempts": 2,
+      "openingDeadlineMs": 2000,
+      "leaseCeilingMs": 30000
+    },
+    "remaining": [
+      "camera",
+      "microphone",
+      "screen",
+      "encoded or remote-media transport",
+      "physical devices",
+      "browser-native buffer measurement"
+    ]
+  },
+  "haptics": {
+    "result": "pass",
+    "profile": "preset-haptics/1",
+    "node": "v24.14.0",
+    "publicResolution": "ordinary-installed-sdk-esm",
+    "browsers": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "result": {
+          "supported": true,
+          "checks": [
+            "no-current-approval-no-api",
+            "actual-browser-api-result-unverified",
+            "replay-no-repeat",
+            "revoke-no-api",
+            "expire-no-api",
+            "wrong-session-no-api",
+            "expo-preset-only-no-physical-claim"
+          ],
+          "apiReturns": [
+            true,
+            true
+          ],
+          "requested": [
+            [
+              15
+            ],
+            0
+          ],
+          "physicalVibration": "unverified",
+          "nativeBridge": "unqualified"
+        },
+        "pageErrors": 0,
+        "foreignRequests": 0
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "result": {
+          "supported": false,
+          "checks": [
+            "no-current-approval-no-api",
+            "actual-missing-api-fallback",
+            "revoke-no-api",
+            "expire-no-api",
+            "wrong-session-no-api",
+            "expo-preset-only-no-physical-claim"
+          ],
+          "apiReturns": [],
+          "requested": [],
+          "physicalVibration": "unverified",
+          "nativeBridge": "unqualified"
+        },
+        "pageErrors": 0,
+        "foreignRequests": 0
+      }
+    ],
+    "sourceSha256": {
+      "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+      "packages/device-model/src/haptic-profile.test.ts": "e1041a39657958e766d1254205ad92d4847052305b9b667ceb2139dcd2f8ed53",
+      "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+      "packages/device-runtime/src/haptic-output.test.ts": "64559298a476f38e5cef2b98c84f2bd2ce46595d19e68560bd30380e1038321d",
+      "apps/controller-native/src/controller-haptics.ts": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+      "apps/controller-native/src/controller-haptics.test.ts": "d82b8e362b3b2d5bfd79f04b01c0e4a396019f250a6bd27a8a78ae4176b98831",
+      "apps/controller-native/App.tsx": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+      "tools/qa-haptic-output.mjs": "2fcf53584d7fe5b47bb3fc347e629124a7a57704066d08d07cf4941fc13bbb6d"
+    },
+    "exclusions": [
+      "native-bridge-dispatch",
+      "physical-vibration-distinction",
+      "physical-duration-intensity",
+      "issued-Expo-cancellation",
+      "legacy-SDK-grant-migration"
+    ],
+    "receipt": {
+      "path": "/tmp/101-media-haptic-fair-packed-haptic.json",
+      "sha256": "dab52449056adb35bca64d6cba4a0c0db4134ef0b6747219ba380b424313c795",
+      "bytes": 2560
+    },
+    "limits": {
+      "maxAgeMs": 100,
+      "maxHz": 10,
+      "queueCapacity": 1,
+      "maxInFlight": 1,
+      "maxRecords": 64
+    },
+    "queueCapacityPolicy": "Caller configures each command route with queueCapacity:1; inert profile metadata does not override arbitrary runtime routes.",
+    "nativeReservation": "Shared by actual Expo port object identity across SDK/legacy entry points and helper replacement; retained until issued native Promise settles. Logical cancellation cannot undo a physical effect.",
+    "nativeBundle": {
+      "status": "pass",
+      "sourceTree": "013e8771fe6e2db1057b8fe923ee9c3b37e03065",
+      "scope": "Local iOS/Android JavaScript bundle and source-map byte reachability; installation/native bridge/hardware remain unverified",
+      "node": "24.14.0",
+      "expo": "57.0.12",
+      "offline": true,
+      "platforms": [
+        {
+          "platform": "ios",
+          "map": "/tmp/101-media-haptic-fair-native-final-bundle/_expo/static/js/ios/AppEntry-bd78a31aeb8c00c1955c78d585136ccd.js.map",
+          "mapSha256": "cdf4307c6e0b1f121cf2ffa770f71ee8f2ab41933df33ead24abd1a4904546c3",
+          "js": "/tmp/101-media-haptic-fair-native-final-bundle/_expo/static/js/ios/AppEntry-bd78a31aeb8c00c1955c78d585136ccd.js",
+          "jsSha256": "34be577469a026b06c4db4720e4bb9b2e42c85eb321a3cee80499dd3914adf3e",
+          "matches": [
+            {
+              "path": "apps/controller-native/App.tsx",
+              "source": "/apps/controller-native/App.tsx",
+              "sha256": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+              "exact": true
+            },
+            {
+              "path": "apps/controller-native/src/controller-haptics.ts",
+              "source": "/apps/controller-native/src/controller-haptics.ts",
+              "sha256": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/haptic-profile.ts",
+              "source": "/packages/device-model/src/haptic-profile.ts",
+              "sha256": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/haptic-output.ts",
+              "source": "/packages/device-runtime/src/haptic-output.ts",
+              "sha256": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/runtime.ts",
+              "source": "/packages/device-runtime/src/runtime.ts",
+              "sha256": "6eafa42a90e4f725a42690cf7cb02590650e590c9aa1acee8debd8101e69523e",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/application-media.ts",
+              "source": "/packages/device-web/src/application-media.ts",
+              "sha256": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/media-grants.ts",
+              "source": "/packages/device-runtime/src/media-grants.ts",
+              "sha256": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/index.ts",
+              "source": "/packages/device-model/src/index.ts",
+              "sha256": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "725e60bf4c56b84160492d1fd84af28c01850dd4f19a92fe8e9706daa3959782",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/index.ts",
+              "source": "/packages/device-web/src/index.ts",
+              "sha256": "64a5c3c4dc1f318aa1562aca5a59b05957b3e772e54fb16d6b1766f8f794728c",
+              "exact": true
+            }
+          ]
+        },
+        {
+          "platform": "android",
+          "map": "/tmp/101-media-haptic-fair-native-final-bundle/_expo/static/js/android/AppEntry-896b86fc2347f6e72a11143c56814716.js.map",
+          "mapSha256": "9b9da5ebb12ea312d5e6e8d1ed7cef99f76524c434409d7cb3b36c4980217b31",
+          "js": "/tmp/101-media-haptic-fair-native-final-bundle/_expo/static/js/android/AppEntry-896b86fc2347f6e72a11143c56814716.js",
+          "jsSha256": "8b69809aad32cbf31b74f928f46de6b8157d1821225b0cac317e861d658ffbe4",
+          "matches": [
+            {
+              "path": "apps/controller-native/App.tsx",
+              "source": "/apps/controller-native/App.tsx",
+              "sha256": "6f54e8859512b158757f403c437e06a407a996e74e49c4469182f3d976c981ac",
+              "exact": true
+            },
+            {
+              "path": "apps/controller-native/src/controller-haptics.ts",
+              "source": "/apps/controller-native/src/controller-haptics.ts",
+              "sha256": "316d3f5b071e246a1f375d38d431145db3b203497f28d63428ab9ac170c13134",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/haptic-profile.ts",
+              "source": "/packages/device-model/src/haptic-profile.ts",
+              "sha256": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/haptic-output.ts",
+              "source": "/packages/device-runtime/src/haptic-output.ts",
+              "sha256": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/runtime.ts",
+              "source": "/packages/device-runtime/src/runtime.ts",
+              "sha256": "6eafa42a90e4f725a42690cf7cb02590650e590c9aa1acee8debd8101e69523e",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/application-media.ts",
+              "source": "/packages/device-web/src/application-media.ts",
+              "sha256": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/media-grants.ts",
+              "source": "/packages/device-runtime/src/media-grants.ts",
+              "sha256": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+              "exact": true
+            },
+            {
+              "path": "packages/device-model/src/index.ts",
+              "source": "/packages/device-model/src/index.ts",
+              "sha256": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+              "exact": true
+            },
+            {
+              "path": "packages/device-runtime/src/index.ts",
+              "source": "/packages/device-runtime/src/index.ts",
+              "sha256": "725e60bf4c56b84160492d1fd84af28c01850dd4f19a92fe8e9706daa3959782",
+              "exact": true
+            },
+            {
+              "path": "packages/device-web/src/index.ts",
+              "source": "/packages/device-web/src/index.ts",
+              "sha256": "64a5c3c4dc1f318aa1562aca5a59b05957b3e772e54fb16d6b1766f8f794728c",
+              "exact": true
+            }
+          ]
+        }
+      ]
+    },
+    "remaining": [
+      "native-bridge-dispatch",
+      "physical-vibration-distinction",
+      "physical-duration-intensity",
+      "issued-Expo-cancellation",
+      "legacy-SDK-grant-migration"
+    ]
+  },
+  "fairness": {
+    "status": "pass",
+    "node": "24.14.0",
+    "workloads": [
+      {
+        "delivery": "latest",
+        "recipients": 6,
+        "sourceGroups": 1,
+        "slots": 2,
+        "rounds": 12,
+        "deliveries": 24,
+        "minimum": 4,
+        "maximum": 4,
+        "peakPending": 2,
+        "releases": 6
+      },
+      {
+        "delivery": "reliable",
+        "recipients": 6,
+        "sourceGroups": 1,
+        "slots": 2,
+        "rounds": 12,
+        "deliveries": 24,
+        "minimum": 4,
+        "maximum": 4,
+        "peakPending": 2,
+        "releases": 6
+      },
+      {
+        "delivery": "latest",
+        "recipients": 128,
+        "sourceGroups": 4,
+        "slots": 4,
+        "rounds": 64,
+        "deliveries": 256,
+        "minimum": 2,
+        "maximum": 2,
+        "peakPending": 4,
+        "releases": 128
+      }
+    ],
+    "checks": [
+      "exact-host-approval",
+      "bounded-global-pending",
+      "no-starvation-under-completing-provider-contention",
+      "balanced-recipient-service",
+      "reliable-and-latest",
+      "route-and-release-teardown"
+    ],
+    "sourceTree": "013e8771fe6e2db1057b8fe923ee9c3b37e03065",
+    "sourceSha256": "6eafa42a90e4f725a42690cf7cb02590650e590c9aa1acee8debd8101e69523e",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-Rc9KGz/manifest.json",
+      "sha256": "1b021dba7cb35ac6c2194cae3f08b2ad39decc16704b1b7c5449c68f8f5fb66a"
+    },
+    "qaToolSha256": "2122c0ce8d3da19f24bdd58ccedabfd8c6a576443c772577e34fa9e429da670f",
+    "limitations": [
+      "Cooperating local JavaScript providers; callback CPU is not sandboxed.",
+      "Providers retaining every global slot indefinitely can still block admission.",
+      "No physical, network, browser scheduling or per-tenant CPU/byte quota qualification."
+    ],
+    "receipt": {
+      "path": "/tmp/101-media-haptic-fair-packed-fair.json",
+      "sha256": "9f3233b89b1c01ee343c1b7c1be92cf9b95e11ce58021734a58de5ac82cfe6f7",
+      "bytes": 1693
+    },
+    "existingBoundsRegression": {
+      "status": "pass",
+      "environment": {
+        "node": "v24.14.0",
+        "platform": "darwin",
+        "arch": "arm64"
+      },
+      "fanout": {
+        "routes": 32,
+        "publications": 20000,
+        "delivered": 32,
+        "heapBaseline": 9702968,
+        "heapAfterShortBurst": 9803520,
+        "heapAfterLongBurst": 9797456,
+        "retainedGrowthBytes": -6064
+      },
+      "reliableQueue": {
+        "queueLimit": 64,
+        "accepted": 64,
+        "rejected": 936,
+        "cancelled": 64
+      },
+      "hangingProviders": {
+        "pendingProviderLimit": 4,
+        "initialCalls": 4,
+        "callsAfterRelease": 5,
+        "abortedContexts": 4,
+        "liveReplacementEffects": 1
+      }
+    },
+    "scope": "At most one reservation per eligible route per frozen flush; successful reservations rotate behind waiting routes. Reliable FIFO, freshness, host authorization and global bounds remain.",
+    "remaining": [
+      "CPU and byte quotas per scope",
+      "isolation of untrusted synchronous providers",
+      "admission when every global delivery slot remains unresolved"
+    ]
+  },
+  "retainedTiming": {
+    "receipt": {
+      "path": "/tmp/101-media-haptic-fair-packed-timing.json",
+      "sha256": "1dc4337e599723245ed6f9e759691adb65723564c81786d204cc94e60a5d48b3",
+      "bytes": 8884
+    },
+    "result": "pass",
+    "sourceTree": "013e8771fe6e2db1057b8fe923ee9c3b37e03065",
+    "scope": "Offline compiled public SDK and native local MessagePorts; actual Node output and browser DOM commit/frame boundary. No physical phone, network, throughput or photon evidence."
+  },
+  "independentReviews": [
+    {
+      "scope": "Runtime fair reservation scheduling",
+      "tree": "3dfdb552d91a32fd92d67a1315fae2893e6ab3fc",
+      "result": "clear",
+      "checks": 4,
+      "probeSha256": "d96ea3ee28059c40d6c20dc3296fabca97aa8234b7fbdd4fbbd0d52500f4fdd0",
+      "node": "24.19.0"
+    },
+    {
+      "scope": "Native haptic lifetime",
+      "initialTree": "002e45faf6e2fe0dcfd8fcf59b0a422c66a6a2c9",
+      "initialResult": "revise",
+      "finding": "Replacement helper using same Expo port released an unsettled native reservation",
+      "repairedTree": "859a9980dae228b5dc425e0c62aa672336d0e549",
+      "result": "clear",
+      "proof": {
+        "path": "/tmp/101-haptic-cross-instance-green.log",
+        "sha256": "c5a62faf08da61a26a6dd37a5314b5c3743a5c8f2c537fadee9b3b765fabd54d",
+        "bytes": 440
+      },
+      "node": "24.14.0"
+    },
+    {
+      "scope": "Local application media and packed QA adapter",
+      "initialTree": "002e45faf6e2fe0dcfd8fcf59b0a422c66a6a2c9",
+      "initialResult": "revise",
+      "findings": [
+        "Fresh narrowed maximum age did not fence visible frame copy",
+        "Late source consent denial was classified unsupported"
+      ],
+      "repairedTree": "013e8771fe6e2db1057b8fe923ee9c3b37e03065",
+      "result": "clear",
+      "proof": {
+        "path": "/tmp/101-application-media-independent-green.json",
+        "sha256": "d3573bd0f7e3c70c0097c16eb292b86f19d880e075e0fad61796c3c1c34221ae",
+        "bytes": 15276
+      },
+      "nativeChecks": {
+        "chromium": 26,
+        "webkit": 12
+      },
+      "node": "Independent correction resolver did not record Node version; original media probes24.19.0; final packed root proof24.14.0"
+    }
+  ],
+  "regressions": {
+    "retained": [
+      {
+        "path": "/tmp/101-fair-delivery-original-red.log",
+        "bytes": 1721,
+        "sha256": "69a77c6c8a7d621df0e8d8aa4092c00395907c2def49d9fc549bc9e0c9cd85bf"
+      },
+      {
+        "path": "/tmp/101-fair-delivery-green.log",
+        "bytes": 2641,
+        "sha256": "ce8bf6970a50bd7ad29905615eeda02dbe05142f0e63fd24d285bfefc83a5d8a"
+      },
+      {
+        "path": "/tmp/101-fair-delivery-runtime-bounds.json",
+        "bytes": 466,
+        "sha256": "e83ed3b5c122c585bb98bfa8540c5672fad52fddabf7bd273c68dd1c7fda6fb5"
+      },
+      {
+        "path": "/tmp/101-fair-delivery-packed-original-red.log",
+        "bytes": 3307,
+        "sha256": "a53fe804b5c4324cb0993c15cd7b1a5b7eead1a65f884f887e3dc834d6a6d15a"
+      },
+      {
+        "path": "/tmp/101-haptic-original-red.log",
+        "bytes": 898,
+        "sha256": "c143e53be09372cd060fba6eb853f4138ac26c02b449ac6497bc486ea2fcdcc6"
+      },
+      {
+        "path": "/tmp/101-haptic-mixed-red.log",
+        "bytes": 941,
+        "sha256": "4db6cfa2b0dd304b95945de75eca1b8a089393bda093e10a5cb3c09149f0e38b"
+      },
+      {
+        "path": "/tmp/101-haptic-backend-lifetime-red.log",
+        "bytes": 994,
+        "sha256": "15d1e0a1fc5aaeabcc0533103ea71c0159573b44b1e2f753614d87603d6db309"
+      },
+      {
+        "path": "/tmp/101-haptic-sync-failure-red.log",
+        "bytes": 1004,
+        "sha256": "51314d97f3e31a3f4e8a6585c1aed98c63b20ea3e74671f92e6dd0a71cc6d086"
+      },
+      {
+        "path": "/tmp/101-haptic-cross-instance-red.log",
+        "bytes": 670,
+        "sha256": "59e38b205a71a398b11193dd43c1543bffc1b9fa174b1367269274ce66066822"
+      },
+      {
+        "path": "/tmp/101-haptic-replacement-root-red.log",
+        "bytes": 972,
+        "sha256": "ecea4e51e9de31adeec8473c781d686a1378adbb4299bc51ea00fc040a8a65b7"
+      },
+      {
+        "path": "/tmp/101-haptic-replacement-root-green.log",
+        "bytes": 2043,
+        "sha256": "8d301b5b42cc235a42617af41ec0b45348ccd98fe8507b83c833852403deb143"
+      },
+      {
+        "path": "/tmp/101-haptic-cross-instance-green.log",
+        "bytes": 440,
+        "sha256": "c5a62faf08da61a26a6dd37a5314b5c3743a5c8f2c537fadee9b3b765fabd54d"
+      },
+      {
+        "path": "/tmp/101-application-media-expiry-red.err",
+        "bytes": 508,
+        "sha256": "24c53dd9ea385264671528f53eeb2250d1d46680d369520a513b188c89fb5d32"
+      },
+      {
+        "path": "/tmp/101-application-media-dom-red.err",
+        "bytes": 416,
+        "sha256": "556ef18808190fd56f57c8ef7121ce9c7703c44e16e55fa518adad6def99fd02"
+      },
+      {
+        "path": "/tmp/101-application-media-failure-red.err",
+        "bytes": 491,
+        "sha256": "1de842f770162ffcc9ecbf7b178275d9a22f8109d7613fa5114d84702a0f012f"
+      }
+    ],
+    "mediaFreshAgeAndOpeningDenial": {
+      "path": "/tmp/101-application-media-review-fixes-red.err",
+      "sha256": "aa08dd7657710c5a7d835ac88faf0498d1862d3e13ad8cb256f232174b2464c2",
+      "bytes": 1927
+    },
+    "mediaPostCopyLifecycle": {
+      "path": "/tmp/101-application-media-post-copy-red.err",
+      "sha256": "57a068735b166ff393a4c97612855ac8f5e475ecfd749c9b3cb9bed4a9cb95e9",
+      "bytes": 879
+    },
+    "mediaRepairSourceGreen": {
+      "path": "/tmp/101-application-media-review-final-green.json",
+      "sha256": "d3573bd0f7e3c70c0097c16eb292b86f19d880e075e0fad61796c3c1c34221ae",
+      "bytes": 15276
+    },
+    "nativeHelperGreen": {
+      "path": "/tmp/101-haptic-replacement-root-green.log",
+      "sha256": "8d301b5b42cc235a42617af41ec0b45348ccd98fe8507b83c833852403deb143",
+      "bytes": 2043,
+      "passed": 19,
+      "failed": 0,
+      "skipped": 0
+    },
+    "nativeStrict": {
+      "path": "/tmp/101-media-haptic-fair-final-native-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "result": "pass",
+      "exitCode": 0,
+      "executedTypeScript": "5.9.3",
+      "command": "node node_modules/typescript/bin/tsc --noEmit -p apps/controller-native/tsconfig.json"
+    }
+  },
+  "qaAdapterChanges": {
+    "media": "Ordinary ESM public imports after verifying receipt-hashed immutable manifest, all seven installed file inventories, paths/symlinks, and selected current source hashes; source-mode proof remains separately identified.",
+    "haptics": "Ordinary public ESM resolver with the same closed installed-byte/immutable-manifest fences; actual native browser API boolean and honest missing-API result.",
+    "fairness": "Normal external child ESM imports public @101/connect with Node type stripping/aliases disabled and actual host-approved runtime providers. Old packed producer fails2/6 recipients; current producer admits all eligible recipients within bounded rounds."
+  },
+  "requiredCommitGates": [
+    "npx tsc --noEmit",
+    "npm run lint",
+    "npm run test:unit",
+    "npm run build",
+    "node --test tests/rendered-html.test.mjs"
+  ],
+  "gateEvidence": "The integrating commit records the exact final candidate tree, gate logs/counts and fresh build ID after these metadata files are frozen.",
+  "limitations": [
+    "V01/I08/F05 remain unchecked; these receipts prove only the declared bounded local implementations.",
+    "Physical phone/Mirroring/Mac pointer/OS permission/assistive/hardware checks are deferred.",
+    "Native proof is byte-exact iOS/Android JavaScript/source-map reachability, without Hermes/native bridge/install/physical vibration acceptance.",
+    "WebKit lacks a required native frame-rate setting; unsupported cleanup/recovery is proven, positive media output is not claimed.",
+    "Trusted same-origin host callbacks, factories and native port bindings are cooperative boundaries; no malicious-host sandbox claim.",
+    "No publish, deploy, push, preview URL, third-party service or external network qualification."
+  ],
+  "published": false
+}

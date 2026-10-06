@@ -2,7 +2,7 @@
 
 The first platform implementation connects typed providers inside one application process.
 `@101/connect` exports the device model, embedded routing API and bounded peer resource bridge without game dependencies.
-The runnable [examples](../../examples/device-pipelines/README.md) use simulated providers.
+The runnable [examples](../../examples/device-pipelines/README.md) use explicit local providers and fixtures; browser examples declare the required native APIs and owner grants.
 The [platform stages](../superpowers/specs/2026-10-01-universal-device-platform-design.md)
 describe native agents, media, discovery and connector work still to come. The authenticated peer bridge and actual browser enrollment screens have local Chromium runtime evidence. Native screen/storage/bridge runtime and physical qualification remain open.
 The [master checklist](MASTER-CHECKLIST.md) is the canonical implementation and release task ledger.
@@ -358,6 +358,83 @@ does not open a track, route media or report a rendered frame. The
 shows a video-to-canvas proposal and unavailable microphone/codec failures.
 Actual capture, transport, permission and physical output remain separate
 qualifications.
+
+
+## Local application video
+
+`createBrowserApplicationMedia({ applicationId, sessionId, clockDomain, now,
+authorizeSource, authorizeSink })` implements the selected
+`local-application-video/1` browser path. It captures a caller-owned canvas with
+native `captureStream`, decodes its video privately and draws into an SDK-owned
+canvas inside the selected output container. Existing container children and
+the borrowed source remain intact. Camera, microphone, screen capture and
+remote media transports require their separate providers and grants.
+
+Register the source with `registerSource({ sourceId, ownerPrincipalId, canvas,
+maxHz })`, then explicitly `bind({ source, outputId, ownerPrincipalId, container,
+label, signal? })`. The issued source handle is identity-bound; copied handles
+cannot bind. Each owner authorizer receives a frozen request containing the
+exact source, recipient, output, application, session and operation. Approval
+returns `{ request, grant }` with that same request object. Metadata alone
+cannot approve another output. Both decisions must be current before capture,
+pixel reads and visible output. The runtime independently binds the concrete
+resource registrations to the resulting limits.
+
+`ready` reports successful local opening; `status()` reports route state.
+`renew()` can refresh a lease only within the captured opening deadline and
+current owner limits. Revocation, cancellation, expiry, native track loss,
+hidden document and `close()` retire owned capture and output work; restoring
+availability does not automatically reopen a route. `revokeOutput` retires one
+recipient; the final recipient stops the owned capture. `revokeSource` retires
+all its outputs. No frame data, video, stream or native track is exposed through
+a public handle or serialized into the control wire.
+
+Fresh owner decisions can tighten rate and maximum age. The frame notification
+timestamp records local decoded-frame receipt in the declared clock domain.
+Its age is checked against the current narrowed grant before visible output;
+it does not establish camera capture time or cross-device synchronization.
+
+The selected profile caps two sources, four outputs, thirty requested frames
+per second and 1,048,576 pixels per source/output backing surface. Opening has
+a two-second deadline. Native settings and decoded dimensions must establish
+the selected format; a missing setting is unsupported rather than an invented
+capability. Browser-native media buffers do not carry a hard memory claim.
+Trusted same-origin host code owns consent and the application canvas; these
+APIs are cooperative recipient isolation, not a sandbox against that host.
+
+## Preset haptic output
+
+`getHapticOutputProfile` exposes `app:expo-haptic-presets/1` and
+`app:browser-haptic-presets/1`. Both accept only `tap`, `impact` and `warning`.
+Expo selects actual intensity and duration; custom values are unsupported.
+Browser patterns request 15 ms, 35 ms and `[50, 35, 50]` respectively, with a
+maximum requested pattern span of 135 ms including the pause. Actual hardware
+output and physical distinguishability remain unverified.
+
+`createHapticOutputController({ runtime, deviceId, backend, now, label? })`
+registers an initially unavailable, exclusive reliable command sink. The caller
+supplies the existing runtime and authorizes its exact source, sink, principal,
+application, session and `invoke` operation. The helper creates no grants.
+After explicit `setAvailable(true)`, commands still require increasing
+operation IDs, current delivery contexts and bounded deadlines. Dispatch is
+capped at ten requests per second, one API invocation in flight and a 100 ms
+freshness window; evidence retains at most 64 records.
+Runtime queue capacity is supplied by the caller; create each command route
+with `queueCapacity: 1` for this profile.
+
+`createBrowserHapticBackend(navigator)` uses the actual vibration API result.
+A missing API, false return or thrown call has no fabricated acknowledgement.
+Records distinguish the dispatch attempt from `api-returned`, `api-rejected`,
+`unavailable`, busy, cancellation and expiry, and always leave physical effect
+unverified. `setAvailable(false)` and `close()` fence future work and late
+completion. Expo offers no cancellation of an already issued effect; browser
+stop is only an API request. The native controller helper adapts the installed
+Expo preset methods. The helper requires explicit active state and shares its
+actual API reservation between SDK and legacy/local feedback; background and
+close decline new calls. Replacement helpers using the same installed Expo
+port remain busy until the original native Promise settles. Its legacy/local
+App callbacks retain an explicit
+compatibility boundary and do not establish migrated SDK route grants.
 
 ## Measurement calibration and quality
 
@@ -917,7 +994,17 @@ parser-only finite-number, relational, byte, depth and plain-object constraints.
 | Registered endpoints | Default 1024; configurable 1–4096 |
 | Reliable records per route | Default 64; configurable 1–256 |
 | Unresolved deliveries across the runtime | Default 256; configurable 1–4096 |
+| Delivery-slot contention | Eligible routes rotate after successful reservations; at most one reservation per route per flush |
 | Ownership lease | Default 1500 ms; configurable 1–30000 ms |
+
+Successful delivery reservations rotate behind waiting routes on the next
+`flush()`. Each flush freezes its work before calling a provider; derived work
+waits for another flush. Under contention, continuously eligible routes whose
+providers finish receive bounded turns independently of registration order.
+Cadence, freshness, reliable ordering, host grants and the global pending limit
+still apply. This is route fairness, not a CPU sandbox or per-tenant byte quota.
+Providers retaining every global slot indefinitely can still block admission.
+The host must isolate untrusted computation and handle unavailable providers.
 
 ## Reusable control surfaces
 

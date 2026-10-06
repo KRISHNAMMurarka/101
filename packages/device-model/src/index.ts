@@ -71,3 +71,6 @@ export type { ConnectorProfileManifest, ConnectorProfileResource, ConnectorIdent
 
 export { LOCAL_PACKAGE_CATALOG_PROFILE, LOCAL_PACKAGE_CATALOG_LIMITS, parseCatalogSubmission, catalogSubmissionSigningBytes, catalogSubmissionSha256, verifyCatalogSubmission, parseCatalogReviewAttestation, catalogReviewSigningBytes, verifyCatalogReviewAttestation, catalogSha256, catalogReleaseSha256, catalogProcessorReportPassed, verifyCatalogSignature } from './package-catalog.ts';
 export type { CatalogSubmission, UnsignedCatalogSubmission, CatalogReviewAttestation, UnsignedCatalogReviewAttestation, CatalogConformanceReport, CatalogDocs, CatalogProvenance, CatalogReviewDecision } from './package-catalog.ts';
+
+export { HAPTIC_PROFILE_IDS, HAPTIC_OUTPUT_LIMITS, getHapticOutputProfile } from './haptic-profile.ts';
+export type { HapticProfileId, HapticPreset, HapticOutputProfile } from './haptic-profile.ts';

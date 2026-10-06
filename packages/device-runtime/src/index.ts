@@ -49,3 +49,8 @@ export type { InputOwnershipController, InputOwnershipOptions, InputOwnershipSou
 export { createLocalPackageCatalog } from './package-catalog.ts';
 export type { LocalPackageCatalog, LocalPackageCatalogOptions, LocalPackageCatalogRole, LocalPackageCatalogAction, LocalPackageCatalogStatus, LocalPackageCatalogFailure, LocalPackageCatalogResult, LocalPackageCatalogWriteGuard, LocalPackageCatalogStorage, LocalPackageCatalogTrust, LocalPackageCatalogOwnerTrust, LocalPackageCatalogScope, LocalPackageCatalogApproval, LocalPackageCatalogReleaseSummary, LocalPackageCatalogSnapshot } from './package-catalog.ts';
 export type { ProcessorInstallationWriteGuard, ProcessorInstallationStorage, ProcessorPublisherTrust, ProcessorInstallationAction, ProcessorInstallationScope, ProcessorInstallationApproval, ProcessorInstallationFailure, ProcessorInstallationResult, ProcessorInstallationPackage, ProcessorInstallationSnapshot, ReviewedProcessorActivationRequest, ProcessorExtensionActivation, ProcessorInstallation, ProcessorInstallationOptions } from './processor-installation.ts';
+
+export { intersectMediaRouteGrants } from './media-grants.ts';
+
+export { createHapticOutputController, createBrowserHapticBackend } from './haptic-output.ts';
+export type { HapticBackendOutcome, HapticOutcome, HapticBackend, HapticOutputEvidence, HapticOutputOptions, HapticOutputController } from './haptic-output.ts';

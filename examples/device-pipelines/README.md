@@ -1,14 +1,15 @@
 # Embedded device pipelines
 
-These examples use `@101/connect` without a game package. They simulate the
-providers in one process; they do not pair a physical device, send data over a
-network, move an operating system cursor or operate an actual relay.
+These examples use `@101/connect` without a game package. Deterministic runners
+use explicit local providers and fixtures. Browser examples require the named
+native APIs and current host grants. They do not qualify a physical phone,
+operating system cursor or actuator.
 
 Run them with `npm run example:devices` from the repository root. The command
 prints deterministic pointer coordinates and command evidence as JSON.
 
 For an external consumer, build the current SDK with `npm run build:sdk -- HEAD`,
-install all five produced tarballs in a separate directory using offline npm,
+install all seven matching produced tarballs in a separate directory using offline npm,
 and run `node node_modules/@101/connect/examples/run.js`. The facade exports
 `@101/connect/examples/pointer`, `/examples/sensor-feedback`,
 `/examples/threshold`, `/examples/telemetry-batch`, `/examples/spatial-joints`
@@ -17,6 +18,20 @@ as compiled ESM with declarations. The packed examples also
 include readable source. No workspace link, type stripping or game dependency is
 needed for the compiled examples. See [distribution evidence](../../docs/platform/SDK-DISTRIBUTION-QA-2026-10-02.md)
 for exact supported checks and remaining qualification.
+
+## Application canvas → private displays
+
+The packed `@101/connect/examples/application-media` entry exports
+`createApplicationMediaExample(sourceCanvas, { first, second })`. The caller
+owns the source canvas and explicitly records separate source and sink consent
+with `setConsent(output, role, true)` before `start(output)`. Await the returned
+binding's `ready` value and read its status; missing native format settings
+produce a recoverable unsupported result. Removing either consent retires that
+recipient. `stop()` releases the SDK-owned capture and display canvases.
+
+The example uses native browser canvas capture and video decoding. It requires
+current same-origin host decisions and leaves camera, microphone, screen and
+remote-media providers to their separately authorized paths.
 
 ## Touch position → application pointer
 

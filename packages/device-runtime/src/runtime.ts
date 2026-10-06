@@ -282,7 +282,17 @@ export class EmbeddedRuntime implements DeviceRuntime {
       const now = this.time();
       this.sweep(now);
       // Freeze this flush's work before calling any provider. Derived work is a later turn.
-      const work = [...this.active].flatMap((route) => route.prepareDelivery(now));
+      const work: (() => void)[] = [];
+      for (const route of [...this.active]) {
+        const prepared = route.prepareDelivery(now);
+        work.push(...prepared);
+        // Successful reservations move behind waiting routes for the next flush.
+        // Rotate the existing bounded set; no cursor retains a detached provider.
+        if (prepared.length && this.active.has(route)) {
+          this.active.delete(route);
+          this.active.add(route);
+        }
+      }
       for (const dispatch of work) dispatch();
     }
     catch { this.close(); }

@@ -29,6 +29,7 @@ import { ControllerPanel, type ControllerActions } from "./src/controls";
 import { ControllerSession, type ControllerAssignment } from "./src/controller-session";
 import { connectionErrorMessage } from "./src/link-error";
 import { ControllerSpeaker } from "./src/controller-speaker";
+import { createControllerHaptics, type ControllerHaptics } from "./src/controller-haptics";
 import { NativeMotionController, type MotionReadout } from "./src/motion-controller";
 import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
 import { ticketFromInput } from "./src/pairing-code";
@@ -107,14 +108,24 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const sessionRef = useRef<ControllerSession | undefined>(undefined);
   const motionRef = useRef<NativeMotionController | undefined>(undefined);
   const readoutRenderedAt = useRef(0);
+  const hapticsRef = useRef<ControllerHaptics | undefined>(undefined);
+  const hapticOwnerRef = useRef<ControllerAssignment | undefined>(undefined);
+  const haptics = useMemo(() => ({
+    play: (pattern: "tap" | "impact" | "warning") => hapticsRef.current?.play(pattern) ?? Promise.resolve("cancelled"),
+    cancel: () => hapticsRef.current?.cancel(),
+  }), []);
   const connectBusy = useRef(false);
   const connectRevision = useRef(0);
-  const cancelPendingConnect = useCallback(() => { connectRevision.current++; }, []);
+  const cancelPendingConnect = useCallback(() => { connectRevision.current++; haptics.cancel(); }, [haptics]);
 
-  const haptic = useCallback(async (pattern: "tap" | "impact" | "warning") => {
-    if (pattern === "tap") await Haptics.selectionAsync();
-    else if (pattern === "impact") await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    else await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  const haptic = useCallback((pattern: "tap" | "impact" | "warning") => haptics.play(pattern), [haptics]);
+
+  useEffect(() => {
+    const controller = createControllerHaptics(Haptics);
+    hapticsRef.current = controller;
+    controller.setActive(AppState.currentState === "active");
+    const listener = AppState.addEventListener("change", (state) => controller.setActive(state === "active"));
+    return () => { listener.remove(); controller.close(); if (hapticsRef.current === controller) hapticsRef.current = undefined; };
   }, []);
 
   useEffect(() => {
@@ -146,6 +157,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       setError("101 Link is still starting up. Try again in a moment.");
       return;
     }
+    haptics.cancel();
     setError(undefined);
     setManualAnswer("");
     setLinkState("connecting");
@@ -177,7 +189,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       connectBusy.current = false;
       setConnectionPending(false);
     }
-  }, []);
+  }, [haptics]);
 
   const reviewPairing = useCallback((input: string, source: PairingCandidate["source"]) => {
     const result = pairIntake.current!.receive(input, source);
@@ -264,13 +276,18 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     });
     motionRef.current = motion;
     const session = new ControllerSession(deviceId, `${Platform.OS} 101 Link`, {
-      state: setLinkState,
+      state: (state) => { if (state !== "connected") haptics.cancel(); setLinkState(state); },
       layout: (next, fromHost) => {
         layoutRef.current = next;
         setLayout(next);
         setHostControlled(fromHost);
       },
-      assignment: setAssignment,
+      assignment: (next) => {
+        const previous = hapticOwnerRef.current;
+        if (previous?.playerId !== next?.playerId || previous?.role !== next?.role || previous?.gameId !== next?.gameId) haptics.cancel();
+        hapticOwnerRef.current = next;
+        setAssignment(next);
+      },
       hostState: (values, message, tone) => {
         setHostValues(values);
         setHostMessage(message);
@@ -339,7 +356,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       sessionRef.current = undefined;
       motionRef.current = undefined;
     };
-  }, [cancelPendingConnect, deviceId, haptic, reviewPairing, speaker]);
+  }, [cancelPendingConnect, deviceId, haptic, haptics, reviewPairing, speaker]);
 
   useEffect(() => {
     sessionRef.current?.setSpeakerReady(

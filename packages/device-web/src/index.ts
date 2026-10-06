@@ -29,3 +29,8 @@ export { mountControlSurface } from './control-surface.ts';
 export type { ControlSurfaceOptions, MountedControlSurface, SurfaceControlEvent, SurfaceControlContext, SurfaceControlCallback } from './control-surface.ts';
 export { mountApplicationViewCanvas } from './application-view-canvas.ts';
 export type { ApplicationCanvasGeometry, ApplicationCanvasView, ApplicationCanvasOptions } from './application-view-canvas.ts';
+
+export { createBrowserApplicationMedia } from './application-media.ts';
+export type { BrowserApplicationMedia, BrowserApplicationMediaOptions, BrowserMediaGrantRequest, BrowserMediaOwnerGrant,
+  BrowserApplicationMediaSourceOptions, BrowserApplicationMediaSource, BrowserApplicationMediaBindOptions,
+  BrowserApplicationMediaBinding, BrowserApplicationMediaStatus } from './application-media.ts';
