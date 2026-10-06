@@ -500,19 +500,22 @@
     "primaryTreeUnchanged": true
   },
   "requiredGates": {
-    "status": "pending",
-    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
-    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
-    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
-    "earlierDocumentaryCandidate": {
-      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
-      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
-    }
+    "status": "pass",
+    "sourceCommit": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+    "exactCommittedTree": "2323ef524f834d9fc84f1ffff1cdaa53c935f430",
+    "receipt": {
+      "path": "/tmp/101-media-enrollment-corrected-required-gates.json",
+      "sha256": "a2d9095fef208c1eea4b78f9ad7ee6f445fb4f46be9dcbc00b6e6870c3081b9e"
+    },
+    "unit": 1928,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All required commands passed against this actual committed source/canonical tree before local commit. Subsequent documentary completion update records the achieved result; no broader physical/full-row claims."
   },
   "tally": {
     "total": 272,
-    "completed": 117,
-    "open": 155
+    "completed": 118,
+    "open": 154
   },
   "taskDisposition": {
     "U02": "OPEN. Added volatile bilateral manual enrollment, self-reported resource metadata, exact separate preview approvals, candidate recovery, removal and lifecycle. Actual18 journeys each Chromium149/WebKit26.5 passed. Persistent device/account identity, complete discovery/general operations and hardware/accessibility matrix remain open."
@@ -523,5 +526,18 @@
     "Broader U02 remainsopen: persistent/enrolled generaldevice inventory/account lifecycle, command/job/media/property privileges, scopedforget impact acrossgeneralconnections/grants, physicalchooser/formfactor/named-screenreader and fullsupportmatrix are not established.",
     "Current final all-fivegates/commit disposition requires root gates; native36 and historicalfocused14 are not substitutes.",
     "No storedcredentials/grants/identity restoration, networkscanning, phone/physicaldevice/manualOS UI or nativeinternalresourcezero qualification."
-  ]
+  ],
+  "gateHistory": [
+    {
+      "status": "pending",
+      "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+      "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+      "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+      "earlierDocumentaryCandidate": {
+        "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+        "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+      }
+    }
+  ],
+  "sourceCommit": "9617efe06b49f253d44f39f782ac58e9e30d658d"
 }

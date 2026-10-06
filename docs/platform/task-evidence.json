@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 105,
+  "revision": 107,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10371,6 +10371,115 @@
         "Owned Mac and private browser peers; phone/hardware tests deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "sdk-media-enrollment-source-commit-2026-10-07",
+      "revision": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V09",
+        "V10",
+        "V11",
+        "B06",
+        "U02",
+        "T10",
+        "T12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-media-recording.json",
+        "docs/platform/receipts/2026-10-06-media-synchronization.json",
+        "docs/platform/receipts/2026-10-06-output-sharing.json",
+        "docs/platform/receipts/2026-10-06-owner-backup-copies.json",
+        "docs/platform/receipts/2026-10-07-media-backup-installed.json",
+        "docs/platform/receipts/2026-10-07-devices-enrolled-resources.json",
+        "docs/platform/MASTER-CHECKLIST.md"
+      ],
+      "environment": "macOS arm64; Node24.14.0/TS5.9.3; exact committed tree2323ef52; selected private browser/native/software qualification and installed SDK recorded in receipts.",
+      "reproduction": "Exact AGENTS types/lint/unit/fresh build/rendered gates allpassed before actual localcommit;1928unit/34rendered/0skip. Gate and commit receipts preserved in Git refs/codex/evidence/2026-10-07-media-enrollment.",
+      "scope": "Literal V09 policy implementation completed. V10/V11/B06/U02 and transport full outcomes remain partial/open at their explicitly recorded boundaries. No physical hardware/support/production claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac and private fixtures; phone/hardware checks deferred"
+      ],
+      "supportRows": [
+        "media-synchronization-software-2026-10-06",
+        "media-recording-software-2026-10-06",
+        "output-sharing-software-2026-10-06"
+      ],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+        "exactCommittedTree": "2323ef524f834d9fc84f1ffff1cdaa53c935f430",
+        "receipt": {
+          "path": "/tmp/101-media-enrollment-corrected-required-gates.json",
+          "sha256": "a2d9095fef208c1eea4b78f9ad7ee6f445fb4f46be9dcbc00b6e6870c3081b9e"
+        },
+        "unit": 1928,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All required commands passed against this actual committed source/canonical tree before local commit. Subsequent documentary completion update records the achieved result; no broader physical/full-row claims."
+      },
+      "tally": {
+        "total": 272,
+        "completed": 118,
+        "open": 154
+      }
+    },
+    {
+      "id": "r09-cross-host-workload-built-2026-10-07",
+      "revision": "6b65e977aafc29b39941dcabb4616d1b6d8bd8a9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "R09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-cross-host-workload.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; local software/private native browser and loopback Node fixtures only; no physical phone/hardware.",
+      "reproduction": "Actual source27 and installed27 using unchanged SDK7bf plus explicit workspace hub; controlled old650 silence RED then real fresh sampling GREEN; exact issued-abort correction and strict/lint receipts. Required broad gates/local commit pending.",
+      "scope": "Selected supported loopback-node-workload-handoff/1: actual independently executing hosts/groups/live snapshot transfer/disconnect/owner refusal/host-loss/fresh recovery. No physical/IP/performance claim; final source commit pending.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/private software fixtures; phones deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "u03-page-resource-built-partial-2026-10-07",
+      "revision": "6b65e977aafc29b39941dcabb4616d1b6d8bd8a9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-page-resource-connections.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; local software/private native browser and loopback Node fixtures only; no physical phone/hardware.",
+      "reproduction": "Helper16 and strict120; Chromium17 at actuala539 QA55cd reused by independent branch equivalence, WebKit17 at actual7741 QA482 after real native Alt+Tab diagnostic. Exact positive/failed envelopes preserved; broad gates/local commit pending.",
+      "scope": "PARTIAL page-owned resource connection task; descriptors/compatibility/separate approvals/current effects/replacement/interruption/Stop. Whole U03 remains open for nearby/remote/general schemas and named screen readers.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/private software fixtures; phones deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -10868,7 +10977,8 @@
         "resource-binding-2026-10-02",
         "resource-loopback-chromium-2026-10-02",
         "resource-loopback-webkit-2026-10-02",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -10897,7 +11007,8 @@
       "records": [
         "pending-T12",
         "t12-local-sdk-2026-10-06",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -11885,7 +11996,8 @@
         "pending-V09",
         "v03-private-application-audio-installed-2026-10-06",
         "v09-output-sharing-installed-2026-10-06",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -11902,7 +12014,8 @@
       "records": [
         "pending-V10",
         "v10-media-synchronization-installed-2026-10-06",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -11919,7 +12032,8 @@
       "records": [
         "pending-V11",
         "v11-media-recording-installed-2026-10-06",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12567,7 +12681,8 @@
     {
       "id": "R09",
       "records": [
-        "pending-R09"
+        "pending-R09",
+        "r09-cross-host-workload-built-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12660,7 +12775,8 @@
         "pending-B06",
         "b06-backup-resolution-scope-partial-2026-10-06",
         "b06-registered-copies-installed-2026-10-06",
-        "media-backup-current-installed-2026-10-07"
+        "media-backup-current-installed-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12902,7 +13018,8 @@
       "records": [
         "pending-U02",
         "u02-browser-add-inspect-partial-2026-10-06",
-        "u02-enrolled-resources-partial-2026-10-07"
+        "u02-enrolled-resources-partial-2026-10-07",
+        "sdk-media-enrollment-source-commit-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12919,7 +13036,8 @@
       "records": [
         "pending-U03",
         "u03-built-partial-2026-10-06",
-        "u03-webkit-keyboard-unqualified-2026-10-06"
+        "u03-webkit-keyboard-unqualified-2026-10-06",
+        "u03-page-resource-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",

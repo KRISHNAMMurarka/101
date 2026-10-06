@@ -1,0 +1,289 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "page-owned-resource-connection/1",
+  "localOnly": true,
+  "base": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+  "candidateSourceTree": "6b65e977aafc29b39941dcabb4616d1b6d8bd8a9",
+  "sourceSha256": {
+    "app/connections/resources/page.tsx": "e8244646f291b475e67ce5fd19d6e72b545726de9292ca8cc4834df1c87dd310",
+    "app/connections/resources/ResourceTaskView.tsx": "5be6a21efb77b0eebca217c266d6c8429ee875537b90b4accf4c89c497813e5a",
+    "app/connections/resources/resource-task.ts": "5c490da935fb9a24609d5bd2cc61ed851b2232ef389c096a04d38afad66646c5",
+    "app/connections/resources/resource-task.test.ts": "2ac21970e1fdcf0c48ff9f894ce00c07160d731c14bc0825a35e845c43b3babb",
+    "app/connections/resources/resource-task.module.css": "48ce81f57b4dcf270da5819fd5b27aaf5f80574692c73b908c3c15038244bbec",
+    "tools/qa-resource-task-flow.mjs": "48267362ce6a2ea643674c2e26a8b703c68bf975f327d5b7b9369d70e2a5a4cd"
+  },
+  "focused": {
+    "path": "/tmp/101-u03-resource-task-focused-v2.json",
+    "sha256": "e778f3e13fcb860d490dd425ae7c41f8c873e1e3ccb252d8f86ceedd68693b3b"
+  },
+  "strict": {
+    "path": "/tmp/101-u03-resource-task-strict-v2.json",
+    "sha256": "827bd96172f8163223b85c6e6c79179ad492a9b723c677f86e612bb60391fd0c"
+  },
+  "focusedScope": "16 plain helper regressions and actual120-file strict closure; worker ordinary source SDK, not an installed UI. Immutable v2 draft stale unrun labels corrected by qualified addendum.",
+  "qualificationAddendum": {
+    "path": "/tmp/101-u03-resource-task-v2-qualification-addendum.json",
+    "sha256": "ac3440e82e0597e2e58baa5e5d9f00e9fc519b2769d68c99500f374e8eee4f01"
+  },
+  "actualNative": {
+    "chromium": {
+      "record": {
+        "path": "/tmp/101-u03-resource-task-primary-native-focused-qa.json",
+        "sha256": "9aa0952da9b9b69393fe068b967d9cb31c51d19031dcc4aa55a32d3c5b078e96"
+      },
+      "packet": {
+        "path": "/tmp/101-u03-resource-task-primary-native-focused-qa-packet.json",
+        "sha256": "98cf8094eaed9ddb849314e8b76107148709fa0e60e4fb8e562fb9342cf3dea5"
+      },
+      "actualSourceTree": "a539a72933089048eb977e6f6bfe5d707ad41ba5",
+      "actualQaSha256": "55cd51840a6cf6d13f2dfad7a81ed5e0973350b37b661ca49c929d57da38ee83",
+      "result": {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "status": "pass",
+        "checks": [
+          "inert-entry-no-registered-resource-or-timer",
+          "actual-dark-and-light-palette-status-and-focus-contrast",
+          "actual-schema-compatible-options-and-recoverable-mismatch",
+          "independent-source-output-consent",
+          "actual-native-range-event-to-exact-public-runtime-meter",
+          "inert-candidate-cancel-preserves-current-effect-and-focus",
+          "declined-review-grants-no-effect-and-preserves-incumbent",
+          "old-output-release-before-explicit-replacement",
+          "actual-native-button-boolean-to-current-runtime-output",
+          "source-revoke-releases-output-and-focus-after-settlement",
+          "actual-owned-timer-callback-counter-through-public-recipe-route",
+          "absolute-quiet-expiry-without-renewal-and-all-owned-timers-released",
+          "fresh-selection-fresh-approvals-after-expiry",
+          "explicit-stop-clears-exact-output-and-settled-focus",
+          "explicit-software-window-blur-lifecycle-fixture-retires-route",
+          "responsive-visible-focus-reduced-motion-and-no-resource-storage",
+          "actual-route-unmount-awaits-owned-work-and-redacted-zero-resource-readback"
+        ],
+        "actualEffects": "owned-page-timer/native-range/native-button through real public SDK routing into actual native DOM displays",
+        "physical": false,
+        "lifecycleFixture": "window.blur dispatch is explicitly software; unmount is actual application route navigation",
+        "palettes": [
+          {
+            "scheme": "dark",
+            "nativeTabSteps": 11,
+            "paper": "#f2f2f2",
+            "panel": "#101010",
+            "lineControl": "rgba(255, 255, 255, 0.34)",
+            "color": "rgb(242, 242, 242)",
+            "statusColor": "rgb(242, 242, 242)",
+            "bodyBackground": "rgb(10, 10, 10)",
+            "panelBackground": "rgb(16, 16, 16)",
+            "panelBorder": "rgba(255, 255, 255, 0.34)",
+            "outlineColor": "rgb(242, 242, 242)",
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "documentHasFocus": true,
+            "reviewIsActive": true,
+            "reviewMatchesFocus": true,
+            "reviewMatchesFocusVisible": true
+          },
+          {
+            "scheme": "light",
+            "nativeTabSteps": 0,
+            "paper": "#0a0a0a",
+            "panel": "#f7f7f7",
+            "lineControl": "rgba(0, 0, 0, 0.44)",
+            "color": "rgb(10, 10, 10)",
+            "statusColor": "rgb(10, 10, 10)",
+            "bodyBackground": "rgb(255, 255, 255)",
+            "panelBackground": "rgb(247, 247, 247)",
+            "panelBorder": "rgba(0, 0, 0, 0.44)",
+            "outlineColor": "rgb(10, 10, 10)",
+            "outlineStyle": "solid",
+            "outlineWidth": "2px",
+            "documentHasFocus": true,
+            "reviewIsActive": true,
+            "reviewMatchesFocus": true,
+            "reviewMatchesFocusVisible": true
+          }
+        ],
+        "retirements": [
+          {
+            "state": "closed",
+            "rawPending": 0,
+            "startPending": false,
+            "owned": {
+              "registrations": 0,
+              "routes": 0,
+              "producerTimers": 0,
+              "expiryTimers": 0
+            },
+            "cleanupUnconfirmed": false
+          }
+        ]
+      },
+      "scope": "Chromium17 PASS within mixed receipt whose overall result is FAIL because WebKit native Tab focus failed. Only this actual Chromium result is reused; no promotion of failed WebKit or whole receipt."
+    },
+    "webkit": {
+      "record": {
+        "path": "/tmp/101-u03-resource-task-primary-webkit-final.json",
+        "sha256": "eb0ac49a1a10ec9b44c751273b9f546e04d105af95c1138498d78e2f885816b7"
+      },
+      "actualSourceTree": "7741a40c28524c0d533de340345c397a757a62d9",
+      "actualQaSha256": "48267362ce6a2ea643674c2e26a8b703c68bf975f327d5b7b9369d70e2a5a4cd",
+      "results": [
+        {
+          "engine": "webkit",
+          "version": "26.5",
+          "status": "pass",
+          "checks": [
+            "inert-entry-no-registered-resource-or-timer",
+            "actual-dark-and-light-palette-status-and-focus-contrast",
+            "actual-schema-compatible-options-and-recoverable-mismatch",
+            "independent-source-output-consent",
+            "actual-native-range-event-to-exact-public-runtime-meter",
+            "inert-candidate-cancel-preserves-current-effect-and-focus",
+            "declined-review-grants-no-effect-and-preserves-incumbent",
+            "old-output-release-before-explicit-replacement",
+            "actual-native-button-boolean-to-current-runtime-output",
+            "source-revoke-releases-output-and-focus-after-settlement",
+            "actual-owned-timer-callback-counter-through-public-recipe-route",
+            "absolute-quiet-expiry-without-renewal-and-all-owned-timers-released",
+            "fresh-selection-fresh-approvals-after-expiry",
+            "explicit-stop-clears-exact-output-and-settled-focus",
+            "explicit-software-window-blur-lifecycle-fixture-retires-route",
+            "responsive-visible-focus-reduced-motion-and-no-resource-storage",
+            "actual-route-unmount-awaits-owned-work-and-redacted-zero-resource-readback"
+          ],
+          "actualEffects": "owned-page-timer/native-range/native-button through real public SDK routing into actual native DOM displays",
+          "physical": false,
+          "lifecycleFixture": "window.blur dispatch is explicitly software; unmount is actual application route navigation",
+          "palettes": [
+            {
+              "scheme": "dark",
+              "nativeFocusKey": "Alt+Tab",
+              "nativeTabSteps": 11,
+              "paper": "#f2f2f2",
+              "panel": "#101010",
+              "lineControl": "rgba(255, 255, 255, 0.34)",
+              "color": "rgb(242, 242, 242)",
+              "statusColor": "rgb(242, 242, 242)",
+              "bodyBackground": "rgb(10, 10, 10)",
+              "panelBackground": "rgb(16, 16, 16)",
+              "panelBorder": "rgba(255, 255, 255, 0.34)",
+              "outlineColor": "rgb(242, 242, 242)",
+              "outlineStyle": "solid",
+              "outlineWidth": "2px",
+              "documentHasFocus": true,
+              "reviewIsActive": true,
+              "reviewMatchesFocus": true,
+              "reviewMatchesFocusVisible": true
+            },
+            {
+              "scheme": "light",
+              "nativeFocusKey": "Alt+Tab",
+              "nativeTabSteps": 0,
+              "paper": "#0a0a0a",
+              "panel": "#f7f7f7",
+              "lineControl": "rgba(0, 0, 0, 0.44)",
+              "color": "rgb(10, 10, 10)",
+              "statusColor": "rgb(10, 10, 10)",
+              "bodyBackground": "rgb(255, 255, 255)",
+              "panelBackground": "rgb(247, 247, 247)",
+              "panelBorder": "rgba(0, 0, 0, 0.44)",
+              "outlineColor": "rgb(10, 10, 10)",
+              "outlineStyle": "solid",
+              "outlineWidth": "2px",
+              "documentHasFocus": true,
+              "reviewIsActive": true,
+              "reviewMatchesFocus": true,
+              "reviewMatchesFocusVisible": true
+            }
+          ],
+          "retirements": [
+            {
+              "state": "closed",
+              "rawPending": 0,
+              "startPending": false,
+              "owned": {
+                "registrations": 0,
+                "routes": 0,
+                "producerTimers": 0,
+                "expiryTimers": 0
+              },
+              "cleanupUnconfirmed": false
+            }
+          ]
+        }
+      ],
+      "cleanup": {
+        "ownedQaChildSettled": true,
+        "ownedDevServerClosed": true,
+        "httpServerListening": false,
+        "ownedQaBrowserContextsAfterExit": 0,
+        "ownedQaBrowsersAfterExit": 0
+      },
+      "scope": "ONLY explicit --engine webkit actual17 positive journeys, owned source Vite/551 pinned application inputs; no both-engine execution claim for this command."
+    },
+    "branchEquivalence": {
+      "path": "/tmp/101-u03-resource-task-engine-qa-adjustment-independent-review.json",
+      "sha256": "c597869a4c909a648b2925db5a690f881085b5fca43b12f918c6a6ac76651cb3"
+    },
+    "scope": "Same five application paths and eighteen public SDK/UI dependency roots in both actual runs. Native focus policy explicit QA engine only (Chromium Tab/WebKit Alt+Tab), \u226432 steps, real focus/style assertions unchanged. Post-palette journey body byte-equivalent. No stale worker U02 or current entire551 graph promotion."
+  },
+  "authorityAndLifecycle": [
+    "Descriptor/recipe-derived compatible timer/range/button to number/meter/indicator selection; separate source/output approvals and exact opaque page review/publication tokens.",
+    "Cancelled/declined candidate preserves incumbent; explicit replacement releases old output before new start.",
+    "Actual public DeviceRuntime/RecipeSession with remaining original review deadline\u226430s; one latest slot and actual source timestamps/sequences, no renewal/restamp.",
+    "Actual native range/button/timer callback values reach native DOM displays. Quiet untouched slider expiry uses original30s with no new source events.",
+    "Stop/revoke/expiry/actual navigation fence epochs, clear output, unregister routes and cancel owned timers; final unmount awaits actual raw settlement and redacted zero-owned readback.",
+    "Real dark/light readable status and2px focus ring, responsive320/390/1280 and reduced motion. Blur event is an explicitly software lifecycle fixture, not physical OS focus qualification."
+  ],
+  "failedHistory": [
+    {
+      "path": "/tmp/101-u03-current-old-built-feature-red.json",
+      "sha256": "c9596fedda7965ee2df81f5f37fb310d05062695748765eb0ab1263e493d8837"
+    },
+    {
+      "path": "/tmp/101-u03-resource-task-old-palette-arrival.json",
+      "sha256": "0ca477b496bcc7e6387e48bea92d67bf28ebff93783fdd93cff2370f67308a1d"
+    },
+    {
+      "path": "/tmp/101-u03-resource-task-primary-native-first-packet.json",
+      "sha256": "c769f26e500dad4d9ced48f3a93ed954a23c45c9b6b675a78a295a9eee795159"
+    },
+    {
+      "path": "/tmp/101-u03-resource-task-primary-native-focused-qa-packet.json",
+      "sha256": "98cf8094eaed9ddb849314e8b76107148709fa0e60e4fb8e562fb9342cf3dea5"
+    },
+    {
+      "path": "/tmp/101-u03-resource-task-webkit-focus-diagnostic-packet.json",
+      "sha256": "3eb8c1bff79d25de25c10e46d1878f6503b0e44cdcc634d591b9d63027208cd4"
+    }
+  ],
+  "independentReviews": [
+    {
+      "path": "/tmp/101-u03-resource-task-v2-independent-review.json",
+      "sha256": "867957ecf084dcbc6cae8bafe6d170cc3664b8612b67c26207be4792a5976872"
+    },
+    {
+      "path": "/tmp/101-u03-resource-task-engine-qa-adjustment-independent-review.json",
+      "sha256": "c597869a4c909a648b2925db5a690f881085b5fca43b12f918c6a6ac76651cb3"
+    }
+  ],
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact integrated final tree must pass AGENTS types/lint/unit/fresh build/rendered before a local source commit."
+  },
+  "sourceCommit": null,
+  "preservation": {
+    "path": "/tmp/101-workload-resource-history-preservation.json",
+    "sha256": "3cc737521602b8a82fb4ef2a609e4cf34764c3c93ea6b2aa55e879c0bc8fdd6c"
+  },
+  "taskDisposition": {
+    "U03": "PARTIAL/OPEN. New local page resource task is built/qualified; complete nearby/remote paths, additional general resource schemas and named screen readers remain open."
+  },
+  "limitations": [
+    "Source UI and owned software sources only; no installed UI, phone, hardware, sensor, camera, microphone or OS input/output.",
+    "No remote enrollment or authentication from descriptor labels; no relay/remote route qualification in this page flow.",
+    "Current primary U02 files are untouched; historical worker U02 pins are not current source graph evidence."
+  ]
+}

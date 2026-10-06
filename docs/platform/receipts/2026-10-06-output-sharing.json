@@ -22,19 +22,22 @@
     "installedFiles": 352
   },
   "requiredGates": {
-    "status": "pending",
-    "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
-    "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
-    "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
-    "earlierDocumentaryCandidate": {
-      "path": "/tmp/101-media-enrollment-exact-required-gates.json",
-      "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
-    }
+    "status": "pass",
+    "sourceCommit": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+    "exactCommittedTree": "2323ef524f834d9fc84f1ffff1cdaa53c935f430",
+    "receipt": {
+      "path": "/tmp/101-media-enrollment-corrected-required-gates.json",
+      "sha256": "a2d9095fef208c1eea4b78f9ad7ee6f445fb4f46be9dcbc00b6e6870c3081b9e"
+    },
+    "unit": 1928,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All required commands passed against this actual committed source/canonical tree before local commit. Subsequent documentary completion update records the achieved result; no broader physical/full-row claims."
   },
   "tally": {
     "total": 272,
-    "completed": 117,
-    "open": 155
+    "completed": 118,
+    "open": 154
   },
   "localOnly": true,
   "profile": "output-sharing-policy/1",
@@ -47,7 +50,7 @@
     "tools/qa-output-sharing.mjs": "0e1381318f500ab0ba7adb57707116cd1db56853eb3054025068faf3050663c7"
   },
   "taskDisposition": {
-    "V09": "Implemented and current installed software profile passed; literal row remains open until exact gates and local source commit."
+    "V09": "COMPLETE literal policy implementation. Audio mix/duck/exclusive, read-only camera observers and app layers/regions are built with explicit policy/owner/conflict/transfer tests; current installed native93 checks, exact five gates and local source commit recorded. Broad physical/support qualifications remain separate/open."
   },
   "environment": "macOS arm64; Node24.14.0/TypeScript5.9.3; actual installed Chromium149.0.7827.55/Firefox151.0/WebKit26.5; owned loopback/private software producers.",
   "source": {
@@ -330,5 +333,18 @@
       "sha256": "65d094eb8f137cd43e67a76e560d412665e998747bc847911a1739cacb0009f1"
     },
     "meaning": "Exact caller/compiler/SDK byte audit establishes equivalence to the current integration source; actual execution revision is callerTree, not integrationTree."
-  }
+  },
+  "gateHistory": [
+    {
+      "status": "pending",
+      "candidateSourceTree": "5b304c62b3a494ba1d8d952a376aa4c0db659ddc",
+      "scope": "All five AGENTS gates on the frozen integrated candidate and local source commit pending. Earlier failed gates remain historical; no production deadlines or native assertions relaxed.",
+      "plannedReceipt": "/tmp/101-media-enrollment-corrected-required-gates.json",
+      "earlierDocumentaryCandidate": {
+        "path": "/tmp/101-media-enrollment-exact-required-gates.json",
+        "sha256": "13a812988271bdc2c7b34b284bb2d7e6af3f3b73cc72223161447a6200aa4619"
+      }
+    }
+  ],
+  "sourceCommit": "9617efe06b49f253d44f39f782ac58e9e30d658d"
 }

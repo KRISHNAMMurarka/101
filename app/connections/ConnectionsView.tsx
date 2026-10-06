@@ -84,7 +84,10 @@ export default function ConnectionsView() {
   return <main className={styles.page}>
     <header className={styles.header}><p className={styles.eyebrow}>Connections</p><h1>Connect an input</h1>
       <p>Choose what can send input and where it can act. Both screens decide before anything moves.</p>
-      <Link href="/devices">Back to Devices</Link></header>
+      <nav aria-label="Connection options" className={styles.actions}>
+        <Link href="/connections/resources">Connect page controls</Link>
+        <Link href="/devices">Back to Devices</Link>
+      </nav></header>
     <fieldset className={styles.roles} disabled={!ready || hasWork || snapshot.rawPending > 0}><legend>This screen will</legend>
       <button type="button" aria-pressed={role === 'receiver'} onClick={() => changeRole('receiver')}>Receive input</button>
       <button type="button" aria-pressed={role === 'source'} onClick={() => changeRole('source')}>Send input</button>

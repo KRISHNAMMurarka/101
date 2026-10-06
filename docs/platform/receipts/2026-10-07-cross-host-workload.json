@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "loopback-node-workload-handoff/1",
+  "localOnly": true,
+  "base": "9617efe06b49f253d44f39f782ac58e9e30d658d",
+  "candidateSourceTree": "6b65e977aafc29b39941dcabb4616d1b6d8bd8a9",
+  "sourceSha256": {
+    "examples/cross-host-workload/cross-host-workload.ts": "e52fb6f4f83b6aa21692dda15939833a03e6262712ab766dd7d9de7f3542f8d7",
+    "examples/cross-host-workload/runtime-host.mjs": "1bd75c396e17099e4bdd0e8971fa60a5685d605d15ef2c0457420ce192f8c521",
+    "tests/cross-host-workload.test.ts": "3c0b1f8e68f1a38a5bcd77f3a381cac1f5d9e464064e9ea031d5e474893e0033",
+    "tools/qa-cross-host-workload.mjs": "d249f4348c16f4778d2e498d34740f102155c36a1e4e0b91554deafae50f14eb"
+  },
+  "qualification": {
+    "source": {
+      "record": {
+        "path": "/tmp/101-cross-host-workload-fresh-corrected-source.stdout",
+        "sha256": "e0c9058a44305b437173935ea2fe4c2f277cfff4bcd6b710c135245dae4c2d9a"
+      },
+      "actualSourceTree": "748355fc8e745fc004c179c02d1f86a175ba3a49",
+      "mode": "owned-public-source-hosts",
+      "checks": 27,
+      "provenance": {
+        "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-cross-host-provenance-fOoRJA/receipt.json",
+        "sha256": "c1436613d7f5af5916dfa2f53c527ed2d38d0e7e31cadeab3193bb16b0cec997"
+      },
+      "scenarios": [
+        {
+          "name": "shared-group-live-handoff",
+          "hostPids": [
+            51289,
+            51295
+          ],
+          "effects": 2,
+          "outputEffects": [
+            2,
+            2
+          ],
+          "admissions": 4,
+          "releases": 3,
+          "nativeStarts": 2,
+          "rawIssued": 2,
+          "rawSettled": 2,
+          "recoveryMs": [
+            131.4761669999998
+          ],
+          "originalClockDomains": [
+            "hosted-raster:51300:1",
+            "hosted-raster:51304:1"
+          ],
+          "sourcePreparationFrameSequences": []
+        },
+        {
+          "name": "snapshot-refusal-and-owner-loss",
+          "hostPids": [
+            51313,
+            51318
+          ],
+          "effects": 2,
+          "outputEffects": [
+            1,
+            1
+          ],
+          "admissions": 6,
+          "releases": 8,
+          "nativeStarts": 1,
+          "rawIssued": 2,
+          "rawSettled": 2,
+          "recoveryMs": [
+            54.459875000000466
+          ],
+          "originalClockDomains": [
+            "hosted-raster:51323:1"
+          ],
+          "sourcePreparationFrameSequences": []
+        },
+        {
+          "name": "owned-host-loss-and-recovery",
+          "hostPids": [
+            51331,
+            51335,
+            51367
+          ],
+          "effects": 3,
+          "outputEffects": [
+            2,
+            2
+          ],
+          "admissions": 6,
+          "releases": 1,
+          "nativeStarts": 3,
+          "rawIssued": 3,
+          "rawSettled": 3,
+          "recoveryMs": [
+            406.88383299999987
+          ],
+          "originalClockDomains": [
+            "hosted-raster:51341:1",
+            "hosted-raster:51362:1",
+            "hosted-raster:51372:1"
+          ],
+          "sourcePreparationFrameSequences": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        }
+      ],
+      "cleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    },
+    "installed": {
+      "record": {
+        "path": "/tmp/101-cross-host-workload-fresh-corrected-installed.stdout",
+        "sha256": "d31424cf923755c3e7edf368d01185fb2995368f1e098f5e8e329bdda18aea49"
+      },
+      "actualSourceTree": "748355fc8e745fc004c179c02d1f86a175ba3a49",
+      "mode": "ordinary-installed-seven-sdk-with-explicit-source-hub",
+      "checks": 27,
+      "provenance": {
+        "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-cross-host-provenance-vYQVBT/receipt.json",
+        "sha256": "af2a87d74df59afa490cd315ecff61292d01a3d80947055e3193be10ad9b7cd6"
+      },
+      "scenarios": [
+        {
+          "name": "shared-group-live-handoff",
+          "hostPids": [
+            49794,
+            50166
+          ],
+          "effects": 2,
+          "outputEffects": [
+            2,
+            2
+          ],
+          "admissions": 4,
+          "releases": 3,
+          "nativeStarts": 2,
+          "rawIssued": 2,
+          "rawSettled": 2,
+          "recoveryMs": [
+            427.19291599999997
+          ],
+          "originalClockDomains": [
+            "hosted-raster:50290:1",
+            "hosted-raster:50432:1"
+          ],
+          "sourcePreparationFrameSequences": []
+        },
+        {
+          "name": "snapshot-refusal-and-owner-loss",
+          "hostPids": [
+            50534,
+            50618
+          ],
+          "effects": 2,
+          "outputEffects": [
+            1,
+            1
+          ],
+          "admissions": 6,
+          "releases": 8,
+          "nativeStarts": 1,
+          "rawIssued": 2,
+          "rawSettled": 2,
+          "recoveryMs": [
+            55.528542000000016
+          ],
+          "originalClockDomains": [
+            "hosted-raster:50689:1"
+          ],
+          "sourcePreparationFrameSequences": []
+        },
+        {
+          "name": "owned-host-loss-and-recovery",
+          "hostPids": [
+            50779,
+            50794,
+            50861
+          ],
+          "effects": 3,
+          "outputEffects": [
+            2,
+            2
+          ],
+          "admissions": 6,
+          "releases": 1,
+          "nativeStarts": 3,
+          "rawIssued": 3,
+          "rawSettled": 3,
+          "recoveryMs": [
+            362.269542
+          ],
+          "originalClockDomains": [
+            "hosted-raster:50820:1",
+            "hosted-raster:50853:1",
+            "hosted-raster:50869:1"
+          ],
+          "sourcePreparationFrameSequences": [
+            5,
+            6,
+            7,
+            8,
+            9
+          ]
+        }
+      ],
+      "cleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    },
+    "correctedAbort": {
+      "path": "/tmp/101-cross-host-workload-issued-abort-native-refusal-qualification.json",
+      "sha256": "99c6f26ad0e4c78ce816a05b1e95fb502c7da16bf62410fef64facfb97a1a0ce"
+    },
+    "equivalence": "Both actual27 native modes executed at748355/testbf05. Subsequent test-only actual IPC instance observer correction changes neither main e52fb, host1bd75, QAd249 nor runtime SDK/source dependencies; modes retain their actual historical execution tree. Fresh broad gates will verify the integrated candidate."
+  },
+  "installedSdk": {
+    "sourceProducer": "7bf47e8bd70a300db2114088342c8456c79327e2",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-7TS8NS/manifest.json",
+      "sha256": "84445225cec65a7a7a0fb594391d92065b8fbb45aaa3a576c15ea6516b76c969"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ISTXSt/receipt.json",
+      "sha256": "9ff615d9ce9c48d566912806d5657e7427a2e84b112eef4fb167bc5da25dba2b"
+    },
+    "packages": 7,
+    "sourceFiles": 158,
+    "packedInstalledFiles": 352,
+    "hub": "Explicit workspace @101/hub-server coordinator/native provider, not an installed hub distribution."
+  },
+  "authorityAndLifecycle": [
+    "Shared typed input and native4x4 RGBA output groups have separate current grants; frame state and exact two downstream native effects are observed, not only admissions.",
+    "Supported live handoff retires actual source before target resume, preserves reviewed snapshot x/y/revision, rejects incompatible version before stage, and recovers with a fresh source epoch.",
+    "Killed owned host recovery uses a distinct fresh identity and fresh explicit consent; actual native children, sends, sockets and owned timers settle before cleanup.",
+    "Fixed650ms unrelated target preparation runs beside fresh SOURCE provider.frame sampling at nominal150ms intervals. Samples charge unchanged32frame/64IPC/1600turn/15s/9s/250age budgets; receiver500ms silence remains unchanged. No cached restamp/reopen/deadline or grant renewal creates keepalive authority."
+  ],
+  "failedHistory": {
+    "firstInstalledTimeout": {
+      "path": "/tmp/101-cross-host-workload-primary-final-first-record.json",
+      "sha256": "86baacc210526938c7a1cae471a8fdb03311155f3eed3616217cbb6931ddd04d"
+    },
+    "firstCause": "UNKNOWN. Later diagnostic pass does not retroactively explain the first timeout.",
+    "diagnosticPass": {
+      "path": "/tmp/101-cross-host-workload-primary-installed-diagnostic-record.json",
+      "sha256": "1c05e32a747095addfa0efe2f87a9e353d5ada5fdfdae78e938a1d401f524f35"
+    },
+    "prospectiveControlledOld": {
+      "path": "/tmp/101-cross-host-workload-controlled-old-record.json",
+      "sha256": "f50beb3a59c912a80e7096c0b89deb9cafe1a793abdef74940cff765d1e3ab44"
+    },
+    "controlledDiagnosis": "Actual650ms source raster silence expired two routes while original owners/handoff/current9s approvals remained current; separate prospective regression, not the historical first timeout cause.",
+    "firstTestLint": {
+      "path": "/tmp/101-cross-host-workload-fresh-primary-qualification.json",
+      "sha256": "0b841b7704ffd920599927175b80f1e282435aae2bf010654be535d99906677d"
+    },
+    "firstAbortFixture": {
+      "path": "/tmp/101-cross-host-workload-fresh-corrected-qualification.json",
+      "sha256": "90d9c0602eae95145660d74b04b3585e1c6a6ecf843cd017ce954270fe117d17"
+    }
+  },
+  "independentReviews": [
+    {
+      "path": "/tmp/101-cross-host-workload-source-v3-independent-review.json",
+      "sha256": "4221426ae806888b5b150c4fc7de0db995148689f0b5ede71891f1428bdb814a"
+    },
+    {
+      "path": "/tmp/101-cross-host-workload-fresh-preparation-independent-review.json",
+      "sha256": "c71421caa5668dba35e548d35ce3d72bec2680580708702c5487923a1dff9b67"
+    },
+    {
+      "path": "/tmp/101-cross-host-workload-literal-acceptance-decision.json",
+      "sha256": "78812243c659c43dfcb391c075a3ba99cd96379dd93260f7f53a0e99ed8cd463"
+    }
+  ],
+  "literalDisposition": "R09 selected supported local Node workload acceptance clauses have implementation/runtime evidence. Row stays open until exact candidate gates and actual local source commit. Physical machine/IP-loss/installed hub/performance qualifications are outside this selected profile and remain unclaimed.",
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact integrated final tree must pass AGENTS types/lint/unit/fresh build/rendered before a local source commit."
+  },
+  "sourceCommit": null,
+  "preservation": {
+    "path": "/tmp/101-workload-resource-history-preservation.json",
+    "sha256": "3cc737521602b8a82fb4ef2a609e4cf34764c3c93ea6b2aa55e879c0bc8fdd6c"
+  },
+  "limitations": [
+    "Independent software processes on one owned Mac; no physical second computer or actual IP interruption.",
+    "Trusted loopback plaintext coordinator/gateway; no end-to-end encryption or third-party service.",
+    "Recovery durations are fixture measurements, not cross-clock mappings or service-level commitments."
+  ]
+}

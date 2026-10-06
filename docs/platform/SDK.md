@@ -1153,6 +1153,47 @@ installed application code bytes or reserve target capacity. The orchestrator
 must use authorized placement and host-owned grants; live cross-host
 qualification remains R09.
 
+## Independent local workload hosts
+
+The [cross-host workload caller](../../examples/cross-host-workload/cross-host-workload.ts)
+uses the public handoff and route-group APIs with independently running Node
+hosts. Its fixed `loopback-node-workload-handoff/1` profile sends approved typed
+cursor input to an owned native raster application and shares its 4×4 RGBA
+frames with separately approved outputs. Each host owns its identity, grants,
+clock domain and routes. Host control uses private, bounded IPC; the loopback
+relay is a trusted plaintext gateway, not an end-to-end encrypted channel.
+
+`runCrossHostWorkloadQualification({ signal })` runs three bounded scenarios:
+live transfer with source retirement, incompatible snapshot recovery, and host
+loss followed by a new identity and fresh consent. It records confirmed native
+state, distinct host PIDs, recovery durations and actual cleanup. Pending native
+work remains reserved until its callback or process actually settles. The
+caller accepts only the fixed reviewed workload, with at most two host
+processes concurrently and 15 seconds per scenario, 45 seconds in aggregate.
+
+Run the source caller with Node 24.14.0:
+
+```sh
+node tools/qa-cross-host-workload.mjs --source
+```
+
+To use the seven ordinarily installed SDK packages, pass the immutable local
+consumer directory produced by `tools/qa-sdk-consumer.mjs`:
+
+```sh
+node tools/qa-cross-host-workload.mjs --sdk-root /tmp/101-sdk-consumer-EXAMPLE
+```
+
+The host-loss scenario includes 650 ms of unrelated target preparation. During
+that work the current source supplies fresh native frames at nominal 150 ms
+intervals under its original grants and frame/IPC quotas. Cached frames are not
+restamped, expired routes are not reopened, and the receiver silence policy
+stays unchanged.
+
+The coordinator remains the explicit workspace `@101/hub-server` provider.
+These checks qualify local software hosts; they do not establish physical
+machine, IP interruption, clock mapping or performance service-level claims.
+
 ## Owned native raster application
 
 `createHostedApplication()` from the workspace `@101/hub-server` export starts
@@ -2721,6 +2762,23 @@ keyboard recovery, narrow layout, themes and reduced motion. General resource
 selection, enrolled remote devices, relay paths, physical devices and named screen
 readers remain U03 qualification work. The preserved WebKit traversal failure
 leaves that engine's keyboard qualification open.
+
+## Page-owned resource connection task
+
+Connections also links to **Connect page controls** at `/connections/resources`.
+Select a compatible local timer, slider or switch and a number, meter or switch
+readout. Source and output approvals are separate. Cancelling or declining a
+review keeps the current connection; explicitly replacing it releases its old
+output first. Stop, revocation, expiry and navigation retire the connection and
+await its owned work. Approvals last at most 30 seconds without renewal.
+
+This source application flow uses public descriptor/recipe/runtime APIs and
+page-owned software values. It does not enroll remote devices or access hardware.
+Run `node tools/qa-resource-task-flow.mjs OWNED_LOOPBACK_ORIGIN/ --served-proof
+PINNED_SERVER_PROOF.json` against the owned source server. `--engine chromium`
+or `--engine webkit` selects one native browser; omitting the option requests
+both. [Local task evidence](receipts/2026-10-07-page-resource-connections.json)
+keeps each actual engine revision and the remaining U03 scope explicit.
 
 ## Disposable operator overload drill
 
