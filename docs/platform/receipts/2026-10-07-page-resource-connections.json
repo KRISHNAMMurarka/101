@@ -270,10 +270,19 @@
     }
   ],
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact integrated final tree must pass AGENTS types/lint/unit/fresh build/rendered before a local source commit."
+    "status": "pass",
+    "sourceCommit": "e59b014da696a674722ce9a724b96a9083f4982a",
+    "exactCommittedTree": "d0af9acd8b1db434b93091c1c06bfea56bb5e711",
+    "receipt": {
+      "path": "/tmp/101-workload-resource-exact-required-gates.json",
+      "sha256": "bc6fd396464726bc29f1f76410631de76292eabfefdc29427c9cbe18b63580cb"
+    },
+    "unit": 1949,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five required commands passed this exact committed source/canonical tree before local commit. This subsequent documentary completion update records the achieved result; its documentary tree awaits the next coherent batch gates. Historical native/browser runs retain their actual execution trees and explicitly reviewed unchanged source/dependency equivalence."
   },
-  "sourceCommit": null,
+  "sourceCommit": "e59b014da696a674722ce9a724b96a9083f4982a",
   "preservation": {
     "path": "/tmp/101-workload-resource-history-preservation.json",
     "sha256": "3cc737521602b8a82fb4ef2a609e4cf34764c3c93ea6b2aa55e879c0bc8fdd6c"
@@ -285,5 +294,14 @@
     "Source UI and owned software sources only; no installed UI, phone, hardware, sensor, camera, microphone or OS input/output.",
     "No remote enrollment or authentication from descriptor labels; no relay/remote route qualification in this page flow.",
     "Current primary U02 files are untouched; historical worker U02 pins are not current source graph evidence."
-  ]
+  ],
+  "committedTree": "d0af9acd8b1db434b93091c1c06bfea56bb5e711",
+  "finalPreservation": {
+    "path": "/tmp/101-workload-resource-final-preservation.json",
+    "sha256": "56b5f28e747c33dc115013feae4d0277d845da11535d488c2e806bee9b637315"
+  },
+  "actualLocalCommit": {
+    "path": "/tmp/101-workload-resource-exact-commit.json",
+    "sha256": "010c118d0da0095d1353e0d4abe3420ec536768db2ec5bfbe577ee014a6f230c"
+  }
 }

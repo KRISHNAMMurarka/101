@@ -3,7 +3,7 @@ import Controller from "./Controller";
 
 export const metadata: Metadata = {
   title: "101 Link — Browser controller",
-  description: "A local browser controller for the 101 Input Lab.",
+  description: "Use this browser to control a game on another screen.",
   applicationName: "101 Link",
   manifest: "/link.webmanifest",
   appleWebApp: { capable: true, title: "101 Link", statusBarStyle: "black-translucent" },

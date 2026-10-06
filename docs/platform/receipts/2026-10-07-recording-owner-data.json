@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "managed-recorded-media-owner-data/1",
+  "localOnly": true,
+  "base": "e59b014da696a674722ce9a724b96a9083f4982a",
+  "candidateSourceTree": "24a0cff9b46fe5462d7c027aed2ff0d4721af0af",
+  "sourceSha256": {
+    "packages/device-runtime/src/recording-owner-data.ts": "e464c32795ed0a83fce5dd57f61c3290297d06f32778851a389272d5646856ac",
+    "packages/device-runtime/src/recording-owner-data.test.ts": "c42de3d80cc6f90bcee21d5304f663e6aabcbe3b693f3f6811470f06d124085f",
+    "examples/browser-resources/recording-owner-data.ts": "2041e5a0038eb9fe254889cb56ba428537f9c46c9a2494644d837944d8bc637f",
+    "tools/qa-recording-owner-data.mjs": "4861a904a70737987aa084d8ebf52053802228bec193bbc2129b6c6c8ecbe71c"
+  },
+  "publicIntegrationSha256": {
+    "packages/device-runtime/src/index.ts": "64fdc7ca1ac4d4c8577c26d699c461eaa5e5348435c8bcb4b7ecd74beafc54e0",
+    "tools/build-sdk.mjs": "3fde7d8fb0c39d8daa4b1fe238e25a876b2db0168d1ad1527aded784408b95fc",
+    "tools/qa-sdk-consumer.mjs": "2f90613fc64fc50bb1592b0b402aea25e7a9d33d4787ecfb0501159fd5baaf49"
+  },
+  "design": {
+    "path": "/tmp/101-next-b05-recorded-media-design.json",
+    "sha256": "fa72388100ffe692d8587aa9682fb79715a6c8f42dc777e5c28824369b7deb59"
+  },
+  "sourceReady": {
+    "path": "/tmp/101-recording-owner-data-final-source-ready.json",
+    "sha256": "448e9b22e4a57c6e5110d47793f60a49ab31e8d343726fba15a0ef5b0b2a46fb"
+  },
+  "historicalFocused": {
+    "path": "/tmp/101-recording-owner-data-focused-eight-1791320111516-76071.receipt.json",
+    "sha256": "8b281287d41b3e0095227df8f9d8b9d4f53ba25643c205f161aa7da38d3200dc",
+    "providerSha256": "82f24dc9d8ae218870006746de3bc9b1952010f748b2ba59b671c56cc3aeacdf",
+    "currentByteQualification": false,
+    "subsequentChanges": "Named never helper and explicit return of same throwing catch; no behavior or tests changed; no duplicate runtime run"
+  },
+  "currentStrict": {
+    "path": "/tmp/101-recording-owner-data-strict-final-1791320388310-12105.receipt.json",
+    "sha256": "317868edef697615dee0c201e070c8525bb14519f464e866f3d0751ad65d8115",
+    "status": "pass",
+    "sourceCount": 77,
+    "declarationCount": 163
+  },
+  "scopedLint": {
+    "path": "/tmp/101-recording-owner-data-lint-first-1791320427464-15732.receipt-recovered.json",
+    "sha256": "de17eddd39188cba114dcc342f78ab3c304e656faa67ef811c0c24be207ba56e",
+    "diagnostics": "four files0errors/0warnings",
+    "actualExitCodeCaptured": false,
+    "receiptCaptureLimitRetained": true
+  },
+  "nativeQualification": {
+    "source": {
+      "actualTree": "e4bc392d8974b381e92287e54e35471f8bfcac54",
+      "record": {
+        "path": "/tmp/101-recording-controller-primary-runtime-sdk-source.stdout",
+        "sha256": "57caeba997c9d791bdf28200f22e0dd1c8d07d12764a55a58d07bf4b191538a9"
+      },
+      "wrapper": {
+        "path": "/tmp/101-recording-controller-primary-runtime-sdk.json",
+        "sha256": "a9d8fca6b20d901d1f0b7a8c29109d28912280e26651dd4b4f7113933be43a71"
+      },
+      "scope": "Passing source subresult only; overall first wrapper failed at later consumer closed caller allowlist.",
+      "mode": "ordinary-public-source-browser",
+      "dependencyFiles": 120,
+      "engines": [
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-recording-owner-data-identity",
+            "zero-default-camera-acquisitions",
+            "actual-owned-native-decoded-canvas-through-current-source-sink-route",
+            "real-producer-no-automatic-opt-in",
+            "independent-owner-capture-export-and-private-output-grants",
+            "closed-SHA-verified-export-frame-projection",
+            "exact-content-selection-and-destination-grants",
+            "issued-current-page-only-registered-copy",
+            "actual-native-IndexedDB-epoch-fence-and-review-required-restart",
+            "raw-reservation-until-actual-call-settlement",
+            "private-canvas-output-retirement",
+            "staged-selected-clip-and-registered-local-copy-deletion",
+            "fixed-redacted-30-day-audit",
+            "original-ingestion-TTL-and-copy-expiry",
+            "owned-native-cleanup"
+          ]
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-recording-owner-data-identity",
+            "zero-default-camera-acquisitions",
+            "actual-owned-native-decoded-canvas-through-current-source-sink-route",
+            "real-producer-no-automatic-opt-in",
+            "independent-owner-capture-export-and-private-output-grants",
+            "closed-SHA-verified-export-frame-projection",
+            "exact-content-selection-and-destination-grants",
+            "issued-current-page-only-registered-copy",
+            "actual-native-IndexedDB-epoch-fence-and-review-required-restart",
+            "raw-reservation-until-actual-call-settlement",
+            "private-canvas-output-retirement",
+            "staged-selected-clip-and-registered-local-copy-deletion",
+            "fixed-redacted-30-day-audit",
+            "original-ingestion-TTL-and-copy-expiry",
+            "owned-native-cleanup"
+          ]
+        }
+      ],
+      "cleanup": {
+        "browsers": 0,
+        "contexts": 0,
+        "ownedListeners": 0,
+        "timers": 0,
+        "callbacks": 0,
+        "loopbackServers": 0,
+        "ownedDirectories": 0
+      }
+    },
+    "installed": {
+      "actualCallerTree": "24a0cff9b46fe5462d7c027aed2ff0d4721af0af",
+      "record": {
+        "path": "/tmp/101-recording-controller-primary-installed-corrected-installed.stdout",
+        "sha256": "f4485915832f1c3caa2612a83c63e85824afec30c678b6adc67825b8c9adb4d9"
+      },
+      "wrapper": {
+        "path": "/tmp/101-recording-controller-primary-installed-corrected.json",
+        "sha256": "45eeb371672c2c220e6c0e477c96851dfd754f49dc5040f3f76b26ccb4358073"
+      },
+      "mode": "ordinary-installed-immutable-sdk-browser",
+      "sourceFiles": 160,
+      "packedInstalledFiles": 357,
+      "engines": [
+        {
+          "browser": "chromium",
+          "version": "149.0.7827.55",
+          "checks": [
+            "ordinary-public-recording-owner-data-identity",
+            "zero-default-camera-acquisitions",
+            "actual-owned-native-decoded-canvas-through-current-source-sink-route",
+            "real-producer-no-automatic-opt-in",
+            "independent-owner-capture-export-and-private-output-grants",
+            "closed-SHA-verified-export-frame-projection",
+            "exact-content-selection-and-destination-grants",
+            "issued-current-page-only-registered-copy",
+            "actual-native-IndexedDB-epoch-fence-and-review-required-restart",
+            "raw-reservation-until-actual-call-settlement",
+            "private-canvas-output-retirement",
+            "staged-selected-clip-and-registered-local-copy-deletion",
+            "fixed-redacted-30-day-audit",
+            "original-ingestion-TTL-and-copy-expiry",
+            "owned-native-cleanup"
+          ]
+        },
+        {
+          "browser": "webkit",
+          "version": "26.5",
+          "checks": [
+            "ordinary-public-recording-owner-data-identity",
+            "zero-default-camera-acquisitions",
+            "actual-owned-native-decoded-canvas-through-current-source-sink-route",
+            "real-producer-no-automatic-opt-in",
+            "independent-owner-capture-export-and-private-output-grants",
+            "closed-SHA-verified-export-frame-projection",
+            "exact-content-selection-and-destination-grants",
+            "issued-current-page-only-registered-copy",
+            "actual-native-IndexedDB-epoch-fence-and-review-required-restart",
+            "raw-reservation-until-actual-call-settlement",
+            "private-canvas-output-retirement",
+            "staged-selected-clip-and-registered-local-copy-deletion",
+            "fixed-redacted-30-day-audit",
+            "original-ingestion-TTL-and-copy-expiry",
+            "owned-native-cleanup"
+          ]
+        }
+      ],
+      "cleanup": {
+        "browsers": 0,
+        "contexts": 0,
+        "ownedListeners": 0,
+        "timers": 0,
+        "callbacks": 0,
+        "loopbackServers": 0,
+        "ownedDirectories": 0
+      }
+    }
+  },
+  "installedSdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-OA3kO4/manifest.json",
+      "sha256": "fa220ab7d229c4c74c8f3517d87581b82c9a9889356677d3a4505831dcee5d5f",
+      "actualProducerTree": "e4bc392d8974b381e92287e54e35471f8bfcac54",
+      "sourceFiles": 160,
+      "currentByteEquivalence": true
+    },
+    "actualProducerTree": "e4bc392d8974b381e92287e54e35471f8bfcac54",
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-lHuQws/receipt.json",
+      "sha256": "7957a2a9f93bd6605e36328f0c0129a9b2abdc915a3083a6158f86e710595383"
+    },
+    "packages": 7,
+    "sourceFiles": 160,
+    "packedInstalledFiles": 357,
+    "cleanConsumerChecks": 10,
+    "equivalence": "Producer e4/160 actual source bytes independently rechecked against current24a; only SDK consumer exact allowlist/types/runtime imports changed. Original source30/pack retained at e4 without rerun; installed30 executed actual24a caller with ordinary installed SDK."
+  },
+  "authorityAndLifecycle": [
+    "Same real createMediaRecording uses supplied OwnerDataStorage under outer epoch/revision/final native guard; capture, playback and managed owner operations have distinct current approvals.",
+    "Export contains only SHA-verified public RGBA fields and references. Only an exact current controller-issued page can register a selected-purpose/destination local copy; private IDs, contexts and grants are omitted.",
+    "Original clip ingestion expiry is pinned through final content authorization and actual storage isCurrent readback. Current later grants cannot renew original content retention. Two real old-memory producer/guard TTL failures preceded minimal fix.",
+    "Deletion persists epoch fence and selected pending stages; restart restores no handles/grants/automatic work, requires fresh approval per stage and verifies removed clips/local registered copies.",
+    "Required30-day redacted audit capacity is preflighted without early eviction. Async close/raw reservations persist through actual issued producer/storage settlement."
+  ],
+  "failedHistory": [
+    {
+      "path": "/tmp/101-recording-owner-data-old-red-1791316578590-78065.receipt.json",
+      "sha256": "c02bfaa62e7150b47769fd2b0a07a52addf12e76914122d8a0ba120020f9a965"
+    },
+    {
+      "path": "/tmp/101-recording-owner-data-focused-first.json",
+      "sha256": "9ef26d3a0393cf4149e8827b8e1cafe5cf7695e9b51c13b9a583ad92870b7255"
+    },
+    {
+      "path": "/tmp/101-recording-owner-data-selected-ttl-old-run-1791319878420-49833.receipt.json",
+      "sha256": "20d6c6adf50110b946f38ac8589e641d476bb7392b389cbcedf687664f0b8447"
+    },
+    {
+      "path": "/tmp/101-recording-owner-data-strict-1791320153029-77798.receipt.json",
+      "sha256": "24799ee0dd167c7484c643e441df2756dc6c9ffcfd38f1cda9ecc3724976a6c4"
+    },
+    {
+      "path": "/tmp/101-recording-owner-data-strict-rerun-1791320313017-95755.receipt.json",
+      "sha256": "166b659eb206996fae78f53bd5061f6902a607b3069beb82308e6d0bb7214eac"
+    },
+    {
+      "path": "/tmp/101-sdk-consumer-QSps8a/receipt.json",
+      "sha256": "0acae7d455043c23b132af1aed33263e53034cdd39e398c920beeaa53ee17052"
+    },
+    {
+      "path": "/tmp/101-recording-controller-sdk-consumer-allowlist-correction.json",
+      "sha256": "cfc33f5bc07b730c6ce53f52433bc9cf9d1a5282e6022c0687e5497a03a677a8"
+    }
+  ],
+  "independentSourceReview": {
+    "path": "/tmp/101-recording-owner-data-deadline-review-signal.json",
+    "sha256": "4ba1fb8ecc54afa72b9e6fa443562b1cfcad4e1dfb8c9df8dea247b24f4c99c9"
+  },
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact integrated source plus canonical tree requires all AGENTS types/lint/unit/fresh build/rendered gates before local source commit. Historical8 tests are not relabeled current and scoped lint original exit capture remains unconfirmed until exact full gate."
+  },
+  "sourceCommit": null,
+  "taskDisposition": {
+    "B05": "PARTIAL/OPEN. Selected recorded-media managed owner-local export/copies/deletion/expiry/audit built and native/source/installed qualified. Full stored-data profile integration remains open."
+  },
+  "limitations": [
+    "Owned digital canvas/native IndexedDB; no user camera, phone, physical acquisition or installed application UI.",
+    "Unmanaged/caller-retained/transmitted/external copies cannot be recalled. Legacy/desktop/other stored-data profiles remain outside this selected provider.",
+    "Unchanged recording producer deletion/sweep does not cryptographically verify expired original frame bytes; exported frames and registered copies are verified.",
+    "Memory final-guard TTL and128-row audit-capacity tests passed historically on82; native finalguard TTL transitions/queued owner-grant IDB abort/audit-capacity refusal are not newly qualified. General underlying storage proofs retain their earlier explicit scope.",
+    "Current provider e464 differs historical8 provider82 by named never declaration and return of same throwing catch only; current8 require exact broad gate. Scoped lint diagnostics4/0/0 preserved but original CLI exit was not persisted before capture-budget failure; no inferred original receipt pass."
+  ]
+}

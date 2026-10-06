@@ -77,6 +77,9 @@ export { createWatchCompanionResources } from './watch-companion.ts';
 export type { WatchCompanionEnrollment, WatchCompanionRelaySnapshot, WatchCompanionBridge, WatchCompanionReportEvent,
   WatchCompanionResourceRequest, WatchCompanionResourceOwnerGrant, WatchCompanionResourcesOptions, WatchCompanionResources,
   WatchCompanionResult } from './watch-companion.ts';
+export { RECORDING_OWNER_DATA_PROFILE, RECORDING_OWNER_DATA_LIMITS, createRecordingOwnerData } from './recording-owner-data.ts';
+export type { RecordingOwnerDataFailure, RecordingOwnerDataResult, RecordingOwnerDataScope, RecordingOwnerDataGrant, RecordingOwnerDataOptions, RecordingOwnerDataPort, RecordingOwnerDataFrame, RecordingOwnerDataExportPage, RecordingOwnerDataDeletion, RecordingOwnerDataAudit, RecordingOwnerDataController } from './recording-owner-data.ts';
+
 export { MEDIA_RECORDING_LIMITS, createMediaRecording } from './media-recording.ts';
 export type { MediaRecordingSource, MediaRecordingFrame, MediaRecordingSourceContext, MediaRecordingRequest, MediaRecordingGrant, MediaRecordingCaptureRequest, MediaRecordingPlaybackRequest, MediaRecordingReviewRequest, MediaRecordingExportRequest, MediaRecordingDeleteRequest, MediaRecordingOptions, MediaRecordingCaptureHandle, MediaRecordingPlaybackHandle, MediaRecordingFailure, MediaRecordingResult, MediaRecordingStoredFrame, MediaRecordingClip, MediaRecordingPlaybackFrame, MediaRecordingExportPage, MediaRecording } from './media-recording.ts';
 

@@ -225,7 +225,7 @@
       "path": "/tmp/101-cross-host-workload-issued-abort-native-refusal-qualification.json",
       "sha256": "99c6f26ad0e4c78ce816a05b1e95fb502c7da16bf62410fef64facfb97a1a0ce"
     },
-    "equivalence": "Both actual27 native modes executed at748355/testbf05. Subsequent test-only actual IPC instance observer correction changes neither main e52fb, host1bd75, QAd249 nor runtime SDK/source dependencies; modes retain their actual historical execution tree. Fresh broad gates will verify the integrated candidate."
+    "equivalence": "Both actual27 native modes executed at748355/testbf05. Subsequent test-only actual IPC instance observer correction changes neither main e52fb, host1bd75, QAd249 nor runtime SDK/source dependencies; modes retain their actual historical execution tree. All five broad gates passed the exact integrated committed candidate d0af9acd; both native modes retain their actual historical execution tree."
   },
   "installedSdk": {
     "sourceProducer": "7bf47e8bd70a300db2114088342c8456c79327e2",
@@ -286,12 +286,21 @@
       "sha256": "78812243c659c43dfcb391c075a3ba99cd96379dd93260f7f53a0e99ed8cd463"
     }
   ],
-  "literalDisposition": "R09 selected supported local Node workload acceptance clauses have implementation/runtime evidence. Row stays open until exact candidate gates and actual local source commit. Physical machine/IP-loss/installed hub/performance qualifications are outside this selected profile and remain unclaimed.",
+  "literalDisposition": "R09 selected supported local Node workload acceptance clauses completed: source/installed native qualification, independent literal/risk reviews, all exact candidate gates and actual local source commit. Physical machine/IP-loss/installed hub/performance qualifications remain outside this selected profile and unclaimed.",
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact integrated final tree must pass AGENTS types/lint/unit/fresh build/rendered before a local source commit."
+    "status": "pass",
+    "sourceCommit": "e59b014da696a674722ce9a724b96a9083f4982a",
+    "exactCommittedTree": "d0af9acd8b1db434b93091c1c06bfea56bb5e711",
+    "receipt": {
+      "path": "/tmp/101-workload-resource-exact-required-gates.json",
+      "sha256": "bc6fd396464726bc29f1f76410631de76292eabfefdc29427c9cbe18b63580cb"
+    },
+    "unit": 1949,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five required commands passed this exact committed source/canonical tree before local commit. This subsequent documentary completion update records the achieved result; its documentary tree awaits the next coherent batch gates. Historical native/browser runs retain their actual execution trees and explicitly reviewed unchanged source/dependency equivalence."
   },
-  "sourceCommit": null,
+  "sourceCommit": "e59b014da696a674722ce9a724b96a9083f4982a",
   "preservation": {
     "path": "/tmp/101-workload-resource-history-preservation.json",
     "sha256": "3cc737521602b8a82fb4ef2a609e4cf34764c3c93ea6b2aa55e879c0bc8fdd6c"
@@ -300,5 +309,14 @@
     "Independent software processes on one owned Mac; no physical second computer or actual IP interruption.",
     "Trusted loopback plaintext coordinator/gateway; no end-to-end encryption or third-party service.",
     "Recovery durations are fixture measurements, not cross-clock mappings or service-level commitments."
-  ]
+  ],
+  "committedTree": "d0af9acd8b1db434b93091c1c06bfea56bb5e711",
+  "finalPreservation": {
+    "path": "/tmp/101-workload-resource-final-preservation.json",
+    "sha256": "56b5f28e747c33dc115013feae4d0277d845da11535d488c2e806bee9b637315"
+  },
+  "actualLocalCommit": {
+    "path": "/tmp/101-workload-resource-exact-commit.json",
+    "sha256": "010c118d0da0095d1353e0d4abe3420ec536768db2ec5bfbe577ee014a6f230c"
+  }
 }

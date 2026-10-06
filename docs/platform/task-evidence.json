@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 107,
+  "revision": 109,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10480,6 +10480,110 @@
         "Owned Mac/private software fixtures; phones deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "workload-resource-source-commit-2026-10-07",
+      "revision": "e59b014da696a674722ce9a724b96a9083f4982a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "R09",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-cross-host-workload.json",
+        "docs/platform/receipts/2026-10-07-page-resource-connections.json",
+        "docs/platform/MASTER-CHECKLIST.md"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; exact committed tree d0af9acd. Selected private software/native fixtures and scoped historical browser executions recorded with actual trees in receipts.",
+      "reproduction": "All required types/lint/unit/fresh build/rendered commands passed the exact candidate before actual local commit:1949unit/34rendered/0skip. Actual source27/installed27 workload runs, issued-abort regression and Chromium17/WebKit17 page journeys retain actual executed source/proof metadata. Failures and successful results preserved in local Git evidence refs.",
+      "scope": "Literal R09 supported local Node workload completed. U03 page resource task built/qualified; whole U03 remains partial/open for nearby/remote/general schemas and named screen readers. No physical device/IP/installed hub/production claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/private fixtures; phone/hardware checks deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "e59b014da696a674722ce9a724b96a9083f4982a",
+        "exactCommittedTree": "d0af9acd8b1db434b93091c1c06bfea56bb5e711",
+        "receipt": {
+          "path": "/tmp/101-workload-resource-exact-required-gates.json",
+          "sha256": "bc6fd396464726bc29f1f76410631de76292eabfefdc29427c9cbe18b63580cb"
+        },
+        "unit": 1949,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five required commands passed this exact committed source/canonical tree before local commit. This subsequent documentary completion update records the achieved result; its documentary tree awaits the next coherent batch gates. Historical native/browser runs retain their actual execution trees and explicitly reviewed unchanged source/dependency equivalence."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-workload-resource-exact-commit.json",
+        "sha256": "010c118d0da0095d1353e0d4abe3420ec536768db2ec5bfbe577ee014a6f230c"
+      },
+      "preservation": {
+        "path": "/tmp/101-workload-resource-final-preservation.json",
+        "sha256": "56b5f28e747c33dc115013feae4d0277d845da11535d488c2e806bee9b637315"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 119,
+        "open": 153
+      }
+    },
+    {
+      "id": "b05-recording-owner-data-built-partial-2026-10-07",
+      "revision": "24a0cff9b46fe5462d7c027aed2ff0d4721af0af",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-recording-owner-data.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; isolated local Chromium149/WebKit26.5 software/native fixtures; no physical phone/hardware. Actual execution trees/byte-equivalence limitations in canonical receipt.",
+      "reproduction": "Actual source30 and installed30 C/W native IndexedDB/owned-canvas checks; exact old public prefix and2TTL failures, current strict77/163, historical8 provider82, actual consumer10 SDK160/357 after retained exact caller allowlist failure. Required broad gates/local source commit pending.",
+      "scope": "PARTIAL selected managed recorded-media owner-local public export/copies/staged deletion/original expiry/redacted audit. Other stored-data/legacy/native/desktop profiles remain open; no physical, external-copy recall or newly native finalguard TTL/capacity claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/private loopback/IndexedDB/digital canvas fixtures; phone/hardware tests deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "u05-controller-player-chrome-built-partial-2026-10-07",
+      "revision": "24a0cff9b46fe5462d7c027aed2ff0d4721af0af",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-controller-player-chrome.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; isolated local Chromium149/WebKit26.5 software/native fixtures; no physical phone/hardware. Actual execution trees/byte-equivalence limitations in canonical receipt.",
+      "reproduction": "Actual old real SessionHost\u2192Controller internal-role RED after retained hidden-heading fixture failure; corrected current C/W8each at actuale4/552sourcepins, exact DOM title/status/room/readout/idle motion and awaited host/page/context/browser closure. Broad gates/local source commit pending.",
+      "scope": "PARTIAL four-path controller plain task/status/motion-label presentation with unchanged protocol/grants/sensor/input/release/CSS/game-authored readout. Whole product surface/state matrix remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/private loopback/IndexedDB/digital canvas fixtures; phone/hardware tests deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -12682,7 +12786,8 @@
       "id": "R09",
       "records": [
         "pending-R09",
-        "r09-cross-host-workload-built-2026-10-07"
+        "r09-cross-host-workload-built-2026-10-07",
+        "workload-resource-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12758,7 +12863,8 @@
       "records": [
         "pending-B05",
         "pairing-recovery-2026-10-06",
-        "b05-profiles-data-catalog-2026-10-06"
+        "b05-profiles-data-catalog-2026-10-06",
+        "b05-recording-owner-data-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13037,7 +13143,8 @@
         "pending-U03",
         "u03-built-partial-2026-10-06",
         "u03-webkit-keyboard-unqualified-2026-10-06",
-        "u03-page-resource-built-partial-2026-10-07"
+        "u03-page-resource-built-partial-2026-10-07",
+        "workload-resource-source-commit-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13069,7 +13176,8 @@
       "id": "U05",
       "records": [
         "pending-U05",
-        "u10-invitation-copy-expiry-2026-10-06"
+        "u10-invitation-copy-expiry-2026-10-06",
+        "u05-controller-player-chrome-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",

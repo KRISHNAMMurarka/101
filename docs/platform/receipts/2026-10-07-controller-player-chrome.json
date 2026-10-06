@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "controller-player-chrome/1",
+  "localOnly": true,
+  "base": "e59b014da696a674722ce9a724b96a9083f4982a",
+  "candidateSourceTree": "24a0cff9b46fe5462d7c027aed2ff0d4721af0af",
+  "sourceSha256": {
+    "app/controller/Controller.tsx": "1b54b8ebdeca208732eec6e7ceb3d168638a3b3a056fbb417ec8e2baff2224e6",
+    "app/controller/page.tsx": "2dc25ecc05eb2e7c84c090962cab10b09a6dd2458291c13f182667a1445e529e",
+    "app/controller/controller-copy.ts": "1372f753a1bdb124c0e63c7c2434e22c45e27e88ae9cd224ef0ab0673665a609",
+    "tools/qa-controller-player-chrome.mjs": "73f3a96c5301a62b1d67984d61d203f5dc0956aacf8e3f60e68618112339b2b0"
+  },
+  "unchangedDependencyPins": {
+    "app/controller/controller-copy.test.ts": "e3e71e8c0ecc6ca3f33dd1cf0009b7e6dc76620e7ebc542737f6973ef7fe6d61",
+    "app/controller/controller-route.ts": "65e42c8c3ee15cf800fa063a25c0dfaa20e97972744af97c0b071d405b9bacf1",
+    "app/controller/controller-surface-state.ts": "b982573e67e8684863fe70b98f5e389710d5853049914495857b0b42c158fff4",
+    "app/controller/controller-speaker.ts": "c84d53b94f80b03f8b2a8a23c66cb88238fb1eae956fd2416332e0163889b159",
+    "app/globals.css": "38894593a8cab5530773207f33b996c7bfb288d1cb1cf66883d28140f6aa8ee6",
+    "packages/session/src/index.ts": "9428e31a1e41c0b26ea053ffbc5d59b19da2ca17fab29e82fde5a6ec9c9c96f6",
+    "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+    "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+    "games/spellcaster/src/roles.ts": "601962863b1b9b472d193ffbeeed0129ef41dc17303f86f60cc353eed73cd4c1",
+    "games/echomaze/src/roles.ts": "08d6fee6bd1ef8b1e4ab79ec71dfb5612949bacb40d015412588cecb0e4f5a64"
+  },
+  "design": {
+    "path": "/tmp/101-u05-player-chrome-design.json",
+    "sha256": "48e4690046e4818ec5c1ab2cd49f50dd1fb380e8b9a2de067a64b9f059624924"
+  },
+  "sourceReady": {
+    "path": "/tmp/101-controller-player-chrome-source-ready.json",
+    "sha256": "ac1d35a19f9c4424a3d3a7c35fbbf7374738fe59b7d8b3cb065dbd169cd116c6"
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-controller-player-chrome-source-review-signal.json",
+    "sha256": "482de3ff48112357e79ca53b45f99ed3f08556351a769d14d111c7fa259da695"
+  },
+  "nativeQualification": {
+    "actualTree": "e4bc392d8974b381e92287e54e35471f8bfcac54",
+    "record": {
+      "path": "/tmp/101-controller-player-chrome-primary-positive-run.json",
+      "sha256": "de048b97a50b4771951cec8129149c9aae5b7dbe8631e3dda3da36f4455ace19"
+    },
+    "stdout": {
+      "path": "/tmp/101-controller-player-chrome-primary-positive-run.stdout",
+      "sha256": "f17340d926ee2cff04a450852abb6337aec252c8bc3184e26b9338448a461f08"
+    },
+    "servedProof": {
+      "path": "/tmp/101-controller-player-chrome-primary-positive-run-served-proof.json",
+      "sha256": "c95248a4d6b4a1fc55edcd280df473b21ae79a9de25128ec3c1d9669c580a8b2"
+    },
+    "actualPinnedSourceFiles": 552,
+    "producer": "Real parsed SessionHost game layout over native same-origin BroadcastChannel into actual rendered Controller",
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "actualProducer": {
+          "configurationCount": 1,
+          "gameId": "spellcaster",
+          "role": "sorcerer",
+          "title": "Arcane Focus",
+          "movementLabel": "Aim + physical casting",
+          "movementAction": "spell.aim",
+          "deviceCount": 1
+        },
+        "observed": {
+          "primaryTitle": "Arcane Focus",
+          "primaryStatus": "Connected",
+          "room": "CHROME-CHROMIUM-1791320659346",
+          "sessionHint": "Controls are ready",
+          "sessionHintObservation": "DOM text only; deliberately hidden at this 390px viewport",
+          "readout": "Arcane Focus controls are ready.",
+          "motion": "Aim + physical casting is optional. Touch controls remain available."
+        },
+        "checks": 8,
+        "cleanup": {
+          "hostStopAwaited": true,
+          "controllerPageClosed": true,
+          "hostPageClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "physicalMotion": "unqualified"
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "actualProducer": {
+          "configurationCount": 1,
+          "gameId": "spellcaster",
+          "role": "sorcerer",
+          "title": "Arcane Focus",
+          "movementLabel": "Aim + physical casting",
+          "movementAction": "spell.aim",
+          "deviceCount": 1
+        },
+        "observed": {
+          "primaryTitle": "Arcane Focus",
+          "primaryStatus": "Connected",
+          "room": "CHROME-WEBKIT-1791320666189",
+          "sessionHint": "Controls are ready",
+          "sessionHintObservation": "DOM text only; deliberately hidden at this 390px viewport",
+          "readout": "Arcane Focus controls are ready.",
+          "motion": "Aim + physical casting is optional. Touch controls remain available."
+        },
+        "checks": 8,
+        "cleanup": {
+          "hostStopAwaited": true,
+          "controllerPageClosed": true,
+          "hostPageClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "physicalMotion": "unqualified"
+      }
+    ],
+    "cleanup": {
+      "ownedQaChildSettled": true,
+      "ownedDevServerClosed": true,
+      "httpServerListening": false,
+      "actualAwaitedQaCleanup": {
+        "phase": "actual-owned-cleanup",
+        "engine": "webkit",
+        "version": "26.5",
+        "cleanup": {
+          "hostStopAwaited": true,
+          "controllerPageClosed": true,
+          "hostPageClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "cleanupErrors": [],
+        "hostDeviceCountAfterStop": "not measured; stop does not erase historical session membership",
+        "browserInternalResources": "not measured"
+      },
+      "browserInternalResources": "not measured; actual awaited host/page/context/browser closure readback only"
+    },
+    "equivalence": "Actual current source UI executed at e4. Subsequent qa-sdk-consumer-only allowlist/type/runtime import update changes none of four controller pins or552 served-source/dependency pins; no current blanket route/motion/installed UI claim."
+  },
+  "changes": [
+    "Primary controller/task labels derive from parsed layout title with neutral unavailable/untitled fallbacks, preserving exact room/connection-link review.",
+    "Plain finite waiting/ready/interruption/retry/lost messages replace locally authored protocol assignment/status copy. Game-authored controller.state values/messages unchanged.",
+    "Motion text uses declared movement label and current state without raw action identifiers; sensor/permission/calibration/audio/haptic/input/release handlers and CSS unchanged.",
+    "Public metadata describes controlling a game. Existing controller-copy helper reused; no new fixed-string-only tests."
+  ],
+  "failedHistory": [
+    {
+      "path": "/tmp/101-controller-player-chrome-primary-old-run.json",
+      "sha256": "74a791dcb10d033d8b6acca139a1ba91a5a43519e5c4733fce318e65e696d4e8"
+    },
+    {
+      "path": "/tmp/101-controller-player-chrome-primary-old-corrected-run.json",
+      "sha256": "8404af6372aebf903229ee6c156cfbd94245e7940e18c18e0e6460336a162a88"
+    },
+    {
+      "path": "/tmp/101-controller-player-chrome-old-red-classification-addendum.json",
+      "sha256": "31b64c2dd750539715dd736a6c104eab0b81231d0c0d25d60095b03467a59ebd"
+    }
+  ],
+  "failureInterpretation": "First fixture attempted visible wait on deliberately play-hidden heading; retained precondition failure. Corrected native Setup fixture observed genuine SORCERER primary vs Arcane Focus declaration, then failed exact product assertion. Root original classifier expected lowercase but CSS innerText was uppercase; preserved original unexpected-result envelope and classification-only addendum. Future exact DOM text is read on verified visible label nodes; no old rerun or asserted namespace filtering.",
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact integrated source plus canonical tree requires all AGENTS types/lint/unit/fresh build/rendered gates before local source commit. Historical8 tests are not relabeled current and scoped lint original exit capture remains unconfirmed until exact full gate."
+  },
+  "sourceCommit": null,
+  "taskDisposition": {
+    "U05": "PARTIAL/OPEN. Four-path presentation build and16 selected real browser assertions pass. Full product surface/state matrix remains open."
+  },
+  "limitations": [
+    "Chromium/WebKit at390px with actual native Setup and optional idle motion only. Narrow session hint is DOM-only because CSS intentionally hides it at that viewport.",
+    "Active/denied/unsupported native motion, additional real game roles/fallbacks, physical phones, named screen readers and full player route/state matrix remain unqualified.",
+    "No authenticated endpoint/resource authority, hardware, OS cursor, camera/microphone or speaker activation from this fixture."
+  ]
+}

@@ -30,7 +30,7 @@ import {
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Icon } from "../components/Icon";
 import { BrowserControllerSpeaker } from "./controller-speaker";
-import { controllerHint } from "./controller-copy";
+import { controllerConnectionCopy, controllerHint, controllerMotionCopy, controllerTaskChrome } from "./controller-copy";
 import { resolveControllerRoute, type ControllerRoute } from "./controller-route";
 import { controllerSurfaceState } from "./controller-surface-state";
 
@@ -292,7 +292,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         if (motionAdapterRef.current) void motionAdapterRef.current.stop();
         motionAdapterRef.current = null;
         setMotionState("idle");
-        setReadout({ values: {}, tone: "normal", message: "CONNECTED · WAITING FOR AN OPEN ROLE" });
+        setReadout({ values: {}, tone: "normal", message: controllerConnectionCopy("waiting") });
       }
       if (payload.type === "controller.configure" && payload.deviceId === deviceId) {
         lastHostMessageAt.current = performance.now();
@@ -318,7 +318,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
           motionAdapterRef.current = null;
           setMotionState("idle");
         }
-        setReadout({ values: {}, tone: "normal", message: `${payload.role.toUpperCase()} PANEL READY` });
+        setReadout({ values: {}, tone: "normal", message: controllerConnectionCopy("ready", payload.layout.title) });
       }
       if (payload.type === "controller.state" && payload.deviceId === deviceId) {
         lastHostMessageAt.current = performance.now();
@@ -345,7 +345,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       if (state === "connected") hello();
       if (state === "failed" || state === "disconnected") {
         setConnected(false);
-        setReadout({ values: {}, tone: "warning", message: "LINK INTERRUPTED · RECONNECTING" });
+        setReadout({ values: {}, tone: "warning", message: controllerConnectionCopy("reconnecting") });
       }
     }) : () => undefined;
     let connectCancelled = false;
@@ -361,7 +361,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       } catch {
         if (connectCancelled) return;
         setConnected(false);
-        setReadout({ values: {}, tone: "critical", message: "LINK TRANSPORT UNAVAILABLE · RETRYING" });
+        setReadout({ values: {}, tone: "critical", message: controllerConnectionCopy("unavailable") });
         const delay = Math.min(10_000, 600 * 2 ** Math.min(connectFailures, 4));
         connectFailures += 1;
         connectRetryTimer = window.setTimeout(() => void connectTransport(), delay);
@@ -376,7 +376,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         publishSnapshot(inputRef.current!.releaseAll());
         configurationRef.current = "";
         setAssigned(false);
-        setReadout({ values: {}, tone: "warning", message: "HOST SIGNAL LOST · RECONNECTING" });
+        setReadout({ values: {}, tone: "warning", message: controllerConnectionCopy("hostLost") });
         return false;
       });
     }, 800);
@@ -532,14 +532,16 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   };
 
   const roleClass = assignment.role.replace(/[^a-z0-9-]/gi, "-").toLowerCase();
+  const taskChrome = controllerTaskChrome({ connected, assigned, title: layout.title });
+  const motionCopy = controllerMotionCopy({ state: motionState, label: layout.motion?.label });
   return (
     // A layout may carry `accent`, and 101 Link deliberately ignores it. Ten games each choosing a
     // hue turns one controller into ten unrelated ones, and a saturated fill under the player's
     // thumb is the last place attention belongs. Emphasis comes from weight instead.
     <main className={`controller-page role-${roleClass}`} data-phase={phase}>
       <header className="controller-top">
-        <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">{assignment.role}</span></div>
-        <div className={connected ? "controller-status online" : "controller-status"}><i />{connected ? assigned ? "LINKED" : "STANDBY" : "WAITING"}</div>
+        <div className="wordmark"><span className="mark-block">101</span><span className="mark-label">{taskChrome.title}</span></div>
+        <div className={connected ? "controller-status online" : "controller-status"}><i />{taskChrome.status}</div>
         {playing && (
           <button className="controller-setup-toggle" onClick={() => setSetupOpen((open) => !open)} aria-expanded={setupOpen}>
             <Icon name={setupOpen ? "shrink" : "expand"} size={16} />
@@ -549,7 +551,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       </header>
       <section className="controller-session">
         <span>Room</span><strong>{selectedSession}</strong>
-        <small>{connected ? assigned ? `${assignment.gameId.toUpperCase()} · ${assignment.playerId.toUpperCase()}` : `${assignment.gameId.toUpperCase()} · WAITING FOR ROLE` : "Open a 101 game on the host"}</small>
+        <small>{taskChrome.sessionHint}</small>
       </section>
 
       {pairReview && <section className="link-runtime" aria-labelledby="pairing-review-title">
@@ -598,7 +600,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         <section className="dynamic-controller-heading">
           <div>
             <span>Ready</span>
-            <h1>{layout.title ?? assignment.role}</h1>
+            <h1>{taskChrome.title}</h1>
           </div>
           {canFlipHandedness && (
             <button className="handedness-toggle" onClick={flipHandedness} aria-label={`Switch to ${playerHandedness === "right" ? "left" : "right"}-handed layout`}>
@@ -628,8 +630,8 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
 
       {surfaceState === "play" && layout.motion && (
         <section className="motion-permission">
-          <button onClick={motionState === "active" ? calibrate : enableMotion}>{motionState === "active" ? "SET NEUTRAL" : "ENABLE MOTION"}</button>
-          <p>{motionState === "active" ? `${layout.motion.label ?? "Motion"} is processed locally and mapped to ${layout.motion.action}.` : motionState === "denied" ? "Motion permission was not granted. Touch controls remain available." : motionState === "unsupported" ? "Motion is unavailable here. Touch controls remain available." : `${layout.motion.label ?? "Motion Sensors"}: optional ${layout.motion.mode} control.`}</p>
+          <button onClick={motionState === "active" ? calibrate : enableMotion}>{motionCopy.buttonLabel}</button>
+          <p>{motionCopy.description}</p>
         </section>
       )}
 

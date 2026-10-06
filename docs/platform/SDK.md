@@ -497,6 +497,18 @@ returns copies: deletion cannot recall copies retained by the caller. Audio,
 encoded media, remote copies and physical acquisition remain separate profiles.
 [Local evidence](receipts/2026-10-06-media-recording.json).
 
+## Managed recording retention and deletion
+
+`createRecordingOwnerData` binds `createMediaRecording` to an explicitly supplied `OwnerDataStorage`, owner signal and trusted clock. `openRecording` requires owner approval; capture/playback still need separate `authorizeRecording` decisions. Supply `retireOwned()` to stop your routes and clear private outputs when the managed port retires. Await both port/controller `close()` before disposing storage; already issued storage and producer work stay reserved until actual settlement.
+
+`exportPage` returns a closed public projection of verified RGBA frame bytes, SHA-256 references, source clock, sequence and quality. `storeRegisteredExport` accepts only the exact current page issued by that controller, with separate reviewed purpose/destination consent. Registered copies keep the original ingestion expiry; a later approval or clock change cannot extend it, including at the final storage guard. Caller-retained, transmitted or unmanaged copies cannot be recalled.
+
+`beginDeletion` persists a pending operation and advances the epoch before deleting selected clips and registered local copies. After restart, `inspectDeletion` exposes progress and `resumeDeletionReviewed` requires fresh approval for each bounded stage. No capture, playback, export or route authority is restored. Completed status follows retained-state verification. `sweep()` removes expired clips/copies and expired audit entries when explicitly invoked.
+
+The selected profile bounds one producer port/mutator, eight issued storage operations, four frames/8 KiB per export page, 64 registered copy frames/64 KiB and 128 audit rows/64 KiB. Audit rows retain only operation/action/state/time/removal counts for 30 days; required audit capacity is checked before deletion, without early eviction. The unchanged recording producer does not cryptographically verify expired original frame bytes during deletion; exported frames and registered copies are verified.
+
+The packaged `@101/connect/examples/recording-owner-data` caller supplies its own canvas and actual IndexedDB. This is a selected owner-local RGBA profile. Legacy/native/unmanaged stores, remote-copy deletion, other media formats and physical device qualification remain separate.
+
 ## Private application audio
 
 `createBrowserApplicationAudio` and `BROWSER_APPLICATION_AUDIO_LIMITS` are public
