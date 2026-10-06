@@ -192,3 +192,6 @@ export { OPERATOR_CONFIGURATION_PROFILE, prepareOperatorStartup } from './operat
 export type { OperatorConfiguration, OperatorConfigurationIssue, OperatorStartupSnapshot, OperatorStartupResult, OperatorStartupController } from './operator-configuration.ts';
 export { OPERATOR_IDENTITY_LIFECYCLE_PROFILE, OPERATOR_IDENTITY_LIFECYCLE_LIMITS, prepareOperatorIdentityLifecycle } from './operator-identity-lifecycle.ts';
 export type { OperatorIdentityIssue, OperatorIdentityResult, OperatorIdentitySnapshot, OperatorIdentityController } from './operator-identity-lifecycle.ts';
+
+export { createScopedAgentIpc, SCOPED_AGENT_IPC_PROFILE, SCOPED_AGENT_IPC_LIMITS, SCOPED_AGENT_IPC_SOURCE_SHA256 } from './scoped-agent-ipc.ts';
+export type { AgentIpcFailure, AgentIpcResult, AgentIpcEpoch, AgentIpcApprovalRequest, AgentIpcApproval, AgentIpcObservation, AgentIpcRssSample, ScopedAgentIpcOptions, ScopedAgentIpc } from './scoped-agent-ipc.ts';

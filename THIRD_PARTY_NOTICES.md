@@ -26,6 +26,15 @@
 | BlazePose GHUM Pose Landmarker Lite model | float16 bundle, revision 1 | Apache-2.0 | Bundled single-person 33-landmark pose model |
 | MediaPipe Hand Landmarker model | float16 bundle, revision 1 | Apache-2.0 | Bundled 21-landmark hand model |
 
-The generated `THIRD_PARTY_LICENSES.json` and `THIRD_PARTY_RUST_LICENSES.json` files record licenses declared by every installed JavaScript and Rust dependency at the exact locked version. Redistributions must include the full license texts required by those packages; this summary is not a substitute for their licenses.
+`THIRD_PARTY_LICENSES.json` records every locked JavaScript dependency's declared
+license and preserves available local license, copyright and notice text with
+SHA-256 hashes. Its coverage fields identify packages absent from the local
+installation and packages without local legal text. The collector reads ordinary
+package files offline, checks the installed name/version against the lockfile and
+does not substitute a declaration for missing terms. `THIRD_PARTY_RUST_LICENSES.json`
+records locked Rust license declarations. Native libraries, model terms, missing
+target packages and redistribution review remain separate work. Redistributions
+must include the full license texts required by their packages; this summary and
+local text coverage do not establish complete redistribution approval.
 
 The committed MediaPipe models and WebAssembly files remain under their Apache-2.0 terms; a full copy is included at `third_party/APACHE-2.0.txt`. Their exact integrity hashes and limitations are recorded in `docs/vision.md`. No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included.

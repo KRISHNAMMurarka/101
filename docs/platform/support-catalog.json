@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 10,
+  "revision": 11,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2096,6 +2096,62 @@
       "limitations": [
         "partial: explicit native WebRTC pointer connection task, owner comparison, independent grants, active/candidate/stop/recovery and navigation built; general resources, remote/relay paths and full UI qualification remain open",
         "No accepted support, live/remote/physical or full canonical task claim."
+      ]
+    },
+    {
+      "id": "private-node-agent-rss-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned fixed native child, software only",
+        "transport": "Private inherited IPC and0700/0600Unixsocket",
+        "connector": "Private Node agent",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "private-node-agent-rss/1"
+        ],
+        "resources": [
+          "Actual child-owned native RSS with source/receipt clock provenance"
+        ],
+        "unavailable": [
+          "Other operating systems are not runtime-qualified",
+          "No installed/update/account-authentication/OS-sandbox claim",
+          "Cooperative same-user host is trusted; malicious host/root substitution not contained",
+          "Already-issued native read can finish before revocation; no rollback claim, outputs fenced and true settlement awaited",
+          "Forced-exit path verifies host-owned directory removal, not native cleanup acknowledgement",
+          "Public caller used explicit owned module source entry before root hub barrel hook, no installed/published hub claim",
+          "N14 full install/update/other-OS qualification remains partial"
+        ]
+      },
+      "qualificationTasks": [
+        "N14",
+        "S12",
+        "Q04"
+      ],
+      "evidence": {
+        "implementation": [
+          "n14-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "n14-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "n14-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: private capability-gated fixed Node agent, version/epoch rejection, crash/restart and real public-runtime source release built; install/update, OS/account isolation and other targets remain open",
+        "No installed/update/account/OSsandbox/physical support or accepted matrix claim."
       ]
     }
   ]

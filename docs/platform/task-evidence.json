@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 83,
+  "revision": 84,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8484,6 +8484,62 @@
         "Owned private native pasteboards or isolated headless WebKit contexts"
       ],
       "supportRows": []
+    },
+    {
+      "id": "n14-built-partial-2026-10-06",
+      "revision": "b616474c5caa8418e88ac127a0893dc4c60b3105",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N14"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-agent-ipc-license-texts.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; actual owned native/software/file inputs",
+      "reproduction": "node tools/qa-agent-ipc.mjs --workspace-exports --hub-barrel; source pins, focused regression and exact candidate gates in receipt",
+      "scope": "partial: private capability-gated fixed Node agent, version/epoch rejection, crash/restart and real public-runtime source release built; install/update, OS/account isolation and other targets remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fixed disposable native Node children; private Unix sockets; ordinary public source-runtime consumer"
+      ],
+      "supportRows": [
+        "private-node-agent-rss-2026-10-06"
+      ]
+    },
+    {
+      "id": "k09-built-partial-2026-10-06",
+      "revision": "6b592e3bc875caab5f7aefb7506f686ec7bc1301",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-agent-ipc-license-texts.json",
+        "docs/platform/SDK.md",
+        "THIRD_PARTY_LICENSES.json",
+        "THIRD_PARTY_NOTICES.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; actual owned native/software/file inputs",
+      "reproduction": "node tools/generate-license-inventory.mjs;9 focused tests and exact877 real file/hash references; exact candidate gates in receipt",
+      "scope": "partial: exact local JavaScript license/notice texts collected and source hashes verified; absent target packages, missing local texts, native/model terms and complete redistribution review remain open",
+      "failure": null,
+      "equipment": [
+        "Exact package-lock and ordinary installed package files; no remote terms/source retrieval"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9631,7 +9687,8 @@
     {
       "id": "N14",
       "records": [
-        "pending-N14"
+        "pending-N14",
+        "n14-built-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11792,7 +11849,8 @@
       "id": "K09",
       "records": [
         "pending-K09",
-        "k09-js-inventory-2026-10-05"
+        "k09-js-inventory-2026-10-05",
+        "k09-built-partial-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [

@@ -1954,3 +1954,43 @@ request, an eighty-five-second deadline and owned listener/caller teardown.
 Disabled relay and unknown regions fail configuration validation. Processor
 failures, enabled relay failure and regional service qualification remain O04
 work; admission ceilings are not measured service capacity.
+
+## Scoped native agent IPC
+
+`createScopedAgentIpc` from the workspace `@101/hub-server` export explicitly
+starts one fixed Node child in the `private-node-agent-rss/1` profile. A new private
+0700 directory and 0600 Unix socket hold its endpoint. The random capability and
+one-use read permit arrive over inherited private IPC; neither is written to
+environment, files or diagnostics. The child authenticates capability, version,
+epoch and permit before reading its own native RSS. It cannot select another
+process or an arbitrary executable.
+
+Owner, registration, read and delivery permissions require current intrinsic
+AbortSignals. Retirement invalidates admission before its redacted host callback;
+the public caller unregisters the old source immediately. Crash, stop and expiry
+await actual socket/IPC/child settlement. Fresh registration creates a new opaque
+epoch and new grants; stale handles cannot read the replacement. Capture and
+receipt timestamps keep separate child/host clock provenance.
+
+The controller bounds one pending read, two native clients, thirty-two operations,
+three starts, 4 KiB frames, 64 KiB input, a 2.5-second readiness/operation deadline
+and ten-second native lifetime. Forced termination reports host-owned directory
+removal without claiming a native unlink acknowledgment. Run
+`node tools/qa-agent-ipc.mjs --workspace-exports --hub-barrel` for actual source
+export and native/public-runtime checks. Installed updates, OS account isolation,
+other targets and the full N14 lifecycle remain unqualified.
+
+## Local license text inventory
+
+`node tools/generate-license-inventory.mjs` collects exact legal text available in
+ordinary installed JavaScript package files. It checks each name/version against
+the lockfile, preserves license/copyright/notice bytes as UTF-8 text with SHA-256
+hashes, deduplicates identical text and atomically replaces the existing JSON
+inventory after successful collection. Importing the collector has no effect.
+
+The collector allows 2,048 locked packages, 64 legal files per package, 128 KiB per
+text, two nested legal-directory levels and 16 MiB of distinct text. Symlinks,
+identity drift, invalid UTF-8 and exceeded bounds fail before replacing the
+inventory. Missing packages and missing local texts remain explicit incomplete
+coverage. Local text presence is not legal approval; native/model terms, omitted
+target packages and complete redistribution review remain K09 work.
