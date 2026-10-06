@@ -105,7 +105,7 @@ try {
     await page.screenshot({ path: join(work, `${engine}-review.png`), fullPage: true });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     const hostSurfaces = [];
-    for (const [path, opener] of [['/', 'Try a second-screen controller'], ['/devices', undefined], ['/games/echomaze', 'Connect a phone']]) {
+    for (const [path, opener] of [['/', 'Try a second-screen controller'], ['/devices', 'Add a device'], ['/games/echomaze', 'Connect a phone']]) {
       const hostTarget = new URL(path, application); hostTarget.searchParams.set('hub', endpoint);
       hostTarget.searchParams.set('session', `HOST-${engine.toUpperCase()}-${hostSurfaces.length}`);
       const before = requests.length;

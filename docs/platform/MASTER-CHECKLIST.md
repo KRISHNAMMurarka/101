@@ -280,7 +280,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### U — Finished product UI and accessibility
 
 - [x] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery. [Product architecture contract](RELEASE-CONTRACT.md#product-information-architecture).
-- [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions.
+- [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions. [Built browser add/inspect journey](receipts/2026-10-06-devices-add-inspect.json); enrolled resource/removal and full qualification remain open.
 - [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths.
 - [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users.
 - [ ] **U05 — Replace diagnostic product chrome.** Use device/task language and deliberate monochrome chrome; protocol, local labels, raw errors and constant status dots belong only where they help details/Studio.

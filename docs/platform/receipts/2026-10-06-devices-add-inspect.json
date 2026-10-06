@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "17807a90d8e94598a1ebc3b3766dcce37b111150",
+  "sourceTree": "41ce063edb7ca7c2d944388c560bcb4c1ae19b58",
+  "sourceSha256": {
+    "app/devices/DevicesView.tsx": "a19637b93aafbc9563c48e96b9e252e88408e87e03f3af7c5197f316ec413488",
+    "app/devices/device-inspection.ts": "42b357018c0f108f0923b3d74b07fe52eb0f0ee26cdede6db546d07c376a1552",
+    "app/devices/device-inspection.test.ts": "54a1007f1cacaac9144ae56ef610e974a214a8cc1064e5a19c9873d222548c1b",
+    "app/devices/devices.css": "1950c5c0e450ec0763105a1d27855f72d41c2b86f828c6dea611543f2e6d5bfd",
+    "tools/qa-devices-flow.mjs": "2980812c2aca65d8dcbe3bd986a3b6a57da03ebc357e603ae9481a92b59483b4",
+    "app/lib/browser-link.ts": "392484b56057fb4aeaf192dd9db87c6a4ec8db90dda38ee6508355bf29ced8cf",
+    "app/lib/host-endpoint-review.ts": "4d350852261695d06372ccae3898d970238bbcb87286145d06e4da32d962c8b8",
+    "app/components/HostConnectionReview.tsx": "5662dfd41e3c5765ae174016ce2e18f1f7239d344600b05dbf82caf4145b1231",
+    "app/lib/local-capabilities.ts": "8432f6c3e7d713f85f37da4779e68594ed6f501d0693cce49bff0e4af7767c1a",
+    "app/lib/catalog.ts": "f21a9523a197176ec6b3dc43c61925c7282d05f66c818293c531b392a9ba1780",
+    "app/lib/session-id.ts": "07a46104b13577469869414775a4912a2281d0929c689c0c7e2b603a94d68496",
+    "app/controller/Controller.tsx": "87ded010765a41794610af35475e57379210d2ba75b2a1ba932751639e6abb59",
+    "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+    "packages/session/src/index.ts": "9428e31a1e41c0b26ea053ffbc5d59b19da2ca17fab29e82fde5a6ec9c9c96f6",
+    "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+    "packages/adapter-camera/src/cameras.ts": "9d6668225b425dc0c7256a7f20d88b9fac65e3b849a830d1a1ebb96a6780dddc",
+    "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+    "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+    "packages/hub-server/src/index.ts": "4c0431eddbbfb0113318b4f870ec8de0cf71f3cfc1731d4c2ffe84c72473912a",
+    "tools/qa-pairing-intake.mjs": "dd65b36dc176ee52ac875aa5cbefc1cc117e55e603f044deda5a0433b80edd3a"
+  },
+  "profile": "devices-add-inspect/1",
+  "taskDisposition": {
+    "U02": "partial: current browser-controller add/inspect states built and checked; enrolled general resource/removal and full declared qualification remain open"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 108,
+    "open": 164
+  },
+  "environment": {
+    "os": "macOS26.5.2arm64",
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1"
+  },
+  "browser": {
+    "proof": {
+      "path": "/tmp/101-u02-integrated-browser-final.json",
+      "sha256": "52918a4b73a5dd688c972da10fadb5cab016de87fd72fb6a551b23ef4042deb6",
+      "bytes": 5299
+    },
+    "receipt": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/receipt.json",
+      "sha256": "d3fa6e45579f6adc43867f5d6c884f1aa225524db2f21972bad617783814ea1d",
+      "bytes": 5197
+    },
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "permission": "denied",
+        "clipboard": "native-permission-denied-recovery",
+        "checks": [
+          "inert-arrival-and-add",
+          "explicit-find-no-results",
+          "stop-retry",
+          "actual-separate-controller-tab",
+          "wrong-room-excluded",
+          "reported-input-is-unchecked",
+          "unknown-and-unsupported-software-metadata",
+          "opaque-id-not-local-identity",
+          "actual-software-input-observed-and-expires",
+          "zero-role-and-command-emissions",
+          "native-permission-inspection",
+          "missing-hub-recovery",
+          "selected-hub-ticket-and-controller-review",
+          "native-clipboard-result-or-recovery",
+          "quiet-device-offline",
+          "controller-reappears",
+          "browser-offline-requires-explicit-retry",
+          "keyboard-and-return-focus",
+          "320-390-1280-no-overflow",
+          "44px-controls",
+          "reduced-motion",
+          "zero-page-errors-and-foreign-requests"
+        ],
+        "requests": 24,
+        "screenshots": [
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/chromium-local-inspection.png",
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/chromium-add-device.png",
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/chromium-offline-recovery.png"
+        ]
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "permission": "prompt",
+        "clipboard": "native-write-returned",
+        "checks": [
+          "inert-arrival-and-add",
+          "explicit-find-no-results",
+          "stop-retry",
+          "actual-separate-controller-tab",
+          "wrong-room-excluded",
+          "reported-input-is-unchecked",
+          "unknown-and-unsupported-software-metadata",
+          "opaque-id-not-local-identity",
+          "actual-software-input-observed-and-expires",
+          "zero-role-and-command-emissions",
+          "native-permission-inspection",
+          "missing-hub-recovery",
+          "selected-hub-ticket-and-controller-review",
+          "native-clipboard-result-or-recovery",
+          "quiet-device-offline",
+          "controller-reappears",
+          "browser-offline-requires-explicit-retry",
+          "keyboard-and-return-focus",
+          "320-390-1280-no-overflow",
+          "44px-controls",
+          "reduced-motion",
+          "zero-page-errors-and-foreign-requests"
+        ],
+        "requests": 25,
+        "screenshots": [
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/webkit-local-inspection.png",
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/webkit-add-device.png",
+          "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-devices-flow-9yQb9j/webkit-offline-recovery.png"
+        ]
+      }
+    ],
+    "scope": "real source-bound Devices/Controller browser UI and local Hub; software protocol metadata/input and native browser permission states; no native/phone/hardware discovery, authenticated endpoint identity, resource grants or physical input qualification"
+  },
+  "pairing": {
+    "proof": {
+      "path": "/tmp/101-u02-integrated-pairing-final.json",
+      "sha256": "682e51c812638ed3fe75af7bebaaa9a0a50dc7e5e61ca203e95ab2a574cec67e",
+      "bytes": 3583
+    },
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "hostSurfaces": [
+          "/",
+          "/devices",
+          "/games/echomaze"
+        ],
+        "checks": [
+          "inert-arrival",
+          "inert-cancel",
+          "native-keyboard-approval",
+          "selected-session-only",
+          "history-needs-fresh-approval",
+          "stop-polling",
+          "duplicate-link-denied",
+          "paste-recovery-review",
+          "390px-no-overflow",
+          "44px-control",
+          "three-inert-host-surfaces",
+          "read-only-health-review",
+          "explicit-host-connect",
+          "host-change-address-focus",
+          "zero-page-errors",
+          "zero-foreign-requests"
+        ],
+        "screenshot": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-pairing-intake-3QqzzJ/chromium-review.png"
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "hostSurfaces": [
+          "/",
+          "/devices",
+          "/games/echomaze"
+        ],
+        "checks": [
+          "inert-arrival",
+          "inert-cancel",
+          "native-keyboard-approval",
+          "selected-session-only",
+          "history-needs-fresh-approval",
+          "stop-polling",
+          "duplicate-link-denied",
+          "paste-recovery-review",
+          "390px-no-overflow",
+          "44px-control",
+          "three-inert-host-surfaces",
+          "read-only-health-review",
+          "explicit-host-connect",
+          "host-change-address-focus",
+          "zero-page-errors",
+          "zero-foreign-requests"
+        ],
+        "screenshot": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-pairing-intake-3QqzzJ/webkit-review.png"
+      }
+    ],
+    "scope": "actual local Controller and three host UI surfaces with a real disposable Hub; browser-generated keyboard input; no native/phone/cryptographic legacy endpoint qualification"
+  },
+  "focusedTests": 9,
+  "limits": {
+    "devices": 8,
+    "eventsPerSecond": 64,
+    "freshnessMs": 6000,
+    "activityMs": 2000,
+    "tickMs": 250,
+    "actualUnresolvedTransportReservations": 1
+  },
+  "review": {
+    "path": "/tmp/101-u02-independent-review.json",
+    "sha256": "ed9966faccc1a664a17ef05c6150cc1c5bd5245f951baac2b4f09bd5672dedde",
+    "bytes": 3259
+  },
+  "regressions": [
+    {
+      "kind": "missing-device-flow",
+      "old": {
+        "path": "/tmp/101-u02-browser-feature-red.err",
+        "sha256": "865f560dd88cb366a42da8e7b5814ae746d75871e9dff5337cddc88ed7c9b4c5",
+        "bytes": 424
+      }
+    },
+    {
+      "kind": "clock-and-reentrant-cancellation",
+      "old": {
+        "path": "/tmp/101-u02-lifecycle-red.log",
+        "sha256": "1ce8846779ee823115ecd3e69c8fe5a063f737013b1370aea9544a52957e3016",
+        "bytes": 2126
+      },
+      "green": {
+        "path": "/tmp/101-u02-integrated-focused.log",
+        "sha256": "3b5948ec7952963f47e1497058691b09b752a139b1588a734072a4f831b222fb",
+        "bytes": 1136
+      }
+    },
+    {
+      "kind": "root-harness-origin",
+      "old": {
+        "path": "/tmp/101-u02-integrated-browser.err",
+        "sha256": "eb1dd77863381b38ccd9be0ea3ac41e649b1bc7faa9b8e1a86c5fd293eb5634d",
+        "bytes": 625
+      },
+      "repair": "vinext bound the owned localhost IPv6 loopback despite the host argument. Rerun used the actual loopback listener; product code unchanged."
+    }
+  ],
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-u02-final-gates.json"
+  },
+  "boundaries": [
+    "Metadata/input observations do not assign roles, grant resources or authenticate device identity",
+    "No native/phone/hardware or general OS control qualification"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 81,
+  "revision": 82,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8245,6 +8245,34 @@
       "supportRows": [
         "android-offline-build-2026-10-06"
       ]
+    },
+    {
+      "id": "u02-browser-add-inspect-partial-2026-10-06",
+      "revision": "41ce063edb7ca7c2d944388c560bcb4c1ae19b58",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-devices-add-inspect.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3/Playwright1.61.1; Chromium149.0.7827.55 and WebKit26.5",
+      "reproduction": "Owned vinext localhost loopback server; node tools/qa-devices-flow.mjs http://localhost:3237/; node tools/qa-pairing-intake.mjs http://localhost:3237/; focused plain TS tests and exact candidate gates.",
+      "scope": "partial: current browser-controller add/inspect states built and checked; enrolled general resource/removal and full declared qualification remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable headless browser contexts; owned local Hub; real Controller tabs and software protocol producer"
+      ],
+      "supportRows": [
+        "browser-device-add-inspect-2026-10-06"
+      ]
     }
   ],
   "tasks": [
@@ -10732,7 +10760,8 @@
     {
       "id": "U02",
       "records": [
-        "pending-U02"
+        "pending-U02",
+        "u02-browser-add-inspect-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",

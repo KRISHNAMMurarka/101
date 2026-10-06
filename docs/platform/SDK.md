@@ -1823,3 +1823,26 @@ SDK imports. The caller tree binds the new adapter/example/test/tool; unchanged
 SDK source and installed bytes retain their original artifact provenance. This
 selected implementation leaves clipboard, application control and general user
 files outside N16's current evidence.
+
+## Browser device add and inspection
+
+The Devices screen opens with local setup information. Explicit Find observes
+current browser controllers in the selected room; explicit Add opens the
+existing reviewed connection-address task and expiring invitation. Inspect
+shows actual reported inputs, unknown or unsupported inputs, permission setup,
+recent input activity and quiet/offline recovery. Metadata never grants resource
+access or authenticates an enrolled device. Camera inspection queries permission
+and availability without starting capture.
+
+The passive observer bounds devices to eight, incoming reports to sixty-four per
+second, freshness to six seconds and activity to two seconds. Stop, cancellation,
+clock loss and unmount remove its listener/timer, fence late reports and release
+only its own transport lease after actual settlement. Keyboard task focus and
+return focus, visible controls, narrow layouts and reduced motion are checked
+with genuine browser APIs and Controller producers.
+
+Run `node tools/qa-devices-flow.mjs OWNED_LOOPBACK_ORIGIN/` against the source
+development server, and `node tools/qa-pairing-intake.mjs OWNED_LOOPBACK_ORIGIN/`
+for the existing invitation journeys. U02 remains open for enrolled identity,
+general shared-resource details, removal impact and full form-factor/assistive
+qualification. See the [exact local receipt](receipts/2026-10-06-devices-add-inspect.json).
