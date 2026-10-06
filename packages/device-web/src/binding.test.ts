@@ -5,6 +5,7 @@ import type { DeliveryContext, Observation, RouteGrant } from '../../device-runt
 import type { DeviceDescriptor } from '../../device-model/src/index.ts';
 import { observationAgeBounds, parseObservationTiming } from '../../device-model/src/index.ts';
 import { RemoteResourcePublisher, RemoteResourceReceiver } from './binding.ts';
+import type { RemoteValueTiming } from './binding.ts';
 import { decodePacket, encodePacket } from './wire.ts';
 
 const epoch = '0123456789abcdef0123456789abcdef';
@@ -55,7 +56,8 @@ test('raw or copied peers cannot be registered as authenticated resource endpoin
     available: () => true }), /authenticated|diagnostic/i);
   assert.equal(peer.listeners.size, 0); assert.equal(peer.states.size, 0); runtime.close();
 });
-function harness(options: { grant?: RouteGrant; available?: boolean; apply?: (observation: Observation, context: DeliveryContext) => void | Promise<void>; remoteOffset?: number; synchronize?: boolean } = {}) {
+function harness(options: { grant?: RouteGrant; available?: boolean; apply?: (observation: Observation, context: DeliveryContext) => void | Promise<void>; remoteOffset?: number; synchronize?: boolean;
+  publisherTiming?: (value: RemoteValueTiming) => void; receiverTiming?: (value: RemoteValueTiming) => void } = {}) {
   let now = 100, released = 0;
   const received: Observation[] = [], status: string[] = [];
   const host = new Peer(), phone = new Peer(); host.other = phone; phone.other = host;
@@ -68,10 +70,10 @@ function harness(options: { grant?: RouteGrant; available?: boolean; apply?: (ob
     runtime.setReadiness(sink, 'available'); return [capability.id, sink];
   }));
   const receiver = new RemoteResourceReceiver({ authentication: 'local-diagnostic', peer: host, runtime, epoch, principalId: 'owner', applicationId: 'app', sessionId: 'session',
-    clockId: 'host-clock', now: () => now, onStatus: value => { status.push(value); } });
+    clockId: 'host-clock', now: () => now, onStatus: value => { status.push(value); }, onTiming: options.receiverTiming });
   let available = options.available ?? true;
   const publisher = new RemoteResourcePublisher({ authentication: 'local-diagnostic', peer: phone, device: device(), epoch, clockId: 'phone-clock',
-    now: () => now + (options.remoteOffset ?? 1000), available: () => available, onStatus: value => { status.push(value); } });
+    now: () => now + (options.remoteOffset ?? 1000), available: () => available, onStatus: value => { status.push(value); }, onTiming: options.publisherTiming });
   publisher.start(); if (options.synchronize !== false) receiver.tick();
   const approve = (capability = 'position', codec: 'json/1' | 'normalized-pointer/1' = 'json/1', ownerGrant = grant) => receiver.approve({ capability,
     sink: sinks.get(capability)!, sinkDevice: device(true), sinkCapability: capability, grant: ownerGrant, codec });
@@ -96,6 +98,45 @@ test('negotiated typed position and temperature retain meaning with a foreign cl
   const age = observationAgeBounds(timing);
   assert.ok(age.earliestMs >= 0 && age.latestMs >= age.earliestMs);
   assert.equal(h.publisher.publish('temperature', 200), false);
+});
+test('opted-in value timing measures actual codec boundaries without granting or leaking payloads', () => {
+  const published: RemoteValueTiming[] = [], received: RemoteValueTiming[] = [];
+  const h = harness({ publisherTiming: value => { published.push(value); throw new Error('Diagnostic observer'); },
+    receiverTiming: value => { received.push(value); throw new Error('Diagnostic observer'); } });
+  try {
+    assert.equal(h.publisher.publish('position', { x: 0.2, y: 0.8 }), false);
+    assert.equal(published.length, 0); assert.equal(received.length, 0);
+    assert.equal(h.approve('position', 'normalized-pointer/1'), 1);
+    assert.equal(h.publisher.publish('position', { x: 0.2, y: 0.8 }), true); h.receiver.tick();
+    assert.equal(published.length, 1); assert.equal(received.length, 1); assert.equal(h.received.length, 1);
+    const encoding = published[0], decoding = received[0];
+    assert.equal(encoding.phase, 'encoding'); assert.equal(decoding.phase, 'decoding');
+    assert.equal(encoding.epoch, epoch); assert.equal(encoding.slot, 1); assert.equal(encoding.sequence, 1);
+    assert.equal(encoding.clockId, 'phone-clock'); assert.equal(decoding.clockId, 'host-clock');
+    assert.equal(encoding.startedAt <= encoding.finishedAt, true);
+    assert.equal(decoding.startedAt <= decoding.finishedAt, true);
+    assert.equal(Object.hasOwn(encoding, 'value'), false); assert.equal(Object.hasOwn(decoding, 'value'), false);
+    assert.ok(Object.isFrozen(encoding) && Object.isFrozen(decoding));
+    const sample = h.phone.sent.findLast(frame => frame.lane === 'disposable')!;
+    assert.equal((sample.data as ArrayBuffer).byteLength, 48);
+    h.host.deliver(sample); assert.equal(received.length, 1, 'replay has no accepted timing');
+    h.receiver.stop(); h.setNow(130); h.publisher.publish('position', { x: 0.4, y: 0.6 });
+    assert.equal(received.length, 1, 'stopped route has no accepted timing');
+  } finally { h.publisher.stop(); h.receiver.stop(); h.runtime.close(); }
+});
+for (const capability of ['position', 'contact']) test(`timing observer reentrancy cannot resend accepted ${capability} work`, () => {
+  let reports = 0;
+  const h = harness({ publisherTiming: () => {
+    reports++;
+    if (reports === 1) { h.setNow(120); h.publisher.tick(); }
+  } });
+  try {
+    h.approve(capability);
+    assert.equal(h.publisher.publish(capability, capability === 'position' ? { x: 0.2, y: 0.8 } : true), true);
+    const sent = h.phone.sent.map(frame => decodePacket(frame.data, frame.lane)?.packet).filter(packet => packet?.type === 'sample' || packet?.type === 'event');
+    assert.equal(sent.length, 1); assert.equal(reports, 1);
+    assert.equal(h.publisher.status().pending, 0);
+  } finally { h.publisher.stop(); h.receiver.stop(); h.runtime.close(); }
 });
 test('compact normalized pointer is negotiated independently of sensor JSON', () => {
   const h = harness(); h.approve('position', 'normalized-pointer/1');

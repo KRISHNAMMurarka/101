@@ -5,6 +5,8 @@ import { createPrivateKey, timingSafeEqual, X509Certificate } from "node:crypto"
 import { createSecureContext, type TLSSocket } from "node:tls";
 import { LocalSignalingBroker, type CreatedSignalingSession, type HostPeerSignal } from "@101/pairing";
 import { CAPABILITY_NAMES, type DeviceCapabilities } from "@101/protocol";
+import { PRIVATE_DIRECTORY_LIMITS } from "@101/device-model";
+import { createCoordinatorDirectory, DirectoryRejection, type ProvisionedDirectoryResource } from "./private-directory.ts";
 
 /** Selected provisioned Node-client profile. These are server admission ceilings, not resource grants. */
 export const HTTPS_COORDINATOR_LIMITS = Object.freeze({
@@ -24,6 +26,8 @@ export interface HttpsCoordinatorOptions {
   readonly clientCaCertificatePem: string;
   readonly allowedOrigins: readonly string[];
   readonly enrollments: readonly CoordinatorEnrollment[];
+  /** Closed host-owned metadata catalog; directory visibility never creates device-resource grants. */
+  readonly directoryResources?: readonly ProvisionedDirectoryResource[];
   /** The selected local profile always binds 127.0.0.1. Zero requests an ephemeral port. */
   readonly port?: number;
 }
@@ -47,7 +51,7 @@ class Rejection extends Error {
  * Ephemeral authority is destroyed by stop; this profile has no account or enrollment lifecycle API.
  */
 export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
-  const values = ownData(options, ["serverCertificatePem", "serverPrivateKeyPem", "clientCaCertificatePem", "allowedOrigins", "enrollments", "port"]);
+  const values = ownData(options, ["serverCertificatePem", "serverPrivateKeyPem", "clientCaCertificatePem", "allowedOrigins", "enrollments", "port", "directoryResources"]);
   const certPem = pem(values.serverCertificatePem);
   const keyPem = pem(values.serverPrivateKeyPem);
   const caPem = pem(values.clientCaCertificatePem);
@@ -74,6 +78,7 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
     principals.add(principalId); devices.add(deviceId);
   }
   if (!enrolled.size) throw new Error("Missing coordinator enrollment");
+  const directory = createCoordinatorDirectory(values.directoryResources, [...enrolled.values()]);
   const sessions = new Map<string, Session>();
   const broker = new LocalSignalingBroker();
   const rates = new Map<string, { second: number; count: number }>();
@@ -87,10 +92,10 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
   let closed = false;
 
   function retireExpired() {
-    for (const id of broker.expire()) sessions.delete(id);
+    for (const id of broker.expire()) { sessions.delete(id); directory.retireSession(id); }
     for (const [id, session] of sessions) {
       const livePeers = new Set(broker.listPeers(id, session.created.hostToken).map((peer) => peer.peerId));
-      for (const peerId of session.peers.keys()) if (!livePeers.has(peerId)) session.peers.delete(peerId);
+      for (const peerId of session.peers.keys()) if (!livePeers.has(peerId)) { session.peers.delete(peerId); directory.retirePeer(id, peerId); }
     }
   }
   function sessionFor(id: string, identity: Enrollment, host: boolean, peerId?: string): Session {
@@ -127,7 +132,8 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
       const parts = incoming.url.split("/");
       if (incoming.method === "OPTIONS") return finish(outgoing, 204);
       if (incoming.method === "GET" && incoming.url === "/v1/health") return finish(outgoing, 200, { service: "101-https-coordinator", version: 1 });
-      const body = ["POST", "PUT"].includes(incoming.method ?? "") ? await readBody(incoming) : undefined;
+      const isDirectory = parts[4] === "host" && parts[5] === "directory" || parts[4] === "peers" && parts[6] === "directory";
+      const body = ["POST", "PUT"].includes(incoming.method ?? "") ? await readBody(incoming, isDirectory ? PRIVATE_DIRECTORY_LIMITS.requestBytes : HTTPS_COORDINATOR_LIMITS.requestBytes) : undefined;
       if (closed || !endpoint || incoming.aborted || incoming.socket.destroyed || outgoing.destroyed) throw new Rejection(503);
       // Certificate validity and origin/authentication are rechecked after asynchronous body input.
       authenticate(incoming);
@@ -144,6 +150,7 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
           const token = bearer(incoming);
           const created = broker.resumeSession(sessionId, token, { endpoint, hostName });
           existing.created = created;
+          directory.retireSession(sessionId);
           return finish(outgoing, 201, created);
         }
         if (sessions.size >= HTTPS_COORDINATOR_LIMITS.sessions || [...sessions.values()].filter((item) => item.principalId === identity.principalId).length >= HTTPS_COORDINATOR_LIMITS.sessionsPerPrincipal) throw new Rejection(429);
@@ -174,6 +181,7 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
       if (parts[4] === "host") {
         const session = sessionFor(id, identity, true);
         if (!sameToken(session.created.hostToken, token)) throw new Rejection(404);
+        if (parts[5] === "directory") return directoryRequest(incoming, outgoing, identity, session, id, "host", token, parts.slice(6), body);
         if (parts[5] !== "peers") throw new Rejection(404);
         if (incoming.method === "GET" && parts.length === 6) return finish(outgoing, 200, broker.listPeers(id, token));
         if (incoming.method === "PUT" && parts.length === 8 && parts[7] === "offer") {
@@ -185,12 +193,14 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
         if (incoming.method === "POST" && parts.length === 8 && parts[7] === "reconnect") {
           emptyBody(body);
           broker.requestReconnect(id, parts[6]!, token, true);
+          directory.retirePeer(id, parts[6]!);
           return finish(outgoing, 204);
         }
       } else if (parts[4] === "peers" && parts[5]) {
         const peerId = parts[5];
         const session = sessionFor(id, identity, false, peerId);
         if (!sameToken(session.peers.get(peerId)!.token, token)) throw new Rejection(404);
+        if (parts[6] === "directory") return directoryRequest(incoming, outgoing, identity, session, id, "peer", token, parts.slice(7), body, peerId);
         if (incoming.method === "GET" && parts.length === 7 && parts[6] === "offer") return finish(outgoing, 200, broker.getOffer(id, peerId, token));
         if (incoming.method === "PUT" && parts.length === 7 && parts[6] === "answer") {
           const value = signalBody(body, "answer");
@@ -201,18 +211,46 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
         }
         if (incoming.method === "POST" && parts.length === 7 && parts[6] === "reconnect") {
           emptyBody(body);
-          return finish(outgoing, 200, broker.requestReconnect(id, peerId, token));
+          const replacement = broker.requestReconnect(id, peerId, token);
+          directory.retirePeer(id, peerId);
+          return finish(outgoing, 200, replacement);
         }
         if (incoming.method === "DELETE" && parts.length === 6) {
-          broker.leave(id, peerId, token); session.peers.delete(peerId);
+          broker.leave(id, peerId, token); session.peers.delete(peerId); directory.retirePeer(id, peerId);
           return finish(outgoing, 204);
         }
       }
       throw new Rejection(404);
     } catch (cause) {
-      const status = cause instanceof Rejection ? cause.status : 404;
+      const status = cause instanceof Rejection || cause instanceof DirectoryRejection ? cause.status : 404;
       finish(outgoing, status, { error: status === 404 ? "Not found" : "Request rejected" });
     }
+  }
+  function directoryRequest(incoming: IncomingMessage, outgoing: ServerResponse, identity: Enrollment, session: Session, id: string,
+    role: "host" | "peer", token: string, suffix: readonly string[], body: unknown, peerId?: string) {
+    const owner = [...enrolled.values()].find(value => value.principalId === session.principalId);
+    if (!owner || !validAt(owner.certificate)) throw new Rejection(404);
+    const now = Date.now();
+    const peers = new Map(broker.listPeers(id, session.created.hostToken).map(peer => [peer.peerId, peer.generation]));
+    const generation = role === "host" ? 0 : peers.get(peerId ?? "");
+    if (generation === undefined) throw new Rejection(404);
+    const expiresAt = Math.min(session.created.ticket.expiresAt, Date.parse(identity.certificate.validTo), Date.parse(owner.certificate.validTo), Date.parse(ca.validTo), Date.parse(certificateValue.validTo));
+    const current = () => {
+      if (closed || incoming.aborted || incoming.socket.destroyed || outgoing.destroyed || sessions.get(id) !== session ||
+        Date.now() >= expiresAt || incoming.headers.origin === undefined || !origins.has(incoming.headers.origin) || !validAt(owner.certificate)) return false;
+      try {
+        if (authenticate(incoming) !== identity) return false;
+        if (role === "host") return session.principalId === identity.principalId && sameToken(session.created.hostToken, token);
+        const peer = session.peers.get(peerId!);
+        return peer?.principalId === identity.principalId && sameToken(peer.token, token) &&
+          broker.listPeers(id, session.created.hostToken).some(peer => peer.peerId === peerId && peer.generation === generation);
+      } catch { return false; }
+    };
+    const result = directory.dispatch({ sessionId: id, principalId: identity.principalId, deviceId: identity.deviceId, role,
+      ...(peerId === undefined ? {} : { peerId }), generation, peers, now, expiresAt, current }, incoming.method ?? "", suffix, body);
+    // Serialized output is closed/frozen data, and no asynchronous work separates this currentness check from finish.
+    if (!current()) throw new Rejection(404);
+    return finish(outgoing, result.status, result.body);
   }
   return {
     get url() { if (!endpoint || closed) throw new Error("Start coordinator; closed coordinators cannot restart"); return endpoint; },
@@ -256,11 +294,11 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
     endpoint = undefined;
     for (const socket of sockets) socket.destroy();
     sockets.clear();
-    for (const id of broker.expire()) sessions.delete(id);
+    for (const id of broker.expire()) { sessions.delete(id); directory.retireSession(id); }
     for (const [id, session] of sessions) {
       try { broker.removeSession(id, session.created.hostToken); } catch { /* Expiry already removed broker authority. */ }
     }
-    sessions.clear(); rates.clear(); enrolled.clear();
+    sessions.clear(); rates.clear(); enrolled.clear(); directory.close();
     const active = server;
     server = undefined;
     if (!active) return Promise.resolve();
@@ -393,16 +431,16 @@ function bearer(request: IncomingMessage): string {
   if (!value || !/^Bearer [A-Za-z0-9_-]{32,128}$/.test(value)) throw new Rejection(404);
   return value.slice(7);
 }
-function readBody(request: IncomingMessage): Promise<unknown> {
+function readBody(request: IncomingMessage, maximum: number = HTTPS_COORDINATOR_LIMITS.requestBytes): Promise<unknown> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = []; let bytes = 0; let settled = false;
     const finish = (cause?: Rejection) => { if (settled) return; settled = true; if (cause) reject(cause); else { try { resolve(bytes ? JSON.parse(Buffer.concat(chunks).toString("utf8")) : undefined); } catch { reject(new Rejection(400)); } } };
-    request.on("data", (chunk: Buffer) => { bytes += chunk.length; if (bytes > HTTPS_COORDINATOR_LIMITS.requestBytes) { chunks.length = 0; finish(new Rejection(413)); } else if (!settled) chunks.push(chunk); });
+    request.on("data", (chunk: Buffer) => { bytes += chunk.length; if (bytes > maximum) { chunks.length = 0; finish(new Rejection(413)); } else if (!settled) chunks.push(chunk); });
     request.once("end", () => finish());
     request.once("aborted", () => finish(new Rejection(400)));
     request.once("error", () => finish(new Rejection(400)));
     const length = request.headers["content-length"];
-    if (length && Number(length) > HTTPS_COORDINATOR_LIMITS.requestBytes) finish(new Rejection(413));
+    if (length && Number(length) > maximum) finish(new Rejection(413));
     const type = request.headers["content-type"];
     if (type !== undefined && type !== "application/json") finish(new Rejection(400));
   });

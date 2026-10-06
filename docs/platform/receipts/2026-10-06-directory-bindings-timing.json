@@ -1,0 +1,1202 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "tasks": [
+    "F02",
+    "D06",
+    "E12",
+    "K03"
+  ],
+  "acceptance": {
+    "F02": "Complete selected capture-output-timing/1 instrumentation: genuine local MessagePorts, public negotiated pointer producer/receiver and current sinks yield bounded target-relative stage P50/P95/P99 and clock uncertainty. JS capture and caller-declared local output commit are explicit; no physical acquisition/photon, network, throughput or hardware qualification claim.",
+    "D06": "Partial provisioned-session-directory/1: genuine current mTLS host enrollment and separately selected member visibility expose only bounded inert metadata. Persistent/account directories, provisioning/key lifecycle, peer-owned publication/live inventory and broader browser/physical/network qualification remain open.",
+    "E12": "Partial normalized-pointer-bindings/1 Swift/Kotlin/C inert codec consumers share real public producer fixtures and separate actual JS host currentness checks. Full native runtime, identity, transport authentication, phone/OS/hardware and additional ABI/toolchain qualification remain open.",
+    "K03": "Partial local Swift/Kotlin/C pointer artifact distributions: immutable source, compiled binaries/source, MIT/profile/schema/fixtures/metadata and hashes; clean extracted compiled consumers. Full native-language SDK distributions and target-platform qualification remain open."
+  },
+  "sourceTree": "07daddb45c2be5315a45fb823b72da146fdf1851",
+  "sourceSha256": {
+    "bindings/normalized-pointer/c/include/one01_pointer_wire.h": "0d6619e075e855e97b155fa3188a998b8b073bbbf33600c7516bfe471eebcddd",
+    "bindings/normalized-pointer/c/src/one01_pointer_wire.c": "7f3bd5484dba07e86b9d19f61f0bf98270cc2e09d6a6be0670caa8a5f82bf8d4",
+    "bindings/normalized-pointer/fixtures/normalized-pointer-v1.json": "149af2cdf16a2372db9234e15bf9b14370457e12c2d923a29037eb61654cadc8",
+    "bindings/normalized-pointer/kotlin/src/main/kotlin/com/oneohone/pointerwire/PointerWire.kt": "f4e989a7c5a04a39c1e2d3d4d161506ff6eaa02fe007ee98414e89f0e6556b62",
+    "bindings/normalized-pointer/profile.json": "8ecbef18606c9c0f34c6e94ec49f9d67137e18cff406fe13241f7fcd98b30ce9",
+    "bindings/normalized-pointer/swift/Package.swift": "38e14775d67be6699771cc9faab9ca891a7d9d69050f812b1089ff1b032b49f1",
+    "bindings/normalized-pointer/swift/Sources/One01PointerWire/PointerWire.swift": "cdfe48791bc37056e3b387ce6aeadc4e2e8d133eadb05facd34269eb5540be09",
+    "bindings/normalized-pointer/swift/Tests/One01PointerWireTests/PointerWireTests.swift": "df5ed5ac023c542d962698eaea36d497fd76f17c466364880fb7454b7a4da356",
+    "examples/coordinator/private-directory.ts": "4f0f500a57ce0d62bfa0f93adc26632d20d9334c96c5d12e190ba9fefaa0b4fa",
+    "examples/device-pipelines/timed-pointer.ts": "169425b9abac01c573080109559c8725f7b87d8630b2c1222804f606eee5a1bb",
+    "examples/language-bindings/PointerConsumer.kt": "c640c2da3eb3d600d6aedf17bbd602e6052070a5775fe1917b0eb15b4283aab8",
+    "examples/language-bindings/PointerConsumer.swift": "9773baad58f08c14b216b75adc004d78ce9d27a5471db4b2557f87fd5a0507eb",
+    "examples/language-bindings/normalized-pointer.mjs": "3ae87fafac6f210b2eee76dad2883107fb24c7e88ff4b4b31f47d8adf4fc4b9a",
+    "examples/language-bindings/pointer-consumer.c": "c209e8490ba4c55eca59d471dcf794741b620086ebc01649390ed0a7d7cfa673",
+    "package-lock.json": "fdb02fca5164f5f43d9563df29154f48f7f2aa844959ed5b6a097f2709d2c516",
+    "packages/device-model/src/index.ts": "b6f070ddd7fc755bf5fd88246121574d51c1a1e478e9ee125850192aa22da9eb",
+    "packages/device-model/src/pipeline-timing.test.ts": "bba342db1ec5cbc285841669448b5a746101ff6756ff1055284171996946fa69",
+    "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+    "packages/device-model/src/private-directory.test.ts": "154784c1b368a0aab95c85aa2e30f0025a8c63fcdf362627416ef89da157b3a4",
+    "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+    "packages/device-web/src/binding.test.ts": "153a1716f7ae27e7ac2a66076244b0d658670a107bfa8201a9699beb9c6e3558",
+    "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+    "packages/device-web/src/index.ts": "313f3134417aa688ca663ed1ca67f16f884aa88d05e301585885f6496efce24a",
+    "packages/hub-server/package.json": "a3d79b5b8bab7ec96abc5f1936e6520403ffd99536a83b9b75838eb2fe99e551",
+    "packages/hub-server/src/https-coordinator.test.ts": "e8c030580c143a1a85350e491685907004455fa6719cfb8e762965740472d8a1",
+    "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+    "packages/hub-server/src/index.ts": "cd010e29fccc7e55e50694054c70667dce6f60cd014d4fbd46a6f7c07302518e",
+    "packages/hub-server/src/private-directory.test.ts": "db50d9620fb4d83490b9f075a0768d49a36216bcd208c93bd69edfcf5f041abb",
+    "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+    "tests/pointer-bindings.test.ts": "c536394fd131312587a36fa5a182abd4a4c1aa98e78c98f0aa9f009bf722c8d3",
+    "tools/build-pointer-bindings.mjs": "f9858af104ea3d82843368a294a5c5c2ff48bd51f39fe9c1cbc6d9d45f43d8bd",
+    "tools/build-sdk.mjs": "0e44c570bfbaa20184123e612693f94bb7e26422e589459e2270bc9d6127f1c1",
+    "tools/qa-pipeline-timing-packed.mjs": "e79a95ddec211a2ec292d7b05cc1c18d564114b2a8218d77733ed2650f997879",
+    "tools/qa-pointer-bindings.mjs": "48b9692e5c6dd20b0789ff7733c54490f1a7acd90a92c98ce8640b7bccadccb3",
+    "tools/qa-private-directory.mjs": "bedd561b548a1a507d7b84ea404a82885db99b2e1a83542703e3896ec334364b",
+    "tools/qa-sdk-consumer.mjs": "dd21410c7946e4d0f38f5bab82cca2e492f697d86aa34dd9b5f5f3f1630663d0"
+  },
+  "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Swift6.3.3/AppleClang21/Kotlin2.1.21/JDK21.0.12; owned loopback only",
+  "sdk": {
+    "manifest": "release/sdk-MtePq2/manifest.json",
+    "manifestSha256": "0ef1a5e6f515e8699268d72a445c734478e4e1c376f5d1a47af6f2ed67915101",
+    "sourceTree": "07daddb45c2be5315a45fb823b72da146fdf1851",
+    "consumer": "/tmp/101-sdk-consumer-tmyq2b",
+    "packages": [
+      {
+        "name": "@101/device-model",
+        "version": "0.1.0",
+        "sha256": "012458373e7de6a7e14080978d5a24c95aea7ef2ed00e880b03fce797112f0aa",
+        "bytes": 76984
+      },
+      {
+        "name": "@101/device-runtime",
+        "version": "0.1.0",
+        "sha256": "fe67f05b43b67ab750139a050ecd79e3fdadeab95e84259acd9310de32e30e85",
+        "bytes": 103345
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "version": "0.1.0",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+        "bytes": 6529
+      },
+      {
+        "name": "@101/transport-websocket",
+        "version": "0.1.0",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62",
+        "bytes": 7533
+      },
+      {
+        "name": "@101/device-web",
+        "version": "0.1.0",
+        "sha256": "ac6483e61c1a892247b44766ed11d4633c3ffd38d3e65df2a163918bfcd5905d",
+        "bytes": 49271
+      },
+      {
+        "name": "@101/vision",
+        "version": "0.1.0",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62",
+        "bytes": 34919
+      },
+      {
+        "name": "@101/connect",
+        "version": "0.1.0",
+        "sha256": "4c84a381a4dc093e1c30843bd04715cc0aa225e7f8ee0ec17bdad1b73a0b9b34",
+        "bytes": 67566
+      }
+    ],
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass"
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass"
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass"
+      }
+    ],
+    "isolation": "Seven ordinary offline installed packages; strict NodeNext/Bundler skipLibCheck false; no workspace symlinks/aliases; ordinary Node and Chromium/Firefox/WebKit."
+  },
+  "directory": {
+    "result": "pass",
+    "profile": "provisioned-session-directory/1",
+    "node": "v24.14.0",
+    "sdkProof": "actual-installed-sdk-model-and-runtime",
+    "hubProof": "source-bound-worker-node-hub-server-and-native-mtls",
+    "resolvedPublicEntries": {
+      "@101/connect": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/connect/dist/index.js",
+      "@101/device-model": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/device-model/dist/index.js",
+      "@101/device-runtime": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/device-runtime/dist/index.js",
+      "@101/device-web": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/device-web/dist/index.js",
+      "@101/transport-webrtc": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/transport-webrtc/dist/index.js",
+      "@101/transport-websocket": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/transport-websocket/dist/index.js",
+      "@101/vision": "file:///private/tmp/101-sdk-consumer-tmyq2b/node_modules/@101/vision/dist/index.js",
+      "@101/hub-server": "file:///Users/km/Desktop/games/101/packages/hub-server/src/index.ts",
+      "@101/pairing": "file:///Users/km/Desktop/games/101/packages/pairing/src/index.ts",
+      "@101/protocol": "file:///Users/km/Desktop/games/101/packages/protocol/src/index.ts",
+      "@101/input": "file:///Users/km/Desktop/games/101/packages/input/src/index.ts"
+    },
+    "implementationSha256": {
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/private-directory.test.ts": "db50d9620fb4d83490b9f075a0768d49a36216bcd208c93bd69edfcf5f041abb",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/device-model/src/private-directory.test.ts": "154784c1b368a0aab95c85aa2e30f0025a8c63fcdf362627416ef89da157b3a4",
+      "examples/coordinator/private-directory.ts": "4f0f500a57ce0d62bfa0f93adc26632d20d9334c96c5d12e190ba9fefaa0b4fa",
+      "tools/qa-private-directory.mjs": "bedd561b548a1a507d7b84ea404a82885db99b2e1a83542703e3896ec334364b",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/https-coordinator.test.ts": "e8c030580c143a1a85350e491685907004455fa6719cfb8e762965740472d8a1"
+    },
+    "checks": [
+      "real-public-hooks-present",
+      "actual-public-directory-and-independent-sdk-route-first-caller",
+      "constructing-native-directory-callers-dispatches-no-request",
+      "already-aborted-list-dispatches-no-request",
+      "actual-authenticated-member-needs-explicit-visibility",
+      "closed-projection-excludes-unselected-private-data-and-bearers",
+      "copied-owner-and-cross-session-bearers-rejected-over-real-tls",
+      "real-reconnect-generation-retires-visibility",
+      "remove-reenroll-never-restores-member-visibility",
+      "actual-wall-clock-visibility-expiry",
+      "explicit-host-revoke-removes-metadata",
+      "current-membership-is-required-after-real-leave",
+      "owned-shutdown-destroys-ephemeral-authority"
+    ],
+    "limits": {
+      "catalogResources": 32,
+      "resourcesPerSession": 16,
+      "capabilitiesPerResource": 8,
+      "membersPerSession": 8,
+      "requestBytes": 8192,
+      "responseBytes": 65536,
+      "ttlMs": 60000
+    },
+    "example": {
+      "profile": "provisioned-session-directory/1",
+      "directoryRows": 1,
+      "joinGrantedRows": 0,
+      "hintState": "unverified",
+      "metadataGrantedResourceRoute": false,
+      "localApprovedObservations": 1,
+      "resourceRevokeFencedLateAndQueued": true,
+      "excludedPrivateMetadata": true
+    },
+    "excluded": [
+      "persistent/account-directory",
+      "browser-client-certificate-provisioning",
+      "enrollment/key-lifecycle",
+      "peer-owned-publication",
+      "live-capability-probes",
+      "unmanaged/native-data",
+      "physical-effects",
+      "phones",
+      "multiple-physical-networks",
+      "published-hub-package"
+    ]
+  },
+  "bindings": {
+    "manifest": "release/pointer-bindings-lQFJ9D/manifest.json",
+    "manifestSha256": "037911eea8a31f1621d2f14b16fe46367b96aa4998a02ca7ac7118b706a5ce8b",
+    "sourceTree": "07daddb45c2be5315a45fb823b72da146fdf1851",
+    "toolchains": {
+      "swift": {
+        "version": "6.3.3",
+        "detail": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+        "target": "macos-arm64",
+        "runtime": "darwin"
+      },
+      "c": {
+        "version": "21",
+        "detail": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+        "standard": "C11",
+        "target": "macos-arm64"
+      },
+      "kotlin": {
+        "version": "2.1.21",
+        "compilerSha256": [
+          {
+            "name": "kotlin-compiler-embeddable-2.1.21.jar",
+            "sha256": "67a2e3673765f097725608cc7c843b0d8fdd94bd9af41327211361614aa57d49"
+          },
+          {
+            "name": "kotlin-stdlib-2.1.21.jar",
+            "sha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8"
+          },
+          {
+            "name": "annotations-23.0.0.jar",
+            "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+          },
+          {
+            "name": "trove4j-1.0.20200330.jar",
+            "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d"
+          },
+          {
+            "name": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+            "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+          }
+        ],
+        "stdlibSha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8",
+        "jdk": "21.0.12",
+        "declaredJvmTarget": 17,
+        "qualifiedJvmRuntime": 21,
+        "android": "unqualified"
+      }
+    },
+    "qualifiedTargets": [
+      "swift-macos-arm64",
+      "c-macos-arm64",
+      "kotlin-jvm-jdk21"
+    ],
+    "artifacts": [
+      {
+        "language": "swift",
+        "directory": "swift",
+        "files": [
+          {
+            "path": "LICENSE",
+            "bytes": 1073,
+            "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+          },
+          {
+            "path": "artifact.json",
+            "bytes": 1418,
+            "sha256": "b80e5893981fa867f2306554b5129ba310f7ddc3f672036e2e1b58d3d1a118e3"
+          },
+          {
+            "path": "assets/device-descriptor.schema.json",
+            "bytes": 20096,
+            "sha256": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+          },
+          {
+            "path": "assets/normalized-pointer-v1.json",
+            "bytes": 16233,
+            "sha256": "149af2cdf16a2372db9234e15bf9b14370457e12c2d923a29037eb61654cadc8"
+          },
+          {
+            "path": "assets/profile.json",
+            "bytes": 976,
+            "sha256": "8ecbef18606c9c0f34c6e94ec49f9d67137e18cff406fe13241f7fcd98b30ce9"
+          },
+          {
+            "path": "examples/PointerConsumer.swift",
+            "bytes": 1410,
+            "sha256": "9773baad58f08c14b216b75adc004d78ce9d27a5471db4b2557f87fd5a0507eb"
+          },
+          {
+            "path": "examples/normalized-pointer.mjs",
+            "bytes": 10271,
+            "sha256": "3ae87fafac6f210b2eee76dad2883107fb24c7e88ff4b4b31f47d8adf4fc4b9a"
+          },
+          {
+            "path": "lib/One01PointerWire.abi.json",
+            "bytes": 149,
+            "sha256": "4277ac6b49f8511196028a5ac20f5b1b1dfa754c24615d34068089f0b1739728"
+          },
+          {
+            "path": "lib/One01PointerWire.swiftdoc",
+            "bytes": 652,
+            "sha256": "c85f1c4630319fc6116e5e3c8abf7946b3b0ed7cc3bd7180b4f37c1d04617992"
+          },
+          {
+            "path": "lib/One01PointerWire.swiftmodule",
+            "bytes": 39648,
+            "sha256": "9f37eec7419573d69eae2f0e0d3eb08ec9e83a16f8bbadc30254b8c209dbc5ef"
+          },
+          {
+            "path": "lib/One01PointerWire.swiftsourceinfo",
+            "bytes": 3340,
+            "sha256": "c0643de4577025437c90d352131e7adf278f056f7e02ce91c147661ab8ba9935"
+          },
+          {
+            "path": "lib/libOne01PointerWire.dylib",
+            "bytes": 84472,
+            "sha256": "451c4faac3c1ca08cac0adfb3b5019d7a33b011e603a664ab8555eaa81b0e315"
+          },
+          {
+            "path": "source/Package.swift",
+            "bytes": 375,
+            "sha256": "38e14775d67be6699771cc9faab9ca891a7d9d69050f812b1089ff1b032b49f1"
+          },
+          {
+            "path": "source/Sources/One01PointerWire/PointerWire.swift",
+            "bytes": 2902,
+            "sha256": "cdfe48791bc37056e3b387ce6aeadc4e2e8d133eadb05facd34269eb5540be09"
+          },
+          {
+            "path": "source/Tests/One01PointerWireTests/PointerWireTests.swift",
+            "bytes": 1078,
+            "sha256": "df5ed5ac023c542d962698eaea36d497fd76f17c466364880fb7454b7a4da356"
+          }
+        ],
+        "tarball": {
+          "path": "tarballs/one01-pointer-swift-1.0.0.tgz",
+          "bytes": 48147,
+          "sha256": "9cefc0a4869825b45687429fd5b789f63225251bffdd76c2bff3af45bc76129e"
+        }
+      },
+      {
+        "language": "kotlin",
+        "directory": "kotlin",
+        "files": [
+          {
+            "path": "LICENSE",
+            "bytes": 1073,
+            "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+          },
+          {
+            "path": "artifact.json",
+            "bytes": 2288,
+            "sha256": "37bcb477b6900f74d7b65bd335f2567a1732c9206027792e46e3baf6d23567bc"
+          },
+          {
+            "path": "assets/device-descriptor.schema.json",
+            "bytes": 20096,
+            "sha256": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+          },
+          {
+            "path": "assets/normalized-pointer-v1.json",
+            "bytes": 16233,
+            "sha256": "149af2cdf16a2372db9234e15bf9b14370457e12c2d923a29037eb61654cadc8"
+          },
+          {
+            "path": "assets/profile.json",
+            "bytes": 976,
+            "sha256": "8ecbef18606c9c0f34c6e94ec49f9d67137e18cff406fe13241f7fcd98b30ce9"
+          },
+          {
+            "path": "examples/PointerConsumer.kt",
+            "bytes": 1767,
+            "sha256": "c640c2da3eb3d600d6aedf17bbd602e6052070a5775fe1917b0eb15b4283aab8"
+          },
+          {
+            "path": "examples/normalized-pointer.mjs",
+            "bytes": 10271,
+            "sha256": "3ae87fafac6f210b2eee76dad2883107fb24c7e88ff4b4b31f47d8adf4fc4b9a"
+          },
+          {
+            "path": "lib/one01-pointer-wire.jar",
+            "bytes": 5396,
+            "sha256": "2facf08117fd2598591166246d1b18a21edbf8a783b6df162321112fe5c1528f"
+          },
+          {
+            "path": "source/PointerWire.kt",
+            "bytes": 2143,
+            "sha256": "f4e989a7c5a04a39c1e2d3d4d161506ff6eaa02fe007ee98414e89f0e6556b62"
+          }
+        ],
+        "tarball": {
+          "path": "tarballs/one01-pointer-kotlin-1.0.0.tgz",
+          "bytes": 17930,
+          "sha256": "9e7e952783162e61f3d9a06bdee7d5b89cf18f813b18fad0671d6f72dd04c259"
+        }
+      },
+      {
+        "language": "c",
+        "directory": "c",
+        "files": [
+          {
+            "path": "LICENSE",
+            "bytes": 1073,
+            "sha256": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+          },
+          {
+            "path": "artifact.json",
+            "bytes": 1552,
+            "sha256": "f7216f84f89a159f3aadf25624990709aa7787cbb751fc95ba74e67d1fe8a343"
+          },
+          {
+            "path": "assets/device-descriptor.schema.json",
+            "bytes": 20096,
+            "sha256": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+          },
+          {
+            "path": "assets/normalized-pointer-v1.json",
+            "bytes": 16233,
+            "sha256": "149af2cdf16a2372db9234e15bf9b14370457e12c2d923a29037eb61654cadc8"
+          },
+          {
+            "path": "assets/profile.json",
+            "bytes": 976,
+            "sha256": "8ecbef18606c9c0f34c6e94ec49f9d67137e18cff406fe13241f7fcd98b30ce9"
+          },
+          {
+            "path": "examples/normalized-pointer.mjs",
+            "bytes": 10271,
+            "sha256": "3ae87fafac6f210b2eee76dad2883107fb24c7e88ff4b4b31f47d8adf4fc4b9a"
+          },
+          {
+            "path": "examples/pointer-consumer.c",
+            "bytes": 4234,
+            "sha256": "c209e8490ba4c55eca59d471dcf794741b620086ebc01649390ed0a7d7cfa673"
+          },
+          {
+            "path": "include/one01_pointer_wire.h",
+            "bytes": 1097,
+            "sha256": "0d6619e075e855e97b155fa3188a998b8b073bbbf33600c7516bfe471eebcddd"
+          },
+          {
+            "path": "lib/libone01_pointer_wire.a",
+            "bytes": 4320,
+            "sha256": "ce04761ba2214f426aa386b82ab653b2335c68bbd14da83f88daaa246013cdf5"
+          },
+          {
+            "path": "source/one01_pointer_wire.c",
+            "bytes": 3961,
+            "sha256": "7f3bd5484dba07e86b9d19f61f0bf98270cc2e09d6a6be0670caa8a5f82bf8d4"
+          }
+        ],
+        "tarball": {
+          "path": "tarballs/one01-pointer-c-1.0.0.tgz",
+          "bytes": 15661,
+          "sha256": "a47233889156ba362127f59d03c5dae4b5596c5cf98f84492efb2e0aa0011058"
+        }
+      }
+    ],
+    "consumerProof": [
+      {
+        "language": "swift",
+        "cleanExternalCompiledConsumer": true,
+        "positiveFixtures": 17,
+        "malformedDecodeFixtures": 29,
+        "invalidEncodeFixtures": 12,
+        "commands": 75,
+        "closedAssetsAndHashes": true,
+        "hostLifecycle": {
+          "checks": [
+            "no-selection-no-effect",
+            "selected-current-grant-effect",
+            "replay-epoch-slot-lane-no-effect",
+            "stale-capture-no-effect",
+            "revoked-owner-grant-releases",
+            "stop-detaches-no-effect",
+            "expiry-releases-no-effect",
+            "disconnect-releases-no-effect"
+          ],
+          "nativeCodecAuthority": "none",
+          "hostAuthority": "existing-public-receiver-runtime-local-diagnostic",
+          "nativeRuntimeLifecycle": "unqualified",
+          "transportAuthentication": "unqualified",
+          "physicalEffects": "unqualified"
+        }
+      },
+      {
+        "language": "kotlin",
+        "cleanExternalCompiledConsumer": true,
+        "positiveFixtures": 17,
+        "malformedDecodeFixtures": 29,
+        "invalidEncodeFixtures": 12,
+        "commands": 75,
+        "closedAssetsAndHashes": true,
+        "hostLifecycle": {
+          "checks": [
+            "no-selection-no-effect",
+            "selected-current-grant-effect",
+            "replay-epoch-slot-lane-no-effect",
+            "stale-capture-no-effect",
+            "revoked-owner-grant-releases",
+            "stop-detaches-no-effect",
+            "expiry-releases-no-effect",
+            "disconnect-releases-no-effect"
+          ],
+          "nativeCodecAuthority": "none",
+          "hostAuthority": "existing-public-receiver-runtime-local-diagnostic",
+          "nativeRuntimeLifecycle": "unqualified",
+          "transportAuthentication": "unqualified",
+          "physicalEffects": "unqualified"
+        }
+      },
+      {
+        "language": "c",
+        "cleanExternalCompiledConsumer": true,
+        "positiveFixtures": 17,
+        "malformedDecodeFixtures": 29,
+        "invalidEncodeFixtures": 12,
+        "commands": 75,
+        "closedAssetsAndHashes": true,
+        "hostLifecycle": {
+          "checks": [
+            "no-selection-no-effect",
+            "selected-current-grant-effect",
+            "replay-epoch-slot-lane-no-effect",
+            "stale-capture-no-effect",
+            "revoked-owner-grant-releases",
+            "stop-detaches-no-effect",
+            "expiry-releases-no-effect",
+            "disconnect-releases-no-effect"
+          ],
+          "nativeCodecAuthority": "none",
+          "hostAuthority": "existing-public-receiver-runtime-local-diagnostic",
+          "nativeRuntimeLifecycle": "unqualified",
+          "transportAuthentication": "unqualified",
+          "physicalEffects": "unqualified"
+        }
+      }
+    ],
+    "authority": "inert-codec-only",
+    "exclusions": [
+      "native-runtime-lifecycle",
+      "resource-grants",
+      "identity",
+      "transport-authentication",
+      "physical-effects",
+      "ios",
+      "android",
+      "cross-toolchain-abi",
+      "public-distribution"
+    ],
+    "ownedTemporaryCleanup": true,
+    "roundingRepair": "C integer-bit nearest-ties-even independent of ambient floating environment; clean consumer checks all four rounding modes and unchanged exception/rounding state."
+  },
+  "timing": {
+    "profile": "capture-output-timing/1",
+    "limits": {
+      "defaultSamples": 256,
+      "maximumSamples": 2048,
+      "maximumDurationMs": 60000
+    },
+    "proof": {
+      "node": {
+        "profile": "capture-output-timing/1",
+        "measurement": "JavaScript capture to declared local output commit",
+        "transport": "native local MessageChannel",
+        "distribution": {
+          "profile": "capture-output-timing/1",
+          "capacity": 64,
+          "samples": 64,
+          "accepted": 64,
+          "rejected": 0,
+          "evicted": 0,
+          "closed": false,
+          "maxClockUncertaintyMs": 0.45778866542923424,
+          "stages": {
+            "processing": {
+              "p50": {
+                "minMs": 0.08595040495950661,
+                "maxMs": 0.08596759675967852
+              },
+              "p95": {
+                "minMs": 0.12340465953383689,
+                "maxMs": 0.12342934293408368
+              },
+              "p99": {
+                "minMs": 0.4949505049496233,
+                "maxMs": 0.4950495049506133
+              }
+            },
+            "encoding": {
+              "p50": {
+                "minMs": 0.007041295870368769,
+                "maxMs": 0.007042704270382844
+              },
+              "p95": {
+                "minMs": 0.022163783621835343,
+                "maxMs": 0.022168216821879715
+              },
+              "p99": {
+                "minMs": 0.028580141985827423,
+                "maxMs": 0.028585858585884593
+              }
+            },
+            "transit": {
+              "p50": {
+                "minMs": 0,
+                "maxMs": 0.35151673728825017
+              },
+              "p95": {
+                "minMs": 0.10075289919154784,
+                "maxMs": 0.5019281030647349
+              },
+              "p99": {
+                "minMs": 0.16198070758332506,
+                "maxMs": 0.6359652860081724
+              }
+            },
+            "decoding": {
+              "p50": {
+                "minMs": 0.005957999999964159,
+                "maxMs": 0.005957999999964159
+              },
+              "p95": {
+                "minMs": 0.011832999999995764,
+                "maxMs": 0.011832999999995764
+              },
+              "p99": {
+                "minMs": 0.0558329999999998,
+                "maxMs": 0.0558329999999998
+              }
+            },
+            "sink": {
+              "p50": {
+                "minMs": 2.4317920000000868,
+                "maxMs": 2.4317920000000868
+              },
+              "p95": {
+                "minMs": 2.7881250000000364,
+                "maxMs": 2.7881250000000364
+              },
+              "p99": {
+                "minMs": 2.820166999999998,
+                "maxMs": 2.820166999999998
+              }
+            },
+            "render": {
+              "p50": {
+                "minMs": 1.286833999999999,
+                "maxMs": 1.286833999999999
+              },
+              "p95": {
+                "minMs": 1.3274579999999787,
+                "maxMs": 1.3274579999999787
+              },
+              "p99": {
+                "minMs": 1.4294580000000678,
+                "maxMs": 1.4294580000000678
+              }
+            },
+            "captureToOutput": {
+              "p50": {
+                "minMs": 3.5682283978397322,
+                "maxMs": 4.1828014676468115
+              },
+              "p95": {
+                "minMs": 4.18907325000032,
+                "maxMs": 4.659692260926278
+              },
+              "p99": {
+                "minMs": 4.3111672499999685,
+                "maxMs": 5.02775075000018
+              }
+            }
+          }
+        },
+        "unmatched": 0,
+        "effects": 64,
+        "released": 1,
+        "pendingFrames": 0,
+        "checks": {
+          "selectionBeforeEffect": true,
+          "genuineCodecAndClockExchange": true,
+          "currentSinkEffect": true,
+          "allStageQuantiles": true,
+          "uncertaintyPreserved": true,
+          "aggregateRedaction": true,
+          "releaseAndClosedBuffers": true
+        },
+        "limits": "Serial 64-frame diagnostic workload, not throughput, impairment, physical acquisition or display photon evidence."
+      },
+      "browsers": {
+        "chromium": {
+          "version": "149.0.7827.55",
+          "profile": "capture-output-timing/1",
+          "measurement": "JavaScript capture to declared local output commit",
+          "transport": "native local MessageChannel",
+          "distribution": {
+            "profile": "capture-output-timing/1",
+            "capacity": 64,
+            "samples": 64,
+            "accepted": 64,
+            "rejected": 0,
+            "evicted": 0,
+            "closed": false,
+            "maxClockUncertaintyMs": 0.40138007154496336,
+            "stages": {
+              "processing": {
+                "p50": {
+                  "minMs": 0.09998990564200416,
+                  "maxMs": 0.10000990562313067
+                },
+                "p95": {
+                  "minMs": 0.19998004967874794,
+                  "maxMs": 0.2000200496886847
+                },
+                "p99": {
+                  "minMs": 0.3999600993574959,
+                  "maxMs": 0.4000400993773694
+                }
+              },
+              "encoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0.09998990564200416,
+                  "maxMs": 0.10000990562313067
+                },
+                "p99": {
+                  "minMs": 0.09999014403674379,
+                  "maxMs": 0.10001014406555402
+                }
+              },
+              "transit": {
+                "p50": {
+                  "minMs": 0.07016990361341868,
+                  "maxMs": 0.6007199990285699
+                },
+                "p95": {
+                  "minMs": 0.17165004668368056,
+                  "maxMs": 0.8004199483214336
+                },
+                "p99": {
+                  "minMs": 0.19957980525998664,
+                  "maxMs": 0.8792601897254144
+                }
+              },
+              "decoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0.09999990463256836,
+                  "maxMs": 0.09999990463256836
+                },
+                "p99": {
+                  "minMs": 0.10000014305114746,
+                  "maxMs": 0.10000014305114746
+                }
+              },
+              "sink": {
+                "p50": {
+                  "minMs": 5.200000047683716,
+                  "maxMs": 5.200000047683716
+                },
+                "p95": {
+                  "minMs": 5.599999904632568,
+                  "maxMs": 5.599999904632568
+                },
+                "p99": {
+                  "minMs": 5.799999952316284,
+                  "maxMs": 5.799999952316284
+                }
+              },
+              "render": {
+                "p50": {
+                  "minMs": 5.199999809265137,
+                  "maxMs": 5.199999809265137
+                },
+                "p95": {
+                  "minMs": 9.299999952316284,
+                  "maxMs": 9.299999952316284
+                },
+                "p99": {
+                  "minMs": 15.700000047683716,
+                  "maxMs": 15.700000047683716
+                }
+              },
+              "captureToOutput": {
+                "p50": {
+                  "minMs": 10.352479856944228,
+                  "maxMs": 10.916760095381704
+                },
+                "p95": {
+                  "minMs": 14.093680143046399,
+                  "maxMs": 14.706320286107044
+                },
+                "p99": {
+                  "minMs": 20.50368990461834,
+                  "maxMs": 20.99630985696308
+                }
+              }
+            }
+          },
+          "unmatched": 0,
+          "effects": 64,
+          "released": 1,
+          "pendingFrames": 0,
+          "checks": {
+            "selectionBeforeEffect": true,
+            "genuineCodecAndClockExchange": true,
+            "currentSinkEffect": true,
+            "allStageQuantiles": true,
+            "uncertaintyPreserved": true,
+            "aggregateRedaction": true,
+            "releaseAndClosedBuffers": true
+          },
+          "limits": "Serial 64-frame diagnostic workload, not throughput, impairment, physical acquisition or display photon evidence.",
+          "pageErrors": [],
+          "foreignRequests": []
+        },
+        "firefox": {
+          "version": "151.0",
+          "profile": "capture-output-timing/1",
+          "measurement": "JavaScript capture to declared local output commit",
+          "transport": "native local MessageChannel",
+          "distribution": {
+            "profile": "capture-output-timing/1",
+            "capacity": 64,
+            "samples": 64,
+            "accepted": 64,
+            "rejected": 0,
+            "evicted": 0,
+            "closed": false,
+            "maxClockUncertaintyMs": 0.10271027102726293,
+            "stages": {
+              "processing": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0.9999000099990001,
+                  "maxMs": 1.000100010001
+                },
+                "p99": {
+                  "minMs": 0.9999000099990001,
+                  "maxMs": 1.000100010001
+                }
+              },
+              "encoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p99": {
+                  "minMs": 0.9999000099990001,
+                  "maxMs": 1.000100010001
+                }
+              },
+              "transit": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0.06590659065909676
+                },
+                "p95": {
+                  "minMs": 0.9708000000000538,
+                  "maxMs": 1.0258000000000038
+                },
+                "p99": {
+                  "minMs": 0.9994999899989807,
+                  "maxMs": 1.092200000000048
+                }
+              },
+              "decoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p99": {
+                  "minMs": 0,
+                  "maxMs": 0
+                }
+              },
+              "sink": {
+                "p50": {
+                  "minMs": 6,
+                  "maxMs": 6
+                },
+                "p95": {
+                  "minMs": 7,
+                  "maxMs": 7
+                },
+                "p99": {
+                  "minMs": 7,
+                  "maxMs": 7
+                }
+              },
+              "render": {
+                "p50": {
+                  "minMs": 4,
+                  "maxMs": 4
+                },
+                "p95": {
+                  "minMs": 11,
+                  "maxMs": 11
+                },
+                "p99": {
+                  "minMs": 13,
+                  "maxMs": 13
+                }
+              },
+              "captureToOutput": {
+                "p50": {
+                  "minMs": 9.978697869787084,
+                  "maxMs": 10.095509550955285
+                },
+                "p95": {
+                  "minMs": 15.999599999999987,
+                  "maxMs": 16.000400000000013
+                },
+                "p99": {
+                  "minMs": 17.966896689669056,
+                  "maxMs": 18.099109910991046
+                }
+              }
+            }
+          },
+          "unmatched": 0,
+          "effects": 64,
+          "released": 1,
+          "pendingFrames": 0,
+          "checks": {
+            "selectionBeforeEffect": true,
+            "genuineCodecAndClockExchange": true,
+            "currentSinkEffect": true,
+            "allStageQuantiles": true,
+            "uncertaintyPreserved": true,
+            "aggregateRedaction": true,
+            "releaseAndClosedBuffers": true
+          },
+          "limits": "Serial 64-frame diagnostic workload, not throughput, impairment, physical acquisition or display photon evidence.",
+          "pageErrors": [],
+          "foreignRequests": []
+        },
+        "webkit": {
+          "version": "26.5",
+          "profile": "capture-output-timing/1",
+          "measurement": "JavaScript capture to declared local output commit",
+          "transport": "native local MessageChannel",
+          "distribution": {
+            "profile": "capture-output-timing/1",
+            "capacity": 64,
+            "samples": 64,
+            "accepted": 64,
+            "rejected": 0,
+            "evicted": 0,
+            "closed": false,
+            "maxClockUncertaintyMs": 0.5996099609960766,
+            "stages": {
+              "processing": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0.9999000099990001,
+                  "maxMs": 1.000100010001
+                },
+                "p99": {
+                  "minMs": 0.9999000099990001,
+                  "maxMs": 1.000100010001
+                }
+              },
+              "encoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p99": {
+                  "minMs": 0,
+                  "maxMs": 0
+                }
+              },
+              "transit": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 1.0165016501649973
+                },
+                "p95": {
+                  "minMs": 0.9502999999999702,
+                  "maxMs": 2.04970000000003
+                },
+                "p99": {
+                  "minMs": 0.9996000000000294,
+                  "maxMs": 2.0901000000000067
+                }
+              },
+              "decoding": {
+                "p50": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p95": {
+                  "minMs": 0,
+                  "maxMs": 0
+                },
+                "p99": {
+                  "minMs": 1,
+                  "maxMs": 1
+                }
+              },
+              "sink": {
+                "p50": {
+                  "minMs": 8,
+                  "maxMs": 8
+                },
+                "p95": {
+                  "minMs": 9,
+                  "maxMs": 9
+                },
+                "p99": {
+                  "minMs": 9,
+                  "maxMs": 9
+                }
+              },
+              "render": {
+                "p50": {
+                  "minMs": 11,
+                  "maxMs": 11
+                },
+                "p95": {
+                  "minMs": 18,
+                  "maxMs": 18
+                },
+                "p99": {
+                  "minMs": 20,
+                  "maxMs": 20
+                }
+              },
+              "captureToOutput": {
+                "p50": {
+                  "minMs": 19.96799679968001,
+                  "maxMs": 21.00440000000026
+                },
+                "p95": {
+                  "minMs": 25.92039203920399,
+                  "maxMs": 26.084799999999973
+                },
+                "p99": {
+                  "minMs": 26.905500000000075,
+                  "maxMs": 28.094499999999925
+                }
+              }
+            }
+          },
+          "unmatched": 0,
+          "effects": 64,
+          "released": 1,
+          "pendingFrames": 0,
+          "checks": {
+            "selectionBeforeEffect": true,
+            "genuineCodecAndClockExchange": true,
+            "currentSinkEffect": true,
+            "allStageQuantiles": true,
+            "uncertaintyPreserved": true,
+            "aggregateRedaction": true,
+            "releaseAndClosedBuffers": true
+          },
+          "limits": "Serial 64-frame diagnostic workload, not throughput, impairment, physical acquisition or display photon evidence.",
+          "pageErrors": [],
+          "foreignRequests": []
+        }
+      }
+    },
+    "scope": "Offline compiled public SDK and native local MessagePorts; actual Node output and browser DOM commit/frame boundary. No physical phone, network, throughput or photon evidence.",
+    "consumer": "/private/tmp/101-sdk-consumer-tmyq2b",
+    "qaTool": {
+      "path": "tools/qa-pipeline-timing-packed.mjs",
+      "sha256": "e79a95ddec211a2ec292d7b05cc1c18d564114b2a8218d77733ed2650f997879"
+    },
+    "callerSha256": "194326c62d6d7928e24ae93288863f570d374520979d811ee91bb3861acdb7f6"
+  },
+  "independentReviews": [
+    {
+      "scope": "D06 eight paths and public/dependency hooks",
+      "tree": "20bfd1893384519a4b4c01afce2d9af75f8b9a42",
+      "result": "clear",
+      "actualRetirementProbes": 4,
+      "reviewProbeNode": "24.19.0",
+      "qaAdapterDeltaSha256": "bedd561b548a1a507d7b84ea404a82885db99b2e1a83542703e3896ec334364b"
+    },
+    {
+      "scope": "F02 collector and actual binding timing hooks",
+      "initialTree": "2cb2ede7711c6c0e6ac9a7333e8e297da3401ded",
+      "initialResult": "revise",
+      "findings": [
+        "Callback before pending/dequeue retirement duplicated accepted wire sequence",
+        "Linear drift upper bound excluded lawful slow clock"
+      ],
+      "repairedTree": "07daddb45c2be5315a45fb823b72da146fdf1851",
+      "result": "clear",
+      "retainedProbesPassed": 3,
+      "reviewProbeNode": "24.19.0",
+      "qaAdapterDeltaSha256": "e79a95ddec211a2ec292d7b05cc1c18d564114b2a8218d77733ed2650f997879"
+    },
+    {
+      "scope": "Native binding fifteen paths and narrow C repair",
+      "initialTree": "2cb2ede7711c6c0e6ac9a7333e8e297da3401ded",
+      "initialResult": "revise",
+      "finding": "Ambient FE_UPWARD violated public nearest-float32 bytes and coordinate error limit",
+      "repairedTree": "07daddb45c2be5315a45fb823b72da146fdf1851",
+      "result": "clear",
+      "independentBoundaryInputs": 50,
+      "roundingModes": 4,
+      "exactPublicOracleWireMatches": 200,
+      "floatingExceptionAndRoundingStatePreserved": true
+    }
+  ],
+  "regressions": {
+    "directoryOriginalNativeMtls": "/tmp/101-private-directory-mtls-original-red.log",
+    "directoryInternalRetirement": "/tmp/101-private-directory-callback-red.log",
+    "directoryActualCallerCleanup": "/tmp/101-private-directory-caller-cleanup-red.log",
+    "pipelineMissingApi": "/tmp/101-pipeline-timing-original-red.log",
+    "oldActualBindingNoTiming": "/tmp/101-wire-timing-original-red.log",
+    "pipelineReentrantDuplicate": "/tmp/101-pipeline-timing-reentrancy-red.log",
+    "pipelineSlowClockBounds": "/tmp/101-pipeline-timing-drift-red.log",
+    "pipelineFocusedGreen": {
+      "path": "/tmp/101-pipeline-timing-fixes-green.log",
+      "passed": 34
+    },
+    "nativeMissingExternalApi": "/tmp/101-pointer-bindings-api-red.log",
+    "nativeMissingFixture": "/tmp/101-pointer-bindings-fixture-red.log",
+    "nativeRoundingOldConsumer": {
+      "executable": "/tmp/101-pointer-rounding-red",
+      "sha256": "f7422e4a8c6725e125c24ae785e97c2b8133a65b399b5721f46e98124cade052",
+      "exitCode": 5,
+      "oldCLibraryTree": "2cb2ede7711c6c0e6ac9a7333e8e297da3401ded",
+      "repairedConsumerExitCode": 0
+    },
+    "qaAdapterCorrections": {
+      "directory": "Preserved ERR_PACKAGE_PATH_NOT_EXPORTED from CommonJS resolution; repaired via native public ESM import-condition resolution, installed package realpath fenced.",
+      "timing": "Preserved missing files-list error in consumer receipt; reads receipt-hashed manifest and verifies each actual installed JS file.",
+      "native": "Preserved ArrayBuffer-to-Uint8Array.from caller error and false callback-withdrawal revocation assumption; real retained Connection public runtime.revoke now used."
+    }
+  },
+  "requiredCommitGates": [
+    "npx tsc --noEmit",
+    "npm run lint",
+    "npm run test:unit",
+    "npm run build",
+    "node --test tests/rendered-html.test.mjs"
+  ],
+  "gateEvidence": "Exact final candidate tree, gate logs, counts and fresh build ID are recorded by the integrating commit after these metadata files are frozen.",
+  "limitations": [
+    "D06, E12 and K03 remain unchecked for the broader scopes stated above.",
+    "No phone/Mirroring/OS pointer/hardware/assistive screen-reader or physical display qualification.",
+    "No Node22/JDK17/additional native ABI requalification; source Node hub is separate from seven packed SDK packages.",
+    "Timing observer metadata is opted-in and local; aggregate collector contains no payload/session identifier and creates no permission.",
+    "Serial64-frame MessageChannel timing workload is not an impaired-network, throughput or physical latency benchmark.",
+    "Source tree identifies frozen implementation; exact final metadata/gate tree is recorded separately."
+  ],
+  "published": false
+}

@@ -184,4 +184,6 @@ function applyCors(response: ServerResponse, origin: string) {
 function formatHost(host: string) { return host.includes(":") && !host.startsWith("[") ? `[${host}]` : host; }
 
 export { createHttpsCoordinator, createCoordinatorFetcher, HTTPS_COORDINATOR_LIMITS } from './https-coordinator.ts';
+export { createPrivateDirectoryClient } from './private-directory.ts';
+export type { ProvisionedDirectoryResource, PrivateDirectoryClientOptions } from './private-directory.ts';
 export type { HttpsCoordinatorOptions, CoordinatorEnrollment, CoordinatorFetcherOptions } from './https-coordinator.ts';

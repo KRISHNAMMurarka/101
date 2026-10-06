@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 102 completed with recorded evidence; 170 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 103 completed with recorded evidence; 169 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -119,7 +119,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **D03 — Integrate OS/browser choosers.** HID/BLE/serial/camera/audio selection remains permissioned; cancellation, denial, disappearance and retry produce recoverable states.
 - [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal.
 - [ ] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features.
-- [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks.
+- [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [ ] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible.
 - [ ] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning.
 - [ ] **D09 — Secure discovery metadata/links.** Bound parsing and rate, reject unrestricted URL fetching, redirects/credential forwarding and identity spoofing; discovery grants no operation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
@@ -273,7 +273,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **E09 — Provide third-party conformance SDK.** Connector/processor tests validate manifest, schemas, lifecycle, permissions, limits, feedback and test evidence independently of 101. [SDK contract and local runtime evidence](receipts/2026-10-06-e09-conformance.json).
 - [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 - [x] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access. [Local signed package workflow and packed runtime evidence](receipts/2026-10-06-profiles-data-catalog.json).
-- [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior.
+- [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [ ] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency.
 - [x] **E14 — Provide machine-readable developer guidance.** Schemas, complete example recipes, package manifests and contextual instructions let developers/AI tools generate validated projects; explanatory text cannot grant privileges or execute code. [Generated guidance and fresh consumer evidence](receipts/2026-10-05-e14-developer-guidance.json).
 
@@ -296,7 +296,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### F — Performance, latency, workload limits and reliability
 
 - [x] **F01 — Define measured workload/SLO profiles.** Set supported route/device/session counts, sample/event/media rates and latency/loss/skew budgets before making performance claims. [Workload contract](RELEASE-CONTRACT.md#workload-and-performance-profiles).
-- [ ] **F02 — Instrument capture-to-output timing.** Capture, processing, encoding, transit, decoding and sink/render yield P50/P95/P99 with clock uncertainty; displayed ping is not finger-to-pixel evidence.
+- [x] **F02 — Instrument capture-to-output timing.** Capture, processing, encoding, transit, decoding and sink/render yield P50/P95/P99 with clock uncertainty; displayed ping is not finger-to-pixel evidence. [Selected instrumentation and packed runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); physical/network qualification remains separate.
 - [x] **F03 — Measure full payload cost.** Record encoded bytes, transport overhead, packets/rate, quantization error and resource negotiations for each fast profile. [Pointer profile measurement](receipts/2026-10-05-f03-pointer-cost.json).
 - [ ] **F04 — Optimize demonstrated bottlenecks.** Compare cadence, coalescing, compact codecs, copy/allocation and processing placement against reproducible workloads; preserve transitions and security checks.
 - [ ] **F05 — Implement fair scheduling/quotas.** One resource, session or slow recipient cannot monopolize controls; per-scope CPU/bytes/work limits remain bounded under contention.
@@ -363,7 +363,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 
 - [x] **K01 — Build installable SDK distributions.** Emit versioned JavaScript, types and schemas with defined exports/module support; workspace TypeScript links are not the public distribution. [Original packed consumer evidence](receipts/2026-10-03-sdk-consumer.json) and [current six-package requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
 - [x] **K02 — Verify a clean external SDK consumer.** Install packed artifacts outside the repository without workspace links; compile and run examples on supported toolchains. [Node 22.13 consumer](receipts/2026-10-03-sdk-consumer-node22.json) and [Node 24.14 consumer](receipts/2026-10-03-sdk-consumer.json) used the same [source-bound package set](receipts/2026-10-03-sdk-distribution-manifest.json). [Current six-package Node22/24 requalification](receipts/2026-10-05-p04-landmark-processors.json). [Keyboard/text consumer requalification](receipts/2026-10-05-i05-keyboard-text.json).
-- [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata.
+- [ ] **K03 — Verify native-language distributions.** Swift/Kotlin/C artifacts and their clean consumers share conformance fixtures and include required assets/metadata. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [ ] **K04 — Produce standalone Android Release artifacts.** Intended signing and install/update/cold launch/deep link/permissions work without Metro or another development server.
 - [ ] **K05 — Produce standalone iOS/iPadOS/watchOS artifacts.** Intended release identities/profiles and embedded companions verify; install/update/relaunch behavior passes the selected distribution route.
 - [ ] **K06 — Produce desktop installers.** macOS, Windows and Linux packages have required platform signing/notarization where applicable plus target-OS install/update/uninstall receipts.

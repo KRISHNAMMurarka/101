@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "profile": "normalized-pointer-bindings/1",
+  "version": "1.0.0",
+  "codec": "normalized-pointer/1",
+  "packetBytes": 48,
+  "byteOrder": "big-endian",
+  "lane": "disposable",
+  "inputProfile": "app:pointer/1",
+  "capability": "position",
+  "coordinateAbsoluteError": 2.9802322387695312e-8,
+  "limits": { "positiveFixtures": 32, "negativeFixtures": 64, "invalidEncodeFixtures": 16, "fixtureBytes": 49152, "consumerCommands": 128, "consumerLineBytes": 4096 },
+  "authority": "inert-codec-only",
+  "qualifiedTargets": ["swift-macos-arm64", "c-macos-arm64", "kotlin-jvm-jdk21"],
+  "excluded": ["native-runtime-lifecycle", "resource-grants", "identity", "transport-authentication", "physical-effects", "ios", "android", "cross-toolchain-abi", "public-distribution"],
+  "runtimeDependencies": { "swift": "Foundation", "c": "C11 standard library and IEEE binary32/binary64", "kotlin": "Kotlin stdlib 2.1.21; JVM target17 declared, tested on JDK21 only" }
+}

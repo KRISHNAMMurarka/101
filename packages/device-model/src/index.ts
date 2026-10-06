@@ -29,6 +29,8 @@ export { createDeadzoneMapper, createHysteresisEdgeProcessor, createLatestResamp
 export type { DeadzoneOptions, HysteresisOptions, ResamplerOptions, HysteresisEdge, HysteresisEdgeProcessor, LatestResampler } from './generic-processors.ts';
 export { parseObservationTiming, observationAgeBounds, compareClockStamps } from './observation-timing.ts';
 export type { ClockStamp, CaptureMapping, ProcessorTimingStep, ObservationTiming } from './observation-timing.ts';
+export { createPipelineTimingCollector, PIPELINE_TIMING_PROFILE, PIPELINE_TIMING_LIMITS } from './pipeline-timing.ts';
+export type { PipelineTimingTrace, PipelineTimingInterval, PipelineTimingStage, PipelineTimingDistribution, PipelineTimingSnapshot, PipelineTimingCollector } from './pipeline-timing.ts';
 export { parseDeviceHealthReport, assessDeviceHealth } from './health.ts';
 export type { DeviceHealthFault, DeviceHealthResource, DeviceHealthReport, DeviceHealthAssessment } from './health.ts';
 export { planDescriptorEvolution } from './evolution.ts';
@@ -63,6 +65,8 @@ export { PROCESSOR_EXTENSION_PROFILE, PROCESSOR_EXTENSION_LIMITS, parseProcessor
 export type { UnsignedProcessorExtensionRelease, ProcessorExtensionRelease } from './extension-release.ts';
 
 export { parseConnectorProfileManifest, CONNECTOR_PROFILE_LIMITS } from './connector-profile.ts';
+export { PRIVATE_DIRECTORY_PROFILE, PRIVATE_DIRECTORY_LIMITS, parsePrivateDirectorySnapshot, privateDirectoryCandidates } from './private-directory.ts';
+export type { PrivateDirectoryCapability, PrivateDirectoryResource, PrivateDirectorySnapshot } from './private-directory.ts';
 export type { ConnectorProfileManifest, ConnectorProfileResource, ConnectorIdentityFilter, ConnectorFraming, ConnectorCommandPolicy, ConnectorCalibration } from './connector-profile.ts';
 
 export { LOCAL_PACKAGE_CATALOG_PROFILE, LOCAL_PACKAGE_CATALOG_LIMITS, parseCatalogSubmission, catalogSubmissionSigningBytes, catalogSubmissionSha256, verifyCatalogSubmission, parseCatalogReviewAttestation, catalogReviewSigningBytes, verifyCatalogReviewAttestation, catalogSha256, catalogReleaseSha256, catalogProcessorReportPassed, verifyCatalogSignature } from './package-catalog.ts';

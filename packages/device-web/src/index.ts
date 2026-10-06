@@ -1,7 +1,7 @@
 export { decodePacket, encodePacket } from './wire.ts';
 export type { WireCodec, WireControl, WirePacket, WireValue } from './wire.ts';
 export { RemoteResourcePublisher, RemoteResourceReceiver } from './binding.ts';
-export type { RemoteApproval, RemotePublisherOptions, RemoteReceiverOptions, ResourcePeer } from './binding.ts';
+export type { RemoteApproval, RemotePublisherOptions, RemoteReceiverOptions, ResourcePeer, RemoteValueTiming } from './binding.ts';
 export { PointerSourceDriver } from './pointer-driver.ts';
 export type { PointerPosition, PointerSourceDriverOptions, PointerSourceState } from './pointer-driver.ts';
 export { PointerResourceProvider, pointerSourceDescriptor } from './pointer-provider.ts';

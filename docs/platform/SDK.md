@@ -1300,7 +1300,8 @@ consumers, including Node consumers, need `ES2022`, `DOM` and `DOM.Iterable` in
 their configured libraries. Node 24.14.0 and TypeScript 5.9.3 are verified here; the declared
 Node 22.13 minimum, other compiler/OS toolchains and physical WebRTC are unverified.
 These are local dry runs of the current API, with no registry publication.
-Swift/Kotlin/C bindings and complete future API/platform qualification remain open.
+Selected Swift/Kotlin/C pointer codecs are built separately below. Full native runtime
+bindings and future API/platform qualification remain open.
 
 The application collector is separate: `npm run package:release -- --release web hub`
 requires every selected production target and exits nonzero on any skip. Each
@@ -1342,3 +1343,95 @@ The finite ceilings include 64 enrollments, sixteen origins/sessions, four sessi
 The public `@101/connect/examples/application-views` caller supplies two common displays and a separately approved owner display from one simulation. Actual packed Chromium/WebKit checks cover canvas pixels, private projection denial, resize, memory bounds, revocation during staging, expiry, renderer failure and teardown. This local typed-frame profile does not claim capture/encoded media, physical monitor behavior or cross-host streaming.
 
 Verification: [foundation QA record](FOUNDATION-QA-2026-10-01.md).
+
+## Provisioned private resource directory
+
+`provisioned-session-directory/1` extends the local Node mTLS coordinator. Trusted
+startup `directoryResources` pin an enrolled principal/device, a parsed descriptor
+and selected capability IDs. An authenticated current host explicitly enrolls a
+resource in its current session, then grants a current joined peer visibility to
+selected resource IDs until expiry. Joining alone returns an empty directory.
+
+`createPrivateDirectoryClient` is a source Node hub export. Its `list`, host-only
+`enroll`, `allow`, `remove`, `revoke` and `close` methods use the actual configured
+TLS caller and role bearer. Construction sends no request; every operation is
+explicit and accepts an optional `AbortSignal`. Close aborts owned requests and
+the native agent. There is no polling, directory cache or persisted authority.
+
+The packed model exports `parsePrivateDirectorySnapshot` and
+`privateDirectoryCandidates`. Responses contain only resource ID, revision,
+reviewed label, selected capability summaries, scope and expiry. Discovery hints
+remain unverified until the host independently verifies their receipt; they do
+not authenticate an endpoint, make a resource ready or grant a runtime route.
+`examples/coordinator/private-directory.ts` demonstrates separate exact runtime
+registrations and resource-owner approval after directory visibility.
+
+The profile permits 32 startup resources, sixteen session resources, eight selected
+capabilities/resource and eight visibility grants/session. Each request fits 8 KiB;
+the complete escaped UTF-8 response fits 64 KiB. Mutations reserve the full future
+response size before commit. Resource/visibility lifetimes last at most sixty
+seconds and are capped by session/certificate expiry. Reconnect retires generation
+visibility; leave, removal, revocation, host rotation and stop retire their scoped
+authority. Re-enrollment does not restore a removed grant. Persistent/account
+directories, enrollment/key lifecycle, peer-owned publication, browser client
+certificates and physical/two-network qualification remain open.
+
+## Native normalized pointer codecs
+
+`normalized-pointer-bindings/1` supplies Swift `One01PointerWire`, Kotlin
+`com.oneohone.pointerwire` and the C `one01_pointer_wire.h` API. They encode/decode
+the existing `normalized-pointer/1` disposable 48-byte big-endian sample. Epoch,
+slot, sequence, finite capture time and normalized coordinates retain the public
+JavaScript codec contract. Decoded values are inert; the existing JS host still
+owns endpoint authentication, selection, freshness, grants and release.
+
+Build from one immutable source tree with
+`node tools/build-pointer-bindings.mjs TREE --sdk-root INSTALLED_CONSUMER --sdk-manifest SDK_MANIFEST`,
+then pass the emitted manifest and the same SDK inputs to
+`node tools/qa-pointer-bindings.mjs BINDING_MANIFEST --sdk-root INSTALLED_CONSUMER --sdk-manifest SDK_MANIFEST`.
+The local tarballs contain compiled artifacts, source, clean callers, MIT license,
+profile, schema, shared producer fixtures and source/toolchain/file hashes.
+
+Qualified here: Swift 6.3.3 and C11/Apple Clang 21 on macOS arm64, plus Kotlin 2.1.21
+on JDK 21. JVM target 17 is declared but was not run on JDK 17. C requires IEEE
+binary32/binary64, rounds coordinates to nearest ties-even independently of the
+caller's rounding mode, and leaves output untouched on invalid input. Kotlin copies
+epoch inputs/getters; Swift handles nonzero-start `Data` slices. iOS, Android,
+other native targets/ABIs, native transport/lifecycle authority and public
+distribution remain unqualified. These selected codecs keep E12/K03 partial.
+
+## Capture-to-output timing
+
+`createPipelineTimingCollector({ capacity })` records complete local timing traces
+under `capture-output-timing/1`. A trace has source capture/final encoding stamps,
+target receipt/decode/apply/render stamps and the actual capture clock mapping.
+Source durations are bounded in the target clock using the declared relative-rate
+limits; transit preserves those bounds and the capture mapping uncertainty.
+Unknown fields, incomplete/reversed/nonfinite stamps, unsupported clock comparisons
+and durations over sixty seconds reject the whole trace. The default latest window
+holds 256 samples; the hard ceiling is 2,048. `snapshot` reports independent
+nearest-rank lower/upper P50/P95/P99 bounds for processing, encoding, transit,
+decoding, sink delivery, render and total capture-to-output, with maximum clock
+uncertainty. Empty windows report null quantiles; rejected and evicted counts stay
+visible. `clear` resets an open window; terminal `close` clears buffers and rejects
+new work. Nothing is persisted or automatically uploaded.
+
+`RemoteResourcePublisher` and `RemoteResourceReceiver` accept optional `onTiming`
+callbacks for actual final encoding and decode boundaries. Default-off hooks add
+no timing clock reads or wire bytes. Only accepted values emit frozen local
+metadata (epoch, slot, sequence and stamps), with no signal payload; callbacks
+cannot grant routes, and observer exceptions do not govern admission. Match these
+local records with actual sink apply/render stamps and the receiver-owned mapping.
+Missing output stages are not estimated or counted as completed traces.
+
+The public `@101/connect/examples/timed-pointer` caller uses actual native local
+MessagePorts, negotiated pointer bytes, clock exchange, explicit host approval and
+current runtime sinks. The caller supplies actual output, release and monotonic
+clock callbacks, owns scheduling, and closes the example on departure. Encoding
+measures the final codec pass; processing includes earlier validation, preflight
+encoding, input work and any coalescing wait. Render ends at the caller-declared
+local output commit; browser QA uses DOM/layout and an owned animation-frame
+boundary. The serial 64-frame Node/three-browser workload is instrumentation
+evidence, not a throughput or network benchmark. JS capture excludes physical
+acquisition, and a frame callback does not prove display photon time. Physical
+phone, assistive, thermal and impaired-network qualification remains separate.

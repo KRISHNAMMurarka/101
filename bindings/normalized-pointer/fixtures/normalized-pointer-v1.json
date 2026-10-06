@@ -1,0 +1,563 @@
+{
+  "schemaVersion": 1,
+  "profile": "normalized-pointer-bindings/1",
+  "codec": "normalized-pointer/1",
+  "descriptor": {
+    "schemaVersion": 1,
+    "id": "touch-surface",
+    "label": "Touch surface",
+    "revision": 1,
+    "adapter": {
+      "id": "app:touch-surface",
+      "version": "1.0.0"
+    },
+    "runtime": {
+      "platform": "language-binding-local-fixture"
+    },
+    "capabilities": [
+      {
+        "id": "position",
+        "semantic": "app:pointer-position/1",
+        "schemaVersion": 1,
+        "kind": "sample",
+        "value": {
+          "type": "vector",
+          "unit": "1",
+          "min": 0,
+          "max": 1,
+          "frame": "surface-normalized",
+          "components": [
+            "x",
+            "y"
+          ]
+        },
+        "delivery": {
+          "mode": "latest",
+          "maxHz": 60,
+          "maxAgeMs": 100
+        },
+        "permissions": [
+          "subscribe"
+        ]
+      },
+      {
+        "id": "contact",
+        "semantic": "app:pointer-contact/1",
+        "schemaVersion": 1,
+        "kind": "event",
+        "value": {
+          "type": "boolean"
+        },
+        "delivery": {
+          "mode": "reliable",
+          "maxAgeMs": 100
+        },
+        "permissions": [
+          "subscribe"
+        ]
+      }
+    ]
+  },
+  "inputProfile": {
+    "id": "app:pointer/1",
+    "capabilities": [
+      {
+        "id": "position",
+        "semantic": "app:pointer-position/1",
+        "schemaVersion": 1,
+        "kind": "sample",
+        "value": {
+          "type": "vector",
+          "unit": "1",
+          "min": 0,
+          "max": 1,
+          "frame": "surface-normalized",
+          "components": [
+            "x",
+            "y"
+          ]
+        },
+        "delivery": {
+          "mode": "latest",
+          "maxHz": 60,
+          "maxAgeMs": 100
+        },
+        "permissions": [
+          "subscribe"
+        ]
+      },
+      {
+        "id": "contact",
+        "semantic": "app:pointer-contact/1",
+        "schemaVersion": 1,
+        "kind": "event",
+        "value": {
+          "type": "boolean"
+        },
+        "delivery": {
+          "mode": "reliable",
+          "maxAgeMs": 100
+        },
+        "permissions": [
+          "subscribe"
+        ]
+      }
+    ],
+    "sinkOperations": {
+      "position": "write",
+      "contact": "write"
+    }
+  },
+  "positive": [
+    {
+      "id": "actual-publisher",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.25,
+          "y": 0.75
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "sample-1",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 128,
+        "sequence": 16909060,
+        "capturedAt": 1234.125,
+        "value": {
+          "x": 0.25,
+          "y": 0.75
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef008000000102030440934880000000003e8000003f40000000000000"
+    },
+    {
+      "id": "sample-2",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "ffffffffffffffffffffffffffffffff",
+        "slot": 1,
+        "sequence": 4294967295,
+        "capturedAt": 1.7976931348623157e+308,
+        "value": {
+          "x": 0,
+          "y": 1
+        }
+      },
+      "hex": "434e0101ffffffffffffffffffffffffffffffff00010000ffffffff7fefffffffffffff000000003f80000000000000"
+    },
+    {
+      "id": "sample-3",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 0,
+        "value": {
+          "x": 1,
+          "y": 0
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef000100000000000100000000000000003f8000000000000000000000"
+    },
+    {
+      "id": "sample-4",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 123456789.12345679,
+        "value": {
+          "x": 0.25,
+          "y": 0.75
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001419d6f34547e6b753e8000003f40000000000000"
+    },
+    {
+      "id": "sample-5",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 1e-7,
+          "y": 1e-7
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f40000000000033d6bf9533d6bf9500000000"
+    },
+    {
+      "id": "sample-6",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 1e-7,
+          "y": 0.9999999
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f40000000000033d6bf953f7ffffe00000000"
+    },
+    {
+      "id": "sample-7",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.123456789,
+          "y": 0.123456789
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003dfcd6ea3dfcd6ea00000000"
+    },
+    {
+      "id": "sample-8",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.123456789,
+          "y": 0.876543211
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003dfcd6ea3f60652300000000"
+    },
+    {
+      "id": "sample-9",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.49999999,
+          "y": 0.49999999
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f0000003f00000000000000"
+    },
+    {
+      "id": "sample-10",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.49999999,
+          "y": 0.5000000099999999
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f0000003f00000000000000"
+    },
+    {
+      "id": "sample-11",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.50000003,
+          "y": 0.50000003
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f0000013f00000100000000"
+    },
+    {
+      "id": "sample-12",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.50000003,
+          "y": 0.49999996999999996
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f0000013effffff00000000"
+    },
+    {
+      "id": "sample-13",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.99999998,
+          "y": 0.99999998
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f8000003f80000000000000"
+    },
+    {
+      "id": "sample-14",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 0.99999998,
+          "y": 1.9999999989472883e-8
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f80000032abcc7700000000"
+    },
+    {
+      "id": "sample-15",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 1,
+          "y": 1
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f8000003f80000000000000"
+    },
+    {
+      "id": "sample-16",
+      "input": {
+        "protocol": "connect",
+        "version": 1,
+        "type": "sample",
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 1000,
+        "value": {
+          "x": 1,
+          "y": 0
+        }
+      },
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f8000000000000000000000"
+    }
+  ],
+  "negative": [
+    {
+      "id": "length-0",
+      "lane": "disposable",
+      "hex": ""
+    },
+    {
+      "id": "length-47",
+      "lane": "disposable",
+      "hex": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "length-49",
+      "lane": "disposable",
+      "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "length-100",
+      "lane": "disposable",
+      "hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "id": "tag-reserved-0",
+      "lane": "disposable",
+      "hex": "414e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-1",
+      "lane": "disposable",
+      "hex": "434c01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-2",
+      "lane": "disposable",
+      "hex": "434e03010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-3",
+      "lane": "disposable",
+      "hex": "434e01030123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-22",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001020000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-23",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000200000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "tag-reserved-44",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000002000000"
+    },
+    {
+      "id": "tag-reserved-45",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000020000"
+    },
+    {
+      "id": "tag-reserved-46",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000200"
+    },
+    {
+      "id": "tag-reserved-47",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000002"
+    },
+    {
+      "id": "slot-0",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0000000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "slot-129",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0081000000000001408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "sequence-zero",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000000408f4000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "time-negative",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001bff00000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "time-nan",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef00010000000000017ff80000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "time-infinity",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef00010000000000017ff00000000000003e8000003f40000000000000"
+    },
+    {
+      "id": "coordinate-36-negative",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f400000000000bdcccccd3f40000000000000"
+    },
+    {
+      "id": "coordinate-36-over-one",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003f8ccccd3f40000000000000"
+    },
+    {
+      "id": "coordinate-36-nan",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000007fc000003f40000000000000"
+    },
+    {
+      "id": "coordinate-36-infinity",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000007f8000003f40000000000000"
+    },
+    {
+      "id": "coordinate-40-negative",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e800000bdcccccd00000000"
+    },
+    {
+      "id": "coordinate-40-over-one",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f8ccccd00000000"
+    },
+    {
+      "id": "coordinate-40-nan",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000007fc0000000000000"
+    },
+    {
+      "id": "coordinate-40-infinity",
+      "lane": "disposable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000007f80000000000000"
+    },
+    {
+      "id": "wrong-lane",
+      "lane": "reliable",
+      "hex": "434e01010123456789abcdef0123456789abcdef0001000000000001408f4000000000003e8000003f40000000000000"
+    }
+  ],
+  "invalidEncode": [
+    "E 0123456789abcdef0123456789abcdef 0 1 1000 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 129 1 1000 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 0 1000 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 4294967296 1000 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 -1 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 NaN 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 Infinity 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 1000 -0.1 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 1000 1.1 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 1000 0.25 NaN",
+    "E 0123 1 1 1000 0.25 0.75",
+    "E 0123456789abcdef0123456789abcdef 1 1 1000 Infinity 0.75"
+  ]
+}

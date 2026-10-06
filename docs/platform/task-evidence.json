@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 75,
+  "revision": 76,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7765,6 +7765,58 @@
       "equipment": [
         "Owned Mac; actual Chromium/WebKit native RTC/WebCrypto/IndexedDB and DOM pointer/keyboard producers; fresh offline public Node SDK install; no physical input claim"
       ]
+    },
+    {
+      "id": "f02-pipeline-timing-2026-10-06",
+      "revision": "07daddb45c2be5315a45fb823b72da146fdf1851",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "F02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-directory-bindings-timing.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Swift6.3.3/AppleClang21/Kotlin2.1.21/JDK21.0.12; owned loopback only",
+      "reproduction": "Build SDK from immutable07daddb45, fresh offline qa-sdk-consumer, qa-private-directory --sdk-root, qa-pipeline-timing-packed, build-pointer-bindings and qa-pointer-bindings with exact matching SDK; required exact commit gates.",
+      "scope": "Complete selected capture-output-timing/1 instrumentation: genuine local MessagePorts, public negotiated pointer producer/receiver and current sinks yield bounded target-relative stage P50/P95/P99 and clock uncertainty. JS capture and caller-declared local output commit are explicit; no physical acquisition/photon, network, throughput or hardware qualification claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; actual Node mTLS/MessagePorts and browser DOM/frame callbacks; fresh installed SDK; actual Swift/C/Kotlin compiled external consumers; no physical device qualification"
+      ]
+    },
+    {
+      "id": "directory-native-bindings-partial-2026-10-06",
+      "revision": "07daddb45c2be5315a45fb823b72da146fdf1851",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D06",
+        "E12",
+        "K03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-directory-bindings-timing.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2 arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Swift6.3.3/AppleClang21/Kotlin2.1.21/JDK21.0.12; owned loopback only",
+      "reproduction": "Build SDK from immutable07daddb45, fresh offline qa-sdk-consumer, qa-private-directory --sdk-root, qa-pipeline-timing-packed, build-pointer-bindings and qa-pointer-bindings with exact matching SDK; required exact commit gates.",
+      "scope": "Partial provisioned-session-directory/1: genuine current mTLS host enrollment and separately selected member visibility expose only bounded inert metadata. Persistent/account directories, provisioning/key lifecycle, peer-owned publication/live inventory and broader browser/physical/network qualification remain open. Partial normalized-pointer-bindings/1 Swift/Kotlin/C inert codec consumers share real public producer fixtures and separate actual JS host currentness checks. Full native runtime, identity, transport authentication, phone/OS/hardware and additional ABI/toolchain qualification remain open. Partial local Swift/Kotlin/C pointer artifact distributions: immutable source, compiled binaries/source, MIT/profile/schema/fixtures/metadata and hashes; clean extracted compiled consumers. Full native-language SDK distributions and target-platform qualification remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; actual Node mTLS/MessagePorts and browser DOM/frame callbacks; fresh installed SDK; actual Swift/C/Kotlin compiled external consumers; no physical device qualification"
+      ]
     }
   ],
   "tasks": [
@@ -8397,12 +8449,14 @@
     {
       "id": "D06",
       "records": [
-        "pending-D06"
+        "pending-D06",
+        "directory-native-bindings-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
         "T01",
-        "S01"
+        "S01",
+        "S05"
       ],
       "equipment": [
         "Named discovery/chooser targets"
@@ -10181,7 +10235,8 @@
       "id": "E12",
       "records": [
         "pending-E12",
-        "native-source-2026-10-02"
+        "native-source-2026-10-02",
+        "directory-native-bindings-partial-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -10429,9 +10484,17 @@
     {
       "id": "F02",
       "records": [
-        "pending-F02"
+        "pending-F02",
+        "f02-pipeline-timing-2026-10-06"
       ],
-      "dependencies": [],
+      "dependencies": [
+        "M08",
+        "T03",
+        "T04",
+        "T05",
+        "T06",
+        "F01"
+      ],
       "equipment": [
         "Exact supported workload hosts; energy/thermal instrumentation"
       ]
@@ -10979,7 +11042,8 @@
     {
       "id": "K03",
       "records": [
-        "pending-K03"
+        "pending-K03",
+        "directory-native-bindings-partial-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [
