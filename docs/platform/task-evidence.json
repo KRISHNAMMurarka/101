@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 78,
+  "revision": 79,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -7973,6 +7973,88 @@
         "Owned Mac; fresh offline installed seven-package SDK; genuine Node RSS producer and managed owner producers; actual filesystem and IndexedDB; headless owned loopback browsers"
       ],
       "supportRows": []
+    },
+    {
+      "id": "d05-live-inventory-2026-10-06",
+      "revision": "5362de9ceeaf8780124908409411f04e1c73d847",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-inventory-invitation-linux.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Expo57.0.12 JS/source maps. Actual Linux6.10.14-linuxkit/arm64 Node24.21.0, Docker28.4.0 cached image6dac556d; no-network nonroot cgroup256MiB/32PID/0.5CPU.",
+      "reproduction": "build-sdk 5362de9ceeaf8780124908409411f04e1c73d847; fresh qa-sdk-consumer; qa-capability-inventory --sdk-root; qa-invitation-connection --sdk-root; qa-headless-linux --sdk-root --candidate-tree; offline Expo strict JS/source maps; exact candidate commit gates.",
+      "scope": "complete: selected genuine Node RSS and enabled-state live read/subscribe inventory; unsupported controls/OS/physical claims remain absent. Two actual producers, exact separately granted routes, bounded provenance, honest unsupported labels/operations, expiry/loss cleanup.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; actual Node RSS producers; owned loopback TLS/headless browsers; existing local Linux ARM64 container runtime/cached image"
+      ],
+      "supportRows": [
+        "inventory-node-rss-selected-2026-10-06"
+      ]
+    },
+    {
+      "id": "n12-linux-headless-2026-10-06",
+      "revision": "5362de9ceeaf8780124908409411f04e1c73d847",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-inventory-invitation-linux.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Expo57.0.12 JS/source maps. Actual Linux6.10.14-linuxkit/arm64 Node24.21.0, Docker28.4.0 cached image6dac556d; no-network nonroot cgroup256MiB/32PID/0.5CPU.",
+      "reproduction": "build-sdk 5362de9ceeaf8780124908409411f04e1c73d847; fresh qa-sdk-consumer; qa-capability-inventory --sdk-root; qa-invitation-connection --sdk-root; qa-headless-linux --sdk-root --candidate-tree; offline Expo strict JS/source maps; exact candidate commit gates.",
+      "scope": "complete: selected bounded Linux ARM64 software sensor and command with actual installed client. Actual cached immutable-image Linux runtime, cgroup limits, typed RSS/sampling, native ACK plus separately observed state, raw unsettled reservations, revoke/loss/fresh recovery and byte-bound regressions.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; actual Node RSS producers; owned loopback TLS/headless browsers; existing local Linux ARM64 container runtime/cached image"
+      ],
+      "supportRows": [
+        "linux-node-rss-selected-2026-10-06"
+      ]
+    },
+    {
+      "id": "d02-invitation-connection-partial-2026-10-06",
+      "revision": "5362de9ceeaf8780124908409411f04e1c73d847",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-inventory-invitation-linux.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3/Playwright1.61.1; Chromium149.0.7827.55/Firefox151.0/WebKit26.5; Expo57.0.12 JS/source maps. Actual Linux6.10.14-linuxkit/arm64 Node24.21.0, Docker28.4.0 cached image6dac556d; no-network nonroot cgroup256MiB/32PID/0.5CPU.",
+      "reproduction": "build-sdk 5362de9ceeaf8780124908409411f04e1c73d847; fresh qa-sdk-consumer; qa-capability-inventory --sdk-root; qa-invitation-connection --sdk-root; qa-headless-linux --sdk-root --candidate-tree; offline Expo strict JS/source maps; exact candidate commit gates.",
+      "scope": "PARTIAL partial: independently enrolled fixed receiver; enrolled-agent discovery and optical/physical qualification remain open. Real TLS/CA/hostname and bilateral P256, exact connection scope/currentness, inert genuine manual/link/QR text, source-owner/receiver/runtime grant separation, quiet expiry and fresh explicit retry. No optical scan or discovered agent claimed.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; fresh offline installed seven-package SDK; actual Node RSS producers; owned loopback TLS/headless browsers; existing local Linux ARM64 container runtime/cached image"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -8549,7 +8631,8 @@
     {
       "id": "D02",
       "records": [
-        "pending-D02"
+        "pending-D02",
+        "d02-invitation-connection-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -8591,7 +8674,8 @@
     {
       "id": "D05",
       "records": [
-        "pending-D05"
+        "pending-D05",
+        "d05-live-inventory-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -9085,7 +9169,8 @@
     {
       "id": "N12",
       "records": [
-        "pending-N12"
+        "pending-N12",
+        "n12-linux-headless-2026-10-06"
       ],
       "dependencies": [
         "C01",

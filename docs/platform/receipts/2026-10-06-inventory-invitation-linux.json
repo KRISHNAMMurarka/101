@@ -1,0 +1,567 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "c4e28210cad1c74c43016b638be9e6412c13d0da",
+  "sourceTree": "5362de9ceeaf8780124908409411f04e1c73d847",
+  "sourceSha256": {
+    "examples/device-profiles/live-inventory.mjs": "2cb30ea19b50d84c2932129b359c3dd8e73cf6136aec58a618926cf679dfacb2",
+    "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+    "packages/device-runtime/src/capability-inventory.test.ts": "d0d8a348a85caced9daa3a9eb63b026d285c87f6593fbddbe6d219da4171df77",
+    "packages/device-runtime/src/index.ts": "34a9aac361284dec977eb423c0b05bf15df0b1bc7ead11cd5e2aa6a657567fa6",
+    "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+    "packages/device-web/src/invitation-connection.test.ts": "a2b41f29bc0bac232a0c9db143f13b0a808d83eeb98397a8e11df57ed791c843",
+    "packages/device-web/src/index.ts": "cfc9984033f82735b5cfa2657657f3602f49a0e42e21097e3609c204734c5929",
+    "examples/device-pipelines/invitation-connection.ts": "6e043c32b3bbe515b8998c3de1ca10cc188bb8ae89997d0bb41270ce44bc156d",
+    "examples/headless-linux/client.mjs": "bdcb76b68c2331d38e12d72558d07a7802c6a65eeb9da3bd189115802db153ca",
+    "examples/headless-linux/process-port.mjs": "6b341c769c7196a4a7a4f5834278892c9ecfa8badce2d976a4358d96b1ffdf1c",
+    "tools/qa-capability-inventory.mjs": "c8b1d3e71ab572b5065426b06014410e11de6ca8402daf6873ea9e4fc6a8a5b3",
+    "tools/qa-invitation-connection.mjs": "6fad943020733e613e4bf5794d4e9e1e4d433c1f5a857150fb56545a7eaeb1a3",
+    "tools/qa-headless-linux.mjs": "b7568d42df655fa9e790b9660265bba487578c6c5d26107c40c2369b51dec930",
+    "tools/build-sdk.mjs": "139fd711e7442ff621c045c53f0a438145c8adb9197c20c4232e0b7991ae66f4",
+    "tools/qa-sdk-consumer.mjs": "1bef0ec05fb93895ab903aac1a7e7769c3890a18afe7bd4dc57c6756a993eb8a"
+  },
+  "taskDisposition": {
+    "D05": "complete: selected genuine Node RSS and enabled-state live read/subscribe inventory; unsupported controls/OS/physical claims remain absent",
+    "N12": "complete: selected bounded Linux ARM64 software sensor and command with actual installed client",
+    "D02": "partial: independently enrolled fixed receiver; enrolled-agent discovery and optical/physical qualification remain open"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 106,
+    "open": 166
+  },
+  "environment": {
+    "host": "macOS26.5.2arm64",
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "expo": "57.0.12",
+    "linuxNode": "24.21.0",
+    "linuxKernel": "6.10.14-linuxkit",
+    "linuxArch": "arm64",
+    "dockerEngine": "28.4.0"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "release/sdk-Ieip9P/manifest.json",
+      "sha256": "f77bf2c7c1cb2274677c61764a16ffa6e0a118934b14827f0eb5f2398f319acd",
+      "bytes": 73779
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-MhcO0a/receipt.json",
+      "sha256": "20a1d463e84256a43add1a13979cfee799256a424b1c57e3e66b58a0cd4236bf",
+      "bytes": 29223
+    },
+    "sourceFiles": 138,
+    "packages": 7,
+    "packedFiles": 308,
+    "checks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass",
+        "packages": 7,
+        "files": 309,
+        "symlinks": 0,
+        "aliases": 0
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass",
+        "skipLibCheck": false,
+        "pathAliases": false,
+        "consumerCompilerInstalled": false
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass",
+        "source": [
+          {
+            "path": "packages/devkit/src/device-scaffold.ts",
+            "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+          },
+          {
+            "path": "tools/create-device-project.mjs",
+            "sha256": "b7787ad96b49627db4249fcabc045d5b749645f8831efd6d2a0fc3f0fd4e84f6"
+          }
+        ],
+        "project": "/tmp/101-sdk-consumer-MhcO0a/generated-device-project",
+        "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+        "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+        "guidance": {
+          "schema": "device-guidance.schema.json",
+          "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+          "generatedAssets": [
+            {
+              "path": "device-guidance.json",
+              "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+            },
+            {
+              "path": "device-guidance.schema.json",
+              "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+            },
+            {
+              "path": "src/devices.json",
+              "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+            },
+            {
+              "path": "src/recipe.json",
+              "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+            },
+            {
+              "path": "scripts/validate.mjs",
+              "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+            }
+          ],
+          "validation": {
+            "status": "pass",
+            "recipeId": "room-sensor:temperature-display",
+            "processorId": "room-sensor:threshold",
+            "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+          },
+          "rejectedAssets": [
+            "unknown-recipe-field",
+            "changed-processor-source",
+            "incompatible-selected-device"
+          ],
+          "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+        },
+        "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "actualNodeMemoryBatch": true,
+        "publicSchemas": true,
+        "privateSubpathsRejected": 18,
+        "packedRunEntry": true
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass",
+        "version": "149.0.7827.55",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouch": true,
+          "independentRelease": true,
+          "capturedOutsideBounds": true,
+          "resizeCancellation": true,
+          "orientationCancellation": true,
+          "disconnectCaptureRelease": true,
+          "unmountCaptureRelease": true
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised",
+          "trustedProtocolMultiTouchScroll": true,
+          "cancellation": true
+        }
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass",
+        "version": "151.0",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass",
+        "version": "26.5",
+        "embeddedPointer": true,
+        "embeddedSensorFeedback": true,
+        "threshold": true,
+        "structuredBatch": true,
+        "explicitBatchMigration": true,
+        "explicitUnitConversion": true,
+        "motionProcessors": true,
+        "visionProcessors": true,
+        "keyboardTextSource": true,
+        "touchContactSource": true,
+        "richInputEvents": true,
+        "resourceDocuments": true,
+        "mediaDescription": true,
+        "measurementQuality": true,
+        "observationTiming": true,
+        "deviceHealth": true,
+        "descriptorEvolution": true,
+        "discoveryEvidence": true,
+        "invitationLink": true,
+        "operationSemantics": true,
+        "moduleIdentity": true,
+        "webCryptoSignVerify": true,
+        "invitationExpiry": true,
+        "directTransportAcceptedByFacade": true,
+        "physicalWebRTC": "not-exercised",
+        "publicSchemas": true,
+        "privateSubpathsRejected": 2,
+        "indexedDBIdentityLifecycle": true,
+        "keyboardBrowser": {
+          "trustedKeyboardRepeatAndModifiers": true,
+          "focusRelease": true,
+          "syntheticCompositionProtocol": true,
+          "unmountRelease": true,
+          "nativeOSIME": "not-exercised"
+        },
+        "touchBrowser": {
+          "trustedSingleContact": true,
+          "stableContactId": true,
+          "nativePointerCapture": "not-observed-while-held",
+          "physicalFingers": "not-exercised"
+        },
+        "gestureBrowser": {
+          "trustedTapDragWheel": true,
+          "contactRelease": true,
+          "physicalFingers": "not-exercised"
+        }
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass",
+        "package": "@example/temperature-band-processor",
+        "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+        "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+        "operations": [
+          "subscribe",
+          "invoke"
+        ]
+      }
+    ]
+  },
+  "installedProof": {
+    "inventory": {
+      "path": "/tmp/101-inventory-invitation-linux-packed-inventory.json",
+      "sha256": "e9caac013c65732a6bf95559ab79ea40f44a3f4b4d148e9c6210fb7ea6c1f521",
+      "bytes": 17106
+    },
+    "invitation": {
+      "path": "/tmp/101-inventory-invitation-linux-packed-invitation.json",
+      "sha256": "de6c7da78fdf923b463386e107270a599fac21fc22e55e4cac6268eab29d713d",
+      "bytes": 4279
+    },
+    "headless": {
+      "path": "/tmp/101-inventory-invitation-linux-packed-headless.json",
+      "sha256": "2bf7338a0736a6444c53763ee271a0e6cfda53abd599a48c6193dfe5e3d96039",
+      "bytes": 8715
+    }
+  },
+  "inventory": {
+    "resources": [
+      "resident-memory By",
+      "sampling-enabled Boolean"
+    ],
+    "actualChildren": 2,
+    "scenarios": [
+      "quiet-expiry",
+      "actual-child-loss"
+    ],
+    "scenarioChecks": 26,
+    "aggregateChecks": 5,
+    "noCommandWrites": true,
+    "scope": "Post-start actual authorized subscriptions; fresh retained one-shot property read separately verified in unit tests. Labels/unknown/command/read-on-sample do not invent support; no Observation.value history or capture clock mapping."
+  },
+  "invitation": {
+    "checks": [
+      "native Node TLS CA and hostname validation",
+      "held approval expires before real TLS socket dispatch",
+      "manual/link/QR text inert; real bilateral P256 WSS pin and exact invitation scope",
+      "connection alone gives no source capture, receiver selection or runtime route permission",
+      "unsupported/denied review preserves incumbent; accepted transfer retires old authority before new socket; explicit grant abort fences late effects",
+      "real incorrect enrolled key fails authentication without resources",
+      "real pinned endpoint rejects distinct application and session transcript scopes",
+      "owned timer expires current connection grant during quiet interval",
+      "disappearance has no automatic reconnect; explicit reviewed retry and enrollment revocation",
+      "native Chromium WebSocket, genuine viewport measurement and separately granted Node effect"
+    ],
+    "genuineTlsConnections": 9,
+    "maximumObservedSocketOverlap": 1,
+    "resourceEffects": 2,
+    "pageErrors": []
+  },
+  "invitationTrust": {
+    "node": "Native owned CA and hostname validation; exact P256 endpoint/app/session/epoch proof",
+    "browser": "Isolated Playwright local certificate exception; independent endpoint-key authentication retained",
+    "remaining": "Verified-agent discovery, optical QR decode, account/persistent identity, physical phone/network/OS acceptance"
+  },
+  "linux": {
+    "profile": "linux-node-rss/1",
+    "image": "sha256:6dac556d980b7f0e5498d08f08cee0ca67798b4ad6c23964a9214920e67758d0",
+    "container": {
+      "status": 0,
+      "elapsedMs": 577.5934579999998,
+      "oomKilled": false,
+      "exitCode": 0
+    },
+    "cgroup": {
+      "memoryMax": 268435456,
+      "memorySwapMax": 0,
+      "memoryCurrent": 26578944,
+      "memoryPeak": 38469632,
+      "pidsMax": 32,
+      "cpuMax": "50000 100000",
+      "memoryEvents": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+    },
+    "checks": [
+      "denied-source-and-command-1",
+      "actual-target-ack-and-observed-state-1",
+      "explicit-revoke-safe-state-1",
+      "raw-reservation-through-disconnect-1",
+      "denied-source-and-command-2",
+      "actual-target-ack-and-observed-state-2",
+      "explicit-revoke-safe-state-2",
+      "raw-reservation-through-disconnect-2",
+      "fresh-target-identity-and-separate-new-approval",
+      "old-capture-rejected",
+      "intrinsic-command-byte-limit-before-dispatch",
+      "intrinsic-source-and-command-snapshot",
+      "closed-own-data-context",
+      "one-reservation-before-reentrant-callback",
+      "write-byte-cap-before-native-dispatch",
+      "close-during-currentness-prevents-dispatch"
+    ],
+    "producerNegatives": [
+      {
+        "kind": "malformed",
+        "exitCode": 64,
+        "outputBytes": 188
+      },
+      {
+        "kind": "replay",
+        "exitCode": 64,
+        "outputBytes": 498
+      },
+      {
+        "kind": "overlimit",
+        "exitCode": 64,
+        "outputBytes": 187
+      }
+    ],
+    "exclusions": [
+      "physical-sensor",
+      "MCU",
+      "gateway-distribution",
+      "remote-transport-authentication",
+      "malicious-host-JavaScript-isolation",
+      "undo-of-issued-effect",
+      "cross-clock-source-freshness-mapping"
+    ],
+    "cleanup": "Owned container and temporary sealed inputs removed by harness; no host network/service changes"
+  },
+  "native": {
+    "types": {
+      "path": "/tmp/101-inventory-invitation-linux-native-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "bundleLog": {
+      "path": "/tmp/101-inventory-invitation-linux-native-bundle.log",
+      "sha256": "fc8123e3a0ad7f9c8c3456aee5ce30b85744143e059efe37a588f9e5292bbb8b",
+      "bytes": 1497
+    },
+    "reachability": {
+      "path": "/tmp/101-inventory-invitation-linux-native-reachability.json",
+      "sha256": "1530dafaa60ed681e76edfca4a5963ecad182abb2fc4ddb22ac2088a5a564bc6",
+      "bytes": 8692
+    },
+    "exactSourceMatchesEachPlatform": 14,
+    "scope": "Actual local iOS/Android JS and source maps only; no installation, Hermes/native bridge or physical claim"
+  },
+  "reviews": {
+    "inventory": {
+      "path": "/tmp/101-inventory-independent-review.json",
+      "sha256": "c2d2db12168bfd67c7b553e5ab2bcaf582c981abbefda9eaf1a2adb0a854b77d",
+      "bytes": 3262
+    },
+    "invitation": {
+      "path": "/tmp/101-invitation-independent-review.json",
+      "sha256": "5a6c714687aa43d90bc19623b6bb444aec19000f27c76f60df261b35e5912c2d",
+      "bytes": 2142
+    },
+    "linux": {
+      "path": "/tmp/101-linux-headless-independent-review.json",
+      "sha256": "633891c89a125ff391943c264d9d40b5a2275b94e777c3854b41ca81fe9281ac",
+      "bytes": 1266
+    },
+    "sdkIntegration": "Independent b04_job_design read-only exact named allowlist/type/example/facade review clear"
+  },
+  "regressions": {
+    "linuxByteBound": {
+      "red": {
+        "path": "/tmp/101-n12-raw-byte-review-red.log",
+        "sha256": "4f5d41792a4dc086190ede0a7878b35d3b04adc41019725bf8b3ad6f227a0ce2",
+        "bytes": 708
+      },
+      "green": {
+        "path": "/tmp/101-n12-raw-byte-review-green.log",
+        "sha256": "2286be162be083776fa5a07e4dfda0cab573634b2be49a82865bb10cd0a6dc40",
+        "bytes": 897
+      },
+      "repair": "Intrinsic TypedArray byte length and native set snapshot for both source and command; actual 1188-byte input reporting1 rejected, actual command with enlarged shadow length preserved; fresh installed client adds both regressions"
+    },
+    "invitationUnsafeComposition": {
+      "redUnit": {
+        "path": "/tmp/101-d02-held-consent-unit-red.log",
+        "sha256": "5a256855b70a42219c6c93bcd6af7980d8843c3d3d6bdc8c287b13ea04f91a12",
+        "bytes": 1016
+      },
+      "redTls": {
+        "path": "/tmp/101-d02-tls-old-composition-red.err",
+        "sha256": "6661a932290e0859b51f4e4439259e4419faaeed87cee1b45ae5866bbca7c74b",
+        "bytes": 558
+      },
+      "scope": "Actual pre-controller existing-helper unsafe composition baseline; no claim of a legacy App defect"
+    },
+    "inventoryMissingFeature": {
+      "path": "/tmp/101-capability-inventory-original-red.log",
+      "sha256": "ef863d5f7614d10904209dc692a78784e5dcdfe89759e8c0f07a9ffb5814f72d",
+      "bytes": 1621
+    }
+  },
+  "focused": {
+    "log": {
+      "path": "/tmp/101-inventory-invitation-integrated-focused.log",
+      "sha256": "97225fbc54a2e908b00483e79c6c3e435f270990d0be0549c47c0ef3ec401af2",
+      "bytes": 3144
+    },
+    "tests": 28,
+    "failed": 0,
+    "skipped": 0,
+    "lint": {
+      "path": "/tmp/101-inventory-invitation-linux-integrated-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "commitGatePolicy": {
+    "required": "Strict types, lint, unit, fresh build then rendered checks must all pass on the exact staged candidate before local commit. Gate evidence is separate from these actual immutable SDK/runtime proofs.",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "finalEvidence": "/tmp/101-inventory-invitation-linux-final-gates.json"
+  },
+  "releaseScope": "No publish/push/deploy/preview/service or phone/OS pointer/manual test. Current release catalog keeps zero accepted rows; selected local runtime evidence does not declare general platform support."
+}

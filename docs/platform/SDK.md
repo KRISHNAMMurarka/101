@@ -1580,3 +1580,90 @@ The existing rotating recipient order applies to both reliable and latest delive
 This is a work-admission bound for cooperating providers; it does not sandbox
 callback CPU or enforce byte quotas, and enough distinct approved scopes can still
 occupy the global capacity. F05 remains partial.
+
+## Live inventory for selected resources
+
+`createCapabilityInventory` reviews at most sixteen declared resources from actual
+registered runtime sources. Select `read` or `subscribe` with the exact principal,
+application and session. `start()` creates private compatible sinks and requests
+normal runtime authorization; `matches()` only compares that exact request and
+never grants it. Unknown resources, unavailable providers and unsupported
+operations remain visible without creating a successful probe.
+
+A subscription becomes supported only after actual current data arrives after
+the probe starts. A separately authorized one-shot property read may qualify a
+fresh retained value and keeps its original age. Proof records source registration,
+descriptor/schema revisions, sequence, quality, timestamps and bounded provenance;
+it keeps no observation value history. Foreign producer stamps remain provenance,
+separate from the declared runtime receipt clock. This does not estimate a
+cross-clock capture age.
+
+The helper owns one expiry timer, at most sixty-four lifetime starts and bounded
+reliable queues. Silence, route loss, stop or close clears current support and
+retires owned routes and sinks; borrowed sources remain caller-owned. The genuine
+Node RSS and enabled-state caller is `examples/device-profiles/live-inventory.mjs`.
+Run `node tools/qa-capability-inventory.mjs --sdk-root INSTALLED_CONSUMER` against
+a fresh immutable local SDK. This selected inventory establishes no positive
+command/action, physical sensor, operating-system control or general hardware
+compatibility claim.
+
+## Explicit connection to an enrolled receiver
+
+`createInvitationConnectionController` implements
+`enrolled-invitation-connection/1`. The host supplies at most eight independently
+enrolled fixed WSS endpoints and their expected P256 key IDs. Manual invitation
+JSON, a copied fragment link or QR-decoded text produces an inert opaque review.
+The carrier link chooses neither the network URL nor the trusted endpoint key.
+An explicit current connection grant binds the owner, endpoint/key, application,
+session, invitation epoch and deadline. Only an actual authenticated peer with
+that exact scope yields a connection handle.
+
+Invitation possession and connection approval supply no source capture,
+registration, remote resource selection or runtime route grant. Those approvals
+remain independent. Unsupported or denied reviews preserve the current connection;
+an accepted replacement retires it before issuing the new socket. Cancellation,
+expiry, enrollment loss, grant abort or endpoint disappearance retires the owned
+peer and transport. Recovery requires a fresh review and explicit grant, with no
+automatic reconnect. Native or host-supplied TLS socket capability must be available.
+
+The controller retains sixty-four redacted transitions, one logical pending
+connection and one timer. It caps reviews at eight per second and connection
+attempts at thirty-two for its lifetime. Connection timeout is five seconds;
+grants last at most sixty seconds and cannot exceed invitation or enrollment
+expiry. Raw authorization promises and closing sockets remain counted until their
+actual completion; logical cancellation does not imply their work settled.
+
+`@101/connect/examples/invitation-connection` exports
+`createInvitationConnectionSource` and its options. Its explicit source-owner
+approval enables actual Node RSS or browser viewport measurements, after separate
+receiver/runtime resource approval. Run
+`node tools/qa-invitation-connection.mjs --sdk-root INSTALLED_CONSUMER` for the
+owned local TLS callers. This does not implement enrolled-agent discovery, optical
+QR scanning, account identity or physical phone/network qualification.
+
+## Selected Linux headless client
+
+`linux-node-rss/1` qualifies the owned Linux ARM64 container caller in
+`examples/headless-linux/client.mjs`. Its genuine reviewed producer exposes typed
+RSS bytes, observed sampling state and a Boolean sampling command. Command
+acknowledgment and the separately observed state are distinct evidence. Exact
+source/sink registrations and principal/application/session route grants are
+required; reading RSS does not permit commands.
+
+Run `node tools/qa-headless-linux.mjs --sdk-root INSTALLED_CONSUMER --candidate-tree TREE`
+with the existing pinned local image. The harness creates one disposable container
+without network access, using a nonroot user, read-only filesystem and SDK inputs,
+no capabilities, 256 MiB memory, thirty-two PIDs and half a CPU. The actual tested
+target is Node 24.21.0 on Linux 6.10.14-linuxkit/ARM64; it is not a claim for another
+Linux image or runtime. No repository, credentials or Docker socket enter it.
+
+The owned process port caps source bytes at 16 KiB, command bytes at 1 KiB and raw
+chunks at 64 KiB. Intrinsic typed-array lengths and snapshots enforce those bounds
+without trusting shadowed length fields. One raw write remains reserved until its
+native callback settles, including after logical termination. Runtime queues and
+retained observations are bounded. Revocation observes the declared disabled
+software state; disconnect retires routes and capture, and fresh recovery requires
+a new producer identity and independent approval. Original producer time remains
+separate from the client receipt clock. The tested software sensor/command does
+not establish a physical sensor, MCU, general gateway, remote authentication,
+malicious-host sandbox or reversal of an already issued effect.

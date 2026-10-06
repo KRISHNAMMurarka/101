@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 5,
+  "revision": 6,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -1425,6 +1425,125 @@
       ],
       "limitations": [
         "Only the recorded subset is proven; T07/native touch and physical/full release qualification remain open."
+      ]
+    },
+    {
+      "id": "inventory-node-rss-selected-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned Mac ARM64 Node child processes",
+        "transport": "Owned local stdio and in-process SDK",
+        "connector": "@101/connect + reviewed example:node-memory profile",
+        "connectorVersion": "0.1.0 / profile1.0.0; exact source pins in receipt",
+        "profiles": [
+          "descriptor/1",
+          "scalar/1",
+          "boolean/1",
+          "example:node-memory@1.0.0"
+        ],
+        "resources": [
+          "software resident-memory By",
+          "observed sampling-enabled Boolean"
+        ],
+        "unavailable": [
+          "physical sensors",
+          "OS input/control",
+          "MCU/general gateway",
+          "remote authentication",
+          "general hardware compatibility",
+          "positive command/action inventory"
+        ]
+      },
+      "qualificationTasks": [
+        "D05",
+        "Q01",
+        "K01"
+      ],
+      "evidence": {
+        "implementation": [
+          "d05-live-inventory-2026-10-06"
+        ],
+        "contract": [
+          "d05-live-inventory-2026-10-06"
+        ],
+        "runtime": [
+          "d05-live-inventory-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Only this selected software target and exact immutable local client are recorded. Final release acceptance remains separate.",
+        "Original source clock and local receipt clock are separate; no implicit physical/cross-clock capture-age claim."
+      ]
+    },
+    {
+      "id": "linux-node-rss-selected-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Linux",
+        "osVersion": "6.10.14-linuxkit",
+        "runtime": "Node",
+        "runtimeVersion": "24.21.0",
+        "formFactor": "Owned Linux ARM64 OCI container with cgroup v2",
+        "transport": "Owned local stdio and in-process SDK",
+        "connector": "@101/connect + reviewed example:node-memory profile",
+        "connectorVersion": "0.1.0 / profile1.0.0; exact source pins in receipt",
+        "profiles": [
+          "descriptor/1",
+          "scalar/1",
+          "boolean/1",
+          "example:node-memory@1.0.0",
+          "linux-node-rss/1"
+        ],
+        "resources": [
+          "software resident-memory By",
+          "observed sampling-enabled Boolean",
+          "sampling Boolean command with ACK and observed state"
+        ],
+        "unavailable": [
+          "physical sensors",
+          "OS input/control",
+          "MCU/general gateway",
+          "remote authentication",
+          "general hardware compatibility"
+        ]
+      },
+      "qualificationTasks": [
+        "N12",
+        "Q01",
+        "K01"
+      ],
+      "evidence": {
+        "implementation": [
+          "n12-linux-headless-2026-10-06"
+        ],
+        "contract": [
+          "n12-linux-headless-2026-10-06"
+        ],
+        "runtime": [
+          "n12-linux-headless-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Only this selected software target and exact immutable local client are recorded. Final release acceptance remains separate.",
+        "Original source clock and local receipt clock are separate; no implicit physical/cross-clock capture-age claim."
       ]
     }
   ]

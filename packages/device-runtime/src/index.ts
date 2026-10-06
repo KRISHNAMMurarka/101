@@ -60,3 +60,6 @@ export type { OwnerBackupFailure, OwnerBackupResult, OwnerBackupScope, OwnerBack
 
 export { PROFILE_RESOLUTION_LIMITS, createProfileResolutionController } from './profile-resolution.ts';
 export type { ProfileObservationHandle, ProfileReviewHandle, ProfileChoiceHandle, ProfileResolutionOptions, ProfileResolutionFailure, ProfileResolutionResult, ProfileResolutionSelection, ProfileResolutionSnapshot, ProfileResolutionController } from './profile-resolution.ts';
+
+export { CAPABILITY_INVENTORY_LIMITS, createCapabilityInventory } from "./capability-inventory.ts";
+export type { CapabilityInventoryResource, CapabilityInventorySelection, CapabilityInventoryScope, CapabilityInventoryOptions, CapabilityInventoryProof, CapabilityInventoryReason, CapabilityInventoryRow, CapabilityInventorySnapshot, CapabilityInventoryResult, CapabilityInventoryController } from "./capability-inventory.ts";

@@ -34,3 +34,6 @@ export { createBrowserApplicationMedia } from './application-media.ts';
 export type { BrowserApplicationMedia, BrowserApplicationMediaOptions, BrowserMediaGrantRequest, BrowserMediaOwnerGrant,
   BrowserApplicationMediaSourceOptions, BrowserApplicationMediaSource, BrowserApplicationMediaBindOptions,
   BrowserApplicationMediaBinding, BrowserApplicationMediaStatus } from './application-media.ts';
+
+export { INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS, createInvitationConnectionController } from "./invitation-connection.ts";
+export type { InvitationEndpoint, InvitationReviewHandle, InvitationConnectionHandle, InvitationConnectionScope, InvitationConnectionGrant, InvitationConnectionFailure, InvitationConnectionResult, InvitationConnectionOptions, InvitationConnectionPreview, InvitationConnectionSnapshot, InvitationConnectionController } from "./invitation-connection.ts";

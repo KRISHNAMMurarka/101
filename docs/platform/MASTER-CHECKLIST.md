@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 104 completed with recorded evidence; 168 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 106 completed with recorded evidence; 166 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -115,10 +115,10 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 ### D — Discovery, identification and resource inventory
 
 - [x] **D01 — Define discovery candidate/evidence types.** Separate observed, identified, authenticated, authorized and ready states; each candidate has scope, expiry and a recovery path. [Scoped receipt and SDK consumer evidence](receipts/2026-10-02-d01-discovery.json).
-- [ ] **D02 — Integrate explicit invites and pairing.** QR, links, manual entry and enrolled-agent discovery identify the intended endpoint without turning an invitation into unlimited grants.
+- [ ] **D02 — Integrate explicit invites and pairing.** QR, links, manual entry and enrolled-agent discovery identify the intended endpoint without turning an invitation into unlimited grants. [Bounded local TLS integration](receipts/2026-10-06-inventory-invitation-linux.json); enrolled-agent discovery and remaining qualification stay open.
 - [ ] **D03 — Integrate OS/browser choosers.** HID/BLE/serial/camera/audio selection remains permissioned; cancellation, denial, disappearance and retry produce recoverable states.
 - [ ] **D04 — Add scoped native network discovery.** Implement supported mDNS/DNS-SD providers with cancellation, deduplication, quotas and expired-device removal.
-- [ ] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features.
+- [x] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features. [Selected actual runtime evidence](receipts/2026-10-06-inventory-invitation-linux.json).
 - [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [x] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible. [Reviewed profile and fresh installed caller evidence](receipts/2026-10-06-backup-resolution-scope.json).
 - [ ] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning.
@@ -157,7 +157,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **N09 — Implement external screens and multi-monitor geometry.** Screen selection, scale, rotation, safe area, unplug and changed coordinates preserve or safely stop the route.
 - [ ] **N10 — Add qualified TV/receiver paths.** Implement selected Android TV/browser/Cast/AirPlay-style application receivers where permitted; demonstrate actual input/output behavior on representative hardware.
 - [ ] **N11 — Establish console/closed-platform outcomes.** Research permitted runtimes/APIs, implement a viable receiver/gateway where available, and publish explicit unsupported boundaries where access is unavailable.
-- [ ] **N12 — Support an embedded/headless runtime.** A selected Linux/MCU/gateway target exposes a typed sensor and command with bounded memory, disconnect policy and a tested client.
+- [x] **N12 — Support an embedded/headless runtime.** A selected Linux/MCU/gateway target exposes a typed sensor and command with bounded memory, disconnect policy and a tested client. [Selected actual runtime evidence](receipts/2026-10-06-inventory-invitation-linux.json).
 - [ ] **N13 — Enforce OS lifecycle behavior.** Background, screen lock, battery saver, process termination and permission revocation follow OS rules and expose recovery; they do not fabricate continuous access.
 - [ ] **N14 — Qualify native agent IPC/update lifecycle.** Unauthorized local callers fail; crash/restart, agent version mismatch and upgrade release authority and recover predictably.
 - [ ] **N15 — Implement dedicated terminal/SSH connectors.** Verify host identity and scoped credentials; allowed sessions/operations, bounded output, cancellation, reconnect and audit pass a disposable local host test.

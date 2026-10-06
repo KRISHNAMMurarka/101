@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -166,6 +166,12 @@ import type { SpatialFrame, SpatialPoseConverter, SpatialPoseConverterOptions, U
 import { createDeviceRuntime as directRuntime } from '@101/device-runtime';
 import type { EffectEvidence, HandlerResult, RouteRequest, RouteGroupController, WorkloadHandoff, HandoffHost, ProcessorFailureController, RecipeSession } from '@101/device-runtime';
 import { createEphemeralWebIdentity as directIdentity } from '@101/device-web';
+import { createCapabilityInventory, CAPABILITY_INVENTORY_LIMITS } from '@101/connect';
+import type { CapabilityInventoryController, CapabilityInventoryOptions, CapabilityInventorySnapshot } from '@101/device-runtime';
+import { createInvitationConnectionController, INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS } from '@101/connect';
+import type { InvitationConnectionController, InvitationConnectionOptions, InvitationConnectionSnapshot } from '@101/device-web';
+import { createInvitationConnectionSource } from '@101/connect/examples/invitation-connection';
+import type { InvitationConnectionSourceOptions } from '@101/connect/examples/invitation-connection';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
 import { SecureWebSocketTransport as DirectWebSocketTransport, WSS_SUBPROTOCOL } from '@101/transport-websocket';
 import { SecureWebSocketTransport } from '@101/connect';
@@ -275,6 +281,9 @@ const direct: DirectTransport = new PeerDataTransport({ initiator: false });
 const applicationViewExampleFactory: typeof createApplicationViewsExample = createApplicationViewsExample;
 const secureWebSocketExampleFactory: typeof createSecureWebSocketPeer = createSecureWebSocketPeer;
 void [applicationViewExampleFactory, secureWebSocketExampleFactory];
+let inventoryOptions: CapabilityInventoryOptions | undefined, inventoryController: CapabilityInventoryController | undefined, inventorySnapshot: CapabilityInventorySnapshot | undefined;
+let invitationOptions: InvitationConnectionOptions | undefined, invitationController: InvitationConnectionController | undefined, invitationSnapshot: InvitationConnectionSnapshot | undefined, invitationSourceOptions: InvitationConnectionSourceOptions | undefined;
+void [createCapabilityInventory, CAPABILITY_INVENTORY_LIMITS, inventoryOptions, inventoryController, inventorySnapshot, createInvitationConnectionController, INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS, invitationOptions, invitationController, invitationSnapshot, createInvitationConnectionSource, invitationSourceOptions];
 const websocketFactory: typeof DirectWebSocketTransport = SecureWebSocketTransport;
 let websocketOptions: SecureWebSocketOptions | undefined;
 let websocketLimits: WebSocketLimits | undefined;
@@ -428,6 +437,7 @@ function compileConsumer() {
 }
 
 const runtimeImports = String.raw`
+import { createInvitationConnectionSource } from '@101/connect/examples/invitation-connection';
 import * as sdk from '@101/connect';
 import * as model from '@101/device-model';
 import * as runtime from '@101/device-runtime';
@@ -464,6 +474,8 @@ export async function checkRuntime() {
   check(sdk.GestureSourceDriver === web.GestureSourceDriver && sdk.mountGestureSource === web.mountGestureSource, 'Gesture public identity differs');
   check(sdk.createPenDetailProcessor === model.createPenDetailProcessor && sdk.createRotaryDeltaProcessor === model.createRotaryDeltaProcessor && sdk.createGamepadDetailProcessor === model.createGamepadDetailProcessor, 'Input detail public identity differs');
   check(sdk.createSettingsStore === runtime.createSettingsStore && sdk.createIndexedDbSettingsStorage === runtime.createIndexedDbSettingsStorage && sdk.createRuntimeInspector === runtime.createRuntimeInspector && sdk.runConnectorConformance === runtime.runConnectorConformance && sdk.runProcessorConformance === runtime.runProcessorConformance, 'New runtime facade identity differs');
+  check(sdk.createCapabilityInventory === runtime.createCapabilityInventory && sdk.CAPABILITY_INVENTORY_LIMITS === runtime.CAPABILITY_INVENTORY_LIMITS, 'Live inventory facade identity differs');
+  check(sdk.createInvitationConnectionController === web.createInvitationConnectionController && sdk.INVITATION_CONNECTION_PROFILE === web.INVITATION_CONNECTION_PROFILE && sdk.INVITATION_CONNECTION_LIMITS === web.INVITATION_CONNECTION_LIMITS && typeof createInvitationConnectionSource === 'function', 'Invitation connection facade or packed example differs');
   const settingsStorage = await runSettingsStorageExample();
   check(settingsStorage.simulatedStorage && settingsStorage.fresh && settingsStorage.saved && settingsStorage.reloaded && settingsStorage.authorityRejected && settingsStorage.removedDevicePruned && settingsStorage.reset, 'Packed settings example failed');
   const conformance = await runConformanceExample();
