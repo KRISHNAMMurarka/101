@@ -11,6 +11,8 @@ const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-
 const examples = ['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => ({ name, source: `examples/device-pipelines/${name}.ts` }));
 examples.push({ name: 'media-recording', source: 'examples/browser-resources/media-recording.ts' });
 examples.push({ name: 'recording-owner-data', source: 'examples/browser-resources/recording-owner-data.ts' });
+examples.push({ name: 'hid-switch', source: 'examples/browser-resources/hid-switch.ts' });
+examples.push({ name: 'serial-switch', source: 'examples/browser-resources/serial-switch.ts' });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();

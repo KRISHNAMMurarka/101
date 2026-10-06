@@ -63,6 +63,46 @@ async function setup() {
 }
 function success<T>(result: { ok: true; value: T } | { ok: false; reason: string }): T { assert.equal(result.ok, true, JSON.stringify(result)); return (result as { value: T }).value; }
 
+test('installation reserves an actual stalled storage call after logical timeout', async () => {
+  const s = await setup();
+  let reads = 0, settle!: (value: string | undefined) => void;
+  const raw = new Promise<string | undefined>(resolve => { settle = resolve; });
+  const store = api!.createProcessorInstallation({ ...s.options, storage: {
+    ...s.db.storage, read: async () => { reads++; return reads === 1 ? raw : undefined; },
+  } });
+  try {
+    assert.deepEqual(await store.inspect(), { ok: false, reason: 'unavailable' });
+    assert.equal(reads, 1);
+    assert.deepEqual(await store.inspect(), { ok: false, reason: 'busy' }, 'a deadline does not settle the actual storage call');
+    assert.equal(reads, 1, 'do not issue a replacement while raw work is unresolved');
+    settle(undefined); await new Promise<void>(resolve => setImmediate(resolve));
+    assert.equal((await store.inspect()).ok, true, 'an explicit new operation may start after actual settlement');
+    assert.equal(reads, 2);
+  } finally { settle(undefined); await raw; store.close(); s.store.close(); }
+});
+
+test('installation reserves actual signed-release approval after logical timeout', async () => {
+  const s = await setup(), release = await s.release();
+  let approvals = 0, settle!: (value: ProcessorInstallationApproval | undefined) => void;
+  const raw = new Promise<ProcessorInstallationApproval | undefined>(resolve => { settle = resolve; });
+  const store = api!.createProcessorInstallation({ ...s.options, authorize: scope => {
+    approvals++;
+    assert.equal(scope.action, 'install');
+    assert.equal(scope.release?.source.sha256, release.source.sha256);
+    return raw;
+  } });
+  try {
+    assert.deepEqual(await store.install(release, source), { ok: false, reason: 'unavailable' });
+    assert.equal(approvals, 1);
+    assert.deepEqual(await store.inspect(), { ok: false, reason: 'busy' }, 'a deadline does not settle the actual approval call');
+    assert.equal(s.db.values.size, 0, 'a timed-out approval never writes the real source installation');
+    settle({ expiresAt: 60_000, isCurrent: () => true });
+    await new Promise<void>(resolve => setImmediate(resolve));
+    assert.equal(success(await store.inspect()).packages.length, 0, 'late approval cannot resurrect a timed-out operation');
+    assert.equal(approvals, 1);
+  } finally { settle(undefined); await raw; store.close(); s.store.close(); }
+});
+
 test('actual source installation is inactive, idempotent and persists no trust or grant', async () => {
   const s = await setup(), release = await s.release();
   success(await s.store.install(release, source)); success(await s.store.install(release, source));

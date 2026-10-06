@@ -161,10 +161,19 @@
   ],
   "failureInterpretation": "First fixture attempted visible wait on deliberately play-hidden heading; retained precondition failure. Corrected native Setup fixture observed genuine SORCERER primary vs Arcane Focus declaration, then failed exact product assertion. Root original classifier expected lowercase but CSS innerText was uppercase; preserved original unexpected-result envelope and classification-only addendum. Future exact DOM text is read on verified visible label nodes; no old rerun or asserted namespace filtering.",
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact integrated source plus canonical tree requires all AGENTS types/lint/unit/fresh build/rendered gates before local source commit. Historical8 tests are not relabeled current and scoped lint original exit capture remains unconfirmed until exact full gate."
+    "status": "pass",
+    "sourceCommit": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+    "exactCommittedTree": "6ff086a6caffe7ddd60ad01f935efa10323c22b9",
+    "receipt": {
+      "path": "/tmp/101-recording-controller-exact-required-gates.json",
+      "sha256": "161144c347e8e94dde6348bfd4c3a583f5fdceaaaab79673e510d715694cc589"
+    },
+    "unit": 1957,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five required commands passed this exact source/canonical tree before actual local commit. This subsequent documentary commit receipt awaits the next coherent candidate gates. Historical focused82/native e4/installed24a executions retain their actual source and dependency scopes; no blanket newer native or physical result."
   },
-  "sourceCommit": null,
+  "sourceCommit": "41bc129d838a7bf6e76b35cd17e755b37f460476",
   "taskDisposition": {
     "U05": "PARTIAL/OPEN. Four-path presentation build and16 selected real browser assertions pass. Full product surface/state matrix remains open."
   },
@@ -172,5 +181,21 @@
     "Chromium/WebKit at390px with actual native Setup and optional idle motion only. Narrow session hint is DOM-only because CSS intentionally hides it at that viewport.",
     "Active/denied/unsupported native motion, additional real game roles/fallbacks, physical phones, named screen readers and full player route/state matrix remain unqualified.",
     "No authenticated endpoint/resource authority, hardware, OS cursor, camera/microphone or speaker activation from this fixture."
-  ]
+  ],
+  "actualLocalCommit": {
+    "path": "/tmp/101-recording-controller-exact-commit.json",
+    "sha256": "08152fdc93ded5f944d00e114d0959a0467110051e397f9be2ad7c253af80572"
+  },
+  "preservation": {
+    "path": "/tmp/101-recording-controller-final-preservation.json",
+    "sha256": "d48653218f05588d317accded83c5a30718456e1d18ee6feb49562ad5a6a38ab"
+  },
+  "independentIntegratedSourceReview": {
+    "path": "/tmp/101-recording-controller-final-source-review-signal.json",
+    "sha256": "5fcbc60ab5660885610997bcaf2309062ba31492f6a0471aa057b31e0ec9065d"
+  },
+  "independentCanonicalReview": {
+    "path": "/tmp/101-recording-controller-canonical-review-signal.json",
+    "sha256": "b2904fb0912e0eb60c7d97d61c5550d2a44601b11aeb8a2da1f79584957bdcf9"
+  }
 }

@@ -9,7 +9,7 @@
 .page button[aria-pressed="true"] { background: var(--solid); color: var(--on-solid); }
 .page button:disabled { opacity: .55; cursor: default; }
 .page a { display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: .2em; }
-.page :is(button, a, select, input, [tabindex]):focus { outline: 3px solid var(--paper); outline-offset: 4px; }
+.page :is(button, a, select, input, textarea, [tabindex]):focus { outline: 3px solid var(--paper); outline-offset: 4px; }
 .page select { border: 1px solid currentColor; background: var(--ink); color: var(--paper); padding: .5rem 2.4rem .5rem .5rem; width: 100%; min-height: 44px; height: 44px; appearance: none; border-radius: 0; background-image: linear-gradient(45deg, transparent 50%, var(--paper) 50%), linear-gradient(135deg, var(--paper) 50%, transparent 50%); background-position: calc(100% - 18px) center, calc(100% - 13px) center; background-size: 5px 5px; background-repeat: no-repeat; }
 .status { font-weight: 600; line-height: 1.5; }
 .panel, .review { border: 1px solid currentColor; padding: clamp(1rem, 3vw, 1.6rem); margin-block: 1rem; min-width: 0; }
@@ -31,6 +31,8 @@
 .check input { min-width: 22px; min-height: 22px; margin-top: .2rem; accent-color: var(--paper); }
 .duration { display: grid; max-width: 24rem; gap: .5rem; margin: 1rem 0; }
 .state { min-height: 3rem; }
+.page textarea { width: 100%; min-height: 7rem; max-height: 16rem; padding: .75rem; border: 1px solid; background: var(--ink); color: inherit; font: inherit; resize: vertical; }
+.comparison { display: block; margin-block: 1rem; font-family: monospace; overflow-wrap: anywhere; user-select: text; }
 @media (max-width: 720px) { .controls, .surfaces { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .page { padding: 1rem; } .actions > *, .panel > button { width: 100%; } .panel > button + button { margin-left: 0; margin-top: .7rem; } }
 @media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

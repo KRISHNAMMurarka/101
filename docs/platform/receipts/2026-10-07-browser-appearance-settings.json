@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "browser-local-appearance-settings/1",
+  "localOnly": true,
+  "base": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+  "candidateSourceTree": "9bb7f9992430c3dcf27800f1f47492f2b1880b17",
+  "actualBuiltSourceTree": "9bb7f9992430c3dcf27800f1f47492f2b1880b17",
+  "buildQualification": {
+    "path": "/tmp/101-u12-settings-budget-repair-build.json",
+    "sha256": "9948a3c587eed1e33548c5003663ede5794f944325d3737755cc9caf84c8f51c"
+  },
+  "sourceSha256": {
+    "app/components/AppShell.tsx": "b7cbe5bc7be6df6237776dce9b11709c45ec4f3dab275b48f20cdd337810e066",
+    "app/components/Icon.tsx": "461eef4e570691f1eb75ef2e4de2022697f2c52ba5ea67d1d9325ed617241ca5",
+    "app/connections/connections.module.css": "ac3c2105401986840a39c3ddc37d3561004f48ca2b82ed77a86b5a04c9e9e142",
+    "app/layout.tsx": "697e37a50f77d29cd78d11432aa1ea0c23033035370e4fe4ec752e084d3819c4",
+    "app/globals.css": "38894593a8cab5530773207f33b996c7bfb288d1cb1cf66883d28140f6aa8ee6",
+    "package.json": "00c8257064d1b2a54f9e34c1858f0fcb86c6544c814978e4ba8f62f7b161504e",
+    "app/settings/page.tsx": "c04e21cce9cc44d8d5fbda22539044cdf3c9b8cbb3baac3624a50b7f16569fd4",
+    "app/settings/SettingsView.tsx": "589ef6f81a0dead18d87532d535eff9733e5080f09cfbd48dc908d660bd0efbe",
+    "app/settings/settings-task.ts": "655a78a5c9fd906378f0aa01a473843fb9b865b171594afbda96183bafd88df4",
+    "app/settings/settings-task.test.ts": "13582c5d06e85b23a1321eb5ac7b81051766b2653a5a8d4de6934e3fad495cc5",
+    "app/settings/settings.module.css": "41538ed1bed0a2c2a662b756a7837cf86bdb885a335eb7e9a3a8e7419e79e0f0",
+    "tools/qa-settings-flow.mjs": "a8cc321405a851abfea511d221729ef7529d67685db16d4a6aa692d5720dc047",
+    "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+    "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+    "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+    "packages/device-runtime/src/index.ts": "64fdc7ca1ac4d4c8577c26d699c461eaa5e5348435c8bcb4b7ecd74beafc54e0",
+    "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2"
+  },
+  "sourceBuildEquivalence": {
+    "pathsChangedSinceActualBuild": [],
+    "scope": "Current native C/W software executions use actual fresh9bb source tree and exact literal524 emitted build inputs, all preserved before later compiler invocation."
+  },
+  "oldMissingRoute": {
+    "path": "/tmp/101-u12-settings-old-route.json",
+    "sha256": "f2680f4f2ebbb8ba6515c5ad1ccbd06e7616ed430afc94818d9266d7126ab102"
+  },
+  "firstFocusedFailure": {
+    "path": "/tmp/101-u12-settings-first-focused.json",
+    "sha256": "4b6ac188465748008cfca154da335065269eb48082d65ffe76346fec5b2332c4"
+  },
+  "oldDeclineRegression": {
+    "path": "/tmp/101-u12-settings-decline-old.json",
+    "sha256": "41c032ae8ea496fedab0bfa12624895d6fd99ce3c1bc860068032c779f16daa0"
+  },
+  "reviewCorrections": {
+    "path": "/tmp/101-u12-settings-review-corrections-pins.json",
+    "sha256": "39fc2a45fa9d423ae8d0ba923712e4d26d06e41fc76dd251d7795a4c84a94405"
+  },
+  "focused": {
+    "path": "/tmp/101-u12-settings-corrected-focused.json",
+    "sha256": "706853a47894c57eb7741ceb94631724470154577b50b4778691fcbf87dac2b2",
+    "tests": 14,
+    "passCount": 14,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 117,
+    "scope": "Actual public SettingsStore/OwnerDataController with cooperative memory fixture; subsequent three declaration-only prefer-const corrections are covered by final candidate full unit gate."
+  },
+  "softwareRuntime": {
+    "chromium": {
+      "path": "/tmp/101-u12-settings-budget-fixed-native-chromium.json",
+      "sha256": "a6f9f03f9fe3d3962b779d1f2b1515ed65d0b65578c6dc2545ceab4b1ff1fe36"
+    },
+    "webkit": {
+      "path": "/tmp/101-u12-settings-budget-fixed-native-webkit.json",
+      "sha256": "e82bf67526a25f3467b0900a1637ae70a7a06fc0831e165915970abfaa5088ae"
+    },
+    "checksPerEngine": 12,
+    "versions": {
+      "chromium": "149.0.7827.55",
+      "webkit": "26.5"
+    },
+    "checks": [
+      "inert-native-storage-arrival",
+      "native-keyboard-declined-management-no-open",
+      "declined-save-reset-delete-preserve-native-preview-draft-and-storage",
+      "actual-idb-reviewed-save",
+      "explicit-second-page-load-no-auto-theme",
+      "native-cas-conflict-explicit-reload",
+      "owned-preview-cancel-and-competing-theme-preserved",
+      "explicit-native-reset",
+      "actual-settings-only-staged-removal-retains-audit",
+      "responsive-two-theme-native-controls",
+      "quiet-absolute-management-expiry-no-storage-work",
+      "actual-blocked-native-open-retained-through-timeout-stop-and-late-terminal"
+    ],
+    "cleanup": "Both actual pages/context/browser close awaited and owned root child/server/request/waitUntil settled with zero remaining work; browser internals not measured."
+  },
+  "preservedFailures": [
+    {
+      "path": "/tmp/101-u12-settings-first-software-build.json",
+      "sha256": "ca7e48bbd06579f7c5ce65b883c428fdfcabc1f197fa9afed58bd502744b15d3"
+    },
+    {
+      "path": "/tmp/101-u12-settings-native-chromium.json",
+      "sha256": "a428fda73d995a27b0e37dc74ebcd83c4aa180189bfc53ec7cfcc52b8f003860"
+    },
+    {
+      "path": "/tmp/101-u12-settings-native-import-fixed-chromium.json",
+      "sha256": "b304600185da6f96afd341b16b9ef1a460696033bfb5cce497c88d5f16ec1252"
+    },
+    {
+      "path": "/tmp/101-settings-extension-exact-required-gates.json",
+      "sha256": "499f8067662cbccaeeeab9337b1b27815fe4d8e534b859fac1d4f25c672b9af5"
+    }
+  ],
+  "oldRuntimePreservation": {
+    "path": "/tmp/101-settings-sharing-old-runtime-preservation.json",
+    "sha256": "af1aa075636be0d38fe1a8e5ad38025dccecb3b4c620dc02c1e1411fe8c28099"
+  },
+  "changes": [
+    "Inert Settings arrival and explicit thirty-second appearance management/save/reset/selected settings deletion using genuine public managed storage APIs in a private browser-purpose database.",
+    "Native page-only owned theme preview; confirmation decline preserves draft/preview, while explicit Cancel preview/Stop/hide/unmount restores owned changes without overwriting a competing theme change.",
+    "Current revision conflicts need explicit reload; future/foreign managed headers retain bytes and retire authority; unreadable preferences under a supported managed header permit separately reviewed reset.",
+    "Actual native IndexedDB pending-open reservation survives SDK logical timeout/Stop until native success/error; close awaits returned storage work and true observed native open.",
+    "Root navigation exposes Settings with the existing monochrome shell and an owned decorative settings icon.",
+    "Common presentation reuses existing Connections CSS. Settings-only styles remain below the unchanged total CSS budget; select/programmatic focus and native44px/reduced-motion/width/theme journeys rerun on the exact repair."
+  ],
+  "authorityScope": "One origin/browser-profile private purpose database app-player-settings-managed-v1 and fixed app-player-settings:this-browser identifier; no authenticated account/person claim, device/connector capture, grant persistence or general database discovery. Underlying SDK open-stores admits its declared managed kinds; this facade consumes only settings and denies export/copy/sweep.",
+  "requiredGates": {
+    "status": "pending",
+    "scope": "All exact coherent source/canonical candidate AGENTS gates before local commit. This receipt preserves historical source/runtime producers rather than promoting physical/full-task support."
+  },
+  "sourceCommit": null,
+  "taskDisposition": {
+    "U12": "PARTIAL/OPEN. Browser appearance management is built and locally software-qualified. Identity, permission/privacy administration, installed connectors/trusted publishers, general device removal, update/restore, native and full accessibility/physical flows remain open."
+  },
+  "limitations": [
+    "No automatic global theme application or other pages preferences; valid unused handedness/motion retained; no claim those are active controls.",
+    "No phone, OS mouse, actual screen reader/assistive hardware, installed UI, native provider/account/publisher/general management or full U12 closure.",
+    "No browser internal quiescence claim; unresolved actual native requests can remain retained, requiring their true terminal event before retry.",
+    "Full exact candidate AGENTS gates and local source commit pending; independent selected source/QA review is clear for its recorded byte pins."
+  ],
+  "independentSourceReview": {
+    "path": "/tmp/101-u12-settings-corrections-independent-review.json",
+    "sha256": "18d707ab4d528a6868dc29b96115a282281b19e1f54820daee1bf93822f71aaa",
+    "result": "CLEAR",
+    "reviewedTree": "dd92da3e5ddc728457c6789b7b2b4f0901d896fc",
+    "scope": "Reviewed only the recorded dd92 bytes; later three-path CSS/import/QA repair is covered separately by cssBudgetRepair.sourceReview. Mandatory exact full gates remain separate."
+  },
+  "historicalNativeQualification": {
+    "candidateSourceTree": "dd92da3e5ddc728457c6789b7b2b4f0901d896fc",
+    "actualBuiltSourceTree": "4d271432c8f9010cd1924c430ea2df429229fb28",
+    "sourceSha256": {
+      "app/components/AppShell.tsx": "b7cbe5bc7be6df6237776dce9b11709c45ec4f3dab275b48f20cdd337810e066",
+      "app/components/Icon.tsx": "461eef4e570691f1eb75ef2e4de2022697f2c52ba5ea67d1d9325ed617241ca5",
+      "app/layout.tsx": "697e37a50f77d29cd78d11432aa1ea0c23033035370e4fe4ec752e084d3819c4",
+      "app/globals.css": "38894593a8cab5530773207f33b996c7bfb288d1cb1cf66883d28140f6aa8ee6",
+      "package.json": "00c8257064d1b2a54f9e34c1858f0fcb86c6544c814978e4ba8f62f7b161504e",
+      "app/settings/page.tsx": "c04e21cce9cc44d8d5fbda22539044cdf3c9b8cbb3baac3624a50b7f16569fd4",
+      "app/settings/SettingsView.tsx": "37940c6ea503156a7b16bc37a7848e53664491b257e2d5e07e4db7a234e233da",
+      "app/settings/settings-task.ts": "655a78a5c9fd906378f0aa01a473843fb9b865b171594afbda96183bafd88df4",
+      "app/settings/settings-task.test.ts": "13582c5d06e85b23a1321eb5ac7b81051766b2653a5a8d4de6934e3fad495cc5",
+      "app/settings/settings.module.css": "3f63386c7c2e01d8cbb34ce8b686a23825183c95d2b3a2b657012c08b104a1a1",
+      "tools/qa-settings-flow.mjs": "e8c5b01311d45c79ad7b54da1f5577bbeca2247fdbef5aa485383ef744356a49",
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/index.ts": "64fdc7ca1ac4d4c8577c26d699c461eaa5e5348435c8bcb4b7ecd74beafc54e0",
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2"
+    },
+    "softwareRuntime": {
+      "chromium": {
+        "path": "/tmp/101-u12-settings-native-selector-fixed-chromium.json",
+        "sha256": "34af0cd64183d117273c5f51c75b6420e94247885f7cb23c1b07caec1bc9f903"
+      },
+      "webkit": {
+        "path": "/tmp/101-u12-settings-native-selector-fixed-webkit.json",
+        "sha256": "9f87b10b8ded4e984464028c2d76dde9c68dada381e6e8abb4a3cb5948da4579"
+      },
+      "checksPerEngine": 12,
+      "versions": {
+        "chromium": "149.0.7827.55",
+        "webkit": "26.5"
+      },
+      "checks": [
+        "inert-native-storage-arrival",
+        "native-keyboard-declined-management-no-open",
+        "declined-save-reset-delete-preserve-native-preview-draft-and-storage",
+        "actual-idb-reviewed-save",
+        "explicit-second-page-load-no-auto-theme",
+        "native-cas-conflict-explicit-reload",
+        "owned-preview-cancel-and-competing-theme-preserved",
+        "explicit-native-reset",
+        "actual-settings-only-staged-removal-retains-audit",
+        "responsive-two-theme-native-controls",
+        "quiet-absolute-management-expiry-no-storage-work",
+        "actual-blocked-native-open-retained-through-timeout-stop-and-late-terminal"
+      ],
+      "cleanup": "Both actual owned pages/context/browser close awaited; root child/loopback server settled with zero request/waitUntil work; browser internals not measured."
+    },
+    "sourceBuildEquivalence": {
+      "pathsChangedSinceActualBuild": [
+        "tools/qa-settings-flow.mjs"
+      ],
+      "scope": "Only standalone QA import/mobile-hidden-rail selector/default timeout/diagnostic repairs changed after the actual fresh build. Every application/source dependency listed is byte-identical to actual built4d; neither QA/runtime nor later documentary tree is mislabeled the compiler producer."
+    },
+    "artifactPreservation": {
+      "path": "/tmp/101-u12-settings-historical-native-artifact-preservation.json",
+      "sha256": "29cd6b23132257ea880dbbb2ed5104528ecc970a49e81d3546f271c459a96f22"
+    },
+    "limitation": "Actual earlier4d runtime results remain historical;516/525 literal inputs were retained, nine generated server bytes overwritten before snapshot. No full historical literal-preservation or replayable-runtime claim."
+  },
+  "fixedNativeBuildPreservation": {
+    "path": "/tmp/101-u12-settings-fixed-native-build-preservation.json",
+    "sha256": "08f6e553f332c2d885af87a30f2fdb8bc5aca48fb40db9a5a0cca4199b2bd46b"
+  },
+  "cssBudgetRepair": {
+    "beforeGzipBytes": 33167,
+    "afterGzipBytes": 32574,
+    "limitGzipBytes": 32768,
+    "buildAndSelectedRegression": {
+      "path": "/tmp/101-u12-settings-budget-repair-build.json",
+      "sha256": "9948a3c587eed1e33548c5003663ede5794f944325d3737755cc9caf84c8f51c"
+    },
+    "sourceReview": {
+      "path": "/tmp/101-u12-settings-css-reuse-independent-review.json",
+      "sha256": "2f6f51c2ebc4bfa65c6f8216d9cc4303ab62618768cf152e30544aed4b0ac221"
+    },
+    "change": "Reuse existing Connections common page/header/panel/controls CSS with small select/programmatic-focus rules; unchanged storage/authority handlers and no budget/globalCSS changes."
+  }
+}

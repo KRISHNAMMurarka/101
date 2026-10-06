@@ -1,0 +1,4 @@
+.choice { display: grid; gap: .5rem; margin: 1rem 0; }
+.choice select { width: 100%; min-height: 44px; padding: .7rem; border: 1px solid currentColor; border-radius: 0; background: var(--ink); color: var(--paper); font: inherit; }
+.page :is(select, [tabindex]):focus { outline: 3px solid var(--paper); outline-offset: 4px; }
+.stop { margin-top: 1rem; }

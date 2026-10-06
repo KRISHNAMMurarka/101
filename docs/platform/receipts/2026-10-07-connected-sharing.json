@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "connected-page-sharing/1",
+  "localOnly": true,
+  "base": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+  "candidateSourceTree": "8fe486aff2b4ab80c982aa530fdd9f5957f3fe65",
+  "actualBuiltSourceTree": "8fe486aff2b4ab80c982aa530fdd9f5957f3fe65",
+  "sourceSha256": {
+    "app/sharing/SharingView.tsx": "f40fd95fa67ccb1784f9ead787ff73cef3a9886cec5772c7fc0d510f552f7879",
+    "app/sharing/sharing.module.css": "21684fbf322f25ea53b78e19a321022ae6db1b266a2c172646fbd8e3f83540a3",
+    "app/sharing/ConnectedSharingView.tsx": "93b4d0ccdd0fdd7e2f0e248d154f6b234f9dcc43811b80ba87d4d1822889fddd",
+    "app/sharing/connected-sharing-task.ts": "c68ade94e56a64789f5089a6c7d67a186d488f65af8eb272effdad480dc186c7",
+    "app/sharing/connected-sharing-task.test.ts": "23adc38140293ea0c4d56a617e609e08b6053f9c45410e2b727d95f0d879bd7e",
+    "app/sharing/sharing-peer.ts": "ed6d648979607d8be137e8eb6ae2ce3f783a1231ac36daa3e8f1ed21259ae6b8",
+    "tools/qa-connected-sharing.mjs": "c9290d2a58262fafb35a7e31bf766cd45c51d3ce8d1d6652d12e0cc9aa7c4035"
+  },
+  "protectedSamePageSha256": {
+    "app/sharing/page.tsx": "04e2116f70788f02711b876f40b749b0ca6ab927dd53c42486c0cbf8e619abf9",
+    "app/sharing/sharing-task.ts": "3881aed7737582e832549dc17877d5a1e46cec13429b5fcab0009e20542ad032",
+    "app/sharing/sharing-task.test.ts": "68a5fc0e7ac2b44209a12bd000e84b66e6658100329914994df80d8eb8a2d60d",
+    "tools/qa-sharing-flow.mjs": "9f855e2dcf74347c8350204225b91c36f0a1d82741c15a7dd563a76294ba296c"
+  },
+  "oldMissingFeature": {
+    "path": "/tmp/101-connected-sharing-primary-old-corrected-runtime.json",
+    "sha256": "f1a9eed610046c9610f15309703ace76b5ea350376a0cb3a7790ce61646ee18b"
+  },
+  "firstClientFixtureFailure": {
+    "path": "/tmp/101-connected-sharing-primary-old-built-run.json",
+    "sha256": "44a161aff7301e26986139a561bcf84c1575e3cbb4baf9e6ef2ebf654b873370"
+  },
+  "originalFocusedFailure": {
+    "path": "/tmp/101-hid-sharing-original-focused.json",
+    "sha256": "4cfb9f5745854b9fa8f84ba8785d11b13991afb44d7379ef0843e2c83138d390"
+  },
+  "originalCollectorLimitation": {
+    "path": "/tmp/101-hid-sharing-original-capture-limitation.json",
+    "sha256": "3679469efc1b2c6558cbca80ae4f5d75f7f84a0a5f1dfd5a6e0f8efe1449bbcd"
+  },
+  "originalReviewBlock": {
+    "path": "/tmp/101-connected-sharing-source-independent-review.json",
+    "sha256": "11aed92848482a96c0314a0b2d68cbbfcb03c80d8289c8539c0c30eb4b73063d"
+  },
+  "notificationOldRegression": {
+    "path": "/tmp/101-connected-sharing-notification-reentry-old.json",
+    "sha256": "40f0cdab0ef1257b481ac264b177b4a12e7b8adf291859da365aba293b443584"
+  },
+  "focused": {
+    "path": "/tmp/101-connected-sharing-core-corrected.json",
+    "sha256": "9fffeba7a9a5de2fec15f54c55c9d0ee6f038911ac44dc2b07defacdbcbb7c4d",
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 119,
+    "scope": "Actual cryptographic peer enrollment on cooperative software channel ports and real runtime/ownership. No native DTLS claim for these unit fixtures."
+  },
+  "firstScopedLintFailure": {
+    "path": "/tmp/101-hid-sharing-corrected-software.json",
+    "sha256": "afba79041c898f53b014ba53dd223f70411d7079077e931b5e09da506ad6e1a1"
+  },
+  "staticAndBuild": {
+    "path": "/tmp/101-hid-sharing-final-ui-software.json",
+    "sha256": "cb65aa0e53684be83f8818bb1a0a34b295ddff59a06ffdc8dc63d8d7e681c992"
+  },
+  "heldSetupOld": {
+    "path": "/tmp/101-connected-sharing-held-crypto-old-runtime.json",
+    "sha256": "7b94eba17286de485bed008db71000ee6f5b279a1c24c37eea32c810575a2c1e"
+  },
+  "heldSetupOldClassification": {
+    "path": "/tmp/101-connected-sharing-held-crypto-old-classified.json",
+    "sha256": "a94e53fa7b83c8de360b2f55f12f3f9c8446a82382b462bb4b7a5501f9df47ee"
+  },
+  "heldSetupFixed": {
+    "path": "/tmp/101-connected-sharing-held-crypto-fixed-runtime.json",
+    "sha256": "c2ac0b3dd8350ebe379d62cb7dc80a183b7713edd2e3948242fce827fdd2ed72",
+    "checks": 3,
+    "scope": "Unchanged fixture delegates genuine native P256 crypto, holds only its returned result: Stop/Back enabled, immediate authority retirement and replacement blocked while actual result remains pending. Actual returned work and process cleanup observed."
+  },
+  "nativeJourney": {
+    "path": "/tmp/101-connected-sharing-primary-native-v1.json",
+    "sha256": "ab56c7d39a47d9035dd57be2e01fe4b177a3a7ae41358ccee6a20b687bb558d4",
+    "rawReceipt": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-connected-sharing-native-2e5pU4/receipt.json",
+      "sha256": "493cbe6b2b4cedafece66aca0f39fe64c6a6d77c102a97dcf0c00ed3a08a6c9d"
+    },
+    "checks": 26,
+    "durationMs": 37217,
+    "engine": "chromium",
+    "scope": "Exact actual compiled8fe three independent browser contexts; four actual native RTC peers and genuine bilateral WebCrypto endpoint comparison, independent source consent/owner grants and concrete page effects. No identity/account/phone/hardware/cross-network general support claim."
+  },
+  "changes": [
+    "A separate Connect participants flow preserves the original local two-control task; no local actor is relabeled as a remote person.",
+    "Manual code exchange and actual endpoint comparison enroll at most two cryptographic page endpoints. Each independently consents to page input; owner separately reviews scope and fixed30/60second duration.",
+    "A persistent receiver per enrolled peer epoch preserves clock mapping and monotonic wire-slot watermark across revoke/layout. Genuine private resource refs come only from real authorization, then feed explicitly approved public bridge registrations preserving timestamp/clock/provenance/expiry.",
+    "Candidate waits for actual current clock readiness and both typed neutral resources before existing InputOwnershipController releases/transfers the incumbent. Original request/output/source deadlines are retained; decline/cancel never removes the incumbent.",
+    "Issued helper operations are tracked before all notification/clock/action callouts; close retains actual work. UI Stop/Back retire authority immediately while negotiation is pending, and replacement waits for genuine settlement.",
+    "Native labelled pressed pad button supplies keyboard/pointer hold/release/focus-loss plus explicit equivalent controls. Consent/focus changes follow external task transitions; no automatic permission or persistence."
+  ],
+  "limits": {
+    "participants": 2,
+    "resourcesPerParticipant": 2,
+    "registrations": 16,
+    "routes": 8,
+    "runtimePendingDeliveries": 16,
+    "ownershipQueue": 4,
+    "requestsPerSession": 64,
+    "setupMs": 30000,
+    "sourceOutputCapsMs": [
+      30000,
+      60000
+    ],
+    "helperRawPending": 4,
+    "helperRawPendingPerPeer": 2,
+    "controlBytes": 4096,
+    "manualCodeBytes": 65536,
+    "transitions": 64,
+    "policyChanges": 8
+  },
+  "independentCoreReview": {
+    "path": "/tmp/101-connected-sharing-core-repairs-independent-review.json",
+    "sha256": "2e82ecc99c48c9bd56306cf61d42a66c390aa4528a8c542d6fbd758dd81b0be6"
+  },
+  "independentUIReview": {
+    "path": "/tmp/101-connected-sharing-ui-repairs-independent-review.json",
+    "sha256": "07f5cf9aed6d6a3d75a872ae39dbda3a389fe3d621cd625e2f80c1e2db4a98f1"
+  },
+  "reviewScope": "Passive source verdicts only; actual root software/native executions separately retained. No reviewer runtime/hardware claim.",
+  "preservation": {
+    "originalUIBuild": {
+      "path": "/tmp/101-hid-sharing-old-ui-preservation.json",
+      "sha256": "26b4bb784ca220fefb17d07fedf82139362ff791824a8aaf749f6fa4e438433e",
+      "literalBuildInputs": 524,
+      "bundleTree": "e8b4f2f5027e2dd43557ca85b1a75b5ac61088c1"
+    },
+    "fixedUIBuild": {
+      "path": "/tmp/101-hid-sharing-fixed-ui-build-preservation.json",
+      "sha256": "0993f0e4cb9f84af50179bfc51d187ce9c047432e1a65213ce63f6a76bfcc64d",
+      "literalBuildInputs": 524,
+      "bundleTree": "e8074ac5e299275eb95a688ce526ebedba99a055"
+    },
+    "scope": "All original/fixed literal compiled inputs and completed actual26/3 native results protected in the referenced local Git bundles before further builds; no whole profile/hardware claim.",
+    "fullNativeResults": {
+      "status": "retained",
+      "path": "/tmp/101-hid-sharing-serial-result-preservation.json",
+      "sha256": "9659f62da59faa504fefc1ac2f5269732d01f7cd97ce2b6035b0d9d29beeb941",
+      "artifactCount": 896,
+      "bundleTree": "f17cbc657b6a904aace3ace9bb69d4959f773053",
+      "indexBlob": "f1dee56c8f1e631862967961c9d0e137b44c418e",
+      "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/serial-sharing-result-bundle",
+      "scope": "Full actual26/3native results, raw26receipt, actual historical failures/reviews/scripts retained. Original/fixed524 literalbuildinputs separately retained in recorded bundles."
+    }
+  },
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact final coherent whole candidate AGENTS gates remain separate; prior1973-unit Settings/installer subset green is historical."
+  },
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "remaining": [
+    "Whole U04 full-scope acceptance",
+    "Accounts, team administration and observer distribution",
+    "Physical phone/hardware, wider network/runtime and final accessibility/responsive matrix",
+    "SDK-internal crypto quiescence is not independently observable from the app helper"
+  ]
+}

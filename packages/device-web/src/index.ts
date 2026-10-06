@@ -73,3 +73,9 @@ export type {
 
 export { createBrowserOutputSharing } from './output-sharing.ts';
 export type { BrowserOutputSharingSource, BrowserOutputSharingDestination, BrowserOutputSharingEnvironment, BrowserOutputSharingOptions, BrowserOutputSharingSnapshot, BrowserOutputSharing } from './output-sharing.ts';
+
+export { createBrowserHidSwitchProvider, BROWSER_HID_SWITCH_LIMITS } from './browser-hid-switch.ts';
+export type { BrowserHidSwitchFailure, BrowserHidSwitchResult, BrowserHidSwitchProfile, NativeHidSwitchDevice, NativeHidSwitchManager, BrowserHidSwitchEnvironment, BrowserHidSwitchSelection, BrowserHidSwitchCaptureRequest, BrowserHidSwitchCaptureGrant, BrowserHidSwitchActivation, BrowserHidSwitchOptions, BrowserHidSwitchSnapshot, BrowserHidSwitchProvider } from './browser-hid-switch.ts';
+
+export { createBrowserSerialSwitchProvider, BROWSER_SERIAL_SWITCH_LIMITS } from './browser-serial-switch.ts';
+export type { BrowserSerialSwitchFailure, BrowserSerialSwitchResult, BrowserSerialSwitchProfile, NativeSerialSwitchPort, NativeSerialSwitchManager, BrowserSerialSwitchEnvironment, BrowserSerialSwitchSelection, BrowserSerialSwitchCaptureRequest, BrowserSerialSwitchCaptureGrant, BrowserSerialSwitchActivation, BrowserSerialSwitchOptions, BrowserSerialSwitchSnapshot, BrowserSerialSwitchProvider } from './browser-serial-switch.ts';

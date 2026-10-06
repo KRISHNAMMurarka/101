@@ -121,7 +121,7 @@ function unbase64(value: unknown): Uint8Array<ArrayBuffer> {
   const decoded = atob(value), bytes = Uint8Array.from(decoded, character => character.charCodeAt(0));
   if (base64(bytes) !== value) fail('corrupt'); return bytes;
 }
-async function bounded<T>(promise: T | Promise<T>): Promise<T> {
+async function withinDeadline<T>(promise: T | Promise<T>): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try { return await Promise.race([Promise.resolve(promise), new Promise<never>((_, reject) => {
     timer = setTimeout(() => reject(new InstallationError('unavailable')), LIMITS.asyncMs);
@@ -201,8 +201,16 @@ export function createProcessorInstallation(options: ProcessorInstallationOption
   const storage: ProcessorInstallationStorage = { read: read.bind(storageInput), compareAndSwap: compare.bind(storageInput), isCurrent: revisionCurrent.bind(storageInput) };
   const key = `101:processor-installation:${encodeURIComponent(ownerId)}`;
   const active = new Set<Active>(), locallyRevoked = new Set<string>(), locallyRevokedPublishers = new Set<string>(), locallyRemoved = new Set<string>();
-  let closed = false, busy = false, epoch = 0, lastTime = -1;
+  let closed = false, busy = false, rawPending = 0, epoch = 0, lastTime = -1;
   let operationAbort: AbortController | undefined;
+  function bounded<T>(promise: T | Promise<T>): Promise<T> {
+    const raw = Promise.resolve(promise);
+    rawPending++;
+    const settled = () => { rawPending--; };
+    void raw.then(settled, settled);
+    // A logical deadline retires authority; only actual settlement releases raw work.
+    return withinDeadline(raw);
+  }
   function retire(entry: Active): void {
     if (entry.retired) return;
     entry.retired = true; active.delete(entry); if (entry.timer !== undefined) clearTimeout(entry.timer); entry.detach();
@@ -244,7 +252,7 @@ export function createProcessorInstallation(options: ProcessorInstallationOption
     if (!alive) retire(entry); return alive;
   }
   async function operation<T>(run: (id: number, signal: AbortSignal) => Promise<T>): Promise<ProcessorInstallationResult<T>> {
-    if (closed) return bad('closed'); if (busy) return bad('busy');
+    if (closed) return bad('closed'); if (busy || rawPending > 0) return bad('busy');
     busy = true; const id = ++epoch, controller = new AbortController(); operationAbort = controller;
     try { const value = await run(id, controller.signal); check(id); return ok(value); }
     catch (error) { return bad(error instanceof InstallationError ? error.reason : 'invalid'); }

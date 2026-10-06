@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createSharingTask } from './sharing-task';
 import type { SharingSnapshot, SharingTask } from './sharing-task';
 import styles from './sharing.module.css';
+import ConnectedSharingView from './ConnectedSharingView';
 
 const slotLabel = (id: string) => id === 'exclusive' ? 'Whole play area' : id === 'left' ? 'Left side' : 'Right side';
 const outcomes = {
@@ -20,6 +21,7 @@ const notices = { ready: '', 'consent-needed': 'Allow your controls before sendi
   closed: 'Sharing is closed. Start a new setup to continue.', limit: 'This setup has reached its request limit. Stop it and start a new setup.' };
 
 export default function SharingView() {
+  const [connected, setConnected] = useState(false);
   const task = useRef<SharingTask | undefined>(undefined), status = useRef<HTMLParagraphElement>(null);
   const [snapshot, setSnapshot] = useState<SharingSnapshot>();
   const [choice, setChoice] = useState<Record<string, string>>({ first: 'left', second: 'right' });
@@ -53,6 +55,7 @@ export default function SharingView() {
   useEffect(() => () => { task.current?.close(); task.current = undefined; }, []);
   const label = (id: string) => snapshot?.recipients.find(recipient => recipient.id === id)?.label ?? 'Selected controls';
   const active = snapshot?.slots.filter(slot => slot.owner) ?? [];
+  if (connected) return <ConnectedSharingView onBack={() => setConnected(false)} />;
   return <main className={styles.page}>
     <header className={styles.header}>
       <p className={styles.eyebrow}>Sharing</p>
@@ -62,7 +65,7 @@ export default function SharingView() {
       <a href="/devices">Back to Devices</a>
     </header>
     <p id="sharing-status" ref={status} className={styles.status} role="status" tabIndex={-1}>{snapshot ? notices[snapshot.notice] || `${active.length ? 'Sharing is active.' : 'Nothing is shared.'} Review requests below.` : 'Nothing is shared. Start a setup when you are ready.'}</p>
-    {!snapshot || snapshot.closed ? <button onClick={start}>Start sharing setup</button> : <>
+    {!snapshot || snapshot.closed ? <div className={styles.actions}><button onClick={start}>Start sharing setup</button><button onClick={() => setConnected(true)}>Connect participants</button></div> : <>
       <section className={styles.panel} aria-labelledby="sharing-policy-title">
         <h2 id="sharing-policy-title">Shared play area</h2>
         <p>{snapshot.policy === 'partitioned' ? 'Left and right are separate. Two controls can use them at the same time.' : 'One control can use the whole play area. Another request waits for your review.'}</p>

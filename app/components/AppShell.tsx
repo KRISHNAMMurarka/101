@@ -38,6 +38,7 @@ const PRIMARY: Destination[] = [
   { href: "/devices", label: "Devices", icon: "devices" },
   { href: "/connections", label: "Connections", icon: "arrow" },
   { href: "/sharing", label: "Sharing", icon: "devices" },
+  { href: "/settings", label: "Settings", icon: "settings" },
 ];
 
 

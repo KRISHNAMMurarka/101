@@ -55,6 +55,7 @@ export const ICONS = {
   check: "M4 13l5 5L20 6",
   close: "M5 5l14 14 M19 5L5 19",
   search: "M11 5a6 6 0 110 12 6 6 0 010-12z M15.5 15.5L20 20",
+  settings: "M3 6h5 M12 6h9 M8 3v6 M3 12h11 M18 12h3 M14 9v6 M3 18h3 M10 18h11 M6 15v6",
   chevron: "M9 5l7 7-7 7",
   plus: "M12 5v14 M5 12h14",
   /* Four corners opening outward, and the same four closing in — the pair every windowing system

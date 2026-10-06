@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "browser-serial-switch-input/1",
+  "localOnly": true,
+  "base": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+  "candidateSourceTree": "cda4589b0e8fa584d3471f45d7e1dbe3159abbff",
+  "sourceSha256": {
+    "packages/device-web/src/browser-serial-switch.ts": "fa88a039d1fb89364acb8acdf9ba560fa814b1b26ce6a3727df398683664696c",
+    "packages/device-web/src/browser-serial-switch.test.ts": "2c57c12f355ed600780760bfdad244a492f5f7049988a256596c98443ee12d30",
+    "examples/browser-resources/serial-switch.ts": "5b7bfe2a195c6ece74525d849fa7b1a11fb7e5ae6ad7a3a0f09df8b30a63b71f",
+    "tools/qa-browser-serial-switch.mjs": "e21a1b06f2bd183f4567e3838eb9bc6ac857a1f83f5b85812f7a04024569f264"
+  },
+  "integrationSha256": {
+    "packages/device-web/src/index.ts": "667aca558f9e4ad738d1d0a6d12de11b604045fbcaf31c8d38ee3895bdf083cd",
+    "tools/build-sdk.mjs": "634ae678189a58d0caa987357d87f2001a9ab848e9acef4bb8ee677b5e4e8f9d",
+    "tools/qa-sdk-consumer.mjs": "3cf28c004c2d52cde7fb00054f8e3b8aab1356acfccdc8fb207445bc480dcb2f"
+  },
+  "oldPublicFeature": {
+    "path": "/tmp/101-serial-switch-old-installed-public.json",
+    "sha256": "a162cceb21cc596b4f3ac508e95b34fcd7a60ad6cd978697e25cc0c7afdaae68"
+  },
+  "oldPublicFeatureScope": "Actual ordinary installed435 seven-package JS: existing HID factory present, Serial factory undefined. Root record statusfail retains genuine intended public feature absence; not a native or runtime positive.",
+  "firstTestPrerequisiteFailure": {
+    "path": "/tmp/101-serial-switch-original-focused.json",
+    "sha256": "dc3752b68df3e8827cb797216e0a5a3299f2c5d708f47dd7a75fec2316b95b40"
+  },
+  "testSyntaxRepair": {
+    "path": "/tmp/101-serial-switch-test-syntax-repair.json",
+    "sha256": "31dfbbcfa7f40c927d6bdb57712389ca9042ac48682a4a396f8ccd54ab3af4de"
+  },
+  "focused": {
+    "path": "/tmp/101-serial-switch-parser-corrected-focused.json",
+    "sha256": "e7156acfbde1958b47b11fa07bb957d58f0b7607ee5d219208b02dcae7b1b3fc",
+    "tests": 10,
+    "pass": 10,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 118,
+    "scope": "Genuine Node ReadableStream/readers/EventTargets through trusted software SerialPort and real public runtime. Includes actual500ms quiet read timeout, held cancel/close and whole invalid-chunk rejection; no native UART equipment."
+  },
+  "staticChecks": {
+    "path": "/tmp/101-serial-switch-first-software.json",
+    "sha256": "399fa80cb026eb1e7946ff5b100a85bc9ad68423ab0446669aa05e9f52895df5"
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-serial-switch-source-browser.json",
+    "sha256": "adc1b7c9ce61b1f94502b85726f5b9eb26685021ddaf68b448f59a4487bb077f",
+    "runs": 4,
+    "scope": "Actual owned browser Worker Uint8Array bytes through genuine ReadableStream and trusted software SerialPort; actual native API/policy/activation negatives only, no chooser/UART positive."
+  },
+  "installedSdk": {
+    "path": "/tmp/101-serial-switch-sdk.json",
+    "sha256": "832b395e3332bad2fdee088ffb86a8a4e91410e633c6cecc5ae013a11ef85b45",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-LBA50c/manifest.json",
+      "sha256": "27195282db078f3b427501f96ec2ca9944e21c9c8494f5467a9a4fe5294bd38b"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-AW2OGn/receipt.json",
+      "sha256": "c38d160248797e9bc2b8dd9e235bfaa4119aa40db139b92e419ba004ee3a4cb9"
+    },
+    "actualProducerTree": "cda4589b0e8fa584d3471f45d7e1dbe3159abbff",
+    "packages": 7,
+    "sourceFiles": 164,
+    "packedInstalledFiles": 367,
+    "consumerChecks": 10
+  },
+  "installedBrowser": {
+    "path": "/tmp/101-serial-switch-installed-browser.json",
+    "sha256": "fc4470f103f0b54f190a57d8240e5a038909b77c6dfa9dec097f092903bc7502",
+    "runs": 4,
+    "callerTree": "cda4589b0e8fa584d3471f45d7e1dbe3159abbff",
+    "scope": "Ordinary installed JS/declarations and exact164 producer source/367 SDK package bytes; truthful independent software Worker/SerialPort/readable-stream resource effects. No physical serial/UART support claim."
+  },
+  "contract": [
+    "Read-only explicit USB vendor/product/profile revision and exact9600 baud/8N1/no flow/256B open config. Every byte0/1 is one switch frame; no getPorts auto-selection, writes, arbitrary decoder, inferred hardware capability or legacy InputBus.",
+    "Opaque selection/capture ownership remains independent of real source and sink runtime grants. Admission reserved before Proxy/teardown callouts; exact owner, epoch, native port info and capture expiry rechecked before effects.",
+    "Whole chunk<=32B copied and validated before any effect; invalid data cannot emit a partial held transition. No retained framing fragments or provider extra queue. Included selected caller route owns queue8/pending1, not aggregate over arbitrary routes.",
+    "Native500ms read timeout and fixed30s capture retire authority; true read/cancel/reader lock/close reservations stay until actual cancel then read settlement, intrinsic releaseLock and owned port.close settlement. Async close is idempotent; cleanup failure quarantines future admission.",
+    "Timestamps are host JavaScript read receipt and explicitly labeled software clocks; no physical UART capture clock mapping."
+  ],
+  "limits": {
+    "selectedPorts": 1,
+    "sources": 1,
+    "filters": 1,
+    "selectionAuthorizerOpenPending": 1,
+    "readerLocks": 1,
+    "nativeReadPending": 1,
+    "nativeCancelPending": 1,
+    "nativeClosePending": 1,
+    "attempts": 64,
+    "captureMs": 30000,
+    "logicalSelectionOpenWaitMs": 5000,
+    "readWaitMs": 500,
+    "chunkBytes": 32,
+    "chunkCount": 600,
+    "frameCount": 600,
+    "totalCopiedPayloadBytes": 600,
+    "maxHz": 20,
+    "burstFrames": 4,
+    "retainedFragmentBytes": 0,
+    "selectedCallerReliableQueue": 8,
+    "selectedCallerPendingDeliveries": 1,
+    "listeners": 6,
+    "expiryTimers": 1,
+    "waitTimers": 1,
+    "readTimers": 1
+  },
+  "cleanup": {
+    "sourceBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0,
+      "ownedWorkerHandles": 0
+    },
+    "installedBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0,
+      "ownedWorkerHandles": 0
+    },
+    "browserInternalQuiescenceMeasured": false
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-browser-serial-switch-source-independent-review.json",
+    "sha256": "2e4840fd4a80ad8c2a76164bc782af3dde05b33d1a898ab5e0e7cd242a1782a9",
+    "scope": "Exact originalleaf/caller/QA source plus separate root test declaration repair10-pass byte/source metadata. Source/installed browser results and SDK pack are separate later root executions; reviewer ran none."
+  },
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact final coherent candidate all5 AGENTS gates remain separate from these selected software results."
+  },
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "remaining": [
+    "Whole N02/A03 and general serial profile/decoder compatibility",
+    "Physical chooser/UART reports/permissions/replug/firmware versions",
+    "Phone/OS/peripheral and wider full support qualification"
+  ],
+  "preservation": {
+    "status": "retained",
+    "path": "/tmp/101-hid-sharing-serial-result-preservation.json",
+    "sha256": "9659f62da59faa504fefc1ac2f5269732d01f7cd97ce2b6035b0d9d29beeb941",
+    "artifactCount": 896,
+    "bundleTree": "f17cbc657b6a904aace3ace9bb69d4959f773053",
+    "indexBlob": "f1dee56c8f1e631862967961c9d0e137b44c418e",
+    "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/serial-sharing-result-bundle",
+    "scope": "All actual164-source/367packed-installed SDK tarballs/files and selected Serial source/tests/caller/QA/reviews/failures are retained in local Git. Actual producer source tree protected separately; ephemeral QA scratch intentionally deleted remains excluded."
+  }
+}

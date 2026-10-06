@@ -243,10 +243,19 @@
     "sha256": "4ba1fb8ecc54afa72b9e6fa443562b1cfcad4e1dfb8c9df8dea247b24f4c99c9"
   },
   "requiredGates": {
-    "status": "pending",
-    "scope": "Exact integrated source plus canonical tree requires all AGENTS types/lint/unit/fresh build/rendered gates before local source commit. Historical8 tests are not relabeled current and scoped lint original exit capture remains unconfirmed until exact full gate."
+    "status": "pass",
+    "sourceCommit": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+    "exactCommittedTree": "6ff086a6caffe7ddd60ad01f935efa10323c22b9",
+    "receipt": {
+      "path": "/tmp/101-recording-controller-exact-required-gates.json",
+      "sha256": "161144c347e8e94dde6348bfd4c3a583f5fdceaaaab79673e510d715694cc589"
+    },
+    "unit": 1957,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five required commands passed this exact source/canonical tree before actual local commit. This subsequent documentary commit receipt awaits the next coherent candidate gates. Historical focused82/native e4/installed24a executions retain their actual source and dependency scopes; no blanket newer native or physical result."
   },
-  "sourceCommit": null,
+  "sourceCommit": "41bc129d838a7bf6e76b35cd17e755b37f460476",
   "taskDisposition": {
     "B05": "PARTIAL/OPEN. Selected recorded-media managed owner-local export/copies/deletion/expiry/audit built and native/source/installed qualified. Full stored-data profile integration remains open."
   },
@@ -255,6 +264,22 @@
     "Unmanaged/caller-retained/transmitted/external copies cannot be recalled. Legacy/desktop/other stored-data profiles remain outside this selected provider.",
     "Unchanged recording producer deletion/sweep does not cryptographically verify expired original frame bytes; exported frames and registered copies are verified.",
     "Memory final-guard TTL and128-row audit-capacity tests passed historically on82; native finalguard TTL transitions/queued owner-grant IDB abort/audit-capacity refusal are not newly qualified. General underlying storage proofs retain their earlier explicit scope.",
-    "Current provider e464 differs historical8 provider82 by named never declaration and return of same throwing catch only; current8 require exact broad gate. Scoped lint diagnostics4/0/0 preserved but original CLI exit was not persisted before capture-budget failure; no inferred original receipt pass."
-  ]
+    "Current provider e464 differs historical8 provider82 by named never declaration and return of same throwing catch only. Exact full1957-unit/types/lint/build/rendered gates passed committed6ff; historical8 focused scope remains82. Scoped lint diagnostics4/0/0 retain their original CLI-exit capture limitation, distinct from current exact full lint exit0."
+  ],
+  "actualLocalCommit": {
+    "path": "/tmp/101-recording-controller-exact-commit.json",
+    "sha256": "08152fdc93ded5f944d00e114d0959a0467110051e397f9be2ad7c253af80572"
+  },
+  "preservation": {
+    "path": "/tmp/101-recording-controller-final-preservation.json",
+    "sha256": "d48653218f05588d317accded83c5a30718456e1d18ee6feb49562ad5a6a38ab"
+  },
+  "independentIntegratedSourceReview": {
+    "path": "/tmp/101-recording-controller-final-source-review-signal.json",
+    "sha256": "5fcbc60ab5660885610997bcaf2309062ba31492f6a0471aa057b31e0ec9065d"
+  },
+  "independentCanonicalReview": {
+    "path": "/tmp/101-recording-controller-canonical-review-signal.json",
+    "sha256": "b2904fb0912e0eb60c7d97d61c5550d2a44601b11aeb8a2da1f79584957bdcf9"
+  }
 }

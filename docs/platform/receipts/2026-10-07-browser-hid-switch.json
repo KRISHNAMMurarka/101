@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "browser-hid-switch-input/1",
+  "localOnly": true,
+  "base": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+  "candidateSourceTree": "435cb49c4676f0611696115fd466a0df8262624e",
+  "sourceSha256": {
+    "packages/device-web/src/browser-hid-switch.ts": "e0b117d2744713ce6f781c146092582e6d3709fa443e1e57a91dd558cb5175e0",
+    "packages/device-web/src/browser-hid-switch.test.ts": "1be40557e0385d3913a918e951a4df8b6850ec25909613a08c95f8974b3b6317",
+    "examples/browser-resources/hid-switch.ts": "64ea663d6c1927154b8f0db8873d472c01de901ad3ff6a56b57633b824e1a9dc",
+    "tools/qa-browser-hid-switch.mjs": "2ef88585f53829a4424c977f375db79eff6e21ffacf74ee565b1b74fe6d8d627"
+  },
+  "integrationSha256": {
+    "packages/device-web/src/index.ts": "12543706050f6ac497fa018fc274be45e15fb73d33829ecce62de28fd140c813",
+    "tools/build-sdk.mjs": "44429292d89705da039e26e5fcf45863b45df2c29454ad73174aa9f76942b123",
+    "tools/qa-sdk-consumer.mjs": "b3692f3b04f01e441c26efca71440f5010b3cf0386008fc5918febd0b1841825"
+  },
+  "oldPublicFeature": {
+    "path": "/tmp/101-n02-hid-old-public-feature-environment-fixed.json",
+    "sha256": "c6ed808950a3d5598e5bee99f598ac82bb39ffc9b7d4236aa4f041047a004987"
+  },
+  "firstPrerequisiteFailure": {
+    "path": "/tmp/101-n02-hid-old-public-feature.json",
+    "sha256": "470a296ba211b6e52c1d1f18da4cb39bed33b48f52c4601c49b6bb9fd77286bd"
+  },
+  "firstSourceReviewBlock": {
+    "path": "/tmp/101-browser-hid-switch-source-independent-review.json",
+    "sha256": "40f8e3710531fda16ac677010d30b1bcb5afafe81f2abd2b2d01177e4511b1ea"
+  },
+  "oldAdmissionRegression": {
+    "path": "/tmp/101-hid-switch-proxy-request-old.json",
+    "sha256": "e37fafcd8564e8581795bcbce839e8850fa25dffa9f85c29cd8b1a88e89a2b37"
+  },
+  "focused": {
+    "path": "/tmp/101-hid-switch-admission-corrected.json",
+    "sha256": "77e29de78763557aa9499a6bab3df4a739cdd91b73e7ed9b8e43d7febd05db51",
+    "tests": 13,
+    "pass": 13,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 117
+  },
+  "firstCompileFailure": {
+    "path": "/tmp/101-hid-sharing-original-software.json",
+    "sha256": "80074728007bef2cf3a6e1f61e82ab50f3c6db83c388fb1cbbbf3c4764febaaa"
+  },
+  "initialTwoFileRun": {
+    "path": "/tmp/101-hid-sharing-original-focused.json",
+    "sha256": "4cfb9f5745854b9fa8f84ba8785d11b13991afb44d7379ef0843e2c83138d390"
+  },
+  "captureLimitation": {
+    "path": "/tmp/101-hid-sharing-original-capture-limitation.json",
+    "sha256": "3679469efc1b2c6558cbca80ae4f5d75f7f84a0a5f1dfd5a6e0f8efe1449bbcd"
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-hid-switch-source-browser.json",
+    "sha256": "0aaef2f8a367e6c09e8bee3466f446f57b707d820a173b1682d84766ced56005",
+    "runs": 4,
+    "assertionsPerRun": 13,
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "scope": "Native API/policy/activation readback negatives without chooser; actual owned browser Worker bytes through explicitly trusted software EventTarget/DataView HID ports and public SDK route. No native HID dispatch or physical device positive."
+  },
+  "installedSdk": {
+    "path": "/tmp/101-hid-switch-sdk.json",
+    "sha256": "20ab29658960c144a0d2d214dfc9381f7117b537053f53c93092f3b074597e6a",
+    "actualProducerTree": "435cb49c4676f0611696115fd466a0df8262624e",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-50sWwn/manifest.json",
+      "sha256": "4028cb7a87b4519898dfc50bafd4182f8fb44797df49e69c07fb4db4d22cd545"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-ctbaBe/receipt.json",
+      "sha256": "11b139309bf1488be0c846208692ada396149b735090680bc9f7d70bf22d5145"
+    },
+    "packages": 7,
+    "sourceFiles": 162,
+    "packedInstalledFiles": 362,
+    "consumerChecks": 10
+  },
+  "installedBrowser": {
+    "path": "/tmp/101-hid-switch-installed-browser.json",
+    "sha256": "11d0d1109a1e84d43b80025f5e8a3061f4b582bb063c3065575366cb466262f6",
+    "runs": 4,
+    "assertionsPerRun": 13,
+    "callerTree": "435cb49c4676f0611696115fd466a0df8262624e",
+    "scope": "Ordinary installed seven-package JS/declarations; same truthful software Worker/port and real route journey, not physical/native HID report qualification."
+  },
+  "contract": {
+    "profile": "Exact explicitly reviewed VID/PID/usage/report/revision; one fixed8bit input layout, one byte0/1 to app:switch/1 switch-0. Fixture IDs/layout are software declarations, not a supported physical product.",
+    "authority": "Explicit native selection and separate capture owner grant; independently approved real runtime source/sink route. No sendReport, auto-selection, label-derived capability or legacy InputBus.",
+    "timestamp": "Host JavaScript report receipt in runtime clock; native event stamp is unmapped provenance, not hardware capture/established hardware clock mapping.",
+    "lifecycle": "Provisional admission before request Proxy/listener teardown callouts. Issued chooser/authorizer/open/close promises reserve capacity to actual settlement; logical5s cancellation does not free a raw job. Idempotent async close retains genuine pending work and cleanup failure quarantines admission.",
+    "limits": {
+      "devices": 1,
+      "sources": 1,
+      "resources": 1,
+      "selectionAuthorizationOpenPending": 1,
+      "nativeClosePending": 1,
+      "attempts": 64,
+      "captureMs": 30000,
+      "logicalWaitMs": 5000,
+      "reportBytes": 1,
+      "reportHz": 20,
+      "burst": 4,
+      "reportsPerCapture": 600,
+      "listeners": 7,
+      "expiryTimers": 1,
+      "nativeWaitTimers": 1,
+      "providerAdditionalQueues": 0,
+      "selectedCallerReliableQueue": 8,
+      "selectedCallerPendingDeliveries": 1
+    },
+    "queueScope": "Selected caller route8/1 only; no aggregate claim over arbitrary independent host routes."
+  },
+  "cleanup": {
+    "sourceBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0,
+      "ownedWorkerHandles": 0
+    },
+    "installedBrowser": {
+      "browsers": 0,
+      "contexts": 0,
+      "ownedListeners": 0,
+      "timers": 0,
+      "callbacks": 0,
+      "loopbackServers": 0,
+      "ownedDirectories": 0,
+      "ownedWorkerHandles": 0
+    },
+    "browserInternalQuiescenceMeasured": false
+  },
+  "independentRepairReview": {
+    "path": "/tmp/101-browser-hid-switch-admission-repair-final-independent-review.json",
+    "sha256": "cbcb86ad0f564ac764cd139073293ab7c12d4141e3dc7648848b23bba97aa46f",
+    "status": "clear",
+    "scope": "Recorded e0b117 provider/1be405 tests/original caller/QA and root hooks/162-source/362-packed-installed SDK bytes. Installed HID run finished after this passive verdict; no claim that reviewer executed it."
+  },
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact coherent whole candidate AGENTS gates remain separate from these selected SDK/software results."
+  },
+  "sourceCommit": null,
+  "wholeChecklistItemsCompleted": [],
+  "remaining": [
+    "Whole N02/D03/A02/I11 scope",
+    "Physical HID/USB chooser, reports, permission/loss/replug and general compatibility",
+    "BLE/serial/output profiles",
+    "Phones, assistive technology and wider runtime/device support"
+  ],
+  "preservation": {
+    "status": "retained",
+    "path": "/tmp/101-settings-hid-sdk-preservation.json",
+    "sha256": "221922a799cd75c2e3f73cbf04b58e45bd5e2f9afce6a73735b0d6569821bedc",
+    "artifactCount": 1598,
+    "bundleTree": "f494052730ebaf05c58c0273aaa4d5006ff0f0a7",
+    "indexBlob": "77f8b75414cc2c458f558243601293ad8bc56148",
+    "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/settings-hid-sdk-bundle",
+    "scope": "Both actual installer160/357 and HID162/362 SDK source trees, tarballs/packed/ordinaryinstalled bytes and selected historical/current scripts/QA/failures are retained in local Git. Ephemeral compiler/native fixture scratch intentionally deleted by QA is excluded; no claim of retaining every generated scratch byte."
+  },
+  "testDeclarationLintRepair": {
+    "path": "packages/device-web/src/browser-hid-switch.test.ts",
+    "oldSha256": "1be40557e0385d3913a918e951a4df8b6850ec25909613a08c95f8974b3b6317",
+    "newSha256": "9b2bc27267490be5a3b198a087a489aad02d1e6304cf430b8d1a4af342dd88eb",
+    "change": "Three self-referencing fixture declarations made const with their existing explicit ReturnType; counts/assertions/callbacks unchanged. Historical13/source/installed browser proof remains attached to its actual original test bytes. Exact final repository unit/types gates must cover new declarations."
+  }
+}

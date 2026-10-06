@@ -133,7 +133,7 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
@@ -149,7 +149,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|media-recording|recording-owner-data|media-synchronization|output-sharing|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|media-recording|recording-owner-data|hid-switch|serial-switch|media-synchronization|output-sharing|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }
@@ -1038,6 +1038,23 @@ function executeNode() {
 import { readFileSync } from 'node:fs';
 ` + runtimeChecks + String.raw`
 const summary = await checkRuntime();
+// A supplied held storage promise is a software workload, not native filesystem qualification.
+let storageReads = 0, settleStorage;
+const heldStorage = new Promise(resolve => { settleStorage = resolve; });
+const pendingInstallation = sdk.createProcessorInstallation({
+  ownerId: 'clean-consumer', now: () => 1000, publisherTrust: () => undefined, authorize: () => undefined,
+  storage: { read() { storageReads++; return storageReads === 1 ? heldStorage : Promise.resolve(undefined); },
+    async compareAndSwap() { return false; }, isCurrent() { return false; } },
+});
+try {
+  const timedOut = await pendingInstallation.inspect();
+  check(!timedOut.ok && timedOut.reason === 'unavailable', 'Held installed storage did not reach its logical deadline');
+  const replacement = await pendingInstallation.inspect();
+  check(!replacement.ok && replacement.reason === 'busy' && storageReads === 1, 'Installed operation admitted replacement before actual storage settlement');
+  settleStorage(undefined); await heldStorage;
+  check((await pendingInstallation.inspect()).ok && storageReads === 2, 'Installed operation did not permit an explicit retry after actual settlement');
+  summary.issuedStoragePromiseReservation = true;
+} finally { settleStorage(undefined); await heldStorage; pendingInstallation.close(); }
 const observedAt = performance.now(), residentBytes = process.memoryUsage().rss;
 const memory = createTelemetryBatchPipeline({ now: () => observedAt });
 try {

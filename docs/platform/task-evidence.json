@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 109,
+  "revision": 116,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10552,7 +10552,7 @@
         "docs/platform/receipts/2026-10-07-recording-owner-data.json"
       ],
       "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; isolated local Chromium149/WebKit26.5 software/native fixtures; no physical phone/hardware. Actual execution trees/byte-equivalence limitations in canonical receipt.",
-      "reproduction": "Actual source30 and installed30 C/W native IndexedDB/owned-canvas checks; exact old public prefix and2TTL failures, current strict77/163, historical8 provider82, actual consumer10 SDK160/357 after retained exact caller allowlist failure. Required broad gates/local source commit pending.",
+      "reproduction": "Actual source30 and installed30 C/W native IndexedDB/owned-canvas checks; exact old public prefix and2TTL failures, current strict77/163, historical8 provider82, actual consumer10 SDK160/357 after retained exact caller allowlist failure. Exact broad gates/local commit now recorded in recording-controller-source-commit-2026-10-07.",
       "scope": "PARTIAL selected managed recorded-media owner-local public export/copies/staged deletion/original expiry/redacted audit. Other stored-data/legacy/native/desktop profiles remain open; no physical, external-copy recall or newly native finalguard TTL/capacity claim.",
       "failure": null,
       "equipment": [
@@ -10577,11 +10577,215 @@
         "docs/platform/receipts/2026-10-07-controller-player-chrome.json"
       ],
       "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; isolated local Chromium149/WebKit26.5 software/native fixtures; no physical phone/hardware. Actual execution trees/byte-equivalence limitations in canonical receipt.",
-      "reproduction": "Actual old real SessionHost\u2192Controller internal-role RED after retained hidden-heading fixture failure; corrected current C/W8each at actuale4/552sourcepins, exact DOM title/status/room/readout/idle motion and awaited host/page/context/browser closure. Broad gates/local source commit pending.",
+      "reproduction": "Actual old real SessionHost\u2192Controller internal-role RED after retained hidden-heading fixture failure; corrected current C/W8each at actuale4/552sourcepins, exact DOM title/status/room/readout/idle motion and awaited host/page/context/browser closure. Exact broad gates/local commit now recorded in recording-controller-source-commit-2026-10-07.",
       "scope": "PARTIAL four-path controller plain task/status/motion-label presentation with unchanged protocol/grants/sensor/input/release/CSS/game-authored readout. Whole product surface/state matrix remains open.",
       "failure": null,
       "equipment": [
         "Owned Mac/private loopback/IndexedDB/digital canvas fixtures; phone/hardware tests deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "recording-controller-source-commit-2026-10-07",
+      "revision": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05",
+        "U05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-recording-owner-data.json",
+        "docs/platform/receipts/2026-10-07-controller-player-chrome.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; exact committed6ff tree; isolated owned digital-canvas/nativeIndexedDB and real SessionHost browser fixtures, with actual historical native trees and reviewed source/dependency equivalence retained.",
+      "reproduction": "Exact candidate all five AGENTS gates pass before local commit:1957unit/34rendered/0skip. Selected recording source30/installed30 and offline consumer10/current SDK160source357installed; selected controller16 native assertions retain actual execution metadata. Initial meaningful old failures and actual fixture/compiler/allowlist/capture failures preserved with subsequent corrections.",
+      "scope": "B05 selected managed recording export/copies/staged deletion/original retention/redacted audit built; U05 selected plain controller task/status labels built. Whole B05/U05 remain PARTIAL/OPEN. No physical, broader surface, newly native TTL-edge, external-copy recall or production claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/software fixtures; phone/hardware tests deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+        "exactCommittedTree": "6ff086a6caffe7ddd60ad01f935efa10323c22b9",
+        "receipt": {
+          "path": "/tmp/101-recording-controller-exact-required-gates.json",
+          "sha256": "161144c347e8e94dde6348bfd4c3a583f5fdceaaaab79673e510d715694cc589"
+        },
+        "unit": 1957,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five required commands passed this exact source/canonical tree before actual local commit. This subsequent documentary commit receipt awaits the next coherent candidate gates. Historical focused82/native e4/installed24a executions retain their actual source and dependency scopes; no blanket newer native or physical result."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-recording-controller-exact-commit.json",
+        "sha256": "08152fdc93ded5f944d00e114d0959a0467110051e397f9be2ad7c253af80572"
+      },
+      "preservation": {
+        "path": "/tmp/101-recording-controller-final-preservation.json",
+        "sha256": "d48653218f05588d317accded83c5a30718456e1d18ee6feb49562ad5a6a38ab"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 119,
+        "open": 153
+      }
+    },
+    {
+      "id": "extension-raw-reservation-built-partial-2026-10-07",
+      "revision": "ea86362be35664b02357fca4af9c7f81cc820971",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E10",
+        "F07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-extension-raw-reservation.json"
+      ],
+      "environment": "Owned macOS arm64; Node24.14.0/TS5.9.3; current source44-module actual native crypto/software storage fixture; immutable SDK160source357installed; owned offline package/browser consumer with no physical acquisition.",
+      "reproduction": "Actual OLD2 product assertion failures retained along with first summary-parser capture failure; current full20/0skip source suite passed. Current immutable seven-package ordinary installed SDK consumer10 passed including Node-only public held storage Promise/busy/settled-retry workload. All five required coherent-candidate gates and next local source commit pending.",
+      "scope": "PARTIAL selected installer raw-operation admission bound under stalled storage/approval after logical timeout. Real returned promises remain reserved until actual settlement; unchanged authority/atomic guards. No entire E10/F07 matrix or native quiescence claim.",
+      "failure": null,
+      "equipment": [
+        "Owned Mac/software Promise/atomic-memory fixtures and offline public SDK consumer; phone/hardware tests deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "browser-appearance-settings-built-partial-2026-10-07",
+      "revision": "dd92da3e5ddc728457c6789b7b2b4f0901d896fc",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-appearance-settings.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0/TS5.9.3; actual source117 modules/cooperative managed fixture; fresh local built4d app, Chromium149.0.7827.55 and WebKit26.5 genuine native IndexedDB/page software journeys.",
+      "reproduction": "Actual old missing-route and declined-draft REDs retained; corrected14/0skip source checks passed. Actual C12/W12 checks cover native local persistence, current-revision conflict, settings-only deletion/audit, keyboard/appearance/responsive, quiet expiry and true pending-open lifetime. First lint and two QA prerequisite failures retained. Final exact candidate AGENTS gates/local commit pending.",
+      "scope": "PARTIAL selected browser appearance management only. No account/publisher/provider/general settings/native/phone/namedAT or whole U12 acceptance. Actual compiled4d app sources equal current declared runtime inputs; QA-only delta documented.",
+      "failure": null,
+      "equipment": [
+        "Owned isolated browser contexts/private-purpose IDB and cooperative software storage; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "browser-appearance-budget-repair-partial-2026-10-07",
+      "revision": "9bb7f9992430c3dcf27800f1f47492f2b1880b17",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-appearance-settings.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0/Chromium149.0.7827.55/WebKit26.5, exact fresh9bb native page/IndexedDB software caller, literal524 emitted build inputs preserved in local Git.",
+      "reproduction": "Original coherentfc types/lint/build passed but rendered33/34 failed total CSS33167>32768; units not executed. Narrow shared-style reuse brought total CSS32574 within unchanged limit; selected rendered-budget regression passed. New actual source/built9bb C12/W12 full Settings journeys and real owned cleanup passed. Exact final full repository gates/local commit pending.",
+      "scope": "PARTIAL Settings/browser appearance software. Current524 literal build inputs retained before further builds. Prior4d actual C/W are historical and only516/525 artifact bytes retained; nine generated bytes were overwritten before snapshot. No physical/AT/provider/account/publisher/full U12 promotion.",
+      "failure": null,
+      "equipment": [
+        "Owned isolated native browser contexts/IndexedDB; no hardware acquisition"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "n02-reviewed-hid-switch-software-partial-2026-10-07",
+      "revision": "435cb49c4676f0611696115fd466a0df8262624e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-hid-switch.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0/TypeScript5.9.3; ordinary offline7-package SDK162source/362installed files; actual isolated Chromium/WebKit browser Worker and trusted software HID ports.",
+      "reproduction": "Actual public feature absence and two-held-authorizer Proxy admission REDs retained. Corrected13 source tests plus4source/4installed software browser runs and10 clean consumer checks pass. First compiler and two-file collector issue retained. Exact final candidate gates/local source commit pending.",
+      "scope": "PARTIAL selected read-only reviewed fixed-byte HID software provider and separately authorized real resource route. Actual native API/policy readback negatives only, no native HID report/physical product/general compatibility or whole N02 acceptance.",
+      "failure": null,
+      "equipment": [
+        "Owned software EventTarget/DataView/browser Worker; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "u04-connected-page-sharing-partial-2026-10-07",
+      "revision": "8fe486aff2b4ab80c982aa530fdd9f5957f3fe65",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-connected-sharing.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; actual source119module crypto/software-port fixtures; actual compiled8fe three isolated Chromium contexts, native RTC four peers and WebCrypto endpoint enrollment.",
+      "reproduction": "Actual missing action, original exclusive replacement, notification-reentry and held-genuine-key Stop REDs retained. Corrected9focused,26native browser and3same-fixture held-setup checks pass; owned returned work/browserchild/server close observed0. First client fixture, collector and lint failures retained. Exact final all5candidate gates/local commit pending.",
+      "scope": "PARTIAL two authenticated browser-page endpoints with separately approved source and owner grants; actual partition/decline/cancel/revoke/transfer/quiet expiry/recovery effects. No person/account identity, observer, phone, OS pointer, physical/full accessibility or whole U04 promotion. Actual built8fe is retained; later namespace additions are not relabeled as that native execution.",
+      "failure": null,
+      "equipment": [
+        "Owned isolated native browser contexts and four native RTC peers; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "n02-reviewed-serial-switch-software-partial-2026-10-07",
+      "revision": "cda4589b0e8fa584d3471f45d7e1dbe3159abbff",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-serial-switch.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0/TypeScript5.9.3; offline7-package SDK164source/367packed-installed files; owned Chromium/WebKit Worker and genuine native ReadableStream through trusted software SerialPort.",
+      "reproduction": "Actual ordinary installed public feature absence retained; first original test-only Node parameter-property parse failure retained and corrected without implementation/assertion changes. Corrected10/0skip source checks,4source/4installed browser runs and10cleanconsumer checks pass. Exact final all5candidate gates/local commit pending.",
+      "scope": "PARTIAL read-only explicit binary0/1 Serial switch and exact UART config; real native stream lifecycle/software transport/public resource routing. Native API/activation negatives only; no physical UART/permission dialog/general profiles or whole N02/A03 promotion.",
+      "failure": null,
+      "equipment": [
+        "Owned browser Worker/ReadableStream/trusted software SerialPort; physical checks deferred"
       ],
       "supportRows": []
     }
@@ -11563,7 +11767,9 @@
         "n02-selected-microphone-envelope-2026-10-06",
         "n02-browser-camera-raster-2026-10-06",
         "n02-current-installed-browser-resources-2026-10-06",
-        "v03-private-application-audio-installed-2026-10-06"
+        "v03-private-application-audio-installed-2026-10-06",
+        "n02-reviewed-hid-switch-software-partial-2026-10-07",
+        "n02-reviewed-serial-switch-software-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12864,7 +13070,8 @@
         "pending-B05",
         "pairing-recovery-2026-10-06",
         "b05-profiles-data-catalog-2026-10-06",
-        "b05-recording-owner-data-built-partial-2026-10-07"
+        "b05-recording-owner-data-built-partial-2026-10-07",
+        "recording-controller-source-commit-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13030,7 +13237,8 @@
       "id": "E10",
       "records": [
         "pending-E10",
-        "pairing-extension-local-2026-10-06"
+        "pairing-extension-local-2026-10-06",
+        "extension-raw-reservation-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13160,7 +13368,8 @@
       "id": "U04",
       "records": [
         "pending-U04",
-        "u04-built-partial-2026-10-06"
+        "u04-built-partial-2026-10-06",
+        "u04-connected-page-sharing-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13177,7 +13386,8 @@
       "records": [
         "pending-U05",
         "u10-invitation-copy-expiry-2026-10-06",
-        "u05-controller-player-chrome-built-partial-2026-10-07"
+        "u05-controller-player-chrome-built-partial-2026-10-07",
+        "recording-controller-source-commit-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13283,7 +13493,9 @@
     {
       "id": "U12",
       "records": [
-        "pending-U12"
+        "pending-U12",
+        "browser-appearance-settings-built-partial-2026-10-07",
+        "browser-appearance-budget-repair-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13385,7 +13597,8 @@
       "id": "F07",
       "records": [
         "embedded-bounds-2026-10-05",
-        "pending-F07"
+        "pending-F07",
+        "extension-raw-reservation-built-partial-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [

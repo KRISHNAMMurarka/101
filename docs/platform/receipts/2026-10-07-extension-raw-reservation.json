@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass",
+  "profile": "reviewed-processor-extension/1-raw-reservation",
+  "localOnly": true,
+  "base": "41bc129d838a7bf6e76b35cd17e755b37f460476",
+  "candidateSourceTree": "ea86362be35664b02357fca4af9c7f81cc820971",
+  "sourceSha256": {
+    "packages/device-runtime/src/processor-installation.ts": "2a310d5ef69f817c4fb943f9e141970b9cb4c9c5ec3c00c060ceef677572b706",
+    "packages/device-runtime/src/processor-installation.test.ts": "3e25aa6751edf441ff6b398761f403e1f6b65391af28682031804c235c5a4809",
+    "examples/external-processor/processor.mjs": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+    "examples/external-processor/manifest.json": "71855286c4a42f808a6bd79cdddfb819fcfb460eeabdcaed7f73919e1945105e"
+  },
+  "integrationSha256": {
+    "docs/platform/SDK.md": "ecd90b8b81df7e32aa1b647a88ea8398257c5e3e746ca81f8a593dff56c60e9b",
+    "tools/qa-sdk-consumer.mjs": "0b762b6107c57678b36cfbef976e421e3356617417a7731dfed3bf06d02e05b9"
+  },
+  "oldRegression": {
+    "path": "/tmp/101-extension-raw-pending-old.json",
+    "sha256": "441a75bc9cf58495b462f8c1a5637afc4ad90b369d7bac404e0fe32bb5e32374"
+  },
+  "originalCaptureFailure": {
+    "path": "/tmp/101-extension-raw-pending-old-capture-failure.json",
+    "sha256": "e8148b740ceac1d828212544e5e4400510f258e473645641b44f8e7eac17c373"
+  },
+  "smallestOldOutcome": {
+    "tests": 2,
+    "pass": 0,
+    "fail": 2,
+    "scope": "Actual public installer inspect on held contract-shaped storage and install of actual native-crypto signed example source on held approval. Each logical1s timeout admitted a subsequent successful inspect while raw promise remained unresolved. No native filesystem or browser storage claim."
+  },
+  "currentFocused": {
+    "path": "/tmp/101-extension-raw-pending-focused.json",
+    "sha256": "b85a52a594dcc3cbac0e7d99f93e41335394dd6a85c96bf232c1316bf394b82b",
+    "tests": 20,
+    "pass": 20,
+    "fail": 0,
+    "skipped": 0,
+    "loadedSourceFiles": 44,
+    "scope": "Full actual-source producer/signature/install/update/rollback/revoke/remove and negative suite plus two raw storage/approval boundary regressions; underlying memory fixture remains explicitly software."
+  },
+  "installedSdk": {
+    "qualification": {
+      "path": "/tmp/101-extension-raw-pending-sdk.json",
+      "sha256": "50dce292f4e1f2a0fb3ed42c9d8299a0662f1e3dfe8a7298f0a65f039ee94c35"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-vhUUHT/manifest.json",
+      "sha256": "8d63f278f52f6cd67eddc7900262d255a6e60228d3078a9570cec357010eb488"
+    },
+    "actualProducerTree": "ea86362be35664b02357fca4af9c7f81cc820971",
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-a2UA1R/receipt.json",
+      "sha256": "583bd89a852db544cdd84712a0e89911e879b44dd356860dbd32673f9db3c4cc"
+    },
+    "packages": 7,
+    "sourceFiles": 160,
+    "packedInstalledFiles": 357,
+    "checks": 10,
+    "nodeOnlyAddedWorkload": "Public ordinary installed JS factory under a supplied held storage Promise: genuine deadline refusal, busy without issuing replacement, explicit retry only after actual resolve. Software workload, no new native filesystem qualification."
+  },
+  "changes": [
+    "Per-installer reservations retain every actually issued awaited promise until its returned promise resolves or rejects. Logical timeout cannot admit a replacement while raw work remains unresolved.",
+    "Existing epoch/signal/current grant/final storage guard and caps remain unchanged; late approval cannot resume the failed operation.",
+    "Synchronous close retires authority; callers separately close storage. No asynchronous/native quiescence promise added."
+  ],
+  "independentSourceReview": {
+    "path": "/tmp/101-extension-raw-pending-source-review-signal.json",
+    "sha256": "9312b4cc63327970d3e3e10b89575a17cca0bcb72a8a384b2521808580513dcd"
+  },
+  "requiredGates": {
+    "status": "pending",
+    "scope": "Exact coherent source/UI/canonical candidate requires all AGENTS gates before next local source commit; SDK/current20 runtime results retain actual pinned source scopes."
+  },
+  "sourceCommit": null,
+  "taskDisposition": {
+    "E10": "PARTIAL/OPEN. Selected verified local extension asynchronous reservation fixed; broader extension/native/dependency/sandbox qualification remains open.",
+    "F07": "PARTIAL/OPEN. One installer unresolved raw-operation workload now bounded; full resource/queue/fanout matrix remains open."
+  },
+  "limitations": [
+    "Underlying atomic storage must still enforce supplied final guard. This proof measures returned contract promises and does not guarantee cancellation/quiescence of a native operation hidden behind them.",
+    "Two held promises are deliberate contract-shaped software workloads; no physical device/hardware/browser filesystem/native install/language binding qualification.",
+    "Required final exact coherent candidate broad gates and source commit are pending. Independent installer source and bounded installed-tool/documentary risk reviews are clear for their pinned scopes."
+  ],
+  "independentSdkNodeDocReview": {
+    "path": "/tmp/101-u12-settings-source-independent-review.json",
+    "sha256": "1244e577e7059c0c9dfafd46cbef138301411b72768530f8ca31a16c5100b2d3",
+    "result": "CLEAR",
+    "scope": "sdkNodeDocAddendum field only; original separate U12 product review was BLOCKED and corrected independently. Exact ea installer/tool/doc160source357installed inputs verified passively, no reruns."
+  },
+  "preservation": {
+    "status": "retained",
+    "path": "/tmp/101-settings-hid-sdk-preservation.json",
+    "sha256": "221922a799cd75c2e3f73cbf04b58e45bd5e2f9afce6a73735b0d6569821bedc",
+    "artifactCount": 1598,
+    "bundleTree": "f494052730ebaf05c58c0273aaa4d5006ff0f0a7",
+    "indexBlob": "77f8b75414cc2c458f558243601293ad8bc56148",
+    "bundleRef": "refs/codex/evidence/2026-10-07-hid-sharing/settings-hid-sdk-bundle",
+    "scope": "Both actual installer160/357 and HID162/362 SDK source trees, tarballs/packed/ordinaryinstalled bytes and selected historical/current scripts/QA/failures are retained in local Git. Ephemeral compiler/native fixture scratch intentionally deleted by QA is excluded; no claim of retaining every generated scratch byte."
+  }
+}
