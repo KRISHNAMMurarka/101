@@ -994,6 +994,107 @@ installed application code bytes or reserve target capacity. The orchestrator
 must use authorized placement and host-owned grants; live cross-host
 qualification remains R09.
 
+## Owned native raster application
+
+`createHostedApplication()` from the workspace `@101/hub-server` export starts
+the fixed reviewed `owned-node-raster-application/1` program in a separate Node
+24.14.0 child. The child owns a 4×4 cursor state and renders 64 raw RGBA8 bytes.
+Descriptions are inert: no caller-selected executable, path, code or application
+is accepted. Launch approval binds the owner, provider, application, session,
+code digest and native epoch. A private 0700 directory, 0600 socket, inherited
+random capability, one-use permits and authenticated replies bind operations to
+that child. This is a cooperative same-user boundary, not an OS sandbox or
+account identity service.
+
+Construction and declined launch create no child. Successful `start` returns
+an opaque epoch with a paused child; the current workload handoff authority and
+a separate resume approval activate it. `input` accepts only integer cursor
+coordinates 0–3, a current SDK invoke delivery and an independent native input
+approval. Its acknowledgment identifies the confirmed state revision. `frame`
+requires separate read approval. An independent `ApplicationViews` output grant
+is required to expose those pixels. `currentFrame` performs no new read or
+render and returns only an already approved current frame. Revocation clears
+that retained frame; retry requires fresh authority.
+
+`handoffHost()` stages validated cursor state while paused. Transfer waits for
+the old child's actual settlement before target resume; the target needs fresh
+input, frame and output approvals. Missing captured state cannot silently
+recover by launching default state. Restoring a captured snapshot requires
+explicit launch/stage approval. Issued input that loses acknowledgment during
+cancellation is marked uncertain; cancellation does not claim to undo effects.
+
+Child `sourceTime` is render/emission time, with the original child PID and
+native epoch in its clock identity. Host `receivedAt` and `receiptClockId` are
+separate. The view's projection clock stays separate too.
+`hostedApplicationRequirements(providerId, { sourceClockId, receiptClockId })`
+provides a frame schema only after selecting the exact observed clock identities;
+it authenticates neither identity and establishes no clock mapping. The 250 ms
+receipt-age limit cannot be refreshed by projecting the same frame again.
+
+Each owner admits one unresolved native operation, three starts, sixty-four
+attempts and thirty-two operations. A child accepts two clients, 4 KiB per frame,
+64 KiB lifetime traffic and sixty-four chunks. Native requests have a 2.5-second
+deadline and children a ten-second lifetime. Stop fences authority immediately
+and retains reservations through actual socket, IPC callback and child closure,
+then removes only its private directory.
+
+The [independent caller](../../examples/hosted-application/consumer.mjs) verifies
+real child-rendered bytes, granted runtime input, separate private output,
+two-child snapshot handoff, expiry, cancellation and teardown. Reproduce with
+`node --experimental-strip-types tools/qa-hosted-application.mjs
+--workspace-exports`. This named provider uses public source exports; it is not
+part of the seven packed browser SDK artifacts. Cross-host/network service,
+encoded media, audio, arbitrary applications, OS input, physical display and
+general platform qualification remain unavailable here. R09 remains open.
+
+## Sparse runtime load qualification
+
+`examples/runtime-load/runtime-load.ts` exports `RUNTIME_LOAD_TIERS` and
+`runRuntimeLoadQualification({ tier, signal, authorize })`. The
+`subscribed-runtime-load/1` workload uses the public runtime with fixed adjacent
+Node worker targets. The host's ordinary `Authorize` callback remains necessary;
+declared tiers confer no permission. Each of four owner/application/session
+scopes has its own actual worker. Only subscribed edges carry work.
+
+| Tier | Subscribed edges per scope | Sources | Maximum fan-out per source | Native pending work |
+| --- | --- | --- | --- | --- |
+| 16 edges | 4 | 4 | 16 | 8 total; 2 per scope |
+| 64 edges | 16 | 4 | 16 | 8 total; 2 per scope |
+| 128 edges | 32 | 8 | 16 | 8 total; 2 per scope |
+
+Each edge has one sink and one latest pending record containing bounded integer
+sequence/state. Sixty sustained turns request a 20 ms interval; the receipt
+reports actual elapsed time and turn rate. A turn publishes current state and
+explicitly flushes the public runtime. Native acknowledgment confirms the exact
+edge, sequence and state. Every admitted edge must receive current output, and
+receipts report per-edge service and per-scope recovery. Latest delivery can
+coalesce intermediate states; accepted, coalesced, dispatched, current and late
+effects, cancelled work and retired queue counts remain distinct.
+
+The runner rejects a foreign tenant before any target dispatch and denies an
+extra route without displacing incumbents. It holds real native work in scope
+zero for eight turns while the other three continue, then verifies all scopes
+recover during twenty turns. Actual held operations exercise revocation and a
+fresh constrained-grant expiry. Cancellation fences queued and late delivery,
+retains its one runner reservation through four actual worker exits, and closes
+every created route, including denied idle handles. Issued effects may finish
+before cancellation reaches a worker; late and uncertain outcomes are retained.
+
+Runs admit at most thirty-two lifetime attempts per module, have a twelve-second
+deadline, and bound each target to two unresolved operations and 4,096 operation
+IDs. Native producer messages are capped at 2,048 and captured output at 4 KiB.
+Receipts are capped at 32 KiB. Worker heap/stack ceilings constrain this fixed
+software target; they establish no RSS, thermal, battery or general OS sandbox
+guarantee. Parent admission-to-ACK time and worker emission clocks are separate;
+the receipt makes no hardware capture-to-output or network latency claim.
+
+Run `node tools/qa-runtime-load.mjs --sdk-root <installed-consumer>
+--candidate-tree <source-tree>`. It compiles the exact caller against the
+immutable seven-package SDK, verifies all source and installed file hashes, and
+executes ordinary public JavaScript imports without loader aliases. The named
+macOS/Node software tiers are local qualification; accepted release capacity,
+other platforms, media, networks and physical devices require separate evidence.
+
 ## Local device simulator
 
 `createDeviceSimulator({ sources, sinks, routes })` runs reviewed descriptors

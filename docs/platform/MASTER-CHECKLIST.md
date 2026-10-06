@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 111 completed with recorded evidence; 161 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 113 completed with recorded evidence; 159 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -248,7 +248,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **R05 — Implement an authorized placement scheduler.** Select an eligible host, respect quotas and resource ownership, and reject an incompatible or unauthorized runtime. [Contract](SDK.md#authorized-placement-reservation) and [packed consumer receipt](receipts/2026-10-05-r05-placement.json).
 - [x] **R06 — Implement versioned application snapshots.** A reference application serializes tested state; incompatible snapshots and absent assets fail with explicit restart alternatives. [Contract](SDK.md#versioned-application-snapshots) and [packed consumer receipt](receipts/2026-10-05-r06-application-snapshot.json).
 - [x] **R07 — Implement pause/transfer/resume handoff.** New route epochs and ownership leave one authoritative host; interrupted transfer recovers without dual simulation or stale commands. [Runtime behavior](SDK.md#workload-handoff) and [packed consumer receipt](receipts/2026-10-05-r07-workload-handoff.json).
-- [ ] **R08 — Implement hosted/streamed application integration.** Launch, input targets and media views authenticate to a real provider; metadata alone does not count as remote execution.
+- [x] **R08 — Implement hosted/streamed application integration.** Launch, input targets and media views authenticate to a real provider; metadata alone does not count as remote execution. [Exact selected software evidence](receipts/2026-10-06-hosted-load.json).
 - [ ] **R09 — Qualify cross-host workloads.** Shared input/output groups and a supported live handoff pass permissions, disconnect, loss, snapshot version and measured recovery checks.
 
 ### B — Opted-in history, persistent state and jobs
@@ -302,7 +302,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **F05 — Implement fair scheduling/quotas.** One resource, session or slow recipient cannot monopolize controls; per-scope CPU/bytes/work limits remain bounded under contention. [Bounded local build and runtime evidence](receipts/2026-10-06-media-haptics-scheduling.json); remaining scope stays open. [Authorized-scope pending-work evidence](receipts/2026-10-06-backup-resolution-scope.json).
 - [ ] **F06 — Verify clock/drift and synchronization limits.** Simulated offset/drift and real devices validate age/skew decisions; uncertain clocks degrade honestly.
 - [ ] **F07 — Verify memory/queue/fan-out limits.** Burst, hostile, hanging-provider, overload and cancellation workloads remain within declared bounds and release resources.
-- [ ] **F08 — Run large graph/session load tests.** Scale by subscribed edges rather than unrestricted mesh; test published capacity tiers, tenant isolation and graceful overload.
+- [x] **F08 — Run large graph/session load tests.** Scale by subscribed edges rather than unrestricted mesh; test published capacity tiers, tenant isolation and graceful overload. [Exact selected software evidence](receipts/2026-10-06-hosted-load.json).
 - [ ] **F09 — Run loss/reconnect/slow-sink tests.** Network interruptions, congestion and stalled media/commands leave no stuck output or stale replay and recover through documented behavior.
 - [ ] **F10 — Measure battery, CPU and thermal behavior.** Supported mobile, watch, desktop and gateway workloads sustain declared rates through realistic long sessions.
 - [ ] **F11 — Investigate camera timing outliers.** Reproduce recorded startup/inference stalls and distinguish warmup, throttling and sustained latency; acceptance uses distributions and a completed walkthrough.

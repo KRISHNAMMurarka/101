@@ -1,0 +1,1005 @@
+{
+  "schemaVersion": 1,
+  "result": "pass-selected-local-scopes",
+  "date": "2026-10-06",
+  "base": "f1a56ada68cddb8bf2b186cb740ab698dc782b26",
+  "sourceTree": "b8bae98bd782f7ca557d135c9b468663abfff5c5",
+  "sourceSha256": {
+    "docs/platform/RELEASE-CONTRACT.md": "2cb894a87390903724f5ecbfb149ae8b4df557952cfa170d29b3ab0da258dada",
+    "docs/platform/SDK.md": "9bb46795e2e79049a6b1c1abd68add1ae8cd5623db327cb6f1481bc509313ada",
+    "examples/hosted-application/consumer.mjs": "25a0b8d519970dfc358a82f2e9c4ff8ee4d973f260b73f87fe15cfb94c0ab763",
+    "examples/runtime-load/application-target.mjs": "7d0c7d936fdb4a19b04005edbde2a6e95988afe3f61ab91c03b37bf4123a2b17",
+    "examples/runtime-load/runtime-load.ts": "000237adc14a6adee0ab9c757b13681f8c0e0d02ca300e2a72175b9e857829d1",
+    "packages/hub-server/src/hosted-application.test.ts": "250c7de734c60251f8989de7c762c4c6ec041f6af135fa905131d0e3df7b9992",
+    "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+    "packages/hub-server/src/index.ts": "fc60d332fc3ebc538c3a7437bcfd0db12693d8bdd72304d02091685e8ed03bd6",
+    "tests/runtime-load.test.ts": "4f261ef28e036ceee60a0260d1399d35f63351c0ec09d9ed39ce7180e6ea95b7",
+    "tools/qa-hosted-application.mjs": "57cfe68bc6a280565d559e37f6bd6e40331add7ab89e4b760c7d909d4179ae98",
+    "tools/qa-runtime-load.mjs": "72a62a47964632e78a6be2c9df928aa798fffb06e94012098907ad2c43cebe74"
+  },
+  "taskDisposition": {
+    "R08": "complete for owned-node-raster-application/1 on macOS26.5.2arm64/Node24.14.0: independently executing fixed native application, inherited private capability/one-use permits/authenticated replies, exact launch/input/frame approvals, independent public SDK input/output routes and native raster, two-child snapshot handoff, missing-state recovery failure, cancellation/expiry and real cleanup. Source-bound hub API only; no packed hub/cross-host/network/OS sandbox/arbitrary application/hardware claim.",
+    "F08": "complete for subscribed-runtime-load/1 measured Node24.14.0/macOS26.5.2arm64 software tiers16/64/128: sparse subscribed edges across four exact owner/application/session scopes, every admitted edge receives current native effect, sustained sixty measured turns, tenant denial, overload preserves incumbents, held-scope isolation/all-scope recovery and actual revoke/expiry/cancel teardown. Latest coalescing and late/uncertain issued effects reported honestly. No supported release capacity promotion, RSS/SLO/thermal/media/network/physical/all-platform claim."
+  },
+  "tally": {
+    "total": 272,
+    "completed": 113,
+    "open": 159
+  },
+  "hosted": {
+    "packet": {
+      "path": "/tmp/101-hosted-application-frozen-pins.json",
+      "sha256": "020f712f331822f1a3ee45abf43486df4ff4970c6e652d85d8fd9a7fcdd07f0c",
+      "bytes": 23925
+    },
+    "review": {
+      "path": "/tmp/101-hosted-application-independent-review.json",
+      "sha256": "a7ad90fd3c96e1d8991460c7aa8c71fc5dc839f75962adc0684fda6b88a6bfb6",
+      "bytes": 38029
+    },
+    "literalRowDecision": {
+      "literalRow": "docs/platform/MASTER-CHECKLIST.md:251 \u2014 Implement hosted/streamed application integration. Launch, input targets and media views authenticate to a real provider; metadata alone does not count as remote execution.",
+      "policyReferences": [
+        "docs/platform/MASTER-CHECKLIST.md:11",
+        "docs/platform/MASTER-CHECKLIST.md:14",
+        "docs/platform/MASTER-CHECKLIST.md:15",
+        "docs/platform/MASTER-CHECKLIST.md:16"
+      ],
+      "decision": "The fixed owned Node/raw-raster provider meets the literal R08 implementation outcome: actual separate native application execution, authenticated approved launch/input/frame path, independent real SDK input/display effects, and cancellation/cleanup/recovery evidence. R08 may close for this exact named Node24.14.0/macOS26.5.2 profile after root frozen-candidate gates, commit and canonical linked receipt. No additional physical or network deliverable is named in R08; those are separate qualification/remote rows.",
+      "conditions": [
+        "All final root gates and receipts must refer to the exact integrated four owned bytes plus current dependency/public hook closure.",
+        "Document actual same-user private IPC trust, raw4x4 RGBA provider, clock/receipt semantics and remaining exclusions.",
+        "Do not describe source-bound hub proof as an installed hub-server SDK consumer.",
+        "Do not close R09 or claim cross-host/network execution, arbitrary code, encoded media/audio, hardware displays, accounts or OS isolation from this proof."
+      ]
+    },
+    "sourcePins": {
+      "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "packages/hub-server/src/hosted-application.test.ts": "250c7de734c60251f8989de7c762c4c6ec041f6af135fa905131d0e3df7b9992",
+      "examples/hosted-application/consumer.mjs": "25a0b8d519970dfc358a82f2e9c4ff8ee4d973f260b73f87fe15cfb94c0ab763",
+      "tools/qa-hosted-application.mjs": "57cfe68bc6a280565d559e37f6bd6e40331add7ab89e4b760c7d909d4179ae98"
+    },
+    "focusedTests": 15,
+    "rootNativeProof": {
+      "path": "/tmp/101-hosted-load-root-hosted.json",
+      "sha256": "e5724a6c76ab55e84ca855f28d425b155266bedc443a806787a86305e4f5c235",
+      "bytes": 20298
+    },
+    "checks": 14,
+    "dependencyPins": {
+      "examples/hosted-application/consumer.mjs": "25a0b8d519970dfc358a82f2e9c4ff8ee4d973f260b73f87fe15cfb94c0ab763",
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+      "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+      "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/impulse-fusion.ts": "2832c60aef91b83c1f65e6de13ab5598a7c62fd833bdc9fc4820d551e9d76374",
+      "packages/device-model/src/index.ts": "61b4528b6a95327acab56ff174e78c3b0fe5370c1a7afdd4c2940a0a55eee298",
+      "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+      "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+      "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+      "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+      "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/watch-companion-report.ts": "e4ffd1572ad76e5af46149d4648239e73be70158e1e0c91b18909ae28ee29006",
+      "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+      "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+      "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+      "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+      "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+      "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+      "packages/device-runtime/src/index.ts": "e913a9f7e5d02a031a26dc924ac872535b049360e78f321e185bb1944a1ce1d5",
+      "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+      "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+      "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+      "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+      "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+      "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+      "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+      "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+      "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+      "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+      "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+      "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+      "packages/device-runtime/src/watch-companion.ts": "a710eb8f38e5138a4d3661b675f13b0881f24bd0f1bafe5c7d27abfb7522eef5",
+      "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+      "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+      "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+      "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+      "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+      "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+      "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+      "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+      "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/index.ts": "fc60d332fc3ebc538c3a7437bcfd0db12693d8bdd72304d02091685e8ed03bd6",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+      "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+      "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+      "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+      "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+      "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+      "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+      "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a"
+    },
+    "childSourceSha256": "11871cec6e9b3a1c98001e8ca7d19f22cdcc346db0bca7c9badf0fdb4bb3139d",
+    "actualChildStarts": 3,
+    "nativeInputs": 3,
+    "nativeOperations": 12,
+    "nativeRaster": {
+      "width": 4,
+      "height": 4,
+      "format": "raw-rgba8",
+      "bytes": 64,
+      "verifiedInIndependentConsumer": true,
+      "syntheticPositiveFrames": false
+    },
+    "limits": {
+      "pending": 1,
+      "nativeClients": 2,
+      "starts": 3,
+      "attempts": 64,
+      "operations": 32,
+      "frameBytes": 4096,
+      "totalBytes": 65536,
+      "chunks": 64,
+      "deadlineMs": 2500,
+      "lifetimeMs": 10000,
+      "frameAgeMs": 250,
+      "pixels": 16,
+      "width": 4,
+      "height": 4,
+      "terminateMs": 150,
+      "killMs": 400
+    },
+    "cleanup": {
+      "children": 0,
+      "rawPending": 0,
+      "timers": 0,
+      "ownedDirectories": 0,
+      "retainedDisplayBytes": 0
+    },
+    "provenance": {
+      "ordinaryPublicSourceImports": true,
+      "installedSDK": false,
+      "separateNativeApplication": true,
+      "fixedReviewedChild": true,
+      "sourceHashesFrozen": true,
+      "nativeRendering": true,
+      "physicalRendering": false
+    },
+    "excluded": [
+      "cross-host",
+      "network-service",
+      "encoded-media",
+      "audio",
+      "arbitrary-application",
+      "OS-input",
+      "OS-sandbox",
+      "account-authentication",
+      "physical-display",
+      "phone",
+      "UI",
+      "general-platform-qualification"
+    ]
+  },
+  "load": {
+    "packet": {
+      "path": "/tmp/101-runtime-load-frozen-pins.json",
+      "sha256": "d7ee5960f4de12075cd0000626d2d31554827cf532e2ce3f35efa5bacaa55f9f",
+      "bytes": 67220
+    },
+    "review": {
+      "path": "/tmp/101-runtime-load-independent-review.json",
+      "sha256": "c36536b95049520727d2f519f37cf44c40a4a5b8c3ba30e5323fcdca244b6874",
+      "bytes": 45808
+    },
+    "sourcePins": {
+      "examples/runtime-load/runtime-load.ts": "000237adc14a6adee0ab9c757b13681f8c0e0d02ca300e2a72175b9e857829d1",
+      "tests/runtime-load.test.ts": "4f261ef28e036ceee60a0260d1399d35f63351c0ec09d9ed39ce7180e6ea95b7",
+      "examples/runtime-load/application-target.mjs": "7d0c7d936fdb4a19b04005edbde2a6e95988afe3f61ab91c03b37bf4123a2b17",
+      "tools/qa-runtime-load.mjs": "72a62a47964632e78a6be2c9df928aa798fffb06e94012098907ad2c43cebe74"
+    },
+    "focusedTests": 8,
+    "workerInstalledProof": {
+      "path": "/tmp/101-runtime-load-installed-green.json",
+      "sha256": "6d5ba36b5af5e9d45825a3d75d3172367ff8ea3c34ab0bb98fdd20aa1f43ec75",
+      "bytes": 110419
+    },
+    "rootInstalledProof": {
+      "path": "/tmp/101-hosted-load-root-load.json",
+      "sha256": "584edb4a320cced01679019539f151118dcc52600f5bcf4b633acbaee2dffdab",
+      "bytes": 110435
+    },
+    "rootExternalReceipt": {
+      "path": "/private/tmp/101-sdk-consumer-RZEmai/runtime-load-caller-t4dMeu/receipt.json",
+      "sha256": "49c0bae03313bbf810ffbf4941d95c939db6e6a81b5c27f131ccec54ab24fca2",
+      "bytes": 139673
+    },
+    "tiers": [
+      {
+        "edges": 16,
+        "scopes": 4,
+        "fanout": 16,
+        "sustainedTurns": 60,
+        "intervalMs": 20,
+        "heldTurns": 8,
+        "recoveryTurns": 20,
+        "maxPending": 8,
+        "maxPendingPerScope": 2,
+        "maxPayloadBytes": 256,
+        "maxAttempts": 4096,
+        "maxLifetimeMs": 12000,
+        "workerOldHeapMiB": 16,
+        "workerYoungHeapMiB": 4,
+        "workerStackMiB": 1
+      },
+      {
+        "edges": 64,
+        "scopes": 4,
+        "fanout": 16,
+        "sustainedTurns": 60,
+        "intervalMs": 20,
+        "heldTurns": 8,
+        "recoveryTurns": 20,
+        "maxPending": 8,
+        "maxPendingPerScope": 2,
+        "maxPayloadBytes": 256,
+        "maxAttempts": 4096,
+        "maxLifetimeMs": 12000,
+        "workerOldHeapMiB": 16,
+        "workerYoungHeapMiB": 4,
+        "workerStackMiB": 1
+      },
+      {
+        "edges": 128,
+        "scopes": 4,
+        "fanout": 16,
+        "sustainedTurns": 60,
+        "intervalMs": 20,
+        "heldTurns": 8,
+        "recoveryTurns": 20,
+        "maxPending": 8,
+        "maxPendingPerScope": 2,
+        "maxPayloadBytes": 256,
+        "maxAttempts": 4096,
+        "maxLifetimeMs": 12000,
+        "workerOldHeapMiB": 16,
+        "workerYoungHeapMiB": 4,
+        "workerStackMiB": 1
+      }
+    ],
+    "tierResults": [
+      {
+        "profile": "subscribed-runtime-load/1",
+        "tier": 16,
+        "scopes": [
+          {
+            "scopeIndex": 0,
+            "admittedEdges": 4,
+            "accepted": 361,
+            "coalesced": 194,
+            "dispatched": 165,
+            "currentApplied": 161,
+            "lateApplied": 2,
+            "cancelledBeforeEffect": 2,
+            "retiredQueued": 2,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 5,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 161,
+              "minimumMs": 0.0494160000000079,
+              "maximumMs": 176.65170799999987,
+              "totalMs": 474.16358900000057
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-0",
+              "count": 178,
+              "firstMs": 57.516541,
+              "lastMs": 2362.462083
+            },
+            "serviceMinimum": 40,
+            "perEdgeEntries": 16
+          },
+          {
+            "scopeIndex": 1,
+            "admittedEdges": 4,
+            "accepted": 360,
+            "coalesced": 178,
+            "dispatched": 182,
+            "currentApplied": 182,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 182,
+              "minimumMs": 0.05291599999998198,
+              "maximumMs": 2.5378749999999854,
+              "totalMs": 57.8805339999981
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-1",
+              "count": 184,
+              "firstMs": 57.477458,
+              "lastMs": 2362.483083
+            },
+            "serviceMinimum": 45,
+            "perEdgeEntries": 16
+          },
+          {
+            "scopeIndex": 2,
+            "admittedEdges": 4,
+            "accepted": 360,
+            "coalesced": 178,
+            "dispatched": 182,
+            "currentApplied": 182,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 182,
+              "minimumMs": 0.05691600000000108,
+              "maximumMs": 2.5455839999999625,
+              "totalMs": 61.07341499999919
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-2",
+              "count": 184,
+              "firstMs": 57.503875,
+              "lastMs": 2362.501291
+            },
+            "serviceMinimum": 45,
+            "perEdgeEntries": 16
+          },
+          {
+            "scopeIndex": 3,
+            "admittedEdges": 4,
+            "accepted": 360,
+            "coalesced": 178,
+            "dispatched": 182,
+            "currentApplied": 182,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 182,
+              "minimumMs": 0.0621249999999236,
+              "maximumMs": 2.5532080000000406,
+              "totalMs": 64.04966999999874
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-3",
+              "count": 184,
+              "firstMs": 57.410458,
+              "lastMs": 2362.521958
+            },
+            "serviceMinimum": 45,
+            "perEdgeEntries": 16
+          }
+        ],
+        "turns": 60,
+        "sustainedElapsedMs": 1346.496709,
+        "actualTurnHz": 44.560079203283074,
+        "denialDispatchDelta": 0,
+        "overloadDispatchDelta": 0,
+        "overloadPreserved": true,
+        "heldOtherScopeProgress": true,
+        "allEdgesServed": true,
+        "acceptedNotDispatched": 730,
+        "ownedCleanup": {
+          "workersStarted": 4,
+          "workersExited": 4,
+          "pendingRaw": 0,
+          "timers": 0,
+          "listeners": 0,
+          "contexts": 0
+        },
+        "scope": "Owned Node workers and sparse subscribed latest edges only. Coalescing may discard intermediate states. ACK timing is parent admission-to-ACK; worker emission is a separate source clock. Worker heap ceilings are not RSS/thermal/platform guarantees. Issued effects can remain uncertain after retirement.",
+        "reason": "qualified-selected-local-tier",
+        "status": "pass"
+      },
+      {
+        "profile": "subscribed-runtime-load/1",
+        "tier": 64,
+        "scopes": [
+          {
+            "scopeIndex": 0,
+            "admittedEdges": 16,
+            "accepted": 1441,
+            "coalesced": 1262,
+            "dispatched": 165,
+            "currentApplied": 161,
+            "lateApplied": 2,
+            "cancelledBeforeEffect": 2,
+            "retiredQueued": 14,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 5,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 161,
+              "minimumMs": 0.04616599999963,
+              "maximumMs": 178.65787499999988,
+              "totalMs": 478.3547159999953
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-0",
+              "count": 178,
+              "firstMs": 2394.028916,
+              "lastMs": 4714.883375
+            },
+            "serviceMinimum": 10,
+            "perEdgeEntries": 64
+          },
+          {
+            "scopeIndex": 1,
+            "admittedEdges": 16,
+            "accepted": 1440,
+            "coalesced": 1246,
+            "dispatched": 184,
+            "currentApplied": 184,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 184,
+              "minimumMs": 0.05079100000011749,
+              "maximumMs": 5.041582999999719,
+              "totalMs": 67.60746299999664
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-1",
+              "count": 186,
+              "firstMs": 2393.46975,
+              "lastMs": 4714.933333
+            },
+            "serviceMinimum": 11,
+            "perEdgeEntries": 64
+          },
+          {
+            "scopeIndex": 2,
+            "admittedEdges": 16,
+            "accepted": 1440,
+            "coalesced": 1246,
+            "dispatched": 184,
+            "currentApplied": 184,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 184,
+              "minimumMs": 0.05404099999987011,
+              "maximumMs": 5.062750000000051,
+              "totalMs": 70.47566500000448
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-2",
+              "count": 186,
+              "firstMs": 2393.0465,
+              "lastMs": 4714.960208
+            },
+            "serviceMinimum": 11,
+            "perEdgeEntries": 64
+          },
+          {
+            "scopeIndex": 3,
+            "admittedEdges": 16,
+            "accepted": 1440,
+            "coalesced": 1246,
+            "dispatched": 184,
+            "currentApplied": 184,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 0,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 184,
+              "minimumMs": 0.0573340000000826,
+              "maximumMs": 5.065166999999747,
+              "totalMs": 72.73879599999782
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-3",
+              "count": 186,
+              "firstMs": 2393.562583,
+              "lastMs": 4714.982958
+            },
+            "serviceMinimum": 11,
+            "perEdgeEntries": 64
+          }
+        ],
+        "turns": 60,
+        "sustainedElapsedMs": 1358.5373749999999,
+        "actualTurnHz": 44.16514488605807,
+        "denialDispatchDelta": 0,
+        "overloadDispatchDelta": 0,
+        "overloadPreserved": true,
+        "heldOtherScopeProgress": true,
+        "allEdgesServed": true,
+        "acceptedNotDispatched": 5044,
+        "ownedCleanup": {
+          "workersStarted": 4,
+          "workersExited": 4,
+          "pendingRaw": 0,
+          "timers": 0,
+          "listeners": 0,
+          "contexts": 0
+        },
+        "scope": "Owned Node workers and sparse subscribed latest edges only. Coalescing may discard intermediate states. ACK timing is parent admission-to-ACK; worker emission is a separate source clock. Worker heap ceilings are not RSS/thermal/platform guarantees. Issued effects can remain uncertain after retirement.",
+        "reason": "qualified-selected-local-tier",
+        "status": "pass"
+      },
+      {
+        "profile": "subscribed-runtime-load/1",
+        "tier": 128,
+        "scopes": [
+          {
+            "scopeIndex": 0,
+            "admittedEdges": 32,
+            "accepted": 2881,
+            "coalesced": 2686,
+            "dispatched": 165,
+            "currentApplied": 161,
+            "lateApplied": 2,
+            "cancelledBeforeEffect": 2,
+            "retiredQueued": 30,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 5,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 161,
+              "minimumMs": 0.040540999999393534,
+              "maximumMs": 174.0167080000001,
+              "totalMs": 460.7832539999954
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-0",
+              "count": 178,
+              "firstMs": 4747.728291,
+              "lastMs": 7071.740875
+            },
+            "serviceMinimum": 5,
+            "perEdgeEntries": 128
+          },
+          {
+            "scopeIndex": 1,
+            "admittedEdges": 32,
+            "accepted": 2880,
+            "coalesced": 2670,
+            "dispatched": 184,
+            "currentApplied": 184,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 24,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 184,
+              "minimumMs": 0.036208999999871594,
+              "maximumMs": 1.6879170000001977,
+              "totalMs": 51.379753999998684
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-1",
+              "count": 186,
+              "firstMs": 4747.779708,
+              "lastMs": 7071.832333
+            },
+            "serviceMinimum": 5,
+            "perEdgeEntries": 128
+          },
+          {
+            "scopeIndex": 2,
+            "admittedEdges": 32,
+            "accepted": 2880,
+            "coalesced": 2670,
+            "dispatched": 184,
+            "currentApplied": 184,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 24,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 184,
+              "minimumMs": 0.040333999999347725,
+              "maximumMs": 1.6850420000000668,
+              "totalMs": 51.29229999999188
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-2",
+              "count": 186,
+              "firstMs": 4746.822375,
+              "lastMs": 7071.815375
+            },
+            "serviceMinimum": 5,
+            "perEdgeEntries": 128
+          },
+          {
+            "scopeIndex": 3,
+            "admittedEdges": 32,
+            "accepted": 2880,
+            "coalesced": 2670,
+            "dispatched": 186,
+            "currentApplied": 186,
+            "lateApplied": 0,
+            "cancelledBeforeEffect": 0,
+            "retiredQueued": 24,
+            "uncertainOnExit": 0,
+            "peakRaw": 2,
+            "heldDispatches": 0,
+            "recoveryApplied": 40,
+            "ackTiming": {
+              "count": 186,
+              "minimumMs": 0.04204200000003766,
+              "maximumMs": 1.6742080000003625,
+              "totalMs": 55.326132999995025
+            },
+            "workerEmission": {
+              "clockId": "owned-node-worker-3",
+              "count": 188,
+              "firstMs": 4746.829625,
+              "lastMs": 7071.842833
+            },
+            "serviceMinimum": 5,
+            "perEdgeEntries": 128
+          }
+        ],
+        "turns": 60,
+        "sustainedElapsedMs": 1360.7814589999998,
+        "actualTurnHz": 44.092311519362056,
+        "denialDispatchDelta": 0,
+        "overloadDispatchDelta": 0,
+        "overloadPreserved": true,
+        "heldOtherScopeProgress": true,
+        "allEdgesServed": true,
+        "acceptedNotDispatched": 10802,
+        "ownedCleanup": {
+          "workersStarted": 4,
+          "workersExited": 4,
+          "pendingRaw": 0,
+          "timers": 0,
+          "listeners": 0,
+          "contexts": 0
+        },
+        "scope": "Owned Node workers and sparse subscribed latest edges only. Coalescing may discard intermediate states. ACK timing is parent admission-to-ACK; worker emission is a separate source clock. Worker heap ceilings are not RSS/thermal/platform guarantees. Issued effects can remain uncertain after retirement.",
+        "reason": "qualified-selected-local-tier",
+        "status": "pass"
+      }
+    ],
+    "accountingLimit": "acceptedNotDispatched is the full aggregate of accepted work without dispatch. Coalesced and retiredQueued are non-exhaustive subcounters; quiet latest flushes may discard stale queued states. No accepted=dispatched+coalesced+retired identity or zero-loss claim is made.",
+    "negativeStatus": {
+      "denied": "denied",
+      "cancelled": "cancelled"
+    },
+    "scope": "Actual owned Node Worker integer-state effects, four exact authorized scopes, sparse subscribed latest delivery on measured Node24.14/macOS arm64. No RSS, SLO, thermal, arbitrary worker/command, physical, phone or all-platform certification. Coalescing can discard intermediate states; already issued effects can remain uncertain after retirement. No core, shared package, dependency, configuration or barrel changes.",
+    "literalRowDecision": {
+      "rowReference": "docs/platform/MASTER-CHECKLIST.md:305",
+      "literalRow": "- [ ] **F08 \u2014 Run large graph/session load tests.** Scale by subscribed edges rather than unrestricted mesh; test published capacity tiers, tenant isolation and graceful overload.",
+      "policyReferences": [
+        "docs/platform/MASTER-CHECKLIST.md:9",
+        "docs/platform/MASTER-CHECKLIST.md:11",
+        "docs/platform/MASTER-CHECKLIST.md:14",
+        "docs/platform/MASTER-CHECKLIST.md:16"
+      ],
+      "decision": "Eligible to close F08 for this named software load-test deliverable after root publishes exact measured test tiers and links the final commit, required gates and runtime receipt. Literal F08 requires sparse subscribed graph/session load tests, published tiers, tenant isolation and graceful overload; it does not require physical hardware.",
+      "conditions": [
+        "Publish 16/64/128 as measured test workload tiers; accepted release capacity remains0 absent separate qualification.",
+        "Retain actual cadence/duration, coalescing and aggregate non-dispatch, non-exhaustive drop classification, late issued outcomes and environment. No guaranteed50Hz/SLO.",
+        "Root exact-candidate gates/commit/receipt linkage remains necessary and is not replaced by this review."
+      ],
+      "exclusions": [
+        "F06 drift/synchronization acceptance",
+        "F07 general hostile/hanging-provider/memory qualification",
+        "F10 battery/CPU/thermal/long-session qualification",
+        "RSS or OS sandbox guarantees from V8 limits",
+        "network/remote accounts/cross-host distribution",
+        "phones/physical hardware/all-platform support",
+        "arbitrary worker programs/full release support promotion"
+      ]
+    }
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/manifest.json",
+      "sha256": "2273efc22bea561032d43c880a4335dd4e77e252ffda03cdaed2e9e1a644cc17",
+      "bytes": 77185
+    },
+    "sourceTree": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+    "reusedUnchanged": true,
+    "sourcePins": 145,
+    "packages": 7,
+    "packedFiles": 322,
+    "installedFilesVerified": 322,
+    "cleanConsumer": {
+      "path": "/tmp/101-sdk-consumer-RZEmai/receipt.json",
+      "sha256": "b8bee668731ff5d104651549f9bc1ed1895772f55385017984978045c9ee3d69",
+      "bytes": 30099
+    },
+    "hubPacked": false
+  },
+  "failedPrior": {
+    "hosted": {
+      "classification": {
+        "feature": "real original missing native provider API",
+        "handoffCreation": "reentrant Stop started native child; cancel during launch leaked paused child",
+        "lifecycle": "missing source capture cold-restart recovery lie; real suspended child wrong deadline reason; real epoch5 exceeds advertised frame schema",
+        "clockContract": "producer/helper contract bug: actual raw native clock string rejected by rich text schema; preserved old failure without replacing green-named original",
+        "publicFixtures": "first source ApplicationViews schema-version mismatch and one-flush cadence driver error retained separately"
+      },
+      "files": [
+        {
+          "path": "/tmp/101-hosted-application-feature-red.log",
+          "sha256": "31cba5706d823cbcd28fe404fc92416c27481acbf248a18ca8486e8be9224b85",
+          "bytes": 1105
+        },
+        {
+          "path": "/tmp/101-hosted-application-handoff-creation-red.log",
+          "sha256": "ed7be2496b0c83461b0ee43926c1f2e5ed91e47edfd7ebf7ebd7a752b7cbff37",
+          "bytes": 1821
+        },
+        {
+          "path": "/tmp/101-hosted-application-final-lifecycle-red.log",
+          "sha256": "1884c8bdb9dad75a0f449d1d302d9a3d18e165f768dc2e8cf9ae2b5b5e19f2b8",
+          "bytes": 3304
+        },
+        {
+          "path": "/tmp/101-hosted-application-epoch-clock-contract-red.log",
+          "sha256": "35869070cb8ba5f5d423a9ac5958500735ab48e50fc1294078a06076ab1d6683",
+          "bytes": 1677
+        },
+        {
+          "path": "/tmp/101-hosted-application-clock-binding-red.log",
+          "sha256": "b471359e5e5c4809fa54f79d50fccde54f5fde0ba15d467b8475bef9f7fdee1e",
+          "bytes": 2463
+        },
+        {
+          "path": "/tmp/101-hosted-application-source-first.err",
+          "sha256": "788d7cb4613753490de4f571cb56e4f577323b6705e4841864561beb831b2968",
+          "bytes": 1501
+        },
+        {
+          "path": "/tmp/101-hosted-application-source-second.err",
+          "sha256": "3022457df8abb1e2bd48babd006bb97433c48a4025e60bbf85eaa51bccdb5c15",
+          "bytes": 826
+        },
+        {
+          "path": "/tmp/101-hosted-application-focused-frozen.log",
+          "sha256": "448e1f124b806c21422f9440ab446aeac9b5a9cc097a97542d3baac30a4ad33e",
+          "bytes": 1679
+        },
+        {
+          "path": "/tmp/101-hosted-application-types-final.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-hosted-application-lint-frozen.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-hosted-application-source-frozen.json",
+          "sha256": "c18e5d9f32a5afce6d0856a849a72a5cd2141ed2767a1b9c79b4efe3ad8e3281",
+          "bytes": 20074
+        },
+        {
+          "path": "/tmp/101-hosted-application-source-frozen.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-hosted-application-pre-final-lifecycle.ts",
+          "sha256": "bd43452391d65b111a16fbc14ce66d1ae365f624f3d1c7e07b62fa172c13fe07",
+          "bytes": 39271
+        },
+        {
+          "path": "/tmp/101-hosted-application-source-test-hook.mjs",
+          "sha256": "a49dc7a1cc3c7a0ec17a2f4a7d1db939f4d6bdee2835f930b29773d12d1aebf5",
+          "bytes": 414
+        },
+        {
+          "path": "/tmp/101-hosted-application-tsconfig.json",
+          "sha256": "90eee41cdf3e9c10231bd91bfabc0c81f5ea8e13ccf54a948c7071f6e4d315d7",
+          "bytes": 5941
+        }
+      ]
+    },
+    "load": {
+      "classification": {
+        "missingRunner": "Faithful actual valid worker effect ACK precedes missing feature assertion, not an existing runtime defect.",
+        "stripOnlySyntax": "Initial new runner constructor parameter-property syntax unsupported by Node stripping; corrected fields.",
+        "ownedCleanup": "Explicit stop now closes idle denied handles as well as runtime-owned active/prepared routes.",
+        "expiryFixture": "Fresh constrained grant replaces mistaken assumption that existing lease renew calls Authorize.",
+        "strictCompiler": "Initial new caller noUncheckedIndexedAccess guard failure fixed before emission.",
+        "lint": "Missing-feature test catch now explains intended absent module."
+      },
+      "files": [
+        {
+          "path": "/tmp/101-runtime-load-missing-runner-red.log",
+          "sha256": "46c07d24daacdfc9d9a1697e0dd039c52ec95d0545c0a74567b2d8723ca5a119",
+          "bytes": 980
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-first.log",
+          "sha256": "3519c76754c97a71be0ece2ebdd7b61c454575054a90456a6ca527df85e76604",
+          "bytes": 9340
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-second.log",
+          "sha256": "5f9039cab4ef42be7d19b2a755a00d1c8a3bac8b2411e8918b370456186d810c",
+          "bytes": 715
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-boundaries.log",
+          "sha256": "646fd4ce7a803484af785daf1d21cbddeecfab0d518ac76fbd8ed924cf58df3b",
+          "bytes": 14053
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-cleanup-green.log",
+          "sha256": "6bda151d60d49de18a9696c983f969a8b775e385fb6832b96ceb4958f20b7a5a",
+          "bytes": 12559
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-real-expiry.log",
+          "sha256": "8ab41a8301a8c677bb03a5487ab88ea53aba65f80f5821b760811fd3456adda7",
+          "bytes": 897
+        },
+        {
+          "path": "/tmp/101-runtime-load-installed-first.err",
+          "sha256": "a2947cf029aace50d23dcc085683bc5555363366d7470a56f51b3d8f5d232b54",
+          "bytes": 1118
+        },
+        {
+          "path": "/tmp/101-runtime-load-installed-green.json",
+          "sha256": "6d5ba36b5af5e9d45825a3d75d3172367ff8ea3c34ab0bb98fdd20aa1f43ec75",
+          "bytes": 110419
+        },
+        {
+          "path": "/tmp/101-runtime-load-installed-green.err",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-runtime-load-focused-final.log",
+          "sha256": "6eb2113cf398e4616554e8e97e04d25aba1567c26fa019b2e7c711862890d673",
+          "bytes": 896
+        },
+        {
+          "path": "/tmp/101-runtime-load-strict-source.log",
+          "sha256": "324b092333d9130f7c245b684d2274caf58c46c56182a057a0b2c372e49abac3",
+          "bytes": 61
+        },
+        {
+          "path": "/tmp/101-runtime-load-lint-first.log",
+          "sha256": "17f4305b94b8eb6664dc4cdfa74ac71403982b5222526483eab642a74c2480f1",
+          "bytes": 158
+        },
+        {
+          "path": "/tmp/101-runtime-load-lint-green.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        }
+      ]
+    },
+    "rootSetup": {
+      "file": {
+        "path": "/tmp/101-hosted-load-root-load-ref-argument.err",
+        "sha256": "2bf3e4470cbc6f178843a5ddce2a683f8086266fb4d640462d3866f3076649c8",
+        "bytes": 746
+      },
+      "cause": "QA requires40hex tree, root initially passed a refname. Corrected argument only; source and producer unchanged."
+    }
+  },
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-hosted-load-final-gates.json"
+  },
+  "boundaries": [
+    "R08/F08 selected software deliverables only; R09 and physical/full matrix qualification remain open",
+    "Zero accepted support rows; published load test tiers do not confer resource authority or accepted release capacity",
+    "No iPhone/Android/watch/Mirroring/OS input/clipboard/capture/user UI interaction",
+    "No publish/deploy/push/preview URL/third-party service/remote access; only owned local software and immutable offline artifacts"
+  ]
+}

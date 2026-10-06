@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 86,
+  "revision": 87,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8784,6 +8784,64 @@
         "Owned disposable local software only; no phone/watch/physical router/capture hardware"
       ],
       "supportRows": []
+    },
+    {
+      "id": "r08-owned-native-raster-2026-10-06",
+      "revision": "b8bae98bd782f7ca557d135c9b468663abfff5c5",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "R08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-hosted-load.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; owned native process/worker proofs and offline installed SDK distinctions in exact receipt",
+      "reproduction": "node --experimental-strip-types tools/qa-hosted-application.mjs --workspace-exports",
+      "scope": "complete for owned-node-raster-application/1 on macOS26.5.2arm64/Node24.14.0: independently executing fixed native application, inherited private capability/one-use permits/authenticated replies, exact launch/input/frame approvals, independent public SDK input/output routes and native raster, two-child snapshot handoff, missing-state recovery failure, cancellation/expiry and real cleanup. Source-bound hub API only; no packed hub/cross-host/network/OS sandbox/arbitrary application/hardware claim.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable software only; no physical device/OS input/capture or user UI"
+      ],
+      "supportRows": [
+        "owned-node-raster-application-2026-10-06"
+      ]
+    },
+    {
+      "id": "f08-subscribed-runtime-load-2026-10-06",
+      "revision": "b8bae98bd782f7ca557d135c9b468663abfff5c5",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "F08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-hosted-load.json",
+        "docs/platform/SDK.md",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; owned native process/worker proofs and offline installed SDK distinctions in exact receipt",
+      "reproduction": "node tools/qa-runtime-load.mjs --sdk-root /tmp/101-sdk-consumer-RZEmai --candidate-tree b8bae98bd782f7ca557d135c9b468663abfff5c5",
+      "scope": "complete for subscribed-runtime-load/1 measured Node24.14.0/macOS26.5.2arm64 software tiers16/64/128: sparse subscribed edges across four exact owner/application/session scopes, every admitted edge receives current native effect, sustained sixty measured turns, tenant denial, overload preserves incumbents, held-scope isolation/all-scope recovery and actual revoke/expiry/cancel teardown. Latest coalescing and late/uncertain issued effects reported honestly. No supported release capacity promotion, RSS/SLO/thermal/media/network/physical/all-platform claim.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable software only; no physical device/OS input/capture or user UI"
+      ],
+      "supportRows": [
+        "subscribed-runtime-load-tiers-2026-10-06"
+      ]
     }
   ],
   "tasks": [
@@ -10937,7 +10995,8 @@
     {
       "id": "R08",
       "records": [
-        "pending-R08"
+        "pending-R08",
+        "r08-owned-native-raster-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11546,7 +11605,8 @@
     {
       "id": "F08",
       "records": [
-        "pending-F08"
+        "pending-F08",
+        "f08-subscribed-runtime-load-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [

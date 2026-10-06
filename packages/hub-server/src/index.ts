@@ -199,3 +199,6 @@ export type { AgentIpcFailure, AgentIpcResult, AgentIpcEpoch, AgentIpcApprovalRe
 export { createGatewayInventoryConnector, GATEWAY_INVENTORY_PROFILE, GATEWAY_INVENTORY_LIMITS } from './gateway-inventory.ts';
 export type { GatewayInventoryApprovalRequest, GatewayInventoryApproval, GatewayInventoryOptions, GatewayInventoryFailure,
   GatewayInventorySnapshot, GatewayInventoryResult, GatewayInventoryConnector } from './gateway-inventory.ts';
+
+export { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_PROFILE, HOSTED_APPLICATION_LIMITS, HOSTED_APPLICATION_SOURCE_SHA256 } from './hosted-application.ts';
+export type { HostedApplicationOptions, HostedApplicationApprovalRequest, HostedApplicationApproval, HostedApplicationEpoch, HostedApplicationState, HostedApplicationFrame, HostedApplicationFailure, HostedApplicationResult, HostedApplication } from './hosted-application.ts';

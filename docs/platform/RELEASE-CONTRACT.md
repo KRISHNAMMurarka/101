@@ -36,6 +36,25 @@ P1 was reproduced by `node tools/qa-pointer-ui.mjs chromium http://127.0.0.1:300
 
 F03's [local pointer cost receipt](receipts/2026-10-05-f03-pointer-cost.json) measures the only compact fast codec currently implemented, `normalized-pointer/1`, with `QA_POINTER_COST=1` on the same application route. The 80 delivered position packets were 48 bytes each; during 2.821 seconds, all application data totaled 14,882 bytes in 134 messages, while the selected WebRTC ICE pair reported 21,656 sent bytes and 134 packets. The 6,774-byte difference includes transport/control overhead and cannot isolate SCTP, DTLS, IP or link-layer headers. Contact heartbeats accounted for 51 reliable JSON events and 10,506 payload bytes. The actual receiver negotiated compact position and JSON contact, both at 60/s and 100 ms age ceilings. Fourteen precision fixtures measured maximum normalized-coordinate quantization error `2.960465e-8`, within the declared `2^-25` bound. These are local Chromium costs, not physical phone, cellular, relay or sustained 60/s measurements.
 
+### Subscribed runtime load tiers
+
+The named `subscribed-runtime-load/1` software workload publishes three test
+tiers: **16, 64 and 128 subscribed edges** across four independent
+owner/application/session scopes. They use respectively four, four and eight
+sources, one sink per edge, fan-out at most sixteen, one latest queued record per
+edge, and eight actual pending native operations with at most two per scope.
+Four fixed Node worker targets confirm bounded integer state effects. These
+published test tiers do not promote accepted release capacity above zero.
+
+Each run requests sixty sustained turns at a 20 ms interval, reports the actual
+cadence, and requires current confirmed output on every admitted edge. It also
+checks cross-tenant denial, overload without incumbent displacement, held-scope
+isolation, recovery, real revoke/expiry cancellation and actual worker teardown.
+Intermediate latest states may coalesce; receipts retain service, drop and late
+effect accounting. This is a macOS 26.5.2 arm64 / Node 24.14.0 local software
+qualification, with no network, physical input, media, memory/RSS, battery or
+thermal SLO. See the [exact workload and reproduction](SDK.md#sparse-runtime-load-qualification).
+
 ## Roles and permissions
 
 | Role | May do | Boundary |
