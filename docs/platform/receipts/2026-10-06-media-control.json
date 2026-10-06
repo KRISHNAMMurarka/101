@@ -205,12 +205,71 @@
     "V02": "open; selected software composition built and locally qualified"
   },
   "requiredGates": {
-    "status": "pending exact integrated candidate"
+    "status": "pass for committed source candidate",
+    "path": "/tmp/101-media-control-required-gates.json",
+    "sha256": "751acf6419233b0e280f38b6dce560910287a3722abd8bb798d3351e37fbd4a4",
+    "tree": "fd88a5b1b03cdef474e352217072723df3f484f2",
+    "unit": {
+      "tests": 1860,
+      "pass": 1860,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab warning",
+    "freshBuild": "pass"
   },
   "tally": {
     "total": 272,
     "completed": 117,
     "open": 155
   },
-  "acceptedSupportRows": 0
+  "acceptedSupportRows": 0,
+  "priorGateState": {
+    "status": "pending exact integrated candidate"
+  },
+  "sourceIntegration": {
+    "schemaVersion": 1,
+    "status": "committed-locally-exact-candidate-gates-pass",
+    "commit": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
+    "tree": "fd88a5b1b03cdef474e352217072723df3f484f2",
+    "parent": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+    "localOnly": true,
+    "requiredGates": {
+      "path": "/tmp/101-media-control-required-gates.json",
+      "sha256": "751acf6419233b0e280f38b6dce560910287a3722abd8bb798d3351e37fbd4a4"
+    },
+    "unit": {
+      "tests": 1860,
+      "pass": 1860,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "types": "pass",
+    "lint": "pass",
+    "freshBuild": "pass",
+    "tally": {
+      "total": 272,
+      "completed": 117,
+      "open": 155
+    },
+    "scope": "Selected media/control software composition only; full V02 remains open. Later documentary reconciliation requires its next exact-candidate gates."
+  },
+  "laterDocumentaryCandidateGateState": "This source-commit reconciliation is a later documentary candidate; its exact gates remain pending next software batch."
 }

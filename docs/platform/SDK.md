@@ -402,6 +402,41 @@ capability. Browser-native media buffers do not carry a hard memory claim.
 Trusted same-origin host code owns consent and the application canvas; these
 APIs are cooperative recipient isolation, not a sandbox against that host.
 
+## Adaptive encoded application video
+
+`createBrowserApplicationVideoCodec` binds one caller-owned application canvas
+to two independently approved private outputs. The packaged
+`@101/connect/examples/application-video-codec` caller provides explicit source
+and sink consent. Sampling is caller-driven; no camera or screen is acquired.
+
+The controller probes the offered VP8/VP9 encoder and decoder configurations
+before acquiring codecs. Missing APIs or a common configuration return
+`unsupported`. Both owners approve the exact source, recipient, application,
+session, codec and format tiers. Runtime subscription/write grants remain
+separate. Revocation retires the real route and removes only its owned output.
+
+Pressure moves an output from 320×180 at requested 20 Hz/384,000 bit/s to 160×90
+at requested 10 Hz/128,000 bit/s; successful delivery can recover the approved
+upper tier. These are requested configurations, not measured achieved bitrate.
+Every admitted frame is an independent keyframe. A slow output keeps one waiting
+frame and cannot occupy the other output's queue. Generation/currentness checks
+discard stale native results before copying them to the visible canvas.
+
+The selected profile limits eight binding attempts, thirty-two support probes,
+512 capture attempts, 256 encodes, eight adaptations per output, 64 KiB combined
+chunk/description bytes, 4 KiB descriptions, 128 KiB/s copied bytes per output
+and 4 MiB total copied bytes per controller. Opening has a two-second deadline
+and bindings last at most thirty seconds. Close retains issued API reservations
+until support probes and native flush promises actually settle; it does not
+claim browser-internal memory or worker quiescence.
+
+Run `node tools/qa-application-video-codec.mjs --sdk-root <clean-consumer>` for
+strict installed public declarations and actual owned Chromium/Firefox/WebKit
+encode/decode, private pixels, adaptation, controlled chunk loss and teardown.
+The selected actual codec is VP8. VP9 effect qualification, a dedicated expiry
+fixture, interframe streaming, transported video, synchronization, hardware and
+the full V06 matrix remain open.
+
 ## Private application audio
 
 `createBrowserApplicationAudio` and `BROWSER_APPLICATION_AUDIO_LIMITS` are public

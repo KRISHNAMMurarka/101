@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-local-software-profile",
+  "base": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
+  "callerTree": "e7d391c8db5213416a590f502c8fe033050a522f",
+  "producerTree": "27cf1ebc622a525b249ceb19a729adf969f8a8cf",
+  "sourceSha256": {
+    "packages/device-web/src/application-video-codec.ts": "7852dd7263748988a13d76e4770ebbb605d7c1aae266fbf6ef87b42427c176f7",
+    "packages/device-web/src/application-video-codec.test.ts": "ae72422d706bcabaa1675a905e9d3787fa8eb1f6263541651050de2bfb17d294",
+    "examples/device-pipelines/application-video-codec.ts": "0a99a443fe7aeb65391efa5c5eaddbdeb6e27fdbfb7288b7b8af43f940d5f00f",
+    "tools/qa-application-video-codec.mjs": "6ce2bc3658561b1e18f818a5367bab62eb21d2259227c99b1fabc4152ba0c46e"
+  },
+  "rootIntegration": {
+    "path": "/tmp/101-application-video-codec-primary-integration.json",
+    "sha256": "543cdc8916f7facf1766663ea1f9e35ed69ff98421b9d82be926fd55c4056e80"
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-yhsy3d/manifest.json",
+      "sha256": "77629dd05a0b481982cda3bbdbec26efa5faf0db13f8204724c6428302c30119"
+    },
+    "packages": 7,
+    "sourcePins": 151,
+    "installedFiles": 335,
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-Ik0iSb/receipt.json",
+      "sha256": "e8b8807aaa9e20644512d4c38da86028c6d0d8ce6e4428cfb2a93752a57e8282"
+    },
+    "compilerProbeDeclarationPins": 176,
+    "strictNodeNext": true,
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": false,
+    "sourceAliases": false,
+    "sdkTypeStripping": false
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-application-video-codec-frozen-pins.json",
+    "sha256": "6e404546c76eaab9bb33997b534156047d4e2d665272433e2d86478cf08574a7"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-application-video-codec-final-independent-review.json",
+    "sha256": "5e44d8bd91c832783d285d863b1cb5d392bc644c463f4b9dbeb1d17b6f72fd6b"
+  },
+  "consumerAllowlistReview": {
+    "path": "/tmp/101-application-video-codec-consumer-allowlist-independent-review.json",
+    "sha256": "9050b05126278aba9f3ad4d358fbff3e6abe99bea14bc59a4069085d8f44c2d3"
+  },
+  "installedReview": {
+    "path": "/tmp/101-application-video-codec-installed-independent-review.json",
+    "sha256": "f5acbf347d7697356b0fc7332fbaedc4b9ff78d6aa6cfa8f9077c3fe27d693eb"
+  },
+  "installed": {
+    "schemaVersion": 1,
+    "status": "actual-current-installed-pass",
+    "actualExitCode": 0,
+    "command": "env -u NODE_OPTIONS -u NODE_PATH node tools/qa-application-video-codec.mjs --sdk-root /tmp/101-sdk-consumer-Ik0iSb",
+    "installed": {
+      "path": "/tmp/101-application-video-codec-current-installed.json",
+      "sha256": "dacb9f44737edd4979b3fb2e178671741f605b81acf44c3f791ee474b83d21c0"
+    },
+    "actualStdoutBytes": 10137,
+    "maximumStdoutBytes": 16384,
+    "stderrBytes": 0,
+    "provenance": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-application-video-codec-proof-6YpHjA/provenance.json",
+      "sha256": "9d9014f18d23a594dda9dd59a8c4cc281a0855d95f9cef89340764620a97377d"
+    },
+    "consumerReceipt": {
+      "path": "/tmp/101-sdk-consumer-Ik0iSb/receipt.json",
+      "sha256": "e8b8807aaa9e20644512d4c38da86028c6d0d8ce6e4428cfb2a93752a57e8282"
+    },
+    "sdkManifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-yhsy3d/manifest.json",
+      "sha256": "77629dd05a0b481982cda3bbdbec26efa5faf0db13f8204724c6428302c30119"
+    },
+    "producerTree": "27cf1ebc622a525b249ceb19a729adf969f8a8cf",
+    "callerSourceTreeVerifiedByRoot": "e7d391c8db5213416a590f502c8fe033050a522f",
+    "runtimeEmittedCallerGitClaim": false,
+    "compilerPinFiles": 176,
+    "node": "v24.14.0",
+    "results": [
+      {
+        "engine": "chromium",
+        "checks": 32,
+        "nativeFrames": 57,
+        "frameClosures": 57,
+        "rawCallbacks": 0,
+        "pendingNative": 0
+      },
+      {
+        "engine": "firefox",
+        "checks": 32,
+        "nativeFrames": 57,
+        "frameClosures": 57,
+        "rawCallbacks": 0,
+        "pendingNative": 0
+      },
+      {
+        "engine": "webkit",
+        "checks": 32,
+        "nativeFrames": 57,
+        "frameClosures": 57,
+        "rawCallbacks": 0,
+        "pendingNative": 0
+      }
+    ],
+    "cleanup": {
+      "ownedBrowserContexts": 0,
+      "ownedServers": 0
+    },
+    "fullV06Matrix": false
+  },
+  "sourceNative": {
+    "path": "/tmp/101-application-video-codec-source-first.json",
+    "sha256": "13d0a22f44332783b00a5edea1f3c2aa4f1d53785d18d352a4e6f9afdbae5480",
+    "checks": 96,
+    "stdoutCap": "old16731B discrepancy retained, narrow serialization repair qualified by current10137B output"
+  },
+  "staticChecks": {
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "unit": {
+      "tests": 5,
+      "pass": 5,
+      "failed": 0,
+      "skipped": 0,
+      "mode": "direct new leaf with borrowed existing workspace public dependencies, not installed new API"
+    },
+    "types": {
+      "mode": "owned-worker-public-source-resolver",
+      "sourceModules": 114,
+      "diagnostics": 0,
+      "strict": true,
+      "noUncheckedIndexedAccess": true,
+      "skipLibCheck": false,
+      "noEmit": true,
+      "paths": "explicit owned-worker seven-public-source resolver; not an installed artifact"
+    },
+    "lint": {
+      "ownedFiles": 4,
+      "exitCode": 0
+    },
+    "compilerFiles": {
+      "/Users/km/Desktop/games/101/node_modules/typescript/lib/typescript.js": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+      "/Users/km/Desktop/games/101/node_modules/typescript/package.json": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    }
+  },
+  "bounds": {
+    "sources": 1,
+    "outputs": 2,
+    "bindAttempts": 8,
+    "probeAttempts": 32,
+    "pendingProbes": 2,
+    "perOutputWaitingFrames": 1,
+    "perOutputIssuedFrames": 1,
+    "combinedChunkAndDescriptionBytes": 65536,
+    "descriptionBytes": 4096,
+    "perOutputPrivateBytes": 131072,
+    "perOutputBytesPerSecond": 131072,
+    "totalCopiedByteLifetime": 4194304,
+    "captureAttempts": 512,
+    "encodes": 256,
+    "adaptationsPerOutput": 8,
+    "openingMs": 2000,
+    "lifetimeMs": 30000,
+    "grantSignalsPerOutput": 8,
+    "qaNativeLogicalMsPerPage": 15000,
+    "qaChecks": 32,
+    "qaReceiptBytes": 16384
+  },
+  "retainedFirstProducerFailure": "Original uninstrumented native decoded-marker prerequisite failure remains unresolved and preserved. Diagnostic unchanged source/config/await/threshold run later qualified native marker all3 engines and genuine missing new export RED; no fixed-bug claim.",
+  "receiptCapDelta": {
+    "oldQaSha": "378fb954ffd7f77d49c5915d46707be19b8a6b756da6cadb444390a4144b1f88",
+    "oldActualStdoutBytes": 16731,
+    "oldCapRedLog": "/tmp/101-application-video-codec-receipt-cap-old-red.log",
+    "oldCapRedSha": "3047f2ef81241a22274eeb4adb650718b0f54fab3120439bf733e13d944ec7ab",
+    "newQaSha": "6ce2bc3658561b1e18f818a5367bab62eb21d2259227c99b1fabc4152ba0c46e",
+    "cap": 16384,
+    "newLine": "  const serialized = JSON.stringify(output) + '\\n'; assert.ok(Buffer.byteLength(serialized) <= 16384); process.stdout.write(serialized);",
+    "onlySerializationChanged": true,
+    "nativeAssertionsSelectionMarkerQueueRateDeadlineUnchanged": true,
+    "repairedActualStdoutQualification": "Current ordinary installed run passed: actual stdout10137 bytes including LF <=16384, SHA256 dacb9f44737edd4979b3fb2e178671741f605b81acf44c3f791ee474b83d21c0. The unchanged source native run was not repeated; repaired output serialization was exercised by the current installed run.",
+    "priorWorkerQualification": "Pending root required ordinary installed run; no unchanged native rerun requested or performed."
+  },
+  "retainedConsumerFailure": {
+    "path": "/tmp/101-application-video-codec-sdk-consumer-first-failure.json",
+    "sha256": "00b5d126e9b6e8597e4760588027519342246f061ca7e9eb91cc1db221e37c16"
+  },
+  "preservation": {
+    "path": "/tmp/101-application-video-codec-build-preservation.json",
+    "sha256": "e18433b8d584b54ec307a1362863042ad7f6cab0441942d2bc582da53436c38e"
+  },
+  "scope": "Built public adaptive encoded application-video controller and packaged caller: explicit bilateral owner/runtime grants, actual private native VP8 encode/decode and decoded pixels at two recipients; requested 320x180/20Hz/384k and 160x90/10Hz/128k adaptation, slow-sink isolation, genuine controlled chunk omission/keyframe recovery, revocation/fresh recovery, intrinsic chunk/description caps, raw retention and final-copy currentness. 5focused; source96 and current installed96 C/F/W checks, all native frames closed and raw/controller/context/server0. Ordinary151source/335file seven-package SDK; strict NodeNext176 compiler/probe/declaration pins; actual repaired stdout10137B<=16384. Full V06 and deferred physical/transport/clock/expiry/VP9/interframe scopes remain open.",
+  "limitations": [
+    "Selected independent-keyframe VP8 profile only; actual VP9 effects, interframe streaming and dedicated expiry fixture remain unqualified.",
+    "Requested bitrate/frame-rate configurations are not achieved bitrate, capture timing, synchronization or display-scanout measurements.",
+    "No user device/camera/screen/speaker, transported video, physical latency, browser internal memory/RSS or native quiescence qualification.",
+    "Original prerequisite pixel failure is retained with cause unresolved; subsequent successful prefixes do not prove its repair.",
+    "Trusted same-realm callbacks and host approvals are cooperative; duplicate native callback interception/malicious host is unqualified."
+  ],
+  "taskDisposition": {
+    "V06": "open; selected software controller and installed caller built and locally qualified"
+  },
+  "requiredGates": {
+    "status": "pending exact integrated candidate"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "acceptedSupportRows": 0
+}

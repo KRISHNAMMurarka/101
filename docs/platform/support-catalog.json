@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 24,
+  "revision": 26,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3254,7 +3254,7 @@
         "formFactor": "Owned software fixture",
         "transport": "Private Worker ports and verified resource chunks",
         "connector": "private-worker-media-control/1",
-        "connectorVersion": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+        "connectorVersion": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
         "profiles": [
           "private-worker-media-control/1"
         ],
@@ -3293,6 +3293,61 @@
         "512 KiB bounds caller buffer reservations; Worker old-heap setting is not process RSS or hostile-host isolation.",
         "Denial prevents raster dispatch; actual Worker construction and authorized neutral contact release can still occur.",
         "The shared-runtime negative is a deliberately unsafe caller composition, not a scheduler core defect."
+      ]
+    },
+    {
+      "id": "private-application-video-codec-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned Chromium149/Firefox151/WebKit26.5",
+        "runtimeVersion": "Node24.14.0/TypeScript5.9.3; exact pins in receipt",
+        "formFactor": "Owned software fixture",
+        "transport": "Private same-realm native WebCodecs application graph",
+        "connector": "local-application-video-codec/1",
+        "connectorVersion": "e7d391c8db5213416a590f502c8fe033050a522f",
+        "profiles": [
+          "local-application-video-codec/1"
+        ],
+        "resources": [
+          "Built public adaptive encoded application-video controller and packaged caller: explicit bilateral owner/runtime grants, actual private native VP8 encode/decode and decoded pixels at two recipients; requested 320x180/20Hz/384k and 160x90/10Hz/128k adaptation, slow-sink isolation, genuine controlled chunk omission/keyframe recovery, revocation/fresh recovery, intrinsic chunk/description caps, raw retention and final-copy currentness. 5focused; source96 and current installed96 C/F/W checks, all native frames closed and raw/controller/context/server0. Ordinary151source/335file seven-package SDK; strict NodeNext176 compiler/probe/declaration pins; actual repaired stdout10137B<=16384. Full V06 and deferred physical/transport/clock/expiry/VP9/interframe scopes remain open."
+        ],
+        "unavailable": [
+          "Selected independent-keyframe VP8 profile only; actual VP9 effects, interframe streaming and dedicated expiry fixture remain unqualified.",
+          "Requested bitrate/frame-rate configurations are not achieved bitrate, capture timing, synchronization or display-scanout measurements.",
+          "No user device/camera/screen/speaker, transported video, physical latency, browser internal memory/RSS or native quiescence qualification.",
+          "Original prerequisite pixel failure is retained with cause unresolved; subsequent successful prefixes do not prove its repair.",
+          "Trusted same-realm callbacks and host approvals are cooperative; duplicate native callback interception/malicious host is unqualified."
+        ]
+      },
+      "qualificationTasks": [
+        "V06"
+      ],
+      "evidence": {
+        "implementation": [
+          "v06-private-application-video-codec-installed-2026-10-06"
+        ],
+        "contract": [
+          "v06-private-application-video-codec-installed-2026-10-06"
+        ],
+        "runtime": [
+          "v06-private-application-video-codec-installed-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Selected independent-keyframe VP8 profile only; actual VP9 effects, interframe streaming and dedicated expiry fixture remain unqualified.",
+        "Requested bitrate/frame-rate configurations are not achieved bitrate, capture timing, synchronization or display-scanout measurements.",
+        "No user device/camera/screen/speaker, transported video, physical latency, browser internal memory/RSS or native quiescence qualification.",
+        "Original prerequisite pixel failure is retained with cause unresolved; subsequent successful prefixes do not prove its repair.",
+        "Trusted same-realm callbacks and host approvals are cooperative; duplicate native callback interception/malicious host is unqualified."
       ]
     }
   ]

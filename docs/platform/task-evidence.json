@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 98,
+  "revision": 100,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10060,7 +10060,7 @@
     },
     {
       "id": "v02-private-worker-media-control-installed-2026-10-06",
-      "revision": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+      "revision": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -10084,6 +10084,72 @@
       ],
       "supportRows": [
         "private-worker-media-control-software-2026-10-06"
+      ],
+      "requiredGates": "all5 pass for committed source fd88a5b1; later documentary candidate pending next software gates",
+      "priorRevision": "9ff4ff9a12c9d10442642987ecb1d492be574c25",
+      "priorGateState": "pending exact integrated candidate",
+      "sourceIntegration": {
+        "schemaVersion": 1,
+        "status": "committed-locally-exact-candidate-gates-pass",
+        "commit": "807269dc7e024e1966ba5e4ef9cb5686930ed36c",
+        "tree": "fd88a5b1b03cdef474e352217072723df3f484f2",
+        "parent": "ba6b0e965c8804dfa86461169c38da2530bfa39a",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-media-control-required-gates.json",
+          "sha256": "751acf6419233b0e280f38b6dce560910287a3722abd8bb798d3351e37fbd4a4"
+        },
+        "unit": {
+          "tests": 1860,
+          "pass": 1860,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass",
+        "freshBuild": "pass",
+        "tally": {
+          "total": 272,
+          "completed": 117,
+          "open": 155
+        },
+        "scope": "Selected media/control software composition only; full V02 remains open. Later documentary reconciliation requires its next exact-candidate gates."
+      }
+    },
+    {
+      "id": "v06-private-application-video-codec-installed-2026-10-06",
+      "revision": "e7d391c8db5213416a590f502c8fe033050a522f",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-application-video-codec.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2/arm64; Node24.14.0/TS5.9.3; owned Chromium149.0.7827.55/Firefox151/WebKit26.5",
+      "reproduction": "node tools/qa-application-video-codec.mjs --sdk-root <hash-bound clean consumer>",
+      "scope": "Built public adaptive encoded application-video controller and packaged caller: explicit bilateral owner/runtime grants, actual private native VP8 encode/decode and decoded pixels at two recipients; requested 320x180/20Hz/384k and 160x90/10Hz/128k adaptation, slow-sink isolation, genuine controlled chunk omission/keyframe recovery, revocation/fresh recovery, intrinsic chunk/description caps, raw retention and final-copy currentness. 5focused; source96 and current installed96 C/F/W checks, all native frames closed and raw/controller/context/server0. Ordinary151source/335file seven-package SDK; strict NodeNext176 compiler/probe/declaration pins; actual repaired stdout10137B<=16384. Full V06 and deferred physical/transport/clock/expiry/VP9/interframe scopes remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler/headless browser/private native software fixtures; no user device/UI"
+      ],
+      "supportRows": [
+        "private-application-video-codec-software-2026-10-06"
       ],
       "requiredGates": "pending exact integrated candidate"
     }
@@ -11548,7 +11614,8 @@
     {
       "id": "V06",
       "records": [
-        "pending-V06"
+        "pending-V06",
+        "v06-private-application-video-codec-installed-2026-10-06"
       ],
       "dependencies": [
         "M01",

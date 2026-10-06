@@ -52,3 +52,21 @@ export type { BrowserCameraOptions, BrowserCameraEnvironment, BrowserCameraSelec
 
 export { createBrowserApplicationAudio, BROWSER_APPLICATION_AUDIO_LIMITS } from './application-audio.ts';
 export type { BrowserApplicationAudioOwnerRequest, BrowserApplicationAudioOwnerGrant, BrowserApplicationAudioSource, BrowserApplicationAudioSourceOptions, BrowserApplicationAudioBindOptions, BrowserApplicationAudioEnvironment, BrowserApplicationAudioOptions, BrowserApplicationAudioStatus, BrowserApplicationAudioBinding, BrowserApplicationAudioControllerStatus, BrowserApplicationAudio } from './application-audio.ts';
+
+export {
+  APPLICATION_VIDEO_CODEC_PROFILE,
+  APPLICATION_VIDEO_CODEC_TIERS,
+  createBrowserApplicationVideoCodec,
+} from './application-video-codec.ts';
+export type {
+  BrowserVideoCodec,
+  BrowserVideoCodecGrantRequest,
+  BrowserVideoCodecOwnerGrant,
+  BrowserApplicationVideoCodecOptions,
+  BrowserApplicationVideoCodecSource,
+  BrowserApplicationVideoCodecSourceOptions,
+  BrowserApplicationVideoCodecBindOptions,
+  BrowserApplicationVideoCodecStatus,
+  BrowserApplicationVideoCodecBinding,
+  BrowserApplicationVideoCodec,
+} from './application-video-codec.ts';
