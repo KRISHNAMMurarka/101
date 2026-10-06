@@ -785,6 +785,55 @@ The native controller uses a separate Expo projection matching the installed
 Android fields are `alpha/beta/gamma`. Both preserve degrees per second before
 the game pipeline. Browser rotation rates use `beta/gamma/alpha`.
 
+## Microphone and linear-motion impulse fusion
+
+`measurePcmImpulse()` and `createImpulseFusionProcessor()` are synchronous public
+APIs through `@101/device-model` and `@101/connect`, profile
+`microphone-linear-motion-impulse/1`. They produce a **coincident impulse candidate**;
+physical table-tap accuracy and human false-activation rates remain unqualified.
+
+The extractor accepts ordinary dense numeric arrays or ordinary same-realm
+`Float32Array` PCM from a caller-owned source. At most 1024 finite samples within
+±1, sample rate 8000–96000 Hz, and a window no longer than 50 ms are accepted.
+Shared buffers, sparse/accessor arrays, nonfinite/oversized data and extra fields
+fail closed. It returns dimensionless full-scale peak/RMS, window length and the
+original timing without retaining or exporting PCM. These features are neither
+sound pressure nor acoustic calibration. Capture time denotes **window end**;
+the processor conservatively includes the entire window in timing comparisons.
+
+The fusion configuration fixes independently selected audio/motion source IDs,
+epochs, positive producer calibration revisions, processing clock and explicit
+high/low thresholds. Motion requires valid gravity-removed `m/s2` measurements;
+zero-filled/missing sensors, unverified calibration, changed bindings and source
+loss cannot establish a candidate. Names and declared calibration are evidence
+supplied by trusted callers; the processor supplies no source authentication or
+microphone/motion permission. Ordinary current source and destination grants
+remain required at SDK ingress and delivery.
+
+Both sources must first supply low baselines, then fresh rising impulses within
+the configured 1–100 ms coincidence window. At most two timing envelopes are
+retained. Sustained signals cannot repeat; both sources must rearm after a
+candidate, and impulses during the explicit refractory period are consumed.
+Capture mappings preserve each source clock; the worst-case full capture span,
+maximum age and uncertainty decide admission. Output preserves both complete
+timing lineages and a separate processing stamp rather than inventing a fused
+capture clock. Stale/unavailable/wrong-source/unsupported-unit/uncertain data
+return an unavailable result and erase pending evidence. Malformed and reversed
+input throws and resets; a processing gap disarms both sources. `reset()` is
+required on input loss, revocation, stop or reconfiguration. Reset/rejection
+clears pending and rearming evidence while retaining same-generation capture,
+processing-clock and refractory floors; it cannot make consumed input fresh.
+New epochs require a new processor.
+
+The [independent caller](../../examples/impulse-fusion/consumer.mjs) labels its
+synthetic inputs explicitly, covers positive/negative coincidence labels and
+routes granted feature producers into one actual application event sink.
+`tools/qa-impulse-fusion.mjs --sdk-root <installed-consumer> --sdk-manifest <manifest>`
+verifies ordinary compiled public imports and exact installed/source hashes.
+Neither the API nor that caller opens capture permissions, records audio,
+certifies tap recognition, or establishes hardware latency, energy or thermal
+performance. Opted-in capture/sharing and physical evaluation remain separate.
+
 ## Generic mapping and sample-rate processors
 
 `createDeadzoneMapper()` converts a declared scalar range to dimensionless
@@ -1462,6 +1511,97 @@ visibility; leave, removal, revocation, host rotation and stop retire their scop
 authority. Re-enrollment does not restore a removed grant. Persistent/account
 directories, enrollment/key lifecycle, peer-owned publication, browser client
 certificates and physical/two-network qualification remain open.
+
+## Authorized software-gateway inventory
+
+`createGatewayInventoryConnector()` is a public `@101/hub-server` source API for
+`authorized-node-agent-gateway-inventory/1`. Its selected endpoint is an explicit
+owned `https://127.0.0.1:<port>` software gateway. One fixed GET reads the enrolled
+peer's existing private-directory metadata; the caller cannot choose a URL,
+method, redirect, scan, program or fallback. Router/vendor/LAN and inaccessible
+isolated equipment remain unsupported by this profile. A stopped gateway returns
+unavailable; retry requires a fresh explicit approval. No unrestricted scan is
+attempted to fill missing equipment or metadata.
+
+The constructor is inert and requires explicit CA trust, matching client
+certificate/key, exact server certificate SHA256, origin, session, peer, bearer,
+owner signal and an owner authorizer. Ordinary CA/hostname validation and the
+exact server pin must pass before the bearer reaches HTTP. Each immutable issued
+request binds the owner, selected gateway/endpoint, both certificate fingerprints,
+session/peer, purpose and GET scope. Approval must return that same request plus
+an intrinsic AbortSignal and an absolute host-performance-clock expiry within
+five seconds; copied requests or signal-like objects do not authorize a read.
+Possession of directory metadata is separate from device ownership and operation
+grants; returned candidates do not establish authenticated, authorized or ready
+resource state and contain no RSS reading.
+
+One raw request remains reserved through actual request/response/socket closure
+after cancel, expiry or owner revocation. `close()` waits for that settlement;
+late bytes cannot restore a retired result. Bounds are 64 lifetime attempts,
+burst four with one token per second, an absolute 2500 ms operation deadline,
+64 KiB/128 response chunks, 16 resources/eight capabilities and at most 60 seconds
+advertised metadata lifetime. Invalid UTF-8, malformed/oversized metadata,
+non-JSON responses, wrong scope, redirects and credential/identity failures
+produce fixed redacted outcomes; no alternate endpoint is contacted.
+
+The selected [software gateway](../../examples/gateway-inventory/node-agent-gateway.mjs)
+qualifies its RSS capability through the actual private Node agent and ordinary
+SDK read before exposing that current epoch's scoped inventory. The
+[independent caller](../../examples/gateway-inventory/consumer.mjs) uses an owned
+mTLS context. Native agent retirement also retires its owned gateway; replacement
+requires a new agent identity, session and approvals. This source distribution
+does not establish physical router support, cross-network access, hardware
+qualification or a packaged native gateway installer.
+
+## Watch companion report resources
+
+`decodeWatchCompanionReport()`, `watchCompanionReportDevice()` and
+`createWatchCompanionResources()` expose the selected
+`watch-companion-report/1` profile through the ordinary model/runtime packages
+and `@101/connect`. The companion's existing 53-byte version-1 packet and
+legacy 101 game path are preserved. The report contains the original 16-bit
+sequence, 32-bit **relay emission** milliseconds, reported quaternion components,
+acceleration in g, rotation in degrees per second, unqualified crown value and
+sampled tap bit. Nonfinite fields and invalid packet grammar are rejected.
+
+These are raw reports with `physicalValidity: 'unspecified'`. Version 1 carries
+no sensor-presence bits, measurement validity, calibration, capture timestamp or
+watch generation. Apple tap reports include synthetic identity/zero motion;
+Wear reports can contain zero defaults for absent sensors. These values cannot
+qualify motion measurements, haptic effects or tap recognition. The latest
+sampled tap bit supplies no guaranteed button edges or reliable event semantics.
+Phone receipt time is separate from watch emission time and establishes receipt
+inactivity only; it cannot establish capture freshness or translate clocks.
+
+The native module's additive `createWatchResourceBridge()` issues opaque
+phone-side enrollments. Apple enrollment describes the current paired
+WatchConnectivity session; Wear selects a reachable native capability node and
+filters message senders to that selection. Copied objects, node IDs, player IDs
+and report fields do not issue enrollment authority. These native associations
+are trusted bridge facts, with no cryptographic hardware-identity claim. Phone
+epochs fence callbacks after enrollment loss; the unchanged wire cannot prove a
+report's original watch generation. Re-enrollment requires fresh owner approval.
+
+Construction is inert. Explicit start requires an intrinsic owner AbortSignal
+and an exact owner-approved resource request. Source enrollment/owner consent
+and each destination route grant remain separate. Loss, abort, stop and expiry
+unregister the source and release held downstream state; late native completion
+cannot restore a revoked source. Two enrollment/raw-work slots are shared per
+runtime, and one unresolved native operation is retained per actual bridge/port
+through cleanup. Other bounds are one latest report, 30 Hz, 250 ms receipt
+inactivity, 30-second owner/session consent, 64 lifetime starts and a 1000 ms
+caller route lease. Reservations precede trusted callouts; native listener
+cleanup also handles cancellation during listener registration.
+
+The [independent caller](../../examples/watch-companion/consumer.mjs) checks
+ordinary public runtime registrations, independent source/sink grants, report
+arrival, expiry, loss and releases. `tools/qa-watch-companion.mjs --sdk-root
+<fresh-consumer> --candidate-tree <tree>` verifies exact installed package and
+source bytes, unchanged executable Swift/Kotlin report producers and the native
+TypeScript issuer through explicitly injected software ports. The new Swift
+issuer has syntax-only checks. Native Expo Swift/Kotlin framework compilation,
+actual scoped watch/phone delivery, permissions and physical qualification
+remain open under W01; software ports do not establish native OS delivery.
 
 ## Native normalized pointer codecs
 

@@ -72,3 +72,8 @@ export type { NativeDiscoveryScope, NativeDiscoveryGrant, NativeDiscoveryService
 
 export { createWorkspaceAdministration, WORKSPACE_ADMINISTRATION_PROFILE, WORKSPACE_ADMINISTRATION_LIMITS } from './workspace-administration.ts';
 export type * from './workspace-administration.ts';
+
+export { createWatchCompanionResources } from './watch-companion.ts';
+export type { WatchCompanionEnrollment, WatchCompanionRelaySnapshot, WatchCompanionBridge, WatchCompanionReportEvent,
+  WatchCompanionResourceRequest, WatchCompanionResourceOwnerGrant, WatchCompanionResourcesOptions, WatchCompanionResources,
+  WatchCompanionResult } from './watch-companion.ts';

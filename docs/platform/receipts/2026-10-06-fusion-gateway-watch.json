@@ -1,0 +1,511 @@
+{
+  "schemaVersion": 1,
+  "result": "pass-selected-local-scopes",
+  "date": "2026-10-06",
+  "base": "e3a895e988a235b735083cc6d4986b9e8031db71",
+  "sourceTree": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+  "sourceSha256": {
+    "apps/controller-native/modules/one01-watch/android/src/main/java/com/oneohone/link/watch/One01WatchModule.kt": "f51882438d4779d7c8e73966abf9a60e76308ec88318f19b9eec0a30721a1f5a",
+    "apps/controller-native/modules/one01-watch/index.ts": "559312663e309e90270678eec7f13c47564ab50c88a00fb3fac94944798b619c",
+    "apps/controller-native/modules/one01-watch/ios/One01WatchModule.swift": "07cbde8f980aca8a1430874ef869c297965e831572e6905b5ef447885cbbc13d",
+    "docs/platform/SDK.md": "dc07bd2a51cf9e79acd78005a0a30bf1d823134a93a446461ee226fea0adb0df",
+    "examples/gateway-inventory/consumer.mjs": "f281d78ef682f54ad46c0eaa551594431d5af0e86f38f56b06f081273756ce72",
+    "examples/gateway-inventory/node-agent-gateway.mjs": "1cbe388c221c7da9499a255537da9749450f49c2adb5e401fcdcc6d89634b745",
+    "examples/impulse-fusion/consumer.mjs": "de974072fecc166ce2a75847d76a1149fc9f232467ab061ce7c215ceef8b159e",
+    "examples/watch-companion/consumer.mjs": "86ba590ae8f98117ab4bbfe29b0a59dd74a1eed3e1b2e7f0708d03d82f87a5d1",
+    "packages/device-model/src/impulse-fusion.test.ts": "c9ec754c292421c614fcc562f5bb70474e7cd371d01e64ac78d2e3bfdb20bd9e",
+    "packages/device-model/src/impulse-fusion.ts": "2832c60aef91b83c1f65e6de13ab5598a7c62fd833bdc9fc4820d551e9d76374",
+    "packages/device-model/src/index.ts": "61b4528b6a95327acab56ff174e78c3b0fe5370c1a7afdd4c2940a0a55eee298",
+    "packages/device-model/src/watch-companion-report.test.ts": "f61f1ee2c65832f2631df47d5276606a38d086d95a37fe2443d05eb7d49a5ef2",
+    "packages/device-model/src/watch-companion-report.ts": "e4ffd1572ad76e5af46149d4648239e73be70158e1e0c91b18909ae28ee29006",
+    "packages/device-runtime/src/index.ts": "e913a9f7e5d02a031a26dc924ac872535b049360e78f321e185bb1944a1ce1d5",
+    "packages/device-runtime/src/watch-companion.test.ts": "aa629ef4d5298d92672616fd78287af0a435100777e50cb8e38d9758b0078ab2",
+    "packages/device-runtime/src/watch-companion.ts": "a710eb8f38e5138a4d3661b675f13b0881f24bd0f1bafe5c7d27abfb7522eef5",
+    "packages/hub-server/src/gateway-inventory.test.ts": "a620413e354aa5232b55041da604feb604e6d39d6f9422a949d61f6218695e7b",
+    "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+    "packages/hub-server/src/index.ts": "3705bddb1f06cd15f392ad0cedb54280c34ded1aa0280b682c2a43f75d955485",
+    "tools/qa-gateway-inventory.mjs": "916cb9b04044c2a484cd763788ef471559415b010231367bbea2181b6bc23d19",
+    "tools/qa-impulse-fusion.mjs": "6c938fdf602f3659240caca5163b1d2ca38f2487485a998d15a7f121d44de274",
+    "tools/qa-watch-companion.mjs": "b448acb10cfd210b263a038ff0e3c3bd37ec220b450c7f76b20094371ccaf8e0"
+  },
+  "taskDisposition": {
+    "D08": "complete for authorized-node-agent-gateway-inventory/1 on macOS26.5.2/Node24.14.0: explicit owned mTLS inventory API, concrete owner approvals, actual child-backed capability qualification, revocation/expiry/recovery and real native socket settlement; inaccessible/isolated-network limits documented without scanning. No physical-router/vendor/LAN/general support claim.",
+    "P06": "partial: coincident microphone/linear-motion impulse processor, bounded labeled software evaluation, timing/calibration/privacy contracts and actual granted application event delivery built. Hardware capture/tap accuracy/false activations/latency/energy/thermal evaluation remain unqualified.",
+    "W01": "partial: existing53B Apple/Wear reports bind to new SDK via opaque phone enrollment and independently granted resources; software callback epochs, quota, arrival, lifecycle and native TS issuer checks pass. New Expo Swift/Kotlin framework compilation and actual OS-scoped watch/phone delivery, capture freshness/physical validity/permissions and platform qualification remain open.",
+    "K01": "partial: refreshed seven immutable SDK tarballs and clean offline installed public consumers include fusion/watch APIs; broader native distributions/platform/runtime acceptance remain open."
+  },
+  "tally": {
+    "total": 272,
+    "completed": 111,
+    "open": 161
+  },
+  "fusion": {
+    "packet": {
+      "path": "/tmp/101-impulse-fusion-review-fixed-pins.json",
+      "sha256": "2cc38032ed6978e5afbcfc6da7a4a4f249ee1d769ebc82217306aa8a59a81455",
+      "bytes": 14091
+    },
+    "review": {
+      "path": "/tmp/101-impulse-fusion-review-fixed-independent-review.json",
+      "sha256": "7579de3df2a71e1f3c530ba53079dbc9791d6ce284f5971b25d4869d6631ccf4",
+      "bytes": 17674
+    },
+    "focused": 11,
+    "installed": {
+      "path": "/tmp/101-fusion-gateway-watch-installed-fusion.json",
+      "sha256": "69aa97e2e65d67a9b0024b720c7b0d53f5a7edfbec63735fc36876a3372e6c01",
+      "bytes": 18645
+    },
+    "installedChecks": 15,
+    "sourcePins": {
+      "packages/device-model/src/impulse-fusion.ts": "2832c60aef91b83c1f65e6de13ab5598a7c62fd833bdc9fc4820d551e9d76374",
+      "packages/device-model/src/impulse-fusion.test.ts": "c9ec754c292421c614fcc562f5bb70474e7cd371d01e64ac78d2e3bfdb20bd9e",
+      "packages/device-model/src/index.ts": "8c039600db33a24d61cd4c7e9aae731a7e05e13b68ef39cab8d1c52c4b615d4f",
+      "examples/impulse-fusion/consumer.mjs": "de974072fecc166ce2a75847d76a1149fc9f232467ab061ce7c215ceef8b159e",
+      "tools/qa-impulse-fusion.mjs": "6c938fdf602f3659240caca5163b1d2ca38f2487485a998d15a7f121d44de274"
+    },
+    "hardwareAccuracy": "unqualified",
+    "recording": false,
+    "microphonePermissionOpened": false
+  },
+  "gateway": {
+    "packet": {
+      "path": "/tmp/101-gateway-inventory-repaired-pins.json",
+      "sha256": "b00ae79fbd074cd82a5806961c92de0930c711b103e4d08a9a26a5bd844ab807",
+      "bytes": 20427
+    },
+    "review": {
+      "path": "/tmp/101-gateway-inventory-repaired-independent-review.json",
+      "sha256": "54cd8d81a7973231a5648ae36506af8350ec272c9d56847a1e154a0125e79faa",
+      "bytes": 18711
+    },
+    "literalRowDecision": {
+      "path": "/tmp/101-gateway-inventory-acceptance-decision.json",
+      "sha256": "2de779cfc67af66c8be6736d6a0f83817c045c505bbbe749c99312497b0e6fd4",
+      "bytes": 5124
+    },
+    "focused": 18,
+    "sourcePins": {
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/gateway-inventory.test.ts": "a620413e354aa5232b55041da604feb604e6d39d6f9422a949d61f6218695e7b",
+      "examples/gateway-inventory/node-agent-gateway.mjs": "1cbe388c221c7da9499a255537da9749450f49c2adb5e401fcdcc6d89634b745",
+      "examples/gateway-inventory/consumer.mjs": "f281d78ef682f54ad46c0eaa551594431d5af0e86f38f56b06f081273756ce72",
+      "tools/qa-gateway-inventory.mjs": "916cb9b04044c2a484cd763788ef471559415b010231367bbea2181b6bc23d19"
+    },
+    "rootNativeProof": {
+      "path": "/tmp/101-fusion-gateway-watch-root-gateway.json",
+      "sha256": "5726b26bfcb706b3f853bb38834b95b03bc03030511c7be6d7e9b5322c56c5b5",
+      "bytes": 17676
+    },
+    "checks": 16,
+    "dependencyPins": {
+      "examples/gateway-inventory/consumer.mjs": "f281d78ef682f54ad46c0eaa551594431d5af0e86f38f56b06f081273756ce72",
+      "examples/gateway-inventory/node-agent-gateway.mjs": "1cbe388c221c7da9499a255537da9749450f49c2adb5e401fcdcc6d89634b745",
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+      "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+      "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/impulse-fusion.ts": "2832c60aef91b83c1f65e6de13ab5598a7c62fd833bdc9fc4820d551e9d76374",
+      "packages/device-model/src/index.ts": "61b4528b6a95327acab56ff174e78c3b0fe5370c1a7afdd4c2940a0a55eee298",
+      "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+      "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+      "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+      "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+      "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/watch-companion-report.ts": "e4ffd1572ad76e5af46149d4648239e73be70158e1e0c91b18909ae28ee29006",
+      "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+      "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+      "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+      "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+      "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+      "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+      "packages/device-runtime/src/index.ts": "e913a9f7e5d02a031a26dc924ac872535b049360e78f321e185bb1944a1ce1d5",
+      "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+      "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+      "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+      "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+      "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+      "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+      "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+      "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+      "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+      "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+      "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+      "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+      "packages/device-runtime/src/watch-companion.ts": "a710eb8f38e5138a4d3661b675f13b0881f24bd0f1bafe5c7d27abfb7522eef5",
+      "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+      "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+      "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+      "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+      "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+      "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+      "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+      "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+      "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/index.ts": "3705bddb1f06cd15f392ad0cedb54280c34ded1aa0280b682c2a43f75d955485",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+      "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+      "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+      "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+      "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+      "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+      "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+      "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a",
+      "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528"
+    },
+    "nativeQualificationReads": 2,
+    "SDKQualificationReads": 2,
+    "separatelyApprovedSensitiveReads": 1,
+    "cleanup": {
+      "nativeChildren": 0,
+      "nativePending": 0,
+      "requestTimers": 0,
+      "ownedListeners": 0,
+      "ownedDirectories": 0
+    },
+    "profile": "authorized-node-agent-gateway-inventory/1",
+    "limits": {
+      "pending": 1,
+      "attempts": 64,
+      "burst": 4,
+      "refillMs": 1000,
+      "deadlineMs": 2500,
+      "grantMs": 5000,
+      "responseBytes": 65536,
+      "chunks": 128,
+      "resources": 16,
+      "capabilities": 8,
+      "advertisedTtlMs": 60000
+    },
+    "mode": {
+      "mode": "ordinary-public-source-exports",
+      "installedSDK": false,
+      "nativeTLS": true,
+      "nativeChild": true,
+      "sourceHashesFrozen": true,
+      "ownedTLSFixtureRemoved": true
+    },
+    "excluded": [
+      "physical-router",
+      "vendor-router-API",
+      "LAN-scanning",
+      "isolated-network-reachability",
+      "remote",
+      "account-authentication",
+      "phone",
+      "UI",
+      "arbitrary-URL",
+      "physical-sensor"
+    ]
+  },
+  "watch": {
+    "packet": {
+      "path": "/tmp/101-watch-companion-frozen-pins.json",
+      "sha256": "bdba67a117da81b23fb92f4ce814c7d406413ba760eb65e65e61acd844348eba",
+      "bytes": 17645
+    },
+    "review": {
+      "path": "/tmp/101-watch-companion-independent-review.json",
+      "sha256": "74235187e5ed272b415ec7bfe3faa0a1d7f501eacc5f109bfd193eb8bcb1a4f9",
+      "bytes": 21822
+    },
+    "focused": 16,
+    "sourcePins": {
+      "packages/device-model/src/watch-companion-report.ts": "e4ffd1572ad76e5af46149d4648239e73be70158e1e0c91b18909ae28ee29006",
+      "packages/device-model/src/watch-companion-report.test.ts": "f61f1ee2c65832f2631df47d5276606a38d086d95a37fe2443d05eb7d49a5ef2",
+      "packages/device-runtime/src/watch-companion.ts": "a710eb8f38e5138a4d3661b675f13b0881f24bd0f1bafe5c7d27abfb7522eef5",
+      "packages/device-runtime/src/watch-companion.test.ts": "aa629ef4d5298d92672616fd78287af0a435100777e50cb8e38d9758b0078ab2",
+      "apps/controller-native/modules/one01-watch/index.ts": "559312663e309e90270678eec7f13c47564ab50c88a00fb3fac94944798b619c",
+      "apps/controller-native/modules/one01-watch/ios/One01WatchModule.swift": "07cbde8f980aca8a1430874ef869c297965e831572e6905b5ef447885cbbc13d",
+      "apps/controller-native/modules/one01-watch/android/src/main/java/com/oneohone/link/watch/One01WatchModule.kt": "f51882438d4779d7c8e73966abf9a60e76308ec88318f19b9eec0a30721a1f5a",
+      "examples/watch-companion/consumer.mjs": "86ba590ae8f98117ab4bbfe29b0a59dd74a1eed3e1b2e7f0708d03d82f87a5d1",
+      "tools/qa-watch-companion.mjs": "b448acb10cfd210b263a038ff0e3c3bd37ec220b450c7f76b20094371ccaf8e0"
+    },
+    "producerPins": {
+      "apps/watch-ios/Sources/One01WatchCore/WatchPayload.swift": "bfcee613a82419bf8d9c0e4222859a2ed9044260ba29606b40b9cf0834dbdce3",
+      "apps/watch-wear/app/src/main/java/com/oneohone/wear/WatchPayload.kt": "0e4cd141e948356f751ff5c4a5803d1374b38038b1e4946ebdb173c38a5eb721"
+    },
+    "installed": {
+      "path": "/tmp/101-fusion-gateway-watch-installed-watch.json",
+      "sha256": "9a12f53d489ffadc248c1dffbac50d6988ab02d968344d31507e8e8023f830bf",
+      "bytes": 57133
+    },
+    "externalReceipt": {
+      "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-watch-companion-proof-8Up4sP/receipt.json",
+      "sha256": "3b95a498cc214079a7685ea3d95b84154fd83c27370d0d192bcd6d72e4a8e798",
+      "bytes": 60679
+    },
+    "publicChecks": 32,
+    "issuerSoftwareChecks": 12,
+    "producer": {
+      "swiftHex": "3101e11087d61200cdcccc3dcdcc4cbe9a99993edf4f6d3f0000003f0000a0bf0000003e0000f142000035c20000004100002a4201",
+      "kotlinHex": "3101e11087d61200cdcccc3dcdcc4cbe9a99993edf4f6d3f0000003f0000a0bf0000003e0000f142000035c20000004100002a4201",
+      "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+      "kotlin": "2.1.21",
+      "kotlinCompiler": [
+        {
+          "name": "kotlin-compiler-embeddable-2.1.21.jar",
+          "sha256": "67a2e3673765f097725608cc7c843b0d8fdd94bd9af41327211361614aa57d49"
+        },
+        {
+          "name": "kotlin-stdlib-2.1.21.jar",
+          "sha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8"
+        },
+        {
+          "name": "annotations-23.0.0.jar",
+          "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+        },
+        {
+          "name": "trove4j-1.0.20200330.jar",
+          "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d"
+        },
+        {
+          "name": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+          "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+        }
+      ],
+      "jvmTarget": 17,
+      "qualifiedJvmRuntime": 21
+    },
+    "nativeIssuerTypecheck": "Actual installed Expo TypeScript declarations; Swift/Kotlin native issuer compilation and OS delivery unqualified",
+    "limits": "53 bytes/72 canonical base64 characters; two enrollment/raw work slots per runtime; one raw native operation per actual bridge/port; one latest slot;30Hz;250ms receipt inactivity;30s owner/session;64 starts per controller/native issuer;1000ms caller route lease in proof.",
+    "remaining": [
+      "W01 remains partial.",
+      "Swift native issuer syntax parses only; new Expo Swift/Kotlin framework compilation and actual OS-scoped delivery are unqualified.",
+      "Physical watch/phone, vendor and platform input/permissions qualification pending.",
+      "Raw sampled tap bit has no guaranteed edges/control/reliable event semantics.",
+      "V1 has no sensor presence/physical validity/capture timestamp/watch generation; phone epochs fence callback enrollment only, not capture freshness.",
+      "Native paired/capable associations are trusted bridge enrollment facts, not cryptographic/hardware identity or network authentication.",
+      "Cooperative trusted host/native module, not malicious same-origin/host isolation or total native sensor memory bounds."
+    ]
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/manifest.json",
+      "sha256": "2273efc22bea561032d43c880a4335dd4e77e252ffda03cdaed2e9e1a644cc17",
+      "bytes": 77185
+    },
+    "sourceTree": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+    "sourcePins": 145,
+    "packedFiles": 322,
+    "packages": [
+      {
+        "name": "@101/device-model",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-device-model-0.1.0.tgz",
+        "sha256": "6f2b32f3514b270208af03a516fa1f5415202f7c3e15ef9948a53741262fbdcc",
+        "bytes": 83246,
+        "files": 76
+      },
+      {
+        "name": "@101/device-runtime",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-device-runtime-0.1.0.tgz",
+        "sha256": "e1e9b937f073565525b3349833e1f49604118858e2082e345e7dd46390b934b6",
+        "bytes": 142092,
+        "files": 75
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-transport-webrtc-0.1.0.tgz",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+        "bytes": 6529,
+        "files": 9
+      },
+      {
+        "name": "@101/transport-websocket",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-transport-websocket-0.1.0.tgz",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62",
+        "bytes": 7533,
+        "files": 9
+      },
+      {
+        "name": "@101/device-web",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-device-web-0.1.0.tgz",
+        "sha256": "de1c57ccdc055b6712c959d771566271e359ba296c97775902997131f6a490e3",
+        "bytes": 70788,
+        "files": 47
+      },
+      {
+        "name": "@101/vision",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-vision-0.1.0.tgz",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62",
+        "bytes": 34919,
+        "files": 19
+      },
+      {
+        "name": "@101/connect",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-R3QuSl/tarballs/101-connect-0.1.0.tgz",
+        "sha256": "a7193d3725c047e47ae3fb1c33920ef1708d184c39dc43109f2156faac6742a7",
+        "bytes": 71735,
+        "files": 87
+      }
+    ],
+    "cleanConsumer": {
+      "path": "/tmp/101-sdk-consumer-RZEmai/receipt.json",
+      "sha256": "b8bee668731ff5d104651549f9bc1ed1895772f55385017984978045c9ee3d69",
+      "bytes": 30099
+    },
+    "checks": 10
+  },
+  "failedPrior": {
+    "fusion": {
+      "originalReview": {
+        "path": "/tmp/101-impulse-fusion-independent-review.json",
+        "sha256": "d456d163f13844b09ad514511258484f5777c06d0594c617e1f322cfe68fe44b",
+        "bytes": 18579
+      },
+      "originalSource": {
+        "path": "/tmp/101-impulse-fusion-before-replay-fix.ts",
+        "sha256": "8f35fb9b57e1f969ff54941ed57eec8d03f00b2f35949b9f09ace4ef64ac82ab",
+        "bytes": 14207
+      },
+      "regressionRed": {
+        "path": "/tmp/101-impulse-fusion-malformed-replay-unit-red.log",
+        "sha256": "4e5ce435aeb2af3f3ca450a67591ccbf85d9aa68b4e7fdb9698df090fff582f3",
+        "bytes": 966
+      },
+      "cause": "Malformed input reset capture/processing/refractory floors, permitting consumed impulse replay. Fixed reset preserves same-epoch floors; fresh new epoch requires new processor.",
+      "fixtureCorrections": "Initial PCM window-end and mapped motion baseline clocks were fixture errors; initial runtime API names were caller fixture errors, not product bugs. Original packets/logs retained."
+    },
+    "gateway": {
+      "originalPacket": {
+        "path": "/tmp/101-gateway-inventory-frozen-pins.json",
+        "sha256": "6a5acb8b2dee4b7e80d054d538244b789dd0689c991f26569769b9ef16d6600e",
+        "bytes": 23576
+      },
+      "originalReview": {
+        "path": "/tmp/101-gateway-inventory-independent-review.json",
+        "sha256": "b2c8622583ffb1815e4eb1b4267d0dade3185d1620f0e3603e1d5738f989d0ad",
+        "bytes": 20644
+      },
+      "earlyCancelRed": {
+        "path": "/tmp/101-gateway-inventory-early-cancel-independent.log",
+        "sha256": "e28e6213ce4624e4812f6dc4352b6987c8e7f6b4fa48d7863b8d9a63e58a48a8",
+        "bytes": 627
+      },
+      "constructionRed": {
+        "path": "/tmp/101-gateway-inventory-construction-worker-red.log",
+        "sha256": "ea6513fe616177806de4823f28c541fde5c18ffb00f34b986a2b9df2c5280c63",
+        "bytes": 1016
+      },
+      "cause": "Own socket at per-request Agent.createConnection; cancel directly destroys that socket; request/response/socket close all precede pending release. Constructor/request catch retains socket close ownership and rawPending reports native socket even without a returned ClientRequest.",
+      "setupFailure": "Initial worker command referenced a nonexistent loader; preserved separately as setup-only. Later correct native commands produced actual REDs.",
+      "acceptanceCorrection": "The original review blanket partial disposition was corrected separately against literal D08: a verified named software gateway meets the row without inventing physical router support."
+    },
+    "watch": {
+      "reds": [
+        {
+          "path": "/tmp/101-watch-companion-missing-provider-red.log",
+          "sha256": "cd714c18aee8b1f6fd993f33e0f71b4939294e9b3084c91a9ee9a9af2939997a",
+          "bytes": 505
+        },
+        {
+          "path": "/tmp/101-watch-companion-issuer-reentry-red.log",
+          "sha256": "a08617eb6a9ea23adb42a9ad3600bb8c74e9b91f7c74c10e2d0690825a92ce60",
+          "bytes": 418
+        },
+        {
+          "path": "/tmp/101-watch-companion-issuer-reentry-red-source.ts",
+          "sha256": "520d85f2af1aeb4ebf43e8fa4b9123084729b61f49a12e4bc072f1ab1a8b3ce7",
+          "bytes": 10754
+        },
+        {
+          "path": "/tmp/101-watch-companion-enrollment-quota-red.log",
+          "sha256": "20ab53df7aea50cda66d5fecb2b0a4c68b8214f4c15145f0b4fed422d7965ed1",
+          "bytes": 1161
+        }
+      ],
+      "cause": "Missing SDK provider, native listener registration cancellation reentry and shared two-enrollment admission quota each received a real failing regression before repair.",
+      "setupCorrections": "Listener overload typing and /var to /private/var URL spelling were harness/type integration concerns; neither expanded permission nor qualified native OS delivery."
+    }
+  },
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-fusion-gateway-watch-final-gates.json"
+  },
+  "boundaries": [
+    "D08 first named software profile only closes; W01/P06/full K01 remain open; zero accepted support promotions",
+    "No phone/watch/Android/iPhone Mirroring/native UI/generalOS pointer/clipboard or capture interaction",
+    "No publish/deploy/push/preview URL/third-party service/remote access",
+    "Only owned software processes, private local fixtures and installed offline tools/cache; preserved REDs are separate from successful exact candidate"
+  ]
+}

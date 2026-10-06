@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 110 completed with recorded evidence; 162 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 111 completed with recorded evidence; 161 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -121,7 +121,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **D05 — Verify live capability inventory.** Selected resources are probed through their adapter/profile; model/vendor labels do not invent sensors, operating systems or control features. [Selected actual runtime evidence](receipts/2026-10-06-inventory-invitation-linux.json).
 - [ ] **D06 — Implement private remote directories.** Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
 - [x] **D07 — Support profile/manual resolution of unknown devices.** A reviewed profile or explicit configuration establishes semantics; unknown/unsupported states stay visible. [Reviewed profile and fresh installed caller evidence](receipts/2026-10-06-backup-resolution-scope.json).
-- [ ] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning.
+- [x] **D08 — Support authorized gateway/router inventories.** Inventory APIs are explicit connectors; isolated networks and inaccessible equipment have documented limits and no unrestricted scanning. [Selected actual software-gateway evidence](receipts/2026-10-06-fusion-gateway-watch.json); physical router/vendor/LAN support remains unqualified.
 - [ ] **D09 — Secure discovery metadata/links.** Bound parsing and rate, reject unrestricted URL fetching, redirects/credential forwarding and identity spoofing; discovery grants no operation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 
 ### S — Security, identity and global sessions
@@ -216,7 +216,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 ### W — Watches, rings, bands and hearables
 
-- [ ] **W01 — Generalize watch companion resource providers.** Existing Apple Watch/Wear OS paths bind selected capabilities to the new SDK without treating every watch as a generic socket.
+- [ ] **W01 — Generalize watch companion resource providers.** Existing Apple Watch/Wear OS paths bind selected capabilities to the new SDK without treating every watch as a generic socket. [Built report resources and installed SDK evidence](receipts/2026-10-06-fusion-gateway-watch.json); native framework/OS delivery and physical qualification remain open.
 - [ ] **W02 — Qualify physical Apple Watch → iPhone → host.** Install the signed companion; wrist/crown/button samples, paired identity, locality, release and reconnect have physical receipts.
 - [ ] **W03 — Qualify physical Wear OS → Android → host.** Installed matching packages, sensor/input relay, identity, loss and reconnect have physical receipts.
 - [ ] **W04 — Test wearable lifecycle and energy.** Wrist-off/background, companion departure, radio changes, stale samples and long sessions follow platform rules and measured battery/thermal bounds.
@@ -233,7 +233,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **P03 — Implement calibration/conversion/filter processors.** Selected transforms preserve units, time and uncertainty; fixtures cover saturation, invalid values, stale input and state reset. [Contract](SDK.md#scalar-measurement-processors) and [packed consumer receipt](receipts/2026-10-05-p03-measurement-processors.json).
 - [x] **P04 — Extract pose/hand/gesture processors.** Existing camera algorithms become independent typed consumers with faithful producer fixtures, assets, calibration and quality behavior. [Contract](SDK.md#independent-landmark-processors) and [packed consumer receipt](receipts/2026-10-05-p04-landmark-processors.json).
 - [x] **P05 — Extract motion/orientation processors.** Native/browser/watch measurements preserve physical values; calibration, filtering and game mapping remain explicit separate steps. [Contract](SDK.md#physical-motion-processors) and [packed consumer receipt](receipts/2026-10-05-p05-motion-processors.json).
-- [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware.
+- [ ] **P06 — Implement selected sensor-fusion/table-tap processor.** Declare actual required microphone/motion resources; evaluate labeled inputs, false activations, latency, privacy and unsupported hardware. [Built fusion and installed SDK evidence](receipts/2026-10-06-fusion-gateway-watch.json); physical accuracy/false activations/performance qualification remains open.
 - [x] **P07 — Implement generic mapping/threshold/resampling processors.** Hysteresis, deadzones, event edges and sample rates are configured and tested without adding device/game special cases. [Contract](SDK.md#generic-mapping-and-sample-rate-processors) and [packed consumer receipt](receipts/2026-10-05-p07-generic-processors.json).
 - [x] **P08 — Implement processor failure/restart propagation.** Loss, exception, timeout and revoked inputs invalidate derived outputs, clear dependent commands and reset state deterministically. [Runtime behavior](SDK.md#processor-failure-and-restart-propagation) and [packed consumer receipt](receipts/2026-10-05-p08-processor-failure.json).
 - [ ] **P09 — Qualify processor performance and accuracy.** Record input conditions, quality thresholds, precision, CPU/memory/thermal and model/asset versions on supported targets.

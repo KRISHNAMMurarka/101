@@ -195,3 +195,7 @@ export type { OperatorIdentityIssue, OperatorIdentityResult, OperatorIdentitySna
 
 export { createScopedAgentIpc, SCOPED_AGENT_IPC_PROFILE, SCOPED_AGENT_IPC_LIMITS, SCOPED_AGENT_IPC_SOURCE_SHA256 } from './scoped-agent-ipc.ts';
 export type { AgentIpcFailure, AgentIpcResult, AgentIpcEpoch, AgentIpcApprovalRequest, AgentIpcApproval, AgentIpcObservation, AgentIpcRssSample, ScopedAgentIpcOptions, ScopedAgentIpc } from './scoped-agent-ipc.ts';
+
+export { createGatewayInventoryConnector, GATEWAY_INVENTORY_PROFILE, GATEWAY_INVENTORY_LIMITS } from './gateway-inventory.ts';
+export type { GatewayInventoryApprovalRequest, GatewayInventoryApproval, GatewayInventoryOptions, GatewayInventoryFailure,
+  GatewayInventorySnapshot, GatewayInventoryResult, GatewayInventoryConnector } from './gateway-inventory.ts';

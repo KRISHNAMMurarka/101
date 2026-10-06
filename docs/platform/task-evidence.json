@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 85,
+  "revision": 86,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8674,6 +8674,116 @@
         "Repository source, ordinary local cache, owned disposable software contexts only"
       ],
       "supportRows": []
+    },
+    {
+      "id": "d08-software-gateway-inventory-2026-10-06",
+      "revision": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-fusion-gateway-watch.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3; source/native/software/package distinctions in exact receipt",
+      "reproduction": "node --experimental-strip-types tools/qa-gateway-inventory.mjs --workspace-exports",
+      "scope": "complete for authorized-node-agent-gateway-inventory/1 on macOS26.5.2/Node24.14.0: explicit owned mTLS inventory API, concrete owner approvals, actual child-backed capability qualification, revocation/expiry/recovery and real native socket settlement; inaccessible/isolated-network limits documented without scanning. No physical-router/vendor/LAN/general support claim.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software only; no phone/watch/physical router/capture hardware"
+      ],
+      "supportRows": [
+        "node-software-gateway-inventory-2026-10-06"
+      ]
+    },
+    {
+      "id": "p06-impulse-fusion-built-2026-10-06",
+      "revision": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "P06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-fusion-gateway-watch.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3; source/native/software/package distinctions in exact receipt",
+      "reproduction": "node tools/qa-impulse-fusion.mjs --sdk-root /tmp/101-sdk-consumer-RZEmai --sdk-manifest /Users/km/Desktop/games/101/release/sdk-R3QuSl/manifest.json",
+      "scope": "partial: coincident microphone/linear-motion impulse processor, bounded labeled software evaluation, timing/calibration/privacy contracts and actual granted application event delivery built. Hardware capture/tap accuracy/false activations/latency/energy/thermal evaluation remain unqualified.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software only; no phone/watch/physical router/capture hardware"
+      ],
+      "supportRows": [
+        "microphone-linear-motion-impulse-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "w01-watch-companion-built-2026-10-06",
+      "revision": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "W01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-fusion-gateway-watch.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3; source/native/software/package distinctions in exact receipt",
+      "reproduction": "node tools/qa-watch-companion.mjs --sdk-root /tmp/101-sdk-consumer-RZEmai --candidate-tree df777e9d82b9bb76d5b63638ead9dba2337cd040",
+      "scope": "partial: existing53B Apple/Wear reports bind to new SDK via opaque phone enrollment and independently granted resources; software callback epochs, quota, arrival, lifecycle and native TS issuer checks pass. New Expo Swift/Kotlin framework compilation and actual OS-scoped watch/phone delivery, capture freshness/physical validity/permissions and platform qualification remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software only; no phone/watch/physical router/capture hardware"
+      ],
+      "supportRows": [
+        "watch-companion-report-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "k01-fusion-watch-sdk-refresh-2026-10-06",
+      "revision": "df777e9d82b9bb76d5b63638ead9dba2337cd040",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-fusion-gateway-watch.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TS5.9.3; source/native/software/package distinctions in exact receipt",
+      "reproduction": "node tools/build-sdk.mjs df777e9d82b9bb76d5b63638ead9dba2337cd040; node tools/qa-sdk-consumer.mjs /Users/km/Desktop/games/101/release/sdk-R3QuSl/manifest.json",
+      "scope": "partial: refreshed seven immutable SDK tarballs and clean offline installed public consumers include fusion/watch APIs; broader native distributions/platform/runtime acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software only; no phone/watch/physical router/capture hardware"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9341,7 +9451,8 @@
     {
       "id": "D08",
       "records": [
-        "pending-D08"
+        "pending-D08",
+        "d08-software-gateway-inventory-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10450,7 +10561,8 @@
     {
       "id": "W01",
       "records": [
-        "pending-W01"
+        "pending-W01",
+        "w01-watch-companion-built-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -10652,7 +10764,8 @@
     {
       "id": "P06",
       "records": [
-        "pending-P06"
+        "pending-P06",
+        "p06-impulse-fusion-built-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11895,7 +12008,8 @@
         "touch-contacts-2026-10-05",
         "surface-gestures-2026-10-05",
         "input-details-2026-10-05",
-        "k01-sdk-administration-refresh-2026-10-06"
+        "k01-sdk-administration-refresh-2026-10-06",
+        "k01-fusion-watch-sdk-refresh-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [

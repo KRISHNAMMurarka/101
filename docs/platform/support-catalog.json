@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 12,
+  "revision": 13,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2268,6 +2268,167 @@
         "One managed connection per exact authorization tuple; duplicate idle/provisional bindings refused before runtime dispatch",
         "Trusted host authenticates actors and must route exclusively through controller",
         "No durable team accounts/cross-process/physical or accepted support claim"
+      ]
+    },
+    {
+      "id": "node-software-gateway-inventory-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned software gateway only",
+        "transport": "Selected loopback TLS1.3 mTLS",
+        "connector": "authorized-node-agent-gateway-inventory/1",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "authorized-node-agent-gateway-inventory/1"
+        ],
+        "resources": [
+          "Explicit enrolled-peer inventory metadata backed by actual owned Node child qualification"
+        ],
+        "unavailable": [
+          "No resource operation grant from metadata",
+          "No physical router/vendor/LAN/isolated network/installed gateway support",
+          "Single raw reservation retained through actual native socket close"
+        ]
+      },
+      "qualificationTasks": [
+        "D08"
+      ],
+      "evidence": {
+        "implementation": [
+          "d08-software-gateway-inventory-2026-10-06"
+        ],
+        "contract": [
+          "d08-software-gateway-inventory-2026-10-06"
+        ],
+        "runtime": [
+          "d08-software-gateway-inventory-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "No resource operation grant from metadata",
+        "No physical router/vendor/LAN/isolated network/installed gateway support",
+        "Single raw reservation retained through actual native socket close"
+      ]
+    },
+    {
+      "id": "microphone-linear-motion-impulse-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Labeled software signals only",
+        "transport": "Local SDK resource routes",
+        "connector": "microphone-linear-motion-impulse/1",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "microphone-linear-motion-impulse/1"
+        ],
+        "resources": [
+          "Coincident impulse candidate with both source clocks/lineages and separate processing stamp"
+        ],
+        "unavailable": [
+          "No capture/recording/permission opened",
+          "Synthetic signal labels do not qualify hardware tap accuracy/false activations/performance",
+          "Source identity/calibration are trusted declarations; runtime grants remain independent"
+        ]
+      },
+      "qualificationTasks": [
+        "P06"
+      ],
+      "evidence": {
+        "implementation": [
+          "p06-impulse-fusion-built-2026-10-06"
+        ],
+        "contract": [
+          "p06-impulse-fusion-built-2026-10-06"
+        ],
+        "runtime": [
+          "p06-impulse-fusion-built-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "No capture/recording/permission opened",
+        "Synthetic signal labels do not qualify hardware tap accuracy/false activations/performance",
+        "Source identity/calibration are trusted declarations; runtime grants remain independent"
+      ]
+    },
+    {
+      "id": "watch-companion-report-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Software watch producer/issuer port only",
+        "transport": "Local report/runtime software caller",
+        "connector": "watch-companion-report/1",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "watch-companion-report/1"
+        ],
+        "resources": [
+          "Unchanged53B report mapped through opaque phone enrollment and independently granted destination"
+        ],
+        "unavailable": [
+          "W01 remains partial.",
+          "Swift native issuer syntax parses only; new Expo Swift/Kotlin framework compilation and actual OS-scoped delivery are unqualified.",
+          "Physical watch/phone, vendor and platform input/permissions qualification pending.",
+          "Raw sampled tap bit has no guaranteed edges/control/reliable event semantics.",
+          "V1 has no sensor presence/physical validity/capture timestamp/watch generation; phone epochs fence callback enrollment only, not capture freshness.",
+          "Native paired/capable associations are trusted bridge enrollment facts, not cryptographic/hardware identity or network authentication.",
+          "Cooperative trusted host/native module, not malicious same-origin/host isolation or total native sensor memory bounds."
+        ]
+      },
+      "qualificationTasks": [
+        "W01"
+      ],
+      "evidence": {
+        "implementation": [
+          "w01-watch-companion-built-2026-10-06"
+        ],
+        "contract": [
+          "w01-watch-companion-built-2026-10-06"
+        ],
+        "runtime": [
+          "w01-watch-companion-built-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "W01 remains partial.",
+        "Swift native issuer syntax parses only; new Expo Swift/Kotlin framework compilation and actual OS-scoped delivery are unqualified.",
+        "Physical watch/phone, vendor and platform input/permissions qualification pending.",
+        "Raw sampled tap bit has no guaranteed edges/control/reliable event semantics.",
+        "V1 has no sensor presence/physical validity/capture timestamp/watch generation; phone epochs fence callback enrollment only, not capture freshness.",
+        "Native paired/capable associations are trusted bridge enrollment facts, not cryptographic/hardware identity or network authentication.",
+        "Cooperative trusted host/native module, not malicious same-origin/host isolation or total native sensor memory bounds."
       ]
     }
   ]

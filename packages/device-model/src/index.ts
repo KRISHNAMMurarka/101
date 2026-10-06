@@ -74,3 +74,11 @@ export type { CatalogSubmission, UnsignedCatalogSubmission, CatalogReviewAttesta
 
 export { HAPTIC_PROFILE_IDS, HAPTIC_OUTPUT_LIMITS, getHapticOutputProfile } from './haptic-profile.ts';
 export type { HapticProfileId, HapticPreset, HapticOutputProfile } from './haptic-profile.ts';
+
+export { IMPULSE_FUSION_PROFILE, measurePcmImpulse, createImpulseFusionProcessor } from './impulse-fusion.ts';
+export type { PcmImpulseOptions, AudioImpulseFeature, MotionImpulseFeature, ImpulseFusionOptions, ImpulseCandidate,
+  ImpulseFusionResult, ImpulseFusionProcessor } from './impulse-fusion.ts';
+
+export { WATCH_COMPANION_REPORT_PROFILE, WATCH_COMPANION_REPORT_LIMITS, decodeWatchCompanionReport,
+  watchCompanionReportDevice } from './watch-companion-report.ts';
+export type { WatchCompanionReport } from './watch-companion-report.ts';
