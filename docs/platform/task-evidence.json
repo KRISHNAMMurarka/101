@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 92,
+  "revision": 94,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8903,7 +8903,7 @@
     },
     {
       "id": "s07-authenticated-loopback-gateway-2026-10-06",
-      "revision": "afc912ef81423eafdfd95aae3cdd284f9963b653",
+      "revision": "55af5b21784ad011ef030fb445f22060efae03aa",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -8921,14 +8921,112 @@
       ],
       "environment": "macOS26.5.2arm64; Node24.14.0/npm11.9.0/TypeScript5.9.3; exact Chromium149.0.7827.55/WebKit26.5 and ws8.21.0 readback; owned local software only",
       "reproduction": "node tools/qa-loopback-relay.mjs --sdk-root /tmp/101-sdk-consumer-FqmLhb",
-      "scope": "partial pending exact candidate commit gates: selected selected authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open.",
+      "scope": "complete for authenticated-loopback-gateway/1 and negotiated direct WSS on owned local software: actual native TLS1.3/mTLS, pre-bearer gateway certificate and standard host/CA verification, pinned endpoint proof, independent owner-approved short-lived one-use role credentials, pair-ready acknowledgment and selected transcript/path receipts, separate SDK resource grants, isolated bounded queues and true raw native socket/write settlement. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Gateway plaintext trust, source Hub, no Internet/TURN/two-network/physical or packed Hub claim; S08 remains open.",
       "failure": null,
       "equipment": [
         "Owned disposable loopback/native software resources; no physical device or user UI required"
       ],
       "supportRows": [
         "authenticated-loopback-gateway-software-2026-10-06"
-      ]
+      ],
+      "priorScope": "partial pending exact candidate commit gates: selected selected authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open.",
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
     },
     {
       "id": "browser-gateway-required-gates-failed-2026-10-06",
@@ -8988,7 +9086,7 @@
     },
     {
       "id": "o02-disposable-local-stack-2026-10-06",
-      "revision": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
+      "revision": "55af5b21784ad011ef030fb445f22060efae03aa",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9005,14 +9103,112 @@
       ],
       "environment": "macOS26.5.2arm64; Node24.14.0/TypeScript5.9.3; owned headless Chromium149.0.7827.55/WebKit26.5 and ws8.21.0; immutable source and current installed closure",
       "reproduction": "node tools/qa-disposable-stack.mjs --sdk-root /tmp/101-sdk-consumer-Q6xaoo",
-      "scope": "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit.",
+      "scope": "complete for disposable-coordinator-directory-gateway/1: simultaneous actual local mTLS coordinator, private directory and authenticated WSS gateway; independent owner approvals, denial, withdrawal and two fresh controllers. Nine native focused tests and four ordinary installed-SDK/source-Hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual sockets, private key modes and credential removal without touching an owned sentinel. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Persistent installation, OS sandbox, account authorization, SIGKILL and physical/network service remain unqualified.",
       "failure": null,
       "equipment": [
         "Owned disposable loopback/native software resources; no physical device or user UI"
       ],
       "supportRows": [
         "disposable-local-stack-software-2026-10-06"
-      ]
+      ],
+      "priorScope": "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit.",
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
     },
     {
       "id": "n02-current-installed-browser-resources-2026-10-06",
@@ -9064,18 +9260,116 @@
       ],
       "environment": "macOS26.5.2; Node24.14.0/Vite8.0.16/TypeScript5.9.3; Chromium149.0.7827.55/WebKit26.5; owned loopback React/DOM with explicit software-only clipboard/host ports",
       "reproduction": "node --experimental-strip-types --test app/lib/invitation-copy.test.ts; node tools/qa-invitation-copy.mjs",
-      "scope": "Shared PreGame/Launcher invitation copying no longer falsely announces success when access is absent or denied; manual selection, per-component pending reservation, late completion fencing and explicit expiry/Connect recovery are built. Nine plain-TS regressions and two owned React/DOM pages (12 checks each) pass with software clipboard/host ports. Native clipboard, actual production-route walkthrough, physical pairing and whole task matrix remain unqualified; exact commit gates pending.",
+      "scope": "Shared PreGame/Launcher invitation copying no longer falsely announces success when access is absent or denied; manual selection, per-component pending reservation, late completion fencing and explicit expiry/Connect recovery are built. Nine plain-TS regressions and two owned React/DOM pages (12 checks each) pass with software clipboard/host ports. Native clipboard, actual production-route walkthrough, physical pairing and whole task matrix remain unqualified; selected software source committed locally55af5b2 after all exact required gates passed.",
       "failure": null,
       "equipment": [
         "Owned headless pages only; no user/general clipboard, OS pointer, user UI, native host request or physical phone"
       ],
       "supportRows": [
         "invitation-copy-expiry-software-2026-10-06"
-      ]
+      ],
+      "priorScope": "Shared PreGame/Launcher invitation copying no longer falsely announces success when access is absent or denied; manual selection, per-component pending reservation, late completion fencing and explicit expiry/Connect recovery are built. Nine plain-TS regressions and two owned React/DOM pages (12 checks each) pass with software clipboard/host ports. Native clipboard, actual production-route walkthrough, physical pairing and whole task matrix remain unqualified; exact commit gates pending.",
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
     },
     {
       "id": "e13-independent-reference-apps-2026-10-06",
-      "revision": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
+      "revision": "55af5b21784ad011ef030fb445f22060efae03aa",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9091,14 +9385,112 @@
       ],
       "environment": "macOS26.5.2;Node24.14.0/TypeScript5.9.3;owned Chromium149.0.7827.55/WebKit26.5;immutable ordinary installed seven-package SDK18f",
       "reproduction": "node tools/qa-sdk-reference-apps.mjs --installed MANIFEST CLEAN_CONSUMER",
-      "scope": "Five complete external projects use ordinary installed public SDK packages and readable local instructions. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and two software collaborative controls pass76 checks/10 Chromium-WebKit journeys. Reproduced keyboard-focus and native outside-release defects are repaired; strict manual capture-loss100ms remains unqualified. Exact broad gates and commit pending.",
+      "scope": "complete: five independent external projects use ordinary installed public SDK packages, readable instructions and no hidden game dependency. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and collaborative software controls pass76 checks across10 Chromium/WebKit journeys. Keyboard-focus/native outside-release regressions and generated queue instructions are repaired. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Strict manual capture-loss100ms, physical resources, remote participants, WebKit decoded-media format and global I12/U qualification remain unqualified.",
       "failure": null,
       "equipment": [
         "Owned software fixtures/headless contexts/private loopback native peers only; no user hardware"
       ],
       "supportRows": [
         "independent-reference-apps-software-2026-10-06"
-      ]
+      ],
+      "priorScope": "Five complete external projects use ordinary installed public SDK packages and readable local instructions. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and two software collaborative controls pass76 checks/10 Chromium-WebKit journeys. Reproduced keyboard-focus and native outside-release defects are repaired; strict manual capture-loss100ms remains unqualified. Exact broad gates and commit pending.",
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
     },
     {
       "id": "f09-software-resource-recovery-2026-10-06",
@@ -9116,15 +9508,304 @@
       "paths": [
         "docs/platform/receipts/2026-10-06-reference-recovery.json"
       ],
-      "environment": "macOS26.5.2;Node24.14.0/TypeScript5.9.3;owned Chromium149.0.7827.55/WebKit26.5;immutable ordinary installed seven-package SDK18f",
+      "environment": "macOS26.5.2;Node24.14.0/TypeScript5.9.3;owned Chromium149.0.7827.55;immutable ordinary installed seven-package SDK18f",
       "reproduction": "node tools/qa-runtime-recovery.mjs --sdk-root CLEAN_CONSUMER",
-      "scope": "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Full F09 matrix and exact broad gates/commit remain open.",
+      "scope": "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Selected software source committed locally55af5b2 after all exact required gates passed; full F09 IP/media/physical matrix remains open.",
       "failure": null,
       "equipment": [
         "Owned software fixtures/headless contexts/private loopback native peers only; no user hardware"
       ],
       "supportRows": [
         "software-resource-recovery-2026-10-06"
+      ],
+      "priorScope": "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Full F09 matrix and exact broad gates/commit remain open.",
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
+    },
+    {
+      "id": "sdk-browser-gateway-reference-required-gates-pass-2026-10-06",
+      "revision": "55af5b21784ad011ef030fb445f22060efae03aa",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S07",
+        "O02",
+        "E13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-browser-gateway.json",
+        "docs/platform/receipts/2026-10-06-camera-stack.json",
+        "docs/platform/receipts/2026-10-06-invitation-recovery.json",
+        "docs/platform/receipts/2026-10-06-reference-recovery.json"
+      ],
+      "environment": "macOS26.5.2arm64;Node24.14.0; exact local commit55af5b21784ad011ef030fb445f22060efae03aa/tree7fd5c3292e725f295a760d501e153321e500b5f1; owned software resources",
+      "reproduction": "npx tsc --noEmit; npm run lint; npm run build; node --test tests/rendered-html.test.mjs; npm run test:unit. Exact commands and all five immutable log hashes in existing receipts.",
+      "scope": "Required exact source commit gates pass: types0,lint0,fresh build0,34/34 rendered,1803/1803 unit. S07 selected direct/authenticated gateway negotiation, O02 disposable simultaneous coordinator/directory/gateway and E13 five independent apps close. Broader F09/N02/V01/D03/U05/U10/D02/I12/physical support remains open. Old AppKit/SSH failed exact candidates remain preserved; their cause and repair remain unestablished. No support row is accepted and accepted service capacity stays zero.",
+      "failure": null,
+      "equipment": [
+        "Owned local offline/compiler/headless/private-native software resources; no physical device or user UI"
+      ],
+      "supportRows": [
+        "authenticated-loopback-gateway-software-2026-10-06",
+        "disposable-local-stack-software-2026-10-06",
+        "independent-reference-apps-software-2026-10-06"
+      ],
+      "sourceIntegration": {
+        "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+        "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+        "localOnly": true,
+        "requiredGateReceipt": {
+          "path": "/tmp/101-build-wave-required-gates.json",
+          "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+        },
+        "results": [
+          {
+            "name": "types",
+            "command": [
+              "npx",
+              "tsc",
+              "--noEmit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-types.log",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "elapsedMs": 3805
+          },
+          {
+            "name": "lint",
+            "command": [
+              "npm",
+              "run",
+              "lint"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-lint.log",
+            "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+            "elapsedMs": 12688
+          },
+          {
+            "name": "build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-build.log",
+            "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+            "elapsedMs": 11756
+          },
+          {
+            "name": "rendered",
+            "command": [
+              "node",
+              "--test",
+              "tests/rendered-html.test.mjs"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-rendered.log",
+            "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+            "elapsedMs": 1745
+          },
+          {
+            "name": "unit",
+            "command": [
+              "npm",
+              "run",
+              "test:unit"
+            ],
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "path": "/tmp/101-build-wave-gate-unit.log",
+            "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+            "elapsedMs": 164190
+          }
+        ],
+        "unit": {
+          "tests": 1803,
+          "pass": 1803,
+          "fail": 0,
+          "skip": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+        "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+      }
+    },
+    {
+      "id": "q02-shared-watch-software-contracts-2026-10-06",
+      "revision": "3176838564660350e1f2fd103793ea68d6fd73cf",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q02",
+        "E12",
+        "W01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-watch-operator-drills.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/Swift6.3.3/Kotlin2.1.21/JDK21.0.12; owned local software inputs; runtime/install/source distinction in receipt",
+      "reproduction": "node tools/qa-watch-report-bindings.mjs --installed SDK_MANIFEST CLEAN_CONSUMER [--caller-tree EXACT_TREE]",
+      "scope": "partial: one shared fixture source checks8goldens/26decode cases using unchanged Swift/Kotlin53-byte codecs42commands each, strict JavaScript and16current installed SDK grant/epoch/revoke/expiry software-bridge checks per native language. Three reserved-bit legacy-mask versus strict-JS-reject differences are explicit. No C watch, native watch OS delivery, authentication, capture freshness, calibration, hardware or whole Q02/E12/W01 closure.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compilers/private native/software fixtures; no user hardware/UI"
+      ],
+      "supportRows": [
+        "shared-watch-report-contracts-software-2026-10-06"
+      ]
+    },
+    {
+      "id": "o07-local-operator-recovery-drills-2026-10-06",
+      "revision": "3176838564660350e1f2fd103793ea68d6fd73cf",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O07",
+        "O05",
+        "O06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-watch-operator-drills.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; 24.14.0; exact129 source hashes; owned local software inputs; runtime/install/source distinction in receipt",
+      "reproduction": "node tools/qa-operator-drills.mjs --source",
+      "scope": "built selected three executable incident/upgrade/rollback runbooks:32actual native/storage/route checks,4CLIchecks and6focused tests. Actual interrupted fsynced update preserves accepted bytes; rollback retains durable revocation/floors; damaged-only recovery preserves authoritative post-deletion current owner/audit/retention; real mTLS rotation/stop/fresh owner reject old identity/bearer/enrollment and retire four listeners. Root actual129 source closure tested separately after two changed public barrels. Required exact gates/local integration commit pending; broader O05/O06/production/OS key/account/SIGKILL/hardware remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compilers/private native/software fixtures; no user hardware/UI"
+      ],
+      "supportRows": [
+        "local-operator-recovery-drills-software-2026-10-06"
       ]
     }
   ],
@@ -9918,7 +10599,8 @@
       "records": [
         "pending-S07",
         "s07-authenticated-loopback-gateway-2026-10-06",
-        "browser-gateway-required-gates-failed-2026-10-06"
+        "browser-gateway-required-gates-failed-2026-10-06",
+        "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10914,7 +11596,8 @@
       "id": "W01",
       "records": [
         "pending-W01",
-        "w01-watch-companion-built-2026-10-06"
+        "w01-watch-companion-built-2026-10-06",
+        "q02-shared-watch-software-contracts-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11575,7 +12258,8 @@
       "records": [
         "pending-E12",
         "native-source-2026-10-02",
-        "directory-native-bindings-partial-2026-10-06"
+        "directory-native-bindings-partial-2026-10-06",
+        "q02-shared-watch-software-contracts-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11590,7 +12274,8 @@
       "id": "E13",
       "records": [
         "pending-E13",
-        "e13-independent-reference-apps-2026-10-06"
+        "e13-independent-reference-apps-2026-10-06",
+        "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11965,7 +12650,8 @@
     {
       "id": "Q02",
       "records": [
-        "pending-Q02"
+        "pending-Q02",
+        "q02-shared-watch-software-contracts-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [
@@ -12522,7 +13208,8 @@
       "records": [
         "pending-O02",
         "o02-disposable-local-partial-2026-10-06",
-        "o02-disposable-local-stack-2026-10-06"
+        "o02-disposable-local-stack-2026-10-06",
+        "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
       ],
       "dependencies": [
         "S01"
@@ -12561,7 +13248,8 @@
       "id": "O05",
       "records": [
         "pending-O05",
-        "o05-built-partial-2026-10-06"
+        "o05-built-partial-2026-10-06",
+        "o07-local-operator-recovery-drills-2026-10-06"
       ],
       "dependencies": [
         "S01"
@@ -12573,7 +13261,8 @@
     {
       "id": "O06",
       "records": [
-        "pending-O06"
+        "pending-O06",
+        "o07-local-operator-recovery-drills-2026-10-06"
       ],
       "dependencies": [
         "S01"
@@ -12585,7 +13274,8 @@
     {
       "id": "O07",
       "records": [
-        "pending-O07"
+        "pending-O07",
+        "o07-local-operator-recovery-drills-2026-10-06"
       ],
       "dependencies": [
         "S01"

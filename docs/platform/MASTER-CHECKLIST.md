@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 113 completed with recorded evidence; 159 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 116 completed with recorded evidence; 156 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -132,7 +132,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **S04 — Implement encrypted authenticated remote channels.** Verify peer binding and certificate/key failures; document the actual trust topology rather than assuming encryption grants access.
 - [x] **S05 — Build the HTTPS coordinator locally.** Authenticated create/join, restricted origins, private rendezvous and startup configuration checks pass disposable integration tests. [Local implementation and runtime evidence](receipts/2026-10-06-transports-views.json).
 - [ ] **S06 — Implement membership/invitation lifecycle.** Expiring invitations, removal, reconnect and lost-device recovery cannot expose another participant's resources.
-- [ ] **S07 — Implement direct and relay negotiation.** ICE/TURN or authenticated gateway fallback uses scoped short-lived credentials and records the selected path. [Built selected software and retained gate failure](receipts/2026-10-06-browser-gateway.json); exact candidate commit gates remain pending.
+- [x] **S07 — Implement direct and relay negotiation.** ICE/TURN or authenticated gateway fallback uses scoped short-lived credentials and records the selected path. [Selected software implementation and exact local gates](receipts/2026-10-06-browser-gateway.json); local commit `55af5b2`.
 - [ ] **S08 — Prove two-network and relay-required sessions.** Physical endpoints on different networks connect, recover and revoke access; direct-only LAN tests cannot close this row.
 - [ ] **S09 — Implement wire replay protection.** Test epochs, sequence windows, IDs/deadlines, revoked grants and stale schema/profile bytes at every receiver boundary.
 - [ ] **S10 — Implement resource/tenant isolation.** Cross-user, cross-session and cross-directory requests fail; private audio/video/telemetry cannot leak to unintended subscribers.
@@ -147,7 +147,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 ### N — OS/runtime libraries and native agents
 
 - [x] **N01 — Define the native provider contract.** Share descriptors, permissions, readiness, lifecycle, IPC and conformance with a real browser/mobile/desktop consumer. [Shared contract and real desktop consumer evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
-- [ ] **N02 — Implement browser resource providers.** Keyboard, pointer, touch, gamepad, camera, microphone and supported hardware APIs expose typed resources with permission/loss recovery. [Built Gamepad, microphone and camera providers with fresh installed SDK evidence](receipts/2026-10-06-camera-stack.json); remaining APIs, physical/full-scope qualification and exact commit gates remain open.
+- [ ] **N02 — Implement browser resource providers.** Keyboard, pointer, touch, gamepad, camera, microphone and supported hardware APIs expose typed resources with permission/loss recovery. [Built Gamepad, microphone and camera providers with fresh installed SDK evidence](receipts/2026-10-06-camera-stack.json); remaining APIs and physical/full-scope qualification remain open.
 - [ ] **N03 — Implement Android native providers.** Inventory and expose selected motion, touch, audio/camera, Bluetooth and hardware resources; permission/background/lock behavior is qualified.
 - [ ] **N04 — Implement iOS/iPadOS native providers.** Selected motion, touch/pen, camera/audio and external surfaces use permitted native APIs; denial, suspension and reconnect are qualified.
 - [ ] **N05 — Implement macOS system pointer/keyboard.** Permissioned native events target the intended surface; denial/revocation, coordinate mapping, held-key release and lease transfer pass.
@@ -274,7 +274,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **E10 — Implement verified extension installation.** Publisher/version/integrity, requested privileges, compatibility, update, rollback, revocation and removal are enforced before activation. [Bounded local implementation and runtime evidence](receipts/2026-10-06-pairing-extension-installation.json); remaining scope stays open.
 - [x] **E11 — Implement package catalog/publication workflow.** Authors submit tested manifests/docs and provenance; review/status/version/conflict handling works without granting package code implicit access. [Local signed package workflow and packed runtime evidence](receipts/2026-10-06-profiles-data-catalog.json).
 - [ ] **E12 — Produce language/runtime bindings.** Qualified JS/browser/Node and selected Swift/Kotlin/C consumers share schema/protocol fixtures and lifecycle behavior. [Bounded local build and runtime evidence](receipts/2026-10-06-directory-bindings-timing.json); remaining scope stays open.
-- [ ] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency. [Built selected independent software and retained limitations](receipts/2026-10-06-reference-recovery.json); exact commit gates remain pending.
+- [x] **E13 — Complete independent reference apps.** Pointer, sensor dashboard, appliance remote, media sharing and collaborative controls run outside the monorepo with readable docs and no hidden game dependency. [Selected software implementation and exact local gates](receipts/2026-10-06-reference-recovery.json); local commit `55af5b2`.
 - [x] **E14 — Provide machine-readable developer guidance.** Schemas, complete example recipes, package manifests and contextual instructions let developers/AI tools generate validated projects; explanatory text cannot grant privileges or execute code. [Generated guidance and fresh consumer evidence](receipts/2026-10-05-e14-developer-guidance.json).
 
 ### U — Finished product UI and accessibility
@@ -288,7 +288,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **U07 — Complete responsive transformations.** Phones, tablets, watches, TV, desktop and external screens adapt to available area, orientation, safe insets, text scaling and offered inputs.
 - [ ] **U08 — Complete touch/control experience.** Real gestures, pinch zoom, automatic focus/exposure where supported, handed layouts, thumb reach and release behavior feel usable on qualified hardware.
 - [ ] **U09 — Complete accessible interaction.** Keyboard, visible focus, screen reader, contrast, reduced motion, readable status and equivalent controls pass actual journeys without technology detection.
-- [ ] **U10 — Complete all asynchronous/error states.** Loading, empty, partial, stale, busy, denied, expired, interrupted, rate-limited and unavailable states have clear cancel/retry/alternative paths. [Built invitation copy/expiry recovery with scoped UI evidence](receipts/2026-10-06-invitation-recovery.json); remaining matrix and exact commit gates stay open.
+- [ ] **U10 — Complete all asynchronous/error states.** Loading, empty, partial, stale, busy, denied, expired, interrupted, rate-limited and unavailable states have clear cancel/retry/alternative paths. [Built invitation copy/expiry recovery with scoped UI evidence](receipts/2026-10-06-invitation-recovery.json); remaining matrix stays open.
 - [ ] **U11 — Complete privacy-sensitive interaction.** Capture and remote control preview the recipient/scope; visible stop, re-entry and revoked access match actual route state.
 - [ ] **U12 — Complete settings/provider management.** Identity, permissions, privacy, installed connectors, trusted publishers, device removal and update/restore have tested flows.
 - [ ] **U13 — Audit the full supported surface matrix.** Record responsive, keyboard/screen-reader, touch, motion, both themes and failure-state receipts on the final UI candidate.
@@ -303,7 +303,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **F06 — Verify clock/drift and synchronization limits.** Simulated offset/drift and real devices validate age/skew decisions; uncertain clocks degrade honestly.
 - [ ] **F07 — Verify memory/queue/fan-out limits.** Burst, hostile, hanging-provider, overload and cancellation workloads remain within declared bounds and release resources.
 - [x] **F08 — Run large graph/session load tests.** Scale by subscribed edges rather than unrestricted mesh; test published capacity tiers, tenant isolation and graceful overload. [Exact selected software evidence](receipts/2026-10-06-hosted-load.json).
-- [ ] **F09 — Run loss/reconnect/slow-sink tests.** Network interruptions, congestion and stalled media/commands leave no stuck output or stale replay and recover through documented behavior. [Built selected independent software and retained limitations](receipts/2026-10-06-reference-recovery.json); exact commit gates remain pending.
+- [ ] **F09 — Run loss/reconnect/slow-sink tests.** Network interruptions, congestion and stalled media/commands leave no stuck output or stale replay and recover through documented behavior. [Selected software implementation and exact local gates](receipts/2026-10-06-reference-recovery.json); full IP/media/physical matrix remains open.
 - [ ] **F10 — Measure battery, CPU and thermal behavior.** Supported mobile, watch, desktop and gateway workloads sustain declared rates through realistic long sessions.
 - [ ] **F11 — Investigate camera timing outliers.** Reproduce recorded startup/inference stalls and distinguish warmup, throttling and sustained latency; acceptance uses distributions and a completed walkthrough.
 - [ ] **F12 — Publish reproducible benchmarks.** Scripts, exact builds/devices, impairment profiles, complete distributions and limitations accompany every latency/capacity claim.
@@ -311,7 +311,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### Q — Conformance, support matrix and regression qualification
 
 - [x] **Q01 — Create the per-profile qualification template.** Require the evidence envelope below for every claimed connector/profile/runtime combination. [Contract evidence](CONTRACT-QA-2026-10-02.md).
-- [ ] **Q02 — Build portable model/codec contract tests.** Shared golden and negative fixtures cover all language bindings, supported schema versions and incompatible revisions.
+- [ ] **Q02 — Build portable model/codec contract tests.** Shared golden and negative fixtures cover all language bindings, supported schema versions and incompatible revisions. [Selected software build and scoped evidence](receipts/2026-10-06-watch-operator-drills.json); exact candidate integration gates remain pending.
 - [ ] **Q03 — Build faithful producer/decoder fixtures.** Use actual documented device/backend output, including malformed, short, nonfinite, missing and unexpected-profile data.
 - [ ] **Q04 — Build permission/identity adversarial suites.** Copied IDs, unauthorized peers, cross-session operations, revoked grants and plugin escalation fail at real execution boundaries.
 - [ ] **Q05 — Build lifecycle/ownership suites.** Stop, disconnect, revoke, expiry, removal, rotation, background and transfer cover exclusive/partition/observer behavior and async races.
@@ -377,12 +377,12 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 ### O — Self-hosted/global operator readiness
 
 - [x] **O01 — Define operator configuration and startup validation.** Identity, origins, storage, relay and quota requirements fail closed with readable recovery when missing or invalid. [Selected startup validation evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
-- [ ] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data. [Built simultaneous coordinator/directory/gateway and verified local teardown](receipts/2026-10-06-camera-stack.json); exact candidate commit gates remain pending.
+- [x] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data. [Selected software implementation and exact local gates](receipts/2026-10-06-camera-stack.json); local commit `55af5b2`.
 - [x] **O03 — Implement redacted observability.** Health, traffic, route/queue load and faults are visible; credentials and private payloads are excluded from operator logs. [Selected actual runtime/traffic and fresh installed caller evidence](receipts/2026-10-06-chooser-discovery-health.json).
 - [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **O06 — Validate state backup/restore where required.** Restoring identity/configuration/history preserves ownership, revocation, retention and migration integrity.
-- [ ] **O07 — Provide upgrade/rollback and incident runbooks.** Execute representative failure, security revocation and rollback drills with redacted receipts.
+- [ ] **O07 — Provide upgrade/rollback and incident runbooks.** Execute representative failure, security revocation and rollback drills with redacted receipts. [Selected software build and scoped evidence](receipts/2026-10-06-watch-operator-drills.json); exact candidate integration gates remain pending.
 - [x] **O08 — Establish service limits and responsibilities.** Document supported load, relay/traffic budgets, operator trust/privacy boundaries and maintenance obligations before a live service claim. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 
 ### L — Publication readiness and actual publication

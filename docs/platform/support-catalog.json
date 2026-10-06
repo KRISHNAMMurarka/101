@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 18,
+  "revision": 20,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2700,7 +2700,7 @@
           "authenticated-loopback-gateway/1"
         ],
         "resources": [
-          "Built selected software scope, pending exact full commit gates and commit: authenticated-loopback-gateway/1 plus separately negotiated direct-wss software path: actual native TLS1.3/mTLS, pre-bearer exact gateway certificate/standard host/CA verification, pinned endpoint proof, independently owner-approved short-lived one-use role credentials, current pair-ready acknowledgment and selected transcript/path receipts, separate SDK source/sink grants, bounded isolated queues and true native raw socket/write teardown. Trusted gateway sees plaintext. No Internet/TURN/two-network/physical or packed hub claim; S08 remains open."
+          "complete for authenticated-loopback-gateway/1 and negotiated direct WSS on owned local software: actual native TLS1.3/mTLS, pre-bearer gateway certificate and standard host/CA verification, pinned endpoint proof, independent owner-approved short-lived one-use role credentials, pair-ready acknowledgment and selected transcript/path receipts, separate SDK resource grants, isolated bounded queues and true raw native socket/write settlement. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Gateway plaintext trust, source Hub, no Internet/TURN/two-network/physical or packed Hub claim; S08 remains open."
         ],
         "unavailable": [
           "Trusted gateway terminates both TLS legs; no end-to-end payload privacy or OS sandbox",
@@ -2713,13 +2713,16 @@
       ],
       "evidence": {
         "implementation": [
-          "s07-authenticated-loopback-gateway-2026-10-06"
+          "s07-authenticated-loopback-gateway-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "contract": [
-          "s07-authenticated-loopback-gateway-2026-10-06"
+          "s07-authenticated-loopback-gateway-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "runtime": [
-          "s07-authenticated-loopback-gateway-2026-10-06"
+          "s07-authenticated-loopback-gateway-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "physical": []
       },
@@ -2731,8 +2734,7 @@
       "limitations": [
         "Trusted gateway terminates both TLS legs; no end-to-end payload privacy or OS sandbox",
         "No Internet/TURN/two-network/physical or packed hub artifact",
-        "Accepted service capacity remains zero",
-        "Required exact full commit gates and committed candidate pending"
+        "Accepted service capacity remains zero"
       ]
     },
     {
@@ -2809,14 +2811,13 @@
           "disposable-coordinator-directory-gateway/1"
         ],
         "resources": [
-          "Selected disposable-coordinator-directory-gateway/1 built: simultaneous actual mTLS coordinator, private directory and authenticated WSS gateway; independent directory/relay/resource grants, explicit denial, withdrawal and two fresh controller owners. Nine native focused tests plus four fresh installed-SDK/source-hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual socket retirement, fixed private key modes and credential removal without touching a sentinel. O02 checkbox and selected acceptance await required exact green commit gates and commit."
+          "complete for disposable-coordinator-directory-gateway/1: simultaneous actual local mTLS coordinator, private directory and authenticated WSS gateway; independent owner approvals, denial, withdrawal and two fresh controllers. Nine native focused tests and four ordinary installed-SDK/source-Hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual sockets, private key modes and credential removal without touching an owned sentinel. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Persistent installation, OS sandbox, account authorization, SIGKILL and physical/network service remain unqualified."
         ],
         "unavailable": [
           "Packed hub artifact",
           "Internet/TURN/two-network/physical service",
           "Persistent install, OS sandbox, people/account authorization",
-          "SIGKILL cleanup",
-          "Required exact full commit gates and committed candidate"
+          "SIGKILL cleanup"
         ]
       },
       "qualificationTasks": [
@@ -2824,13 +2825,16 @@
       ],
       "evidence": {
         "implementation": [
-          "o02-disposable-local-stack-2026-10-06"
+          "o02-disposable-local-stack-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "contract": [
-          "o02-disposable-local-stack-2026-10-06"
+          "o02-disposable-local-stack-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "runtime": [
-          "o02-disposable-local-stack-2026-10-06"
+          "o02-disposable-local-stack-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "physical": []
       },
@@ -2843,8 +2847,7 @@
         "Packed hub artifact",
         "Internet/TURN/two-network/physical service",
         "Persistent install, OS sandbox, people/account authorization",
-        "SIGKILL cleanup",
-        "Required exact full commit gates and committed candidate"
+        "SIGKILL cleanup"
       ]
     },
     {
@@ -2917,14 +2920,13 @@
           "independent-reference-apps/1"
         ],
         "resources": [
-          "Five complete external projects use ordinary installed public SDK packages and readable local instructions. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and two software collaborative controls pass76 checks/10 Chromium-WebKit journeys. Reproduced keyboard-focus and native outside-release defects are repaired; strict manual capture-loss100ms remains unqualified. Exact broad gates and commit pending."
+          "complete: five independent external projects use ordinary installed public SDK packages, readable instructions and no hidden game dependency. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and collaborative software controls pass76 checks across10 Chromium/WebKit journeys. Keyboard-focus/native outside-release regressions and generated queue instructions are repaired. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Strict manual capture-loss100ms, physical resources, remote participants, WebKit decoded-media format and global I12/U qualification remain unqualified."
         ],
         "unavailable": [
           "Physical sensor/appliance/camera/OS cursor",
           "Remote participant authentication",
           "Strict manual capture-loss100ms and full I12/U matrix",
-          "WebKit decoded media format in this selected fixture",
-          "Exact green required gates and committed candidate"
+          "WebKit decoded media format in this selected fixture"
         ]
       },
       "qualificationTasks": [
@@ -2932,13 +2934,16 @@
       ],
       "evidence": {
         "implementation": [
-          "e13-independent-reference-apps-2026-10-06"
+          "e13-independent-reference-apps-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "contract": [
-          "e13-independent-reference-apps-2026-10-06"
+          "e13-independent-reference-apps-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "runtime": [
-          "e13-independent-reference-apps-2026-10-06"
+          "e13-independent-reference-apps-2026-10-06",
+          "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
         ],
         "physical": []
       },
@@ -2951,8 +2956,7 @@
         "Physical sensor/appliance/camera/OS cursor",
         "Remote participant authentication",
         "Strict manual capture-loss100ms and full I12/U matrix",
-        "WebKit decoded media format in this selected fixture",
-        "Exact green required gates and committed candidate"
+        "WebKit decoded media format in this selected fixture"
       ]
     },
     {
@@ -2963,7 +2967,7 @@
         "os": "macOS",
         "osVersion": "26.5.2",
         "runtime": "Node mTLS WebSocket/source Hub + owned Chromium WebRTC",
-        "runtimeVersion": "Node24.14.0 / Chromium149.0.7827.55 / WebKit26.5",
+        "runtimeVersion": "Node24.14.0 / Chromium149.0.7827.55",
         "formFactor": "Owned software fixture",
         "transport": "Direct mTLS WebSocket / trusted authenticated gateway / native WebRTC,iceServers[]",
         "connector": "software-resource-recovery",
@@ -2972,15 +2976,14 @@
           "software-resource-recovery/1"
         ],
         "resources": [
-          "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Full F09 matrix and exact broad gates/commit remain open."
+          "Actual direct mTLS WebSocket, authenticated trusted gateway and native WebRTC pass159 checks/12 fresh generations for independent source/sink denial, host sender refusal, held sink callbacks, owner revoke, grant/lease expiry, native disconnect, genuine inner resource re-send rejection and explicitly approved recovery. Raw/native/observer quotas persist through actual settlement; source/receiver clock IDs and provider origin are separate. Selected software source committed locally55af5b2 after all exact required gates passed; full F09 IP/media/physical matrix remains open."
         ],
         "unavailable": [
           "Actual IP packet loss/congestion or media recovery",
           "Physical input/endpoints/two-network sessions",
           "Outer wire replay and full S09 qualification",
           "Two-page isolation and installed Hub",
-          "Total native-memory/walltime guarantee",
-          "Exact green required gates and committed candidate"
+          "Total native-memory/walltime guarantee"
         ]
       },
       "qualificationTasks": [
@@ -3008,8 +3011,125 @@
         "Physical input/endpoints/two-network sessions",
         "Outer wire replay and full S09 qualification",
         "Two-page isolation and installed Hub",
-        "Total native-memory/walltime guarantee",
-        "Exact green required gates and committed candidate"
+        "Total native-memory/walltime guarantee"
+      ]
+    },
+    {
+      "id": "shared-watch-report-contracts-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node public installed SDK + unchanged native Swift/Kotlin codecs",
+        "runtimeVersion": "Node24.14.0/Swift6.3.3/Kotlin2.1.21/JDK21.0.12",
+        "formFactor": "Owned software fixture",
+        "transport": "Native codec bytes through explicitly supplied software watch bridge",
+        "connector": "watch-report-contracts",
+        "connectorVersion": "3176838564660350e1f2fd103793ea68d6fd73cf",
+        "profiles": [
+          "watch-report-contracts/1"
+        ],
+        "resources": [
+          "partial: one shared fixture source checks8goldens/26decode cases using unchanged Swift/Kotlin53-byte codecs42commands each, strict JavaScript and16current installed SDK grant/epoch/revoke/expiry software-bridge checks per native language. Three reserved-bit legacy-mask versus strict-JS-reject differences are explicit. No C watch, native watch OS delivery, authentication, capture freshness, calibration, hardware or whole Q02/E12/W01 closure."
+        ],
+        "unavailable": [
+          "Q02 general model/codec and additional supported profile/language coverage remains open",
+          "E12 native SDK/lifecycle/transport/platform support remains open",
+          "C has no watch codec; existing pointer C qualification was not rerun or broadened",
+          "Physical watch input, OS watch/phone delivery/enrollment authentication and sensor calibration unqualified",
+          "No capture time/freshness or relay-to-host clock mapping inferred",
+          "No new codec, schema revision, native library/package or distribution"
+        ]
+      },
+      "qualificationTasks": [
+        "Q02",
+        "E12",
+        "W01"
+      ],
+      "evidence": {
+        "implementation": [
+          "q02-shared-watch-software-contracts-2026-10-06"
+        ],
+        "contract": [
+          "q02-shared-watch-software-contracts-2026-10-06"
+        ],
+        "runtime": [
+          "q02-shared-watch-software-contracts-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Q02 general model/codec and additional supported profile/language coverage remains open",
+        "E12 native SDK/lifecycle/transport/platform support remains open",
+        "C has no watch codec; existing pointer C qualification was not rerun or broadened",
+        "Physical watch input, OS watch/phone delivery/enrollment authentication and sensor calibration unqualified",
+        "No capture time/freshness or relay-to-host clock mapping inferred",
+        "No new codec, schema revision, native library/package or distribution"
+      ]
+    },
+    {
+      "id": "local-operator-recovery-drills-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node source public Hub/SDK + private native filesystem/mTLS",
+        "runtimeVersion": "24.14.0; exact129 source hashes",
+        "formFactor": "Owned software fixture",
+        "transport": "Private loopback mTLS/native owner storage; source Hub",
+        "connector": "local-operator-recovery-drills",
+        "connectorVersion": "3176838564660350e1f2fd103793ea68d6fd73cf",
+        "profiles": [
+          "local-operator-recovery-drills/1"
+        ],
+        "resources": [
+          "built selected three executable incident/upgrade/rollback runbooks:32actual native/storage/route checks,4CLIchecks and6focused tests. Actual interrupted fsynced update preserves accepted bytes; rollback retains durable revocation/floors; damaged-only recovery preserves authoritative post-deletion current owner/audit/retention; real mTLS rotation/stop/fresh owner reject old identity/bearer/enrollment and retire four listeners. Root actual129 source closure tested separately after two changed public barrels. Required exact gates/local integration commit pending; broader O05/O06/production/OS key/account/SIGKILL/hardware remain open."
+        ],
+        "unavailable": [
+          "source-only Hub/SDK public barrels, no installed Hub release claim",
+          "no production rollout, persistent account/key store or arbitrary operator state",
+          "no rollback of independent current checkpoint or issuer revocation",
+          "no SIGKILL cleanup guarantee",
+          "no remote, physical or OS device qualification",
+          "O07 remains open until independent review/integration gates"
+        ]
+      },
+      "qualificationTasks": [
+        "O07",
+        "O05",
+        "O06"
+      ],
+      "evidence": {
+        "implementation": [
+          "o07-local-operator-recovery-drills-2026-10-06"
+        ],
+        "contract": [
+          "o07-local-operator-recovery-drills-2026-10-06"
+        ],
+        "runtime": [
+          "o07-local-operator-recovery-drills-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "source-only Hub/SDK public barrels, no installed Hub release claim",
+        "no production rollout, persistent account/key store or arbitrary operator state",
+        "no rollback of independent current checkpoint or issuer revocation",
+        "no SIGKILL cleanup guarantee",
+        "no remote, physical or OS device qualification",
+        "O07 remains open until independent review/integration gates"
       ]
     }
   ]

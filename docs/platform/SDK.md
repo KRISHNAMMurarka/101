@@ -1832,6 +1832,32 @@ issuer has syntax-only checks. Native Expo Swift/Kotlin framework compilation,
 actual scoped watch/phone delivery, permissions and physical qualification
 remain open under W01; software ports do not establish native OS delivery.
 
+### Shared watch report contract fixtures
+
+`bindings/watch-report/fixtures/watch-report-v1.json` is the shared source for
+eight golden reports and 26 decode cases. The unchanged Swift and Kotlin
+`WatchPayload` codecs each execute 42 encode/decode commands; ordinary installed
+JavaScript checks the strict `watch-companion-report/1` decoder. Three reserved
+button-bit cases deliberately differ: the legacy native codecs mask the bits,
+while the strict JavaScript profile rejects them. C has no watch report codec.
+
+Run `node tools/qa-watch-report-bindings.mjs --installed <SDK-manifest>
+<clean-consumer> [--caller-tree <immutable-tree>]`. The caller verifies the exact
+installed package file allowlist, unchanged native producer bytes, shared
+fixtures and public ESM resolution. Each language's actual encoded bytes also
+pass 16 independent source/sink grant, epoch, sequence-wrap, revoke and expiry
+checks through explicitly supplied software bridge ports. Relay emission time
+remains separate from host receipt time; neither proves capture freshness.
+
+Fixture limits are 32 KiB, 16 golden reports, 64 decode cases, 128 commands,
+4 KiB per command line and 256 raw input bytes. Native consumer stdout and
+stderr are each capped at 128 KiB. Their commands have a 30-second deadline
+and retain the child until actual close; the existing cached Kotlin compiler
+helper has its separate 1 MiB output limit and 30-second timeout. The selected
+proof uses Swift 6.3.3, Kotlin 2.1.21 and JDK 21.0.12.
+This adds shared executable contracts; native watch/phone OS delivery,
+hardware, authentication, calibration and broader Q02/E12 coverage remain open.
+
 ## Native normalized pointer codecs
 
 `normalized-pointer-bindings/1` supplies Swift `One01PointerWire`, Kotlin
@@ -2337,6 +2363,41 @@ retirement, recovery and a real delayed native bind. OS key stores, autonomous
 expiry, persistent accounts and fleet rotation remain O05 qualification work.
 Operator ceilings, trust and maintenance obligations are in the
 [responsibility contract](RELEASE-CONTRACT.md#operator-limits-and-responsibilities).
+
+## Disposable upgrade, rollback and incident drills
+
+Run `node tools/operator-drills.mjs --exercise` to execute
+`local-operator-recovery-drills/1` using only newly created private local state.
+`--help` explains the three drills without binding a listener. The CLI accepts
+no endpoint, credentials, configuration path or shell command. Its stage events
+and final receipt contain redacted outcomes and exact source hashes. SIGINT or
+SIGTERM requests retirement; a cancelled run cannot print a passing receipt.
+`node tools/qa-operator-drills.mjs --source` checks the actual CLI, teardown and
+an unrelated owned sentinel. Hub and SDK modules use explicit public source
+barrels; this command does not consume a packed Hub release.
+
+| Drill | Executed recovery boundary |
+| --- | --- |
+| Interrupted update and reviewed rollback | Reject an altered genuine runtime envelope without claiming a valid signature; stage and fsync a reviewed candidate, cancel its final commit and preserve the accepted bytes. A compatible update and explicit retained-version rollback preserve the highest publisher sequence, version/publisher revocation and separate route grants. |
+| Damaged local state after deletion | Complete owner deletion, capture the current external owner/revision floor and recover only a damaged inner producer. Preserve current deletion/audit/owner records, fence old writers and retain the original telemetry expiry. The pre-deletion archive is unavailable; restoring files supplies no recording or route authority. |
+| Credential incident and fresh owner | Reject invalid operator schema and a genuine native bind collision while retaining the incumbent. Rotate actual local mTLS identity, reject removed enrollment, old TLS identity and bearer, then stop and recover with a fresh owner. Independently confirm all four retired listeners refuse new connections. |
+
+The receipt contains 32 drill checks. One invocation remains reserved until
+actual native work, pending storage and asynchronous stage observers settle.
+Bounds are six native owners, four live clients, twelve client instances,
+128 socket attempts, eight pending operations, 64 operation grants, twelve
+stage events and a 16 KiB drill receipt. The 20-second logical native lifetime
+starts after fixed private provisioning; the existing OpenSSL calls each have
+their separate ten-second limit. Source closure is capped at 256 files/8 MiB
+and 48 KiB of hashes; CLI QA caps output at 64 KiB and requests teardown after
+35 seconds. These are admission and logical teardown limits, without a total
+walltime, memory or forced-settlement guarantee for a trusted pending callout.
+
+Normal teardown removes the private state and credentials and preserves the
+unrelated sentinel. The runbook does not qualify SIGKILL cleanup, production
+rollout, persistent accounts/key stores, arbitrary operator data, physical
+devices or rollback of an independently current checkpoint or revocation.
+Broader O04–O06, security, backup and distribution qualification remain open.
 
 ## Scoped private clipboard example
 

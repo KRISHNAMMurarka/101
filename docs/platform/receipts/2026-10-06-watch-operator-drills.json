@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "pass-selected-software;exact-required-gates-pending",
+  "base": "55af5b21784ad011ef030fb445f22060efae03aa",
+  "sourceSha256": {
+    "bindings/watch-report/fixtures/watch-report-v1.json": "03c4fb2bb672de930c920e82a1ad202bbd72dba227667d2705a2dba7b3291461",
+    "examples/language-bindings/watch-report.mjs": "47cf1011e00e0e8931fa3f9e7e1c0f4c5aa9ead2143491eeda3b191bfb8548ce",
+    "examples/language-bindings/WatchReportConsumer.swift": "3831c4295dbd80d1ccb0cbe1ffc558f0d10b81dc701297204fba17d6a581178f",
+    "examples/language-bindings/WatchReportConsumer.kt": "9c0d25b0e2bb931f2a683db0ea445c4ed19cd3fc99dca039e67d0f9a95541375",
+    "tests/watch-report-bindings.test.ts": "89078304fe12594f3f428ed5846db5b7c39b1aea1c555a71e19b9dbefef5663b",
+    "tools/qa-watch-report-bindings.mjs": "8e72da18ef6e96e81eee8e291523e457d532085ac1ec90829c5fdff807fed9b3",
+    "examples/operator-drills/operator-drills.ts": "098d1aba903233338b23233c1b352f07cb667c1fff32705e123acd3a57ce516b",
+    "tests/operator-drills.test.ts": "aa50e2f8fc390e1bd8a0bf43474253fa9ad3c8375991eaf555b0029c4f7f2e4d",
+    "tools/operator-drills.mjs": "53d9fd62b3e80ab462ef0452ed15c440b501c88ddc0d7edeb0d932677b13cd92",
+    "tools/qa-operator-drills.mjs": "6ffe20137aa72cd1728db68821b262e937aa4300768b51ea1012a2532e0b344b",
+    "docs/platform/SDK.md": "2aceabee134c0b768766a40857fc615ce21883206a7a6904eee202463ec43383"
+  },
+  "watch": {
+    "packet": {
+      "path": "/tmp/101-watch-report-frozen-pins.json",
+      "sha256": "b1836533df82efb2e1bfbe991a9ba59f32f8b448719e43aa0554ae5fbfb760ae"
+    },
+    "independentReview": {
+      "path": "/tmp/101-watch-report-independent-review.json",
+      "sha256": "28f2e2ddda15d96265c80adcae04f30957e55379896c1170c7cca84e0c5e5eb0"
+    },
+    "proof": {
+      "path": "/tmp/101-watch-report-native-first.json",
+      "sha256": "39bccadf4dc1c0e6e95824f9fcba3cde5cb86cf2a2c3bc851bd80f935b72a799"
+    },
+    "proofStderr": {
+      "path": "/tmp/101-watch-report-native-first.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "integration": {
+      "path": "/tmp/101-watch-report-primary-integration.json",
+      "sha256": "925c575b2731886421ad7d0c407a760110cef25b7472983eed554d17aee71a9e"
+    },
+    "fixture": "bindings/watch-report/fixtures/watch-report-v1.json",
+    "goldens": 8,
+    "decodeCases": 26,
+    "nativeCommandsPerLanguage": 42,
+    "publicSoftwareBridgeChecksPerLanguage": 16,
+    "sourceAndSinkGrants": "independent",
+    "profiles": {
+      "sharedGoldens": 8,
+      "sharedDecodeCases": 26,
+      "commandsPerNativeConsumer": 42,
+      "nativeProfiles": [
+        "legacy-watch-payload/1:Swift",
+        "legacy-watch-payload/1:Kotlin"
+      ],
+      "javascriptProfile": "watch-companion-report/1",
+      "reservedBits": "Three legacy/native accept + mask versus strict JavaScript reject cases are intentional profile differences, not weakened JavaScript validation",
+      "nativeToPublicHostChecksPerLanguage": 16,
+      "hardware": false,
+      "nativeOSDelivery": false
+    },
+    "toolchains": {
+      "swift": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+      "kotlin": "2.1.21",
+      "kotlinCompilerSha256": [
+        {
+          "name": "kotlin-compiler-embeddable-2.1.21.jar",
+          "sha256": "67a2e3673765f097725608cc7c843b0d8fdd94bd9af41327211361614aa57d49"
+        },
+        {
+          "name": "kotlin-stdlib-2.1.21.jar",
+          "sha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8"
+        },
+        {
+          "name": "annotations-23.0.0.jar",
+          "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+        },
+        {
+          "name": "trove4j-1.0.20200330.jar",
+          "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d"
+        },
+        {
+          "name": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+          "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+        }
+      ],
+      "jvmTarget": 17,
+      "qualifiedRuntime": "JDK21.0.12"
+    },
+    "limits": {
+      "fixtureBytes": 32768,
+      "golden": 16,
+      "decode": 64,
+      "commands": 128,
+      "lineBytes": 4096,
+      "rawInputBytes": 256,
+      "outputBytes": 131072,
+      "nativeDeadlineMs": 30000
+    },
+    "metadataRefusal": {
+      "path": "/tmp/101-watch-report-frozen/evidence/freeze-metadata-first-failure.txt",
+      "sha256": "adb0f13f659b290cd334d29a6eae9844996af29ff4093624bbad28eaf4e02169",
+      "level": "retained context note; original assertion output exists only in worker tool chunk aee0ae",
+      "cause": "metadata expected empty lint diagnostics; unchanged isolated React-detect warning produced161 bytes, lint itself exited0. Only metadata corrected, no source/test/native rerun."
+    },
+    "originalRed": {
+      "path": "/tmp/101-watch-report-missing-fixture-red.log",
+      "sha256": "85b27e07a80ab9ea87552a7cd40f2709d49e93138aa121b25a6c0cd9e52cd290"
+    },
+    "focusedTests": 2,
+    "scopedTypes": {
+      "status": "pass",
+      "typescript": "5.9.3",
+      "strict": true,
+      "noUncheckedIndexedAccess": true,
+      "skipLibCheck": false,
+      "checkedPlainTS": true,
+      "checkJs": false,
+      "sourceFiles": 6
+    },
+    "scopedLint": {
+      "errors": 0,
+      "warning": "Unchanged root React-detect plugin cannot find React in isolated checkout without node_modules; exit0, three non-React files checked"
+    },
+    "cleanup": {
+      "ownedNativeChildren": 0,
+      "ownedTimers": 0,
+      "ownedCallerDirectories": 0,
+      "ownedRuntimeRegistrations": 0,
+      "ownedTemporaryQADirectories": 0,
+      "borrowedDependencyLinks": 0,
+      "originalRedScratchPreservedOutsideCheckout": true
+    },
+    "evidenceReuse": "Exact six caller bytes, two unchanged native producer bytes, helper, all148 installed SDK producer bytes, toolchains and fixture inputs unchanged. No compiler/native rerun for reassurance; root exact broad gates pending.",
+    "limitations": [
+      "Q02 general model/codec and additional supported profile/language coverage remains open",
+      "E12 native SDK/lifecycle/transport/platform support remains open",
+      "C has no watch codec; existing pointer C qualification was not rerun or broadened",
+      "Physical watch input, OS watch/phone delivery/enrollment authentication and sensor calibration unqualified",
+      "No capture time/freshness or relay-to-host clock mapping inferred",
+      "No new codec, schema revision, native library/package or distribution"
+    ]
+  },
+  "operator": {
+    "packet": {
+      "path": "/tmp/101-operator-drills-frozen-pins.json",
+      "sha256": "fc64e6a29f8657ab36dda9284ef38941f50c0539c9c7e47b72424faa4b832094"
+    },
+    "independentReview": {
+      "path": "/tmp/101-operator-drills-independent-review.json",
+      "sha256": "4cb03e132df54b8a533ee339b4a4e6d85d1f9ca14f6c6c5bd39e52f5bfdd939d"
+    },
+    "workerProof": {
+      "path": "/tmp/101-operator-drills-source-green.json",
+      "sha256": "6d8d0b39cffc41ca2cf38d6fca5fa44b96408b429bee05efc9e78360f0194ed6"
+    },
+    "rootProof": {
+      "path": "/tmp/101-operator-drills-root-current.json",
+      "sha256": "d7956ae4abba6c711553b3e4c08e8cd3c49c1cfcf5aea78cf633945d67f6bd61"
+    },
+    "rootProofStderr": {
+      "path": "/tmp/101-operator-drills-root-current.err",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "integration": {
+      "path": "/tmp/101-operator-drills-primary-integration.json",
+      "sha256": "a680a3f4525ae5591e3521036e2f52510b042614edeb36f44e9f86cb968cbcdb"
+    },
+    "publicResolution": "explicit-owned-source-barrels",
+    "actualCurrentDependencyFiles": 129,
+    "currentSourceDependencySha256": {
+      "examples/extension-installation/consumer.mjs": "09edc001241692349539e2ca40e1f5b6a46a6bedf42a0a5bead99aacaf7b2e90",
+      "examples/extension-installation/filesystem-storage.mjs": "ae8a87add626f825922dbdd6b361853334d90b8c4b3bfc5b00e6928a9ea673ce",
+      "examples/extension-installation/temperature-band-v2.mjs": "9bee907c87a6b5621a5d145bcca277838e7d8cfc8082fc156c05ca18826beca8",
+      "examples/external-processor/processor.mjs": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "examples/operator-drills/operator-drills.ts": "098d1aba903233338b23233c1b352f07cb667c1fff32705e123acd3a57ce516b",
+      "examples/owner-data/filesystem-storage.mjs": "b54d87f2d3a378a02a5c292bf9cbebdca8ca57ee4a35db2a3ddf7411157d621a",
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+      "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+      "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/impulse-fusion.ts": "2832c60aef91b83c1f65e6de13ab5598a7c62fd833bdc9fc4820d551e9d76374",
+      "packages/device-model/src/index.ts": "61b4528b6a95327acab56ff174e78c3b0fe5370c1a7afdd4c2940a0a55eee298",
+      "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+      "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+      "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+      "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+      "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/watch-companion-report.ts": "e4ffd1572ad76e5af46149d4648239e73be70158e1e0c91b18909ae28ee29006",
+      "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+      "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+      "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+      "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+      "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+      "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+      "packages/device-runtime/src/index.ts": "e913a9f7e5d02a031a26dc924ac872535b049360e78f321e185bb1944a1ce1d5",
+      "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+      "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+      "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+      "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+      "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+      "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+      "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+      "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+      "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+      "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+      "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+      "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+      "packages/device-runtime/src/watch-companion.ts": "a710eb8f38e5138a4d3661b675f13b0881f24bd0f1bafe5c7d27abfb7522eef5",
+      "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+      "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+      "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+      "packages/device-web/src/browser-camera.ts": "bcc9b4cacf238b8a499e3acc80c0715391d096f58c0625a149561fcaddd6680f",
+      "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+      "packages/device-web/src/browser-gamepad.ts": "5a37dbda32710578540299b428e22cf25eaebe5f7a94d0fcb86c8304b9ee44cf",
+      "packages/device-web/src/browser-microphone.ts": "434b51e569ffb86edb2a6145608c4eb6480e2ce5ab37d3e0f07e29a1537ef639",
+      "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+      "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+      "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+      "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/index.ts": "bd7e712fda9ba3a81de8dd3efaf292a92135c5535b0ebf18f157438ed343be50",
+      "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493",
+      "packages/hub-server/src/hosted-application.ts": "82a9bc140656f046d9afd9d15fbc50c33d20d66e6268c961c3aacd1f218388fa",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
+      "packages/hub-server/src/loopback-relay.ts": "70c90ad99d1eedb3999193c281a35a7051a4dcda9af9e532edbf1c8208fce588",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/scoped-agent-ipc.ts": "e41a86f6eafdc49d42cbcab932f3d366a704f23d03f6aebc86a05083835de09a",
+      "packages/input/src/index.ts": "efa744c1af73435a28e38f8a38a7066af77705f0391a06c1f2958c3dc84904a2",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/intake.ts": "41737b1845c0c44c4f50e6250c24fedb4d643b3a8d602db68940fe2998ff07c3",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+      "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+      "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+      "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+      "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+      "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+      "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+      "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a",
+      "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528"
+    },
+    "drillChecks": [
+      "newly owned fixture private keys are verified native 0600 before any bind",
+      "actual fixed reviewed v1 source matches its public manifest",
+      "tampered producer runtime envelope is rejected without a valid-signature claim and preserves incumbent accepted bytes",
+      "actual fsynced candidate is cancelled before atomic acceptance and cleaned",
+      "compatible update retires the prior reviewed activation",
+      "reviewed code rollback retains highest accepted sequence",
+      "rollback cannot resurrect a revoked version",
+      "current publisher revocation and external sequence floor survive rollback",
+      "fresh controller retains durable revocation without restored activation authority",
+      "actual existing public route caller blocks revoked queued effects and requires fresh route grants",
+      "actual settings producer writes only reviewed preferences",
+      "actual local RSS producer preserves its own source clock and quality",
+      "actual history commits one approved producer record",
+      "owner deletion completes before recovery selection",
+      "independent current recovery guard captures owner epoch and post-deletion floor",
+      "revoked backup approval is not restored from durable bytes",
+      "authoritative deletion retires prior archive before damaged-only recovery can select it",
+      "approved damaged-only recovery advances the actual owner epoch",
+      "damaged-only restore retains authoritative current audit deletion and owner",
+      "old owner port cannot write after revocation and recovery",
+      "recovered actual producer preserves source quality and retention without recording authority",
+      "fresh post-recovery archive retains the original producer expiry",
+      "original retention expires instead of being extended by rollback",
+      "incompatible operator candidate preserves actual incumbent session",
+      "failed actual native candidate bind preserves incumbent authority",
+      "successful replacement never copies the old bearer",
+      "removed enrollment cannot mutate the new actual session store",
+      "actual new CA rejects retired TLS identity before HTTP authority",
+      "CA replacement rejects old session bearer",
+      "terminal revocation cannot restart or implicitly recover authority",
+      "explicit fresh owner cannot revive the retired bearer",
+      "all four native listeners are independently refused after actual teardown"
+    ],
+    "cliChecks": [
+      "invalid closed CLI performs no work",
+      "help performs no native work",
+      "actual complete upgrade rollback and incident drill",
+      "SIGTERM retires actual native owner before removed event"
+    ],
+    "focusedTests": 6,
+    "scopedStrictTypes": "strict/noUncheckedIndexedAccess exit0; current broad types pending",
+    "scopedLint": "exit0/errors0",
+    "bounds": {
+      "concurrentRuns": 1,
+      "nativeLifetimeMs": 20000,
+      "nativeLifetimeBeginsAfterFixedProvisioning": true,
+      "provisioning": "existing fixed OpenSSL operations individually limited to 10000ms",
+      "nativeOwners": 6,
+      "clientInstances": 12,
+      "liveClients": 4,
+      "socketAttempts": 128,
+      "pendingOperations": 8,
+      "operationGrants": 64,
+      "checks": 32,
+      "events": 12,
+      "receiptBytes": 16384,
+      "retentionMs": 2000,
+      "sourceFiles": 256,
+      "sourceBytes": 8388608,
+      "sourceReceiptBytes": 49152,
+      "qaOutputBytes": 65536,
+      "qaChildLifetimeMs": 35000
+    },
+    "upgrade": {
+      "tamperedRuntimeEnvelopeRejected": true,
+      "unsupportedRuntimeSignatureClaim": false,
+      "stagedNativeBytesObserved": true,
+      "stagedUpdateAccepted": false,
+      "explicitCompatibleRollback": true,
+      "highestAcceptedSequence": 2,
+      "revocationRetained": true,
+      "currentExternalFloor": 2,
+      "actualReviewedRouteEffects": 3,
+      "retiredActivations": 3
+    },
+    "rollback": {
+      "damagedInnerOnly": true,
+      "checkpointFromCurrentOwner": true,
+      "checkpointEpoch": 2,
+      "checkpointDataRevision": 9,
+      "ownerRetained": true,
+      "deletionRetained": true,
+      "auditRetained": true,
+      "staleOwnerPortBlocked": true,
+      "sourceClockPreserved": true,
+      "qualityPreserved": true,
+      "retentionUnextended": true,
+      "actualExpiryObserved": true,
+      "restoredRecordingOrRouteAuthority": false
+    },
+    "incident": {
+      "actualNativeOwners": 4,
+      "incompatibleCandidatePreservedIncumbent": true,
+      "partialNativeBindPreservedIncumbent": true,
+      "removedEnrollmentStatus": 401,
+      "newSessionAfterDeniedMutation": 201,
+      "oldBearerStatuses": [
+        404,
+        404,
+        404
+      ],
+      "retiredNativeTlsRejected": true,
+      "terminalRevocation": true,
+      "freshRecovery": true,
+      "oldAuthorityCopied": false,
+      "closedListenerProbes": 4
+    },
+    "cleanup": {
+      "nativeContexts": 0,
+      "pendingOperations": 0,
+      "privateStateRemoved": true,
+      "privateCredentialsRemoved": true,
+      "ownedTimer": false
+    },
+    "qaCleanup": {
+      "ownedChildren": 0,
+      "privateFixtureRemoved": true,
+      "unrelatedSentinelPreserved": true
+    },
+    "importantLabels": {
+      "featureRed": "genuine native mTLS startup/session201, then missing runner; missing feature not core bug",
+      "unsupportedRuntime": "altered genuine envelope is invalid/tampered, not valid signed incompatibility",
+      "compatibility": "actual operator invalid schema and genuine native bind collision preserve incumbent",
+      "partialUpdate": "actual staged/fsynced candidate bytes, abort final commit guard, no accepted update",
+      "priorArchive": "deletion retires prior archive; exact not-found before damaged-only selection",
+      "expiry": "sweep recovery archive before history producer maintenance can independently retire it"
+    },
+    "preservedFailures": {
+      "/tmp/101-operator-drills-feature-red.log": {
+        "sha256": "3771115465ab31fc1b8eb44e2b2b9c6a5035e69963b6514ad2911fe4deebbab9",
+        "bytes": 1152
+      },
+      "/tmp/101-operator-drills-focused-first.log": {
+        "sha256": "c7edc3abd0a6303040d001a4d0bbe86cb351894266f93e42af37bcd127570763",
+        "bytes": 4886
+      },
+      "/tmp/101-operator-drills-diagnostic.log": {
+        "sha256": "8365ce86534474a47165214a420b40c5755be506e1304e0a42f476a6a6ed3e50",
+        "bytes": 2036
+      },
+      "/tmp/101-operator-drills-focused-second.log": {
+        "sha256": "1fc8d4f4d2ebd66a9a2b743cb5b47621481bb67b33faf1c2353fae70f3b4e53e",
+        "bytes": 1477
+      },
+      "/tmp/101-operator-drills-focused-third.log": {
+        "sha256": "cd5aa47015f28b23d1fc97aefb95d62af33096315c418da2cbf2d044af264519",
+        "bytes": 1477
+      },
+      "/tmp/101-operator-drills-focused-fourth.log": {
+        "sha256": "cc5232cbfbaa623fa03cfa84bac116c730990fb6c3c93a87fb0f1fded139ffe8",
+        "bytes": 210
+      },
+      "/tmp/101-operator-drills-focused-final.log": {
+        "sha256": "89da20b391ca843ded495fc4f2ec90221f8ce6d3f5bbb8f4a9a414849a529273",
+        "bytes": 912
+      },
+      "/tmp/101-operator-drills-types-first.log": {
+        "sha256": "e659218f458b1e54469886078aa22448af6317afa883a5734de2419554ba77e9",
+        "bytes": 1208
+      },
+      "/tmp/101-operator-drills-lint-first.log": {
+        "sha256": "9e396dfd7d3de4b5c845960237b0f187b3999d56b77e28c37c11eec79198a5be",
+        "bytes": 296
+      },
+      "/tmp/101-operator-drills-types-green.log": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "/tmp/101-operator-drills-lint-green.log": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "/tmp/101-operator-drills-source-green.json": {
+        "sha256": "6d8d0b39cffc41ca2cf38d6fca5fa44b96408b429bee05efc9e78360f0194ed6",
+        "bytes": 21504
+      },
+      "/tmp/101-operator-drills-source-green.err": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0
+      },
+      "/tmp/101-operator-drills-tsconfig.json": {
+        "sha256": "e93c1af557104594991e0c917b7b680af44a42b00b503785b26f9cbe893abeba",
+        "bytes": 465
+      }
+    },
+    "limitations": [
+      "source-only Hub/SDK public barrels, no installed Hub release claim",
+      "no production rollout, persistent account/key store or arbitrary operator state",
+      "no rollback of independent current checkpoint or issuer revocation",
+      "no SIGKILL cleanup guarantee",
+      "no remote, physical or OS device qualification",
+      "O07 remains open until independent review/integration gates"
+    ],
+    "nonModuleInputs": {
+      "examples/external-processor/manifest.json": {
+        "sha256": "71855286c4a42f808a6bd79cdddfb819fcfb460eeabdcaed7f73919e1945105e",
+        "bytes": 844
+      }
+    },
+    "nonModuleInputReview": {
+      "path": "/tmp/101-operator-drills-nonmodule-input-addendum.json",
+      "sha256": "5410587a92f42da796bab3b4985ad1006acf3ee0e38703b2c35e3fdc7bb86b40"
+    },
+    "nonModuleInputReuse": "Manifest bytes equal workerbase/frozenworker/rootsource/committed55af; actual v1 factory content pin asserted during rootQA. 129loadedmodules remain separately counted; no rerun warranted by documentary input binding."
+  },
+  "taskDisposition": {
+    "Q02": "open; selected shared watch software contracts supplement previous normalized-pointer coverage; general profiles/model/schema remain",
+    "E12": "open; no new native library/distribution or watch OS lifecycle/physical qualification",
+    "W01": "open; supplied software bridge only",
+    "O07": "open; actual selected three runbook drills built and verified; exact required gates and local integration commit pending",
+    "O04": "open; broad overload/region recovery matrix remains",
+    "O05": "open; broader OS key/account/rotation qualification remains",
+    "O06": "open; selected managed owner recovery only"
+  },
+  "requiredGates": {
+    "status": "pending on this combined exact candidate",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs",
+      "npm run test:unit"
+    ],
+    "commitAllowed": false,
+    "previousGreenSource": {
+      "path": "/tmp/101-build-wave-required-gates.json",
+      "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+    },
+    "priorFailedExactCandidatesRetained": [
+      "/tmp/101-gamepad-relay-first-failed-gates.json",
+      "/tmp/101-gamepad-relay-second-failed-gates.json"
+    ]
+  },
+  "tally": {
+    "total": 272,
+    "completed": 116,
+    "open": 156
+  },
+  "acceptedSupportRows": 0,
+  "limits": [
+    "Local software only; no device, OS pointer, general clipboard, camera, microphone or speaker access",
+    "No packed Hub, persistent user/account/key data, production rollout or SIGKILL cleanup claim",
+    "Old native required gate failure cause remains unestablished; these new selected proofs are not a repair claim",
+    "No C watch codec, hardware readings/capture clock or broader Q02/E12/W01/F09/I12 qualification"
+  ]
+}

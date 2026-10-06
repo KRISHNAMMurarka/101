@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-06",
-  "result": "pass-selected-software-scopes;required-commit-gates-pending",
+  "result": "pass-selected-software;source-committed;broader-matrix-open",
   "base": "dfd057e049413babe1897908880f7777d9745416",
   "sourceTree": "18f549eb1f057669a2e2e676d2b8fd9e84b53d6b",
   "sourceSha256": {
@@ -37,13 +37,14 @@
     "N02": "open: selected providers built; full resources and physical qualification remain",
     "D03": "open: physical/browser chooser qualification remains",
     "V01": "open: selected owned software media only",
-    "O02": "open: selected implementation verified; exact full commit gates pending",
-    "S07": "open: selected implementation verified; exact full commit gates pending"
+    "O02": "complete for disposable-coordinator-directory-gateway/1: simultaneous actual local mTLS coordinator, private directory and authenticated WSS gateway; independent owner approvals, denial, withdrawal and two fresh controllers. Nine native focused tests and four ordinary installed-SDK/source-Hub CLI checks exercise typed effects, SIGTERM, overall expiry, invalid CLI, actual sockets, private key modes and credential removal without touching an owned sentinel. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Persistent installation, OS sandbox, account authorization, SIGKILL and physical/network service remain unqualified.",
+    "S07": "complete for authenticated-loopback-gateway/1 and negotiated direct WSS on owned local software: actual native TLS1.3/mTLS, pre-bearer gateway certificate and standard host/CA verification, pinned endpoint proof, independent owner-approved short-lived one-use role credentials, pair-ready acknowledgment and selected transcript/path receipts, separate SDK resource grants, isolated bounded queues and true raw native socket/write settlement. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Gateway plaintext trust, source Hub, no Internet/TURN/two-network/physical or packed Hub claim; S08 remains open."
   },
   "tally": {
     "total": 272,
-    "completed": 113,
-    "open": 159
+    "completed": 116,
+    "open": 156,
+    "basis": "canonical documentary reconciliation after local source commit55af5b2"
   },
   "camera": {
     "scope": "Selected media:camera-rgba8/1 provider built: exact issued video selection and capture approval, native decoded frame callback to bounded 8x8 RGBA8, independent SDK source/sink grants and actual lifecycle retirement. 29 focused tests plus four fresh normal-installed Chromium/WebKit pages use owned Canvas.captureStream decoded red-to-blue pixels. Physical acquisition, permission UI/enforcement, capture-clock mapping and whole N02/D03/V01 acceptance remain open.",
@@ -559,6 +560,112 @@
     "sha256": "0bd767860dfdd4b779869e620a6d072c579c11d155d6864bc2e32fa5de72ce99"
   },
   "requiredGates": {
+    "status": "pass-on-committed-source-tree",
+    "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+    "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+    "localOnly": true,
+    "requiredGateReceipt": {
+      "path": "/tmp/101-build-wave-required-gates.json",
+      "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+    },
+    "results": [
+      {
+        "name": "types",
+        "command": [
+          "npx",
+          "tsc",
+          "--noEmit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-types.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 3805
+      },
+      {
+        "name": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-lint.log",
+        "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+        "elapsedMs": 12688
+      },
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-build.log",
+        "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+        "elapsedMs": 11756
+      },
+      {
+        "name": "rendered",
+        "command": [
+          "node",
+          "--test",
+          "tests/rendered-html.test.mjs"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-rendered.log",
+        "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+        "elapsedMs": 1745
+      },
+      {
+        "name": "unit",
+        "command": [
+          "npm",
+          "run",
+          "test:unit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-unit.log",
+        "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+        "elapsedMs": 164190
+      }
+    ],
+    "unit": {
+      "tests": 1803,
+      "pass": 1803,
+      "fail": 0,
+      "skip": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab ref warning",
+    "freshBuild": "pass",
+    "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+    "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates.",
+    "commitAllowed": true,
+    "documentaryCandidateCommitAllowed": false
+  },
+  "boundaries": [
+    "Owned local software only; no phones, OS pointer, user/general clipboard or physical acquisition",
+    "Gateway is trusted with plaintext; no Internet, TURN or two-network claim",
+    "O02 OpenSSL provisioning is separately bounded outside the overall 15-second native service budget",
+    "No publication, deployment, remote, account authorization, native sandbox, persistent installation or SIGKILL-cleanup claim"
+  ],
+  "priorGateState": {
     "currentCandidate": "not run after camera/stack integration; no full unit/build/rendered pass claimed",
     "priorRedCandidatesRetained": [
       {
@@ -576,10 +683,106 @@
     },
     "commitAllowed": false
   },
-  "boundaries": [
-    "Owned local software only; no phones, OS pointer, user/general clipboard or physical acquisition",
-    "Gateway is trusted with plaintext; no Internet, TURN or two-network claim",
-    "O02 OpenSSL provisioning is separately bounded outside the overall 15-second native service budget",
-    "No publication, deployment, remote, account authorization, native sandbox, persistent installation or SIGKILL-cleanup claim"
-  ]
+  "sourceIntegration": {
+    "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+    "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+    "localOnly": true,
+    "requiredGateReceipt": {
+      "path": "/tmp/101-build-wave-required-gates.json",
+      "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+    },
+    "results": [
+      {
+        "name": "types",
+        "command": [
+          "npx",
+          "tsc",
+          "--noEmit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-types.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 3805
+      },
+      {
+        "name": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-lint.log",
+        "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+        "elapsedMs": 12688
+      },
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-build.log",
+        "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+        "elapsedMs": 11756
+      },
+      {
+        "name": "rendered",
+        "command": [
+          "node",
+          "--test",
+          "tests/rendered-html.test.mjs"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-rendered.log",
+        "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+        "elapsedMs": 1745
+      },
+      {
+        "name": "unit",
+        "command": [
+          "npm",
+          "run",
+          "test:unit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-unit.log",
+        "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+        "elapsedMs": 164190
+      }
+    ],
+    "unit": {
+      "tests": 1803,
+      "pass": 1803,
+      "fail": 0,
+      "skip": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab ref warning",
+    "freshBuild": "pass",
+    "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+    "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+  },
+  "priorTally": {
+    "total": 272,
+    "completed": 113,
+    "open": 159
+  }
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-06",
-  "result": "pass-selected-software;exact-required-commit-gates-pending",
+  "result": "pass-selected-software;source-committed;broader-matrix-open",
   "base": "dfd057e049413babe1897908880f7777d9745416",
   "sourceTree": "154e4a6add073e29a6279c87b5201cb845dd1ea9",
   "sourceSha256": {
@@ -49,7 +49,7 @@
       "sha256": "87797f9903e93105121ab860a76f8378b969088d0e5611dafc497b04e5368913"
     },
     "focusedTests": 12,
-    "strictTypes": "worker strict/noUncheckedIndexedAccess0; current exact broad gate pending",
+    "strictTypes": "worker strict/noUncheckedIndexedAccess0; current source exact broad gate0 on committed tree7fd5c329",
     "projects": [
       "pointer",
       "sensor-dashboard",
@@ -271,7 +271,7 @@
       "sha256": "d9c9ce4a6da3d280792d0cf3da8690635e889e525ff525db0056132e8bb48826"
     },
     "focusedTests": 6,
-    "strictTypes": "worker strict/noUncheckedIndexedAccess0;129 source files;checkJs:false; current exact broad gate pending",
+    "strictTypes": "worker strict/noUncheckedIndexedAccess0;129 source files;checkJs:false; current source exact broad gate0 on committed tree7fd5c329",
     "actualSourceClosure": {
       "file:///Users/km/Desktop/games/101/examples/runtime-recovery/consumer.mjs": "afc14dcb3d005f216d1945aceba4ca88fb557c497b415e03c700217c5dde2f5c",
       "file:///Users/km/Desktop/games/101/packages/hub-server/src/index.ts": "f355d130177b21ff006d7f3d3bbd65377965dddb094a068a73b1788351601cbe",
@@ -391,11 +391,118 @@
     "sha256": "04a56db20e0a42b290a49b2032aedb580b8e92261563a761f608f6cefde184a3"
   },
   "taskDisposition": {
-    "E13": "open; built and selected software-qualified; exact gates/commit pending",
+    "E13": "complete: five independent external projects use ordinary installed public SDK packages, readable instructions and no hidden game dependency. Actual pointer, timer-lateness dashboard, authored software lamp, owned drawing and collaborative software controls pass76 checks across10 Chromium/WebKit journeys. Keyboard-focus/native outside-release regressions and generated queue instructions are repaired. Exact source tree7fd5c329 passed all required gates and committed locally55af5b2. Strict manual capture-loss100ms, physical resources, remote participants, WebKit decoded-media format and global I12/U qualification remain unqualified.",
     "F09": "open; selected software host impairments and native disconnect only; full IP/media/physical matrix remains",
     "I12": "open; manual native capture-loss100ms remains unqualified"
   },
   "requiredGates": {
+    "status": "pass-on-committed-source-tree",
+    "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+    "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+    "localOnly": true,
+    "requiredGateReceipt": {
+      "path": "/tmp/101-build-wave-required-gates.json",
+      "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+    },
+    "results": [
+      {
+        "name": "types",
+        "command": [
+          "npx",
+          "tsc",
+          "--noEmit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-types.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 3805
+      },
+      {
+        "name": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-lint.log",
+        "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+        "elapsedMs": 12688
+      },
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-build.log",
+        "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+        "elapsedMs": 11756
+      },
+      {
+        "name": "rendered",
+        "command": [
+          "node",
+          "--test",
+          "tests/rendered-html.test.mjs"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-rendered.log",
+        "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+        "elapsedMs": 1745
+      },
+      {
+        "name": "unit",
+        "command": [
+          "npm",
+          "run",
+          "test:unit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-unit.log",
+        "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+        "elapsedMs": 164190
+      }
+    ],
+    "unit": {
+      "tests": 1803,
+      "pass": 1803,
+      "fail": 0,
+      "skip": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab ref warning",
+    "freshBuild": "pass",
+    "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+    "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates.",
+    "commitAllowed": true,
+    "documentaryCandidateCommitAllowed": false
+  },
+  "limitations": [
+    "No user device, OS cursor, camera, microphone or general clipboard access",
+    "No physical/IP impairment/media recovery/full F09 or global I12 release-safety qualification",
+    "Actual native WebRTC peers have separate identities in one owned trusted realm; no two-page/sandbox claim",
+    "Gateway plaintext trust and source Hub/coordinator modules remain explicit",
+    "Owned media-sharing format unsupported in WebKit is recovery evidence, not a decoded-media success"
+  ],
+  "priorGateState": {
     "status": "not run on this later integrated candidate; prior exact full unit failures retained",
     "prior": {
       "path": "/tmp/101-gamepad-relay-second-failed-gates.json",
@@ -403,12 +510,101 @@
     },
     "commitAllowed": false
   },
-  "limitations": [
-    "No user device, OS cursor, camera, microphone or general clipboard access",
-    "No physical/IP impairment/media recovery/full F09 or global I12 release-safety qualification",
-    "Actual native WebRTC peers have separate identities in one owned trusted realm; no two-page/sandbox claim",
-    "Gateway plaintext trust and source Hub/coordinator modules remain explicit",
-    "Owned media-sharing format unsupported in WebKit is recovery evidence, not a decoded-media success",
-    "Exact required full gates and integration commit remain pending"
-  ]
+  "sourceIntegration": {
+    "commit": "55af5b21784ad011ef030fb445f22060efae03aa",
+    "tree": "7fd5c3292e725f295a760d501e153321e500b5f1",
+    "localOnly": true,
+    "requiredGateReceipt": {
+      "path": "/tmp/101-build-wave-required-gates.json",
+      "sha256": "4a0310633b75633f6407e328c477683090bc37ff379f02e4d4f0411c219763a0"
+    },
+    "results": [
+      {
+        "name": "types",
+        "command": [
+          "npx",
+          "tsc",
+          "--noEmit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-types.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "elapsedMs": 3805
+      },
+      {
+        "name": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-lint.log",
+        "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+        "elapsedMs": 12688
+      },
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-build.log",
+        "sha256": "de4e5035dc9c3272628262f9aa843620cb19ec757fbd1a5de4090261304ae7c8",
+        "elapsedMs": 11756
+      },
+      {
+        "name": "rendered",
+        "command": [
+          "node",
+          "--test",
+          "tests/rendered-html.test.mjs"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-rendered.log",
+        "sha256": "d2d4bb0e8ef7c6d2e244fab378b0dbcd8ddaa636ce5e6390a0908a211a446274",
+        "elapsedMs": 1745
+      },
+      {
+        "name": "unit",
+        "command": [
+          "npm",
+          "run",
+          "test:unit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "path": "/tmp/101-build-wave-gate-unit.log",
+        "sha256": "b72599422cfa7f6e5bc77b7d23adcba2c3c2d514b80177ac742c918002115772",
+        "elapsedMs": 164190
+      }
+    ],
+    "unit": {
+      "tests": 1803,
+      "pass": 1803,
+      "fail": 0,
+      "skip": 0
+    },
+    "rendered": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0
+    },
+    "types": "pass",
+    "lint": "pass;one existing PointerLab ref warning",
+    "freshBuild": "pass",
+    "oldNativeFailureCause": "Unestablished; different later candidate passes. No old assertion/deadline/discovery relaxation or AppKit/SSH repair claimed.",
+    "qualification": "These gates verify committed tree7fd5c329; later documentary reconciliation awaits its own exact commit gates."
+  }
 }
