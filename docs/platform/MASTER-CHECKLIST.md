@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 108 completed with recorded evidence; 164 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 109 completed with recorded evidence; 163 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -160,8 +160,8 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [x] **N12 — Support an embedded/headless runtime.** A selected Linux/MCU/gateway target exposes a typed sensor and command with bounded memory, disconnect policy and a tested client. [Selected actual runtime evidence](receipts/2026-10-06-inventory-invitation-linux.json).
 - [ ] **N13 — Enforce OS lifecycle behavior.** Background, screen lock, battery saver, process termination and permission revocation follow OS rules and expose recovery; they do not fabricate continuous access.
 - [ ] **N14 — Qualify native agent IPC/update lifecycle.** Unauthorized local callers fail; crash/restart, agent version mismatch and upgrade release authority and recover predictably.
-- [ ] **N15 — Implement dedicated terminal/SSH connectors.** Verify host identity and scoped credentials; allowed sessions/operations, bounded output, cancellation, reconnect and audit pass a disposable local host test.
-- [ ] **N16 — Implement scoped clipboard/filesystem/app operations.** Explicit resource permissions, destination/path limits, sensitive-data handling and denied/revoked/cancelled operations pass an independent client test. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
+- [ ] **N15 — Implement dedicated terminal/SSH connectors.** Verify host identity and scoped credentials; allowed sessions/operations, bounded output, cancellation, reconnect and audit pass a disposable local host test. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
+- [ ] **N16 — Implement scoped clipboard/filesystem/app operations.** Explicit resource permissions, destination/path limits, sensitive-data handling and denied/revoked/cancelled operations pass an independent client test. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json). [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 
 ### I — Human controls, relative motion and output feedback
 
@@ -281,7 +281,7 @@ Each connector row closes only after its first working profile, protocol fixture
 
 - [x] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery. [Product architecture contract](RELEASE-CONTRACT.md#product-information-architecture).
 - [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions. [Built browser add/inspect journey](receipts/2026-10-06-devices-add-inspect.json); enrolled resource/removal and full qualification remain open.
-- [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths.
+- [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users.
 - [ ] **U05 — Replace diagnostic product chrome.** Use device/task language and deliberate monochrome chrome; protocol, local labels, raw errors and constant status dots belong only where they help details/Studio.
 - [ ] **U06 — Complete native/browser/desktop consistency.** Supported capabilities drive the same meaningful actions; platform conventions, permission recovery and navigation remain appropriate to each OS.
@@ -379,11 +379,11 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [x] **O01 — Define operator configuration and startup validation.** Identity, origins, storage, relay and quota requirements fail closed with readable recovery when missing or invalid. [Selected startup validation evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
 - [ ] **O02 — Provide a disposable local deployment harness.** Coordinator/directory/relay dependencies can be started, exercised and removed without touching user or live data. [Bounded local implementation/build evidence](receipts/2026-10-06-operator-filesystem-artifact.json).
 - [x] **O03 — Implement redacted observability.** Health, traffic, route/queue load and faults are visible; credentials and private payloads are excluded from operator logs. [Selected actual runtime/traffic and fresh installed caller evidence](receipts/2026-10-06-chooser-discovery-health.json).
-- [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds.
-- [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access.
+- [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
+- [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **O06 — Validate state backup/restore where required.** Restoring identity/configuration/history preserves ownership, revocation, retention and migration integrity.
 - [ ] **O07 — Provide upgrade/rollback and incident runbooks.** Execute representative failure, security revocation and rollback drills with redacted receipts.
-- [ ] **O08 — Establish service limits and responsibilities.** Document supported load, relay/traffic budgets, operator trust/privacy boundaries and maintenance obligations before a live service claim.
+- [x] **O08 — Establish service limits and responsibilities.** Document supported load, relay/traffic budgets, operator trust/privacy boundaries and maintenance obligations before a live service claim. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 
 ### L — Publication readiness and actual publication
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 82,
+  "revision": 83,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8273,6 +8273,217 @@
       "supportRows": [
         "browser-device-add-inspect-2026-10-06"
       ]
+    },
+    {
+      "id": "o04-built-partial-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; Node.js 24.14.0",
+      "reproduction": "Exact source/caller pins, producer checks, retained commands and full candidate gates in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "partial: actual loopback mTLS session/peer/directory/rate overload, scope isolation and real expiry built; enabled relay, processor failure and regions remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable native/software resources and headless browser contexts only"
+      ],
+      "supportRows": [
+        "operator-loopback-overload-2026-10-06"
+      ]
+    },
+    {
+      "id": "o05-built-partial-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; Node.js 24.14.0",
+      "reproduction": "Exact source/caller pins, producer checks, retained commands and full candidate gates in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "partial: provisioned closed loopback identity/enrollment replacement, stale access rejection, actual retirement and recovery built; OS keystore, persistent accounts, autonomous expiry and fleet lifecycle remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable native/software resources and headless browser contexts only"
+      ],
+      "supportRows": [
+        "operator-identity-replacement-2026-10-06"
+      ]
+    },
+    {
+      "id": "n15-built-partial-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N15"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; Node.js / OpenSSH 24.14.0 / 10.2p1",
+      "reproduction": "Exact source/caller pins, producer checks, retained commands and full candidate gates in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "partial: scoped host-pinned disposable OpenSSH metadata connector and independent installed public SDK consumer built; general terminal operations, remote hosts and platform matrix remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable native/software resources and headless browser contexts only"
+      ],
+      "supportRows": [
+        "loopback-openssh-metadata-2026-10-06"
+      ]
+    },
+    {
+      "id": "n16-built-partial-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N16"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; Node.js / Swift AppKit 24.14.0 / 6.3.3",
+      "reproduction": "Exact source/caller pins, producer checks, retained commands and full candidate gates in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable native/software resources and headless browser contexts only"
+      ],
+      "supportRows": [
+        "owned-private-pasteboard-2026-10-06"
+      ]
+    },
+    {
+      "id": "u03-built-partial-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; Chromium 149.0.7827.55",
+      "reproduction": "Exact source/caller pins, producer checks, retained commands and full candidate gates in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "partial: explicit native WebRTC pointer connection task, owner comparison, independent grants, active/candidate/stop/recovery and navigation built; general resources, remote/relay paths and full UI qualification remain open",
+      "failure": null,
+      "equipment": [
+        "Owned Mac; disposable native/software resources and headless browser contexts only"
+      ],
+      "supportRows": [
+        "authenticated-pointer-task-2026-10-06"
+      ]
+    },
+    {
+      "id": "o08-operator-responsibilities-2026-10-06",
+      "revision": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "O08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "Source-bound contract against Node24.14.0 selected local implementation; zero accepted support rows",
+      "reproduction": "Review exported actual numeric ceilings and closed startup/lifecycle producers; proof /tmp/101-o08-limits-review.json and exact candidate gates.",
+      "scope": "complete: source-bound service ceilings, zero accepted capacity, operator trust/privacy and maintenance responsibilities documented before any live claim",
+      "failure": null,
+      "equipment": [
+        "Repository source and owned local operator receipts"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "n16-installed-clipboard-readiness-failed-2026-10-06",
+      "revision": "native-source:59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "N16"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; exact failed producer/caller paths and hashes retained in receipt",
+      "reproduction": "Preserved failed logs and independent bounded diagnosis in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "unqualified: unchanged reviewed native producer missed synchronous and asynchronous installed-context readiness bounds on preserved prior caller variants; final signal caller has no passing installed proof",
+      "failure": "Synchronous installed-context negative launch timed out after5000ms and independent fresh asynchronous launch after2500ms with zero stdout; owned children settled but2 private-board cleanups unverified.",
+      "equipment": [
+        "Owned private native pasteboards or isolated headless WebKit contexts"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "u03-webkit-keyboard-unqualified-2026-10-06",
+      "revision": "17807a90d8e94598a1ebc3b3766dcce37b111150",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-identity-resources-connections.json"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0; exact failed producer/caller paths and hashes retained in receipt",
+      "reproduction": "Preserved failed logs and independent bounded diagnosis in docs/platform/receipts/2026-10-06-identity-resources-connections.json",
+      "scope": "Preserved WebKit native keyboard traversal failure; Chromium result does not establish this engine qualification.",
+      "failure": "Actual WebKit26.5 native connection/stop/retry ran; final default ShiftTab traversal reached BODY and did not satisfy keyboard acceptance.",
+      "equipment": [
+        "Owned private native pasteboards or isolated headless WebKit contexts"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9435,7 +9646,8 @@
     {
       "id": "N15",
       "records": [
-        "pending-N15"
+        "pending-N15",
+        "n15-built-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -9451,7 +9663,9 @@
       "id": "N16",
       "records": [
         "pending-N16",
-        "n16-owned-filesystem-partial-2026-10-06"
+        "n16-owned-filesystem-partial-2026-10-06",
+        "n16-built-partial-2026-10-06",
+        "n16-installed-clipboard-readiness-failed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10776,7 +10990,9 @@
     {
       "id": "U03",
       "records": [
-        "pending-U03"
+        "pending-U03",
+        "u03-built-partial-2026-10-06",
+        "u03-webkit-keyboard-unqualified-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11660,7 +11876,8 @@
     {
       "id": "O04",
       "records": [
-        "pending-O04"
+        "pending-O04",
+        "o04-built-partial-2026-10-06"
       ],
       "dependencies": [
         "S01"
@@ -11672,7 +11889,8 @@
     {
       "id": "O05",
       "records": [
-        "pending-O05"
+        "pending-O05",
+        "o05-built-partial-2026-10-06"
       ],
       "dependencies": [
         "S01"
@@ -11708,7 +11926,8 @@
     {
       "id": "O08",
       "records": [
-        "pending-O08"
+        "pending-O08",
+        "o08-operator-responsibilities-2026-10-06"
       ],
       "dependencies": [
         "S01"

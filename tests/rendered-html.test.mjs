@@ -317,15 +317,16 @@ test("serves the controller surface and product metadata", async () => {
  * the moment someone renders a route outside the shell.
  */
 test("every route ships the navigation shell, and the controller deliberately does not", async () => {
-  const shellRoutes = ["/", "/devices", "/games/slashstorm", "/games/echomaze"];
+  const shellRoutes = ["/", "/devices", "/connections", "/games/slashstorm", "/games/echomaze"];
 
   for (const path of shellRoutes) {
     const html = await (await render(path)).text();
     assert.match(html, /class="rail"/, `${path} renders without the rail`);
     assert.match(html, /class="tabbar"/, `${path} renders without the phone tab bar`);
-    // Both destinations reachable from anywhere: this is what the old header lost below 760px,
+    // Player destinations reachable from anywhere: this is what the old header lost below 760px,
     // where `.nav { display: none }` left eight of ten destinations with no replacement at all.
     assert.match(html, /href="\/devices"/, `${path} offers no way to reach Devices`);
+    assert.match(html, /href="\/connections"/, `${path} offers no way to reach Connections`);
     assert.match(html, /href="\/"/, `${path} offers no way back to the library`);
   }
 

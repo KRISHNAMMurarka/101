@@ -1,0 +1,1014 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "date": "2026-10-06",
+  "base": "3681e2818eeb221effe0489ad39a67b05cf773b6",
+  "sourceTree": "4bd8bfb0cca484f40bcbf8404ede285620937818",
+  "sourceSha256": {
+    "app/components/AppShell.tsx": "d677dd8a203724b6cd2e873c390e2b7e144b875fef503f843596cae3e15176d1",
+    "app/connections/ConnectionsView.tsx": "ce1a58ae3d93f6eef97ccaa373f765e69f88acf3aacc89dbccb60c7209dc9796",
+    "app/connections/connection-task.test.ts": "f5ead95befad143c50a7c7a1ddcc30c51f648e861ae2388ab56069786fa9be5b",
+    "app/connections/connection-task.ts": "2a97621612278f6ea36f4d760317f33200a88e981651059dd7c96cf47bb345ca",
+    "app/connections/connections.module.css": "ac3c2105401986840a39c3ddc37d3561004f48ca2b82ed77a86b5a04c9e9e142",
+    "app/connections/page.tsx": "df085223f4de46fae1fdf480fbae3b5820d0e5efa4d15135e45a9851c3e2812c",
+    "docs/platform/RELEASE-CONTRACT.md": "62462774de4a370413337cd83564affa842e8dececd2c11cd1953503c3e160a8",
+    "docs/platform/SDK.md": "1b767ecc8beb32b8ce0b66dda2f166deb490cce3f9e35caee7391f53a74c80aa",
+    "examples/clipboard-resources/consumer.mjs": "a4aade4f0e0828437b6bd1478d76ce00039df8b576f362aefd085385342896d1",
+    "examples/clipboard-resources/macos-pasteboard.swift": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+    "examples/clipboard-resources/process-port.mjs": "79ed9890a44d54f1430d78e5b073c8b4e6d8d78ede9dbca93bfe346f6ef97b78",
+    "examples/coordinator/operator-identity-lifecycle.ts": "5027344bfa005b1d20c68512f0e74a34a2251743a47778649e2dedd24d0259cd",
+    "examples/coordinator/operator-overload.ts": "605ba144c3b7baa04f9d1b00fb8e66deae517cdc222817d1e0557fba933422fa",
+    "examples/terminal-resources/consumer.mjs": "7e1807a607bf6dd4b40378ad0066b4043cc557430cfc143eae71882d427afaa5",
+    "examples/terminal-resources/disposable-host.mjs": "77cd842ea17cfd1b780c6271485c382a929f5c32efd7707b1fe3eb9377d0bd88",
+    "examples/terminal-resources/ssh-connector.mjs": "7cc1ad1603b0d123bd6da38b1af819ddb4eff3a4a5c1b41205010f28fbf949b7",
+    "packages/device-runtime/src/clipboard-resources.test.ts": "1ffb97dac61aea70ab47299f869076f4c93a102f06cd3ddb9abfa055cf092bc4",
+    "packages/device-runtime/src/terminal-resources.test.ts": "6a012d8976384506cfca4266519b173473e09ba1791b3a75550d644f3cbcce6d",
+    "packages/hub-server/src/index.ts": "cb4a77032ba134e597af333ef7695bc00f96952077662543e889d0458787a920",
+    "packages/hub-server/src/operator-identity-lifecycle.test.ts": "45a31c5d846da8c92e5b5a08b0494043be11f7250ae5759543bd22a10715ba77",
+    "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+    "tests/rendered-html.test.mjs": "aa81ad1d41294580918d1d400f8d4f853500167f71938c6628b6712806be4c8a",
+    "tools/qa-clipboard-resources.mjs": "966f47d0254235143f5e7500851cd33c3892de324b97205502e4d7a9e80c9257",
+    "tools/qa-connections-flow.mjs": "5cf7b8a97c5d2f3cf6d9cd8fa3b6e8d67b67acbde92ff367e348686e71154a4a",
+    "tools/qa-operator-identity-lifecycle.mjs": "a041d9d6f0f1656f7228eed77b99f9fa5387bb4ea0ec57e24fd38acee39abb64",
+    "tools/qa-operator-overload.mjs": "40b18ce496ac5e490537285e5ae28fc76d925ba72432c5ae91a55ab6e2f67b66",
+    "tools/qa-terminal-resources.mjs": "240069e79b609426a3b6b49a58c88227266d3e9e40093bbd06f0f480f974120e"
+  },
+  "taskDisposition": {
+    "O04": "partial: actual loopback mTLS session/peer/directory/rate overload, scope isolation and real expiry built; enabled relay, processor failure and regions remain open",
+    "O05": "partial: provisioned closed loopback identity/enrollment replacement, stale access rejection, actual retirement and recovery built; OS keystore, persistent accounts, autonomous expiry and fleet lifecycle remain open",
+    "O08": "complete: source-bound service ceilings, zero accepted capacity, operator trust/privacy and maintenance responsibilities documented before any live claim",
+    "N15": "partial: scoped host-pinned disposable OpenSSH metadata connector and independent installed public SDK consumer built; general terminal operations, remote hosts and platform matrix remain open",
+    "N16": "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open",
+    "U03": "partial: explicit native WebRTC pointer connection task, owner comparison, independent grants, active/candidate/stop/recovery and navigation built; general resources, remote/relay paths and full UI qualification remain open"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 109,
+    "open": 163
+  },
+  "environment": {
+    "os": "macOS26.5.2arm64",
+    "kernel": "25.5.0",
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1"
+  },
+  "operatorIdentity": {
+    "profile": "operator-identity-replacement/1",
+    "sourceSha256": {
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "packages/hub-server/src/operator-identity-lifecycle.test.ts": "45a31c5d846da8c92e5b5a08b0494043be11f7250ae5759543bd22a10715ba77",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/hub-server/src/index.ts": "cb4a77032ba134e597af333ef7695bc00f96952077662543e889d0458787a920",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "examples/coordinator/operator-identity-lifecycle.ts": "5027344bfa005b1d20c68512f0e74a34a2251743a47778649e2dedd24d0259cd",
+      "tools/qa-operator-identity-lifecycle.mjs": "a041d9d6f0f1656f7228eed77b99f9fa5387bb4ea0ec57e24fd38acee39abb64",
+      "tools/qa-https-coordinator.mjs": "0dd24df514dd31595b02db943835e1c5c0ad25e3741e3c5881338b711c066528"
+    },
+    "native": {
+      "path": "/tmp/101-o05-source-deadline-final.json",
+      "sha256": "4851038da5fc940d8fb0f7f3752c524b6a232489e93f8b6ac952d7db28e4754c",
+      "bytes": 3489
+    },
+    "proof": {
+      "result": "pass",
+      "actualNativeStartups": 4,
+      "successfulRotations": 2,
+      "freshRecoveryGeneration": 1,
+      "invalidCandidatePreservedIncumbent": true,
+      "removedEnrollmentStatus": 401,
+      "copiedTenantTokenStatus": 404,
+      "retiredTlsCode": "ECONNRESET",
+      "oldBearerStatuses": [
+        404,
+        404,
+        404
+      ],
+      "priorListenersClosed": true,
+      "authorityCopied": false,
+      "credentialsPersisted": false,
+      "final": {
+        "profile": "operator-identity-replacement/1",
+        "phase": "stopped",
+        "generation": 3,
+        "attempts": 4,
+        "pending": false,
+        "timerArmed": false,
+        "authorityCopied": false
+      },
+      "recovery": {
+        "profile": "operator-identity-replacement/1",
+        "phase": "stopped",
+        "generation": 1,
+        "attempts": 1,
+        "pending": false,
+        "timerArmed": false,
+        "authorityCopied": false
+      },
+      "endpoints": [
+        "https://127.0.0.1:58821",
+        "https://127.0.0.1:58824",
+        "https://127.0.0.1:58830",
+        "https://127.0.0.1:58838"
+      ]
+    },
+    "startupDeadline": {
+      "requestedTeardownAtMs": 5000,
+      "actualDelayedNativeBind": 1,
+      "rawReservationRetained": true,
+      "result": "startup-timeout",
+      "incumbentHealth": 200,
+      "elapsedMs": 5059.750958,
+      "timersAfter": false
+    },
+    "checks": [
+      "actual four native mTLS startup owners",
+      "invalid credentials preserve incumbent and session",
+      "new enrollment rejects removed current-CA certificate",
+      "replacement destroys old session bearers and listeners",
+      "copied current token cannot select another tenant",
+      "independent new CA/key identities work",
+      "terminal revocation destroys native access",
+      "fresh recovery does not revive old authority",
+      "redacted snapshots contain no credentials/bearers",
+      "all four owned native listeners closed",
+      "actual five-second startup deadline retains delayed-native reservation and healthy incumbent"
+    ],
+    "focused": 7,
+    "review": {
+      "path": "/tmp/101-o05-independent-review.json",
+      "sha256": "9dda11677600bd347ca7d9773033c16da590b3af4052b805ed85124988123e15",
+      "bytes": 6345
+    }
+  },
+  "operatorOverload": {
+    "profile": "operator-loopback-overload-drill/1",
+    "sourceSha256": {
+      "examples/coordinator/operator-overload.ts": "605ba144c3b7baa04f9d1b00fb8e66deae517cdc222817d1e0557fba933422fa",
+      "tools/qa-operator-overload.mjs": "40b18ce496ac5e490537285e5ae28fc76d925ba72432c5ae91a55ab6e2f67b66",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3",
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/hub-server/src/private-directory.ts": "f9b96c0845fed701931c93af93c2680c095782adbaf7966f462c73a61cf36fc6",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/hub-server/src/index.ts": "cb4a77032ba134e597af333ef7695bc00f96952077662543e889d0458787a920",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69"
+    },
+    "native": {
+      "path": "/tmp/101-operator-overload-integrated-final.json",
+      "sha256": "0620e11459b2134f1693f9d040cdc8e51148b5bed21f17656cff4e0ed5cfcb85",
+      "bytes": 4464
+    },
+    "report": {
+      "profile": "operator-loopback-overload-drill/1",
+      "checks": [
+        "relay-configuration-rejected",
+        "regions-configuration-rejected",
+        "principal-session-capacity-rejected",
+        "other-principal-session-independent",
+        "global-session-capacity-rejected",
+        "copied-host-bearer-rejected",
+        "session-peer-capacity-rejected",
+        "principal-peer-capacity-rejected",
+        "departure-retires-old-lease",
+        "fresh-peer-retry-admitted",
+        "other-peer-principal-independent",
+        "directory-capacity-rejected",
+        "foreign-resource-rejected-before-capacity",
+        "copied-directory-bearer-rejected",
+        "peer-has-no-implicit-visibility",
+        "explicit-metadata-visibility",
+        "actual-directory-expiry-frees-capacity",
+        "reenrollment-does-not-restore-visibility",
+        "principal-rate-capacity-rejected",
+        "other-principal-rate-independent",
+        "actual-next-window-explicit-retry",
+        "actual-session-expiry-retires-bearers-and-invitations",
+        "actual-session-expiry-frees-principal-and-global-capacity"
+      ],
+      "elapsedMs": 60072.162541000005,
+      "nativeRequests": 107,
+      "observedStatusCounts": {
+        "200": 37,
+        "201": 54,
+        "204": 3,
+        "404": 7,
+        "429": 6
+      },
+      "limits": {
+        "coordinator": {
+          "enrollments": 64,
+          "origins": 16,
+          "connections": 32,
+          "sessions": 16,
+          "sessionsPerPrincipal": 4,
+          "peersPerSession": 8,
+          "peersPerPrincipal": 16,
+          "requestsPerSecond": 32,
+          "callerPendingRequests": 4,
+          "requestBytes": 401024,
+          "responseBytes": 401024,
+          "signalCharacters": 400000,
+          "sessionTtlMs": 600000,
+          "requestTimeoutMs": 5000,
+          "headersTimeoutMs": 3000
+        },
+        "directory": {
+          "catalogResources": 32,
+          "resourcesPerSession": 16,
+          "capabilitiesPerResource": 8,
+          "membersPerSession": 8,
+          "requestBytes": 8192,
+          "responseBytes": 65536,
+          "ttlMs": 60000
+        }
+      },
+      "resourceOperationsExercised": 0,
+      "syntheticPositiveResponses": false,
+      "clock": "actual-wall-clock-no-substitution",
+      "cleanup": {
+        "callersClosed": 5,
+        "ownerPhase": "stopped",
+        "operationTimers": 0,
+        "pendingRequests": 0
+      }
+    },
+    "noBindChecks": 2,
+    "nativeRequestCancellationChecks": 1,
+    "ownedListenersRemaining": 0,
+    "review": {
+      "path": "/tmp/101-o04-integrated-independent-review.json",
+      "sha256": "6e6d9b4356299a83053d51bb67c8bfc7cf764695822707b053440b4d46a59bb1",
+      "bytes": 1655
+    }
+  },
+  "operatorResponsibilities": {
+    "proof": {
+      "path": "/tmp/101-o08-limits-review.json",
+      "sha256": "c9f6c00ed392afb0ae0c76aea847550cb52d7d205eba2826cd6506e8a11baa6c",
+      "bytes": 3131
+    },
+    "sourceSha256": {
+      "packages/hub-server/src/https-coordinator.ts": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/hub-server/src/operator-identity-lifecycle.ts": "839e0a0078d20c2acaee62da5af068a740825935511f89aec4120eb66dab436c",
+      "docs/platform/RELEASE-CONTRACT.md": "62462774de4a370413337cd83564affa842e8dececd2c11cd1953503c3e160a8",
+      "packages/hub-server/src/operator-configuration.ts": "3cd282d1ca5f13783b5c7a89c05d417b96dfeef74e71c475517b06353d02c2a3"
+    },
+    "constants": {
+      "HTTPS_COORDINATOR_LIMITS": {
+        "enrollments": 64,
+        "origins": 16,
+        "connections": 32,
+        "sessions": 16,
+        "sessionsPerPrincipal": 4,
+        "peersPerSession": 8,
+        "peersPerPrincipal": 16,
+        "requestsPerSecond": 32,
+        "callerPendingRequests": 4,
+        "requestBytes": 401024,
+        "responseBytes": 401024,
+        "signalCharacters": 400000,
+        "sessionTtlMs": 600000,
+        "requestTimeoutMs": 5000,
+        "headersTimeoutMs": 3000
+      },
+      "PRIVATE_DIRECTORY_LIMITS": {
+        "catalogResources": 32,
+        "resourcesPerSession": 16,
+        "capabilitiesPerResource": 8,
+        "membersPerSession": 8,
+        "requestBytes": 8192,
+        "responseBytes": 65536,
+        "ttlMs": 60000
+      },
+      "OPERATOR_IDENTITY_LIFECYCLE_LIMITS": {
+        "attempts": 16,
+        "pending": 1,
+        "startupDeadlineMs": 5000
+      }
+    },
+    "acceptedRows": 0,
+    "acceptedCapacity": {
+      "routes": 0,
+      "devices": 0,
+      "sessions": 0,
+      "relaySessions": 0,
+      "relayBytes": 0,
+      "relayCredentials": 0
+    },
+    "scope": "Documented limits and operator responsibilities before any live claim; this is a contract outcome, not service or performance qualification."
+  },
+  "terminal": {
+    "profile": "loopback-openssh-metadata/1",
+    "sourceSha256": {
+      "examples/terminal-resources/disposable-host.mjs": "77cd842ea17cfd1b780c6271485c382a929f5c32efd7707b1fe3eb9377d0bd88",
+      "examples/terminal-resources/ssh-connector.mjs": "7cc1ad1603b0d123bd6da38b1af819ddb4eff3a4a5c1b41205010f28fbf949b7",
+      "examples/terminal-resources/consumer.mjs": "7e1807a607bf6dd4b40378ad0066b4043cc557430cfc143eae71882d427afaa5",
+      "packages/device-runtime/src/terminal-resources.test.ts": "6a012d8976384506cfca4266519b173473e09ba1791b3a75550d644f3cbcce6d",
+      "tools/qa-terminal-resources.mjs": "240069e79b609426a3b6b49a58c88227266d3e9e40093bbd06f0f480f974120e"
+    },
+    "installed": {
+      "path": "/tmp/101-terminal-signal-installed-final-green.json",
+      "sha256": "7544b9d2a7bdca426443fa4e95322cb4073d23071b43a8c14a397164cae80974",
+      "bytes": 56456
+    },
+    "receipt": {
+      "path": "/private/tmp/101-sdk-consumer-w8qxOe/terminal-resources-caller-dWrpAj/receipt.json",
+      "sha256": "85cb70a52c0c8f7815354a4126e127fdb75f30d822fe79cede888065657a0acf",
+      "bytes": 61281
+    },
+    "equivalence": {
+      "path": "/tmp/101-terminal-signal-final-equivalence.json",
+      "sha256": "716806464d4597b2c4186a6adc2b169e2751e0f494cae3daa53947e0b222a844",
+      "bytes": 53616
+    },
+    "originalCallerTree": "ab1cfd2062436378b244156dd474b1278b1faa04",
+    "originalPackedTree": "aaf7f80125d31fc5739a1f2b06a76fd308a49568",
+    "immutableManifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-gA7X5U/manifest.json",
+      "sha256": "7e99128a189bd13478bbc8f66c92b640506f912e094e310b8882132a4caf516e"
+    },
+    "counts": {
+      "callers": 5,
+      "deps": 141,
+      "packed": 314
+    },
+    "proof": {
+      "result": "pass",
+      "profile": "loopback-openssh-metadata/1",
+      "kind": "actual-native-openssh-public-runtime",
+      "node": "v24.14.0",
+      "receipts": [
+        {
+          "session": 1,
+          "hostIdentity": {
+            "address": "127.0.0.1",
+            "hostFingerprint": "SHA256:ZC6A1R9gDvF0mdL2MJ9k7DDVZ+Wn8Texyb4F8YfkH14"
+          },
+          "sourceClock": "ssh:d7eeeef46f5d428be923d208c393576d:1641:027e76a5d5e3",
+          "metadata": {
+            "profile": "loopback-openssh-metadata/1",
+            "platform": "darwin",
+            "arch": "arm64",
+            "sourceTime": 115.83325,
+            "clockId": "ssh:d7eeeef46f5d428be923d208c393576d:1641:027e76a5d5e3"
+          },
+          "receivedAt": 257.85,
+          "runtimeOperation": {
+            "id": "2",
+            "deadline": 1069.668625,
+            "state": "target-acknowledged",
+            "handlerResult": "returned",
+            "effectEvidence": "target-acknowledged"
+          },
+          "connectorStatus": {
+            "closed": false,
+            "attempts": 2,
+            "issued": 1,
+            "settled": 1,
+            "rawPending": 0,
+            "pending": 0,
+            "retainedResults": 0,
+            "timerArmed": false,
+            "audit": [
+              {
+                "operationId": "1",
+                "outcome": "denied",
+                "issued": false
+              },
+              {
+                "operationId": "2",
+                "outcome": "returned-private-result",
+                "issued": true
+              }
+            ]
+          },
+          "hostSoftware": "OpenSSH_10.2p1",
+          "producerSha256": "93c962ee211ff9f06c5d389257aeaf76e74dc54d17e2f3779d6fa743019f1240",
+          "ownerResultCalls": 2,
+          "ownerGrantContract": "exact-request-expiry-native-abort-signal",
+          "resultRuntimeGrant": {
+            "sourceOperation": "subscribe",
+            "sinkOperation": "write",
+            "leaseMs": 1000,
+            "queueCapacity": 1,
+            "publishedFrames": 1,
+            "explicitRevoke": true
+          }
+        },
+        {
+          "session": 2,
+          "hostIdentity": {
+            "address": "127.0.0.1",
+            "hostFingerprint": "SHA256:ijqxcYhRMvyFRNL5FrYvxXPRVdYQkvqANe4H3K3W8pI"
+          },
+          "sourceClock": "ssh:ca107f8e7bed81b5aedc534893cd5653:1651:f2cf3bd126ed",
+          "metadata": {
+            "profile": "loopback-openssh-metadata/1",
+            "platform": "darwin",
+            "arch": "arm64",
+            "sourceTime": 116.706875,
+            "clockId": "ssh:ca107f8e7bed81b5aedc534893cd5653:1651:f2cf3bd126ed"
+          },
+          "receivedAt": 472.653083,
+          "runtimeOperation": {
+            "id": "2",
+            "deadline": 1290.587708,
+            "state": "target-acknowledged",
+            "handlerResult": "returned",
+            "effectEvidence": "target-acknowledged"
+          },
+          "connectorStatus": {
+            "closed": false,
+            "attempts": 2,
+            "issued": 1,
+            "settled": 1,
+            "rawPending": 0,
+            "pending": 0,
+            "retainedResults": 0,
+            "timerArmed": false,
+            "audit": [
+              {
+                "operationId": "1",
+                "outcome": "denied",
+                "issued": false
+              },
+              {
+                "operationId": "2",
+                "outcome": "returned-private-result",
+                "issued": true
+              }
+            ]
+          },
+          "hostSoftware": "OpenSSH_10.2p1",
+          "producerSha256": "93c962ee211ff9f06c5d389257aeaf76e74dc54d17e2f3779d6fa743019f1240",
+          "ownerResultCalls": 2,
+          "ownerGrantContract": "exact-request-expiry-native-abort-signal",
+          "resultRuntimeGrant": {
+            "sourceOperation": "subscribe",
+            "sinkOperation": "write",
+            "leaseMs": 1000,
+            "queueCapacity": 1,
+            "publishedFrames": 1,
+            "explicitRevoke": true
+          }
+        }
+      ],
+      "checks": [
+        "actual-runtime-denial-before-native-dispatch-1",
+        "independent-current-operation-owner-consent-1",
+        "sensitive-result-runtime-subscribe-default-deny-1",
+        "sensitive-result-owner-read-default-deny-1",
+        "genuine-native-typed-metadata-delivered-by-public-runtime-1",
+        "separate-source-and-receipt-clock-provenance-1",
+        "result-revocation-erases-and-refuses-stale-handle-1",
+        "actual-runtime-denial-before-native-dispatch-2",
+        "independent-current-operation-owner-consent-2",
+        "sensitive-result-runtime-subscribe-default-deny-2",
+        "sensitive-result-owner-read-default-deny-2",
+        "genuine-native-typed-metadata-delivered-by-public-runtime-2",
+        "separate-source-and-receipt-clock-provenance-2",
+        "result-revocation-erases-and-refuses-stale-handle-2",
+        "fresh-native-host-identity-and-explicit-fresh-approvals"
+      ],
+      "cleanup": [
+        {
+          "current": false,
+          "closing": true,
+          "nativePending": 0,
+          "attempts": 1,
+          "removedOwnedRoot": true,
+          "timerArmed": false,
+          "software": "OpenSSH_10.2p1"
+        },
+        {
+          "current": false,
+          "closing": true,
+          "nativePending": 0,
+          "attempts": 1,
+          "removedOwnedRoot": true,
+          "timerArmed": false,
+          "software": "OpenSSH_10.2p1"
+        }
+      ],
+      "limits": {
+        "hostMs": 15000,
+        "operationMs": 2500,
+        "outputBytes": 1024,
+        "stderrBytes": 4096,
+        "nativePending": 1,
+        "runtimePending": 1,
+        "routeQueue": 1,
+        "auditRows": 64,
+        "resultSourceOperation": "subscribe",
+        "resultSinkOperation": "write",
+        "resultLeaseMs": 1000,
+        "resultPublishedFrames": 1
+      },
+      "exclusions": [
+        "remote-hosts",
+        "interactive-terminal",
+        "arbitrary-command-or-path",
+        "PTY",
+        "forwarding",
+        "agent",
+        "credential-persistence",
+        "OS-account-sandbox",
+        "malicious-same-user-host-isolation",
+        "cross-clock-source-freshness-mapping",
+        "undo-of-issued-native-operation",
+        "physical-device-qualification"
+      ]
+    },
+    "focused": 27,
+    "scope": "New owned non-root loopback OpenSSH metadata host and explicit pinned native host/client identity. Exact actual public runtime invoke and subscribe->write result grants, with separate current operation/result owner consent before one validated result is published. No remote host, interactive shell, PTY/forwarding/agent, existing keys/config/account changes, OS sandbox, issued-operation undo or physical support qualification."
+  },
+  "clipboard": {
+    "profile": "owned-private-pasteboard/1",
+    "sourceSha256": {
+      "examples/clipboard-resources/macos-pasteboard.swift": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+      "examples/clipboard-resources/process-port.mjs": "79ed9890a44d54f1430d78e5b073c8b4e6d8d78ede9dbca93bfe346f6ef97b78",
+      "examples/clipboard-resources/consumer.mjs": "a4aade4f0e0828437b6bd1478d76ce00039df8b576f362aefd085385342896d1",
+      "packages/device-runtime/src/clipboard-resources.test.ts": "1ffb97dac61aea70ab47299f869076f4c93a102f06cd3ddb9abfa055cf092bc4",
+      "tools/qa-clipboard-resources.mjs": "966f47d0254235143f5e7500851cd33c3892de324b97205502e4d7a9e80c9257"
+    },
+    "source": {
+      "path": "/tmp/101-clipboard-integrated-signal-source-final.json",
+      "sha256": "73d9c91113a0f0e7f17712a6279671b8304e7d560526c7304a66395422da6994",
+      "bytes": 19122
+    },
+    "sourceOrPackedTree": "6f71f12ec85801c85f2879401f7238e33e44ab36",
+    "compiledSources": 105,
+    "native": {
+      "sourceSha256": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+      "executableSha256": "1d50bc7c31c3b095aab594862cacfd95ed5a09f3bc783ea9f6a1c81bad3d6264",
+      "compilerArgs": [
+        "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-clipboard-resources-source-uDE3lP/clipboard-resources-caller-Q5D7Dh/macos-pasteboard.swift",
+        "-o",
+        "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-clipboard-resources-source-uDE3lP/clipboard-resources-caller-Q5D7Dh/macos-pasteboard"
+      ],
+      "compilerVersion": "swift-driver version: 1.148.6 Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+      "negatives": [
+        {
+          "name": "name-substitution",
+          "exitCode": 64,
+          "frames": 2,
+          "verifiedOwnedCleanup": true
+        },
+        {
+          "name": "oversize",
+          "exitCode": 64,
+          "frames": 2,
+          "verifiedOwnedCleanup": true
+        },
+        {
+          "name": "malformed-bytes",
+          "exitCode": 64,
+          "frames": 2,
+          "verifiedOwnedCleanup": true
+        },
+        {
+          "name": "partial-frame",
+          "exitCode": 64,
+          "frames": 2,
+          "verifiedOwnedCleanup": true
+        },
+        {
+          "name": "program-argument-substitution",
+          "exitCode": 64,
+          "frames": 0,
+          "noNativeBoardProvisioned": true
+        }
+      ]
+    },
+    "proof": {
+      "result": "pass",
+      "kind": "actual-macos-private-named-pasteboard",
+      "platform": "darwin",
+      "node": "v24.14.0",
+      "checks": [
+        "denied-exact-invoke-before-native-command-1",
+        "independent-owner-action-grant-1",
+        "actual-AppKit-private-write-and-independent-native-read-1",
+        "sensitive-result-needs-separate-read-grant-1",
+        "stale-CAS-clear-preserves-native-value-1",
+        "actual-paused-native-stdin-reservation-after-revoke-1",
+        "issued-effect-uncertainty-no-stale-ACK-or-data-1",
+        "fresh-granted-native-read-confirms-issued-effect-1",
+        "actual-clear-and-fresh-observed-empty-state-1",
+        "fixed-original-native-lifetime-clears-owned-data-and-retires-admission",
+        "verified-owned-board-clear-release-and-native-exit-1",
+        "denied-exact-invoke-before-native-command-2",
+        "independent-owner-action-grant-2",
+        "actual-AppKit-private-write-and-independent-native-read-2",
+        "sensitive-result-needs-separate-read-grant-2",
+        "stale-CAS-clear-preserves-native-value-2",
+        "actual-paused-native-stdin-reservation-after-revoke-2",
+        "issued-effect-uncertainty-no-stale-ACK-or-data-2",
+        "fresh-granted-native-read-confirms-issued-effect-2",
+        "actual-clear-and-fresh-observed-empty-state-2",
+        "verified-owned-board-clear-release-and-native-exit-2",
+        "fresh-native-board-identity-session-and-explicit-new-approvals"
+      ],
+      "sessions": [
+        {
+          "session": 1,
+          "contentSha256": [
+            "12f64e7713b08c8111012387fe7c3019ea63fc488f144831480cbfb730a0dcb4",
+            "ff19f986fcf9699f780f89b814cabdb501d07507418c3314539fa59fd801bad3"
+          ],
+          "byteLengths": [
+            43,
+            37
+          ],
+          "nativeStatus": {
+            "closed": true,
+            "attempts": 11,
+            "nativeCommands": 10,
+            "rawPending": 0,
+            "timerArmed": false,
+            "nativeAlive": false,
+            "nativeExitGuardArmed": false,
+            "stdinCallbackPending": false,
+            "inputBytes": 486,
+            "outputBytes": 2031
+          },
+          "viewerCalls": 7,
+          "uncertainIssuedWrite": {
+            "reason": "cancelled",
+            "issuedEffect": true,
+            "acknowledgementReleased": false
+          }
+        },
+        {
+          "session": 2,
+          "contentSha256": [
+            "12f64e7713b08c8111012387fe7c3019ea63fc488f144831480cbfb730a0dcb4",
+            "ff19f986fcf9699f780f89b814cabdb501d07507418c3314539fa59fd801bad3"
+          ],
+          "byteLengths": [
+            43,
+            37
+          ],
+          "nativeStatus": {
+            "closed": false,
+            "attempts": 10,
+            "nativeCommands": 9,
+            "rawPending": 0,
+            "timerArmed": false,
+            "nativeAlive": true,
+            "nativeExitGuardArmed": true,
+            "stdinCallbackPending": false,
+            "inputBytes": 381,
+            "outputBytes": 1800
+          },
+          "viewerCalls": 6,
+          "uncertainIssuedWrite": {
+            "reason": "cancelled",
+            "issuedEffect": true,
+            "acknowledgementReleased": false
+          }
+        }
+      ],
+      "limits": {
+        "bytes": 128,
+        "attempts": 64,
+        "nativeCommands": 32,
+        "nativePending": 1,
+        "frameBytes": 1024,
+        "inputBytes": 16384,
+        "outputBytes": 16384,
+        "deadlineMs": 2500,
+        "nativeLifetimeMs": 10000,
+        "exitGuardMs": 12000
+      },
+      "nativeSourceSha256": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+      "nativeExecutableSha256": "1d50bc7c31c3b095aab594862cacfd95ed5a09f3bc783ea9f6a1c81bad3d6264",
+      "cleanup": {
+        "nativeChildrenAlive": 0,
+        "operationTimers": 0,
+        "verifiedClearedReleasedBoards": 2
+      },
+      "exclusions": [
+        "general-or-user-clipboard",
+        "application-control",
+        "UI-permission-work",
+        "arbitrary-pasteboard-name-or-program",
+        "same-user-malicious-board-takeover",
+        "physical-capture-clock",
+        "malicious-host-sandbox",
+        "rollback-of-issued-effect",
+        "guaranteed-native-cleanup-after-SIGKILL"
+      ]
+    },
+    "focused": 17,
+    "installedQualification": "unqualified: unchanged reviewed native producer missed synchronous and asynchronous installed-context readiness bounds on preserved prior caller variants; final signal caller has no passing installed proof",
+    "launchDiagnosis": {
+      "path": "/tmp/101-clipboard-launch-independent-diagnosis.json",
+      "sha256": "9ac55798586fdcbd97ee5b968cf91c63f054f61be42a2bb8b2c517f2db84bdfe",
+      "bytes": 6373
+    }
+  },
+  "connections": {
+    "profile": "authenticated-pointer-task/1",
+    "sourceSha256": {
+      "app/connections/page.tsx": "df085223f4de46fae1fdf480fbae3b5820d0e5efa4d15135e45a9851c3e2812c",
+      "app/connections/ConnectionsView.tsx": "ce1a58ae3d93f6eef97ccaa373f765e69f88acf3aacc89dbccb60c7209dc9796",
+      "app/connections/connection-task.ts": "2a97621612278f6ea36f4d760317f33200a88e981651059dd7c96cf47bb345ca",
+      "app/connections/connection-task.test.ts": "f5ead95befad143c50a7c7a1ddcc30c51f648e861ae2388ab56069786fa9be5b",
+      "app/connections/connections.module.css": "ac3c2105401986840a39c3ddc37d3561004f48ca2b82ed77a86b5a04c9e9e142",
+      "tools/qa-connections-flow.mjs": "5cf7b8a97c5d2f3cf6d9cd8fa3b6e8d67b67acbde92ff367e348686e71154a4a"
+    },
+    "dependencyHashes": {
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+      "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+      "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+      "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+      "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+      "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+      "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+      "packages/device-model/src/index.ts": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+      "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+      "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+      "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+      "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+      "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+      "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+      "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+      "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+      "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+      "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+      "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+      "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+      "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+      "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+      "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+      "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+      "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+      "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+      "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+      "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+      "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+      "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+      "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+      "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+      "packages/device-runtime/src/index.ts": "0abec7fb30d1683ed7ad9a70895efc67fc332d744cfaa319ebb7fd8665e8135c",
+      "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+      "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+      "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+      "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+      "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+      "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+      "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+      "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+      "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+      "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+      "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+      "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+      "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+      "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+      "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+      "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+      "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+      "packages/device-runtime/src/types.ts": "22f83720f88b29aad75dbd69cda69592f1efe0cb792470c1eead5720112bfb03",
+      "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+      "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+      "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+      "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+      "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+      "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+      "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+      "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+      "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+      "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+      "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+      "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+      "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+      "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+      "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+      "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+      "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+      "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+      "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+      "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+      "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+      "packages/transport-websocket/src/ports.ts": "dad33fdd5d3fdeafd5386bc75edcc65400cdfd52d4e79d5f452478a575e7a366",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69"
+    },
+    "browser": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-connections-flow-RN6kZ4/receipt.json",
+      "sha256": "6a92aec35b44511f1a0c596cb109b2700a826cbfbce6ad0ad1e63b72c0f255ad",
+      "bytes": 12640
+    },
+    "results": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "checks": 25,
+        "pageErrors": []
+      }
+    ],
+    "limits": {
+      "active": 1,
+      "candidate": 1,
+      "routes": 2,
+      "rawPendingPerController": 2,
+      "lifetimeAttemptsPerController": 32,
+      "redactedTransitions": 64,
+      "codeBytes": 65536,
+      "invitationMs": 300000,
+      "setupMs": 30000,
+      "ownerGrantMs": 60000,
+      "inputMaxHz": 60,
+      "maxAgeMs": 100,
+      "tickMs": 16
+    },
+    "scope": "application-owned pointer surface, manual session-only native WebRTC/P256; no OS cursor, account/device identity, relay, physical networks or phone claim",
+    "focused": 15,
+    "review": {
+      "path": "/tmp/101-u03-integrated-independent-review.json",
+      "sha256": "fae5c1fd8ebebf1a6c68df82444ca9e5247f3c6d1956319467806eab998d711e",
+      "bytes": 14271
+    },
+    "unqualified": [
+      "WebKit default Tab recovery traversal: real native flow reached stop/retry but assertion focused BODY; /tmp/101-u03-browser-webkit-green.err",
+      "phone/hardware/OS cursor and native app bridge",
+      "screen reader and other form factors",
+      "general resource/application catalog or enrolled remote-agent identity/discovery",
+      "relay, remote WSS pairing, separate physical networks",
+      "arbitrary new provider code or live identity/grant restoration"
+    ]
+  },
+  "signalAuthorityReview": {
+    "path": "/tmp/101-signal-authority-final-independent-review.json",
+    "sha256": "f6f66d7d5c8189775b38388a2c86a04aaa4ff42b4a641f11989d3ba39a08a8f9",
+    "bytes": 4402
+  },
+  "regressions": [
+    {
+      "path": "/tmp/101-o05-feature-red.log",
+      "sha256": "56093a91caf9f31e64d84f42d52cee743174ef9a3d8a664955f2fa7d87708914",
+      "bytes": 1076
+    },
+    {
+      "path": "/tmp/101-o05-retirement-expiry-red.log",
+      "sha256": "e041e5909db5c8860266dce97147409e383fcb6a5c16286fd008fc16a2a85d41",
+      "bytes": 1040
+    },
+    {
+      "path": "/tmp/101-clipboard-final-clock-red.log",
+      "sha256": "dcf21ade9838b53ba8e92ae4ba36f56ac9fc903680529c71174d59c5fbbec3b1",
+      "bytes": 1025
+    },
+    {
+      "path": "/tmp/101-clipboard-cross-revocation-red.log",
+      "sha256": "2958c182b9970a181683c4d5661a0af87c4fe48d3ef3f18cdd086ee267f9399a",
+      "bytes": 1057
+    },
+    {
+      "path": "/tmp/101-terminal-review-cross-authority-red.log",
+      "sha256": "e08a2166293257a81584c1a162a63a303aa503536426c22fdc38e2186fa3dcf2",
+      "bytes": 2117
+    },
+    {
+      "path": "/tmp/101-u03-feature-red.log",
+      "sha256": "f960e4103c0addc1546f818eecb09ec1a2bf3df0882dbbd8b6bda8a9ced6f822",
+      "bytes": 3105
+    },
+    {
+      "path": "/tmp/101-u03-lifetime-feature-red.log",
+      "sha256": "30d493db8b308775362cc302cd9c9417002071e5778849fee2a96dd9db444ee2",
+      "bytes": 7265
+    },
+    {
+      "path": "/tmp/101-u03-browser-feature-red.log",
+      "sha256": "db2adf84cf906e4bd1d18ff1cb08fd9c84f27064ff26dbb9f3c2c4cad7c78833",
+      "bytes": 568
+    },
+    {
+      "path": "/tmp/101-u03-wall-clock-red.log",
+      "sha256": "67e67bd57b7bd05b30b8ff9bb71d96bfe69c3f662188ae03a31ed20ded1c95b1",
+      "bytes": 1671
+    },
+    {
+      "path": "/tmp/101-u03-option-snapshot-red.log",
+      "sha256": "1e4c89fef9da07a997b8cc320bb76ed3cad2a4663b299d68029910084ea5bd98",
+      "bytes": 2311
+    },
+    {
+      "path": "/tmp/101-u03-reentrant-review-close-red.log",
+      "sha256": "3ae435a0e5d3f8e0cf0af563432407ba2a37d443be799aa9a517cc25f332d1f5",
+      "bytes": 2980
+    },
+    {
+      "path": "/tmp/101-u03-late-description-red.log",
+      "sha256": "68ae015efead67894ab2fd3acda9bbca9a6360093fb7b6e0516bfa5505c64012",
+      "bytes": 418
+    },
+    {
+      "path": "/tmp/101-u03-cancel-focus-red.log",
+      "sha256": "bd5186acdac2c1334e7aad3d86def398dba4618e28cc4b9c6f70d7900b8fd84a",
+      "bytes": 392
+    },
+    {
+      "path": "/tmp/101-u03-selected-focus-red.log",
+      "sha256": "bce1bd06e967258812af38f8e3254cd376b14caeee7a02bd131cf30a76143bc1",
+      "bytes": 593
+    },
+    {
+      "path": "/tmp/101-u03-recovery-notice-red.log",
+      "sha256": "762cda2856e6446a6b2998fc2f3832199ed3d9c5399f816b40f17d94d6b05c98",
+      "bytes": 2703
+    },
+    {
+      "path": "/tmp/101-u03-contrast-red.log",
+      "sha256": "e57a60f7a8805e111939d605fbe2743684a33587439688161833ad51dd156e55",
+      "bytes": 712
+    }
+  ],
+  "preservedFailures": [
+    {
+      "path": "/tmp/101-clipboard-installed-current.err",
+      "sha256": "20d18e4b3260f9553aa86d8e7befb7b8b7393bd09a84cd60a12708833a3e83e0",
+      "bytes": 625
+    },
+    {
+      "path": "/tmp/101-clipboard-installed-final.err",
+      "sha256": "f39e9a1890df18cb129b7854318cb73521df146d20df4bd74276c1696b371a03",
+      "bytes": 710
+    },
+    {
+      "path": "/tmp/101-clipboard-launch-independent-diagnosis.json",
+      "sha256": "9ac55798586fdcbd97ee5b968cf91c63f054f61be42a2bb8b2c517f2db84bdfe",
+      "bytes": 6373
+    },
+    {
+      "path": "/tmp/101-u03-browser-webkit-green.err",
+      "sha256": "c4cc0fd8ebd3a192abe30837837f93d32a9e5e308a67c3c3ddc51ff6c165d68c",
+      "bytes": 439
+    }
+  ],
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-identity-resources-final-gates.json"
+  },
+  "boundaries": [
+    "No phone, hardware, OS pointer, general/user clipboard or native app UI actions",
+    "Actual software/native effects do not establish physical latency, production throughput, relay, regional or remote qualification",
+    "Installed SDK retains original source/artifact provenance; unchanged sources and actual installed bytes are checked for equivalence",
+    "Canonical O04/O05/N15/N16/U03 remain open; only O08 contract deliverable closes; zero accepted support rows"
+  ],
+  "gateIsolationRepair": {
+    "priorCandidateTree": "9534d9b86a93f69041ffdc201e6f2503a735cd03",
+    "failed": {
+      "path": "/tmp/101-identity-resources-unit.log",
+      "sha256": "1020a8f8cec873468520d98bd3459e5aeda170b4136eecfab5fe9f04beb4c37a",
+      "bytes": 148808
+    },
+    "failedTests": 1,
+    "passedTests": 1547,
+    "smallestIsolatedNativeRegression": {
+      "path": "/tmp/101-clipboard-fullgate-isolated-diagnosis.log",
+      "sha256": "cb7b639a0bf1534ce60526f7b87662e80a78ddd2601a1ad8fbd90c99aa8de3de",
+      "bytes": 203
+    },
+    "runner": "tools/run-unit-tests.mjs",
+    "oldRunnerSha256": "472ae9ec07c8afc1faa5e4fc8b526da6871ccc68f5accaa83388ad794b9a1a36",
+    "currentRunnerSha256": "2433ab2cf5d027e6fc83ec73c44f67d7a31b2974240590975cd88be343cfa23c",
+    "concurrency": 4,
+    "scope": "Bound test-file subprocess concurrency; retain discovery of every test and all real native readiness/operation deadlines. Isolated actual native CAS regression passed. This runner repair does not qualify clipboard installed readiness."
+  }
+}

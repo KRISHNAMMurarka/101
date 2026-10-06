@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 9,
+  "revision": 10,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -1849,6 +1849,253 @@
       "limitations": [
         "partial: current browser-controller add/inspect states built and checked; enrolled general resource/removal and full declared qualification remain open",
         "No accepted support row, native permission/capture, general resource grant or physical input claim."
+      ]
+    },
+    {
+      "id": "operator-loopback-overload-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned native/software process; no physical claim",
+        "transport": "Provisioned loopback mTLS",
+        "connector": "operator-loopback-overload",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "operator-loopback-overload/1"
+        ],
+        "resources": [
+          "session/peer/directory/rate admission and real expiry"
+        ],
+        "unavailable": [
+          "partial: actual loopback mTLS session/peer/directory/rate overload, scope isolation and real expiry built; enabled relay, processor failure and regions remain open"
+        ]
+      },
+      "qualificationTasks": [
+        "O04",
+        "Q04"
+      ],
+      "evidence": {
+        "implementation": [
+          "o04-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "o04-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "o04-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: actual loopback mTLS session/peer/directory/rate overload, scope isolation and real expiry built; enabled relay, processor failure and regions remain open",
+        "No accepted support, live/remote/physical or full canonical task claim."
+      ]
+    },
+    {
+      "id": "operator-identity-replacement-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned native/software process; no physical claim",
+        "transport": "Provisioned loopback mTLS",
+        "connector": "operator-identity-replacement",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "operator-identity-replacement/1"
+        ],
+        "resources": [
+          "credential enrollment, rotation, retirement and fresh recovery"
+        ],
+        "unavailable": [
+          "partial: provisioned closed loopback identity/enrollment replacement, stale access rejection, actual retirement and recovery built; OS keystore, persistent accounts, autonomous expiry and fleet lifecycle remain open"
+        ]
+      },
+      "qualificationTasks": [
+        "O05",
+        "Q04"
+      ],
+      "evidence": {
+        "implementation": [
+          "o05-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "o05-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "o05-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: provisioned closed loopback identity/enrollment replacement, stale access rejection, actual retirement and recovery built; OS keystore, persistent accounts, autonomous expiry and fleet lifecycle remain open",
+        "No accepted support, live/remote/physical or full canonical task claim."
+      ]
+    },
+    {
+      "id": "loopback-openssh-metadata-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js / OpenSSH",
+        "runtimeVersion": "24.14.0 / 10.2p1",
+        "formFactor": "Owned native/software process; no physical claim",
+        "transport": "Owned loopback SSH",
+        "connector": "loopback-openssh-metadata",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "loopback-openssh-metadata/1"
+        ],
+        "resources": [
+          "fixed native platform/architecture metadata"
+        ],
+        "unavailable": [
+          "partial: scoped host-pinned disposable OpenSSH metadata connector and independent installed public SDK consumer built; general terminal operations, remote hosts and platform matrix remain open"
+        ]
+      },
+      "qualificationTasks": [
+        "N15",
+        "Q04"
+      ],
+      "evidence": {
+        "implementation": [
+          "n15-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "n15-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "n15-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: scoped host-pinned disposable OpenSSH metadata connector and independent installed public SDK consumer built; general terminal operations, remote hosts and platform matrix remain open",
+        "No accepted support, live/remote/physical or full canonical task claim."
+      ]
+    },
+    {
+      "id": "owned-private-pasteboard-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js / Swift AppKit",
+        "runtimeVersion": "24.14.0 / 6.3.3",
+        "formFactor": "Owned native/software process; no physical claim",
+        "transport": "Owned private named pasteboard CLI",
+        "connector": "owned-private-pasteboard",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "owned-private-pasteboard/1"
+        ],
+        "resources": [
+          "128-byte scoped read/write/clear"
+        ],
+        "unavailable": [
+          "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open"
+        ]
+      },
+      "qualificationTasks": [
+        "N16",
+        "Q04"
+      ],
+      "evidence": {
+        "implementation": [
+          "n16-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "n16-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "n16-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open",
+        "No accepted support, live/remote/physical or full canonical task claim."
+      ]
+    },
+    {
+      "id": "authenticated-pointer-task-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Chromium",
+        "runtimeVersion": "149.0.7827.55",
+        "formFactor": "Owned Chromium browser viewports; software only",
+        "transport": "Manual session-only native WebRTC/P256",
+        "connector": "authenticated-pointer-task",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "authenticated-pointer-task/1"
+        ],
+        "resources": [
+          "application-owned pointer bundle"
+        ],
+        "unavailable": [
+          "partial: explicit native WebRTC pointer connection task, owner comparison, independent grants, active/candidate/stop/recovery and navigation built; general resources, remote/relay paths and full UI qualification remain open"
+        ]
+      },
+      "qualificationTasks": [
+        "U03",
+        "U09",
+        "U13",
+        "Q01"
+      ],
+      "evidence": {
+        "implementation": [
+          "u03-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "u03-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "u03-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "partial: explicit native WebRTC pointer connection task, owner comparison, independent grants, active/candidate/stop/recovery and navigation built; general resources, remote/relay paths and full UI qualification remain open",
+        "No accepted support, live/remote/physical or full canonical task claim."
       ]
     }
   ]

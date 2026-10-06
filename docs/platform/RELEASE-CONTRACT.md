@@ -116,6 +116,73 @@ The active integration controller of this checkout is the single write owner for
 
 Migration order is C → general T/M/S/I vertical slice → D/U → bounded N/A/W/P → S/V/R/B → E/F/Q throughout → G/K/O/L/Z. Preserve old consumers while bridging actual producers. Each new package must land with a runnable first caller and meaningful check; do not create speculative empty packages. Changes to a qualified boundary reopen affected catalog/task qualification and regenerate artifacts once after inputs settle.
 
+## Operator limits and responsibilities
+
+O08 establishes this contract before any live service claim. **Accepted service
+capacity remains zero** because the support catalog has no accepted rows. The
+limits below are enforced admission ceilings for the selected disposable local
+Node coordinator/directory. They are not sustained-throughput, latency, regional
+availability, physical-device or Internet capacity measurements.
+
+| Selected component | Enforced ceiling / traffic budget | Unavailable scope |
+| --- | --- | --- |
+| Provisioned TLS coordinator | 64 enrolled identities, 16 exact HTTPS origins, 32 native connections; 32 requests/second per enrolled principal; 4 pending requests per caller | Public account/enrollment service, shared production hosting and regional failover |
+| Private rendezvous | 16 sessions total, 4 sessions per principal, 8 peers per session, 16 peers per principal; session TTL at most 600,000 ms | Persistent sessions or automatic authority restoration |
+| Coordinator HTTP | 401,024 bytes per request/response; 400,000 signaling characters; request timeout 5,000 ms and header timeout 3,000 ms | Unlimited signaling, arbitrary URL/proxy forwarding or a payload archive |
+| Private directory | 32 provisioned catalog resources; 16 visible resources and 8 members per session; 8 capability selections per resource; 8,192-byte requests, 65,536-byte responses, 60,000-ms directory TTL | Visibility as a resource-operation grant or unrestricted device scanning |
+| Gateway/TURN relay | Disabled: zero relay sessions, bytes and allocated credentials; relay configuration fails closed | Direct/relay fallback, two-network service and relay bandwidth/latency claims |
+| Explicit identity replacement | 16 lifecycle attempts, one pending operation; replacement startup requests teardown after 5,000 ms; actual native teardown retains its reservation until settlement | OS key storage, in-place live migration, persistent account recovery or fleet rotation |
+
+These values come from `HTTPS_COORDINATOR_LIMITS`, `PRIVATE_DIRECTORY_LIMITS`
+and `OPERATOR_IDENTITY_LIFECYCLE_LIMITS`. The [local startup/harness
+receipt](receipts/2026-10-06-operator-filesystem-artifact.json) records genuine
+mTLS startup, directory access, quota rejection and teardown. Configuration
+selects the fixed ceilings; it cannot increase them. Future relay or storage
+providers must establish their own explicit admission, traffic, expiry, failure
+and cleanup budgets before becoming enabled options.
+
+The operator is trusted to provision the server/CA/client identities, enrollment
+snapshot, exact origin list and private catalog. The coordinator terminates mTLS
+and can inspect its permitted rendezvous/directory metadata; this is the actual
+trust topology. TLS identity and session membership do not authorize a device
+operation. Device owners independently approve exact resource, recipient,
+application/session, operation, direction, limits and expiry. A caller must not
+forward credentials to another endpoint or infer permission from a directory,
+name, invitation or successful connection.
+
+The operator must protect provisioned private keys and any chosen persistent
+backend using the applicable OS/account access controls. The current library
+accepts explicit host inputs and provides no OS key store or persistent backend.
+The disposable harness creates only new private credentials and removes its
+owned temporary directory on normal teardown. Logs and health snapshots contain
+bounded redacted operational metadata, excluding keys, certificates, session
+bearers and private resource payloads. No retention/export/deletion claim extends
+to unmanaged logs, uploaded copies or recorded media; the declared data policy
+and B/S/V qualification tasks govern those separately.
+
+Maintenance requires an inventory of exact build/profile/identity generations,
+current owners and accepted support rows. Before an upgrade, changing trust,
+origins, quotas or providers reopens affected qualification. Validate the exact
+candidate, reject unsupported configuration and preserve failed receipts. A
+credential incident requires stopping affected authority, removing compromised
+enrollments and provisioning a fresh reviewed owner. Successful replacement
+retires the old native owner before publishing the new endpoint; sessions,
+directory membership, bearers and resource grants are never copied. Consumers
+review the replacement endpoint and obtain fresh resource approvals. A failed
+candidate preserves a still-valid incumbent; terminal stop requires a fresh
+lifecycle and cannot resume discarded authority.
+
+Operators must expose overload/expiry/unavailable states with bounded admission
+and recovery, and keep an unresolved native operation reserved until actual
+settlement. Normal cleanup does not prove recovery after SIGKILL, host failure
+or an irreversible already-issued effect. Stop/revoke receipts must distinguish
+requested teardown, actual native closure and verified data removal. Backup,
+restore, upgrade/rollback and incident drills remain O04–O07 and their dependent
+security/data tasks; this responsibility contract does not certify those drills.
+Owned contacts, signing, distribution, service operations and any live action
+remain L04–L07 authorization/qualification work. No endpoint, reporting contact,
+on-call coverage or live maintenance service is invented here.
+
 ## Evidence and final acceptance
 
 [task-evidence.json](task-evidence.json) contains every stable checklist ID, its dependency IDs, equipment and receipt references. The checklist checkboxes remain authoritative. Each receipt records source/build identity, environment, reproduction, outcome, scope, preserved failure and equipment; relevant physical/performance detail follows the [qualification envelope](MASTER-CHECKLIST.md#qualification-evidence-envelope-required-per-support-row). Use immutable commit/build/hash references. `pending` or `unavailable` is explicit and never closes a task. One receipt can prove multiple tasks only if it states each exact scope. Runtime/emulator and physical levels remain independent.

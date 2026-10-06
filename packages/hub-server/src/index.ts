@@ -190,3 +190,5 @@ export type { HttpsCoordinatorOptions, CoordinatorEnrollment, CoordinatorFetcher
 
 export { OPERATOR_CONFIGURATION_PROFILE, prepareOperatorStartup } from './operator-configuration.ts';
 export type { OperatorConfiguration, OperatorConfigurationIssue, OperatorStartupSnapshot, OperatorStartupResult, OperatorStartupController } from './operator-configuration.ts';
+export { OPERATOR_IDENTITY_LIFECYCLE_PROFILE, OPERATOR_IDENTITY_LIFECYCLE_LIMITS, prepareOperatorIdentityLifecycle } from './operator-identity-lifecycle.ts';
+export type { OperatorIdentityIssue, OperatorIdentityResult, OperatorIdentitySnapshot, OperatorIdentityController } from './operator-identity-lifecycle.ts';

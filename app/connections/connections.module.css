@@ -1,0 +1,32 @@
+.page { max-width: 58rem; margin: 0 auto; padding: clamp(1rem, 4vw, 3rem); color: var(--paper, #f2f2f2); }
+.header { margin-bottom: 2rem; max-width: 44rem; }
+.header h1 { font-size: clamp(2rem, 6vw, 3.8rem); line-height: 1.05; letter-spacing: -.04em; margin: .6rem 0 1rem; }
+.header p, .panel p { line-height: 1.55; }
+.eyebrow { text-transform: uppercase; font-size: .75rem; letter-spacing: .16em; }
+.roles { padding: 1rem; border: 1px solid currentColor; display: flex; flex-wrap: wrap; gap: .65rem; margin-bottom: 1rem; }
+.roles legend { padding: 0 .4rem; }
+.page button, .page a { min-height: 44px; min-width: 44px; font: inherit; }
+.page button { border: 1px solid currentColor; background: transparent; color: inherit; padding: .7rem 1rem; cursor: pointer; }
+.page button[aria-pressed="true"] { background: var(--solid, #f2f2f2); color: var(--on-solid, #0a0a0a); }
+.page button:disabled { opacity: .55; cursor: default; }
+.page a { display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: .22em; }
+.page :is(button, textarea, a):focus, .status:focus { outline: 3px solid var(--paper, #f2f2f2); outline-offset: 4px; }
+.panel { border: 1px solid currentColor; padding: clamp(1rem, 3vw, 1.75rem); margin: 1.2rem 0; }
+.panel h2 { font-size: 1.35rem; margin: 0 0 1rem; }
+.status { font-weight: 600; }
+.note { font-size: .9rem; opacity: .8; }
+.code { display: grid; gap: .75rem; margin: 1.5rem 0; }
+.code label { font-weight: 600; }
+.code textarea { width: 100%; min-width: 0; max-width: 100%; min-height: 100px; background: transparent; color: inherit; border: 1px solid currentColor; padding: .8rem; resize: vertical; overflow-wrap: anywhere; font: .85rem/1.5 monospace; }
+.code button { justify-self: start; }
+.review { border-top: 1px solid currentColor; margin-top: 1.5rem; padding-top: 1rem; }
+.comparison { display: block; font-family: monospace; font-size: clamp(.95rem, 3vw, 1.2rem); line-height: 1.7; overflow-wrap: anywhere; }
+.actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.5rem; }
+.pad, .surface { width: 100%; height: 240px; border: 1px solid currentColor; position: relative; }
+.pad { touch-action: none; user-select: none; }
+.surface { overflow: hidden; display: grid; place-items: center; }
+.marker { position: absolute; width: 22px; height: 22px; transform: translate(-50%, -50%); border: 2px solid currentColor; pointer-events: none; }
+.marker[data-held="true"] { background: currentColor; }
+.empty { opacity: .65; text-align: center; padding: 1rem; }
+@media (max-width: 480px) { .page { padding: 1rem; } .panel { padding: 1rem; } .actions > *, .code button { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

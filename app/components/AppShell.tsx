@@ -27,7 +27,7 @@ import { setRailOpen, useRailOpen } from "../lib/rail-preference";
 type Destination = { href: string; label: string; icon: IconName };
 
 /**
- * The player's destinations. Two, and the bar grows with this array rather than with a comment.
+ * The player's destinations. The bar grows with this array.
  *
  * The six diagnostics that used to sit here now live behind /studio. One of them also held a slot in
  * the three-item phone tab bar, so a thumb tap on a player's home screen opened a page reading
@@ -36,6 +36,7 @@ type Destination = { href: string; label: string; icon: IconName };
 const PRIMARY: Destination[] = [
   { href: "/", label: "Play", icon: "play" },
   { href: "/devices", label: "Devices", icon: "devices" },
+  { href: "/connections", label: "Connections", icon: "arrow" },
 ];
 
 

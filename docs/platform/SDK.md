@@ -1846,3 +1846,111 @@ development server, and `node tools/qa-pairing-intake.mjs OWNED_LOOPBACK_ORIGIN/
 for the existing invitation journeys. U02 remains open for enrolled identity,
 general shared-resource details, removal impact and full form-factor/assistive
 qualification. See the [exact local receipt](receipts/2026-10-06-devices-add-inspect.json).
+
+## Explicit operator identity replacement
+
+The Node operator API exports `prepareOperatorIdentityLifecycle()` from
+`@101/hub-server`. Preparation is inert. Its controller provides `start`,
+`rotate`, `stop` and redacted `snapshot` operations for the closed provisioned
+loopback mTLS profile. Rotation starts and validates a candidate, retires the old
+native owner, then revalidates the candidate credentials before publishing the
+new endpoint and generation. Invalid preparation or a failed bind preserves a
+valid incumbent. Sessions, directory memberships, bearer tokens and resource
+grants are never transferred. Consumers review the new endpoint and obtain
+fresh approvals.
+
+The lifecycle admits sixteen attempts and one pending operation. A five-second
+startup deadline requests candidate teardown; the real unresolved native start
+and closure keep the reservation until settlement. Terminal stop fences late
+callbacks and requires a new lifecycle for recovery. The source caller and
+`node tools/qa-operator-identity-lifecycle.mjs` exercise genuine mTLS owners,
+removed enrollment, old authority rejection, new CA/key identity, expiry during
+retirement, recovery and a real delayed native bind. OS key stores, autonomous
+expiry, persistent accounts and fleet rotation remain O05 qualification work.
+Operator ceilings, trust and maintenance obligations are in the
+[responsibility contract](RELEASE-CONTRACT.md#operator-limits-and-responsibilities).
+
+## Scoped private clipboard example
+
+`examples/clipboard-resources` contains an ordinary public Node SDK caller and
+a reviewed Swift/AppKit helper. Explicit provisioning creates one private named
+pasteboard; it never selects the general or user clipboard. The fixed adjacent
+native executable is source/binary pinned. Read, write and clear use separate
+exact owner approval and SDK operation grants; sensitive results also require an
+independent result route. Values are limited to 128 bytes. Revision and SHA-256
+preconditions reject stale writes/clears; clear-before-write is not atomic.
+
+One actual native command remains reserved until its stdin callback and native
+response settle, even after logical cancellation. An issued write may have
+occurred without a released acknowledgment; a fresh approved read confirms it.
+Native owner approval is `{ request, expiresAt, signal: AbortSignal }`; revoke
+its controller to cancel consent. Callback-only owner approval is rejected.
+The intrinsic signal state is checked after the final clock and delivery observer
+before dispatch or release. Delivery revocation must abort its actual signal. The native helper has an original ten-second lifetime and
+clears/releases its own board on normal exit. Forced death leaves cleanup
+unverified. This is a cooperative host example, not an OS sandbox.
+
+`node tools/qa-clipboard-resources.mjs --source` proves the selected native
+source caller. The installed-context helper missed its readiness bound in
+preserved tests, including asynchronous launch; that qualification remains open.
+No warm-up, retry or deadline relaxation establishes support. General clipboard,
+application operations and the full N16 matrix remain open.
+
+## Scoped loopback SSH metadata example
+
+`examples/terminal-resources` provisions a new disposable non-root loopback
+OpenSSH host with private ephemeral client/server keys and an exact host-key pin.
+Its fixed forced command emits typed platform/architecture metadata and actual
+producer-clock provenance. It offers no arbitrary shell, PTY, forwarding, agent,
+existing account/key access or remote host selector. The host lasts fifteen
+seconds; a command has a 2.5-second deadline and 1,024-byte output ceiling.
+
+`createScopedLoopbackSshConnector` admits one actual child at a time and sixty-four
+attempts. Operation and result approvals are independent real abort signals, intrinsically
+checked after the final clock and delivery observers at result release. Each
+owner grant is `{ request, expiresAt, signal: AbortSignal }`; fresh consent uses a
+fresh controller. Mutable delivery revocation propagates through its real signal. A sensitive result uses an explicit SDK `subscribe -> write` route;
+connection or command approval cannot create it. Cancellation fences late data
+while retaining the actual child reservation until close. Reconnect provisions
+fresh host identity and fresh approvals. The installed ordinary public SDK
+caller verifies the selected metadata profile; broader terminal operations,
+remote hosts, other platforms and the full N15 qualification remain open.
+
+## Explicit browser connection task
+
+The Connections screen offers Send input and Receive input for the declared
+`app:pointer/1` resource bundle. Manual invitation and reply codes identify a
+session-only native WebRTC peer. Both owners compare the P256 identity proof and
+confirm it before either can approve input. Sending and receiving require
+independent approvals. Input acts on the receiving screen's application surface.
+
+An active connection remains available while a candidate is reviewed, declined
+or fails. Promotion retires its predecessor and requires fresh source/output
+grants. Stop, interruption, backgrounding, expiry and unmount release held output
+and fence late callbacks. A controller permits one active and one candidate peer,
+two actual unresolved native operations, thirty-two attempts, 64 KiB codes,
+five-minute invitations, thirty-second setup and sixty-second approvals.
+
+Run `node tools/qa-connections-flow.mjs OWNED_LOOPBACK_ORIGIN/` against the source
+development server. Genuine Chromium peers exercise the task, application output,
+keyboard recovery, narrow layout, themes and reduced motion. General resource
+selection, enrolled remote devices, relay paths, physical devices and named screen
+readers remain U03 qualification work. The preserved WebKit traversal failure
+leaves that engine's keyboard qualification open.
+
+## Disposable operator overload drill
+
+`examples/coordinator/operator-overload.ts` exercises the provisioned loopback
+mTLS coordinator and private directory with five independently enrolled callers.
+It checks session, peer, directory and per-principal rate admission ceilings,
+cross-principal isolation, explicit metadata visibility, departure and real
+directory/session expiry. A retry needs fresh authority; expired invitations and
+bearers do not recover access. The minimum session expiry uses an actual
+sixty-second wait. No clock substitution or positive-response fixture proves it.
+
+Run `node --experimental-strip-types tools/qa-operator-overload.mjs
+--workspace-exports`. The drill bounds itself to 160 native requests, one pending
+request, an eighty-five-second deadline and owned listener/caller teardown.
+Disabled relay and unknown regions fail configuration validation. Processor
+failures, enabled relay failure and regional service qualification remain O04
+work; admission ceilings are not measured service capacity.
