@@ -1,0 +1,820 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-06",
+  "result": "built-selected-software-paths-current-installed-proof-pass-exact-broad-gates-pending",
+  "base": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+  "sourceTree": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+  "sourceSha256": {
+    "packages/device-web/src/application-audio.ts": "feec3064fe42fc4eb6e5b3d554e4a90a8a5307a9097c2c1acfcd697a515cbb8e",
+    "packages/device-web/src/application-audio.test.ts": "a0a28468e240d2528012fe7eff6fd885d7d133429d7510de1bcc8eb917db7c20",
+    "examples/browser-resources/application-audio.ts": "ce7171136a2bbc5fc77362a561ebfd0247d94584f4148dd19484cb97d2a659af",
+    "tools/qa-application-audio.mjs": "5757e83728814a9798e04b775a1a71722a050d8ae6521eed748889d30b3b495f",
+    "packages/device-web/src/index.ts": "ad1d014fcb05eaca55fcb6759988e5ab2ccfadc4e60ca4d0906ce706b6ce270f",
+    "examples/wire-replay/wire-replay.ts": "c7e670603d27dbab2166c19dae9c1c5eac98eaf82b968ebf9e47157cc798ed3d",
+    "tests/wire-replay.test.ts": "d722e835c86c95ceb02eb8adf24357a813bf552a2a3d7b1082559146f31335ff",
+    "examples/wire-replay/consumer.mjs": "ba88f6bd9a9bab10efc19a51df7d356f406839db955584033f95585b71778833",
+    "tools/qa-wire-replay.mjs": "9a339133aa468f55becf5c41d8f0fb49ebde1b7401a4d7a45c5a5b0d10f744b9",
+    "tools/qa-sdk-consumer.mjs": "b3ba6c6cfe49e960b4d19eed5a3d16c092b40a11df6cadd2fe09d3bac43d8f93",
+    "docs/platform/SDK.md": "06907caf607fac0a31bc75f9cea4913064c83493660416f4ce33ad99ff7bcb29"
+  },
+  "sdk": {
+    "status": "offline-sdk-pack-pass",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-tjfI35/manifest.json",
+      "sha256": "a7f922d75321596046e35cb1672ae9ec66560f8ee0223caf128ff60ec29786cd"
+    },
+    "sourceTree": "31aa07e7778073ee391b9ca51ce2802f0e9737a3",
+    "sourcePins": 149,
+    "packages": 7,
+    "packedFiles": 330,
+    "stderr": {
+      "path": "/tmp/101-audio-wire-sdk-build.err",
+      "note": "Expected non-commit tree fallback diagnostic from git rev-parse; build exited0. First metadata assertion incorrectly required empty stderr; no rebuild or source change."
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-5aR3lS/receipt.json",
+      "sha256": "7c61f4899d58eb37b6d9ac54d7cfe1051c8182c5aac49e3f386510d8efea7126"
+    },
+    "consumerChecks": [
+      {
+        "name": "source-and-tarball-manifest",
+        "status": "pass"
+      },
+      {
+        "name": "offline-install-closed-graph-and-exact-bytes",
+        "status": "pass",
+        "packages": 7,
+        "files": 331
+      },
+      {
+        "name": "strict-types:nodenext",
+        "status": "pass"
+      },
+      {
+        "name": "strict-types:bundler",
+        "status": "pass"
+      },
+      {
+        "name": "generated-device-project",
+        "status": "pass"
+      },
+      {
+        "name": "packed-node-javascript",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:chromium",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:firefox",
+        "status": "pass"
+      },
+      {
+        "name": "packed-browser:webkit",
+        "status": "pass"
+      },
+      {
+        "name": "external-processor-offline-consumer",
+        "status": "pass"
+      }
+    ],
+    "producerSourceEquivalence": {
+      "current149Match": true,
+      "broaderDocumentaryTreeNotProducerClaim": true
+    }
+  },
+  "audio": {
+    "scope": "Built and locally qualified private application-audio graph: exact borrowed native producer node/stream, separate source/output owner and runtime grants, two private recipients, mute/volume/revocation and actual owned Chromium149/WebKit26.5 native analyser effects. Current repaired leaf feec3064, ordinary installed seven-package SDK149source/330files/171declarations,36focused. WebKit emitted PCM facts unknown. Speaker/headphone/mic capture, route changes on real devices, encoded/network audio, mix/duck/exclusive and full V03/V01/V09/N02 remain open.",
+    "packet": {
+      "path": "/tmp/101-application-audio-review-repairs-frozen-pins.json",
+      "sha256": "3b5fa8c72e5d2489207654218e19848345c94f8b10b6cde3b320bb9268639047"
+    },
+    "focused": {
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "scope": "actual public runtime plus cooperative native-shaped software lifecycle fixtures"
+    },
+    "installed": {
+      "path": "/tmp/101-application-audio-current-installed.json",
+      "sha256": "585d0ddef7670b3e5ad86325fcfdc1e40bfbff31f3b84c1b2a8026608bd8093d",
+      "qualification": "ordinary installed seven-package SDK",
+      "producerTree": "31aa07e7778073ee391b9ca51ce2802f0e9737a3",
+      "callerTree": "31aa07e7778073ee391b9ca51ce2802f0e9737a3",
+      "sourcePins": 149,
+      "installedFiles": 330,
+      "declarations": 171,
+      "results": [
+        {
+          "engine": "chromium",
+          "browserVersion": "149.0.7827.55",
+          "proof": {
+            "native": {
+              "kind": "actual-native-inert-availability",
+              "audioContextAvailable": true,
+              "mediaStreamAvailable": true,
+              "initial": {
+                "closed": false,
+                "sources": 0,
+                "activeOutputs": 0,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 0,
+                "listeners": 0,
+                "polls": 0,
+                "pollArmed": false,
+                "expiryArmed": false
+              },
+              "forgedReady": false,
+              "approvals": 0,
+              "final": {
+                "closed": true,
+                "sources": 0,
+                "activeOutputs": 0,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 0,
+                "listeners": 0,
+                "polls": 0,
+                "pollArmed": false,
+                "expiryArmed": false
+              },
+              "deviceAcquisitions": 0,
+              "speakerConnections": 0,
+              "hardwareEvidence": false
+            },
+            "fixture": {
+              "kind": "owned-native-private-application-audio",
+              "result": "pass",
+              "hardwareEvidence": false,
+              "deniedReady": false,
+              "toneA": 0.17295691268009744,
+              "toneB": 0.1392266742722769,
+              "mutedA": 0,
+              "unaffectedB": 0.1725540422880625,
+              "halfA": 0.0893020588180935,
+              "sourceApprovals": 3,
+              "outputApprovals": 2,
+              "audioRouteApprovals": 2,
+              "diagnosticApprovals": 1,
+              "diagnostics": {
+                "latest": {
+                  "value": {
+                    "rms": 0.1732403695988961,
+                    "peak": 0.25,
+                    "sampleCount": 256,
+                    "sampleRateHz": 48000
+                  },
+                  "sequence": 4,
+                  "timestamp": 702.3000001907349,
+                  "receivedAt": 702.4000000953674,
+                  "clockDomain": "application-audio-javascript-retrieval",
+                  "quality": "valid",
+                  "provenance": {
+                    "timing": "javascript-analyser-retrieval",
+                    "routingContextTimeSeconds": 0.10666666666666667,
+                    "routingContextGeneration": 1,
+                    "factoryKind": "owned-application-audio",
+                    "captureTimeKnown": false,
+                    "clockMappingEstablished": false
+                  },
+                  "source": {
+                    "registrationId": "registration-2",
+                    "deviceId": "app:owned-tone",
+                    "capabilityId": "levels"
+                  }
+                },
+                "delivered": 1,
+                "released": 0
+              },
+              "levelsRetired": {
+                "delivered": 2,
+                "released": 1
+              },
+              "borrowedProducerStillRunning": true,
+              "nativeSourceSettings": {
+                "sampleRateHz": 48000,
+                "channels": 2
+              },
+              "nativeGraphFacts": {
+                "sampleRateHz": 48000,
+                "channels": 2,
+                "contextCorrelated": true,
+                "streamCorrelated": true
+              },
+              "routingContexts": 1,
+              "independentAnalyserContexts": 2,
+              "beforeRevoke": {
+                "closed": false,
+                "sources": 1,
+                "activeOutputs": 2,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 3,
+                "listeners": 20,
+                "polls": 5,
+                "pollArmed": true,
+                "expiryArmed": true
+              },
+              "timing": "JS native-state/analyser retrieval; separate routing context time, no capture clock or inter-context mapping",
+              "scope": "Actual owned native application oscillator and verified two-channel destination-node graph configuration with downmixed native diagnostics; missing emitted PCM channel metadata remains unknown; no physical source, encoded PCM transport, network, acoustic calibration or speaker output.",
+              "cleanup": {
+                "provider": {
+                  "closed": true,
+                  "sources": 0,
+                  "activeOutputs": 0,
+                  "openingOutputs": 0,
+                  "rawPending": 0,
+                  "cleanupPending": 0,
+                  "cleanupFailures": 0,
+                  "attempts": 3,
+                  "listeners": 0,
+                  "polls": 0,
+                  "pollArmed": false,
+                  "expiryArmed": false
+                },
+                "producerState": "closed",
+                "readerStates": [
+                  "closed",
+                  "closed"
+                ],
+                "routingStates": [
+                  "closed"
+                ],
+                "originalTracksEndedByCaller": true,
+                "clonedTracksEndedByAdapter": true
+              },
+              "deviceAcquisitions": 0,
+              "speakerConnections": 0
+            }
+          },
+          "pageErrors": [],
+          "remoteAttempts": []
+        },
+        {
+          "engine": "webkit",
+          "browserVersion": "26.5",
+          "proof": {
+            "native": {
+              "kind": "actual-native-inert-availability",
+              "audioContextAvailable": true,
+              "mediaStreamAvailable": true,
+              "initial": {
+                "closed": false,
+                "sources": 0,
+                "activeOutputs": 0,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 0,
+                "listeners": 0,
+                "polls": 0,
+                "pollArmed": false,
+                "expiryArmed": false
+              },
+              "forgedReady": false,
+              "approvals": 0,
+              "final": {
+                "closed": true,
+                "sources": 0,
+                "activeOutputs": 0,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 0,
+                "listeners": 0,
+                "polls": 0,
+                "pollArmed": false,
+                "expiryArmed": false
+              },
+              "deviceAcquisitions": 0,
+              "speakerConnections": 0,
+              "hardwareEvidence": false
+            },
+            "fixture": {
+              "kind": "owned-native-private-application-audio",
+              "result": "pass",
+              "hardwareEvidence": false,
+              "deniedReady": false,
+              "toneA": 0.17782275520856378,
+              "toneB": 0.1806418995195425,
+              "mutedA": 0,
+              "unaffectedB": 0.173240290515948,
+              "halfA": 0.09067141843342005,
+              "sourceApprovals": 3,
+              "outputApprovals": 2,
+              "audioRouteApprovals": 2,
+              "diagnosticApprovals": 1,
+              "diagnostics": {
+                "latest": {
+                  "value": {
+                    "rms": 0.18146509366831887,
+                    "peak": 0.24999652802944183,
+                    "sampleCount": 256,
+                    "sampleRateHz": 48000
+                  },
+                  "sequence": 6,
+                  "timestamp": 532,
+                  "receivedAt": 532,
+                  "clockDomain": "application-audio-javascript-retrieval",
+                  "quality": "valid",
+                  "provenance": {
+                    "timing": "javascript-analyser-retrieval",
+                    "routingContextTimeSeconds": 0.216,
+                    "routingContextGeneration": 1,
+                    "factoryKind": "owned-application-audio",
+                    "captureTimeKnown": false,
+                    "clockMappingEstablished": false
+                  },
+                  "source": {
+                    "registrationId": "registration-2",
+                    "deviceId": "app:owned-tone",
+                    "capabilityId": "levels"
+                  }
+                },
+                "delivered": 1,
+                "released": 0
+              },
+              "levelsRetired": {
+                "delivered": 3,
+                "released": 1
+              },
+              "borrowedProducerStillRunning": true,
+              "nativeSourceSettings": {
+                "sampleRateHz": null,
+                "channels": null
+              },
+              "nativeGraphFacts": {
+                "sampleRateHz": 48000,
+                "channels": 2,
+                "contextCorrelated": true,
+                "streamCorrelated": true
+              },
+              "routingContexts": 1,
+              "independentAnalyserContexts": 2,
+              "beforeRevoke": {
+                "closed": false,
+                "sources": 1,
+                "activeOutputs": 2,
+                "openingOutputs": 0,
+                "rawPending": 0,
+                "cleanupPending": 0,
+                "cleanupFailures": 0,
+                "attempts": 3,
+                "listeners": 20,
+                "polls": 8,
+                "pollArmed": true,
+                "expiryArmed": true
+              },
+              "timing": "JS native-state/analyser retrieval; separate routing context time, no capture clock or inter-context mapping",
+              "scope": "Actual owned native application oscillator and verified two-channel destination-node graph configuration with downmixed native diagnostics; missing emitted PCM channel metadata remains unknown; no physical source, encoded PCM transport, network, acoustic calibration or speaker output.",
+              "cleanup": {
+                "provider": {
+                  "closed": true,
+                  "sources": 0,
+                  "activeOutputs": 0,
+                  "openingOutputs": 0,
+                  "rawPending": 0,
+                  "cleanupPending": 0,
+                  "cleanupFailures": 0,
+                  "attempts": 3,
+                  "listeners": 0,
+                  "polls": 0,
+                  "pollArmed": false,
+                  "expiryArmed": false
+                },
+                "producerState": "closed",
+                "readerStates": [
+                  "closed",
+                  "closed"
+                ],
+                "routingStates": [
+                  "closed"
+                ],
+                "originalTracksEndedByCaller": true,
+                "clonedTracksEndedByAdapter": true
+              },
+              "deviceAcquisitions": 0,
+              "speakerConnections": 0
+            }
+          },
+          "pageErrors": [],
+          "remoteAttempts": []
+        }
+      ],
+      "limits": {
+        "sources": 1,
+        "privateOutputs": 2,
+        "rawContextLifecycles": 1,
+        "attempts": 64,
+        "lifetimeMs": 30000,
+        "openMs": 5000,
+        "diagnosticHz": 20,
+        "samples": 256,
+        "sampleRateHz": 48000,
+        "channels": 2,
+        "registrations": 4,
+        "internalAudioRoutes": 2,
+        "diagnosticRoutes": "separately granted caller route"
+      },
+      "scope": "Actual owned browser application oscillator/private native graph/analyser digital effects only; no user device, speakers, encoded PCM, network transport, acoustic or hardware capture clock claims."
+    },
+    "sourceReview": {
+      "path": "/tmp/101-application-audio-repaired-independent-review.json",
+      "sha256": "24089de41a31d115d2ca17b42d8be00dcd811273109c306ef3485f3553b54259"
+    },
+    "installedReview": {
+      "path": "/tmp/101-application-audio-installed-independent-review.json",
+      "sha256": "9f572e04234c62a391671831763d2aef1d20c26aba6a558472d1d0b6a278d210"
+    },
+    "preservation": {
+      "path": "/tmp/101-application-audio-build-preservation.json",
+      "sha256": "550ac2b549e449e5ec9b7504df5d2c763f4288b1504268fb9611ef4392a727ec"
+    },
+    "originalFindings": {
+      "path": "/tmp/101-application-audio-independent-review.json",
+      "sha256": "230ba5ad180dceb9d81d80502679da39b543a4f5e0c59cb3aa173a5eab0aefa1"
+    },
+    "originalNativeScope": "Ancestor b040 leaf only; current installed receipt binds repaired feec leaf.",
+    "publicFeatureRed": {
+      "path": "/tmp/101-application-audio-public-old-red.json",
+      "sha256": "a53c49a1a02e91f283e4e50b038a9102b8cf1da0f93004ca663977007c3242cf"
+    },
+    "limitations": [
+      "No user capture/device, speaker/headphone or acoustic/hardware qualification",
+      "Observed48000Hz/two-channel native destination-node graph only; missing WebKit emitted PCM facts unknown",
+      "No encoded audio/network transport, capture-clock mapping or mix/duck/exclusive policy",
+      "Trusted same-realm application owns consent and borrowed producer; no malicious-host sandbox claim"
+    ]
+  },
+  "wire": {
+    "scope": "Built selected direct-wss-wire-replay/1 caller: actual captured101W application bytes reinjected through authenticated native WSS sockets; ordinary strict installed NodeNext compile171declarations,20checks/4freshpairs/22captures/18replays/peak7callbacks/8sockets/cleanup0. Incumbents and fresh actual effects qualify negatives; original700ms expiry and independent source/sink owner revocation retire real routes. Controlled mutations are labeled. TLS ciphertext/IP replay, RTC/IPC/media and every other receiver boundary/full S09 remain open.",
+    "sourcePacket": {
+      "path": "/tmp/101-wire-replay-frozen-pins.json",
+      "sha256": "33ef0bffa296e1002f439dd39097a9ab74ea675f733d6b91c670c7a797150675"
+    },
+    "installedTypesDelta": {
+      "path": "/tmp/101-wire-replay-installed-types-qa-pins.json",
+      "sha256": "30bb049d2899e8b7be4807396c66152bb26b4f2ed7b31405cf261a0806fbcb35"
+    },
+    "focused": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "scope": "public source modules plus owned actual native WSS fixtures"
+    },
+    "installed": {
+      "schemaVersion": 1,
+      "result": "pass",
+      "receipt": {
+        "path": "/tmp/101-wire-replay-current-installed-green.json",
+        "sha256": "38e517168066ec618e8a2295966f85964ecd4687153fe1ca191c9f5678e24598"
+      },
+      "provenance": {
+        "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-wire-replay-proof-1NHaOo/provenance.json",
+        "sha256": "7856158f1406a4020d66788b5489dba0608951bd841cc7cb7ad8f327232d7dc9",
+        "callerPins": {
+          "examples/wire-replay/wire-replay.ts": "c7e670603d27dbab2166c19dae9c1c5eac98eaf82b968ebf9e47157cc798ed3d",
+          "tests/wire-replay.test.ts": "d722e835c86c95ceb02eb8adf24357a813bf552a2a3d7b1082559146f31335ff",
+          "examples/wire-replay/consumer.mjs": "ba88f6bd9a9bab10efc19a51df7d356f406839db955584033f95585b71778833",
+          "tools/qa-wire-replay.mjs": "9a339133aa468f55becf5c41d8f0fb49ebde1b7401a4d7a45c5a5b0d10f744b9"
+        },
+        "sourceModuleCount": 0,
+        "producerTree": "31aa07e7778073ee391b9ca51ce2802f0e9737a3",
+        "producerSources": 149,
+        "packedFiles": 330,
+        "sdkPackages": 7
+      },
+      "compile": {
+        "compilerVersion": "5.9.3",
+        "compilerPath": "/Users/km/Desktop/games/101/node_modules/typescript/lib/typescript.js",
+        "compilerSha256": "3ae902c92cc44dace175c0e69e13a4b0899f6983c6121d76b9ab8dd5795e7675",
+        "compilerPackageSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "skipLibCheck": false,
+        "noEmitOnError": true,
+        "ambientTypePackages": [],
+        "sourceAliases": false,
+        "diagnostics": 0,
+        "inputSha256": "c7e670603d27dbab2166c19dae9c1c5eac98eaf82b968ebf9e47157cc798ed3d",
+        "emittedSha256": "46437a729993a3fd6de3103aa1046678271d2fb97caec5e7c67311a479bb3995",
+        "standardDeclarationCount": 59,
+        "installedDeclarationCount": 112
+      },
+      "actual": {
+        "result": "pass",
+        "profile": "direct-wss-wire-replay/1",
+        "trials": [
+          {
+            "result": "pass",
+            "profile": "direct-wss-wire-replay/1",
+            "scenario": "baseline",
+            "checks": [
+              "source owner denial has zero new resource effects",
+              "sink owner denial has zero new resource effects",
+              "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+              "unchanged actual native compact frame duplicate cannot apply twice",
+              "derived lower compact sequence cannot roll back current state",
+              "unchanged event duplicate and derived fresh higher-sequence old operation cannot apply",
+              "unchanged actual native JSON2 frame duplicate cannot apply twice",
+              "derived compact revision and wrong negotiated codec cannot apply",
+              "fresh unused slots reject derived descriptor and schema pins without disturbing incumbents",
+              "fresh-sequence derived stale capture and elapsed event deadline cannot apply",
+              "fresh real native valid effects confirm all three current routes after coherent rejection batches",
+              "observed real grant-expired reasons and times precede fresh-sequence late bytes"
+            ],
+            "reliableEffects": [
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "latestEffects": 4,
+            "structuredEffects": 4,
+            "releases": 3,
+            "actualRealConnectionsRetired": 5,
+            "unchangedNativeReplays": 3,
+            "derivedEnvelopeAttempts": 9,
+            "nativeFrameHashes": [
+              "268b1d6aea1e64dd33d2764f9d8112e9b1818815e7e1e0ff134f85fa69238b74",
+              "7d8f0f9aced5c1281c436bf4103815840a5c33db471260059afd25510cda29b1",
+              "f1be2f7d40d1759f07d1b580c47879eb169577a5168f1f9270e8f751f050d4d6"
+            ],
+            "grantExpiry": {
+              "deadlineAfterStartMs": 700,
+              "lastConfirmedCurrentAfterStartMs": 699.3995420000001,
+              "keepaliveTurns": 1,
+              "retirements": [
+                {
+                  "afterStartMs": 705.3043749999997,
+                  "reason": "expired"
+                },
+                {
+                  "afterStartMs": 705.5394999999999,
+                  "reason": "expired"
+                },
+                {
+                  "afterStartMs": 705.5821669999996,
+                  "reason": "expired"
+                }
+              ]
+            },
+            "cleanup": {
+              "routes": 0,
+              "heldContact": false,
+              "registrations": 0,
+              "ownedTimer": false
+            },
+            "actualApplicationFrameReplay": true,
+            "tlsCiphertextReplay": false,
+            "physicalQualification": false
+          },
+          {
+            "result": "pass",
+            "profile": "direct-wss-wire-replay/1",
+            "scenario": "source-revoke",
+            "checks": [
+              "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+              "owner signal explicitly revokes real routes; unchanged and derived fresh-sequence late native bytes have zero new effects"
+            ],
+            "reliableEffects": [
+              true,
+              false,
+              true
+            ],
+            "latestEffects": 1,
+            "structuredEffects": 1,
+            "releases": 3,
+            "actualRealConnectionsRetired": 3,
+            "unchangedNativeReplays": 1,
+            "derivedEnvelopeAttempts": 1,
+            "nativeFrameHashes": [
+              "8ffbad44799b9a0572b4410e8a7049913df88ebc3c32e78f287791c1a340f168",
+              "427ae211092adfaa742fd059d2ac6972bb1dea72e189bed384e5480c468bf34b",
+              "e5cee37e8948298ecb74f2d07b8a91f6b445215b7680659d8c6601227bfcf3f9"
+            ],
+            "cleanup": {
+              "routes": 0,
+              "heldContact": false,
+              "registrations": 0,
+              "ownedTimer": false
+            },
+            "actualApplicationFrameReplay": true,
+            "tlsCiphertextReplay": false,
+            "physicalQualification": false
+          },
+          {
+            "result": "pass",
+            "profile": "direct-wss-wire-replay/1",
+            "scenario": "sink-revoke",
+            "checks": [
+              "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+              "owner signal explicitly revokes real routes; unchanged and derived fresh-sequence late native bytes have zero new effects"
+            ],
+            "reliableEffects": [
+              true,
+              false,
+              true
+            ],
+            "latestEffects": 1,
+            "structuredEffects": 1,
+            "releases": 3,
+            "actualRealConnectionsRetired": 3,
+            "unchangedNativeReplays": 1,
+            "derivedEnvelopeAttempts": 1,
+            "nativeFrameHashes": [
+              "38db746771ab3ebefb9e82d9ed23812bb2577345fa54ee7385aedc2350897840",
+              "84cbf7ae77ed9161b864338c3b1eb4749a3fe7afafc3a458059be988485bd8ca",
+              "adc98b576e45ef15cdfba9bc58280eaab107cf0eefe466d8ad65f37861e1aa2d"
+            ],
+            "cleanup": {
+              "routes": 0,
+              "heldContact": false,
+              "registrations": 0,
+              "ownedTimer": false
+            },
+            "actualApplicationFrameReplay": true,
+            "tlsCiphertextReplay": false,
+            "physicalQualification": false
+          },
+          {
+            "result": "pass",
+            "profile": "direct-wss-wire-replay/1",
+            "scenario": "connection-recovery",
+            "checks": [
+              "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+              "unchanged captured old connection-tag frame is dropped before authenticated resource data",
+              "derived current outer tag and fresh timing admit old inner epoch to public boundary but cannot apply",
+              "fresh identities epoch and independent approvals recover actual current effects"
+            ],
+            "reliableEffects": [
+              true,
+              false
+            ],
+            "latestEffects": 2,
+            "structuredEffects": 1,
+            "releases": 3,
+            "actualRealConnectionsRetired": 3,
+            "unchangedNativeReplays": 1,
+            "derivedEnvelopeAttempts": 1,
+            "nativeFrameHashes": [
+              "7d3620f01fa359add7a8aa762f78de036d3005af2ad4e129e13b880d693cac1d",
+              "4087b39923ed842f8a8037090859465c95e89ac6edf7c7abaa319962d813cd07",
+              "cf59c1b86304f29f9aacdd0395eeac3e736ff12eb6ddcf3e719e9ba7aaaa1d88"
+            ],
+            "cleanup": {
+              "routes": 0,
+              "heldContact": false,
+              "registrations": 0,
+              "ownedTimer": false
+            },
+            "actualApplicationFrameReplay": true,
+            "tlsCiphertextReplay": false,
+            "physicalQualification": false
+          }
+        ],
+        "checks": [
+          "source owner denial has zero new resource effects",
+          "sink owner denial has zero new resource effects",
+          "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+          "unchanged actual native compact frame duplicate cannot apply twice",
+          "derived lower compact sequence cannot roll back current state",
+          "unchanged event duplicate and derived fresh higher-sequence old operation cannot apply",
+          "unchanged actual native JSON2 frame duplicate cannot apply twice",
+          "derived compact revision and wrong negotiated codec cannot apply",
+          "fresh unused slots reject derived descriptor and schema pins without disturbing incumbents",
+          "fresh-sequence derived stale capture and elapsed event deadline cannot apply",
+          "fresh real native valid effects confirm all three current routes after coherent rejection batches",
+          "observed real grant-expired reasons and times precede fresh-sequence late bytes",
+          "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+          "owner signal explicitly revokes real routes; unchanged and derived fresh-sequence late native bytes have zero new effects",
+          "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+          "owner signal explicitly revokes real routes; unchanged and derived fresh-sequence late native bytes have zero new effects",
+          "separate grants produce actual compact, JSON2 and both reliable true/false effects",
+          "unchanged captured old connection-tag frame is dropped before authenticated resource data",
+          "derived current outer tag and fresh timing admit old inner epoch to public boundary but cannot apply",
+          "fresh identities epoch and independent approvals recover actual current effects"
+        ],
+        "actualGenerations": 4,
+        "captureCount": 22,
+        "replayAttempts": 18,
+        "peakPendingNativeCallbacks": 7,
+        "capturedNativeFrameHashes": [
+          "7f5e251f24e6ae01722b784d0822dcfd8d2ea2f03975e50b010d6145ef762c54",
+          "268b1d6aea1e64dd33d2764f9d8112e9b1818815e7e1e0ff134f85fa69238b74",
+          "7d8f0f9aced5c1281c436bf4103815840a5c33db471260059afd25510cda29b1",
+          "f1be2f7d40d1759f07d1b580c47879eb169577a5168f1f9270e8f751f050d4d6",
+          "6bf09e006936db083ac2c696d27ee0544d916f6395a6e0da24b70e0b67b2c282",
+          "769a0bd0b6097f5c9d7df827194b45aacaad7e0660083abeb8ddb4a5dbca8f8b",
+          "ad5fd04a4f941c37c4e0d1b744ac1df5520b4d2005cb29f6c6c93b724a1c8b3f",
+          "f4f4163c24b10c75a1fe13ad7496ca89a379aae0ed0ef5cf814fe8808be5c65e",
+          "8ffbad44799b9a0572b4410e8a7049913df88ebc3c32e78f287791c1a340f168",
+          "427ae211092adfaa742fd059d2ac6972bb1dea72e189bed384e5480c468bf34b",
+          "e5cee37e8948298ecb74f2d07b8a91f6b445215b7680659d8c6601227bfcf3f9",
+          "2001f1dc448f28c6a881257a53fa977bc6251299f9f92166fa55cf81ee20a11d",
+          "79d85527bcd6709107b3abb8b1d192a2d6e13f499fde71e544b3a2daa4ac1919",
+          "38db746771ab3ebefb9e82d9ed23812bb2577345fa54ee7385aedc2350897840",
+          "84cbf7ae77ed9161b864338c3b1eb4749a3fe7afafc3a458059be988485bd8ca",
+          "adc98b576e45ef15cdfba9bc58280eaab107cf0eefe466d8ad65f37861e1aa2d",
+          "c5624cc4c9c065f3b68712e49adeb3174e2cdb12d2f914b3f4abed299cf0c877",
+          "764fef19472377387c7f98e2f8e0d531471eed97a3ec0e8d8d79ff852f647da1",
+          "7d3620f01fa359add7a8aa762f78de036d3005af2ad4e129e13b880d693cac1d",
+          "4087b39923ed842f8a8037090859465c95e89ac6edf7c7abaa319962d813cd07",
+          "cf59c1b86304f29f9aacdd0395eeac3e736ff12eb6ddcf3e719e9ba7aaaa1d88",
+          "b9b45cabf54dc3c551077f16184ae065ce67662170918a74e161f49b14c649fc"
+        ],
+        "cleanup": {
+          "nativeContexts": 0,
+          "pendingWrites": 0,
+          "temporaryCredentialsRemoved": true,
+          "issuedNativeSockets": 8
+        },
+        "applicationFrameReplay": true,
+        "tlsCiphertextReplay": false,
+        "actualIpLoss": false,
+        "physicalQualification": false,
+        "sourceClock": "wire-source-performance",
+        "targetClock": "wire-target-performance",
+        "installedHubClaim": false
+      },
+      "ownedNativeContexts": 0,
+      "sourceOnly": false,
+      "physicalQualification": false,
+      "broaderS09": "open"
+    },
+    "sourceReview": {
+      "path": "/tmp/101-wire-replay-independent-review.json",
+      "sha256": "3a4fd57929ce77d1920091893038b9cf05e3a3eeb9d7594ad66ce2c65b404f8e"
+    },
+    "typesDeltaReview": {
+      "path": "/tmp/101-wire-replay-installed-types-independent-review.json",
+      "sha256": "5dbe5261b10fb83cef75943efb80378576da12fbc0e3b3cef27ef1429ed28963"
+    },
+    "importRegression": {
+      "path": "/tmp/101-wire-replay-installed-caller-import-old-red.json",
+      "sha256": "7800c249576bad9b7a09e3adf273c71c42ac05d061c94765d6028277ce287c69"
+    },
+    "importRepairReview": {
+      "path": "/tmp/101-wire-replay-installed-caller-import-independent-review.json",
+      "sha256": "cd479bd32b44a7d09dedc349f5e6d732850082bb5d5d2081e2d11400b0579eb0"
+    },
+    "installedReview": {
+      "path": "/tmp/101-wire-replay-installed-independent-review.json",
+      "sha256": "1f78cd9592698a49a19d262c06f93e475b63a9ce98b5c92cb7ad14728e621a94"
+    },
+    "preservation": {
+      "path": "/tmp/101-wire-replay-build-preservation.json",
+      "sha256": "68f87aa1c38346e9eaea367f8aa80fea303847d7e1949753d984a48fdd2cff68"
+    },
+    "supersededPreservation": {
+      "path": "/tmp/101-wire-replay-superseded-preservation.json",
+      "sha256": "112baf2fda37f2d99dd210c012fdac03989f86f2fab5441c8bf7ffbc996becbf"
+    },
+    "sourcePeakCallbacks": 6,
+    "currentInstalledPeakCallbacks": 7,
+    "limitations": [
+      "Selected direct-WSS public receiver only; other transport/IPC/media receiver boundaries remain open",
+      "Actual101W application frame replay inside fresh valid TLS records; no TLS ciphertext/IP replay or network loss claim",
+      "Derived schema/epoch/profile/timing mutations are separate from unchanged actual captures",
+      "Node24.14 current; historical feature RED24.19 preserved; owned software/native sockets only"
+    ]
+  },
+  "taskDisposition": {
+    "completed": [],
+    "builtSelected": [
+      "V03",
+      "S09"
+    ],
+    "remainOpen": [
+      "V01",
+      "V03",
+      "V09",
+      "N02",
+      "S09"
+    ],
+    "deviceChecks": "deferred by user"
+  },
+  "requiredGates": {
+    "status": "pending against exact integrated candidate; no new broad-gate or source-commit claim at receipt freeze"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 117,
+    "open": 155
+  },
+  "acceptedSupportRows": 0
+}

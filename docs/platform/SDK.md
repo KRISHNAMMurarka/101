@@ -402,6 +402,34 @@ capability. Browser-native media buffers do not carry a hard memory claim.
 Trusted same-origin host code owns consent and the application canvas; these
 APIs are cooperative recipient isolation, not a sandbox against that host.
 
+## Private application audio
+
+`createBrowserApplicationAudio` and `BROWSER_APPLICATION_AUDIO_LIMITS` are public
+exports of `@101/connect` and `@101/device-web`. Supply an existing runtime,
+application/session IDs, monotonic `now`, owner signal and separate
+`authorizeSource`/`authorizeOutput` callbacks. Register a borrowed, same-realm
+`MediaStreamAudioDestinationNode` and its exact stream with
+`registerSource({ sourceId, ownerPrincipalId, producerNode, stream })`.
+The selected native graph requires an observed 48 kHz context, two-channel
+destination node and one live audio track. Contradictory track settings reject;
+missing emitted PCM metadata remains unknown.
+
+Each `bind({ source, outputId, ownerPrincipalId, purpose, signal })` requires
+both current owner decisions, returning `{ request, signal, grant }` for the
+exact issued request, plus independent runtime subscribe/write authorization.
+After `ready` succeeds, `output()` exposes only that recipient's private stream.
+`setMuted` and `setVolume` affect that output independently. Output revocation
+retires one recipient; source revocation retires all. Diagnostics require a
+separate resource route and measure analyser retrieval, not capture time.
+
+The adapter bounds one source, two recipients, one raw routing-context lifecycle,
+64 attempts and a 30-second lifetime. Await `close()` to settle owned native
+cleanup. Borrowed producer tracks/context remain the application's responsibility.
+The [ordinary application caller](../../examples/browser-resources/application-audio.ts)
+demonstrates the grants, private native graphs and cleanup. Its owned browser
+fixture connects no speakers and acquires no devices; hardware output, encoded
+audio and network routing retain their separate qualification.
+
 ## Preset haptic output
 
 `getHapticOutputProfile` exposes `app:expo-haptic-presets/1` and
@@ -1167,6 +1195,21 @@ uses explicitly identified source Hub/coordinator/gateway modules. WebRTC uses
 two native peers and distinct ephemeral identities in one owned trusted browser
 realm with no ICE servers. The gateway sees application plaintext. Installed Hub,
 two-page isolation, internet/physical paths and the wider F09 matrix remain open.
+
+## Captured application-wire replay
+
+The [WSS replay caller](../../examples/wire-replay/wire-replay.ts) exercises
+`direct-wss-wire-replay/1` through the public authenticated peers, publisher and
+receiver. Its private native fixture captures actual `101W` application bytes
+at `socket.send` and reinjects them through an owned authenticated WSS socket.
+Derived schema, profile, epoch and timing mutations are labeled separately.
+Current incumbent routes and fresh native effects qualify rejection checks;
+expiry and owner revocation have their own retirement evidence.
+
+`node tools/qa-wire-replay.mjs --sdk-root <clean-consumer>` compiles the caller
+against ordinary installed declarations with strict NodeNext checks, then runs
+the bounded native suite. This selected path does not qualify TLS ciphertext
+replay or other receiver/transport boundaries.
 
 ## Local device simulator
 

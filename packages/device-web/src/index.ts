@@ -49,3 +49,6 @@ export type { BrowserMicrophoneOptions, BrowserMicrophoneEnvironment, BrowserMic
 
 export { createBrowserCameraProvider, BROWSER_CAMERA_LIMITS } from './browser-camera.ts';
 export type { BrowserCameraOptions, BrowserCameraEnvironment, BrowserCameraSelection, BrowserCameraInventory, BrowserCameraCaptureRequest, BrowserCameraCaptureGrant, BrowserCameraActivation, BrowserCameraFailure, BrowserCameraResult, BrowserCameraProvider, BrowserCameraFrame } from './browser-camera.ts';
+
+export { createBrowserApplicationAudio, BROWSER_APPLICATION_AUDIO_LIMITS } from './application-audio.ts';
+export type { BrowserApplicationAudioOwnerRequest, BrowserApplicationAudioOwnerGrant, BrowserApplicationAudioSource, BrowserApplicationAudioSourceOptions, BrowserApplicationAudioBindOptions, BrowserApplicationAudioEnvironment, BrowserApplicationAudioOptions, BrowserApplicationAudioStatus, BrowserApplicationAudioBinding, BrowserApplicationAudioControllerStatus, BrowserApplicationAudio } from './application-audio.ts';

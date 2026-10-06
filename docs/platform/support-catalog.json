@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 20,
+  "revision": 22,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3090,15 +3090,14 @@
           "local-operator-recovery-drills/1"
         ],
         "resources": [
-          "built selected three executable incident/upgrade/rollback runbooks:32actual native/storage/route checks,4CLIchecks and6focused tests. Actual interrupted fsynced update preserves accepted bytes; rollback retains durable revocation/floors; damaged-only recovery preserves authoritative post-deletion current owner/audit/retention; real mTLS rotation/stop/fresh owner reject old identity/bearer/enrollment and retire four listeners. Root actual129 source closure tested separately after two changed public barrels. Required exact gates/local integration commit pending; broader O05/O06/production/OS key/account/SIGKILL/hardware remain open."
+          "complete for selected local-operator-recovery-drills/1: three representative executable upgrade/rollback/incident runbooks pass32drill+4CLIchecks,6focused and exact1811unit/34rendered/type/lint/freshbuild sourcegates at localcommit3df151b. SourceHub/SDK public modules only; production rollout, persistent account/OS key state, arbitrary operator data, SIGKILL and physical qualification remain separate."
         ],
         "unavailable": [
           "source-only Hub/SDK public barrels, no installed Hub release claim",
           "no production rollout, persistent account/key store or arbitrary operator state",
           "no rollback of independent current checkpoint or issuer revocation",
           "no SIGKILL cleanup guarantee",
-          "no remote, physical or OS device qualification",
-          "O07 remains open until independent review/integration gates"
+          "no remote, physical or OS device qualification"
         ]
       },
       "qualificationTasks": [
@@ -3108,13 +3107,16 @@
       ],
       "evidence": {
         "implementation": [
-          "o07-local-operator-recovery-drills-2026-10-06"
+          "o07-local-operator-recovery-drills-2026-10-06",
+          "o07-selected-runbook-required-gates-pass-2026-10-06"
         ],
         "contract": [
-          "o07-local-operator-recovery-drills-2026-10-06"
+          "o07-local-operator-recovery-drills-2026-10-06",
+          "o07-selected-runbook-required-gates-pass-2026-10-06"
         ],
         "runtime": [
-          "o07-local-operator-recovery-drills-2026-10-06"
+          "o07-local-operator-recovery-drills-2026-10-06",
+          "o07-selected-runbook-required-gates-pass-2026-10-06"
         ],
         "physical": []
       },
@@ -3128,8 +3130,116 @@
         "no production rollout, persistent account/key store or arbitrary operator state",
         "no rollback of independent current checkpoint or issuer revocation",
         "no SIGKILL cleanup guarantee",
-        "no remote, physical or OS device qualification",
-        "O07 remains open until independent review/integration gates"
+        "no remote, physical or OS device qualification"
+      ]
+    },
+    {
+      "id": "private-application-audio-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned Chromium149.0.7827.55/WebKit26.5",
+        "runtimeVersion": "Node24.14.0/TypeScript5.9.3; exact versions and input hashes in receipt",
+        "formFactor": "Owned software fixture",
+        "transport": "Private same-realm native application audio graph",
+        "connector": "private-application-audio/1",
+        "connectorVersion": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+        "profiles": [
+          "private-application-audio/1"
+        ],
+        "resources": [
+          "Built and locally qualified private application-audio graph: exact borrowed native producer node/stream, separate source/output owner and runtime grants, two private recipients, mute/volume/revocation and actual owned Chromium149/WebKit26.5 native analyser effects. Current repaired leaf feec3064, ordinary installed seven-package SDK149source/330files/171declarations,36focused. WebKit emitted PCM facts unknown. Speaker/headphone/mic capture, route changes on real devices, encoded/network audio, mix/duck/exclusive and full V03/V01/V09/N02 remain open."
+        ],
+        "unavailable": [
+          "No user capture/device, speaker/headphone or acoustic/hardware qualification",
+          "Observed48000Hz/two-channel native destination-node graph only; missing WebKit emitted PCM facts unknown",
+          "No encoded audio/network transport, capture-clock mapping or mix/duck/exclusive policy",
+          "Trusted same-realm application owns consent and borrowed producer; no malicious-host sandbox claim"
+        ]
+      },
+      "qualificationTasks": [
+        "V03",
+        "V01",
+        "V09",
+        "N02"
+      ],
+      "evidence": {
+        "implementation": [
+          "v03-private-application-audio-installed-2026-10-06"
+        ],
+        "contract": [
+          "v03-private-application-audio-installed-2026-10-06"
+        ],
+        "runtime": [
+          "v03-private-application-audio-installed-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "No user capture/device, speaker/headphone or acoustic/hardware qualification",
+        "Observed48000Hz/two-channel native destination-node graph only; missing WebKit emitted PCM facts unknown",
+        "No encoded audio/network transport, capture-clock mapping or mix/duck/exclusive policy",
+        "Trusted same-realm application owns consent and borrowed producer; no malicious-host sandbox claim"
+      ]
+    },
+    {
+      "id": "captured-wss-wire-replay-software-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Ordinary installed public SDK; owned native Node WSS",
+        "runtimeVersion": "Node24.14.0/TypeScript5.9.3; exact versions and input hashes in receipt",
+        "formFactor": "Owned software fixture",
+        "transport": "Private loopback authenticated native WSS",
+        "connector": "direct-wss-wire-replay/1",
+        "connectorVersion": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+        "profiles": [
+          "direct-wss-wire-replay/1"
+        ],
+        "resources": [
+          "Built selected direct-wss-wire-replay/1 caller: actual captured101W application bytes reinjected through authenticated native WSS sockets; ordinary strict installed NodeNext compile171declarations,20checks/4freshpairs/22captures/18replays/peak7callbacks/8sockets/cleanup0. Incumbents and fresh actual effects qualify negatives; original700ms expiry and independent source/sink owner revocation retire real routes. Controlled mutations are labeled. TLS ciphertext/IP replay, RTC/IPC/media and every other receiver boundary/full S09 remain open."
+        ],
+        "unavailable": [
+          "Selected direct-WSS public receiver only; other transport/IPC/media receiver boundaries remain open",
+          "Actual101W application frame replay inside fresh valid TLS records; no TLS ciphertext/IP replay or network loss claim",
+          "Derived schema/epoch/profile/timing mutations are separate from unchanged actual captures",
+          "Node24.14 current; historical feature RED24.19 preserved; owned software/native sockets only"
+        ]
+      },
+      "qualificationTasks": [
+        "S09"
+      ],
+      "evidence": {
+        "implementation": [
+          "s09-captured-wss-wire-replay-installed-2026-10-06"
+        ],
+        "contract": [
+          "s09-captured-wss-wire-replay-installed-2026-10-06"
+        ],
+        "runtime": [
+          "s09-captured-wss-wire-replay-installed-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "Selected direct-WSS public receiver only; other transport/IPC/media receiver boundaries remain open",
+        "Actual101W application frame replay inside fresh valid TLS records; no TLS ciphertext/IP replay or network loss claim",
+        "Derived schema/epoch/profile/timing mutations are separate from unchanged actual captures",
+        "Node24.14 current; historical feature RED24.19 preserved; owned software/native sockets only"
       ]
     }
   ]

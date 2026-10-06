@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 116 completed with recorded evidence; 156 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 117 completed with recorded evidence; 155 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -134,7 +134,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **S06 — Implement membership/invitation lifecycle.** Expiring invitations, removal, reconnect and lost-device recovery cannot expose another participant's resources.
 - [x] **S07 — Implement direct and relay negotiation.** ICE/TURN or authenticated gateway fallback uses scoped short-lived credentials and records the selected path. [Selected software implementation and exact local gates](receipts/2026-10-06-browser-gateway.json); local commit `55af5b2`.
 - [ ] **S08 — Prove two-network and relay-required sessions.** Physical endpoints on different networks connect, recover and revoke access; direct-only LAN tests cannot close this row.
-- [ ] **S09 — Implement wire replay protection.** Test epochs, sequence windows, IDs/deadlines, revoked grants and stale schema/profile bytes at every receiver boundary.
+- [ ] **S09 — Implement wire replay protection.** Test epochs, sequence windows, IDs/deadlines, revoked grants and stale schema/profile bytes at every receiver boundary. [Built selected native WSS replay caller and current installed SDK evidence](receipts/2026-10-06-application-audio-replay.json); remaining full scope and deferred physical checks stay open.
 - [ ] **S10 — Implement resource/tenant isolation.** Cross-user, cross-session and cross-directory requests fail; private audio/video/telemetry cannot leak to unintended subscribers.
 - [ ] **S11 — Implement abuse and capacity controls.** Limit invitations, discovery, authentication, connections, rates, bytes, subscriptions, jobs and expensive processors per authorized scope.
 - [ ] **S12 — Minimize native privileged APIs.** Use explicit allowed operations and IPC caller verification; descriptors/recipes cannot invoke arbitrary shell, filesystem or device operations.
@@ -182,7 +182,7 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 
 - [ ] **V01 — Implement authorized media endpoints.** Camera, microphone, screen, application view and output tracks negotiate compatible formats and independent source/sink grants. [Bounded local build and runtime evidence](receipts/2026-10-06-media-haptics-scheduling.json); remaining scope stays open.
 - [ ] **V02 — Separate media and control scheduling.** Large frames, adaptation and slow subscribers cannot starve pointer/events; bounds and cancellation are independently tested.
-- [ ] **V03 — Implement audio capture/output routing.** Source and speaker/headphone destinations are explicit; private recipients, route changes, mute, volume and device loss are verified.
+- [ ] **V03 — Implement audio capture/output routing.** Source and speaker/headphone destinations are explicit; private recipients, route changes, mute, volume and device loss are verified. [Built private application audio and current installed SDK evidence](receipts/2026-10-06-application-audio-replay.json); remaining full scope and deferred physical checks stay open.
 - [ ] **V04 — Support wired and wireless audio devices.** Microphone and playback capabilities are qualified separately; plug/unplug, Bluetooth route changes and latency/skew are recorded.
 - [ ] **V05 — Implement camera selection and controls.** Camera ownership, supported focus/exposure/zoom/PTZ, switching, denial, unplug and retry expose only verified controls.
 - [ ] **V06 — Implement adaptive encoded video.** Codec negotiation, bitrate/resolution changes, slow receivers, missing codecs and loss recover without unbounded buffers.
@@ -311,7 +311,7 @@ Each connector row closes only after its first working profile, protocol fixture
 ### Q — Conformance, support matrix and regression qualification
 
 - [x] **Q01 — Create the per-profile qualification template.** Require the evidence envelope below for every claimed connector/profile/runtime combination. [Contract evidence](CONTRACT-QA-2026-10-02.md).
-- [ ] **Q02 — Build portable model/codec contract tests.** Shared golden and negative fixtures cover all language bindings, supported schema versions and incompatible revisions. [Selected software build and scoped evidence](receipts/2026-10-06-watch-operator-drills.json); exact candidate integration gates remain pending.
+- [ ] **Q02 — Build portable model/codec contract tests.** Shared golden and negative fixtures cover all language bindings, supported schema versions and incompatible revisions. [Selected software build and scoped evidence](receipts/2026-10-06-watch-operator-drills.json); selected software source committed locally; broader profile coverage remains open.
 - [ ] **Q03 — Build faithful producer/decoder fixtures.** Use actual documented device/backend output, including malformed, short, nonfinite, missing and unexpected-profile data.
 - [ ] **Q04 — Build permission/identity adversarial suites.** Copied IDs, unauthorized peers, cross-session operations, revoked grants and plugin escalation fail at real execution boundaries.
 - [ ] **Q05 — Build lifecycle/ownership suites.** Stop, disconnect, revoke, expiry, removal, rotation, background and transfer cover exclusive/partition/observer behavior and async races.
@@ -382,7 +382,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [ ] **O04 — Validate overload and degraded behavior.** Capacity exhaustion, relay failure, processor failure and unavailable regions recover or reject admission within published bounds. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **O05 — Validate operational key/credential lifecycle.** Rotation, expiry, revocation and recovery work without exposing another tenant or retaining stale access. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 - [ ] **O06 — Validate state backup/restore where required.** Restoring identity/configuration/history preserves ownership, revocation, retention and migration integrity.
-- [ ] **O07 — Provide upgrade/rollback and incident runbooks.** Execute representative failure, security revocation and rollback drills with redacted receipts. [Selected software build and scoped evidence](receipts/2026-10-06-watch-operator-drills.json); exact candidate integration gates remain pending.
+- [x] **O07 — Provide upgrade/rollback and incident runbooks.** Execute representative failure, security revocation and rollback drills with redacted receipts. [Executed selected runbooks and exact local gates](receipts/2026-10-06-watch-operator-drills.json); local commit `3df151b`.
 - [x] **O08 — Establish service limits and responsibilities.** Document supported load, relay/traffic budgets, operator trust/privacy boundaries and maintenance obligations before a live service claim. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
 
 ### L — Publication readiness and actual publication

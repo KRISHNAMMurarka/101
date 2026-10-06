@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 94,
+  "revision": 96,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -9750,7 +9750,7 @@
     },
     {
       "id": "q02-shared-watch-software-contracts-2026-10-06",
-      "revision": "3176838564660350e1f2fd103793ea68d6fd73cf",
+      "revision": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9776,11 +9776,39 @@
       ],
       "supportRows": [
         "shared-watch-report-contracts-software-2026-10-06"
-      ]
+      ],
+      "sourceIntegration": {
+        "commit": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+        "tree": "75287aebe80c6e2c974a8ff892d5fd14ba334c81",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-watch-operator-required-gates.json",
+          "sha256": "6baaf49aa6992f6bc2d715e98926563b90524111c7652dfd11769dc6d032efeb"
+        },
+        "unit": {
+          "tests": 1811,
+          "pass": 1811,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "documentaryCandidate": "This later checklist reconciliation is staged for next software batch; gates above verify committedtree75287aeb only.",
+        "oldNativeFailureCause": "Unestablished; older AppKit/SSH failed candidates retained, no relaxation or cause/repair claim."
+      }
     },
     {
       "id": "o07-local-operator-recovery-drills-2026-10-06",
-      "revision": "3176838564660350e1f2fd103793ea68d6fd73cf",
+      "revision": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
       "result": "pass",
       "historical": false,
       "levels": [
@@ -9799,14 +9827,160 @@
       ],
       "environment": "macOS26.5.2arm64; 24.14.0; exact129 source hashes; owned local software inputs; runtime/install/source distinction in receipt",
       "reproduction": "node tools/qa-operator-drills.mjs --source",
-      "scope": "built selected three executable incident/upgrade/rollback runbooks:32actual native/storage/route checks,4CLIchecks and6focused tests. Actual interrupted fsynced update preserves accepted bytes; rollback retains durable revocation/floors; damaged-only recovery preserves authoritative post-deletion current owner/audit/retention; real mTLS rotation/stop/fresh owner reject old identity/bearer/enrollment and retire four listeners. Root actual129 source closure tested separately after two changed public barrels. Required exact gates/local integration commit pending; broader O05/O06/production/OS key/account/SIGKILL/hardware remain open.",
+      "scope": "complete for selected local-operator-recovery-drills/1: three representative executable upgrade/rollback/incident runbooks pass32drill+4CLIchecks,6focused and exact1811unit/34rendered/type/lint/freshbuild sourcegates at localcommit3df151b. SourceHub/SDK public modules only; production rollout, persistent account/OS key state, arbitrary operator data, SIGKILL and physical qualification remain separate.",
       "failure": null,
       "equipment": [
         "Owned offline compilers/private native/software fixtures; no user hardware/UI"
       ],
       "supportRows": [
         "local-operator-recovery-drills-software-2026-10-06"
-      ]
+      ],
+      "priorScope": "built selected three executable incident/upgrade/rollback runbooks:32actual native/storage/route checks,4CLIchecks and6focused tests. Actual interrupted fsynced update preserves accepted bytes; rollback retains durable revocation/floors; damaged-only recovery preserves authoritative post-deletion current owner/audit/retention; real mTLS rotation/stop/fresh owner reject old identity/bearer/enrollment and retire four listeners. Root actual129 source closure tested separately after two changed public barrels. Required exact gates/local integration commit pending; broader O05/O06/production/OS key/account/SIGKILL/hardware remain open.",
+      "sourceIntegration": {
+        "commit": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+        "tree": "75287aebe80c6e2c974a8ff892d5fd14ba334c81",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-watch-operator-required-gates.json",
+          "sha256": "6baaf49aa6992f6bc2d715e98926563b90524111c7652dfd11769dc6d032efeb"
+        },
+        "unit": {
+          "tests": 1811,
+          "pass": 1811,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "documentaryCandidate": "This later checklist reconciliation is staged for next software batch; gates above verify committedtree75287aeb only.",
+        "oldNativeFailureCause": "Unestablished; older AppKit/SSH failed candidates retained, no relaxation or cause/repair claim."
+      }
+    },
+    {
+      "id": "o07-selected-runbook-required-gates-pass-2026-10-06",
+      "revision": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "O07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-watch-operator-drills.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact localcommit3df151bc3ddfe6563ac76efc33e52e50a72d130f/tree75287aebe80c6e2c974a8ff892d5fd14ba334c81; fixed owned private native/software drills",
+      "reproduction": "node tools/qa-operator-drills.mjs --source; exact required commands/log hashes linked in receipt",
+      "scope": "complete for selected local-operator-recovery-drills/1: three representative executable upgrade/rollback/incident runbooks pass32drill+4CLIchecks,6focused and exact1811unit/34rendered/type/lint/freshbuild sourcegates at localcommit3df151b. SourceHub/SDK public modules only; production rollout, persistent account/OS key state, arbitrary operator data, SIGKILL and physical qualification remain separate.",
+      "failure": null,
+      "equipment": [
+        "Owned local native filesystem/mTLS fixtures and offline tools; no user device/UI"
+      ],
+      "supportRows": [
+        "local-operator-recovery-drills-software-2026-10-06"
+      ],
+      "sourceIntegration": {
+        "commit": "3df151bc3ddfe6563ac76efc33e52e50a72d130f",
+        "tree": "75287aebe80c6e2c974a8ff892d5fd14ba334c81",
+        "localOnly": true,
+        "requiredGates": {
+          "path": "/tmp/101-watch-operator-required-gates.json",
+          "sha256": "6baaf49aa6992f6bc2d715e98926563b90524111c7652dfd11769dc6d032efeb"
+        },
+        "unit": {
+          "tests": 1811,
+          "pass": 1811,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "rendered": {
+          "tests": 34,
+          "pass": 34,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0
+        },
+        "types": "pass",
+        "lint": "pass;one existing PointerLab ref warning",
+        "freshBuild": "pass",
+        "documentaryCandidate": "This later checklist reconciliation is staged for next software batch; gates above verify committedtree75287aeb only.",
+        "oldNativeFailureCause": "Unestablished; older AppKit/SSH failed candidates retained, no relaxation or cause/repair claim."
+      }
+    },
+    {
+      "id": "v03-private-application-audio-installed-2026-10-06",
+      "revision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V03",
+        "V01",
+        "V09",
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-application-audio-replay.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Ordinary installed public SDK; owned Chromium149.0.7827.55/WebKit26.5",
+      "reproduction": "node tools/qa-application-audio.mjs --installed <hash-bound manifest> <clean-consumer> <immutable-caller-tree>",
+      "scope": "Built and locally qualified private application-audio graph: exact borrowed native producer node/stream, separate source/output owner and runtime grants, two private recipients, mute/volume/revocation and actual owned Chromium149/WebKit26.5 native analyser effects. Current repaired leaf feec3064, ordinary installed seven-package SDK149source/330files/171declarations,36focused. WebKit emitted PCM facts unknown. Speaker/headphone/mic capture, route changes on real devices, encoded/network audio, mix/duck/exclusive and full V03/V01/V09/N02 remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler/headless browser/private native software fixtures; no user device/UI"
+      ],
+      "supportRows": [
+        "private-application-audio-software-2026-10-06"
+      ],
+      "requiredGates": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate"
+    },
+    {
+      "id": "s09-captured-wss-wire-replay-installed-2026-10-06",
+      "revision": "97affc4c2cacb14e5e42f622fa7e160b92e62744",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-application-audio-replay.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Ordinary installed public SDK; owned native Node WSS",
+      "reproduction": "node tools/qa-wire-replay.mjs --sdk-root <hash-bound clean consumer>",
+      "scope": "Built selected direct-wss-wire-replay/1 caller: actual captured101W application bytes reinjected through authenticated native WSS sockets; ordinary strict installed NodeNext compile171declarations,20checks/4freshpairs/22captures/18replays/peak7callbacks/8sockets/cleanup0. Incumbents and fresh actual effects qualify negatives; original700ms expiry and independent source/sink owner revocation retire real routes. Controlled mutations are labeled. TLS ciphertext/IP replay, RTC/IPC/media and every other receiver boundary/full S09 remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned offline compiler/headless browser/private native software fixtures; no user device/UI"
+      ],
+      "supportRows": [
+        "captured-wss-wire-replay-software-2026-10-06"
+      ],
+      "requiredGates": "pending exact integrated candidate at record freeze; installed/source proof scopes are separate"
     }
   ],
   "tasks": [
@@ -10629,7 +10803,8 @@
       "id": "S09",
       "records": [
         "pending-S09",
-        "resource-binding-2026-10-02"
+        "resource-binding-2026-10-02",
+        "s09-captured-wss-wire-replay-installed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -10780,7 +10955,8 @@
         "n02-selected-browser-gamepad-2026-10-06",
         "n02-selected-microphone-envelope-2026-10-06",
         "n02-browser-camera-raster-2026-10-06",
-        "n02-current-installed-browser-resources-2026-10-06"
+        "n02-current-installed-browser-resources-2026-10-06",
+        "v03-private-application-audio-installed-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11189,7 +11365,8 @@
       "records": [
         "pending-V01",
         "v01-media-haptics-scheduling-partial-2026-10-06",
-        "n02-browser-camera-raster-2026-10-06"
+        "n02-browser-camera-raster-2026-10-06",
+        "v03-private-application-audio-installed-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11219,7 +11396,8 @@
     {
       "id": "V03",
       "records": [
-        "pending-V03"
+        "pending-V03",
+        "v03-private-application-audio-installed-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -11310,7 +11488,8 @@
     {
       "id": "V09",
       "records": [
-        "pending-V09"
+        "pending-V09",
+        "v03-private-application-audio-installed-2026-10-06"
       ],
       "dependencies": [
         "M01",
@@ -13275,7 +13454,8 @@
       "id": "O07",
       "records": [
         "pending-O07",
-        "o07-local-operator-recovery-drills-2026-10-06"
+        "o07-local-operator-recovery-drills-2026-10-06",
+        "o07-selected-runbook-required-gates-pass-2026-10-06"
       ],
       "dependencies": [
         "S01"
