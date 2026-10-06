@@ -4,7 +4,7 @@ Updated: **6 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 109 completed with recorded evidence; 163 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 110 completed with recorded evidence; 162 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -142,11 +142,11 @@ All H rows are proven at `32e0e37` by [foundation QA](FOUNDATION-QA-2026-10-01.m
 - [ ] **S14 — Enforce plugin/processor isolation.** Resource grants, compute/memory/network limits and lifecycle teardown prevent installed extensions from acquiring additional privileges.
 - [ ] **S15 — Implement privacy and audit controls.** Capture/sharing is visible, revocation is prompt, secrets/personal streams stay out of logs/caches, and retention/export/deletion follow the declared policy.
 - [ ] **S16 — Complete independent security validation.** Review each frozen new trust boundary, repair reproduced findings, rerun affected negative tests and define incident/security-update procedures.
-- [ ] **S17 — Implement workspace/team administration.** Create/manage membership, roles and resource-sharing policy with auditable changes; removal/revocation and delegated administration never bypass device-owner consent.
+- [ ] **S17 — Implement workspace/team administration.** Create/manage membership, roles and resource-sharing policy with auditable changes; removal/revocation and delegated administration never bypass device-owner consent. [Bounded local build and exact evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
 
 ### N — OS/runtime libraries and native agents
 
-- [ ] **N01 — Define the native provider contract.** Share descriptors, permissions, readiness, lifecycle, IPC and conformance with a real browser/mobile/desktop consumer.
+- [x] **N01 — Define the native provider contract.** Share descriptors, permissions, readiness, lifecycle, IPC and conformance with a real browser/mobile/desktop consumer. [Shared contract and real desktop consumer evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
 - [ ] **N02 — Implement browser resource providers.** Keyboard, pointer, touch, gamepad, camera, microphone and supported hardware APIs expose typed resources with permission/loss recovery.
 - [ ] **N03 — Implement Android native providers.** Inventory and expose selected motion, touch, audio/camera, Bluetooth and hardware resources; permission/background/lock behavior is qualified.
 - [ ] **N04 — Implement iOS/iPadOS native providers.** Selected motion, touch/pen, camera/audio and external surfaces use permitted native APIs; denial, suspension and reconnect are qualified.
@@ -282,7 +282,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [x] **U01 — Finalize information architecture.** Devices, Connections, Sharing, Details, application surfaces, Settings and Studio have defined jobs, entities, permissions, navigation and recovery. [Product architecture contract](RELEASE-CONTRACT.md#product-information-architecture).
 - [ ] **U02 — Build complete device add/inspect flow.** Discovery, no results, unknown/partial device, unsupported resource, denied access and offline states expose understandable next actions. [Built browser add/inspect journey](receipts/2026-10-06-devices-add-inspect.json); enrolled resource/removal and full qualification remain open.
 - [ ] **U03 — Build complete connection task flow.** Source/output selection, compatible options, consent, connecting, active use, interruption and stop are coherent across nearby and remote paths. [Bounded implementation and exact local evidence](receipts/2026-10-06-identity-resources-connections.json).
-- [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users.
+- [ ] **U04 — Build sharing/ownership flow.** Owners see recipients, scope and duration; request transfer, decline, partition and revoke behave correctly for simultaneous users. [Bounded local build and exact evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
 - [ ] **U05 — Replace diagnostic product chrome.** Use device/task language and deliberate monochrome chrome; protocol, local labels, raw errors and constant status dots belong only where they help details/Studio.
 - [ ] **U06 — Complete native/browser/desktop consistency.** Supported capabilities drive the same meaningful actions; platform conventions, permission recovery and navigation remain appropriate to each OS.
 - [ ] **U07 — Complete responsive transformations.** Phones, tablets, watches, TV, desktop and external screens adapt to available area, orientation, safe insets, text scaling and offered inputs.
@@ -369,7 +369,7 @@ Use [release acceptance](../RELEASE-ACCEPTANCE.md) and [physical runbook](../PHY
 - [ ] **K06 — Produce desktop installers.** macOS, Windows and Linux packages have required platform signing/notarization where applicable plus target-OS install/update/uninstall receipts.
 - [x] **K07 — Produce browser/PWA release assets.** Offline/update/cache/security and runtime asset availability pass production builds with no hidden development origin requirement. [Packaged browser and two-build evidence](receipts/2026-10-04-browser-pwa-release.json); physical installed-PWA acceptance remains G15.
 - [x] **K08 — Repair required-target packaging semantics.** `tools/package-release.mjs` gets a release mode that fails missing required targets; debug/skipped artifacts cannot report an accepted release. [Required-target packaging evidence](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
-- [ ] **K09 — Complete redistribution licenses.** Synchronize notices/inventories with the lockfile and include licenses/assets/model attribution and supported third-party distribution terms. [Partial JavaScript inventory lockfile check](receipts/2026-10-05-k09-js-inventory.json); complete third-party terms/texts remain open. [Bounded build and exact local evidence](receipts/2026-10-06-agent-ipc-license-texts.json).
+- [ ] **K09 — Complete redistribution licenses.** Synchronize notices/inventories with the lockfile and include licenses/assets/model attribution and supported third-party distribution terms. [Partial JavaScript inventory lockfile check](receipts/2026-10-05-k09-js-inventory.json); complete third-party terms/texts remain open. [Bounded build and exact local evidence](receipts/2026-10-06-agent-ipc-license-texts.json). [Bounded local build and exact evidence](receipts/2026-10-06-sharing-administration-native-contract.json).
 - [ ] **K10 — Create artifact provenance/manifests.** Exact revision, build/profile versions, hashes, sizes, toolchains, licenses and provenance identify every package/binary. [Partial immutable SDK package manifest](receipts/2026-10-05-k10-sdk-manifest.json); other release targets and platform binaries remain open.
 - [ ] **K11 — Verify reproducible build/upgrade rollback.** Clean build inputs and installation migrations are repeatable; corrupt/partial updates fail safely and retain a recoverable accepted version.
 - [ ] **K12 — Audit release artifact contents.** Packed files contain required runtime assets/docs and no development secrets, local credentials, private receipts or unintended files. [Partial web and SDK audit](receipts/2026-10-05-k12-web-sdk-contents.json).

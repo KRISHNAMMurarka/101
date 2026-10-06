@@ -69,3 +69,6 @@ export type { OperatorHealthKind, OperatorHealthSource, OperatorHealthScope, Ope
 
 export { NATIVE_DISCOVERY_PROFILE, NATIVE_DISCOVERY_LIMITS, createNativeDiscoveryController } from './native-discovery.ts';
 export type { NativeDiscoveryScope, NativeDiscoveryGrant, NativeDiscoveryService, NativeDiscoveryEvent, NativeDiscoveryOperation, NativeDiscoveryProvider, NativeDiscoveryOptions, NativeDiscoveryHandle, NativeDiscoveryRow, NativeDiscoverySnapshot, NativeDiscoveryResult, NativeDiscoveryController } from './native-discovery.ts';
+
+export { createWorkspaceAdministration, WORKSPACE_ADMINISTRATION_PROFILE, WORKSPACE_ADMINISTRATION_LIMITS } from './workspace-administration.ts';
+export type * from './workspace-administration.ts';

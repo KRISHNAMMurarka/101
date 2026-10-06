@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "result": "pass-selected-built-scopes",
+  "date": "2026-10-06",
+  "base": "be1d5438c0cd7a3d2b534c4aeb355109369d6c6d",
+  "sourceTree": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+  "sourceSha256": {
+    "THIRD_PARTY_NOTICES.md": "ab019fb90ee85ac961d9103f391fcaa135f33fe65317c0a4f5bb6d18912fc3c3",
+    "THIRD_PARTY_RUST_LICENSES.json": "8d945894e3ffa69a6172eaacd1e91abd402af88b45259ac8461fd3facc23fe98",
+    "app/components/AppShell.tsx": "75a6ace20a4d740b5bad5d4604f338bed23ff8d729b70913bec3de6864ec97c0",
+    "app/sharing/SharingView.tsx": "34f898a0aa26e7c8615e817e50d116af30779a70233181323c4696cbdccd4adf",
+    "app/sharing/page.tsx": "04e2116f70788f02711b876f40b749b0ca6ab927dd53c42486c0cbf8e619abf9",
+    "app/sharing/sharing-task.test.ts": "68a5fc0e7ac2b44209a12bd000e84b66e6658100329914994df80d8eb8a2d60d",
+    "app/sharing/sharing-task.ts": "3881aed7737582e832549dc17877d5a1e46cec13429b5fcab0009e20542ad032",
+    "app/sharing/sharing.module.css": "4c18eb35aaabae0027cd812bc1dcb0efe119d91988d3560b66d6a73a2b3d5a32",
+    "docs/platform/SDK.md": "e4ad1b38b41f7dfb3b4fc5171de11eac715999703a393ddaedb4919bb37e4ebf",
+    "examples/workspace-administration/consumer.mjs": "ebbd29695a4d0689d7d5d7a159bcc5fe4338d4f1ab3294b0b422a9be7deca16e",
+    "packages/device-runtime/src/index.ts": "a92ab658f4929db215e21f60c0904ce773acf5403cd4378e9d974292e28704ed",
+    "packages/device-runtime/src/workspace-administration.test.ts": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839",
+    "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+    "tests/rust-license-texts.test.ts": "26786167669ffd99c7a4e4e03946f28a16f638b4cd9f22f91632fd305471e0e3",
+    "tools/generate-license-inventory.mjs": "102e8d897d5321f467af1fe772d402b3c3d2fb3970a6d223d6c66a9f58d06681",
+    "tools/generate-rust-license-inventory.mjs": "9214d978b5e8dd970ba63e8edaddfb564e0101ab41ec174837a6af010be160c9",
+    "tools/qa-sharing-flow.mjs": "9f855e2dcf74347c8350204225b91c36f0a1d82741c15a7dd563a76294ba296c",
+    "tools/qa-workspace-administration.mjs": "c02827e615ec08c5161a3288be5c63f8221bb14c40547dd2f58c955fd69098da"
+  },
+  "taskDisposition": {
+    "N01": "complete: documented shared native descriptor/permission/readiness/lifecycle/IPC/conformance contract with a real macOS Node desktop native RSS consumer; installation/update, platform support and physical qualification remain separate",
+    "U04": "partial: local application sharing consent, recipients/scope/duration, simultaneous partitions, decline/cancel, transfer, epoch-fenced revoke, readiness and recovery built; remote identities, observers and physical/UI matrix remain open",
+    "S17": "partial: ephemeral owner workspace, membership/delegated roles/resource policy and complete audit built; actual owner consent, managed route removal/expiry/raw settlement and duplicate tuple denial verified; durable teams/accounts/cross-process/physical support remains open",
+    "K09": "partial: exact offline cached crate licenses/notices collected and hashed with lock/metadata/manifest identity;40 absent-text crates, other sources/native binaries/model terms and complete redistribution review remain open",
+    "K01": "partial: fresh seven-package immutable SDK tarballs and clean offline consumer include new administration API; broader distribution/runtime acceptance remains open"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 110,
+    "open": 162
+  },
+  "nativeContract": {
+    "definition": "docs/platform/SDK.md#native-provider-contract",
+    "reviewer": "/root/b02_telemetry",
+    "review": "Exact text independently checked against actual descriptor/readiness/owner grants/context/epoch/settlement and selected IPC consumer; generic streaming and RSS conformance explicitly distinguished.",
+    "priorNativeCommit": "be1d5438c0cd7a3d2b534c4aeb355109369d6c6d",
+    "priorNativeReceipt": "docs/platform/receipts/2026-10-06-agent-ipc-license-texts.json",
+    "actualNativeChecks": 18,
+    "profileRegressions": 14,
+    "noSupportPromotion": true
+  },
+  "sharing": {
+    "packet": {
+      "path": "/tmp/101-u04-frozen-pins.json",
+      "sha256": "2e4b4c0999766fa0105df71ea7c1eda28c3884bdf9dec70f4b3748450c96199a",
+      "bytes": 9463
+    },
+    "sourceSha256": {
+      "app/sharing/page.tsx": "04e2116f70788f02711b876f40b749b0ca6ab927dd53c42486c0cbf8e619abf9",
+      "app/sharing/SharingView.tsx": "34f898a0aa26e7c8615e817e50d116af30779a70233181323c4696cbdccd4adf",
+      "app/sharing/sharing-task.ts": "3881aed7737582e832549dc17877d5a1e46cec13429b5fcab0009e20542ad032",
+      "app/sharing/sharing-task.test.ts": "68a5fc0e7ac2b44209a12bd000e84b66e6658100329914994df80d8eb8a2d60d",
+      "app/sharing/sharing.module.css": "4c18eb35aaabae0027cd812bc1dcb0efe119d91988d3560b66d6a73a2b3d5a32",
+      "tools/qa-sharing-flow.mjs": "9f855e2dcf74347c8350204225b91c36f0a1d82741c15a7dd563a76294ba296c"
+    },
+    "workerDependencySha256": {
+      "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+      "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+      "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+      "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+      "packages/device-runtime/src/types.ts": "22f83720f88b29aad75dbd69cda69592f1efe0cb792470c1eead5720112bfb03",
+      "packages/device-runtime/src/index.ts": "0abec7fb30d1683ed7ad9a70895efc67fc332d744cfaa319ebb7fd8665e8135c",
+      "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+      "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+      "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+      "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+      "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+      "packages/device-model/src/index.ts": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+      "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+      "app/globals.css": "787382aef18400333045602b8a729e905042fda3ce37878db34b07561f16fbcb",
+      "app/components/AppShell.tsx": "498f30885f3792d10d05c034da0c322e2e12d2c410b61506f0700fe930ff977d",
+      "vite.config.ts": "1da933a5835f1f00af8334f7b871fd057da73ade0ddf3d6199288b45fd83a4e4",
+      "package-lock.json": "fdb02fca5164f5f43d9563df29154f48f7f2aa844959ed5b6a097f2709d2c516"
+    },
+    "proof": {
+      "path": "/tmp/101-u04-frozen-proof/receipt.json",
+      "sha256": "41a2706406a827233100ff38b187ead9ba657e00ed604d9cae77b20876fc4b16",
+      "bytes": 5057
+    },
+    "focused": 15,
+    "engines": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "traversalKey": "Tab",
+        "checks": [
+          "inert-entry",
+          "separate-consent-review",
+          "actual-keyboard-position-press-release",
+          "incumbent-retained-decline-cancel",
+          "stale-revoke-visible-safe-refresh-selected-60s",
+          "transfer-releases-old-output",
+          "revoke-preview-cancel-confirm",
+          "simultaneous-declared-partitions",
+          "partition-revoke-isolation",
+          "native-readiness-loss-fresh-retry",
+          "policy-review-and-fresh-consent",
+          "actual-native-pointer",
+          "absolute-quiet-expiry-no-restored-grant",
+          "synthetic-background-release",
+          "native-keyboard-focus-44px-reflow",
+          "light-dark-readable-reduced-motion",
+          "no-persisted-grants",
+          "close-restart-client-navigation-teardown"
+        ],
+        "pageErrors": 0,
+        "foreignRequests": 0
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "traversalKey": "Alt+Tab",
+        "checks": [
+          "inert-entry",
+          "separate-consent-review",
+          "actual-keyboard-position-press-release",
+          "incumbent-retained-decline-cancel",
+          "stale-revoke-visible-safe-refresh-selected-60s",
+          "transfer-releases-old-output",
+          "revoke-preview-cancel-confirm",
+          "simultaneous-declared-partitions",
+          "partition-revoke-isolation",
+          "native-readiness-loss-fresh-retry",
+          "policy-review-and-fresh-consent",
+          "actual-native-pointer",
+          "absolute-quiet-expiry-no-restored-grant",
+          "synthetic-background-release",
+          "native-keyboard-focus-44px-reflow",
+          "light-dark-readable-reduced-motion",
+          "no-persisted-grants",
+          "close-restart-client-navigation-teardown"
+        ],
+        "pageErrors": 0,
+        "foreignRequests": 0
+      }
+    ],
+    "review": {
+      "path": "/tmp/101-u04-independent-review.json",
+      "sha256": "89c4ba3686b8b122b0c40e4bbfbc318f0151bf2f33c1a11d3301745868f2b624",
+      "bytes": 11980
+    },
+    "limitations": [
+      "same-page issued control registrations, not authenticated remote people/devices",
+      "source/destination consent acted within this local owner application; no external account authority",
+      "no observer distribution or grants",
+      "no phone/OS pointer/physical networks/hardware/native permission qualification",
+      "no named screen reader or all form factors",
+      "accelerated trusted-clock expiry and synthetic blur explicitly classified",
+      "WebKit button traversal used native Alt+Tab; OS preferences unchanged"
+    ],
+    "rootChanges": "AppShell only adds Sharing navigation; additive runtime barrel exports independently verified. Exact built-root browser proof recorded in final gate receipt."
+  },
+  "administration": {
+    "packet": {
+      "path": "/tmp/101-workspace-administration-review-fixed-pins.json",
+      "sha256": "d65981d5d328b9cef0c65803efd17e766856d90e24926d972924ff66a9a83597",
+      "bytes": 20427
+    },
+    "sourceSha256": {
+      "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "packages/device-runtime/src/workspace-administration.test.ts": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839",
+      "examples/workspace-administration/consumer.mjs": "ebbd29695a4d0689d7d5d7a159bcc5fe4338d4f1ab3294b0b422a9be7deca16e",
+      "tools/qa-workspace-administration.mjs": "c02827e615ec08c5161a3288be5c63f8221bb14c40547dd2f58c955fd69098da"
+    },
+    "installedProof": {
+      "path": "/tmp/101-workspace-administration-installed-final.json",
+      "sha256": "364c96392c47db1227662c7916b5f9edc0086077b2ae851127852524321effac",
+      "bytes": 54822
+    },
+    "actualInstalledChecks": 26,
+    "review": {
+      "path": "/tmp/101-workspace-administration-review-fixed-independent-review.json",
+      "sha256": "e54f488effb3218596f5da4f497894528b9bb19ad91a73787aae3e34e524642c",
+      "bytes": 6198
+    },
+    "priorRejectedReview": {
+      "path": "/tmp/101-workspace-administration-independent-review.json",
+      "sha256": "85da1f24b8ada8aa487d7a7711c75e4f0a1b0c65241eeb11e3482e6815734672",
+      "bytes": 6112
+    },
+    "priorCandidate": {
+      "path": "/tmp/101-workspace-administration-prior-candidate-disposition.json",
+      "sha256": "949e66af8a86162abee447fa2c908248423f2ac9f671c7769e34b5efadaa68e2",
+      "bytes": 536
+    },
+    "scope": "partial: ephemeral owner workspace, membership/delegated roles/resource policy and complete audit built; actual owner consent, managed route removal/expiry/raw settlement and duplicate tuple denial verified; durable teams/accounts/cross-process/physical support remains open"
+  },
+  "rust": {
+    "inventory": {
+      "path": "THIRD_PARTY_RUST_LICENSES.json",
+      "sha256": "8d945894e3ffa69a6172eaacd1e91abd402af88b45259ac8461fd3facc23fe98",
+      "bytes": 1050804
+    },
+    "review": {
+      "path": "/tmp/101-rust-license-texts-independent-review.json",
+      "sha256": "b42652380156bd763cc8b6bbb1686ebb1d0ac85e04e224cac905207854156848",
+      "bytes": 6946
+    },
+    "actualSourceVerification": {
+      "path": "/tmp/101-rust-license-texts-integrated-review.json",
+      "sha256": "df732b25667a732291c164630d86c184cdbd16b260d7deab7b237bb7fdce8bda",
+      "bytes": 809
+    },
+    "focusedLog": {
+      "path": "/tmp/101-rust-license-texts-final-focused.log",
+      "sha256": "7a53c68e477902c5cabe06ee532a4379658e6c767b4aac98d3692cb0a892dcd0",
+      "bytes": 1879
+    },
+    "generationLog": {
+      "path": "/tmp/101-rust-license-texts-generation-final.log",
+      "sha256": "abe6dbd337c10738c54b76c6b7128492c3c2fb7ffdc2e57e1754d9b7ec670fb6",
+      "bytes": 329
+    },
+    "coverage": {
+      "complete": false,
+      "lockedPackages": 456,
+      "missingPackages": 0,
+      "packagesWithoutText": 40,
+      "distinctTexts": 244,
+      "textBytes": 785129,
+      "scope": "Exact ordinary local crate legal files from locked offline Cargo metadata; missing texts, other sources/assets/models and redistribution review remain separate."
+    },
+    "legalFilesVerified": 739,
+    "distinctTextsVerified": 244,
+    "javascriptInventoryExactOutputEquivalent": true,
+    "preservedFeatureRed": {
+      "path": "/tmp/101-rust-license-texts-feature-red.log",
+      "sha256": "8632bb03d322b942bab2ed53f91d78e53292e5df87bb6c6e0f8c3fbdbfb3a38b",
+      "bytes": 1815
+    },
+    "preservedManifestBoundRed": {
+      "path": "/tmp/101-rust-license-manifest-bound-red.log",
+      "sha256": "b5b7d2d47979faeb5f5c40e255c3e5002c59719296224cd75cd2d56984869c93",
+      "bytes": 612
+    },
+    "manifestBudgetMeasurement": {
+      "path": "/tmp/101-rust-license-manifest-size-scan.json",
+      "sha256": "57824fbb4b677de87dc51b4cd550f865c924f8153354a0b663c57ff7732fb61a",
+      "bytes": 190
+    },
+    "limits": {
+      "metadataBytes": 8388608,
+      "cargoDeadlineMs": 10000,
+      "manifestBytes": 131072,
+      "textBytes": 131072,
+      "textTotalBytes": 16777216
+    }
+  },
+  "sdk": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/manifest.json",
+      "sha256": "f798f210833e7c6952415e2011848192cb5ad693292559e235eeddd5a5785353",
+      "bytes": 75729
+    },
+    "source": {
+      "revision": null,
+      "tree": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "sha256": {
+        "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+        "examples/device-pipelines/application-media.ts": "83264015973fe3c49305ce42a7d76212ec1026ba19e9656743130e2b0f34cd7d",
+        "examples/device-pipelines/application-views.ts": "ba33d4fb441f5b41bdf0435e58a501d0d68ddd98e2723abc9d294bffc33a4036",
+        "examples/device-pipelines/conformance.ts": "871c091c7e2a7c52f34054f76a362d63e7efec925eb24968e17eade50993ef32",
+        "examples/device-pipelines/control-surface.ts": "8c05b7fccef8b61ecffffd098b4700f0230a24f26067db6f8e45fa71fcca8aa2",
+        "examples/device-pipelines/durable-artifact-jobs.ts": "9edd1528ad6a3f24ae024e8cae4a1c644a1f24c26700ebac5fc5198e7ce54071",
+        "examples/device-pipelines/gestures.ts": "6ac1c0fb3987fead9960aaefa7a404cc538846fb56703fddc97cd175e5396a54",
+        "examples/device-pipelines/input-details.ts": "38f4fcebd670ed1c033afc49a0b6240e7a14d7a8a277e718d3bdbb130751f611",
+        "examples/device-pipelines/input-ownership.ts": "65ce35379df00cf57ba062f27e4cd470870f2248778112cd8a5d6b8c665c24c2",
+        "examples/device-pipelines/invitation-connection.ts": "6e043c32b3bbe515b8998c3de1ca10cc188bb8ae89997d0bb41270ce44bc156d",
+        "examples/device-pipelines/keyboard-text.ts": "8db1342210bb90ff7ea4d2b45e85ca5f90d2568732bda86df59f753130b94649",
+        "examples/device-pipelines/media-description.ts": "4f66bb3ce1f01b57385bfdbcf84ffd56b53e534dc6093641d1269ef676bad06a",
+        "examples/device-pipelines/motion.ts": "302412a8adee1cf7ad4ae82f78e65b3a6f99d00d07e2e6211a11aee80a5c8d81",
+        "examples/device-pipelines/pointer.ts": "84d26be002a324bce16899055a7fbbc5ff368fbec6e4bdf28771d47c86dc77f3",
+        "examples/device-pipelines/recipe.ts": "6e1a459ed62fccedb14bcdb96799b4b4ba5568e99815abe66e77c01030a9b2a3",
+        "examples/device-pipelines/resource-documents.ts": "0ebc3af59beb826983cb163bc0bca1324830aee4cd483a001a53feeda541b595",
+        "examples/device-pipelines/rich-input.ts": "81e352973465d5880014a3114e9e3b006f2780bb4566fe144709bf946be1ac19",
+        "examples/device-pipelines/run.ts": "45dc7bee6830aa43997640c6b662d747b9080426f3a33354441057f78238e3f5",
+        "examples/device-pipelines/secure-websocket.ts": "14e72579ab90c3812a5405af58c0481464bf5e0e772e9fb6a5a3f1ffce997d47",
+        "examples/device-pipelines/sensor-feedback.ts": "ecaf0a3cb6d77746faf99f006c81a7f4b608006ab2212d55e8700e9c9ab0b1db",
+        "examples/device-pipelines/settings-storage.ts": "2e67fb536cf8361b97ee70513a45f7a3933e589c61b966e2e789cb383349c7cf",
+        "examples/device-pipelines/spatial-joints.ts": "b8baded823152724df6dd33a53846ebda9db4ee46754ae9e61916c2964ebc339",
+        "examples/device-pipelines/telemetry-batch.ts": "5ff7e2ec03b2b582186f14449b226082b9ca6d55a98cd746575296d379b3f9a7",
+        "examples/device-pipelines/telemetry-history.ts": "62e0cc5fd1b63bf1a705c8154f74d7a71a84530fc5a03c512740511cc998da23",
+        "examples/device-pipelines/threshold.ts": "dc9b34b2d209afe0b8a1d533db681de4a927003e578bde9f98d90d10db977793",
+        "examples/device-pipelines/timed-pointer.ts": "169425b9abac01c573080109559c8725f7b87d8630b2c1222804f606eee5a1bb",
+        "examples/device-pipelines/touch-contacts.ts": "4647a3eb72065fec47836b3bce5deca9a2cee458b6f754632d1255761be1ea61",
+        "examples/device-pipelines/vision.ts": "89572355b84e08998793dd1f2df9d6c86d1931de37837e7ffdb4c6aa47d03cb4",
+        "packages/connect/package.json": "9b90961846d2fe9cc318f2c9e227d8f91279a3bc3db05d981c04a243d07e96d6",
+        "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+        "packages/device-model/package.json": "25be40ce32ea9585afbaee12bd05931a85e09fa4f18a19d6c71d89b09c5982a0",
+        "packages/device-model/src/connector-profile.ts": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+        "packages/device-model/src/control-surface.ts": "de3e24d125863941f7075874e6130b7d2ae84322b445b82d290b1992ff96225d",
+        "packages/device-model/src/descriptor-schema.ts": "53f12d894eec96e004d866ee8222079c53e787732ed712de6645b7ccb535cc8c",
+        "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+        "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+        "packages/device-model/src/evolution.ts": "9d428d7f573386a34d693658d55f4d47ae4b67c2d1618cb10675f6505426ef61",
+        "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+        "packages/device-model/src/generic-processors.ts": "02a3f4d07fc518de69114519f7cd180d34a341e326fb9523a1f0a0b64981f2fb",
+        "packages/device-model/src/haptic-profile.ts": "bbcdaab5726ed4274bc8249783898f4b05c6c69b94a2878f1346739be113b8b6",
+        "packages/device-model/src/health.ts": "b4dbd5e277850b7c661aadf20039011af61c057032429fb5791ceb3ded4415fa",
+        "packages/device-model/src/index.ts": "a0011e5845f95287ae9b432019f1786554f1833e92f8f7008dd1ec8cb587604c",
+        "packages/device-model/src/input-details.ts": "64b03a06241289d80b979baafbe093240a45131e5ffd05f70601a4e4a2e6bb16",
+        "packages/device-model/src/input-profile.ts": "5eb7f0dbf3e02d1d22cb56907fb3db5599400d070fde4dfba9ca1542267ea692",
+        "packages/device-model/src/measurement-processors.ts": "73d2e48f423b8d42eb7765e9d719e3ec8bdebe61ffae00892b5751bd1cec4808",
+        "packages/device-model/src/media.ts": "8c9561e7e1d5ea77b224d3c6746edd8b03c0ea125c63c055b4524ed2c69223e5",
+        "packages/device-model/src/motion-math.ts": "b5683d481954d947e3945dcc9779c29e022d3241bbfbd7615fc2b43f40fd8a37",
+        "packages/device-model/src/motion-processors.ts": "488d41b569ab1cadc1f6737e905f53466b38d74b06a2dcfaa36c443a6cf5ac95",
+        "packages/device-model/src/observation-timing.ts": "1bc19496f552dd6a028562c013a6e38b1540a03b0a79356780de22a11afa25ee",
+        "packages/device-model/src/package-catalog.ts": "f2a4ff978baa0c1a6475ec507661a71deee2e03087655ec806bc24f00af800f6",
+        "packages/device-model/src/pipeline-timing.ts": "336269b75f90a89cf91818efbf3d7bc6a76f60ab87ae336667fb338b53f2e707",
+        "packages/device-model/src/private-directory.ts": "654a147f4b6cd977cf3a968dd84b4bd1ab504e99a7a86ec697cb3fd7056d3a8f",
+        "packages/device-model/src/processor-graph.ts": "ff229097bbf8c1e87a5dd60325f0865c3e746b96857ba9cddae77024392c6497",
+        "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+        "packages/device-model/src/quality.ts": "85a05a22a99cfa591198c69654ae89d860d3c75d7fdd579f091493068229ace4",
+        "packages/device-model/src/recipe-resolver.ts": "47d70d9a0d134fbb260d5bac6563004e24b7fcea240a1b290d737ca28948f49b",
+        "packages/device-model/src/recipe.ts": "004f27695aa01e6bbeff19b3e4a0a40b9369e10165218fd2a3a9d13459628597",
+        "packages/device-model/src/remote-clock.ts": "e4c42c7550d6bc42dd10ea81a20b3dd095e265a695aad756dfe6613eabcf5335",
+        "packages/device-model/src/resource.ts": "aeae83fff49c0a2b65bad336a616a069848a361fd3a6b9932abfc7fd0c798ca1",
+        "packages/device-model/src/route-group.ts": "3815c973c02ee55f58f0f052e14467f7dcac90802f2be678d393f20b2ca7e365",
+        "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+        "packages/device-model/src/spatial.ts": "cff0d23c2d19f088b7f20444c93eafaa45926872ea005235e94459d94e529f59",
+        "packages/device-model/src/units.ts": "7dbc2eeb614369d17ff6622f141513f4ec798fa720b2e7383ee4821ffa7753b4",
+        "packages/device-model/src/workload.ts": "87aedce27d4308c3e896e5a4647662291e190ed208afb2c7f70a226e3327543d",
+        "packages/device-model/src/wot.ts": "378332b2f78381cf9bba628aaf4fb54923399a3804b35fc61f5b5d70a0590a08",
+        "packages/device-runtime/package.json": "284e4ba6cf20f537ca8bf6e1d86298726cbcf0b934d8af42baf061cb11b971e1",
+        "packages/device-runtime/src/application-snapshot.ts": "fb01c7dd7c288a2137f57f46d2858587e8fa609d368d37db3f764fe194a7648b",
+        "packages/device-runtime/src/application-views.ts": "616284eca21802efacdb0c7510ff2fe89ba5ccd2084b41983542aa671cefca10",
+        "packages/device-runtime/src/capability-inventory.ts": "7bdddd948349f035746f2a432dd56ff203addcc302774fb9512ce5dcd9b15934",
+        "packages/device-runtime/src/conformance.ts": "25eefcba3582b85c698afa5738614d1f58a3242591db01d2ea9dc1376faf1a81",
+        "packages/device-runtime/src/durable-artifact-jobs.ts": "66b2615ccf66ac31ff579af2a5e170183c4335c4d9650105f9bba4377f682ac1",
+        "packages/device-runtime/src/haptic-output.ts": "61f4d3ea0fbdcc6da6eea0ee4ee7f086aa3f909ceec8543b9b7e252c83fdfbce",
+        "packages/device-runtime/src/index.ts": "a92ab658f4929db215e21f60c0904ce773acf5403cd4378e9d974292e28704ed",
+        "packages/device-runtime/src/input-ownership.ts": "51f505131b9803cc78cab58fffd832dc8aac8c9ea7c42818a45f7970d481357a",
+        "packages/device-runtime/src/inspector.ts": "acb4570d63d4521c75d5e827d03bc4ec624ed5d522adad4249da5ef4aa4b44e3",
+        "packages/device-runtime/src/lease.ts": "625185a02f5b8112568b7faf2bd68fcfc566464bfe176695a97440ef0fe8583a",
+        "packages/device-runtime/src/media-grants.ts": "b88dabdd01ca100773c07b23aef61a646aba199e1c1077e3925956c70cf23d68",
+        "packages/device-runtime/src/native-discovery.ts": "0d704fd76ce3d15c9937ebd84ded37c3a57bdb956dca71dae8e6e87ece50ff7a",
+        "packages/device-runtime/src/operator-health.ts": "da33bc2336854b6fe389eff8339f5f22e873b76114939e50f479ab4eb6e3a8bc",
+        "packages/device-runtime/src/owner-backup.ts": "7cc04b07caafb29ec2c6280bd90cc187fb7730ce0467c84e42483428b46116a3",
+        "packages/device-runtime/src/owner-data-storage.ts": "63e098e88f140024d41696cd6babc34fa32e2630430c68433a99fdcef47f8ff3",
+        "packages/device-runtime/src/owner-data.ts": "a449441ee3e7e4d1b523ea4ec4444544d3c72dac457d67828cd7e62d83a048ba",
+        "packages/device-runtime/src/package-catalog.ts": "afdc95e70a6b4b4378af39978814c49f125de95aaf1227b68d55db1fff420053",
+        "packages/device-runtime/src/placement.ts": "a1b104001cf7338b65e8fc70dce3fc6b614fa0e8db222fa00a9f1f7da49bff8c",
+        "packages/device-runtime/src/processor-failure.ts": "837fd1678156bc797645a0ac746009f9ee03430e3f8dce2bbb072801fde0cfc6",
+        "packages/device-runtime/src/processor-installation.ts": "fd952cd4312956bc41b6d0b4e34c562de7a782108514ebb9238e79f5ce2d0ff7",
+        "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+        "packages/device-runtime/src/profile-connector.ts": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+        "packages/device-runtime/src/profile-resolution.ts": "42f8a8915a8426575d29378c6fc539470ce958763477fab14a77e3736a4668ce",
+        "packages/device-runtime/src/recipe-session.ts": "d132bb003c19b38e81f0a75d693ee70702bb0040ac051c24776ac0d596a154d6",
+        "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+        "packages/device-runtime/src/route-group-runtime.ts": "5eb30bb96415c6fc7559b5baac83a084245f3a4ebf29648a9cc1006b79a0487c",
+        "packages/device-runtime/src/runtime.ts": "d353f59a102d406bc5dcc0d96f8a517e4a2cd01c1083036addc0a90f65284a12",
+        "packages/device-runtime/src/scheduler.ts": "1d3530e577a0bce830e2f58c6d29cd9627ca8abf9344cf87784febf9dddaa2e5",
+        "packages/device-runtime/src/settings-store.ts": "1816d12511515c242677cb2b23fae0b4657431037986e019829db3c24b419fc9",
+        "packages/device-runtime/src/simulator.ts": "affc782cd800926c67a3833c1adacdd65b99ff18418db99fb48bc373ecf7d8b1",
+        "packages/device-runtime/src/telemetry-history.ts": "fce8da25cbd630268e070109bb5fb13e4800444a807879c082b7880917251925",
+        "packages/device-runtime/src/telemetry-storage.ts": "af0ae9468570011f044c37532eb7841fe9029fdfa4f32394c3c170f4dd04ebb3",
+        "packages/device-runtime/src/types.ts": "22f83720f88b29aad75dbd69cda69592f1efe0cb792470c1eead5720112bfb03",
+        "packages/device-runtime/src/workload-handoff.ts": "152a694144142125c2c7c7c1be442244b2ac2048ec26b005f7d310e8f9e21a38",
+        "packages/device-runtime/src/workspace-administration.ts": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+        "packages/device-web/package.json": "960d3e23ccbbe795cd57b8fc573b32870c2b9ec67e2d5de66387c341bac144f9",
+        "packages/device-web/src/application-media.ts": "1c34543479e7d39cecfe357ae4f1bd94847942d1634df5871838ae819405d063",
+        "packages/device-web/src/application-view-canvas.ts": "c34d95512172782e9bbb4bb16ed4e6c8de0706544a5dd31747c64bef3529af58",
+        "packages/device-web/src/authenticated-peer.ts": "f71e912fd134450c9dda98ae2e59d552dabc24b2b70b0877793b56cd91c7079a",
+        "packages/device-web/src/binding.ts": "6b02c1551893321f3bb4d8103484b1ab9e94ce8532e0bff802353f149bb5411c",
+        "packages/device-web/src/browser-chooser.ts": "f439bd4074d8f719e3ed1e160b18d470525eba6dd1dbb28f18b45460e3c6bfae",
+        "packages/device-web/src/control-input.ts": "258d3a090c446c8cb6adbfd657906f0b00ed097e4f697c7857c5e697de48d6eb",
+        "packages/device-web/src/control-surface.ts": "f7562fd36b45a7ff9613080f4a963c01205bdc281d24721d14d091b5bbe1e77e",
+        "packages/device-web/src/gesture-driver.ts": "f0fa2fb8466011e30aa3c28c36a6199b1b18e68ae475951a891d2be574c789fc",
+        "packages/device-web/src/gesture-source.ts": "4760d77c7a82a8a8a19da71ba136421e810b2b979f34093a28d1221c3f5d9f1c",
+        "packages/device-web/src/identity-format.ts": "04298d2027037dcef7366f7c8b0ab16a943b21e860f2b1be602b29584f5ff259",
+        "packages/device-web/src/identity-types.ts": "dbfdc8e796f5b55a0e0a61612ee747219061de4a3f9e4c5fddd3876a8fba8499",
+        "packages/device-web/src/index.ts": "6aa26041fd29905799a688857fb3e86b8a1cf568308ca61e07496ec556b58f03",
+        "packages/device-web/src/invitation-connection.ts": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda",
+        "packages/device-web/src/invitation.ts": "d3da5cab366745efb197a850dfce8a50e496b0efb66528388a6d85e369b87e9d",
+        "packages/device-web/src/keyboard-text-driver.ts": "8b988ad384616b9f248b499cd2b3f0ef2a938828354e3717caf1f725d3bc76e8",
+        "packages/device-web/src/manual-peer.ts": "1727b6aa6ee08c7f518b151945dfe171807c097e02649c5d8f29acd7b89359fa",
+        "packages/device-web/src/native-peer.ts": "db0fc2484c4e44bfa8f03e9c562f9b9aaee2d5bd0dd2b3141c651580dba68907",
+        "packages/device-web/src/pointer-driver.ts": "33dd9cbdf1f472c8d72ac63e4286440321eb937037523c379dab683901e4365d",
+        "packages/device-web/src/pointer-provider.ts": "e4df653e2aeb08bea20f20e966024454a1b19417c65367753f1a8e9abbaf684a",
+        "packages/device-web/src/touch-contact-driver.ts": "ceaf45e6b02aad9a41a953a44ba8d5b1b8d0bd9d39499604fce83bfff3c0168b",
+        "packages/device-web/src/web-identity.ts": "4d6b64a6e2af3e3163d7f0dc44f93690d3208018510957fd2dd218ff5f4ff35b",
+        "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+        "packages/transport-webrtc/package.json": "28687b042a431749a4dac282d690002db3d825a27f743994abeabcc1dc009a61",
+        "packages/transport-webrtc/src/index.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+        "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+        "packages/transport-webrtc/src/ports.ts": "6be79e16abc7006ec0418a83b3ca40188a75286b73d16d51a32366e4b9906209",
+        "packages/transport-websocket/package.json": "3cb94c93eb7963ff8f04c73a217151ca4298f7313c143507500985e054b48111",
+        "packages/transport-websocket/src/index.ts": "d921cc52cac4d9d83e46cfb913227d0785dc42ee9f2d5f37a0091ead55876c1f",
+        "packages/transport-websocket/src/peer.ts": "f8ac1f3b062f57d516f34e4aaa172cc5bf9ec562559a8dbd9d535eed5083cd13",
+        "packages/transport-websocket/src/ports.ts": "dad33fdd5d3fdeafd5386bc75edcc65400cdfd52d4e79d5f452478a575e7a366",
+        "packages/vision/package.json": "2b5c919919a5cd13542250d6a0321e165716e2c3c5bbe873eccf2aa88270b704",
+        "packages/vision/src/face.ts": "9f4fd2dc6fe985d0257635adbd785accad11c29a6df6f5d11e0d6f4b8b1fe0e6",
+        "packages/vision/src/index.ts": "470e49af18bd8cb95c83f3db25d1aaff0bb32a51d741afe367fa02c9035597b7",
+        "packages/vision/src/overlay.ts": "c518a57c25e48ac81f5df566b6761241fa572e0a79b995b116a9dc7fdb67a0b8",
+        "packages/vision/src/people.ts": "3546f8c49f4df2b9f09b389abe901b6ec812197e265f661a596cc5797649e70f",
+        "packages/vision/src/placement.ts": "29798048560ccc9c2a04cf7990364c0f8dc43760cc49e92bb55fe5664e8dc9a1",
+        "packages/vision/src/processors.ts": "021b85a3aca61e3c1692ca957df663c1b4ab3f854d35a203baa4acc1f15b4ce8",
+        "packages/vision/src/quality.ts": "c399f443a8b61fdda60044881b4f4aea10be2ba4d93c35f3e3acca9a6797493b",
+        "packages/vision/src/skeleton.ts": "2481baef6d50662084407e3e9075ed24cf104ceba38843d8be68e85beb36dc4a",
+        "schemas/device-descriptor.schema.json": "ffe44d71f1707cc745551e4da948028547aae3fe2834c65fa2bc3f44e3dd8791"
+      }
+    },
+    "environment": {
+      "node": "24.14.0",
+      "npm": "11.9.0",
+      "typescript": "5.9.3"
+    },
+    "packages": [
+      {
+        "name": "@101/device-model",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-device-model-0.1.0.tgz",
+        "sha256": "1beef7e2b4c67bcb47465828546dfe19fa422658ab5708c85ab3144a34d1a263",
+        "bytes": 77907,
+        "files": 72
+      },
+      {
+        "name": "@101/device-runtime",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-device-runtime-0.1.0.tgz",
+        "sha256": "a1ffc90d67e6126ebaa0f77d0b0e9ad9d512a5984887c2b89e8433f4d32344ef",
+        "bytes": 138704,
+        "files": 73
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-transport-webrtc-0.1.0.tgz",
+        "sha256": "ce943aab88cb63668803961bcc522c932a5f05696c8bc4b6635ee1aa010fe688",
+        "bytes": 6529,
+        "files": 9
+      },
+      {
+        "name": "@101/transport-websocket",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-transport-websocket-0.1.0.tgz",
+        "sha256": "27d6fdff0f2beca0aa2b063481c1417b9c0b6883abdb5ad5da24ca9c1633ac62",
+        "bytes": 7533,
+        "files": 9
+      },
+      {
+        "name": "@101/device-web",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-device-web-0.1.0.tgz",
+        "sha256": "de1c57ccdc055b6712c959d771566271e359ba296c97775902997131f6a490e3",
+        "bytes": 70788,
+        "files": 47
+      },
+      {
+        "name": "@101/vision",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-vision-0.1.0.tgz",
+        "sha256": "e98bccf72982ec4ab57f89e6f4762007e21f4ee7e00e6dac674d5a03ba6e8a62",
+        "bytes": 34919,
+        "files": 19
+      },
+      {
+        "name": "@101/connect",
+        "version": "0.1.0",
+        "tarball": "/Users/km/Desktop/games/101/release/sdk-AU8NCX/tarballs/101-connect-0.1.0.tgz",
+        "sha256": "a7193d3725c047e47ae3fb1c33920ef1708d184c39dc43109f2156faac6742a7",
+        "bytes": 71735,
+        "files": 87
+      }
+    ],
+    "cleanConsumer": {
+      "path": "/tmp/101-sdk-consumer-Lm5ZxB/receipt.json",
+      "sha256": "249a710bb5fc2410d61830a385ae0320486ae77695a8eacb535afe8cbfd0b077",
+      "bytes": 29725
+    },
+    "cleanConsumerChecks": 10,
+    "installedPublicAdministrationChecks": 26,
+    "priorArtifact": "release/sdk-gA7X5U/manifest.json remains unchanged; rejected review candidate release/sdk-KjLqHk/manifest.json separately preserved"
+  },
+  "commitGates": {
+    "required": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactFinalTreeReceipt": "/tmp/101-sharing-administration-final-gates.json"
+  },
+  "boundaries": [
+    "No phone/native UI/generalOS pointer or clipboard interaction; hardware qualification deferred",
+    "Only owned headless/local software/cache and private artifact inputs",
+    "No remote access/publish/deploy/push/preview URL/third-party service",
+    "Only N01 definition closes; full U04/S17/K09 acceptance remains open; zero support promotions"
+  ]
+}

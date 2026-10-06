@@ -32,8 +32,11 @@ SHA-256 hashes. Its coverage fields identify packages absent from the local
 installation and packages without local legal text. The collector reads ordinary
 package files offline, checks the installed name/version against the lockfile and
 does not substitute a declaration for missing terms. `THIRD_PARTY_RUST_LICENSES.json`
-records locked Rust license declarations. Native libraries, model terms, missing
-target packages and redistribution review remain separate work. Redistributions
+also preserves available local crate legal text and hashes from locked offline
+Cargo metadata, including declared license-file paths. It records missing text
+explicitly and accepts only the selected ordinary crates.io cache; other sources
+need separate collection. Native binaries, model terms, missing target packages
+and redistribution review remain separate work. Redistributions
 must include the full license texts required by their packages; this summary and
 local text coverage do not establish complete redistribution approval.
 

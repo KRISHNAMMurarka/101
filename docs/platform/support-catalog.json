@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 11,
+  "revision": 12,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2152,6 +2152,122 @@
       "limitations": [
         "partial: private capability-gated fixed Node agent, version/epoch rejection, crash/restart and real public-runtime source release built; install/update, OS/account isolation and other targets remain open",
         "No installed/update/account/OSsandbox/physical support or accepted matrix claim."
+      ]
+    },
+    {
+      "id": "local-application-sharing-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Headless Chromium/WebKit",
+        "runtimeVersion": "149.0.7827.55/26.5",
+        "formFactor": "Owned local application software only",
+        "transport": "none",
+        "connector": "local-application-sharing/1",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "local-application-sharing/1"
+        ],
+        "resources": [
+          "Two actual local PointerSourceDriver controls into exclusive/partitioned application output"
+        ],
+        "unavailable": [
+          "same-page issued control registrations, not authenticated remote people/devices",
+          "source/destination consent acted within this local owner application; no external account authority",
+          "no observer distribution or grants",
+          "no phone/OS pointer/physical networks/hardware/native permission qualification",
+          "no named screen reader or all form factors",
+          "accelerated trusted-clock expiry and synthetic blur explicitly classified",
+          "WebKit button traversal used native Alt+Tab; OS preferences unchanged"
+        ]
+      },
+      "qualificationTasks": [
+        "U04",
+        "U09",
+        "U13",
+        "Q05"
+      ],
+      "evidence": {
+        "implementation": [
+          "u04-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "u04-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "u04-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "same-page issued control registrations, not authenticated remote people/devices",
+        "source/destination consent acted within this local owner application; no external account authority",
+        "no observer distribution or grants",
+        "no phone/OS pointer/physical networks/hardware/native permission qualification",
+        "no named screen reader or all form factors",
+        "accelerated trusted-clock expiry and synthetic blur explicitly classified",
+        "WebKit button traversal used native Alt+Tab; OS preferences unchanged"
+      ]
+    },
+    {
+      "id": "local-workspace-administration-2026-10-06",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "macOS",
+        "osVersion": "26.5.2",
+        "runtime": "Node.js",
+        "runtimeVersion": "24.14.0",
+        "formFactor": "Owned local application software only",
+        "transport": "none",
+        "connector": "local-workspace-administration/1",
+        "connectorVersion": "0.1.0; exact source pins in receipt",
+        "profiles": [
+          "local-workspace-administration/1"
+        ],
+        "resources": [
+          "Typed resource routes with membership/policy narrowing and independent source/sink owner approvals"
+        ],
+        "unavailable": [
+          "One managed connection per exact authorization tuple; duplicate idle/provisional bindings refused before runtime dispatch",
+          "Trusted host authenticates actors and must route exclusively through controller",
+          "No durable team accounts/cross-process/physical or accepted support claim"
+        ]
+      },
+      "qualificationTasks": [
+        "S17",
+        "S03",
+        "S10",
+        "Q05"
+      ],
+      "evidence": {
+        "implementation": [
+          "s17-built-partial-2026-10-06"
+        ],
+        "contract": [
+          "s17-built-partial-2026-10-06"
+        ],
+        "runtime": [
+          "s17-built-partial-2026-10-06"
+        ],
+        "physical": []
+      },
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "limitations": [
+        "One managed connection per exact authorization tuple; duplicate idle/provisional bindings refused before runtime dispatch",
+        "Trusted host authenticates actors and must route exclusively through controller",
+        "No durable team accounts/cross-process/physical or accepted support claim"
       ]
     }
   ]

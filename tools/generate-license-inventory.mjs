@@ -61,6 +61,32 @@ async function legalFiles(directory) {
   await visit(directory, 0); return paths.sort();
 }
 
+/** Shared bounded collector for ordinary package legal files. No filesystem writes. */
+export async function collectLocalPackageLegalTexts(directory, declaredFiles = []) {
+  ordinary(await lstat(directory), true);
+  if (!Array.isArray(declaredFiles) || declaredFiles.length > LICENSE_INVENTORY_LIMITS.filesPerPackage) throw new Error('License inventory file bound exceeded');
+  const selected = new Set(await legalFiles(directory));
+  for (const path of declaredFiles) {
+    if (typeof path !== 'string' || path.length > 1024 || path.startsWith('/') || path.includes('\\') || path.split('/').some(value => !value || value === '.' || value === '..')) throw new Error('Invalid declared license path');
+    const parts = path.split('/');
+    if (parts.length > LICENSE_INVENTORY_LIMITS.directoryDepth + 2) throw new Error('License inventory depth bound exceeded');
+    if (parts.length > 1 && !await packageDirectory(directory, parts.slice(0, -1).join('/'))) throw new Error('Missing declared license path');
+    selected.add(join(directory, path));
+  }
+  if (selected.size > LICENSE_INVENTORY_LIMITS.filesPerPackage) throw new Error('License inventory file bound exceeded');
+  const files = [], texts = new Map();
+  for (const file of [...selected].sort()) {
+    const value = await bytes(file, LICENSE_INVENTORY_LIMITS.textBytes);
+    if (!value.length) throw new Error('Empty local license text');
+    const text = utf8(value), hash = sha256(value);
+    texts.set(hash, { sha256: hash, bytes: value.length, text });
+    files.push({ path: relative(directory, file).split(sep).join('/'), sha256: hash });
+  }
+  return { files, texts: [...texts.values()] };
+}
+
+export async function readLocalLicenseBytes(path, bound) { return bytes(path, bound); }
+
 /** Collect local locked-package legal bytes; declarations and text presence are not legal approval. Import is inert. */
 export async function collectLicenseInventory({ root = resolve(import.meta.dirname, '..') } = {}) {
   root = resolve(root); ordinary(await lstat(root), true);
@@ -80,16 +106,12 @@ export async function collectLicenseInventory({ root = resolve(import.meta.dirna
     else {
       const installed = JSON.parse(utf8(await bytes(join(directory, 'package.json'), LICENSE_INVENTORY_LIMITS.packageJsonBytes)));
       if (installed.name !== name || installed.version !== pkg.version) throw new Error('Installed package identity does not match lockfile: ' + path);
-      for (const file of await legalFiles(directory)) {
-        const value = await bytes(file, LICENSE_INVENTORY_LIMITS.textBytes);
-        if (!value.length) throw new Error('Empty local license text: ' + path);
-        const text = utf8(value), hash = sha256(value);
-        if (!texts.has(hash)) {
-          total += value.length; if (total > LICENSE_INVENTORY_LIMITS.textTotalBytes) throw new Error('License inventory total byte bound exceeded');
-          texts.set(hash, { sha256: hash, bytes: value.length, text });
-        }
-        row.licenseFiles.push({ path: relative(directory, file).split(sep).join('/'), sha256: hash });
+      const legal = await collectLocalPackageLegalTexts(directory);
+      for (const value of legal.texts) if (!texts.has(value.sha256)) {
+        total += value.bytes; if (total > LICENSE_INVENTORY_LIMITS.textTotalBytes) throw new Error('License inventory total byte bound exceeded');
+        texts.set(value.sha256, value);
       }
+      row.licenseFiles = legal.files;
       row.coverage = row.licenseFiles.length ? 'local-texts' : 'no-local-text'; if (!row.licenseFiles.length) packagesWithoutText++;
     }
     packages.push(row);

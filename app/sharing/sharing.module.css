@@ -1,0 +1,36 @@
+.page { max-width: 64rem; margin: 0 auto; padding: clamp(1rem, 4vw, 3rem); color: var(--paper); }
+.header { max-width: 46rem; margin-bottom: 2rem; }
+.header h1 { font-size: clamp(2rem, 6vw, 3.6rem); line-height: 1.08; letter-spacing: -.035em; margin: .75rem 0 1rem; }
+.header p, .panel p, .review p { line-height: 1.6; }
+.eyebrow { font-size: .75rem; letter-spacing: .15em; text-transform: uppercase; }
+.note { font-size: .9rem; }
+.page :is(button, select, a) { min-height: 44px; min-width: 44px; font: inherit; }
+.page button { border: 1px solid currentColor; color: inherit; background: transparent; padding: .7rem 1rem; cursor: pointer; }
+.page button[aria-pressed="true"] { background: var(--solid); color: var(--on-solid); }
+.page button:disabled { opacity: .55; cursor: default; }
+.page a { display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: .2em; }
+.page :is(button, a, select, input, [tabindex]):focus { outline: 3px solid var(--paper); outline-offset: 4px; }
+.page select { border: 1px solid currentColor; background: var(--ink); color: var(--paper); padding: .5rem 2.4rem .5rem .5rem; width: 100%; min-height: 44px; height: 44px; appearance: none; border-radius: 0; background-image: linear-gradient(45deg, transparent 50%, var(--paper) 50%), linear-gradient(135deg, var(--paper) 50%, transparent 50%); background-position: calc(100% - 18px) center, calc(100% - 13px) center; background-size: 5px 5px; background-repeat: no-repeat; }
+.status { font-weight: 600; line-height: 1.5; }
+.panel, .review { border: 1px solid currentColor; padding: clamp(1rem, 3vw, 1.6rem); margin-block: 1rem; min-width: 0; }
+.panel h2, .review h2 { margin: 0 0 .8rem; font-size: 1.4rem; }
+.panel h3 { margin: 0 0 .8rem; font-size: 1.15rem; }
+.panel > button + button { margin-left: .7rem; }
+.controls, .surfaces { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.controls > *, .surfaces > * { margin-block: 0 1rem; }
+.surfaces > :only-child { grid-column: 1 / -1; }
+.surface { height: 220px; border: 1px solid currentColor; position: relative; overflow: hidden; display: grid; place-items: center; font-size: .9rem; margin: 1rem 0; }
+.marker { position: absolute; width: 22px; height: 22px; border: 2px solid currentColor; transform: translate(-50%, -50%); pointer-events: none; }
+.marker[data-held="true"] { background: currentColor; }
+.outputText { position: absolute; bottom: .5rem; left: .5rem; }
+.page .pad { min-height: 150px; border: 1px solid currentColor; margin: 1rem 0; padding: 1rem; display: grid; place-items: center; text-align: center; touch-action: none; user-select: none; }
+.pad[aria-disabled="true"] { opacity: .6; }
+.actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1rem; }
+.pending { padding: 1rem 0; border-top: 1px solid currentColor; }
+.check { display: flex; align-items: flex-start; gap: .7rem; padding: .6rem 0; min-height: 44px; cursor: pointer; }
+.check input { min-width: 22px; min-height: 22px; margin-top: .2rem; accent-color: var(--paper); }
+.duration { display: grid; max-width: 24rem; gap: .5rem; margin: 1rem 0; }
+.state { min-height: 3rem; }
+@media (max-width: 720px) { .controls, .surfaces { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .page { padding: 1rem; } .actions > *, .panel > button { width: 100%; } .panel > button + button { margin-left: 0; margin-top: .7rem; } }
+@media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

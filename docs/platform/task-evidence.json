@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 84,
+  "revision": 85,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -8540,6 +8540,140 @@
         "Exact package-lock and ordinary installed package files; no remote terms/source retrieval"
       ],
       "supportRows": []
+    },
+    {
+      "id": "n01-native-provider-contract-2026-10-06",
+      "revision": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; exact source/native/software/package proofs in receipt",
+      "reproduction": "Source-bound definition and independent review; unchanged native desktop caller proof at be1d543",
+      "scope": "complete: documented shared native descriptor/permission/readiness/lifecycle/IPC/conformance contract with a real macOS Node desktop native RSS consumer; installation/update, platform support and physical qualification remain separate",
+      "failure": null,
+      "equipment": [
+        "Repository source, ordinary local cache, owned disposable software contexts only"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "u04-built-partial-2026-10-06",
+      "revision": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; exact source/native/software/package proofs in receipt",
+      "reproduction": "node tools/qa-sharing-flow.mjs OWNED_LOOPBACK_ORIGIN/sharing",
+      "scope": "partial: local application sharing consent, recipients/scope/duration, simultaneous partitions, decline/cancel, transfer, epoch-fenced revoke, readiness and recovery built; remote identities, observers and physical/UI matrix remain open",
+      "failure": null,
+      "equipment": [
+        "Repository source, ordinary local cache, owned disposable software contexts only"
+      ],
+      "supportRows": [
+        "local-application-sharing-2026-10-06"
+      ]
+    },
+    {
+      "id": "s17-built-partial-2026-10-06",
+      "revision": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S17"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; exact source/native/software/package proofs in receipt",
+      "reproduction": "node tools/qa-workspace-administration.mjs --sdk-root OWNED_CONSUMER --candidate-tree SOURCE_TREE",
+      "scope": "partial: ephemeral owner workspace, membership/delegated roles/resource policy and complete audit built; actual owner consent, managed route removal/expiry/raw settlement and duplicate tuple denial verified; durable teams/accounts/cross-process/physical support remains open",
+      "failure": null,
+      "equipment": [
+        "Repository source, ordinary local cache, owned disposable software contexts only"
+      ],
+      "supportRows": [
+        "local-workspace-administration-2026-10-06"
+      ]
+    },
+    {
+      "id": "k09-rust-texts-partial-2026-10-06",
+      "revision": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; exact source/native/software/package proofs in receipt",
+      "reproduction": "node tools/generate-rust-license-inventory.mjs; no network; exact candidate gates",
+      "scope": "partial: exact offline cached crate licenses/notices collected and hashed with lock/metadata/manifest identity;40 absent-text crates, other sources/native binaries/model terms and complete redistribution review remain open",
+      "failure": null,
+      "equipment": [
+        "Repository source, ordinary local cache, owned disposable software contexts only"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "k01-sdk-administration-refresh-2026-10-06",
+      "revision": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS26.5.2arm64; Node24.14.0/TS5.9.3; exact source/native/software/package proofs in receipt",
+      "reproduction": "node tools/build-sdk.mjs SOURCE_TREE; node tools/qa-sdk-consumer.mjs MANIFEST",
+      "scope": "partial: fresh seven-package immutable SDK tarballs and clean offline consumer include new administration API; broader distribution/runtime acceptance remains open",
+      "failure": null,
+      "equipment": [
+        "Repository source, ordinary local cache, owned disposable software contexts only"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -9470,7 +9604,8 @@
     {
       "id": "S17",
       "records": [
-        "pending-S17"
+        "pending-S17",
+        "s17-built-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -9486,7 +9621,8 @@
       "records": [
         "pending-N01",
         "endpoint-auth-core-2026-10-02",
-        "endpoint-enrollment-ui-2026-10-02"
+        "endpoint-enrollment-ui-2026-10-02",
+        "n01-native-provider-contract-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11064,7 +11200,8 @@
     {
       "id": "U04",
       "records": [
-        "pending-U04"
+        "pending-U04",
+        "u04-built-partial-2026-10-06"
       ],
       "dependencies": [
         "C01",
@@ -11757,7 +11894,8 @@
         "keyboard-text-2026-10-05",
         "touch-contacts-2026-10-05",
         "surface-gestures-2026-10-05",
-        "input-details-2026-10-05"
+        "input-details-2026-10-05",
+        "k01-sdk-administration-refresh-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [
@@ -11850,7 +11988,8 @@
       "records": [
         "pending-K09",
         "k09-js-inventory-2026-10-05",
-        "k09-built-partial-2026-10-06"
+        "k09-built-partial-2026-10-06",
+        "k09-rust-texts-partial-2026-10-06"
       ],
       "dependencies": [],
       "equipment": [

@@ -1955,6 +1955,33 @@ Disabled relay and unknown regions fail configuration validation. Processor
 failures, enabled relay failure and regional service qualification remain O04
 work; admission ceilings are not measured service capacity.
 
+## Native provider contract
+
+Native providers use the same public model and runtime as browser providers.
+The host binds reviewed native code explicitly; descriptor fields never load
+code, choose an executable or grant OS access. The native bridge projects its
+validated profile output into these shared interfaces:
+
+| Boundary | Shared contract and provider obligation |
+| --- | --- |
+| Description | `parseDeviceDescriptor` validates capabilities, schemas, units, delivery and ownership. Permission lists declare supported operations; they do not authorize them. |
+| Registration and readiness | `DeviceRuntime.registerSource` / `registerSink` return local `EndpointHandle`s, initially unavailable. `setReadiness` reflects actual native availability with bounded freshness; missing or denied permission cannot become an available resource. |
+| Authority | `AuthorizationRequest` binds principal, application, session, source/sink registrations, operation and partition. `RouteGrant` narrows rate, age and absolute expiry. Native registration, OS permission and native operation approval are separate prerequisites; sensitive results require their own authorized resource route. |
+| Data and effects | `PublishOptions` / `Observation` preserve validated values, quality and clock provenance. Host receipt and native source clocks stay distinct until explicitly mapped. `DeliveryContext` binds the current route/generation, abort signal and operation; awaiting native work must recheck authority before exposing output. Acknowledgment and observed effect remain separate evidence. |
+| Loss and cleanup | Native loss retires its epoch before host callbacks, marks resources unavailable, unregisters them and releases held output. Stop/revoke fences late results immediately; issued native work keeps its quota until actual settlement. Replacement uses fresh native identity/epoch, registration and owner approvals. Cleanup claims identify the native acknowledgment or exact host-owned removal that actually occurred. |
+| IPC | Each reviewed native profile defines its closed versioned messages, caller proof, permitted operations, frame/client/work limits and failure semantics. The bridge validates native replies before publishing. Unknown versions and stale epochs fail closed; descriptors cannot extend the allowed native operations. |
+| Conformance | A provider has a faithful producer/output oracle and exercises denial, loss, expiry, stale generations, bounded work and teardown through the public runtime. `runConnectorConformance` covers trusted unpartitioned streaming adapters; other operation/ownership/IPC profiles need their own actual consumer checks. |
+
+The real macOS/Node desktop consumer in `examples/agent-ipc/consumer.mjs`
+implements this contract for `private-node-agent-rss/1`: a fixed child reads only
+its own RSS, native registration/read approvals are independent of SDK invocation
+and sensitive-result grants, and crash/replacement retires old runtime resources.
+Its fourteen profile regressions and eighteen actual native/public-runtime checks
+provide the selected IPC/lifecycle oracle; RSS was not run through the generic
+streaming conformance suite. [Exact source and runtime evidence](receipts/2026-10-06-agent-ipc-license-texts.json)
+defines this first native contract consumer. Installation/update, account isolation,
+other OS providers and physical qualification remain their separate N02–N14 rows.
+
 ## Scoped native agent IPC
 
 `createScopedAgentIpc` from the workspace `@101/hub-server` export explicitly
@@ -1994,3 +2021,65 @@ identity drift, invalid UTF-8 and exceeded bounds fail before replacing the
 inventory. Missing packages and missing local texts remain explicit incomplete
 coverage. Local text presence is not legal approval; native/model terms, omitted
 target packages and complete redistribution review remain K09 work.
+
+`node tools/generate-rust-license-inventory.mjs` collects local crate text using
+`cargo metadata --locked --offline`. Importing it neither starts Cargo nor writes
+an inventory. Cargo metadata is bounded to 8 MiB and ten seconds; native manifests
+and legal files are each bounded to 128 KiB. Name/version/source must match the
+lockfile, manifests must belong to the ordinary selected crates.io cache, and
+declared license paths cannot escape the package. The collector reuses the
+JavaScript collector's legal-file limits and byte-preserving reader. A successful
+collection atomically replaces the existing Rust inventory; absent packages or
+texts remain incomplete, and a failed collection preserves prior inventory bytes.
+
+## Local application sharing task
+
+Sharing offers two explicitly started local control sets and either one shared
+play area or independently owned left/right sides. A control requests its selected
+area; the destination separately reviews the recipient, pointer/contact scope and
+thirty- or sixty-second duration. Decline, cancel and stale requests preserve the
+incumbent. Approval transfers ownership and releases the prior held output.
+
+Stop and area changes preview the exact current recipients. A stale review needs
+fresh confirmation; an old review cannot revoke a replacement. Native input loss,
+backgrounding, stop, expiry and unmount release held output. Recovery requires
+fresh approval, and periodic route renewal never extends the approved absolute
+deadline. The task bounds two control sets, four routes, sixty-four requests and
+activations, eight area changes, 100 ms sample age and one owned animation loop.
+
+Run `node tools/qa-sharing-flow.mjs OWNED_LOOPBACK_ORIGIN/sharing` for actual local
+Chromium/WebKit keyboard, pointer, consent, transfer, partition and recovery checks.
+WebKit button traversal uses Alt+Tab, with its default Tab limitation preserved.
+These same-page controls establish no remote person/account identity, observer
+distribution, OS cursor injection, phone ergonomics or full U04 qualification.
+
+## Local workspace administration
+
+`createWorkspaceAdministration` provides one explicitly created ephemeral
+workspace with an immutable provisioned owner, membership, delegated roles,
+resource-sharing rules and complete bounded change audit. The trusted host
+authenticates each actor and approves the exact administration request through a
+current AbortSignal; an actor string supplies no identity proof. Only the owner
+appoints/removes administrators. Delegates cannot replace the owner or expand the
+provisioned resource/rate envelope. Observer routes are limited to trusted
+observe-owned property outputs and cannot invoke controls.
+
+Compose the host's runtime authorization through `authorizeRoute` and create
+managed connections through `route`. Sharing policy narrows access; the exact
+source and sink owners independently approve every route. Membership removal,
+role/policy loss, either owner signal, expiry and close revoke actual runtime
+connections and release held output. Already-issued provider work retains its raw
+quota until actual settlement. A provisional route reservation fences synchronous
+host reentry before the returned public connection can be attached.
+Each exact principal/application/session/resource/operation/partition tuple has
+one managed connection, including a provisional connection. Duplicate tuples are
+refused before runtime dispatch so owner revocation always reaches the active
+handle. A stopped connection permits a separately approved fresh replacement.
+
+The profile bounds sixteen members/resources/rules/routes, two administrators,
+sixty-four changes/route attempts/authorizations/audit events, 32 KiB snapshots and
+thirty-second approvals. A full audit rejects new changes rather than truncating.
+The actual `examples/workspace-administration` public caller verifies typed
+delivery, independent owner denials, delegated-role limits, removal and native
+timer expiry. Durable accounts/team storage, cross-process identity, unmanaged
+host enforcement, installed distribution and full S17 qualification remain open.
