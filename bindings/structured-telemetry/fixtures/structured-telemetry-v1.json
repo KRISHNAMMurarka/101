@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "profile": "structured-telemetry-json2/1",
+  "positive": [
+    {
+      "id": "record-absent",
+      "capability": "reading",
+      "inputVersion": 1,
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":1,\"sequence\":1,\"capturedAt\":0,\"value\":{\"step\":0,\"mode\":\"count-up\"},\"type\":\"sample\"}",
+      "hex": "7b2270726f746f636f6c223a22636f6e6e656374222c2276657273696f6e223a322c2265706f6368223a223031323334353637383961626364656630313233343536373839616263646566222c22736c6f74223a312c2273657175656e6365223a312c2263617074757265644174223a302c2276616c7565223a7b2273746570223a302c226d6f6465223a22636f756e742d7570227d2c2274797065223a2273616d706c65227d",
+      "bytes": 167,
+      "meaning": {
+        "protocol": "connect",
+        "version": 2,
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 1,
+        "capturedAt": 0,
+        "value": {
+          "step": 0,
+          "mode": "count-up"
+        },
+        "type": "sample"
+      }
+    },
+    {
+      "id": "record-false",
+      "capability": "reading",
+      "inputVersion": 1,
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":128,\"sequence\":4294967295,\"capturedAt\":125.5,\"value\":{\"step\":50.25,\"ready\":false,\"mode\":\"count-down\"},\"type\":\"sample\"}",
+      "hex": "7b2270726f746f636f6c223a22636f6e6e656374222c2276657273696f6e223a322c2265706f6368223a223031323334353637383961626364656630313233343536373839616263646566222c22736c6f74223a3132382c2273657175656e6365223a343239343936373239352c2263617074757265644174223a3132352e352c2276616c7565223a7b2273746570223a35302e32352c227265616479223a66616c73652c226d6f6465223a22636f756e742d646f776e227d2c2274797065223a2273616d706c65227d",
+      "bytes": 202,
+      "meaning": {
+        "protocol": "connect",
+        "version": 2,
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 128,
+        "sequence": 4294967295,
+        "capturedAt": 125.5,
+        "value": {
+          "step": 50.25,
+          "ready": false,
+          "mode": "count-down"
+        },
+        "type": "sample"
+      }
+    },
+    {
+      "id": "record-true",
+      "capability": "reading",
+      "inputVersion": 1,
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":2,\"sequence\":4,\"capturedAt\":9007199254740991,\"value\":{\"step\":100,\"ready\":true,\"mode\":\"count-up\"},\"type\":\"sample\"}",
+      "hex": "7b2270726f746f636f6c223a22636f6e6e656374222c2276657273696f6e223a322c2265706f6368223a223031323334353637383961626364656630313233343536373839616263646566222c22736c6f74223a322c2273657175656e6365223a342c2263617074757265644174223a393030373139393235343734303939312c2276616c7565223a7b2273746570223a3130302c227265616479223a747275652c226d6f6465223a22636f756e742d7570227d2c2274797065223a2273616d706c65227d",
+      "bytes": 197,
+      "meaning": {
+        "protocol": "connect",
+        "version": 2,
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 2,
+        "sequence": 4,
+        "capturedAt": 9007199254740991,
+        "value": {
+          "step": 100,
+          "ready": true,
+          "mode": "count-up"
+        },
+        "type": "sample"
+      }
+    },
+    {
+      "id": "one-row",
+      "capability": "table",
+      "inputVersion": 1,
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":1,\"sequence\":6,\"capturedAt\":1400.25,\"value\":[{\"step\":1,\"ready\":false,\"mode\":\"count-up\"}],\"type\":\"sample\"}",
+      "hex": "7b2270726f746f636f6c223a22636f6e6e656374222c2276657273696f6e223a322c2265706f6368223a223031323334353637383961626364656630313233343536373839616263646566222c22736c6f74223a312c2273657175656e6365223a362c2263617074757265644174223a313430302e32352c2276616c7565223a5b7b2273746570223a312c227265616479223a66616c73652c226d6f6465223a22636f756e742d7570227d5d2c2274797065223a2273616d706c65227d",
+      "bytes": 189,
+      "meaning": {
+        "protocol": "connect",
+        "version": 2,
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 1,
+        "sequence": 6,
+        "capturedAt": 1400.25,
+        "value": [
+          {
+            "step": 1,
+            "ready": false,
+            "mode": "count-up"
+          }
+        ],
+        "type": "sample"
+      }
+    },
+    {
+      "id": "eight-rows",
+      "capability": "table",
+      "inputVersion": 1,
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":128,\"sequence\":32,\"capturedAt\":1500.125,\"value\":[{\"step\":0,\"mode\":\"count-up\"},{\"step\":12.5,\"mode\":\"count-down\",\"ready\":false},{\"step\":25,\"mode\":\"count-up\",\"ready\":true},{\"step\":37.5,\"mode\":\"count-down\"},{\"step\":50,\"mode\":\"count-up\",\"ready\":true},{\"step\":62.5,\"mode\":\"count-down\",\"ready\":false},{\"step\":75,\"mode\":\"count-up\"},{\"step\":87.5,\"mode\":\"count-down\",\"ready\":false}],\"type\":\"sample\"}",
+      "hex": "7b2270726f746f636f6c223a22636f6e6e656374222c2276657273696f6e223a322c2265706f6368223a223031323334353637383961626364656630313233343536373839616263646566222c22736c6f74223a3132382c2273657175656e6365223a33322c2263617074757265644174223a313530302e3132352c2276616c7565223a5b7b2273746570223a302c226d6f6465223a22636f756e742d7570227d2c7b2273746570223a31322e352c226d6f6465223a22636f756e742d646f776e222c227265616479223a66616c73657d2c7b2273746570223a32352c226d6f6465223a22636f756e742d7570222c227265616479223a747275657d2c7b2273746570223a33372e352c226d6f6465223a22636f756e742d646f776e227d2c7b2273746570223a35302c226d6f6465223a22636f756e742d7570222c227265616479223a747275657d2c7b2273746570223a36322e352c226d6f6465223a22636f756e742d646f776e222c227265616479223a66616c73657d2c7b2273746570223a37352c226d6f6465223a22636f756e742d7570227d2c7b2273746570223a38372e352c226d6f6465223a22636f756e742d646f776e222c227265616479223a66616c73657d5d2c2274797065223a2273616d706c65227d",
+      "bytes": 473,
+      "meaning": {
+        "protocol": "connect",
+        "version": 2,
+        "epoch": "0123456789abcdef0123456789abcdef",
+        "slot": 128,
+        "sequence": 32,
+        "capturedAt": 1500.125,
+        "value": [
+          {
+            "step": 0,
+            "mode": "count-up"
+          },
+          {
+            "step": 12.5,
+            "mode": "count-down",
+            "ready": false
+          },
+          {
+            "step": 25,
+            "mode": "count-up",
+            "ready": true
+          },
+          {
+            "step": 37.5,
+            "mode": "count-down"
+          },
+          {
+            "step": 50,
+            "mode": "count-up",
+            "ready": true
+          },
+          {
+            "step": 62.5,
+            "mode": "count-down",
+            "ready": false
+          },
+          {
+            "step": 75,
+            "mode": "count-up"
+          },
+          {
+            "step": 87.5,
+            "mode": "count-down",
+            "ready": false
+          }
+        ],
+        "type": "sample"
+      }
+    }
+  ],
+  "pointerPrefix": {
+    "hex": "434e01010123456789abcdef0123456789abcdef000c00000000000540348000000000003e8000003f40000000000000",
+    "meaning": {
+      "protocol": "connect",
+      "version": 1,
+      "type": "sample",
+      "epoch": "0123456789abcdef0123456789abcdef",
+      "slot": 12,
+      "sequence": 5,
+      "capturedAt": 20.5,
+      "value": {
+        "x": 0.25,
+        "y": 0.75
+      }
+    }
+  }
+}

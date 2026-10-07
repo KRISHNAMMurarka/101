@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected Swift codec/package/clean consumer pass; whole E12 open",
+  "localOnly": true,
+  "base": "232f13aca786bfd41766566a993d29fb6a6ad078",
+  "profile": "structured-telemetry-json2/1",
+  "qualifiedNativeTree": "f040c40dbc7846e9da02bef5ba13af0cabec2c67",
+  "sourceSha256": {
+    "bindings/structured-telemetry/profile.json": "1b0626c4b67a9120b7329f5077956f9096a1bef86841640217bfcec42ade2296",
+    "bindings/structured-telemetry/fixtures/page-readings-v1.json": "61c9e00d6ebe7636801759e52f67590405d18971da519f91992d567f319a4b80",
+    "bindings/structured-telemetry/fixtures/structured-telemetry-v1.json": "c3760106f9f7fd66fe5d5067139693a0cc9cfa1e7aadc11a2d0ef6ebc35186f0",
+    "bindings/structured-telemetry/swift/Package.swift": "f48d10707fa31ebace8bcbed9d852989c03d05829447a8af14992a09b4751e3b",
+    "bindings/structured-telemetry/swift/Sources/One01StructuredTelemetryWire/StructuredTelemetryWire.swift": "db666a1550a9940145aa5f2ea566d8293a50dde5da6b7b3beea2fbd5e44a8d25",
+    "bindings/structured-telemetry/swift/Tests/One01StructuredTelemetryWireTests/StructuredTelemetryWireTests.swift": "de4941e1c2b7f0a678d17811f28753991e34bfdc99f139f060c41844e94e6bc0",
+    "examples/language-bindings/StructuredTelemetryConsumer.swift": "f778f40de136ba93cd89c01da39c4be70914296b96a119093c85236888fffbcd",
+    "examples/language-bindings/structured-telemetry.mjs": "bcb4afda51c0b8d88612a1484697f2a1ced70258ba03e56eb3cd05ff7cb944f0",
+    "tests/structured-telemetry-bindings.test.ts": "e23a4aab2152c56513bd6e61eaeea0f86c1a5c90a3451f81c2becafd8996a1be",
+    "tools/build-structured-telemetry-bindings.mjs": "7d084d1071fc46db841a28ce9d9f10cbbe8179efc36f3bfbee34d9b7ec862ecf",
+    "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+    "tools/build-pointer-bindings.mjs": "226b117a8b5baf2f77afda45e16301777749228742c1e1944e165a248bbcc472"
+  },
+  "target": "swift-macos-arm64",
+  "toolchain": "Apple Swift version 6.3.3 (swiftlang-6.3.3.1.3 clang-2100.1.1.101)\nTarget: arm64-apple-macosx26.0",
+  "authority": "inert-codec-only",
+  "changes": [
+    "Existing actual json/2 sample and page reading record/table1..8 typed Swift codec, closed fields, optional absent/false retained, standard Foundation/CoreFoundation parser.",
+    "Raw4KiB UTF8/depth/control/marker guard before Foundation; reproduced actual leading marker admission and repaired raw-byte check before String conversion.",
+    "Public JS producer/reciprocal caller, shared actual page schema/fixtures, Swift package/tests and bounded standalone native caller; local compiled13-file USTAR package.",
+    "SDK prose now describes explicit tab/browser Settings and read-only observers with deferred interaction qualification."
+  ],
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-e12-old-retained.json",
+    "sha256": "5e8a32bb601e6119288677f447cb6937b912fba0029a005cd9f1f80f07c1db78"
+  },
+  "meaningfulGuardOld": {
+    "path": "/tmp/101-structured-telemetry-bom-guard-old.json",
+    "sha256": "6aa5ff5e0828bc8dff0a90ce9d4c36fcce59594e821cb436f5b3378edb25a165"
+  },
+  "focusedSource": {
+    "record": {
+      "path": "/tmp/101-structured-telemetry-source-focused.json",
+      "sha256": "a468d3db4fab1d51931cdf0113763c4758a298da91e4927ae3bbc8fdf6d6c245"
+    },
+    "tests": 1,
+    "result": "pass",
+    "scope": "Actual current page descriptor and public producer fixture oracle; new Swift changes are checked by native command separately."
+  },
+  "native": {
+    "record": {
+      "path": "/tmp/101-structured-telemetry-native-build-final.json",
+      "sha256": "f1658dbf8836b8355fd6fd82953bba088bc5e723d7319c9e05d30d34ab5b4eb8"
+    },
+    "manifest": {
+      "path": "release/structured-telemetry-QttsPR/manifest.json",
+      "sha256": "024050bd16114a5322437fec6c00410e55b77d8f49bc5df2b25c31edb58e09b1"
+    },
+    "swiftTests": 7,
+    "pass": 7,
+    "reciprocal": {
+      "result": "pass",
+      "reciprocalValues": 5,
+      "commands": 10,
+      "authority": "inert-codec-only",
+      "sourceTimePreserved": true,
+      "nativeByteIdentityClaimed": false
+    },
+    "wrongLaneRejected": true,
+    "cliFramingChecks": 6,
+    "actualOwnedGroupSettled": true
+  },
+  "cleanConsumer": {
+    "record": {
+      "path": "/tmp/101-structured-telemetry-clean-consumer.json",
+      "sha256": "f68245833b012ec3245bf28821540223c5e3714ef2bf5926705566ab8858512b"
+    },
+    "closedFiles": 13,
+    "commands": 4,
+    "result": "pass",
+    "scope": "Actual clean extracted module/library import and public installed SDK reciprocal semantics. Finite content checks, not general secret scanning or public distribution approval."
+  },
+  "retention": {
+    "path": "/tmp/101-structured-telemetry-final-native-retained.json",
+    "sha256": "80bd25af0afc144e0c2971d1d4bb88496b04297ff4676f7bf22510090e7e3004"
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-structured-telemetry-swift/integration-gates",
+    "requirement": "All five AGENTS gates on frozen final integration candidate; fresh build before rendered; actual output counts in retained record."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-structured-telemetry-swift/integration-review",
+    "requirement": "Passive exact source/evidence review CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Only selected record/table codec on this Swift6.3.3 macOSarm64 host. Re-encoding preserves meaning, not original JSON bytes.",
+    "Native codec issues no grants, authentication, routing, clock conversion, freshness decisions or runtime lifecycle.",
+    "Other json/2 schemas, Kotlin/C/other platforms, iOS/Android, cross-toolchain ABI, physical effects and public distribution remain unqualified.",
+    "Finite package content checks cover declared bytes/paths/known marker only; no generic secret-scan or release acceptance.",
+    "Phone and broader app interaction checks remain deferred; unrelated reading WebKit expiry failure unchanged."
+  ],
+  "taskDisposition": {
+    "E12": "PARTIAL/OPEN. Selected local Swift source/codec/package/consumer built and software-qualified; wider runtime/language/support scopes remain."
+  },
+  "supportRowsAccepted": 0
+}

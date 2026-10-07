@@ -1999,11 +1999,13 @@ restored. Live routes still require separate source and destination grants.
 
 This is a cooperative same-origin storage profile. It does not isolate hostile
 same-origin code, prevent browser eviction or guarantee recovery after OS power
-loss. The tab-only Settings page below retains its existing RAM lifetime.
+loss. Settings offers the explicit tab or browser choice described below.
 General extension, native privilege, dependency and isolation work remains open.
 [Scoped implementation and current installed browser evidence](receipts/2026-10-07-browser-processor-storage.json) records exact producer bytes, original failures and remaining limits.
 
-## Tab-only reviewed processor management
+<a id="tab-only-reviewed-processor-management"></a>
+
+## Reviewed processor management
 
 `/settings/processors`, linked from Settings, manages two built-in reviewed
 number-threshold versions through the public signed installer and runtime. Arrival
@@ -2013,8 +2015,17 @@ Live use separately approves the page's Celsius number input and its indicator
 output. Both versions use their original fixed reviewed factories and genuine
 native P-256/SHA-256 verification; a manifest cannot select executable code.
 
-Installation documents, factories and grants belong to this page's RAM lifetime.
-Navigation/reload forgets them. Stop is available during verification and live use;
+The management review defaults to **Only this tab**. **Save on this browser**
+explicitly selects the public browser storage adapter after fresh management
+approval; selecting or declining the choice does not touch saved storage. Tab
+documents stay in RAM. Browser documents retain reviewed source/history and
+revocation records; a fresh page restores them inactive. Neither choice saves
+factories, trust, grants or live permissions. No automatic migration or RAM
+fallback occurs when browser storage is unavailable. Corrupt/future data stays
+unchanged. Another page's stored-byte revision fences live effects; storage
+notifications only retire authority and never supply consent.
+
+Stop is available during verification and live use;
 actual issued public returns and supported route settlement are retained through
 close. A hung return remains pending. The page admits at most 32 changes and 32
 derived commands at 10 Hz within the original lease, with at most one incumbent
@@ -2029,6 +2040,8 @@ isolation, native privileges, other profiles and physical/assistive technology
 qualification remain open under U12/E10. [Scoped implementation and software
 evidence](receipts/2026-10-07-processor-management.json) identifies exact inputs
 and the distinction between implementation, runtime evidence and final gates.
+[The browser-saved Settings build and focused source checks](receipts/2026-10-07-durable-processor-management.json)
+leave its broader browser interaction checks deferred.
 
 ## Local package submission and review
 
@@ -2689,6 +2702,38 @@ bounded buffers; this is not an OS sandbox or an arbitrary secret detector. Its
 finite private-marker policy and cooperative filesystem identity guards do not
 prove all SDK/app contents safe. [Actual native contents and clean consumer
 evidence](receipts/2026-10-07-native-binding-contents.json) remains partial K12/K03/E12.
+
+## Selected Swift structured telemetry codec
+
+`structured-telemetry-json2/1` supplies `One01StructuredTelemetryWire` for the
+existing `json/2` disposable sample envelope and the page-reading record/table
+schemas. A record contains `step` in unit `1` from 0 to 100, `mode` (`count-up` or
+`count-down`) and optional Boolean `ready`; tables contain 1 to 8 records. Absent
+`ready` remains distinct from `false`. Epoch, slot, sequence and finite nonnegative
+source time are preserved. Re-encoding preserves meaning; JSON key order and
+number spelling need not match JavaScript's original bytes.
+
+`StructuredTelemetryWire.decode(Data, lane:)` returns an inert typed sample or
+`nil`. `encode(_:)` throws the fixed `.invalid` error for invalid typed values.
+Raw input is limited to 4 KiB and container depth 3. UTF-8, raw markers, control
+bytes and encoding boundaries are checked before Foundation's complete JSON
+parser; Boolean and numeric values remain separate.
+
+Build locally from an immutable tree and the ordinary installed matching SDK:
+`node tools/build-structured-telemetry-bindings.mjs TREE --sdk-root INSTALLED_CONSUMER --sdk-manifest SDK_MANIFEST`.
+The local Swift package contains source, compiled module/library, callers,
+license, selected schemas/fixtures and exact hashes. The builder executes seven
+Swift Testing groups, five reciprocal JS/native vectors, wrong-lane rejection
+and six CLI framing checks. The standalone caller accepts `D disposable HEX`
+or typed `E` commands; it caps commands at 128, lines at 16 KiB, and total input
+and output at 1 MiB. Valid streaming outputs may precede a later framing exit 2.
+
+The selected codec was run with Swift 6.3.3 on this macOS arm64 host. Wider
+`json/2` schemas, other languages/platforms/ABIs, native runtime ownership,
+authentication, grants, freshness, clock conversion and physical effects remain
+outside this codec. The host must enforce those separately. Full E12/Q02 and
+public distribution remain open. [Exact source/native build evidence](receipts/2026-10-07-structured-telemetry-swift.json)
+records the actual marker regression and remaining limits.
 
 ## Capture-to-output timing
 
@@ -3659,6 +3704,20 @@ Chromium/WebKit keyboard, pointer, consent, transfer, partition and recovery che
 WebKit button traversal uses Alt+Tab, with its default Tab limitation preserved.
 These same-page controls establish no remote person/account identity, observer
 distribution, OS cursor injection, phone ergonomics or full U04 qualification.
+
+### Read-only observers
+
+`/sharing/watch` adds one owner and up to two independent observers of this
+page's software movement/press record. Each endpoint verifies the full peer
+comparison; source consent and every recipient's display approval remain
+separate. Decline, cancel or revoke affects only that observer. The original
+source approval lasts at most 30 seconds and cannot be renewed by pausing.
+The actual public resource receiver retains its slot watermark across fresh
+approvals and conservatively narrows consent using its real clock mapping.
+Source emission time is a page clock stamp, not hardware capture time.
+Stop awaits the task's issued-return barrier; backgrounding retires approvals
+and unmount initiates tracked close. [Selected build and 19 source checks](receipts/2026-10-07-watch-sharing.json)
+leave broader browser/phone interaction and full U04 qualification deferred.
 
 ## Local workspace administration
 

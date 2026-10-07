@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 140,
+  "revision": 141,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11830,6 +11830,31 @@
         "Local software source checks; broader interaction and physical checks deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "structured-telemetry-swift-built-partial-2026-10-07",
+      "revision": "f040c40dbc7846e9da02bef5ba13af0cabec2c67",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-structured-telemetry-swift.json"
+      ],
+      "environment": "Actual Swift6.3.3/macOSarm64/Foundation/CoreFoundation, Node24.14 and unchanged ordinary installed seven-package405-file SDK. Native inert codec only.",
+      "reproduction": "Immutable build/clean consumer manifests, actual producer/guard OLD and literal inputs/binaries/outputs in receipt; exact final integration gates/review retained references.",
+      "scope": "Selected json/2 page-reading record/table codec,7Swift test groups,5reciprocal vectors,wrong lane/6CLI framing and13-file clean extracted module caller. E12 broader native runtime/language/other schemas remain OPEN.",
+      "failure": null,
+      "equipment": [
+        "Actual local Swift macOSarm64 compiler and clean ordinary native/software consumers"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14367,7 +14392,8 @@
         "directory-native-bindings-partial-2026-10-06",
         "q02-shared-watch-software-contracts-2026-10-06",
         "native-binding-contents-built-partial-2026-10-07",
-        "processor-native-exact-local-gates-2026-10-07"
+        "processor-native-exact-local-gates-2026-10-07",
+        "structured-telemetry-swift-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
