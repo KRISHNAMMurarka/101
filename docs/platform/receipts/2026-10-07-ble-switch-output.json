@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "result": "pass selected reviewed BLE boolean-byte/1 output software contract; exact gates/local commit pending",
+  "profile": "app:ble-switch-setting/1",
+  "base": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
+  "candidateSourceTree": "02db0a4c2a8bc516076d2690164fd5359920aa9b",
+  "sourceCommit": null,
+  "sourceSha256": {
+    "packages/device-web/src/browser-ble-switch.ts": "3e0dc0bb9b5034b86ab3c22018eee2e7f953b35503b14addddbdb1320c6b4464",
+    "packages/device-web/src/browser-ble-switch.test.ts": "ecab820feac23be06516a51b70cdfbcc5f2c3c940df9c02c79cce79af5753543",
+    "examples/browser-resources/ble-switch-output.ts": "985f934241ebd2e4b2cc35daa488d5e07d54b21016f289096f3ffd7114cf36c0",
+    "tools/qa-ble-switch-output.mjs": "00a1224b488ef19b007e1f9539f8fb6fc98c29d18c93a3f3c38be54e1fe55a95",
+    "packages/device-web/src/index.ts": "47d88aeed81493646d9ac0b0d754b130ee72c410edeb208b958b4418ac9fcd41",
+    "tools/build-sdk.mjs": "22d3dbea3040a81bfefc949a203523b8e1272c9da811a1520fbaa75e8ead3842",
+    "tools/qa-sdk-consumer.mjs": "8d899bf79e1d81d07edd4e670ce9a45b12e8b86cad9c3be3933a33489a357a9a"
+  },
+  "literalDisposition": {
+    "tasks": [
+      "A03",
+      "N02"
+    ],
+    "builtAndQualified": "Selected write-with-response output on the same private captured GATT characteristic, exact reviewed boolean byte and independently consented real reliable invoke route, source and ordinary installed software Worker target caller qualified.",
+    "wholeRows": "OPEN: real BLE radio/peripheral/vendor profiles, chooser/permissions/reconnection and physical reported state/latency/safe-state qualification remain deferred.",
+    "tally": {
+      "total": 272,
+      "completed": 120,
+      "open": 152
+    }
+  },
+  "publicContract": {
+    "factory": "createBrowserBleSwitchProvider",
+    "methods": [
+      "inspectOutput",
+      "bindOutput",
+      "outputStatus"
+    ],
+    "additiveTypes": [
+      "BrowserBleSwitchOutputReport",
+      "BrowserBleSwitchOutputRequest",
+      "BrowserBleSwitchOutputGrant",
+      "BrowserBleSwitchOutputActivation",
+      "BrowserBleSwitchOutputDeliveryLimits",
+      "BrowserBleSwitchOutputStatus",
+      "BrowserBleSwitchOutputRecord"
+    ],
+    "profile": "Optional reviewedProfile.writeFormat exactly boolean-byte/1; absent remains original notification-only capture. Metadata declares meaning, never grants a command.",
+    "nativeMethod": "Actual properties.write true and exact current writeValueWithResponse(BufferSource) method required. Fixed owned byte0/1 only; no writeValue/writeWithoutResponse/reliableWrite fallback or arbitrary UUID/raw bytes.",
+    "owner": "Private WeakMap exact current successfully issued capture activation; structural copies/foreign/retired activations rejected. No second GATT owner or raw selected characteristic exported.",
+    "authority": "Optional authorizeOutput defaults deny; exact request/intrinsic signal/expiry no later than original capture. Independent reliable application event subscribe-to-command invoke grant; canonical positive numeric operation IDs and integer lease/queue1.",
+    "finalBoundary": "Trusted default-deny exact-context numeric outputDeliveryLimits from same actual owned Connection.limits() and exact running OperationRecord.deadline. Observer/native/currentness callouts precede final clock, then private epochs/intrinsic signals and captured deadline/age/cadence fence issuance. Trusted-host same-clock declaration, no new authentication/all-readiness atomicity.",
+    "nativeWork": "Returned sink Promise and provider raw reservation both retain actual issued write response until settlement. Stop/revoke/expiry retire local authority without reset bytes; stopNotifications/disconnect wait actual write settlement. Invalid/unreturned Promise/issued throw quarantines and may retain close pending; no fabricated native cancellation or quiescence.",
+    "evidence": "dispatched/API-returned/API-rejected/uncertain remain separate from independently routed notification state. API return is not target acknowledgement/observation. Already-cancelled issued row stays uncertain even if apiReturned later true.",
+    "caller": "@101/connect/examples/ble-switch-output exports createBrowserBleSwitchOutputCaller, checkBleSwitchOutputWithoutDevice and runBleSwitchOutputWorkerFixture, plus BrowserBleSwitchOutputCallerOptions. Separate notification display and reliable event/invoke routes on same owner."
+  },
+  "limits": {
+    "captureDevices": 1,
+    "captureSources": 1,
+    "captureCharacteristics": 1,
+    "captureAttempts": 64,
+    "captureMs": 30000,
+    "captureMaxHz": 20,
+    "captureBurst": 4,
+    "captureFrames": 600,
+    "notificationQueue": 8,
+    "captureListeners": 7,
+    "outputListeners": 2,
+    "maximumCombinedListeners": 9,
+    "outputSinks": 1,
+    "outputPendingBytes": 1,
+    "outputAttempts": 32,
+    "outputMaxHz": 2,
+    "outputMaxAgeMs": 100,
+    "outputHistory": 16,
+    "outputQueue": 1,
+    "aggregateRawIntendedCeiling": 3,
+    "nativePendingIntendedCeiling": 2,
+    "expiryTimers": 1,
+    "nativeWaitTimers": 1,
+    "callerRegistrations": 4,
+    "callerRoutes": 2,
+    "callerRuntimePending": 2,
+    "callerCommands": 31,
+    "workerRpcAttempts": 8,
+    "workerPending": 1,
+    "workerDiagnosticReplyMs": 1000
+  },
+  "failedAndNegativeHistory": [
+    {
+      "classification": "Ordinary installed original read-only BLE absent public methods RED after inert/native0/public factory identity prefix; feature absence only.",
+      "receipt": {
+        "path": "/tmp/101-ble-output-old-installed-public.json",
+        "sha256": "9ffa0ccc6832498063f6a2ae57de3d39c52798f63989318507c50120b88148fd"
+      }
+    },
+    {
+      "classification": "First integrated46 regressions all pass. Strict actually rejected validated options closure possibly undefined at four call sites and caller nativeWrites literal0 vs3. Capturing validated optional callbacks plus reading mutable count through a function repairs type inference only.",
+      "focused": {
+        "path": "/tmp/101-ble-output-first-focused.json",
+        "sha256": "0821e54086a09804dc57d16be898bb6ea2314367794b309f059336f4c42c9316"
+      },
+      "strict": {
+        "path": "/tmp/101-ble-output-first-types-lint.json",
+        "sha256": "7a51e03522964c99d78658543a19ca02492aa48bec81e8ee99d15ac6031face3"
+      },
+      "literalSource": {
+        "path": "/tmp/101-ble-output-first-source.json",
+        "sha256": "3dc7c142013fcda8fefb3dc1ab7cea7b74e6a20d2bb68b2ac35c1ea782f9e2a3"
+      }
+    },
+    {
+      "classification": "Current strict/scoped lint and46 focused pass after narrow type repair; no runtime/parser/permission or original notification weakening.",
+      "receipt": {
+        "path": "/tmp/101-ble-output-types-repaired.json",
+        "sha256": "f30a60488b3f21a3c15260e3ed9341caad57b926012180fb0258a2fb53b41a70"
+      }
+    }
+  ],
+  "focused": {
+    "path": "/tmp/101-ble-output-final-focused.json",
+    "sha256": "f72c8eceedd6228f8b2fbcadf1bffff7b81e5da76b0e4893445d42677eb3b348"
+  },
+  "focusedCounts": {
+    "tests": 46,
+    "pass": 46,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "loadedSourceModules": 121,
+  "staticChecks": {
+    "path": "/tmp/101-ble-output-types-repaired.json",
+    "sha256": "f30a60488b3f21a3c15260e3ed9341caad57b926012180fb0258a2fb53b41a70"
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-ble-output-current-source-independent-review.json",
+    "sha256": "8c02904f3587da7ac13f13f99147f09d34b60a85c6fc61f0b19f7b0a999ee7c0"
+  },
+  "installedSdk": {
+    "receipt": {
+      "path": "/tmp/101-ble-output-sdk.json",
+      "sha256": "358610b98fabd907042291251876a8685d65cbdf58a45d00ab964e04b3b2f3a6"
+    },
+    "actualProducerTree": "02db0a4c2a8bc516076d2690164fd5359920aa9b",
+    "callerTree": "02db0a4c2a8bc516076d2690164fd5359920aa9b",
+    "sourceFiles": 171,
+    "installedFiles": 385,
+    "tarballs": 7,
+    "consumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-rkInJ3/manifest.json",
+      "sha256": "edbea49162fc2e4e6f71d1c928f7b963d377aff77ebaa330d17f385335b8c04e"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-92LUmD/receipt.json",
+      "sha256": "bfcf79ff6eb5f7503830918b4e67db555b9e4b509e74c85a9e76818d96ef1e89"
+    }
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-ble-output-first-source-browser.json",
+    "sha256": "dabf42fca923c94d1f91df10413e471b5ca5da683094348a164a1d339c9ccd15"
+  },
+  "installedPublic": {
+    "path": "/tmp/101-ble-output-installed-public.json",
+    "sha256": "8a2bc863cb68ec6b00b90f5d68c087b2247d35a66b225cdc964de5c98f1c78fd"
+  },
+  "actualBrowserScope": {
+    "sourceRuns": 4,
+    "installedRuns": 4,
+    "checksPerRun": 15,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "requestedBluetoothPolicyHeaders": [
+      "self",
+      "deny"
+    ],
+    "policyEnforcementQualified": false,
+    "sourceCompiledInputs": 125,
+    "publicResolutions": 7,
+    "installedCompilerDeclarationInputs": 182,
+    "trustedSoftwareGatt": true,
+    "nativePositive": "Genuine owned Worker receives3 software byte writes and separately answers3 state reports;7 replies and1held actual response per run. Native Worker terminate return is observed; native exit is not.",
+    "physicalBleQualification": false,
+    "nativeRadioPositive": false,
+    "apiReturnIsTargetState": false,
+    "defaultNativeChooserCalls": 0
+  },
+  "preservation": {
+    "path": "/tmp/101-ble-output-software-preservation.json",
+    "sha256": "141e1336367dbb9009fe1bb3e5992904aa40e523d58d14effa2e3d601a698658"
+  },
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "pages": 0,
+    "launchPending": 0,
+    "loopbackServerListening": false,
+    "nativeHttpSockets": 0,
+    "inflightRequests": 0,
+    "callerDirectoryRemoved": true,
+    "installedConsumerRetained": true,
+    "errors": []
+  },
+  "requiredGates": {
+    "status": "pending exact final candidate",
+    "scope": "Current source/installed proof belongs to immutable producer/caller02db; all-five repository gates must qualify the final source/canonical candidate."
+  },
+  "remaining": [
+    "Whole A03/N02 remain open: actual radio/peripheral, native chooser/permissions/reconnection, undocumented vendor protocols, physical state/safe-state/latency and broader profiles.",
+    "Trusted environment/software GATT and honest same-clock numeric route/operation snapshot are policy seams, not arbitrary-host authentication.",
+    "Browser-internal quiescence/native Worker exit unobserved; only exact owned bookkeeping/API return claimed.",
+    "No phone/pointer/device hardware, remote service/push/publication/deploy used."
+  ]
+}

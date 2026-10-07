@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 124,
+  "revision": 126,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11091,6 +11091,84 @@
         "completed": 120,
         "open": 152
       }
+    },
+    {
+      "id": "v05-camera-zoom-exact-local-gates-2026-10-07",
+      "revision": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-controls.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; exact12-path committed source/canonical candidate plus source/installed Chromium/WebKit and explicit software camera.",
+      "reproduction": "All5 actual gates pass: 2104 unit / 34 rendered, zero fail/cancel/skip/todo; freshbuild/types/lint. Source55/121actualdeps,source4\u00d712/browser125inputs and installed4\u00d712/SDK170/382/7/consumer10. Passive source and exact canonical/SDK ancestry reviews CLEAR.",
+      "scope": "Selected V05 same-owner reported zoom software built/qualified locally. Full V05 remains OPEN: physical camera/native zoom/optics/focus/exposure/PTZ/switching/unplug and broader qualification deferred. No native hardware/support/publication promotion; next documentary bytes await coherent gates.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browser/software ports; physical camera devices deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
+        "exactCommittedTree": "f8e3dfb0e4162db4a4ff5a863496596ad7744a2f",
+        "receipt": {
+          "path": "/tmp/101-camera-controls-cleanup-exact-required-gates.json",
+          "sha256": "87967dbf68bb3a60d7333ea31539c1cf43fad6511ef8b94b5aa29f1c3d445ae8"
+        },
+        "unit": 2104,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. This later documentary update awaits the next coherent candidate; historical source/installed tests retain distinct immutable producer/caller trees."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-camera-controls-cleanup-exact-commit.json",
+        "sha256": "f2ec83edf1b1c1afd7e377e31ec754cc54d7e18bf46a0d4461f4e9cda8324682"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "a03-selected-ble-byte-output-software-2026-10-07",
+      "revision": "02db0a4c2a8bc516076d2690164fd5359920aa9b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A03",
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-ble-switch-output.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14; actual source46/121 loaded modules and source125 inputs; ordinary installed SDK171source/385files/7tar/consumer10; headless Chromium/WebKit software GATT with genuine Worker target.",
+      "reproduction": "Intended OLD ordinary public missingmethods RED native0. Current46 focused zero skip/cancel/fail, strict/scopedlint, source4\u00d715 and installed4\u00d715 pass. Software3writes/7replies/separate3notifications/1held response and actual retirement cleanup. Passive current source review CLEAR; exact canonical/gates/commit pending.",
+      "scope": "Selected reviewed BLE byte-output software built/qualified. Whole A03/N02 OPEN, native radio/peripheral/permissions/physical write/full profiles deferred; support catalog unchanged.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browser Worker/software GATT; physical devices deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
     }
   ],
   "tasks": [
@@ -12076,7 +12154,8 @@
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "v07-browser-screen-preview-software-partial-2026-10-07",
         "n02-a03-browser-ble-switch-software-partial-2026-10-07",
-        "screen-ble-haptic-exact-local-gates-2026-10-07"
+        "screen-ble-haptic-exact-local-gates-2026-10-07",
+        "a03-selected-ble-byte-output-software-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12554,7 +12633,8 @@
       "records": [
         "pending-V05",
         "v05-selected-camera-zoom-software-2026-10-07",
-        "v05-late-control-cleanup-repair-2026-10-07"
+        "v05-late-control-cleanup-repair-2026-10-07",
+        "v05-camera-zoom-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12719,7 +12799,8 @@
       "records": [
         "pending-A03",
         "n02-a03-browser-ble-switch-software-partial-2026-10-07",
-        "screen-ble-haptic-exact-local-gates-2026-10-07"
+        "screen-ble-haptic-exact-local-gates-2026-10-07",
+        "a03-selected-ble-byte-output-software-2026-10-07"
       ],
       "dependencies": [
         "M01",

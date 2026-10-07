@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-07",
-  "result": "pass selected same-owner reported zoom-setting software contract; exact gates/local commit pending",
+  "result": "pass selected same-owner reported zoom-setting software contract; exact required gates passed and local source committed",
   "localOnly": true,
   "profile": "media:camera-zoom-setting/1",
   "base": "d34b0af40c8203eb315abfae9e775a328632611a",
   "candidateSourceTree": "e1e565e2ab4019379188a012d90c1e28a9debe7a",
-  "sourceCommit": null,
+  "sourceCommit": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
   "sourceSha256": {
     "packages/device-web/src/browser-camera.ts": "960cf616efc69bfdd83bf61ae6da9a141977d2072e1390133da81f761564b726",
     "packages/device-web/src/browser-camera.test.ts": "a82fd347aedad03fb72362afb72872c37215dc4489ab9fdcfa7aeec37d6b25f7",
@@ -261,8 +261,17 @@
     "ownedDirectories": 0
   },
   "requiredGates": {
-    "status": "pending exact final candidate",
-    "scope": "All five required gates must run on exact source/canonical bytes; earlier gates are not new-code proof."
+    "status": "pass",
+    "sourceCommit": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
+    "exactCommittedTree": "f8e3dfb0e4162db4a4ff5a863496596ad7744a2f",
+    "receipt": {
+      "path": "/tmp/101-camera-controls-cleanup-exact-required-gates.json",
+      "sha256": "87967dbf68bb3a60d7333ea31539c1cf43fad6511ef8b94b5aa29f1c3d445ae8"
+    },
+    "unit": 2104,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. This later documentary update awaits the next coherent candidate; historical source/installed tests retain distinct immutable producer/caller trees."
   },
   "remaining": [
     "V05 stays open: native camera permission/selected hardware/switching/unplug/retry, optics/focus/exposure/PTZ and broader physical/profile qualification.",
@@ -273,5 +282,18 @@
   "independentSourceReview": {
     "path": "/tmp/101-camera-controls-cleanup-repaired-independent-review.json",
     "sha256": "c75bc677bdda03a7c2633f5d02dd38fb41681f1673cada488a1ebe070f9dbc46"
+  },
+  "committedSourceTree": "f8e3dfb0e4162db4a4ff5a863496596ad7744a2f",
+  "actualLocalCommit": {
+    "path": "/tmp/101-camera-controls-cleanup-exact-commit.json",
+    "sha256": "f2ec83edf1b1c1afd7e377e31ec754cc54d7e18bf46a0d4461f4e9cda8324682"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-camera-controls-cleanup-exact-independent-review.json",
+    "sha256": "446c5609d0669cbe7bccbddefa8c50dcd5fd69453e0bd09f0d7e94a7e6eb6400"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-camera-controls-cleanup-final-build-preservation.json",
+    "sha256": "22dab67ee00534774ab622286f35fb4cf8daf6555887794530e7980ba8d3db7a"
   }
 }

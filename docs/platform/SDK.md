@@ -2853,6 +2853,52 @@ verifies API-shaped setting and held-Promise cleanup. Four source and four ordin
 installed Chromium/WebKit runs pass twelve checks each; neither qualifies native
 camera zoom, physical optics, focus/exposure/PTZ or the complete V05 scope.
 
+### Selected BLE switch output
+
+The same `createBrowserBleSwitchProvider` adds `inspectOutput(activation)`,
+`bindOutput(activation, { purpose })` and `outputStatus()`. Optional reviewed
+`writeFormat: 'boolean-byte/1'` declares an absolute false byte 0 / true byte 1
+protocol. Profiles without this field retain notification-only behavior. The
+exact private current capture activation and its characteristic remain the sole
+owner; no raw characteristic, extra chooser or second GATT connection is exposed.
+Actual `properties.write === true` and `writeValueWithResponse` are required.
+There is no generic write/without-response fallback or inferred vendor meaning.
+
+`authorizeOutput` defaults to denial and binds the exact request, intrinsic signal
+and expiry no later than capture consent. Declining an unissued output preserves
+notification input. A separate reliable application **event** source needs real
+`subscribe` → `invoke` approval for `app:ble-switch-setting/1`. Its payload is a
+boolean; operation IDs are positive canonical numeric strings and queue is one.
+`outputDeliveryLimits(context)` defaults to denial and returns only the exact
+context plus numeric expiry, age and cadence from the same actual `Connection`
+and its exact running `OperationRecord`. The expiry narrows to their minimum,
+age to at most 100 ms and cadence to at most 2 Hz. All observer callouts precede
+the final fresh clock; private epochs and intrinsic signals fence issuance after
+it. This same-clock trusted-host contract adds no permission or authentication.
+
+The output has one sink, one pending byte, 32 bind/command attempts and 16 history
+entries. Capture retains its original seven listeners; output owns at most two
+additional abort listeners, so the combined ceiling is nine. Existing capture
+and native-wait timers are reused. The public caller has four registrations,
+two separately granted routes and at most 31 command IDs per command source.
+
+The provider and returned runtime sink work both retain the actual issued
+native write Promise. Stop/revoke/expiry removes authority without a reset byte;
+notification shutdown and disconnect wait for its actual settlement. Unknown
+issued returns quarantine work and may keep `close()` pending. API-returned is
+separate from independently routed notification state. A cancelled issued row
+remains uncertain even when its response later returns; no target observation,
+physical acknowledgement or native cancellation is inferred.
+
+`@101/connect/examples/ble-switch-output` exports
+`createBrowserBleSwitchOutputCaller`, `checkBleSwitchOutputWithoutDevice` and
+`runBleSwitchOutputWorkerFixture`. Its explicitly software GATT target is a genuine
+owned Worker, with separate writes and state-report requests. Four source and four
+ordinary installed Chromium/WebKit runs pass 15 checks each, using three writes,
+seven replies and one held response per run. Worker terminate API return is
+observed; native Worker exit, BLE radio/peripheral, Permissions-Policy enforcement
+and hardware behavior remain unqualified. Whole A03/N02 remain open.
+
 ## Disposable coordinator, directory and gateway stack
 
 `node tools/disposable-stack.mjs --exercise` creates, exercises and removes a
