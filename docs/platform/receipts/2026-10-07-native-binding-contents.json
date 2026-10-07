@@ -4,7 +4,7 @@
   "localOnly": true,
   "base": "5f184a92d13148aeef251a3ba7c9229653da1303",
   "candidateSourceTree": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
-  "sourceCommit": null,
+  "sourceCommit": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
   "tally": {
     "total": 272,
     "completed": 121,
@@ -15,10 +15,19 @@
     "sha256": "c87680b853bbb2f832c0a174ddd3dd0ffc72404e41b58b07918e4df159a2fa1e"
   },
   "requiredGates": {
-    "status": "pending exact coherent candidate",
-    "scope": "Focused/runtime qualification below describes its actual immutable source. All five AGENTS gates and final candidate browser qualification are required before local commit; no final candidate pass is inferred from an earlier build."
+    "status": "pass",
+    "sourceCommit": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
+    "exactCommittedTree": "23a9c0e12ba200f838527190c7f328ed14e4c6f8",
+    "receipt": {
+      "path": "/tmp/101-processor-native-final-bound-exact-required-gates.json",
+      "sha256": "b25fe497436fbd397cef644c9e2eee1899f3c98dbb7f505cf545381e53134653"
+    },
+    "unit": 2224,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates passed the exact18-path committed candidate. Later documentary bytes await the next coherent candidate; native producerab926/publicSDKa519 retain their distinct leaf-equivalent scopes."
   },
-  "result": "pass selected native package contents implementation, real compiler output and clean consumers; final exact gates pending",
+  "result": "pass selected software implementation/runtime; exact required gates passed and source committed locally",
   "profile": "normalized-pointer-bindings-content-audit/1",
   "tasks": [
     "K12",
@@ -142,5 +151,18 @@
     "Whole K12/K03/E12/S15 remain open: this is the selected native normalized pointer distribution only. It is not an audit of every SDK/app artifact or arbitrary secret encoding.",
     "No publication, distribution acceptance, other ABI/runtime, native authority lifecycle, phone/OS injection or physical peripheral qualification.",
     "Historical metadata-only repack is not current compiler qualification. Genuine fresh33 producer and actual clean consumers above supply the current narrow evidence."
-  ]
+  ],
+  "committedSourceTree": "23a9c0e12ba200f838527190c7f328ed14e4c6f8",
+  "actualLocalCommit": {
+    "path": "/tmp/101-processor-native-final-bound-commit.json",
+    "sha256": "755eb459d17664cceb3704273fcd2e602df8e54beffdbcd11217b6bf5d7a8328"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-processor-native-final-bound-exact-independent-review.json",
+    "sha256": "cda5dfe51a567b9594f7b16d6467b07071b7a6b80e338cb89b110c083bc3c3a8"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-processor-native-qualified-build-preserved.json",
+    "sha256": "73b734c86a4a2b3fa763b1726ecca3c56633b93979d78c33be6c8369eca75380"
+  }
 }

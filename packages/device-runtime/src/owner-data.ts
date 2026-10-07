@@ -22,7 +22,11 @@ export interface OwnerDataStorage {
   transact<T>(ownerId: string, mutation: (current: unknown) => { state: unknown; result: T },
     guard?: Readonly<{ signal: AbortSignal; isCurrent(): boolean }>): Promise<T>;
 }
-export interface OwnerDataSelection { readonly kinds: readonly Kind[]; readonly purpose: string }
+export interface OwnerDataSelection {
+  readonly kinds: readonly Kind[]; readonly purpose: string;
+  /** Only kinds:['telemetry']. The controller also removes this resource's registered local copies. */
+  readonly telemetryResourceId?: string;
+}
 export interface OwnerDataScope {
   readonly ownerId: string; readonly action: 'open-stores' | 'export' | 'copy' | 'delete' | 'resume-delete' | 'sweep';
   readonly epoch: number; readonly deadline: number; readonly maxBytes: number; readonly request: Readonly<Record<string, unknown>>;
@@ -38,6 +42,8 @@ export interface OwnerDataDeletion {
   readonly operationId: string; readonly kinds: readonly Kind[]; readonly state: 'pending' | 'completed';
   readonly completedStages: number; readonly startedAt: number; readonly updatedAt: number;
   readonly removed: Readonly<Record<Kind, number>>;
+  /** Pending review only. Completed plans and redacted audit omit the selector. */
+  readonly telemetryResourceId?: string;
 }
 export interface OwnerDataPorts {
   readonly telemetry: TelemetryStorage; readonly settings: SettingsStorage; readonly artifacts: ArtifactJobStorage;
@@ -82,6 +88,18 @@ interface CommitFence { readonly signals: readonly AbortSignal[]; isCurrent(): b
 class DataError extends Error { readonly reason: OwnerDataFailure; constructor(reason: OwnerDataFailure) { super(reason); this.reason = reason; } }
 class WriteCancelled extends Error { constructor() { super('managed-write-cancelled'); } }
 function fail(reason: OwnerDataFailure): never { throw new DataError(reason); }
+// Authority is the native signal's state/event, not an own shadow property or
+// an overridable caller method. Intrinsic branding also rejects prototype-only
+// impostors before a lease or producer guard is admitted.
+const abortState = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted')?.get;
+const signalListen = EventTarget.prototype.addEventListener, signalUnlisten = EventTarget.prototype.removeEventListener;
+function isSignal(input: unknown): input is AbortSignal {
+  try { return typeof abortState?.call(input) === 'boolean'; } catch { return false; }
+}
+function signalAborted(signal?: AbortSignal): boolean {
+  if (signal === undefined) return false;
+  try { return abortState?.call(signal) !== false; } catch { return true; }
+}
 const ok = <T>(value: T): OwnerDataResult<T> => Object.freeze({ ok: true, value });
 const bad = (reason: OwnerDataFailure): OwnerDataResult<never> => Object.freeze({ ok: false, reason });
 const size = (value: unknown) => new TextEncoder().encode(JSON.stringify(value)).byteLength;
@@ -200,11 +218,14 @@ function parse(raw: unknown, owner: string, now: number): Envelope {
     kinds(event.kinds); validCounts(event.removed); }
   if (new Set(value.audit.map(event => event.operationId)).size !== value.audit.length) fail('corrupt');
   if (value.deletion !== undefined) { const deletion = object(value.deletion);
-    exact(deletion, ['operationId', 'kinds', 'state', 'completedStages', 'startedAt', 'updatedAt', 'removed']);
+    exact(deletion, ['operationId', 'kinds', 'state', 'completedStages', 'startedAt', 'updatedAt', 'removed'], ['telemetryResourceId']);
     const selected = kinds(deletion.kinds);
     if (!id(deletion.operationId) || !['pending', 'completed'].includes(deletion.state as string) ||
       !integer(deletion.completedStages, selected.length) || !integer(deletion.startedAt) || !integer(deletion.updatedAt) ||
-      (deletion.completedStages === selected.length) !== (deletion.state === 'completed')) fail('corrupt'); validCounts(deletion.removed); }
+      (deletion.completedStages === selected.length) !== (deletion.state === 'completed')) fail('corrupt');
+    if (deletion.telemetryResourceId !== undefined && (!id(deletion.telemetryResourceId) || deletion.state !== 'pending' ||
+      selected.join(',') !== 'telemetry,copies')) fail('corrupt');
+    validCounts(deletion.removed); }
   return value as unknown as Envelope;
 }
 
@@ -232,19 +253,26 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
     lastNow = value; return value;
   }
   function check(grant: OwnerDataGrant) {
-    const time = now(); if (grant.signal?.aborted) fail('revoked'); if (time >= grant.expiresAt) fail('expired');
+    const time = now(); if (signalAborted(grant.signal)) fail('revoked'); if (time >= grant.expiresAt) fail('expired');
     let current = false; try { current = grant.isCurrent() === true; } catch { /* Reject a unavailable current-authority source. */ }
-    if (!current || closed || grant.signal?.aborted) fail(closed ? 'closed' : 'revoked');
+    if (!current || closed || signalAborted(grant.signal)) fail(closed ? 'closed' : 'revoked');
     if (now() >= grant.expiresAt) fail('expired');
-    if (closed || grant.signal?.aborted) fail(closed ? 'closed' : 'revoked');
+    if (closed || signalAborted(grant.signal)) fail(closed ? 'closed' : 'revoked');
   }
   async function transaction<T>(mutation: (state: Envelope) => T, grant?: OwnerDataGrant, fence?: CommitFence): Promise<T> {
     const commit = new AbortController(), signals = new Set([lifetime.signal, ...(grant?.signal ? [grant.signal] : []), ...(fence?.signals ?? [])]);
     const abort = () => commit.abort(); let rejected = false;
-    function checkFence() { if (fence && (!fence.isCurrent() || commit.signal.aborted)) { rejected = true; throw new WriteCancelled(); } }
-    const guard = { signal: commit.signal, isCurrent() { try { if (grant) check(grant); else now(); checkFence(); return !commit.signal.aborted; } catch { return false; } } };
+    function checkFence() {
+      // The supplied producer observer may advance the trusted clock. Check
+      // expiry and native cancellation again after that callback returns.
+      if (fence && (!fence.isCurrent() || signalAborted(commit.signal) ||
+          grant && now() >= grant.expiresAt || signalAborted(commit.signal))) {
+        rejected = true; throw new WriteCancelled();
+      }
+    }
+    const guard = { signal: commit.signal, isCurrent() { try { if (grant) check(grant); else now(); checkFence(); return !signalAborted(commit.signal); } catch { return false; } } };
     try {
-      for (const signal of signals) { signal.addEventListener('abort', abort, { once: true }); if (signal.aborted) abort(); }
+      for (const signal of signals) { signalListen.call(signal, 'abort', abort, { once: true }); if (signalAborted(signal)) abort(); }
       now();
       return await storage.transact(owner, raw => {
       const time = now(); if (grant) check(grant); const state = parse(raw, owner, time);
@@ -254,10 +282,10 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
       if (size(state.audit) > OWNER_DATA_LIMITS.auditBytes || size(state) > OWNER_DATA_LIMITS.ownerBytes) fail('capacity');
       return { state: snapshotOwnerDataState(state), result };
     }, guard); } catch (error) {
-      if (commit.signal.aborted || rejected) throw new WriteCancelled();
+      if (signalAborted(commit.signal) || rejected) throw new WriteCancelled();
       if (error instanceof DataError) { if (error.reason === 'invalid-clock') { clockFault = true; retireAll(); } throw error; }
       if (grant) check(grant); return fail('unavailable');
-    } finally { for (const signal of signals) signal.removeEventListener('abort', abort); }
+    } finally { for (const signal of signals) signalUnlisten.call(signal, 'abort', abort); }
   }
   async function attempt<T>(action: () => Promise<T>): Promise<OwnerDataResult<T>> {
     if (busy) return bad('busy'); busy = true;
@@ -273,15 +301,15 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
       request: Object.freeze(snapshotJson(request) as Record<string, unknown>) });
     const received = await new Promise<unknown>(resolve => {
       let settled = false; const timer = setTimeout(() => finish(undefined), OWNER_DATA_LIMITS.authorizationMs);
-      function finish(value: unknown) { if (settled) return; settled = true; clearTimeout(timer); lifetime.signal.removeEventListener('abort', abort); resolve(value); }
+      function finish(value: unknown) { if (settled) return; settled = true; clearTimeout(timer); signalUnlisten.call(lifetime.signal, 'abort', abort); resolve(value); }
       function abort() { finish(undefined); }
-      lifetime.signal.addEventListener('abort', abort, { once: true });
+      signalListen.call(lifetime.signal, 'abort', abort, { once: true });
       Promise.resolve().then(() => { now(); return authorize(scope); }).then(finish, () => finish(undefined));
     });
     now(); let grant: OwnerDataGrant;
     try { const value = object(received); exact(value, ['scope', 'expiresAt', 'isCurrent'], ['signal']);
       if (JSON.stringify(snapshotJson(value.scope)) !== JSON.stringify(scope) || !integer(value.expiresAt) || value.expiresAt <= now() ||
-        value.expiresAt > scope.deadline || typeof value.isCurrent !== 'function' || value.signal !== undefined && !(value.signal instanceof AbortSignal)) fail('denied');
+        value.expiresAt > scope.deadline || typeof value.isCurrent !== 'function' || value.signal !== undefined && !isSignal(value.signal)) fail('denied');
       grant = Object.freeze({ scope, expiresAt: value.expiresAt, isCurrent: value.isCurrent as () => boolean,
         ...(value.signal === undefined ? {} : { signal: value.signal as AbortSignal }) });
     } catch { fail('denied'); }
@@ -294,13 +322,13 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
   function dataChanged(state: Envelope) { if (state.dataRevision >= Number.MAX_SAFE_INTEGER) fail('capacity'); state.dataRevision++; }
   function ports(grant: OwnerDataGrant, cleanup: () => void, tracked: boolean, revision?: { value: number }, validateExpiredArtifacts = false): OwnerDataPorts {
     const lease: Lease = { grant, epoch: grant.scope.epoch, abort: new AbortController(), retired: false, cleanup };
-    function active() { if (lease.retired) fail('revoked'); try { check(grant); if (lease.retired || lease.abort.signal.aborted) fail('revoked'); }
+    function active() { if (lease.retired) fail('revoked'); try { check(grant); if (lease.retired || signalAborted(lease.abort.signal)) fail('revoked'); }
       catch (error) { retire(lease); throw error; } }
     async function access<T>(operation: (state: Envelope) => T, producer?: ArtifactJobWriteGuard): Promise<T> {
       const fence: CommitFence = { signals: [lease.abort.signal, ...(producer?.signal ? [producer.signal] : [])], isCurrent() {
-        try { active(); if (producer?.signal?.aborted) return false;
+        try { active(); if (signalAborted(producer?.signal)) return false;
           const current = !producer?.isCurrent || producer.isCurrent() === true;
-          return current && !lease.retired && !lease.abort.signal.aborted && !lifetime.signal.aborted && !grant.signal?.aborted && !producer?.signal?.aborted;
+          return current && !lease.retired && !signalAborted(lease.abort.signal) && !signalAborted(lifetime.signal) && !signalAborted(grant.signal) && !signalAborted(producer?.signal);
         } catch { return false; }
       } };
       active(); try { return await transaction(state => {
@@ -314,9 +342,9 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
         // Finish trusted callbacks before installing owned resources. Reentrant retirement cannot reacquire them.
         active(); const delay = Math.max(1, grant.expiresAt - lastNow);
         leases.add(lease); lease.timer = setTimeout(() => retire(lease), delay);
-        if (grant.signal) { const abort = () => retire(lease); lease.detach = () => grant.signal?.removeEventListener('abort', abort);
-          grant.signal.addEventListener('abort', abort, { once: true }); }
-        if (lease.retired || closed || grant.signal?.aborted) fail(closed ? 'closed' : 'revoked');
+        if (grant.signal) { const signal = grant.signal, abort = () => retire(lease); lease.detach = () => signalUnlisten.call(signal, 'abort', abort);
+          signalListen.call(signal, 'abort', abort, { once: true }); }
+        if (lease.retired || closed || signalAborted(grant.signal)) fail(closed ? 'closed' : 'revoked');
       } catch (error) { retire(lease); throw error; }
     }
     const settingsKey = `101.settings:${owner}`, artifactsKey = `101.artifact-jobs:${owner}`;
@@ -348,7 +376,7 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
         compareAndSwap: async (key, expected, value, guard) => {
           let producer: ArtifactJobWriteGuard | undefined;
           if (guard !== undefined) { const source = object(guard); exact(source, [], ['signal', 'isCurrent']);
-            if (source.signal !== undefined && !(source.signal instanceof AbortSignal) || source.isCurrent !== undefined && typeof source.isCurrent !== 'function') fail('invalid');
+            if (source.signal !== undefined && !isSignal(source.signal) || source.isCurrent !== undefined && typeof source.isCurrent !== 'function') fail('invalid');
             producer = Object.freeze({ ...(source.signal === undefined ? {} : { signal: source.signal as AbortSignal }),
               ...(source.isCurrent === undefined ? {} : { isCurrent: source.isCurrent as () => boolean }) }); }
           try { return await access(state => {
@@ -417,6 +445,71 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
     else { removed = state.records.settings === undefined ? 0 : 1; delete state.records.settings; }
     if (removed) dataChanged(state); return removed;
   }
+  async function stageTelemetryRemoval(input: unknown, resourceId: string, grant: OwnerDataGrant) {
+    // No host storage is written here. The authoritative history producer validates,
+    // expires, deletes, assigns its epoch and accounts bytes in a bounded snapshot.
+    // The returned snapshot is admitted only by the owner CAS/final guard below.
+    let staged = input === undefined ? undefined : snapshotOwnerDataState(input);
+    const stagedStorage: TelemetryStorage = Object.freeze({ async transact<T>(requested: string,
+      mutation: (current: unknown) => { state: unknown; result: T }): Promise<T> {
+      if (requested !== owner) fail('wrong-owner'); check(grant);
+      const next = mutation(staged === undefined ? undefined : snapshotOwnerDataState(staged));
+      check(grant); const value = object(next); exact(value, ['state', 'result']);
+      staged = snapshotOwnerDataState(value.state); return value.result as T;
+    } });
+    const history = createTelemetryHistory({ ownerId: owner, storage: stagedStorage, trustedNow: now, authorize: () => undefined });
+    try {
+      const result = await history.delete(resourceId); check(grant);
+      if (!result.ok) fail(result.reason === 'invalid-clock' ? 'invalid-clock' : 'corrupt');
+      const absent = await history.exportPage({ resourceId, limit: 1 }); check(grant);
+      if (!absent.ok || absent.records.length !== 0) fail('integrity');
+      return Object.freeze({ state: input === undefined ? undefined : staged, removed: result.removed, expired: history.status().expired });
+    } finally { history.close(); }
+  }
+  async function resumeSelectedDeletion(operationId: string, resourceId: string, grant: OwnerDataGrant) {
+    const initial = await transaction(state => {
+      check(grant); const deletion = state.deletion;
+      if (state.epoch !== grant.scope.epoch) fail('conflict');
+      if (!deletion || deletion.operationId !== operationId || deletion.state !== 'pending' || deletion.telemetryResourceId !== resourceId) fail('conflict');
+      return state;
+    }, grant);
+    const previous = initial.deletion!, kind = previous.kinds[previous.completedStages]!;
+    if (kind !== 'telemetry' && kind !== 'copies') fail('corrupt');
+    const staged = kind === 'telemetry' ? await stageTelemetryRemoval(initial.records.telemetry, resourceId, grant) : undefined;
+    check(grant);
+    return transaction(state => {
+      check(grant); const current = state.deletion;
+      if (state.epoch !== grant.scope.epoch || state.dataRevision !== initial.dataRevision || !current ||
+        current.operationId !== operationId || current.state !== 'pending' || current.telemetryResourceId !== resourceId ||
+        current.completedStages !== previous.completedStages) fail('conflict');
+      let removed = 0;
+      if (kind === 'telemetry') {
+        if (!staged) fail('integrity'); removed = staged.removed;
+        if (JSON.stringify(state.records.telemetry) !== JSON.stringify(staged.state)) {
+          if (staged.state === undefined) delete state.records.telemetry; else state.records.telemetry = staged.state;
+          dataChanged(state);
+        }
+        if (staged.expired) { const time = now(); audit(state, { operationId: crypto.randomUUID(), action: 'expiry', at: time,
+          expiresAt: time + OWNER_DATA_LIMITS.auditRetentionMs, kinds: ['telemetry'], state: 'completed',
+          removed: Object.freeze({ ...counts(), telemetry: staged.expired }) }, time); }
+      } else {
+        // These closed records and hashes were validated by parse/approval; this is
+        // registered-copy selection, not a second parser for producer history.
+        const before = state.copies.length;
+        state.copies = state.copies.filter(copy => copy.record.resourceId !== resourceId);
+        removed = before - state.copies.length; if (removed) dataChanged(state);
+      }
+      const completedStages = previous.completedStages + 1, completed = completedStages === previous.kinds.length;
+      const { telemetryResourceId: pendingSelector, ...redactedPlan } = previous;
+      const deletion: OwnerDataDeletion = Object.freeze({ ...redactedPlan,
+        ...(!completed ? { telemetryResourceId: pendingSelector } : {}),
+        removed: Object.freeze({ ...previous.removed, [kind]: removed }), completedStages,
+        state: completed ? 'completed' : 'pending', updatedAt: now() });
+      const event = state.audit.find(event => event.operationId === operationId);
+      audit(state, Object.freeze({ ...(event ?? redacted(deletion, 'deletion', now())), state: deletion.state, removed: deletion.removed }), now());
+      state.deletion = deletion; return deletion;
+    }, grant);
+  }
   const controller: OwnerDataController = {
     openStores: input => attempt(async () => {
       const value = object(input); exact(value, ['retireOwned']); if (typeof value.retireOwned !== 'function') fail('invalid');
@@ -480,9 +573,12 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
       } finally { source.close(); }
     }),
     beginDeletion: input => attempt(async () => {
-      const value = object(snapshotJson(input)); exact(value, ['kinds', 'purpose']); if (!id(value.purpose)) fail('invalid');
-      let selected = kinds(value.kinds); if (selected.includes('telemetry') && !selected.includes('copies')) selected = kinds([...selected, 'copies']);
-      const grant = await approval('delete', { kinds: selected, purpose: value.purpose });
+      const value = object(snapshotJson(input)); exact(value, ['kinds', 'purpose'], ['telemetryResourceId']); if (!id(value.purpose)) fail('invalid');
+      let selected = kinds(value.kinds);
+      if (Object.hasOwn(value, 'telemetryResourceId') && (!id(value.telemetryResourceId) || selected.join(',') !== 'telemetry')) fail('invalid');
+      const selector = value.telemetryResourceId === undefined ? {} : { telemetryResourceId: value.telemetryResourceId as string };
+      if (selected.includes('telemetry') && !selected.includes('copies')) selected = kinds([...selected, 'copies']);
+      const grant = await approval('delete', { kinds: selected, purpose: value.purpose, ...selector });
       const revision = { value: await transaction(state => { currentState(state, grant); return state.dataRevision; }, grant) };
       const source = ports(grant, () => {}, false, revision, true);
       try {
@@ -494,12 +590,15 @@ export function createOwnerDataController(options: OwnerDataOptions): OwnerDataC
       retireAll();
       return transaction(state => { currentState(state, grant); if (state.dataRevision !== revision.value) fail('conflict'); const time = now(); if (state.epoch >= Number.MAX_SAFE_INTEGER) fail('capacity');
         const deletion: OwnerDataDeletion = Object.freeze({ operationId: crypto.randomUUID(), kinds: Object.freeze(selected), state: 'pending', completedStages: 0,
-          startedAt: time, updatedAt: time, removed: Object.freeze(counts()) });
+          startedAt: time, updatedAt: time, removed: Object.freeze(counts()), ...selector });
         audit(state, redacted(deletion, 'deletion', time), time); state.epoch++; state.deletion = deletion; dataChanged(state); return deletion; }, grant);
     }),
     resumeDeletionReviewed: operationId => attempt(async () => {
       if (!id(operationId)) fail('invalid');
-      const grant = await approval('resume-delete', { operationId }, true);
+      const pending = await transaction(state => state.deletion);
+      const resourceId = pending?.operationId === operationId ? pending.telemetryResourceId : undefined;
+      const grant = await approval('resume-delete', { operationId, ...(resourceId ? { telemetryResourceId: resourceId } : {}) }, true);
+      if (resourceId) return resumeSelectedDeletion(operationId, resourceId, grant);
       const result = await transaction(state => { check(grant); const previous = state.deletion;
         if (!previous || previous.operationId !== operationId) fail('not-found'); if (previous.state === 'completed') return previous;
         const kind = previous.kinds[previous.completedStages]!;

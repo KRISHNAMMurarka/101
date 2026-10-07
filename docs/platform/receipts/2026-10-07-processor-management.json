@@ -4,7 +4,7 @@
   "localOnly": true,
   "base": "5f184a92d13148aeef251a3ba7c9229653da1303",
   "candidateSourceTree": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
-  "sourceCommit": null,
+  "sourceCommit": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
   "tally": {
     "total": 272,
     "completed": 121,
@@ -15,10 +15,19 @@
     "sha256": "c87680b853bbb2f832c0a174ddd3dd0ffc72404e41b58b07918e4df159a2fa1e"
   },
   "requiredGates": {
-    "status": "pending exact coherent candidate",
-    "scope": "Focused/runtime qualification below describes its actual immutable source. All five AGENTS gates and final candidate browser qualification are required before local commit; no final candidate pass is inferred from an earlier build."
+    "status": "pass",
+    "sourceCommit": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
+    "exactCommittedTree": "23a9c0e12ba200f838527190c7f328ed14e4c6f8",
+    "receipt": {
+      "path": "/tmp/101-processor-native-final-bound-exact-required-gates.json",
+      "sha256": "b25fe497436fbd397cef644c9e2eee1899f3c98dbb7f505cf545381e53134653"
+    },
+    "unit": 2224,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates passed the exact18-path committed candidate. Later documentary bytes await the next coherent candidate; native producerab926/publicSDKa519 retain their distinct leaf-equivalent scopes."
   },
-  "result": "pass selected processor management implementation and scoped software journeys; final exact gates pending",
+  "result": "pass selected software implementation/runtime; exact required gates passed and source committed locally",
   "profile": "tab-reviewed-processor-management/1",
   "tasks": [
     "U12",
@@ -68,8 +77,24 @@
       "path": "/tmp/101-u12-webkit-seeded-tab-probe-built-webkit.json",
       "sha256": "f51374b1d06dbf85cba0272f5d7ea710cdedb208ddd024fc45bf601f3fbdedfc"
     },
-    "sourceScope": "Actual native WebCrypto/installer/runtime page journeys on their recorded source. Core helper/factories/navigation remain unchanged; current page aliases the same lifetime ref for cleanup lint and the test uses its single assigned const. Current QA adds the witnessed headless document entry checkpoint and requires a genuine keyboard step before focus acceptance. Final exact candidate runs pending.",
-    "retention": "Earlier Chromium full compiled literal retention was incomplete after an overlong evidence archive name and rebuild; its source/receipts/proof/partial bundle remain. Current actual probe compiled534 inputs and native artifacts are fully retained; fresh final Chromium qualification is required."
+    "sourceScope": "Final exact committed candidate cf02d8e/23a9 has genuine Chromium and WebKit18 checks each, native public verification, full installer/runtime transitions, opening Stop/held returned work, keyboard focus and actual page close. Earlier probe/diagnostic inputs remain historical.",
+    "retention": "Complete actual final534 compiled inputs plus857 final evidence/source files retained through local Git refs. Earlier original Chromium literal retention was incomplete; its preserved source/results/partial archive remain historical, without implying missing bytes were reconstructed.",
+    "finalExactCandidate": {
+      "chromium": {
+        "receipt": {
+          "path": "/tmp/101-processor-native-final-bound-built-chromium.json",
+          "sha256": "b037b34b8c74dd3ce6fcd8925d03115abbd03425bb86b1efcce284aa8ebfaa2a"
+        },
+        "checks": 18
+      },
+      "webkit": {
+        "receipt": {
+          "path": "/tmp/101-processor-native-final-bound-built-webkit.json",
+          "sha256": "1984b0f7b5cad24c12d64dfc5a20b3b1cc403095901d311c304ced7d29fe46d5"
+        },
+        "checks": 18
+      }
+    }
   },
   "history": [
     {
@@ -112,6 +137,19 @@
   "scopeLimits": [
     "Whole U12/E10 remain open: durable/general provider/account management, arbitrary extension/native/dependency/asset isolation, supported surface/assistive technology and physical qualification are absent.",
     "Owned headless browser/software indicator only; no phone, native input, hardware, service or distribution acceptance.",
-    "Original source review is CLEAR for its recorded version. The final QA checkpoint, same-ref page cleanup alias, const test binding and document delta await coherent candidate review/gates."
-  ]
+    "Corrected source/QA/document binding has independent CLEAR review; exact final18-path gates and C/WK qualified before local commit. This later metadata update awaits next coherent gates."
+  ],
+  "committedSourceTree": "23a9c0e12ba200f838527190c7f328ed14e4c6f8",
+  "actualLocalCommit": {
+    "path": "/tmp/101-processor-native-final-bound-commit.json",
+    "sha256": "755eb459d17664cceb3704273fcd2e602df8e54beffdbcd11217b6bf5d7a8328"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-processor-native-final-bound-exact-independent-review.json",
+    "sha256": "cda5dfe51a567b9594f7b16d6467b07071b7a6b80e338cb89b110c083bc3c3a8"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-processor-native-qualified-build-preserved.json",
+    "sha256": "73b734c86a4a2b3fa763b1726ecca3c56633b93979d78c33be6c8369eca75380"
+  }
 }

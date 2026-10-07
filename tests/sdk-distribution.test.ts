@@ -14,6 +14,14 @@ test('immutable general SDK packs compiled public contracts and licenses without
   try {
     assert.equal(result.schemaVersion, 1);
     assert.equal(result.source.tree, tree);
+    const content = JSON.parse(readFileSync(resolve(result.outputDir, 'content-audit.json'), 'utf8'));
+    assert.equal(content.schemaVersion, 1); assert.equal(content.auditProfile, 'sdk-content-audit/1');
+    assert.equal(content.result, 'pass'); assert.equal(content.reason, 'ok'); assert.equal(content.releaseAccepted, false);
+    assert.equal(content.sourceTree, tree);
+    assert.equal(content.toolSha256, result.source.sha256['tools/audit-sdk-contents.py']);
+    assert.equal(content.sdkManifestSha256, createHash('sha256').update(readFileSync(resolve(result.outputDir, 'manifest.json'))).digest('hex'));
+    assert.equal(content.artifacts.length, 7);
+    assert.equal(content.files, result.packages.reduce((count: number, item: { files: unknown[] }) => count + item.files.length, 0));
     for (const [path, digest] of Object.entries(result.source.sha256)) {
       assert.equal(createHash('sha256').update(readFileSync(resolve(root, path))).digest('hex'), digest,
         `Stage the current SDK producer before the immutable pack contract: ${path}`);
@@ -33,7 +41,12 @@ test('immutable general SDK packs compiled public contracts and licenses without
       assert.ok(packed.every(path => !path.includes('/src/') && !path.includes('.test.') && !path.includes('node_modules')));
       assert.deepEqual(packed.map(path => path.replace(/^package\//, '')).sort(), item.files.map((file: { path: string }) => file.path).sort());
       if (item.name === '@101/connect' || item.name === '@101/device-model') assert.ok(packed.includes('package/schema/device-descriptor.json'));
-      if (item.name === '@101/connect') assert.ok(packed.includes('package/examples/run.js'));
+      if (item.name === '@101/connect') {
+        assert.ok(packed.includes('package/examples/run.js'));
+        assert.ok(packed.includes('package/examples/telemetry-owner.mjs'));
+        const metadata = JSON.parse(readFileSync(resolve(item.directory, 'package.json'), 'utf8'));
+        assert.equal(metadata.exports['./examples/telemetry-owner'], './examples/telemetry-owner.mjs');
+      }
     }
     const repeated = JSON.parse(execFileSync(process.execPath, ['tools/build-sdk.mjs', tree], { cwd: root, encoding: 'utf8' }));
     assert.ok(repeated.outputDir.startsWith(resolve(root, 'release', 'sdk-')) && repeated.outputDir !== result.outputDir);

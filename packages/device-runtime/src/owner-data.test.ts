@@ -7,7 +7,9 @@ import { createTelemetryHistory } from './telemetry-history.ts';
 import { createSettingsStore } from './settings-store.ts';
 import { createDurableArtifactJobStore } from './durable-artifact-jobs.ts';
 import { createAssetReference } from '@101/device-model';
-import type { OwnerDataStorage, OwnerDataOptions, OwnerDataPorts } from './owner-data.ts';
+import { createTelemetryHistory as createPublicTelemetryHistory } from '@101/connect';
+import type { TelemetryRecord } from '@101/connect';
+import type { OwnerDataStorage, OwnerDataOptions, OwnerDataPorts, OwnerDataController } from './owner-data.ts';
 
 // This unit port is not persistence qualification; the public caller uses real engines.
 const api = await import('./owner-data.ts').catch(() => undefined);
@@ -403,4 +405,443 @@ for (const reentry of ['owner-grant', 'port-close'] as const) test(`the ${reentr
     assert.equal(ports.signal.aborted, true);
     assert.deepEqual(f.storage.rows.get('owner-a'), before);
   } finally { f.controller.close(); }
+});
+
+// Selected-resource extension tests are authored before its implementation.
+// These use the current public telemetry producer. Actual Node RSS/heap values
+// are process diagnostics, never external-device measurements. The controlled
+// trusted ingest clock is distinct from the per-process source receipt clock.
+const telemetryOwnerResources = Object.freeze({ selected: 'owned-node:rss', retained: 'owned-node:heap-used' });
+const selectedTelemetryDeletion = Object.freeze({ kinds: ['telemetry'] as const,
+  purpose: 'owner-selected-resource-removal', telemetryResourceId: telemetryOwnerResources.selected });
+const resourceExport = (resourceId: string, fields?: readonly string[]) => ({ kind: 'telemetry' as const,
+  purpose: 'owner-resource-portability', destinationId: 'owner-download', resourceId, ...(fields ? { fields } : {}) });
+
+async function seedCurrentPublicTelemetry(ports: OwnerDataPorts) {
+  const observed = process.memoryUsage(), sourceTime = Object.freeze({
+    clockId: `owned-node:${process.pid}:${crypto.randomUUID()}`, at: performance.now() });
+  assert.ok(Number.isSafeInteger(observed.rss) && observed.rss > 0);
+  assert.ok(Number.isSafeInteger(observed.heapUsed) && observed.heapUsed > 0);
+  assert.ok(Number.isFinite(sourceTime.at) && sourceTime.at >= 0);
+  const producer = createPublicTelemetryHistory({ ownerId: 'owner-a', storage: ports.telemetry,
+    trustedNow: () => 1000, limits: { retentionMs: 5000 },
+    authorize: scope => ({ scope, expiresAt: scope.expiresAt }) });
+  const inputs = [{ resourceId: telemetryOwnerResources.selected, field: 'residentBytes', value: observed.rss },
+    { resourceId: telemetryOwnerResources.retained, field: 'heapUsedBytes', value: observed.heapUsed }] as const;
+  for (const input of inputs) {
+    const capture = await producer.requestCapture({ resourceId: input.resourceId, schemaVersion: 1,
+      fields: [input.field], provenanceFields: [], destinationId: 'local-history', purpose: 'owner-process-diagnostics',
+      expiresAt: 51000, schema: { type: 'record', fields: { [input.field]: {
+        type: 'scalar', unit: 'By', min: 0, max: Number.MAX_SAFE_INTEGER } } } });
+    assert.ok(capture.ok, 'a genuine separately consented public producer capture must seed the fixture');
+    assert.ok(producer.enqueue(capture.handle, { sourceTime, quality: 'observed', values: { [input.field]: input.value } }).ok);
+  }
+  const committed = await producer.flush(); assert.ok(committed.ok);
+  assert.equal(committed.committed, 2, 'both actual process measurements must commit before the new feature assertion');
+  return { producer, sourceTime, observed };
+}
+
+async function registerSelectedResourceCopies(controller: OwnerDataController) {
+  const selected = required(await controller.exportPage(resourceExport(telemetryOwnerResources.selected, ['residentBytes'])));
+  const retained = required(await controller.exportPage(resourceExport(telemetryOwnerResources.retained, ['heapUsedBytes'])));
+  assert.equal(selected.records.length, 1); assert.equal(retained.records.length, 1);
+  const selectedRecord = selected.records[0] as TelemetryRecord, retainedRecord = retained.records[0] as TelemetryRecord;
+  assert.equal(selectedRecord.resourceId, telemetryOwnerResources.selected);
+  assert.equal(retainedRecord.resourceId, telemetryOwnerResources.retained);
+  for (const [batchId, records] of [['selected-process-rss', selected.records], ['retained-process-heap', retained.records]] as const) {
+    assert.equal(required(await controller.storeLocalTelemetryCopy({ batchId, records }, {
+      purpose: 'owner-reviewed-local-recipient', destinationId: 'local-recipient' })).copied, 1);
+  }
+  const copies = required(await controller.exportPage({ kind: 'copies', purpose: 'owner-copy-inspection', destinationId: 'owner-download' }));
+  assert.equal(copies.records.length, 2, 'actual registered local copies must exist before selected deletion');
+  return { selectedRecord, retainedRecord };
+}
+
+test('selected managed telemetry deletion removes only the reviewed resource and matching registered copies', async () => {
+  assert.ok(api);
+  const storageModule = await import(new URL('../../../examples/owner-data/filesystem-storage.mjs', import.meta.url).href);
+  const directory = realpathSync(mkdtempSync(join(tmpdir(), '101-telemetry-owner-selection-')));
+  const storage: OwnerDataStorage & { close(): void } = storageModule.createOwnerDataFilesystemStorage(directory);
+  const authority = new AbortController(), scopes: Parameters<OwnerDataOptions['authorize']>[0][] = [];
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined, retired = 0;
+  const controller = api.createOwnerDataController({ ownerId: 'owner-a', storage, trustedNow: () => 1000,
+    availableDevices: () => [], authorize(scope) {
+      assert.equal(scope.ownerId, 'owner-a'); scopes.push(scope);
+      return { scope, expiresAt: scope.deadline, isCurrent: () => true, signal: authority.signal };
+    } });
+  const other = api.createOwnerDataController({ ownerId: 'owner-b', storage, trustedNow: () => 1000,
+    availableDevices: () => [], authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true }) });
+  const read = (ownerId: string) => storage.transact(ownerId, state => ({ state, result: structuredClone(state) }));
+  try {
+    const ports = required(await controller.openStores({ retireOwned() { retired++; producer?.close(); } }));
+    const seeded = await seedCurrentPublicTelemetry(ports); producer = seeded.producer;
+    const original = await registerSelectedResourceCopies(controller);
+    assert.equal(original.selectedRecord.values.residentBytes, seeded.observed.rss);
+    assert.equal(original.retainedRecord.values.heapUsedBytes, seeded.observed.heapUsed);
+    for (const record of [original.selectedRecord, original.retainedRecord]) {
+      assert.deepEqual(record.sourceTime, seeded.sourceTime); assert.equal(record.quality, 'observed');
+      assert.equal(record.ingestedAt, 1000); assert.equal(record.expiresAt, 6000);
+    }
+    const ownerSettings = createSettingsStore({ ownerId: 'owner-a', storage: ports.settings, availableDevices: () => [] });
+    assert.ok((await ownerSettings.save(0, choice)).ok);
+    const otherPorts = required(await other.openStores({ retireOwned() {} }));
+    assert.ok((await createSettingsStore({ ownerId: 'owner-b', storage: otherPorts.settings,
+      availableDevices: () => [] }).save(0, choice)).ok);
+    const before = await read('owner-a') as { records: { telemetry: { rows: TelemetryRecord[] }; settings: string };
+      copies: { record: TelemetryRecord }[] };
+    const otherBefore = JSON.stringify(await read('owner-b'));
+    const retainedProducerRow = before.records.telemetry.rows.find(row => row.resourceId === telemetryOwnerResources.retained);
+    const retainedCopy = before.copies.find(row => row.record.resourceId === telemetryOwnerResources.retained);
+    assert.ok(retainedProducerRow); assert.ok(retainedCopy);
+
+    // OLD must fail here with {ok:false,reason:invalid}, after all genuine seeds.
+    // A broad fallback is forbidden: it would destroy the unrelated resource.
+    const deletion = required(await controller.beginDeletion(selectedTelemetryDeletion));
+    assert.equal(deletion.state, 'pending'); assert.equal(ports.signal.aborted, true); assert.equal(retired, 1);
+    assert.deepEqual(deletion.kinds, ['telemetry', 'copies']);
+    const pending = await read('owner-a') as { deletion: { telemetryResourceId?: string } };
+    assert.equal(pending.deletion.telemetryResourceId, telemetryOwnerResources.selected);
+    assert.equal(scopes.find(scope => scope.action === 'delete')?.request.telemetryResourceId, telemetryOwnerResources.selected);
+    assert.deepEqual(await controller.exportPage(resourceExport(telemetryOwnerResources.retained)), { ok: false, reason: 'review-required' });
+    for (let stage = 0; stage < 2; stage++) required(await controller.resumeDeletionReviewed(deletion.operationId));
+    const completed = required(await controller.inspectDeletion()); assert.equal(completed?.state, 'completed');
+    assert.equal(completed?.removed.telemetry, 1); assert.equal(completed?.removed.copies, 1);
+    const after = await read('owner-a') as { records: { telemetry: { rows: TelemetryRecord[] }; settings: string };
+      copies: { record: TelemetryRecord }[]; deletion: Record<string, unknown>;
+      audit: { action: string; state: string; expiresAt: number; removed: { telemetry: number; copies: number } }[] };
+    assert.equal(after.records.telemetry.rows.length, 1); assert.deepEqual(after.records.telemetry.rows[0], retainedProducerRow);
+    assert.equal(after.copies.length, 1); assert.deepEqual(after.copies[0], retainedCopy);
+    assert.equal(after.records.settings, before.records.settings); assert.equal(JSON.stringify(await read('owner-b')), otherBefore);
+    assert.equal(Object.hasOwn(after.deletion, 'telemetryResourceId'), false, 'completed durable metadata retains no resource selector');
+    assert.equal(required(await controller.exportPage(resourceExport(telemetryOwnerResources.selected))).records.length, 0);
+    assert.deepEqual(required(await controller.exportPage(resourceExport(telemetryOwnerResources.retained))).records, [original.retainedRecord]);
+    const audit = after.audit.find(row => row.action === 'deletion'); assert.ok(audit);
+    assert.deepEqual(Object.keys(audit).sort(), ['action', 'at', 'expiresAt', 'kinds', 'operationId', 'removed', 'state']);
+    assert.equal(audit.state, 'completed'); assert.equal(audit.expiresAt, 1000 + 30 * 86400000);
+    assert.equal(audit.removed.telemetry, 1); assert.equal(audit.removed.copies, 1);
+    assert.equal(JSON.stringify(after.audit).includes(telemetryOwnerResources.selected), false);
+    assert.equal(JSON.stringify(after.audit).includes('residentBytes'), false);
+  } finally { authority.abort(); controller.close(); other.close(); producer?.close(); storage.close(); rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('selected telemetry deletion restart preserves its selector and requires fresh exact resume authority', async () => {
+  const storage = memory(), scopes: Parameters<OwnerDataOptions['authorize']>[0][] = [];
+  const first = setup({}, storage); let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  let resumed: ReturnType<typeof setup> | undefined, allow = false;
+  try {
+    const ports = await first.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    const original = await registerSelectedResourceCopies(first.controller);
+    const deletion = required(await first.controller.beginDeletion(selectedTelemetryDeletion));
+    first.controller.close(); producer.close(); producer = undefined;
+    resumed = setup({ authorize(scope) { scopes.push(scope); return allow
+      ? { scope, expiresAt: scope.deadline, isCurrent: () => allow } : undefined; } }, storage);
+    assert.equal(required(await resumed.controller.inspectDeletion())?.state, 'pending');
+    assert.deepEqual(await resumed.controller.resumeDeletionReviewed(deletion.operationId), { ok: false, reason: 'denied' });
+    const raw = storage.rows.get('owner-a') as { deletion: { completedStages: number; telemetryResourceId?: string } };
+    assert.equal(raw.deletion.completedStages, 0); assert.equal(raw.deletion.telemetryResourceId, telemetryOwnerResources.selected);
+    allow = true;
+    for (let stage = 0; stage < 2; stage++) required(await resumed.controller.resumeDeletionReviewed(deletion.operationId));
+    const requests = scopes.filter(scope => scope.action === 'resume-delete'); assert.equal(requests.length, 3);
+    for (const scope of requests) {
+      assert.equal(scope.ownerId, 'owner-a'); assert.equal(scope.request.operationId, deletion.operationId);
+      assert.equal(scope.request.telemetryResourceId, telemetryOwnerResources.selected);
+    }
+    assert.equal(required(await resumed.controller.exportPage(resourceExport(telemetryOwnerResources.selected))).records.length, 0);
+    assert.deepEqual(required(await resumed.controller.exportPage(resourceExport(telemetryOwnerResources.retained))).records, [original.retainedRecord]);
+    const fresh = await resumed.ports(), history = createPublicTelemetryHistory({ ownerId: 'owner-a', storage: fresh.telemetry,
+      trustedNow: () => 1000, authorize: () => undefined });
+    assert.equal(history.status().captureHandles, 0); assert.equal(history.status().uploadHandles, 0); history.close(); fresh.close();
+  } finally { first.controller.close(); resumed?.controller.close(); producer?.close(); }
+});
+
+test('telemetry resource selector is rejected outside exactly one telemetry kind before destructive authority', async () => {
+  const scopes: Parameters<OwnerDataOptions['authorize']>[0][] = [];
+  const f = setup({ authorize(scope) { scopes.push(scope); return { scope, expiresAt: scope.deadline, isCurrent: () => true }; } });
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller); const before = structuredClone(f.storage.rows.get('owner-a'));
+    for (const kinds of [['settings'], ['copies'], ['telemetry', 'copies'], ['telemetry', 'settings'], ['telemetry', 'telemetry']] as const) {
+      assert.deepEqual(await f.controller.beginDeletion({ ...selectedTelemetryDeletion, kinds }), { ok: false, reason: 'invalid' });
+      assert.deepEqual(f.storage.rows.get('owner-a'), before); assert.equal(ports.signal.aborted, false);
+    }
+    assert.equal(scopes.filter(scope => scope.action === 'delete').length, 0);
+    // Absent selector still follows the existing broad kind contract.
+    const broad = required(await f.controller.beginDeletion({ kinds: ['telemetry'], purpose: 'owner-broad-resource-removal' }));
+    for (let stage = 0; stage < 2; stage++) required(await f.controller.resumeDeletionReviewed(broad.operationId));
+    const done = required(await f.controller.inspectDeletion()); assert.equal(done?.removed.telemetry, 2); assert.equal(done?.removed.copies, 2);
+    assert.equal(required(await f.controller.exportPage({ kind: 'telemetry', purpose: 'owner-after-broad', destinationId: 'owner-download' })).records.length, 0);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected telemetry deletion rejects malformed and accessor selectors without executing getters or authorizing deletion', async () => {
+  let authorizations = 0, getters = 0;
+  const f = setup({ authorize(scope) { if (scope.action === 'delete') authorizations++;
+    return { scope, expiresAt: scope.deadline, isCurrent: () => true }; } });
+  try {
+    const ports = await f.ports(), producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    try {
+      const before = structuredClone(f.storage.rows.get('owner-a'));
+      for (const resource of ['', 'foreign resource', 'x'.repeat(129), undefined, 1]) {
+        const value = { ...selectedTelemetryDeletion, telemetryResourceId: resource };
+        assert.equal((await f.controller.beginDeletion(value as unknown as Parameters<OwnerDataController['beginDeletion']>[0])).ok, false);
+      }
+      const accessor = { kinds: ['telemetry'] as const, purpose: 'owner-selected-resource-removal',
+        get telemetryResourceId() { getters++; return telemetryOwnerResources.selected; } };
+      assert.equal((await f.controller.beginDeletion(accessor)).ok, false);
+      assert.equal(getters, 0); assert.equal(authorizations, 0);
+      assert.deepEqual(f.storage.rows.get('owner-a'), before); assert.equal(ports.signal.aborted, false);
+    } finally { producer.close(); }
+  } finally { f.controller.close(); }
+});
+
+test('selected deletion exact initial and resumed approval cannot widen or omit its resource selector', async () => {
+  let mismatch: 'none' | 'initial' | 'resume' = 'initial';
+  const f = setup({ authorize(scope) {
+    const wrong = scope.action === 'delete' && mismatch === 'initial' || scope.action === 'resume-delete' && mismatch === 'resume';
+    const request = { ...scope.request }; if (wrong) delete request.telemetryResourceId;
+    return { scope: wrong ? { ...scope, request } : scope, expiresAt: scope.deadline, isCurrent: () => true };
+  } });
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const before = structuredClone(f.storage.rows.get('owner-a'));
+    assert.deepEqual(await f.controller.beginDeletion(selectedTelemetryDeletion), { ok: false, reason: 'denied' });
+    assert.deepEqual(f.storage.rows.get('owner-a'), before); assert.equal(ports.signal.aborted, false);
+    mismatch = 'none'; const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion));
+    const pending = structuredClone(f.storage.rows.get('owner-a')); mismatch = 'resume';
+    assert.deepEqual(await f.controller.resumeDeletionReviewed(deletion.operationId), { ok: false, reason: 'denied' });
+    assert.deepEqual(f.storage.rows.get('owner-a'), pending);
+    mismatch = 'none'; for (let stage = 0; stage < 2; stage++) required(await f.controller.resumeDeletionReviewed(deletion.operationId));
+    assert.equal(required(await f.controller.exportPage(resourceExport(telemetryOwnerResources.retained))).records.length, 1);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected deletion retires queued old producer data and a late registered copy cannot resurrect it', async () => {
+  const f = setup(); let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(), seeded = await seedCurrentPublicTelemetry(ports); producer = seeded.producer;
+    const original = await registerSelectedResourceCopies(f.controller);
+    const capture = await producer.requestCapture({ resourceId: telemetryOwnerResources.selected, schemaVersion: 1,
+      fields: ['residentBytes'], provenanceFields: [], destinationId: 'local-history', purpose: 'owner-process-diagnostics', expiresAt: 51000,
+      schema: { type: 'record', fields: { residentBytes: { type: 'scalar', unit: 'By', min: 0, max: Number.MAX_SAFE_INTEGER } } } });
+    assert.ok(capture.ok); assert.ok(producer.enqueue(capture.handle, { sourceTime: seeded.sourceTime,
+      quality: 'observed', values: { residentBytes: seeded.observed.rss } }).ok);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion));
+    assert.equal(ports.signal.aborted, true); assert.equal((await producer.flush()).ok, false);
+    assert.equal((await f.controller.storeLocalTelemetryCopy({ batchId: 'late-selected-copy', records: [original.selectedRecord] },
+      { purpose: 'owner-reviewed-local-recipient', destinationId: 'local-recipient' })).ok, false);
+    for (let stage = 0; stage < 2; stage++) required(await f.controller.resumeDeletionReviewed(deletion.operationId));
+    assert.equal((await f.controller.storeLocalTelemetryCopy({ batchId: 'late-selected-copy', records: [original.selectedRecord] },
+      { purpose: 'owner-reviewed-local-recipient', destinationId: 'local-recipient' })).ok, false);
+    assert.equal(required(await f.controller.exportPage(resourceExport(telemetryOwnerResources.selected))).records.length, 0);
+    assert.deepEqual(required(await f.controller.exportPage(resourceExport(telemetryOwnerResources.retained))).records, [original.retainedRecord]);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected telemetry stage revoked at the supplied final guard preserves all producer rows and registered copies', async () => {
+  const authority = new AbortController(); let revokeAtStage = false;
+  const f = setup({ authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true, signal: authority.signal }) });
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion));
+    const pending = structuredClone(f.storage.rows.get('owner-a'));
+    f.storage.before(state => {
+      const value = state as { deletion?: { completedStages: number } };
+      if (revokeAtStage && value.deletion?.completedStages === 1) authority.abort();
+    }); revokeAtStage = true;
+    assert.equal((await f.controller.resumeDeletionReviewed(deletion.operationId)).ok, false);
+    assert.equal(authority.signal.aborted, true); assert.deepEqual(f.storage.rows.get('owner-a'), pending);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected telemetry stage clock expiry after producer work cannot commit a deletion stage', async () => {
+  let time = 1000, expireAtStage = false;
+  const engine = memory(), storage: OwnerDataStorage = { transact(ownerId, mutation, guard) {
+    return engine.storage.transact(ownerId, raw => {
+      const next = mutation(raw), plan = (next.state as { deletion?: { completedStages: number } }).deletion;
+      if (expireAtStage && plan?.completedStages === 1) time = 2000;
+      return next;
+    }, guard);
+  } };
+  const f = setup({ storage, trustedNow: () => time,
+    authorize: scope => ({ scope, expiresAt: 2000, isCurrent: () => true }) }, engine);
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion)), pending = structuredClone(engine.rows.get('owner-a'));
+    expireAtStage = true;
+    assert.equal((await f.controller.resumeDeletionReviewed(deletion.operationId)).ok, false);
+    assert.deepEqual(engine.rows.get('owner-a'), pending);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected stage keeps the owner operation busy until supplied held storage actually settles after close', async () => {
+  const engine = memory(); let release!: () => void, entered!: () => void, hold = false;
+  const pending = new Promise<void>(resolve => { release = resolve; }), boundary = new Promise<void>(resolve => { entered = resolve; });
+  const storage: OwnerDataStorage = { async transact(ownerId, mutation, guard) {
+    const next = mutation(structuredClone(engine.rows.get(ownerId)));
+    const plan = (next.state as { deletion?: { completedStages: number } }).deletion;
+    if (hold && plan?.completedStages === 1) { entered(); await pending; }
+    if (guard && (guard.signal.aborted || guard.isCurrent() !== true || guard.signal.aborted)) throw new Error('held-storage-cancelled');
+    engine.rows.set(ownerId, structuredClone(next.state)); return next.result;
+  } };
+  const f = setup({ storage }, engine); let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion)), before = structuredClone(engine.rows.get('owner-a'));
+    hold = true; let settled = false;
+    const stage = f.controller.resumeDeletionReviewed(deletion.operationId).finally(() => { settled = true; });
+    await boundary; assert.equal(settled, false);
+    assert.deepEqual(await f.controller.inspectDeletion(), { ok: false, reason: 'busy' });
+    f.controller.close(); await Promise.resolve(); assert.equal(settled, false, 'synchronous close is authority retirement, not native settlement');
+    release(); assert.equal((await stage).ok, false); assert.deepEqual(engine.rows.get('owner-a'), before);
+  } finally { release(); f.controller.close(); producer?.close(); }
+});
+
+test('selected deletion authorizer reentry closes authority before the owner barrier can commit', async () => {
+  let armed = false;
+  const f = setup({ authorize(scope) {
+    if (armed && scope.action === 'delete') controller.close();
+    return { scope, expiresAt: scope.deadline, isCurrent: () => true };
+  } }); const controller = f.controller;
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const before = structuredClone(f.storage.rows.get('owner-a')); armed = true;
+    assert.equal((await f.controller.beginDeletion(selectedTelemetryDeletion)).ok, false);
+    assert.equal(ports.signal.aborted, true); assert.deepEqual(f.storage.rows.get('owner-a'), before);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('selected telemetry stage preserves corrupt producer bytes for separate recovery instead of whole-owner fallback', async () => {
+  const f = setup(); let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion));
+    const raw = f.storage.rows.get('owner-a') as { records: { telemetry: { bytes: number } } };
+    raw.records.telemetry.bytes++; const corrupt = structuredClone(raw);
+    assert.equal((await f.controller.resumeDeletionReviewed(deletion.operationId)).ok, false);
+    assert.deepEqual(f.storage.rows.get('owner-a'), corrupt);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('real owner grant abort retires ports even with own signal shadows', async () => {
+  const authority = new AbortController();
+  const intrinsicAborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted')!.get!;
+  Object.defineProperties(authority.signal, {
+    aborted: { value: false, configurable: true },
+    addEventListener: { value() {}, configurable: true },
+    removeEventListener: { value() {}, configurable: true },
+  });
+  const f = setup({ authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true, signal: authority.signal }) });
+  try {
+    const ports = await f.ports();
+    const settings = createSettingsStore({ ownerId: 'owner-a', storage: ports.settings, availableDevices: () => [] });
+    assert.ok((await settings.save(0, choice)).ok);
+    const before = JSON.stringify(f.storage.rows.get('owner-a'));
+    authority.abort();
+    assert.equal(intrinsicAborted.call(authority.signal), true, 'Actual native grant signal revoked');
+    assert.equal(authority.signal.aborted, false, 'Faithful caller own data shadow');
+    assert.equal(ports.signal.aborted, true, 'Native abort must retire already-open owner ports');
+    assert.equal((await settings.save(1, { ...choice, preferences: { ...choice.preferences, theme: 'light' } })).ok, false);
+    assert.equal(JSON.stringify(f.storage.rows.get('owner-a')), before);
+    assert.equal(f.retired(), 1);
+  } finally { f.controller.close(); }
+});
+
+test('shadowed native owner grant abort after selected mutation reaches the supplied final commit signal', async () => {
+  const engine = memory(), authority = new AbortController();
+  const intrinsicAborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted')!.get!;
+  Object.defineProperties(authority.signal, { aborted: { value: false }, addEventListener: { value() {} }, removeEventListener: { value() {} } });
+  let arm = false, queued = 0, composedAborted = false;
+  const storage: OwnerDataStorage = { async transact(ownerId, mutation, guard) {
+    const next = mutation(structuredClone(engine.rows.get(ownerId)));
+    const plan = (next.state as { deletion?: { completedStages: number } }).deletion;
+    if (arm && plan?.completedStages === 1) {
+      queueMicrotask(() => { queued++; authority.abort(); composedAborted = intrinsicAborted.call(guard!.signal); });
+      await Promise.resolve();
+    }
+    if (guard && (intrinsicAborted.call(guard.signal) || guard.isCurrent() !== true || intrinsicAborted.call(guard.signal)))
+      throw new Error('queued-commit-cancelled');
+    engine.rows.set(ownerId, structuredClone(next.state)); return next.result;
+  } };
+  const f = setup({ storage, authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true, signal: authority.signal }) }, engine);
+  let producer: ReturnType<typeof createPublicTelemetryHistory> | undefined;
+  try {
+    const ports = await f.ports(); producer = (await seedCurrentPublicTelemetry(ports)).producer;
+    await registerSelectedResourceCopies(f.controller);
+    const deletion = required(await f.controller.beginDeletion(selectedTelemetryDeletion)), before = structuredClone(engine.rows.get('owner-a'));
+    arm = true; assert.equal((await f.controller.resumeDeletionReviewed(deletion.operationId)).ok, false);
+    assert.equal(queued, 1); assert.equal(composedAborted, true, 'Native abort propagation must survive no-op own listener methods');
+    assert.equal(intrinsicAborted.call(authority.signal), true); assert.equal(authority.signal.aborted, false);
+    assert.deepEqual(engine.rows.get('owner-a'), before);
+  } finally { f.controller.close(); producer?.close(); }
+});
+
+test('unbranded AbortSignal prototype impostor cannot authorize owner ports', async () => {
+  const impostor = Object.create(AbortSignal.prototype) as AbortSignal;
+  const f = setup({ authorize: scope => ({ scope, expiresAt: scope.deadline, isCurrent: () => true, signal: impostor }) });
+  try { assert.deepEqual(await f.controller.openStores({ retireOwned() {} }), { ok: false, reason: 'denied' }); }
+  finally { f.controller.close(); }
+});
+
+test('actual producer guard native abort cannot be hidden by own signal shadows at the owner artifact port', async () => {
+  const authority = new AbortController(), intrinsicAborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted')!.get!;
+  Object.defineProperties(authority.signal, { aborted: { value: false }, addEventListener: { value() {} }, removeEventListener: { value() {} } });
+  const f = setup(); let jobs: ReturnType<typeof createDurableArtifactJobStore> | undefined;
+  try {
+    const ports = await f.ports();
+    jobs = createDurableArtifactJobStore({ ownerId: 'owner-a', storage: ports.artifacts, now: () => 1000, authorize: () => undefined });
+    const input = new TextEncoder().encode('actual public artifact producer document');
+    required(await jobs.submit({ idempotencyKey: 'shadow-guard-fixture', applicationId: 'example:guard', profileId: '101:local-artifact',
+      profileRevision: 1, destinationId: 'owner-artifacts', totalUnits: 1,
+      input: await createAssetReference('example:guard-input', 'text', input) }));
+    const expected = await ports.artifacts.read(jobs.key); assert.ok(expected);
+    const document = JSON.parse(expected) as { revision: number }; document.revision++;
+    const before = structuredClone(f.storage.rows.get('owner-a')); authority.abort();
+    assert.equal(intrinsicAborted.call(authority.signal), true); assert.equal(authority.signal.aborted, false);
+    const accepted = await ports.artifacts.compareAndSwap(jobs.key, expected, JSON.stringify(document),
+      { signal: authority.signal, isCurrent: () => true });
+    assert.equal(accepted, false); assert.deepEqual(f.storage.rows.get('owner-a'), before);
+    assert.equal(ports.signal.aborted, false, 'Producer cancellation does not revoke an independent still-current owner lease');
+  } finally { f.controller.close(); await jobs?.close(); }
+});
+
+
+test('producer observer expiry at the supplied final artifact commit cannot outlive the owner grant', async () => {
+  const engine = memory(); let time = 1000, armed = false, finalGuard = false, observed = 0;
+  const storage: OwnerDataStorage = { async transact(ownerId, mutation, guard) {
+    const next = mutation(structuredClone(engine.rows.get(ownerId)));
+    finalGuard = armed;
+    try {
+      if (guard && (guard.signal.aborted || guard.isCurrent() !== true || guard.signal.aborted)) throw new Error('actual-final-commit-denied');
+    } finally { finalGuard = false; }
+    engine.rows.set(ownerId, structuredClone(next.state)); return next.result;
+  } };
+  const f = setup({ storage, trustedNow: () => time, artifactRetentionMs: 10000,
+    authorize: scope => ({ scope, expiresAt: 2000, isCurrent: () => true }) }, engine);
+  let jobs: ReturnType<typeof createDurableArtifactJobStore> | undefined;
+  try {
+    const ports = await f.ports();
+    jobs = createDurableArtifactJobStore({ ownerId: 'owner-a', storage: ports.artifacts, now: () => 1000, authorize: () => undefined });
+    required(await jobs.submit({ idempotencyKey: 'deadline-guard-fixture', applicationId: 'example:deadline-guard',
+      profileId: '101:local-artifact', profileRevision: 1, destinationId: 'owner-artifacts', totalUnits: 1,
+      input: await createAssetReference('example:deadline-input', 'text', new TextEncoder().encode('actual public artifact producer document')) }));
+    const expected = await ports.artifacts.read(jobs.key); assert.ok(expected);
+    const document = JSON.parse(expected) as { revision: number }; document.revision++;
+    const before = structuredClone(engine.rows.get('owner-a')); armed = true;
+    const accepted = await ports.artifacts.compareAndSwap(jobs.key, expected, JSON.stringify(document),
+      { isCurrent() { if (finalGuard) { observed++; time = 2000; } return true; } });
+    assert.equal(observed, 1, 'Actual supplied engine invokes the producer observer at its final commit boundary');
+    assert.equal(accepted, false, 'Recheck owner expiry after the producer observer returns');
+    assert.deepEqual(engine.rows.get('owner-a'), before);
+  } finally { f.controller.close(); await jobs?.close(); }
 });

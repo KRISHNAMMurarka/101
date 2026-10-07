@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "base": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
+  "candidateSourceTree": "7204d86713d063a6a1e4901701e8e56e66d89ebd",
+  "sourceSha256": {
+    "packages/device-runtime/src/owner-data.ts": "c2892a9fd929a1195ab1ad905fb4de6d6837201734de5d0cbbfe8687aaf47774",
+    "packages/device-runtime/src/owner-data.test.ts": "abddd9ed2d57a26775afe2cdc903b599e84d4ad4f63f6ff7c5e13a0b5c19d129",
+    "examples/owner-data/telemetry-owner.mjs": "721a52fc915e56296f12e11643fbf6e730082f72ce75ceea151754bf02607822",
+    "tools/qa-telemetry-owner-data.mjs": "57ff71d5dfd7aa7d91f0981ff6f57bccd51ee956247ff7f1ed1083eb60ef1446",
+    "tools/audit-sdk-contents.py": "f146a069b4c3665580f2cb1bf039e637e2fb84b62f8cd8b72826722a11c07eac",
+    "tests/sdk-contents.test.ts": "e904f0436a65e1c9b3cea883800d45d873c4f5de05f77bcd889ef43305f58a89",
+    "tools/qa-sdk-contents.mjs": "81cc057072d1b1e09e0f659f99908effd3936d302b1d3c537df52bb54b7bd85f",
+    "tools/build-sdk.mjs": "bf21f89ae19a0568ce021c754064e8556664305cd4ebb43c78520facff1a261d",
+    "tools/qa-sdk-consumer.mjs": "5e1448c0746c2c3945a69f37acede722791c54e59865c523279272618e0c017b",
+    "tests/sdk-distribution.test.ts": "cc682544b060354357f3aaa606d9cc2889b919b01f27667eaeb067cd54472366"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "requiredGates": {
+    "status": "pending exact coherent canonical candidate; root will run all5 before any local commit"
+  },
+  "preservation": {
+    "path": "/tmp/101-telemetry-sdk-current-preserved.json",
+    "sha256": "3d437a5a7e780bc0a71891691b4ee0e3242f8c5403c2f76e2a70a349c53aca4d"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-telemetry-sdk-source-v5-independent-review.json",
+    "sha256": "9e0a6472fe29ae2a686cb9a5d62af9d6cbeda9969250bd328cf1fdb37d2fe4e8"
+  },
+  "currentSdk": {
+    "producer": {
+      "path": "/tmp/101-telemetry-sdk-current-producer.json",
+      "sha256": "eb335ed5f81b2fd4a6000e32a0a7578c1c1dc4b4d6ed272afe4d1b2ac8c238ae"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-1boYhr/manifest.json",
+      "sha256": "b635c0b4dfb52c9921bef313a14ed8bd09f70d91f05567c164b726fb6f266c52"
+    },
+    "sourceTree": "87089bf409344924403c692ab261e61292907026",
+    "sourceFiles": 178,
+    "ordinaryPackageFiles": 395,
+    "archives": 7,
+    "consumers": 10,
+    "consumer": {
+      "path": "/tmp/101-telemetry-sdk-ordinary-contract-consumers.json",
+      "sha256": "08d47271af4ac24762a141291d83d244f33000fe443388df5f928351158b7636"
+    },
+    "consumerReceipt": {
+      "path": "/tmp/101-sdk-consumer-XdLrAx/receipt.json",
+      "sha256": "5274295b0d9d0ae07af448100a1c8bb8713ba38e7b0afcf7604e0e7dfdde9095"
+    },
+    "countScope": "Offline node_modules filesystem396 includes package-lock; later400 includes four separately tested @example processor files. Ordinary installed SDK inventory395. SDK producer870 is distinct and all178 leaves equal current source720; consumer-tool delta is outside its sourcepins."
+  },
+  "result": "pass selected seven-package content implementation/runtime; whole K12/Q10 open",
+  "profile": "sdk-content-audit/1",
+  "tasks": [
+    "K12",
+    "Q10",
+    "S15"
+  ],
+  "contract": {
+    "trust": "Expected outer immutable manifest SHA before fields, expected sourceTree and self SHA, exact seven-package closed metadata/public inventory and compressed+decoded payload size/SHA. Frozen helper is selected into the builder source; immutable manifest is written before audit, success emitted only after audit.",
+    "privatePolicy": "Whole bounded physical decoded tar bytes, including metadata/trailer, scanned before standard tarfile normalization for finite PEM family/explicit logical+real workspace roots/fixed SDK source-temp stem and prohibited private filename classes. Redacted fixed receipts; no extract/execute/install.",
+    "archive": "Current observed npm portable contiguous ordinary header profile only: no PAX/GNU/sparse/link/duplicate/traversal/unknown file. Full bounded gzip CRC/EOF, exact payloads and zero trailer. Legitimate future extended metadata needs separate qualification.",
+    "limits": "Manifest1MiB,sourcepins512,7packages,256files/pkg,512members/pkg,path512B,compressed2MiB/decoded16MiB/pkg,file2MiB,64KiB chunk overlap,receipt1MiB,max4 explicit workspace variants. Bounded staging, not OS/RSS sandbox or arbitrary encoded-secret filter.",
+    "example": "One explicit ordinary Node telemetry-owner.mjs public caller, exact export; no widening to arbitraryMJS. TypeScript examples retain their declarations."
+  },
+  "focused": {
+    "receipt": {
+      "path": "/tmp/101-sdk-contents-current-focused.json",
+      "sha256": "9fee34baad78f470b3268729ed22612c35e22bfa00254fb39ea9d89b5d0da3ff"
+    },
+    "tests": 40,
+    "scope": "Tiny inert actual394 public path/metadata-shape fixtures; optional395 fixture is no ABI or actual SDK qualification."
+  },
+  "currentContent": {
+    "receipt": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-1boYhr/content-audit.json",
+      "sha256": "e475e7154faa8059e9132753d4685fc18d00d4d36b41d7b9b28e9dbd2f1fbb7e"
+    },
+    "files": 395,
+    "packages": 7,
+    "releaseAccepted": false
+  },
+  "old": {
+    "producer": {
+      "path": "/tmp/101-sdk-contents-model-marker-old-evidence.json",
+      "sha256": "69781e2a767d0f6e52dc744d6cfdd254c162f17202727ef330c8e0944e66233a"
+    },
+    "regression": {
+      "path": "/tmp/101-sdk-contents-model-marker-old-regression.json",
+      "sha256": "4e94cf9c0655401266d5da44f20eed4e71b6f4237cd39df74c76cf375a28e9c3"
+    },
+    "literalPreservation": {
+      "path": "/tmp/101-sdk-contents-meaningful-old-preserved.json",
+      "sha256": "41b03241cc7604691d306965167969bd18746b880cdd95a95f9e9dc8f4f8c14f"
+    },
+    "scope": "Actual original compiler/npm7producer accepted an inert private key-header comment in allowed model JS after all394 inventory hashes. No real key/body/credential or current leak claimed."
+  },
+  "negative": {
+    "actualOldArchive": {
+      "path": "/tmp/101-sdk-contents-actual-old-marker-bound-refusal.json",
+      "sha256": "d2070575f9595bab7d13a00c8c31ec782ab0ddaab4ebf3f5ffee9b07089f42a1"
+    },
+    "actualCurrentBuilder": {
+      "path": "/tmp/101-sdk-contents-current-marker-builder-refusal.json",
+      "sha256": "dedf910de8ef3cd0321b42169defd348266a6f0013ce7b963b7ccce4fbf3648b"
+    },
+    "outcome": "Audit private-content refusal and actual current compiler/npm builder exit1 before success; its only new output removed, existing inputs unchanged and owned process group settled0. Rejected current archives were removed and are not falsely claimed retained."
+  },
+  "preservedFailures": [
+    {
+      "path": "/tmp/101-telemetry-sdk-current-focused.json",
+      "sha256": "aa3f7de5bd7e74786350b3cfe80db71f512b759c950560950aed7be08250d57d"
+    },
+    {
+      "path": "/tmp/101-telemetry-sdk-preflight-lint.json",
+      "sha256": "dafe2bf8820257cf1063f4fc1aa279bbcd144f9da8183b54caf27432a4f3f618"
+    },
+    {
+      "path": "/tmp/101-telemetry-sdk-current-consumers.json",
+      "sha256": "726cf5d6b700f92370fdc04b84cd92dd421cb802a76f0b1746acb3c050c5b0a4"
+    },
+    {
+      "path": "/tmp/101-telemetry-sdk-export-repaired-consumers.json",
+      "sha256": "8c39586b14b32bd899a38d52382aefc3858195c8a9379ed3e1b6dfeab263394e"
+    },
+    {
+      "path": "/tmp/101-sdk-contents-actual-old-marker-refusal.json",
+      "sha256": "256f4316aa96a36db151bee51a982f4e30338973830faafeb270c3adf6074ed3"
+    }
+  ],
+  "failureScope": "Combined81/80/1 FAILED due instrumentation exit EEXIST; separate40+40 pass. Initial2 lint errors repaired;2 clean-consumer contract-precondition errors repaired. First markerQA incorrect outer pin failed before scanner; later bound invocation observes real private-content refusal. No failure promoted to positive.",
+  "scopeLimits": [
+    "Whole K12/Q10/S15 remainOPEN: selected7SDK artifacts only, no arbitrary encoded-secret assurance, all other app/native artifacts, signed publication/upgrade acceptance or physical/runtime support promotion.",
+    "No source producer rerun is inferred from content-only QA. Current real7producer,10 separate clean-consumer checks and actual installed selected workflow are named explicitly."
+  ]
+}

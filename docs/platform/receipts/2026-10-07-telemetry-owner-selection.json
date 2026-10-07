@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "base": "cf02d8ec4bd4aed117b17398cb48cfb9234fbd0a",
+  "candidateSourceTree": "7204d86713d063a6a1e4901701e8e56e66d89ebd",
+  "sourceSha256": {
+    "packages/device-runtime/src/owner-data.ts": "c2892a9fd929a1195ab1ad905fb4de6d6837201734de5d0cbbfe8687aaf47774",
+    "packages/device-runtime/src/owner-data.test.ts": "abddd9ed2d57a26775afe2cdc903b599e84d4ad4f63f6ff7c5e13a0b5c19d129",
+    "examples/owner-data/telemetry-owner.mjs": "721a52fc915e56296f12e11643fbf6e730082f72ce75ceea151754bf02607822",
+    "tools/qa-telemetry-owner-data.mjs": "57ff71d5dfd7aa7d91f0981ff6f57bccd51ee956247ff7f1ed1083eb60ef1446",
+    "tools/audit-sdk-contents.py": "f146a069b4c3665580f2cb1bf039e637e2fb84b62f8cd8b72826722a11c07eac",
+    "tests/sdk-contents.test.ts": "e904f0436a65e1c9b3cea883800d45d873c4f5de05f77bcd889ef43305f58a89",
+    "tools/qa-sdk-contents.mjs": "81cc057072d1b1e09e0f659f99908effd3936d302b1d3c537df52bb54b7bd85f",
+    "tools/build-sdk.mjs": "bf21f89ae19a0568ce021c754064e8556664305cd4ebb43c78520facff1a261d",
+    "tools/qa-sdk-consumer.mjs": "5e1448c0746c2c3945a69f37acede722791c54e59865c523279272618e0c017b",
+    "tests/sdk-distribution.test.ts": "cc682544b060354357f3aaa606d9cc2889b919b01f27667eaeb067cd54472366"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "requiredGates": {
+    "status": "pending exact coherent canonical candidate; root will run all5 before any local commit"
+  },
+  "preservation": {
+    "path": "/tmp/101-telemetry-sdk-current-preserved.json",
+    "sha256": "3d437a5a7e780bc0a71891691b4ee0e3242f8c5403c2f76e2a70a349c53aca4d"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-telemetry-sdk-source-v5-independent-review.json",
+    "sha256": "9e0a6472fe29ae2a686cb9a5d62af9d6cbeda9969250bd328cf1fdb37d2fe4e8"
+  },
+  "currentSdk": {
+    "producer": {
+      "path": "/tmp/101-telemetry-sdk-current-producer.json",
+      "sha256": "eb335ed5f81b2fd4a6000e32a0a7578c1c1dc4b4d6ed272afe4d1b2ac8c238ae"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-1boYhr/manifest.json",
+      "sha256": "b635c0b4dfb52c9921bef313a14ed8bd09f70d91f05567c164b726fb6f266c52"
+    },
+    "sourceTree": "87089bf409344924403c692ab261e61292907026",
+    "sourceFiles": 178,
+    "ordinaryPackageFiles": 395,
+    "archives": 7,
+    "consumers": 10,
+    "consumer": {
+      "path": "/tmp/101-telemetry-sdk-ordinary-contract-consumers.json",
+      "sha256": "08d47271af4ac24762a141291d83d244f33000fe443388df5f928351158b7636"
+    },
+    "consumerReceipt": {
+      "path": "/tmp/101-sdk-consumer-XdLrAx/receipt.json",
+      "sha256": "5274295b0d9d0ae07af448100a1c8bb8713ba38e7b0afcf7604e0e7dfdde9095"
+    },
+    "countScope": "Offline node_modules filesystem396 includes package-lock; later400 includes four separately tested @example processor files. Ordinary installed SDK inventory395. SDK producer870 is distinct and all178 leaves equal current source720; consumer-tool delta is outside its sourcepins."
+  },
+  "result": "pass selected managed telemetry implementation/runtime; whole B05/B06/S15 open",
+  "profile": "selected-managed-telemetry/1",
+  "tasks": [
+    "B05",
+    "B06",
+    "S15"
+  ],
+  "contract": {
+    "selection": "Exact optional telemetryResourceId only with caller kinds:[telemetry]; controller derives matching registered copies. No selector retains existing broad policy. Initial/resume grant bind selector+purpose/exact operation; no restored capture/upload authority.",
+    "producer": "Real bounded telemetry history.delete/resource export owns parsing/TTL/epoch/bytes; final owner CAS pins epoch/dataRevision/operation/selector/stage and native commit signal. Completed selector is omitted; count-only audit retains original30-day deadline.",
+    "preservation": "Other resource/copy/settings/owner bytes and original source stamps/quality/expiry survive selected removal. Corrupt/foreign/future bytes require separate recovery; no broad fallback.",
+    "abort": "Captured native AbortSignal getter and EventTarget listeners prevent own shadows from retaining leased ports or bypassing final producer cancellation; recheck owner expiry after the final supplied producer observer.",
+    "limits": "Existing256rows/64copies/2MiBowner/1MiBtelemetry/8storageops/1ownerop/32exportrows64KiB/60sgrant/128audit64KiB. QA9 sequential children,10s and64KiB stdout+stderr per child, not aggregate."
+  },
+  "focused": {
+    "receipt": {
+      "path": "/tmp/101-telemetry-owner-selection-v3-focused.json",
+      "sha256": "968fd1f0050c4dcc826930fd7ecc542e2b4203db8dad736b99a0cbe6f6d2a7cd"
+    },
+    "tests": 40,
+    "sourceScope": "Actual core c289 matches current; test const-alias lint change later qualified by final all5, not misrepresented as original21c test bytes."
+  },
+  "installed": {
+    "receipt": {
+      "path": "/tmp/101-telemetry-owner-selection-v3-installed.json",
+      "sha256": "135973dd3d26575b3a794b354bc1d86fe675c0078d3cfa70eaf6a35f59cc9f93"
+    },
+    "freshPhases": 8,
+    "ownedLockRefusal": 1,
+    "actualChildrenStarted": 9,
+    "actualChildrenClosed": 9,
+    "cleanup": {
+      "children": 0,
+      "filesystemPorts": 0,
+      "ownedDirectories": 0,
+      "network": 0
+    },
+    "producer": "Actual owned Node RSS/heap with per-process nonce/performance clock, trusted ingestion/retention separate; genuine owned private filesystem across restart.",
+    "scope": "Actual ordinary installed public SDK caller; matching selected deletion, exact fresh resume review, other-resource/owner/settings preservation, no source-time/quality/TTL rewrite, expiry and redacted audit expiry."
+  },
+  "old": [
+    {
+      "path": "/tmp/101-telemetry-owner-selection-old-v3.json",
+      "sha256": "d83d656db870e125258dbe305fa58f9a7508b81080c84b3fbb32817e5d2a22ef"
+    },
+    {
+      "path": "/tmp/101-owner-grant-native-abort-old.json",
+      "sha256": "b9493a35eeca4dc22767960099e5e450241ff8c13f19892d3fc041905f27f979"
+    },
+    {
+      "path": "/tmp/101-owner-producer-deadline-old.json",
+      "sha256": "e74313a444e80c3eb2df885ab9178a4821061aee08822995bb4fe3d657f853f2"
+    }
+  ],
+  "history": [
+    {
+      "path": "/tmp/101-telemetry-owner-selection-v1-focused.json",
+      "sha256": "fb25c57b5305d08041cd109cd6ac8136749bd297a0c57073b2b2a96e9241796b"
+    },
+    {
+      "path": "/tmp/101-telemetry-owner-selection-v2-focused.json",
+      "sha256": "654838ecad8c989e50c0a40d8b5a5d63a6e4303a462a83d4af33d1f628aa1fe2"
+    },
+    {
+      "path": "/tmp/101-telemetry-owner-selection-v2-source.json",
+      "sha256": "52009aae7b23ded28fad1ad6d9e3bce0cab178af5c0e24719abb453fff9c0492"
+    }
+  ],
+  "scopeLimits": [
+    "Source-v1/v2 snapshots and past alias/native proofs retain their distinct actual byte scopes. Current installed proof uses source-equivalent870 SDK and current720 caller.",
+    "Whole B05/B06/S15 remainOPEN: no unmanaged/remote recipient recall, arbitrary old databases, forensic erasure, identity/credential persistence, IndexedDB or physical devices here.",
+    "Synchronous close retires authority; held actual storage ownership remains reserved until settlement. Inherited asynchronous authorizer timeout behavior is unchanged and not claimed generic native quiescence."
+  ]
+}

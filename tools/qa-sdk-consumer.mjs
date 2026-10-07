@@ -133,12 +133,15 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'screen-preview', 'ble-switch', 'camera-controls', 'ble-switch-output', 'hid-switch-output', 'serial-switch-output', 'runtime-settlement', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'telemetry-owner', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'screen-preview', 'ble-switch', 'camera-controls', 'ble-switch-output', 'hid-switch-output', 'serial-switch-output', 'runtime-settlement', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
       assert.ok(targets.length > 0 && targets.every(value => typeof value === 'string' && value.startsWith('./') && inventory.some(file => `./${file.path}` === value)), `Export target missing from packed inventory: ${item.name}${subpath}`);
-      if (subpath.startsWith('./examples/')) {
+      if (item.name === '@101/connect' && subpath === './examples/telemetry-owner') {
+        assert.equal(target, './examples/telemetry-owner.mjs');
+        assert.ok(inventory.some(file => file.path === 'examples/telemetry-owner.mjs'), 'Ordinary Node caller absent from packed inventory');
+      } else if (subpath.startsWith('./examples/')) {
         const name = subpath.slice('./examples/'.length);
         assert.equal(target.types, `./examples/${name}.d.ts`);
         assert.equal(target.import ?? target.default, `./examples/${name}.js`);
@@ -1079,12 +1082,14 @@ for (const name of ['@101/device-model', '@101/device-runtime', '@101/transport-
     check(rejected, 'Private package subpath was not rejected: ' + name + suffix);
   }
 }
+const telemetryOwner = await import('@101/connect/examples/telemetry-owner');
+check(telemetryOwner.TELEMETRY_OWNER_SELECTION_PROFILE === 'selected-managed-telemetry/1' && typeof telemetryOwner.runTelemetryOwnerSelection === 'function', 'Packed ordinary telemetry owner caller export failed');
 const print = console.log;
 let entryResult;
 try { console.log = value => { entryResult = JSON.parse(value); }; await import('@101/connect/examples/run'); }
 finally { console.log = print; }
 check(entryResult?.pointer?.position?.x === 200 && entryResult?.sensorWithFeedback?.operations?.[0]?.state === 'observed' && entryResult?.sensorWithoutFeedback?.operations?.[0]?.state === 'unverified' && entryResult?.spatialJoints?.joints?.wrist?.position?.x === -100 && entryResult?.motion?.measurements?.length === 5 && entryResult?.vision?.handLost?.status === 'unavailable' && entryResult?.touchContacts?.cancelled?.contacts?.length === 0 && entryResult?.keyboardText?.disconnected?.text === 'zन' && entryResult?.richInput?.events === 12 && entryResult?.resourceDocuments?.cancelled === true && entryResult?.mediaDescription?.workingRoute === false && entryResult?.recipe?.observed === true && entryResult?.directRecipe?.released === 1, 'Packed examples/run entry failed');
-console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 18, packedRunEntry: true }));
+console.log(JSON.stringify({ ...summary, publicSchemas: true, privateSubpathsRejected: 18, packedRunEntry: true, ordinaryTelemetryOwnerExport: true }));
 `;
   const path = join(work, 'runtime-check.mjs');
   writeFileSync(path, source);

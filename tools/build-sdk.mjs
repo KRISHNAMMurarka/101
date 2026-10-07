@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -20,6 +20,8 @@ examples.push({ name: 'ble-switch-output', source: 'examples/browser-resources/b
 examples.push({ name: 'hid-switch-output', source: 'examples/browser-resources/hid-switch-output.ts' });
 examples.push({ name: 'serial-switch-output', source: 'examples/browser-resources/serial-switch-output.ts' });
 examples.push({ name: 'runtime-settlement', source: 'examples/runtime-lifecycle/settlement.ts' });
+const ordinaryExamples = [{ name: 'telemetry-owner', source: 'examples/owner-data/telemetry-owner.mjs' }];
+const auditSources = ['tools/audit-sdk-contents.py', 'tests/sdk-contents.test.ts', 'tools/qa-sdk-contents.mjs'];
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
@@ -45,7 +47,7 @@ function readme(name, version) {
     vision: 'Independent landmark observation parsers and bounded pose/hand gesture classifiers. Camera inference, WASM and model assets are supplied separately by the caller.',
     connect: 'Game-independent public facade for the current 101 device model, embedded runtime, authenticated resource bridge, pointer provider and keyboard/text source.',
   }[name];
-  return `# @101/${name}\n\n${intro}\n\nVersion ${version}. Compiled ESM JavaScript and TypeScript declarations; CommonJS and native-language distributions are not supplied. The public facade declarations include browser APIs: TypeScript consumers must include ES2022, DOM and DOM.Iterable libraries, including Node consumers of @101/connect. Node entry points use ordinary JavaScript, without type stripping. Browser APIs require the corresponding browser/OS capabilities. Node 22.13+ is the declared engine range; actual tested versions and limitations are recorded in the local distribution receipt.\n\nInstall the complete matching local tarball set with npm install --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/*.tgz. This is a local dry run; no registry publication is implied.\n\n${name === 'connect' ? 'Import createDeviceRuntime, parseDeviceDescriptor, AuthenticatedResourcePeer or PointerResourceProvider from @101/connect. Run the compiled examples with node node_modules/@101/connect/examples/run.js. Source examples and their declarations are included alongside JavaScript. Examples use explicit local providers and fixtures. The application-media example captures a caller-owned browser canvas; the SDK does not move the OS cursor or establish a physical actuator effect.\n\n' : ''}${name === 'connect' || name === 'device-model' ? 'The descriptor JSON schema is exported at @101/' + name + '/schema/device-descriptor.json. The runtime parser additionally enforces finite numbers, bounded plain JSON, relational limits and identity-safe snapshots. createUnitConverter explicitly maps reviewed numeric unit pairs with declared precision and error bounds; routing still requires exact units.\n\n' : ''}Value schemas support bounded records and arrays with explicit optional fields. Structured remote values negotiate json/2; json/1 and compact pointer bytes retain their existing contracts. Timestamp members remain in the declared application clock domain; nested timestamps are never silently translated. The telemetry-batch example includes explicit v1-to-v2 migration and opt-in KiBy-to-By publication with conversion provenance. Remote packets and runtime observation/options envelopes each have a separate 4 KiB limit; provenance consumes runtime space. Sender success does not establish host admission or effect. A host payload-limit drop preserves the grant without refreshing freshness or advancing received IDs, allowing a smaller batch to recover before the deadman expires.\n\nLabels, descriptors, invitation possession and endpoint key IDs supply no resource permission. The host must authorize concrete registrations. Remote resources require issued endpoint proof by default, bilateral connection enrollment and separate owner resource approval. Identity creation is explicit; missing storage stays unavailable. Release held input and cancel owned timers on stop, hide, disconnect and unmount. Native/physical, account identity, global service, wider SDK APIs and final security qualification remain separate.\n\nMIT license. Source: https://github.com/KRISHNAMMurarka/101. Private implementation subpaths are not exported.\n`;
+  return `# @101/${name}\n\n${intro}\n\nVersion ${version}. Compiled ESM JavaScript and TypeScript declarations; CommonJS and native-language distributions are not supplied. The public facade declarations include browser APIs: TypeScript consumers must include ES2022, DOM and DOM.Iterable libraries, including Node consumers of @101/connect. Node entry points use ordinary JavaScript, without type stripping. Browser APIs require the corresponding browser/OS capabilities. Node 22.13+ is the declared engine range; actual tested versions and limitations are recorded in the local distribution receipt.\n\nInstall the complete matching local tarball set with npm install --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/*.tgz. This is a local dry run; no registry publication is implied.\n\n${name === 'connect' ? 'Import createDeviceRuntime, parseDeviceDescriptor, AuthenticatedResourcePeer or PointerResourceProvider from @101/connect. Run the compiled examples with node node_modules/@101/connect/examples/run.js. Source TypeScript examples and their declarations are included alongside JavaScript. The telemetry-owner example is an ordinary Node ESM caller exported as MJS without TypeScript declarations. Examples use explicit local providers and fixtures. The application-media example captures a caller-owned browser canvas; the SDK does not move the OS cursor or establish a physical actuator effect.\n\n' : ''}${name === 'connect' || name === 'device-model' ? 'The descriptor JSON schema is exported at @101/' + name + '/schema/device-descriptor.json. The runtime parser additionally enforces finite numbers, bounded plain JSON, relational limits and identity-safe snapshots. createUnitConverter explicitly maps reviewed numeric unit pairs with declared precision and error bounds; routing still requires exact units.\n\n' : ''}Value schemas support bounded records and arrays with explicit optional fields. Structured remote values negotiate json/2; json/1 and compact pointer bytes retain their existing contracts. Timestamp members remain in the declared application clock domain; nested timestamps are never silently translated. The telemetry-batch example includes explicit v1-to-v2 migration and opt-in KiBy-to-By publication with conversion provenance. Remote packets and runtime observation/options envelopes each have a separate 4 KiB limit; provenance consumes runtime space. Sender success does not establish host admission or effect. A host payload-limit drop preserves the grant without refreshing freshness or advancing received IDs, allowing a smaller batch to recover before the deadman expires.\n\nLabels, descriptors, invitation possession and endpoint key IDs supply no resource permission. The host must authorize concrete registrations. Remote resources require issued endpoint proof by default, bilateral connection enrollment and separate owner resource approval. Identity creation is explicit; missing storage stays unavailable. Release held input and cancel owned timers on stop, hide, disconnect and unmount. Native/physical, account identity, global service, wider SDK APIs and final security qualification remain separate.\n\nMIT license. Source: https://github.com/KRISHNAMMurarka/101. Private implementation subpaths are not exported.\n`;
 }
 
 const reference = process.argv[2];
@@ -59,7 +61,7 @@ const snapshot = mkdtempSync(join(tmpdir(), '101-sdk-source-'));
 let outputDir;
 try {
   const selectedPaths = [...names.map(name => `packages/${name}`), 'LICENSE', 'schemas/device-descriptor.schema.json',
-    ...examples.map(({ source }) => source)];
+    ...examples.map(({ source }) => source), ...ordinaryExamples.map(({ source }) => source), ...auditSources];
   const archive = execFileSync('git', ['archive', '--format=tar', tree, '--', ...selectedPaths], { cwd: root, maxBuffer: 16 * 1024 * 1024 });
   execFileSync('tar', ['-xf', '-', '-C', snapshot], { input: archive });
   const manifests = new Map(names.map(name => [name, JSON.parse(readFileSync(join(snapshot, `packages/${name}/package.json`), 'utf8'))]));
@@ -73,7 +75,8 @@ try {
   const roots = names.flatMap(name => files(join(snapshot, `packages/${name}/src`)).filter(path => path.endsWith('.ts') && !path.endsWith('.test.ts')));
   roots.push(...examples.map(({ source }) => join(snapshot, source)));
   const sourcePaths = [...roots, ...names.map(name => join(snapshot, `packages/${name}/package.json`)),
-    join(snapshot, 'LICENSE'), join(snapshot, 'schemas/device-descriptor.schema.json')].sort();
+    join(snapshot, 'LICENSE'), join(snapshot, 'schemas/device-descriptor.schema.json'),
+    ...ordinaryExamples.map(({ source }) => join(snapshot, source)), ...auditSources.map(path => join(snapshot, path))].sort();
   const sourceSha256 = Object.fromEntries(sourcePaths.map(path => [relative(snapshot, path).replaceAll(sep, '/'), fileHash(path)]));
   const compiled = join(snapshot, '.compiled');
   const program = ts.createProgram(roots, {
@@ -112,6 +115,10 @@ try {
         copy(join(snapshot, source), join(directory, `examples/${example}.ts`));
         exportMap[`./examples/${example}`] = { types: `./examples/${example}.d.ts`, import: `./examples/${example}.js` };
       }
+      for (const { name: example, source } of ordinaryExamples) {
+        copy(join(snapshot, source), join(directory, `examples/${example}.mjs`));
+        exportMap[`./examples/${example}`] = `./examples/${example}.mjs`;
+      }
       publicFiles.push('examples');
     }
     for (const path of files(join(compiled, `packages/${name}/src`))) {
@@ -129,7 +136,7 @@ try {
     const inventory = packed[0].files.map(file => {
       const path = resolve(directory, file.path);
       if (!path.startsWith(directory + sep) || !existsSync(path) || !lstatSync(path).isFile()) throw new Error('Unexpected packed file path');
-      if (!['LICENSE', 'README.md', 'package.json'].includes(file.path) && !/^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path)) throw new Error('SDK tarball contains a file outside the public allowlist');
+      if (!(name === 'connect' && ordinaryExamples.some(example => file.path === `examples/${example.name}.mjs`)) && !['LICENSE', 'README.md', 'package.json'].includes(file.path) && !/^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path)) throw new Error('SDK tarball contains a file outside the public allowlist');
       return { path: file.path, size: readFileSync(path).length, sha256: fileHash(path) };
     }).sort((a, b) => a.path.localeCompare(b.path));
     const tarball = join(tarballs, packed[0].filename);
@@ -139,7 +146,26 @@ try {
   const result = { schemaVersion: 1, source: { revision, tree, sha256: sourceSha256 },
     environment: { node: process.versions.node, npm: execFileSync('npm', ['--version'], { encoding: 'utf8' }).trim(), typescript: ts.version },
     builderSha256: fileHash(new URL(import.meta.url)), outputDir, packages };
-  json(join(outputDir, 'manifest.json'), result); console.log(JSON.stringify(result, null, 2));
+  const manifestPath = join(outputDir, 'manifest.json'); json(manifestPath, result);
+  const manifestSha256 = fileHash(manifestPath), auditPath = join(outputDir, 'content-audit.json');
+  let contentAudit;
+  try {
+    contentAudit = JSON.parse(execFileSync('python3', ['-I', '-S', '-B', join(snapshot, 'tools/audit-sdk-contents.py'),
+      '--manifest', manifestPath, '--manifest-sha256', manifestSha256, '--artifact-root', outputDir,
+      '--source-tree', tree, '--audit-tool-sha256', sourceSha256['tools/audit-sdk-contents.py'],
+      '--output', auditPath, '--workspace-root', root, '--workspace-root', realpathSync(root)],
+    { encoding: 'utf8', timeout: 30_000, killSignal: 'SIGKILL', maxBuffer: 1024 * 1024 }));
+  } catch { throw new Error('SDK contents audit rejected the package output'); }
+  if (contentAudit.schemaVersion !== 1 || contentAudit.auditProfile !== 'sdk-content-audit/1' ||
+      contentAudit.result !== 'pass' || contentAudit.reason !== 'ok' || contentAudit.releaseAccepted !== false ||
+      contentAudit.sdkManifestSha256 !== manifestSha256 || contentAudit.sourceTree !== tree ||
+      contentAudit.toolSha256 !== sourceSha256['tools/audit-sdk-contents.py'] ||
+      contentAudit.files !== packages.reduce((count, item) => count + item.files.length, 0) ||
+      contentAudit.artifacts?.length !== names.length || fileHash(manifestPath) !== manifestSha256 ||
+      JSON.stringify(JSON.parse(readFileSync(auditPath, 'utf8'))) !== JSON.stringify(contentAudit)) {
+    throw new Error('SDK contents audit did not bind the immutable package output');
+  }
+  console.log(JSON.stringify(result, null, 2));
 } catch (error) {
   if (outputDir) rmSync(outputDir, { recursive: true, force: true });
   console.error(error.message); process.exitCode = 1;
