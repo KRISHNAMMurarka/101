@@ -46,6 +46,10 @@ test('immutable general SDK packs compiled public contracts and licenses without
         assert.ok(packed.includes('package/examples/telemetry-owner.mjs'));
         const metadata = JSON.parse(readFileSync(resolve(item.directory, 'package.json'), 'utf8'));
         assert.equal(metadata.exports['./examples/telemetry-owner'], './examples/telemetry-owner.mjs');
+        assert.deepEqual(metadata.exports['./examples/device-scaffold'], { types: './examples/device-scaffold.d.ts', import: './examples/device-scaffold.js' });
+        assert.equal(metadata.exports['./examples/onboarding'], './examples/onboarding/onboarding.mjs');
+        for (const path of ['device-scaffold.js', 'device-scaffold.d.ts', 'device-scaffold.ts', 'onboarding/onboarding.mjs', 'onboarding/consumer.mjs'])
+          assert.ok(packed.includes('package/examples/' + path));
       }
     }
     const repeated = JSON.parse(execFileSync(process.execPath, ['tools/build-sdk.mjs', tree], { cwd: root, encoding: 'utf8' }));

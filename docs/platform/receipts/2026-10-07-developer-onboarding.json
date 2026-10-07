@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass-local-developer-documentation",
+  "tasks": [
+    "L01"
+  ],
+  "baseCommit": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+  "tally": {
+    "total": 272,
+    "completed": 122,
+    "open": 150
+  },
+  "localOnly": true,
+  "sourceSha256": {
+    "examples/developer-onboarding/onboarding.mjs": "523ba0d760eed2be33d075ef502cded638b8eef785c310a1c502c59880cdd6fe",
+    "examples/developer-onboarding/consumer.mjs": "1b6f11832a3f11860f1b4e60a8fda6a66d0c199646e47b8cd78f6d83fbf873c3",
+    "tests/developer-onboarding.test.ts": "d1bf0eb19496017ce8ca0dbd8e47699567f10a34f66e132c3e5633e5614bdb5a",
+    "tests/device-project-create.test.ts": "842a4c1a3509594ffd65046afeafbbf74f49e97fd58918537c2e93f137b10a84",
+    "tools/create-device-project.mjs": "6114f38a652ad87b4434f0941bc6841f9a8c5f33ef4fe32009a62a59c3cfa332",
+    "tools/qa-developer-onboarding.mjs": "51859c0702489b2e8273f516011aca1186ddebbbde8be0a9285d39412c36b5d7",
+    "tools/build-sdk.mjs": "c454359e8fabe3c21d674dd691a536c119dd48703a0aef1d02cc4521af219301",
+    "tools/audit-sdk-contents.py": "fd0e8f43970559d768be8fe56e2cdc4f847be2068f66ec5abe2c9e49d492d257",
+    "tools/qa-sdk-consumer.mjs": "7e328875d33ba9ce1262b22c8e39fc9059f04ef22d054fbff502c7988d4e3718",
+    "tests/sdk-distribution.test.ts": "01d7e3f9a052ddd4981221dcd6e1fa31a4a82d5389b4b88eeb58b0311b063d65",
+    "docs/platform/SDK.md": "1dfefdcbd2e9fd4323a0a31c01bda1400db54f8c228bb2238be4ee7039ce1537",
+    "docs/platform/RELEASE-CONTRACT.md": "0c001b52a61194e07798201f43633974297892e861ea34871a15d31c96474dcb"
+  },
+  "profile": "local-developer-onboarding/1",
+  "acceptance": "Fresh developer install/create/connect/test/extend/recover through complete ordinary public examples and accurately interpreted canonical supported matrix. Local documentation deliverable; no publication, physical or platform-row acceptance.",
+  "artifact": {
+    "path": "/Users/km/Desktop/games/101/release/sdk-9VqXH5/manifest.json",
+    "sha256": "ff618cde24ec0063eee163e735cd72a1a0e8ca69353588f7b0463adea65fdb58",
+    "sourceTree": "067e671dc1f5d1d94af72645a9a2e229ac592c54",
+    "sourceFiles": 181,
+    "sdkPackages": 7,
+    "sdkFiles": 400,
+    "nodeExampleCompiler": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-9VqXH5/node-example-compiler.json",
+      "sha256": "d3ca1fcdc1d63c2817dcd5c8f34cdf89eb46413fab9def637ebefd6f7244a739"
+    },
+    "contentsAudit": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-9VqXH5/content-audit.json",
+      "sha256": "476c22a1cf24e52ca4193d36a3ca7a08dcb99a35b75cc05a69fe8e38ac8178d3"
+    }
+  },
+  "build": {
+    "path": "/tmp/101-onboarding-sdk-build-final.json",
+    "sha256": "4783b2ccc1b2eb465bfb48313bad08f368d22ac2b0d8a85fbfdd8b93b9da0328"
+  },
+  "ordinaryConsumer": {
+    "path": "/tmp/101-onboarding-sdk-consumer-final.json",
+    "sha256": "11e90cbc3f545585922e07928a50fdc8ae2603d93f8c41724fd1fc48c86affb9"
+  },
+  "ordinaryConsumerChecks": 10,
+  "installedSixStages": {
+    "path": "/tmp/101-developer-onboarding-installed-compact.json",
+    "sha256": "efbafc3d33a142a6e60bbcad9fb7d7ad769982e674792ca66be83bbd1ead8948"
+  },
+  "installedReceipt": {
+    "path": "/tmp/101-developer-onboarding-9eKBME/receipt.json",
+    "sha256": "46b9a05fddec3d4896658d5baf3b761e0091d2e0c5becefd635ff56166ed5857"
+  },
+  "installedStages": [
+    "install",
+    "create",
+    "connect",
+    "test",
+    "extend",
+    "recover"
+  ],
+  "childStarts": 12,
+  "rawChildrenSettled": true,
+  "producerTimers": 0,
+  "literalGuide": {
+    "path": "/tmp/101-developer-onboarding-literal-guide.json",
+    "sha256": "b27d9c6276044e7ea1d48a365dd66bdda8b0a8650fbf9f3f878f0f2bdb860b77"
+  },
+  "literalGuideReceipt": {
+    "path": "/tmp/101-doc-onboarding-1os_eeuo/receipt.json",
+    "sha256": "b4d8ce2adb0c886c0b2fc6bb35d707d522adc3a5202ff585132e3536e526b6aa"
+  },
+  "literalGuideScope": "Actual unmodified first six shell blocks, with only four documented local path placeholders filled, in a second fresh external install. Repository QA selector is separately executed exactly; no guide command is inferred from a source mirror. Six actual source/display/threshold results clear on Stop.",
+  "sourceUnits": {
+    "path": "/tmp/101-onboarding-installed-metadata-fixed.json",
+    "sha256": "119542e8af8d8ed47dfa85ea06bbee407d3c208fcfbcfd6a227e2a20f831c958",
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "skipped": 0
+  },
+  "cliRace": {
+    "old": {
+      "path": "/tmp/101-device-project-create-old.json",
+      "sha256": "c8602774e7b842f638f3d68dbc2c2f34523fa97d2aaf47e9947d826bbc729bb2"
+    },
+    "oldPass": 2,
+    "oldFail": 1,
+    "fixed": {
+      "path": "/tmp/101-device-project-create-exclusive.json",
+      "sha256": "d2db23499eb2a5af1299a66166c006e65c3d922c08b2242814936de72e786fb3"
+    },
+    "fixedPass": 3,
+    "oldLiteral": {
+      "path": "/tmp/101-onboarding-creator-race-old.json",
+      "sha256": "932c084699e42e8d0f848ff9dd9cd6b472077a1b918e3ea05acbb9918407c329"
+    },
+    "boundary": "Actual native concurrent mkdir immediately before either old rename or new exclusive mkdir. Original CLI replaced the competing empty-directory inode; repaired CLI refuses and preserves it. Existing directories/files/symlinks and exact generated files also checked."
+  },
+  "metadataRegression": {
+    "old": {
+      "path": "/tmp/101-onboarding-installed-metadata-old.json",
+      "sha256": "23448596aa157ba540b7c2b40395937316671bd9eadfb8a1235ad95b26721f43"
+    },
+    "oldPass": 15,
+    "oldFail": 1,
+    "fixed": {
+      "path": "/tmp/101-onboarding-installed-metadata-fixed.json",
+      "sha256": "119542e8af8d8ed47dfa85ea06bbee407d3c208fcfbcfd6a227e2a20f831c958"
+    },
+    "change": "Accept only the actual seven-package local file-tarball metadata written by npm, preserving exact fixed project scripts and nondependency metadata. This inert metadata does not establish trusted installed code or grants."
+  },
+  "oldFeature": {
+    "path": "/tmp/101-onboarding-public-export-old.json",
+    "sha256": "95645b017fa2920f5549f3ed0dbaac503e701b5af0ea0b6a205b49fd017c1288"
+  },
+  "oldFeatureLiteral": {
+    "path": "/tmp/101-onboarding-public-export-old-preserved.json",
+    "sha256": "a81b718da3ad7ae35bf5ca85db6284e6c3b2046e78bd4c29d4c9a2133a676f6b"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-onboarding-source-risk-independent-review.json",
+    "sha256": "1ea88b6ee186974613e6e98cfe57806483bc23df5809030008105acf0afd4a13"
+  },
+  "literalPreservation": {
+    "path": "/tmp/101-onboarding-software-literal-preserved.json",
+    "sha256": "d06b4e7ed1b38d025f4c49e3f10fbaf404a2ff100d26f565536c8c21fdd675e2"
+  },
+  "preservedAttempts": [
+    {
+      "path": "/tmp/101-developer-onboarding-installed.json",
+      "sha256": "a66b12fff7eaef97c803ca642f580da8f81d87b8bfb7883aeb4a6ad39035cd8c"
+    },
+    {
+      "path": "/tmp/101-developer-onboarding-installed-graph-fixed.json",
+      "sha256": "bdaf5e556e3536853405e04b1f89fa26ba7bb1fc3acb5586f126c2a4e6ca1c1b"
+    },
+    {
+      "path": "/tmp/101-developer-onboarding-installed-final.json",
+      "sha256": "70c7005c2af827e47ea843017d441b11424404a4248453942f30e2a25b141127"
+    }
+  ],
+  "fixtureCorrections": [
+    "Ordinary consumer actually adds its one pinned external processor after the seven-SDK audit. Onboarding now verifies exactly that declared four-file addon and closed lock graph; no arbitrary extra package allowance.",
+    "Full six-stage native commands passed but pretty receipt exceeded the existing16KiB budget. Compact lossless encoding is12820 bytes; the ceiling and fields remain unchanged. Failed old execution and twelve actual command logs remain retained."
+  ],
+  "bounds": {
+    "activeProjects": 1,
+    "runs": 1,
+    "stages": 6,
+    "directChildStarts": 12,
+    "rawDirectChildren": 1,
+    "generatedFiles": 32,
+    "generatedSourceBytes": 262144,
+    "receiptBytes": 16384,
+    "childLifetimeMs": 120000,
+    "runtimeRoutes": 2,
+    "runtimeRegistrations": 4,
+    "effects": 16
+  },
+  "environment": {
+    "node": "24.14.0",
+    "npm": "11.9.0",
+    "typescript": "5.9.3",
+    "playwright": "1.61.1",
+    "scope": "Exact local trusted compiler/software; current packed ordinary C149/FF151/W26.5 consumers separately qualified. Engine-floor/hardware/support profiles remain independent."
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-onboarding/integration-gates",
+    "requirement": "All five AGENTS gates against the exact integration candidate; fresh build before rendered HTML. Resolve the retained record for status/tree/log hashes. No browser or physical qualification inferred."
+  },
+  "support": {
+    "revision": 30,
+    "rows": 65,
+    "acceptedRows": 0,
+    "changed": false
+  },
+  "limitations": [
+    "Cooperative same-user filesystem and trusted compiler bindings; no arbitrary native filesystem attacker sandbox or untrusted source execution.",
+    "Stored source/manifests, local file install paths and compiler hashes are inert provenance; each explicit run uses fresh exact owner/application/session/resource grants and releases on Stop.",
+    "Direct raw-child reservations retain actual issued work through native close; this is not a process-tree sandbox or physical acknowledgement.",
+    "L02 remains open for a verified private security-reporting destination and final artifact/support reference acceptance.",
+    "Phone, hardware, publication and wider platform qualification deferred; no external mutation."
+  ]
+}

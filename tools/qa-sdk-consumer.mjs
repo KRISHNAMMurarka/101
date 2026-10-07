@@ -133,12 +133,16 @@ function installAndAudit(manifest) {
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
-    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'telemetry-owner', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'screen-preview', 'ble-switch', 'camera-controls', 'ble-switch-output', 'hid-switch-output', 'serial-switch-output', 'runtime-settlement', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
+    if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'telemetry-owner', 'device-scaffold', 'onboarding', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'screen-preview', 'ble-switch', 'camera-controls', 'ble-switch-output', 'hid-switch-output', 'serial-switch-output', 'runtime-settlement', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
       assert.ok(targets.length > 0 && targets.every(value => typeof value === 'string' && value.startsWith('./') && inventory.some(file => `./${file.path}` === value)), `Export target missing from packed inventory: ${item.name}${subpath}`);
-      if (item.name === '@101/connect' && subpath === './examples/telemetry-owner') {
+      if (item.name === '@101/connect' && subpath === './examples/onboarding') {
+        assert.equal(target, './examples/onboarding/onboarding.mjs');
+        for (const file of ['examples/onboarding/onboarding.mjs', 'examples/onboarding/consumer.mjs'])
+          assert.ok(inventory.some(item => item.path === file), 'Closed ordinary onboarding pair absent');
+      } else if (item.name === '@101/connect' && subpath === './examples/telemetry-owner') {
         assert.equal(target, './examples/telemetry-owner.mjs');
         assert.ok(inventory.some(file => file.path === 'examples/telemetry-owner.mjs'), 'Ordinary Node caller absent from packed inventory');
       } else if (subpath.startsWith('./examples/')) {
@@ -152,7 +156,7 @@ function installAndAudit(manifest) {
     assert.ok(inventory.some(file => /^README(?:\.md)?$/i.test(file.path)), `Public README absent: ${item.name}`);
     for (const file of inventory) {
       assert.ok(!file.path.split('/').some(part => ['src', 'node_modules', 'tests', '__tests__', 'receipts'].includes(part)) && !/\.test\.[cm]?[jt]s$/.test(file.path), `Private source/test content packed: ${item.name}/${file.path}`);
-      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|media-recording|recording-owner-data|hid-switch|serial-switch|screen-preview|ble-switch|camera-controls|ble-switch-output|hid-switch-output|serial-switch-output|runtime-settlement|media-synchronization|output-sharing|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
+      assert.ok(!file.path.endsWith('.ts') || file.path.endsWith('.d.ts') || item.name === '@101/connect' && /^examples\/(pointer|sensor-feedback|threshold|telemetry-batch|spatial-joints|motion|vision|keyboard-text|touch-contacts|gestures|input-details|rich-input|resource-documents|media-description|recipe|settings-storage|conformance|telemetry-history|device-scaffold|control-surface|durable-artifact-jobs|secure-websocket|application-views|input-ownership|timed-pointer|application-media|application-video-codec|media-recording|recording-owner-data|hid-switch|serial-switch|screen-preview|ble-switch|camera-controls|ble-switch-output|hid-switch-output|serial-switch-output|runtime-settlement|media-synchronization|output-sharing|invitation-connection|run)\.ts$/.test(file.path), `Runtime TypeScript/source internals packed: ${item.name}/${file.path}`);
     }
     installed.set(item.name, { ...item, directory, pkg });
   }

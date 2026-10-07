@@ -33,6 +33,201 @@ This closes the persisted model deliverable, not endpoint authentication or S16'
 independent security validation. Update the model when a new trust boundary is
 implemented, preserving earlier failures and documentation discrepancies.
 
+## Install, create, connect, test, extend and recover
+
+This walkthrough runs an authored local Celsius source, display and threshold
+processor. It does not access a sensor, appliance or OS device. Use an immutable
+local SDK artifact containing `@101/connect/examples/device-scaffold` and
+`@101/connect/examples/onboarding`; verify its seven tarball hashes against its
+manifest. Select the matching trusted TypeScript 5.9.3 tarball and Node/npm
+toolchain separately. No package is fetched from a registry.
+
+### 1. Install in a fresh directory
+
+Replace these absolute paths with the selected local artifacts and toolchain.
+The SDK directory must contain exactly its seven matching SDK tarballs.
+
+```sh
+NODE=/absolute/path/to/node
+NPM_CLI=/absolute/path/to/npm/bin/npm-cli.js
+SDK_TARBALL_DIR=/absolute/path/to/selected-sdk/tarballs
+TYPESCRIPT_TARBALL=/absolute/path/to/typescript-5.9.3.tgz
+unset NODE_OPTIONS NODE_PATH
+mkdir sdk-walkthrough
+cd sdk-walkthrough
+printf '{"private":true,"type":"module"}\n' > package.json
+"$NODE" "$NPM_CLI" install --offline --ignore-scripts --no-audit --no-fund \
+  "$SDK_TARBALL_DIR"/*.tgz "$TYPESCRIPT_TARBALL"
+```
+
+### 2. Create explicitly
+
+```sh
+"$NODE" --input-type=module <<'JS'
+import { resolve } from 'node:path';
+import { createOnboardingProject, reviewOnboardingProject } from '@101/connect/examples/onboarding';
+const created = await createOnboardingProject({ id: 'room-sensor', destination: resolve('room-sensor') });
+console.log(await reviewOnboardingProject({ id: 'room-sensor', directory: created.directory, revision: 'base' }));
+JS
+cd room-sensor
+"$NODE" "$NPM_CLI" install --offline --ignore-scripts --no-audit --no-fund \
+  "$SDK_TARBALL_DIR"/*.tgz "$TYPESCRIPT_TARBALL"
+```
+
+Creation refuses an existing destination, including an empty directory. Review
+checks the fixed source, declarations and manifest; it grants no resource access.
+The project remains outside the 101 repository and imports only public SDK APIs.
+
+### 3. Compile and connect
+
+Define these two shell functions once, while inside `room-sensor`. The first
+binds unchanged source/manifest bytes to the actual selected compiler and emitted
+JavaScript. The second uses those output pins, tries a denied route, then makes
+fresh explicit approvals for the exact source `subscribe` and display `write`.
+
+```sh
+compile_reviewed() {
+  "$NODE" --input-type=module <<'JS' || return
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+const sha = path => createHash('sha256').update(readFileSync(path)).digest('hex');
+writeFileSync('onboarding-build-inputs.json', JSON.stringify({
+  sourceSha256: sha('src/processor.ts'), manifestSha256: sha('processor.manifest.json'),
+  compilerSha256: sha('node_modules/typescript/bin/tsc'),
+}));
+JS
+  "$NODE" node_modules/typescript/bin/tsc -p tsconfig.json --noUncheckedIndexedAccess true || return
+  "$NODE" --input-type=module <<'JS'
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+const sha = path => createHash('sha256').update(readFileSync(path)).digest('hex');
+const before = JSON.parse(readFileSync('onboarding-build-inputs.json', 'utf8'));
+assert.equal(sha('src/processor.ts'), before.sourceSha256);
+assert.equal(sha('processor.manifest.json'), before.manifestSha256);
+assert.equal(sha('node_modules/typescript/bin/tsc'), before.compilerSha256);
+writeFileSync('onboarding-compiled.json', JSON.stringify({
+  sourceSha256: before.sourceSha256, manifestSha256: before.manifestSha256,
+  'connector.js': sha('dist/connector.js'), 'processor.js': sha('dist/processor.js'),
+}));
+JS
+}
+run_reviewed() {
+  "$NODE" --input-type=module - "$1" <<'JS'
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runOnboardingExample } from '@101/connect/examples/onboarding';
+const revision = process.argv[2];
+const options = { id: 'room-sensor', directory: process.cwd(), revision,
+  compiledSha256: JSON.parse(readFileSync('onboarding-compiled.json', 'utf8')) };
+const denied = await runOnboardingExample({ ...options, mode: 'denied', sample: 31 });
+assert.equal(denied.denied, true);
+assert.equal(denied.effects, 0);
+assert.equal(denied.factoryCalls, 0);
+for (const sample of [30, 31]) {
+  const result = await runOnboardingExample({ ...options, mode: 'approved', sample });
+  assert.equal(result.reading, sample);
+  assert.equal(result.switchOn, sample === 31 || revision === 'base');
+  assert.deepEqual(result.afterStop, { hasReading: false, released: 1 });
+  assert.equal(result.routesClosed, true);
+  assert.equal(result.runtimeClosed, true);
+  console.log(JSON.stringify(result));
+}
+JS
+}
+compile_reviewed && run_reviewed base
+```
+
+The supplied hashes express trusted compilation, not authority. Every explicit
+run creates new runtime registrations and grants, then stops the route, releases
+the display and closes the runtime. A manifest or successful review supplies none
+of those approvals. The reported boolean is the local processor's result, not an
+appliance acknowledgement or observed physical state.
+
+### 4. Test the generated project
+
+```sh
+"$NODE" scripts/validate.mjs
+"$NODE" --test test/project.test.mjs
+```
+
+These are the generated project's real validator and tests. They check the
+source pin, descriptor/recipe parsing, exact host authorization, inert guidance,
+local result and Stop release. Invalid or incompatible assets remain rejected.
+
+### 5. Extend one reviewed behavior
+
+First require the unchanged base review. Then choose only the fixed supported
+extension: use `temperature > onAt` rather than `temperature >= onAt`, with
+processor version `1.0.1` and a new exact source hash.
+
+```sh
+"$NODE" --input-type=module <<'JS'
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { writeFileSync } from 'node:fs';
+import { createDeviceScaffold } from '@101/connect/examples/device-scaffold';
+import { reviewOnboardingProject } from '@101/connect/examples/onboarding';
+await reviewOnboardingProject({ id: 'room-sensor', directory: process.cwd(), revision: 'base' });
+const known = createDeviceScaffold({ id: 'room-sensor' });
+assert.equal(known['src/processor.ts'].split('temperature >= onAt').length, 2);
+const source = known['src/processor.ts'].replace('temperature >= onAt', 'temperature > onAt');
+const manifest = JSON.parse(known['processor.manifest.json']);
+manifest.version = '1.0.1';
+manifest.codeSha256 = createHash('sha256').update(source).digest('hex');
+writeFileSync('src/processor.ts', source);
+writeFileSync('processor.manifest.json', JSON.stringify(manifest, null, 2) + '\n');
+console.log(await reviewOnboardingProject({ id: 'room-sensor', directory: process.cwd(), revision: 'strict-threshold' }));
+JS
+compile_reviewed && run_reviewed strict-threshold
+```
+
+At 30 Celsius the selected extension returns false; at 31 it returns true.
+Other source changes or undeclared revisions do not inherit this review.
+
+### 6. Recover by an explicit known restore
+
+After a source-pin failure, stop and inspect the affected files. For this
+exercise, explicitly restore only the factory's known processor and manifest:
+
+```sh
+"$NODE" --input-type=module <<'JS'
+import { writeFileSync } from 'node:fs';
+import { createDeviceScaffold } from '@101/connect/examples/device-scaffold';
+import { reviewOnboardingProject } from '@101/connect/examples/onboarding';
+const known = createDeviceScaffold({ id: 'room-sensor' });
+for (const path of ['src/processor.ts', 'processor.manifest.json']) writeFileSync(path, known[path]);
+console.log(await reviewOnboardingProject({ id: 'room-sensor', directory: process.cwd(), revision: 'base' }));
+JS
+compile_reviewed && run_reviewed base
+```
+
+This preserves unknown files. It does not repair other rejected assets, restore
+old compiled-output pins or recover permission. Recompilation and fresh explicit
+approvals are required; there is no automatic fallback to changed code.
+
+For the checked six-stage walkthrough through ordinary installed packages, run
+this tool from the repository root with the immutable manifest, its qualified
+clean consumer, trusted compiler tarball and immutable caller tree selected by
+the host:
+
+```sh
+"$NODE" tools/qa-developer-onboarding.mjs --installed \
+  /absolute/path/to/manifest.json /absolute/path/to/clean-consumer \
+  "$TYPESCRIPT_TARBALL" IMMUTABLE_CALLER_TREE
+```
+
+The tool checks the installed SDK bytes, compilation ancestry, denial,
+extension, explicit restore and actual owned-child
+Stop/close. Its direct child reservation is not a process-tree sandbox or a
+physical safe-state claim.
+
+The [support catalog](support-catalog.json) is schema version 1, revision 30,
+with 65 rows and zero accepted rows. This local software exercise accepts none
+of them: a release claim requires `status: "qualified"`, `accepted: true` and
+the exact target's required current evidence. See the existing support/version
+reference for engine-floor, platform and hardware qualification limits.
+
 ## Start with a provider
 
 A description says what a device can expose. A registration binds that description to
@@ -202,6 +397,126 @@ Namespaced extension data remains inert and cannot select executable factories,
 fetch URLs, revive grants or infer native support. This reference specifies software
 contracts; it does not promote hardware, full-platform or physical qualification.
 
+### Find a public schema or protocol
+
+The local general SDK contains seven package roots: `@101/device-model`,
+`@101/device-runtime`, `@101/transport-webrtc`, `@101/transport-websocket`,
+`@101/device-web`, `@101/vision` and the `@101/connect` facade. Use an artifact's
+export map and declarations for its exact public surface. Package version,
+descriptor revision, capability schema version, profile/codec revision and wire
+version identify different contracts; none supplies resource authority.
+
+| Contract | Exact public reference | Boundary |
+| --- | --- | --- |
+| Device description | `DeviceDescriptor`, `DeviceCapability`, `ValueSchema`, `parseDeviceDescriptor`, `parseValueSchema` and `parseSignalValue`, from model or facade roots | Descriptor envelope `schemaVersion: 1`; each capability has its own positive schema version. Spatial and rich-input schemas require capability version at least 2. Rich input also requires event kind and reliable delivery. [Value contracts](#descriptions-and-signal-meaning). |
+| Editor JSON schema | `@101/device-model/schema/device-descriptor.json` or `@101/connect/schema/device-descriptor.json`; Draft-07, `$id: urn:101:device-descriptor:1` | Structural editing aid. Runtime parsers additionally enforce finite values, relational/byte/depth limits and safe immutable snapshots. [Parser limits](#local-device-simulator). |
+| Recipes and processors | `Recipe`/`parseRecipe` and `ProcessorManifest`/`parseProcessorManifest`, from model or facade roots; both manifest envelopes have `schemaVersion: 1` | Inert declarations need explicit resource resolution and trusted pinned code. A recipe or manifest grants no access. [Recipes](#declarative-recipe-v1), [processors](#processor-manifests-and-trusted-registry). |
+| Runtime routes | `DeviceRuntime`, `Connection`, `AuthorizationRequest`, `RouteGrant` and `DeliveryContext`, from runtime or facade roots | Concrete registration identity, host grants, generation and currentness govern delivery. [Public lifecycle](#core-route-lifecycle), [operations](#property-command-and-job-operations). |
+| Resource wire values | `WireControl`, `WireValue`, `WirePacket`, `WireCodec`, `encodePacket` and `decodePacket`, from browser or facade roots | `protocol: 'connect'`; control messages use version 1. Values use version 1 with `json/1`, or version 2 with negotiated `json/2`. The binder separately validates the selected resource, schema, codec, slot, epoch and authority. [Remote binding](#bind-a-remote-provider). |
+| Compact pointer codec | `normalized-pointer/1` in `WireCodec` | Exactly 48 bytes, disposable sample lane, version 1; only the binder's compatible normalized two-coordinate pointer schema. No generic vector or physical pointer claim. [Pointer codec](#native-normalized-pointer-codecs). |
+| Receiver invitation | `ReceiverInvitation`, `decodeReceiverInvitation` and related public invitation helpers | `protocol: 'connect-invite'`, version 1; current receiver application/session/epoch data. Possession or parsing grants neither endpoint identity nor resource consent. [Receiver connection](#explicit-connection-to-an-enrolled-receiver). |
+| Manual diagnostic code | `ManualPeerCode`, `encodeManualPeerCode`, `decodeManualPeerCode` | `protocol: 'connect-manual'`, version 1; diagnostic offer/answer transfer. It does not authenticate an endpoint. [Remote binding](#bind-a-remote-provider). |
+| Endpoint authentication | `AuthenticatedResourcePeer`, `AuthenticatedPeerOptions`, `AuthenticatedPeerScope`, `EndpointIdentity`, `EndpointCrypto` | Library-owned `connect-auth` version 1 handshake binds the actual transport transcript and locally expected scope. Endpoint proof, bilateral enrollment and owner grants remain separate. [Authentication](#bind-a-remote-provider). |
+| Secure WebSocket transport | `SecureWebSocketTransport`, `WebSocketSessionBinding`, `WebSocketLimits`, `WSS_SUBPROTOCOL` | Subprotocol `101-resource-wss-1`; library-owned `connect-wss` version 1 handshake negotiates `ordered-bounded/1`. A supplied server port does not prove TLS. [WSS contract](#secure-websocket-fallback). |
+
+`encodePacket()` validates and snapshots its input, returning a JSON string or
+compact `ArrayBuffer`; malformed input throws. `decodePacket()` returns
+`{ packet, codec }` or `undefined`, including for a malformed packet or wrong lane.
+Samples use the disposable lane; controls and events use the reliable lane.
+Wire value/control packets are bounded to 4 KiB, except the description envelope
+which is bounded to 66 KiB. The runtime observation/options envelope has its own
+independent 4 KiB bound; source and provenance fields consume that budget.
+Successful decoding alone supplies no negotiated schema, grant, delivery or effect.
+Use the binding and authentication APIs rather than implementing a new handshake
+from this lookup table.
+
+Additional resource/profile declarations and exported limits are documented in
+the [contract-family references](#contract-families). Their individual exported
+types and parsers remain authoritative; the descriptor editor schema is not a
+universal validator for recipes, storage, extension packages or peer packets.
+
+The selected local artifact additionally exports the Node-only
+`@101/connect/examples/device-scaffold` factory (JavaScript, declarations and
+source) and the ordinary MJS `@101/connect/examples/onboarding` entry. The latter
+retains its same-directory consumer module. See the [six-stage walkthrough](#install-create-connect-test-extend-and-recover)
+and [onboarding evidence](receipts/2026-10-07-developer-onboarding.json) for the exact
+artifact and tested local toolchain. These are explicit local examples, with no
+registry publication or platform acceptance implied.
+
+### Resource operations and consent
+
+| Operation in `AuthorizationRequest` | Resource contract | Consent boundary |
+| --- | --- | --- |
+| Source `read` | A latest `property` source advertising `read`; one fresh retained snapshot, then terminal retirement | Authorize the exact source registration and the selected sink operation. Missing or stale snapshots are refused. |
+| Source `subscribe` | A source advertising `subscribe`; continuing publications under its declared delivery policy | Approve the exact resource, principal, application, session, rate/age and expiry. |
+| Sink `write` | A compatible sink other than a command/job, advertising `write` | The sink's owner and host approve this registration; source permission does not imply destination permission. |
+| Sink `invoke` | A compatible command/job sink advertising `invoke` | Reliable operation IDs/deadlines and current authority remain required; callback return is not target acknowledgment or observed effect. |
+
+The runtime selects `invoke` for command/job sinks and `write` for other sinks;
+an advertised operation is a capability declaration, not a grant. An omitted
+source operation selects `subscribe` when advertised, otherwise `read`.
+Host authorization may refuse either choice. Caller constraints only narrow
+the host grant. Partition selection must match the sink's declared ownership.
+Browser/OS permission, endpoint enrollment, resource-owner approval and runtime
+authorization have separate lifetimes. Labels, descriptor IDs, membership,
+invitation possession and encrypted transport replace none of them. See
+[roles and permissions](RELEASE-CONTRACT.md#roles-and-permissions).
+
+### Interpret support and versions
+
+The canonical matrix is [support-catalog.json](support-catalog.json), schema
+version 1, currently revision 30 with 65 rows and zero accepted rows. A row is a
+release claim only when `status: 'qualified'` and `accepted: true`, with its exact
+target and required current evidence. Implementation, contract, runtime and
+physical evidence are independent. `embedded`, `candidate` and `historical`
+describe their recorded scopes; an unknown target inherits no evidence.
+
+[Current local SDK evidence](receipts/2026-10-07-sdk-content-audit.json) identifies
+the concrete unpublished artifact and separately bounded consumer checks. A
+successful local tarball build or example does not accept a support row. Node
+22.13 is the declared engine floor; its qualification remains open. Use the
+actual runtime/compiler versions in the selected receipt for tested claims.
+Phone, hardware, native OS input and broader platform acceptance remain separate.
+The [compatibility policy](RELEASE-CONTRACT.md#public-names-and-compatibility)
+defines negotiated additions, 0.x migration, stable deprecation and security
+revocation. Unknown revisions or undeclared semantics fail closed.
+
+### Troubleshoot a failed attempt
+
+These are diagnostic checks, not automatic retries or an onboarding sequence.
+Core result reasons are open strings; other APIs have their own exported result
+unions and exception boundaries. Keep a safe fallback for an unfamiliar reason.
+
+| Symptom | Inspect | Required boundary |
+| --- | --- | --- |
+| Missing export or incompatible declarations | Exact artifact export map, matching package versions, declaration entry and configured `ES2022`/`DOM`/`DOM.Iterable` libraries | Workspace source resolution and private implementation imports do not establish a packaged public export. Match example availability to the exact artifact export map. |
+| Descriptor/value rejection | `DeviceValidationError.code` and `path`, schema/capability revision, delivery kind and declared bounds | Correct the declaration or explicit migration; do not clamp values, strip fields to bypass validation or reinterpret a rich event as a latest sample. |
+| `decodePacket()` returns `undefined` | Input lane, codec, version and bounded packet shape | Invalid bytes remain rejected. Decoding is not authentication or permission. |
+| Description/binding remains unavailable | Current issued authenticated facade, expected application/session/roles/epoch and bilateral enrollment | Transport connection, a code or a copied scope object is insufficient; no diagnostic exemption supplies production authority. |
+| `denied`, `busy`, `unavailable` or `unknown-endpoint` | Current endpoint handle/readiness, host decision, owner lease and registration lifetime | Do not substitute IDs or seize an incumbent lease. Authority and current provider availability must be established explicitly. |
+| `incompatible` or `unsupported-operation` | Exact semantic/schema/value/delivery compatibility and advertised source/sink operations | Use an explicitly declared compatible provider or reviewed converter; a grant cannot make incompatible contracts compatible. |
+| `payload-limit`, `capacity` or sender admission failure | Independent wire/runtime envelope sizes, provenance, effective route limits and outstanding provider work | Stay within negotiated bounds. Admission failure is not effect; do not repeat ambiguous non-idempotent operations. |
+| `stale`, `expired`, invalid deadline or closed route | Original clock domain, age/deadline, owner expiry and terminal route status | Retired authority stays retired. Never extend a source timestamp, replay expired edges or renew a closed handle. |
+| Callback returned but effect is unclear | Separate operation handler state and evidence (`dispatched`, `target-acknowledged`, `observed`) | Return or transport send success cannot establish a physical effect; ambiguity must remain visible. |
+| Stop happened but owned work is pending | Actual returned provider work and the selected API's settlement/teardown contract | `pending: 0` or `onClose` is not quiescence. Optional `whenSettled()` does not await detached native work. [Settlement limits](#returned-work-effect-evidence-and-settlement). |
+
+### Security reports and safe diagnostics
+
+Follow the repository [security policy](../../SECURITY.md). It requests private
+reports to maintainers and has no stable security-support window. It currently
+provides no verified private reporting destination. A usable private contact
+must be established by the owner before the security-reporting part of L02 can
+be accepted; this reference supplies no invented mailbox, service or response SLA.
+
+Prepare an affected package/version, artifact/source identity, failing phase,
+bounded error code and minimal reproduction using disposable values. Exclude
+tokens, private keys, device data/labels, recordings, live pairing payloads and
+raw sample values. Do not post sensitive reports as public issues. The policy
+permits public issues for non-sensitive hardening ideas and ordinary bugs.
+The whole L02 deliverable remains open pending the verified reporting path and
+review against the exact accepted release artifacts and support scope.
+
+
 ## Bind a remote provider
 
 `PeerDataTransport` owns raw reliable/disposable WebRTC lanes and captures an immutable current-generation offer/answer only after complete ICE gathering. `AuthenticatedResourcePeer` signs a transcript containing those exact SDP bytes and fingerprints, bilateral fresh challenges, endpoint keys, roles and locally expected application/session/epoch. P-256/SHA-256 signatures use established cryptographic providers. Both owners compare the full verified digest and confirm enrollment, or supply already enrolled remote key pins. Application packets and resource scopes stay closed until both endpoints finish. Code possession and encryption alone do not establish endpoint identity.
@@ -232,7 +547,7 @@ WebKit authentication, physical providers and account identity remain open.
 
 `createWebCryptoIdentityStore()` explicitly creates and persists nonextractable WebCrypto private keys in IndexedDB; `load()` leaves missing storage absent. Captured keys fail after loss, deletion or replacement. Local removal/close invalidates peers synchronously; external storage loss is checked every second and has a two-second freshness bound. `createEphemeralWebIdentity()` is session-only. Native `createNativeIdentityStore()` uses the local Expo module's fixed Keychain/AndroidKeyStore identity and the same signature contract. iOS uses a software SecKey in Keychain; neither native provider infers hardware backing. Persisted iOS lifecycle and actual Expo bridge invocation remain unverified. See [endpoint authentication evidence](ENDPOINT-AUTH-QA-2026-10-02.md).
 
-The complete [remote pointer surface](../../examples/device-pipelines/remote-pointer.ts) supplies both typed profiles, explicit owner selection, scoped host authorization, geometry and release. Run `node tools/qa-authenticated-peer.mjs chromium` for two browser pages with separate persisted identities, bilateral comparison and typed pointer routes. `qa-resource-peer.mjs` retains its explicit raw diagnostic scope. Values are generated by both harnesses; neither is a phone touch or OS pointer test. Local compiled ESM tarballs now support an external consumer of the current general SDK; full K01/K02 qualification remains open.
+The complete [remote pointer surface](../../examples/device-pipelines/remote-pointer.ts) supplies both typed profiles, explicit owner selection, scoped host authorization, geometry and release. Run `node tools/qa-authenticated-peer.mjs chromium` for two browser pages with separate persisted identities, bilateral comparison and typed pointer routes. `qa-resource-peer.mjs` retains its explicit raw diagnostic scope. Values are generated by both harnesses; neither is a phone touch or OS pointer test. Local compiled ESM tarballs now support an external consumer of the current general SDK; broader platform qualification remains open.
 
 `receiver.approve()` intersects source/sink policy and owner limits. The embedded runtime independently authorizes the route. Optional `RouteRequest.constraints` can only narrow that host grant and is snapshotted; it caps renewal, queued dispatch and asynchronous `isCurrent()` at owner expiry. `connection.limits()` returns immutable effective limits only while active. An incompatible or narrowed actual limit releases before delivery and requires current approval.
 
@@ -878,7 +1193,7 @@ before binding.
 `examples/external-processor/` is a standalone local npm package containing a
 pure temperature-band processor, a pinned manifest and its license. The SDK
 consumer QA copies that package and a separate consumer from the same immutable
-Git tree, packs and installs both it and the five SDK packages offline, then
+Git tree, packs and installs both it and the seven SDK packages offline, then
 verifies the installed code bytes against the manifest pin. The consumer uses
 the public registry, graph validator, failure controller and two host-granted
 routes to drive a simulated relay. The graph declares `subscribe` and `invoke`;

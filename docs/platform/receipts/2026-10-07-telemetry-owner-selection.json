@@ -22,7 +22,17 @@
     "open": 151
   },
   "requiredGates": {
-    "status": "pending exact coherent canonical candidate; root will run all5 before any local commit"
+    "status": "pass",
+    "sourceCommit": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+    "exactCommittedTree": "de5c48730dcc1cff891c1f31e9fdc11c8ec10f81",
+    "receipt": {
+      "path": "/tmp/101-telemetry-sdk-exact-required-gates.json",
+      "sha256": "8b7a260b04199b2d6aa307eed83d7eb03efa914b52ade41c7f4500c012133a93"
+    },
+    "unit": 2280,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual AGENTS gates passed the exact16-path committed candidate. This later documentary update awaits the next coherent candidate gates. SDK870 remains distinct, all178 producer source leaves equal committed de5; installed workflow and ordinary consumer proofs have separately stated scopes."
   },
   "preservation": {
     "path": "/tmp/101-telemetry-sdk-current-preserved.json",
@@ -128,5 +138,19 @@
     "Source-v1/v2 snapshots and past alias/native proofs retain their distinct actual byte scopes. Current installed proof uses source-equivalent870 SDK and current720 caller.",
     "Whole B05/B06/S15 remainOPEN: no unmanaged/remote recipient recall, arbitrary old databases, forensic erasure, identity/credential persistence, IndexedDB or physical devices here.",
     "Synchronous close retires authority; held actual storage ownership remains reserved until settlement. Inherited asynchronous authorizer timeout behavior is unchanged and not claimed generic native quiescence."
-  ]
+  ],
+  "sourceCommit": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+  "committedSourceTree": "de5c48730dcc1cff891c1f31e9fdc11c8ec10f81",
+  "actualLocalCommit": {
+    "path": "/tmp/101-telemetry-sdk-qualified-commit.json",
+    "sha256": "581d438ca30c0449ebc0908f3925dae87885386b7c7323d215909d9441cb42b7"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-telemetry-sdk-exact-independent-review.json",
+    "sha256": "b460b48838dc051ccc73a4a2d074c771d26ce3dc75e4b33fe72c2430b7d4f6aa"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-telemetry-sdk-qualified-build-preserved.json",
+    "sha256": "9037d9d79a4589bd3d8c705db1b351c947a0b69990b2a8f0845365e8fe63d1d8"
+  }
 }

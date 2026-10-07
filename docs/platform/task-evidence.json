@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 135,
+  "revision": 138,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11578,6 +11578,184 @@
       "scope": "pass selected seven-package content implementation/runtime; whole K12/Q10 open; no checkbox/support acceptance promotion",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "telemetry-sdk-exact-local-gates-2026-10-07",
+      "revision": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05",
+        "B06",
+        "K12",
+        "Q10",
+        "S15"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-telemetry-owner-selection.json",
+        "docs/platform/receipts/2026-10-07-sdk-content-audit.json"
+      ],
+      "environment": "Owned macOSarm64 Node24.14.0/TypeScript5.9.3/Python3.13; actual clean SDK Node and Chromium149/Firefox151/WebKit26.5 consumers; owned private filesystem telemetry.",
+      "reproduction": "Actual all5:2280 unit/34 rendered zero fail/cancel/skip/todo; freshbuild/types/lint. Current7SDK/395 ordinary files/178 source inputs and10 ordinary consumer checks; selected installed managed telemetry9 children started/closed. Passive CLEAR exact16 review, literal534 compiled files plus577 final inputs and separately1085 software inputs retained.",
+      "scope": "Selected telemetry removal and seven-package contents gate built, qualified and committed locally. Broader B05/B06/K12/Q10/S15 remainOPEN. No hardware/support/publish acceptance; later documentary bytes await coherent gates.",
+      "failure": null,
+      "equipment": [
+        "Owned software browser/crypto/private temp filesystem; hardware deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+        "exactCommittedTree": "de5c48730dcc1cff891c1f31e9fdc11c8ec10f81",
+        "receipt": {
+          "path": "/tmp/101-telemetry-sdk-exact-required-gates.json",
+          "sha256": "8b7a260b04199b2d6aa307eed83d7eb03efa914b52ade41c7f4500c012133a93"
+        },
+        "unit": 2280,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "Exact committed16-path candidate; later metadata bytes await next coherent gates."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-telemetry-sdk-qualified-commit.json",
+        "sha256": "581d438ca30c0449ebc0908f3925dae87885386b7c7323d215909d9441cb42b7"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
+    },
+    {
+      "id": "browser-history-privacy-built-partial-2026-10-07",
+      "revision": "8b045cdca519c5bffdcd92a2f980d411b900c488",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05",
+        "U12",
+        "S15"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-history-privacy.json"
+      ],
+      "environment": "Owned Node24.14/TypeScript5.9.3, built Chromium149.0.7827.55 and WebKit26.5 headless software; local Worker/IndexedDB/WebCrypto/RTC only.",
+      "reproduction": "Original actual twelve C/W software checks each, true native blocked/open/export/deletion/expiry settlement, meaningful source regressions and retained literal evidence in receipt; exact integration AGENTS gate record is separately retained.",
+      "scope": "Selected browser history management built and current C/W twelve software checks each pass; broader B05/U12/S15 and all physical/support acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned local software pages; phone and physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "reading-connections-built-partial-2026-10-07",
+      "revision": "75df4b89f91004584c6d341aeacd2c57c12c243f",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U02",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-reading-connections.json"
+      ],
+      "environment": "Owned Node24.14/TypeScript5.9.3, built Chromium149.0.7827.55 and WebKit26.5 headless software; local Worker/IndexedDB/WebCrypto/RTC only.",
+      "reproduction": "Exact current CSS-repaired product build and two actual C/W journeys each, zero errors/foreign; source26/26 units and meaningful original OLDs, failed budget attempts and literal artifacts in receipt. Coherent all5 gates pending.",
+      "scope": "Historical75df selected reading C/W passes remain scoped to that exact source/build. Later0f47 strict WebKit expiry failure is independently retained and blocks wider qualification; no whole U02/U03 completion.",
+      "failure": "Later current strict WebKit original-expiry failure has one pageerror, unknown cause; original v5 discarded details remain UNKNOWN.",
+      "equipment": [
+        "Owned local software pages; phone and physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "reading-connections-webkit-expiry-unqualified-2026-10-07",
+      "revision": "c84a68c5023e53e0c8a53155b75e45be2f3a4c89",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "U02",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-reading-connections.json"
+      ],
+      "environment": "Owned local Node24.14/npm11.9/TypeScript5.9.3; seven packed SDK packages/400 files. Headless software checks only; no phone, OS control, physical/service/publication.",
+      "reproduction": "Exact source/artifact/runtime commands, full output hashes, original failures and retained literal evidence in linked receipt; integration gate record is bound independently to the exact candidate.",
+      "scope": "Strict current0f47 WebKit reading expiry qualification failed; native cleanup completes, source built and Chromium selected pass retained. No whole row/support promotion.",
+      "failure": "One original-expiry pageerror: Error sending string through RTCDataChannel. Source has two catches; native probe did not reproduce. Cause UNKNOWN, no product fix/assertion weakening.",
+      "equipment": [
+        "Owned disposable local software fixtures; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "developer-onboarding-complete-local-2026-10-07",
+      "revision": "c84a68c5023e53e0c8a53155b75e45be2f3a4c89",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "L01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-developer-onboarding.json"
+      ],
+      "environment": "Owned local Node24.14/npm11.9/TypeScript5.9.3; seven packed SDK packages/400 files. Headless software checks only; no phone, OS control, physical/service/publication.",
+      "reproduction": "Exact source/artifact/runtime commands, full output hashes, original failures and retained literal evidence in linked receipt; integration gate record is bound independently to the exact candidate.",
+      "scope": "Whole local developer documentation deliverable: fresh install/create/connect/test/extend/recover in ordinary seven-package artifacts and actual literal guide; exact support matrix interpreted honestly. Publication/physical/platform qualification remain separate.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures; physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "public-reference-built-partial-2026-10-07",
+      "revision": "c84a68c5023e53e0c8a53155b75e45be2f3a4c89",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "L02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-public-reference.json"
+      ],
+      "environment": "Owned local Node24.14/npm11.9/TypeScript5.9.3; seven packed SDK packages/400 files. Headless software checks only; no phone, OS control, physical/service/publication.",
+      "reproduction": "Exact source/artifact/runtime commands, full output hashes, original failures and retained literal evidence in linked receipt; integration gate record is bound independently to the exact candidate.",
+      "scope": "Built current public schema/protocol/permission/version/troubleshooting reference matched to local artifact; whole L02 stays open for verified private reporting path and final artifact/support acceptance.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures; physical checks deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -12496,7 +12674,9 @@
         "native-binding-contents-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
         "selected-managed-telemetry-owner-2026-10-07",
-        "seven-package-sdk-content-audit-2026-10-07"
+        "seven-package-sdk-content-audit-2026-10-07",
+        "telemetry-sdk-exact-local-gates-2026-10-07",
+        "browser-history-privacy-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -13901,7 +14081,9 @@
         "recording-controller-source-commit-2026-10-07",
         "b05-desktop-replay-retention-built-partial-2026-10-07",
         "e01-b05-replay-settlement-exact-local-gates-2026-10-07",
-        "selected-managed-telemetry-owner-2026-10-07"
+        "selected-managed-telemetry-owner-2026-10-07",
+        "telemetry-sdk-exact-local-gates-2026-10-07",
+        "browser-history-privacy-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13920,7 +14102,8 @@
         "b06-registered-copies-installed-2026-10-06",
         "media-backup-current-installed-2026-10-07",
         "sdk-media-enrollment-source-commit-2026-10-07",
-        "selected-managed-telemetry-owner-2026-10-07"
+        "selected-managed-telemetry-owner-2026-10-07",
+        "telemetry-sdk-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14171,7 +14354,9 @@
         "pending-U02",
         "u02-browser-add-inspect-partial-2026-10-06",
         "u02-enrolled-resources-partial-2026-10-07",
-        "sdk-media-enrollment-source-commit-2026-10-07"
+        "sdk-media-enrollment-source-commit-2026-10-07",
+        "reading-connections-built-partial-2026-10-07",
+        "reading-connections-webkit-expiry-unqualified-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14190,7 +14375,9 @@
         "u03-built-partial-2026-10-06",
         "u03-webkit-keyboard-unqualified-2026-10-06",
         "u03-page-resource-built-partial-2026-10-07",
-        "workload-resource-source-commit-2026-10-07"
+        "workload-resource-source-commit-2026-10-07",
+        "reading-connections-built-partial-2026-10-07",
+        "reading-connections-webkit-expiry-unqualified-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14337,7 +14524,8 @@
         "browser-appearance-budget-repair-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "processor-management-built-partial-2026-10-07",
-        "processor-native-exact-local-gates-2026-10-07"
+        "processor-native-exact-local-gates-2026-10-07",
+        "browser-history-privacy-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14603,7 +14791,8 @@
       "id": "Q10",
       "records": [
         "pending-Q10",
-        "seven-package-sdk-content-audit-2026-10-07"
+        "seven-package-sdk-content-audit-2026-10-07",
+        "telemetry-sdk-exact-local-gates-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [
@@ -15055,7 +15244,8 @@
         "web-sdk-contents-2026-10-05",
         "native-binding-contents-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
-        "seven-package-sdk-content-audit-2026-10-07"
+        "seven-package-sdk-content-audit-2026-10-07",
+        "telemetry-sdk-exact-local-gates-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [
@@ -15174,21 +15364,23 @@
       "id": "L01",
       "records": [
         "pending-L01",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "developer-onboarding-complete-local-2026-10-07"
       ],
       "dependencies": [
         "K01",
         "O01"
       ],
       "equipment": [
-        "Owned registry/store/service destinations; credentials; explicit L05 authorization"
+        "Clean local SDK/runtime/compiler artifacts and accurately declared supported matrix; service credentials/publication are separate L05 work"
       ]
     },
     {
       "id": "L02",
       "records": [
         "pending-L02",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "public-reference-built-partial-2026-10-07"
       ],
       "dependencies": [
         "K01",

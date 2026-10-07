@@ -32,6 +32,7 @@ TREE = re.compile(r"^[0-9a-f]{40}$")
 VERSION = re.compile(r"^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$")
 PUBLIC = re.compile(r"^(?:dist/[^/]+\.(?:js|d\.ts)|schema/device-descriptor\.json|examples/[^/]+\.(?:js|ts|d\.ts))$")
 TELEMETRY = "examples/telemetry-owner.mjs"
+ONBOARDING = ("examples/onboarding/onboarding.mjs", "examples/onboarding/consumer.mjs")
 PRIVATE_NAME = re.compile(r"^(?:\.env(?:\..*)?|\.npmrc|\.git|\.ssh|node_modules|receipts|credentials?\.json|secrets?\.json|google-services\.json|GoogleService-Info\.plist)$", re.IGNORECASE)
 PRIVATE_EXTENSION = re.compile(r"\.(?:pem|p12|mobileprovision|key|jks|keystore|pfx)$", re.IGNORECASE)
 PRIVATE_KEY = re.compile(br"-----BEGIN (?:ENCRYPTED |RSA |EC |OPENSSH )?PRIVATE KEY-----")
@@ -203,7 +204,7 @@ def private_path(value):
 
 
 def public_path(value, package):
-    return value in ("LICENSE", "README.md", "package.json") or bool(PUBLIC.fullmatch(value)) or (package == "@101/connect" and value == TELEMETRY)
+    return value in ("LICENSE", "README.md", "package.json") or bool(PUBLIC.fullmatch(value)) or (package == "@101/connect" and value in (TELEMETRY, *ONBOARDING))
 
 
 class ContentScanner:
@@ -394,6 +395,9 @@ def package_metadata(metadata, record, inventory, records):
             continue
         if subpath == "./schema/device-descriptor.json":
             require(record["name"] in ("@101/device-model", "@101/connect") and target == "./schema/device-descriptor.json", "inventory-mismatch", package=record["name"])
+        elif subpath == "./examples/onboarding":
+            require(record["name"] == "@101/connect" and target == "./" + ONBOARDING[0]
+                    and all(path in inventory for path in ONBOARDING), "inventory-mismatch", package=record["name"])
         elif subpath == "./examples/telemetry-owner":
             require(record["name"] == "@101/connect" and target == "./" + TELEMETRY, "inventory-mismatch", package=record["name"])
         else:
@@ -407,6 +411,7 @@ def package_metadata(metadata, record, inventory, records):
     if record["name"] in ("@101/device-model", "@101/connect"):
         require(schema in exports, "inventory-mismatch", package=record["name"])
     require((TELEMETRY in inventory) == ("./examples/telemetry-owner" in exports), "inventory-mismatch", package=record["name"])
+    require(all((path in inventory) == ("./examples/onboarding" in exports) for path in ONBOARDING), "inventory-mismatch", package=record["name"])
 
 
 def audit(options):

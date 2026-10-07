@@ -141,6 +141,11 @@ export default function SettingsView() {
       <div className={styles.actions}><Link href="/settings/processors">Manage reviewed processors</Link></div>
       <p className={styles.note}>Installed versions stay only in that page. Leaving or reloading it forgets them.</p>
     </section>
+    <section className={styles.panel} aria-labelledby="settings-history-title">
+      <h2 id="settings-history-title">Saved page size and position</h2>
+      <p>Choose whether to keep page size or page position. Exporting or removing saved items needs a separate review.</p>
+      <div className={styles.actions}><Link href="/settings/history">Manage page history</Link></div>
+    </section>
     <section className={styles.panel} aria-labelledby="settings-devices-title">
       <h2 id="settings-devices-title">Devices and connections</h2>
       <p>Inspect devices or review a connection in their own pages. Appearance choices do not grant access to them.</p>

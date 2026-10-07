@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "result": "built-partial; latest WebKit qualification failed; broader acceptance open",
+  "date": "2026-10-07",
+  "baseCommit": "39e14baf57dfdc9e1ce15de8b1a24c9b9855001e",
+  "candidateSourceTree": "75df4b89f91004584c6d341aeacd2c57c12c243f",
+  "actualBuiltSourceTree": "75df4b89f91004584c6d341aeacd2c57c12c243f",
+  "environment": {
+    "node": "24.14.0",
+    "typescript": "5.9.3",
+    "chromium": "149.0.7827.55",
+    "webkit": "26.5",
+    "scope": "Owned headless software pages and local Worker loopback. No phone, OS input, remote service or support acceptance."
+  },
+  "oldFeature": {
+    "path": "/tmp/101-next-ui-genuine-old.json",
+    "sha256": "bdba19793d1047d882b238788747cfc529a5447db0e245e3be04e94cc6a2e791"
+  },
+  "oldFeatureLiteral": {
+    "path": "/tmp/101-next-ui-old-literal-preserved.json",
+    "sha256": "2c4d47670fac28d96aeeb14c3277fd44cc9054c5a0fc3692e6bddb0043f940f8"
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-next-ui-repaired-source-independent-review.json",
+    "sha256": "4886f21569f55f8746d8bd7194c958fa6e3b7384df527107fa858d190cdb087b"
+  },
+  "runtimeLiteral": {
+    "path": "/tmp/101-next-ui-css-repaired-runtime-literal-preserved.json",
+    "sha256": "4f627608976b7b19f4e534cc89fa59d6f66919e7bc3d82e46624016f6d004874"
+  },
+  "runtimeLiteralFiles": 1138,
+  "actualRuntimeCompiledFiles": 548,
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-onboarding/integration-gates",
+    "requirement": "All five AGENTS gates against the exact integration candidate; fresh build before rendered HTML. Resolve the retained record for status/tree/log hashes. No browser or physical qualification inferred."
+  },
+  "tally": {
+    "total": 272,
+    "completed": 122,
+    "open": 150
+  },
+  "supportAcceptance": {
+    "changed": false,
+    "acceptedRows": 0,
+    "scope": "No support-matrix promotion or whole task closure."
+  },
+  "profile": "browser-software-reading-connections/1",
+  "tasks": [
+    "U02",
+    "U03"
+  ],
+  "focused": {
+    "path": "/tmp/101-readings-v4-focused.json",
+    "sha256": "29444f1d3e7709d651192d6ed4205881bfc8134989fe2b990fc4f34fbc2700a4",
+    "pass": 26,
+    "fail": 0,
+    "skipped": 0
+  },
+  "regressions": {
+    "old": {
+      "path": "/tmp/101-readings-retirement-old.json",
+      "sha256": "34a3250038293c4b1862d9ca00a7d475c1592a3eee747db391211905d48f698d"
+    },
+    "literal": {
+      "path": "/tmp/101-readings-retirement-old-preserved.json",
+      "sha256": "3de90066364786abf3d77a6ac956cc39621e61f0daff3c74197c4f19858f1620"
+    },
+    "witnesses": [
+      "Genuine already-aborted signal with shadowed aborted:false acquired an identity under the old controller; captured native signal intrinsics now retire it before acquisition.",
+      "Release callback reentered close after an actual public receiver invitation; old outer and nested promises differed. One settlement promise is now published before callouts, with Stop/release fencing."
+    ]
+  },
+  "softwareRuntime": {
+    "sourceTree": "0f47d97d4eaf14f09751e8d7b8fce8e6ce505f66",
+    "chromium": {
+      "path": "/tmp/101-next-ui-final-chromium.json",
+      "sha256": "3770594caa0cfa3c4a15a95d3da2d2bc16d8acf71ccf664c4a23d7cf88780c0c",
+      "status": "pass"
+    },
+    "webkit": {
+      "path": "/tmp/101-next-ui-final-webkit.json",
+      "sha256": "c9b5d6d5adce748a39de4738dc78e74232129e695befc278dd2db8bd312601ba",
+      "status": "fail",
+      "pageErrors": 1,
+      "phase": "webkit-original-expiry"
+    },
+    "literal": {
+      "path": "/tmp/101-next-ui-final-runtime-literal-preserved.json",
+      "sha256": "b38423eea19524143655b13b19af0ba306ac31c537e30e00bf466f270b596424"
+    },
+    "compiledFiles": 548,
+    "cause": "UNKNOWN; actual native send location is inside SDK try/catch returning false and a second binder catch. Installed Playwright WebKit may promote native JavaScript console diagnostics to pageerror; this is only a hypothesis.",
+    "passiveDiagnosis": {
+      "path": "/tmp/101-next-ui-webkit-expiry-passive-diagnosis.json",
+      "sha256": "efe09f71c3728d699f70f6249af924bef30b32f12e3e0bced787a127d3a56c6f"
+    },
+    "controlledNativeProbe": {
+      "path": "/tmp/101-webkit-native-send-probe.json",
+      "sha256": "545ec290d3aa4644a063d1c507972861a5cd012f2e8d1977738446897e761c36"
+    },
+    "probeDisposition": "Actual two-peer close/send prefix did not reproduce pageerror; no product fix, suppression or attribution of earlier v5 error is claimed.",
+    "cleanup": "Both actual runs closed owned native peers, raw work, routes, timers, pages, context, browser, child and server; strict failed qualification remains failed.",
+    "qualification": "Open/deferred while remaining local builds proceed at user direction; zero-error assertion is retained."
+  },
+  "changes": [
+    "Generic manifest/schema-derived flat record or array-of-record reading display with units and optional absence; no raw JSON or per-game cases.",
+    "Manual volatile complete invitation/offer/answer, genuine native WebCrypto endpoint comparison and native RTC; source and display independently review one whole resource.",
+    "Finite nonrenewable resource approval and publication bounds, raw operation retention, Stop/hide/unmount fencing and true close settlement."
+  ],
+  "bounds": {
+    "attempts": 16,
+    "activeAttempts": 1,
+    "setupMs": 5000,
+    "attemptMs": 60000,
+    "resourceApprovalMs": 30000,
+    "advertisedResources": 8,
+    "selectedResources": 1,
+    "recordFields": 6,
+    "tableRows": 8,
+    "maxHz": 4,
+    "publications": 120,
+    "wireBytes": 4096,
+    "manualCodeBytes": 65536
+  },
+  "preservedAttempts": [
+    {
+      "path": "/tmp/101-next-ui-readings-v4-chromium.json",
+      "sha256": "b258b9c8d4df8aad1a895159498df8cc655fd4d171f2592e80ae645f88c2a383"
+    },
+    {
+      "path": "/tmp/101-next-ui-readings-v5-chromium.json",
+      "sha256": "36f1aaab2f6951229c86a048c4592596c73aa0368bf97ceef4913fd425c3e9a0"
+    },
+    {
+      "path": "/tmp/101-next-ui-readings-v5-webkit.json",
+      "sha256": "f02692f9973e6d2f8d252712a99b59ed64e2f2de85d6deca2b8d020970f79075"
+    }
+  ],
+  "qaCorrections": [
+    {
+      "path": "/tmp/101-reading-qa-playwright-entry-correction.json",
+      "sha256": "52144ab012f2076414e76c3391c1d60907dfb965387365b90b76b2e51cf54493"
+    },
+    {
+      "path": "/tmp/101-reading-qa-page-error-diagnostic-correction.json",
+      "sha256": "394d9a77530dbfd021f4594a5f8f78708a1468e009263c7c84e2347b6a3f9489"
+    }
+  ],
+  "unclassifiedHistoricalFailure": {
+    "receipt": {
+      "path": "/tmp/101-next-ui-readings-v5-webkit.json",
+      "sha256": "f02692f9973e6d2f8d252712a99b59ed64e2f2de85d6deca2b8d020970f79075"
+    },
+    "pageErrors": 1,
+    "detailsAvailable": false,
+    "disposition": "Original v5 error details were discarded and remain UNKNOWN. Later0f47 strict WebKit original-expiry failure is separately retained; earlier selected passes do not supersede it. No fix is claimed."
+  },
+  "limitations": [
+    "U02/U03 remain partial/open: nearby/remote/general schemas, enrolled device operations and full qualification are incomplete.",
+    "Selected built journeys do not qualify rendered foreign unsupported-resource, decline, hidden-page recovery or named screen-reader cases.",
+    "Software form values and RTC between owned pages do not establish physical or installed-phone acceptance.",
+    "No clipboard, service, STUN/relay, persisted identity or permission. Phone checks are deferred.",
+    "Latest strict WebKit original-expiry run failed with one diagnostic; phone/physical and broader browser qualification deferred. Built source and positive scoped checks are not whole U02/U03 completion."
+  ],
+  "independentQaReview": {
+    "path": "/tmp/101-next-ui-qa-finalization-independent-review.json",
+    "sha256": "801b8d3936f75db28281e415d6874d2d21761200dfdcf99f8d3e7c1bae1c3e0d",
+    "result": "CLEAR",
+    "scope": "Read/hash only current QA/parent and actual record consistency; v5 unidentified error remains failed, no fix claim."
+  },
+  "cssBudgetRepair": {
+    "oldRequiredGateFailure": {
+      "path": "/tmp/101-next-ui-exact-required-gates.json",
+      "sha256": "657b17cd7bc85cb766ef0b2164f91a8c66b5f3961b118d2299afcaf4c16ed556"
+    },
+    "oldCompiledLiteral": {
+      "path": "/tmp/101-next-ui-css-budget-old-literal-preserved.json",
+      "sha256": "95e7006a652508bbb8d8073b02b0c437344b9cb2ffdc8b3949f37ffafa9a3554"
+    },
+    "firstAttemptFailed": {
+      "path": "/tmp/101-next-ui-css-budget-fixed.json",
+      "sha256": "4dc1a9945f03f38546c2947d3efea9cfdf270234227965e9817763c83c87c2f1"
+    },
+    "firstAttemptCssLiteral": {
+      "path": "/tmp/101-readings-css-composes-failure-index.json",
+      "sha256": "4cf463ef131adbb12453dcf2f026e82bc5f952cd60dfcad3b6046e6d1305e984"
+    },
+    "positiveBudgetRegression": {
+      "path": "/tmp/101-next-ui-css-import-budget-fixed.json",
+      "sha256": "ded86f07939c4c8e8b0860c08dc73ef123b7cd5e18ba80a9fc0180b2ad4e4b81"
+    },
+    "actualBuild": {
+      "path": "/tmp/101-next-ui-css-import-reuse-build.json",
+      "sha256": "ec1e18c5fb0fded5093941264ecfd84f34edbf4fe6264c1b0db207c9b229b411"
+    },
+    "sourceTree": "75df4b89f91004584c6d341aeacd2c57c12c243f",
+    "runtimeLiteral": {
+      "path": "/tmp/101-next-ui-css-repaired-runtime-literal-preserved.json",
+      "sha256": "4f627608976b7b19f4e534cc89fa59d6f66919e7bc3d82e46624016f6d004874"
+    },
+    "compiledFiles": 548,
+    "literalFiles": 1138,
+    "actualNodeZlibMeasurement": {
+      "cssGzipBytes": 32673,
+      "scriptGzipBytes": 1791922,
+      "cssLimit": 32768,
+      "scriptLimit": 2097152,
+      "compiledJsCssFiles": 99,
+      "scope": "Root native Node standard zlib gzip scan over exact current emitted client files, after actual passing budget regression; emitted input bytes are retained."
+    },
+    "change": "Direct shared CSS-module imports reuse existing Connections/resource/sharing styles. Remove duplicate reading stylesheet and keep typed table geometry/cell presentation local. Existing44px resource controls cover number inputs; focus, monochrome, narrow layouts and reduced motion retained. Standard CSS composes attempt duplicated chunks and failed; it is preserved as failed, not the accepted solution.",
+    "softwareRuntime": {
+      "chromium": {
+        "path": "/tmp/101-next-ui-readings-css-repaired-chromium.json",
+        "sha256": "4fbac0a5c96e85cde69fecf2622e2ad1100c19da693edc877db829fc0919eac6"
+      },
+      "webkit": {
+        "path": "/tmp/101-next-ui-readings-css-repaired-webkit.json",
+        "sha256": "817bfee7d7e2010e576c6058e7d8246ed0d147f3e7e92c4879ab59aea58bce8a"
+      },
+      "scope": "Historical actual75df repaired reading C/W journeys passed. Later strict current0f47 WebKit failed with one original-expiry diagnostic; neither this prior pass nor type-only source annotation qualifies that failure."
+    },
+    "declarationOnlyCorrection": {
+      "originalTypeGate": {
+        "path": "/tmp/101-next-ui-css-repaired-exact-required-gates.json",
+        "sha256": "d0d1322e1c18abeb1de48913d358221ffd7ceac1f4777e0fcbf18958e1276aa7"
+      },
+      "oldSourceCopy": "/tmp/101-next-ui-css-repaired-exact-source",
+      "previousViewSha256": "4425dca73a4585476ee4b763897962a73da4c24fa75eeee04ca964ebd19ba5f1",
+      "currentViewSha256": "5b62af9981644f73deca1de99e3642f11d047fee15af155950f5087811b904a3",
+      "change": "Only an explicit Record<string,string> annotation retains the existing CSS map index signature through TypeScript spread. No runtime statement or control selection changes.",
+      "emittedComparison": {
+        "path": "/tmp/101-next-ui-final-emitted-equivalence.json",
+        "sha256": "53b447c901308bf08d3ef2f2e0f9fea2827f0c2ce3deec563a73ae77f4452043"
+      },
+      "comparisonResult": "fail-full-emitted-equality; no reuse asserted",
+      "actualRetest": {
+        "chromium": {
+          "path": "/tmp/101-next-ui-final-chromium.json",
+          "sha256": "3770594caa0cfa3c4a15a95d3da2d2bc16d8acf71ccf664c4a23d7cf88780c0c"
+        },
+        "webkit": {
+          "path": "/tmp/101-next-ui-final-webkit.json",
+          "sha256": "c9b5d6d5adce748a39de4738dc78e74232129e695befc278dd2db8bd312601ba"
+        }
+      },
+      "actualRetestDisposition": "Chromium passed; WebKit strict zero-pageerror guard failed at original expiry. Actual peers/routes/raw work closed; browser cause UNKNOWN. No runtime statement changed and no send exception escape inferred."
+    }
+  },
+  "historicalPreBudgetSourceSha256": {
+    "app/connections/ConnectionsView.tsx": "24fda57f5b89cbb2607de8396b14e80015bb427b2cbe1473576e98a42f68b114",
+    "app/connections/readings/page.tsx": "7934b83fbc509f9afe7b1f09a07e99761cad62869fd6a5ba252c3eb61cacb67a",
+    "app/connections/readings/ReadingsView.tsx": "19a7c68e4e69f0d69872864d6c8cbc9dc7599609bda1b988b326a83465142285",
+    "app/connections/readings/readings-task.ts": "4e192169d7d828dd33c077656bd21e171250e6ab4c67764a1ae6ba66f6d2e9aa",
+    "app/connections/readings/readings-task.test.ts": "c05e2e6118dc9b590fa1f7631ae0ed09fb5d05539c12390758e7ac8d2bd04d41",
+    "app/connections/readings/readings-schema.ts": "14c801ab844572c8d3f0bfb5ac420f7c93daa0f95f8c40bd13d2c5898fbd0500",
+    "app/connections/readings/readings.module.css": "35102d16c7b83f8a5c109da87fa3a8f76511b9355c8180bd40632bc741f3a525",
+    "tools/qa-reading-connections.mjs": "df3d241ed258f6de904e398ca100e24cc443c4d85923ef80acf573ab002d2a92"
+  },
+  "sourceSha256": {
+    "app/connections/ConnectionsView.tsx": "24fda57f5b89cbb2607de8396b14e80015bb427b2cbe1473576e98a42f68b114",
+    "app/connections/readings/page.tsx": "7934b83fbc509f9afe7b1f09a07e99761cad62869fd6a5ba252c3eb61cacb67a",
+    "app/connections/readings/ReadingsView.tsx": "5b62af9981644f73deca1de99e3642f11d047fee15af155950f5087811b904a3",
+    "app/connections/readings/readings-task.ts": "4e192169d7d828dd33c077656bd21e171250e6ab4c67764a1ae6ba66f6d2e9aa",
+    "app/connections/readings/readings-task.test.ts": "c05e2e6118dc9b590fa1f7631ae0ed09fb5d05539c12390758e7ac8d2bd04d41",
+    "app/connections/readings/readings-schema.ts": "14c801ab844572c8d3f0bfb5ac420f7c93daa0f95f8c40bd13d2c5898fbd0500",
+    "app/connections/resources/resource-task.module.css": "c690626a06bd99fe8eef0a1e98abd1a837dcd0b7d3dbce674efc15cbc5b28115",
+    "app/connections/connections.module.css": "ac3c2105401986840a39c3ddc37d3561004f48ca2b82ed77a86b5a04c9e9e142",
+    "app/sharing/sharing.module.css": "21684fbf322f25ea53b78e19a321022ae6db1b266a2c172646fbd8e3f83540a3",
+    "tools/qa-reading-connections.mjs": "da607d466f36d1296245f7258f29e8e62c83d0ecc70cdcab65a3e83835990604"
+  },
+  "historicalPreBudgetSoftwareRuntime": {
+    "chromium": {
+      "path": "/tmp/101-next-ui-readings-v6-chromium.json",
+      "sha256": "07fc4a7636fdfb37654d432959fbd4b42312b6bce83019980be2a96c96ee9c95"
+    },
+    "webkit": {
+      "path": "/tmp/101-next-ui-readings-v6-webkit.json",
+      "sha256": "a87d1412ca83c02df5603f06b5a1c837ab5e3ff675b1ba49216726abf075d197"
+    },
+    "sourceTree": "8b045cdca519c5bffdcd92a2f980d411b900c488",
+    "journeysPerEngine": 2,
+    "actualNativeRTCCreatedPerEngine": 4,
+    "actualNativeRTCClosedPerEngine": 4,
+    "pageErrors": 0,
+    "foreignRequests": 0,
+    "checks": [
+      "Actual typed native record form delivered into typed cells only after independent whole-source and whole-display approvals.",
+      "Actual native array form preserves optional absence and clears unchanged values at original thirty-second expiry.",
+      "Keyboard Stop clears values; two themes, responsive widths, visible focus, reduced motion and actual route/resource/timer retirement checks pass."
+    ],
+    "sourceBuildEquivalence": "Exact product/config/dependency bytes equal actual build6a; only the two explicitly allowed QA selectors changed. Untouched compiled551 inputs and exact source343 per tree are retained."
+  },
+  "previousExactGates": {
+    "path": "/tmp/101-next-ui-final-exact-required-gates.json",
+    "sha256": "c14e9e4cac942556096953d2d84bc99d94075e57147e936f242a5124c2b529d6"
+  },
+  "historicalCssRepairedSoftwareRuntime": {
+    "chromium": {
+      "path": "/tmp/101-next-ui-readings-css-repaired-chromium.json",
+      "sha256": "4fbac0a5c96e85cde69fecf2622e2ad1100c19da693edc877db829fc0919eac6"
+    },
+    "webkit": {
+      "path": "/tmp/101-next-ui-readings-css-repaired-webkit.json",
+      "sha256": "817bfee7d7e2010e576c6058e7d8246ed0d147f3e7e92c4879ab59aea58bce8a"
+    },
+    "sourceTree": "75df4b89f91004584c6d341aeacd2c57c12c243f",
+    "journeysPerEngine": 2,
+    "actualNativeRTCCreatedPerEngine": 4,
+    "actualNativeRTCClosedPerEngine": 4,
+    "pageErrors": 0,
+    "foreignRequests": 0,
+    "checks": [
+      "Actual typed native record form delivered into typed cells only after independent whole-source and whole-display approvals.",
+      "Actual native array form preserves optional absence and clears unchanged values at original thirty-second expiry.",
+      "Keyboard Stop clears values; two themes, responsive widths, visible focus, reduced motion and actual route/resource/timer retirement checks pass."
+    ],
+    "sourceBuildEquivalence": "Fresh actual repaired build exactly matches the latest reading execution tree. Later canonical documents have no product changes. All548 compiled inputs and exact342 source closure retained.",
+    "scope": "Both latest actual two-journey reading C/W runs use the fresh repaired product build with no source/build delta, zero page errors/foreign requests and true raw/runtime/RTC/page/context/browser/child/server cleanup."
+  }
+}

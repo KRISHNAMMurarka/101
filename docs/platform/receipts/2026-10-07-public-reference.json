@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass-scoped-local-reference; L02 open",
+  "tasks": [
+    "L02"
+  ],
+  "tally": {
+    "total": 272,
+    "completed": 122,
+    "open": 150
+  },
+  "sourceSha256": {
+    "docs/platform/SDK.md": "1dfefdcbd2e9fd4323a0a31c01bda1400db54f8c228bb2238be4ee7039ce1537",
+    "docs/platform/RELEASE-CONTRACT.md": "0c001b52a61194e07798201f43633974297892e861ea34871a15d31c96474dcb",
+    "SECURITY.md": "b3903e05e45b45c94bdff464b1c9d8c30bd1d4649bbf72c6301c89b14ccda613",
+    "docs/platform/support-catalog.json": "a5d965ee3be2b5f354dce2939e579aea061c3dce3451f691ef6da1a37012fe1a"
+  },
+  "draftSource": {
+    "path": "/tmp/101-sdk-public-reference-source-ready.json",
+    "sha256": "d8125d941c9f38237e070f18627eb322dadb94c09a17daf7ced65df11d371555"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-onboarding-source-risk-independent-review.json",
+    "sha256": "1ea88b6ee186974613e6e98cfe57806483bc23df5809030008105acf0afd4a13"
+  },
+  "matchedArtifact": {
+    "path": "/Users/km/Desktop/games/101/release/sdk-9VqXH5/manifest.json",
+    "sha256": "ff618cde24ec0063eee163e735cd72a1a0e8ca69353588f7b0463adea65fdb58"
+  },
+  "build": {
+    "path": "/tmp/101-onboarding-sdk-build-final.json",
+    "sha256": "4783b2ccc1b2eb465bfb48313bad08f368d22ac2b0d8a85fbfdd8b93b9da0328"
+  },
+  "ordinaryConsumer": {
+    "path": "/tmp/101-onboarding-sdk-consumer-final.json",
+    "sha256": "11e90cbc3f545585922e07928a50fdc8ae2603d93f8c41724fd1fc48c86affb9"
+  },
+  "changes": [
+    "Exact public schema/protocol and operation lookup, parser/wire limits, explicit permission/lifecycle boundaries.",
+    "Current seven-package public roots and two new explicit Node examples; actual local artifacts separated from publication and platform qualification.",
+    "Version/support interpretation, result/exception and troubleshooting references; corrected original five-package/foundation descriptions without reopening completed K01/K02.",
+    "Private reporting policy is linked honestly; no contact, response SLA or stable support window invented."
+  ],
+  "support": {
+    "revision": 30,
+    "rows": 65,
+    "acceptedRows": 0,
+    "changed": false
+  },
+  "securityReporting": {
+    "status": "open",
+    "reason": "SECURITY.md requests private reports but has no verified private reporting destination. Owner must establish the exact destination before whole L02 acceptance. User input deferred while other local builds continue."
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-onboarding/integration-gates",
+    "requirement": "All five AGENTS gates against the exact integration candidate; fresh build before rendered HTML. Resolve the retained record for status/tree/log hashes. No browser or physical qualification inferred."
+  },
+  "scope": "Built local reference documentation and existing policy corrections; whole L02, accepted release artifacts/support and private-reporting path remain open. No credentials/service/contact/publication action."
+}

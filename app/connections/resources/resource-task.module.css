@@ -7,8 +7,8 @@
 .choices, .outputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 .outputs { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 1rem 0; }
 .page label { display: grid; gap: .5rem; min-width: 0; line-height: 1.5; }
-.page button, .page select { font: inherit; min-height: 2.75rem; border: 1px solid currentColor; border-radius: .4rem; padding: .6rem .8rem; color: inherit; background: transparent; }
-.page select { width: 100%; }
+.page button, .page select, .page input[type='number'] { font: inherit; min-height: 2.75rem; border: 1px solid currentColor; border-radius: .4rem; padding: .6rem .8rem; color: inherit; background: transparent; }
+.page select, .page input[type='number'] { width: 100%; }
 .page button { cursor: pointer; }
 .page button:disabled { cursor: default; opacity: .55; }
 .page input[type='range'] { accent-color: currentColor; width: 100%; min-height: 2.75rem; }
