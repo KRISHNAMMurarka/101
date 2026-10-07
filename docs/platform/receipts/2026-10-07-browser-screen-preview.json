@@ -132,12 +132,19 @@
     "scope": "Ordinary offline seven-package installed public JS/declarations/examples; no source loader/alias in the installed positive caller."
   },
   "requiredGates": {
-    "status": "pending-before-local-commit",
-    "recordPath": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
-    "localCommitEvidenceRef": "refs/codex/evidence/2026-10-07-screen-ble/source-commit",
-    "scope": "All five gates must pass against the final frozen canonical candidate before its local commit. Current software proof binds its own earlier producer tree; no prior gates are reused as current gates."
+    "status": "pass",
+    "sourceCommit": "c90f492cb3dbeb94dfbe2711f80396b671551997",
+    "exactCommittedTree": "f0eaec2dbb9dae0af4b5133f1d3a1c27bc27946e",
+    "receipt": {
+      "path": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
+      "sha256": "71770185ff9a8dd9be0b88fa155feb8692a0dcab371a21935758ffd945e8e3de"
+    },
+    "unit": 2059,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All5 exact committed source/canonical tree gates ran before local commit. This subsequent postcommit documentary update is later untested metadata awaiting the next coherent candidate. Historical source/browser/installed receipts keep their own exact producers and scope."
   },
-  "sourceCommit": null,
+  "sourceCommit": "c90f492cb3dbeb94dfbe2711f80396b671551997",
   "wholeChecklistItemsCompleted": [],
   "remaining": [
     "Whole V07/N02/V01 scope",
@@ -163,5 +170,19 @@
     "sha256": "0c6ed97a944383e6b7c47fc4d203f753dc236e375f532b6059de30b6894beb03",
     "bundleRef": "refs/codex/evidence/2026-10-07-screen-ble/current-software-bundle",
     "artifacts": 696
+  },
+  "committedSourceTree": "f0eaec2dbb9dae0af4b5133f1d3a1c27bc27946e",
+  "actualLocalCommit": {
+    "path": "/tmp/101-screen-ble-haptic-exact-commit.json",
+    "sha256": "515abfa366ca6e4bf8e5c353d065e29f0622369be22b4e7f47685863acb5ef30"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-screen-ble-haptic-final-build-preservation.json",
+    "sha256": "e7cda7637fdf08a6598b7c07d356709b2246a3b30b6dde533a162c28213b234b"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-screen-ble-haptic-exact-independent-review.json",
+    "sha256": "3fddde8f7dbe64199a6dcec9af6a9bce60dcb48f14c8e63c86f1b70de615489e",
+    "scope": "Passive exact f0ea27-path canonical/source assessment frozen before final gate completion; actual gate success and commit are distinct root evidence."
   }
 }

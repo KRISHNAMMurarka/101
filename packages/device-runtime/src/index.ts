@@ -88,3 +88,6 @@ export type { MediaSynchronizationRole, MediaSynchronizationState, MediaSynchron
 
 export { OUTPUT_SHARING_PROFILE, OUTPUT_SHARING_LIMITS, createOutputSharingController } from './output-sharing.ts';
 export type { OutputSharingKind, OutputSharingInput, OutputSharingPolicy, OutputSharingSource, OutputSharingSlot, OutputSharingDestination, OutputSharingPolicyRequest, OutputSharingPolicyGrant, OutputSharingResourceRequest, OutputSharingResourceGrant, OutputSharingFailure, OutputSharingResult, OutputSharingPlan, OutputSharingRoute, OutputSharingEffectContext, OutputSharingOptions, OutputSharingController } from './output-sharing.ts';
+
+export { createWearableCalibrationProcessor, wearableFusionInputDevice, WEARABLE_CALIBRATION_PROFILE, WEARABLE_CALIBRATION_LIMITS } from './wearable-calibration.ts';
+export type { WearableReviewedProfile, WearableCalibrationConfiguration, WearableCalibrationHandle, WearableFusionInput, WearableCalibrationProcessor, WearableCalibrationOptions, WearableCalibrationDeliveryScope, WearableCalibrationResult } from './wearable-calibration.ts';

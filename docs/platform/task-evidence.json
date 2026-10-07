@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 119,
+  "revision": 121,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10840,7 +10840,7 @@
         "docs/platform/receipts/2026-10-07-browser-screen-preview.json"
       ],
       "environment": "Owned macOS arm64 Node24.14.0 and Chromium/WebKit; actual native owned digital Canvas.captureStream/video decode/raster, software ports and real public runtime, no OS capture.",
-      "reproduction": "Actual old installed public feature absence retained; original21PASS and lint/preflight failures retained; both actual old1FAIL regressions repaired. Corrected23/0skip/119loaded,type/scopedlint and4source browser cases\u00d78checks pass. Fresh168-source/377-file seven-package SDK/10consumer checks and4installed browser cases\u00d78checks now pass at8a678; final exact candidate gates remain required.",
+      "reproduction": "Actual old installed public feature absence retained; original21PASS and lint/preflight failures retained; both actual old1FAIL regressions repaired. Corrected23/0skip/119loaded,type/scopedlint and4source browser cases\u00d78checks pass. Fresh168-source/377-file seven-package SDK/10consumer checks and4installed browser cases\u00d78checks now pass at8a678; exact local commit/all5 gates now recorded in screen-ble-haptic-exact-local-gates-2026-10-07.",
       "scope": "PARTIAL honestly downsized8x8 screen semantic and consent/lifecycle. Owned canvas/native decode does not establish native monitor/window capture, permission enforcement, HD/cursor mapping or full V07/N02 support.",
       "failure": null,
       "equipment": [
@@ -10866,7 +10866,7 @@
         "docs/platform/receipts/2026-10-07-browser-ble-switch.json"
       ],
       "environment": "Owned macOS arm64 Node24.14.0; ordinary compiled public seven-package SDK; browser versions and software fixtures pinned in actual receipts.",
-      "reproduction": "28focused/120loaded;types/scopedlint;4source+4installed Chromium/WebKit cases\u00d715checks; fresh168source/377packed seven-package consumer10. Final exact canonical commit gates still required.",
+      "reproduction": "28focused/120loaded;types/scopedlint;4source+4installed Chromium/WebKit cases\u00d715checks; fresh168source/377packed seven-package consumer10. Exact local commit/all5 gates now recorded in screen-ble-haptic-exact-local-gates-2026-10-07.",
       "scope": "PARTIAL reviewed one-byte BLE notification software profile, native API activation negatives and owned Worker through trusted software GATT. No radio/vendor/writes/whole N02/A03.",
       "failure": null,
       "equipment": [
@@ -10893,13 +10893,97 @@
         "docs/platform/receipts/2026-10-07-haptic-retirement.json"
       ],
       "environment": "Owned macOS arm64 Node24.14.0; ordinary compiled public seven-package SDK; browser versions and software fixtures pinned in actual receipts.",
-      "reproduction": "GenuineOLD2haptic +OLD1scheduler failures retained; final10haptic/41loaded and8scheduler/2loaded pass, strict/lint,7 ordinary installed software cases with4issued/7settled owned Promises and0hardwarecalls. Final exact canonical commit gates still required.",
+      "reproduction": "GenuineOLD2haptic +OLD1scheduler failures retained; final10haptic/41loaded and8scheduler/2loaded pass, strict/lint,7 ordinary installed software cases with4issued/7settled owned Promises and0hardwarecalls. Exact local commit/all5 gates now recorded in screen-ble-haptic-exact-local-gates-2026-10-07.",
       "scope": "PARTIAL reentrant haptic retirement and late-dispatch scheduler repair. Cancel is an optional request; actual native quiescence, physical feedback and whole I08/F07/I12 remain unqualified.",
       "failure": null,
       "equipment": [
         "Owned software fixture/runtime; phone/peripheral/haptic checks deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "screen-ble-haptic-exact-local-gates-2026-10-07",
+      "revision": "c90f492cb3dbeb94dfbe2711f80396b671551997",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "V07",
+        "A03",
+        "I08",
+        "F07",
+        "I12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-screen-preview.json",
+        "docs/platform/receipts/2026-10-07-browser-ble-switch.json",
+        "docs/platform/receipts/2026-10-07-haptic-retirement.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; exact committed f0ea source/canonical candidate all5 local gates; separately pinned SDK168source377files and software browser/public callers.",
+      "reproduction": "2059unit/34rendered,zero fail/cancel/skip/todo;types/full lint/fresh build precedes rendered. Current4source+4installed Screen\u00d78 andBLE\u00d715 cases; haptic10/scheduler8 and7ordinaryinstalledsoftware cases remain individually scoped. Independent exact27path/168SDKsource/377file canonical review CLEAR.",
+      "scope": "PARTIAL built and locally integrated software outcomes, no full checklist row/physical support promotion. Source/native/installed results retain their own producers. Later documentary references are not part of tested committed f0ea canonical bytes.",
+      "failure": null,
+      "equipment": [
+        "Owned software/native-canvas/Worker fixtures;phone/peripheral/haptic physical testing deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "c90f492cb3dbeb94dfbe2711f80396b671551997",
+        "exactCommittedTree": "f0eaec2dbb9dae0af4b5133f1d3a1c27bc27946e",
+        "receipt": {
+          "path": "/tmp/101-screen-ble-haptic-exact-required-gates.json",
+          "sha256": "71770185ff9a8dd9be0b88fa155feb8692a0dcab371a21935758ffd945e8e3de"
+        },
+        "unit": 2059,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All5 exact committed source/canonical tree gates ran before local commit. This subsequent postcommit documentary update is later untested metadata awaiting the next coherent candidate. Historical source/browser/installed receipts keep their own exact producers and scope."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-screen-ble-haptic-exact-commit.json",
+        "sha256": "515abfa366ca6e4bf8e5c353d065e29f0622369be22b4e7f47685863acb5ef30"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 119,
+        "open": 153
+      }
+    },
+    {
+      "id": "w07-reported-calibration-software-2026-10-07",
+      "revision": "bd9b22ac9aff58cf0b7bf05575a7984b10f2ff02",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "W07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-wearable-calibration.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0/TypeScript5.9.3;169-source/379-file seven-package ordinary installed SDK; explicit software bridge replay of retained unchanged encoder bytes.",
+      "reproduction": "19 actual source tests/77 loaded dependencies; genuine narrower-route and reciprocal consent-expiry OLD retained. Installed20 checks/7 resolutions,6effects/7releases/raw0. Strict/scoped lint pass; final exact all-five gates/local commit pending, no inherited gate claim.",
+      "scope": "Selected W07 reported orientation/mounting/declared handed frames/calibration/profile generations; no physical/sensor/capture/native framework qualification. Independent approvals, captured conservative route caps and final application guards.",
+      "failure": null,
+      "equipment": [
+        "Owned explicit software bridge/runtime; physical accuracy and OS delivery deferred under separate W/Q rows"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
     }
   ],
   "tasks": [
@@ -11884,7 +11968,8 @@
         "n02-reviewed-serial-switch-software-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "v07-browser-screen-preview-software-partial-2026-10-07",
-        "n02-a03-browser-ble-switch-software-partial-2026-10-07"
+        "n02-a03-browser-ble-switch-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12223,7 +12308,8 @@
       "records": [
         "pending-I08",
         "i08-media-haptics-scheduling-partial-2026-10-06",
-        "i08-haptic-retirement-software-partial-2026-10-07"
+        "i08-haptic-retirement-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12280,7 +12366,8 @@
         "pending-I12",
         "pointer-provider-2026-10-02",
         "pointer-ui-chromium-2026-10-02",
-        "i08-haptic-retirement-software-partial-2026-10-07"
+        "i08-haptic-retirement-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12390,7 +12477,8 @@
       "id": "V07",
       "records": [
         "pending-V07",
-        "v07-browser-screen-preview-software-partial-2026-10-07"
+        "v07-browser-screen-preview-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12521,7 +12609,8 @@
       "id": "A03",
       "records": [
         "pending-A03",
-        "n02-a03-browser-ble-switch-software-partial-2026-10-07"
+        "n02-a03-browser-ble-switch-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12809,7 +12898,8 @@
     {
       "id": "W07",
       "records": [
-        "pending-W07"
+        "pending-W07",
+        "w07-reported-calibration-software-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13722,7 +13812,8 @@
         "pending-F07",
         "extension-raw-reservation-built-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
-        "i08-haptic-retirement-software-partial-2026-10-07"
+        "i08-haptic-retirement-software-partial-2026-10-07",
+        "screen-ble-haptic-exact-local-gates-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [

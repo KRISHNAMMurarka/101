@@ -2048,6 +2048,75 @@ issuer has syntax-only checks. Native Expo Swift/Kotlin framework compilation,
 actual scoped watch/phone delivery, permissions and physical qualification
 remain open under W01; software ports do not establish native OS delivery.
 
+### Declared wearable calibration inputs
+
+`createWearableCalibrationProcessor()`, `wearableFusionInputDevice()`,
+`WEARABLE_CALIBRATION_PROFILE` and `WEARABLE_CALIBRATION_LIMITS` are public
+runtime/facade exports. The selected `reviewed-wearable-projection/1` projects
+**reported** watch inputs; it does not qualify sensor presence, physical motion,
+capture timing or native watch/phone delivery.
+
+Construction is inert. `configure()` requires closed host-reviewed profile
+id/version/hash/revision and raw `watch-companion-report/1` semantics,
+namespaced source/reference/target frames, explicit mounting/neutral unit
+quaternions, hand/calibration revision, raw source authorization reference and
+intrinsic owner signal/deadline. Unknown semantics are unavailable; malformed
+replacement preserves the incumbent. Valid newer calibration issues a private
+handle and retires the old generation. Delivered observations verify the source
+registration/device/capability tuple; descriptor revision remains a host declaration.
+
+`process(handle, observation, context, deliveryScope)` consumes actual raw
+route data plus a fresh conservative host snapshot:
+
+~~~ts
+const limits = computeRoute.limits();
+if (!limits) return;
+const result = processor.process(handle, observation, context, {
+  routeId: computeRoute.id,
+  expiresAt: limits.expiresAt,
+  maxAgeMs: limits.maxAgeMs,
+});
+~~~
+
+`WearableCalibrationDeliveryScope` binds its own-data route ID to the context.
+The snapshot does not grant/authenticate access. A final fresh clock follows
+two bounded currentness callouts, then checks private generation, both intrinsic
+signals, owner/route expiry and intersected receipt age. No exact-clock equality
+or fence loop is required. This is a local projection snapshot under captured
+route time caps/observed delivery authority. Source/sink readiness deadlines
+absent from the snapshot and arbitrary lying hosts are not certified. Recheck
+the actual raw context and current processor before publication; recheck the
+actual application context before an effect.
+
+Mounting computes `q_report*q_mount` and inverse-rotates vectors; neutral changes
+attitude only. Hand labels never mirror by themselves. Declared frame reflection
+maps polar acceleration and applies determinant parity to axial angular velocity.
+Reported g and deg/s remain explicit; the grams converter is not used. The
+distinct `wearable:reported-fusion-input/1` capability uses schema version 2
+for its framed quaternion and retains `captureTimeKnown: false` and
+`physicalValidity: 'unspecified'`.
+
+Provenance preserves reviewed profile/version/hash/revision, mounting/neutral,
+hand/frames/calibration/private generation, source reference/delivery caps,
+sequence, relay emission and host arrival. Replay floors survive reset,
+replacement and A→B→A; descriptor metadata cannot mint an epoch. Copied/retired
+handles, stale/reordered input, invalid/saturated quaternions/vectors, revoked
+signals and clock failure are refused. Bounds: 32 lifetime configuration
+attempts, one active handle/synchronous admission, 32 source/profile floors,
+30-second ownership, 250 ms receipt age, 30 Hz, 4 KiB input/output, no retained
+reports or timers. `reset()` and synchronous `close()` retire local computation;
+no native/async work or quiescence promise.
+
+The [external reference caller](../../examples/watch-companion/calibration.mjs)
+is deliberately unpacked ordinary JavaScript. Retained genuine encoder bytes
+enter an explicit software bridge and real watch report resources. Capture,
+raw compute and projected application routes need separate exact approvals.
+Calibration/source loss removes queued output and releases the owned effect.
+Run `node tools/qa-wearable-calibration.mjs --installed SDK_MANIFEST CLEAN_CONSUMER CALLER_TREE`
+on an immutable artifact set. Current evidence includes 19 source runtime tests,
+20 ordinary installed caller checks and seven verified public package
+resolutions. It opens no physical watch/phone.
+
 ### Shared watch report contract fixtures
 
 `bindings/watch-report/fixtures/watch-report-v1.json` is the shared source for

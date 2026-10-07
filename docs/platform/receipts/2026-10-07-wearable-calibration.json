@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass selected reported-input software contract; exact full gates/local commit pending",
+  "profile": "reviewed-wearable-projection/1",
+  "localOnly": true,
+  "base": "c90f492cb3dbeb94dfbe2711f80396b671551997",
+  "candidateSourceTree": "bd9b22ac9aff58cf0b7bf05575a7984b10f2ff02",
+  "sourceCommit": null,
+  "sourceSha256": {
+    "packages/device-runtime/src/wearable-calibration.ts": "0ead6b029d3aac33f0bdc4e79be622f710004985d659e22de319e6104562bb76",
+    "packages/device-runtime/src/wearable-calibration.test.ts": "44f5f2057a99883f41d607a9907c718b7b9ec771a4d71c0d58dea6a394e3c089",
+    "packages/device-runtime/src/index.ts": "53debd524d1fc0dbfead1c4773b67a980bcc2786f2517df240ce4a0ee7b936f9",
+    "examples/watch-companion/calibration.mjs": "ff37b262342c73a5eb5dc7d43f49216f0e4c1d122f464095ac903ab5323155f0",
+    "tools/qa-wearable-calibration.mjs": "ff2a2c484106cfcbddddcdd9a8333542df2ee441c2729fb763bc669ab3f18038"
+  },
+  "literalDisposition": {
+    "task": "W07",
+    "builtAndQualified": "Orientation, mounting, declared handed frames and calibration/profile revisions update provenance and reject old generations/replayed reports through real public SDK routes.",
+    "closureCondition": "Selected source/current installed checks pass; checkbox closure is a staged candidate pending all-five gates/local commit.",
+    "wholeVisionComplete": false,
+    "otherRows": "Native/physical W01-W06/W08-W09 and Q support remain open; no support catalog promotion."
+  },
+  "publicContract": {
+    "values": [
+      "createWearableCalibrationProcessor",
+      "wearableFusionInputDevice",
+      "WEARABLE_CALIBRATION_PROFILE",
+      "WEARABLE_CALIBRATION_LIMITS"
+    ],
+    "types": [
+      "WearableReviewedProfile",
+      "WearableCalibrationConfiguration",
+      "WearableCalibrationHandle",
+      "WearableFusionInput",
+      "WearableCalibrationProcessor",
+      "WearableCalibrationOptions",
+      "WearableCalibrationDeliveryScope",
+      "WearableCalibrationResult"
+    ],
+    "configure": "Inert closed host-reviewed profile/version/hash/revision/raw semantics, exact source reference, explicit mounting/neutral/target frame/hand/calibration revision and intrinsic owner signal/deadline. Private issued handle; malformed replacement preserves incumbent.",
+    "process": "Actual Observation/DeliveryContext plus per-delivery own-data routeId/expiresAt/maxAgeMs from actual compute Connection.limits(). Trusted host declaration never issues/authenticates a grant. Two bounded currentness/clock checks, final fresh clock then private generation/both intrinsic signals/local and captured route time caps before cadence/floor update. No equality requirement.",
+    "projection": "q_report*q_mount; inverse mounting rotates vectors; neutral changes attitude only. Existing spatial converter handles declared reflection with polar acceleration/axial angular parity. Hand label alone never mirrors. Reported g and deg/s stay explicit; gram converter not used.",
+    "provenance": "Profile/version/hash/revision, mounting/neutral/hand/source-reference-target frames, calibration revision/private generation, raw source authorization reference and captured route caps, uint16 sequence/relay emission/host arrival. captureTimeKnown:false and physicalValidity:unspecified.",
+    "retirement": "Old/copied handles refused; tuple registration/device/capability replay floors survive reset/reconfiguration/A-to-B-to-A. Descriptor revision alone cannot mint an epoch. Close retires synchronous local computation, no native/async/quiescence promise.",
+    "caller": "Deliberately unpacked ordinary external .mjs; retained genuine encoder base replay through explicit software bridge and actual watch provider. Separate capture/raw compute/projected output grants. Source loss and calibration replacement unregister output and release queued effects. Actual raw context/current handle guard publication; final real application context guards effect."
+  },
+  "limits": {
+    "configurationAttempts": 32,
+    "activeHandles": 1,
+    "synchronousAdmission": 1,
+    "rawPacketBytes": 53,
+    "inputBytes": 4096,
+    "outputBytes": 4096,
+    "receiptMaxAgeMs": 250,
+    "maxHz": 30,
+    "ownerMs": 30000,
+    "sourceFloors": 32,
+    "profileFloors": 32,
+    "retainedReports": 0,
+    "quaternionNormTolerance": 0.001,
+    "maxAbsAccelerationG": 32,
+    "maxAbsAngularDegPerSecond": 2000,
+    "outputAbsAccelerationG": 56,
+    "outputAbsAngularDegPerSecond": 3500,
+    "timers": 0,
+    "nativeCalls": 0
+  },
+  "failedHistory": [
+    {
+      "classification": "Actual missing public feature RED; existing strict decoder/math prefix passed, native0.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-old-installed-public.json",
+        "sha256": "156689850d2a4bfd6e36227fa7e50cd6e85f61e80816920f378b15fe44850335"
+      }
+    },
+    {
+      "classification": "Unexecuted parser-fidelity draft observations only. Namespaced SpatialFrame and capability v2 corrected before tests.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-before-parser-correction.json",
+        "sha256": "265dbfd52dcab244e6e67a89ccc8544e61e80d32cbce3e6995606edbd91b4c6e"
+      }
+    },
+    {
+      "classification": "Genuine narrower-route maxAge25ms OLD: actual context false before erroneous processor success.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-narrow-route-old.json",
+        "sha256": "30d51ae4091181b31706ec6f8a6dc4e933c73118592350154ae97d0919a38f28"
+      }
+    },
+    {
+      "classification": "First corrected16 passed; subsequent independent review found reciprocal consent expiry.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-repaired-focused.json",
+        "sha256": "f2850afa9cd3860cb46bee29276f8a35e4434ee366893457a02a8ce78ac88f76"
+      }
+    },
+    {
+      "classification": "Genuine reciprocal owner expiry OLD: actual route still current, local handle expired before erroneous success.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-reciprocal-consent-old.json",
+        "sha256": "d9ffc50f30226b7b55a556b20a9a3422651d019108182e5184f303d277d1c11d"
+      }
+    },
+    {
+      "classification": "Actual TS18046 validated callback narrowing repaired with captured const.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-types-lint.json",
+        "sha256": "510940d5faf2d69775b75e006f5aa5cd2eaf059a088bbef9f01b5cc729daa24b"
+      }
+    },
+    {
+      "classification": "Root edit preflight failed before writes; accidentally scheduled OLD17suite repeated known16pass1fail. No repaired-candidate claim.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-final-focused.json",
+        "sha256": "3ff3f31ce9ad8d4ddad1fba96bb6196f3608cc76e7f0c53a8837d13db0c8b226"
+      }
+    },
+    {
+      "classification": "Known TS18046 repeated after failed edit preflight; not a new code failure.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-final-types-lint.json",
+        "sha256": "792fb93edb343db58da26d3ad6303e547ccaccd83a9336152d2e211fe69c0b3d"
+      }
+    },
+    {
+      "classification": "Actual strict step passed; caller lint failed one short-circuit expression; equivalent if correction.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-route-bounds-types-lint.json",
+        "sha256": "7e40d5f5474ae731b2a5c1120be36f5fe0010d89012ec99b64cbe80c19b14aaf"
+      }
+    },
+    {
+      "classification": "First installed QA tarball-layout assertion failed before external caller. Corrected actual tarballs subdirectory; SDK169 bytes unchanged.",
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-installed-public.json",
+        "sha256": "0e7546d1153c2a86e73bbfa05671bece972fb9d3ce348ed9a79a9c24eac1888c"
+      }
+    }
+  ],
+  "focused": {
+    "path": "/tmp/101-wearable-calibration-route-bounds-focused.json",
+    "sha256": "b7e49f7c56cb84f296f6da99211ebe6b3695724b3ba9d728d63f076bb1a41340"
+  },
+  "focusedCounts": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "loadedSourceModules": 77,
+  "staticChecks": {
+    "strictPass": {
+      "receipt": {
+        "path": "/tmp/101-wearable-calibration-route-bounds-types-lint.json",
+        "sha256": "7e40d5f5474ae731b2a5c1120be36f5fe0010d89012ec99b64cbe80c19b14aaf"
+      },
+      "step": "types",
+      "status": "pass"
+    },
+    "callerLintPass": {
+      "path": "/tmp/101-wearable-calibration-caller-repaired-lint.json",
+      "sha256": "eb2580ff575daae25841c9ba7e90392782334ae6feafa14154cf9a075fb5bce1"
+    }
+  },
+  "installedSdk": {
+    "qualification": {
+      "path": "/tmp/101-wearable-calibration-sdk.json",
+      "sha256": "b3ecc30b112789bcfd4096f2e2d970458092bc16022be5732bca3ea56dc56233"
+    },
+    "actualProducerTree": "eb6817095c3c0fab1328cd35f71cfeb627d79710",
+    "currentCallerTree": "bd9b22ac9aff58cf0b7bf05575a7984b10f2ff02",
+    "sourceFiles": 169,
+    "installedFiles": 379,
+    "tarballs": 7,
+    "cleanConsumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-UMk74Q/manifest.json",
+      "sha256": "1454eb33b2f60e6ed5703ecf360f90e8928c4d51aa247acba8e0b88179b02cc5"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-dbcazR/receipt.json",
+      "sha256": "8847cfb1290b72620d607a43562016cade51466c0ca1118f5d932e6a4df42f39"
+    }
+  },
+  "installedPublic": {
+    "path": "/tmp/101-wearable-calibration-installed-public-v2.json",
+    "sha256": "d7b8e332cd6eefcb955b3017018c12dbcd74a22c73437e4f7c206e5253f17b7e"
+  },
+  "installedResult": {
+    "checks": 20,
+    "observedEffects": 6,
+    "releases": 7,
+    "sourceStarts": 2,
+    "sourceStops": 3,
+    "normalPublicResolutions": 7,
+    "sourceAliases": false,
+    "typeStripForCaller": false,
+    "installedExampleExport": false,
+    "nativeFrameworkDelivery": "unqualified software bridge only"
+  },
+  "independentSourceReview": {
+    "path": "/tmp/101-wearable-calibration-final-independent-review.json",
+    "sha256": "5ad1c91c77ed4841814a82aac321e3b3bd04481c71623c46a5f0c99d73c4a7fd"
+  },
+  "qaLayoutReview": {
+    "path": "/tmp/101-wearable-calibration-qa-layout-review.json",
+    "sha256": "292174306c57682ce2f575b10e785014ecaa338d9ae48afd6134d2eedec6514a"
+  },
+  "preservation": {
+    "oldLiteralHistory": {
+      "path": "/tmp/101-wearable-calibration-original-history.json",
+      "sha256": "85234f863b9f96b4e4e581d8b9c22cdf695ee704cc2f5bbbadd221e0ba2e23be"
+    },
+    "currentLiteralSdkAndProof": {
+      "path": "/tmp/101-wearable-calibration-software-preservation.json",
+      "sha256": "9a6fbbc6b8e187ccbf1d37a8f4fac57ccfddbefb2f6f22665a554c4d6d8caf80"
+    }
+  },
+  "cleanup": {
+    "rawSoftwarePromises": 0,
+    "activeOutput": false,
+    "ownedChildren": 0,
+    "ownedDirectories": 0,
+    "runtimeClosed": true,
+    "processorClosed": true,
+    "reportProviderClosed": true,
+    "nativeQuiescence": "Not established; no native framework/hardware operation issued."
+  },
+  "requiredGates": {
+    "status": "pending exact final candidate",
+    "scope": "Previous gates do not prove new code; full types/lint/freshbuild/rendered/unit before local commit."
+  },
+  "remaining": [
+    "Physical sensors/wrist mounting/hand accuracy, sensor presence, authenticated device identity, capture freshness and clock translation unqualified.",
+    "Version1 synthetic/default reports may decode; explicit reviewed semantics enable reported projection only.",
+    "Snapshot covers captured route grant/lease/freshness time caps. Source/sink readiness deadlines absent; no atomic all-readiness or arbitrary lying-host authentication claim. Actual publication/application guards remain required.",
+    "Native watch/phone OS delivery, hardware support, battery/thermal and broader physiological/fusion profiles separate.",
+    "No publication/deploy/push/external service."
+  ]
+}

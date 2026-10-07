@@ -4,7 +4,7 @@ Updated: **7 October 2026**. Source baseline: **`576202b`**. This is the canonic
 
 **Outcome:** a documented, secure, extensible SDK and complete reference system that developers can install outside this repository, use across the declared device/runtime matrix, extend with connectors and processors, and release with reproducible evidence.
 
-**Snapshot tally:** 272 tasks — 119 completed with recorded evidence; 153 open. The checkboxes are authoritative as work progresses.
+**Snapshot tally:** 272 tasks — 120 completed with recorded evidence; 152 open. The checkboxes are authoritative as work progresses.
 
 ## How completion works
 
@@ -222,7 +222,7 @@ Each connector row closes only after its first working profile, protocol fixture
 - [ ] **W04 — Test wearable lifecycle and energy.** Wrist-off/background, companion departure, radio changes, stale samples and long sessions follow platform rules and measured battery/thermal bounds.
 - [ ] **W05 — Implement a selected ring/band profile.** Document available vendor/standard resources and permissions; prove meaningful samples and feedback rather than inferring sensors from the form factor.
 - [ ] **W06 — Implement a selected hearable/headset profile.** Audio, controls and any permitted sensors are independently qualified; unavailable vendor resources remain absent.
-- [ ] **W07 — Implement wearable calibration and fusion inputs.** Orientation, mounting, handedness and calibration changes update provenance and reject stale profile generations.
+- [x] **W07 — Implement wearable calibration and fusion inputs.** Orientation, mounting, handedness and calibration changes update provenance and reject stale profile generations. [Reported-input software calibration and current installed SDK evidence](receipts/2026-10-07-wearable-calibration.json); physical sensor accuracy, wearer calibration and native watch delivery remain unqualified.
 - [ ] **W08 — Protect sensitive wearable data.** Separate consent, purpose, destinations and retention apply to any supported physiological resources; they are not automatically exported as game telemetry.
 - [ ] **W09 — Publish exact wearable support outcomes.** Record model/firmware/runtime/profile versions, available resources and lifecycle limits; researched and physical-verified support remain distinct.
 
