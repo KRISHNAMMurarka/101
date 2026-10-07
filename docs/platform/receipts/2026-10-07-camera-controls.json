@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass selected same-owner reported zoom-setting software contract; exact gates/local commit pending",
+  "localOnly": true,
+  "profile": "media:camera-zoom-setting/1",
+  "base": "d34b0af40c8203eb315abfae9e775a328632611a",
+  "candidateSourceTree": "e1e565e2ab4019379188a012d90c1e28a9debe7a",
+  "sourceCommit": null,
+  "sourceSha256": {
+    "packages/device-web/src/browser-camera.ts": "960cf616efc69bfdd83bf61ae6da9a141977d2072e1390133da81f761564b726",
+    "packages/device-web/src/browser-camera.test.ts": "a82fd347aedad03fb72362afb72872c37215dc4489ab9fdcfa7aeec37d6b25f7",
+    "examples/browser-resources/camera-controls.ts": "f73f56618ccd72a4c34e12d6b1ab2307f23b8dc6f4b03a4509633febd01a0547",
+    "tools/qa-camera-controls.mjs": "8d98a3e6a42272eefb53e5227e4c0ee21d0d9a3623aac79cc8258d405f2885dd",
+    "packages/device-web/src/index.ts": "32b1cf99d95fb0c72b074f6f0faed05993c760161bc6115f332436b9fd647fdd",
+    "tools/build-sdk.mjs": "b27a0ebbae376950c7f6798fa11630907872e018325e6ad2a31a5acd0c602d3e",
+    "tools/qa-sdk-consumer.mjs": "ec1547750cdefcc6bd8c076a574be9c89f58914b17a08d5c88f91497d4ef0a37"
+  },
+  "literalDisposition": {
+    "task": "V05",
+    "builtAndQualified": "Issued current camera activation inspection plus separately consented reported zoom-setting command on the same private track. Original capture contract retained; independent real runtime reliable invoke grant and actual operation/route numeric caps. Source and ordinary installed software checks pass.",
+    "wholeRow": "OPEN: physical/native camera controls, focus/exposure/PTZ, camera switching/unplug and full qualification remain open. No support catalog promotion.",
+    "tally": {
+      "total": 272,
+      "completed": 120,
+      "open": 152
+    }
+  },
+  "publicContract": {
+    "methods": [
+      "inspectControls",
+      "bindZoom",
+      "controlStatus"
+    ],
+    "additiveTypes": [
+      "BrowserCameraControlReport",
+      "BrowserCameraZoomFacts",
+      "BrowserCameraControlRequest",
+      "BrowserCameraControlGrant",
+      "BrowserCameraControlActivation",
+      "BrowserCameraControlDeliveryLimits",
+      "BrowserCameraControlStatus"
+    ],
+    "captureOwner": "Exact activation identity in private WeakMap; no raw track export or second camera owner. Existing default capture permission/choice lifecycle unchanged.",
+    "facts": "Only finite coherent current owned track zoom min/max/step/current; focus/exposure/pan/tilt unsupported. Facts grant no native effect. API promise/getSettings return is reported setting only, never optical accuracy or target observation.",
+    "authority": "authorizeControl default deny, exact same request and intrinsic signal/deadline no later than capture consent. Application reliable event source separately granted subscribe-to-command invoke; positive canonical numeric operation IDs.",
+    "finalBoundary": "Default-denied own-data controlDeliveryLimits callback returns exact delivered context and same-clock numeric caps from actual owned Connection.limits() and exact running OperationRecord.deadline. Observer getters/currentness/cap callouts precede final clock; afterward private epochs/intrinsic signals plus captured expiry/age/cadence fence precede issuance. Trusted host declaration is not authentication or atomic all-readiness.",
+    "nativeWork": "Prepublished owned raw reservation before applyConstraints. Exact fixed advanced zoom scalar only. Logical Stop/revoke/expiry releases endpoint/capture promptly; actual returned Promise remains retained until real settlement. close awaits actual owned settlement. Unknown unreturned/cleanup work quarantines and does not claim native cancellation/quiescence. False or thrown removal of a genuine late endpoint records cleanup failure and permanently quarantines control admission; raw0/active0 never implies that unknown removal succeeded.",
+    "caller": "Packaged camera-controls example with separate frame/display and reliable event/invoke routes; integer lease duration derived from remaining consent deadline, queue1, only exact route/running-operation cap snapshot. Owned native canvas pixels/unsupported zoom and explicit software setting fixture separately labeled."
+  },
+  "limits": {
+    "activeControlSinks": 1,
+    "rawControlPending": 1,
+    "bindingPending": 1,
+    "controlAttempts": 32,
+    "controlMaxHz": 2,
+    "controlMaxAgeMs": 250,
+    "controlHistory": 16,
+    "controlLogicalWaitMs": 5000,
+    "controlTimers": 1,
+    "zoomMin": 0,
+    "zoomMax": 1024,
+    "minimumStep": 1e-06,
+    "maximumPositions": 1024,
+    "captureRasterBytes": 256,
+    "captureRasterWidth": 8,
+    "captureRasterHeight": 8,
+    "captureMaxHz": 10,
+    "captureMaxMs": 30000,
+    "callerRoutes": 2,
+    "callerRegistrations": 4,
+    "callerPendingRuntimeSlots": 2,
+    "callerOperations": 32
+  },
+  "failedAndNegativeHistory": [
+    {
+      "classification": "Intended ordinary installed absent public methods RED; inert old provider/public factory identity prefix passed native0. New feature absence, no old capture defect.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-old-installed-public.json",
+        "sha256": "af5e61df9c16f00bae802e725f62ef6521efae7a78035a10336bee9d2342c2a8"
+      }
+    },
+    {
+      "classification": "Faithful original capture registerSource reentrancy selector already GREEN against unchanged bcc baseline:1PASS/121 loaded modules. Original capture retained; static leak suspicion unconfirmed.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-inherited-capture-old.json",
+        "sha256": "71667573f56d1626a3301d257d32aac328d388aad0638936c576dd5c40d87b12"
+      }
+    },
+    {
+      "classification": "Actual first54 suite40PASS14FAIL setup: command kind is not a readable source. Correct reliable application event source and canonical numeric operation identifiers in fixture/caller; no runtime/parser/provider weakening.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-first-focused.json",
+        "sha256": "8c140d9649a188521070c1b0b739ebdc5b9739efd7186805d46e25896fe6a56c"
+      }
+    },
+    {
+      "classification": "Actual source/caller-fidelity correction54PASS/121 loaded modules.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-source-fidelity-focused.json",
+        "sha256": "313a073abc34183aacfe4faeefb01cdea4d15537d694735c15610234e4baa8e9"
+      }
+    },
+    {
+      "classification": "Actual strict caller errors: captured red state inference and mutable call-count narrowing. Explicit state type/captured const/read function repaired.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-first-types-lint.json",
+        "sha256": "2395401901fef086a44e75167eb02366b6914a1b39a797d058fdc8bd5a3facad"
+      }
+    },
+    {
+      "classification": "Strict passed; two actual test prefer-const errors repaired without behavior change.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-caller-types-lint.json",
+        "sha256": "63c4c0f5b6db83d38b78c15d3785f78c33a8d4d80c9910cea9ba89cc91abdea7"
+      }
+    },
+    {
+      "classification": "First current SDK170/382/7/consumer10 passed; first installed browser1727ms failed real fractional remaining-deadline lease because actual Connection requires integer capacity. Caller Math.floor narrowly repairs; SDK/runtime/provider unchanged.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-first-installed.json",
+        "sha256": "8a62b9456cab3cdddc6a4f08af44b659c17c53f3c26a2953799549c5ab74a51b"
+      }
+    },
+    {
+      "classification": "Repaired source browser4runs x12 assertions passed,125 compiled sources; fresh final SDK and installed browser proof below are distinct immutable candidates.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-lease-repaired-source.json",
+        "sha256": "6fefa2341ac6844cb0b7939e2d5b096d2e91f0dd212b4b732f04f73532413656"
+      }
+    },
+    {
+      "classification": "First exact ff602 all5 gates passed2103unit/34rendered and524 compiled files preserved; later semantic review found a new cleanup path. This remains historical before repair, never current-code gates.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-exact-required-gates.json",
+        "sha256": "fe174f7497f24b9621935678dccece8bc8af9b13fb0925c2b05c3fa7c8e2e0b5"
+      },
+      "buildPreservation": {
+        "path": "/tmp/101-camera-controls-final-build-preservation.json",
+        "sha256": "adac35d8dacd10011ab13c32278ae33b34dc4cad9ef07058c532a0bc279f2f4c"
+      },
+      "exactCanonicalReview": {
+        "path": "/tmp/101-camera-controls-exact-independent-review.json",
+        "sha256": "fe0ff755f2b6e9c6ef572c7446a9fcce7cfb1ce8a4c110a6bd8465be9b603e7f"
+      }
+    },
+    {
+      "classification": "Original independent semantic BLOCK candidate was static/unwitnessed at recording; real root OLD below confirmed it later. Original seven-file pins retained.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-draft-independent-review.json",
+        "sha256": "2effcccdddeb397571aaab846b6ce89fdc10f6839dc55bdbb88e18eeb7153f41"
+      }
+    },
+    {
+      "classification": "Actual faithful genuine late returned command endpoint cleanup callback throws once; failedbind/realhandle/native0 prefix passed, cleanupFailures0 vs1 failed. No unauthorized native dispatch claim.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-late-cleanup-throw-old.json",
+        "sha256": "c306aa7b059f07b681abdfd9fd59fce2923863994feac54702cabb94ac165c33"
+      },
+      "literalSource": {
+        "path": "/tmp/101-camera-controls-late-cleanup-old-source.json",
+        "sha256": "a835ca439496c7e41f0e6f68cfe5dba85fbc349613f5a5e37ba7059a9cc40687"
+      }
+    },
+    {
+      "classification": "Narrow late removal try/catch mirrors existing false-return quarantine/counter then retains cancelled refusal. Current55 tests pass including busy subsequent control admission. Test removes exact fixture handle separately; product does not claim cleanup succeeded.",
+      "receipt": {
+        "path": "/tmp/101-camera-controls-cleanup-repaired-focused.json",
+        "sha256": "33b0c113ed27f3fb6702481ea1a0f119ac93d87c4cbdb0b1240634883f1de3d5"
+      }
+    },
+    {
+      "classification": "Original b4 source4\u00d712 and installed4\u00d712 passed their exact pre-cleanup-repair scope; current960c source/installed receipts above remain distinct.",
+      "source": {
+        "path": "/tmp/101-camera-controls-lease-repaired-source.json",
+        "sha256": "6fefa2341ac6844cb0b7939e2d5b096d2e91f0dd212b4b732f04f73532413656"
+      },
+      "installed": {
+        "path": "/tmp/101-camera-controls-installed-v2.json",
+        "sha256": "f033878818258ebacf6dbf3220489a0ad2c8a9c63f8d6b38f2296565b921b251"
+      }
+    }
+  ],
+  "focused": {
+    "path": "/tmp/101-camera-controls-cleanup-repaired-focused.json",
+    "sha256": "33b0c113ed27f3fb6702481ea1a0f119ac93d87c4cbdb0b1240634883f1de3d5"
+  },
+  "focusedCounts": {
+    "tests": 55,
+    "pass": 55,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "loadedSourceModules": 121,
+  "staticChecks": {
+    "path": "/tmp/101-camera-controls-repaired-types-lint.json",
+    "sha256": "85aa121d90836b0f8a7fccd9a677643db7e6fd3d420936c3c9e2ca969c3b0701"
+  },
+  "installedSdk": {
+    "receipt": {
+      "path": "/tmp/101-camera-controls-sdk-v3.json",
+      "sha256": "a073039e9893557e65f1741219209c66cdbc47160aca371fe109740dd38388d2"
+    },
+    "actualProducerTree": "e1e565e2ab4019379188a012d90c1e28a9debe7a",
+    "callerTree": "e1e565e2ab4019379188a012d90c1e28a9debe7a",
+    "sourceFiles": 170,
+    "installedFiles": 382,
+    "tarballs": 7,
+    "consumerChecks": 10,
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-W5Zr97/manifest.json",
+      "sha256": "3477cb1b383b5a8d34c4976462e8b42d1fd4bdcdee03f7fe6f8e3869cb290a02"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-FD2ejF/receipt.json",
+      "sha256": "ba266605d3a9c2b6adf3df5a8e31c58833bc38df9601473fe306b612180afa7d"
+    }
+  },
+  "sourceBrowser": {
+    "path": "/tmp/101-camera-controls-cleanup-current-source.json",
+    "sha256": "429833de15bec81de4be2d5ac7382366ba56bf19b883a9e30efa486102cd3ff1"
+  },
+  "installedPublic": {
+    "path": "/tmp/101-camera-controls-cleanup-current-installed.json",
+    "sha256": "8aac7a07a85ffa110827708d86a1e2b629840685047a89a08c32c0381a2c6981"
+  },
+  "actualBrowserScope": {
+    "sourceRuns": 4,
+    "installedRuns": 4,
+    "checksPerRun": 12,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "cameraPolicyHeaders": [
+      "self",
+      "deny"
+    ],
+    "publicResolutions": 7,
+    "sourceCompiledModules": 125,
+    "nativePositive": "Owned Canvas.captureStream to decoded typed red/blue pixels; native canvas zoom unsupported and zero constraints.",
+    "softwarePositive": "Explicit cooperative native-shaped track reports setting2.5 and held setting3 issued via actual authorized SDK command; revoke reports uncertainty/raw1 and close waits actual returned Promise.",
+    "physicalCameraQualification": false,
+    "nativeZoomPositive": false,
+    "nativeHardwarePositive": false,
+    "defaultCameraInspectionOrAcquisition": 0
+  },
+  "preservation": {
+    "path": "/tmp/101-camera-controls-cleanup-software-preservation.json",
+    "sha256": "760df1b0073ed21fe87ea34234e2c83b9087d133cc62a3406ed28780c7f0df41"
+  },
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "ownedListeners": 0,
+    "timers": 0,
+    "callbacks": 0,
+    "loopbackServers": 0,
+    "ownedDirectories": 0
+  },
+  "requiredGates": {
+    "status": "pending exact final candidate",
+    "scope": "All five required gates must run on exact source/canonical bytes; earlier gates are not new-code proof."
+  },
+  "remaining": [
+    "V05 stays open: native camera permission/selected hardware/switching/unplug/retry, optics/focus/exposure/PTZ and broader physical/profile qualification.",
+    "Numeric delivery caps depend on honest same-clock trusted host real Connection/Operation snapshots; no arbitrary-host sandbox or universal currentness atomicity.",
+    "API setting return/getSettings are not optical/target observations; issued cancellation outcome remains uncertain.",
+    "No physical devices, chooser, phone, OS pointer, remote service, publish/deploy/push used."
+  ],
+  "independentSourceReview": {
+    "path": "/tmp/101-camera-controls-cleanup-repaired-independent-review.json",
+    "sha256": "c75bc677bdda03a7c2633f5d02dd38fb41681f1673cada488a1ebe070f9dbc46"
+  }
+}

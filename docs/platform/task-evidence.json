@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 121,
+  "revision": 124,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -10972,11 +10972,118 @@
         "docs/platform/receipts/2026-10-07-wearable-calibration.json"
       ],
       "environment": "Owned macOS arm64 Node24.14.0/TypeScript5.9.3;169-source/379-file seven-package ordinary installed SDK; explicit software bridge replay of retained unchanged encoder bytes.",
-      "reproduction": "19 actual source tests/77 loaded dependencies; genuine narrower-route and reciprocal consent-expiry OLD retained. Installed20 checks/7 resolutions,6effects/7releases/raw0. Strict/scoped lint pass; final exact all-five gates/local commit pending, no inherited gate claim.",
+      "reproduction": "19 actual source tests/77 loaded dependencies; genuine narrower-route and reciprocal consent-expiry OLD retained. Installed20 checks/7 resolutions,6effects/7releases/raw0. Strict/scoped lint and final exact all-five gates passed; local commit recorded in w07-calibration-exact-local-gates-2026-10-07. Source/installed inputs retain original producer/caller scopes.",
       "scope": "Selected W07 reported orientation/mounting/declared handed frames/calibration/profile generations; no physical/sensor/capture/native framework qualification. Independent approvals, captured conservative route caps and final application guards.",
       "failure": null,
       "equipment": [
         "Owned explicit software bridge/runtime; physical accuracy and OS delivery deferred under separate W/Q rows"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "w07-calibration-exact-local-gates-2026-10-07",
+      "revision": "d34b0af40c8203eb315abfae9e775a328632611a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "W07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-wearable-calibration.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0, exact committed aaa483 twelve-path source/canonical candidate; separate SDK169source/379files/7tarballs and ordinary installed software caller.",
+      "reproduction": "All5 actual gates:2078unit/34rendered zero fail/cancel/skip/todo, types/lint/freshbuild. Source19/77deps and installed20/7publicresolutions;6effects/7releases/raw0. Independent exact12pins/canonical/SDK inventories CLEAR.",
+      "scope": "Selected W07 reported-input calibration contract complete locally; no physical/native/capture/all-readiness/support/wholevision promotion. Later documentary bytes await next coherent candidate.",
+      "failure": null,
+      "equipment": [
+        "Owned software bridge/runtime; physical sensors/watch/phone qualification deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "d34b0af40c8203eb315abfae9e775a328632611a",
+        "exactCommittedTree": "aaa483e90f78a2f958d6c0c5681b0f64cc1a1e3f",
+        "receipt": {
+          "path": "/tmp/101-wearable-calibration-exact-required-gates.json",
+          "sha256": "bf1b0a644e8043e21d8501c67a8d53c8ad34624de3f4e38b8e294d43f76eacd3"
+        },
+        "unit": 2078,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five actual gates passed exact source/canonical tree before local commit. This later documentary update is not part of tested committed canonical bytes and awaits the next coherent candidate; historical source/installed tests keep distinct producer/caller trees."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-wearable-calibration-exact-commit.json",
+        "sha256": "6c51fd173ecf7f18774f539d77018fe74eabeb59c79a6a268048d4771fdd393c"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "v05-selected-camera-zoom-software-2026-10-07",
+      "revision": "9640c3ca7dfc469e73e0eaa8e32675547fb94a41",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-controls.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14, current public source125/Node121 loaded dependency closure and ordinary installed immutable SDK170source/382files/7tarballs; Chromium/WebKit headless only.",
+      "reproduction": "54 current focused pass zero skip/cancel/fail, source4 and installed4 browser runs x12 checks, actual source/installed same-owner command consent/default denial/deadline/raw-settlement checks. SDK seven packages and consumer10 pass.",
+      "scope": "Selected reported zoom-setting software build; native owned-canvas pixels only and cooperative software positive zoom. V05 OPEN and support catalog unchanged. Exact gates/local commit pending. Superseded by witnessed late-control cleanup correction; original source/installed and ff602 all5 results remain historical exact scopes.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browsers and explicit software camera; physical devices deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "v05-late-control-cleanup-repair-2026-10-07",
+      "revision": "e1e565e2ab4019379188a012d90c1e28a9debe7a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-controls.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14; current real source55/121deps, source4\u00d712/125compiled and installed4\u00d712 currentSDK170source/382files/7tar/consumer10; headless Chromium/WebKit only.",
+      "reproduction": "Genuine late returned SDK endpoint OLD cleanupFailures0 vs1 failed; one minimal removal catch quarantines control admission/counters, current55 pass0skip/cancel/fail. Source/installed each4\u00d712 pass after fresh SDK. Semantic review CLEAR; previous ff602all5 historical.",
+      "scope": "Selected same-owner reported zoom software built; fullV05 and physical/native camera/focus/exposure/PTZ remain OPEN. Exact corrected canonical/all5 gates/local commit pending.",
+      "failure": null,
+      "equipment": [
+        "Owned browser/software camera; physical devices deferred"
       ],
       "supportRows": [],
       "tally": {
@@ -12445,7 +12552,9 @@
     {
       "id": "V05",
       "records": [
-        "pending-V05"
+        "pending-V05",
+        "v05-selected-camera-zoom-software-2026-10-07",
+        "v05-late-control-cleanup-repair-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12899,7 +13008,8 @@
       "id": "W07",
       "records": [
         "pending-W07",
-        "w07-reported-calibration-software-2026-10-07"
+        "w07-reported-calibration-software-2026-10-07",
+        "w07-calibration-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",

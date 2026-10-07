@@ -2790,6 +2790,69 @@ performs availability/policy readback with zero native camera opens. Physical
 selection, permission enforcement, camera controls and complete N02/D03/V01
 qualification remain open.
 
+### Selected camera reported zoom setting
+
+The same `BrowserCameraProvider` adds `inspectControls(activation)`,
+`bindZoom(activation, { purpose })` and `controlStatus()`. An activation must be
+the exact privately issued current capture handle. Only its owned track is used;
+no raw track, second camera owner or automatic permission request is exported.
+
+Inspection reports coherent finite `getCapabilities().zoom` range/step and
+`getSettings().zoom`. Absent, malformed or changing facts cannot become a working
+control. Focus, exposure, pan and tilt remain unsupported. Capability reports
+are availability facts; they do not grant effects or prove optical magnification.
+
+`authorizeControl` is optional and defaults to denial. A grant must retain the
+exact request, an intrinsic signal and an expiry no later than capture consent.
+Declining an unissued control preserves the captured frame. The command sink
+declares `media:camera-zoom-setting/1`, reliable scalar `invoke`, and the reviewed
+range/step. A readable application **event** source with the same semantic/schema
+requires a separate real `subscribe` → `invoke` route approval. Reliable
+operation IDs are canonical positive integer strings; queue capacity is one.
+
+`controlDeliveryLimits(context)` also defaults to denial. The trusted caller
+matches the exact delivered route to its actual owned `Connection`, reads
+`limits()` and the exact running operation from `operations()`, then returns:
+~~~ts
+{
+  context,
+  expiresAt: Math.min(limits.expiresAt, operation.deadline),
+  maxAgeMs: Math.min(limits.maxAgeMs, 250),
+  maxHz: Math.min(limits.maxHz, 2),
+}
+~~~
+Runtime and provider use the same host clock. This numeric declaration cannot
+grant permission. All observer/native getter callouts precede a final fresh
+clock; private epoch, intrinsic signal, capture/control/operation deadline,
+age and cadence checks then fence native issuance. This is an honest cooperating
+host contract, with no atomic all-readiness or hostile-host authentication claim.
+
+Only `{ advanced: [{ zoom: value }] }` is issued. One control sink, one native
+Promise reservation, thirty-two attempts, two commands per second, 250 ms age,
+sixteen history entries and one timer are admitted. Values use the reported step
+within 0–1,024, with at most 1,024 positions and minimum step 0.000001. Control
+consent is bounded by the original capture deadline; logical native wait is at
+most five seconds and narrows to the actual delivered operation deadline.
+
+Stop, revocation or expiry retires the command endpoint promptly. If a setting
+was already issued, capture is conservatively retired and its outcome remains
+uncertain. The owned raw slot survives until the actual returned Promise settles;
+`close()` waits for this settlement. Unknown returned work or cleanup failure
+quarantines control admission, without claiming native cancellation or quiescence.
+False or thrown removal of a late endpoint records cleanup failure; quarantined
+controls remain busy. A zero raw count does not establish successful removal.
+Promise fulfillment and a subsequent settings report prove API return only.
+
+The packaged `@101/connect/examples/camera-controls` caller exposes
+`createBrowserCameraControls`, `checkCameraControlsWithoutDevice`,
+`runOwnedCameraControlsCanvas` and `runSoftwareCameraZoom`. Its frame/display
+and event/command routes have separate grants and bounded registrations.
+An actual owned canvas stream verifies decoded red/blue RGBA8 pixels and reports
+zoom unsupported with zero constraints. An explicitly labeled software track
+verifies API-shaped setting and held-Promise cleanup. Four source and four ordinary
+installed Chromium/WebKit runs pass twelve checks each; neither qualifies native
+camera zoom, physical optics, focus/exposure/PTZ or the complete V05 scope.
+
 ## Disposable coordinator, directory and gateway stack
 
 `node tools/disposable-stack.mjs --exercise` creates, exercises and removes a

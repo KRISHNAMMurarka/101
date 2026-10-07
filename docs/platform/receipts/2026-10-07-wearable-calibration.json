@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-07",
-  "result": "pass selected reported-input software contract; exact full gates/local commit pending",
+  "result": "pass selected reported-input software contract; exact all-five gates passed and locally committed",
   "profile": "reviewed-wearable-projection/1",
   "localOnly": true,
   "base": "c90f492cb3dbeb94dfbe2711f80396b671551997",
   "candidateSourceTree": "bd9b22ac9aff58cf0b7bf05575a7984b10f2ff02",
-  "sourceCommit": null,
+  "sourceCommit": "d34b0af40c8203eb315abfae9e775a328632611a",
   "sourceSha256": {
     "packages/device-runtime/src/wearable-calibration.ts": "0ead6b029d3aac33f0bdc4e79be622f710004985d659e22de319e6104562bb76",
     "packages/device-runtime/src/wearable-calibration.test.ts": "44f5f2057a99883f41d607a9907c718b7b9ec771a4d71c0d58dea6a394e3c089",
@@ -17,7 +17,7 @@
   "literalDisposition": {
     "task": "W07",
     "builtAndQualified": "Orientation, mounting, declared handed frames and calibration/profile revisions update provenance and reject old generations/replayed reports through real public SDK routes.",
-    "closureCondition": "Selected source/current installed checks pass; checkbox closure is a staged candidate pending all-five gates/local commit.",
+    "closureCondition": "Selected W07 contract qualified and committed after exact all-five gates plus independent source/canonical review. Other physical/native/support rows unchanged.",
     "wholeVisionComplete": false,
     "otherRows": "Native/physical W01-W06/W08-W09 and Q support remain open; no support catalog promotion."
   },
@@ -230,8 +230,17 @@
     "nativeQuiescence": "Not established; no native framework/hardware operation issued."
   },
   "requiredGates": {
-    "status": "pending exact final candidate",
-    "scope": "Previous gates do not prove new code; full types/lint/freshbuild/rendered/unit before local commit."
+    "status": "pass",
+    "sourceCommit": "d34b0af40c8203eb315abfae9e775a328632611a",
+    "exactCommittedTree": "aaa483e90f78a2f958d6c0c5681b0f64cc1a1e3f",
+    "receipt": {
+      "path": "/tmp/101-wearable-calibration-exact-required-gates.json",
+      "sha256": "bf1b0a644e8043e21d8501c67a8d53c8ad34624de3f4e38b8e294d43f76eacd3"
+    },
+    "unit": 2078,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed exact source/canonical tree before local commit. This later documentary update is not part of tested committed canonical bytes and awaits the next coherent candidate; historical source/installed tests keep distinct producer/caller trees."
   },
   "remaining": [
     "Physical sensors/wrist mounting/hand accuracy, sensor presence, authenticated device identity, capture freshness and clock translation unqualified.",
@@ -239,5 +248,18 @@
     "Snapshot covers captured route grant/lease/freshness time caps. Source/sink readiness deadlines absent; no atomic all-readiness or arbitrary lying-host authentication claim. Actual publication/application guards remain required.",
     "Native watch/phone OS delivery, hardware support, battery/thermal and broader physiological/fusion profiles separate.",
     "No publication/deploy/push/external service."
-  ]
+  ],
+  "committedSourceTree": "aaa483e90f78a2f958d6c0c5681b0f64cc1a1e3f",
+  "actualLocalCommit": {
+    "path": "/tmp/101-wearable-calibration-exact-commit.json",
+    "sha256": "6c51fd173ecf7f18774f539d77018fe74eabeb59c79a6a268048d4771fdd393c"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-wearable-calibration-final-build-preservation.json",
+    "sha256": "c573b5ee5e3b96c0482c49336f0f89a92c97ca1a41675a5de501da68633c1d0a"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-wearable-calibration-exact-independent-review.json",
+    "sha256": "bd711f50a0e5cbc5af9ef2c37cfe67d7a9e848b9c751315f119fda0efc2c4cfc"
+  }
 }
