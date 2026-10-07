@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "date": "2026-10-07",
   "localOnly": true,
-  "result": "pass selected HID/Serial output and HID/Serial/BLE caller recovery software; exact gates/local commit pending",
+  "result": "pass selected HID/Serial byte output and HID/Serial/BLE caller recovery software; exact required gates passed and local source committed",
   "base": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
   "candidateSourceTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
-  "sourceCommit": null,
+  "sourceCommit": "1ab7579de6946356d3704f947392f81e39621bf3",
   "sourceSha256": {
     "packages/device-web/src/browser-hid-switch.ts": "3522a8bc8d4db9bcbe4914e11ddfde672b05aea207559d12ad996bbb4261f110",
     "packages/device-web/src/browser-hid-switch.test.ts": "c465ab700145ea5b4dcb9ac23ba848292380e05ec7c291477bbd486a1fdc651b",
@@ -400,12 +400,35 @@
     "nativeWorkerExitObserved": false
   },
   "requiredGates": {
-    "status": "pending exact final candidate"
+    "status": "pass",
+    "sourceCommit": "1ab7579de6946356d3704f947392f81e39621bf3",
+    "exactCommittedTree": "6e579d2d5c5d2e7b98bb540b653557a2d599d050",
+    "receipt": {
+      "path": "/tmp/101-switch-output-exact-required-gates.json",
+      "sha256": "1a6b6b9d4fd4148dc4b5e6b7a86bc282b4adfc51772296d709c99242e411ede6"
+    },
+    "unit": 2168,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; SDK source/installed scope retains distinct immutable producer/caller745f."
   },
   "remaining": [
     "Physical/device testing intentionally deferred by user.",
     "Software Worker ports do not qualify hardware, driver quiescence or operating-system permissions.",
     "Trusted host environment/numeric same-clock fences do not establish arbitrary-host authentication.",
     "No support catalog row accepted and no full checklist row closed by partial software evidence."
-  ]
+  ],
+  "committedSourceTree": "6e579d2d5c5d2e7b98bb540b653557a2d599d050",
+  "actualLocalCommit": {
+    "path": "/tmp/101-switch-output-exact-commit.json",
+    "sha256": "07cfd3bfdaa7de0c51ca8b3d48a030fdf4269ddcbf25d4366badc23c26a91d90"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-switch-output-exact-independent-review.json",
+    "sha256": "1473695e8947342b156b86b6877024e1d51eb956e219c1606200f88a0657c241"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-switch-output-final-build-preservation.json",
+    "sha256": "0c3c07bcd9bcf84354fc0e593ab701af1644ce7756f6d0e7c841cf3866dd1b4f"
+  }
 }

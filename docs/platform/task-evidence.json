@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 128,
+  "revision": 131,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11250,6 +11250,118 @@
         "completed": 120,
         "open": 152
       }
+    },
+    {
+      "id": "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07",
+      "revision": "1ab7579de6946356d3704f947392f81e39621bf3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A02",
+        "A03",
+        "A04",
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-switch-output.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; exact18-path committed source/canonical candidate; source/ordinary installed Chromium/WebKit trusted software GATT and genuine Worker target.",
+      "reproduction": "All5 actual gates pass: 2168 unit / 34 rendered, zero fail/cancel/skip/todo; freshbuild/types/lint. HID37/Serial30/BLE48 focused with122currentmodules each plus three callers eachsource4\u00d715 andinstalled4\u00d715/SDK173/391/7/consumer10. Semantic and exact canonical/SDK ancestry reviews CLEAR.",
+      "scope": "Selected HID/Serial byte-output and all three caller recovery software built/qualified/committed locally. WholeA02/A03/A04/N02 remain OPEN: physical radio/peripheral/chooser/permissions/reconnection/vendor/wider profiles deferred. No native hardware/support/policy/Worker exit/publication promotion; later metadata awaits coherent gates.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browser Worker and software GATT; physical devices deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "1ab7579de6946356d3704f947392f81e39621bf3",
+        "exactCommittedTree": "6e579d2d5c5d2e7b98bb540b653557a2d599d050",
+        "receipt": {
+          "path": "/tmp/101-switch-output-exact-required-gates.json",
+          "sha256": "1a6b6b9d4fd4148dc4b5e6b7a86bc282b4adfc51772296d709c99242e411ede6"
+        },
+        "unit": 2168,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; SDK source/installed scope retains distinct immutable producer/caller745f."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-switch-output-exact-commit.json",
+        "sha256": "07cfd3bfdaa7de0c51ca8b3d48a030fdf4269ddcbf25d4366badc23c26a91d90"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "b05-desktop-replay-retention-built-partial-2026-10-07",
+      "revision": "c1bf3a61f444a4d7ff0a3ed0b78b56b1a98dbe0d",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "B05",
+        "S15",
+        "V11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-desktop-replay-retention.json"
+      ],
+      "environment": "macOS arm64; Node24.14.0/TypeScript5.9.3; Rust1.94.1/Cargo1.94.1; owned Chromium149.0.7827.55/WebKit26.5 software contexts where declared. No device interaction.",
+      "reproduction": "Actual OLD native3expected failures aftergenuine producer; current14focused and25allnative checks; Chromium/WebKit11checks each builtDOMcontrolledIPC; actualfocus/TERM OLD\u2192GREEN; passive repairedreviewCLEAR.",
+      "scope": "Selected actual macOS private native replay retention/deletion+legacy review and built software DOM; wholeB05/S15/V11 remainOPEN. Generic export/secret classification/backuprollback/nativeapp/otherOS/physical qualification notclaimed.",
+      "failure": null,
+      "equipment": [
+        "Owned temp filesystem and software Worker/browser fixtures; hardware deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
+    },
+    {
+      "id": "e01-public-api-runtime-settlement-2026-10-07",
+      "revision": "a5191563654b18034c48146991f206ee59eb6129",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-runtime-settlement.json"
+      ],
+      "environment": "macOS arm64; Node24.14.0/TypeScript5.9.3; Rust1.94.1/Cargo1.94.1; owned Chromium149.0.7827.55/WebKit26.5 software contexts where declared. No device interaction.",
+      "reproduction": "Actual OLD source/ordinary installed methodabsence aftergenuinegrantedheldwork; current8runtime+1realWorker cleanupregression; source/ordinaryinstalled9checkeachactualWorkerexit0, current174source/394installed/7tar/10consumerSDK; repairedsource+referenceCLEAR. Firstexactcandidate typesPASS/lintFAILED retained; narrowafter-finally reporting andconst fixture correction has8+1focused/scopedlintPASS. Required all5rerun against corrected finalcandidate pending.",
+      "scope": "Literal E01 software API reference completed: exact public lifecycle/results/errors/evidence/async; compatible optionalroutebarrier andpublicexample. Constructor supported/helpersexperimental; no internalimports. Other implementation/platform/L02tasksnotclosed.",
+      "failure": null,
+      "equipment": [
+        "Owned temp filesystem and software Worker/browser fixtures; hardware deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
     }
   ],
   "tasks": [
@@ -12162,7 +12274,8 @@
       "id": "S15",
       "records": [
         "pending-S15",
-        "pairing-recovery-2026-10-06"
+        "pairing-recovery-2026-10-06",
+        "b05-desktop-replay-retention-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12238,7 +12351,8 @@
         "screen-ble-haptic-exact-local-gates-2026-10-07",
         "a03-selected-ble-byte-output-software-2026-10-07",
         "a03-ble-byte-output-exact-local-gates-2026-10-07",
-        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12821,7 +12935,8 @@
         "pending-V11",
         "v11-media-recording-installed-2026-10-06",
         "media-backup-current-installed-2026-10-07",
-        "sdk-media-enrollment-source-commit-2026-10-07"
+        "sdk-media-enrollment-source-commit-2026-10-07",
+        "b05-desktop-replay-retention-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12867,7 +12982,8 @@
       "id": "A02",
       "records": [
         "pending-A02",
-        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12886,7 +13002,8 @@
         "screen-ble-haptic-exact-local-gates-2026-10-07",
         "a03-selected-ble-byte-output-software-2026-10-07",
         "a03-ble-byte-output-exact-local-gates-2026-10-07",
-        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12901,7 +13018,8 @@
       "id": "A04",
       "records": [
         "pending-A04",
-        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13558,7 +13676,8 @@
         "pairing-recovery-2026-10-06",
         "b05-profiles-data-catalog-2026-10-06",
         "b05-recording-owner-data-built-partial-2026-10-07",
-        "recording-controller-source-commit-2026-10-07"
+        "recording-controller-source-commit-2026-10-07",
+        "b05-desktop-replay-retention-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13590,7 +13709,8 @@
     {
       "id": "E01",
       "records": [
-        "pending-E01"
+        "pending-E01",
+        "e01-public-api-runtime-settlement-2026-10-07"
       ],
       "dependencies": [
         "M01",

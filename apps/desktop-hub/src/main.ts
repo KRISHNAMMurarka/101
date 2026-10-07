@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { encodePairingTicket } from "@101/protocol";
 import QRCode from "qrcode";
-import type { CreatedSession, HubSettings, HubStatus, InstalledGame, StoredReplay } from "./types";
+import type { CreatedSession, HubSettings, HubStatus, InstalledGame, ReplayCatalog, ReplayDeletion, StoredReplay } from "./types";
 import "./style.css";
 
 const app = document.querySelector<HTMLElement>("#app");
@@ -43,9 +43,12 @@ app.innerHTML = `
       <ul id="games" class="records"></ul>
       <details><summary>Import developer package</summary><label>Package folder<input id="package-path" placeholder="/absolute/path/to/game" /></label><button id="import-package" class="secondary">IMPORT</button></details>
     </article>
-    <article class="panel">
-      <span class="eyebrow">LOCAL HISTORY</span><h3>Replays</h3>
+    <article class="panel replay-history">
+      <span class="eyebrow">LOCAL HISTORY</span><h3 id="replay-heading" tabindex="-1">Replays</h3>
+      <p class="muted">Saved replays become unavailable after seven days. Expired files are removed when the Hub next checks history. Up to 32 replays and 50 MiB, including files awaiting removal.</p>
+      <p id="replay-status" role="status" aria-live="polite"></p>
       <ul id="replays" class="records"></ul>
+      <button id="retry-replays" class="secondary">REFRESH HISTORY</button>
     </article>
     <article class="panel settings">
       <span class="eyebrow">HUB SETTINGS</span><h3>Private by default</h3>
@@ -74,19 +77,20 @@ let status: HubStatus | undefined;
 let settings: HubSettings | undefined;
 let activeSession: { sessionId: string; hostToken: string } | undefined;
 
-async function refresh() {
+async function refresh(background = false) {
+  // Background status polling must not replace a keyboard interaction in history.
+  if (!background || (!replaySelection && !byId("replays").contains(document.activeElement))) void refreshReplayHistory();
   try {
-    const [nextStatus, nextSettings, replays, games] = await Promise.all([
+    const [nextStatus, nextSettings, games] = await Promise.all([
       invoke<HubStatus>("hub_status"),
       invoke<HubSettings>("get_settings"),
-      invoke<StoredReplay[]>("list_replays"),
       invoke<InstalledGame[]>("list_game_packages"),
     ]);
     status = nextStatus;
     settings = nextSettings;
     renderStatus(nextStatus);
     renderSettings(nextSettings);
-    renderRecords(replays, games);
+    renderGames(games);
   } catch (error) {
     notify(error, true);
   }
@@ -113,13 +117,111 @@ function renderSettings(value: HubSettings) {
   byId<HTMLInputElement>("advertise").checked = value.advertiseMdns;
 }
 
-function renderRecords(replays: StoredReplay[], games: InstalledGame[]) {
-  byId("replays").innerHTML = replays.length
-    ? replays.map((replay) => `<li><b>${escapeHtml(replay.gameId)}</b><span>${escapeHtml(replay.seed)} · ${formatBytes(replay.bytes)}</span></li>`).join("")
-    : "<li class=empty>No replay data yet</li>";
+function renderGames(games: InstalledGame[]) {
   byId("games").innerHTML = games.length
     ? games.map((game) => `<li><b>${escapeHtml(game.name)}</b><span>v${escapeHtml(game.version)} · ${escapeHtml(game.renderer)}</span></li>`).join("")
     : "<li class=empty>No downloaded packages yet</li>";
+}
+
+let replayCatalog: ReplayCatalog | undefined;
+let replaySelection: { id: string; generation: string } | "legacy" | undefined;
+let replayIssued = false;
+let replayEpoch = 0;
+let replayDisposed = false;
+
+function historyNotice(message: string) { byId("replay-status").textContent = message; }
+function historyButton(label: string, action: () => void, disabled = replayIssued) {
+  const button = document.createElement("button");
+  button.type = "button"; button.className = "secondary";
+  button.textContent = label; button.disabled = disabled;
+  button.addEventListener("click", action); return button;
+}
+function renderReplayHistory() {
+  const list = byId("replays"); list.replaceChildren();
+  byId<HTMLButtonElement>("retry-replays").disabled = replayIssued;
+  const catalog = replayCatalog;
+  if (!catalog) {
+    const item = document.createElement("li"); item.className = "empty";
+    item.textContent = replayIssued ? "Loading replay history…" : "Replay history is unavailable. Refresh to retry.";
+    list.append(item); return;
+  }
+  if (catalog.state === "legacy-review") {
+    const item = document.createElement("li");
+    const copy = document.createElement("span");
+    copy.textContent = "Existing replays need review. Applying retention uses their file dates; entries older than seven days will be removed. Nothing is opened or played automatically.";
+    item.append(copy);
+    if (replaySelection === "legacy") {
+      item.append(historyButton(replayIssued ? "APPLYING…" : "CONFIRM RETENTION", () => void adoptReplayHistory()));
+      item.append(historyButton("CANCEL", () => { replaySelection = undefined; renderReplayHistory(); byId("replay-heading").focus(); }));
+    } else item.append(historyButton("REVIEW EXISTING REPLAYS", () => { replaySelection = "legacy"; renderReplayHistory(); list.querySelector<HTMLButtonElement>("button")?.focus(); }));
+    list.append(item); return;
+  }
+  for (const replay of catalog.records) {
+    const item = document.createElement("li");
+    const title = document.createElement("b"); title.textContent = replay.gameId;
+    const details = document.createElement("span");
+    details.textContent = `${replay.seed} · ${formatBytes(replay.bytes)} · expires ${new Date(replay.expiresAt).toLocaleString()}`;
+    item.append(title, details);
+    const selected = replaySelection !== "legacy" && replaySelection?.id === replay.id && replaySelection.generation === replay.generation;
+    if (selected) {
+      const warning = document.createElement("span"); warning.textContent = "Delete this replay from this computer?"; item.append(warning);
+      const confirm = historyButton(replayIssued ? "DELETING…" : "CONFIRM DELETE", () => void deleteSelectedReplay(replay));
+      confirm.dataset.confirmDelete = "true"; item.append(confirm);
+      item.append(historyButton("CANCEL", () => { replaySelection = undefined; renderReplayHistory(); list.querySelector<HTMLButtonElement>("button")?.focus(); }));
+    } else {
+      const button = historyButton("DELETE", () => { replaySelection = { id: replay.id, generation: replay.generation }; renderReplayHistory(); list.querySelector<HTMLButtonElement>("[data-confirm-delete]")?.focus(); });
+      button.setAttribute("aria-label", `Delete replay for ${replay.gameId}`); item.append(button);
+    }
+    list.append(item);
+  }
+  if (!catalog.records.length) {
+    const item = document.createElement("li"); item.className = "empty"; item.textContent = "No replay data yet"; list.append(item);
+  }
+}
+async function refreshReplayHistory() {
+  if (replayIssued || replayDisposed) return;
+  replayIssued = true; const epoch = ++replayEpoch; renderReplayHistory();
+  try {
+    const next = await invoke<ReplayCatalog>("list_replays");
+    if (replayDisposed || replayEpoch !== epoch) return;
+    replayCatalog = next;
+    const selected = replaySelection;
+    if (selected !== "legacy" && selected && !next.records.some((r) => r.id === selected.id && r.generation === selected.generation)) replaySelection = undefined;
+    historyNotice(next.state === "legacy-review" ? "Review the retention policy before opening existing replay data." : `${next.records.length} saved replays · ${formatBytes(next.totalBytes)} on this computer`);
+  } catch {
+    if (!replayDisposed && replayEpoch === epoch) { replayCatalog = undefined; historyNotice("Replay history could not be loaded. Refresh to retry; if local recovery is needed, restart the Hub afterward."); }
+  } finally {
+    if (!replayDisposed && replayEpoch === epoch) { replayIssued = false; renderReplayHistory(); }
+  }
+}
+async function deleteSelectedReplay(replay: StoredReplay) {
+  const selected = replaySelection;
+  if (replayIssued || replayDisposed || !selected || selected === "legacy" || selected.id !== replay.id || selected.generation !== replay.generation) return;
+  replayIssued = true; const epoch = ++replayEpoch; renderReplayHistory();
+  try {
+    const result = await invoke<ReplayDeletion>("delete_replay", { id: replay.id, generation: replay.generation });
+    if (replayDisposed || replayEpoch !== epoch) return;
+    if (result.state === "deleted" || result.state === "not-found") {
+      replayCatalog = replayCatalog && { ...replayCatalog, records: replayCatalog.records.filter((r) => r.id !== replay.id || r.generation !== replay.generation) };
+      replaySelection = undefined; historyNotice(result.state === "deleted" ? "Replay deleted from this computer." : "This replay is no longer saved.");
+    } else if (result.state === "conflict") { replaySelection = undefined; historyNotice("This replay changed. Refresh history before choosing it again."); }
+    else historyNotice("Removal is incomplete. Refresh history to retry cleanup; the replay cannot be opened.");
+  } catch { if (!replayDisposed && replayEpoch === epoch) historyNotice("Deletion could not be confirmed. Refresh history to check its current state."); }
+  finally {
+    if (!replayDisposed && replayEpoch === epoch) { replayIssued = false; renderReplayHistory(); byId("replay-heading").focus(); }
+  }
+}
+async function adoptReplayHistory() {
+  if (replayIssued || replayDisposed || replaySelection !== "legacy") return;
+  replayIssued = true; const epoch = ++replayEpoch; renderReplayHistory();
+  try {
+    const next = await invoke<ReplayCatalog>("review_replay_retention");
+    if (replayDisposed || replayEpoch !== epoch) return;
+    replayCatalog = next; replaySelection = undefined; historyNotice("Replay retention applied. Expired entries are unavailable and removed when cleanup succeeds.");
+  } catch { if (!replayDisposed && replayEpoch === epoch) historyNotice("Retention could not be applied. Review local files and retry; no successful removal is claimed."); }
+  finally {
+    if (!replayDisposed && replayEpoch === epoch) { replayIssued = false; renderReplayHistory(); byId("replay-heading").focus(); }
+  }
 }
 
 async function createSession() {
@@ -184,6 +286,9 @@ function escapeHtml(value: string) {
 
 function formatBytes(bytes: number) { return bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`; }
 
+byId("retry-replays").addEventListener("click", () => void refreshReplayHistory());
+window.addEventListener("pagehide", () => { replayDisposed = true; replayEpoch += 1; });
+
 byId("refresh").addEventListener("click", () => void refresh());
 byId("create-session").addEventListener("click", () => void createSession());
 byId("save-settings").addEventListener("click", () => void saveSettings());
@@ -194,4 +299,4 @@ byId("open-paired-session").addEventListener("click", () => {
 });
 
 void refresh();
-window.setInterval(() => void refresh(), 3_000);
+window.setInterval(() => void refresh(true), 3_000);

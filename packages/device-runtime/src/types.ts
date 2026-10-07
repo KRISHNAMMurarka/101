@@ -55,6 +55,11 @@ export interface Connection {
   start(): Result; stop(reason?: string): void; renew(principalId: string): Result;
   /** Observe terminal route loss after its queues and lease have been released. */
   onClose(listener: (reason: string) => void): () => void;
+  /** Optional actual-runtime capability. The same Promise fulfills after terminal
+   * retirement, synchronous close/release callouts, and all runtime-reserved apply
+   * returns settle. Observation neither stops nor renews a route. A hung returned
+   * Promise keeps this pending. It does not prove effects or detached native cleanup. */
+  whenSettled?(): Promise<void>;
   status(): Readonly<{ state: "idle" | "prepared" | "active" | "closed"; reason?: string; pending: number }>;
   limits(): Readonly<{ maxHz: number; maxAgeMs: number; expiresAt: number }> | undefined;
   operations(): readonly OperationRecord[];

@@ -2269,6 +2269,7 @@ dependencies = [
  "axum",
  "base64 0.22.1",
  "if-addrs",
+ "libc",
  "mdns-sd",
  "mime_guess",
  "open",

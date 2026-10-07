@@ -19,6 +19,7 @@ examples.push({ name: 'camera-controls', source: 'examples/browser-resources/cam
 examples.push({ name: 'ble-switch-output', source: 'examples/browser-resources/ble-switch-output.ts' });
 examples.push({ name: 'hid-switch-output', source: 'examples/browser-resources/hid-switch-output.ts' });
 examples.push({ name: 'serial-switch-output', source: 'examples/browser-resources/serial-switch-output.ts' });
+examples.push({ name: 'runtime-settlement', source: 'examples/runtime-lifecycle/settlement.ts' });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileHash = path => hash(readFileSync(path));
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();

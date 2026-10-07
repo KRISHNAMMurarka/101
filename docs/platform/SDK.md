@@ -80,6 +80,128 @@ the supplied concrete resource references. A descriptor's permission list declar
 operations; it does not grant access. Applications must not expose this embedded authority
 API directly to untrusted network callers.
 
+## Public TypeScript contract
+
+Use `@101/connect` for the general facade, or the documented package-root exports
+of its model, runtime, browser and transport packages. Import public types from the
+same roots. Do not import source paths, compiled implementation files, registries,
+queues or lease helpers. Installed export maps and declarations define the packaged
+surface; a workspace source alias does not establish an installed contract.
+
+### Contract families
+
+| Public contract | Lifecycle and outcome boundary | Detailed reference |
+| --- | --- | --- |
+| Descriptors, values, profiles, recipes and codecs | Parsers/codecs validate bounded data; compatibility and resolution describe possibilities. Descriptions, labels, recipes and extensions do not grant access or choose executable code. | [Descriptions](#descriptions-and-signal-meaning), [recipes](#declarative-recipe-v1), [profiles](#connector-and-device-profile-manifests), [revisions](#descriptor-revisions-and-extensions) |
+| `DeviceRuntime`, `Connection`, `DeliveryContext` | The trusted host registers concrete providers, authorizes each exact source/sink operation and owns `flush()`. Admission, route authority, handler return, effect evidence and settlement are separate outcomes. | [Scheduling](#publication-and-scheduling), [ownership](#ownership-cleanup-and-async-providers), [operations](#property-command-and-job-operations) |
+| Recipe, group, handoff, processor and ownership controllers | Each controller's declared phases, results and retained generation govern that operation; controller consent does not replace concrete runtime grants. | [Groups](#route-group-contracts), [handoff](#workload-handoff), [processor failure](#processor-failure-and-restart-propagation), [input ownership](#application-input-ownership) |
+| Storage, settings, installation, catalog and recording controllers | Use each exported result union and its transaction/retention contract. Stored history and selections are inert; CAS, deletion floors and fresh approvals remain authoritative. | [Settings](#versioned-owner-settings), [managed data](#managed-owner-data), [installation](#reviewed-local-extension-installation), [recording](#opt-in-application-recording), [backup](#local-managed-owner-backup-and-reviewed-recovery) |
+| Browser capture, media and output providers | Selection, capture consent and output consent have their own exact current handles. Route grants are independent. Owned versus borrowed native resources, issued work and async close limits belong to the selected provider profile. | [Selection](#permissioned-browser-selection), [camera](#selected-browser-camera-raster), [audio](#private-application-audio), [HID/Serial output](#selected-hid-and-serial-switch-output), [BLE output](#selected-ble-switch-output) |
+| Peer transports, authentication and remote resources | Transport connection/sender admission is not authenticated enrollment, resource approval, receiver delivery or effect. Generation, transcript, mapping and owner grants are separate. | [Remote binding](#bind-a-remote-provider), [WSS](#secure-websocket-fallback), [invitation connection](#explicit-connection-to-an-enrolled-receiver) |
+
+`EmbeddedRuntime` remains an exported constructor implementing `DeviceRuntime`;
+existing public callers may construct it. General consumers should use
+`createDeviceRuntime()` and the `DeviceRuntime`/`Connection` contracts. Its registry,
+lease and dispatch helper members are implementation plumbing rather than resource
+operations. Their signatures are experimental implementation helpers outside the
+stabilized `DeviceRuntime` contract; compatible constructor use remains supported.
+Do not call those helpers to bypass the declared host/route lifecycle.
+
+### Results and exceptions
+
+The core runtime's `Result<T>` is `{ ok: true, value: T }` or
+`{ ok: false, reason: string }`. Successful void operations carry
+`value: undefined`. Inspect `ok` before reading `value`; a failed result contains
+no usable value or new authority. Core reasons such as `denied`, `busy`, `stale`,
+`expired` and `unknown-endpoint` are diagnostics for the attempted operation, not
+permission to retry, renew, reconnect or substitute a resource automatically.
+The string type is open: retain a safe fallback for an unfamiliar reason.
+
+Other APIs use their own exported result unions: for example `SettingsResult` adds
+a success status, and `OwnerDataResult`/`OwnerBackupResult` have profile-specific
+failure unions. Do not replace those types with a universal core `Result` or assume
+that every asynchronous API resolves a result. `readVerifiedResource()` returns
+bytes or rejects; `ResourceTransferError.code` identifies its transfer failure.
+Model validation can throw `DeviceValidationError` with `code` and `path`.
+Runtime constructors/registration may throw for malformed descriptors or unsupported
+operations; invalid integer capacities throw `RangeError`, invalid callbacks or
+configuration can throw `TypeError`, and registration after runtime close throws.
+Catch exceptions at those declared boundaries. Error message text is diagnostic
+copy, not a versioned wire protocol or identity claim.
+
+### Core route lifecycle
+
+| Method/state | Meaning |
+| --- | --- |
+| `route()` / `idle` | Creates an inert connection; validates local capacity options but does not authorize, activate or deliver. Registration handles are identity-bound objects, not copied IDs. |
+| `prepare()` / `prepared` | Obtains current host approval and reserves the owner lease without dispatch or a provider release. `activate()` rechecks approval/currentness before becoming active. |
+| `start()` / `active` | From idle, authorizes and activates; from prepared, delegates to activation. A refused idle start leaves that connection idle with its diagnostic reason, so an explicit later attempt is possible. Failed prepared activation retires it. |
+| `stop()`, revoke, expiry, unregister or runtime close / `closed` | Terminal authority loss; queues/leases retire and current delivery signals abort before `onClose` and the active provider's one synchronous `release` call. A prepared or never-active route has no issued output to release. Closed routes cannot restart or renew; recovery needs a new route and current grants. |
+
+`publish()` success means local admission/snapshot acceptance, with accepted and
+rejected route counts. A latest property can be retained with zero routes; success
+is never proof of provider dispatch or effect. `flush()` returns void and owns no
+background tick. `limits()` is present only for an active, current route;
+`status().pending` counts queued latest/reliable work, not all returned async work.
+Runtime close, unregister and expiry retire affected prepared/active routes.
+An idle handle has no issued work and is not in those active/prepared sets;
+explicitly stop idle handles before awaiting their settlement.
+
+`onClose` announces terminal route loss and returns an unsubscribe function. It is
+not a native cleanup receipt. Throwing close/release observers cannot reopen authority;
+ignored observer/cleanup exceptions do not establish successful physical cleanup.
+
+### Returned work, effect evidence and settlement
+
+`DeliveryContext.isCurrent()` and its abort signal fence a delivery; check again
+immediately before effects after every await. Operation history records handler state
+(`not-started`, `running`, `returned`, `failed`) independently of effect evidence
+(`none`, `dispatched`, `target-acknowledged`, `observed`). Successful callback return
+supplies `unverified`, not a physical observation. A trusted provider's report supplies
+only the evidence it actually has. Stronger late ACK/observation may update historical
+records after retirement; it never restores route authority or retries an operation.
+A cancelled/expired callback can remain running, and its actual Promise retains the
+runtime workload reservation until it fulfills or rejects.
+
+`Connection.whenSettled?()` is an optional capability. When present on an embedded
+route or its inspector facade, repeated calls return the same Promise. It fulfills
+only after terminal retirement, synchronous close/release callouts and all that
+route's runtime-reserved `apply` returns have settled, including reserved frozen
+flush work. Observing it neither stops nor renews the route. Calling it while idle,
+prepared or active waits for retirement; hung returned work keeps it pending.
+Provider rejection updates ordinary history and still permits the barrier to fulfill;
+fulfillment is a settlement result, not an operation-success result.
+
+```ts
+const whenSettled = route.whenSettled;
+route.stop('owner-stop');
+if (!whenSettled) throw new Error('Connection settlement is unavailable');
+await whenSettled.call(route);
+// Now dispose only resources whose lifetime is represented by those apply returns.
+```
+
+If the capability is absent, retain the host's own provider-work tracking; neither
+`pending: 0` nor `onClose` is a substitute. The barrier does not await detached native
+work, an asynchronous value returned from the synchronous `release(): void` callback,
+process/socket shutdown, borrowed producer lifetime or physical cancellation.
+Those need the provider's explicit teardown contract and actual host observation.
+
+A Promise return type alone is not a universal quiescence guarantee.
+`OwnerBackupController.close()` and `MediaRecording.close()` wait for their actual
+owned tracked work, while `ProcessorInstallation.close()` and haptic close retire
+synchronously. WebRTC/WSS `disconnect(): Promise<void>` retires the generation and
+requests native port closure; it does not observe browser-internal or raw socket
+quiescence. Preserve each API's documented ownership and failure boundary.
+
+The [public names and compatibility policy](RELEASE-CONTRACT.md#public-names-and-compatibility)
+separates package version, schema/profile/codec revision and negotiated wire revision.
+Optional capabilities need presence checks; unknown revisions or undeclared semantics
+fail closed. Experimental 0.x changes require a documented migration preserving
+accepted consumers; 1.0 deprecation and security-revocation rules are in that policy.
+Namespaced extension data remains inert and cannot select executable factories,
+fetch URLs, revive grants or infer native support. This reference specifies software
+contracts; it does not promote hardware, full-platform or physical qualification.
+
 ## Bind a remote provider
 
 `PeerDataTransport` owns raw reliable/disposable WebRTC lanes and captures an immutable current-generation offer/answer only after complete ICE gathering. `AuthenticatedResourcePeer` signs a transcript containing those exact SDP bytes and fingerprints, bilateral fresh challenges, endpoint keys, roles and locally expected application/session/epoch. P-256/SHA-256 signatures use established cryptographic providers. Both owners compare the full verified digest and confirm enrollment, or supply already enrolled remote key pins. Application packets and resource scopes stay closed until both endpoints finish. Code possession and encryption alone do not establish endpoint identity.
@@ -1642,8 +1764,10 @@ cancelled by route loss. `OperationRecord.handlerResult` records whether the
 handler has not started, is running, returned or failed. `effectEvidence`
 separately records dispatch, target acknowledgment or observed effect; `none`
 means no such evidence. A deadline or cancellation changes the operation
-state without claiming the handler has stopped. If it later returns, its
-handler result can update while the expired/cancelled state remains. The
+state without claiming the handler has stopped. A later ordinary return updates
+its handler result while preserving expired/cancelled state. A stronger late
+`target-acknowledged` or `observed` report may update historical state/effect
+evidence; the route remains retired and no authority is renewed. The
 runtime never automatically retries a command or job; a host with a
 non-idempotent operation must use a new explicit operation after resolving
 an ambiguous effect. The threshold example's set-state relay command is
@@ -2942,7 +3066,7 @@ native cancellation are not inferred.
 `@101/connect/examples/hid-switch-output` and
 `@101/connect/examples/serial-switch-output` export their respective
 `createBrowser…SwitchOutputCaller`, `check…SwitchOutputWithoutDevice` and
-`run…SwitchOutputWorkerFixture`. The current seven-package offline SDK has 173
+`run…SwitchOutputWorkerFixture`. The linked switch-output receipt’s seven-package offline SDK had 173
 source inputs and 391 installed files. Each corrected HID, Serial and BLE caller
 passes four source and four ordinary installed Chromium/WebKit runs, 15 checks
 per run. Native-shaped software ports and genuine owned Workers establish the
@@ -3214,3 +3338,48 @@ The installed caller proof uses an owned Worker and explicitly trusted software 
 `createHapticOutputController` honors release or `close()` called synchronously inside a trusted backend's `invoke`: an issued attempt receives its one optional cancel request after its route is recorded. Synchronous refusals create no dispatched effect. The actual issued Promise keeps the backend busy until settlement; logical cancellation or the 100ms timeout cannot free it. `close():void` remains synchronous retirement, and optional cancellation requests do not prove physical cancellation.
 
 Late dispatched/unverified reports retain cancelled/expired/failed operation status and actual dispatched history. Existing stronger target acknowledgement/observation may update historical evidence without resuming work. The installed software proof uses genuine public runtime grants and held software Promises; native haptic dispatch and physical feedback are deferred.
+
+## Private desktop replay retention
+
+The Hub’s local main window uses `desktop-local-replay-retention/1` for explicitly
+saved bare Replay101 data. The selected macOS native store fixes expiry at the
+original native ingestion time plus seven days; replacement never extends it.
+Limits are16 MiB per replay,32 live entries,50 MiB including old/new/staged and
+unaccepted bytes,64 directory entries,64 KiB index/audit and128 redacted audit
+rows retained30 days. One issued native operation runs with zero queue.
+
+Captured no-follow directory/file identities, private permissions and a lifetime
+native lock fence local filesystem changes. Durable cleanup intent precedes body
+creation/deletion; bounded rename/fsync commits metadata. A stale deletion
+generation reports conflict. Uncertain cleanup claims no removed count; restart
+resumes the exact intent before serving data. Corrupt/unknown files fail closed.
+Legacy adoption is an explicit review using conservative native file dates, never
+source timestamps; it does not restore runtime grants or autoplay recordings.
+
+Expiry runs when the Hub next checks history, with no offline erasure timer claim.
+Backwards/invalid native clocks refuse access. Opaque `event.data` remains bounded
+local JSON and is not certified secret-free; this profile exposes no generic
+export. Whole-index backup rollback, power loss, malicious same-user access and
+other OS targets are unqualified. The built UI uses inline confirmation, retry,
+redacted failures,44px controls and visible keyboard focus. Background status
+polling pauses history refresh during selection/focus. WebKit’s observed button
+keyboard mode was Alt+Tab; Chromium used Tab. Controlled browser invoke fixtures
+qualify the built DOM, not an actual Tauri bridge or native app launch.
+[Scoped native and UI evidence](receipts/2026-10-07-desktop-replay-retention.json).
+
+## Public route settlement example
+
+`@101/connect/examples/runtime-settlement` exports `runRouteSettlementCaller`,
+`RouteSettlementTarget` and `RouteSettlementAttempt`. It uses public roots only,
+exact separately approved reliable subscribe→invoke routes, and the optional
+[returned-work barrier](#returned-work-effect-evidence-and-settlement). A private
+owned Node Worker holds two actual command returns, supplies one late software
+ACK and one rejection, then exits separately. Host release errors cannot skip the
+raw-return/barrier waits. This example proves software return/evidence semantics;
+it neither moves the OS pointer nor establishes native/physical quiescence.
+
+The scoped current offline SDK has174 source inputs,394 installed files and
+seven tarballs; ten clean consumer checks pass. The ordinary installed public
+caller adds nine checks with actual owned Worker exit observed. Existing matching
+consumer migrations and experimental helpers follow the release compatibility
+policy. [E01 evidence](receipts/2026-10-07-runtime-settlement.json).

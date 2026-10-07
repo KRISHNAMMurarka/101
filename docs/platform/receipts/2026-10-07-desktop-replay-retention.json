@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass selected private macOS replay build; exact final commit gates pending",
+  "localOnly": true,
+  "profile": "desktop-local-replay-retention/1",
+  "base": "1ab7579de6946356d3704f947392f81e39621bf3",
+  "candidateSourceTree": "c1bf3a61f444a4d7ff0a3ed0b78b56b1a98dbe0d",
+  "sourceCommit": null,
+  "tasks": [
+    "B05",
+    "S15",
+    "V11"
+  ],
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "sourceSha256": {
+    "apps/desktop-hub/src-tauri/Cargo.lock": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+    "apps/desktop-hub/src-tauri/Cargo.toml": "cd635d531a38850c1632c6ae4af91a1bcb477257ee455123439e5b3ebbce5b4f",
+    "apps/desktop-hub/src-tauri/src/lib.rs": "52c9abc3a57e25346347151357a24ce17eb6156f011baaa605ce76b0b7bd3272",
+    "apps/desktop-hub/src-tauri/src/replay_storage.rs": "cccd2a567f7768e717798a16001d9c7d7c6e3468bcf0ea708ef6dac97df4d31c",
+    "apps/desktop-hub/src-tauri/src/storage.rs": "e0af442bec57699bdd946044ce50b44742657249fc1be732edff78df1919cfb8",
+    "apps/desktop-hub/src/main.ts": "bff9b8d43c732dfdb2d2bdd7eeb1caddfd97efdaac589704eab7eff060f9b7bc",
+    "apps/desktop-hub/src/style.css": "3e7175e3aae4ee37918f5a3b32264022fa9441bd4ea84e302370245a76567468",
+    "apps/desktop-hub/src/types.ts": "5885fc010b61126bde10efbf887a35be972cf80679672aa0f47eb4a90f1440ad",
+    "tools/qa-desktop-replay-retention.mjs": "4da9539081630c2d02c5c11fce648e780ff78c24d6c44025f4463ce69f2f0841"
+  },
+  "contract": {
+    "limits": {
+      "retentionMs": 604800000,
+      "perReplayBytes": 16777216,
+      "aggregateBytesIncludingOldNewMetadataStaging": 52428800,
+      "liveRecords": 32,
+      "directoryEntries": 64,
+      "indexBytesIncludingAudit": 65536,
+      "auditRows": 128,
+      "auditRetentionMs": 2592000000,
+      "nativeIssued": 1,
+      "nativeQueue": 0
+    },
+    "durability": "captured no-follow directory + actual inode/uid/single-link checks and lifetime native lock; unique0600 body, bounded metadata stage/rename/fsync; durable cleanup intent before body creation/deletion; old body remains accepted until replacement index commit",
+    "clock": "native wall-time ingest retained across replacement, source startedAt/timestamps unconverted; persisted+in-memory backward clock refusal; expired files denied/swept on owned activation, no offline timer claim",
+    "authority": "local main Tauri window only; manager try_lock; no HTTP replay routes or restored runtime grants; unavailable replay store does not block existing Hub startup",
+    "deletion": "exact listed generation; stale replacement conflicts; deletion marks inaccessible before native unlink+directory sync; uncertain cleanup never reports removed counts; retries complete current pending intent",
+    "legacy": "explicit adoption using existing native mtime, not source time; malformed/oversize/unknown/symlink or over-quota legacy refuses adoption and requires local recovery; no automatic raw-file resurrection",
+    "UI": "Inline confirmation/cancel, disabled pending command, selection/epoch fencing, redacted states, scoped monochrome44px/focus/reduced-motion; actual built Chromium/WebKit11checks each with controlled invoke fixtures. Actual Tauri bridge/nativeapp unrun.",
+    "settingsAtomicHelperUnchanged": true
+  },
+  "native": {
+    "focused": {
+      "path": "/tmp/101-desktop-replay-current-source.json",
+      "sha256": "1baf20db07dd523590f795897a8a78cdf59a60e0f4d2e09d7d03c1b79285b28f"
+    },
+    "focusedPassed": 14,
+    "allNative": {
+      "path": "/tmp/101-desktop-replay-full-native.json",
+      "sha256": "1bd612ef35652024725bf93bc7268bbff924c15b25a3938f4e3c23361582c2ce"
+    },
+    "allNativePassed": 25,
+    "actualCompiler": "cargo 1.94.1 (29ea6fb6a 2026-03-24)",
+    "actualRust": "rustc 1.94.1 (e408947bf 2026-03-25)",
+    "nativeAppLaunched": false,
+    "processGroupsAndScratchSettled": true
+  },
+  "ui": {
+    "chromium": {
+      "receipt": {
+        "path": "/tmp/101-desktop-replay-ui-final-chromium.json",
+        "sha256": "c38ca43159ada81c4ce109653309984134f277ce80c947ba365a3ef215443342"
+      },
+      "version": "149.0.7827.55",
+      "checks": 11,
+      "builtProof": {
+        "path": "/tmp/101-desktop-replay-ui-IC43l7/result.json",
+        "sha256": "bc641ee2a4dd49bfe02f4f8261ae2f494a5a190dd14490931b5142fe0ec98784"
+      },
+      "scope": "actual built software UI; native IPC fixture, no native app or device"
+    },
+    "webkit": {
+      "receipt": {
+        "path": "/tmp/101-desktop-replay-ui-final-webkit.json",
+        "sha256": "7d6c79b5b7fb9c37dd32f9992aaf0a7eee406fad4fbcfbbce34d9062b2a860b8"
+      },
+      "version": "26.5",
+      "checks": 11,
+      "builtProof": {
+        "path": "/tmp/101-desktop-replay-ui-7Hlh0Q/result.json",
+        "sha256": "44241dcec62c6e993669ca82dc0170805a2d1454c096ae8582cfdacf121f92d0"
+      },
+      "scope": "actual built software UI; native IPC fixture, no native app or device"
+    }
+  },
+  "history": [
+    {
+      "classification": "Original actual native implementation failed three genuine ReplayRecorder prefix regressions: expiry, aggregate quota and33rd live entry.",
+      "receipt": {
+        "path": "/tmp/101-desktop-replay-old-native.json",
+        "sha256": "37babc2dc7f085f2df99fad8136f579a38c098ae3ee65f94280610c2cc948296"
+      }
+    },
+    {
+      "classification": "Source review found focus and timeout issues; root witnessed actual built keyboard focus loss and actual TERM-ignoring owned process remaining beyond budget.",
+      "receipts": [
+        {
+          "path": "/tmp/101-desktop-replay-source-independent-review.json",
+          "sha256": "fd79fd02ad700b39f14af58ed16b8860fd1366f29e0d0b1264eb14d9e1c11367"
+        },
+        {
+          "path": "/tmp/101-desktop-replay-ui-focus-old.json",
+          "sha256": "2b4c6bdd7cd1d6bd005f2adf39b008e81dd56a0cfefc9cdc7e905fb395bb5ea7"
+        },
+        {
+          "path": "/tmp/101-desktop-replay-compiler-term-old-valid.json",
+          "sha256": "af259a98006d09e6647a4fa21ee5b2ac3cc20f982070f46ba5e644abdbd61797"
+        }
+      ]
+    },
+    {
+      "classification": "Initial TERM helper lacked injected root and started no child; not OLD evidence. Initial WebKit Tab navigation uses macOS alternate Alt+Tab for buttons; corrected QA proves actual alternate keyboard journey and retains first unsupported-default-Tab failure.",
+      "receipts": [
+        {
+          "path": "/tmp/101-desktop-replay-compiler-term-old.json",
+          "sha256": "c7a28a5d1949d3760871471f25b0afeb4ccc356275a86e1a9cbf1509767f7ae5"
+        },
+        {
+          "path": "/tmp/101-desktop-replay-ui-current-webkit.json",
+          "sha256": "0887cfc2406b6a353b3b86cd4d27d007fd58079d0d9c9696b7467af5d9395673"
+        }
+      ]
+    }
+  ],
+  "recovery": {
+    "compilerTermination": {
+      "path": "/tmp/101-desktop-replay-compiler-term-fixed.json",
+      "sha256": "70994bb4acb3be8e85668b877fda27b2d0ee54f8fb54491be5a1979176a275a2"
+    },
+    "keyboard": "Automatic Hub status refresh continues, but history polling pauses during selection or keyboard focus. Explicit refresh and native generation conflicts protect changed data.",
+    "webkitKeyboardMode": "Alt+Tab/Alt+Shift+Tab observed; Chromium Tab/Shift+Tab observed"
+  },
+  "sourceReview": {
+    "path": "/tmp/101-desktop-replay-repaired-source-independent-review.json",
+    "sha256": "b8d967ae9eb8c34a108263db9bcbb86f1673a83adb9d96d8b0a338873188cc90"
+  },
+  "preservation": {
+    "path": "/tmp/101-replay-settlement-gate-repaired-software-preservation.json",
+    "sha256": "fa4d4a9d4614e9b905f8c48c6f5b3c7ec987062117a25d14df655054207a9b31"
+  },
+  "requiredGates": {
+    "status": "pending exact candidate"
+  },
+  "scopeLimits": [
+    "selected macOS native filesystem target only; Linux syscall code/other targets unqualified and unsupported targets deny",
+    "cooperative app owner, no malicious same-user/OS sandbox claim",
+    "whole-index/file backup rollback has no independent trusted floor",
+    "opaque event.data is local bounded JSON and is not certified secret-free; no generic export",
+    "Tauri/framework input allocation and external IPC queues are not globally memory bounded by the native reservation",
+    "prepared crash-phase recovery tests are not physical crash/durable power-loss qualification",
+    "no native app/webview/UI/device/network launched; existing live recording untouched",
+    "whole B05/S15/V11 remain OPEN"
+  ],
+  "wholeTasksRemainOpen": [
+    "B05",
+    "S15",
+    "V11"
+  ],
+  "currentCatalogAcceptedRows": 0
+}

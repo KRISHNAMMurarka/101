@@ -18,6 +18,7 @@ tauri-build = { version = "2.6.3", features = [] }
 axum = { version = "0.8.7", features = ["json"] }
 base64 = "0.22.1"
 if-addrs = "0.15.0"
+libc = "=0.2.189"
 mdns-sd = "0.21.0"
 mime_guess = "2.0.5"
 open = "5.3.3"

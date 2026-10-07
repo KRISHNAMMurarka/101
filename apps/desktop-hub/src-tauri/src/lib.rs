@@ -1,3 +1,4 @@
+mod replay_storage;
 mod signaling;
 mod storage;
 
@@ -12,10 +13,11 @@ use serde::Serialize;
 use serde_json::Value;
 use signaling::{ip_strings, router, ApiError, HttpState, SignalingBroker};
 use storage::{
-    list_game_packages_at, list_replays_at, load_settings, read_replay_at,
-    register_game_package_at, save_replay_at, save_settings, validate_settings, AppPaths,
+    list_game_packages_at, load_settings,
+    register_game_package_at, save_settings, validate_settings, AppPaths,
     HubSettings, InstalledGame, StoredReplay,
 };
+use replay_storage::{ReplayCatalog, ReplayDeletion, ReplayStore};
 use tauri::async_runtime::JoinHandle;
 use tauri::{Manager, State};
 use tokio::{
@@ -46,6 +48,7 @@ struct HubManager {
     broker: Arc<Mutex<SignalingBroker>>,
     settings: RwLock<HubSettings>,
     paths: AppPaths,
+    replays: Mutex<Result<ReplayStore, String>>,
     status: RwLock<HubStatus>,
     running: AsyncMutex<Option<RunningHub>>,
 }
@@ -61,9 +64,19 @@ impl HubManager {
                 ..HubStatus::default()
             }),
             settings: RwLock::new(settings),
+            replays: Mutex::new(ReplayStore::open(&paths).map_err(display_error)),
             paths,
             running: AsyncMutex::new(None),
         })
+    }
+
+    fn replay_operation<T>(&self, action: impl FnOnce(&mut ReplayStore) -> signaling::ApiResult<T>) -> Result<T, String> {
+        let mut owned = self.replays.try_lock().map_err(|error| match error {
+            std::sync::TryLockError::WouldBlock => "Replay storage is busy; retry after the current operation".to_owned(),
+            std::sync::TryLockError::Poisoned(_) => "Replay storage is unavailable; restart the Hub after local recovery".to_owned(),
+        })?;
+        let store = owned.as_mut().map_err(|_| "Replay storage is unavailable; restart the Hub after local recovery".to_owned())?;
+        action(store).map_err(display_error)
     }
 
     async fn start(&self) -> Result<(), String> {
@@ -268,23 +281,33 @@ fn launcher_url(
     }
 }
 
-#[tauri::command]
-fn list_replays(manager: State<'_, Arc<HubManager>>) -> Result<Vec<StoredReplay>, String> {
-    list_replays_at(&manager.paths).map_err(display_error)
+fn replay_window(window: &tauri::WebviewWindow) -> Result<(), String> {
+    if window.label() != "main" { return Err("Replay history belongs to the local Hub window".into()); } Ok(())
 }
 
 #[tauri::command]
-fn save_replay(
-    id: String,
-    replay: Value,
-    manager: State<'_, Arc<HubManager>>,
-) -> Result<StoredReplay, String> {
-    save_replay_at(&manager.paths, &id, replay).map_err(display_error)
+fn list_replays(window: tauri::WebviewWindow, manager: State<'_, Arc<HubManager>>) -> Result<ReplayCatalog, String> {
+    replay_window(&window)?; manager.replay_operation(ReplayStore::catalog)
 }
 
 #[tauri::command]
-fn read_replay(id: String, manager: State<'_, Arc<HubManager>>) -> Result<Value, String> {
-    read_replay_at(&manager.paths, &id).map_err(display_error)
+fn save_replay(id: String, replay: Value, window: tauri::WebviewWindow, manager: State<'_, Arc<HubManager>>) -> Result<StoredReplay, String> {
+    replay_window(&window)?; manager.replay_operation(|store| store.save(&id, replay))
+}
+
+#[tauri::command]
+fn read_replay(id: String, window: tauri::WebviewWindow, manager: State<'_, Arc<HubManager>>) -> Result<Value, String> {
+    replay_window(&window)?; manager.replay_operation(|store| store.read(&id))
+}
+
+#[tauri::command]
+fn delete_replay(id: String, generation: String, window: tauri::WebviewWindow, manager: State<'_, Arc<HubManager>>) -> Result<ReplayDeletion, String> {
+    replay_window(&window)?; manager.replay_operation(|store| store.delete(&id, &generation))
+}
+
+#[tauri::command]
+fn review_replay_retention(window: tauri::WebviewWindow, manager: State<'_, Arc<HubManager>>) -> Result<ReplayCatalog, String> {
+    replay_window(&window)?; manager.replay_operation(ReplayStore::adopt)
 }
 
 #[tauri::command]
@@ -433,6 +456,8 @@ pub fn run() {
             list_replays,
             save_replay,
             read_replay,
+            delete_replay,
+            review_replay_retention,
             list_game_packages,
             register_game_package,
         ])

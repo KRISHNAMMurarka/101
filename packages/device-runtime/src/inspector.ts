@@ -205,6 +205,7 @@ export function createRuntimeInspector(options: RuntimeInspectorOptions): Runtim
           record('stop', entry.id, 'ok', reason);
         },
         onClose: (listener: (reason: string) => void) => connection.onClose(listener),
+        ...(typeof connection.whenSettled === 'function' ? { whenSettled: connection.whenSettled.bind(connection) } : {}),
         status: () => connection.status(), limits: () => connection.limits(), operations: () => connection.operations() });
       entry.unsubscribe = connection.onClose(reason => {
         if (publishingLoss && reason === publishingLoss.quality) {

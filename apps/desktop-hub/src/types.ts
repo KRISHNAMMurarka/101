@@ -37,6 +37,8 @@ export interface StoredReplay {
   gameVersion: string;
   seed: string;
   savedAt: number;
+  expiresAt: number;
+  generation: string;
   bytes: number;
 }
 
@@ -46,4 +48,20 @@ export interface InstalledGame {
   version: string;
   renderer: string;
   path: string;
+}
+
+export interface ReplayCatalog {
+  profile: "desktop-local-replay-retention/1";
+  revision: number;
+  limits: { retentionMs: number; perReplayBytes: number; aggregateBytes: number; liveReplays: number };
+  totalBytes: number;
+  records: StoredReplay[];
+  state: "ready" | "legacy-review";
+  pendingCleanup: number;
+}
+
+export interface ReplayDeletion {
+  state: "deleted" | "not-found" | "conflict" | "cleanup-pending" | "unavailable";
+  removedCount: number;
+  removedBytes: number;
 }

@@ -8,9 +8,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use walkdir::WalkDir;
 
-use crate::signaling::{now_ms, validate_identifier, ApiError, ApiResult};
+use crate::signaling::{validate_identifier, ApiError, ApiResult};
 
-const MAX_REPLAY_BYTES: usize = 16 * 1024 * 1024;
 const MAX_GAME_BYTES: u64 = 250 * 1024 * 1024;
 const MAX_GAME_FILES: usize = 20_000;
 
@@ -101,110 +100,27 @@ pub fn validate_settings(settings: &HubSettings) -> ApiResult<()> {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct StoredReplay {
     pub id: String,
     pub game_id: String,
     pub game_version: String,
     pub seed: String,
     pub saved_at: u64,
-    #[serde(default)]
+    pub expires_at: u64,
+    pub generation: String,
     pub bytes: u64,
 }
 
+// Compatibility helpers own one temporary native store. Product commands retain one manager store.
 pub fn save_replay_at(paths: &AppPaths, id: &str, replay: Value) -> ApiResult<StoredReplay> {
-    validate_identifier(id, 96)?;
-    let object = replay
-        .as_object()
-        .ok_or_else(|| ApiError::bad_request("Replay must be a JSON object"))?;
-    let game_id = object
-        .get("gameId")
-        .and_then(Value::as_str)
-        .ok_or_else(|| ApiError::bad_request("Replay gameId is required"))?;
-    let game_version = object
-        .get("gameVersion")
-        .and_then(Value::as_str)
-        .ok_or_else(|| ApiError::bad_request("Replay gameVersion is required"))?;
-    let seed = object
-        .get("seed")
-        .and_then(Value::as_str)
-        .ok_or_else(|| ApiError::bad_request("Replay seed is required"))?;
-    validate_identifier(game_id, 64)?;
-    if game_version.is_empty() || game_version.len() > 64 || seed.is_empty() || seed.len() > 256 {
-        return Err(ApiError::bad_request("Invalid replay metadata"));
-    }
-    let bytes = serde_json::to_vec(&replay).map_err(json_error)?;
-    if bytes.len() > MAX_REPLAY_BYTES {
-        return Err(ApiError::bad_request(
-            "Replay exceeds the 16 MB local limit",
-        ));
-    }
-    atomic_write(&paths.replays.join(format!("{id}.json")), &bytes)?;
-    Ok(StoredReplay {
-        id: id.into(),
-        game_id: game_id.into(),
-        game_version: game_version.into(),
-        seed: seed.into(),
-        saved_at: now_ms(),
-        bytes: bytes.len() as u64,
-    })
+    crate::replay_storage::ReplayStore::open(paths)?.save(id, replay)
 }
-
 pub fn list_replays_at(paths: &AppPaths) -> ApiResult<Vec<StoredReplay>> {
-    let mut records = Vec::new();
-    for entry in fs::read_dir(&paths.replays).map_err(io_error)? {
-        let entry = entry.map_err(io_error)?;
-        let path = entry.path();
-        if path.extension().and_then(|value| value.to_str()) != Some("json") || !path.is_file() {
-            continue;
-        }
-        let metadata = entry.metadata().map_err(io_error)?;
-        if metadata.len() as usize > MAX_REPLAY_BYTES {
-            continue;
-        }
-        let value: Value = match serde_json::from_slice(&fs::read(&path).map_err(io_error)?) {
-            Ok(value) => value,
-            Err(_) => continue,
-        };
-        let Some(object) = value.as_object() else {
-            continue;
-        };
-        let (Some(game_id), Some(game_version), Some(seed)) = (
-            object.get("gameId").and_then(Value::as_str),
-            object.get("gameVersion").and_then(Value::as_str),
-            object.get("seed").and_then(Value::as_str),
-        ) else {
-            continue;
-        };
-        let Some(id) = path.file_stem().and_then(|value| value.to_str()) else {
-            continue;
-        };
-        records.push(StoredReplay {
-            id: id.into(),
-            game_id: game_id.into(),
-            game_version: game_version.into(),
-            seed: seed.into(),
-            saved_at: modified_ms(&metadata),
-            bytes: metadata.len(),
-        });
-    }
-    records.sort_by(|left, right| {
-        right
-            .saved_at
-            .cmp(&left.saved_at)
-            .then(left.id.cmp(&right.id))
-    });
-    Ok(records)
+    Ok(crate::replay_storage::ReplayStore::open(paths)?.catalog()?.records)
 }
-
 pub fn read_replay_at(paths: &AppPaths, id: &str) -> ApiResult<Value> {
-    validate_identifier(id, 96)?;
-    let path = paths.replays.join(format!("{id}.json"));
-    let bytes = fs::read(path).map_err(|_| ApiError::bad_request("Replay does not exist"))?;
-    if bytes.len() > MAX_REPLAY_BYTES {
-        return Err(ApiError::bad_request("Replay is too large"));
-    }
-    serde_json::from_slice(&bytes).map_err(|_| ApiError::bad_request("Replay data is malformed"))
+    crate::replay_storage::ReplayStore::open(paths)?.read(id)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -377,13 +293,6 @@ fn atomic_write(path: &Path, bytes: &[u8]) -> ApiResult<()> {
     fs::rename(temporary, path).map_err(io_error)
 }
 
-fn modified_ms(metadata: &fs::Metadata) -> u64 {
-    metadata
-        .modified()
-        .ok()
-        .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
-        .map_or(0, |duration| duration.as_millis() as u64)
-}
 fn default_host_name() -> String {
     std::env::var("COMPUTERNAME")
         .or_else(|_| std::env::var("HOSTNAME"))
@@ -406,14 +315,14 @@ mod tests {
     #[test]
     fn settings_and_replays_round_trip_inside_app_data() {
         let directory = tempfile::tempdir().unwrap();
-        let paths = AppPaths::new(directory.path().into()).unwrap();
+        let paths = AppPaths::new(directory.path().canonicalize().unwrap()).unwrap();
         let settings = HubSettings {
             host_name: "Test Station".into(),
             ..HubSettings::default()
         };
         save_settings(&paths, &settings).unwrap();
         assert_eq!(load_settings(&paths).unwrap(), settings);
-        save_replay_at(&paths, "run-1", serde_json::json!({ "gameId": "slashstorm", "gameVersion": "1.0.0", "seed": "daily-7", "frames": [] })).unwrap();
+        save_replay_at(&paths, "run-1", serde_json::json!({ "schema": 1, "gameId": "slashstorm", "gameVersion": "1.0.0", "seed": "daily-7", "startedAt": 1000, "frames": [], "events": [] })).unwrap();
         assert_eq!(list_replays_at(&paths).unwrap()[0].seed, "daily-7");
         assert!(read_replay_at(&paths, "run-1")
             .unwrap()

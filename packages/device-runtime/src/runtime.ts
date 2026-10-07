@@ -342,6 +342,12 @@ class EmbeddedConnection implements Connection {
   private maxAgeMs = 0;
   private maxHz = 1;
   private readonly deliveryScope: string;
+  // Unlike inFlight, these reservations survive logical stop and include work
+  // frozen for dispatch before any provider callback runs.
+  private reservedDeliveries = 0;
+  private retiring = false;
+  private settlementPromise?: Promise<void>;
+  private resolveSettlement?: () => void;
 
   constructor(runtime: EmbeddedRuntime, id: string, request: RouteRequest) {
     this.runtime = runtime; this.id = id; this.request = { ...request };
@@ -415,16 +421,19 @@ class EmbeddedConnection implements Connection {
     if (this.state === "closed") return;
     const active = this.state === "active";
     const prepared = this.state === 'prepared';
-    this.state = "closed"; this.reason = reason;
-    this.latest.clear(); this.queue.clear();
-    if (active) this.runtime.detach(this, this.source!, this.sink!, this.leaseKey);
-    if (prepared) this.runtime.releasePrepared(this, this.leaseKey);
-    for (const controller of this.inFlight.values()) controller.abort();
-    this.inFlight.clear(); this.latestBusy = false;
-    const listeners = [...this.closeListeners]; this.closeListeners.clear();
-    for (const listener of listeners) try { listener(reason); } catch { /* A listener cannot reopen a closed route. */ }
-    if (active) try { this.sink!.provider!.release(reason, Object.freeze({ routeId: this.id, partition: this.request.partition })); }
-    catch { /* Authority is already revoked; release failures cannot reopen it. */ }
+    this.retiring = true;
+    try {
+      this.state = "closed"; this.reason = reason;
+      this.latest.clear(); this.queue.clear();
+      if (active) this.runtime.detach(this, this.source!, this.sink!, this.leaseKey);
+      if (prepared) this.runtime.releasePrepared(this, this.leaseKey);
+      for (const controller of this.inFlight.values()) controller.abort();
+      this.inFlight.clear(); this.latestBusy = false;
+      const listeners = [...this.closeListeners]; this.closeListeners.clear();
+      for (const listener of listeners) try { listener(reason); } catch { /* A listener cannot reopen a closed route. */ }
+      if (active) try { this.sink!.provider!.release(reason, Object.freeze({ routeId: this.id, partition: this.request.partition })); }
+      catch { /* Authority is already revoked; release failures cannot reopen it. */ }
+    } finally { this.retiring = false; this.settleIfReady(); }
   }
   onClose(listener: (reason: string) => void): () => void {
     if (typeof listener !== 'function') throw new TypeError('Close listener required');
@@ -434,6 +443,27 @@ class EmbeddedConnection implements Connection {
     }
     this.closeListeners.add(listener);
     return () => { this.closeListeners.delete(listener); };
+  }
+  whenSettled(): Promise<void> {
+    if (!this.settlementPromise) this.settlementPromise = new Promise(resolve => { this.resolveSettlement = resolve; });
+    this.settleIfReady();
+    return this.settlementPromise;
+  }
+  private settleIfReady(): void {
+    if (this.state !== 'closed' || this.retiring || this.reservedDeliveries !== 0) return;
+    const resolve = this.resolveSettlement; this.resolveSettlement = undefined; resolve?.();
+  }
+  private reserveDelivery(): boolean {
+    if (!this.runtime.reserveDelivery(this.deliveryScope)) return false;
+    this.reservedDeliveries++;
+    return true;
+  }
+  private releaseDelivery(updateHistory?: () => void): void {
+    // Keep existing global admission release timing. The route barrier remains
+    // reserved through history, clock and any resulting retirement callouts.
+    this.runtime.releaseDelivery(this.deliveryScope);
+    try { updateHistory?.(); }
+    finally { this.reservedDeliveries--; this.settleIfReady(); }
   }
   status(): ReturnType<Connection["status"]> {
     return Object.freeze({ state: this.state, reason: this.reason, pending: this.latest.size + this.queue.pending });
@@ -469,10 +499,10 @@ class EmbeddedConnection implements Connection {
     this.check(now);
     if (this.state !== "active") return [];
     if (this.source!.capability.delivery.mode === "latest") {
-      if (this.latestBusy || !this.latest.size || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery(this.deliveryScope)) return [];
+      if (this.latestBusy || !this.latest.size || now - this.lastDispatch < 1000 / this.maxHz || !this.reserveDelivery()) return [];
       const observation = this.latest.take(now, this.maxAgeMs);
       if (!observation) {
-        this.runtime.releaseDelivery(this.deliveryScope);
+        this.releaseDelivery();
         if (this.oneShot) this.stop("stale");
         return [];
       }
@@ -480,21 +510,21 @@ class EmbeddedConnection implements Connection {
       return [() => this.dispatch(observation)];
     } else {
       const capacity = this.request.queueCapacity ?? 64;
-      if (this.inFlight.size >= capacity || now - this.lastDispatch < 1000 / this.maxHz || !this.runtime.reserveDelivery(this.deliveryScope)) return [];
+      if (this.inFlight.size >= capacity || now - this.lastDispatch < 1000 / this.maxHz || !this.reserveDelivery()) return [];
       const operation = this.queue.next(now);
-      if (!operation) { this.runtime.releaseDelivery(this.deliveryScope); return []; }
+      if (!operation) { this.releaseDelivery(); return []; }
       this.lastDispatch = now;
       return [() => this.dispatch(operation.value, operation.id, operation.deadline)];
     }
   }
   private dispatch(observation: Observation, operationId?: string, deadline?: number): void {
     let now: number;
-    try { now = this.runtime.time(); } catch { this.runtime.releaseDelivery(this.deliveryScope); return; }
+    try { now = this.runtime.time(); } catch { this.releaseDelivery(); return; }
     this.check(now);
     if (this.state !== "active" || (deadline !== undefined && now >= deadline) || now - observation.timestamp > this.maxAgeMs) {
       if (operationId) this.queue.settle(operationId, "expired");
       else this.latestBusy = false;
-      this.runtime.releaseDelivery(this.deliveryScope); return;
+      this.releaseDelivery(); return;
     }
     const controller = new AbortController();
     const key = operationId ?? "latest", generation = this.generation;
@@ -510,16 +540,17 @@ class EmbeddedConnection implements Connection {
         if (operationId && ["dispatched", "unverified", "target-acknowledged", "observed"].includes(evidence)) this.queue.evidence(operationId, evidence);
       } });
     const complete = (failed: boolean): void => {
-      this.runtime.releaseDelivery(this.deliveryScope);
-      this.inFlight.delete(key); if (!operationId) this.latestBusy = false;
-      if (operationId) {
-        this.queue.settle(operationId, failed ? "failed" : "unverified");
-        let settledAt = observation.receivedAt;
-        try { settledAt = this.runtime.time(); } catch { /* Closed on a bad clock; retain bounded evidence. */ }
-        this.queue.unpin(operationId, settledAt);
-      }
-      if (failed && this.state === "active") this.stop("provider-failed");
-      if (!failed && this.oneShot && this.state === "active") this.stop("read-complete");
+      this.releaseDelivery(() => {
+        this.inFlight.delete(key); if (!operationId) this.latestBusy = false;
+        if (operationId) {
+          this.queue.settle(operationId, failed ? "failed" : "unverified");
+          let settledAt = observation.receivedAt;
+          try { settledAt = this.runtime.time(); } catch { /* Closed on a bad clock; retain bounded evidence. */ }
+          this.queue.unpin(operationId, settledAt);
+        }
+        if (failed && this.state === "active") this.stop("provider-failed");
+        if (!failed && this.oneShot && this.state === "active") this.stop("read-complete");
+      });
     };
     try {
       const returned = this.sink!.provider!.apply(observation, context);

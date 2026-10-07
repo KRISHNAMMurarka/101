@@ -216,3 +216,11 @@ The final candidate must satisfy all Z tasks and all required predecessor rows, 
 Supported lifecycle includes attach, denial/cancel/retry, loss, reconnect, background/lock/process death within OS limits, ownership conflict/transfer/expiry and teardown. Required outputs stop safely on loss; interrupted/non-idempotent effects remain explicitly unverified. Performance claims include capture-to-output distributions with clock uncertainty and complete payload/load/energy conditions. No receipt substitutes ping for finger-to-pixel or a hardware label for capability probing.
 
 Security maintenance uses versioned disclosures, reproduced negative tests, affected-version/catalog reopening, prompt unsafe-grant/key/package revocation and validated update/rollback. A stable release includes a real reporting contact and owned update channel under L02/L04; inventing a mailbox or live service is not permitted. Operator obligations and supported load are O08 gates. Current local-only policy persists through L04. L05 presents concrete accepted artifacts, owned destinations and exact external actions for explicit authorization; L06–L07 and Z06 stay open until actual authorized publication and consumption succeed.
+
+The [public TypeScript contract](SDK.md#public-typescript-contract) specifies current
+0.1.0 lifecycle, result/error, effect and async boundaries. E01 has a compatible
+optional `Connection.whenSettled()` capability and a fresh ordinary installed
+public caller. Exported `EmbeddedRuntime` construction remains supported; its
+implementation-facing registry/lease/dispatch helpers are explicitly experimental
+outside `DeviceRuntime`. [Exact software evidence](receipts/2026-10-07-runtime-settlement.json)
+does not qualify the Node engine floor, hardware or release support rows.

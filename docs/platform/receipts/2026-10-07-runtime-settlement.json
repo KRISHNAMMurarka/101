@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass literal E01 public software contract; exact final commit gates pending",
+  "localOnly": true,
+  "profile": "runtime-route-settlement/1",
+  "tasks": [
+    "E01"
+  ],
+  "base": "1ab7579de6946356d3704f947392f81e39621bf3",
+  "candidateSourceTree": "a5191563654b18034c48146991f206ee59eb6129",
+  "sourceCommit": null,
+  "sourceSha256": {
+    "examples/runtime-lifecycle/settlement.ts": "991f62cbade537a04c3b539187911b91ce880763c91367f757bcefade00251cf",
+    "packages/device-runtime/src/inspector.ts": "e4cc30b884a8bd54ba824637277fea9e490c5f8f8c19a5a16562936c20aaedbf",
+    "packages/device-runtime/src/route-settlement.test.ts": "bc8b207ff56ba69b1abe9a1ad4217c2af0adc27d44ee16d8fca2ed627b3ee361",
+    "packages/device-runtime/src/runtime.ts": "79f3caa489b53cf78afef5fb20cc8bc2393275d204d28201121de25ba51b499f",
+    "packages/device-runtime/src/types.ts": "0abe92d991e6fcb9d38700b2eab8e789b25094e51429ae211081f7d932e99be2",
+    "tests/route-settlement-caller.test.ts": "86db99777aef48f0c8c6bf0da80b1c901c56e8518397abafd9e0496a95a2d94d",
+    "tools/build-sdk.mjs": "08eb2c5273d88e6b53a08b64ef5422c8e362e4a8ddcbb3a342d264ab66f4e34a",
+    "tools/qa-runtime-settlement.mjs": "7332fb4464fcb46694973156fe4b59262dd165235918f1a3bedf4c2170c237ed",
+    "tools/qa-sdk-consumer.mjs": "5e7d73330b11adc66d9693fe384ab2c8d346fd9163a812d4b5ad2315374b3630"
+  },
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "reference": "docs/platform/SDK.md#public-typescript-contract",
+  "contract": {
+    "capability": "Optional Connection.whenSettled(): same retained Promise, observes terminal retirement+all actual route reserved apply returns+sync onClose/release/history; no stop/renew/timers or fake absence fallback. RuntimeInspector forwards actual capability.",
+    "authority": "Existing exact grants/scheduler quotas retained. queued pending0 or aborted context does not free actual work. Rejecting returned work records handler failure then fulfills barrier; hung returned work remains pending.",
+    "nativeBoundary": "Detached native work, sync release callback asynchronous return values, raw socket/process/OS shutdown and physical effects are outside barrier. Host explicitly tracks/disposes them.",
+    "apiSurface": "Public package roots/exports and declarations; supported factory/DeviceRuntime/Connection and constructor. EmbeddedRuntime registry/dispatch/lease helpers explicitly experimental outside stable interface, with existing compatibility policy.",
+    "lifecycle": "Idle/prepared/active/closed; failed idle start explicit retry, failed prepared activation terminal; runtimeclose/unregister/expiry affect prepared/active sets, idle handles need explicitStop beforewait. Results/errors, callback/history/effects and provider-specific close boundaries documented.",
+    "callerCleanup": "All release callbacks attempted with errors retained. Actual raw returns and route barriers awaited before reporting release failure. Never assumes Worker exit from barrier; actual QA separately observes process exit. The original operation exception retains priority over cleanup errors; successful execution reports a cleanup callback failure after the final waits."
+  },
+  "focused": {
+    "focused": {
+      "receipt": {
+        "path": "/tmp/101-route-settlement-gate-repaired-focused.json",
+        "sha256": "169e7fb2d1a8e80c8e7ec3857835af543ee627a0bfdfc704cc04071aca52e046"
+      },
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "loadedModules": 121
+    },
+    "cleanup": {
+      "receipt": {
+        "path": "/tmp/101-route-settlement-gate-repaired-cleanup.json",
+        "sha256": "258a1b814f7007914117717e33636f2a9024174f6b2b7a4d4c2bb753fa9e1b56"
+      },
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "loadedModules": 122
+    }
+  },
+  "publicCaller": {
+    "source": {
+      "receipt": {
+        "path": "/tmp/101-route-settlement-gate-repaired-source-caller.json",
+        "sha256": "46cc81d67253409082ac2bfd478dc797935fdb9d2fb00db347da9fd7185c1a3d"
+      },
+      "provenance": {
+        "path": "/private/tmp/101-runtime-settlement-proof-CtZfqV/provenance.json",
+        "sha256": "1a08d51e1335ea56d75f5ba19d92d76bbd84efbedcf46192c8457c641fd133c4"
+      },
+      "checks": 9,
+      "actualWorkerExit": 0,
+      "scope": "owned Node software target and runtime returned apply work; no hardware or detached native quiescence"
+    },
+    "installed": {
+      "receipt": {
+        "path": "/tmp/101-route-settlement-gate-repaired-installed-caller.json",
+        "sha256": "d713a8ba14d82386b285dad7671144526af44f242f9aecfd03feb13b42c6e20e"
+      },
+      "provenance": {
+        "path": "/private/tmp/101-runtime-settlement-proof-SfGW1Y/provenance.json",
+        "sha256": "ed681667816dd8ae4f726dc8895978bceb9d3d0119047c8dd644b2a303aa8b64"
+      },
+      "checks": 9,
+      "actualWorkerExit": 0,
+      "scope": "owned Node software target and runtime returned apply work; no hardware or detached native quiescence"
+    }
+  },
+  "currentSdk": {
+    "receipt": {
+      "path": "/tmp/101-replay-settlement-gate-repaired-sdk.json",
+      "sha256": "338625e4cfdfb3c625928094eff4ee6f64bb4d642e6e85d6dcb3861ede8ad8a1"
+    },
+    "producerTree": "a5191563654b18034c48146991f206ee59eb6129",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-A5w2AQ/manifest.json",
+      "sha256": "91074073f8d7178631dfe21567389caa3ccf7c6349a5f4811baee15df060565c"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-PtCRzl/receipt.json",
+      "sha256": "36a481c6805b9d77afaaa58feacc0e7a3910dcab8d2f3a8ae10fbf0b1a872bcd"
+    },
+    "sourceFiles": 174,
+    "installedFiles": 394,
+    "tarballs": 7,
+    "ordinaryConsumerChecks": 10,
+    "publicExample": "@101/connect/examples/runtime-settlement"
+  },
+  "history": [
+    {
+      "classification": "Actual OLD source and ordinary installed public runtime genuine granted held invocation+Stop then absent method; no import/compiler failure accepted.",
+      "receipts": [
+        {
+          "path": "/tmp/101-route-settlement-first-source-old.json",
+          "sha256": "1b9e887c4cce67392ec28e4d80b63a4047fd59de7b877e0479445f98fdd1c6f5"
+        },
+        {
+          "path": "/tmp/101-runtime-settlement-old-evidence.json",
+          "sha256": "33c1bfc1f504904ca64ebd222496c97a80614099b09af17687414270f2b5ec85"
+        }
+      ]
+    },
+    {
+      "classification": "Initial strict caller compile failed Set.size narrowing across await; fixed fresh getter. No runtime failure inferred.",
+      "receipt": {
+        "path": "/tmp/101-route-settlement-first-source-caller.json",
+        "sha256": "16a76ae3949ba00c74fa293646839b2796a7b879a242a352484aefb9e71567cf"
+      }
+    },
+    {
+      "classification": "Source review found public caller skipped awaits after host release exception. Actual NodeWorker held work produced meaningful OLD assertion; same regression passes after repair.",
+      "receipts": [
+        {
+          "path": "/tmp/101-route-settlement-source-independent-review.json",
+          "sha256": "04a41ee6b22de020e96405dd64492e58bc4ae55a4bd8ea8a3e8464ec472be21f"
+        },
+        {
+          "path": "/tmp/101-route-settlement-cleanup-old.json",
+          "sha256": "b21491e7f8a9e7afec3f4180dc77485f9cd194cb11771467e48c41caa22b4c36"
+        },
+        {
+          "path": "/tmp/101-route-settlement-cleanup-fixed.json",
+          "sha256": "6b78b7ee5320c903c9f6e8bd8e41eeb623a6735f1bb4c8cf5d92fa9f5d667997"
+        }
+      ]
+    },
+    {
+      "classification": "First frozen candidate rejected by required lint: unsafe finally throw and mutable declaration. Corrected caller preserves original operation failure, always awaits actual work and reports cleanup failure after finally on success; fixture usesconst identity. Newcurrent8+1 regressions/scopedlint/source and installed9+9/fresh1743947SDK pass. PreviousSDK/browser/native proof retains own immutable scope, unchanged replaybytes not rerun.",
+      "receipts": [
+        {
+          "path": "/tmp/101-replay-settlement-exact-required-gates.json",
+          "sha256": "0ecf9bf9ac0b17a2d1f0e33ec5957166d1ab27eb52a230a959b268ad93ef1e56"
+        },
+        {
+          "path": "/tmp/101-replay-settlement-exact-independent-review.json",
+          "sha256": "06c843bc4f5035a277af6cf844e3ec3775dd01478629a2ec0ae7c3516c158504"
+        },
+        {
+          "path": "/tmp/101-route-settlement-gate-repaired-lint.json",
+          "sha256": "501416100cad0d4c6ce8ff5a8afdbfda02c6518ec6bcdb6b51f80addc2ed70f8"
+        },
+        {
+          "path": "/tmp/101-replay-settlement-sdk.json",
+          "sha256": "ac8a589c4a8145bb20efebd293272d28174a3a2fa7b2e12eacb349a7d0ac0c76"
+        },
+        {
+          "path": "/tmp/101-replay-settlement-software-preservation.json",
+          "sha256": "a8a49c3d211d12043451553a727defe4526982318aece2268c54a44dac1461cb"
+        }
+      ]
+    }
+  ],
+  "sourceReview": {
+    "path": "/tmp/101-route-settlement-gate-repaired-source-independent-review.json",
+    "sha256": "13f27fbb99613a6119348335cf6277dd3f79bfca08ab783ecd281d20becb18ba"
+  },
+  "referenceReview": {
+    "path": "/tmp/101-e01-reference-independent-review.json",
+    "sha256": "fdf959b67b66528678c8863bd5235d8bfe162093fa690718bb5a49d4713d096a"
+  },
+  "preservation": {
+    "path": "/tmp/101-replay-settlement-gate-repaired-software-preservation.json",
+    "sha256": "fa4d4a9d4614e9b905f8c48c6f5b3c7ec987062117a25d14df655054207a9b31"
+  },
+  "requiredGates": {
+    "status": "pending exact candidate"
+  },
+  "scopeLimits": [
+    "Literal public software API reference and compatible optional capability, not whole L02 documentation or other API/platform implementation tasks.",
+    "Actual tested Node24.14.0/TypeScript5.9.3 onmacOS; Node22 floor and physical/native targets stay open.",
+    "Zero accepted support rows. Physical devices deferred."
+  ]
+}
