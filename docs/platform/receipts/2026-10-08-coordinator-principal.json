@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-built-full-acceptance-open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "previousDocumentationTree": "f14b56be05da9982f6f581c97a824a4951ab074a",
+  "verifiedProductTree": "f997685015dde82675b415f79cf470abd4ad78bd",
+  "contract": "Selected provisioned-loopback-node-mtls/1 coordinator binds each native authenticated TLSSocket once to its current enrolled certificate principal before HTTP. Four resident authenticated sockets per principal, across caller/Agent instances, plus existing global32 raw sockets. Fifth socket closes without admitting HTTP work. Keepalive/requests do not reserve extra quota. Only actual native socket close releases admission, including Stop; stopped authority cannot restart. Per-request enrollment, TLS1.3, CA/origin/session/private-directory checks remain.",
+  "sources": {
+    "packages/hub-server/src/https-coordinator.ts": "0a40cb49c2c45024280fc445f8b7504143b8654f8ad0d74bc8dc757cb80246a2",
+    "packages/hub-server/src/https-coordinator-principal.test.ts": "0baf76eba56ec5ab8cd51329cc07ed9cb3b51151777014159e558c8667886bee"
+  },
+  "sourceProof": {
+    "worker": {
+      "path": "/tmp/101-coordinator-principal-completion.json",
+      "sha256": "f96d08a999aa1d415cfa048796f06539c20732e7af5bc43e0259cc515a051a11"
+    },
+    "workerTests": 45,
+    "newActualTlsTcpTests": 6,
+    "directDependentTests": 31,
+    "selectedSourceTests": 76,
+    "workerInputs": 158,
+    "workerInputsMethod": "TypeScript AST conservative static workspace public-barrel closure and literal dynamic imports/requires; includes type imports and package manifests. Not an actual-loaded module inventory.",
+    "actualRootLoadedModules": 156,
+    "actualRootLoadedRecord": {
+      "path": "/tmp/101-coordinator-principal-integration.loaded.json",
+      "sha256": "49b7ec7b9f2a941c29a750085a2eb4df1a8af76b6f61d61f5aa88b34cf66a838"
+    },
+    "ownedNativeProcessesAndCredentialsCleaned": true
+  },
+  "genuineOld": {
+    "log": {
+      "path": "/tmp/101-coordinator-principal-held-old.log",
+      "sha256": "1d7dad9007bde5216fa2e6c5a2b33ddb27a56be2abdc7bcbe94388044d888335"
+    },
+    "source": {
+      "path": "/tmp/101-coordinator-principal-old-source.ts",
+      "sha256": "37fa0b184d36df3e5b527c49366eb6a5317e4fed26098f6bdbd69ed767813753"
+    },
+    "before": {
+      "admittedA": 32,
+      "refusedA": 0,
+      "otherOutcome": "refused"
+    },
+    "after": {
+      "admittedA": 4,
+      "refusedA": 28,
+      "otherOutcome": 200
+    },
+    "witness": "Hold32 enrolled A authenticated native TLS sockets without HTTP. B public health is refused before any A HTTP. Current A admits4/refuses28 and B health200 while those4 remain resident. Original held OLD fixture later expanded; its exact old source and actual native trace are retained, without claiming an original held fixture literal."
+  },
+  "sourceReview": {
+    "path": "/tmp/101-coordinator-principal-source-review.json",
+    "sha256": "395261d2e58a2ee1ee74fc1edb79887b20b25d29df65d06fc5dbf8a6955ce09b",
+    "status": "CLEAR",
+    "ref": "refs/codex/evidence/2026-10-08-coordinator-principal/source-review",
+    "forcedTlsResumptionExecuted": false
+  },
+  "softwareBuild": {
+    "path": "/tmp/101-coordinator-principal-integration.json",
+    "sha256": "88f71f7b23e906b1367f6b8b1e0dda592be813a23908cddd792eb77fa37135fb",
+    "tree": "f997685015dde82675b415f79cf470abd4ad78bd",
+    "checks": [
+      {
+        "name": "dependents",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "coordinator-public",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "directory-public-installed-sdk",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "types",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "application-build",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "rendered-html",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      }
+    ],
+    "publicCoordinatorChecks": 15,
+    "publicInstalledSdkDirectoryChecks": 13,
+    "renderedHtmlTests": 37,
+    "lint": "Zero errors; one existing PointerLab ref cleanup warning.",
+    "scope": "Local actual disposable Node TLS/TCP software and normal public hub exports, source and installed SDK directory caller; types/lint/fresh application build/full rendered HTML."
+  },
+  "sdkReuse": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-FaL5gC/manifest.json",
+      "sha256": "d1ce884c029078123ee182ea64f25a0d685e7387a3be1e76a9e666508773be25",
+      "inputs": 183,
+      "packages": 7,
+      "installedFiles": 405
+    },
+    "inputs": 183,
+    "installedFiles": 405,
+    "byteHashesRechecked": true,
+    "reason": "Hub-server is separate from the seven browser SDK packages. All183 SDK source inputs and405 installed emitted file bytes rehashed before/after root checks; no SDK rebuild required.",
+    "retention": {
+      "path": "/tmp/101-principal-delivery-retained.json",
+      "sha256": "42e1f9c60aaf1c1ad27615dca7dbb005548c4c1632978e8991247d1f24774326",
+      "ref": "refs/codex/evidence/2026-10-08-principal-delivery/literal-record",
+      "bundleRef": "refs/codex/evidence/2026-10-08-principal-delivery/literal-bundle"
+    }
+  },
+  "retention": {
+    "path": "/tmp/101-coordinator-principal-retained.json",
+    "sha256": "25d700b9c13ebd8eb0c45c49a83010e23c3bb31258dfed6840ecf55f23932e56",
+    "ref": "refs/codex/evidence/2026-10-08-coordinator-principal/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-coordinator-principal/literal-bundle",
+    "literalFiles": 216
+  },
+  "preservedFailures": {
+    "rejectedInitialCumulativeWitness": {
+      "path": "/tmp/101-coordinator-principal-old.log",
+      "sha256": "0ba8772ccc0d7fe89244584e55d3f8eaae5b28a93bcafde93bdd504e28c2b082",
+      "reason": "Cumulative public caller success is not simultaneous residency; Node Agent may close free sockets because its keepalive timeout buffer equals the advertised one-second server timeout. B succeeded in that run."
+    },
+    "rawCloseFixtureFailure": {
+      "path": "/tmp/101-coordinator-principal-global-close-red.log",
+      "sha256": "73dddfc5620e14c388a3597b0e20994f2da1800bb7da17403722042eddf39235",
+      "reason": "Immediate retry after local TCP destroy did not await peer-observed raw socket close.",
+      "repair": {
+        "path": "/tmp/101-coordinator-principal-global-close-fixed.log",
+        "sha256": "4406826c6de1216f6205f885b2e92c3999fef069294c5fcbc1b67a0d2555a017"
+      }
+    },
+    "rootHarnessFailure": {
+      "path": "/tmp/101-coordinator-principal-integration-input-shape-failure.json",
+      "sha256": "928d1fb58ed7c501ac637bd0725d1de928ad385b4dac04fa3b18d0ff6fe320ce",
+      "scope": "Pre-execution dependency-list guard shape failure; zero product execution; repaired harness unchanged candidate."
+    }
+  },
+  "limitations": [
+    "S11 remains open; no checkbox or support-row promotion.",
+    "Pre-auth and signed-but-unenrolled peers can still saturate global32; aggregate separate principals and handshake CPU/rate fairness remain outside this enrolled resident-slot scope.",
+    "Forced TLS1.3 session resumption was not executed. Independent Node/OpenSSL source assessment found no identity attribution bypass; this is source inference only.",
+    "Complete unit gate remains open with five historical native startup/IPC failures; no fresh full unit run or cause/fix claim.",
+    "Browser, physical devices, OS input and native capture deferred; no commit, push, publication, deployment, preview URL or new service."
+  ],
+  "published": false
+}

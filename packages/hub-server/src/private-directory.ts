@@ -1,5 +1,5 @@
-import { parseDeviceDescriptor, snapshotJson, parsePrivateDirectorySnapshot, PRIVATE_DIRECTORY_PROFILE, PRIVATE_DIRECTORY_LIMITS } from '@101/device-model';
-import type { DeviceDescriptor, PrivateDirectoryResource, PrivateDirectorySnapshot } from '@101/device-model';
+import { parseDeviceDescriptor, snapshotJson, parsePrivateDirectorySnapshot, parsePrivateDirectoryPublication, PRIVATE_DIRECTORY_PROFILE, PRIVATE_DIRECTORY_LIMITS } from '@101/device-model';
+import type { DeviceDescriptor, PrivateDirectoryPublication, PrivateDirectoryResource, PrivateDirectorySnapshot } from '@101/device-model';
 import { createCoordinatorFetcher } from './https-coordinator.ts';
 import type { CoordinatorFetcherOptions } from './https-coordinator.ts';
 
@@ -10,9 +10,12 @@ export interface ProvisionedDirectoryResource {
 export interface PrivateDirectoryClientOptions extends CoordinatorFetcherOptions {
   readonly sessionId: string; readonly role: 'host' | 'peer'; readonly token: string; readonly peerId?: string;
 }
-interface ProjectedResource { readonly principalId: string; readonly deviceId: string; readonly resource: Omit<PrivateDirectoryResource, 'expiresAt'>; }
+interface ProjectedResource { readonly principalId: string; readonly deviceId: string; readonly resource: Omit<PrivateDirectoryResource, 'expiresAt'>;
+  readonly peerId?: string; readonly generation?: number; }
 interface MemberVisibility { readonly resourceIds: readonly string[]; readonly expiresAt: number; readonly generation: number; }
-interface DirectoryState { readonly resources: Map<string, { resource: ProjectedResource; expiresAt: number }>; readonly members: Map<string, MemberVisibility>; }
+interface PublicationFloor { readonly generation: number; readonly revision: number; }
+interface DirectoryState { readonly resources: Map<string, { resource: ProjectedResource; expiresAt: number }>; readonly members: Map<string, MemberVisibility>;
+  readonly publications: Map<string, PublicationFloor>; }
 /** Only the coordinator constructs this after native TLS, enrollment, principal, role and bearer checks. */
 export interface CoordinatorDirectoryAuthority {
   readonly sessionId: string; readonly principalId: string; readonly deviceId: string; readonly role: 'host' | 'peer';
@@ -43,9 +46,19 @@ function strings(input: unknown, count: number): readonly string[] {
   if (!Array.isArray(copy) || copy.length > count) reject();
   const values = copy.map(identifier); if (new Set(values).size !== values.length) reject(); return Object.freeze(values);
 }
+function project(descriptor: Readonly<DeviceDescriptor>, ids: readonly string[]): Omit<PrivateDirectoryResource, 'expiresAt'> {
+  const capabilities = ids.map(id => {
+    const capability = descriptor.capabilities.find(value => value.id === id); if (!capability) reject();
+    return Object.freeze({ id: capability.id, semantic: capability.semantic, kind: capability.kind, schemaVersion: capability.schemaVersion });
+  });
+  const resource = Object.freeze({ id: descriptor.id, revision: descriptor.revision, label: descriptor.label, capabilities: Object.freeze(capabilities) });
+  parsePrivateDirectorySnapshot({ schemaVersion: 1, profile: PRIVATE_DIRECTORY_PROFILE, scope: { kind: 'directory', id: 'provisioned' }, issuedAt: 0, expiresAt: 1, resources: [{ ...resource, expiresAt: 1 }] });
+  return resource;
+}
 
 /** Internal session state; no HTTP identity or authority is derived here. It is deliberately not a public barrel export. */
 export function createCoordinatorDirectory(input: unknown, enrollments: readonly { principalId: string; deviceId: string }[]) {
+  const owners = enrollments.map(value => Object.freeze({ principalId: value.principalId, deviceId: value.deviceId }));
   const catalog = new Map<string, ProjectedResource>();
   if (input !== undefined) {
     if (!Array.isArray(input) || Object.getPrototypeOf(input) !== Array.prototype || input.length > PRIVATE_DIRECTORY_LIMITS.catalogResources) reject();
@@ -58,13 +71,8 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
       if (!enrollments.some(value => value.principalId === principalId && value.deviceId === deviceId)) reject();
       const descriptor = parseDeviceDescriptor(entry.descriptor), ids = strings(entry.capabilityIds, PRIVATE_DIRECTORY_LIMITS.capabilitiesPerResource);
       if (!ids.length || catalog.has(descriptor.id)) reject();
-      const capabilities = ids.map(id => {
-        const capability = descriptor.capabilities.find(value => value.id === id); if (!capability) reject();
-        return Object.freeze({ id: capability.id, semantic: capability.semantic, kind: capability.kind, schemaVersion: capability.schemaVersion });
-      });
-      const resource = Object.freeze({ id: descriptor.id, revision: descriptor.revision, label: descriptor.label, capabilities: Object.freeze(capabilities) });
       // Apply the same closed public wire parser at provision time, before a listener can exist.
-      parsePrivateDirectorySnapshot({ schemaVersion: 1, profile: PRIVATE_DIRECTORY_PROFILE, scope: { kind: 'directory', id: 'provisioned' }, issuedAt: 0, expiresAt: 1, resources: [{ ...resource, expiresAt: 1 }] });
+      const resource = project(descriptor, ids);
       catalog.set(descriptor.id, Object.freeze({ principalId, deviceId, resource }));
     }
   }
@@ -82,9 +90,11 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
   function state(authority: CoordinatorDirectoryAuthority): DirectoryState {
     check(authority);
     let value = sessions.get(authority.sessionId);
-    if (!value) { value = { resources: new Map(), members: new Map() }; sessions.set(authority.sessionId, value); }
-    for (const [id, entry] of value.resources) if (entry.expiresAt <= authority.now) removeResource(value, id);
+    if (!value) { value = { resources: new Map(), members: new Map(), publications: new Map() }; sessions.set(authority.sessionId, value); }
+    for (const [id, entry] of value.resources) if (entry.expiresAt <= authority.now || entry.resource.peerId !== undefined &&
+      authority.peers.get(entry.resource.peerId) !== entry.resource.generation) removeResource(value, id);
     for (const [id, member] of value.members) if (member.expiresAt <= authority.now || authority.peers.get(id) !== member.generation) value.members.delete(id);
+    for (const [id, publication] of value.publications) if (authority.peers.get(id) !== publication.generation) value.publications.delete(id);
     return value;
   }
   function removeResource(value: DirectoryState, id: string) {
@@ -104,7 +114,7 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
     return parsePrivateDirectorySnapshot({ schemaVersion: 1, profile: PRIVATE_DIRECTORY_PROFILE, scope: { kind: 'directory', id: authority.sessionId },
       issuedAt: authority.now, expiresAt: expiry, resources });
   }
-  function preflight(authority: CoordinatorDirectoryAuthority, value: DirectoryState) {
+  function preflight(authority: CoordinatorDirectoryAuthority, value: Pick<DirectoryState, 'resources'>) {
     // Reserve complete metadata and worst-case timestamp digits, so later reads always remain representable.
     const resourceRows = [...value.resources.values()].map(entry => ({ ...entry.resource.resource, expiresAt: Number.MAX_SAFE_INTEGER }));
     try { parsePrivateDirectorySnapshot({ schemaVersion: 1, profile: PRIVATE_DIRECTORY_PROFILE, scope: { kind: 'directory', id: authority.sessionId },
@@ -119,6 +129,32 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
     dispatch(authority: CoordinatorDirectoryAuthority, method: string, suffix: readonly string[], input?: unknown): { status: number; body?: PrivateDirectorySnapshot } {
       const value = state(authority);
       if (method === 'GET' && !suffix.length) { const body = snapshot(authority, value); check(authority); return { status: 200, body }; }
+      if (authority.role === 'peer' && suffix[0] === 'publication') {
+        const peerId = authority.peerId;
+        if (!peerId || authority.peers.get(peerId) !== authority.generation || !owners.some(owner => owner.principalId === authority.principalId && owner.deviceId === authority.deviceId)) reject(404);
+        const prior = value.resources.get(authority.deviceId), floor = value.publications.get(peerId);
+        if (method === 'DELETE' && suffix.length === 3) {
+          if (suffix[1] !== String(authority.generation) || !prior || prior.resource.peerId !== peerId || prior.resource.generation !== authority.generation || suffix[2] !== String(prior.resource.resource.revision)) reject(404);
+          check(authority); removeResource(value, authority.deviceId); return { status: 204 };
+        }
+        if ((method !== 'POST' && method !== 'PUT') || suffix.length !== 1) reject(404);
+        const publication = parsePrivateDirectoryPublication(input), descriptor = publication.descriptor;
+        if (publication.generation !== authority.generation || descriptor.id !== authority.deviceId || catalog.has(descriptor.id)) reject(404);
+        if (floor && descriptor.revision <= floor.revision) reject(409);
+        if (prior && (prior.resource.peerId !== peerId || prior.resource.generation !== authority.generation)) reject(404);
+        if (method === 'POST' && prior || method === 'PUT' && !prior) reject(409);
+        const expiresAt = expiry(publication.expiresAt, authority);
+        if (method === 'PUT' && expiresAt !== prior!.expiresAt) reject(409);
+        if (!prior && value.resources.size >= PRIVATE_DIRECTORY_LIMITS.resourcesPerSession || !floor && value.publications.size >= PRIVATE_DIRECTORY_LIMITS.membersPerSession) reject(429);
+        const resource = Object.freeze({ principalId: authority.principalId, deviceId: authority.deviceId, peerId, generation: authority.generation, resource: project(descriptor, publication.capabilityIds) });
+        const future = { resources: new Map(value.resources) };
+        future.resources.set(descriptor.id, { resource, expiresAt }); preflight(authority, future);
+        // A replacement always retires the host's old visibility selection, even when the selected capability ids match.
+        removeResource(value, descriptor.id);
+        value.resources.set(descriptor.id, { resource, expiresAt });
+        value.publications.set(peerId, { generation: authority.generation, revision: descriptor.revision });
+        return { status: method === 'POST' ? 201 : 204 };
+      }
       if (authority.role !== 'host') reject(404);
       if (method === 'POST' && suffix.length === 1 && suffix[0] === 'resources') {
         const body = ownData(input, ['resourceId', 'expiresAt']), id = identifier(body.resourceId);
@@ -126,7 +162,7 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
         if (!resource || resource.principalId !== authority.principalId || resource.deviceId !== authority.deviceId) reject(404);
         const expiresAt = expiry(body.expiresAt, authority);
         if (!value.resources.has(id) && value.resources.size >= PRIVATE_DIRECTORY_LIMITS.resourcesPerSession) reject(429);
-        const future = { resources: new Map(value.resources), members: value.members };
+        const future = { resources: new Map(value.resources) };
         future.resources.set(id, { resource, expiresAt }); preflight(authority, future);
         value.resources.set(id, { resource, expiresAt }); return { status: 201 };
       }
@@ -150,7 +186,11 @@ export function createCoordinatorDirectory(input: unknown, enrollments: readonly
       reject(404);
     },
     retireSession(sessionId: string) { epoch++; sessions.delete(sessionId); },
-    retirePeer(sessionId: string, peerId: string) { epoch++; sessions.get(sessionId)?.members.delete(peerId); },
+    retirePeer(sessionId: string, peerId: string) {
+      epoch++; const value = sessions.get(sessionId); if (!value) return;
+      value.members.delete(peerId); value.publications.delete(peerId);
+      for (const [id, entry] of value.resources) if (entry.resource.peerId === peerId) removeResource(value, id);
+    },
     close() { epoch++; closed = true; sessions.clear(); catalog.clear(); },
   };
 }
@@ -168,9 +208,9 @@ export function createPrivateDirectoryClient(options: PrivateDirectoryClientOpti
   const path = `/v1/sessions/${sessionId}/${role === 'host' ? 'host' : `peers/${peerId}`}/directory`;
   const lifetime = new AbortController();
   let closed = false;
-  async function send(method: string, suffix: string, body: unknown, signal?: AbortSignal) {
+  async function send(method: string, suffix: string, body: unknown, signal?: AbortSignal, publication = false) {
     if (closed || signal !== undefined && !(signal instanceof AbortSignal)) throw new Error('Directory caller closed or invalid');
-    const copied = body === undefined ? undefined : JSON.stringify(snapshotJson(body));
+    const copied = body === undefined ? undefined : JSON.stringify(publication ? parsePrivateDirectoryPublication(body) : snapshotJson(body));
     if (copied !== undefined && Buffer.byteLength(copied) > PRIVATE_DIRECTORY_LIMITS.requestBytes) throw new Error('Directory request too large');
     const currentSignal = signal === undefined ? lifetime.signal : AbortSignal.any([lifetime.signal, signal]);
     if (closed || currentSignal.aborted) throw new Error('Directory caller closed or aborted');
@@ -186,12 +226,19 @@ export function createPrivateDirectoryClient(options: PrivateDirectoryClientOpti
     return snapshot;
   }
   const hostOnly = () => { if (role !== 'host') throw new Error('Directory host role required'); };
+  const peerOnly = () => { if (role !== 'peer') throw new Error('Directory peer role required'); };
   return {
     async list(signal?: AbortSignal): Promise<PrivateDirectorySnapshot> { return (await send('GET', '', undefined, signal))!; },
     async enroll(resourceId: string, expiresAt: number, signal?: AbortSignal) { hostOnly(); await send('POST', '/resources', { resourceId: identifier(resourceId), expiresAt: timestamp(expiresAt) }, signal); },
     async allow(peer: string, resourceIds: readonly string[], expiresAt: number, signal?: AbortSignal) { hostOnly(); await send('PUT', `/members/${identifier(peer)}`, { resourceIds: strings(resourceIds, PRIVATE_DIRECTORY_LIMITS.resourcesPerSession), expiresAt: timestamp(expiresAt) }, signal); },
     async remove(resourceId: string, signal?: AbortSignal) { hostOnly(); await send('DELETE', `/resources/${identifier(resourceId)}`, undefined, signal); },
     async revoke(peer: string, signal?: AbortSignal) { hostOnly(); await send('DELETE', `/members/${identifier(peer)}`, undefined, signal); },
+    async publish(publication: PrivateDirectoryPublication, signal?: AbortSignal) { peerOnly(); await send('POST', '/publication', publication, signal, true); },
+    async update(publication: PrivateDirectoryPublication, signal?: AbortSignal) { peerOnly(); await send('PUT', '/publication', publication, signal, true); },
+    async unpublish(generation: number, revision: number, signal?: AbortSignal) {
+      peerOnly(); if (timestamp(generation) < 1 || timestamp(revision) < 1 || revision > 4294967295) reject();
+      await send('DELETE', `/publication/${generation}/${revision}`, undefined, signal);
+    },
     close() { closed = true; lifetime.abort(); caller.close(); },
   };
 }

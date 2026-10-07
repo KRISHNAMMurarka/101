@@ -10,7 +10,7 @@ import { createCoordinatorDirectory, DirectoryRejection, type ProvisionedDirecto
 
 /** Selected provisioned Node-client profile. These are server admission ceilings, not resource grants. */
 export const HTTPS_COORDINATOR_LIMITS = Object.freeze({
-  enrollments: 64, origins: 16, connections: 32, sessions: 16, sessionsPerPrincipal: 4,
+  enrollments: 64, origins: 16, connections: 32, connectionsPerPrincipal: 4, sessions: 16, sessionsPerPrincipal: 4,
   peersPerSession: 8, peersPerPrincipal: 16, requestsPerSecond: 32, callerPendingRequests: 4,
   requestBytes: 401_024, responseBytes: 401_024, signalCharacters: 400_000,
   sessionTtlMs: 600_000, requestTimeoutMs: 5_000, headersTimeoutMs: 3_000,
@@ -83,6 +83,8 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
   const broker = new LocalSignalingBroker();
   const rates = new Map<string, { second: number; count: number }>();
   const sockets = new Set<Duplex>();
+  const socketPrincipals = new Map<TLSSocket, string>();
+  const principalConnections = new Map<string, number>();
   let server: Server | undefined;
   let endpoint: string | undefined;
   let starting: Promise<string> | undefined;
@@ -103,11 +105,15 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
     if (!session || (host ? session.principalId !== identity.principalId : session.peers.get(peerId ?? "")?.principalId !== identity.principalId)) throw new Rejection(404);
     return session;
   }
-  function authenticate(incoming: IncomingMessage): Enrollment {
-    const socket = incoming.socket as TLSSocket;
+  function enrolledSocket(socket: TLSSocket): Enrollment | undefined {
     const peer = socket.getPeerCertificate();
     const identity = peer.fingerprint256 ? enrolled.get(peer.fingerprint256) : undefined;
-    if (closed || !socket.authorized || socket.getProtocol() !== "TLSv1.3" || !identity || !validAt(identity.certificate) || !validAt(certificateValue) || !validAt(ca)) throw new Rejection(401);
+    if (closed || !socket.authorized || socket.getProtocol() !== "TLSv1.3" || !identity || !validAt(identity.certificate) || !validAt(certificateValue) || !validAt(ca)) return;
+    return identity;
+  }
+  function authenticate(incoming: IncomingMessage): Enrollment {
+    const identity = enrolledSocket(incoming.socket as TLSSocket);
+    if (!identity) throw new Rejection(401);
     return identity;
   }
   function rate(identity: Enrollment) {
@@ -266,6 +272,21 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
       active.maxRequestsPerSocket = 64;
       active.maxConnections = HTTPS_COORDINATOR_LIMITS.connections;
       active.on("connection", (socket) => { sockets.add(socket); socket.once("close", () => sockets.delete(socket)); });
+      active.on("secureConnection", (socket) => {
+        if (closed) { socket.destroy(); return; }
+        const identity = enrolledSocket(socket);
+        // Valid CA credentials without an enrollment retain the existing HTTP 401 boundary.
+        if (!identity || socketPrincipals.has(socket)) return;
+        const principal = identity.principalId;
+        const count = principalConnections.get(principal) ?? 0;
+        if (count >= HTTPS_COORDINATOR_LIMITS.connectionsPerPrincipal) { socket.destroy(); return; }
+        socketPrincipals.set(socket, principal); principalConnections.set(principal, count + 1);
+        socket.once("close", () => {
+          socketPrincipals.delete(socket);
+          const remaining = principalConnections.get(principal)! - 1;
+          if (remaining) principalConnections.set(principal, remaining); else principalConnections.delete(principal);
+        });
+      });
       active.on("tlsClientError", (_cause, socket) => socket.destroy());
       active.on("clientError", (_cause, socket) => socket.destroy());
       let bound: () => void;
@@ -293,7 +314,6 @@ export function createHttpsCoordinator(options: HttpsCoordinatorOptions) {
     rejectStart = undefined;
     endpoint = undefined;
     for (const socket of sockets) socket.destroy();
-    sockets.clear();
     for (const id of broker.expire()) { sessions.delete(id); directory.retireSession(id); }
     for (const [id, session] of sessions) {
       try { broker.removeSession(id, session.created.hostToken); } catch { /* Expiry already removed broker authority. */ }

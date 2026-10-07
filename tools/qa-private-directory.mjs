@@ -111,5 +111,5 @@ try {
     sdkProof: source ? 'source-bound-worker-public-barrels-only' : 'actual-installed-sdk-model-and-runtime',
     hubProof: 'source-bound-worker-node-hub-server-and-native-mtls', resolvedPublicEntries: Object.fromEntries(resolved),
     implementationSha256: before, checks, limits: sdk.PRIVATE_DIRECTORY_LIMITS, example,
-    excluded: ['persistent/account-directory', 'browser-client-certificate-provisioning', 'enrollment/key-lifecycle', 'peer-owned-publication', 'live-capability-probes', 'unmanaged/native-data', 'physical-effects', 'phones', 'multiple-physical-networks', 'published-hub-package'] }, null, 2));
+    excluded: ['persistent/account-directory', 'browser-client-certificate-provisioning', 'enrollment/key-lifecycle', 'live-capability-probes', 'unmanaged/native-data', 'physical-effects', 'phones', 'multiple-physical-networks', 'published-hub-package'] }, null, 2));
 } finally { process.removeListener('SIGINT', interrupt); process.removeListener('SIGTERM', interrupt); for (const caller of callers) caller.close(); if (coordinator) await coordinator.stop(); fixture.close(); hooks.deregister(); }

@@ -6,6 +6,7 @@ test('hosted execution needs a reviewed native provider rather than application 
 });
 
 import { createConnection } from 'node:net';
+import { ChildProcess } from 'node:child_process';
 import { existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createWorkloadHandoff } from '@101/device-runtime';
@@ -26,8 +27,25 @@ function fixture(providerId = 'host-a', customize: Partial<HostedApplicationOpti
   return { provider, owner, grants, scopes, observations, handoff };
 }
 async function active(selected: ReturnType<typeof fixture>) {
-  const result = await selected.provider.start({ purpose: 'explicit-launch', version: 1 }); assert.ok(result.ok);
+  const result = await selected.provider.start({ purpose: 'explicit-launch', version: 1 });
+  assert.ok(result.ok, JSON.stringify({ operation: 'start', result, status: selected.provider.status() }));
   await selected.provider.handoffHost().resume(selected.handoff.authority()); return result.value;
+}
+function observeStartup() {
+  const descriptor = Object.getOwnPropertyDescriptor(ChildProcess.prototype, 'spawn')!;
+  const original = descriptor.value as (this: ChildProcess, ...args: unknown[]) => unknown;
+  const milestones: { spawnEnteredAt?: number; spawnReturnedAt?: number; spawnAt?: number; readyAt?: number;
+    closeAt?: number; exitCode?: number | null; signalCode?: string | null; errorCode?: string } = {};
+  Object.defineProperty(ChildProcess.prototype, 'spawn', { ...descriptor, value: function (this: ChildProcess, ...args: unknown[]) {
+    milestones.spawnEnteredAt = performance.now(); const result = Reflect.apply(original, this, args);
+    milestones.spawnReturnedAt = performance.now();
+    this.once('spawn', () => { milestones.spawnAt = performance.now(); });
+    this.once('error', (error: NodeJS.ErrnoException) => { milestones.errorCode = typeof error.code === 'string' && /^[A-Z0-9_]{1,32}$/.test(error.code) ? error.code : 'unknown'; });
+    this.on('message', message => { if (message && typeof message === 'object' && 'kind' in message && message.kind === 'ready') milestones.readyAt = performance.now(); });
+    this.once('close', (code, signal) => { milestones.closeAt = performance.now(); milestones.exitCode = code; milestones.signalCode = signal; });
+    return result;
+  } });
+  return { milestones, restore: () => Object.defineProperty(ChildProcess.prototype, 'spawn', descriptor) };
 }
 function context(signal = new AbortController().signal): DeliveryContext {
   return { signal, routeId: 'input-route', generation: 1, isCurrent: () => !signal.aborted, reportEvidence() {} };
@@ -179,9 +197,12 @@ test('frame declarations require exact observed bounded clocks without executing
   assert.throws(() => api.hostedApplicationRequirements('inert', { sourceClockId: 'hosted-raster:1:65', receiptClockId: 'hosted-receipt:1:0123456789abcdef' }), /Invalid hosted application clocks/);
   assert.equal(getters, 0);
 });
-test('denied launch attempts preserve their real epoch in later valid native frame declarations', async () => {
-  assert.ok(api); let allow = false;
-  const selected = fixture('epoch-bounds', { authorize(request) { if (!allow) return; return { request, signal: selected.owner.signal, expiresAt: performance.now() + 9000 }; } });
+test('denied launch attempts preserve their real epoch in later valid native frame declarations', async t => {
+  assert.ok(api); let allow = false, failed = false, launchExpiresAt: number | undefined, retiredAt: number | undefined;
+  const trace = observeStartup();
+  const selected = fixture('epoch-bounds', { authorize(request) { if (!allow) return;
+    const expiresAt = performance.now() + 9000; if (request.action === 'launch') launchExpiresAt = expiresAt;
+    return { request, signal: selected.owner.signal, expiresAt }; }, onRetire() { retiredAt = performance.now(); } });
   try {
     for (let index = 0; index < 4; index++) assert.equal((await selected.provider.start({ purpose: 'deny', version: 1 })).ok, false);
     allow = true; const epoch = await active(selected), result = await selected.provider.frame(epoch, { purpose: 'frame', signal: selected.owner.signal }); assert.ok(result.ok); assert.equal(result.value.providerEpoch, 5);
@@ -189,5 +210,9 @@ test('denied launch attempts preserve their real epoch in later valid native fra
     const definition = api.hostedApplicationRequirements('epoch-bounds', { sourceClockId: result.value.sourceTime.clockId, receiptClockId: result.value.receiptClockId }); assert.ok(definition.frameValue);
     assert.deepEqual(parseSignalValue(projection, definition.frameValue), projection);
     assert.throws(() => parseSignalValue({ ...projection, sourceTime: { ...projection.sourceTime, clockId: 'hosted-raster:1:1' } }, definition.frameValue!), /enum-value/);
-  } finally { await selected.provider.close(); }
+  } catch (error) { failed = true; throw error; }
+  finally { try { await selected.provider.close(); } finally {
+    trace.restore(); if (failed) t.diagnostic(JSON.stringify({ kind: 'hosted-startup', clock: 'parent-performance',
+      launchExpiresAt, retiredAt, ...trace.milestones, status: selected.provider.status() }));
+  } }
 });

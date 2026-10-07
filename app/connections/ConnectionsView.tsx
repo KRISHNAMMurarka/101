@@ -87,6 +87,12 @@ export default function ConnectionsView() {
       <nav aria-label="Connection options" className={styles.actions}>
         <Link href="/connections/resources">Connect page controls</Link>
         <Link href="/connections/readings">View shared readings</Link>
+        <Link href="/connections/camera">Use a camera here</Link>
+        <Link href="/connections/microphone">Check microphone levels</Link>
+        <Link href="/connections/screen">Preview a screen here</Link>
+        <Link href="/connections/feedback">Try feedback here</Link>
+        <Link href="/connections/gamepad">Check a gamepad here</Link>
+        <Link href="/connections/audio">Try sound here</Link>
         <Link href="/devices">Back to Devices</Link>
       </nav></header>
     <fieldset className={styles.roles} disabled={!ready || hasWork || snapshot.rawPending > 0}><legend>This screen will</legend>

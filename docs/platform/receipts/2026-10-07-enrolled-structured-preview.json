@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected enrolled structured preview source pass; whole U02/U03 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "focusedSourceTree": "7bda90994a9fb2fecf8bcbf804484f1721b1479a",
+  "sourceSha256": {
+    "app/devices/enrolled-device.ts": "5637396095c38c0b9e21465f49a161cbe95caaee3c2612110b09a56a5aeadcda",
+    "app/devices/enrolled-device.test.ts": "6c9a0cb476119089d67b38a5a41c5060912e57944b176acdf4ff7c63d4be55cf",
+    "app/devices/EnrolledDevices.tsx": "7c54ac6d8c670dfb099e5c256af5c304469572ffe7138fb4735d8e665ec7429d"
+  },
+  "changes": [
+    "Enrolled authenticated resources derive bounded record/table reading choices from existing public descriptors. Selected capability approval remains explicit and independent.",
+    "Readable fields, units and semantic tables distinguish missing values from Off. Only bounded projected cells are retained for the current preview.",
+    "Stop, expiry, disconnect and removal clear preview readings. Remembered metadata and manual backups exclude readings and connection authority."
+  ],
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-enrolled-structured-feature-old-fixed.json",
+    "sha256": "179dbbfb061275b5993d4efcfaec3f8a6eff35b6c2fddc8b9085bf764d7d6b2c"
+  },
+  "oldFailure": "Actual complete authenticated enrollment and faithful inactive public reading descriptor prefix passed; desired eligibility assertion then failed on old implementation. No loader or precondition error counted.",
+  "focusedSource": {
+    "path": "/tmp/101-enrolled-structured-camera-dependency-current.json",
+    "sha256": "e527ad886ffc334f2bd4d40ada7b8ca176b14fbaa4283576f412c394139ba347"
+  },
+  "focusedCounts": {
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "initialFocusedFailure": {
+    "path": "/tmp/101-enrolled-structured-integrated-inspector.json",
+    "sha256": "279cf87154737f57acf929bb8a4adf9253b6b038953cf46a443c98c4d2f3abe5"
+  },
+  "fixtureRepair": {
+    "path": "/tmp/101-enrolled-structured-expiry-fixture-repair.json",
+    "sha256": "2c28993e7601d270f88924ae7b6cad65f1f9e6df243832d661920f909513e20b"
+  },
+  "fixtureDescription": "Initial expiry fixture skipped earlier identity currency and data-silence deadlines. Test-only repair delivers faithful public frames every250ms until the unchanged preview grant boundary; no product budget or assertion change.",
+  "rootSourceRepair": {
+    "path": "/tmp/101-enrolled-structured-root-repaired.json",
+    "sha256": "2d95b5f348d868f1eb4e77521c8c9a2e2ad4fa26eaf46da54ca623dbd3b9db5f"
+  },
+  "originalSourceReview": {
+    "path": "/tmp/101-enrolled-structured-preview-e09-source-review.json",
+    "sha256": "4340183aaa2528df50582f940e98c7145201ecea9a28c99af30bfe92ce81e34c"
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-enrolled-structured-preview/source-review",
+    "status": "CLEAR",
+    "scope": "Exact three source paths, wrapping and faithful expiry fixture only; broader interaction not run."
+  },
+  "retention": {
+    "path": "/tmp/101-enrolled-structured-retained.json",
+    "sha256": "d3c703d0d9d12b6856fc2f65c0b9cb27b85b189726058b9ef65594185783007e"
+  },
+  "literalFiles": 167,
+  "softwareBuild": {
+    "recordRef": "refs/codex/evidence/2026-10-07-enrolled-structured-preview/software-build",
+    "scope": "Selected exact candidate type/lint/local build only; no full acceptance claim."
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "status": "FAIL",
+    "scope": "Historical previous23-path candidate completed2409unit checks with5existing native startup/IPC failures. This is not a full gate pass for the current preview tree."
+  },
+  "scopeLimits": [
+    "Existing six fields/eight rows and schemaVersion1 scalar/boolean/enum reading limits reused. Commands, jobs, nested/oversized/unsupported schemas remain unavailable.",
+    "Focused Node24 cooperative authenticated SDK tests only. NativeRTC, broader UI, phone/device and physical qualification deferred at user direction.",
+    "No raw structured preview data persistence, new grants, automatic pairing or per-field authority.",
+    "Original excluded harness failure, initial focused fixture failure and independent source BLOCK preserved alongside corrected source pass.",
+    "Full U02/U03 and current full commit gates remain open. No support row accepted."
+  ],
+  "taskDisposition": {
+    "U02": "PARTIAL/OPEN",
+    "U03": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0,
+  "originalCorrectedFocusedSource": {
+    "path": "/tmp/101-enrolled-structured-integrated-inspector-fixture-fixed.json",
+    "sha256": "f06e708dafc546c49c27f4e7954658bdbb232375cd6b712578afbe42de8896be"
+  },
+  "dependencyRefresh": "Same3 preview source pins,19source assertions rerun PASS with125current loaded dependencies after additive shared camera SDK change. Original19source/literal167/three-build candidate preserved; no new UI/device qualification."
+}

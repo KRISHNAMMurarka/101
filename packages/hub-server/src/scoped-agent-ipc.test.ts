@@ -20,26 +20,38 @@ if (api) {
     const owner = signal(), registration = signal(), read = signal();
     const observations: { pid: number; socketPath: string; epoch: number }[] = [];
     let registrations = 0, reads = 0;
+    const milestones: { registrationApprovedAt?: number; registrationExpiresAt?: number; readyAt?: number; retiredAt?: number } = {};
     const controller = createScopedAgentIpc({ ownerId: 'owned-agent-operator', signal: owner.signal,
-      authorizeRegistration(request) { registrations++; return { request, signal: registration.signal, expiresAt: performance.now() + 9000 }; },
+      authorizeRegistration(request) { registrations++; const at = performance.now();
+        milestones.registrationApprovedAt = at; milestones.registrationExpiresAt = at + 9000;
+        return { request, signal: registration.signal, expiresAt: at + 9000 }; },
       authorizeRead(request) { reads++; return { request, signal: read.signal, expiresAt: performance.now() + 9000 }; },
-      onAgent(observation) { observations.push(observation); }, ...overrides });
-    return { controller, owner, registration, read, observations, counts: () => ({ registrations, reads }) };
+      onAgent(observation) { milestones.readyAt = performance.now(); observations.push(observation); },
+      onRetire() { milestones.retiredAt = performance.now(); }, ...overrides });
+    return { controller, owner, registration, read, observations, milestones, counts: () => ({ registrations, reads }) };
   }
   const delivery = () => ({ purpose: 'selected-process-rss', signal: signal().signal });
-  async function unauthorized(socketPath: string, frame: unknown) {
+  interface Probe { ordinal: number; spawnEnteredAt: number; spawnReturnedAt?: number; spawnAt?: number;
+    closeAt?: number; exitCode?: number | null; signalCode?: string | null; socketErrorCode?: string }
+  async function unauthorized(socketPath: string, frame: unknown, probe: Probe) {
     const child = spawn(process.execPath, ['--input-type=module', '--eval', `
       import net from 'node:net';
       const s=net.createConnection(process.argv[1]); let text='';
       s.on('connect',()=>s.end(process.argv[2]+'\\n'));
       s.on('data',c=>{text+=c;if(text.length>4096)process.exit(65)});
       s.on('end',()=>{process.stdout.write(text);});
-      s.on('error',()=>process.exit(66));setTimeout(()=>process.exit(67),2000).unref();
+      s.on('error',e=>{process.stderr.write(JSON.stringify({socketErrorCode:typeof e.code==='string'&&/^[A-Z0-9_]{1,32}$/.test(e.code)?e.code:'unknown'})+'\\n',()=>process.exit(66))});setTimeout(()=>process.exit(67),2000).unref();
     `, socketPath, JSON.stringify(frame)], { stdio: ['ignore', 'pipe', 'pipe'] });
+    probe.spawnReturnedAt = performance.now(); child.once('spawn', () => { probe.spawnAt = performance.now(); });
     let output = '', errors = '';
     child.stdout.on('data', chunk => { output += chunk; }); child.stderr.on('data', chunk => { errors += chunk; });
-    const code = await new Promise<number | null>(resolve => child.once('close', resolve));
-    assert.equal(code, 0); assert.equal(errors, ''); return JSON.parse(output.trim());
+    const code = await new Promise<number | null>(resolve => child.once('close', (code, signal) => {
+      probe.closeAt = performance.now(); probe.exitCode = code; probe.signalCode = signal; resolve(code);
+    }));
+    try { const parsed = JSON.parse(errors); if (typeof parsed.socketErrorCode === 'string' && /^[A-Za-z0-9_]{1,32}$/.test(parsed.socketErrorCode)) probe.socketErrorCode = parsed.socketErrorCode; }
+    catch { /* Unstructured helper stderr is never copied into diagnostics. */ }
+    assert.equal(code, 0, JSON.stringify({ kind: 'ipc-negative-probe', clock: 'parent-performance', ...probe }));
+    assert.equal(errors.length, 0, 'Negative helper must emit no unexpected stderr'); return JSON.parse(output.trim());
   }
   test('construction is inert and denied registration starts no process', async () => {
     const h = setup({ authorizeRegistration: () => undefined });
@@ -47,24 +59,28 @@ if (api) {
     assert.equal((await h.controller.start({ purpose: 'rss', version: 1 })).ok, false);
     assert.equal(h.observations.length, 0); assert.equal(h.controller.status().nativeChildren, 0); await h.controller.close();
   });
-  test('actual private socket rejects separate missing/wrong capability and version before RSS acquisition', async () => {
-    const h = setup();
+  test('actual private socket rejects separate missing/wrong capability and version before RSS acquisition', async t => {
+    const h = setup(), probes: Probe[] = []; let failed = false;
     try {
-      const started = await h.controller.start({ purpose: 'rss', version: 1 }); assert.ok(started.ok);
+      const started = await h.controller.start({ purpose: 'rss', version: 1 });
+      assert.ok(started.ok, JSON.stringify({ operation: 'start', result: started, status: h.controller.status() }));
       const observation = h.observations[0]!;
       assert.equal((await stat(observation.socketPath)).mode & 0o777, 0o600);
       for (const frame of [{ version: 1, epoch: observation.epoch, action: 'read-rss', id: 'foreign' },
         { version: 1, epoch: observation.epoch, action: 'read-rss', id: 'foreign', capability: 'wrong' },
         { version: 1, epoch: observation.epoch, action: 'read-rss', id: 'foreign', capability: 'é'.repeat(64) },
         { version: 2, epoch: observation.epoch, action: 'read-rss', id: 'foreign', capability: 'wrong' }]) {
-        assert.deepEqual(await unauthorized(observation.socketPath, frame), { ok: false, reason: 'denied' });
+        const probe = { ordinal: probes.length + 1, spawnEnteredAt: performance.now() }; probes.push(probe);
+        assert.deepEqual(await unauthorized(observation.socketPath, frame, probe), { ok: false, reason: 'denied' });
       }
       const result = await h.controller.readRss(started.value, delivery()); assert.ok(result.ok);
       assert.equal(result.value.sequence, 1, 'native unauthorized callers performed zero memoryUsage reads');
       assert.ok(result.value.rssBytes > 0); assert.equal(result.value.sourceTime.clockId, `agent-rss:${observation.pid}:${observation.epoch}`);
       assert.equal(result.value.quality, 'valid'); assert.ok(result.value.sourceTime.at >= 0);
       assert.ok(result.value.receivedAt >= 0); assert.notEqual(result.value.receiptClockId, result.value.sourceTime.clockId);
-    } finally { await h.controller.close(); }
+    } catch (error) { failed = true; throw error; }
+    finally { try { await h.controller.close(); } finally { if (failed) t.diagnostic(JSON.stringify({ kind: 'ipc-startup',
+      clock: 'parent-performance', ...h.milestones, probes, status: h.controller.status() })); } }
     assert.equal(h.controller.status().nativeChildren, 0); assert.equal(h.controller.status().nativePending, 0);
   });
   test('declared version mismatch is checked against the actual native handshake', async () => {

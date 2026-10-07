@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "local-reported-camera-preview/1",
+  "result": "Selected local camera task built;16 focused source checks and exact combined type/lint/fresh application build PASS. Browser/device and complete qualification remain deferred/open.",
+  "localOnly": true,
+  "route": "/connections/camera",
+  "sourceTree": "e3aeb3ca4636c93a3407d9a0510ccbd92052c7ca",
+  "sourceSha256": {
+    "app/connections/camera/camera-task.ts": "08872d1db59939487e735dee44de28dfdf253fc11df73370719a1eedaec55f32",
+    "app/connections/camera/camera-task.test.ts": "c99d4abcdf378bdb6d2682c94cf03b5e121d650e33b243d4c764b589b9e76b4c",
+    "app/connections/camera/CameraView.tsx": "941bc0a5b244360f7bfa8173f654f791cfbc72367dae122c0a4e3411775687c7",
+    "app/connections/camera/page.tsx": "eb87e93b54e0434d02773758e3720972552bc8ff1b2289cb998822fc3a7486e9",
+    "app/connections/ConnectionsView.tsx": "6f3405470c9c5d66244fc8fbf28909d12bec73fa815e9644f9eaa867ada4d178"
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-camera-page-private/source-ready.json",
+    "sha256": "39a44c7759b5a08c14c8a3c89777c7b88213c0d641b791ec2ae02fa4cb2c7480"
+  },
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-camera-page-feature-old.json",
+    "sha256": "893ecf01fb16a4648a4df304773534665d8e5a9e2ecb9737eb91e695a008a36c"
+  },
+  "historicalFirstFocused": {
+    "path": "/tmp/101-camera-player-source-focused.json",
+    "sha256": "32ee327b2db59237cf3ba1905e3a911706f619a8b11ee74f74f6205fa1fbb7f7"
+  },
+  "meaningfulTimingOld": {
+    "path": "/tmp/101-camera-page-delayed-approval-old.json",
+    "sha256": "d3bd50e3874ee96b098695afb0710481359c8e86205dc43beee4044ed31ffd3f"
+  },
+  "timingTestsFirst": {
+    "path": "/tmp/101-camera-page-delayed-approval-tests-first.json",
+    "sha256": "ccc478dc18e4b33fa01e666cf88c53657630be6dcc5186dd6c1b7b409890b8da"
+  },
+  "timingRepair": {
+    "path": "/tmp/101-camera-page-delayed-approval-source-repair.json",
+    "sha256": "8747cb059b8a97bf21758b139121a3e3bb9652e06ccbeebb3c637325c1996a80"
+  },
+  "focused": {
+    "path": "/tmp/101-camera-player-source-clear-fixed.json",
+    "sha256": "eea85df90664ad2d0c87e3d489669855e6bb0162f95bf97af82cea447ce3a065"
+  },
+  "focusedCounts": {
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "changes": [
+    "Inert page/task; explicit inventory, private numbered choices, separate capture/frame source/local display approvals and30s initial route request narrowed by actual existing approvals. Original provider selection lifetime clips consent; no renewal or automatic reacquisition.",
+    "Existing single camera provider/caller owns capture and native returned work. Local8x8 scaled sample only, no preview save/send. Supported reported zoom/pan/tilt facts drive offered controls; one reviewed axis requires separate native control/page command/target invocation approvals.",
+    "Stop, visibility/focus loss, expiry, owner abort and unmount retire logical authority/clear preview promptly. Stable prepublished actual caller close barrier reserves late inventory/acquisition/control work and blocks replacement until real settlement.",
+    "Native keyboard/select/number/buttons, readable fixed status, focus recovery and skip/back choices reuse existing monochrome CSS. Native browser/device/full accessibility/responsive interaction qualification deferred.",
+    "Failed owned preview clear immediately retires the same captured run through existing stable close and cleanup quarantine. Denial copy offers browser camera access and fresh-choice recovery; observed lint repaired only the test const closure."
+  ],
+  "limits": {
+    "runs": 4,
+    "userActions": 64,
+    "choices": 8,
+    "captureMaxMs": 30000,
+    "reviewMs": 5000,
+    "commandAttemptsPerRun": 16,
+    "controlMaxHz": 2,
+    "commandAgeMs": 250,
+    "taskTimers": 1,
+    "timerMs": 100,
+    "timerCallbacksPerRun": 360,
+    "frameBytes": 256
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-camera-player/source-review",
+    "status": "CLEAR",
+    "scope": "Independent passive exact5current source review; timing repair and all3 original source findings resolved. TSX/browser/device/full-application acceptance separate.",
+    "sha256": "770674a09b4bf7c2a852fc98e304001c729f78a35286c6f78c14ec99d3aee005",
+    "originalBlockRef": "refs/codex/evidence/2026-10-07-camera-player/source-original-block",
+    "historicalNavigationSupplement": {
+      "recordRef": "refs/codex/evidence/2026-10-07-screen-player/source-review",
+      "sha256": "0a3d19ae7241eefc94a682d34c86b01f0900bf90e948c19225e486e01fc95458",
+      "navigationSha256": "d71a5eb0c3ee53809f41c79f6bfc6df159e3276a92af2365fc4e0d4edeae9a7e",
+      "scope": "Tiny final shared navigation camera/microphone/screen links reviewed separately from historical page source review pins."
+    },
+    "navigationSupplement": {
+      "recordRef": "refs/codex/evidence/2026-10-07-feedback-player/source-review",
+      "status": "CLEAR",
+      "navigationSha256": "6f3405470c9c5d66244fc8fbf28909d12bec73fa815e9644f9eaa867ada4d178",
+      "scope": "Final shared camera/microphone/screen/feedback local links; separate from historical page source review pins.",
+      "path": "/tmp/101-feedback-player-e09-status-supplement.json",
+      "sha256": "9490e4f3f40b054b63a40531710679a223ab6099c0f23f0793410ec2a2df5c7a"
+    }
+  },
+  "softwareBuild": {
+    "status": "PASS",
+    "historicalPass": {
+      "path": "/tmp/101-camera-player-build-gates-fixed.json",
+      "sha256": "a94ea3bd52ba4c1bd2c75925b65cb5b1a616ac09bc085b5824f3024ccc444cc2"
+    },
+    "historicalPassTree": "7aa58ee3cf882bb11c6242fd6926bd8cb1bd11fb",
+    "previousAttempt": {
+      "path": "/tmp/101-camera-player-build-gates.json",
+      "sha256": "9c46d353c74bb228d972dbb0528d8f6b9248c966dd74717374453d0e4de61602"
+    },
+    "previousResult": "types PASS; lint FAIL test-only prefer-const; build not run",
+    "scope": "Exact49path frozen selected software candidate type/lint/fresh local application build. Subsequent changes record results only in documentation; product source inputs remain identical. No rendered/browser/device/fullunit acceptance. Historical five native startup/IPC fullunit failures remain unresolved.",
+    "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/software-build",
+    "path": "/tmp/101-local-player-build-gates-final.json",
+    "sha256": "f76f251afb62dec4b4385ec9651eba5812fd285f7dd37fca190a1718a8937213",
+    "tree": "5db7351ad4992c40a57a2ab9088d0a76157a580e",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      }
+    ],
+    "retention": {
+      "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/build-literal-record",
+      "path": "/tmp/101-local-player-build-retained.json",
+      "sha256": "77cd31500391d3988822fb7fca46657b7aa7c220ece12b4d6e26b1a004bceed8",
+      "literalPaths": 60,
+      "literalFiles": 60
+    }
+  },
+  "retention": {
+    "recordRef": "refs/codex/evidence/2026-10-07-camera-player/literal-record",
+    "sha256": "4012f6cd5712e2153e2e739fc4f0926da3fe5808ba0ba2457b17d7f414611cd1",
+    "literalPaths": 219,
+    "literalFiles": 213,
+    "scope": "Genuine feature/timing/clear OLD,14/15/16sourcehistory, all124current loaded inputs,3sourceBLOCK/CLEAR, original34type/lintFAIL and later34type/lint/buildPASS before TSXunmount correction."
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "status": "FAIL",
+    "scope": "Previous23path2404/2409 complete unit result with5existing native startup/IPC failures preserved. No current complete gate pass or commit."
+  },
+  "scopeLimits": [
+    "Cooperative actual public SDK source tests establish selected software behavior only. Browser permission/camera/PTZ/native/physical effects and full runtime/UI/accessibility/responsive matrix deferred.",
+    "Reported API settings do not confirm an angle, optics or physical movement; focus/exposure remain unavailable. This is a tiny sample, not full-resolution video.",
+    "No iPhone/Android/pointer/browser/native capture, remote/network service, publication, deployment or persistent preview/permission restoration.",
+    "Whole U03/U10/U11/V05 and all support rows remain OPEN; support rows accepted0. Original missing feature OLD, delayed approval OLD and previous gate failures retained."
+  ],
+  "taskDisposition": {
+    "U03": "PARTIAL/OPEN",
+    "U10": "PARTIAL/OPEN",
+    "U11": "PARTIAL/OPEN",
+    "V05": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0,
+  "historicalDelayedFocused": {
+    "path": "/tmp/101-camera-player-source-delayed-fixed.json",
+    "sha256": "f953800d475266e4fb3be5f01ef6531f1ca568eabf0231d18a35500ccc32544e"
+  },
+  "meaningfulClearFailureOld": {
+    "path": "/tmp/101-camera-page-clear-failure-old.json",
+    "sha256": "d832e1c639364350d2772b02007cefe1f02b35ad21c6fa9aa42c5f9cf41dab6d"
+  },
+  "clearTestsFirst": {
+    "path": "/tmp/101-camera-page-clear-failure-tests-first.json",
+    "sha256": "e02898fb3a7af4a9673d0a62d7289bdd9541cb6c64395909e8dfe08be490a405"
+  },
+  "clearRepair": {
+    "path": "/tmp/101-camera-page-clear-source-repair.json",
+    "sha256": "f5a6aebfb6620c4f00198ba5daf03cd63e30bc635bfaa0b310f2fb936f6396cb"
+  },
+  "unmountClearRepair": {
+    "path": "/tmp/101-camera-page-unmount-clear-repair.json",
+    "sha256": "c1111fd923e9f45f18521163ccf06019fd88e13d995b08eb8c75b9d63033f58b"
+  }
+}

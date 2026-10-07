@@ -36,7 +36,7 @@ export type { BrowserApplicationMedia, BrowserApplicationMediaOptions, BrowserMe
   BrowserApplicationMediaBinding, BrowserApplicationMediaStatus } from './application-media.ts';
 
 export { INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS, createInvitationConnectionController } from "./invitation-connection.ts";
-export type { InvitationEndpoint, InvitationReviewHandle, InvitationConnectionHandle, InvitationConnectionScope, InvitationConnectionGrant, InvitationConnectionFailure, InvitationConnectionResult, InvitationConnectionOptions, InvitationConnectionPreview, InvitationConnectionSnapshot, InvitationConnectionController } from "./invitation-connection.ts";
+export type { InvitationEndpoint, InvitationDiscoveryEnrollment, InvitationReviewHandle, InvitationConnectionHandle, InvitationConnectionScope, InvitationConnectionGrant, InvitationConnectionFailure, InvitationConnectionResult, InvitationConnectionOptions, InvitationConnectionPreview, InvitationConnectionSnapshot, InvitationConnectionController } from "./invitation-connection.ts";
 
 export { createBrowserChooserController, BROWSER_CHOOSER_LIMITS } from './browser-chooser.ts';
 export type { BrowserChooserKind, BrowserHidFilter, BrowserBluetoothFilter, BrowserSerialFilter, BrowserChooserDeclaration, BrowserChooserScope, BrowserChooserResource, BrowserChooserRequest, BrowserChooserCaptureRequest, BrowserChooserCaptureGrant, BrowserChooserContext, BrowserChooserNativeSelection, BrowserChooserCaptureLease, BrowserChooserCaptureContext, BrowserChooserAdapterBinding, BrowserChooserEnvironment, BrowserChooserOptions, BrowserChooserSelection, BrowserChooserReason, BrowserChooserResult, BrowserChooserOption, BrowserChooserSnapshot, BrowserChooserController } from './browser-chooser.ts';

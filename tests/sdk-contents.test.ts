@@ -838,6 +838,19 @@ for package in shapes:
   files[path]=b'export {};\n' if path.endswith(('.js','.ts')) else b'public fixture\n'
  files['package.json']=encode(package['metadata']); files['LICENSE']=b'MIT License\nCopyright 101\n'
  files['README.md']=b'# Public SDK fixture\n'
+ if name=='@101/device-runtime' or mode=='node-executor-wrong-package' and name=='@101/device-model':
+  metadata=dict(package['metadata']); metadata['exports']=dict(metadata['exports'])
+  entry='index' if mode=='node-executor-wrong-target' else 'processor-node'
+  subpath='./private-node' if mode=='node-executor-private-alias' else './node'
+  metadata['exports'][subpath]={'types':'./dist/'+entry+'.d.ts','import':'./dist/'+entry+'.js'}
+  files['package.json']=encode(metadata)
+  for stem in ['processor-node','processor-worker','processor-language']:
+   for extension in ['.js','.d.ts']: files['dist/'+stem+extension]=b'export {};\n'
+  if mode=='node-executor-missing-worker': del files['dist/processor-worker.js']
+  if mode=='node-executor-missing-export':
+   del metadata['exports']['./node']; files['package.json']=encode(metadata)
+   for stem in ['processor-node','processor-worker','processor-language']:
+    for extension in ['.js','.d.ts']: del files['dist/'+stem+extension]
  if name=='@101/connect' and mode in ['telemetry-owner','arbitrary-mjs']:
   example='telemetry-owner' if mode=='telemetry-owner' else 'unreviewed'
   metadata=dict(package['metadata']); metadata['exports']=dict(metadata['exports'])
@@ -959,7 +972,7 @@ test('missing seven-package SDK decoded contents command', () => {
     const report = JSON.parse(readFileSync(f.output, 'utf8'));
     assert.equal(report.auditProfile, 'sdk-content-audit/1'); assert.equal(report.result, 'pass'); assert.equal(report.reason, 'ok');
     assert.equal(report.sdkManifestSha256, f.manifestSha); assert.equal(report.sourceTree, sourceTree); assert.equal(report.toolSha256, f.toolSha);
-    assert.equal(report.artifacts.length, 7); assert.equal(report.files, 394); assert.equal(report.releaseAccepted, false);
+    assert.equal(report.artifacts.length, 7); assert.equal(report.files, 400); assert.equal(report.releaseAccepted, false);
   } finally { f.close(); }
 });
 
@@ -995,6 +1008,11 @@ const refusals = [
   ['decoded-bound', 'limit-exceeded', 'bounded gzip expansion'],
   ['compressed-bound', 'limit-exceeded', 'oversized compressed input'],
   ['arbitrary-mjs', 'unsupported-schema', 'undeclared MJS example despite matching inventory'],
+  ['node-executor-wrong-package', 'inventory-mismatch', 'Node executor exported by an unrelated package'],
+  ['node-executor-wrong-target', 'inventory-mismatch', 'Node executor redirected to a different target'],
+  ['node-executor-private-alias', 'unsupported-schema', 'private alias for the Node executor'],
+  ['node-executor-missing-worker', 'inventory-mismatch', 'Node executor without its worker dependency'],
+  ['node-executor-missing-export', 'inventory-mismatch', 'runtime package missing its required Node executor export'],
 ] as const;
 for (const [mode, reason, title] of refusals) test(`SDK contents refuses ${title}`, () => rejected(mode, reason));
 
@@ -1004,8 +1022,15 @@ test('SDK contents accepts only the explicitly declared optional telemetry MJS e
   const f = fixture('telemetry-owner');
   try {
     const result = f.run(); assert.equal(result.status, 0); assert.equal(result.signal, null); assert.equal(result.error, undefined);
-    const report = JSON.parse(result.stdout); assert.equal(report.result, 'pass'); assert.equal(report.files, 395);
+    const report = JSON.parse(result.stdout); assert.equal(report.result, 'pass'); assert.equal(report.files, 401);
     assert.equal(report.artifacts.find((item: { name: string }) => item.name === '@101/connect').files, 130);
+  } finally { f.close(); }
+});
+test('SDK contents accepts the exact Node executor entrypoint with its compiled dependencies', () => {
+  const f = fixture('node-executor');
+  try {
+    const result = f.run(); assert.equal(result.status, 0); assert.equal(result.signal, null); assert.equal(result.error, undefined);
+    const report = JSON.parse(result.stdout); assert.equal(report.result, 'pass'); assert.equal(report.files, 400);
   } finally { f.close(); }
 });
 test('SDK contents preserves an existing output receipt', () => {

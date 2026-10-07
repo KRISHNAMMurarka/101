@@ -7,10 +7,9 @@ import type { DeliveryContext } from '@101/connect';
 interface Credential { readonly certificatePem: string; readonly privateKeyPem: string; readonly principalId: string; readonly deviceId: string; }
 /** Actual Node mTLS directory plus an independently authorized local SDK observation route. No physical input/effect claim. */
 export async function runPrivateDirectoryExample(options: { coordinator: HttpsCoordinatorOptions; origin: string; host: Credential; peer: Credential }) {
-  const resource = parseDeviceDescriptor({ ...pointerSourceDescriptor('node'), id: 'reviewed-local-surface', label: 'Reviewed local surface',
+  const resource = parseDeviceDescriptor({ ...pointerSourceDescriptor('node'), id: options.peer.deviceId, label: 'Reviewed local surface',
     metadata: { privateOwnerNote: 'excluded-from-directory' } });
-  const coordinator = createHttpsCoordinator({ ...options.coordinator, directoryResources: [{ principalId: options.host.principalId,
-    deviceId: options.host.deviceId, descriptor: resource, capabilityIds: ['position'] }] });
+  const coordinator = createHttpsCoordinator(options.coordinator);
   let hostCaller: ReturnType<typeof createCoordinatorFetcher> | undefined, peerCaller: ReturnType<typeof createCoordinatorFetcher> | undefined;
   let hostDirectory: ReturnType<typeof createPrivateDirectoryClient> | undefined, peerDirectory: ReturnType<typeof createPrivateDirectoryClient> | undefined;
   let runtime: ReturnType<typeof createDeviceRuntime> | undefined;
@@ -27,7 +26,8 @@ export async function runPrivateDirectoryExample(options: { coordinator: HttpsCo
     const before = await peerDirectory.list();
     if (before.resources.length !== 0) throw new Error('Join unexpectedly granted metadata visibility');
     const expiry = Date.now() + 5000;
-    await hostDirectory.enroll(resource.id, expiry);
+    await peerDirectory.publish({ generation: lease.generation, descriptor: resource, capabilityIds: ['position'], expiresAt: expiry, consent: true });
+    if ((await peerDirectory.list()).resources.length !== 0) throw new Error('Publication unexpectedly granted metadata visibility');
     await hostDirectory.allow(lease.peerId, [resource.id], expiry);
     const received = parsePrivateDirectorySnapshot(await peerDirectory.list());
     if (received.resources.length !== 1 || received.resources[0]!.id !== resource.id || received.resources[0]!.revision !== resource.revision ||

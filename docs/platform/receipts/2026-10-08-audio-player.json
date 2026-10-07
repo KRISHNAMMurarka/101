@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "route": "/connections/audio",
+  "sourceTree": "d2c209fd1fd98cac00d2a82c641702c0b9edfdc3",
+  "sourceSha256": {
+    "app/connections/audio/audio-task.ts": "19da8f54741d78e643725a4a84bb278033c8f3c0833033225525f43a87bc16ef",
+    "app/connections/audio/audio-task.test.ts": "203a83b32adba07714d39c666f26407cc98ebc3194a6db37bc605ca343a98979",
+    "app/connections/audio/AudioView.tsx": "f5d299c113f2be2eb2de774993eaf0c9c60d9c535e0dd46831698da40a70c178",
+    "app/connections/audio/page.tsx": "6bd57a5d73b3812eccf18e5d7b137ece96d18c04d4d2d50cbe91cd3994267658",
+    "app/connections/ConnectionsView.tsx": "483cb305b97e71f09b29f145c84af27bcc13f21c339a9bd373257a54f45c6422",
+    "tests/rendered-html.test.mjs": "74bf00e68657d8cb844c81db2d11d1755f185e12235cc47c7164259cb79e6ead"
+  },
+  "result": "Selected separately approved local page-tone/browser-playback caller built.38 focused source checks, types/lint/fresh local build and2selected audio/gamepad SSR checks pass. Browser/hardware/full acceptance remain open.",
+  "boundedPlan": {
+    "outcome": "Review one generated page tone, its private connection and default browser playback; explicitly start, adjust volume/mute, stop or recover.",
+    "ownership": "Worker task/tests; root UI/navigation/SSR/index/evidence; independent source reviewer.",
+    "interfaces": [
+      "createLocalAudioTask",
+      "AudioTone",
+      "AudioOutputPort",
+      "AudioTaskSnapshot",
+      "AudioReview"
+    ],
+    "negativeStates": [
+      "missing API",
+      "forged/stale/replayed review",
+      "separate permission missing",
+      "blocked or delayed playback",
+      "hidden/unfocused/lost page",
+      "partial acquisition",
+      "Stop/close reentry",
+      "expiry",
+      "cleanup uncertainty"
+    ],
+    "qualification": "Actual public SDK with faithful software graph/track/output ports plus built SSR only; native/browser/device/broad interaction deferred."
+  },
+  "changes": [
+    "Arrival and review generate no tone or playback. One opaque five-second review retains three independent source/private-route/output approvals; reading review again never renews it. Start requires the same complete review.",
+    "First approved-start clock read fixes a ten-second deadline before all availability, lifecycle, native factory and provider callouts. Exact source/output-owner requests and private runtime scope/registration/device/capability/schema/revision subscribe/write references admit only this page tone to its one approved local output, with no renewal or partition.",
+    "Task owns the low-gain440Hz producer and its original track/context; the existing SDK owns routing clones/context and private stream. UI retains the exact media element through unmount and synchronously pauses/detaches on Stop; delayed readiness/play/close holds admission until actual settlement. Partial factory failure retains cleanup or quarantines unknown ownership.",
+    "Stop holds its reservation through review timer cleanup and observer notifications; close immediately records terminal closed state. Cleanup rejection is marked before observers can admit a fresh review. Caller-owned volume/mute, Stop, readable status, keyboard controls, skip and recovery reuse monochrome page styles."
+  ],
+  "limits": {
+    "starts": 4,
+    "actions": 64,
+    "reviewMs": 5000,
+    "fixedActiveMs": 10000,
+    "lifetimeTaskCallbacks": 1000,
+    "taskTimers": 1,
+    "activeTaskMonitorMs": 20,
+    "reviewExpiryTimerMs": 5000,
+    "runtimeRegistrations": 4,
+    "runtimeRoutes": 1,
+    "runtimeSubscribers": 1,
+    "runtimePendingDeliveries": 1,
+    "logicalProducerSources": 1,
+    "privateOutputs": 1,
+    "maxVolume": 0.5,
+    "initialVolume": 0.25
+  },
+  "graphFactsScope": "Selected48kHz/two-channel destination-node configuration only; missing emitted PCM facts remain unknown. Default browser sound destination only; no speaker/headphone enumeration, remote sound, microphone, recording, acoustic calibration or physical-hearing evidence.",
+  "focused": {
+    "path": "/tmp/101-audio-player-source-terminal-fixed.json",
+    "sha256": "e9f9cd050b6b19a648e2e1d06596197243197fb926e5eba5db00875bef8fc5e2"
+  },
+  "focusedCounts": {
+    "tests": 38,
+    "pass": 38,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "actualLoadedDependencies": 123,
+  "softwareBuild": {
+    "path": "/tmp/101-audio-player-build-gates-terminal-fixed.json",
+    "sha256": "36ab8c33066f0009ef61ab65668e532f26b3d083a49bdb21ac6477a66ea1962d",
+    "recordRef": "refs/codex/evidence/2026-10-08-audio-player/software-build",
+    "tree": "d2c209fd1fd98cac00d2a82c641702c0b9edfdc3",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "player-rendered",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      }
+    ],
+    "scope": "Types/lint/fresh build/current2audio+gamepad SSR only. One existing PointerLab lint warning; no full unit/rendered/browser/device acceptance."
+  },
+  "sourceReview": {
+    "path": "/tmp/101-audio-player-review-supplement.json",
+    "sha256": "fc56450f4ce0de69516e588dbb327460d07632d850c55cd752b45aa949401e4b",
+    "recordRef": "refs/codex/evidence/2026-10-08-audio-player/review-supplement",
+    "status": "CLEAR",
+    "originalBlock": {
+      "path": "/tmp/101-audio-player-source-review.json",
+      "sha256": "8afe4aabbd835f733b54dec98c4a6131aa8425b420acaa8668c0d2fa151b8ee1",
+      "recordRef": "refs/codex/evidence/2026-10-08-audio-player/source-review"
+    },
+    "terminalBlock": {
+      "path": "/tmp/101-audio-player-retirement-supplement-block.json",
+      "sha256": "a928e24ff2090e58fa54226c2b1c69dadad182ce56034cc28410ab262505e6ac",
+      "recordRef": "refs/codex/evidence/2026-10-08-audio-player/retirement-supplement-block"
+    }
+  },
+  "oldAndFailedEvidence": {
+    "workerPacket": {
+      "path": "/tmp/101-audio-task-completion.json",
+      "sha256": "376db52bab75682dab93e8cae8e036a834a8fee904bb997aa38cbf827db38157"
+    },
+    "genuineMissingRoute404": {
+      "path": "/tmp/101-audio-player-render-old.json",
+      "sha256": "eba60e29e484ce08090cc73e0092da0be7eb284185b682f7f0b83c2ec0aafccf"
+    },
+    "externalStopOld": {
+      "path": "/tmp/101-audio-player-external-stop-old.json",
+      "sha256": "3ca7b63127094fb4b2063857c989b13ff2e25de938a853891e821538e7f50a2e"
+    },
+    "ownerCloseOld": {
+      "path": "/tmp/101-audio-player-owner-close-old.json",
+      "sha256": "c4d7e8c7ccf081e6fdf901fd046af9c66c6249cc44646171ef9d7fc86f20bd4e"
+    },
+    "initialIntegrationLintFailure": {
+      "path": "/tmp/101-audio-player-build-gates.json",
+      "sha256": "7060de80d6b4240d469703d0d608d6f646076889bcb8b5509f08768794fb94b7"
+    },
+    "supersededBeforeTerminalCorrection": {
+      "path": "/tmp/101-audio-player-build-gates-final.json",
+      "sha256": "f9b6345aeaa2a406e5f501cc289c8b2996c1dd891246596db827bf72efc3303b"
+    },
+    "provisionalUiSourceHardening": {
+      "path": "/tmp/101-audio-player-ui-provisional-review.json",
+      "sha256": "9cffeb39b3d2adf7b364e74b429065b1eb52e10a5242364d7ccd26e178d1cc67",
+      "scope": "Source-visible stale async error path hardened; no executed live/remount failure asserted."
+    },
+    "scope": "Original worker actual failures and exact OLD source snapshots, invalid strip-only preliminary fixture and asynchronous runner failure retained literally; no invalid failure represented as success."
+  },
+  "sdkInputReuse": {
+    "path": "/tmp/101-audio-player-sdk-source-reuse.json",
+    "sha256": "c15050b8d638eeab2e0d4c1aea43e7494278fe0001b166ac97f983ef81d3e197",
+    "inputs": 183,
+    "scope": "SDK source inputs and actual123gamepad dependencies remain unchanged; SDK/current39gamepad source proofs reused after exact rehash; fresh2SSR separately verifies current UI."
+  },
+  "retention": {
+    "path": "/tmp/101-audio-player-retained.json",
+    "sha256": "d66272712078c06ba921845e66091fdc3a6208ca8c3679983a13c9fd8da5d0eb",
+    "recordRef": "refs/codex/evidence/2026-10-08-audio-player/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-audio-player/literal-bundle",
+    "literalFiles": 209
+  },
+  "requiredGates": {
+    "status": "OPEN",
+    "historicalFailedRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "scope": "Historical5native fullunit failures unresolved; unchanged isolated5/related34diagnostic passes establish no fix/fullsuite acceptance. Current full unit/rendered not rerun; no commit."
+  },
+  "unverified": [
+    "Native browser gesture/autoplay and media-element teardown qualification",
+    "Physical speaker/headphone destination, audio format/PCM/acoustic facts and hearing",
+    "Broad keyboard/screen-reader/responsive interaction",
+    "Complete V03/U03 and final candidate acceptance",
+    "Publication/deployment/preview URLs/services not performed"
+  ]
+}

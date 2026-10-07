@@ -2,18 +2,23 @@ import { createBrowserCameraProvider, createDeviceRuntime, parseDeviceDescriptor
 import type { Authorize, BrowserCameraActivation, BrowserCameraCaptureGrant, BrowserCameraCaptureRequest, BrowserCameraControlGrant,
   BrowserCameraControlRequest, BrowserCameraEnvironment, BrowserCameraFrame, BrowserCameraOptions, Connection, Observation } from '@101/connect';
 
+type CameraControlAxis = 'zoom' | 'pan' | 'tilt';
 /** Independent selected-camera caller. Only the provider owns its private track.
- * Reported zoom facts/settings never establish optical effects. Runtime and provider
+ * Reported zoom/pan/tilt facts/settings never establish optical effects or angles. Runtime and provider
  * use the same host clock; native decoded media position remains separate. */
 export function createBrowserCameraControls(options: { ownerSignal: AbortSignal; now?: () => number;
   authorizeCapture(request: BrowserCameraCaptureRequest): BrowserCameraCaptureGrant | undefined;
   authorizeControl(request: BrowserCameraControlRequest): BrowserCameraControlGrant | undefined;
-  authorizeRoutes: Authorize; environment?: BrowserCameraEnvironment }) {
+  authorizeRoutes: Authorize; environment?: BrowserCameraEnvironment;
+  /** Initial local route lease only; concrete source/output grants still narrow it. No renewal. */
+  routeLeaseMs?: number }) {
+  const routeLeaseMs = options.routeLeaseMs ?? 5000;
+  if (!Number.isInteger(routeLeaseMs) || routeLeaseMs < 1 || routeLeaseMs > 30000) throw new RangeError('Invalid camera route lease');
   const now = options.now ?? (() => performance.now()), scope = { principalId: 'camera-control-owner', applicationId: 'camera-controls-example', sessionId: 'camera-controls-session' };
   const runtime = createDeviceRuntime({ now, clockDomain: 'camera-controls-js-retrieval', authorize: options.authorizeRoutes,
     maxRegistrations: 4, maxRoutes: 2, maxPendingDeliveries: 2 });
   const routes = new Map<string, Connection>(), endpoints: ReturnType<typeof runtime.registerSource>[] = [];
-  let activation: BrowserCameraActivation | undefined, command: ReturnType<typeof runtime.registerSource> | undefined, commandRoute: Connection | undefined;
+  let activation: BrowserCameraActivation | undefined, command: ReturnType<typeof runtime.registerSource> | undefined, commandRoute: Connection | undefined, commandAxis: CameraControlAxis | undefined;
   let latest: Observation | undefined, delivered = 0, released = 0, operation = 0;
   const controlDeliveryLimits: NonNullable<BrowserCameraOptions['controlDeliveryLimits']> = context => {
     const connection = routes.get(context.routeId), limits = connection?.limits();
@@ -24,6 +29,24 @@ export function createBrowserCameraControls(options: { ownerSignal: AbortSignal;
   };
   const provider = createBrowserCameraProvider({ runtime, now, scope, ownerSignal: options.ownerSignal, authorizeCapture: options.authorizeCapture,
     authorizeControl: options.authorizeControl, controlDeliveryLimits, ...(options.environment ? { environment: options.environment } : {}) });
+  // Fixed enumerated public methods share one provider sink and one command route.
+  // A zoom method cannot accidentally send to a previously selected pan/tilt lane.
+  function connectControl(axis: CameraControlAxis) {
+    if (!activation) return { ok: false as const, reason: 'denied' as const };
+    const request = { purpose: 'reviewed-camera-api-' + axis };
+    const bound = axis === 'zoom' ? provider.bindZoom(activation, request) : axis === 'pan' ? provider.bindPan(activation, request) : provider.bindTilt(activation, request);
+    if (!bound.ok) return bound;
+    const device = parseDeviceDescriptor({ ...bound.value.device, id: bound.value.device.id + ':command-source', capabilities: bound.value.device.capabilities.map(capability => ({ ...capability, kind: 'event' as const, permissions: ['subscribe'] })) });
+    command = runtime.registerSource({ device, capability: 'camera-' + axis }); endpoints.push(command); runtime.setReadiness(command, 'available');
+    commandRoute = runtime.route({ from: command, to: bound.value.sink, ...scope, leaseMs: Math.max(1, Math.floor(Math.min(routeLeaseMs, bound.value.expiresAt - now()))), queueCapacity: 1 });
+    routes.set(commandRoute.id, commandRoute);
+    if (!commandRoute.start().ok) { commandRoute.stop('denied'); runtime.unregister(command); command = undefined; commandRoute = undefined; commandAxis = undefined; return { ok: false as const, reason: 'denied' as const }; }
+    commandAxis = axis; return bound;
+  }
+  function setControl(axis: CameraControlAxis, value: number, deadline: number) {
+    if (!command || !commandRoute || commandAxis !== axis || ++operation > 32) return { ok: false as const, reason: 'denied' as const };
+    const result = runtime.publish(command, value, { operationId: String(operation), deadline }); runtime.flush(); return result;
+  }
   return {
     provider,
     async activate(selection: Parameters<typeof provider.start>[0]) {
@@ -34,29 +57,19 @@ export function createBrowserCameraControls(options: { ownerSignal: AbortSignal;
         if (context.isCurrent() && !context.signal.aborted) { latest = observation; delivered++; }
       }, release() { latest = undefined; released++; } }); endpoints.push(sink);
       runtime.setReadiness(sink, 'available');
-      const route = runtime.route({ from: activation.source, to: sink, ...scope, leaseMs: 5000 }); routes.set(route.id, route);
+      const route = runtime.route({ from: activation.source, to: sink, ...scope, leaseMs: routeLeaseMs }); routes.set(route.id, route);
       if (!route.start().ok) { provider.stop(); runtime.unregister(sink); activation = undefined; return { ok: false as const, reason: 'denied' as const }; }
       return result;
     },
     report() { return activation ? provider.inspectControls(activation) : { ok: false as const, reason: 'denied' as const }; },
-    connectZoom() {
-      if (!activation) return { ok: false as const, reason: 'denied' as const };
-      const bound = provider.bindZoom(activation, { purpose: 'reviewed-camera-api-zoom' }); if (!bound.ok) return bound;
-      const device = parseDeviceDescriptor({ ...bound.value.device, id: bound.value.device.id + ':command-source', capabilities: bound.value.device.capabilities.map(capability => ({ ...capability, kind: 'event' as const, permissions: ['subscribe'] })) });
-      command = runtime.registerSource({ device, capability: 'camera-zoom' }); endpoints.push(command); runtime.setReadiness(command, 'available');
-      commandRoute = runtime.route({ from: command, to: bound.value.sink, ...scope, leaseMs: Math.max(1, Math.floor(Math.min(5000, bound.value.expiresAt - now()))), queueCapacity: 1 });
-      routes.set(commandRoute.id, commandRoute);
-      if (!commandRoute.start().ok) { commandRoute.stop('denied'); runtime.unregister(command); command = undefined; commandRoute = undefined; return { ok: false as const, reason: 'denied' as const }; }
-      return bound;
-    },
-    setZoom(value: number, deadline = now() + 250) {
-      if (!command || !commandRoute || ++operation > 32) return { ok: false as const, reason: 'denied' as const };
-      const result = runtime.publish(command, value, { operationId: String(operation), deadline }); runtime.flush(); return result;
-    },
+    connectZoom: () => connectControl('zoom'), connectPan: () => connectControl('pan'), connectTilt: () => connectControl('tilt'),
+    setZoom: (value: number, deadline = now() + 250) => setControl('zoom', value, deadline),
+    setPan: (value: number, deadline = now() + 250) => setControl('pan', value, deadline),
+    setTilt: (value: number, deadline = now() + 250) => setControl('tilt', value, deadline),
     tick() { runtime.flush(); }, state() { return { latest, delivered, released, control: provider.controlStatus() }; },
     async close() {
       provider.stop(); for (const route of routes.values()) route.stop('camera-controls-close');
-      await provider.close(); for (const endpoint of endpoints) runtime.unregister(endpoint); endpoints.length = 0; routes.clear(); command = undefined; commandRoute = undefined; activation = undefined; runtime.close();
+      await provider.close(); for (const endpoint of endpoints) runtime.unregister(endpoint); endpoints.length = 0; routes.clear(); command = undefined; commandRoute = undefined; commandAxis = undefined; activation = undefined; runtime.close();
     }
   };
 }
@@ -111,14 +124,22 @@ export async function runOwnedCameraControlsCanvas() {
 
 /** Cooperative software port only. Genuine EventTarget and native-shaped getters/
  * returned promises exercise public command grants, never physical zoom. */
-export async function runSoftwareCameraZoom() {
+export async function runSoftwareCameraZoom() { return runSoftwareCameraSetting('zoom'); }
+
+/** Two sequential cooperative settings profiles, never a native-camera/angle proof. */
+export async function runSoftwareCameraPanTilt() {
+  return { kind: 'cooperative-software-camera-pan-tilt', positiveHardwareEvidence: false, nativePanTiltQualification: false,
+    pan: await runSoftwareCameraSetting('pan'), tilt: await runSoftwareCameraSetting('tilt') };
+}
+
+async function runSoftwareCameraSetting(axis: CameraControlAxis) {
   class SoftwareTrack extends EventTarget {
-    kind = 'video'; readyState = 'live'; muted = false; id = 'software-track'; setting = 1; calls: MediaTrackConstraints[] = []; held: Promise<void> | undefined;
+    kind = 'video'; readyState = 'live'; muted = false; id = 'software-track'; setting = axis === 'zoom' ? 1 : axis === 'pan' ? -1 : 0; calls: MediaTrackConstraints[] = []; held: Promise<void> | undefined;
     stop() { this.readyState = 'ended'; }
-    getSettings() { return { deviceId: 'software-camera-selected-id', width: 64, height: 48, zoom: this.setting }; }
-    getCapabilities() { return { zoom: { min: 1, max: 4, step: 0.5 } }; }
-    applyConstraints(payload: MediaTrackConstraints) { this.calls.push(payload); const next = (payload.advanced?.[0] as { zoom: number }).zoom;
-      if (JSON.stringify(payload) !== JSON.stringify({ advanced: [{ zoom: next }] })) throw Error('Only zoom allowed');
+    getSettings() { return { deviceId: 'software-camera-selected-id', width: 64, height: 48, [axis]: this.setting }; }
+    getCapabilities() { return { [axis]: { min: axis === 'zoom' ? 1 : axis === 'pan' ? -90 : -45, max: axis === 'zoom' ? 4 : axis === 'pan' ? 90 : 45, step: 0.5 } }; }
+    applyConstraints(payload: MediaTrackConstraints) { this.calls.push(payload); const next = (payload.advanced?.[0] as Partial<Record<CameraControlAxis, number>>)[axis];
+      if (typeof next !== 'number' || JSON.stringify(payload) !== JSON.stringify({ advanced: [{ [axis]: next }] })) throw Error('Only the selected reported setting allowed');
       return (this.held ?? Promise.resolve()).then(() => { this.setting = next; }); }
   }
   class SoftwareStream { track = new SoftwareTrack(); getTracks() { return [this.track]; } }
@@ -141,26 +162,30 @@ export async function runSoftwareCameraZoom() {
     authorizeControl(request) { reviewed++; return allowed ? { request, signal: control.signal, expiresAt: end } : undefined; }, authorizeRoutes(request) {
       if (request.principalId !== 'camera-control-owner' || request.applicationId !== 'camera-controls-example' || request.sessionId !== 'camera-controls-session' || request.sourceOperation !== 'subscribe') return;
       if (request.source.capabilityId === 'camera-frame' && request.sink.capabilityId === 'camera-frame' && request.sinkOperation === 'write') return { expiresAt: end, maxAgeMs: 250, maxHz: 10 };
-      if (allowed && request.source.capabilityId === 'camera-zoom' && request.sink.capabilityId === 'camera-zoom' && request.sinkOperation === 'invoke') return { expiresAt: end, maxAgeMs: 250, maxHz: 2 };
+      if (allowed && request.source.capabilityId === 'camera-' + axis && request.sink.capabilityId === 'camera-' + axis && request.sinkOperation === 'invoke') return { expiresAt: end, maxAgeMs: 250, maxHz: 2 };
     } });
+  const connect = axis === 'zoom' ? caller.connectZoom : axis === 'pan' ? caller.connectPan : caller.connectTilt;
+  const set = axis === 'zoom' ? caller.setZoom : axis === 'pan' ? caller.setPan : caller.setTilt;
+  const firstSetting = axis === 'zoom' ? 2.5 : -2.5, beyond = axis === 'zoom' ? 5 : axis === 'pan' ? 91 : 46;
   const timer = setInterval(() => { if (video.frames < 80) video.emit(); caller.tick(); }, 100);
   const issuedCount = () => stream.track.calls.length;
   let release: (() => void) | undefined, closed: Promise<void> | undefined; let denied, returned, pending, final;
   try {
     const inspected = await caller.provider.inspect(); if (!inspected.ok) throw Error('Software inventory');
     const active = await caller.activate(inspected.value[0]!.selection); if (!active.ok) throw Error('Software activation');
-    denied = caller.connectZoom(); if (denied.ok || denied.reason !== 'denied' || issuedCount() !== 0 || caller.provider.snapshot().activeSources !== 1) throw Error('Decline must retain captured frame');
-    allowed = true; const bound = caller.connectZoom(); if (!bound.ok) throw Error('Reviewed software zoom');
-    if (!caller.setZoom(2.5).ok) throw Error('Actual SDK software command'); await new Promise(resolve => setTimeout(resolve, 20)); returned = caller.state();
-    if (stream.track.setting !== 2.5 || returned.control.state !== 'api-returned' || issuedCount() !== 1) throw Error('Software setting not observed');
-    caller.setZoom(1.25); caller.setZoom(5); caller.setZoom(NaN); if (issuedCount() !== 1) throw Error('Invalid scalar cannot issue');
+    denied = connect(); if (denied.ok || denied.reason !== 'denied' || issuedCount() !== 0 || caller.provider.snapshot().activeSources !== 1) throw Error('Decline must retain captured frame');
+    allowed = true; const bound = connect(); if (!bound.ok) throw Error('Reviewed software setting');
+    if (!set(firstSetting).ok) throw Error('Actual SDK software command'); await new Promise(resolve => setTimeout(resolve, 20)); returned = caller.state();
+    if (stream.track.setting !== firstSetting || returned.control.state !== 'api-returned' || issuedCount() !== 1) throw Error('Software setting not observed');
+    if ((axis !== 'zoom' && caller.setZoom(2).ok) || (axis === 'zoom' && caller.setPan(-2).ok)) throw Error('Wrong axis must not publish to the selected setting');
+    set(1.25); set(beyond); set(NaN); if (issuedCount() !== 1) throw Error('Invalid scalar cannot issue');
     await new Promise(resolve => setTimeout(resolve, 500)); stream.track.held = new Promise<void>(yes => { release = yes; });
-    if (!caller.setZoom(3).ok || issuedCount() !== 2) throw Error('Held software command');
+    if (!set(3).ok || issuedCount() !== 2) throw Error('Held software command');
     control.abort(); pending = caller.provider.controlStatus(); if (pending.rawPending !== 1 || pending.state !== 'uncertain' || caller.provider.snapshot().activeSources !== 0) throw Error('Issued revoke must retire capture and retain raw work');
     let settled = false; closed = caller.close().then(() => { settled = true; }); await new Promise(resolve => setTimeout(resolve, 20)); if (settled) throw Error('Logical close is not actual settlement');
     release!(); await closed; final = caller.state(); if (final.control.rawPending !== 0 || final.control.activeSinks !== 0) throw Error('Actual software settlement cleanup');
   } finally { clearInterval(timer); release?.(); owner.abort(); await (closed ?? caller.close()); }
-  return { kind: 'cooperative-software-camera-zoom', result: 'pass', positiveHardwareEvidence: false, nativeZoomQualification: false,
+  return { kind: 'cooperative-software-camera-' + axis, result: 'pass', positiveHardwareEvidence: false, nativeZoomQualification: false, nativePanTiltQualification: false, reportedUnit: '1',
     reviewed, denied, returned, pending, final, payloads: stream.track.calls, apiSetting: stream.track.setting,
     cleanup: { provider: caller.provider.snapshot(), control: caller.provider.controlStatus(), trackEnded: stream.track.readyState === 'ended', frameCallbacks: video.pending.size, producerTimers: 0 } };
 }

@@ -63,6 +63,7 @@ const hashPixels = (pixels: unknown) => {
   return createHash('sha256').update(Uint8Array.from(pixels as number[])).digest('hex');
 };
 function marker(x: number, y: number) { const pixels: number[] = []; for (let row = 0; row < 4; row++) for (let column = 0; column < 4; column++) pixels.push(...(column === x && row === y ? [255, 0, 64, 255] : [0, 32, 0, 255])); return hashPixels(pixels); }
+const diagnosticCode = (value: unknown) => typeof value === 'string' && /^[A-Z0-9_]{1,32}$/.test(value) ? value : 'unknown';
 
 /** Fixed adjacent native runtime host. One semantic IPC operation and its actual
  * send callback remain reserved until response+callback or actual process close. */
@@ -73,18 +74,40 @@ class HostPort {
   private sequence = 0; private bytes = 0; private callbacks = new Set<Promise<void>>(); private callDone?: Promise<unknown>;
   private hello!: (value: void) => void; readonly ready = new Promise<void>(resolve => { this.hello = resolve; });
   readonly reports: Record<string, unknown>[] = []; private stderrBytes = 0;
+  private stderrTail = '';
+  private startup: { spawnEnteredAt: number; spawnReturnedAt: number; spawnAt?: number; helloAt?: number;
+    closeAt?: number; exitCode?: number | null; signalCode?: string | null; errorCode?: string } = { spawnEnteredAt: 0, spawnReturnedAt: 0 };
+  private milestones: { event: string; childAt: number; receivedAt: number }[] = [];
   constructor() {
     const environment: NodeJS.ProcessEnv = { NODE_ENV: 'production', PATH: process.env.PATH };
     if (process.env.CROSS_HOST_RESOLUTIONS) environment.CROSS_HOST_RESOLUTIONS = process.env.CROSS_HOST_RESOLUTIONS;
     this.closed = new Promise(resolve => { this.done = resolve; });
+    this.startup.spawnEnteredAt = now();
     this.child = spawn(process.execPath, ['--import', new URL('../../tools/qa-cross-host-workload.mjs?host-loader', import.meta.url).href,
       new URL('./runtime-host.mjs', import.meta.url).pathname], { env: environment, stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
-    this.child.on('error', () => this.child.kill('SIGTERM'));
-    this.child.stderr?.on('data', (value: Buffer) => { this.stderrBytes += value.byteLength; if (this.stderrBytes > 4096) this.child.kill('SIGTERM'); });
+    this.startup.spawnReturnedAt = now();
+    this.child.once('spawn', () => { this.startup.spawnAt = now(); });
+    this.child.on('error', error => { this.startup.errorCode = diagnosticCode((error as NodeJS.ErrnoException).code); this.child.kill('SIGTERM'); });
+    this.child.stderr?.on('data', (value: Buffer) => {
+      this.stderrBytes += value.byteLength; if (this.stderrBytes > 4096) { this.child.kill('SIGTERM'); return; }
+      this.stderrTail += value.toString();
+      for (;;) {
+        const end = this.stderrTail.indexOf('\n'); if (end < 0) break;
+        const line = this.stderrTail.slice(0, end); this.stderrTail = this.stderrTail.slice(end + 1);
+        try {
+          const record = object(JSON.parse(line));
+          if (Object.keys(record).sort().join(',') === 'at,event,kind' && record.kind === 'cross-host-startup' &&
+            ['module-body-enter', 'identity-ready', 'hello-sent'].includes(String(record.event)) &&
+            typeof record.at === 'number' && Number.isFinite(record.at) && record.at >= 0 &&
+            this.milestones.length < 3 && !this.milestones.some(value => value.event === record.event))
+            this.milestones.push({ event: record.event as string, childAt: record.at, receivedAt: now() });
+        } catch { /* Raw child stderr is never retained in public diagnostics. */ }
+      }
+    });
     this.child.on('message', value => {
       try {
         const message = object(value); if (encoder.encode(JSON.stringify(message)).byteLength > 4096) throw Error('Host reply quota');
-        if (message.kind === 'hello') { this.pid = number(message.pid); if (typeof message.keyId !== 'string' || !/^[a-f0-9]{64}$/.test(message.keyId)) throw Error('Host key invalid'); this.keyId = message.keyId; this.hello(); return; }
+        if (message.kind === 'hello') { this.pid = number(message.pid); if (typeof message.keyId !== 'string' || !/^[a-f0-9]{64}$/.test(message.keyId)) throw Error('Host key invalid'); this.keyId = message.keyId; this.startup.helloAt = now(); this.hello(); return; }
         if (message.nativePids !== undefined) {
           if (!Array.isArray(message.nativePids) || message.nativePids.length > 3) throw Error('Native child count invalid');
           for (const pid of message.nativePids) { if (!Number.isSafeInteger(pid) || pid < 1) throw Error('Native PID invalid'); this.nativePids.add(pid); }
@@ -94,8 +117,12 @@ class HostPort {
         const result = object(message.value); this.reports.push(result); if ('rawIssued' in result) this.summary = { ...this.summary, ...result }; if (this.reports.length > 64) throw Error('Host reply quota'); selected.resolve(result);
       } catch { this.child.kill('SIGTERM'); }
     });
-    this.child.once('close', () => { this.alive = false; this.reply?.reject(Error('Native host closed')); this.hello(); this.done(); });
+    this.child.once('close', (code, signal) => { this.startup.closeAt = now(); this.startup.exitCode = code;
+      this.startup.signalCode = signal === null ? null : diagnosticCode(signal);
+      this.alive = false; this.reply?.reject(Error('Native host closed')); this.hello(); this.done(); });
   }
+  diagnostics() { return Object.freeze({ ...this.startup, stderrBytes: this.stderrBytes,
+    milestones: Object.freeze(this.milestones.map(value => Object.freeze({ ...value }))) }); }
   async call(kind: string, fields: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
     if (!this.alive || this.reply || this.callDone || this.sequence >= 64 || this.callbacks.size) throw Error('Host control busy or closed');
     const id = ++this.sequence, message = { ...fields, kind, id }, bytes = encoder.encode(JSON.stringify(message)).byteLength;
@@ -504,7 +531,17 @@ export async function runCrossHostWorkloadQualification(options: { readonly sign
     if ([...hosts].some(value => value.alive || value.pending()) || sockets.size || directory && existsSync(directory) || fixture && existsSync(fixture.directory)) failure ??= Error('Cross-host cleanup incomplete');
     reserved = false;
   }
-  if (failure) throw failure;
+  if (failure) {
+    if (failure instanceof Error) Object.defineProperty(failure, 'startupDiagnostics', { value: Object.freeze({
+      parentClock: 'parent-performance', childClock: 'runtime-host-performance',
+      clockScope: 'Child module-body-enter excludes static ESM imports; childAt and parent times are separate clock domains.',
+      hosts: Object.freeze([...hosts].map(value => value.diagnostics())),
+      cleanup: Object.freeze({ processes: [...hosts].filter(value => value.alive).length,
+        callbacks: [...hosts].reduce((sum, value) => sum + value.pending(), 0), sockets: sockets.size, timers: timers.size,
+        fixturesRemoved: (!directory || !existsSync(directory)) && (!fixture || !existsSync(fixture.directory)) })
+    }) });
+    throw failure;
+  }
   const result: CrossHostWorkloadReceipt = Object.freeze({ profile: CROSS_HOST_WORKLOAD_PROFILE, result: 'pass', checks: Object.freeze(checks), scenarios: Object.freeze(scenarios),
     cleanup: Object.freeze({ processes: 0, callbacks: 0, sockets: 0, timers: 0, fixturesRemoved: true }),
     scope: Object.freeze({ independentNodeProcesses: true, physicalMachines: false, actualIpLoss: false, gatewayPlaintextTrusted: true, installedHub: false, captureClockMapping: false, performanceSlo: false,

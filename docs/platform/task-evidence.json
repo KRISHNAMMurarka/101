@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 141,
+  "revision": 161,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11855,6 +11855,611 @@
         "Actual local Swift macOSarm64 compiler and clean ordinary native/software consumers"
       ],
       "supportRows": []
+    },
+    {
+      "id": "structured-telemetry-kotlin-built-partial-2026-10-07",
+      "revision": "bb780962746b525a76c0b884fbe1795b3599e1ba",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-structured-telemetry-kotlin.json"
+      ],
+      "environment": "Actual Kotlin2.1.21/JVM17/JDK21.0.12 Darwinarm64, external installed Gson2.11/stdlib and unchanged183-source405-file seven-package SDK.",
+      "reproduction": "Actual meaningful OLD, retained literal inputs/outputs, focused/native and clean-consumer records where applicable; exact final integration gates/review neutral refs in receipt.",
+      "scope": "Selected json/2 record/table inert thin codec,171 native assertions,5reciprocal vectors,6CLI framing and9-file clean extracted caller; broader lifecycle/language/platform/physical/distribution scope remains OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local software tooling; broader interaction and physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "remembered-devices-built-partial-2026-10-07",
+      "revision": "e7fb65c9a8533a7dd855626f80aad64932b0f3d1",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "U02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-remembered-devices.json"
+      ],
+      "environment": "Actual Node24.14 cooperative authenticated public SDK enrollment and faithful storage/lock source ports. Broader UI/native browser/phone checks deferred.",
+      "reproduction": "Actual meaningful OLD, retained literal inputs/outputs, focused/native and clean-consumer records where applicable; exact final integration gates/review neutral refs in receipt.",
+      "scope": "Selected explicit offline past public metadata flow,15inspector+9store source checks. No native browser storage/lock/UI or physical identity continuity; whole U02 remains OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local software tooling; broader interaction and physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "structured-telemetry-c-built-partial-2026-10-07",
+      "revision": "76aa052bbbf5cd317e6f0872158df7017e850847",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-structured-telemetry-c.json"
+      ],
+      "environment": "Actual C11/AppleClang21/macOSarm64 with external provided Jansson2.15.1 and unchanged ordinary seven-package public SDK. Inert codec only.",
+      "reproduction": "Retained genuine compactC prefix+5selected failures, initial8nativepass then SIGPIPE and publicMIN_VALUE typedcaller OLD failures; exact current native/cleanconsumer and final neutral gate/review refs.",
+      "scope": "Selected json/2 record/table thin C codec,8native groups,5public reciprocals+finiteMIN_VALUE,6CLI framing/closedpipe and10-file cleanconsumer. Broader runtime/otherplatform/physical/distribution and whole E12 stay OPEN.",
+      "failure": null,
+      "equipment": [
+        "Actual local C compiler/Jansson and ordinary public software consumers"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "remembered-public-backup-built-partial-2026-10-07",
+      "revision": "7702e1b927b04f26f1288198278b823a75477eb8",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "B05",
+        "B06",
+        "U02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-remembered-public-backup.json"
+      ],
+      "environment": "Actual Node24.14 public P256/authenticated enrollment plus cooperative Storage/WebLock software ports. Native/browser/phone qualification deferred.",
+      "reproduction": "Retained genuine enrolled-and-saved OLD desired absence failure, exact source/loaded dependency literal archive,15inspector+19store focused records and neutral final integration gate/review refs in receipt.",
+      "scope": "Selected manual past-public-metadata export and identical-empty-store restore with fresh30second identity-bound review, existing native-lock/CAS/raw-return lifecycle. No credentials/connection/resource restoration; whole B05/B06/U02 OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local software tooling; native browser and broader interaction checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "enrolled-structured-preview-built-partial-2026-10-07",
+      "revision": "4f02f0714343f4d705e6830b112ae1dd884e9016",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "U02",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-enrolled-structured-preview.json"
+      ],
+      "environment": "Actual Node24.14 authenticated cooperative SDK source tests; nativeRTC/UI/device qualification deferred.",
+      "reproduction": "Retained authenticated producer OLD, original excluded harness/18-of19 fixture failure, faithful test-only expiry repair,19-of19 source pass and exact source review/literal archive.",
+      "scope": "Selected bounded descriptor-derived enrolled record/table readings with explicit approval and retirement. Whole U02/U03 remain OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local software tooling; nativeRTC/broader UI/device checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "bindings-device-backup-required-gates-failed-2026-10-07",
+      "revision": "f02ebbbff3d0d6b5ebaf008c2ede9bd92a36ff42",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12",
+        "B05",
+        "B06",
+        "U02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-structured-telemetry-kotlin.json",
+        "docs/platform/receipts/2026-10-07-structured-telemetry-c.json",
+        "docs/platform/receipts/2026-10-07-remembered-public-backup.json"
+      ],
+      "environment": "Exact previous23-path tree; types/lint/fresh build/rendered35 passed. Normal fullunit recheck completed2409 checks without observer.",
+      "reproduction": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates and integration-review preserve actual FAIL/BLOCK plus latest-failed-unit-output.",
+      "scope": "2404of2409unit pass,5existing native startup/IPC cases fail,0cancelled/skip; original causes UNKNOWN. No source fix, deadline relaxation or acceptance inferred. Current preview tree differs and has no full gate pass.",
+      "failure": "Five native denied-launch/socket/cross-host/first-bind/owner-abort checks failed; local commit blocked. Broad rechecks deferred while building independently actionable software at user direction.",
+      "equipment": [
+        "Local software/native startup tooling"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "camera-pan-tilt-built-partial-2026-10-07",
+      "revision": "055d50004dca8b2e46ff34194f657740ed72e255",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "V05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-pan-tilt.json"
+      ],
+      "environment": "Actual Node24.14 cooperative source80checks and fresh seven-package183-source405-file SDK with ordinary offline compiled public camera caller; no native camera/browser/device run.",
+      "reproduction": "Retained genuine approved zoom-prefix OLD,76/78 fixture failure and repair, original lint/documentary failure and correction, continuous actual producer initial-lease OLD,80/80current source/CLEAR review, fresh SDK/content audit and405ordinary installed literals/public Node output.",
+      "scope": "Selected same-owner separately approved reported pan/tilt numeric settings, shared raw-work limits and bounded initial route lease. Focus/exposure/nativeOS/PTZ/physical/UI/wholeV05 remain OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local Node/compiler and faithful cooperative camera software ports; physical/UI checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "camera-player-built-partial-2026-10-07",
+      "revision": "e3aeb3ca4636c93a3407d9a0510ccbd92052c7ca",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U10",
+        "U11",
+        "V05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-player.json"
+      ],
+      "environment": "Actual Node24.14 cooperative source16checks through current public camera/runtime graph; page/browser/native/device interaction deferred.",
+      "reproduction": "Genuine actual approved pan/tilt effect/cleanup prefix before missing task OLD; initial14green; genuine100ms delayed approval OLD then conservative original selection lifetime repair and15/15current focused checks. Genuine active-preview\u2192stale throwing-clear OLD then exact captured-run retirement/copy recovery and16/16current source checks; original typesPASS/lintFAIL/buildNOTRUN preserved.",
+      "scope": "Explicit local choice/three capture and three setting permissions, bounded scaled8x8 local preview and reported settings, immediate logical Stop and true returned-work close barrier. Whole rows OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local Node and cooperative software camera ports; browser/device checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "microphone-player-built-partial-2026-10-07",
+      "revision": "0c5d03502278e1e130be9fabf562b16818d8c428",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U10",
+        "U11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-microphone-player.json"
+      ],
+      "environment": "Actual Node24.14 cooperative public microphone provider/runtime source21checks; native/browser/device/page interaction deferred.",
+      "reproduction": "Actual typed0.25envelope/exact grants/true cleanup prefix before desired missing task OLD; original19green; actual close rejection and reentrant real inspection2caseOLD then narrow quarantine/admission repair/current21PASS.",
+      "scope": "Explicit selected digital microphone level page with3 approvals, original deadline, one current immutable local projection, true returned-work lifetime/cleanup quarantine and fixed loading recovery. Whole rows OPEN.",
+      "failure": null,
+      "equipment": [
+        "Local Node and cooperative software microphone ports; browser/device checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "screen-player-built-partial-2026-10-07",
+      "revision": "e34aa086abcf8509bb5d419dd7e2551d741beae3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U11",
+        "V07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-screen-player.json"
+      ],
+      "environment": "Actual Node24.14 cooperative public screen pipeline/provider source17checks; native/browser/device/page interaction deferred.",
+      "reproduction": "Actual typed8x8 granted public preview/resize and true held chooser cleanup prefix before desired missing task OLD; selected17source casesPASS. Original denial recovery sourceBLOCK fixed; initial44typesPASS/lintFAIL preserved then lexical corrections/current17PASS.",
+      "scope": "Explicit brief selected local screen task with three private approvals, original10s deadline, true current-sample visibility and stable actual close/cleanup quarantine. Whole rowsOPEN.",
+      "failure": null,
+      "equipment": [
+        "Local Node and cooperative software screen ports; browser/device checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "feedback-player-built-partial-2026-10-07",
+      "revision": "a92cb94a1d41f1d2d6945bc52c16b19362613a26",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I08",
+        "U03",
+        "U10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-feedback-player.json"
+      ],
+      "environment": "Actual Node24.14 cooperative public browser haptic preset/runtime source23checks; browser/device interaction deferred.",
+      "reproduction": "Actual default-deny/exact-granted public preset request and true route cleanup precede missing feature OLD. Four faithful cleanup/clock and two pending-status OLD regressions fail, then current23 source casesPASS. Invalid swallowed-return preliminary cases explicitly excluded.",
+      "scope": "Selected two-approval local preset task with original scope, exact command authority, true actual-return cleanup, quarantine and truthful pending status. Whole rowsOPEN.",
+      "failure": null,
+      "equipment": [
+        "Local Node and cooperative software browser-feedback ports; browser/device checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "local-player-combined-software-build-2026-10-07",
+      "revision": "5db7351ad4992c40a57a2ab9088d0a76157a580e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "I08",
+        "U02",
+        "U03",
+        "U10",
+        "U11",
+        "V05",
+        "V07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-camera-player.json",
+        "docs/platform/receipts/2026-10-07-microphone-player.json",
+        "docs/platform/receipts/2026-10-07-screen-player.json",
+        "docs/platform/receipts/2026-10-07-feedback-player.json"
+      ],
+      "environment": "Exact49path local candidate Node24.14 types/lint/fresh vinext application build; no browser/native/device or fullunit execution.",
+      "reproduction": "Frozen staged tree5db7351a: npx tsc --noEmit, npm run lint (0errors/1 existing PointerLabwarning), npm run build all exit0 and actual owned process groups settled. Current selected source77checks/183SDKinputs verified by hashes and reused.",
+      "scope": "Selected build-first local software integration only. Whole rowsOPEN; historical fullunit5native startup/IPC failures remain and commit blocked. Result-recording documentation changes follow build with identical product source bytes.",
+      "failure": null,
+      "equipment": [
+        "Local installed Node/npm/compiler/bundler; no phone/device/OS input"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "local-gamepad-player-built-source-partial-2026-10-08",
+      "revision": "e913c8ead5f1de57c0247be8e865be0a9213e78b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "N02",
+        "U02",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-gamepad-player.json"
+      ],
+      "environment": "Node24.14.0/macOS local actual public source runtime with faithful software Gamepad ports; fresh server-rendered build only. Browser/device interaction deferred.",
+      "reproduction": "Frozen39-check/123-loaded-dependency record, actual OLD regressions, exact type/lint/freshbuild/selectedSSR and independent source review retained in linked receipt.",
+      "scope": "Selected local gamepad player software only. No native/physical gamepad, manual accessibility, complete task or full candidate acceptance. Existing SDK183input reuse verified; no support row promoted.",
+      "failure": null,
+      "equipment": [
+        "Owned local software fixtures only; physical gamepad and supported browser/runtime qualification deferred"
+      ]
+    },
+    {
+      "id": "native-startup-isolated-diagnostic-2026-10-08",
+      "revision": "fc5b3f92c2467e87fe7a89555ab32ae535a1da03",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-gamepad-player.json"
+      ],
+      "environment": "Node24.14.0 owned sequential private Node RSS/raster IPC and loopback cross-host runtime fixtures; no OS input or browser/device capture.",
+      "reproduction": "Exact unchanged recorded-five selectors pass5; entire three affected files pass34; retained native-startup-diagnostic ref and literal logs.",
+      "scope": "Focused diagnostic pass only. Five historical fullsuite failures reached three startup preconditions before downstream assertions. Scheduling/bootstrap pressure is unproven; no source bug fix or fullsuite acceptance inferred. Original failure history retained.",
+      "failure": null,
+      "equipment": [
+        "Owned separate local Node software children and loopback fixture"
+      ]
+    },
+    {
+      "id": "local-audio-player-built-source-partial-2026-10-08",
+      "revision": "d2c209fd1fd98cac00d2a82c641702c0b9edfdc3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "V03",
+        "U03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-audio-player.json"
+      ],
+      "environment": "Node24.14/macOS actual public SDK with faithful software audio graph/track/output ports; fresh built SSR only. Browser/device interaction deferred.",
+      "reproduction": "Frozen38-check/123-loaded-dependency proof, actual OLD2externalStop/1terminalClose and prior worker failures, exact current type/lint/freshbuild/2SSR and source review retained in receipt.",
+      "scope": "Selected local separately approved page-tone/browser-playback caller only. SDK183inputs and gamepad39source reused after exact rehash. No physical sound, manual accessibility, full V03/U03 or final candidate acceptance; no support rows promoted.",
+      "failure": null,
+      "equipment": [
+        "Owned local software fixtures/toolchain only; native browser/device and broad interaction deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "f05-principal-delivery-partial-2026-10-08",
+      "revision": "028eaebfd7462e13617edfa35b24265dd895a0fb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "F05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-principal-delivery.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS Node24.14.0/npm11.9.0/TypeScript5.9.3; cooperative source and fresh ordinary offline installed SDK. No browser/device/native acquisition.",
+      "reproduction": "Retained source OLD and identical installed OLD caller; optional aggregate-principal counter fix; current24 plus unchanged15focused and753direct dependents; frozen types/lint/freshbuild/full37SSR/SDKbuild; offline strict NodeNext/Bundler and compiled11fair/scope/principal workloads; exact source CLEAR review. See canonical receipt and Git evidence refs.",
+      "scope": "PARTIAL F05 actual pending apply admission per exact authorized principal across app/session tuples; retains global/scope bounds, raw retirement reservations, authorization/currentness/FIFO/fair rotation and omitted policy. CPU/bytes and exhaustion by separately authorized principals remain open. Full unit gate historical native failures remain unresolved; no commit or support promotion.",
+      "failure": null,
+      "equipment": [
+        "Owned local software processes, seven local matching tarballs and disposable offline Node consumer"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "s11-coordinator-principal-partial-2026-10-08",
+      "revision": "f997685015dde82675b415f79cf470abd4ad78bd",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-coordinator-principal.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS Node24.14.0/OpenSSL3.0.18; disposable native loopback TLS/TCP coordinator and normal public caller, exact reused seven-package offline SDK. No browser/device/OS input/native acquisition.",
+      "reproduction": "Retained original held32A/B-refused OLD trace and exact source; four resident authenticated sockets per enrolled principal; current45focused+31direct dependents; public15coordinator+13installed-SDKdirectory checks; frozen types/lint/freshbuild/full37SSR; exact immutable source CLEAR review. SDK183inputs/405files unchanged. See canonical receipt and Git evidence refs.",
+      "scope": "PARTIAL S11 selected enrolled principal authenticated connection admission across caller instances before HTTP and release only on actual native close. Existing global raw32 and TLS/origin/enrollment checks retained. Pre-auth/unenrolled global saturation, aggregate principals, CPU fairness and forced TLS resumption execution remain open. Full unit historical native failures remain unresolved; no commit/support promotion.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node TLS/TCP processes and ephemeral certificates, existing exact offline seven-package SDK consumer"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "d02-s06-invitation-admission-partial-2026-10-08",
+      "revision": "e6274fcf4f1afc340e8efa3b11e2ed6a09644379",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D02",
+        "S06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-invitation-admission.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS Node24.14.0/OpenSSL3.0.18, owned disposable native TLS/WSS/P256 software and fresh exact offline compiled seven-package SDK. Browser/device/OS acquisition deferred.",
+      "reproduction": "Original admission OLD native approval/socket after cancellation; review-found Stop listener/successfulCancel native close OLDs; final22controller+75direct dependent source checks, frozen types/lint/freshbuild/full37SSR/newSDKbuild; strict NodeNext/Bundler/405byte offline install and13 ordinary compiled public Node checks; full-tool actual OpenSSL forced failure cleanup; scoped repaired source CLEAR supplement with original BLOCKED packet preserved.",
+      "scope": "PARTIAL D02/S06 selected independently enrolled invitation review/connect cancellation and withdrawal admission fencing, preserving live incumbent/raw ownership/original expiry and explicit recovery. Discovery/optical/lost-device/account/physical and full unit acceptance remain open; no support promotion or commit.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable Node native TLS/WSS software, real P256 identities and seven local matching tarballs with fresh offline SDK consumer"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "native-startup-failure-diagnostics-2026-10-08",
+      "revision": "69068a1a89831f429af5dea304b6acc6a2bc9d33",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-native-startup-diagnostics.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS Node24.14/OpenSSL3.0.18; real owned Node RSS/raster/private IPC/loopback children only. Original nine pins/toolchain retained.",
+      "reproduction": "Genuine OLD forced actual-child SIGKILL rejection fails for missing diagnostics; first forced1/current original5 selector pass. Preserve first lint failure, correct only child-observer storage to Set, then final forced1/types/lint pass at exact source tree.195 conservative final input literals,247 evidence/source files plus5 review-copy supplement and independent CLEAR review retained. SDK183sources/7tarballs/405 installed files rehashed for exact unchanged reuse.",
+      "scope": "Scoped startup failure diagnostics only, preserving actual result/status/original expiry and bounded non-sensitive distinct-clock milestones through real cleanup. Historical2404/2409 five failures, original causes and complete unit/final acceptance remain unresolved. No support/checkbox promotion, commit or new fullunit.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node processes/private IPC/loopback TLS software; no OS input/capture/browser/device"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "f05-local-software-partial-2026-10-08",
+      "revision": "b4095f5c7e65bc04cab10a3a721c3255c14644d6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "F05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-local-software.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS/arm64 Node24.14; owned software Node Workers/private IPC/loopback TLS only for selected4lanes; fresh offline7SDK tarballs and strict types.",
+      "reproduction": "Aggregate UTF8 JSON observation+copied-options bytes reserved per raw apply, bounded globally and by exact principal; intersects count/scope caps; blocked latest/FIFO work is not consumed; original property publication cost retained; Stop/revoke/replacement never recycle unsettled raw capacity. Genuine OLD witness, focused repairs, actual public installed caller, independent source review and809retained literals.",
+      "scope": "Bounded F05 software mechanism only. Encoded envelope bytes only; not total heap/queued snapshots/transport/CPU/service capacity. Actual4096byte publication envelope remains. No support-row or F05 checkbox promotion. Final exact-tree gates recorded separately; historical5startup causes UNKNOWN.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node software fixtures; independently enrolled local TLS/P256 endpoints"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "s14-local-software-partial-2026-10-08",
+      "revision": "b4095f5c7e65bc04cab10a3a721c3255c14644d6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S14"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-local-software.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS/arm64 Node24.14; owned software Node Workers/private IPC/loopback TLS only for selected4lanes; fresh offline7SDK tarballs and strict types.",
+      "reproduction": "Signed dependency-free asset-free compute-local source interpreted by a closed language in an actual Node Worker; fixed guest data arena, finite instruction/time limits and parent termination; fresh approval/currentness/expiry gates output; raw reservation released only on actual Worker exit. Explicit @101/device-runtime/node export. Genuine OLD witness, focused repairs, actual public installed caller, independent source review and809retained literals.",
+      "scope": "Bounded S14 software mechanism only. Not an arbitrary JavaScript or Worker security sandbox. Guest memory excludes parser/source/AST/host dictionaries/V8/Worker heap/RSS. No generic connectors, assets/dependencies, filesystem/network/native guest primitives or physical effects. Full S14 acceptance open. Final exact-tree gates recorded separately; historical5startup causes UNKNOWN.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node software fixtures; independently enrolled local TLS/P256 endpoints"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "d06-local-software-partial-2026-10-08",
+      "revision": "b4095f5c7e65bc04cab10a3a721c3255c14644d6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-local-software.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS/arm64 Node24.14; owned software Node Workers/private IPC/loopback TLS only for selected4lanes; fresh offline7SDK tarballs and strict types.",
+      "reproduction": "One explicitly consented descriptor owned by current enrolled peer generation; exact enrolled device ID and selected existing capabilities; monotonic revision updates retain original expiry; generation/revision-pinned unpublish and bounded current-lease revision floor; host visibility separate from runtime grants. Genuine OLD witness, focused repairs, actual public installed caller, independent source review and809retained literals.",
+      "scope": "Bounded D06 software mechanism only. Hub/client API is source-bound local Node mTLS, separate from seven packed SDK packages. Actual installed model/runtime/web used. No persistent/account directory, physical availability probe, published Hub or source support promotion. D06 acceptance open. Final exact-tree gates recorded separately; historical5startup causes UNKNOWN.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node software fixtures; independently enrolled local TLS/P256 endpoints"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "d02-local-software-partial-2026-10-08",
+      "revision": "b4095f5c7e65bc04cab10a3a721c3255c14644d6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-local-software.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS/arm64 Node24.14; owned software Node Workers/private IPC/loopback TLS only for selected4lanes; fresh offline7SDK tarballs and strict types.",
+      "reproduction": "At most8 exact observed/identified candidate snapshots mapped by independent host enrollment to fixed endpoint/key/current generation. Explicit reviewDiscovered reviews candidate+invitation; bytes never select URL/key. Separate connect/source/runtime grants. Candidate scope/receipt/expiry and original endpoint/invitation/grant deadlines remain current through held approval, socket/auth/connected use. Loss/Stop fences late work; retry needs fresh explicit review. Genuine OLD witness, focused repairs, actual public installed caller, independent source review and809retained literals.",
+      "scope": "Bounded D02 software mechanism only. Owned Node RSS/private IPC/loopback TLS software only; discovery is supplied candidate metadata. No native LAN discovery, optical QR scan, OS chooser, phone/device/network qualification, automatic scan/connect/reconnect or invitation-derived resource grants. D02 acceptance open. Final exact-tree gates recorded separately; historical5startup causes UNKNOWN.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local Node software fixtures; independently enrolled local TLS/P256 endpoints"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -12437,7 +13042,9 @@
       "records": [
         "pending-D02",
         "d02-invitation-connection-partial-2026-10-06",
-        "u10-invitation-copy-expiry-2026-10-06"
+        "u10-invitation-copy-expiry-2026-10-06",
+        "d02-s06-invitation-admission-partial-2026-10-08",
+        "d02-local-software-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -12497,7 +13104,8 @@
       "id": "D06",
       "records": [
         "pending-D06",
-        "directory-native-bindings-partial-2026-10-06"
+        "directory-native-bindings-partial-2026-10-06",
+        "d06-local-software-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -12635,7 +13243,8 @@
     {
       "id": "S06",
       "records": [
-        "pending-S06"
+        "pending-S06",
+        "d02-s06-invitation-admission-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -12710,7 +13319,8 @@
     {
       "id": "S11",
       "records": [
-        "pending-S11"
+        "pending-S11",
+        "s11-coordinator-principal-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -12752,7 +13362,8 @@
     {
       "id": "S14",
       "records": [
-        "pending-S14"
+        "pending-S14",
+        "s14-local-software-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -12852,7 +13463,8 @@
         "a03-selected-ble-byte-output-software-2026-10-07",
         "a03-ble-byte-output-exact-local-gates-2026-10-07",
         "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
-        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07",
+        "local-gamepad-player-built-source-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13192,7 +13804,9 @@
         "pending-I08",
         "i08-media-haptics-scheduling-partial-2026-10-06",
         "i08-haptic-retirement-software-partial-2026-10-07",
-        "screen-ble-haptic-exact-local-gates-2026-10-07"
+        "screen-ble-haptic-exact-local-gates-2026-10-07",
+        "feedback-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13298,7 +13912,8 @@
       "id": "V03",
       "records": [
         "pending-V03",
-        "v03-private-application-audio-installed-2026-10-06"
+        "v03-private-application-audio-installed-2026-10-06",
+        "local-audio-player-built-source-partial-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -13331,7 +13946,10 @@
         "pending-V05",
         "v05-selected-camera-zoom-software-2026-10-07",
         "v05-late-control-cleanup-repair-2026-10-07",
-        "v05-camera-zoom-exact-local-gates-2026-10-07"
+        "v05-camera-zoom-exact-local-gates-2026-10-07",
+        "camera-pan-tilt-built-partial-2026-10-07",
+        "camera-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13364,7 +13982,9 @@
       "records": [
         "pending-V07",
         "v07-browser-screen-preview-software-partial-2026-10-07",
-        "screen-ble-haptic-exact-local-gates-2026-10-07"
+        "screen-ble-haptic-exact-local-gates-2026-10-07",
+        "screen-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14182,7 +14802,9 @@
         "e01-b05-replay-settlement-exact-local-gates-2026-10-07",
         "selected-managed-telemetry-owner-2026-10-07",
         "telemetry-sdk-exact-local-gates-2026-10-07",
-        "browser-history-privacy-built-partial-2026-10-07"
+        "browser-history-privacy-built-partial-2026-10-07",
+        "remembered-public-backup-built-partial-2026-10-07",
+        "bindings-device-backup-required-gates-failed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14202,7 +14824,9 @@
         "media-backup-current-installed-2026-10-07",
         "sdk-media-enrollment-source-commit-2026-10-07",
         "selected-managed-telemetry-owner-2026-10-07",
-        "telemetry-sdk-exact-local-gates-2026-10-07"
+        "telemetry-sdk-exact-local-gates-2026-10-07",
+        "remembered-public-backup-built-partial-2026-10-07",
+        "bindings-device-backup-required-gates-failed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14393,7 +15017,10 @@
         "q02-shared-watch-software-contracts-2026-10-06",
         "native-binding-contents-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
-        "structured-telemetry-swift-built-partial-2026-10-07"
+        "structured-telemetry-swift-built-partial-2026-10-07",
+        "structured-telemetry-kotlin-built-partial-2026-10-07",
+        "structured-telemetry-c-built-partial-2026-10-07",
+        "bindings-device-backup-required-gates-failed-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14458,7 +15085,13 @@
         "u02-enrolled-resources-partial-2026-10-07",
         "sdk-media-enrollment-source-commit-2026-10-07",
         "reading-connections-built-partial-2026-10-07",
-        "reading-connections-webkit-expiry-unqualified-2026-10-07"
+        "reading-connections-webkit-expiry-unqualified-2026-10-07",
+        "remembered-devices-built-partial-2026-10-07",
+        "remembered-public-backup-built-partial-2026-10-07",
+        "enrolled-structured-preview-built-partial-2026-10-07",
+        "bindings-device-backup-required-gates-failed-2026-10-07",
+        "local-player-combined-software-build-2026-10-07",
+        "local-gamepad-player-built-source-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14479,7 +15112,15 @@
         "u03-page-resource-built-partial-2026-10-07",
         "workload-resource-source-commit-2026-10-07",
         "reading-connections-built-partial-2026-10-07",
-        "reading-connections-webkit-expiry-unqualified-2026-10-07"
+        "reading-connections-webkit-expiry-unqualified-2026-10-07",
+        "enrolled-structured-preview-built-partial-2026-10-07",
+        "camera-player-built-partial-2026-10-07",
+        "microphone-player-built-partial-2026-10-07",
+        "screen-player-built-partial-2026-10-07",
+        "feedback-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07",
+        "local-gamepad-player-built-source-partial-2026-10-08",
+        "local-audio-player-built-source-partial-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14592,7 +15233,11 @@
       "id": "U10",
       "records": [
         "pending-U10",
-        "u10-invitation-copy-expiry-2026-10-06"
+        "u10-invitation-copy-expiry-2026-10-06",
+        "camera-player-built-partial-2026-10-07",
+        "microphone-player-built-partial-2026-10-07",
+        "feedback-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14607,7 +15252,11 @@
     {
       "id": "U11",
       "records": [
-        "pending-U11"
+        "pending-U11",
+        "camera-player-built-partial-2026-10-07",
+        "microphone-player-built-partial-2026-10-07",
+        "screen-player-built-partial-2026-10-07",
+        "local-player-combined-software-build-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14710,7 +15359,9 @@
       "records": [
         "pending-F05",
         "f05-media-haptics-scheduling-partial-2026-10-06",
-        "f05-backup-resolution-scope-partial-2026-10-06"
+        "f05-backup-resolution-scope-partial-2026-10-06",
+        "f05-principal-delivery-partial-2026-10-08",
+        "f05-local-software-partial-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [
@@ -14839,7 +15490,9 @@
     {
       "id": "Q05",
       "records": [
-        "pending-Q05"
+        "pending-Q05",
+        "native-startup-isolated-diagnostic-2026-10-08",
+        "native-startup-failure-diagnostics-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [
@@ -14927,7 +15580,9 @@
       "id": "Q13",
       "records": [
         "pending-Q13",
-        "browser-gateway-required-gates-failed-2026-10-06"
+        "browser-gateway-required-gates-failed-2026-10-06",
+        "native-startup-isolated-diagnostic-2026-10-08",
+        "native-startup-failure-diagnostics-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [

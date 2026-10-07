@@ -69,6 +69,13 @@ export interface RuntimeOptions {
   maxRoutes?: number; maxSubscribers?: number; maxRegistrations?: number; maxPendingDeliveries?: number;
   /** Outstanding raw provider work per exact principal/application/session tuple; defaults to the global cap. */
   maxPendingDeliveriesPerScope?: number;
+  /** Outstanding raw provider work across all approved application/session tuples for an exact principal; defaults to the global cap. */
+  maxPendingDeliveriesPerPrincipal?: number;
+  /** Sum of UTF-8 encoded publication-envelope bytes reserved by outstanding raw apply returns.
+   * Defaults to 4096 times the global count cap; this is not a JavaScript heap limit. */
+  maxPendingDeliveryBytes?: number;
+  /** Encoded-envelope bytes across all approved tuples for an exact principal; defaults to the global byte cap. */
+  maxPendingDeliveryBytesPerPrincipal?: number;
 }
 export interface DeviceRuntime {
   readonly clockDomain: string;

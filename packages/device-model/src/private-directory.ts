@@ -1,5 +1,5 @@
-import { DeviceValidationError, snapshotJson } from './descriptor.ts';
-import type { JsonObject, JsonValue } from './descriptor.ts';
+import { DeviceValidationError, parseDeviceDescriptor, snapshotJson } from './descriptor.ts';
+import type { DeviceDescriptor, JsonObject, JsonValue } from './descriptor.ts';
 import { parseDiscoveryCandidate } from './discovery.ts';
 import type { DiscoveryCandidate, DiscoveryScope } from './discovery.ts';
 
@@ -17,6 +17,11 @@ export interface PrivateDirectorySnapshot {
   readonly schemaVersion: 1; readonly profile: typeof PRIVATE_DIRECTORY_PROFILE;
   readonly scope: Readonly<{ kind: 'directory'; id: string }>; readonly issuedAt: number; readonly expiresAt: number;
   readonly resources: readonly PrivateDirectoryResource[];
+}
+/** Explicit owner consent for one current enrolled-device descriptor; this carries no runtime authority. */
+export interface PrivateDirectoryPublication {
+  readonly generation: number; readonly descriptor: Readonly<DeviceDescriptor>; readonly capabilityIds: readonly string[];
+  readonly expiresAt: number; readonly consent: true;
 }
 function fail(): never { throw new DeviceValidationError('private-directory-invalid'); }
 function object(value: JsonValue | undefined, fields: readonly string[]): JsonObject {
@@ -37,6 +42,24 @@ function time(value: JsonValue | undefined): number {
 }
 function list(value: JsonValue | undefined, maximum: number): JsonValue[] {
   if (!Array.isArray(value) || value.length > maximum) fail(); return value;
+}
+/** Closed, immutable request. Native enrollment, current generation and expiry are checked by the coordinator. */
+export function parsePrivateDirectoryPublication(input: unknown): PrivateDirectoryPublication {
+  if (!input || typeof input !== 'object' || Array.isArray(input) || ![Object.prototype, null].includes(Object.getPrototypeOf(input)) || Object.getOwnPropertySymbols(input).length) fail();
+  const fields = ['generation', 'descriptor', 'capabilityIds', 'expiresAt', 'consent'], properties = Object.getOwnPropertyDescriptors(input);
+  if (Object.keys(properties).length !== fields.length || fields.some(key => !properties[key]?.enumerable || !Object.hasOwn(properties[key]!, 'value'))) fail();
+  // The descriptor owns its deeper schema/metadata bounds; the surrounding request must not narrow them.
+  const descriptor = parseDeviceDescriptor(properties.descriptor!.value);
+  const value = object(snapshotJson({ generation: properties.generation!.value, capabilityIds: properties.capabilityIds!.value,
+    expiresAt: properties.expiresAt!.value, consent: properties.consent!.value }), ['generation', 'capabilityIds', 'expiresAt', 'consent']);
+  if (time(value.generation) < 1 || value.consent !== true) fail();
+  time(value.expiresAt);
+  identifier(descriptor.id); text(descriptor.label);
+  const ids = list(value.capabilityIds, PRIVATE_DIRECTORY_LIMITS.capabilitiesPerResource).map(identifier);
+  if (!ids.length || new Set(ids).size !== ids.length || ids.some(id => !descriptor.capabilities.some(capability => capability.id === id))) fail();
+  const publication = Object.freeze({ generation: value.generation as number, descriptor, capabilityIds: Object.freeze(ids), expiresAt: value.expiresAt as number, consent: true as const });
+  if (new TextEncoder().encode(JSON.stringify(publication)).byteLength > PRIVATE_DIRECTORY_LIMITS.requestBytes) fail();
+  return publication;
 }
 /** Closed inert metadata. Parsing and directory membership never create resource grants. */
 export function parsePrivateDirectorySnapshot(input: unknown): PrivateDirectorySnapshot {

@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "localOnly": true,
+  "profile": "app:browser-haptic-presets/1",
+  "route": "/connections/feedback",
+  "result": "Selected local feedback task built;23 focused source checks and exact combined type/lint/fresh application build PASS. Browser/device and complete qualification remain deferred/open.",
+  "sourceTree": "a92cb94a1d41f1d2d6945bc52c16b19362613a26",
+  "sourceSha256": {
+    "app/connections/feedback/FeedbackView.tsx": "b525d4bcff150fcfc7a98918b99eff859c9465dc4ce614ab0b560f572f9fb046",
+    "app/connections/feedback/feedback-task.ts": "ef445b04b3ef37f69ef38da257b296b5405d0c0c49b34099020ebc34e482d6e5",
+    "app/connections/feedback/page.tsx": "a4062334cb48313c974a506d8690b0ade0dab10143666d0d960f7725948e6005",
+    "app/connections/feedback/feedback-task.test.ts": "df640b300b5ee7fdc197dba1c433443010ba5cd7976623426d121c9535aa73fe",
+    "app/connections/ConnectionsView.tsx": "6f3405470c9c5d66244fc8fbf28909d12bec73fa815e9644f9eaa867ada4d178"
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-feedback-player-private/source-ready.json",
+    "sha256": "79e1168f347e20d88085eb9b80d33140fdeac0ce0348424b7ccec3aa67a0c923"
+  },
+  "testsFirst": {
+    "path": "/tmp/101-feedback-player-private/tests-first.json",
+    "sha256": "4625406afc1bbbf2229d9e1371475513c9531d5af05388928df18b9abd0f85d0"
+  },
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-feedback-player-feature-old.json",
+    "sha256": "c7a5359266c3cbb85167f659a011880d61cadcf3f508792f3e6f056cc02356c4"
+  },
+  "focused": {
+    "path": "/tmp/101-feedback-player-source-current.json",
+    "sha256": "077322eecbd6f3040eff9e9b78d1c0c286f10a0144b4b9173df7a1640e403942"
+  },
+  "focusedCounts": {
+    "tests": 23,
+    "pass": 23,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "changes": [
+    "Arrival is inert; existing closed profile derives Tap, Impact and Warning. Distinct private current source-subscribe and output-invoke approval reviews precede lazy backend construction. No duration/intensity override or physical-effect confirmation.",
+    "Original30s setup deadline starts with first review and never renews. Exact authority principal/application/session/registration/device/schema/revision tuples are checked by the actual default-deny public runtime. Commands have fresh increasing IDs, deadline and bounded rate.",
+    "Stop/background/expiry/owner abort withdraw authority before callbacks and preserve stable actual setup/invoke/route settlement before disposal. Clock reentry cannot overwrite/revive a run. Asynchronous cancellation is unsupported, quarantined, observed and retained through its true return; physical cancellation stays unverified.",
+    "New requests clear previous results. Initial helper cancelled placeholders are withheld until matching route/command handler settlement; actual finalized outcomes stay distinct from issued effect and unverified physical effect. Readable status, Stop, skip/back and ordinary keyboard buttons reuse existing styles."
+  ],
+  "limits": {
+    "runs": 4,
+    "userActions": 64,
+    "commandsPerRun": 8,
+    "commandsLifetime": 32,
+    "reviewMs": 5000,
+    "originalScopeMs": 30000,
+    "renewals": 0,
+    "maxHz": 2,
+    "commandMaxAgeMs": 100,
+    "queueCapacity": 1,
+    "sources": 1,
+    "sinks": 1,
+    "routes": 1,
+    "taskTimers": 1,
+    "timerMs": 100,
+    "callbacksPerRun": 320,
+    "defaultRawInvocations": 1,
+    "maximumOwnedRawIncludingUnsupportedDeferredCancellation": 2
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-feedback-player/source-review",
+    "status": "CLEAR",
+    "previousCleanupClear": {
+      "path": "/tmp/101-feedback-player-e09-source-supplement.json",
+      "sha256": "69238cda94edbb472535279b369e451f776b17ff99a71c85623fbb3fa6f1c304"
+    },
+    "originalBlock": {
+      "path": "/tmp/101-feedback-player-e09-source-review.json",
+      "sha256": "331811db4054c50baa41de640ac73f322a5a85acbcc4bbfb7faee29adaab5216"
+    },
+    "scope": "Original sourceBLOCK, corrected clock/raw-cancellationCLEAR and final statusCLEAR retained; exact five source/navigation pins. Current23source cases and123actualloadeddependencies; no app/browser/device or whole-task acceptance.",
+    "path": "/tmp/101-feedback-player-e09-status-supplement.json",
+    "sha256": "9490e4f3f40b054b63a40531710679a223ab6099c0f23f0793410ec2a2df5c7a"
+  },
+  "softwareBuild": {
+    "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/software-build",
+    "status": "PASS",
+    "scope": "Exact49path frozen selected software candidate type/lint/fresh local application build. Subsequent changes record results only in documentation; product source inputs remain identical. No rendered/browser/device/fullunit acceptance. Historical five native startup/IPC fullunit failures remain unresolved.",
+    "path": "/tmp/101-local-player-build-gates-final.json",
+    "sha256": "f76f251afb62dec4b4385ec9651eba5812fd285f7dd37fca190a1718a8937213",
+    "tree": "5db7351ad4992c40a57a2ab9088d0a76157a580e",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      }
+    ],
+    "retention": {
+      "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/build-literal-record",
+      "path": "/tmp/101-local-player-build-retained.json",
+      "sha256": "77cd31500391d3988822fb7fca46657b7aa7c220ece12b4d6e26b1a004bceed8",
+      "literalPaths": 60,
+      "literalFiles": 60
+    }
+  },
+  "retention": {
+    "recordRef": "refs/codex/evidence/2026-10-07-feedback-player/literal-record",
+    "status": "RETAINED",
+    "path": "/tmp/101-feedback-player-retained.json",
+    "sha256": "a4f2a9e69c149f0ecfcf44bdd5c245b8e1e91aa712b200db32d1bc875d4b277d",
+    "literalPaths": 209,
+    "literalFiles": 197
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "status": "FAIL",
+    "scope": "Historical exact23path fullunit2404/2409,5 existing native startup/IPC failures retained. No current complete gate pass or commit."
+  },
+  "regressions": {
+    "cleanupFaithfulTestsFirst": {
+      "path": "/tmp/101-feedback-player-review-tests-first-v2.json",
+      "sha256": "a9f15b4f473f5f8bbd41f97c9970987bba1dd09937cc1eac422c229b3ce5d75c"
+    },
+    "cleanupMeaningfulOld": {
+      "path": "/tmp/101-feedback-player-review-old-corrected.json",
+      "sha256": "8eb222b7450343c8a248f46b44b8105ade15444ef179663d33fc9136a3a15b1b"
+    },
+    "cleanupRepair": {
+      "path": "/tmp/101-feedback-player-review-source-repair.json",
+      "sha256": "212c2cdda71c3e6a664cfe1dce8ee0407ea60b813f95d67ddcdb7139316338a6"
+    },
+    "cleanupFocused": {
+      "path": "/tmp/101-feedback-player-source-review-fixed.json",
+      "sha256": "15b48c612d5b03d8417c1427590c54b9c9758dbd75d18a7b918419ab11c57fe2"
+    },
+    "statusTestsFirst": {
+      "path": "/tmp/101-feedback-player-status-tests-first.json",
+      "sha256": "34fdabcafc5251c7bb5067dfc86f7af350c6be62e6f29247b10054325d611fde"
+    },
+    "statusMeaningfulOld": {
+      "path": "/tmp/101-feedback-player-status-old.json",
+      "sha256": "2ba9046aea8d6a7dfee1166c6ac4d5beaf7542b13fea01915d94777f69d6ad7f"
+    },
+    "statusFinalRepair": {
+      "path": "/tmp/101-feedback-player-status-final-repair.json",
+      "sha256": "cc9ee9f623c4312381a24e1919c5ed5516e9fb26db54d2a083166726eb898381"
+    }
+  },
+  "invalidHistoricalFixtures": {
+    "preliminaryAttempt": {
+      "path": "/tmp/101-feedback-player-review-old.json",
+      "sha256": "543dd3b6f64e403718a36c79d07b54c3e66ee07a279bdfa1c638bbdcd7573ac2"
+    },
+    "scope": "Only original clock case genuine; two async-cancel tests swallowed actual callback returns and are INVALID evidence. Corrected direct-return4case OLD is retained separately. No qualification from invalid cases."
+  },
+  "scopeLimits": [
+    "Cooperative actual public SDK software fixtures only. No browser vibration, physical feedback/cancellation/latency/ergonomics, native phone/device/OS input or browser/page interaction proof.",
+    "Only selected existing browser preset profile; intensity/duration variants, additional endpoints and full I08/U03/U10 remain OPEN/deferred; no support rows promoted."
+  ],
+  "taskDisposition": {
+    "I08": "PARTIAL/OPEN",
+    "U03": "PARTIAL/OPEN",
+    "U10": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0
+}

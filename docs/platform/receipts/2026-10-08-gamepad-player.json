@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-08",
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "localOnly": true,
+  "route": "/connections/gamepad",
+  "profile": "app:gamepad/1",
+  "result": "Selected local gamepad player built;39 focused source checks, type/lint/fresh application build and1selected SSR check pass. Broader browser/device/full acceptance remains deferred/open.",
+  "sourceTree": "e913c8ead5f1de57c0247be8e865be0a9213e78b",
+  "sourceSha256": {
+    "app/connections/gamepad/gamepad-task.ts": "0c931439a4a8d36f463e6d63f33d6def1ac8e90b951f912a45d120d3be0313c5",
+    "app/connections/gamepad/gamepad-task.test.ts": "0ea31860b2b23a6049f46c812d4a3ecf03914a515eea31f33bb41c924f80f408",
+    "app/connections/gamepad/GamepadView.tsx": "cfafde87141593b5aac017fe0fef7673b64f35ca8e7d1cfe1d1a0b97f4481fe2",
+    "app/connections/gamepad/page.tsx": "9c154aa9656170ad6ba66e9e7ba3ab4ae2c9657b8d56d4be47b5aad68c498339",
+    "app/connections/ConnectionsView.tsx": "68f3cee64e8c4e3d6e852df05385a66b992cb12a4aaa551cb8d4bbfc0e7aa420",
+    "tests/rendered-html.test.mjs": "e36464734564c7ef945d8ae592b388a42e69c68c3cc67f118f9ee9c2fc3a68dc"
+  },
+  "boundedPlan": {
+    "outcome": "Choose one reported gamepad, review scoped local capture/input/display, preview its declared axes/button reports and stop/recover.",
+    "ownership": "Worker task/types/tests; controller UI/navigation/SSR/Git/index/evidence; independent read-only source review.",
+    "interfaces": [
+      "createLocalGamepadTask",
+      "LocalGamepadTask",
+      "GamepadTaskSnapshot",
+      "GamepadReview"
+    ],
+    "negativeStates": [
+      "missing API",
+      "empty inventory",
+      "blocked access",
+      "stale or forged review",
+      "changed pad",
+      "disconnect",
+      "hidden/unfocused page",
+      "expiry",
+      "cleanup uncertainty"
+    ],
+    "qualification": "Software fixtures and server-rendered HTML only; device, browser, broad interaction and full checklist acceptance deferred."
+  },
+  "changes": [
+    "Arrival and merely reading selected instructions are inert. Actual reported inventory/counts and an opaque selected provider handle govern capture; a swapped pad cannot be silently selected after review.",
+    "Separate capture, input and local display permissions precede actual provider start. Exact scope/registration/device/capability/schema/revision tuples authorize typed subscribe/write routes. The original ten-second deadline starts at the first approved-start clock reading and every lease is clipped to it.",
+    "Latest axes expire; reliable button reports retain observed held state between reports. A first report can show an already-held button. Button values describe the last producer report, not continuous pressure or a physical press start time.",
+    "Stop, expiry, background, disconnect and owner close clear access/readings. Withdrawal stays reserved through status notification, blocking observer reacquisition. Cleanup uncertainty quarantines retry. Player controls reuse monochrome styles with readable status, keyboard buttons, visible focus, skip and recovery."
+  ],
+  "limits": {
+    "starts": 4,
+    "actions": 64,
+    "reviewMs": 5000,
+    "originalActiveScopeMs": 10000,
+    "renewals": 0,
+    "taskTimers": 1,
+    "normalTimerMs": 20,
+    "pendingTimerMs": 1,
+    "totalReviewAndActiveCallbacks": 1000,
+    "selectedIdleTimers": 0,
+    "queueCapacity": 64,
+    "pendingDeliveriesPerScope": 64,
+    "routes": 2,
+    "sinks": 2,
+    "reportedPadSlots": 8,
+    "reportedAxes": 16,
+    "reportedButtons": 32,
+    "producerEventDeadlineMs": 100
+  },
+  "focused": {
+    "path": "/tmp/101-gamepad-player-source-reports-final.json",
+    "sha256": "62c2e7456a2944aeb86c00e49577d9303799e8f0222604472c9ed23743efd301"
+  },
+  "focusedCounts": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "actualLoadedDependencies": 123,
+  "softwareBuild": {
+    "path": "/tmp/101-gamepad-player-build-gates-reports-final.json",
+    "sha256": "b2d6f80761897006e49d97290127a89260fbe48bb3a79ab7a9c04a5362778010",
+    "recordRef": "refs/codex/evidence/2026-10-08-gamepad-player/software-build",
+    "tree": "e913c8ead5f1de57c0247be8e865be0a9213e78b",
+    "status": "PASS",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "gamepad-rendered",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      }
+    ],
+    "scope": "Type/lint/fresh build and1selected gamepad SSR regression only. No fullunit/fullrendered/browser/device acceptance. Existing PointerLab warning remains."
+  },
+  "sourceReview": {
+    "path": "/tmp/101-gamepad-player-review-supplement.json",
+    "sha256": "36e87612831599ff566dde79628833886e25b264afbd0ee835584eedbfc3cf40",
+    "recordRef": "refs/codex/evidence/2026-10-08-gamepad-player/review-supplement",
+    "status": "CLEAR",
+    "originalBlock": {
+      "path": "/tmp/101-gamepad-player-source-review.json",
+      "sha256": "11327d06726fdb83efcd69962ca78e936adb75d9559790b1abb6365940079406",
+      "recordRef": "refs/codex/evidence/2026-10-08-gamepad-player/source-review"
+    }
+  },
+  "oldAndFailedEvidence": {
+    "taskFeatureOld": [
+      {
+        "path": "/tmp/101-gamepad-task-old-entry.log",
+        "sha256": "803bdbfbc5cf7974789d2ef5abecb0da968085ff1b5aeb074648300ede2447f9"
+      },
+      {
+        "path": "/tmp/101-gamepad-task-old-selected-timer.log",
+        "sha256": "f03ffeda79c48ec69f7808403e1bb1456900e323a3fe30f9b150044b7a7625f1"
+      },
+      {
+        "path": "/tmp/101-gamepad-task-old-clock-deadline.log",
+        "sha256": "e00c71f3d6c1ef0fd179e5581df5038fbe47417e79ae491a1e44116f0c795936"
+      }
+    ],
+    "retirementMeaningfulOld": {
+      "path": "/tmp/101-gamepad-player-review-old.json",
+      "sha256": "aab5852d0f467e8f3c537c5e4301c693a474b8f5ceb4336f433f92fda9c39830"
+    },
+    "retirementFocusedRepair": {
+      "path": "/tmp/101-gamepad-player-source-review-fixed.json",
+      "sha256": "ed10a8e0965e9e1f8dfb04fdc008d37c4eb4618c288d7ac4aed0e15572059f24"
+    },
+    "routeOld404": {
+      "path": "/tmp/101-gamepad-render-old.json",
+      "sha256": "2a3dd7f4aa94b90d595f48a0c2efc87f0093fada5053759f6161dd903f0bc72a"
+    },
+    "reportCopyOld": {
+      "log": {
+        "path": "/tmp/101-gamepad-report-copy-render-old.log",
+        "sha256": "f65ebd1eb6aaaaf58acbacaaf2d454ebe608daf5230c6966a1d7c46a9e83070c"
+      },
+      "builtSourceTree": "ff71357e046480ca63ddd76a572103e99749a9b5",
+      "scope": "Actual previous gamepad SSR omitted truthful initial-held/report explanation;1assertion failed. Old rendered output digest was not separately recorded."
+    },
+    "initialIntegrationLintFailure": {
+      "path": "/tmp/101-gamepad-player-build-gates.json",
+      "sha256": "3581f4a8280accbd19a6842f2ec02fb78e18565fdb49f312b6f9eda15f25d18f"
+    },
+    "invalidPreliminaryFixture": {
+      "log": {
+        "path": "/tmp/101-gamepad-task-initial.log",
+        "sha256": "7674d12c6c190af71b4c4717ad487a7f5c609ce329605aa6767eb83b1cbfad3f"
+      },
+      "scope": "Initial slot/index reason expectation did not match actual producer unavailable contract; retained as invalid preliminary fixture, corrected without changing provider/deadlines/permissions."
+    }
+  },
+  "nativeStartupDiagnostic": {
+    "path": "/tmp/101-controller-native-startup-diagnostic.json",
+    "sha256": "6c7bdab07aaf54c907ccae64d5ab0f4b3482d9c8e052b94ba217d51019a0cd61",
+    "recordRef": "refs/codex/evidence/2026-10-08-gamepad-player/native-startup-diagnostic",
+    "scope": "Original fullunit2404/2409with5fail retained. Unchanged isolated5andrelated34pass identify intermittent startup preconditions only; no cause/fix/fullsuite claim."
+  },
+  "sdkInputReuse": {
+    "path": "/tmp/101-gamepad-player-sdk-source-reuse.json",
+    "sha256": "a530c4c78a2a8d1d046792428a2436c3f4d5e6e2660b5ba298126ae254c29ee6",
+    "inputs": 183,
+    "scope": "All seven-package SDK source inputs remain identical to current offline artifact; no rebuild needed or performed."
+  },
+  "retention": {
+    "path": "/tmp/101-gamepad-player-retained.json",
+    "sha256": "50ce3f2b5ce706e91e2f91f7d1beb89e4e86789fff0f79fcb0d527a0a9d8c9a4",
+    "recordRef": "refs/codex/evidence/2026-10-08-gamepad-player/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-gamepad-player/literal-bundle",
+    "literalFiles": 195
+  },
+  "requiredGates": {
+    "status": "OPEN",
+    "historicalFailedRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "scope": "Historical5native unit failures remain unresolved; current fullunit/fullrendered gates not rerun during build-first phase. No commit, publication, deployment, preview URL or new service."
+  },
+  "unverified": [
+    "Native browser gamepad permission and lifecycle",
+    "Physical gamepad/firmware/OS mapping",
+    "Broad keyboard/screen-reader/responsive interaction",
+    "Complete N02/U02/U03 qualification",
+    "Full final candidate unit/rendered acceptance"
+  ]
+}

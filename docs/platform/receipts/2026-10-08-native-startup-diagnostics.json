@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "status": "instrumentation-verified-historical-cause-unresolved",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "previousDocumentationTree": "6dfff07344e5c345faed3f091ebc5a84fa0c58d1",
+  "verifiedSourceTree": "69068a1a89831f429af5dea304b6acc6a2bc9d33",
+  "firstDiagnosticTree": "21f807fdce0e4426391a54283772598d93230529",
+  "sources": {
+    "packages/hub-server/src/hosted-application.test.ts": "2698eb74f2d9506de5b2fcd1e5637cfb00b9505f1ccfdb37ef219b347f6a0586",
+    "packages/hub-server/src/scoped-agent-ipc.test.ts": "fbbe1f783416f974ed2c2bf40a55351761771134308edd5955d8bb4c69c4e574",
+    "examples/cross-host-workload/cross-host-workload.ts": "cd0ec817e81af6269ce9822254f763f9f25a93551aa84b3ceb8b3b00e7febdfa",
+    "examples/cross-host-workload/runtime-host.mjs": "3ffefb26164131e835671180fc00e01dc33a9d7f2e963550f7e8b65ae3f44368",
+    "tests/cross-host-workload.test.ts": "05284db98adb2ebd47a519b8a9fef75e09e48a167f3daf2970da267462f2dcb8"
+  },
+  "contract": "Failure-only selected test reports retain actual start result/status, parent-clock child spawn/readiness/retirement/close and original approval expiry. Private-socket helper errors retain only fixed sanitized error code and ordinal. Cross-host rejection retains at most three fixed module-body/identity-ready/hello-sent child-clock milestones with parent receipt times and existing cleanup counters. Raw stderr, credentials, identity, application values, socket paths and grants are omitted. Parent and child clocks remain separate; module-body entry excludes static ESM import/bootstrap. Existing real2500ms readiness,9000ms approval/helper2s bounds, authorization, raw settlement and serial runner stay unchanged.",
+  "sourceProof": {
+    "worker": {
+      "path": "/tmp/101-native-startup-diagnostics-completion.json",
+      "sha256": "b690e94c15d7a12b4fa1adf9bcb360c996032b689ae21bb238fbdd90d7b20f50"
+    },
+    "conservativeInputs": {
+      "path": "/tmp/101-native-startup-diagnostics-current-inputs.json",
+      "sha256": "908d07115c953cbff976e00d088d6d9bd820b467787103498a34d933d5cdaab9"
+    },
+    "conservativeDependencyCount": 195,
+    "method": "Conservative TypeScript AST static imports/public barrels/literal dynamic imports/requires. All nine native producer/test/host-loader roots are explicitly included, covering spawned-file URLs and inline child-source owners. Includes unexecuted branches and type imports; this is not an actual-loaded module inventory. Node builtins excluded. ws optional peer modules absent; standard JavaScript fallback fingerprinted.",
+    "actualLoadedClaim": false,
+    "old": {
+      "source": "tests/cross-host-workload.test.ts",
+      "sha256": "4cbd5ae95f2876736f437a06517dc7e1fd8a683671c7cc15e93c888e9399b661",
+      "literal": "/tmp/101-native-startup-diagnostics-old-witness.test.ts",
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=unexpected actual runtime-host startup failure",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "log": {
+        "path": "/tmp/101-native-startup-diagnostics-old-witness.log",
+        "sha256": "76ba5664ff0b53ba11e1f9be8bc4375d3949ec82f06cba895ee8438d9bd9ae6e"
+      },
+      "exitCode": 1,
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "meaning": "Real owned runtime host was killed and original unavailable rejection executed; assertion failed because retained startupDiagnostics was absent. Diagnostic contract RED, not a reproduction/cause of the five historical intermittent failures."
+    },
+    "firstForcedRejection": {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=unexpected actual runtime-host startup failure",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "log": {
+        "path": "/tmp/101-native-startup-diagnostics-witness-final.log",
+        "sha256": "78b723f90f7d11ff03dff5c72b2b11119a1b320fbcf4327427645306baedc665"
+      },
+      "exitCode": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "scope": "Real owned child SIGKILL; parent-clock spawn/close bounds and zero process/callback/socket/timer/fixture residue verified before rejection. No synthetic successful backend."
+    },
+    "originalFiveChangedDiagnostic": {
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "--test-name-pattern=denied launch attempts|actual private socket rejects|independently executing|cancellation at the first actual bind|owner abort after an actual keeper",
+        "packages/hub-server/src/hosted-application.test.ts",
+        "packages/hub-server/src/scoped-agent-ipc.test.ts",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "log": {
+        "path": "/tmp/101-native-startup-diagnostics-five-final.log",
+        "sha256": "0b34c78bc1ffce6ce216d8611fff5088e603015e927c4a27b7490a90cec85442"
+      },
+      "exitCode": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "scope": "Same original five-name pattern and serial runner, run once after coherent diagnostics. Passing cases emit no failure diagnostics. Instrumentation verification only; historical root cause remains unresolved."
+    },
+    "correctedForcedRejection": {
+      "name": "changed-rejection-witness",
+      "command": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "--test-reporter=tap",
+        "--test-name-pattern=unexpected actual runtime-host startup failure",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "ownedProcessGroupSettled": true,
+      "durationMs": 533,
+      "stdout": {
+        "path": "/tmp/101-native-startup-diagnostics-integration-repaired-changed-rejection-witness.log",
+        "sha256": "38f7638b3e1059837f136df4ecef9bffbaa93658f6c336ca526ab1ad69501612"
+      },
+      "stderr": {
+        "path": "/tmp/101-native-startup-diagnostics-integration-repaired-changed-rejection-witness.stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "counts": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    "scope": "Original5 run once at first diagnostic/test bytes. Corrected Set observer changes only forced witness storage; final witness1/types/lint run at verifiedSourceTree. Independent review confirms unchanged original5 test bodies and owned-child selection. These are instrumentation checks, not reproduction or repair of historical intermittent failures."
+  },
+  "softwareChecks": {
+    "path": "/tmp/101-native-startup-diagnostics-integration-repaired.json",
+    "sha256": "9d9d0874cc36df2d2dd06a94b459bfe2634044847ce2841905c444bd1214c896",
+    "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/software-checks",
+    "checks": [
+      {
+        "name": "changed-rejection-witness",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "types",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      }
+    ],
+    "firstLintFailure": {
+      "path": "/tmp/101-native-startup-diagnostics-integration.json",
+      "sha256": "e50cb9371e28fd38f485e24c896223897cd84c3688384ae7877c5c28a7251aa2"
+    },
+    "lint": "Zero errors after no-this-alias observer Set correction; existing PointerLab ref cleanup warning retained.",
+    "scope": "Changed diagnostic tests and whole types/lint only; no redundant SDK/application/browser/fullunit rebuild or run."
+  },
+  "independentReview": {
+    "path": "/tmp/101-native-startup-diagnostics-source-review.json",
+    "sha256": "9b114f36f8c8c61fc4c65e4b803ac66ce9c42da4e625cc6fd6e2ee0594dedb80",
+    "status": "CLEAR",
+    "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/source-review",
+    "executed": false
+  },
+  "sdkReuse": {
+    "path": "/tmp/101-native-startup-sdk-reuse.json",
+    "sha256": "91656f7170d33757d2dea8e3057560e139a5adb3927b40c081689965d5952749",
+    "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/sdk-reuse",
+    "sourceInputs": 183,
+    "tarballs": 7,
+    "installedFiles": 405,
+    "previousQualifiedDistributionRef": "refs/codex/evidence/2026-10-08-invitation-admission/distribution",
+    "scope": "All183 source inputs,7 tarball bytes,405 installed files and Node executable rehashed unchanged; current five diagnostic files are outside released seven-package input sets. This is exact-input reuse, not a new SDK qualification."
+  },
+  "retention": {
+    "path": "/tmp/101-native-startup-diagnostics-retained.json",
+    "sha256": "d0d16faf096b2c0ab15313df685cdcd0e283f87338187e15211eb39a609a643b",
+    "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/literal-bundle",
+    "literalFiles": 247,
+    "reviewCopySupplement": {
+      "path": "/tmp/101-native-startup-diagnostics-review-literal-supplement.json",
+      "sha256": "c5bbcc1be141e5c30300e1238d78cdf0f6cebf0463159bd0ead89a4bf7225e17",
+      "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/review-literal-supplement-record",
+      "bundleRef": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/review-literal-supplement",
+      "literalFiles": 5
+    }
+  },
+  "preservedHistoricalEvidence": [
+    {
+      "path": "/tmp/101-bindings-device-backup-diagnosed-required-gates-unit.log",
+      "sha256": "9bf2cd9e0389dbf70bda67d15249766caa9c68e828e0a64b70798266f02fb2ad"
+    },
+    {
+      "path": "/tmp/101-controller-native-five-initial.log",
+      "sha256": "ff8768259aab0bc2ebd2ae4fd022262d439e71c7535cbc8a047a5c83b6bf5693"
+    },
+    {
+      "path": "/tmp/101-controller-native-related-files.log",
+      "sha256": "5a8d058f2835b8dc6c8db4d98a7dd4f6b20137b5a8d41e8eb1a6b0b38ced5445"
+    }
+  ],
+  "historicalDiagnosis": {
+    "path": "/tmp/101-controller-native-startup-diagnostic.json",
+    "sha256": "6c7bdab07aaf54c907ccae64d5ab0f4b3482d9c8e052b94ba217d51019a0cd61"
+  },
+  "nextDiagnosticDecision": {
+    "path": "/tmp/101-native-startup-next-decision.json",
+    "sha256": "0a04531e5d8db8adfb2a00805e54ac2ff5e7294f3da3e25684e4de9b5edb8b8f"
+  },
+  "remainingSoftwareInventory": {
+    "path": "/tmp/101-remaining-software-inventory.json",
+    "sha256": "604fa6bb8351ed2318b8aae3fb7c4e88f6f8b810e1dd5714d0d1c1d860c96bc2",
+    "ref": "refs/codex/evidence/2026-10-08-native-startup-diagnostics/remaining-software-inventory",
+    "snapshotTree": "6dfff07344e5c345faed3f091ebc5a84fa0c58d1",
+    "nextLocalLanes": [
+      "F05 aggregate encoded-envelope raw-delivery byte admission",
+      "S14 enforceable bounded processor executor",
+      "D06 enrolled peer-owned current metadata publication",
+      "D02 discovered candidate to independently enrolled receiver caller"
+    ]
+  },
+  "limitations": [
+    "Historical fullunit2404/2409 with five native startup/IPC failures remains preserved; root cause/fix and final all-gates acceptance remain OPEN. No new fullunit run.",
+    "Focused5/5 and actual forced-child failure cleanup prove instrumentation only. Startup milestone intervals do not establish a scheduling cause.",
+    "No runtime authority/provider implementation change, deadline extension, grant renewal, retry/warmup, fake successful backend or concurrency change.",
+    "No browser/device/phone/physical network/OS input/native camera/microphone/screen capture, commit/push/deploy/publication/preview URL/new third-party service.",
+    "Q05/Q13 and broader task/support rows remain OPEN; no checkbox/support promotion."
+  ],
+  "published": false
+}

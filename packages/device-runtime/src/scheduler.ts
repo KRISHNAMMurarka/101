@@ -13,11 +13,18 @@ export class LatestSlot<T> {
   private pending?: { value: T; receivedAt: number };
   get size(): number { return this.pending ? 1 : 0; }
   offer(value: T, receivedAt: number): void { this.pending = { value, receivedAt }; }
-  take(now: number, maxAgeMs: number): T | undefined {
+  peek(now: number, maxAgeMs: number): T | undefined {
     const pending = this.pending;
-    this.pending = undefined;
-    if (!pending || now < pending.receivedAt || now - pending.receivedAt > maxAgeMs) return undefined;
+    if (!pending || now < pending.receivedAt || now - pending.receivedAt > maxAgeMs) {
+      this.pending = undefined;
+      return undefined;
+    }
     return pending.value;
+  }
+  take(now: number, maxAgeMs: number): T | undefined {
+    const value = this.peek(now, maxAgeMs);
+    this.pending = undefined;
+    return value;
   }
   clear(): void { this.pending = undefined; }
 }
@@ -71,16 +78,22 @@ export class OperationQueue<T> {
     return success();
   }
 
-  next(now: number): { id: string; deadline: number; value: T } | undefined {
+  peek(now: number): { id: string; deadline: number; value: T } | undefined {
     this.expire(now);
     for (const entry of this.entries.values()) {
       if (!entry.settled && entry.state === "accepted") {
-        entry.state = "dispatched";
-        const value = entry.value as T;
-        entry.value = undefined;
-        return { id: entry.id, deadline: entry.deadline, value };
+        return { id: entry.id, deadline: entry.deadline, value: entry.value as T };
       }
     }
+  }
+  next(now: number): { id: string; deadline: number; value: T } | undefined {
+    const pending = this.peek(now);
+    if (pending) {
+      const entry = this.entries.get(pending.id)!;
+      entry.state = "dispatched";
+      entry.value = undefined;
+    }
+    return pending;
   }
 
   started(id: string): void {

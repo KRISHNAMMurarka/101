@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { getEventListeners } from 'node:events';
+import { createBrowserCameraControls } from '../../../examples/browser-resources/camera-controls.ts';
 import { createDeviceRuntime, parseDeviceDescriptor } from '@101/connect';
 import type { Observation } from '@101/connect';
 import type { BrowserCameraEnvironment, BrowserCameraActivation, BrowserCameraOptions, BrowserCameraControlActivation, BrowserCameraControlDeliveryLimits } from './browser-camera.ts';
@@ -13,15 +14,18 @@ test('an exact selected camera exposes a typed frame source instead of selection
 class Track extends EventTarget {
   kind = 'video'; readyState = 'live'; muted = false; id = 'native-track'; stops = 0; deviceId: string | undefined = 'selected-id';
   zoom: number | undefined; range: { min: number; max: number; step: number } | undefined; constraints: MediaTrackConstraints[] = [];
+  pan: number | undefined; tilt: number | undefined; panRange: { min: number; max: number; step: number } | undefined; tiltRange: { min: number; max: number; step: number } | undefined;
   applyGate?: Promise<void>; onCapabilities?: () => void; onSettings?: () => void; onApply?: () => void;
   stop() { this.stops++; this.readyState = 'ended'; }
-  getCapabilities() { this.onCapabilities?.(); return this.range ? { zoom: this.range } : {}; }
-  getSettings() { this.onSettings?.(); return { deviceId: this.deviceId, width: 64, height: 48, ...(this.zoom === undefined ? {} : { zoom: this.zoom }) }; }
+  getCapabilities() { this.onCapabilities?.(); return { ...(this.range ? { zoom: this.range } : {}), ...(this.panRange ? { pan: this.panRange } : {}), ...(this.tiltRange ? { tilt: this.tiltRange } : {}) }; }
+  getSettings() { this.onSettings?.(); return { deviceId: this.deviceId, width: 64, height: 48, ...(this.zoom === undefined ? {} : { zoom: this.zoom }), ...(this.pan === undefined ? {} : { pan: this.pan }), ...(this.tilt === undefined ? {} : { tilt: this.tilt }) }; }
   applyConstraints(value: MediaTrackConstraints) {
     this.constraints.push(value); this.onApply?.();
-    const zoom = (value.advanced?.[0] as { zoom?: number } | undefined)?.zoom;
-    assert.deepEqual(value, { advanced: [{ zoom }] });
-    return (this.applyGate ?? Promise.resolve()).then(() => { this.zoom = zoom; });
+    const settings = value.advanced?.[0] as { zoom?: number; pan?: number; tilt?: number } | undefined;
+    assert.ok(settings); const keys = Object.keys(settings); assert.equal(keys.length, 1);
+    const axis = keys[0]; assert.ok(axis === 'zoom' || axis === 'pan' || axis === 'tilt'); const next = settings[axis];
+    assert.deepEqual(value, { advanced: [{ [axis]: next }] });
+    return (this.applyGate ?? Promise.resolve()).then(() => { this[axis] = next; });
   }
 }
 class Stream { track = new Track(); getTracks() { return [this.track]; } }
@@ -195,7 +199,8 @@ function zoomFixture(change: Partial<BrowserCameraOptions> = {}) {
   f.stream.track.range = { min: 1, max: 4, step: 0.5 }; f.stream.track.zoom = 1;
   function route(bound: BrowserCameraControlActivation) {
     const device = parseDeviceDescriptor({ ...bound.device, id: bound.device.id + ':source', capabilities: bound.device.capabilities.map(c => ({ ...c, kind: 'event' as const, permissions: ['subscribe'] })) });
-    const source = f.runtime.registerSource({ device, capability: 'camera-zoom' }); f.runtime.setReadiness(source, 'available');
+    const capability = bound.device.capabilities[0]!.id;
+    const source = f.runtime.registerSource({ device, capability }); f.runtime.setReadiness(source, 'available');
     const connection = f.runtime.route({ from: source, to: bound.sink, principalId: 'camera-owner', applicationId: 'camera-app', sessionId: 'camera-session', leaseMs: 1000, queueCapacity: 1 });
     connections.set(connection.id, connection); let operation = 0;
     return { connection, publish(value: unknown, deadline = f.at() + 250) { const result = f.runtime.publish(source, value, { operationId: String(++operation), deadline }); f.runtime.flush(); return result; } };
@@ -365,5 +370,183 @@ test('thrown cleanup of its genuine late returned zoom endpoint quarantines cont
   } finally {
     f.runtime.registerSink = register; f.runtime.unregister = unregister;
     if (issued) unregister(issued); await f.close();
+  }
+});
+
+
+// Reported pan/tilt software port only: these unitless API values never establish
+// an angle, physical motion, PTZ permission or native-camera support.
+type ReportedAxis = 'pan' | 'tilt';
+function axisFixture(axis: ReportedAxis, change: Partial<BrowserCameraOptions> = {}) {
+  const f = zoomFixture(change); f.stream.track.panRange = { min: -90, max: 90, step: 0.5 }; f.stream.track.pan = -1;
+  f.stream.track.tiltRange = { min: -45, max: 45, step: 0.5 }; f.stream.track.tilt = 0;
+  const method = axis === 'pan' ? 'bindPan' : 'bindTilt';
+  function bind(active: BrowserCameraActivation) {
+    const candidate = (f.provider as unknown as Record<string, unknown>)[method]; assert.equal(typeof candidate, 'function', 'Missing selected reported axis binding');
+    return Reflect.apply(candidate as (activation: BrowserCameraActivation, options: { purpose: string }) => ReturnType<typeof f.provider.bindZoom>, f.provider, [active, { purpose: 'reviewed-camera-' + axis }]) as ReturnType<typeof f.provider.bindZoom>;
+  }
+  return { ...f, axis, bindAxis: bind };
+}
+
+test('reported pan and tilt are absent only after genuine activated and separately granted zoom effect', async () => {
+  const f = axisFixture('pan'); f.enableZoomRoutes();
+  try {
+    const active = await f.start(), bound = f.provider.bindZoom(active, { purpose: 'existing-zoom-prefix' }); assert.ok(bound.ok);
+    const route = f.route(bound.value); assert.ok(route.connection.start().ok); assert.ok(route.publish(2.5).ok); await turn();
+    assert.deepEqual(f.stream.track.constraints, [{ advanced: [{ zoom: 2.5 }] }]); assert.equal(f.stream.track.zoom, 2.5);
+    assert.equal(f.provider.controlStatus().state, 'api-returned'); assert.equal(f.provider.snapshot().activeSources, 1);
+    const report = f.provider.inspectControls(active); assert.ok(report.ok);
+    assert.deepEqual(report.value.zoom, { state: 'reported', min: 1, max: 4, step: 0.5, current: 2.5 });
+    assert.deepEqual(report.value.pan, { state: 'reported', min: -90, max: 90, step: 0.5, current: -1 }, 'Missing coherent reported pan after genuine zoom prefix');
+    assert.deepEqual(report.value.tilt, { state: 'reported', min: -45, max: 45, step: 0.5, current: 0 });
+    assert.equal(typeof (f.provider as unknown as Record<string, unknown>).bindPan, 'function'); assert.equal(typeof (f.provider as unknown as Record<string, unknown>).bindTilt, 'function');
+    assert.equal(report.value.opticalVerification, false); assert.equal(f.stream.track.constraints.length, 1, 'Inspecting reported axes cannot move them');
+  } finally { await f.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('separately approved reported ' + axis + ' sends one exact negative numeric setting through the existing real runtime', async () => {
+  const f = axisFixture(axis); f.enableZoomRoutes();
+  try { const active = await f.start(), bound = f.bindAxis(active); assert.ok(bound.ok);
+    assert.equal(bound.value.device.capabilities[0]!.id, 'camera-' + axis); assert.equal(bound.value.device.capabilities[0]!.semantic, 'media:camera-' + axis + '-setting/1');
+    assert.deepEqual(bound.value.device.capabilities[0]!.permissions, ['invoke']); const value = bound.value.device.capabilities[0]!.value; assert.equal(value.type, 'scalar'); if (value.type === 'scalar') assert.equal(value.unit, '1');
+    const route = f.route(bound.value); assert.ok(route.connection.start().ok); assert.ok(route.publish(-2.5).ok); await turn();
+    assert.deepEqual(f.stream.track.constraints, [{ advanced: [{ [axis]: -2.5 }] }]); assert.equal(f.stream.track[axis], -2.5);
+    assert.equal(f.provider.controlStatus().state, 'api-returned'); assert.equal(f.provider.controlStatus().reportedSetting, -2.5);
+    assert.equal(f.provider.controlStatus().activeSinks, 1); assert.equal(f.provider.controlStatus().rawPending, 0);
+  } finally { await f.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('reported ' + axis + ' needs both exact control consent and independent invoke approval', async () => {
+  const denied = axisFixture(axis, { authorizeControl: () => undefined });
+  try { const active = await denied.start(); assert.deepEqual(denied.bindAxis(active), { ok: false, reason: 'denied' }); assert.equal(denied.stream.track.constraints.length, 0); assert.equal(denied.provider.snapshot().activeSources, 1); }
+  finally { await denied.close(); }
+  const copied = axisFixture(axis, { authorizeControl(request) { return { request: { ...request, capabilityId: 'camera-zoom' }, signal: new AbortController().signal, expiresAt: 1100 }; } });
+  try { const active = await copied.start(); assert.deepEqual(copied.bindAxis(active), { ok: false, reason: 'denied' }); assert.equal(copied.stream.track.constraints.length, 0); }
+  finally { await copied.close(); }
+  const routed = axisFixture(axis);
+  try { const active = await routed.start(), bound = routed.bindAxis(active); assert.ok(bound.ok); const route = routed.route(bound.value); assert.equal(route.connection.start().ok, false);
+    route.publish(-2.5); await turn(); assert.equal(routed.stream.track.constraints.length, 0); }
+  finally { await routed.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('malformed or missing reported ' + axis + ' facts never bind a mutation endpoint', async () => {
+  const cases = [undefined, { min: -1025, max: 0, step: 1 }, { min: 0, max: 1025, step: 1 }, { min: -1, max: 1, step: 0 },
+    { min: -1, max: 1, step: 0.0000001 }, { min: -1, max: 1, step: 0.000001 }, { min: -1, max: Infinity, step: 1 }, { min: 1, max: -1, step: 1 }];
+  for (const facts of cases) { const f = axisFixture(axis); f.stream.track[axis === 'pan' ? 'panRange' : 'tiltRange'] = facts;
+    try { const active = await f.start(), report = f.provider.inspectControls(active); assert.ok(report.ok); assert.equal(report.value[axis], 'unsupported');
+      assert.deepEqual(f.bindAxis(active), { ok: false, reason: 'unsupported' }); assert.equal(f.provider.controlStatus().activeSinks, 0); assert.equal(f.stream.track.constraints.length, 0); }
+    finally { await f.close(); } }
+  const boolean = axisFixture(axis), capabilities = boolean.stream.track.getCapabilities.bind(boolean.stream.track);
+  boolean.stream.track.getCapabilities = () => ({ ...capabilities(), [axis]: true }) as ReturnType<typeof capabilities>;
+  try { const active = await boolean.start(); assert.deepEqual(boolean.bindAxis(active), { ok: false, reason: 'unsupported' }); assert.equal(boolean.stream.track.constraints.length, 0); }
+  finally { await boolean.close(); }
+  for (const current of [NaN, Infinity, -1000, 0.25]) { const f = axisFixture(axis); f.stream.track[axis] = current;
+    try { const active = await f.start(); assert.deepEqual(f.bindAxis(active), { ok: false, reason: 'unsupported' }); assert.equal(f.stream.track.constraints.length, 0); }
+    finally { await f.close(); } }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('reported ' + axis + ' refuses offstep/object/nonfinite values and sub-cadence native dispatch', async () => {
+  // A valid but off-step scalar consumes the real route's dispatch cadence.
+  // Isolate refusals so every candidate reaches its own independently granted route.
+  for (const value of [-2.25, 1000, NaN, Infinity, { [axis]: -2 }, Object.defineProperty({}, axis, { get() { throw Error('No command object accessor'); } })]) {
+    const f = axisFixture(axis); f.enableZoomRoutes();
+    try { const active = await f.start(), bound = f.bindAxis(active); assert.ok(bound.ok); const route = f.route(bound.value); assert.ok(route.connection.start().ok);
+      route.publish(value); await turn(); assert.equal(f.stream.track.constraints.length, 0);
+    } finally { await f.close(); }
+  }
+  const f = axisFixture(axis); f.enableZoomRoutes();
+  try { const active = await f.start(), bound = f.bindAxis(active); assert.ok(bound.ok); const route = f.route(bound.value); assert.ok(route.connection.start().ok);
+    assert.ok(route.publish(-2.5).ok); await turn(); assert.equal(f.stream.track.constraints.length, 1);
+    f.setAt(200); route.publish(-2); await turn(); assert.equal(f.stream.track.constraints.length, 1, 'Same 2Hz limit applies to signed reported settings');
+  } finally { await f.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('reported ' + axis + ' retains issued activation identity and one shared control sink', async () => {
+  const f = axisFixture(axis), foreign = axisFixture(axis);
+  try { const active = await f.start(), other = await foreign.start();
+    for (const candidate of [{ ...active }, other, {} as BrowserCameraActivation]) { assert.equal(f.bindAxis(candidate).ok, false); assert.equal(f.provider.controlStatus().activeSinks, 0); }
+    const bound = f.bindAxis(active); assert.ok(bound.ok); assert.equal(f.provider.controlStatus().activeSinks, 1);
+    assert.deepEqual(f.provider.bindZoom(active, { purpose: 'no-second-sink' }), { ok: false, reason: 'busy' });
+    const opposite = (f.provider as unknown as Record<string, unknown>)[axis === 'pan' ? 'bindTilt' : 'bindPan']; assert.equal(typeof opposite, 'function');
+    assert.deepEqual(Reflect.apply(opposite as (...args: unknown[]) => unknown, f.provider, [active, { purpose: 'no-other-axis' }]), { ok: false, reason: 'busy' });
+    assert.equal(f.stream.track.constraints.length, 0);
+  } finally { await f.close(); await foreign.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) test('reported ' + axis + ' refuses changed native ranges and final shorter real delivery limits', async () => {
+  const f = axisFixture(axis); f.enableZoomRoutes();
+  try { const active = await f.start(), bound = f.bindAxis(active); assert.ok(bound.ok); const route = f.route(bound.value); assert.ok(route.connection.start().ok);
+    f.stream.track[axis === 'pan' ? 'panRange' : 'tiltRange'] = { min: -2, max: 2, step: 0.5 }; route.publish(-1); await turn();
+    assert.equal(f.stream.track.constraints.length, 0); assert.equal(f.provider.controlStatus().activeSinks, 0); assert.equal(f.provider.snapshot().activeSources, 1);
+  } finally { await f.close(); }
+  const late = axisFixture(axis); late.enableZoomRoutes();
+  try { const active = await late.start(), bound = late.bindAxis(active); assert.ok(bound.ok); late.narrowRoutes(125, 25); const route = late.route(bound.value); assert.ok(route.connection.start().ok);
+    const original = late.stream.track.applyConstraints.bind(late.stream.track); Object.defineProperty(late.stream.track, 'applyConstraints', { get() { late.setAt(140); return original; } });
+    route.publish(-2.5); await turn(); assert.equal(late.stream.track.constraints.length, 0, 'Final clock fences real narrower invoke/operation limits');
+  } finally { await late.close(); }
+});
+
+for (const axis of ['pan', 'tilt'] as const) for (const reason of ['stop', 'revoke', 'loss', 'expiry'] as const) test('issued reported ' + axis + ' retains its actual Promise through ' + reason, async () => {
+  const f = axisFixture(axis), returned = gate<void>(); f.enableZoomRoutes(); f.stream.track.applyGate = returned.promise; let closing: Promise<void> | undefined;
+  try { const active = await f.start(), bound = f.bindAxis(active); assert.ok(bound.ok); const route = f.route(bound.value); assert.ok(route.connection.start().ok);
+    route.publish(-2.5); await turn(); assert.equal(f.stream.track.constraints.length, 1); assert.equal(f.provider.controlStatus().rawPending, 1);
+    if (reason === 'stop') f.provider.stop(); else if (reason === 'revoke') f.control.abort(); else if (reason === 'loss') { f.stream.track.readyState = 'ended'; f.stream.track.dispatchEvent(new Event('ended')); } else { f.setAt(1100); f.provider.sweep(); }
+    assert.equal(f.provider.controlStatus().rawPending, 1); assert.equal(f.provider.controlStatus().activeSinks, 0); assert.equal(f.provider.controlStatus().state, 'uncertain');
+    let settled = false; closing = f.provider.close().then(() => { settled = true; }); await turn(); assert.equal(settled, false);
+    returned.resolve(); await closing; assert.equal(f.provider.controlStatus().rawPending, 0); assert.equal(f.provider.snapshot().activeSources, 0); assert.equal(f.video.pending.size, 0);
+    assert.equal(f.stream.track[axis], -2.5, 'Already-issued software effect may occur; cancellation does not claim rollback');
+  } finally { returned.resolve(); if (closing) await closing; await f.close(); }
+});
+
+test('reported-axis native prototype accessors are bounded and reentrant authorizers cannot bind late', async () => {
+  const f = axisFixture('pan'); const settings = f.stream.track.getSettings.bind(f.stream.track), capabilities = f.stream.track.getCapabilities.bind(f.stream.track);
+  f.stream.track.getCapabilities = () => ({ ...capabilities(), pan: Object.create({ get min() { return -90; }, get max() { return 90; }, get step() { return 0.5; } }) });
+  // Native IDL accessors may live on a prototype; omit the own pan override.
+  f.stream.track.getSettings = () => { const value = settings(); const { pan: _pan, ...rest } = value; void _pan; return Object.assign(Object.create({ get pan() { return -1; } }), rest); };
+  try { const active = await f.start(), report = f.provider.inspectControls(active); assert.ok(report.ok); assert.deepEqual(report.value.pan, { state: 'reported', min: -90, max: 90, step: 0.5, current: -1 }); }
+  finally { await f.close(); }
+  const reentrant: ReturnType<typeof axisFixture> = axisFixture('tilt', { authorizeControl(request) { reentrant.provider.stop(); return { request, signal: reentrant.control.signal, expiresAt: 1100 }; } });
+  try { const active = await reentrant.start(); assert.equal(reentrant.bindAxis(active).ok, false); assert.equal(reentrant.provider.controlStatus().activeSinks, 0); assert.equal(reentrant.stream.track.constraints.length, 0); }
+  finally { await reentrant.close(); }
+});
+
+test('late reported pan sink unregister failure quarantines the shared engine without freeing authority', async () => {
+  const f = axisFixture('pan'), register = f.runtime.registerSink.bind(f.runtime), unregister = f.runtime.unregister.bind(f.runtime); let issued: ReturnType<typeof register> | undefined;
+  f.runtime.registerSink = provider => { const endpoint = register(provider); if (provider.capability === 'camera-pan') { issued = endpoint; f.provider.stop(); } return endpoint; };
+  f.runtime.unregister = endpoint => { if (endpoint === issued) throw Error('Owned unregister failure'); return unregister(endpoint); };
+  try { const active = await f.start(); assert.equal(f.bindAxis(active).ok, false); assert.ok(issued); assert.equal(f.provider.snapshot().cleanupFailures, 1);
+    assert.equal(f.provider.controlStatus().activeSinks, 0); assert.deepEqual(f.provider.bindZoom(active, { purpose: 'quarantine-cannot-reset' }), { ok: false, reason: 'busy' }); }
+  finally { f.runtime.registerSink = register; f.runtime.unregister = unregister; if (issued) unregister(issued); await f.close(); }
+});
+
+
+test('explicit camera route lease retains actual continuously produced preview beyond default five seconds', async () => {
+  const f = fixture(), end = 30100;
+  const caller = createBrowserCameraControls({ ownerSignal: f.owner.signal, now: () => f.at(), routeLeaseMs: 30000,
+    environment: f.environment, authorizeCapture: request => ({ request, signal: f.capture.signal, expiresAt: end }),
+    authorizeControl: () => undefined, authorizeRoutes(request) {
+      if (request.principalId === 'camera-control-owner' && request.applicationId === 'camera-controls-example' &&
+          request.sessionId === 'camera-controls-session' && request.source.capabilityId === 'camera-frame' &&
+          request.sink.capabilityId === 'camera-frame' && request.sourceOperation === 'subscribe' && request.sinkOperation === 'write')
+        return { expiresAt: end, maxAgeMs: 250, maxHz: 10 };
+    } });
+  try {
+    const choices = await caller.provider.inspect(); assert.ok(choices.ok); assert.equal(choices.value.length, 1);
+    const starting = caller.activate(choices.value[0]!.selection); await turn(); f.video.emit(100); assert.ok((await starting).ok);
+    f.setAt(200); f.video.emit(200); caller.tick(); await turn(); assert.equal(caller.state().latest?.timestamp, 200, 'Actual authorized preview prefix');
+    for (let at = 300; at <= 6000; at += 100) { f.setAt(at); f.video.emit(at); caller.tick(); await turn(); }
+    assert.equal(caller.provider.snapshot().activeSources, 1); assert.equal(f.stream.track.constraints.length, 0);
+    assert.equal(caller.state().latest?.timestamp, 6000, 'Explicit initial lease must continue current frames beyond default5s without renewal');
+    f.setAt(end); caller.tick(); caller.provider.sweep(); assert.equal(caller.state().latest, undefined, 'Original capture approval still expires');
+  } finally { await caller.close(); await f.close(); }
+});
+
+test('invalid explicit camera route leases are refused before inventory or permission callbacks', async () => {
+  for (const routeLeaseMs of [0, -1, 30001, 1.5, NaN, Infinity]) {
+    const f = fixture(); let grants = 0;
+    try { assert.throws(() => createBrowserCameraControls({ ownerSignal: f.owner.signal, routeLeaseMs, environment: f.environment,
+      authorizeCapture() { grants++; return undefined; }, authorizeControl() { grants++; return undefined; }, authorizeRoutes() { grants++; return undefined; } }), RangeError);
+      assert.equal(f.opens(), 0); assert.equal(f.inspections(), 0); assert.equal(grants, 0);
+    } finally { await f.close(); }
   }
 });

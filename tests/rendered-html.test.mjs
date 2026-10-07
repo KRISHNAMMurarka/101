@@ -24,6 +24,54 @@ async function render(path = "/") {
   );
 }
 
+test('local audio preview arrives silently and offers separate review, stop and skip', async () => {
+  const response = await render('/connections/audio');
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? '';
+  assert.match(html, /<title>101 — Try sound here<\/title>/);
+  assert.match(main, /data-audio-phase="idle"/);
+  assert.match(main, /<h1>Try sound here<\/h1>/);
+  assert.match(main, /No sound plays on arrival/);
+  assert.match(main, /Review tone source/);
+  assert.match(main, /Review private connection/);
+  assert.match(main, /Review browser sound/);
+  assert.match(main, /<button[^>]*disabled[^>]*>Start tone<\/button>/);
+  assert.match(main, /Sound volume/);
+  assert.match(main, /Mute/);
+  assert.match(main, /Stop/);
+  assert.match(main, /Skip and return to Connections/);
+  assert.match(main, /up to ten seconds/);
+  assert.match(main, /current sound destination/);
+  assert.doesNotMatch(main, /<audio[^>]*(?:autoplay|\ssrc=)/i);
+  assert.doesNotMatch(main, /confidence|architecture|software percentage/i);
+});
+
+test('local gamepad preview arrives without input and offers review, recovery and skip', async () => {
+  const response = await render('/connections/gamepad');
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? '';
+  assert.match(html, /<title>101 — Check a gamepad here<\/title>/);
+  assert.match(main, /data-gamepad-phase="idle"/);
+  assert.match(main, /<h1>Check a gamepad here<\/h1>/);
+  assert.match(main, /Nothing reads input on arrival/);
+  assert.match(main, /role="status"/);
+  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Find gamepads<\/button>/);
+  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Stop gamepad access<\/button>/);
+  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Review local use<\/button>/);
+  assert.match(main, /press one of its buttons with this page in focus/);
+  assert.match(main, /href="#gamepad-readings"/);
+  assert.match(main, /id="gamepad-readings"/);
+  assert.match(main, /Skip and return to Connections/);
+  assert.match(main, /The first report can show a button already held/);
+  assert.match(main, /Button values belong to the last pressed or released report/);
+  assert.doesNotMatch(main, /Value at last change|Button values arrive with pressed or released changes/);
+  assert.doesNotMatch(main, /<meter\b|Allowed:|Start local preview/);
+  const connections = await (await render('/connections')).text();
+  assert.match(connections, /href="\/connections\/gamepad"/);
+});
+
 test("server-renders the player library, and nothing built for developers", async () => {
   const response = await render();
   assert.equal(response.status, 200);

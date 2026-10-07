@@ -395,6 +395,12 @@ def package_metadata(metadata, record, inventory, records):
             continue
         if subpath == "./schema/device-descriptor.json":
             require(record["name"] in ("@101/device-model", "@101/connect") and target == "./schema/device-descriptor.json", "inventory-mismatch", package=record["name"])
+        elif subpath == "./node":
+            require(record["name"] == "@101/device-runtime"
+                    and target == {"types": "./dist/processor-node.d.ts", "import": "./dist/processor-node.js"}
+                    and all("dist/" + stem + extension in inventory
+                            for stem in ("processor-node", "processor-worker", "processor-language")
+                            for extension in (".js", ".d.ts")), "inventory-mismatch", package=record["name"])
         elif subpath == "./examples/onboarding":
             require(record["name"] == "@101/connect" and target == "./" + ONBOARDING[0]
                     and all(path in inventory for path in ONBOARDING), "inventory-mismatch", package=record["name"])
@@ -410,6 +416,8 @@ def package_metadata(metadata, record, inventory, records):
     schema = "./schema/device-descriptor.json"
     if record["name"] in ("@101/device-model", "@101/connect"):
         require(schema in exports, "inventory-mismatch", package=record["name"])
+    if record["name"] == "@101/device-runtime":
+        require("./node" in exports, "inventory-mismatch", package=record["name"])
     require((TELEMETRY in inventory) == ("./examples/telemetry-owner" in exports), "inventory-mismatch", package=record["name"])
     require(all((path in inventory) == ("./examples/onboarding" in exports) for path in ONBOARDING), "inventory-mismatch", package=record["name"])
 

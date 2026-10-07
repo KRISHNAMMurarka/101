@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-built-full-acceptance-open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "previousDocumentationTree": "99f0d9a16efc45910ec370d69c55ca498c2f1298",
+  "verifiedProductTree": "028eaebfd7462e13617edfa35b24265dd895a0fb",
+  "contract": "Optional host RuntimeOptions.maxPendingDeliveriesPerPrincipal aggregates actual reserved apply work across all exact authorized application/session tuples for one principal. Integer1..selected global capacity; undefined/omitted equals global. Scope and global caps also apply. Scope authorization, FIFO/fair rotation, queue/freshness and raw-settlement barriers retain their contracts. Stop/revoke/replacement cannot recycle unresolved raw capacity.",
+  "sources": {
+    "packages/device-runtime/src/runtime.ts": "5d122e1015c111424a8f7154a26b97d940fe0df7b49fdc971899e855430b2347",
+    "packages/device-runtime/src/types.ts": "17be1b2801751bb752d176ca94e7327e225f5b7466119adba6a52b5cf3ebcf82",
+    "packages/device-runtime/src/principal-delivery.test.ts": "a498c9139310ed7ee2c7d437cf73799e16c685df429633f104ef7c99650b449c",
+    "tools/qa-fair-delivery.mjs": "69c97ac0fef404a0f34953da7f11be06fa4ed359e94bff180efbd8f11cd08a2f"
+  },
+  "sourceProof": {
+    "path": "/tmp/101-principal-delivery-source-aggregate.json",
+    "sha256": "85c8cec2bbfdff78f523d5831a19d17cc0c8b4fc3d6702f5c3aebc88319c7a5f",
+    "tests": 792,
+    "newPrincipalTests": 24,
+    "reusedScopeFairnessSettlementTests": 15,
+    "broaderDependentTests": 753,
+    "scope": "Current24 plus unchanged15, current741 and reused initial12Inspector; initial37recorder failures are retained and excluded from success."
+  },
+  "genuineOld": {
+    "source": {
+      "path": "/tmp/101-principal-delivery-old.log",
+      "sha256": "886768e776330c9f3a525c7365da68435ca77a3253bcf6914b78b43ca8de390d"
+    },
+    "sourcePins": {
+      "kind": "principal-delivery-old-source",
+      "sha256": {
+        "packages/device-runtime/src/runtime.ts": "79f3caa489b53cf78afef5fb20cc8bc2393275d204d28201121de25ba51b499f",
+        "packages/device-runtime/src/types.ts": "0abe92d991e6fcb9d38700b2eab8e789b25094e51429ae211081f7d932e99be2"
+      }
+    },
+    "installed": {
+      "path": "/tmp/101-principal-delivery-packed-old.json",
+      "sha256": "76aaa64fbc665ab66390be7da75f2eff233e55889315c191d4f709631ce5210b"
+    },
+    "witness": "Four distinct approved A app/session tuples occupy all global4 raw apply slots and B cannot dispatch. Installed OLD caller and all original tarballs retained. Source OLDtest later expanded; no original test literal retention claim."
+  },
+  "sourceReview": {
+    "path": "/tmp/101-principal-delivery-source-review.json",
+    "sha256": "72315b14c36198171d3f4b66eab8d61abd1a9aa76ceaddc9b32aa33d4df3eee1",
+    "status": "CLEAR",
+    "ref": "refs/codex/evidence/2026-10-08-principal-delivery/source-review"
+  },
+  "softwareBuild": {
+    "path": "/tmp/101-principal-delivery-integration-repaired.json",
+    "sha256": "d881755a43e020258421e627a2e8bb68544bc3b70911d22cf1b422b24dd73fd7",
+    "tree": "028eaebfd7462e13617edfa35b24265dd895a0fb",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "application-build",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "rendered-html",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "sdk-build",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      }
+    ],
+    "renderedHtmlTests": 37,
+    "lint": "Zero errors; one existing PointerLab ref cleanup warning. Initial fixture prefer-const failure retained; test-only repair rerun24checks."
+  },
+  "distribution": {
+    "path": "/tmp/101-principal-delivery-distribution.json",
+    "sha256": "5b0a7012233cde5a31bd8e332654d242c82a478e4c20c33fed91c7fe843c3569",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-FaL5gC/manifest.json",
+      "sha256": "d1ce884c029078123ee182ea64f25a0d685e7387a3be1e76a9e666508773be25",
+      "inputs": 183,
+      "packages": 7,
+      "installedFiles": 405
+    },
+    "consumerReceipt": {
+      "path": "/private/tmp/101-sdk-consumer-principal-Ew4w08/receipt.json",
+      "sha256": "24fd327498979b921e205cef0bdbd5dc1bf6c7a2a0398a2c52e92fc7ed1afa38"
+    },
+    "sourceInputs": 183,
+    "packages": 7,
+    "installedFiles": 405,
+    "types": [
+      "NodeNext strict",
+      "Bundler strict"
+    ],
+    "ordinaryCompiledNodeWorkloads": 11,
+    "principalWorkloads": 4,
+    "SDKChangedInputs": [
+      "packages/device-runtime/src/runtime.ts",
+      "packages/device-runtime/src/types.ts"
+    ],
+    "scope": "Fresh offline/no scripts seven-package install; exact files/types/public compiled caller. No TypeScript stripping, monorepo aliases, browser or device execution."
+  },
+  "retention": {
+    "path": "/tmp/101-principal-delivery-retained.json",
+    "sha256": "42e1f9c60aaf1c1ad27615dca7dbb005548c4c1632978e8991247d1f24774326",
+    "ref": "refs/codex/evidence/2026-10-08-principal-delivery/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-principal-delivery/literal-bundle",
+    "literalFiles": 766
+  },
+  "preservedFailures": [
+    {
+      "path": "/tmp/101-principal-delivery-dependents.json",
+      "sha256": "ad66d028aa576454a0e369eed2f1221477aa22fc393a09b82d0a74327c4a953d"
+    },
+    {
+      "path": "/tmp/101-principal-delivery-integration.json",
+      "sha256": "6bb79b91a376f10516cb062741be4d5d3dfacbbc90b027c2f0da9be0db037701"
+    }
+  ],
+  "limitations": [
+    "F05 remains open; no checkbox or support-row promotion.",
+    "Host-authorized identity strings define cohorts; independently authorized principals can still exhaust global work.",
+    "Cooperating returned work only; callback CPU is not sandboxed, byte quotas and detached effects are unproved.",
+    "Complete unit gate remains open with the five historical native startup/IPC failures; no fresh full unit run or cause/fix claim.",
+    "Browser, physical devices, OS input and native capture deferred; no commit, push, publication, deployment, preview URL or new service."
+  ],
+  "published": false
+}

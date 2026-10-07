@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, { type TestContext } from 'node:test';
 import assert from 'node:assert/strict';
 import { Server } from 'node:net';
 import { ChildProcess } from 'node:child_process';
@@ -15,10 +15,15 @@ async function runner() {
     cleanup: { processes: number; callbacks: number; sockets: number; timers: number; fixturesRemoved: boolean };
   }> };
 }
+function reportStartupFailure(t: TestContext, error: unknown) {
+  const diagnostics = error instanceof Error ? Object.getOwnPropertyDescriptor(error, 'startupDiagnostics')?.value : undefined;
+  t.diagnostic(JSON.stringify({ kind: 'cross-host-startup', diagnostics: diagnostics ?? { retained: false } }));
+}
 
-test('independently executing authenticated runtime hosts transfer native state and recover with fresh authority', async () => {
+test('independently executing authenticated runtime hosts transfer native state and recover with fresh authority', async t => {
   const { runCrossHostWorkloadQualification } = await runner();
-  const result = await runCrossHostWorkloadQualification({ signal: new AbortController().signal });
+  const result = await runCrossHostWorkloadQualification({ signal: new AbortController().signal })
+    .catch(error => { reportStartupFailure(t, error); throw error; });
   assert.equal(result.profile, 'loopback-node-workload-handoff/1');
   assert.equal(result.scenarios.length, 3);
   for (const scenario of result.scenarios) {
@@ -54,17 +59,18 @@ test('aborted or spoofed owner signals cannot acquire a native cross-host fixtur
   await assert.rejects(runCrossHostWorkloadQualification({ signal: { aborted: false } as AbortSignal }), /signal/i);
 });
 
-test('cancellation at the first actual bind retains ownership until native host and gateway teardown', async () => {
+test('cancellation at the first actual bind retains ownership until native host and gateway teardown', async t => {
   const { runCrossHostWorkloadQualification } = await runner();
   const owner = new AbortController(), original = Server.prototype.listen;
-  let binds = 0;
+  let binds = 0, failedRun: unknown;
   Server.prototype.listen = function (this: Server, ...args: Parameters<typeof original>) {
     const value = original.apply(this, args); binds++; owner.abort(); return value;
   } as typeof original;
   try {
-    await assert.rejects(runCrossHostWorkloadQualification({ signal: owner.signal }), /retired|cancelled/i);
+    await assert.rejects(runCrossHostWorkloadQualification({ signal: owner.signal }).catch(error => { failedRun = error; throw error; }), /retired|cancelled/i);
     assert.equal(binds, 1, 'Abort must prevent a replacement or second fixture bind');
-  } finally { Server.prototype.listen = original; }
+  } catch (error) { reportStartupFailure(t, failedRun); throw error; }
+  finally { Server.prototype.listen = original; }
   const done = new AbortController(); done.abort();
   await assert.rejects(runCrossHostWorkloadQualification({ signal: done.signal }), /retired|signal/i);
 });
@@ -84,7 +90,40 @@ test('fixed actual host group producer satisfies the public route-group schema',
   }
 });
 
-test('owner abort after an actual keeper sample is issued awaits both preparation and native child settlement', async () => {
+test('unexpected actual runtime-host startup failure retains bounded clock milestones and cleanup', async () => {
+  const { runCrossHostWorkloadQualification } = await runner();
+  const descriptor = Object.getOwnPropertyDescriptor(ChildProcess.prototype, 'spawn');
+  assert.ok(descriptor && typeof descriptor.value === 'function');
+  const original = descriptor.value as (this: ChildProcess, ...args: unknown[]) => unknown;
+  const observed = new Set<ChildProcess>(); let closed = false;
+  try {
+    Object.defineProperty(ChildProcess.prototype, 'spawn', { ...descriptor, value: function (this: ChildProcess, ...args: unknown[]) {
+      const result = Reflect.apply(original, this, args);
+      if (!observed.size && this.spawnargs.some(value => value.endsWith('/runtime-host.mjs'))) {
+        observed.add(this); this.once('close', () => { closed = true; }); this.kill('SIGKILL');
+      }
+      return result;
+    } });
+    await assert.rejects(runCrossHostWorkloadQualification({ signal: new AbortController().signal }), (error: unknown) => {
+      assert.ok(error instanceof Error); assert.match(error.message, /native runtime host unavailable/i);
+      const diagnostic = (error as Error & { startupDiagnostics?: {
+        hosts: readonly { spawnEnteredAt: number; spawnReturnedAt: number; closeAt: number; signalCode: string;
+          milestones: readonly { event: string; childAt: number; receivedAt: number }[] }[];
+        cleanup: { processes: number; callbacks: number; sockets: number; timers: number; fixturesRemoved: boolean };
+      } }).startupDiagnostics;
+      assert.ok(diagnostic, 'Actual startup rejection must retain bounded non-sensitive diagnostics');
+      assert.equal(diagnostic.hosts.length, 1);
+      const host = diagnostic.hosts[0]!;
+      assert.ok(host.spawnEnteredAt <= host.spawnReturnedAt && host.spawnReturnedAt <= host.closeAt);
+      assert.equal(host.signalCode, 'SIGKILL'); assert.ok(host.milestones.length <= 3);
+      assert.deepEqual(diagnostic.cleanup, { processes: 0, callbacks: 0, sockets: 0, timers: 0, fixturesRemoved: true });
+      return true;
+    });
+    assert.equal(observed.size, 1); assert.equal(closed, true, 'Actual owned host has closed before diagnostic rejection');
+  } finally { Object.defineProperty(ChildProcess.prototype, 'spawn', descriptor); }
+});
+
+test('owner abort after an actual keeper sample is issued awaits both preparation and native child settlement', async t => {
   const { runCrossHostWorkloadQualification } = await runner();
   const owner = new AbortController();
   const spawnDescriptor = Object.getOwnPropertyDescriptor(ChildProcess.prototype, 'spawn');
@@ -95,6 +134,7 @@ test('owner abort after an actual keeper sample is issued awaits both preparatio
   const roles = new WeakMap<ChildProcess, 'source' | 'target'>();
   let sourceSamples = 0, issuedKeeperSample = false,
     targetLaunched = false, sampleWhileTargetPreparationPending = false;
+  let failedRun: unknown;
   try {
     Object.defineProperty(ChildProcess.prototype, 'spawn', { ...spawnDescriptor, value: function (this: ChildProcess, ...args: unknown[]) {
       const result = Reflect.apply(originalSpawn, this, args);
@@ -123,7 +163,7 @@ test('owner abort after an actual keeper sample is issued awaits both preparatio
       }
       return result;
     } });
-    await assert.rejects(runCrossHostWorkloadQualification({ signal: owner.signal }), (error: unknown) => {
+    await assert.rejects(runCrossHostWorkloadQualification({ signal: owner.signal }).catch(error => { failedRun = error; throw error; }), (error: unknown) => {
       assert.ok(error instanceof Error);
       assert.equal(issuedKeeperSample, true, 'Rejection follows the actual delegated source request');
       assert.equal(owner.signal.aborted, true, 'The original caller owner was revoked');
@@ -134,7 +174,8 @@ test('owner abort after an actual keeper sample is issued awaits both preparatio
     assert.equal(sampleWhileTargetPreparationPending, true, 'Real source sampling runs while the target preparation job is pending');
     assert.ok(observed.size >= 6, 'The loss scenario actually starts both independent hosts');
     assert.equal(closed.size, observed.size, 'No observed runtime child survives runner rejection');
-  } finally {
+  } catch (error) { reportStartupFailure(t, failedRun); throw error; }
+  finally {
     Object.defineProperty(ChildProcess.prototype, 'spawn', spawnDescriptor);
     for (const [child, descriptor] of sendDescriptors) Object.defineProperty(child, 'send', descriptor);
   }

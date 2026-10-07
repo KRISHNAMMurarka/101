@@ -4,6 +4,7 @@ import { AuthenticatedResourcePeer, PeerDataTransport, RemoteResourcePublisher, 
   decodeManualPeerCode, decodeReceiverInvitation, encodeManualPeerCode, parseDeviceDescriptor, webEndpointCrypto } from '@101/connect';
 import type { PeerConnectionPort, PeerDataChannelPort } from '@101/connect';
 import { createEnrolledDeviceInspector, inspectEnrolledResources } from './enrolled-device.ts';
+import { pageReadingDescriptor } from '../connections/readings/readings-schema.ts';
 
 const scope = { sessionId: 'owned-test-room', now: () => 1000, wallNow: () => 10000 };
 const descriptor = { schemaVersion: 1, id: 'owned-software-meter', label: 'Software meter', revision: 1,
@@ -259,4 +260,241 @@ test('an enrolled preview retains a valid __proto__ capability as an own scalar 
     if (sourcePort.localDescription) assert.equal(sourcePort.connectionState, 'closed');
     if (receiverPort.localDescription) assert.equal(receiverPort.connectionState, 'closed');
   }
+});
+
+
+test('remembered public backup is absent only after genuine enrolled saved metadata prefix', async () => {
+  const queue: (() => void)[] = [], sourcePort = new PreviewPeer(queue), receiverPort = new PreviewPeer(queue);
+  const sourcePeer = new PeerDataTransport({ initiator: true, createPeer: () => sourcePort });
+  const sourceIdentity = await createEphemeralWebIdentity();
+  let raw: string | null = null, writes = 0;
+  const storage = { getItem() { return raw; }, setItem(_key: string, value: string) { raw = value; writes++; } };
+  const locks: Pick<LockManager, 'request'> = { request<T>(name: string, optionsOrCallback: LockOptions | LockGrantedCallback<T>, supplied?: LockGrantedCallback<T>) {
+    const callback = typeof optionsOrCallback === 'function' ? optionsOrCallback : supplied;
+    assert.ok(callback); return Promise.resolve(callback({ name, mode: 'exclusive' }));
+  } };
+  let restored: ReturnType<typeof createEnrolledDeviceInspector> | undefined, backupRestored: ReturnType<typeof createEnrolledDeviceInspector> | undefined;
+  const controller = createEnrolledDeviceInspector({ ...scope, rememberedStorage: { storage, locks },
+    createPeer: () => new PeerDataTransport({ initiator: false, createPeer: () => receiverPort }) });
+  let auth: AuthenticatedResourcePeer | undefined, publisher: RemoteResourcePublisher | undefined;
+  try {
+    assert.equal(await controller.prepare(), true);
+    const invitation = decodeReceiverInvitation(controller.snapshot().invitation!, scope.wallNow());
+    auth = new AuthenticatedResourcePeer({ transport: sourcePeer, identity: sourceIdentity, crypto: webEndpointCrypto,
+      ...invitation, role: 'source', now: scope.now, timeoutMs: 60000 });
+    const reported = parseDeviceDescriptor({ ...descriptor,
+      capabilities: [{ ...descriptor.capabilities[0], id: '__proto__' }] });
+    assert.equal(reported.capabilities[0]?.id, '__proto__', 'the actual public descriptor accepts this bounded ID');
+    publisher = new RemoteResourcePublisher({ peer: auth, epoch: invitation.epoch, clockId: 'owned-software-route-clock',
+      now: scope.now, device: reported, available: () => true });
+    const offer = await sourcePeer.createOffer();
+    assert.equal(await controller.acceptOffer(encodeManualPeerCode(invitation.epoch, offer)), true);
+    await sourcePeer.acceptAnswer(decodeManualPeerCode(controller.snapshot().answer!, 'answer', invitation.epoch).description);
+    for (const [label, channel] of sourcePort.channels) {
+      const remote = new PreviewChannel(label, { ordered: channel.ordered, maxRetransmits: channel.maxRetransmits ?? undefined }, queue);
+      remote.target = channel; channel.target = remote; receiverPort.channels.set(label, remote); receiverPort.ondatachannel?.({ channel: remote });
+    }
+    for (const port of [sourcePort, receiverPort]) { port.connectionState = 'connected'; port.onconnectionstatechange?.({}); }
+    const pump = async (condition: () => boolean) => {
+      for (let turn = 0; turn < 2000 && !condition(); turn++) {
+        auth!.tick(); publisher!.tick(); controller.tick();
+        while (queue.length) queue.shift()!();
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
+      assert.ok(condition(), JSON.stringify({ inspector: controller.snapshot(), auth: auth!.status(), publisher: publisher!.status() }));
+    };
+    await pump(() => !!controller.snapshot().candidate?.comparison && auth!.status().phase === 'awaiting-enrollment');
+    const digest = controller.snapshot().candidate!.comparison!;
+    assert.equal(digest, auth.status().comparisonDigest); assert.equal(digest.length, 64);
+    assert.equal(controller.confirm(digest), true); assert.equal(auth.confirmEnrollment(digest), true);
+    await pump(() => auth!.state === 'connected' && controller.snapshot().candidate?.phase === 'connected');
+    assert.equal(controller.activate(), true); assert.equal(publisher.start(), true);
+    await pump(() => controller.snapshot().current?.resources.length === 1);
+    assert.equal(controller.snapshot().current?.preview, 'unapproved');
+    assert.equal(publisher.status().active, 0, 'enrollment itself approves no resource');
+    const handle = controller.snapshot().current!.handle;
+    assert.equal(typeof controller.rememberCurrent, 'function', 'missing remember past device flow after genuine enrolled inactive prefix');
+    assert.equal(await controller.rememberCurrent(handle), true);
+    assert.equal(writes, 1); const saved = JSON.parse(raw!);
+    assert.deepEqual(saved, { schemaVersion: 1, devices: [{ publicKeyId: sourceIdentity.keyId, label: 'Software meter' }] });
+    assert.equal(typeof controller.reviewRememberedExport, 'function', 'missing reviewed metadata backup after genuine enrolled and saved prefix');
+    assert.equal(await controller.reviewRememberedExport(), true);
+    const exportReview = controller.snapshot().remembered!.backupReview!;
+    assert.deepEqual(exportReview.records, [{ publicKeyId: sourceIdentity.keyId, label: 'Software meter', state: 'offline' }]);
+    assert.equal(controller.snapshot().remembered!.backupText, undefined);
+    assert.equal(await controller.confirmRememberedBackup(exportReview.handle), true);
+    const backupText = controller.snapshot().remembered!.backupText!;
+    assert.deepEqual(JSON.parse(backupText), saved); assert.equal(writes, 1);
+    let restoredRaw: string | null = null, restoredWrites = 0, restoredIdentities = 0;
+    backupRestored = createEnrolledDeviceInspector({ ...scope, rememberedStorage: { locks,
+      storage: { getItem() { return restoredRaw; }, setItem(_key: string, value: string) { restoredRaw = value; restoredWrites++; } } },
+      createIdentity: async () => { restoredIdentities++; return createEphemeralWebIdentity(); } });
+    assert.equal(restoredIdentities, 0); assert.equal(restoredWrites, 0);
+    assert.equal(await backupRestored.reviewRememberedImport(backupText), true); assert.equal(restoredWrites, 0);
+    assert.equal(await backupRestored.confirmRememberedBackup(backupRestored.snapshot().remembered!.backupReview!.handle), true);
+    assert.deepEqual(JSON.parse(restoredRaw!), saved); assert.equal(restoredWrites, 1);
+    assert.equal(backupRestored.snapshot().current, undefined); assert.equal(backupRestored.snapshot().timerArmed, false);
+    assert.equal(restoredIdentities, 0); assert.equal(backupRestored.preview(['__proto__']), false);
+    assert.equal(await controller.rememberCurrent({ kind: 'enrolled-device' }), false); assert.equal(writes, 1);
+    let identityCalls = 0;
+    restored = createEnrolledDeviceInspector({ ...scope, rememberedStorage: { storage, locks }, createIdentity: async () => { identityCalls++; return createEphemeralWebIdentity(); } });
+    assert.equal(identityCalls, 0); assert.equal(restored.snapshot().current, undefined);
+    assert.equal(await restored.loadRemembered(), true);
+    assert.deepEqual(restored.snapshot().remembered?.records, [{ publicKeyId: sourceIdentity.keyId, label: 'Software meter', state: 'offline' }]);
+    assert.equal(restored.snapshot().timerArmed, false); assert.equal(identityCalls, 0); assert.equal(restored.preview(['__proto__']), false);
+    controller.stop(); assert.equal(await controller.rememberCurrent(handle), false); assert.equal(writes, 1);
+    assert.equal(publisher.status().active, 0, 'Remembered metadata never grants a preview');
+  } finally { publisher?.stop(); auth?.stop(); await sourcePeer.disconnect(); await controller.close(); await restored?.close(); await backupRestored?.close(); }
+});
+
+test('structured preview eligibility reuses bounded declared fields without widening other formats', () => {
+  const readings = pageReadingDescriptor('owned-enrolled-eligibility');
+  const resources = inspectEnrolledResources(readings);
+  assert.deepEqual(resources.map(resource => [resource.id, resource.previewable]), [['reading', true], ['table', true]]);
+  assert.deepEqual(resources[0]?.reading?.columns.map(column => [column.key, column.label, column.unit, column.optional]),
+    [['step', 'Step', '1', undefined], ['ready', 'Ready', undefined, true], ['mode', 'Mode', undefined, undefined]]);
+  const base = readings.capabilities[0]!;
+  for (const change of [
+    { kind: 'command', permissions: ['invoke'], delivery: { mode: 'reliable', maxAgeMs: 1000 } },
+    { kind: 'job', permissions: ['invoke'], delivery: { mode: 'reliable', maxAgeMs: 1000 } },
+    { kind: 'property', permissions: ['read'] }, { schemaVersion: 2 },
+    { value: { type: 'record', fields: { nested: base.value } } },
+    { value: { type: 'record', fields: Object.fromEntries(Array.from({ length: 7 }, (_, index) => [`field${index}`, { type: 'boolean' }])) } },
+    { value: { type: 'array', minItems: 1, maxItems: 9, items: base.value } },
+    { value: { type: 'record', fields: { mode: { type: 'enum', values: ['x'.repeat(25)] } } } },
+  ]) {
+    const resource = inspectEnrolledResources({ ...readings, capabilities: [{ ...base, ...change }] })[0]!;
+    assert.equal(resource.previewable, false); assert.equal(resource.reading, undefined);
+  }
+  const mixed = inspectEnrolledResources({ ...readings, capabilities: [...descriptor.capabilities,
+    { ...descriptor.capabilities[0], id: 'vector', value: { type: 'vector', components: ['x', 'y'], frame: 'screen', unit: '1', min: 0, max: 1 } }, ...readings.capabilities] });
+  assert.deepEqual(mixed.map(resource => [resource.id, resource.previewable]),
+    [['level', true], ['switch', false], ['vector', true], ['reading', true], ['table', true]]);
+  const repeated = inspectEnrolledResources({ ...readings, capabilities: [base, { ...base, id: 'another-reading' }] });
+  assert.deepEqual(repeated.map(resource => resource.reading?.label), ['One reading 1', 'One reading 2']);
+});
+
+async function pairedStructuredPreview() {
+  const queue: (() => void)[] = [], sourcePort = new PreviewPeer(queue), receiverPort = new PreviewPeer(queue);
+  const sourcePeer = new PeerDataTransport({ initiator: true, createPeer: () => sourcePort });
+  let at = 1000, storageReads = 0, storageWrites = 0;
+  const controller = createEnrolledDeviceInspector({ sessionId: scope.sessionId, now: () => at, wallNow: scope.wallNow,
+    rememberedStorage: { storage: { getItem() { storageReads++; return null; }, setItem() { storageWrites++; } } },
+    createPeer: () => new PeerDataTransport({ initiator: false, createPeer: () => receiverPort }) });
+  let auth: AuthenticatedResourcePeer | undefined, publisher: RemoteResourcePublisher | undefined;
+  const close = async () => {
+    publisher?.stop(); auth?.stop(); await sourcePeer.disconnect(); await controller.close();
+    assert.equal(controller.snapshot().rawPending, 0); assert.equal(controller.snapshot().timerArmed, false);
+    assert.equal(storageReads, 0); assert.equal(storageWrites, 0);
+    if (sourcePort.localDescription) assert.equal(sourcePort.connectionState, 'closed');
+    if (receiverPort.localDescription) assert.equal(receiverPort.connectionState, 'closed');
+  };
+  try {
+    assert.equal(controller.snapshot().current, undefined); assert.equal(storageReads, 0);
+    assert.equal(await controller.prepare(), true);
+    const invitationCode = controller.snapshot().invitation!;
+    const invitation = decodeReceiverInvitation(invitationCode, scope.wallNow());
+    const identity = await createEphemeralWebIdentity();
+    auth = new AuthenticatedResourcePeer({ transport: sourcePeer, identity, crypto: webEndpointCrypto,
+      ...invitation, role: 'source', now: () => at, timeoutMs: 60000 });
+    const reported = pageReadingDescriptor(invitation.epoch);
+    assert.deepEqual(reported.capabilities.map(capability => capability.value.type), ['record', 'array']);
+    publisher = new RemoteResourcePublisher({ peer: auth, epoch: invitation.epoch, clockId: 'owned-structured-preview-clock',
+      now: () => at, device: reported, available: () => true });
+    const offer = await sourcePeer.createOffer();
+    assert.equal(await controller.acceptOffer(encodeManualPeerCode(invitation.epoch, offer)), true);
+    await sourcePeer.acceptAnswer(decodeManualPeerCode(controller.snapshot().answer!, 'answer', invitation.epoch).description);
+    for (const [label, channel] of sourcePort.channels) {
+      const remote = new PreviewChannel(label, { ordered: channel.ordered, maxRetransmits: channel.maxRetransmits ?? undefined }, queue);
+      remote.target = channel; channel.target = remote; receiverPort.channels.set(label, remote); receiverPort.ondatachannel?.({ channel: remote });
+    }
+    for (const port of [sourcePort, receiverPort]) { port.connectionState = 'connected'; port.onconnectionstatechange?.({}); }
+    const pump = async (condition: () => boolean) => {
+      for (let turn = 0; turn < 2000 && !condition(); turn++) {
+        auth!.tick(); publisher!.tick(); controller.tick();
+        while (queue.length) queue.shift()!();
+        await new Promise<void>(resolve => setImmediate(resolve));
+      }
+      assert.ok(condition(), 'bounded structured public producer route did not reach its declared state');
+    };
+    await pump(() => !!controller.snapshot().candidate?.comparison && auth!.status().phase === 'awaiting-enrollment');
+    const digest = controller.snapshot().candidate!.comparison!;
+    assert.equal(digest.length, 64); assert.equal(digest, auth.status().comparisonDigest);
+    assert.equal(controller.confirm(digest), true); assert.equal(auth.confirmEnrollment(digest), true);
+    await pump(() => auth!.state === 'connected' && controller.snapshot().candidate?.phase === 'connected');
+    assert.equal(controller.activate(), true); assert.equal(publisher.start(), true);
+    await pump(() => controller.snapshot().current?.resources.length === 2);
+    assert.equal(controller.snapshot().current?.preview, 'unapproved'); assert.deepEqual(controller.snapshot().current?.values, {});
+    assert.equal(publisher.status().active, 0, 'genuine structured producer is inactive before separate approval');
+    return { controller, publisher, sourcePort, receiverPort, queue, invitationCode, pump, close,
+      time: () => at, advance: (next: number) => { at = next; } };
+  } catch (cause) { await close(); throw cause; }
+}
+
+test('structured enrolled preview is absent only after genuine authenticated inactive descriptor prefix', async () => {
+  const paired = await pairedStructuredPreview();
+  try {
+    assert.deepEqual(paired.controller.snapshot().current!.resources.map(resource => [resource.id, resource.previewable]),
+      [['reading', true], ['table', true]], 'missing bounded structured eligibility after actual authenticated inactive producer prefix');
+    assert.equal(paired.controller.preview(['reading', 'table']), true);
+    await paired.pump(() => paired.publisher.status().active === 2);
+    assert.equal(paired.publisher.publish('reading', { step: 42, mode: 'count-down' }, { capturedAt: paired.time() }), true);
+    const rows = [{ step: 7, ready: false, mode: 'count-up' }, { step: 9, ready: true, mode: 'count-down' }];
+    assert.equal(paired.publisher.publish('table', rows, { capturedAt: paired.time() }), true); rows[0]!.step = 99;
+    await paired.pump(() => !!paired.controller.snapshot().current?.readings?.reading && !!paired.controller.snapshot().current?.readings?.table);
+    const current = paired.controller.snapshot().current!;
+    assert.equal(current.preview, 'receiving'); assert.deepEqual(current.readings!.reading!.rows, [['42', 'Not supplied', 'count-down']]);
+    assert.deepEqual(current.readings!.table!.rows, [['7', 'Off', 'count-up'], ['9', 'On', 'count-down']]);
+    assert.equal(Object.isFrozen(current.readings!.table!.rows[0]), true); assert.deepEqual(current.values, {}, 'only projected structured cells are retained by the page');
+    assert.deepEqual(paired.controller.snapshot().remembered?.records, []);
+    assert.equal(paired.publisher.publish('reading', { step: 101, mode: 'count-up' }, { capturedAt: paired.time() }), false);
+    paired.advance(1250);
+    assert.equal(paired.publisher.publish('reading', { step: 8, ready: false, mode: 'count-up' }, { capturedAt: paired.time() }), true);
+    paired.controller.stopPreview();
+    await paired.pump(() => paired.publisher.status().active === 0);
+    assert.deepEqual(paired.controller.snapshot().current?.readings, {}); assert.deepEqual(paired.controller.snapshot().current?.values, {});
+    assert.equal(paired.controller.snapshot().current?.preview, 'stopped'); assert.equal(paired.controller.preview(['reading']), false);
+    assert.equal(paired.publisher.publish('reading', { step: 10, mode: 'count-up' }, { capturedAt: paired.time() }), false);
+  } finally { await paired.close(); }
+});
+
+test('structured preview expiry releases projected cells and requires a fresh pairing', async () => {
+  const paired = await pairedStructuredPreview();
+  try {
+    assert.equal(paired.controller.preview(['table']), true); await paired.pump(() => paired.publisher.status().active === 1);
+    const rows = Array.from({ length: 8 }, (_, index) => ({ step: index, ready: index % 2 === 0, mode: 'count-up' }));
+    assert.equal(paired.publisher.publish('table', rows, { capturedAt: paired.time() }), true);
+    await paired.pump(() => paired.controller.snapshot().current?.readings?.table?.rows.length === 8);
+    // Keep the actual peer currency and route current while approaching grant
+    // expiry; a 30s jump instead tests the separate 2s identity-currency guard.
+    for (let at = 1250; at < 31000; at += 250) {
+      paired.advance(at); rows[0]!.step = ((at - 1000) / 250) % 100;
+      assert.equal(paired.publisher.publish('table', rows, { capturedAt: paired.time() }), true);
+      await paired.pump(() => paired.controller.snapshot().current?.readings?.table?.rows[0]?.[0] === String(rows[0]!.step));
+    }
+    paired.advance(31000); paired.controller.tick();
+    assert.equal(paired.controller.snapshot().outcome, 'preview-expired'); assert.deepEqual(paired.controller.snapshot().current?.readings, {});
+    await paired.pump(() => paired.publisher.status().active === 0);
+    assert.equal(paired.controller.preview(['table']), false);
+  } finally { await paired.close(); }
+});
+
+test('structured preview disconnect retires cells and a queued retired frame cannot enter a new task', async () => {
+  const paired = await pairedStructuredPreview();
+  try {
+    assert.equal(paired.controller.preview(['reading']), true); await paired.pump(() => paired.publisher.status().active === 1);
+    assert.equal(paired.publisher.publish('reading', { step: 17, ready: false, mode: 'count-up' }, { capturedAt: paired.time() }), true);
+    await paired.pump(() => !!paired.controller.snapshot().current?.readings?.reading);
+    paired.advance(1250);
+    assert.equal(paired.publisher.publish('reading', { step: 99, ready: true, mode: 'count-down' }, { capturedAt: paired.time() }), true);
+    assert.ok(paired.queue.length > 0, 'an actual accepted producer frame is pending before retirement');
+    paired.receiverPort.connectionState = 'failed'; paired.receiverPort.onconnectionstatechange?.({}); paired.controller.tick();
+    assert.equal(paired.controller.snapshot().current, undefined);
+    for (let turn = 0; turn < 32 && paired.controller.snapshot().rawPending; turn++) await new Promise<void>(resolve => setImmediate(resolve));
+    assert.equal(paired.controller.snapshot().rawPending, 0); assert.ok(paired.queue.length > 0);
+    assert.equal(await paired.controller.prepare(), true); assert.notEqual(paired.controller.snapshot().invitation, paired.invitationCode);
+    assert.ok(paired.queue.length > 0, 'old producer traffic stays held through fresh task creation');
+    while (paired.queue.length) paired.queue.shift()!(); paired.controller.tick();
+    assert.equal(paired.controller.snapshot().current, undefined); assert.equal(paired.controller.preview(['reading']), false);
+  } finally { await paired.close(); }
 });

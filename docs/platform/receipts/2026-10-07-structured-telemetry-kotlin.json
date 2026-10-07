@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected Kotlin codec/package/clean consumer pass; whole E12 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "structured-telemetry-json2/1",
+  "artifactProfile": "structured-telemetry-kotlin-jvm/1",
+  "qualifiedNativeTree": "bb780962746b525a76c0b884fbe1795b3599e1ba",
+  "sourceSha256": {
+    "bindings/structured-telemetry/kotlin/profile.json": "3208c70cba9447dfe8fbc843191e34803dba1233a7e5def5e5437606656480e6",
+    "bindings/structured-telemetry/kotlin/src/main/kotlin/one01/structuredtelemetry/StructuredTelemetryWire.kt": "69ae5819c50ffc9078496532ad69dbba916954dc183f1f0a565f1d492417a756",
+    "bindings/structured-telemetry/kotlin/src/test/kotlin/one01/structuredtelemetry/StructuredTelemetryWireTests.kt": "75b840c1c08227faa5ef85f8f1dc6979ff6227e8c4faaf6905aa388d1c78a818",
+    "examples/language-bindings/StructuredTelemetryConsumer.kt": "1403778e6645dbdbb4dabf2e26b75f3a9dae98e50cc8aee421f44d2623b33c16",
+    "tools/build-structured-telemetry-kotlin.mjs": "c59ffe40865f8f788f556eaf73083d0e3f3ea4dd0b16788e54bd8db015e89e06",
+    "bindings/structured-telemetry/fixtures/page-readings-v1.json": "61c9e00d6ebe7636801759e52f67590405d18971da519f91992d567f319a4b80",
+    "bindings/structured-telemetry/fixtures/structured-telemetry-v1.json": "c3760106f9f7fd66fe5d5067139693a0cc9cfa1e7aadc11a2d0ef6ebc35186f0",
+    "examples/language-bindings/structured-telemetry.mjs": "bcb4afda51c0b8d88612a1484697f2a1ced70258ba03e56eb3cd05ff7cb944f0",
+    "tools/build-pointer-bindings.mjs": "226b117a8b5baf2f77afda45e16301777749228742c1e1944e165a248bbcc472",
+    "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+  },
+  "target": "kotlin-jvm-jdk21-macos-arm64",
+  "toolchain": {
+    "kotlin": "2.1.21",
+    "compilerSha256": [
+      {
+        "name": "kotlin-compiler-embeddable-2.1.21.jar",
+        "sha256": "67a2e3673765f097725608cc7c843b0d8fdd94bd9af41327211361614aa57d49"
+      },
+      {
+        "name": "kotlin-stdlib-2.1.21.jar",
+        "sha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8"
+      },
+      {
+        "name": "annotations-23.0.0.jar",
+        "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05"
+      },
+      {
+        "name": "trove4j-1.0.20200330.jar",
+        "sha256": "c5fd725bffab51846bf3c77db1383c60aaaebfe1b7fe2f00d23fe1b7df0a439d"
+      },
+      {
+        "name": "kotlinx-coroutines-core-jvm-1.10.2.jar",
+        "sha256": "5ca175b38df331fd64155b35cd8cae1251fa9ee369709b36d42e0a288ccce3fd"
+      }
+    ],
+    "stdlibSha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8",
+    "javaReleaseSha256": "6fa1e2f6d99ddfee824a9f9f1dbd3ae7a33562c20689322117129b72d1538a43",
+    "jdk": "21.0.12",
+    "jvmTarget": 17
+  },
+  "authority": "inert-codec-only",
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-structured-kotlin-old-retained.json",
+    "sha256": "29df0e2ffefdda2ea78c7a3e25c76b19b746bd447d8e0472a5cf09d7bc89f4ab"
+  },
+  "meaningfulGuardOld": [
+    {
+      "path": "/tmp/101-structured-kotlin-snapshot-old.json",
+      "sha256": "aa7d9f9aca930bd87fed74539de4ea6d6ae3acfc377c68ba72651773612c0458"
+    },
+    {
+      "path": "/tmp/101-structured-kotlin-printstream-old-corrected.json",
+      "sha256": "fd07283b9a309a9be0385b8f0686721dac57dac075ac52872349b1a170b29948"
+    }
+  ],
+  "repairs": [
+    "Capture bounded caller-owned packet bytes before decoding/scanning; snapshot table rows before validation and serialization.",
+    "Check actual standard JDK PrintStream write/flush failure state.",
+    "Test fixture Gson serializeNulls preserves actual ready:null malformed input; original native schema failure retained, actual installed producer omission witness retained."
+  ],
+  "fixtureProducerDiagnostic": {
+    "path": "/tmp/101-kotlin-null-fixture-witness.json",
+    "sha256": "5aa979e700d3705a6ebe23c98d2d8e12dcdab8fd13f2c814e55d8504ca6a5ada"
+  },
+  "initialNativeFailure": {
+    "path": "/tmp/101-structured-kotlin-native-build.json",
+    "sha256": "62d606e2e381196a9101b50449690c8353003b74150d01edb4b765a205560a7d"
+  },
+  "native": {
+    "record": {
+      "path": "/tmp/101-structured-kotlin-native-build-fixed.json",
+      "sha256": "2d76a08e376b4856b1db8d8b8c00913ba678255861b5c52e02fee3a193bd7206"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/structured-kotlin-QIkzgS/manifest.json",
+      "sha256": "cad411e6721516890bff444089fa38f678b3fb7a2cc4b60d3819f953ae927aa7"
+    },
+    "assertions": 171,
+    "reciprocal": {
+      "result": "pass",
+      "reciprocalValues": 5,
+      "commands": 10,
+      "authority": "inert-codec-only",
+      "sourceTimePreserved": true,
+      "nativeByteIdentityClaimed": false
+    },
+    "wrongLaneRejected": true,
+    "cliFramingChecks": 6,
+    "actualOwnedGroupSettled": true
+  },
+  "cleanConsumer": {
+    "record": {
+      "path": "/tmp/101-structured-kotlin-clean-consumer.json",
+      "sha256": "2e417cf3f711728d5f5adaf824a32bdf2ff8929f799db15a56cf5e3e269e7a4d"
+    },
+    "closedFiles": 9,
+    "commands": 4,
+    "result": "pass"
+  },
+  "currentPublicSdk": {
+    "path": "/tmp/101-kotlin-public-sdk-inventory.json",
+    "sha256": "4d0fa257f8b92833e7a14ac9174d5312e96f6e5f2edda7063f5c45855dc92284"
+  },
+  "dependencyPackaging": {
+    "gson": {
+      "coordinate": "com.google.code.gson:gson:2.11.0",
+      "sha256": "57928d6e5a6edeb2abd3770a8f95ba44dce45f3b23b7a9dc2b309c581552a78b",
+      "licenseDeclaration": "Apache-2.0",
+      "metadata": [
+        {
+          "entry": "META-INF/MANIFEST.MF",
+          "sha256": "dd5741885119543cdc503646cc8f3700ec7c7e8fa98f12f415a4880d658e8554"
+        },
+        {
+          "entry": "META-INF/maven/com.google.code.gson/gson/pom.properties",
+          "sha256": "b54c04b8858ed1da00d0667c283065b27bb2584efb052fef66642858373bb762"
+        },
+        {
+          "entry": "META-INF/maven/com.google.code.gson/gson/pom.xml",
+          "sha256": "c0e547bea998888e6e25c5886a90e762272bc88b5275343dd2c05ded6ca2e360"
+        }
+      ]
+    },
+    "stdlib": {
+      "coordinate": "org.jetbrains.kotlin:kotlin-stdlib:2.1.21",
+      "sha256": "263bdc679e1f62012db7b091796279b6d71cf36f4797a98ff1ace05835f201c8"
+    }
+  },
+  "dependencyJarsPackaged": false,
+  "sourceReview": {
+    "path": "/tmp/101-e12-selected-kotlin-builder-source-independent-review.json",
+    "sha256": "317fab6c0018ea82541f58cb6c601b8e7523a046fe19703e20f375914403eb8a"
+  },
+  "retention": {
+    "path": "/tmp/101-structured-telemetry-kotlin-retained.json",
+    "sha256": "94a7ae8ee9a4b6c3d822eba98350c66d19cb95bf94f535baef6984d2cbe75bbd"
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "requirement": "All five AGENTS gates on frozen final integration candidate; fresh build before rendered; actual output counts retained."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-review",
+    "requirement": "Passive exact source/evidence review CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Only selected json/2 page-reading record/table inert codec on Kotlin2.1.21/JVM17/JDK21.0.12 Darwinarm64. Re-encoding preserves meaning, not byte identity.",
+    "Thin9-file package uses external provided installed Gson2.11 and Kotlin stdlib2.1.21. Embedded dependency license declarations/hashes are provenance, not complete redistribution approval.",
+    "Other schemas/platforms/JDKs, Android/iOS/C, native runtime ownership, grants/identity/transport/clock conversion/freshness and physical effects remain unqualified.",
+    "Finite archive hashes/USTAR/known-marker checks are not generic secret scanning or full distribution acceptance.",
+    "Original PrintStream guard record incorrectly labeled public-fixture prefix; corrected derived record records only actual null-result caller prefix and preserves original bytes.",
+    "Phone and broader interaction checks deferred; unrelated reading WebKit expiry failure unchanged.",
+    "Original full unit suite recorded three cross-host startup/abort-guard failures: two readiness deadline errors and one keeper-source issuance assertion. The third underlying failure phase is not recorded. Unchanged focused5/5 diagnostic passed within the original2500ms bound. First cause remains UNKNOWN; no resolution or relaxed timeout claimed. Final required gate outcome is in the retained neutral reference."
+  ],
+  "taskDisposition": {
+    "E12": "PARTIAL/OPEN. Selected local Kotlin source/codec/package/consumer built and software-qualified; broader language/runtime/support scopes remain."
+  },
+  "supportRowsAccepted": 0,
+  "integrationStartupDiagnostic": {
+    "path": "/tmp/101-cross-host-startup-diagnostic.json",
+    "sha256": "36d5972e586f3906c15da77f55f071673dca7170d4bb3b838b2cb8c3b22e10ce"
+  }
+}

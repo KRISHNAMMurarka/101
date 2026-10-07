@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected remembered past-device software flow pass; whole U02 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "remembered-device-metadata/1",
+  "focusedSourceTree": "e7fb65c9a8533a7dd855626f80aad64932b0f3d1",
+  "sourceSha256": {
+    "app/devices/enrolled-device.ts": "195959e2e2ac58890fa068d7f5b809443140499844dafd07ba606c5848226bf1",
+    "app/devices/EnrolledDevices.tsx": "c8edf7be217a7e357038be7fe79631ba963f676b1f4eaf43cb5864f927677e6c",
+    "app/devices/enrolled-device.test.ts": "eb2ec37c9a40de0c41ed14f2930d003110749f75e25e6e1971a8e633de613009",
+    "app/devices/remembered-devices.ts": "563bf6f386306e02928fd4106acf03975c2ff5fe9a867b5f2520c5822451592e",
+    "app/devices/remembered-devices.test.ts": "6d922f8f2fe5257d6c72026a6a550dfe0ce1a1ca9cc3e4ef72d38be2cfeab18d"
+  },
+  "changes": [
+    "Temporary default; explicit reviewed save/load/forget of past reported name and public key ID only. Always offline, fresh independent Pair again and resource approval.",
+    "Fixed native Storage/WebLock profile,8records/8KiB, closed metadata fields, corrupt/future preservation and explicit recovery; no silent RAM fallback/migration/reset.",
+    "Raw storage/lock reservation survives cancellation/closure until actual returned work settles; ownership reserved before injected callbacks.",
+    "No credentials, offers/answers, samples, descriptors, preview, grant or connection restoration; changing keys establish no physical identity continuity."
+  ],
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-device-memory-feature-old.json",
+    "sha256": "7ff4413ca08555d6da0f9e7f2e2cf2f4f38200bddbdbbb76d758a24c1e8f3faf"
+  },
+  "oldInputs": {
+    "path": "/tmp/101-device-memory-old-inputs.json",
+    "sha256": "544f9b34a2761d807d493543d8246f2e8496893577a085493344ceb503df749e"
+  },
+  "focusedSource": [
+    {
+      "record": {
+        "path": "/tmp/101-device-memory-integrated-inspector.json",
+        "sha256": "180e7d855dbc198deaba2787b872932f394757b76473b06c27572cb0f8238f02"
+      },
+      "tests": 15,
+      "pass": 15
+    },
+    {
+      "record": {
+        "path": "/tmp/101-device-memory-store-lint-fixed.json",
+        "sha256": "53dbb2d74f1b6e744205d70a3238b8a3b2440dc1b2de4033b175e78912aaa393"
+      },
+      "tests": 9,
+      "pass": 9
+    }
+  ],
+  "sourceReview": {
+    "path": "/tmp/101-enrolled-device-memory-e09-source-review.json",
+    "sha256": "5aaa3990ed6cbda256ebc6e2e9a38e3f971820264f4503717aded62e2adc52be"
+  },
+  "retention": {
+    "path": "/tmp/101-remembered-devices-retained.json",
+    "sha256": "ae030687732c76904567edba9fb4ea9d06ab063d784ac257da15614f16ced25a"
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "requirement": "All five AGENTS gates on frozen final integration candidate; fresh build before rendered; actual output counts retained."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-review",
+    "requirement": "Passive exact source/evidence review CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Actual Node24.14 cooperative public P256 enrollment/resource/controller and faithful storage/lock software ports only.",
+    "Native browser Storage/WebLock, keyboard/focus and broader UI journeys are deferred; no new native or physical receipt.",
+    "Only browser-saved past public metadata; no account/enrolled-agent directory, durable physical identity continuity or automatic reconnect.",
+    "Initial parallel focused-driver launch collided on Git index lock before Node execution; successful focused runs executed sequentially. No product assertion from the prelaunch failure is counted.",
+    "Full U02 general resource/actions/state matrix and qualification remain open.",
+    "Original full unit suite recorded three cross-host startup/abort-guard failures: two readiness deadline errors and one keeper-source issuance assertion. The third underlying failure phase is not recorded. Unchanged focused5/5 diagnostic passed within the original2500ms bound. First cause remains UNKNOWN; no resolution or relaxed timeout claimed. Final required gate outcome is in the retained neutral reference."
+  ],
+  "taskDisposition": {
+    "U02": "PARTIAL/OPEN. Selected explicit browser-saved offline past metadata flow built and focused source checks pass; native/broader/general scope remains."
+  },
+  "supportRowsAccepted": 0,
+  "initialGateFailure": {
+    "path": "/tmp/101-kotlin-memory-final-exact-required-gates.json",
+    "sha256": "3b87d7918912e4a63589c95454219f5c42666f28fce0c03cdcc8bbec32ac68bf"
+  },
+  "lintRepair": "Test-only const binding and unused type removal;9checks pass again with unchanged assertions. Original lint failure retained; existing unrelated PointerLab warning unchanged.",
+  "integrationStartupDiagnostic": {
+    "path": "/tmp/101-cross-host-startup-diagnostic.json",
+    "sha256": "36d5972e586f3906c15da77f55f071673dca7170d4bb3b838b2cb8c3b22e10ce"
+  }
+}

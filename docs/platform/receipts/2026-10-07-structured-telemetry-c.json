@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected C codec/package/clean consumer pass; whole E12 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "structured-telemetry-json2/1",
+  "artifactProfile": "structured-telemetry-c-jansson/1",
+  "qualifiedNativeTree": "76aa052bbbf5cd317e6f0872158df7017e850847",
+  "sourceSha256": {
+    "bindings/structured-telemetry/c/profile.json": "03176782d3553775ff27ce76e9c5bc2476cf30232e1bfabe7d1c48d58b8ca427",
+    "bindings/structured-telemetry/c/one01_structured_telemetry_wire.h": "9d98ad368b73b3a6ad2d6be949044060e1c711c488942ba2a61b421f9c5c69fd",
+    "bindings/structured-telemetry/c/one01_structured_telemetry_wire.c": "ee27b47c48338069e1275fb30aa07814d1e5769282af9df64a0b796265060039",
+    "bindings/structured-telemetry/c/structured_telemetry_wire_test.c": "a989ce295d8bfb9b0682527fe0ee802e2f54d8fc559f43c232bb6143413ea7cb",
+    "examples/language-bindings/structured-telemetry-consumer.c": "6a3334b36c3b9ba890674b5e27df23ed1177dacc5bf2efae78a723198875ba41",
+    "tools/build-structured-telemetry-c.mjs": "39558c681c8b9514ed6cfa2fc66a678295a489838bc9f005dcf147bf7750cd83",
+    "bindings/structured-telemetry/fixtures/page-readings-v1.json": "61c9e00d6ebe7636801759e52f67590405d18971da519f91992d567f319a4b80",
+    "bindings/structured-telemetry/fixtures/structured-telemetry-v1.json": "c3760106f9f7fd66fe5d5067139693a0cc9cfa1e7aadc11a2d0ef6ebc35186f0",
+    "examples/language-bindings/structured-telemetry.mjs": "bcb4afda51c0b8d88612a1484697f2a1ced70258ba03e56eb3cd05ff7cb944f0",
+    "tools/build-pointer-bindings.mjs": "226b117a8b5baf2f77afda45e16301777749228742c1e1944e165a248bbcc472",
+    "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb"
+  },
+  "target": "c11-clang21-macos-arm64",
+  "toolchain": {
+    "clang": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "standard": "C11",
+    "runtime": "Darwin",
+    "arch": "arm64"
+  },
+  "authority": "inert-codec-only",
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-structured-c-old.json",
+    "sha256": "5afd0414100f32051a7b2dac4786f49811149fece7ee43a189019fd921c22d3e"
+  },
+  "meaningfulCallerOld": [
+    {
+      "path": "/tmp/101-structured-c-initial-check.json",
+      "sha256": "0064e3929dda52ab12ef5fef379ba6c3b5d11b64e5ea5bc28a5d0d0da8822f4f"
+    },
+    {
+      "path": "/tmp/101-structured-c-subnormal-old.json",
+      "sha256": "429e99f48f320b8d9411ee889bcc58bd3312cf2b4f8d6d0e13f5ee1be19b3e38"
+    }
+  ],
+  "repairs": [
+    "Standalone caller handles SIGPIPE so actual closed output returns fixed exit2, after genuine ordinary public fixture prefix and actual original -13 guard failure. Library unchanged.",
+    "Standard strtod complete finite conversion accepts representable subnormal values even when libc reports ERANGE. Actual public SDK MIN_VALUE D decode/re-encode passes before original typedE null/assertionfailure; current D/E reciprocals both pass."
+  ],
+  "native": {
+    "record": {
+      "path": "/tmp/101-structured-c-native-build.json",
+      "sha256": "2a216c9868dca93c326b894abe753120b804c3399e14353dd4d3dc030968091c"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/structured-c-hYSITB/manifest.json",
+      "sha256": "53c1e24af266c8202dad40d3109f903b7e456fde786992e7c0f068c7e9d4cd59"
+    },
+    "groups": 8,
+    "pass": 8,
+    "reciprocal": {
+      "result": "pass",
+      "reciprocalValues": 5,
+      "commands": 10,
+      "authority": "inert-codec-only",
+      "sourceTimePreserved": true,
+      "nativeByteIdentityClaimed": false
+    },
+    "finiteMinimum": {
+      "result": "pass",
+      "reciprocalValues": 1,
+      "commands": 2,
+      "finiteMinimum": true
+    },
+    "wrongLaneRejected": true,
+    "cliFramingChecks": 6,
+    "closedOutputExitCode": 2,
+    "actualOwnedGroupSettled": true
+  },
+  "cleanConsumer": {
+    "record": {
+      "path": "/tmp/101-structured-c-clean-consumer.json",
+      "sha256": "7eca00095850b372e38c8f702e333a166a4751502359872194ed19d84c9e16e0"
+    },
+    "closedFiles": 10,
+    "commands": 4,
+    "result": "pass"
+  },
+  "runtimeDependency": {
+    "name": "Jansson",
+    "version": "2.15.1",
+    "packaging": "external-provided; Jansson library/header/license not redistributed",
+    "licenseDeclaration": "MIT",
+    "files": [
+      {
+        "path": "/opt/homebrew/opt/jansson/include/jansson.h",
+        "sha256": "899dc9038f70430e7c5fc6d76cfc85bd0bd7dab04e600ef8be882e097838c627"
+      },
+      {
+        "path": "/opt/homebrew/opt/jansson/include/jansson_config.h",
+        "sha256": "e73bb56652077335e06d53df5751dc3e4e70aa8d98d0af9869a42f5fdfe5663e"
+      },
+      {
+        "path": "/opt/homebrew/opt/jansson/lib/pkgconfig/jansson.pc",
+        "sha256": "f1be54414c3a6ef692824d7ecd1dcd5d29f27aef659e4f8943021a72c49fd149"
+      },
+      {
+        "path": "/opt/homebrew/opt/jansson/LICENSE",
+        "sha256": "150d90904cd8de73609bb177b42edd3867b07b4b7b786dbba319f30de39fcda2"
+      },
+      {
+        "path": "/opt/homebrew/opt/jansson/lib/libjansson.4.dylib",
+        "sha256": "19c8cb598f07c630090e00c165260dff6db178a819025c2c2fe3e9c0c958c303"
+      }
+    ]
+  },
+  "dependencyLibraryPackaged": false,
+  "retention": {
+    "path": "/tmp/101-structured-telemetry-c-retained.json",
+    "sha256": "0a53d274fb81a767c47a16d92e87649df1ca9ac12fdcddec66e264b7a6d3ed7f"
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-structured-telemetry-c/source-review",
+    "requirement": "Passive exact six-source review CLEAR before local commit."
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "requirement": "All five AGENTS gates on final exact integration candidate; fresh build before rendered. Actual outputs/counts retained."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-review",
+    "requirement": "Passive exact23-source/evidence review CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Only selected closed json/2 record/table inert codec with actual C11/AppleClang21 macOSarm64/Jansson2.15.1. Re-encoding preserves meaning, not byte identity.",
+    "External provided installed Jansson header/library/license hashes are provenance; the ten-file thin module redistributes no Jansson code. No broader legal/distribution acceptance.",
+    "Duplicate keys are rejected in this selected producer profile; no unrestricted json/2 parser equivalence claim. C caller memory must be valid/stable/nonoverlapping; this is not an arbitrary memory sandbox.",
+    "Other schemas/platforms/ABIs, grants/identity/transport, native runtime ownership, clock conversion/freshness, physical effects and full E12 remain unqualified.",
+    "Finite USTAR/hash/known-marker content checks are not generic secret scanning or complete release acceptance.",
+    "Phone and broader app interaction checks deferred; unrelated prior WebKit expiry failure unchanged."
+  ],
+  "taskDisposition": {
+    "E12": "PARTIAL/OPEN. Selected local C source/codec/thin module/ordinary consumer built and software-qualified; wider runtime/language/support acceptance remains."
+  },
+  "supportRowsAccepted": 0
+}

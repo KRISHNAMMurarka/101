@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected remembered past-public-metadata backup/empty-store restore software pass; whole B05/B06/U02 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "remembered-device-metadata/1",
+  "focusedSourceTree": "7702e1b927b04f26f1288198278b823a75477eb8",
+  "sourceSha256": {
+    "app/devices/remembered-devices.ts": "b1816dd61b74ad1e7c97e0168985594b1ddb936d0287a1bbdb001e953d0810dd",
+    "app/devices/remembered-devices.test.ts": "17c4b71c604e2debfb12a9308abff31268629a75391e3b45691eaf8f9e5bfe25",
+    "app/devices/enrolled-device.ts": "ce5296f7e88e0cc96897bdb9385b5c50c0e020396eb25fe406b48837d961876f",
+    "app/devices/enrolled-device.test.ts": "e16a475d8e64b260d94e6a9c63ebbc31d795ea01763099edc9484d40b45edb87",
+    "app/devices/EnrolledDevices.tsx": "3105d5d5253640b6361e2ee286d91b92bfc426c283ec01f8b2e228bd1e8329e5"
+  },
+  "changes": [
+    "Explicit review of exact past names/public IDs, identity-bound single-use30second confirmation, then bounded manual JSON export; no clipboard/filesystem/device actions.",
+    "Explicit bounded closed-version1 manual import review; restore only into the identical reviewed EMPTY dedicated store under existing exclusive native WebLock and final synchronous raw CAS. No merge, overwrite, migration, reset or fallback.",
+    "All restored entries remain offline. No identity/connection/preview/resource authority is restored; fresh complete pairing and independent resource approval remain required.",
+    "Review/copy retirement on started actions, cancel and close. Issued native-shaped lock work remains reserved until its actual returned Promise settles; stable reentrant close awaits it."
+  ],
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-remembered-backup-feature-old.json",
+    "sha256": "005c66c9385eca45d31219adb56c8d1271f41e420eac5d976d266903ba509ca6"
+  },
+  "oldInputs": {
+    "path": "/tmp/101-remembered-backup-old-inputs.json",
+    "sha256": "250447616da30a973eb0d3073ee8805bcc2900d9122830f20c6bb612433cb088"
+  },
+  "oldFailure": "Actual public P256/authenticated full-code enrollment and existing save1 closed metadata prefix passed; only then the desired reviewed-backup controller method assertion failed as undefined. No missing import/compiler/precondition error counted.",
+  "focusedSource": [
+    {
+      "record": {
+        "path": "/tmp/101-remembered-backup-integrated-inspector.json",
+        "sha256": "910ba10cdd3232a1c8f6ecfed66c22dc8710771c48190e555af6221d4e65dc53"
+      },
+      "tests": 15,
+      "pass": 15
+    },
+    {
+      "record": {
+        "path": "/tmp/101-remembered-backup-integrated-store.json",
+        "sha256": "2b8ef2f829b3aebb554051efb597345266101dffa17b6b2b4b23d39ad7ca9196"
+      },
+      "tests": 19,
+      "pass": 19
+    }
+  ],
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-remembered-public-backup/source-review",
+    "requirement": "Independent passive exact five-path source review CLEAR before local save."
+  },
+  "retention": {
+    "path": "/tmp/101-remembered-public-backup-retained.json",
+    "sha256": "c5ca2268be0d024d872b29cb556e5030b1dcaac31c979874fc9622d1430933cd"
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "requirement": "All five AGENTS gates on final frozen coherent candidate, fresh build before rendered, exact output counts retained."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-review",
+    "requirement": "Passive exact source/evidence review CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Actual Node24.14 cooperative software tests with public authenticated SDK and faithful native-shaped injected Storage/WebLock ports only; no native browser Storage/WebLock or broader UI/physical qualification.",
+    "Existing8records/8KiB document,128Unicode-codepoint/512UTF8-byte reported-name and64lowercasehex historical public key ID limits and closed fields reused; credentials/descriptors/offer/answer/samples/grants/previews/connections excluded.",
+    "Backup text is canonical public metadata manually copied/pasted by user. No account backup, encryption, native clipboard/file picker, downloaded backup, automatic reconnect or physical identity continuity.",
+    "Review expiry is checked at confirmation/final restore approval; no idle expiry timer or startup reads. Stored corrupt/future/nonempty data and changed empty raw revisions remain intact.",
+    "Broader stored-data profiles/migration/runtime/language/device/UI acceptance and whole B05/B06/U02 remain OPEN."
+  ],
+  "taskDisposition": {
+    "B05": "PARTIAL/OPEN. Selected manual past-public-metadata export/empty-store restore implemented and34 focused software checks pass; general/native/broader qualification remains.",
+    "B06": "PARTIAL/OPEN. Selected manual past-public-metadata export/empty-store restore implemented and34 focused software checks pass; general/native/broader qualification remains.",
+    "U02": "PARTIAL/OPEN. Selected manual past-public-metadata export/empty-store restore implemented and34 focused software checks pass; general/native/broader qualification remains."
+  },
+  "supportRowsAccepted": 0,
+  "rootSourceRepair": {
+    "path": "/tmp/101-remembered-backup-root-repaired.json",
+    "sha256": "b0f83d6a6033b6d190356acebd05976d2cd641a6aba9068a9edc45bbcfd0c252"
+  },
+  "repairDescription": "Review prompted source-local wrapping for allowed long names and corrected copy: inert restore keeps records offline; fresh pairing/approval is required before device use.",
+  "interruptedSupersededGateRun": {
+    "path": "/tmp/101-bindings-device-backup-final-exact-stop-settled.json",
+    "sha256": "b083f39b4305a6f1de39eac59e4d65ffda2718f6f877cf136daa8bd063dcdf9c"
+  }
+}

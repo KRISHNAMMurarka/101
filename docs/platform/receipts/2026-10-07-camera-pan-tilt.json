@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "selected reported pan/tilt source and ordinary installed Node caller pass; whole V05 open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "browser-camera-reported-pan-tilt/1",
+  "focusedSourceTree": "055d50004dca8b2e46ff34194f657740ed72e255",
+  "sourceSha256": {
+    "packages/device-web/src/browser-camera.ts": "9c1333151b72ee2eb1c2945c48cd1f13b9806a5008c73653d5865f47456bac04",
+    "packages/device-web/src/browser-camera.test.ts": "e8c7b6c0bfc8882ea8ca0796f31cbcc50944eae7b797c72fcd835f603d78ab86",
+    "examples/browser-resources/camera-controls.ts": "3371a6917e149811211c490d659d368cdeabc08a2bc7df47f50dff0bccc8812a"
+  },
+  "changes": [
+    "Fixed bindPan/bindTilt reuse the existing exact camera activation, current private track and shared control engine. No second capture owner, raw track export or automatic movement.",
+    "Reported finite coherent pan/tilt ranges use opaque API numeric settings, unit1; no angle, motion, PTZ permission or physical accuracy inferred. Missing/malformed/unsupported reports remain unsupported.",
+    "Independent default-denied control approval and actual reliable runtime subscribe-to-invoke grant plus exact running operation/connection numeric limits remain required.",
+    "Existing one control binding, one actual raw Promise slot,32attempts,2Hz,250ms age,16history entries/one timer, retention/quarantine and close semantics are shared across zoom/pan/tilt.",
+    "Caller optionally requests an initial integer1..30000ms route lease, default5000ms; actual authorization and original consent deadlines narrow it. Continuously produced actual software preview remains available beyond old5s while the separately approved30s route is current."
+  ],
+  "meaningfulOld": {
+    "path": "/tmp/101-camera-pan-tilt-feature-old.json",
+    "sha256": "497e07784b427cdf18d176fd874789249cfc5838c467d14d0cfa66748bafd9dc"
+  },
+  "oldFailure": "Exact existing activated capture and independently granted actual zoom constraints/getSettings return prefix passed. Desired reported pan assertion then failed as unsupported; no precondition/loader failure counted.",
+  "firstFocusedFailure": {
+    "path": "/tmp/101-camera-pan-tilt-source-focused.json",
+    "sha256": "3c722f900d22eae3573ae8568d28ae8ff93cceca716ce28660dfa91acf19be8e"
+  },
+  "fixtureRepair": {
+    "path": "/tmp/101-camera-pan-tilt-rate-fixture-repair.json",
+    "sha256": "cb2ef3a2e0290f684005a15020f45496ed2a92acd7b90ed2b222722251e7d094"
+  },
+  "fixtureDescription": "Initial76/78 exposed two new tests reusing one2Hz real runtime window for invalid and then valid commands at identical100ms clock. Test-only fresh independently approved routes isolate each refusal and valid/sub-cadence prefix; no product or budget changes.",
+  "focusedSource": {
+    "path": "/tmp/101-camera-controls-route-lease-focused.json",
+    "sha256": "7c480332fc2dada6df749f1dfb2fcb12a99ff5b06ecb50ef37d235cf4e15ed75"
+  },
+  "focusedCounts": {
+    "tests": 80,
+    "pass": 80,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "publicSdk": {
+    "path": "/tmp/101-camera-route-lease-sdk-build.json",
+    "sha256": "ae0f3b9ae9cd66729122e933351018df44d9466b33d0dc89ea6be9d9c49e5665"
+  },
+  "sdkManifest": {
+    "path": "/Users/km/Desktop/games/101/release/sdk-bUt04a/manifest.json",
+    "sha256": "3c094f5f8b646a4f80a2d6a895e8baff50618530523f426374e0a6b3fd03b0f1"
+  },
+  "sdkSourceFiles": 183,
+  "sdkFiles": 405,
+  "packages": 7,
+  "ordinaryCleanConsumer": {
+    "path": "/tmp/101-camera-route-lease-clean-consumer.json",
+    "sha256": "49de61c3dd5142461e1e8ac69afad1f6758fb882a64b73c822950390dcdc575c"
+  },
+  "consumerDescription": "Seven matching local tarballs installed offline without lifecycle scripts/monorepo symlinks.405ordinary installed files match manifest. Node24 public compiled camera example zoom/pan/tilt cooperative fixtures pass without TypeScript stripping; retained command outputs and cleanup states.",
+  "enrolledDependencyRefresh": {
+    "path": "/tmp/101-enrolled-structured-camera-dependency-current.json",
+    "sha256": "e527ad886ffc334f2bd4d40ada7b8ca176b14fbaa4283576f412c394139ba347"
+  },
+  "originalSourceReview": {
+    "path": "/tmp/101-camera-pan-tilt-e09-source-review.json",
+    "sha256": "687516396557c8c7b1f7cbc869aadee057d828df61564409d6f39bf916976877"
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-camera-pan-tilt/source-review",
+    "status": "CLEAR",
+    "scope": "Exact3 current source paths, faithful cadence fixture repair, const-only test repair and bounded initial route lease; source CLEAR206c1141. Final application/full gate acceptance remains separate."
+  },
+  "retention": {
+    "path": "/tmp/101-camera-route-lease-retained.json",
+    "sha256": "b3a4b309549f1859153d5b7640f2dd26086f9c07f4b8d50e40932adefdfacfcd"
+  },
+  "softwareBuild": {
+    "status": "SELECTED_SOURCE_UNCHANGED_WITH_PRIOR_APPLICATION_PASS",
+    "previousAttempt": {
+      "path": "/tmp/101-camera-pan-tilt-build-gates.json",
+      "sha256": "891e14f3e38fab315a5fedf21809e01aab6eeb55ad491de390be675bd90382ff"
+    },
+    "previousResult": "types PASS; lint FAIL on test-only prefer-const; build not run",
+    "repair": {
+      "path": "/tmp/101-camera-pan-tilt-lint-doc-repair.json",
+      "sha256": "c9edd24d4177dc7d69ce9238a332a9f19ae656cd26d6afef4f212c431e410482"
+    },
+    "scope": "Selected provider/caller/test unchanged from80sourcePASS/currentSDK; combined34path type/lint/fresh local application build PASS at7aa58ee3. Later player TSX cleanup correction reopens final app check separately. Whole gate acceptance remains blocked by preserved native unit failures.",
+    "historicalPass": {
+      "path": "/tmp/101-camera-player-build-gates-fixed.json",
+      "sha256": "a94ea3bd52ba4c1bd2c75925b65cb5b1a616ac09bc085b5824f3024ccc444cc2"
+    }
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "status": "FAIL",
+    "scope": "Previous23-path exact complete unit result2404/2409 with5existing native startup/IPC failures preserved. No current full gate pass or commit."
+  },
+  "scopeLimits": [
+    "Native camera/PTZ authorization, optical/angle/movement effects, focus/exposure, physical switching/unplug and broader runtime/device/UI qualification remain OPEN/deferred.",
+    "API-return/getSettings evidence is reported setting only. Explicit caller authorization never supplies OS permission.",
+    "No native camera/browser/device interaction, network service, publication or deployment performed in this selected slice.",
+    "Original OLD, source76/78 fixture failure, original source/documentary BLOCK and28-path lint failure remain retained; current source80/80/CLEAR, fresh SDK and ordinary installed Node caller establish selected software scope only.",
+    "Whole V05 and support rows remain OPEN;0support rows accepted."
+  ],
+  "taskDisposition": {
+    "V05": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0,
+  "historicalFocusedSource": {
+    "path": "/tmp/101-camera-pan-tilt-source-focused-fixed.json",
+    "sha256": "ff6b049dddd74e88736a05d94a14172c56dedfa265b922e609457929f54264d3"
+  },
+  "historicalPublicSdk": {
+    "path": "/tmp/101-camera-pan-tilt-sdk-build.json",
+    "sha256": "000e150eb8dc1418fef3c0f645518b06b39cc068bfc8c209e662f05362df7d78"
+  },
+  "historicalSdkManifest": {
+    "path": "/Users/km/Desktop/games/101/release/sdk-m3vVGp/manifest.json",
+    "sha256": "660bc07ae6eda99a93eebbacc101b931a4863c41c7b6569ce96cc55f7bc06f32"
+  },
+  "historicalOrdinaryCleanConsumer": {
+    "path": "/tmp/101-camera-pan-tilt-clean-consumer.json",
+    "sha256": "308100ce23db56a05b414eb3b6474403b1c7cf5d88a89926a0adf367f757010d"
+  },
+  "historicalRetention": {
+    "path": "/tmp/101-camera-pan-tilt-retained.json",
+    "sha256": "b54fa5fe9aac59d24865e703b604aa17afe14e5039005aaffb2d373cac2a57d8"
+  },
+  "initialRouteLease": {
+    "option": "routeLeaseMs",
+    "defaultMs": 5000,
+    "maxMs": 30000,
+    "meaningfulOld": {
+      "path": "/tmp/101-camera-route-lease-feature-old.json",
+      "sha256": "e24b317e13836b5198903ec57952237caa32d1f5c57a931015bd54159acbe67a"
+    },
+    "testsFirst": {
+      "path": "/tmp/101-camera-route-lease-tests-first.json",
+      "sha256": "9a4d5acc0ccf70053e174582716f645e363259ca1c84a1ace1e08e8e2caf9d3e"
+    },
+    "sourceRepair": {
+      "path": "/tmp/101-camera-route-lease-source-repair.json",
+      "sha256": "9847b819655af24739c85e3512b2f4780b6a36bb79e3fa91d6243d8e224a6a50"
+    },
+    "scope": "Initial frame/control route request only; existing runtime and original capture/control approvals narrow the actual expiry. No renewal or automatic reacquisition. Invalid lease rejected before caller runtime/provider construction."
+  }
+}

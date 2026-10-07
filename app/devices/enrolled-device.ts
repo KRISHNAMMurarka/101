@@ -4,6 +4,10 @@ import { AuthenticatedResourcePeer, PeerDataTransport, RemoteResourceReceiver, a
   webEndpointCrypto } from '@101/connect';
 import type { AuthorizationRequest, DeviceCapability, DeviceDescriptor, DeviceRuntime, EndpointHandle,
   EndpointIdentity, Observation, ReceiverInvitation, RouteGrant, SignalValue } from '@101/connect';
+import { createRememberedDeviceStore } from './remembered-devices.ts';
+import type { RememberedBackupHandle, RememberedDeviceSnapshot, RememberedDeviceStoreOptions } from './remembered-devices.ts';
+import { readingChoices, readingTable } from '../connections/readings/readings-schema.ts';
+import type { ReadingChoice, ReadingTable } from '../connections/readings/readings-schema.ts';
 
 export const ENROLLED_DEVICE_LIMITS = Object.freeze({ attempts: 16, setupMs: 5000, connectionMs: 60000,
   previewMs: 30000, previewResources: 4, previewHz: 20, previewAttempts: 16, tickMs: 20 });
@@ -12,17 +16,21 @@ export interface EnrolledDeviceHandle { readonly kind: 'enrolled-device' }
 export interface EnrolledResource {
   readonly id: string; readonly semantic: string; readonly permissions: readonly string[];
   readonly previewable: boolean; readonly schemaVersion: number; readonly unit?: string;
+  readonly reading?: ReadingChoice;
 }
 export interface EnrolledDeviceView {
   readonly handle: EnrolledDeviceHandle; readonly label: string; readonly resources: readonly EnrolledResource[];
+  readonly metadataReady?: boolean;
   readonly preview: 'unapproved' | 'waiting' | 'receiving' | 'stopped';
   readonly values: Readonly<Record<string, SignalValue>>; readonly previewExpiresAt?: number;
+  readonly readings: Readonly<Record<string, ReadingTable>>;
 }
 export interface EnrolledDeviceSnapshot {
   readonly state: 'idle' | 'preparing' | 'reviewing' | 'connected' | 'interrupted' | 'closed';
   readonly outcome: string; readonly invitation?: string; readonly answer?: string;
   readonly candidate?: Readonly<{ phase: 'waiting' | 'comparison' | 'confirmed' | 'connected'; comparison?: string }>;
   readonly current?: EnrolledDeviceView; readonly rawPending: number; readonly timerArmed: boolean;
+  readonly remembered?: RememberedDeviceSnapshot;
 }
 export interface EnrolledDeviceInspectorOptions {
   readonly sessionId: string; readonly now: () => number; readonly wallNow: () => number;
@@ -30,31 +38,58 @@ export interface EnrolledDeviceInspectorOptions {
   /** Cooperative host seams for lifecycle checks. Authentication still requires the actual public classes. */
   readonly createIdentity?: () => Promise<EndpointIdentity>;
   readonly createPeer?: () => PeerDataTransport;
+  /** Trusted native-shaped metadata-only storage ports; not processor storage. */
+  readonly rememberedStorage?: Omit<RememberedDeviceStoreOptions, 'onChange'>;
 }
 export interface EnrolledDeviceInspector {
   prepare(): Promise<boolean>; acceptOffer(input: string): Promise<boolean>;
   confirm(wholeDigest: string): boolean; activate(): boolean; cancel(): void;
   preview(capabilities: readonly string[]): boolean; stopPreview(): void;
   remove(handle: EnrolledDeviceHandle): boolean; stop(): void; tick(): void;
+  loadRemembered(): Promise<boolean>; rememberCurrent(handle: EnrolledDeviceHandle): Promise<boolean>;
+  forgetRemembered(publicKeyId: string): Promise<boolean>; cancelRemembering(): void;
+  reviewRememberedExport(): Promise<boolean>; reviewRememberedImport(text: string): Promise<boolean>;
+  confirmRememberedBackup(handle: RememberedBackupHandle): Promise<boolean>;
   snapshot(): EnrolledDeviceSnapshot; close(): Promise<void>;
 }
-function previewable(capability: DeviceCapability): boolean {
+function primitivePreviewable(capability: DeviceCapability): boolean {
   return capability.kind !== 'command' && capability.kind !== 'job' &&
     capability.permissions.includes('subscribe') &&
     (capability.value.type === 'boolean' || capability.value.type === 'scalar' || capability.value.type === 'vector');
 }
+function readingFor(capability: DeviceCapability): ReadingChoice | undefined {
+  if (capability.value.type !== 'record' && capability.value.type !== 'array') return;
+  // A single validated declaration reuses the existing display policy without
+  // imposing that helper's whole-page choice count on primitive device inputs.
+  const choice = readingChoices({ schemaVersion: 1, id: 'enrolled-reading-display', label: 'Reading preview', revision: 1,
+    adapter: { id: 'app:enrolled-reading-display', version: '1' }, runtime: { platform: 'browser-application' }, capabilities: [capability] })[0];
+  return choice?.supported ? choice : undefined;
+}
+function previewable(capability: DeviceCapability): boolean { return primitivePreviewable(capability) || readingFor(capability) !== undefined; }
 /** Reported semantics only. This helper performs no authentication, observation or authorization. */
 export function inspectEnrolledResources(input: unknown): readonly EnrolledResource[] {
-  return Object.freeze(parseDeviceDescriptor(input).capabilities.map(capability => Object.freeze({
-    id: capability.id, semantic: capability.semantic, permissions: Object.freeze([...capability.permissions]),
-    previewable: previewable(capability), schemaVersion: capability.schemaVersion,
-    ...('unit' in capability.value ? { unit: capability.value.unit } : {}),
-  })));
+  const device = parseDeviceDescriptor(input), choices = device.capabilities.map(readingFor);
+  const totals = new Map<'record' | 'table', number>(), counts = new Map<'record' | 'table', number>();
+  for (const choice of choices) if (choice?.shape) totals.set(choice.shape, (totals.get(choice.shape) ?? 0) + 1);
+  return Object.freeze(device.capabilities.map((capability, index) => {
+    let reading = choices[index];
+    if (reading?.shape) {
+      const ordinal = (counts.get(reading.shape) ?? 0) + 1; counts.set(reading.shape, ordinal);
+      if ((totals.get(reading.shape) ?? 0) > 1) reading = Object.freeze({ ...reading, label: `${reading.label} ${ordinal}` });
+    }
+    return Object.freeze({
+      id: capability.id, semantic: capability.semantic, permissions: Object.freeze([...capability.permissions]),
+      previewable: primitivePreviewable(capability) || reading !== undefined, schemaVersion: capability.schemaVersion,
+      ...(reading ? { reading } : {}),
+      ...('unit' in capability.value ? { unit: capability.value.unit } : {}),
+    });
+  }));
 }
 interface Preview {
   readonly owner: AbortController; readonly grant: Readonly<RouteGrant>; readonly chosen: ReadonlySet<string>;
   readonly sinks: Map<string, EndpointHandle>; readonly sourceRegistrations: Map<string, string>;
   readonly descriptor: Readonly<DeviceDescriptor>; readonly values: Record<string, SignalValue>;
+  readonly readings: Record<string, ReadingTable>;
   receiving: boolean;
 }
 interface Enrollment {
@@ -82,18 +117,23 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
   let state: EnrolledDeviceSnapshot['state'] = 'idle', outcome = 'idle', pending: Enrollment | undefined, current: Enrollment | undefined;
   let timer: ReturnType<typeof setTimeout> | undefined, closing: Promise<void> | undefined, mutating = false, notifying = false;
   const tasks = new Set<Promise<unknown>>();
+  // The store is inert until an explicit read/save/remove action. Its records
+  // are past public key metadata, never candidates or restored connections.
+  const remembered = createRememberedDeviceStore({ ...options.rememberedStorage, onChange: () => emit() });
   const active = (record: Enrollment) => !closed && !record.retired && !record.owner.signal.aborted && (pending === record || current === record);
   function snapshot(): EnrolledDeviceSnapshot {
     const candidate = pending;
     const preview = current?.preview;
-    return Object.freeze({ state, outcome, rawPending: tasks.size, timerArmed: timer !== undefined,
+    return Object.freeze({ state, outcome, rawPending: tasks.size, timerArmed: timer !== undefined, remembered: remembered.snapshot(),
       ...(candidate?.invitation && !candidate.peer ? { invitation: encodeReceiverInvitation(candidate.invitation) } : {}),
       ...(candidate?.answer ? { answer: candidate.answer } : {}),
       ...(candidate?.peer ? { candidate: Object.freeze({ phase: candidate.phase, ...(candidate.comparison ? { comparison: candidate.comparison } : {}) }) } : {}),
       ...(current ? { current: Object.freeze({ handle: current.handle, label: current.descriptor?.label ?? 'Connected device',
+        metadataReady: current.descriptor !== undefined,
         resources: current.descriptor ? inspectEnrolledResources(current.descriptor) : Object.freeze([]),
         preview: preview ? preview.receiving ? 'receiving' as const : 'waiting' as const : current.previewUsed ? 'stopped' as const : 'unapproved' as const,
-        values: Object.freeze({ ...(preview?.values ?? {}) }), ...(preview ? { previewExpiresAt: preview.grant.expiresAt } : {}),
+        values: Object.freeze({ ...(preview?.values ?? {}) }), readings: Object.freeze({ ...(preview?.readings ?? {}) }),
+        ...(preview ? { previewExpiresAt: preview.grant.expiresAt } : {}),
       }) } : {}),
     });
   }
@@ -113,6 +153,7 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
     const preview = record.preview; record.preview = undefined;
     if (!preview) return;
     preview.owner.abort(); Object.keys(preview.values).forEach(key => delete preview.values[key]);
+    Object.keys(preview.readings).forEach(key => delete preview.readings[key]);
     try { record.receiver?.stop(); } catch { /* Authority was retired first. */ }
     for (const handle of preview.sinks.values()) { try { record.runtime?.unregister(handle); } catch { /* Continue all owned cleanup. */ } }
     preview.sinks.clear();
@@ -135,6 +176,7 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
   }
   function stop(): void {
     revision++; disarm(); const records = [pending, current]; pending = undefined; current = undefined;
+    remembered.cancel();
     for (const record of records) if (record) retire(record);
     if (!closed) state = 'interrupted'; emit(closed ? 'closed' : 'stopped');
   }
@@ -289,17 +331,25 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
     const descriptor = parseDeviceDescriptor({ schemaVersion: 1, id: `devices-sink:${record.invitation!.epoch}`, label: 'This screen input preview', revision: 1,
       adapter: { id: 'app:device-inspector', version: '1.0.0' }, runtime: { platform: 'browser-value-preview' },
       capabilities: capabilities.map(capability => ({ ...capability!, permissions: ['write'] })) });
-    const owner = new AbortController(), capture: Preview = { owner, grant, chosen: new Set(selected), descriptor, sinks: new Map(), sourceRegistrations: new Map(), values: Object.create(null) as Record<string, SignalValue>, receiving: false };
+    const owner = new AbortController(), capture: Preview = { owner, grant, chosen: new Set(selected), descriptor, sinks: new Map(), sourceRegistrations: new Map(),
+      values: Object.create(null) as Record<string, SignalValue>, readings: Object.create(null) as Record<string, ReadingTable>, receiving: false };
     record.preview = capture; record.previewUsed = true; record.previewAttempts++;
     try {
       for (const capability of descriptor.capabilities) {
         if (!previewCurrent(record, capture)) throw Error();
+        const sourceCapability = capabilities.find(value => value?.id === capability.id)!;
+        const reading = readingFor(sourceCapability);
         const handle = record.runtime.registerSink({ device: descriptor, capability: capability.id,
           apply(observation: Observation, context) {
             if (context.signal.aborted || !context.isCurrent() || !previewCurrent(record, capture) || context.signal.aborted) return;
-            capture.values[capability.id] = observation.value; capture.receiving = true;
+            if (reading) {
+              const projected = readingTable(sourceCapability, observation.value);
+              if (!projected || context.signal.aborted || !context.isCurrent() || !previewCurrent(record, capture)) return;
+              capture.readings[capability.id] = projected;
+            } else capture.values[capability.id] = observation.value;
+            capture.receiving = true;
             emit(!pending && ['device-enrolled', 'preview-waiting', 'input-received', 'preview-released'].includes(outcome) ? 'input-received' : undefined);
-          }, release() { delete capture.values[capability.id]; if (record.preview === capture) emit('preview-released'); },
+          }, release() { delete capture.values[capability.id]; delete capture.readings[capability.id]; if (record.preview === capture) emit('preview-released'); },
         });
         if (!previewCurrent(record, capture)) { record.runtime.unregister(handle); throw Error(); }
         capture.sinks.set(capability.id, handle); record.runtime.setReadiness(handle, 'available', grant.expiresAt);
@@ -307,7 +357,7 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
       for (const capability of capabilities) {
         if (!previewCurrent(record, capture)) throw Error();
         const approved = record.receiver.approve({ capability: capability!.id, sink: capture.sinks.get(capability!.id)!,
-          sinkDevice: descriptor, sinkCapability: capability!.id, grant, codec: 'json/1' });
+          sinkDevice: descriptor, sinkCapability: capability!.id, grant });
         if (approved === undefined || !previewCurrent(record, capture)) throw Error();
       }
       emit('preview-waiting'); return previewCurrent(record, capture);
@@ -349,7 +399,21 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
     if (closing) return closing;
     closed = true; state = 'closed';
     closing = Promise.resolve().then(async () => { while (tasks.size) await Promise.allSettled([...tasks]); });
+    if (remembered.snapshot().pending) void track(() => remembered.close());
+    else void remembered.close(); // Inert/synchronously retired storage has no issued work to reserve.
     stop(); return closing;
+  }
+  async function rememberCurrent(handle: EnrolledDeviceHandle): Promise<boolean> {
+    const record = current;
+    if (!record || record.handle !== handle || !record.descriptor || !proof(record)) return false;
+    const authenticated = authenticatedPeerScope(record.auth);
+    if (!authenticated || !proof(record)) return false;
+    const publicKeyId = authenticated.remoteKeyId, label = record.descriptor.label;
+    return track(() => remembered.save({ publicKeyId, label }, { signal: record.owner.signal, isCurrent() {
+      if (current !== record || !proof(record) || record.descriptor?.label !== label) return false;
+      const actual = authenticatedPeerScope(record.auth);
+      return actual?.remoteKeyId === publicKeyId && active(record);
+    } }));
   }
   function guarded(operation: () => boolean): boolean {
     if (closed || mutating) return false; mutating = true;
@@ -361,5 +425,12 @@ export function createEnrolledDeviceInspector(options: EnrolledDeviceInspectorOp
   }
   return { prepare: () => guardedAsync(prepare), acceptOffer: input => guardedAsync(() => acceptOffer(input)),
     confirm: digest => guarded(() => confirm(digest)), activate: () => guarded(activate), cancel,
-    preview: ids => guarded(() => preview(ids)), stopPreview, remove: handle => guarded(() => remove(handle)), stop, tick, snapshot, close };
+    preview: ids => guarded(() => preview(ids)), stopPreview, remove: handle => guarded(() => remove(handle)),
+    loadRemembered: () => guardedAsync(() => track(() => remembered.load())),
+    rememberCurrent: handle => guardedAsync(() => rememberCurrent(handle)),
+    forgetRemembered: publicKeyId => guardedAsync(() => track(() => remembered.forget(publicKeyId))),
+    reviewRememberedExport: () => guardedAsync(() => track(() => remembered.reviewExport())),
+    reviewRememberedImport: text => guardedAsync(() => track(() => remembered.reviewImport(text))),
+    confirmRememberedBackup: handle => guardedAsync(() => track(() => remembered.confirmBackup(handle))),
+    cancelRemembering: () => remembered.cancel(), stop, tick, snapshot, close };
 }

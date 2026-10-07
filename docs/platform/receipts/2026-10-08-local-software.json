@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-local-software-built-full-acceptance-open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "inheritedIndexTree": "c0837f38448f802a4b0be0c95dea91efc4d55b7a",
+  "verifiedSourceTree": "b4095f5c7e65bc04cab10a3a721c3255c14644d6",
+  "sources": {
+    "packages/device-runtime/src/runtime.ts": "2bd9af8d6399821b5a2436c635a5e16b010308e9c98dd9bce4f7518cecddf056",
+    "packages/device-runtime/src/types.ts": "0573d3a9dac212b215b64fd0817e013847a0a04dddfbc073f8a01f396fb3ccba",
+    "packages/device-runtime/src/scheduler.ts": "1783839f23b5f43517544d23133391d72c264abca3a797a2e4b967120351b940",
+    "packages/device-runtime/src/byte-delivery.test.ts": "e85bdc7a5e199120805b7ab1f7637b39a78f20715f21298501e20aa7d286d6ee",
+    "packages/device-runtime/src/processor-node.ts": "64b1272288b2a56b2fcc2c7fbfc0a3c14747e67d1e66b2cf0b25223f5735832c",
+    "packages/device-runtime/src/processor-worker.ts": "fdd872f0d0fcdcff552a773be8b03111490ac64d02063ec9bd178cae55bdb365",
+    "packages/device-runtime/src/processor-language.ts": "c476bc686653700e59601037004083a8912df96249e03963884d6ec2e5fa28e0",
+    "packages/device-runtime/src/processor-executor.test.ts": "44891cf2edd20135bcb7b814b556c49f73f28b533aef397609050a626b13e06c",
+    "packages/device-model/src/private-directory.ts": "fa876f71b8010858b55be90c173e9583ed55dc56b1e699b4938b12aea53627e1",
+    "packages/device-model/src/private-directory.test.ts": "d3d26a20f89d8e1241c9859057a31cb5a880e9af0dec4c0af7b330a68018bdd6",
+    "packages/device-model/src/index.ts": "f09c0d8b206a1df52f30fafbe5677521afa70c617eca4c6bc4f2e69f4b8c24f1",
+    "packages/hub-server/src/private-directory.ts": "5bd140fca6151cacd1ccd1cb25cde8447a38e2b59286dc81bf3623aa028d311a",
+    "packages/hub-server/src/private-directory-peer.test.ts": "f6a9627273950ebba9cce742172e5f03105099df10f55fae8a0e5efd1559e65d",
+    "packages/device-web/src/invitation-connection.ts": "106eaa28d234e542c272ead26cb6eb560b0722e71a363c0cb6c7bac7293f533e",
+    "packages/device-web/src/invitation-discovery.test.ts": "1321bfa3703667ab734e049ef7b84317b321efbd4af5677e379a2f8d80a8955c",
+    "packages/device-web/src/index.ts": "7decdb27ec15e0188bc2f2bde372d30dab2c777f2cb3443334dba968600c0675",
+    "examples/device-pipelines/invitation-connection.ts": "7630909b2ed6d978082230f28c7038c364b22dfcc5d5089dd9a59ef6c4921ed2",
+    "examples/coordinator/private-directory.ts": "bacd820cf13228f300d27e4a94f99e4d85d003c494b3b62a08360fc76717a7a3",
+    "examples/processor-executor/consumer.mjs": "76ae7c8b62cc859373fbc7b5c1b0ccaad5170b90f299a36068f0d3d66aaf06d7",
+    "tools/qa-fair-delivery.mjs": "5f531f043e5da6c3b7ba9a791ea354ef1dff70e8744643be8c4f03a9f964c677",
+    "tools/qa-directory-peer.mjs": "7aadd2ef5fb03830c655a4e6a1cac479e87f33f51e31117b42fd781cc54e7872",
+    "tools/qa-invitation-connection.mjs": "997908e9159568e0b34edfb0594efbf4cb3e3a99fd5bbd65d65b7b68909876b4",
+    "tools/qa-processor-executor.mjs": "a46beae6537138e230682e6c6d5b69246c400e59376d7d8d2578df79bb227d12",
+    "tools/qa-sdk-consumer.mjs": "1cdf67bb6a128d9a73daf478debcf647522da6e1f260edaca524686a8a5827c1",
+    "tools/audit-sdk-contents.py": "530e5dcadce340bd67761934a162f189c0ec281cc260153c6f0cba6738d1657a",
+    "tests/sdk-contents.test.ts": "66b24c67dcda4d3028e29488d56b64e7085e6bd94a9e27e45e236196caf6cc56",
+    "tests/sdk-distribution.test.ts": "9fd031107570f285c8b63ca36ff9b2fcf70a766ac4381087f8e88ac47d4c6511",
+    "tools/build-sdk.mjs": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b",
+    "tests/device-platform-boundary.test.ts": "dcb95624d751bd57585f74b6f7c5dc486e62fc4948707aadfebdd8d4071cf829"
+  },
+  "lanes": {
+    "F05": {
+      "contract": "Aggregate UTF8 JSON observation+copied-options bytes reserved per raw apply, bounded globally and by exact principal; intersects count/scope caps; blocked latest/FIFO work is not consumed; original property publication cost retained; Stop/revoke/replacement never recycle unsettled raw capacity.",
+      "genuineOld": {
+        "path": "/tmp/101-f05-byte-old.json",
+        "sha256": "505cc2d7aa2622900581ef2fa0677493badfe2c3eb6fa1473e7da567c3402d0c"
+      },
+      "sourceProof": {
+        "firstFocused": {
+          "path": "/tmp/101-f05-focused-first.log",
+          "sha256": "53856f9adb0ecc2a47db3be98c67755b53d0f467a1c6fd5671d9df894bef7301"
+        },
+        "tests": 82,
+        "pass": 81,
+        "failure": "Stale fixture advanced timestamp100 to1101 beyond original exact byte cap; fixture repaired by10byte headroom only.",
+        "repairedFailedSelector": {
+          "path": "/tmp/101-f05-focused-repair.log",
+          "sha256": "381eb3e473d93d176bbc2c13c2d2f68b177de4b3cff8a19ecac53773667b3800"
+        },
+        "repairedSelectorPass": 1
+      },
+      "installedProof": {
+        "path": "/tmp/101-f05-installed-final.json",
+        "sha256": "3d410bd9c8d8d635ae02ac95750b6618f0473acf17e507658c10722cab691d7b"
+      },
+      "installedWorkloads": {
+        "unchangedFairness": 3,
+        "scope": 4,
+        "principal": 4,
+        "byte": 4
+      },
+      "limits": [
+        "Encoded envelope bytes only; not total heap/queued snapshots/transport/CPU/service capacity.",
+        "Actual4096byte publication envelope remains. No support-row or F05 checkbox promotion."
+      ]
+    },
+    "S14": {
+      "contract": "Signed dependency-free asset-free compute-local source interpreted by a closed language in an actual Node Worker; fixed guest data arena, finite instruction/time limits and parent termination; fresh approval/currentness/expiry gates output; raw reservation released only on actual Worker exit. Explicit @101/device-runtime/node export.",
+      "genuineOld": {
+        "path": "/tmp/101-s14-old-result.json",
+        "sha256": "1783d5bd927eaf2d2847f85104c3059203f26c07fe960c55ba059d13e8258d82"
+      },
+      "completion": {
+        "path": "/tmp/101-s14-completion.json",
+        "sha256": "0d10d4a306c8732cacae2fe16d6882a9448665f1311b3633bb46978c5f773487"
+      },
+      "sourceProof": {
+        "changedAndCompatibility": {
+          "path": "/tmp/101-s14-changed-neighbors-green.log",
+          "sha256": "9c8dcb2b27345e914a8435794d1e161015035be6af489665d85def50255fda1c"
+        },
+        "tests": 17,
+        "expiryRegressionOld": {
+          "path": "/tmp/101-s14-expiry-old.log",
+          "sha256": "31c160397faec9fb4d9f09f0450b4557634af88340ec836953bd21f7392e2e6b"
+        },
+        "expiryRegressionCurrent": {
+          "path": "/tmp/101-s14-expiry-focused.log",
+          "sha256": "d970b9e3d8f1c07b5b02529b52443f51f1c61ca2904736417995239b7f95af0a"
+        },
+        "currentExecutorTests": 11
+      },
+      "installedProof": {
+        "path": "/tmp/101-s14-installed-final.json",
+        "sha256": "1038cd578b99911dfce6fec35840dfb60089ae11be5bba4f27038c22dc65cb93"
+      },
+      "installedPhases": [
+        "Stop-pending: two fresh separately approved runtime routes; late output fenced; actual Worker exit",
+        "signed installation revoke-queued: management and execution authority separate; queued output fenced; actual Worker exit"
+      ],
+      "limits": [
+        "Not an arbitrary JavaScript or Worker security sandbox.",
+        "Guest memory excludes parser/source/AST/host dictionaries/V8/Worker heap/RSS.",
+        "No generic connectors, assets/dependencies, filesystem/network/native guest primitives or physical effects. Full S14 acceptance open."
+      ]
+    },
+    "D06": {
+      "contract": "One explicitly consented descriptor owned by current enrolled peer generation; exact enrolled device ID and selected existing capabilities; monotonic revision updates retain original expiry; generation/revision-pinned unpublish and bounded current-lease revision floor; host visibility separate from runtime grants.",
+      "genuineOld": {
+        "path": "/tmp/101-d06-old.json",
+        "sha256": "4d54b02f7b0789676cdbf24f16d817e2e4cae592ddb2cfd85f67555ad1ae74cd"
+      },
+      "parserRegressionOld": {
+        "path": "/tmp/101-d06-parser-depth-old.json",
+        "sha256": "700f5bcba0b2eb5f6887ac1dfcd5ad9f194acb0db9a31e61d7e322f275084593"
+      },
+      "completion": {
+        "path": "/tmp/101-d06-completion.json",
+        "sha256": "57bacee8cc142548bf6cc67232d63a82565ae577d63f77923610a0043e5b0e8c"
+      },
+      "sourceProof": {
+        "focused": {
+          "path": "/tmp/101-d06-focused-final.log",
+          "sha256": "67c081ca36036ab2ca64f3f3ccabe79ba6f26753724b1fba2f74dc139d7b3b66"
+        },
+        "tests": 47,
+        "pass": 47
+      },
+      "installedProof": {
+        "path": "/tmp/101-d06-installed-final.json",
+        "sha256": "6d1c28a9931c9d6f7d03be3cf7e9629a0f81bcbbcb3f61fce041c72133c115c4"
+      },
+      "installedChecks": 11,
+      "retirement": [
+        "update",
+        "explicit owner loss/unpublish",
+        "expiry",
+        "generation mismatch",
+        "reconnect",
+        "departure",
+        "session retirement"
+      ],
+      "limits": [
+        "Hub/client API is source-bound local Node mTLS, separate from seven packed SDK packages.",
+        "Actual installed model/runtime/web used. No persistent/account directory, physical availability probe, published Hub or source support promotion. D06 acceptance open."
+      ]
+    },
+    "D02": {
+      "contract": "At most8 exact observed/identified candidate snapshots mapped by independent host enrollment to fixed endpoint/key/current generation. Explicit reviewDiscovered reviews candidate+invitation; bytes never select URL/key. Separate connect/source/runtime grants. Candidate scope/receipt/expiry and original endpoint/invitation/grant deadlines remain current through held approval, socket/auth/connected use. Loss/Stop fences late work; retry needs fresh explicit review.",
+      "genuineOld": {
+        "path": "/tmp/101-d02-discovery-old.json",
+        "sha256": "bfe7214e584642ae01bd76a697f771e2c47e70dc665db7d1c0c0f106990092c5"
+      },
+      "sourceProof": {
+        "focused": {
+          "path": "/tmp/101-d02-discovery-focused-first.log",
+          "sha256": "b46d1b02707022f82c15c17524194c48fca2ccb8603a426db1eda093992cdf16"
+        },
+        "tests": 28,
+        "pass": 28
+      },
+      "installedProof": {
+        "path": "/tmp/101-d02-installed-final.json",
+        "sha256": "01ae6647f61937c87a5db9ecca40ad3e2673e88143942de1498e12e1a8e0ee9e"
+      },
+      "installedChecks": 14,
+      "actualTlsConnections": 14,
+      "maximumObservedSocketOverlap": 1,
+      "limits": [
+        "Owned Node RSS/private IPC/loopback TLS software only; discovery is supplied candidate metadata.",
+        "No native LAN discovery, optical QR scan, OS chooser, phone/device/network qualification, automatic scan/connect/reconnect or invitation-derived resource grants. D02 acceptance open."
+      ]
+    }
+  },
+  "distribution": {
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/manifest.json",
+      "sha256": "fcd6b0fe6dc2aa1f66cee3903d671ecf358f6aca8fa10041f4fb64d3e743c043"
+    },
+    "sourceTree": "97a50a60be932cead2a28eb2bdef36de791a95ee",
+    "sourceInputs": 186,
+    "packages": 7,
+    "installedFiles": 411,
+    "tarballs": [
+      {
+        "name": "@101/device-model",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-device-model-0.1.0.tgz",
+        "sha256": "10573b5ab7abc0c4ae292d0ea22be3ea7bf531c100115e12b07cf9248d24ecf5"
+      },
+      {
+        "name": "@101/device-runtime",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-device-runtime-0.1.0.tgz",
+        "sha256": "e53b074c79565e99947d2de47e6b49d6ba696da7e840b79604711272b22d6159"
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-transport-webrtc-0.1.0.tgz",
+        "sha256": "d8a3954f4c208372473636b7b8409d32ad7758a95c9e48ebae4568406c884bcd"
+      },
+      {
+        "name": "@101/transport-websocket",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-transport-websocket-0.1.0.tgz",
+        "sha256": "9e6fa01511490c338276ae4e402e5c007f3ca5189428e23472f97ff8d61057ec"
+      },
+      {
+        "name": "@101/device-web",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-device-web-0.1.0.tgz",
+        "sha256": "ee2fcc7dac62fca1c2d9d63bf8aa05c5f4964d4e23a4444d1ea66c379db4e70c"
+      },
+      {
+        "name": "@101/vision",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-vision-0.1.0.tgz",
+        "sha256": "71ee8eb3f9305a42132b8f4cee5a8b90ea4193737f99ae8646ccbf87aca6f4a0"
+      },
+      {
+        "name": "@101/connect",
+        "path": "/Users/km/Desktop/games/101/release/sdk-jGwQfb/tarballs/101-connect-0.1.0.tgz",
+        "sha256": "592e583de0e5a69de8c2f38caa2513f9c8e3a14f3ad0c812f883f48a9eefdc94"
+      }
+    ],
+    "nodeOnlyConsumer": {
+      "path": "/tmp/101-sdk-consumer-Vcy8lp/receipt.json",
+      "sha256": "f0fa9d912c92b90f0fe7ab9b0b73b8a3c89ee93b21f1924a4be03a39b5a40fbd"
+    },
+    "matchingLocalCallerConsumer": {
+      "path": "/tmp/101-sdk-consumer-J0cskx/receipt.json",
+      "sha256": "8b39268458adc7dc1f5872704e7f8f1a0add59e0c26a8a805fbf96d5beedbe53"
+    },
+    "nodeOnlyChecks": 7,
+    "types": [
+      "strict NodeNext",
+      "strict Bundler"
+    ],
+    "inputReuse": {
+      "unchangedCurrentAndCandidatePins": 186,
+      "builderSha256": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b",
+      "packages": 7,
+      "installedFiles": 411,
+      "consumers": [
+        {
+          "consumer": "/private/tmp/101-sdk-consumer-J0cskx",
+          "status": "pass",
+          "exactInstalledFiles": 411,
+          "checks": 10,
+          "browserExecution": "default headless browsers ran and closed"
+        },
+        {
+          "consumer": "/private/tmp/101-sdk-consumer-Vcy8lp",
+          "status": "pass",
+          "exactInstalledFiles": 411,
+          "checks": 7,
+          "browserExecution": "deferred by --node-only"
+        }
+      ]
+    },
+    "scope": "Final7packed SDK artifacts reused after QA-only changes; all186 manifest inputs and builder pins match current source and verified tree; both exact411file installed inventories rehashed. Four local callers use ordinary compiled SDK, D06 Hub side source-bound."
+  },
+  "sourceReview": {
+    "status": "CLEAR",
+    "initialReview": {
+      "path": "/tmp/101-local-software-source-review.json",
+      "sha256": "6dbbb55d639156c1c3a1f41a848d7370910749ef94dc785307b44342841c94ea"
+    },
+    "repairReview": {
+      "path": "/tmp/101-local-software-source-review-repairs.json",
+      "sha256": "8768b48f8a9a48d279db08c42c45eecf804a53b472075ffccdc3a19e01dc7853"
+    },
+    "resolvedProductReview": {
+      "path": "/tmp/101-local-software-source-review-final.json",
+      "sha256": "cc39fcffe77396e95aa033ef787a310501de2b6a6af03be3a06fea4deb0f600d"
+    },
+    "consumerReview": {
+      "path": "/tmp/101-local-software-source-review-consumer.json",
+      "sha256": "a7c46612b0f8307f61fdfcb3e26791b2e73d664b3d409ab3a1b75daabd9a1bc4"
+    },
+    "nodeOnlyReview": {
+      "path": "/tmp/101-local-software-source-review-node-only.json",
+      "sha256": "a4ad0cb21c002a8715a86465ebe52cbc0079a0398975cc9b2ed2123035887ef1"
+    },
+    "resolvedFindings": [
+      "approval beyond60seconds was retired early; timer rechecks/rearms original expiry",
+      "SDK auditor could omit Node executor export; runtime requires exact export and6compiled files"
+    ],
+    "limits": "Read-only independent source review; no product execution by reviewer. Initial four lanes plus each narrow source delta pinned.",
+    "boundaryReview": {
+      "path": "/tmp/101-local-software-source-review-boundary.json",
+      "sha256": "8c465a576d082861e63d84592ca2d3bc2137a63c8d8de47c2efed94f6f20925c"
+    }
+  },
+  "preservedFirstFailures": [
+    {
+      "path": "/tmp/101-local-software-sdk-build-first.stderr.log",
+      "sha256": "1f9549802757ea3db4db42ae97eb6877fc68ef3703b5597b398918485ea0c980"
+    },
+    {
+      "path": "/tmp/101-sdk-node-export-old.log",
+      "sha256": "c9de03e497a2d433ca52a9501984ad2caf3b253fef4c394045cf926a08eecc6b"
+    },
+    {
+      "path": "/tmp/101-sdk-node-export-required-old.log",
+      "sha256": "8120f724c8a564005d94e4bd02c1d234ecf9b0068f1608efffd8e28b4c40b533"
+    },
+    {
+      "path": "/tmp/101-local-software-sdk-consumer-first.json",
+      "sha256": "073d648384bccbaaa989ab7dd20953c605832027fc29d1a1ee89f35b021d74a8"
+    },
+    {
+      "path": "/tmp/101-sdk-node-only-old.json",
+      "sha256": "59d4ec98cd5073bdec8e638a9c505c6de9cfc26ab425afa1432e96637c8f6eeb"
+    },
+    {
+      "path": "/tmp/101-s14-expiry-old.log",
+      "sha256": "31c160397faec9fb4d9f09f0450b4557634af88340ec836953bd21f7392e2e6b"
+    }
+  ],
+  "integrationRegressionProof": {
+    "exactNodeExportCurrent": {
+      "path": "/tmp/101-sdk-node-export-focused.log",
+      "sha256": "4db263af222deb699a8a37781945bc70587a99fecb4052456b9b386cd4bf5a16"
+    },
+    "requiredNodeExportCurrent": {
+      "path": "/tmp/101-sdk-node-export-required-focused.log",
+      "sha256": "d9c2553611f1ec9a5869cd2cf4683a48f1b11da04f6211650e045c57e4c0aebd"
+    },
+    "currentContentsTests": 46,
+    "pass": 46
+  },
+  "retention": {
+    "record": {
+      "path": "/tmp/101-local-software-retained.json",
+      "sha256": "df5478c742550f53b64be7dfcf6589edce5808610e627a571f608e9b0e79b0e5"
+    },
+    "recordRef": "refs/codex/evidence/2026-10-08-local-software/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-local-software/literal-bundle",
+    "bundleSha256": "a225e6d7b67a2ec126c26f3fe8287951d5889fa8346e57a2ae3229f8c6f6a433",
+    "literalFiles": 809,
+    "sourceTreeRef": "refs/codex/evidence/2026-10-08-local-software/source-tree-final",
+    "inheritedTreeRef": "refs/codex/evidence/2026-10-08-local-software/inherited-index",
+    "limits": "Selected source literals, witnesses/logs/receipts,7 public tarballs and one exact installed411-file inventory; no ephemeral TLS credentials or runtime/toolchain binaries. Source graph coverage is conservative source-package capture, not actual-loaded module tracing. Final repository gates retained separately.",
+    "boundarySupplement": {
+      "record": {
+        "path": "/tmp/101-local-software-boundary-retained.json",
+        "sha256": "b9e1da0583e37bbc91ef70a8ba42d585d54571d8b0f504569a8cf1c0a4e69330"
+      },
+      "recordRef": "refs/codex/evidence/2026-10-08-local-software/boundary-record",
+      "bundleRef": "refs/codex/evidence/2026-10-08-local-software/boundary-bundle",
+      "literalFiles": 8
+    }
+  },
+  "finalRepositoryGateEvidence": {
+    "ref": "refs/codex/evidence/2026-10-08-local-software/final-gates",
+    "scope": "Post-documentation exact candidate gates recorded separately. This scoped receipt does not claim final-gate success at authoring time."
+  },
+  "unexpectedBrowserRun": {
+    "receipt": {
+      "path": "/tmp/101-sdk-consumer-J0cskx/receipt.json",
+      "sha256": "8b39268458adc7dc1f5872704e7f8f1a0add59e0c26a8a805fbf96d5beedbe53"
+    },
+    "scope": "Existing general consumer launched3headless browser checks by default despite deferred broad browser work. Runs/server closed. First unsupported --node-only CLI rejection retained; exact Node-only mode added, reviewed and run with7localchecks/no browserServer. Browser evidence not promoted into support."
+  },
+  "historicalStartupFailures": {
+    "status": "UNKNOWN original causes",
+    "evidence": "docs/platform/receipts/2026-10-08-native-startup-diagnostics.json",
+    "scope": "Earlier2404/2409 unit outcome and5startup failures remain preserved. Diagnostic observability repaired only; current gate results do not retrospectively determine or fix original causes."
+  },
+  "limitations": [
+    "All4MASTER-CHECKLIST rows remain open and support rows unchanged.",
+    "Local work only; no publish, push, deploy, preview URL, third-party service, OS input/capture or hardware qualification.",
+    "Prior controllers/chats/worktrees and original staged tree preserved. Heartbeat remains paused."
+  ],
+  "firstFinalUnitGate": {
+    "candidateTree": "db8bf4feda5133408e1f1b8a0a511f3fdc64bb74",
+    "record": {
+      "path": "/tmp/101-local-software-unit-first.json",
+      "sha256": "23b518d23e0e41705945bd278df2b82e81ae00fe0d5989e51c26f5c8b408e511"
+    },
+    "tests": 2690,
+    "pass": 2689,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "failure": "Old source-package boundary checker rejected node:worker_threads in the explicit new Node entrypoint. No historical startup failure recurred.",
+    "repair": "Only test boundary updated: exact runtime ./node and two worker_threads files; static import/re-export browser closure remains Node-free; negative leakage/builtin/package fixtures added. Focused4/4 pass, independent source review CLEAR. Product/builder/all186SDKinputs unchanged; existing compiled callers retained."
+  }
+}

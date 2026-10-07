@@ -1643,6 +1643,8 @@ The coordinator remains the explicit workspace `@101/hub-server` provider.
 These checks qualify local software hosts; they do not establish physical
 machine, IP interruption, clock mapping or performance service-level claims.
 
+On unexpected failure, the workload error retains bounded `startupDiagnostics` after the real cleanup waits. It reports parent-clock spawn, hello and close times; at most three fixed child-clock module-body, identity-ready and hello-sent milestones; and process/callback/socket/timer/fixture cleanup counts. Raw stderr, identities, credentials, paths and grants are omitted. Child module-body entry occurs after static ESM imports, and child and parent times belong to separate clock domains. The hosted/private-IPC regression tests likewise report actual startup result/status, original approval expiry and sanitized probe error codes only on failure. [Scoped diagnostic evidence](receipts/2026-10-08-native-startup-diagnostics.json) preserves the genuine missing-diagnostic OLD, corrected forced-child cleanup check and original five-case selector. Their passing results verify instrumentation; the historical full-suite failures and their cause remain unresolved.
+
 ## Owned native raster application
 
 `createHostedApplication()` from the workspace `@101/hub-server` export starts
@@ -2369,7 +2371,7 @@ Local admission cannot recall bytes already handed to a socket. The resource bin
 
 Authenticated creation, invitation join, host rotation, private offer/answer, reconnect and departure reuse the public pairing clients. Host and peer requests need their role bearer and authenticated principal; copying a bearer to another enrolled principal fails. Device identity comes from enrollment. The host sees only its session's peers and a peer can read only its own offer. Endpoint overrides and forwarded-header authority are rejected. Rendezvous permission grants no device resource access.
 
-The finite ceilings include 64 enrollments, sixteen origins/sessions, four sessions per principal, eight peers per session, sixteen peers per principal, 32 total sockets, 32 requests per principal per second, four pending caller requests, 401,024 request/response bytes and ten-minute sessions. `createCoordinatorFetcher` verifies CA/hostname, permits only its configured origin/endpoint, rejects redirects and closes its owned agent/requests. `stop` destroys accepted sockets and ephemeral authority; stopped coordinators cannot restart. Credentials are host supplied and never emitted by the public example or receipt.
+The finite ceilings include 64 enrollments, sixteen origins/sessions, four sessions per principal, eight peers per session, sixteen peers per principal, 32 total raw sockets, four resident authenticated sockets per enrolled principal across caller instances, 32 requests per principal per second, four pending caller requests, 401,024 request/response bytes and ten-minute sessions. `createCoordinatorFetcher` verifies CA/hostname, permits only its configured origin/endpoint, rejects redirects and closes its owned agent/requests. `stop` destroys accepted sockets and ephemeral authority; stopped coordinators cannot restart. Credentials are host supplied and never emitted by the public example or receipt. Enrolled-principal admission occurs once per authenticated TLS socket before HTTP; requests and keepalive do not acquire another slot. Only the actual native close event releases its slot, including during Stop. The [selected S11 evidence](receipts/2026-10-08-coordinator-principal.json) retains the genuine held-socket OLD failure and four-socket isolation result. Pre-authentication and unenrolled global saturation, aggregate multi-principal exhaustion and handshake CPU fairness remain open; forced TLS resumption has source review but no executed qualification.
 
 `examples/coordinator/https-coordinator.ts` is the real provisioned Node caller. `node --experimental-strip-types tools/qa-https-coordinator.mjs` exercises disposable local certificates and the normal public exports. Its generated offer/answer proves private signaling, without claiming a WebRTC/media session. Browser client certificates, accounts, enrollment/key lifecycle, persistent directories, relay and phone/two-network qualification remain separate.
 
@@ -2469,8 +2471,9 @@ response size before commit. Resource/visibility lifetimes last at most sixty
 seconds and are capped by session/certificate expiry. Reconnect retires generation
 visibility; leave, removal, revocation, host rotation and stop retire their scoped
 authority. Re-enrollment does not restore a removed grant. Persistent/account
-directories, enrollment/key lifecycle, peer-owned publication, browser client
-certificates and physical/two-network qualification remain open.
+directories, enrollment/key lifecycle, browser client certificates and
+physical/two-network qualification remain open. Current peer publication is
+described below.
 
 ## Authorized software-gateway inventory
 
@@ -2735,6 +2738,112 @@ outside this codec. The host must enforce those separately. Full E12/Q02 and
 public distribution remain open. [Exact source/native build evidence](receipts/2026-10-07-structured-telemetry-swift.json)
 records the actual marker regression and remaining limits.
 
+## Selected Kotlin structured telemetry codec
+
+`structured-telemetry-kotlin-jvm/1` supplies `one01.structuredtelemetry` for the
+same selected `structured-telemetry-json2/1` record/table contract above.
+`StructuredTelemetryWire.decode` returns an inert typed sample or `null`;
+encoding validates an owned snapshot and throws a fixed invalid-value error.
+Strict Gson parsing consumes the complete JSON document. Numeric values remain
+distinct from strings and Booleans; optional `ready` retains absence and false.
+
+Build locally with
+`node tools/build-structured-telemetry-kotlin.mjs TREE --sdk-root INSTALLED_CONSUMER --sdk-manifest SDK_MANIFEST`.
+The nine-file package contains a thin library JAR, source, caller, selected
+fixtures/profile and license. Gson 2.11.0 and Kotlin stdlib 2.1.21 are explicitly
+provided external dependencies with pinned hashes; their JARs are not packaged.
+Embedded dependency license declarations record provenance, not complete
+redistribution approval. The builder requires the declared installed dependencies
+and downloads nothing.
+
+On this macOS arm64 host, Kotlin 2.1.21 produces JVM 17 bytecode for the selected
+JDK 21.0.12 runtime. Actual checks cover 171 assertions, five public SDK/native
+reciprocal vectors, wrong-lane rejection, six bounded CLI framing checks and a
+clean extracted thin-module caller. The caller uses the same D/E grammar and
+limits as Swift and checks actual `PrintStream` write failures. No native runtime
+authority, Android/other OS/JDK compatibility or physical effects are established.
+E12 remains open. [Scoped build and consumer evidence](receipts/2026-10-07-structured-telemetry-kotlin.json).
+
+## Selected C structured telemetry codec
+
+`structured-telemetry-c-jansson/1` supplies the same selected record/table
+contract through `one01_structured_telemetry_wire.h`. Decode returns 1 on
+success and leaves the output unchanged on failure. Encode captures a fixed
+sample, validates its owned rows and publishes complete bytes only on success;
+failure sets the encoded size to zero without changing the byte buffer. Caller
+pointers must identify valid, stable, nonoverlapping owned memory.
+
+Jansson 2.15.1 performs complete JSON parsing and encoding after bounded UTF-8
+and depth preflight. This selected producer profile rejects duplicate keys.
+Boolean, number and absent values remain distinct. The standalone D/E caller
+uses the same bounds as Swift/Kotlin, preserves finite subnormal values and
+returns exit 2 for an actual closed output pipe.
+
+Build locally with
+`node tools/build-structured-telemetry-c.mjs TREE --sdk-root INSTALLED_CONSUMER --sdk-manifest SDK_MANIFEST`.
+The ten-file package contains its own static module, header, source, tests,
+caller, schemas/fixtures, profile and license. Jansson headers/library are
+provided externally and pinned; none are redistributed in this package.
+Actual C11/Apple Clang 21/macOS arm64 checks cover eight native groups, five
+public SDK reciprocal vectors, the public finite minimum, six CLI framing
+checks, closed output and a clean extracted caller. Other platforms, ABIs,
+schemas, runtime authority, physical effects and full E12 remain open.
+[Scoped native and consumer evidence](receipts/2026-10-07-structured-telemetry-c.json).
+
+## Explicitly remembered past devices
+
+The reference application's `/devices` flow keeps connections temporary by
+default. An explicit reviewed action can remember only a past reported name and
+public key ID in this browser. **Show remembered devices** reads those records;
+they always appear offline. **Pair again** starts a fresh pairing with complete
+code comparison and separate resource approval. Saved names and changing keys
+do not establish physical-device identity or restore connection authority.
+
+The selected local store caps records at eight and its document at 8 KiB. A
+fixed native Web Lock serializes reviewed changes; denial, quota, conflicting,
+corrupt and newer-format data have explicit recovery outcomes. Corrupt data is
+preserved. Cancellation retains issued storage/lock work until it returns.
+**Forget remembered device** removes the selected public metadata separately
+from a current connection. No offer, answer, credential, descriptor, preview,
+input, grant or connection is saved.
+
+The implementation passes 24 focused cooperative source checks. Native browser
+storage/lock and broader interaction journeys are deferred; this is not account
+enrollment, physical identity continuity or whole U02 completion.
+[Scoped implementation evidence](receipts/2026-10-07-remembered-devices.json).
+
+**Review public metadata export** shows the exact past names and public pairing
+IDs. A separate confirmation within 30 seconds prepares a bounded version 1 JSON
+copy for manual selection/copying. **Restore remembered names** accepts that
+manual text, reviews every entry and requires a second confirmation. Restore
+works only when the dedicated remembered list is empty and its exact stored
+revision has not changed. It never merges, replaces or resets saved data.
+
+The same eight-record/8 KiB store/parser and exclusive Web Lock protect restore.
+Expired reviews, cancellation, unavailable storage, quota and conflicts preserve
+existing data. Restored records stay offline and require fresh pairing and input
+approval. No clipboard, file picker, account backup or connection authority is
+added. The extended flow passes 34 focused cooperative source checks; native
+browser and broader UI checks remain deferred.
+[Scoped backup/restore evidence](receipts/2026-10-07-remembered-public-backup.json).
+
+## Structured readings in enrolled device previews
+
+The `/devices` preview derives record and table choices from each current,
+authenticated descriptor. Review the fields and units before approving selected
+resources. Readings use readable column names; missing optional values display
+as missing, while a reported false value displays as Off.
+
+The selected preview supports the existing schema version 1 scalar, boolean and
+enumerated reading fields, with six fields and eight rows at most. It retains
+bounded projected cells only during current approval, and clears them on stop,
+expiry or disconnect. Commands, jobs and unsupported schemas remain unavailable.
+Remembered names and public metadata backups never include readings or grants.
+
+The implementation passes 19 focused cooperative source checks. NativeRTC,
+broader UI and device checks are deferred; full U02/U03 acceptance remains open.
+[Scoped source evidence](receipts/2026-10-07-enrolled-structured-preview.json).
+
 ## Capture-to-output timing
 
 `createPipelineTimingCollector({ capacity })` records complete local timing traces
@@ -2834,17 +2943,28 @@ filesystem and IndexedDB callers. The registered-copy caller is checked with
 `node tools/qa-owner-backup-copies.mjs --installed MANIFEST INSTALLED_CONSUMER CALLER_TREE`;
 its current qualification and limits remain in the checklist evidence.
 
-## Pending delivery limits by authorized scope
+## Pending delivery limits by authorized scope and principal
 
 `RuntimeOptions.maxPendingDeliveriesPerScope` optionally bounds actual pending
-provider work for the exact principal/application/session tuple. Select an integer
-from one to `maxPendingDeliveries`; omission preserves the existing global policy.
+provider work for the exact principal/application/session tuple.
+`maxPendingDeliveriesPerPrincipal` additionally aggregates all approved app/session
+tuples for one exact principal. Select an integer from one to
+`maxPendingDeliveries` for either cap; omission preserves the existing global
+policy. The principal cap also rejects explicit non-number values.
+
+For example, global capacity four, scope capacity one and principal capacity one
+keep an owner with several approved sessions from reserving all four slots.
+Other approved principals can use the remaining global capacity. These are host
+admission choices; they grant no route authority or guaranteed service across
+separately authorized identities.
+
 Logical cancellation or route replacement retains its reservation until the raw
-provider result settles. Other approved scopes can use remaining global capacity.
-The existing rotating recipient order applies to both reliable and latest delivery.
-This is a work-admission bound for cooperating providers; it does not sandbox
-callback CPU or enforce byte quotas, and enough distinct approved scopes can still
-occupy the global capacity. F05 remains partial.
+provider result settles. The existing rotating recipient order applies to both
+reliable and latest delivery. The [selected source and fresh installed SDK
+checks](receipts/2026-10-08-principal-delivery.json) cover settlement and replacement.
+These bounds apply to cooperating returned provider work; they do not sandbox
+callback CPU. Optional encoded-envelope byte admission is described below. Enough
+distinct approved principals can still occupy global capacity. F05 remains partial.
 
 ## Live inventory for selected resources
 
@@ -2889,7 +3009,7 @@ remain independent. Unsupported or denied reviews preserve the current connectio
 an accepted replacement retires it before issuing the new socket. Cancellation,
 expiry, enrollment loss, grant abort or endpoint disappearance retires the owned
 peer and transport. Recovery requires a fresh review and explicit grant, with no
-automatic reconnect. Native or host-supplied TLS socket capability must be available.
+automatic reconnect. Native or host-supplied TLS socket capability must be available. Successful cancellation or Disconnect during a provisional review/connect callback fences later review publication, approval and socket issuance. Withdrawal reserves admission through synchronous Stop notifications, native close and timer cleanup; nested review/connect report busy until it returns. A fresh explicit review afterward remains possible, while cancelling a replacement preserves the current connection.
 
 The controller retains sixty-four redacted transitions, one logical pending
 connection and one timer. It caps reviews at eight per second and connection
@@ -2904,7 +3024,7 @@ approval enables actual Node RSS or browser viewport measurements, after separat
 receiver/runtime resource approval. Run
 `node tools/qa-invitation-connection.mjs --sdk-root INSTALLED_CONSUMER` for the
 owned local TLS callers. This does not implement enrolled-agent discovery, optical
-QR scanning, account identity or physical phone/network qualification.
+QR scanning, account identity or physical phone/network qualification. Add `--node-only` to exercise the actual Node TLS/P256/RSS path while browser execution is deferred. [Selected cancellation evidence](receipts/2026-10-08-invitation-admission.json) records97 source checks,13 fresh installed public Node checks, immutable genuine OLD witnesses and repaired source review. The owned QA credential/listener cleanup covers setup failures; the full-tool native OpenSSL failure path is separately verified.
 
 ## Selected Linux headless client
 
@@ -3358,7 +3478,7 @@ performs availability/policy readback with zero native camera opens. Physical
 selection, permission enforcement, camera controls and complete N02/D03/V01
 qualification remain open.
 
-### Selected camera reported zoom setting
+### Selected camera reported settings
 
 The same `BrowserCameraProvider` adds `inspectControls(activation)`,
 `bindZoom(activation, { purpose })` and `controlStatus()`. An activation must be
@@ -3367,7 +3487,8 @@ no raw track, second camera owner or automatic permission request is exported.
 
 Inspection reports coherent finite `getCapabilities().zoom` range/step and
 `getSettings().zoom`. Absent, malformed or changing facts cannot become a working
-control. Focus, exposure, pan and tilt remain unsupported. Capability reports
+control. Focus and exposure remain unsupported. Pan and tilt are offered only when the
+current owned track reports a finite coherent numeric range and setting. Capability reports
 are availability facts; they do not grant effects or prove optical magnification.
 
 `authorizeControl` is optional and defaults to denial. A grant must retain the
@@ -3395,10 +3516,13 @@ clock; private epoch, intrinsic signal, capture/control/operation deadline,
 age and cadence checks then fence native issuance. This is an honest cooperating
 host contract, with no atomic all-readiness or hostile-host authentication claim.
 
-Only `{ advanced: [{ zoom: value }] }` is issued. One control sink, one native
+Only the fixed selected-axis constraint `{ advanced: [{ zoom: value }] }`,
+`{ advanced: [{ pan: value }] }` or `{ advanced: [{ tilt: value }] }` is issued. One control sink, one native
 Promise reservation, thirty-two attempts, two commands per second, 250 ms age,
 sixteen history entries and one timer are admitted. Values use the reported step
-within 0–1,024, with at most 1,024 positions and minimum step 0.000001. Control
+within 0–1,024 for zoom and −1,024–1,024 for reported pan/tilt, with at most
+1,024 positions and minimum step 0.000001. These are opaque API settings with
+unit `1`; no angle, physical movement or accuracy is inferred. Control
 consent is bounded by the original capture deadline; logical native wait is at
 most five seconds and narrows to the actual delivered operation deadline.
 
@@ -3418,8 +3542,130 @@ and event/command routes have separate grants and bounded registrations.
 An actual owned canvas stream verifies decoded red/blue RGBA8 pixels and reports
 zoom unsupported with zero constraints. An explicitly labeled software track
 verifies API-shaped setting and held-Promise cleanup. Four source and four ordinary
-installed Chromium/WebKit runs pass twelve checks each; neither qualifies native
+installed Chromium/WebKit runs at the earlier zoom candidate passed twelve checks
+each; those historical checks do not qualify this new pan/tilt candidate or native
 camera zoom, physical optics, focus/exposure/PTZ or the complete V05 scope.
+
+`bindPan` and `bindTilt` require the same issued activation and independent
+control approval as `bindZoom`. They declare `camera-pan` / `camera-tilt` and
+`media:camera-pan-setting/1` / `media:camera-tilt-setting/1`. Unsupported pan/tilt
+retain their original `unsupported` string; supported reports are immutable
+range/current snapshots. All three axes share one control binding and raw slot.
+Changing reported facts invalidates the selected control before issuance.
+
+The packaged caller adds `connectPan`, `connectTilt`, `setPan`, `setTilt` and
+`runSoftwareCameraPanTilt`. The current source suite passes 80 checks, including
+the existing zoom cases. A fresh seven-package/405-file SDK builds, and an
+ordinary offline Node installation passes the existing zoom and new pan/tilt
+cooperative caller fixtures. Native camera, OS PTZ permission, physical effects
+and broader UI/device qualification remain open.
+The caller accepts `routeLeaseMs` as an integer from 1 through 30,000, defaulting
+to 5,000. This requests only the initial route window. Actual grants and the
+original capture/control consent may shorten it; no consent is renewed.
+Invalid options are rejected before caller runtime/provider construction.
+[Scoped software build evidence](receipts/2026-10-07-camera-pan-tilt.json).
+
+### Local player camera task
+
+`/connections/camera` reuses the existing camera provider and reviewed control
+caller. Arrival is inert. Explicit inventory gives numbered private choices;
+capture, frame source and local display require separate approval before Start.
+A preview lasts at most 30 seconds within the original selection and consent
+deadlines. Nothing renews automatically. The canvas is an honestly labelled
+scaled 8×8 sample, with no saving or sending.
+
+Reported zoom/pan/tilt facts determine available settings. One axis per capture
+requires separate native-setting, page-command and target-invocation approval.
+Returned settings are API reports only. Stop, hiding, focus loss, owner abort or
+leaving clears the preview and retires consent. An actually issued native return
+remains owned until the existing caller close settles; replacement is blocked
+while that work is pending. Capture and native permission are separate.
+
+Sixteen focused cooperative source checks cover these selected software paths,
+including a delayed approval that must fit the original selection deadline.
+The combined local type check, lint and fresh application build pass.
+Native/browser/device interaction and full U03/U10/U11/V05 qualification
+remain separate.
+[Scoped implementation evidence](receipts/2026-10-07-camera-player.json).
+
+### Local player microphone levels
+
+`/connections/microphone` reuses the selected microphone provider for digital
+average and peak signal levels only. Explicit inventory and numbered current
+choices precede separate capture, source-reading and local-display approvals.
+No default capture requests browser permission to populate hidden IDs. Empty
+inventory has a browser-access recovery path. Nothing opens on arrival.
+
+The original 30-second setup deadline starts before inspection and cannot be
+extended by later approvals. One real route supplies one immutable current
+record projection; missing readings and supplied zero remain distinct. Stop,
+background, loss and expiry retire authority and clear the projection. Actual
+provider close and route settlement remain owned before retry. Native cleanup
+failures quarantine the page; a clock callback cannot overwrite an issued run.
+No PCM, recording, playback, remote recipient or acoustic accuracy is claimed.
+
+Twenty-one focused cooperative source checks pass. Actual browser/device/UI
+qualification and complete U03/U10/U11 remain open.
+[Scoped software implementation evidence](receipts/2026-10-07-microphone-player.json).
+
+### Local player brief screen preview
+
+`/connections/screen` reuses the existing screen preview pipeline without a new
+capture owner. Arrival and review are inert. Three separate approvals allow
+capture, frame subscription and display on this page. The explicit Choose action
+invokes the browser chooser synchronously. The original 10-second permission
+window includes chooser time, cannot renew, and narrows the existing route.
+
+Capture readiness does not prove current display. Only an actual valid latest
+sample within 250 milliseconds of its JavaScript retrieval time and current
+permissions makes the 8×8 scaled sample visible. Missing surface/cursor facts
+remain unknown. No audio, recording, saving, sending or remote control is added.
+Stop, background, resize, loss and expiry clear the output and require a fresh
+review. Actual held native returns remain owned through close; cleanup failures
+quarantine retry.
+
+Seventeen focused cooperative software checks pass. Native OS chooser/capture,
+browser/device/UI and full U03/U11/V07 qualification remain open.
+[Scoped implementation evidence](receipts/2026-10-07-screen-player.json).
+
+### Local player sound
+
+`/connections/audio` reviews one generated page tone, its private connection and browser sound separately, then requires explicit Start. Arrival and review create no audio. The same opaque five-second review cannot renew its deadline; the ten-second active deadline starts at the first approved-start clock reading before any trusted/native callout. It includes preparation and clips all owner/runtime grants.
+
+The caller uses the existing private application-audio SDK. It owns the low-gain tone producer and original track/context; the SDK owns routing clones/context and private output stream. The page owns an exact media element, including after its React ref is cleared. Stop synchronously pauses/detaches it and retires authority. Readiness, play and close returns hold admission until actual settlement; cleanup failures quarantine recovery before observer notification. Review-only retirement also stays reserved through timer cleanup/status callbacks, and owner close immediately records closed state.
+
+Four starts,64 actions,1000 task callbacks, one20ms active task timer, one source/output/route, four runtime registrations and one pending delivery bound this caller. Volume0–0.5 and mute remain inside the approved scope; hiding/unfocusing, loss and expiry stop it. A non-speech tone has an equivalent visible description and keyboard controls; no speech-caption track is fabricated. No speaker/headphone choice, remote audio, microphone or recording is offered. Selected48kHz/two-channel graph configuration is not emitted PCM or physical hearing evidence.
+
+[Selected implementation evidence](receipts/2026-10-08-audio-player.json) retains38 focused checks with123 actually loaded public dependencies, genuine OLD failures, original source BLOCKs and current CLEAR, types/lint/fresh local build and2selected audio/gamepad SSR checks. Browser gesture/playback, physical audio, manual accessibility and full V03/U03/final-candidate acceptance remain open.
+
+### Local player gamepad readings
+
+`/connections/gamepad` uses the existing selected browser provider and public runtime. Arrival and reading selection instructions are inert. Inventory exposes actual slots and counts; an opaque selected handle remains pinned through the five-second capture/input/display review. Access begins only after all three permissions and explicit Start, lasts at most ten seconds from the first approved-start clock reading, and never renews during setup or routing.
+
+The page shows current normalized axes and declared button reports without inferring physical mappings. The first report can show a button already held. Button values describe the last pressed/released report, not continuous pressure or when a physical press began. Stop, loss, background, expiry and owner close withdraw routes and clear readings; withdrawal remains reserved through status callbacks. Failed trusted cleanup blocks retry.
+
+Four starts,64 actions,1000 total finite review/active callbacks, one20ms task timer (1ms with pending reliable work), two routes and64 queued/pending work bound this caller. A real32-button software burst drains within the unchanged100ms producer event deadline. [Selected software evidence](receipts/2026-10-08-gamepad-player.json) records39 focused checks with123 actually loaded public dependencies, type/lint/fresh local build and1selected SSR regression. Broader browser, physical gamepad, assistive-technology and full checklist qualification remain open.
+
+### Local player feedback presets
+
+`/connections/feedback` derives Tap, Impact and Warning from the existing
+browser haptic profile. Arrival is inert. Page preset requests and browser
+feedback output need separate current approvals. The original 30-second setup
+scope begins at first review and cannot renew. Each button sends one explicit,
+bounded request; no custom intensity or duration is added.
+
+API return, dispatch and physical effect remain separate. A pending request
+cannot display the helper cancellation placeholder or a preceding preset result.
+Stop, background, expiry and owner abort withdraw authority before callbacks.
+Actually issued returns remain owned through cleanup. Clock reentry cannot
+replace an approved run. Deferred cancellation is outside the synchronous port
+contract, quarantines retries and remains owned until its actual return.
+
+Twenty-three focused cooperative source checks pass. The combined camera,
+microphone, screen and feedback candidate passes type checking, lint and a fresh
+local application build. Browser/device, physical feedback and full
+I08/U03/U10 qualification remain open.
+[Scoped implementation evidence](receipts/2026-10-07-feedback-player.json).
 
 ### Selected BLE switch output
 
@@ -3841,3 +4087,87 @@ seven tarballs; ten clean consumer checks pass. The ordinary installed public
 caller adds nine checks with actual owned Worker exit observed. Existing matching
 consumer migrations and experimental helpers follow the release compatibility
 policy. [E01 evidence](receipts/2026-10-07-runtime-settlement.json).
+
+
+## Encoded-envelope delivery byte admission
+
+`RuntimeOptions.maxPendingDeliveryBytes` bounds the sum of outstanding raw apply
+reservations, measured as UTF-8 `JSON.stringify({observation, options: copied})`
+bytes. The observation includes the runtime's source, sequence, timestamps and
+clock; options and provenance consume their actual encoded space. A publication
+still fits the existing 4096-byte envelope limit. The global default is 4096 times
+`maxPendingDeliveries`; an explicit value is an integer from 1 to 16777216.
+`maxPendingDeliveryBytesPerPrincipal` defaults to the global byte cap and accepts
+an integer from 1 through that cap. Explicit non-number or non-integer budgets
+fail closed.
+
+Each actual fanout delivery reserves its original envelope cost before consuming
+a latest slot or reliable FIFO head. Count, exact scope, exact case-sensitive
+principal and byte limits all apply. A blocked reliable head stays accepted;
+smaller work on another route may progress. Property reads retain the original
+publication cost. Stop, revoke, replacement and runtime close keep reservations
+until actual raw return settlement; synchronous return/throw and asynchronous
+fulfillment/rejection release them once. These are encoded-envelope reservations,
+not total JavaScript heap, queued snapshot, transport, CPU or service-capacity
+limits. F05 remains open for broader acceptance.
+
+## Peer-owned current directory publication
+
+The source Node `createPrivateDirectoryClient` supplies explicit `publish`,
+`update` and `unpublish`; the packed model exports
+`parsePrivateDirectoryPublication`. Publish one descriptor whose ID equals the
+current enrolled device, with its current peer generation, selected existing
+capability IDs, original expiry and `consent: true`. Updates require a strictly
+higher descriptor revision and retain the original expiry. Removal pins the exact
+generation and revision; a bounded current-lease revision floor rejects replay.
+
+Publication gives recipients no visibility. The host must separately select
+allowed resource IDs, and runtime registration and operation grants remain
+independent. Update, removal, expiry, reconnect, departure and session retirement
+clear prior visibility. An owner explicitly unpublishes a lost resource; this
+metadata API does not probe physical availability. The existing startup catalog,
+8 KiB requests, 64 KiB responses, sixteen resources, eight capabilities and eight
+current peer/visibility records remain bounded. The Hub package is a source Node
+API, separate from the seven packed SDK packages.
+
+## Discovered receiver review with independent enrollment
+
+`InvitationConnectionOptions.discoveryEnrollments` optionally binds at most eight
+exact observation/identity candidate snapshots to independently provisioned
+endpoint IDs and a current generation callback. The host supplies that mapping
+from its trusted enrollment review. Candidate receipt IDs, scope and expiry are
+compared to the immutable mapping; discovered bytes never select a URL or key.
+
+`reviewDiscovered(candidate, invitationText, {source, endpointId})` explicitly
+reviews both the candidate pins and the enrolled endpoint/key. Arrival and review
+are inert. Connection still needs a separate exact connection grant, bilateral
+P256 authentication and independent source/resource/runtime grants. Generation,
+receipt scope, candidate expiry, endpoint currentness and the original invitation
+and grant deadlines remain checked throughout held approval, socket issuance and
+connected use. Loss or Stop fences late work and requires fresh explicit review
+and grants for retry. There is no automatic scan, fetch, connection or reconnect.
+The existing reading example exposes `reviewDiscovered`; optical QR, native LAN
+and device qualification remain deferred.
+
+## Bounded Node pure processor execution
+
+The explicit `@101/device-runtime/node` entry exports
+`createNodeProcessorExecutor`. It verifies the existing signed dependency-free,
+asset-free compute-local processor release and interprets a closed JavaScript
+subset without evaluating guest JavaScript. The existing temperature-band source
+runs unchanged. Unsupported syntax, host globals, imports, prototype access and
+general calls are rejected before worker launch. The synchronous trusted registry
+remains available; the new `process` and `reset` APIs return Promises.
+
+Guest values, record metadata and byte allocations occupy one fixed
+`maxMemoryBytes` arena. This guest-data bound excludes source/parser/AST, host
+dictionaries, Worker/V8 heap and RSS. Source, tokens, AST depth, names and output
+transfer also have separate closed bounds. Interpreted instruction/time checks
+and parent termination bound construction, process and reset; the Worker supplies
+scheduling and preemption. It is not an arbitrary-JavaScript security sandbox.
+Current owner approval gates output, and `close()` fences authority immediately
+but awaits actual Worker exit. Runtime resource grants remain separate. Generic
+connectors, dependencies/assets, native privileges, total RSS and full S14
+qualification remain open.
+
+[Scoped four-lane local software evidence](receipts/2026-10-08-local-software.json) retains genuine OLD witnesses, the independent source review and matching public callers from the seven-package SDK (186 inputs, 411 installed files). The final Node-only consumer records seven checks and strict NodeNext/Bundler types. All four checklist rows and broader qualification remain open; final candidate gates have separate retained evidence.

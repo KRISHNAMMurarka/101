@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "profile": "local-selected-microphone-levels/1",
+  "route": "/connections/microphone",
+  "result": "Selected local microphone task built;21 focused source checks and exact combined type/lint/fresh application build PASS. Browser/device and complete qualification remain deferred/open.",
+  "sourceTree": "0c5d03502278e1e130be9fabf562b16818d8c428",
+  "sourceSha256": {
+    "app/connections/microphone/microphone-task.ts": "3722fb427c0961a9546e736bf0bd9b67c1f7d134017d14f49c5b75b3b331fc43",
+    "app/connections/microphone/microphone-task.test.ts": "717161aea833d7ba48d958542ea1f014e09a61210a504f51d50c83305130e237",
+    "app/connections/microphone/MicrophoneView.tsx": "09b39fd05914447025d618d489ea21bc332a300fdd21562d27eb3cdbed804d81",
+    "app/connections/microphone/page.tsx": "b74e163578b6eadc5234a121daa54ac779250f91fbfcd92a831b9249d13ab0f7",
+    "app/connections/ConnectionsView.tsx": "6f3405470c9c5d66244fc8fbf28909d12bec73fa815e9644f9eaa867ada4d178"
+  },
+  "sourcePacket": {
+    "path": "/tmp/101-microphone-player-source-ready.json",
+    "sha256": "ed0d499a2413b79e90460e345c2ad4b17298d3c179a56851894250861e1d426d"
+  },
+  "originalTestsFirst": {
+    "path": "/tmp/101-microphone-player-tests-first.json",
+    "sha256": "aa00d056434f0240a925a2fbc2b63adae8dfb22f3e7f4b046962d27a09488134"
+  },
+  "correctedTestsFirst": {
+    "path": "/tmp/101-microphone-player-tests-first-v2.json",
+    "sha256": "0d3c284142ffa8bbf282c1a5f06927efa08819aa645fdb47240d1310ec28697f"
+  },
+  "meaningfulFeatureOld": {
+    "path": "/tmp/101-microphone-player-feature-old.json",
+    "sha256": "8f407811a1acb974230f8de80047826187b49069a42a62025f33ba0dc0cf35a5"
+  },
+  "historicalFirstFocused": {
+    "path": "/tmp/101-microphone-player-source-focused.json",
+    "sha256": "a2d2bfd3918ba65f285cf5d199f3435201de9ee33f4ca4a30cbae54cc0072bd4"
+  },
+  "originalSourceBlock": {
+    "path": "/tmp/101-microphone-player-e09-source-review.json",
+    "sha256": "e00e345f05ce64c59187f1b689b18b9161d670050ab9a5f8f82ef38f211351f2"
+  },
+  "meaningfulReviewOld": {
+    "path": "/tmp/101-microphone-player-review-old.json",
+    "sha256": "406107e5e6006cb45b36b4faa7d683714b5c0267d999b9af85e32f4064a3900c"
+  },
+  "reviewTestsFirst": {
+    "path": "/tmp/101-microphone-player-review-tests-first.json",
+    "sha256": "d8110a5cca6ae0ff8a4b58fc6c773a7830fd7dbd651146805653df326d642b99"
+  },
+  "sourceRepair": {
+    "path": "/tmp/101-microphone-player-review-source-repair.json",
+    "sha256": "e21ef0189ac83f72f23ce444afa128ad9862ce38aba5f9c7ab6b92c15093a2bc"
+  },
+  "viewStateRepair": {
+    "path": "/tmp/101-microphone-player-pending-view-repair.json",
+    "sha256": "5ddfb34e8c0e8221127940368067c7571019140ada10860548543f3cdad108fc"
+  },
+  "focused": {
+    "path": "/tmp/101-microphone-player-source-review-fixed.json",
+    "sha256": "3d8c7750c41f5a5d3303d74b9bc25f644f1c3374d2cdcd2affe69dd31d91cde9"
+  },
+  "focusedCounts": {
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "changes": [
+    "Inert task; explicit current provider-issued numbered input choices with truthful empty IDs/no default capture bootstrap. Capture, source subscribe and local display write are separate private current reviewed approvals.",
+    "Original consent end is pinned before native inspection and never renewed. Actual independently granted runtime envelope becomes one immutable bounded readings projection; absence remains distinct from zero. Display labels digital average/peak signal levels0..1, no acoustic calibration claim.",
+    "Stop/background/provider loss/expiry clears current output and retires authority. Stable actual close holds provider/runtime and late native-shaped inspection/open/resume/context close. Actual final provider cleanup failures quarantine retry; post-clock admission recheck preserves one real provider under reentry.",
+    "Fixed player loading/denial/unsupported/empty/settling states, ordinary keyboard/native controls/readable status and existing monochrome styles; unmount finally retires owner/actual task closure."
+  ],
+  "limits": {
+    "attempts": 4,
+    "userActions": 64,
+    "choices": 8,
+    "originalCaptureMaxMs": 30000,
+    "reviewMs": 5000,
+    "taskTimerMs": 100,
+    "timerCallbacksPerRun": 360,
+    "routes": 1,
+    "sinks": 1,
+    "latestProjection": 1
+  },
+  "sourceReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-microphone-player/source-review",
+    "status": "CLEAR",
+    "scope": "Corrected5source passive review CLEAR; original2sourceBLOCK and2genuine failing actual-provider regressions retained. Current21focused source checks pass; application/browser/device/fullgates remain separate.",
+    "path": "/tmp/101-microphone-player-e09-source-supplement.json",
+    "sha256": "ba1572befda45c5613986065ed09c62462e59ae79160e4e421527da8ce964359",
+    "historicalNavigationSupplement": {
+      "recordRef": "refs/codex/evidence/2026-10-07-screen-player/source-review",
+      "sha256": "0a3d19ae7241eefc94a682d34c86b01f0900bf90e948c19225e486e01fc95458",
+      "navigationSha256": "d71a5eb0c3ee53809f41c79f6bfc6df159e3276a92af2365fc4e0d4edeae9a7e",
+      "scope": "Tiny final shared navigation camera/microphone/screen links reviewed separately from historical page source review pins."
+    },
+    "navigationSupplement": {
+      "recordRef": "refs/codex/evidence/2026-10-07-feedback-player/source-review",
+      "status": "CLEAR",
+      "navigationSha256": "6f3405470c9c5d66244fc8fbf28909d12bec73fa815e9644f9eaa867ada4d178",
+      "scope": "Final shared camera/microphone/screen/feedback local links; separate from historical page source review pins.",
+      "path": "/tmp/101-feedback-player-e09-status-supplement.json",
+      "sha256": "9490e4f3f40b054b63a40531710679a223ab6099c0f23f0793410ec2a2df5c7a"
+    }
+  },
+  "softwareBuild": {
+    "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/software-build",
+    "status": "PASS",
+    "scope": "Exact49path frozen selected software candidate type/lint/fresh local application build. Subsequent changes record results only in documentation; product source inputs remain identical. No rendered/browser/device/fullunit acceptance. Historical five native startup/IPC fullunit failures remain unresolved.",
+    "path": "/tmp/101-local-player-build-gates-final.json",
+    "sha256": "f76f251afb62dec4b4385ec9651eba5812fd285f7dd37fca190a1718a8937213",
+    "tree": "5db7351ad4992c40a57a2ab9088d0a76157a580e",
+    "checks": [
+      {
+        "name": "types",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      },
+      {
+        "name": "build",
+        "exitCode": 0,
+        "timedOut": false,
+        "actualOwnedProcessGroupSettled": true
+      }
+    ],
+    "retention": {
+      "recordRef": "refs/codex/evidence/2026-10-07-local-media-players/build-literal-record",
+      "path": "/tmp/101-local-player-build-retained.json",
+      "sha256": "77cd31500391d3988822fb7fca46657b7aa7c220ece12b4d6e26b1a004bceed8",
+      "literalPaths": 60,
+      "literalFiles": 60
+    }
+  },
+  "retention": {
+    "recordRef": "refs/codex/evidence/2026-10-07-microphone-player/literal-record",
+    "status": "RETAINED",
+    "path": "/tmp/101-microphone-player-retained.json",
+    "sha256": "9a769956d80319cb141b04de75e8cbb90eea9f71f5c17eb976c4881df3cbcbe6",
+    "literalPaths": 169,
+    "uniquePaths": 162
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-kotlin-remembered-devices/integration-gates",
+    "status": "FAIL",
+    "scope": "Prior23path complete2404/2409 unit result with5existing native startup/IPC failures remains preserved; no current fullgate pass or commit."
+  },
+  "scopeLimits": [
+    "Cooperative source software ports/public actual SDK graph only; no native microphone, OS/browser permission, sound/acoustic or physical-device positive.",
+    "No PCM, recording, playback/speaker, saved samples, remote recipients, native labels/IDs in player state or automatic native permission bootstrap.",
+    "Browser/native/UI/accessibility/responsive and whole U03/U10/U11 qualification remain OPEN/deferred. No support rows accepted.",
+    "Original wrong relative import v1 preserved but was corrected by static inspection before any execution and never counted as meaningful OLD. Original19green and2sourceBLOCK/failing genuine review cases remain retained."
+  ],
+  "taskDisposition": {
+    "U03": "PARTIAL/OPEN",
+    "U10": "PARTIAL/OPEN",
+    "U11": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0
+}

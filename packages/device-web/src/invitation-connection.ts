@@ -1,4 +1,6 @@
 import { SecureWebSocketTransport } from '@101/transport-websocket';
+import { assessDiscoveryCandidate, parseDiscoveryCandidate } from '@101/device-model';
+import type { DiscoveryCandidate, DiscoveryScope } from '@101/device-model';
 import type { WebSocketPort } from '@101/transport-websocket';
 import { AuthenticatedResourcePeer, authenticatedPeerScope } from './authenticated-peer.ts';
 import { decodeReceiverInvitationInput, receiverInvitationCurrent } from './invitation.ts';
@@ -16,6 +18,12 @@ export interface InvitationEndpoint {
   readonly createSocket?: (endpoint: string, subprotocol: string) => WebSocketPort;
 }
 export interface InvitationReviewHandle { readonly kind: 'invitation-review' }
+/** Trusted host enrollment binds an exact inert candidate snapshot and current generation
+ * to one independently provisioned endpoint/key. Discovered bytes cannot create this binding. */
+export interface InvitationDiscoveryEnrollment {
+  readonly endpointId: string; readonly candidate: DiscoveryCandidate; readonly generation: number;
+  readonly isCurrent: () => boolean;
+}
 export interface InvitationConnectionHandle { readonly kind: 'invitation-connection' }
 export interface InvitationConnectionScope {
   readonly ownerId: string; readonly endpointId: string; readonly endpoint: string; readonly remoteKeyId: string;
@@ -31,11 +39,13 @@ export type InvitationConnectionResult<T = undefined> = Readonly<{ ok: true; val
 export interface InvitationConnectionOptions {
   readonly ownerId: string; readonly identity: EndpointIdentity; readonly crypto: EndpointCrypto; readonly now: () => number;
   readonly endpoints: readonly InvitationEndpoint[];
+  readonly discoveryEnrollments?: readonly InvitationDiscoveryEnrollment[];
   readonly authorizeConnect: (scope: InvitationConnectionScope) => InvitationConnectionGrant | undefined | Promise<InvitationConnectionGrant | undefined>;
 }
 export interface InvitationConnectionPreview {
   readonly endpointId: string; readonly endpoint: string; readonly remoteKeyId: string; readonly invitation: ReceiverInvitation;
   readonly source: 'manual' | 'link' | 'qr'; readonly backend: 'host-socket' | 'native-websocket' | 'unavailable';
+  readonly discovery?: Readonly<{ candidateId: string; scope: DiscoveryScope; generation: number; expiresAt: number }>;
 }
 export interface InvitationConnectionSnapshot {
   readonly state: 'unknown' | 'reviewing' | 'connecting' | 'connected' | 'unsupported' | 'expired' | 'interrupted' | 'closed';
@@ -46,13 +56,17 @@ export interface InvitationConnectionSnapshot {
 export interface InvitationConnectionController {
   /** Manual JSON, copied fragment link and QR-decoded text are inert until explicitly reviewed and connected. */
   review(input: string, choice: { source: 'manual' | 'link' | 'qr'; endpointId: string }): InvitationConnectionResult<InvitationReviewHandle>;
+  /** Explicit review of a discovered candidate AND invitation; requires the independent host mapping.
+   * No scanning, endpoint fetching, connection or resource permission is implied. */
+  reviewDiscovered(candidate: unknown, input: string, choice: { source: 'manual' | 'link' | 'qr'; endpointId: string }): InvitationConnectionResult<InvitationReviewHandle>;
   connect(review: InvitationReviewHandle): Promise<InvitationConnectionResult<InvitationConnectionHandle>>;
   cancel(review: InvitationReviewHandle): InvitationConnectionResult;
   /** Issued authenticated facade only. This does not supply registration, resource approval or runtime route grants. */
   connection(handle: InvitationConnectionHandle): AuthenticatedResourcePeer | undefined;
   disconnect(): void; sweep(): void; snapshot(): InvitationConnectionSnapshot; close(): void;
 }
-interface Review { readonly handle: InvitationReviewHandle; readonly target: InvitationEndpoint; readonly preview: InvitationConnectionPreview }
+interface DiscoveryBinding extends InvitationDiscoveryEnrollment { readonly pin: string; readonly expiresAt: number }
+interface Review { readonly handle: InvitationReviewHandle; readonly target: InvitationEndpoint; readonly preview: InvitationConnectionPreview; readonly discovery?: DiscoveryBinding }
 interface Attempt {
   readonly review: Review; readonly handle: InvitationConnectionHandle; readonly scope: InvitationConnectionScope;
   readonly abort: AbortController; readonly wallDeadline: number; wallExpiry: number;
@@ -80,13 +94,19 @@ function sameScope(value: unknown, scope: InvitationConnectionScope): boolean {
   try { const copy = data(value, Object.keys(scope)); return Object.keys(scope).every(key => copy[key] === scope[key as keyof InvitationConnectionScope]); } catch { return false; }
 }
 const wallTime = () => performance.now();
+function candidatePin(candidate: DiscoveryCandidate): string {
+  const { schemaVersion, id, scope, expiresAt, recovery, evidence } = candidate;
+  return JSON.stringify({ schemaVersion, id, scope: { kind: scope.kind, id: scope.id }, expiresAt,
+    recovery: { action: recovery.action, hint: recovery.hint }, evidence: evidence.map(e => ({ stage: e.stage, kind: e.kind,
+      candidateId: e.candidateId, scope: { kind: e.scope.kind, id: e.scope.id }, receiptId: e.receiptId, at: e.at, expiresAt: e.expiresAt })) });
+}
 
 /** A source-side owner for one independently enrolled WSS receiver. No fetching, discovery,
  * persistent authority, automatic reconnect or implicit resource grant. Imports/construction are inert.
  * Trusted synchronous callbacks and native socket methods are not sandboxed or preempted.
  * At most 32 provider/approval attempts can ever be issued; cancellation does not imply raw work settled. */
 export function createInvitationConnectionController(input: InvitationConnectionOptions): InvitationConnectionController {
-  const options = data(input, ['ownerId', 'identity', 'crypto', 'now', 'endpoints', 'authorizeConnect']);
+  const options = data(input, ['ownerId', 'identity', 'crypto', 'now', 'endpoints', 'authorizeConnect'], ['discoveryEnrollments']);
   if (!id(options.ownerId) || typeof options.now !== 'function' || typeof options.authorizeConnect !== 'function' ||
     !options.identity || !options.crypto || !Array.isArray(options.endpoints) || Object.getPrototypeOf(options.endpoints) !== Array.prototype ||
     options.endpoints.length < 1 || options.endpoints.length > INVITATION_CONNECTION_LIMITS.endpoints ||
@@ -103,7 +123,24 @@ export function createInvitationConnectionController(input: InvitationConnection
     new SecureWebSocketTransport({ endpoint: value.endpoint, side: 'client', now: clock });
     endpoints.set(value.id, Object.freeze({ ...value, endpoint: new URL(value.endpoint).href }) as unknown as InvitationEndpoint);
   }
-  let closed = false, readingClock = false, busy = false, lastNow = -1, issuedAttempts = 0, unsettled = 0;
+  const discoveries = new Map<string, DiscoveryBinding>();
+  if (options.discoveryEnrollments !== undefined) {
+    const values = options.discoveryEnrollments;
+    if (!Array.isArray(values) || Object.getPrototypeOf(values) !== Array.prototype || values.length > INVITATION_CONNECTION_LIMITS.endpoints ||
+      Reflect.ownKeys(values).length !== values.length + 1) reject('invalid');
+    for (let index = 0; index < values.length; index++) {
+      const property = Object.getOwnPropertyDescriptor(values, String(index)); if (!property || !('value' in property)) reject('invalid');
+      const value = data(property.value, ['endpointId', 'candidate', 'generation', 'isCurrent']);
+      if (!id(value.endpointId) || !endpoints.has(value.endpointId) || discoveries.has(value.endpointId) ||
+        !integer(value.generation) || value.generation < 1 || value.generation > 0xffffffff || typeof value.isCurrent !== 'function') reject('invalid');
+      const candidate = parseDiscoveryCandidate(value.candidate);
+      if (candidate.evidence.length !== 2) reject('invalid');
+      discoveries.set(value.endpointId, Object.freeze({ endpointId: value.endpointId, candidate, generation: value.generation,
+        isCurrent: value.isCurrent as () => boolean, pin: candidatePin(candidate),
+        expiresAt: Math.min(candidate.expiresAt, ...candidate.evidence.map(e => e.expiresAt)) }));
+    }
+  }
+  let closed = false, readingClock = false, busy = false, lastNow = -1, issuedAttempts = 0, unsettled = 0, cancellationEpoch = 0;
   let review: Review | undefined, pending: Attempt | undefined, current: Attempt | undefined;
   let outcome = 'unknown', timer: ReturnType<typeof setTimeout> | undefined, sequence = 0, windowAt = -1, reviews = 0;
   const sockets = new Set<object>(), transitions: { sequence: number; event: string }[] = [];
@@ -117,8 +154,15 @@ export function createInvitationConnectionController(input: InvitationConnection
     record.peer?.stop(); if (!record.peer) void record.transport?.disconnect();
     if (!record.completed) { record.completed = true; record.finish(failure(reason)); }
   }
-  function close() { if (closed) return; closed = true; review = undefined; disarm();
+  function close() { if (closed) return; cancellationEpoch++; closed = true; review = undefined; disarm();
     if (pending) retire(pending, 'closed'); if (current) retire(current, 'closed'); event('closed'); }
+  function admission(epoch: number) {
+    if (closed) reject('closed'); if (epoch !== cancellationEpoch) reject('cancelled');
+  }
+  function withdraw<T>(run: () => T): T {
+    const reserved = busy; busy = true;
+    try { cancellationEpoch++; return run(); } finally { busy = reserved; }
+  }
   function time() {
     if (closed) reject('closed'); if (readingClock) { close(); reject('invalid-clock'); }
     readingClock = true;
@@ -132,9 +176,18 @@ export function createInvitationConnectionController(input: InvitationConnection
     const at = time(); let yes = false; try { yes = target.isCurrent() === true; } catch { /* Current host enrollment required. */ }
     const after = time(); return yes && !closed && after < target.expiresAt && at <= after;
   }
+  function discoveryCurrent(binding: DiscoveryBinding | undefined): boolean {
+    if (!binding) return true;
+    const at = time(); let yes = false;
+    try { yes = binding.isCurrent() === true; } catch { /* Independent current generation is required. */ }
+    const after = time();
+    return yes && !closed && after < binding.expiresAt && at <= after &&
+      assessDiscoveryCandidate(binding.candidate, binding.candidate.scope, after, () => true).state === 'identified';
+  }
   function guard(record: Attempt) {
     if (!live(record)) reject(closed ? 'closed' : 'cancelled');
     if (!enrolled(record.review.target) || !live(record)) reject('revoked');
+    if (!discoveryCurrent(record.review.discovery) || !live(record)) reject('revoked');
     const at = time(); if (!receiverInvitationCurrent(record.review.preview.invitation, at)) reject('expired');
     if (wallTime() >= (current === record ? record.wallExpiry : record.wallDeadline)) reject('expired');
     const grant = record.grant;
@@ -184,7 +237,7 @@ export function createInvitationConnectionController(input: InvitationConnection
   function sweep() {
     if (closed) return;
     try { const at = time();
-      if (review && (at >= review.preview.invitation.expiresAt || !enrolled(review.target))) { review = undefined; event('expired'); }
+      if (review && (at >= review.preview.invitation.expiresAt || !enrolled(review.target) || !discoveryCurrent(review.discovery))) { review = undefined; event('expired'); }
       for (const record of [pending, current]) if (record) {
         try { guard(record); record.transport?.tick(); record.peer?.tick(); guard(record);
           if (record.peer && ['failed', 'disconnected'].includes(record.peer.state)) reject('unavailable');
@@ -235,50 +288,75 @@ export function createInvitationConnectionController(input: InvitationConnection
     return Object.freeze({ endpointId: target.id, endpoint: target.endpoint, remoteKeyId: target.remoteKeyId, invitation, source,
       backend: target.createSocket ? 'host-socket' : typeof globalThis.WebSocket === 'function' ? 'native-websocket' : 'unavailable' });
   }
-  const controller: InvitationConnectionController = {
-    review(value, choice) {
+  function reviewInput(value: string, choice: { source: 'manual' | 'link' | 'qr'; endpointId: string }, discovered?: { candidate: unknown }): InvitationConnectionResult<InvitationReviewHandle> {
       if (closed) return failure('closed'); if (busy) return failure('busy'); busy = true;
+      const epoch = cancellationEpoch;
       try {
         if (pending) retire(pending, 'cancelled');
+        admission(epoch);
         const fields = data(choice, ['source', 'endpointId']), at = time();
+        admission(epoch);
         if (!['manual', 'link', 'qr'].includes(fields.source as string) || !id(fields.endpointId)) reject('invalid');
         if (windowAt < 0 || at - windowAt >= 1000) { windowAt = at; reviews = 0; }
         if (reviews >= INVITATION_CONNECTION_LIMITS.reviewsPerSecond) reject('capacity'); reviews++;
-        const target = endpoints.get(fields.endpointId); if (!target || !enrolled(target)) reject('unsupported');
+        const target = endpoints.get(fields.endpointId); if (!target) reject('unsupported');
+        const available = enrolled(target); admission(epoch); if (!available) reject('unsupported');
+        let discovery: DiscoveryBinding | undefined;
+        if (discovered) {
+          discovery = discoveries.get(target.id); if (!discovery) reject('unsupported');
+          const candidate = parseDiscoveryCandidate(discovered.candidate);
+          if (candidatePin(candidate) !== discovery.pin) reject('wrong-endpoint');
+          const current = discoveryCurrent(discovery); admission(epoch); if (!current) reject('revoked');
+        }
         const invitation = decodeReceiverInvitationInput(value, at);
-        if (!receiverInvitationCurrent(invitation, time())) reject('expired');
+        const currentInvitation = receiverInvitationCurrent(invitation, time()); admission(epoch); if (!currentInvitation) reject('expired');
         const next: Review = { handle: Object.freeze({ kind: 'invitation-review' }), target,
-          preview: preview(target, invitation, fields.source as InvitationConnectionPreview['source']) };
-        if (closed) reject('closed'); review = next; event('review'); arm(); return success(next.handle);
+          preview: Object.freeze({ ...preview(target, invitation, fields.source as InvitationConnectionPreview['source']),
+            ...(discovery ? { discovery: Object.freeze({ candidateId: discovery.candidate.id, scope: discovery.candidate.scope,
+              generation: discovery.generation, expiresAt: discovery.expiresAt }) } : {}) }), ...(discovery ? { discovery } : {}) };
+        admission(epoch); review = next; event('review'); arm(); admission(epoch); return success(next.handle);
       } catch (error) { review = undefined; const reason = error instanceof ConnectionError ? error.reason : 'invalid'; if (!closed) event(reason); return failure(reason); }
       finally { busy = false; }
-    },
+  }
+  const controller: InvitationConnectionController = {
+    review: (value, choice) => reviewInput(value, choice),
+    reviewDiscovered: (candidate, value, choice) => reviewInput(value, choice, { candidate }),
     connect(handle) {
       if (closed) return Promise.resolve(failure('closed')); if (busy || pending) return Promise.resolve(failure('busy'));
       if (!review || review.handle !== handle) return Promise.resolve(failure('stale'));
       if (issuedAttempts >= INVITATION_CONNECTION_LIMITS.attempts) return Promise.resolve(failure('capacity'));
       busy = true;
+      const epoch = cancellationEpoch;
       try {
-        const selected = review, at = time(); if (!enrolled(selected.target) || review !== selected) reject('revoked');
-        if (!receiverInvitationCurrent(selected.preview.invitation, time())) reject('expired');
+        const selected = review, at = time(); admission(epoch);
+        const available = enrolled(selected.target); admission(epoch); if (!available || review !== selected) reject('revoked');
+        const candidateCurrent = discoveryCurrent(selected.discovery); admission(epoch); if (!candidateCurrent || review !== selected) reject('revoked');
+        const currentInvitation = receiverInvitationCurrent(selected.preview.invitation, time()); admission(epoch); if (!currentInvitation) reject('expired');
         const scope: InvitationConnectionScope = Object.freeze({ ownerId, endpointId: selected.target.id, endpoint: selected.target.endpoint,
           remoteKeyId: selected.target.remoteKeyId, applicationId: selected.preview.invitation.applicationId, sessionId: selected.preview.invitation.sessionId,
           epoch: selected.preview.invitation.epoch, role: 'source', invitationExpiresAt: selected.preview.invitation.expiresAt,
-          deadline: Math.min(selected.target.expiresAt, selected.preview.invitation.expiresAt, at + INVITATION_CONNECTION_LIMITS.grantMs) });
+          deadline: Math.min(selected.target.expiresAt, selected.preview.invitation.expiresAt, selected.discovery?.expiresAt ?? Infinity, at + INVITATION_CONNECTION_LIMITS.grantMs) });
         let finish!: Attempt['finish']; const result = new Promise<InvitationConnectionResult<InvitationConnectionHandle>>(resolve => { finish = resolve; });
         const record: Attempt = { review: selected, handle: Object.freeze({ kind: 'invitation-connection' }), scope,
           abort: new AbortController(), wallDeadline: wallTime() + INVITATION_CONNECTION_LIMITS.connectMs, wallExpiry: Infinity,
           finish, detach: [], completed: false };
-        review = undefined; pending = record; issuedAttempts++; event('connecting'); arm(); void open(record); return result;
+        admission(epoch); review = undefined; pending = record; issuedAttempts++; event('connecting'); arm(); admission(epoch); void open(record); return result;
       } catch (error) { return Promise.resolve(failure(error instanceof ConnectionError ? error.reason : 'invalid')); }
       finally { busy = false; }
     },
     cancel(handle) { if (closed) return failure('closed');
-      if (review?.handle === handle) review = undefined; else if (pending?.review.handle === handle) retire(pending, 'cancelled'); else return failure('stale');
-      event('cancelled'); if (!review && !pending && !current) disarm(); return success(); },
+      const selected = review?.handle === handle, record = pending?.review.handle === handle ? pending : undefined;
+      if (!selected && !record) return failure('stale');
+      return withdraw(() => {
+        if (selected) review = undefined; else retire(record!, 'cancelled');
+        event('cancelled'); if (!review && !pending && !current) disarm(); return success();
+      }); },
     connection(handle) { const record = current; if (!record || record.handle !== handle) return;
       try { guard(record); if (!matches(record)) reject('wrong-endpoint'); guard(record); return record.peer; } catch (error) { failed(record, error); return; } },
-    disconnect() { review = undefined; if (pending) retire(pending, 'cancelled'); if (current) retire(current, 'cancelled'); disarm(); if (!closed) event('disconnected'); },
+    disconnect() { withdraw(() => {
+      review = undefined; if (pending) retire(pending, 'cancelled'); if (current) retire(current, 'cancelled');
+      disarm(); if (!closed) event('disconnected');
+    }); },
     sweep,
     snapshot() { return Object.freeze({ state: closed ? 'closed' : review ? 'reviewing' : pending ? 'connecting' : current ? 'connected' :
       outcome === 'unsupported' ? 'unsupported' : outcome === 'expired' ? 'expired' : ['unavailable', 'revoked', 'wrong-endpoint'].includes(outcome) ? 'interrupted' : 'unknown',

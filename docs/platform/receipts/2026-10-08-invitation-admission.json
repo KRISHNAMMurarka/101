@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-built-full-acceptance-open",
+  "localOnly": true,
+  "base": "793b2d6eafe87f21a27bccf08922ca8a98c392b1",
+  "previousDocumentationTree": "f11421901a29926b8ae668f49bbdc23818202259",
+  "verifiedProductTree": "e6274fcf4f1afc340e8efa3b11e2ed6a09644379",
+  "contract": "Selected enrolled-invitation-connection/1 provisional review/connect authority is invalidated by successful cancellation or Disconnect at clock, enrollment and native availability callouts. Cancellation fences publication, approval and socket issuance. External Disconnect/successful Cancel reserve admission through synchronous retirement notifications/native close/timer disarm, restoring original busy state afterward. Nested review/connect return busy during withdrawal; a later explicit reviewed retry may connect. Cancelling a replacement preserves the incumbent. Live record identity, raw returned approval/socket-close ownership and original first connection-clock deadline clipped by invitation/enrollment expiry remain.",
+  "sources": {
+    "packages/device-web/src/invitation-connection.ts": "66c65ba63293397def77539dc87b2aaccb34b3876ebd824cbbcc62e2b372b3bc",
+    "packages/device-web/src/invitation-connection-admission.test.ts": "ee33e430d25055a1abec4c39692eb6243f44ea5cd8caf4fcb2e090d7ec7c7e58",
+    "tools/qa-invitation-connection.mjs": "9acba946656e17ac4b24b3707a475620d899dd9cd1f9a7051d86d84a410565be"
+  },
+  "sourceProof": {
+    "worker": {
+      "path": "/tmp/101-invitation-admission-completion-repaired.json",
+      "sha256": "a220d3a1a364051f579ffea8426159fcf4802bb744c53733bcf7b3811db318e1"
+    },
+    "focusedTests": 22,
+    "newAdmissionTests": 11,
+    "existingControllerTests": 11,
+    "directDependentTests": 75,
+    "selectedSourceTests": 97,
+    "workerConservativeInputs": 171,
+    "workerInputsMethod": "TypeScript AST conservative static public-barrel closure with literal dynamic imports/requires/createRequire calls, regenerated from repaired selector roots. Includes type imports and package manifests; not an actual-loaded module inventory. Node builtins excluded. ws optional modules are absent; its standard JavaScript fallback is fingerprinted.",
+    "actualRootLoadedModules": 127,
+    "actualRootLoadedRecord": {
+      "path": "/tmp/101-invitation-admission-integration-repaired.loaded.json",
+      "sha256": "82fcdd349761f544433ed45c6f76e4ad3cc502221caeb9df70e1e34d6493086f"
+    },
+    "ownedNativeResourcesAndEphemeralCredentialsCleaned": true
+  },
+  "genuineOld": {
+    "originalAdmission": {
+      "source": {
+        "path": "packages/device-web/src/invitation-connection.ts",
+        "sha256": "775472a84e726f064ac05acd8f1be0748066e26092e243930656ce0acdcfabda"
+      },
+      "literalWitness": {
+        "path": "packages/device-web/src/invitation-connection-admission.test.ts",
+        "sha256": "5f58a994a5c44c57f4df28e2dc6b00d908b282ee7420f278ea6a0641c8de1276"
+      },
+      "command": "node --experimental-strip-types --test --test-concurrency=1 packages/device-web/src/invitation-connection-admission.test.ts",
+      "node": "v24.14.0",
+      "log": "/tmp/101-invitation-admission-old.log",
+      "immutableSource": "/tmp/101-invitation-admission-old-source.ts",
+      "immutableLiteral": "/tmp/101-invitation-admission-old-witness.test.ts",
+      "outcome": {
+        "approvals": 1,
+        "issued": 1,
+        "accepted": 1,
+        "timerArmed": true
+      }
+    },
+    "stopNotification": {
+      "source": {
+        "path": "packages/device-web/src/invitation-connection.ts",
+        "sha256": "968dd90bd69ed2f1126c3d76ded8a5b79fd3a0d06882ba6ea05f0b018177c412"
+      },
+      "literalWitness": {
+        "path": "packages/device-web/src/invitation-connection-admission.test.ts",
+        "sha256": "4a05e99c14911981d0142da321d45d2fc6e3e5e3d4faf85e54f175bc0d2e10df"
+      },
+      "command": "node --experimental-strip-types --test --test-concurrency=1 --test-name-pattern=\"Disconnect owns admission\" packages/device-web/src/invitation-connection-admission.test.ts",
+      "toolchain": {
+        "node": "v24.14.0",
+        "platform": "darwin",
+        "arch": "arm64",
+        "nodeBinary": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+        "nodeSha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+        "openssl": "OpenSSL 3.0.18 30 Sep 2025 (Library: OpenSSL 3.0.18 30 Sep 2025)",
+        "opensslPath": "/opt/anaconda3/bin/openssl",
+        "opensslSha256": "a858d656dce472bb6ce371967c424ecde8d949dba83070693febf06f4eee3383"
+      },
+      "immutableSource": {
+        "path": "/tmp/101-invitation-stop-reentry-old-source.ts",
+        "sha256": "968dd90bd69ed2f1126c3d76ded8a5b79fd3a0d06882ba6ea05f0b018177c412"
+      },
+      "immutableLiteral": {
+        "path": "/tmp/101-invitation-stop-reentry-old-witness.test.ts",
+        "sha256": "4a05e99c14911981d0142da321d45d2fc6e3e5e3d4faf85e54f175bc0d2e10df"
+      },
+      "log": {
+        "path": "/tmp/101-invitation-stop-reentry-old.log",
+        "sha256": "c7152270690a7c5c90065b0fbbeff29312eca0d897a38544dd150987a0238552"
+      },
+      "outcome": {
+        "notifications": 1,
+        "nestedReview": "allowed",
+        "approvalDelta": 1,
+        "issuedDelta": 1,
+        "acceptedDelta": 1,
+        "state": "connecting",
+        "reviewPresent": false,
+        "timerArmed": true
+      }
+    },
+    "successfulCancelNativeClose": {
+      "path": "packages/device-web/src/invitation-connection-admission.test.ts",
+      "sha256": "202640edb8fc2c576aeae4cc2aab6e4500a05f82021283694469b196d0190811",
+      "command": "node --experimental-strip-types --test --test-concurrency=1 --test-name-pattern=\"successful Cancel owns admission\" packages/device-web/src/invitation-connection-admission.test.ts",
+      "source": {
+        "path": "packages/device-web/src/invitation-connection.ts",
+        "sha256": "968dd90bd69ed2f1126c3d76ded8a5b79fd3a0d06882ba6ea05f0b018177c412"
+      },
+      "immutableSource": {
+        "path": "/tmp/101-invitation-stop-reentry-old-source.ts",
+        "sha256": "968dd90bd69ed2f1126c3d76ded8a5b79fd3a0d06882ba6ea05f0b018177c412"
+      },
+      "immutableLiteral": {
+        "path": "/tmp/101-invitation-cancel-reentry-old-witness.test.ts",
+        "sha256": "202640edb8fc2c576aeae4cc2aab6e4500a05f82021283694469b196d0190811"
+      },
+      "log": {
+        "path": "/tmp/101-invitation-cancel-reentry-old.log",
+        "sha256": "d9eb35ddfee844ed6e610045733164cd75cc2cd59ae9746b81bab64487fef88b"
+      },
+      "outcome": {
+        "callouts": 1,
+        "nestedReview": "allowed",
+        "approvalDelta": 1,
+        "issuedDelta": 1,
+        "acceptedDelta": 1,
+        "state": "connecting",
+        "timerArmed": true
+      }
+    },
+    "scope": "Actual OLD public invitation/P256 and disposable native TLS/WSS; exact implementation and each pre-expansion witness literal/log retained. Each cancellation gap admitted an extra approval/native socket/server connection. Repaired outcomes fence admission, preserve raw reservations and allow explicit retry."
+  },
+  "sourceReview": {
+    "path": "/tmp/101-invitation-admission-source-review-repaired.json",
+    "sha256": "786d08e410633108da8dd76a2e23a0de77290e282d1043deed2131d1f8164cb9",
+    "status": "CLEAR",
+    "ref": "refs/codex/evidence/2026-10-08-invitation-admission/source-review",
+    "originalBlockedReview": {
+      "path": "/tmp/101-invitation-admission-source-review-blocked.json",
+      "sha256": "b80020b205e2313d118949c81a7715f62b2763762ff56dbc30a38d91106b9b68"
+    }
+  },
+  "softwareBuild": {
+    "path": "/tmp/101-invitation-admission-integration-repaired.json",
+    "sha256": "aa3bde03ad3d00ad11a7285c9cc7c923e74141d178bb0b8a1f6f2e2738ad9cf5",
+    "tree": "e6274fcf4f1afc340e8efa3b11e2ed6a09644379",
+    "checks": [
+      {
+        "name": "dependents",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "types",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "lint",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "application-build",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "rendered-html",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      },
+      {
+        "name": "sdk-build",
+        "exitCode": 0,
+        "ownedProcessGroupSettled": true
+      }
+    ],
+    "renderedHtmlTests": 37,
+    "lint": "Zero errors; one existing PointerLab ref cleanup warning.",
+    "scope": "Final repaired exact tree only; original fe23 source/build/SDK green artifacts remain retained but are not final qualification."
+  },
+  "distribution": {
+    "path": "/tmp/101-invitation-admission-distribution.json",
+    "sha256": "536c250d23ad37f98fd28089fd9bb2841d999d619e0a672d954e0096f5facde8",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-UJnSdy/manifest.json",
+      "sha256": "13d910b6674968b32db194f662206e87f2912562cd7a94c5e476eb96d6dd7719",
+      "inputs": 183,
+      "packages": 7,
+      "installedFiles": 405
+    },
+    "consumerReceipt": {
+      "path": "/private/tmp/101-sdk-consumer-invitation-tJRQ99/receipt.json",
+      "sha256": "51c3f3e1c0594857d28621361fefd0a5e040a747e560c09ab6c3927a9ac8db9e"
+    },
+    "sourceInputs": 183,
+    "packages": 7,
+    "installedFiles": 405,
+    "types": [
+      "NodeNext strict public facade/direct invitation types",
+      "Bundler strict public facade/direct invitation types"
+    ],
+    "ordinaryCompiledNodeChecks": 13,
+    "proof": {
+      "checks": [
+        "native Node TLS CA and hostname validation",
+        "reentrant Stop during review admission publishes no review or timer",
+        "reentrant cancel at final admission issues no approval/socket; fresh reviewed retry connects over real pinned TLS/P256",
+        "reentrant disconnect at final admission issues no approval/socket; fresh reviewed retry connects over real pinned TLS/P256",
+        "actual disconnected observer cannot review/connect during Stop; explicit reviewed retry after Stop connects over pinned TLS/P256",
+        "held approval expires before real TLS socket dispatch",
+        "manual/link/QR text inert; real bilateral P256 WSS pin and exact invitation scope",
+        "connection alone gives no source capture, receiver selection or runtime route permission",
+        "unsupported/denied review preserves incumbent; accepted transfer retires old authority before new socket; explicit grant abort fences late effects",
+        "real incorrect enrolled key fails authentication without resources",
+        "real pinned endpoint rejects distinct application and session transcript scopes",
+        "owned timer expires current connection grant during quiet interval",
+        "disappearance has no automatic reconnect; explicit reviewed retry and enrollment revocation"
+      ],
+      "genuineTlsConnections": 12,
+      "socketConstructionAttempts": 12,
+      "maximumObservedSocketOverlap": 1,
+      "resourceEffects": 1,
+      "pageErrors": []
+    },
+    "SDKChangedInputs": [
+      "packages/device-web/src/invitation-connection.ts"
+    ],
+    "disposableCredentialsRemoved": true,
+    "scope": "Fresh offline/no-scripts closed matching seven-package install; actual public compiled Node TLS/P256/RSS caller with --node-only and --no-experimental-strip-types. No monorepo aliases, browser/device/physical execution."
+  },
+  "qaCleanup": {
+    "old": {
+      "path": "/tmp/101-invitation-admission-qa-cleanup-old.log",
+      "sha256": "25fb08a37af7d5d6ffafaec7973d0a99d20c01097e86bd57aa5ceb3c5455e921"
+    },
+    "oldLiteral": {
+      "path": "/tmp/101-invitation-admission-qa-old-setup-fragment.mjs",
+      "sha256": "c0b588e70b57b05aee0c69fd6d3e40738d64c375e74a3e827e5353adc3bde8e6"
+    },
+    "repaired": {
+      "path": "/tmp/101-invitation-admission-qa-cleanup-final.json",
+      "sha256": "674b3281f38ba35d9f7759129979632298ea36813dd7bc46956c6a46daaa3f41"
+    },
+    "witness": "OLD exact credential setup fragment uses real OpenSSL key generation followed by controlled exit1 and leaves owned key behind. Repaired full QA tool with the same native producer failure exits1 as expected and removes its complete credential directory; owned process group settles. Identity/bind failure cleanup is source-reviewed rather than fault-executed."
+  },
+  "retention": {
+    "path": "/tmp/101-invitation-admission-retained.json",
+    "sha256": "b4d073d062dc0496d2cd243f980d8c28ec1c8d5625a19d1da7890a991fa7df8e",
+    "ref": "refs/codex/evidence/2026-10-08-invitation-admission/literal-record",
+    "bundleRef": "refs/codex/evidence/2026-10-08-invitation-admission/literal-bundle",
+    "literalFiles": 700
+  },
+  "preservedFirstCandidate": {
+    "tree": "fe23a829efb70a0d5ff794b066f343b885325e31",
+    "focused": {
+      "path": "/tmp/101-invitation-admission-completion.json",
+      "sha256": "1c6167a4507cf6669a82233eef087b4bb43bb3e00258435ea2d184327ec2aa8a"
+    },
+    "softwareBuild": {
+      "path": "/tmp/101-invitation-admission-integration.json",
+      "sha256": "c6dad57cbdadf9515ed02618f87f3bdf51bc772f2376aecc62fc6b3a5ff2a744"
+    },
+    "sourceReview": {
+      "path": "/tmp/101-invitation-admission-source-review-blocked.json",
+      "sha256": "b80020b205e2313d118949c81a7715f62b2763762ff56dbc30a38d91106b9b68"
+    },
+    "scope": "First18 and75dependents/types/lint/build/37SSR/SDK passed but scoped review found teardown reentry and QA failure cleanup; all first artifacts/copies and original review remain preserved."
+  },
+  "limitations": [
+    "D02 and S06 remain open; no checkbox or support-row promotion.",
+    "Fixed independently enrolled endpoint only; no discovered-agent/optical QR/lost-device/account identity/physical phone/network/OS key-store qualification.",
+    "Trusted synchronous callbacks are cooperative and are not sandboxed/preempted; cancellation does not prove raw work settled.",
+    "Complete unit gate remains open with five historical native startup/IPC failures; no new full unit run or cause/fix claim.",
+    "Browser/device/OS input and native camera/microphone/screen acquisition deferred; no commit/push/publication/deployment/preview URL/new service."
+  ],
+  "published": false
+}

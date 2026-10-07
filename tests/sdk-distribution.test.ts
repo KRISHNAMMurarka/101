@@ -40,6 +40,12 @@ test('immutable general SDK packs compiled public contracts and licenses without
       assert.ok(packed.includes('package/README.md'));
       assert.ok(packed.every(path => !path.includes('/src/') && !path.includes('.test.') && !path.includes('node_modules')));
       assert.deepEqual(packed.map(path => path.replace(/^package\//, '')).sort(), item.files.map((file: { path: string }) => file.path).sort());
+      if (item.name === '@101/device-runtime') {
+        for (const file of ['processor-node.js', 'processor-node.d.ts', 'processor-worker.js', 'processor-worker.d.ts', 'processor-language.js'])
+          assert.ok(packed.includes('package/dist/' + file));
+        const metadata = JSON.parse(readFileSync(resolve(item.directory, 'package.json'), 'utf8'));
+        assert.deepEqual(metadata.exports['./node'], { types: './dist/processor-node.d.ts', import: './dist/processor-node.js' });
+      }
       if (item.name === '@101/connect' || item.name === '@101/device-model') assert.ok(packed.includes('package/schema/device-descriptor.json'));
       if (item.name === '@101/connect') {
         assert.ok(packed.includes('package/examples/run.js'));

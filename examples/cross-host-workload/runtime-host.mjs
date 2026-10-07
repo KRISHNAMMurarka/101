@@ -8,6 +8,8 @@ import { createDeviceRuntime, createRouteGroupController, createEphemeralWebIden
 import { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256,
   connectAuthenticatedRelay } from '@101/hub-server';
 
+// This clock starts after static ESM imports, not at process/loader bootstrap.
+const moduleBodyEnteredAt = performance.now();
 
 /** Inert producer for this fixed fixture's three hosts. No effects or grants.
  * Clock identities select existing schema declarations only; they neither prove
@@ -35,7 +37,14 @@ async function runRuntimeHost() {
 const aborted = Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted').get;
 const currentSignal = value => { try { return aborted.call(value) === false; } catch { return false; } };
 const now = performance.now.bind(performance), encoder = new TextEncoder();
+function startupMilestone(event, at = now()) {
+  // The parent retains only these three fixed records and reports them on
+  // unexpected failure. No identity, grant, path or application value leaves here.
+  try { process.stderr.write(JSON.stringify({ kind: 'cross-host-startup', event, at }) + '\n'); } catch { /* Advisory only. */ }
+}
+startupMilestone('module-body-enter', moduleBodyEnteredAt);
 const owner = new AbortController(), identity = await createEphemeralWebIdentity();
+startupMilestone('identity-ready');
 const requests = new Set(), sendWork = new Set(), clients = new Set(), opening = new Set(), tokens = new Map(), applyWork = new Set();
 const nativePids = [];
 let configuration, provider, epochHandle, authority, group, receiver, publisher, runtime, tick, latest,
@@ -289,6 +298,7 @@ process.on('SIGTERM', () => { void stop().then(() => { if (process.connected) pr
 const lifetime = setTimeout(() => { void stop().then(() => { if (process.connected) process.disconnect(); }); }, 15000);
 process.once('disconnect', () => { clearTimeout(lifetime); });
 await send({ kind: 'hello', pid: process.pid, keyId: identity.keyId });
+startupMilestone('hello-sent');
 
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

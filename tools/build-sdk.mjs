@@ -21,6 +21,7 @@ examples.push({ name: 'hid-switch-output', source: 'examples/browser-resources/h
 examples.push({ name: 'serial-switch-output', source: 'examples/browser-resources/serial-switch-output.ts' });
 examples.push({ name: 'runtime-settlement', source: 'examples/runtime-lifecycle/settlement.ts' });
 examples.push({ name: 'browser-storage', source: 'examples/extension-installation/browser-storage.ts' });
+const nodeRuntimeSources = ['packages/device-runtime/src/processor-node.ts', 'packages/device-runtime/src/processor-worker.ts'];
 const nodeExamples = [{ name: 'device-scaffold', source: 'packages/devkit/src/device-scaffold.ts' }];
 const onboardingSources = [
   { source: 'examples/developer-onboarding/onboarding.mjs', target: 'examples/onboarding/onboarding.mjs' },
@@ -53,7 +54,7 @@ function readme(name, version) {
     vision: 'Independent landmark observation parsers and bounded pose/hand gesture classifiers. Camera inference, WASM and model assets are supplied separately by the caller.',
     connect: 'Game-independent public facade for the current 101 device model, embedded runtime, authenticated resource bridge, pointer provider and keyboard/text source.',
   }[name];
-  return `# @101/${name}\n\n${intro}\n\nVersion ${version}. Compiled ESM JavaScript and TypeScript declarations; CommonJS and native-language distributions are not supplied. The public facade declarations include browser APIs: TypeScript consumers must include ES2022, DOM and DOM.Iterable libraries, including Node consumers of @101/connect. Node entry points use ordinary JavaScript, without type stripping. Browser APIs require the corresponding browser/OS capabilities. Node 22.13+ is the declared engine range; actual tested versions and limitations are recorded in the local distribution receipt.\n\nInstall the complete matching local tarball set with npm install --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/*.tgz. This is a local dry run; no registry publication is implied.\n\n${name === 'connect' ? 'Import createDeviceRuntime, parseDeviceDescriptor, AuthenticatedResourcePeer or PointerResourceProvider from @101/connect. Run the compiled examples with node node_modules/@101/connect/examples/run.js. Source TypeScript examples and their declarations are included alongside JavaScript. The telemetry-owner example is an ordinary Node ESM caller exported as MJS without TypeScript declarations. The Node-only device-scaffold example supplies the existing project factory as compiled JavaScript, declarations and source. The onboarding example is an inert ordinary Node MJS entry with an explicit exclusive creator and reviewed local consumer; the six-stage walkthrough is in docs/platform/SDK.md in the source repository. Examples use explicit local providers and fixtures. The application-media example captures a caller-owned browser canvas; the SDK does not move the OS cursor or establish a physical actuator effect.\n\n' : ''}${name === 'connect' || name === 'device-model' ? 'The descriptor JSON schema is exported at @101/' + name + '/schema/device-descriptor.json. The runtime parser additionally enforces finite numbers, bounded plain JSON, relational limits and identity-safe snapshots. createUnitConverter explicitly maps reviewed numeric unit pairs with declared precision and error bounds; routing still requires exact units.\n\n' : ''}Value schemas support bounded records and arrays with explicit optional fields. Structured remote values negotiate json/2; json/1 and compact pointer bytes retain their existing contracts. Timestamp members remain in the declared application clock domain; nested timestamps are never silently translated. The telemetry-batch example includes explicit v1-to-v2 migration and opt-in KiBy-to-By publication with conversion provenance. Remote packets and runtime observation/options envelopes each have a separate 4 KiB limit; provenance consumes runtime space. Sender success does not establish host admission or effect. A host payload-limit drop preserves the grant without refreshing freshness or advancing received IDs, allowing a smaller batch to recover before the deadman expires.\n\nLabels, descriptors, invitation possession and endpoint key IDs supply no resource permission. The host must authorize concrete registrations. Remote resources require issued endpoint proof by default, bilateral connection enrollment and separate owner resource approval. Identity creation is explicit; missing storage stays unavailable. Release held input and cancel owned timers on stop, hide, disconnect and unmount. Native/physical, account identity, global service, wider SDK APIs and final security qualification remain separate.\n\nMIT license. Source: https://github.com/KRISHNAMMurarka/101. Private implementation subpaths are not exported.\n`;
+  return `# @101/${name}\n\n${intro}\n\nVersion ${version}. Compiled ESM JavaScript and TypeScript declarations; CommonJS and native-language distributions are not supplied. The public facade declarations include browser APIs: TypeScript consumers must include ES2022, DOM and DOM.Iterable libraries, including Node consumers of @101/connect. Node entry points use ordinary JavaScript, without type stripping. Browser APIs require the corresponding browser/OS capabilities. Node 22.13+ is the declared engine range; actual tested versions and limitations are recorded in the local distribution receipt.\n\nInstall the complete matching local tarball set with npm install --offline --ignore-scripts --no-audit --no-fund /absolute/path/to/*.tgz. This is a local dry run; no registry publication is implied.\n\n${name === 'connect' ? 'Import createDeviceRuntime, parseDeviceDescriptor, AuthenticatedResourcePeer or PointerResourceProvider from @101/connect. Run the compiled examples with node node_modules/@101/connect/examples/run.js. Source TypeScript examples and their declarations are included alongside JavaScript. The telemetry-owner example is an ordinary Node ESM caller exported as MJS without TypeScript declarations. The Node-only device-scaffold example supplies the existing project factory as compiled JavaScript, declarations and source. The onboarding example is an inert ordinary Node MJS entry with an explicit exclusive creator and reviewed local consumer; the six-stage walkthrough is in docs/platform/SDK.md in the source repository. Examples use explicit local providers and fixtures. The application-media example captures a caller-owned browser canvas; the SDK does not move the OS cursor or establish a physical actuator effect.\n\n' : ''}${name === 'connect' || name === 'device-model' ? 'The descriptor JSON schema is exported at @101/' + name + '/schema/device-descriptor.json. The runtime parser additionally enforces finite numbers, bounded plain JSON, relational limits and identity-safe snapshots. createUnitConverter explicitly maps reviewed numeric unit pairs with declared precision and error bounds; routing still requires exact units.\n\n' : ''}Value schemas support bounded records and arrays with explicit optional fields. Structured remote values negotiate json/2; json/1 and compact pointer bytes retain their existing contracts. Timestamp members remain in the declared application clock domain; nested timestamps are never silently translated. The telemetry-batch example includes explicit v1-to-v2 migration and opt-in KiBy-to-By publication with conversion provenance. Remote packets and runtime observation/options envelopes each have a separate 4 KiB limit; provenance consumes runtime space. Sender success does not establish host admission or effect. A host payload-limit drop preserves the grant without refreshing freshness or advancing received IDs, allowing a smaller batch to recover before the deadman expires.\n\nLabels, descriptors, invitation possession and endpoint key IDs supply no resource permission. The host must authorize concrete registrations. Remote resources require issued endpoint proof by default, bilateral connection enrollment and separate owner resource approval. Identity creation is explicit; missing storage stays unavailable. Release held input and cancel owned timers on stop, hide, disconnect and unmount. Native/physical, account identity, global service, wider SDK APIs and final security qualification remain separate.\n\nMIT license. Source: https://github.com/KRISHNAMMurarka/101. The explicit @101/device-runtime/node entry exports the signed compute-only interpreter executor. It supplies bounded guest data memory and parent preemption, not arbitrary JavaScript or a Worker security sandbox. Guest memory excludes host/parser/Worker/RSS overhead. Private implementation subpaths are not exported.\n`;
 }
 
 const reference = process.argv[2];
@@ -79,9 +80,9 @@ try {
       if (!target || target.name !== dependency || target.version !== version) throw new Error('SDK dependency must match an explicitly packed version');
     }
   }
-  const roots = names.flatMap(name => files(join(snapshot, `packages/${name}/src`)).filter(path => path.endsWith('.ts') && !path.endsWith('.test.ts')));
+  const roots = names.flatMap(name => files(join(snapshot, `packages/${name}/src`)).filter(path => path.endsWith('.ts') && !path.endsWith('.test.ts') && !nodeRuntimeSources.some(source => path === join(snapshot, source))));
   roots.push(...examples.map(({ source }) => join(snapshot, source)));
-  const sourcePaths = [...roots, ...names.map(name => join(snapshot, `packages/${name}/package.json`)),
+  const sourcePaths = [...roots, ...nodeRuntimeSources.map(source => join(snapshot, source)), ...names.map(name => join(snapshot, `packages/${name}/package.json`)),
     join(snapshot, 'LICENSE'), join(snapshot, 'schemas/device-descriptor.schema.json'),
     ...ordinaryExamples.map(({ source }) => join(snapshot, source)), ...nodeExamples.map(({ source }) => join(snapshot, source)),
     ...onboardingSources.map(({ source }) => join(snapshot, source)), ...auditSources.map(path => join(snapshot, path))].sort();
@@ -101,14 +102,15 @@ try {
   const emitted = program.emit();
   if (emitted.emitSkipped || emitted.diagnostics.length) throw new Error('SDK compiler could not emit the exact source tree');
   // Node examples have one closed source root. Keep Node declarations out of the browser SDK program.
-  const nodeRoots = nodeExamples.map(({ source }) => join(snapshot, source));
+  const nodeRoots = [...nodeExamples.map(({ source }) => join(snapshot, source)), ...nodeRuntimeSources.map(source => join(snapshot, source))];
   const nodeProgram = ts.createProgram(nodeRoots, {
     target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, moduleResolution: ts.ModuleResolutionKind.Bundler,
-    lib: ['lib.es2022.d.ts'], types: ['node'], typeRoots: [join(root, 'node_modules/@types')], strict: true,
+    lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], types: ['node'], typeRoots: [join(root, 'node_modules/@types')], strict: true,
     noUncheckedIndexedAccess: true, skipLibCheck: false, declaration: true, noEmitOnError: true,
     rewriteRelativeImportExtensions: true, rootDir: snapshot, outDir: compiled,
+    paths: Object.fromEntries(names.map(name => [`@101/${name}`, [join(snapshot, `packages/${name}/src/index.ts`)]])),
   });
-  const allowedNodeSources = new Set(nodeRoots);
+  const allowedNodeSources = new Set([...nodeRoots, ...roots]);
   if (nodeProgram.getSourceFiles().some(source => !source.isDeclarationFile && !allowedNodeSources.has(source.fileName)))
     throw new Error('Node example imported source outside its explicit scope');
   const nodeDiagnostics = ts.getPreEmitDiagnostics(nodeProgram);
@@ -133,6 +135,7 @@ try {
     mkdirSync(directory, { recursive: true });
     const exportMap = { '.': { types: './dist/index.d.ts', import: './dist/index.js' } };
     const publicFiles = ['dist', 'LICENSE', 'README.md'];
+    if (name === 'device-runtime') exportMap['./node'] = { types: './dist/processor-node.d.ts', import: './dist/processor-node.js' };
     if (name === 'device-model' || name === 'connect') {
       copy(join(snapshot, 'schemas/device-descriptor.schema.json'), join(directory, 'schema/device-descriptor.json'));
       exportMap['./schema/device-descriptor.json'] = './schema/device-descriptor.json'; publicFiles.push('schema');
@@ -206,9 +209,9 @@ try {
     schemaVersion: 1, sourceTree: tree, sdkManifestSha256: manifestSha256,
     builderSha256: result.builderSha256, typescript: ts.version,
     nodeTypesVersion: JSON.parse(readFileSync(join(root, 'node_modules/@types/node/package.json'), 'utf8')).version,
-    sourceRoots: nodeExamples.map(example => ({ path: example.source, sha256: sourceSha256[example.source] })),
+    sourceRoots: [...nodeExamples.map(example => example.source), ...nodeRuntimeSources].map(path => ({ path, sha256: sourceSha256[path] })),
     declarationInputs: nodeCompilerInputs,
-    scope: 'Actual separate Node example compiler declaration closure; browser SDK program still excludes Node types.',
+    scope: 'Actual separate Node example/executor compiler declaration closure; browser SDK program still excludes Node types and the worker entry.',
   });
   console.log(JSON.stringify(result, null, 2));
 } catch (error) {

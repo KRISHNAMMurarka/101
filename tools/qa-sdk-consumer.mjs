@@ -12,6 +12,7 @@ import Ajv from 'ajv';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const names = ['@101/device-model', '@101/device-runtime', '@101/transport-webrtc', '@101/transport-websocket', '@101/device-web', '@101/vision', '@101/connect'];
 const input = process.argv[2];
+const nodeOnly = process.argv[3] === '--node-only';
 const work = mkdtempSync('/tmp/101-sdk-consumer-');
 const receiptPath = join(work, 'receipt.json');
 const logs = [];
@@ -132,13 +133,18 @@ function installAndAudit(manifest) {
     assert.equal(entry?.types, './dist/index.d.ts');
     assert.equal(entry?.import ?? entry?.default, './dist/index.js');
     const allowed = ['.'];
+    if (item.name === '@101/device-runtime') allowed.push('./node');
     if (item.name === '@101/device-model' || item.name === '@101/connect') allowed.push('./schema/device-descriptor.json');
     if (item.name === '@101/connect') allowed.push(...['pointer', 'sensor-feedback', 'threshold', 'telemetry-batch', 'spatial-joints', 'motion', 'vision', 'keyboard-text', 'touch-contacts', 'gestures', 'input-details', 'rich-input', 'resource-documents', 'media-description', 'recipe', 'settings-storage', 'conformance', 'telemetry-history', 'telemetry-owner', 'device-scaffold', 'onboarding', 'browser-storage', 'control-surface', 'durable-artifact-jobs', 'secure-websocket', 'application-views', 'input-ownership', 'timed-pointer', 'application-media', 'application-video-codec', 'media-recording', 'recording-owner-data', 'hid-switch', 'serial-switch', 'screen-preview', 'ble-switch', 'camera-controls', 'ble-switch-output', 'hid-switch-output', 'serial-switch-output', 'runtime-settlement', 'media-synchronization', 'output-sharing', 'invitation-connection', 'run'].map(name => `./examples/${name}`));
     assert.deepEqual(Object.keys(exports).sort(), allowed.sort(), `Unexpected public subpath: ${item.name}`);
     for (const [subpath, target] of Object.entries(exports)) {
       const targets = typeof target === 'string' ? [target] : Object.values(target);
       assert.ok(targets.length > 0 && targets.every(value => typeof value === 'string' && value.startsWith('./') && inventory.some(file => `./${file.path}` === value)), `Export target missing from packed inventory: ${item.name}${subpath}`);
-      if (item.name === '@101/connect' && subpath === './examples/onboarding') {
+      if (item.name === '@101/device-runtime' && subpath === './node') {
+        assert.deepEqual(target, { types: './dist/processor-node.d.ts', import: './dist/processor-node.js' });
+        for (const stem of ['processor-node', 'processor-worker', 'processor-language'])
+          for (const extension of ['.js', '.d.ts']) assert.ok(inventory.some(file => file.path === `dist/${stem}${extension}`));
+      } else if (item.name === '@101/connect' && subpath === './examples/onboarding') {
         assert.equal(target, './examples/onboarding/onboarding.mjs');
         for (const file of ['examples/onboarding/onboarding.mjs', 'examples/onboarding/consumer.mjs'])
           assert.ok(inventory.some(item => item.path === file), 'Closed ordinary onboarding pair absent');
@@ -222,7 +228,16 @@ void [createBrowserApplicationAudio, BROWSER_APPLICATION_AUDIO_LIMITS];
 import { createCapabilityInventory, CAPABILITY_INVENTORY_LIMITS } from '@101/connect';
 import type { CapabilityInventoryController, CapabilityInventoryOptions, CapabilityInventorySnapshot } from '@101/device-runtime';
 import { createInvitationConnectionController, INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS } from '@101/connect';
-import type { InvitationConnectionController, InvitationConnectionOptions, InvitationConnectionSnapshot } from '@101/device-web';
+import type { InvitationConnectionController, InvitationConnectionOptions, InvitationConnectionSnapshot, InvitationDiscoveryEnrollment } from '@101/device-web';
+import { createNodeProcessorExecutor } from '@101/device-runtime/node';
+import type { NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus } from '@101/device-runtime/node';
+import { parsePrivateDirectoryPublication } from '@101/device-model';
+import type { PrivateDirectoryPublication } from '@101/device-model';
+import type { RuntimeOptions } from '@101/device-runtime';
+const byteBudgetOptions: Pick<RuntimeOptions, 'maxPendingDeliveryBytes' | 'maxPendingDeliveryBytesPerPrincipal'> = { maxPendingDeliveryBytes: 4096, maxPendingDeliveryBytesPerPrincipal: 1024 };
+export type SelectedLocalSoftwareDeclarations = [InvitationDiscoveryEnrollment, PrivateDirectoryPublication, NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus];
+void [createNodeProcessorExecutor, parsePrivateDirectoryPublication, byteBudgetOptions];
+export type DiscoveredReviewDeclaration = InvitationConnectionController['reviewDiscovered'];
 import { createInvitationConnectionSource } from '@101/connect/examples/invitation-connection';
 import type { InvitationConnectionSourceOptions } from '@101/connect/examples/invitation-connection';
 import { PeerDataTransport as DirectTransport } from '@101/transport-webrtc';
@@ -1432,7 +1447,8 @@ async function distribution(path) {
   compileConsumer();
   executeDeviceScaffold(manifest);
   executeNode();
-  await executeBrowsers(installed);
+  if (nodeOnly) receipt.browserExecution = 'deferred by --node-only';
+  else await executeBrowsers(installed);
   executeExternalProcessor(manifest);
 }
 
@@ -1570,7 +1586,8 @@ function baseline() {
 }
 
 try {
-  assert.ok(input && process.argv.length === 3, 'Usage: node tools/qa-sdk-consumer.mjs <manifest.json|--baseline>');
+  assert.ok(input && (process.argv.length === 3 || process.argv.length === 4 && nodeOnly),
+    'Usage: node tools/qa-sdk-consumer.mjs <manifest.json|--baseline> [--node-only]');
   if (input === '--baseline') baseline();
   else await distribution(input);
   receipt.status = 'pass';

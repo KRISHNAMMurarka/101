@@ -53,6 +53,9 @@ export function createInvitationConnectionSource(options: InvitationConnectionSo
   }
   return Object.freeze({ controller, device,
     review(input: string, source: InvitationConnectionPreview['source'], endpointId: string) { return controller.review(input, { source, endpointId }); },
+    reviewDiscovered(candidate: unknown, input: string, source: InvitationConnectionPreview['source'], endpointId: string) {
+      return controller.reviewDiscovered(candidate, input, { source, endpointId });
+    },
     async connect(review: Parameters<typeof controller.connect>[0]) {
       const result = await controller.connect(review);
       if (result.ok && !closed) {
