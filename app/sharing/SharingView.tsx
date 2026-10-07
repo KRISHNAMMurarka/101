@@ -63,6 +63,7 @@ export default function SharingView() {
       <p>Two controls on this page can move a marker and press inside the shared play area. Review each request, give each control its own side, or allow a transfer.</p>
       <p className={styles.note}>These are controls on this screen, not connected people or devices. Sharing never moves your system pointer or gives access to another application.</p>
       <a href="/devices">Back to Devices</a>
+      <div className={styles.actions}><a href="/sharing/watch">Share a read-only view</a></div>
     </header>
     <p id="sharing-status" ref={status} className={styles.status} role="status" tabIndex={-1}>{snapshot ? notices[snapshot.notice] || `${active.length ? 'Sharing is active.' : 'Nothing is shared.'} Review requests below.` : 'Nothing is shared. Start a setup when you are ready.'}</p>
     {!snapshot || snapshot.closed ? <div className={styles.actions}><button onClick={start}>Start sharing setup</button><button onClick={() => setConnected(true)}>Connect participants</button></div> : <>

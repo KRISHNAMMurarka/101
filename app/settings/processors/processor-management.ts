@@ -1,11 +1,12 @@
-import { createDeviceRuntime, createProcessorInstallation, createProcessorFailureController, validateProcessorGraph } from '@101/connect';
-import type { AuthorizationRequest, Connection, DeliveryContext, DeviceRuntime, EndpointHandle, Observation,
+import { createDeviceRuntime, createProcessorInstallation, createProcessorFailureController, createBrowserProcessorInstallationStorage, validateProcessorGraph } from '@101/connect';
+import type { AuthorizationRequest, BrowserProcessorInstallationStorageSession, Connection, DeliveryContext, DeviceRuntime, EndpointHandle, Observation,
   ProcessorExtensionActivation, ProcessorFailureController, ProcessorInstallation, ProcessorInstallationAction,
   ProcessorInstallationScope, ProcessorInstallationSnapshot, ProcessorInstallationStorage, ProcessorGraphPlan, RuntimeOptions } from '@101/connect';
 import { loadTrustedProcessors } from './trusted-processors.ts';
 import type { TrustedProcessorBundle, TrustedProcessorVersion } from './trusted-processors.ts';
 
 export type ManagementVersion = '1.0.0' | '2.0.0';
+export type ManagementStorageMode = 'tab' | 'browser';
 export type ManagementAction = Exclude<ProcessorInstallationAction, 'read-release'>;
 export type ManagementResult<T = undefined> = Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; reason: string }>;
 export interface ManagementReview {
@@ -20,6 +21,7 @@ export interface ProcessorManagementState {
   readonly rawPending: number; readonly registrations: number; readonly routes: number;
   readonly documentBytes: number; readonly timerArmed: boolean; readonly flushArmed: boolean; readonly attemptsRemaining: number;
   readonly cleanupFailures: number; readonly closurePending: boolean; readonly inputAllowed: boolean; readonly outputAllowed: boolean;
+  readonly storageMode: ManagementStorageMode; readonly storagePending: number;
 }
 export interface ProcessorManagementOptions {
   readonly now?: () => number;
@@ -30,11 +32,12 @@ export interface ProcessorManagementOptions {
   readonly beforeStorage?: (action: 'read' | 'write') => void | Promise<void>;
   readonly allowRoute?: (request: Readonly<AuthorizationRequest>) => boolean;
   readonly makeRuntime?: (options: RuntimeOptions) => DeviceRuntime;
+  readonly makeBrowserStorage?: typeof createBrowserProcessorInstallationStorage;
   readonly onEffect?: (value: boolean) => void | Promise<void>;
   readonly onChange?: () => void;
 }
 export interface ProcessorManagementTask {
-  manage(): Promise<ManagementResult>;
+  manage(mode?: ManagementStorageMode): Promise<ManagementResult>;
   review(action: ManagementAction, version?: ManagementVersion): ManagementResult<ManagementReview>;
   allowInput(review: ManagementReview): ManagementResult;
   allowOutput(review: ManagementReview): ManagementResult;
@@ -42,7 +45,7 @@ export interface ProcessorManagementTask {
   decline(review: ManagementReview): ManagementResult;
   sendNumber(value: number): ManagementResult;
   stopLive(): void;
-  stopManagement(): void;
+  stopManagement(why?: 'stopped' | 'changed-elsewhere'): void;
   snapshot(): ProcessorManagementState;
   /** Same Promise waits for owned returned work and actual runtime route reservations.
    * This does not promise quiescence of WebCrypto internals hidden by the installer. */
@@ -69,14 +72,17 @@ const aborted = (signal: AbortSignal) => abortedGetter.call(signal) === true;
 const versions = new Set(['1.0.0', '2.0.0']);
 const actions = new Set(['install', 'activate-reviewed', 'rollback-reviewed', 'revoke-release', 'revoke-publisher', 'remove']);
 
-/** This page owns a single RAM document. No grant, key, factory or live authority is persisted. */
+/** An explicit browser choice keeps installation data only. Every management
+ * lifetime starts with fresh trust, reviews and live permissions. */
 export function createProcessorManagementTask(options: ProcessorManagementOptions = {}): ProcessorManagementTask {
   const clock = options.now ?? (() => Math.floor(performance.now()));
   const load = options.load ?? loadTrustedProcessors, beforeApprove = options.beforeApprove,
     beforeStorage = options.beforeStorage, allowRoute = options.allowRoute,
-    makeRuntime = options.makeRuntime ?? createDeviceRuntime, effect = options.onEffect, changed = options.onChange;
+    makeRuntime = options.makeRuntime ?? createDeviceRuntime,
+    makeBrowserStorage = options.makeBrowserStorage ?? createBrowserProcessorInstallationStorage,
+    effect = options.onEffect, changed = options.onChange;
   const duration = options.managementMs ?? 30_000;
-  if (typeof clock !== 'function' || typeof load !== 'function' || typeof makeRuntime !== 'function' ||
+  if (typeof clock !== 'function' || typeof load !== 'function' || typeof makeRuntime !== 'function' || typeof makeBrowserStorage !== 'function' ||
     !Number.isInteger(duration) || duration < 1 || duration > 30_000) throw new TypeError('management-options');
   let phase: ProcessorManagementState['phase'] = 'idle', reason: string | undefined, closed = false;
   let busy = false, generation = 0, attempts = 0, reviewSequence = 0, sequence = 0, lastTime = -1;
@@ -86,14 +92,17 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
   let latest: ProcessorInstallationSnapshot | undefined, incumbent: Run | undefined, candidate: Run | undefined;
   let indicator: boolean | null = null, effectCount = 0, releaseCount = 0, cleanupFailures = 0;
   let timer: ReturnType<typeof setTimeout> | undefined, storageClosed = false;
+  let storageMode: ManagementStorageMode = 'tab', browserSession: BrowserProcessorInstallationStorageSession | undefined, browserDocumentBytes = 0;
   let closePromise: Promise<void> | undefined, resolveClose: (() => void) | undefined;
   const documents = new Map<string, string>(), raw = new Set<Promise<unknown>>(), operations = new Set<Promise<unknown>>();
   const allRuns = new Set<Run>();
+  const browserSessions = new Set<BrowserProcessorInstallationStorageSession>();
+  const closingBrowserSessions = new Set<BrowserProcessorInstallationStorageSession>();
   const ownerId = 'page:processor-owner', identity = { principalId: ownerId, applicationId: 'settings-processors', sessionId: 'this-tab' };
   function notify() { try { changed?.(); } catch { /* Fixed diagnostics only; a UI observer cannot revive authority. */ } }
   function finishClose() {
-    if (!closed || busy || raw.size || operations.size || [...allRuns].some(run => run.handles.size || run.routes.size)) return;
-    storageClosed = true; documents.clear(); bundle = undefined; latest = undefined;
+    if (!closed || busy || raw.size || operations.size || browserSessions.size || [...allRuns].some(run => run.handles.size || run.routes.size)) return;
+    storageClosed = true; documents.clear(); browserDocumentBytes = 0; bundle = undefined; latest = undefined;
     const done = resolveClose; resolveClose = undefined; done?.();
   }
   function track<T>(call: () => T | Promise<T>): Promise<T> {
@@ -160,10 +169,23 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
     if (run.retired && !run.callouts && !run.handles.size && !run.routes.size) allRuns.delete(run);
     finishClose(); notify();
   }
+  function retireBrowserSession() {
+    const previous = browserSession; browserSession = undefined;
+    if (!previous || closingBrowserSessions.has(previous)) return;
+    closingBrowserSessions.add(previous);
+    // track reserves before close can call out. Retain the session until the
+    // adapter's real issued request has settled, including a queued abort.
+    const closing = track(() => previous.close());
+    void closing.then(() => {
+      closingBrowserSessions.delete(previous); browserSessions.delete(previous); notify(); finishClose();
+    }, () => { cleanupFailures++; notify(); finishClose(); });
+  }
   function retireManagement(why: string) {
     const previous = scope; scope = undefined; generation++; pendingReview = undefined; allowedReview = undefined; permissions = undefined;
     if (timer !== undefined) { clearTimeout(timer); timer = undefined; }
-    previous?.abort.abort(); store?.close(); store = undefined;
+    const previousStore = store; store = undefined;
+    previous?.abort.abort(); previousStore?.close(); retireBrowserSession();
+    if (why === 'changed-elsewhere') { latest = undefined; browserDocumentBytes = 0; }
     for (const run of [...allRuns]) retireRun(run);
     phase = closed ? 'closed' : why === 'expired' ? 'expired' : 'stopped'; reason = why; indicator = null; notify(); finishClose();
   }
@@ -208,16 +230,50 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
     return returned;
   }
   const storage: ProcessorInstallationStorage = {
-    read(key) { return track(async () => { await beforeStorage?.('read'); if (storageClosed) throw new TaskFailure('closed'); return documents.get(key); }); },
-    compareAndSwap(key, expected, value, guard) { return track(async () => {
-      await beforeStorage?.('write');
-      if (storageClosed || closed || typeof value !== 'string' || new TextEncoder().encode(value).byteLength > 4 * 1024 * 1024 ||
-        key !== `101:processor-installation:${encodeURIComponent(ownerId)}` || documents.get(key) !== expected || aborted(guard.signal)) return false;
-      const approved = guard.isCurrent(), at = readTime(), selected = scope;
-      if (!approved || !selected || !intrinsic(selected, at) || aborted(guard.signal) || documents.get(key) !== expected) return false;
-      documents.set(key, value); return true;
-    }); },
-    isCurrent(key, expected) { return !storageClosed && !closed && documents.get(key) === expected; },
+    read(key) {
+      const selected = scope, session = browserSession;
+      return track(async () => {
+        await beforeStorage?.('read');
+        if (storageClosed || !selected) throw new TaskFailure('closed'); requireCurrent(selected);
+        if (storageMode === 'browser' && (!session || browserSession !== session)) throw new TaskFailure('unavailable');
+        const value = session ? await session.storage.read(key) : documents.get(key);
+        requireCurrent(selected);
+        if (session) {
+          if (browserSession !== session) throw new TaskFailure('stopped');
+          browserDocumentBytes = value === undefined ? 0 : new TextEncoder().encode(value).byteLength;
+        }
+        return value;
+      });
+    },
+    compareAndSwap(key, expected, value, guard) {
+      const selected = scope, session = browserSession;
+      return track(async () => {
+        await beforeStorage?.('write');
+        if (storageClosed || closed || typeof value !== 'string' || new TextEncoder().encode(value).byteLength > 4 * 1024 * 1024 ||
+          key !== `101:processor-installation:${encodeURIComponent(ownerId)}` || !selected || aborted(guard.signal)) return false;
+        if (storageMode === 'browser') {
+          if (!session || browserSession !== session || !current(selected)) return false;
+          // The real adapter owns the exclusive lock, original raw comparison and
+          // final native segment. This wrapper supplies only fresh page authority.
+          const committed = await session.storage.compareAndSwap(key, expected, value, {
+            signal: guard.signal, isCurrent: () => guard.isCurrent() && current(selected) && browserSession === session,
+          });
+          if (committed) browserDocumentBytes = new TextEncoder().encode(value).byteLength;
+          return committed;
+        }
+        if (documents.get(key) !== expected) return false;
+        const approved = guard.isCurrent(), at = readTime();
+        if (!approved || !intrinsic(selected, at) || aborted(guard.signal) || documents.get(key) !== expected) return false;
+        documents.set(key, value); return true;
+      });
+    },
+    isCurrent(key, expected) {
+      if (storageClosed || closed) return false;
+      if (storageMode === 'tab') return documents.get(key) === expected;
+      const selected = scope, session = browserSession;
+      if (!selected || !session || !current(selected)) return false;
+      return session.storage.isCurrent(key, expected) && browserSession === session && intrinsic(selected, lastTime);
+    },
   };
   function known(version: ManagementVersion | undefined): TrustedProcessorVersion {
     const result = bundle?.versions.find(item => item.release.version === version);
@@ -383,13 +439,16 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
       ...(incumbent && !incumbent.retired ? { activeVersion: incumbent.version.release.version } : {}),
       publisherRevoked: latest?.revokedPublishers.includes(PUBLISHER) ?? false, indicator, effectCount, releaseCount,
       rawPending: raw.size, registrations: [...allRuns].reduce((n, run) => n + run.handles.size, 0),
-      routes: [...allRuns].reduce((n, run) => n + run.routes.size, 0), documentBytes: [...documents.values()].reduce((n, value) => n + new TextEncoder().encode(value).byteLength, 0),
+      routes: [...allRuns].reduce((n, run) => n + run.routes.size, 0),
+      documentBytes: storageMode === 'browser' ? browserDocumentBytes : [...documents.values()].reduce((n, value) => n + new TextEncoder().encode(value).byteLength, 0),
       timerArmed: timer !== undefined, flushArmed: [...allRuns].some(run => run.flush !== undefined), attemptsRemaining: remaining(), cleanupFailures, closurePending: closed && !!resolveClose,
-      inputAllowed: permissions?.input ?? false, outputAllowed: permissions?.output ?? false });
+      inputAllowed: permissions?.input ?? false, outputAllowed: permissions?.output ?? false,
+      storageMode, storagePending: [...browserSessions].reduce((n, session) => n + session.snapshot().pendingWrites, 0) });
   }
   const task: ProcessorManagementTask = {
-    manage() { return operation(async () => {
-      if (scope) return bad('busy'); phase = 'opening'; reason = undefined;
+    manage(mode = 'tab') { return operation(async () => {
+      if (scope) return bad('busy'); if (mode !== 'tab' && mode !== 'browser') return bad('invalid');
+      storageMode = mode; latest = undefined; browserDocumentBytes = 0; phase = 'opening'; reason = undefined;
       const before = generation, at = readTime();
       if (closed || generation !== before) throw new TaskFailure('closed');
       const selected: Scope = { id: ++generation, end: at + duration, abort: new AbortController() };
@@ -399,6 +458,13 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
         if (supplied.publisherId !== PUBLISHER || supplied.minimumSequence !== 1 || supplied.versions.length !== 2 ||
           !supplied.versions.every(value => versions.has(value.release.version) && value.release.packageId === PACKAGE && value.release.publisherId === PUBLISHER)) throw new TaskFailure('untrusted');
         bundle = supplied;
+        if (mode === 'browser') {
+          const session = await track(() => makeBrowserStorage({ ownerId }));
+          browserSessions.add(session); browserSession = session;
+          // A factory return arriving after Stop/close still belongs to this
+          // task and must be closed before its raw reservation is released.
+          if (!current(selected)) { retireBrowserSession(); throw new TaskFailure(reason ?? 'stopped'); }
+        }
         store = createProcessorInstallation({ ownerId, storage, now: clock,
           publisherTrust(id) { return id === PUBLISHER && scope === selected && !aborted(selected.abort.signal) ? { key: supplied.key, minimumSequence: supplied.minimumSequence } : undefined; },
           authorize: request => approve(selected, request) });
@@ -460,7 +526,7 @@ export function createProcessorManagementTask(options: ProcessorManagementOption
       run.runtime!.flush(); run.runtime!.flush(); scheduleFlush(run); notify(); return good();
     },
     stopLive() { for (const run of [...allRuns]) retireRun(run); indicator = null; reason = 'live-stopped'; notify(); },
-    stopManagement() { retireManagement('stopped'); }, snapshot,
+    stopManagement(why = 'stopped') { retireManagement(why === 'changed-elsewhere' ? 'changed-elsewhere' : 'stopped'); }, snapshot,
     close() {
       if (closePromise) return closePromise;
       closePromise = new Promise<void>(done => { resolveClose = done; }); closed = true;

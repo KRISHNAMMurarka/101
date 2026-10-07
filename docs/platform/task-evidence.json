@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 139,
+  "revision": 140,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11781,6 +11781,55 @@
         "Owned disposable software browser contexts and clean ordinary SDK consumer; physical checks deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "watch-sharing-built-source-partial-2026-10-07",
+      "revision": "d98f2bd32489b5abb0a251d70e3676fd5619896c",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "U04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-watch-sharing.json"
+      ],
+      "environment": "Local Node24.14 cooperative public SDK source regressions; exact repository build gates in retained reference. Broader browser/phone checks deferred.",
+      "reproduction": "Actual meaningful OLD and final focused source records, source pins and neutral exact integration gate/review refs in receipt.",
+      "scope": "Full native Chromium/WebKit interaction journeys are authored but UNRUN/deferred at user request.; No physical capture time, phone/device, account management, ownership transfer or whole U04 completion.; Prior unrelated shared readings WebKit expiry failure remains unresolved.",
+      "failure": null,
+      "equipment": [
+        "Local software source checks; broader interaction and physical checks deferred"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "durable-processor-management-built-source-partial-2026-10-07",
+      "revision": "d98f2bd32489b5abb0a251d70e3676fd5619896c",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "U12",
+        "E10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-durable-processor-management.json"
+      ],
+      "environment": "Local Node24.14 cooperative public SDK source regressions; exact repository build gates in retained reference. Broader browser/phone checks deferred.",
+      "reproduction": "Actual meaningful OLD and final focused source records, source pins and neutral exact integration gate/review refs in receipt.",
+      "scope": "New broader native/browser Settings journeys are authored but UNRUN/deferred at user request.; Focused storage/lock fault checks are faithful cooperative ports, not new native quota/event/platform certification.; Prior SDK adapter native receipts remain historical at their exact revision. No account/general provider or whole U12/E10 completion.",
+      "failure": null,
+      "equipment": [
+        "Local software source checks; broader interaction and physical checks deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14283,7 +14332,8 @@
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "processor-management-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
-        "browser-processor-storage-built-partial-2026-10-07"
+        "browser-processor-storage-built-partial-2026-10-07",
+        "durable-processor-management-built-source-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14421,7 +14471,8 @@
         "pending-U04",
         "u04-built-partial-2026-10-06",
         "u04-connected-page-sharing-partial-2026-10-07",
-        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+        "watch-sharing-built-source-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14551,7 +14602,8 @@
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "processor-management-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
-        "browser-history-privacy-built-partial-2026-10-07"
+        "browser-history-privacy-built-partial-2026-10-07",
+        "durable-processor-management-built-source-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",

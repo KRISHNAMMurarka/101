@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "base": "5d23657fa1459fe759b2a31bb23fdc51404225aa",
+  "result": "selected software implementation and focused source contract pass; broader interaction checks deferred",
+  "localOnly": true,
+  "tasks": [
+    "U04"
+  ],
+  "sourceSha256": {
+    "app/sharing/watch/watch-sharing-task.ts": "ec96ef5aa74e5ff330748672ea5b28e410fa6e964efff3bb963a7410013f7e3b",
+    "app/sharing/watch/WatchSharingView.tsx": "5cd2c81a0a807669bacfedd4c0ef48eed06a9e5e8e6f9b92ea81b3a8e4a0c46a",
+    "app/sharing/watch/page.tsx": "dfcd821f6fd37e381ad854f66c632b4a4c9d702ddce273ad638767918e48aa60",
+    "app/sharing/watch/watch-sharing-task.test.ts": "b8d4f94e85c266ac0ba17d2ab74f993bb9f96c883c9118e123598958f2f920cd",
+    "app/sharing/SharingView.tsx": "b384301b7345be9f4043469106d19d692b18a49922bf2fbb1958988c3102a4d5",
+    "tools/qa-watch-sharing-flow.mjs": "bf0b0f897f4c31614e61fe0ded5c1b9609ff497fe01acbd413cf35fa1f97d155"
+  },
+  "changes": [
+    "Read-only observer flow for one owner and two independently approved observers using actual public authenticated resource publisher/receiver/runtime.",
+    "Original 30 second source consent, separate recipient approvals, at most20Hz latest software view, conservative actual clock mapping, retained receiver slot watermark, per-recipient decline/cancel/revoke.",
+    "Reproduced aged display commit during final public peer scope clock call; moved public callouts before final intrinsic lifetime and sample-age fence.",
+    "Visible keyboard and equivalent buttons. Stop awaits Task.close\u2019s returned-work barrier; background retires resource approvals, and unmount initiates tracked close."
+  ],
+  "meaningfulOld": [
+    {
+      "path": "/tmp/101-watch-sharing-old-retained.json",
+      "sha256": "9a4dbbb38b4ef8e13cd241b8f32904b9902e2c709586a802819ffbd54089bf27"
+    },
+    {
+      "path": "/tmp/101-watch-sharing-final-clock-old-retained.json",
+      "sha256": "e10f727d24c31f388c0f5990db5319a2483fde8f6a95819e6522e08315488ac7"
+    }
+  ],
+  "focused": {
+    "record": {
+      "path": "/tmp/101-watch-sharing-final-clock-fixed.json",
+      "sha256": "4cbfc37f4ada37da50a23b694e35532368d7055543a7118e2348231975c498ef"
+    },
+    "tests": 19,
+    "pass": 19,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/integration-gates",
+    "requirement": "All five exact AGENTS gates, including fresh build before rendered tests, must pass before local commit. Retained record holds actual outputs/counts."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/integration-review",
+    "requirement": "Passive exact candidate review must be CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "Full native Chromium/WebKit interaction journeys are authored but UNRUN/deferred at user request.",
+    "No physical capture time, phone/device, account management, ownership transfer or whole U04 completion.",
+    "Prior unrelated shared readings WebKit expiry failure remains unresolved."
+  ],
+  "taskDisposition": {
+    "U04": "PARTIAL/OPEN. Selected build/source contract only; remaining acceptance unchanged."
+  },
+  "supportRowsAccepted": 0,
+  "firstTypeGateFailure": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/first-gate-failure",
+    "reason": "Explicitly captured required permit before active message checks; no nullable permit dereference. No red gate committed."
+  },
+  "priorLintGateFailure": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/second-gate-failure",
+    "repair": "Read-only image programmatically focusable without extra tab stop; QA loop condition names existing bounded deadline. Existing unrelated controller ref warning retained."
+  }
+}

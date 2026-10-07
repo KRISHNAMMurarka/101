@@ -597,3 +597,18 @@ test('renders explicit local pointer consent and keeps typed game mapping in Stu
   assert.match(studio, /href="\/pointer-lab"/);
   assert.match(studio, /href="\/studio\/input"/);
 });
+
+
+test("read-only sharing is reachable and arrives without display or control authority", async () => {
+  const sharing = await render("/sharing");
+  assert.equal(sharing.status, 200);
+  assert.match(await sharing.text(), /href="\/sharing\/watch"/);
+  const response = await render("/sharing/watch");
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /Share a read-only page view/);
+  assert.match(html, /Start watch setup/);
+  assert.match(html, /data-testid="watch-display"[^>]*data-held="false"/);
+  assert.doesNotMatch(html, /data-testid="watch-display"[^>]*data-x=/);
+  assert.doesNotMatch(html, /rawPending|RTCPeerConnection|confidence percentage|protocol epoch/);
+});

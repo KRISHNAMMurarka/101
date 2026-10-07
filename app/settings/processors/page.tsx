@@ -3,26 +3,30 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createProcessorManagementTask } from './processor-management';
-import type { ManagementAction, ManagementReview, ManagementVersion, ProcessorManagementState, ProcessorManagementTask } from './processor-management';
+import type { ManagementAction, ManagementReview, ManagementStorageMode, ManagementVersion, ProcessorManagementState, ProcessorManagementTask } from './processor-management';
 import styles from '../../connections/resources/resource-task.module.css';
 import connections from '../../connections/connections.module.css';
 import appearance from '../settings.module.css';
 
 const initial: ProcessorManagementState = Object.freeze({ phase: 'idle', installed: Object.freeze([]), publisherRevoked: false,
   indicator: null, effectCount: 0, releaseCount: 0, rawPending: 0, registrations: 0, routes: 0, documentBytes: 0,
-  timerArmed: false, flushArmed: false, attemptsRemaining: 32, cleanupFailures: 0, closurePending: false, inputAllowed: false, outputAllowed: false });
+  timerArmed: false, flushArmed: false, attemptsRemaining: 32, cleanupFailures: 0, closurePending: false, inputAllowed: false, outputAllowed: false,
+  storageMode: 'tab', storagePending: 0 });
 const messages: Record<string, string> = {
-  idle: 'Nothing is installed or running. Manage this tab when you are ready.',
+  idle: 'Nothing is running. Choose where to keep reviewed versions when you are ready.',
   opening: 'Checking this page’s reviewed versions…', working: 'Finishing your approved change…',
   ready: 'Review an action below. Installation alone never starts the example.',
-  stopped: 'Management stopped. Any installed versions are inactive and stay only in this page.',
+  stopped: 'Management stopped. Installed versions are inactive.',
+  'changed-elsewhere': 'Saved versions changed in another page. Live use stopped. Manage again to review the current saved choice.',
   'live-stopped': 'Live use stopped and the page indicator was released. Allow it again before sending another number.',
   expired: 'Permission ended after 30 seconds. Manage again and give fresh approval to continue.',
   declined: 'That change was declined. Current management and live use stay as they were.',
   integrity: 'This version’s content or signature could not be verified. It was not installed.',
+  corrupt: 'Saved installation data could not be read safely. It was kept unchanged. Stop management and check the saved data before trying again.',
+  'wrong-owner': 'Saved installation data belongs to a different owner. It was kept unchanged and cannot be used here.',
   untrusted: 'This publisher or version is not approved for this page. It was not started.',
   conformance: 'This version did not pass this page’s checked behavior. The current version was kept.',
-  revoked: 'Permission for this version or publisher was removed. It cannot start again in this page.',
+  revoked: 'Permission for this version or publisher was removed in the chosen place. It cannot start there again while that record is kept.',
   incompatible: 'This version is not supported by this page. Your current choice was kept.',
   denied: 'Allow the number input and page indicator separately before starting live use.',
   busy: 'Previous work is still finishing. Wait before reviewing another change.',
@@ -36,29 +40,39 @@ const messages: Record<string, string> = {
   closed: 'This page’s processor management has closed.',
 };
 const reviewText: Record<ManagementAction, { title: string; body: string; confirm: string }> = {
-  install: { title: 'Install this version in this tab?', body: 'Verify and keep this reviewed version only in this page. It will remain inactive until you separately allow live use. A running version stays in place.', confirm: 'Confirm installation' },
+  install: { title: 'Install this reviewed version?', body: 'Verify and keep this reviewed version in the place you chose. It will remain inactive until you separately allow live use. A running version stays in place.', confirm: 'Confirm installation' },
   'activate-reviewed': { title: 'Use this version on this page?', body: 'Use the number you enter in degrees Celsius and change this page’s indicator through the reviewed rule. Both permissions end with this management session. An accepted version change releases the previous live rule.', confirm: 'Start approved example' },
   'rollback-reviewed': { title: 'Use the earlier reviewed version?', body: 'Switch to the retained earlier version for this page’s number and indicator. This does not lower the publisher’s verification requirements. Fresh input and output approval is required.', confirm: 'Confirm rollback and use' },
-  'revoke-release': { title: 'Revoke this version?', body: 'Stop this version’s live use and refuse future starts in this tab. Other reviewed versions remain separate.', confirm: 'Confirm version revocation' },
-  'revoke-publisher': { title: 'Revoke the built-in publisher?', body: 'Stop its live use and refuse both reviewed versions in this tab. Leaving this page clears this tab-only record.', confirm: 'Confirm publisher revocation' },
-  remove: { title: 'Remove the installed versions?', body: 'Stop live use and remove source content from this tab’s installation record. Minimal version and revocation records remain until you leave this page.', confirm: 'Confirm removal' },
+  'revoke-release': { title: 'Revoke this version?', body: 'Stop this version’s live use and refuse future starts in the place you chose. Other reviewed versions remain separate.', confirm: 'Confirm version revocation' },
+  'revoke-publisher': { title: 'Revoke the built-in publisher?', body: 'Stop its live use and refuse both reviewed versions in the place you chose. The block lasts while that installation record is kept.', confirm: 'Confirm publisher revocation' },
+  remove: { title: 'Remove the installed versions?', body: 'Stop live use and remove source content from the chosen installation record. Minimal version and publisher blocks remain while that record is kept.', confirm: 'Confirm removal' },
 };
 
 export default function ProcessorManagementPage() {
   const [state, setState] = useState(initial), [version, setVersion] = useState<ManagementVersion>('1.0.0'),
-    [number, setNumber] = useState(30), [manageReview, setManageReview] = useState(false), [requestError, setRequestError] = useState('');
+    [number, setNumber] = useState(30), [manageReview, setManageReview] = useState(false), [requestError, setRequestError] = useState(''),
+    [storageChoice, setStorageChoice] = useState<ManagementStorageMode>('tab');
   const owned = useRef<ProcessorManagementTask | undefined>(undefined), alive = useRef(false), lifetime = useRef(0),
     reviewTitle = useRef<HTMLHeadingElement>(null), manageButton = useRef<HTMLButtonElement>(null),
     statusText = useRef<HTMLParagraphElement>(null), actionButton = useRef<HTMLButtonElement | null>(null), previousReview = useRef<ManagementReview | undefined>(undefined);
-  const current = state.phase === 'ready' || state.phase === 'working', pending = state.phase === 'opening' || state.phase === 'working' || state.rawPending > 0;
+  const current = state.phase === 'ready' || state.phase === 'working', pending = state.phase === 'opening' || state.phase === 'working' || state.rawPending > 0 || state.storagePending > 0;
   const update = (task: ProcessorManagementTask) => { if (alive.current && owned.current === task) setState(task.snapshot()); };
   useEffect(() => {
     const pageLifetime = lifetime;
     alive.current = true; const id = ++pageLifetime.current;
     const hidden = () => { if (document.hidden) { owned.current?.stopManagement(); setManageReview(false); } };
+    const storageChanged = (event: StorageEvent) => {
+      const task = owned.current;
+      if (!task || task.snapshot().storageMode !== 'browser' ||
+        (event.key !== null && event.key !== '101:processor-installation:page%3Aprocessor-owner')) return;
+      // A notice only retires authority. Its values never supply data or consent.
+      task.stopManagement('changed-elsewhere'); setManageReview(false); setRequestError('');
+    };
     document.addEventListener('visibilitychange', hidden);
+    window.addEventListener('storage', storageChanged);
     return () => {
       alive.current = false; pageLifetime.current++; document.removeEventListener('visibilitychange', hidden);
+      window.removeEventListener('storage', storageChanged);
       const task = owned.current; owned.current = undefined;
       if (task) void task.close().then(() => {
         window.dispatchEvent(new CustomEvent('101-processor-management-retired', { detail: { lifetime: id, closeAwaited: true, ...task.snapshot() } }));
@@ -83,7 +97,7 @@ export default function ProcessorManagementPage() {
       task = created; owned.current = created;
     }
     const id = lifetime.current;
-    const result = await task.manage();
+    const result = await task.manage(storageChoice);
     if (!alive.current || lifetime.current !== id || owned.current !== task) return;
     update(task); if (!result.ok) setRequestError(result.reason);
   }
@@ -103,23 +117,36 @@ export default function ProcessorManagementPage() {
   const installed = state.installed.find(item => item.version === version), liveReview = state.review && ['activate-reviewed', 'rollback-reviewed'].includes(state.review.action),
     details = state.review ? reviewText[state.review.action] : undefined;
   const status = ['closed', 'expired', 'stopped'].includes(state.phase) ? state.reason || state.phase : requestError || state.reason || state.phase;
+  const place = state.storageMode === 'browser' ? 'this browser' : 'this tab';
+  const statusMessage = status === 'unavailable' && state.storageMode === 'browser'
+    ? 'Saving on this browser could not finish. It was not replaced with tab storage. Stop management, wait for pending work, then choose again.'
+    : status === 'stopped' && state.storageMode === 'browser'
+      ? 'Management stopped. Saved versions remain inactive. Manage again and give fresh approval to use them.'
+      : messages[status] ?? 'Review a fresh action to continue.';
   return <main className={`${styles.page} ${appearance.page}`} aria-labelledby="processor-settings-title"
     data-processor-phase={state.phase} data-processor-raw={state.rawPending} data-processor-routes={state.routes}
     data-processor-registrations={state.registrations} data-processor-timers={Number(state.timerArmed) + Number(state.flushArmed)}
     data-processor-effects={state.effectCount} data-processor-releases={state.releaseCount} data-processor-cleanup-failures={state.cleanupFailures}
-    data-processor-until={state.managementUntil ?? ''}>
+    data-processor-until={state.managementUntil ?? ''} data-processor-storage={state.storageMode} data-processor-storage-pending={state.storagePending}>
     <Link className={styles.skip} href="/settings">Back to Settings</Link>
     <header><h1 id="processor-settings-title">Manage reviewed processors</h1>
       <p>Try a built-in reviewed number rule. It can read only the number you enter here and change this page’s indicator after your approval.</p>
-      <p><strong>This tab only.</strong> Leaving or reloading this page forgets its installed versions. This does not install a device connector or give access to other apps.</p></header>
-    <p ref={statusText} tabIndex={-1} className={styles.status} role="status" aria-label="Processor management status">{messages[status] ?? 'Review a fresh action to continue.'}</p>
+      <p>Choose to keep versions only in this tab or save them on this browser. Saving keeps reviewed version content and blocked-version history, never live permissions. Each visit needs fresh approval.</p>
+      <p>This choice applies to this app on this browser. It does not install a device connector or give access to other apps. Browser data is not an account or a backup; clearing it can forget installed versions and blocks.</p></header>
+    <p ref={statusText} tabIndex={-1} className={styles.status} role="status" aria-label="Processor management status">{statusMessage}</p>
     {!current && <div className={styles.actions}>
       <button ref={manageButton} disabled={pending || state.cleanupFailures > 0 || state.attemptsRemaining === 0}
-        onClick={() => { setManageReview(true); setRequestError(''); }}>Manage processors</button>
+        onClick={() => { setStorageChoice('tab'); setManageReview(true); setRequestError(''); }}>Manage processors</button>
     </div>}
     {manageReview && <section className={styles.panel} aria-labelledby="processor-manage-review-title">
       <h2 id="processor-manage-review-title" ref={reviewTitle} tabIndex={-1}>Allow processor management?</h2>
-      <p>For up to 30 seconds, inspect this tab’s installed versions and review changes. Each installation, live use, rollback or removal needs its own approval. Nothing starts now.</p>
+      <p>For up to 30 seconds, inspect versions in the place you choose and review changes. Each installation, live use, rollback or removal needs its own approval. Nothing starts now.</p>
+      <fieldset className={connections.roles} disabled={pending}><legend>Where to keep reviewed versions</legend>
+        <label><input type="radio" name="processor-storage" value="tab" checked={storageChoice === 'tab'} onChange={() => setStorageChoice('tab')} />Only this tab</label>
+        <label><input type="radio" name="processor-storage" value="browser" checked={storageChoice === 'browser'} onChange={() => setStorageChoice('browser')} />Save on this browser</label>
+      </fieldset>
+      <p>{storageChoice === 'browser' ? 'Read saved versions only after approval. New installations and blocks stay while this browser keeps its data. Versions in this tab are not copied.'
+        : 'Installed versions stay only in this page and are forgotten when you leave or reload. Saved browser versions are not copied into this tab.'}</p>
       <div className={styles.actions}><button disabled={pending} onClick={() => void manage()}>Allow management for 30 seconds</button>
         <button onClick={() => { setManageReview(false); manageButton.current?.focus(); }}>Decline management</button></div>
     </section>}
@@ -130,9 +157,9 @@ export default function ProcessorManagementPage() {
         onChange={event => setVersion(event.target.value as ManagementVersion)} aria-label="Reviewed version">
         <option value="1.0.0">1.0.0 — turns on at 30 degrees</option><option value="2.0.0">2.0.0 — turns on above 30 degrees</option>
       </select></label></div>
-      <p>{state.installed.length ? `Installed in this page: ${state.installed.map(item => `${item.version}${item.revoked ? ' (revoked)' : ''}`).join(', ')}.` : 'No installed version in this page.'}</p>
+      <p>{state.installed.length ? `Installed in ${state.storageMode === 'browser' ? 'this browser' : 'this page'}: ${state.installed.map(item => `${item.version}${item.revoked ? ' (revoked)' : ''}`).join(', ')}.` : 'No installed version in the current choice.'}</p>
       <p>{state.activeVersion ? `Live version: ${state.activeVersion}.` : 'No live version. Installation is separate from live use.'}</p>
-      {state.publisherRevoked && <p>Both versions are blocked because this tab revoked the built-in publisher.</p>}
+      {state.publisherRevoked && <p>Both versions are blocked because {place} revoked the built-in publisher.</p>}
       <div className={styles.actions}>
         <button disabled={!current || pending || !!state.review || state.publisherRevoked} onClick={event => review('install', event.currentTarget)}>Review install</button>
         <button disabled={!current || pending || !!state.review || !installed || installed.revoked || state.publisherRevoked || state.activeVersion === version}
@@ -146,7 +173,7 @@ export default function ProcessorManagementPage() {
     </section>
     {details && state.review && <section className={styles.panel} aria-labelledby="processor-action-review-title">
       <h2 id="processor-action-review-title" ref={reviewTitle} tabIndex={-1}>{details.title}</h2>
-      <p>{details.body}</p><p>{state.review.version ? `Selected version: ${state.review.version}.` : 'Scope: the built-in number rule in this tab.'}</p>
+      <p>{details.body}</p><p>Kept in {place}. {state.review.version ? `Selected version: ${state.review.version}.` : 'Only the built-in number rule is included.'}</p>
       {liveReview && <fieldset className={connections.roles}><legend>Allow both sides separately</legend>
         <button aria-pressed={state.inputAllowed} disabled={pending || state.inputAllowed} onClick={() => { owned.current?.allowInput(state.review!); }}>Allow this page’s number input</button>
         <button aria-pressed={state.outputAllowed} disabled={pending || state.outputAllowed} onClick={() => { owned.current?.allowOutput(state.review!); }}>Allow this page’s indicator output</button>

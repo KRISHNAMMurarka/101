@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "base": "5d23657fa1459fe759b2a31bb23fdc51404225aa",
+  "result": "selected software implementation and focused source contract pass; broader interaction checks deferred",
+  "localOnly": true,
+  "tasks": [
+    "U12",
+    "E10"
+  ],
+  "sourceSha256": {
+    "app/settings/processors/processor-management.ts": "8597c0796d9bb8eb8a1a710659b9a97aa280e66469e3db958bd536e27687c0a9",
+    "app/settings/processors/page.tsx": "c94f4c8e5b286754cff8f471f8466e2ffd9043ed1ad4046f90c1a4832d3c4d5d",
+    "app/settings/processors/processor-management.test.ts": "35325a87af486950bf93ab97de96b99e0271772a9857de8c3cd43b8dde8b263b",
+    "tools/qa-durable-processor-management.mjs": "2816020602f07dd92abd6d5dd41f999faf0098f87b9d697324b36c3d7aacadd1"
+  },
+  "changes": [
+    "Explicit Only this tab default or Save on this browser in the management approval. Constructor/choice/decline are inert; durable factory issued only after approved fresh trust.",
+    "Reuses actual public exact-owner browser Storage/WebLock adapter. Stored releases/history/revocations reopen inactive; approvals, routes, inputs and outputs remain fresh.",
+    "Stop/expiry/current-byte revision loss retires authority; actual queued request/session close retained until real returned settlement. No RAM fallback or automatic migration.",
+    "Corrupt/unsupported/refused storage preserved unchanged. Existing owner-key storage notifications only narrow authority; current bytes still fence effects."
+  ],
+  "meaningfulOld": [
+    {
+      "path": "/tmp/101-durable-processor-management-old-retained.json",
+      "sha256": "46aef9c28e9e840dd465cc381e4f4cc99df23c0e52912e83af4d03aea2ff80ef"
+    }
+  ],
+  "focused": {
+    "record": {
+      "path": "/tmp/101-durable-integrated-focused-fixed.json",
+      "sha256": "f1e2b037da884e14d8d00ee6796604542a6954544a59510515f34a16b4a17007"
+    },
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/integration-gates",
+    "requirement": "All five exact AGENTS gates, including fresh build before rendered tests, must pass before local commit. Retained record holds actual outputs/counts."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/integration-review",
+    "requirement": "Passive exact candidate review must be CLEAR before local commit."
+  },
+  "scopeLimits": [
+    "New broader native/browser Settings journeys are authored but UNRUN/deferred at user request.",
+    "Focused storage/lock fault checks are faithful cooperative ports, not new native quota/event/platform certification.",
+    "Prior SDK adapter native receipts remain historical at their exact revision. No account/general provider or whole U12/E10 completion."
+  ],
+  "taskDisposition": {
+    "U12": "PARTIAL/OPEN. Selected build/source contract only; remaining acceptance unchanged.",
+    "E10": "PARTIAL/OPEN. Selected build/source contract only; remaining acceptance unchanged."
+  },
+  "supportRowsAccepted": 0,
+  "firstTypeGateFailure": {
+    "recordRef": "refs/codex/evidence/2026-10-07-watch-durable/first-gate-failure",
+    "reason": "Explicitly captured required permit before active message checks; no nullable permit dereference. No red gate committed."
+  }
+}
