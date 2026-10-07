@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-07",
-  "result": "pass selected private macOS replay build; exact final commit gates pending",
+  "result": "pass selected private macOS replay software build; exact required gates passed and source committed locally",
   "localOnly": true,
   "profile": "desktop-local-replay-retention/1",
   "base": "1ab7579de6946356d3704f947392f81e39621bf3",
   "candidateSourceTree": "c1bf3a61f444a4d7ff0a3ed0b78b56b1a98dbe0d",
-  "sourceCommit": null,
+  "sourceCommit": "5f184a92d13148aeef251a3ba7c9229653da1303",
   "tasks": [
     "B05",
     "S15",
@@ -149,7 +149,17 @@
     "sha256": "fa4d4a9d4614e9b905f8c48c6f5b3c7ec987062117a25d14df655054207a9b31"
   },
   "requiredGates": {
-    "status": "pending exact candidate"
+    "status": "pass",
+    "sourceCommit": "5f184a92d13148aeef251a3ba7c9229653da1303",
+    "exactCommittedTree": "8f7e43a7b9a235ddf0bdeaccb02855d7cd060222",
+    "receipt": {
+      "path": "/tmp/101-replay-settlement-final-exact-required-gates.json",
+      "sha256": "d92373e7c2440249ba6c7e9d323ae45949676383e00398954e2915e4c56f6788"
+    },
+    "unit": 2177,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed this exact committed25 source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; current source/installed SDK software retains distinct immutable producera519."
   },
   "scopeLimits": [
     "selected macOS native filesystem target only; Linux syscall code/other targets unqualified and unsupported targets deny",
@@ -166,5 +176,18 @@
     "S15",
     "V11"
   ],
-  "currentCatalogAcceptedRows": 0
+  "currentCatalogAcceptedRows": 0,
+  "committedSourceTree": "8f7e43a7b9a235ddf0bdeaccb02855d7cd060222",
+  "actualLocalCommit": {
+    "path": "/tmp/101-replay-settlement-final-exact-commit.json",
+    "sha256": "206448ef8e30d59a6ff4e3eecd23656a48a0b92346fac7b76c5b2447e3143b67"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-replay-settlement-final-exact-independent-review.json",
+    "sha256": "1fb3d91dd65584c8ebdbf4fca720802fc226706508ff21601e6b99b6785ff19e"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-replay-settlement-final-build-preservation.json",
+    "sha256": "8c415c06fafe4e8632ee2c9d7fbe78a94fe41d0e1a23db7d7babac897e3d3af2"
+  }
 }

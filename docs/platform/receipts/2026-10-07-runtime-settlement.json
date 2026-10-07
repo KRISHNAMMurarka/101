@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-10-07",
-  "result": "pass literal E01 public software contract; exact final commit gates pending",
+  "result": "pass literal E01 public software contract and optional route settlement; exact required gates passed and source committed locally",
   "localOnly": true,
   "profile": "runtime-route-settlement/1",
   "tasks": [
@@ -9,7 +9,7 @@
   ],
   "base": "1ab7579de6946356d3704f947392f81e39621bf3",
   "candidateSourceTree": "a5191563654b18034c48146991f206ee59eb6129",
-  "sourceCommit": null,
+  "sourceCommit": "5f184a92d13148aeef251a3ba7c9229653da1303",
   "sourceSha256": {
     "examples/runtime-lifecycle/settlement.ts": "991f62cbade537a04c3b539187911b91ce880763c91367f757bcefade00251cf",
     "packages/device-runtime/src/inspector.ts": "e4cc30b884a8bd54ba824637277fea9e490c5f8f8c19a5a16562936c20aaedbf",
@@ -192,11 +192,34 @@
     "sha256": "fa4d4a9d4614e9b905f8c48c6f5b3c7ec987062117a25d14df655054207a9b31"
   },
   "requiredGates": {
-    "status": "pending exact candidate"
+    "status": "pass",
+    "sourceCommit": "5f184a92d13148aeef251a3ba7c9229653da1303",
+    "exactCommittedTree": "8f7e43a7b9a235ddf0bdeaccb02855d7cd060222",
+    "receipt": {
+      "path": "/tmp/101-replay-settlement-final-exact-required-gates.json",
+      "sha256": "d92373e7c2440249ba6c7e9d323ae45949676383e00398954e2915e4c56f6788"
+    },
+    "unit": 2177,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed this exact committed25 source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; current source/installed SDK software retains distinct immutable producera519."
   },
   "scopeLimits": [
     "Literal public software API reference and compatible optional capability, not whole L02 documentation or other API/platform implementation tasks.",
     "Actual tested Node24.14.0/TypeScript5.9.3 onmacOS; Node22 floor and physical/native targets stay open.",
     "Zero accepted support rows. Physical devices deferred."
-  ]
+  ],
+  "committedSourceTree": "8f7e43a7b9a235ddf0bdeaccb02855d7cd060222",
+  "actualLocalCommit": {
+    "path": "/tmp/101-replay-settlement-final-exact-commit.json",
+    "sha256": "206448ef8e30d59a6ff4e3eecd23656a48a0b92346fac7b76c5b2447e3143b67"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-replay-settlement-final-exact-independent-review.json",
+    "sha256": "1fb3d91dd65584c8ebdbf4fca720802fc226706508ff21601e6b99b6785ff19e"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-replay-settlement-final-build-preservation.json",
+    "sha256": "8c415c06fafe4e8632ee2c9d7fbe78a94fe41d0e1a23db7d7babac897e3d3af2"
+  }
 }

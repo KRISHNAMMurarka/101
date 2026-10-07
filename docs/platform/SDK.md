@@ -1652,6 +1652,33 @@ An async deadline retires the operation's authority but keeps its issued promise
 
 `examples/extension-installation/consumer.mjs` verifies both bytes and signatures before importing its two fixed reviewed local implementations. Its real route-backed caller changes the temperature threshold, exercises update and rollback, cancels queued effects, denies an unapproved route and reloads inactive in fresh processes. This is trusted in-process code: host factory binding, synchronous cleanup and checking `activation.isCurrent()` before effects remain explicit host obligations. Untrusted code isolation, synchronous hang preemption, connector/native/dependency/asset profiles and physical qualification remain open under E10.
 
+## Tab-only reviewed processor management
+
+`/settings/processors`, linked from Settings, manages two built-in reviewed
+number-threshold versions through the public signed installer and runtime. Arrival
+is inert. Explicit management lasts at most 30 seconds; each install, activation,
+rollback, revocation or removal has its own review. Installation does not activate.
+Live use separately approves the page's Celsius number input and its indicator
+output. Both versions use their original fixed reviewed factories and genuine
+native P-256/SHA-256 verification; a manifest cannot select executable code.
+
+Installation documents, factories and grants belong to this page's RAM lifetime.
+Navigation/reload forgets them. Stop is available during verification and live use;
+actual issued public returns and supported route settlement are retained through
+close. A hung return remains pending. The page admits at most 32 changes and 32
+derived commands at 10 Hz within the original lease, with at most one incumbent
+and one candidate runtime. Pending latest input gets a bounded 100 ms drain;
+stop cancels the drain before releasing authority. Focus returns to the initiating
+action after its actual work settles. Existing monochrome, reduced-motion and
+visible-focus styles are reused.
+
+This is a software page indicator, not a temperature sensor, heater, general
+connector installer or persistent identity/publisher management. Arbitrary code
+isolation, native privileges, other profiles and physical/assistive technology
+qualification remain open under U12/E10. [Scoped implementation and software
+evidence](receipts/2026-10-07-processor-management.json) identifies exact inputs
+and the distinction between implementation, runtime evidence and final gates.
+
 ## Local package submission and review
 
 `createLocalPackageCatalog` implements `local-reviewed-processor-catalog/1` for the existing signed local processor release profile. An author submits actual source bytes plus publisher-signed documentation, provenance and claimed test evidence. An independently provisioned reviewer signs a decision bound to the exact submission, release, source, docs, provenance, fixture and report digests. An author's passing report remains a review input. The independent caller runs the real E09 conformance suite with fixed host-reviewed code and independent expectations before signing its review.
@@ -2290,6 +2317,27 @@ caller's rounding mode, and leaves output untouched on invalid input. Kotlin cop
 epoch inputs/getters; Swift handles nonzero-start `Data` slices. iOS, Android,
 other native targets/ABIs, native transport/lifecycle authority and public
 distribution remain unqualified. These selected codecs keep E12/K03 partial.
+
+The selected native producer now checks its finished package contents before
+returning. `normalized-pointer-bindings-content-audit/1` binds the immutable
+manifest hash, all declared regular file hashes and three bounded USTAR archives.
+It rejects extra payloads, links, unsafe/duplicate paths, hidden GNU/PAX metadata,
+known private filenames, PEM private-key markers and explicitly supplied workspace
+roots. Kotlin's five-entry JAR is independently decoded with bounds and CRC checks.
+The producer suppresses macOS auxiliary metadata and Swift SourceKit source-info;
+clean Swift module imports still pass. Current output contains 33 declared files:
+14 Swift, 9 Kotlin and 10 C. The adjacent redacted `content-audit.json` is separate
+from the immutable manifest and always records `releaseAccepted: false`.
+
+Run an independent read-only contents check with
+`python3 -I -S -B tools/audit-native-binding-contents.py --manifest MANIFEST --manifest-sha256 SHA256 --artifact-root ROOT --output NEW_RECEIPT --workspace-root WORKSPACE`.
+It writes only that new receipt; it does not extract or execute package content.
+Manifest input is capped at 1 MiB, each archive at 2 MiB compressed/16 MiB decoded,
+each member at 4 MiB and nested JAR output at 4 MiB. Decoded bytes are staged in
+bounded buffers; this is not an OS sandbox or an arbitrary secret detector. Its
+finite private-marker policy and cooperative filesystem identity guards do not
+prove all SDK/app contents safe. [Actual native contents and clean consumer
+evidence](receipts/2026-10-07-native-binding-contents.json) remains partial K12/K03/E12.
 
 ## Capture-to-output timing
 

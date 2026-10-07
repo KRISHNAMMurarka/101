@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "base": "5f184a92d13148aeef251a3ba7c9229653da1303",
+  "candidateSourceTree": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
+  "sourceCommit": null,
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "preservation": {
+    "path": "/tmp/101-processor-native-software-preserved.json",
+    "sha256": "c87680b853bbb2f832c0a174ddd3dd0ffc72404e41b58b07918e4df159a2fa1e"
+  },
+  "requiredGates": {
+    "status": "pending exact coherent candidate",
+    "scope": "Focused/runtime qualification below describes its actual immutable source. All five AGENTS gates and final candidate browser qualification are required before local commit; no final candidate pass is inferred from an earlier build."
+  },
+  "result": "pass selected native package contents implementation, real compiler output and clean consumers; final exact gates pending",
+  "profile": "normalized-pointer-bindings-content-audit/1",
+  "tasks": [
+    "K12",
+    "K03",
+    "E12",
+    "S15"
+  ],
+  "sourceSha256": {
+    "tools/audit-native-binding-contents.py": "a0d700391aa453305571178f0a3a46b99a3bf6ba997bd8e0a2ba4a1f71e7bac1",
+    "tools/build-pointer-bindings.mjs": "226b117a8b5baf2f77afda45e16301777749228742c1e1944e165a248bbcc472",
+    "tests/native-binding-contents.test.ts": "9e824e9ff72aecff4285fa0e7074347065eef889931cde254993cf038b6bb484",
+    "tools/qa-native-binding-contents.mjs": "134ffc63b955901c6d3dfc1ae5226ae39db84d2439125a2a27b7f91c813aca57"
+  },
+  "reference": "docs/platform/SDK.md#native-normalized-pointer-codecs",
+  "contract": {
+    "trust": "Explicit immutable manifest SHA, declared normalized-pointer-bindings/1 metadata and regular-file SHA/size are checked before bounded archive decoding. Reject unknown payloads/unsafe paths, links, duplicate files, private filename classes and declared private markers. Read/decode only, no extraction/execution. One new redacted0600 receipt is the only CLI output.",
+    "tar": "Producer uses USTAR with macOS metadata/xattr/ACL/fflag suppression. Scanner examines whole bounded decoded physical tar bytes before public tarfile normalization; contiguous512-byte physical coverage, exact member data offsets and absent PAX dictionaries prevent hidden GNU/PAX header acceptance.",
+    "jar": "Bounded actual five-entry Kotlin JAR is decoded and checked with standard zipfile CRC/EOF, stored/deflate methods, exact names, no unsafe/duplicate/encrypted entries and finite decoded byte limits.",
+    "privatePolicy": "Finite PEM-private-key family, explicit logical/real workspace variants and native source-temp prefix, prohibited credential/private filenames. Reports emit only declared public relative paths or unknown ordinals/path digests, never matched private values. No arbitrary encoded-secret guarantee.",
+    "limits": "Manifest1MiB,64 declared files per language,128 tar members,2MiB compressed/16MiB decoded per archive,4MiB member,64KiB marker chunks,512-byte paths,4096-byte named headers,1MiB JAR/64 entries/4MiB decoded JAR,1MiB receipt. Bounded decoded staging is used; no stream-only/RSS/OS sandbox claim.",
+    "producer": "Frozen immutable builder includes exact scanner/test/QA source pins. After immutable manifest/three tarballs, frozen -I -S -B scanner must pass exact version/hash/manifest identity/33 files/3 archives before returning the build. Failed new build output is removed; historical evidence remains. Unused Swift SourceKit source-info emission is disabled because genuine source-info bytes retained a workspace path; public module, docs, ABI and library remain.",
+    "filesystem": "Final regular-file identity/hash guards cover cooperative local filesystems. Top logical roots may resolve legitimate aliases; this is not a malicious same-user atomic filesystem/sandbox guarantee."
+  },
+  "focused": {
+    "receipt": {
+      "path": "/tmp/101-k12-native-binding-content-repaired-focused.json",
+      "sha256": "12e10f75303d74fc79f4a47e52788f2bb7027440b84eef9845f579f0a75e3d7a"
+    },
+    "tests": 30,
+    "scope": "27 original fixture classes plus two genuine GNU-extension regressions and global-PAX coverage; selected producer inventory now33, original34 historical fixtures retained."
+  },
+  "nativeProducer": {
+    "receipt": {
+      "path": "/tmp/101-k12-native-binding-current-producer.json",
+      "sha256": "09dc49b08f2512f80edc4227fe8ced738d8ccace6a3b045e212a52997f520c0c"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/pointer-bindings-hc5ytI/manifest.json",
+      "sha256": "d272ae675982c0373f615510838dae086a67e97acf9cdf8f9b58b541b0022f1c"
+    },
+    "contents": {
+      "path": "/Users/km/Desktop/games/101/release/pointer-bindings-hc5ytI/content-audit.json",
+      "sha256": "2c8857b9eca6cd86b5e090d9bc0a4dad02ffda8abea7e8ad99865cbb97ead72a"
+    },
+    "sourceTree": "ab926c82bc8d045c4c5b23f5128181eb22e0c269",
+    "declaredFiles": 33,
+    "languages": {
+      "swift": 14,
+      "kotlin": 9,
+      "c": 10
+    },
+    "archives": 3,
+    "releaseAccepted": false
+  },
+  "consumers": {
+    "receipt": {
+      "path": "/tmp/101-k12-native-binding-current-consumers.json",
+      "sha256": "64022755429e801a83f78e135d084a6f2341196366d1e771a907cb529e355e5e"
+    },
+    "perLanguage": {
+      "positive": 17,
+      "malformedDecode": 29,
+      "invalidEncode": 12,
+      "commandLines": 75,
+      "hostLifecycle": 8
+    },
+    "actualHostLifecycleTotal": 24,
+    "toolchains": "Swift6.3.3/AppleClang21 on macOSarm64; Kotlin2.1.21/JDK21.0.12. JVM target17 is declared, not qualified on JDK17.",
+    "scope": "Actual external clean Swift import/package tests, Kotlin and C callers with current ordinary installed public SDK oracle. Inert codec output does not grant native input/transport authority."
+  },
+  "currentSdk": {
+    "receipt": {
+      "path": "/tmp/101-replay-settlement-gate-repaired-sdk.json",
+      "sha256": "338625e4cfdfb3c625928094eff4ee6f64bb4d642e6e85d6dcb3861ede8ad8a1"
+    },
+    "sourceFiles": 174,
+    "installedFiles": 394,
+    "tarballs": 7,
+    "consumers": 10,
+    "scope": "Public SDK leafs unchanged and source-equivalent; prior literal retained SDK producera519 is reused, not repacked or represented as the new native producer tree."
+  },
+  "history": [
+    {
+      "path": "/tmp/101-native-binding-undeclared-old.json",
+      "sha256": "b817b64e361b63229521db463ced4e6bd1e7541e4eb91db1d53d660acf929048"
+    },
+    {
+      "path": "/tmp/101-k12-content-missing-command-old.json",
+      "sha256": "3e1fb6633b90f750ccd4646aac6c60cfd3c0e421c8e87765c0461a19cac27241"
+    },
+    {
+      "path": "/tmp/101-native-binding-serialization-green.json",
+      "sha256": "1b9420e63e0df702f21a366d60f3734df4967538b7f18f0c811caf9f7a62c752"
+    },
+    {
+      "path": "/tmp/101-k12-native-binding-metadata-clean-actual.json",
+      "sha256": "841b09db3175186661e094bdbbaa3780c0a3c854aa009191ec715a8b5b2cf87e"
+    },
+    {
+      "path": "/tmp/101-k12-swift-prefix-map-probe.json",
+      "sha256": "798c63640569920247c1dc2b64eb5ae351ff675d25bac37ef7b50594ccb7ede2"
+    },
+    {
+      "path": "/tmp/101-k12-swift-relative-probe.json",
+      "sha256": "1cafc1b369d236afbdafddbdcd4d9a28cf4058495474747ba2d5d95eae128ccb"
+    },
+    {
+      "path": "/tmp/101-k12-gnu-metadata-old.json",
+      "sha256": "4f5fbd0a13edf1b233adb1e9f2abb4416abf7cf0f4814c7966b58b30006192c1"
+    },
+    {
+      "path": "/tmp/101-k12-gnu-old-preserve.json",
+      "sha256": "17a10235724cb27ed0af6573cfe2fff6e6eb36cef8b400bbe64db4e5cec6069b"
+    }
+  ],
+  "sourceReview": {
+    "path": "/tmp/101-k12-native-binding-content-repaired-independent-review.json",
+    "sha256": "da9a2a8b32931ff4781c774f75cf36daa6e155c69d5af0164cad49fd9946d4dd"
+  },
+  "scopeLimits": [
+    "Whole K12/K03/E12/S15 remain open: this is the selected native normalized pointer distribution only. It is not an audit of every SDK/app artifact or arbitrary secret encoding.",
+    "No publication, distribution acceptance, other ABI/runtime, native authority lifecycle, phone/OS injection or physical peripheral qualification.",
+    "Historical metadata-only repack is not current compiler qualification. Genuine fresh33 producer and actual clean consumers above supply the current narrow evidence."
+  ]
+}

@@ -135,6 +135,12 @@ export default function SettingsView() {
         <button type="button" disabled={state.pending} onClick={() => { void decide(false); }}>Cancel</button>
       </div>
     </section>}
+    <section className={styles.panel} aria-labelledby="settings-processors-title">
+      <h2 id="settings-processors-title">Reviewed processors</h2>
+      <p>Try a reviewed number rule on this page. Install a version, then separately allow it to read your entered number and change the page indicator.</p>
+      <div className={styles.actions}><Link href="/settings/processors">Manage reviewed processors</Link></div>
+      <p className={styles.note}>Installed versions stay only in that page. Leaving or reloading it forgets them.</p>
+    </section>
     <section className={styles.panel} aria-labelledby="settings-devices-title">
       <h2 id="settings-devices-title">Devices and connections</h2>
       <p>Inspect devices or review a connection in their own pages. Appearance choices do not grant access to them.</p>

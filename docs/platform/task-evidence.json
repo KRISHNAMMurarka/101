@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 131,
+  "revision": 133,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11362,6 +11362,121 @@
         "completed": 121,
         "open": 151
       }
+    },
+    {
+      "id": "e01-b05-replay-settlement-exact-local-gates-2026-10-07",
+      "revision": "5f184a92d13148aeef251a3ba7c9229653da1303",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E01",
+        "B05",
+        "S15",
+        "V11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-desktop-replay-retention.json",
+        "docs/platform/receipts/2026-10-07-runtime-settlement.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0 and TypeScript5.9.3; current SDK public source/ordinary installed Node software Worker; selected Rust1.94.1 private owned-filesystem checks and Chromium149.0.7827.55/WebKit26.5 built software DOM with controlled IPC, no Tauri app bridge or physical devices.",
+      "reproduction": "All5 actual gates pass: 2177 unit / 34 rendered, zero fail/cancel/skip/todo; freshbuild/types/lint. Current8core+1realWorkercleanup regression and source/installed9each, SDK174source/394installed/7tar/10consumer; unchanged pinned replay14focused/25allnative and2\u00d711software UI reused. Correctedsource/reference/exactreviews CLEAR; rejected earlier lint candidate retained historically.",
+      "scope": "Literal E01 API software reference completed; selected macOS private replay retention/deletion and compatible optional route settlement built/qualified/committed locally. WholeB05/S15/V11 stay OPEN, remaining data classes/generalexport/physical/nativebridge/otherOS unqualified. No hardware/support/publication promotion; later documentary bytes await coherent gates.",
+      "failure": null,
+      "equipment": [
+        "Owned temp filesystem and software Worker/browser fixtures; hardware deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "5f184a92d13148aeef251a3ba7c9229653da1303",
+        "exactCommittedTree": "8f7e43a7b9a235ddf0bdeaccb02855d7cd060222",
+        "receipt": {
+          "path": "/tmp/101-replay-settlement-final-exact-required-gates.json",
+          "sha256": "d92373e7c2440249ba6c7e9d323ae45949676383e00398954e2915e4c56f6788"
+        },
+        "unit": 2177,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five actual gates passed this exact committed25 source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; current source/installed SDK software retains distinct immutable producera519."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-replay-settlement-final-exact-commit.json",
+        "sha256": "206448ef8e30d59a6ff4e3eecd23656a48a0b92346fac7b76c5b2447e3143b67"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
+    },
+    {
+      "id": "processor-management-built-partial-2026-10-07",
+      "revision": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U12",
+        "E10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-processor-management.json"
+      ],
+      "environment": "Owned macOS arm64, Node24.14.0/TypeScript5.9.3, headless Chromium149/WebKit26.5 and local Swift6.3.3/Clang21/Kotlin2.1.21/JDK21 software toolchains only.",
+      "reproduction": "17 focused; genuine Chromium journey and WebKit document-entry probe pass. Initial WebKit keyboard setup failure and all earlier regressions retained.",
+      "scope": "Selected tab-only signed processor management is built and scoped native browser journeys pass. Whole U12/E10 stay OPEN; exact final gates/QA await the coherent candidate. Hardware/identity/general provider scope unqualified.",
+      "failure": null,
+      "equipment": [
+        "Owned software browser/native compiler/temp filesystem fixtures; hardware deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
+    },
+    {
+      "id": "native-binding-contents-built-partial-2026-10-07",
+      "revision": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K12",
+        "K03",
+        "E12",
+        "S15"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-native-binding-contents.json"
+      ],
+      "environment": "Owned macOS arm64, Node24.14.0/TypeScript5.9.3, headless Chromium149/WebKit26.5 and local Swift6.3.3/Clang21/Kotlin2.1.21/JDK21 software toolchains only.",
+      "reproduction": "30 focused checks; fresh Swift14/Kotlin9/C10 USTAR contents pass; each clean consumer17 positive/29 malformed decode/12 invalid encode/75 command lines/8 host lifecycle checks. Exact full gates await coherent candidate.",
+      "scope": "Selected native normalized-pointer package contents is built and real33-file producer/clean consumers qualify its narrow contract. All broad tasks stay OPEN; no release/support acceptance.",
+      "failure": null,
+      "equipment": [
+        "Owned software browser/native compiler/temp filesystem fixtures; hardware deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 121,
+        "open": 151
+      }
     }
   ],
   "tasks": [
@@ -12275,7 +12390,9 @@
       "records": [
         "pending-S15",
         "pairing-recovery-2026-10-06",
-        "b05-desktop-replay-retention-built-partial-2026-10-07"
+        "b05-desktop-replay-retention-built-partial-2026-10-07",
+        "e01-b05-replay-settlement-exact-local-gates-2026-10-07",
+        "native-binding-contents-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12936,7 +13053,8 @@
         "v11-media-recording-installed-2026-10-06",
         "media-backup-current-installed-2026-10-07",
         "sdk-media-enrollment-source-commit-2026-10-07",
-        "b05-desktop-replay-retention-built-partial-2026-10-07"
+        "b05-desktop-replay-retention-built-partial-2026-10-07",
+        "e01-b05-replay-settlement-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13677,7 +13795,8 @@
         "b05-profiles-data-catalog-2026-10-06",
         "b05-recording-owner-data-built-partial-2026-10-07",
         "recording-controller-source-commit-2026-10-07",
-        "b05-desktop-replay-retention-built-partial-2026-10-07"
+        "b05-desktop-replay-retention-built-partial-2026-10-07",
+        "e01-b05-replay-settlement-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13710,7 +13829,8 @@
       "id": "E01",
       "records": [
         "pending-E01",
-        "e01-public-api-runtime-settlement-2026-10-07"
+        "e01-public-api-runtime-settlement-2026-10-07",
+        "e01-b05-replay-settlement-exact-local-gates-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13846,7 +13966,8 @@
         "pending-E10",
         "pairing-extension-local-2026-10-06",
         "extension-raw-reservation-built-partial-2026-10-07",
-        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+        "processor-management-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -13878,7 +13999,8 @@
         "pending-E12",
         "native-source-2026-10-02",
         "directory-native-bindings-partial-2026-10-06",
-        "q02-shared-watch-software-contracts-2026-10-06"
+        "q02-shared-watch-software-contracts-2026-10-06",
+        "native-binding-contents-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -14105,7 +14227,8 @@
         "pending-U12",
         "browser-appearance-settings-built-partial-2026-10-07",
         "browser-appearance-budget-repair-partial-2026-10-07",
-        "settings-hid-sharing-serial-exact-local-gates-2026-10-07"
+        "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
+        "processor-management-built-partial-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -14716,7 +14839,8 @@
       "id": "K03",
       "records": [
         "pending-K03",
-        "directory-native-bindings-partial-2026-10-06"
+        "directory-native-bindings-partial-2026-10-06",
+        "native-binding-contents-built-partial-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [
@@ -14817,7 +14941,8 @@
       "records": [
         "pending-K12",
         "sdk-distributions-2026-10-02",
-        "web-sdk-contents-2026-10-05"
+        "web-sdk-contents-2026-10-05",
+        "native-binding-contents-built-partial-2026-10-07"
       ],
       "dependencies": [],
       "equipment": [

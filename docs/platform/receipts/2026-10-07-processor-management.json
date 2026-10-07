@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "base": "5f184a92d13148aeef251a3ba7c9229653da1303",
+  "candidateSourceTree": "2b4842bd995dbdd242258d526dc7629ae00f72f7",
+  "sourceCommit": null,
+  "tally": {
+    "total": 272,
+    "completed": 121,
+    "open": 151
+  },
+  "preservation": {
+    "path": "/tmp/101-processor-native-software-preserved.json",
+    "sha256": "c87680b853bbb2f832c0a174ddd3dd0ffc72404e41b58b07918e4df159a2fa1e"
+  },
+  "requiredGates": {
+    "status": "pending exact coherent candidate",
+    "scope": "Focused/runtime qualification below describes its actual immutable source. All five AGENTS gates and final candidate browser qualification are required before local commit; no final candidate pass is inferred from an earlier build."
+  },
+  "result": "pass selected processor management implementation and scoped software journeys; final exact gates pending",
+  "profile": "tab-reviewed-processor-management/1",
+  "tasks": [
+    "U12",
+    "E10"
+  ],
+  "sourceSha256": {
+    "app/settings/SettingsView.tsx": "faac969dfbdcd43efe02772313f5ddad6a22a4ac7945e69c3657de66561335b8",
+    "app/settings/processors/page.tsx": "03c340fd93438857d81bc3a7cf8c633147961ae56daec891398788eede89838a",
+    "app/settings/processors/processor-management.ts": "e567c2ccbe43f53236b55eff64b060ee2cc0d27b562f04577bce70afa9f6c358",
+    "app/settings/processors/processor-management.test.ts": "df017e836b3761cb359ca239724bcb7bb85db9a005bf38f77fab0af7c74f8107",
+    "app/settings/processors/trusted-processors.ts": "1f093765557ce9c9c150af1bbeb80bbee280017d5c7687bb899aafe00f6b153a",
+    "tools/qa-processor-management.mjs": "004bc5aecbf7c64766c8d015092eedced609dd6eb7407e1b0381cb18c75bfba5"
+  },
+  "reference": "docs/platform/SDK.md#tab-only-reviewed-processor-management",
+  "contract": {
+    "ownership": "Inert arrival; explicit management for 30 seconds; installation does not activate. Page-owned RAM installation document, never browser persistence, identity enrollment or general connector installation. Reload/navigation forgets versions and approvals.",
+    "verification": "Genuine native P-256/SHA-256 verification with a public verify-only provision and two fixed original reviewed factory/source bindings. No private signing key serialized; no URL/code selection or evaluation. Publisher floor1 remains independent of approved retained-version rollback.",
+    "operations": [
+      "review/decline/confirm installation",
+      "separately approve number input and page indicator output",
+      "activate/update/rollback",
+      "revoke selected version",
+      "revoke publisher",
+      "remove versions",
+      "Stop live use",
+      "Stop management during opening or active work"
+    ],
+    "bounds": "32 attempts, 32 derived commands, 10Hz admitted manual inputs, 30-second original lease; at most incumbent/candidate runtimes with one pending apply each, four routes/eight registrations, one reliable queue,64 evidence entries. Pending-only100ms drain and management expiry use at most two page timers; stop fences/cancels both before release.",
+    "retirement": "Reserve actual returned work before public callouts; late SDK logical timeout does not release raw-work capacity. Close retains actual loader/storage/approval/apply and supported route settlement barriers. Failed unregister is quarantined; hung returned work stays pending. No native WebCrypto internal quiescence guarantee.",
+    "interaction": "Existing monochrome/focus/reduced-motion styles reused, no CSS added. Visible Stop during genuine held opening and original action focus returns only after actual operation returns. Page indicator is software output, not a heater/sensor."
+  },
+  "focused": {
+    "receipt": {
+      "path": "/tmp/101-u12-processor-management-opening-repaired-focused.json",
+      "sha256": "64fef7ae8052fd813b40b4ef58491a38d5481e7eb89e16a073734ae0a5ba3954"
+    },
+    "tests": 17,
+    "loadedModules": 125,
+    "scope": "Actual seventeen focused checks against the same current production helper/factories; subsequent changes affect QA keyboard setup only."
+  },
+  "browserQualification": {
+    "chromium": {
+      "path": "/tmp/101-u12-processor-management-repaired-built-chromium.json",
+      "sha256": "c1273d96e82b2a71b988a73a82b1ef18cf04d98eda9473c8da108126d34a6c7c"
+    },
+    "webkitProbe": {
+      "path": "/tmp/101-u12-webkit-seeded-tab-probe-built-webkit.json",
+      "sha256": "f51374b1d06dbf85cba0272f5d7ea710cdedb208ddd024fc45bf601f3fbdedfc"
+    },
+    "sourceScope": "Actual native WebCrypto/installer/runtime page journeys on their recorded source. Core helper/factories/navigation remain unchanged; current page aliases the same lifetime ref for cleanup lint and the test uses its single assigned const. Current QA adds the witnessed headless document entry checkpoint and requires a genuine keyboard step before focus acceptance. Final exact candidate runs pending.",
+    "retention": "Earlier Chromium full compiled literal retention was incomplete after an overlong evidence archive name and rebuild; its source/receipts/proof/partial bundle remain. Current actual probe compiled534 inputs and native artifacts are fully retained; fresh final Chromium qualification is required."
+  },
+  "history": [
+    {
+      "path": "/tmp/101-u12-processor-management-types.json",
+      "sha256": "481957377d731e4088d3d180ba2d56988090aa6f79c1a4d9b561afa68ccfdb51"
+    },
+    {
+      "path": "/tmp/101-u12-latest-drain-old.json",
+      "sha256": "8c88ecb287136a0a74cd713f164abfdd51ad9761eeabc3bdf03b0307b8779531"
+    },
+    {
+      "path": "/tmp/101-u12-opening-focus-old-built-chromium.json",
+      "sha256": "9dfa436a455b31e8160d1ecf858efd034b1c027db4d0a604408c57a4ca646679"
+    },
+    {
+      "path": "/tmp/101-u12-opening-stop-late-old.json",
+      "sha256": "d87bef22584f045ccf37c315c01e06c66b386c36f3310c2ebaf33625262a3613"
+    },
+    {
+      "path": "/tmp/101-processor-native-current-built-webkit.json",
+      "sha256": "ee2e225ff074b819baf89f67cefccd99b35080c942b91e175223d90d4b830da7"
+    },
+    {
+      "path": "/tmp/101-u12-webkit-focus-probe-built-webkit.json",
+      "sha256": "9a884c74e4b58d709be420bc5330e11fe5c5251a0dda4f10de5d228f93d6f41a"
+    },
+    {
+      "path": "/tmp/101-u12-webkit-tab-probe-built-webkit.json",
+      "sha256": "b326999226f244ccc3904af8a530067aadf8f5c68649e95cc72a187e2dd43ccb"
+    },
+    {
+      "path": "/tmp/101-processor-native-final-exact-required-gates.json",
+      "sha256": "28d1ef057e41a9738ee4ebeee89c3be2afce3b427b9a390a02d387530499eb12"
+    }
+  ],
+  "sourceReview": {
+    "path": "/tmp/101-u12-processor-management-repaired-source-independent-review.json",
+    "sha256": "cdba34f16eb59c91aeeb317344b5645016d6155078a6ed933aecb9b598e7640f"
+  },
+  "scopeLimits": [
+    "Whole U12/E10 remain open: durable/general provider/account management, arbitrary extension/native/dependency/asset isolation, supported surface/assistive technology and physical qualification are absent.",
+    "Owned headless browser/software indicator only; no phone, native input, hardware, service or distribution acceptance.",
+    "Original source review is CLEAR for its recorded version. The final QA checkpoint, same-ref page cleanup alias, const test binding and document delta await coherent candidate review/gates."
+  ]
+}

@@ -14,7 +14,8 @@ export const BINDING_PATHS = Object.freeze([
   'bindings/normalized-pointer/c/include/one01_pointer_wire.h', 'bindings/normalized-pointer/c/src/one01_pointer_wire.c',
   'examples/language-bindings/normalized-pointer.mjs', 'examples/language-bindings/PointerConsumer.swift',
   'examples/language-bindings/PointerConsumer.kt', 'examples/language-bindings/pointer-consumer.c',
-  'tests/pointer-bindings.test.ts', 'tools/build-pointer-bindings.mjs', 'tools/qa-pointer-bindings.mjs' ]);
+  'tests/pointer-bindings.test.ts', 'tools/build-pointer-bindings.mjs', 'tools/qa-pointer-bindings.mjs',
+  'tools/audit-native-binding-contents.py', 'tests/native-binding-contents.test.ts', 'tools/qa-native-binding-contents.mjs' ]);
 const producerPaths = ['packages/device-web/src/wire.ts', 'packages/device-web/src/binding.ts',
   'packages/device-web/src/pointer-provider.ts', 'packages/device-model/src/input-profile.ts'];
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -142,6 +143,10 @@ export function buildPointerBindings(reference, sdkRoot, sdkManifest) {
         copy(join(snapshot, 'examples/language-bindings/PointerConsumer.swift'), join(directory, 'examples/PointerConsumer.swift'));
         mkdirSync(join(directory, 'lib'));
         command('/usr/bin/xcrun', ['swiftc', '-swift-version', '6', '-strict-concurrency=complete', '-warnings-as-errors', '-emit-library', '-emit-module',
+          // SourceKit source-info embeds absolute build paths and is unnecessary
+          // for the qualified import/consumer ABI. Keep the public module/docs.
+          '-avoid-emit-module-source-info', '-file-prefix-map', `${root}=/one01-native`,
+          '-debug-prefix-map', `${root}=/one01-native`, '-prefix-serialized-debugging-options',
           '-module-name', 'One01PointerWire', '-emit-module-path', join(directory, 'lib/One01PointerWire.swiftmodule'),
           '-Xlinker', '-install_name', '-Xlinker', '@rpath/libOne01PointerWire.dylib',
           join(directory, 'source/Sources/One01PointerWire/PointerWire.swift'), '-o', join(directory, 'lib/libOne01PointerWire.dylib')]);
@@ -171,13 +176,28 @@ export function buildPointerBindings(reference, sdkRoot, sdkManifest) {
       assert.ok(files.length <= 64);
       mkdirSync(join(output, 'tarballs'), { recursive: true });
       const tarball = `tarballs/one01-pointer-${language}-${profile.version}.tgz`;
-      command('tar', ['-czf', join(output, tarball), '-C', directory, '.']);
+      // The inventory covers public payloads only. Suppress macOS metadata
+      // serialization without removing any attributes from the source files.
+      command('tar', ['--format', 'ustar', '--no-mac-metadata', '--no-xattrs', '--no-acls', '--no-fflags',
+        '-czf', join(output, tarball), '-C', directory, '.']);
       artifacts.push({ language, directory: language, files, tarball: { path: tarball, bytes: lstatSync(join(output, tarball)).size, sha256: fileHash(join(output, tarball)) } });
     }
     const manifest = { schemaVersion: 1, profile: profile.profile, version: profile.version,
       source: { tree, sha256: sourceSha256 }, sdk: { sourceTree: sdk.manifest.source.tree, manifestSha256: sdk.manifestSha256, selectedProducerSha256 },
       toolchains: tools, qualifiedTargets: profile.qualifiedTargets, authority: 'inert-codec-only', exclusions: profile.excluded, artifacts };
-    json(join(output, 'manifest.json'), manifest); return { manifest: join(output, 'manifest.json'), ...manifest };
+    const manifestPath = join(output, 'manifest.json'); json(manifestPath, manifest);
+    const manifestSha256 = fileHash(manifestPath), auditPath = join(output, 'content-audit.json');
+    const contentAudit = JSON.parse(command('python3', ['-I', '-S', '-B', join(snapshot, 'tools/audit-native-binding-contents.py'),
+      '--manifest', manifestPath, '--manifest-sha256', manifestSha256, '--artifact-root', output,
+      '--output', auditPath, '--workspace-root', root, '--workspace-root', realpathSync(root)], { killSignal: 'SIGKILL' }));
+    assert.equal(contentAudit.schemaVersion, 1); assert.equal(contentAudit.auditProfile, 'native-binding-content-audit/1');
+    assert.equal(contentAudit.result, 'pass'); assert.equal(contentAudit.reason, 'ok');
+    assert.equal(contentAudit.bindingManifestSha256, manifestSha256);
+    assert.equal(contentAudit.toolSha256, sourceSha256['tools/audit-native-binding-contents.py']);
+    assert.equal(contentAudit.files, 33); assert.equal(contentAudit.artifacts.length, 3);
+    assert.equal(contentAudit.releaseAccepted, false);
+    assert.equal(fileHash(manifestPath), manifestSha256, 'Content audit must preserve the frozen manifest');
+    return { manifest: manifestPath, ...manifest, contentAudit: { path: auditPath, sha256: fileHash(auditPath) } };
   } catch (error) { if (output) rmSync(output, { recursive: true, force: true }); throw error; }
   finally { rmSync(snapshot, { recursive: true, force: true }); }
 }
