@@ -1967,6 +1967,42 @@ An async deadline retires the operation's authority but keeps its issued promise
 
 `examples/extension-installation/consumer.mjs` verifies both bytes and signatures before importing its two fixed reviewed local implementations. Its real route-backed caller changes the temperature threshold, exercises update and rollback, cancels queued effects, denies an unapproved route and reloads inactive in fresh processes. This is trusted in-process code: host factory binding, synchronous cleanup and checking `activation.isCurrent()` before effects remain explicit host obligations. Untrusted code isolation, synchronous hang preemption, connector/native/dependency/asset profiles and physical qualification remain open under E10.
 
+## Durable browser processor installations
+
+`createBrowserProcessorInstallationStorage({ ownerId })`, exported by
+`@101/device-web` and `@101/connect`, supplies the existing installer's
+`ProcessorInstallationStorage` port. Construction is inert. Explicit reads and
+writes use browser Storage; a missing or denied facility fails closed. The
+adapter accepts only the installer's exact encoded owner key and opaque document
+bytes within the existing 4 MiB UTF-8 limit. It adds no document or wire schema.
+
+Each compare-and-swap holds an exclusive Web Lock for that owner, checks the
+original stored bytes and current native abort signal and approval guard, then
+performs its synchronous write. Initial port/read callouts are followed by a
+fresh approval check and final byte comparison. Injected ports must keep that
+final read/write segment synchronous and native-equivalent, without callbacks
+that change authority or clocks. Arbitrary host callbacks are not made atomic.
+`isCurrent()` reads the actual stored bytes, so
+another cooperating page's mutation can fence activation before a storage event
+arrives. One issued request is retained until its returned promise settles;
+abort and close cannot admit replacement work early. `close()` returns one
+terminal barrier for this adapter's issued requests. Close the public installer
+first to retire activation, then await the storage adapter. This barrier does not
+claim settlement of WebCrypto work hidden behind another API.
+
+`@101/connect/examples/browser-storage` exports
+`createBrowserProcessorStorageExample`. The host supplies its fixed verified
+publisher bundle, factories, conformance fixtures, configuration and fresh
+management approvals. Stored releases, selected versions and revocation history
+reload inactive; publisher trust, approvals and live resource grants are never
+restored. Live routes still require separate source and destination grants.
+
+This is a cooperative same-origin storage profile. It does not isolate hostile
+same-origin code, prevent browser eviction or guarantee recovery after OS power
+loss. The tab-only Settings page below retains its existing RAM lifetime.
+General extension, native privilege, dependency and isolation work remains open.
+[Scoped implementation and current installed browser evidence](receipts/2026-10-07-browser-processor-storage.json) records exact producer bytes, original failures and remaining limits.
+
 ## Tab-only reviewed processor management
 
 `/settings/processors`, linked from Settings, manages two built-in reviewed

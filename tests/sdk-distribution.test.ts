@@ -48,6 +48,9 @@ test('immutable general SDK packs compiled public contracts and licenses without
         assert.equal(metadata.exports['./examples/telemetry-owner'], './examples/telemetry-owner.mjs');
         assert.deepEqual(metadata.exports['./examples/device-scaffold'], { types: './examples/device-scaffold.d.ts', import: './examples/device-scaffold.js' });
         assert.equal(metadata.exports['./examples/onboarding'], './examples/onboarding/onboarding.mjs');
+        assert.deepEqual(metadata.exports['./examples/browser-storage'], { types: './examples/browser-storage.d.ts', import: './examples/browser-storage.js' });
+        for (const path of ['browser-storage.js', 'browser-storage.d.ts', 'browser-storage.ts'])
+          assert.ok(packed.includes('package/examples/' + path));
         for (const path of ['device-scaffold.js', 'device-scaffold.d.ts', 'device-scaffold.ts', 'onboarding/onboarding.mjs', 'onboarding/consumer.mjs'])
           assert.ok(packed.includes('package/examples/' + path));
       }

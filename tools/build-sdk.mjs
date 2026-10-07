@@ -20,6 +20,7 @@ examples.push({ name: 'ble-switch-output', source: 'examples/browser-resources/b
 examples.push({ name: 'hid-switch-output', source: 'examples/browser-resources/hid-switch-output.ts' });
 examples.push({ name: 'serial-switch-output', source: 'examples/browser-resources/serial-switch-output.ts' });
 examples.push({ name: 'runtime-settlement', source: 'examples/runtime-lifecycle/settlement.ts' });
+examples.push({ name: 'browser-storage', source: 'examples/extension-installation/browser-storage.ts' });
 const nodeExamples = [{ name: 'device-scaffold', source: 'packages/devkit/src/device-scaffold.ts' }];
 const onboardingSources = [
   { source: 'examples/developer-onboarding/onboarding.mjs', target: 'examples/onboarding/onboarding.mjs' },

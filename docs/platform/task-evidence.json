@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 138,
+  "revision": 139,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11756,6 +11756,31 @@
         "Owned disposable local software fixtures; physical checks deferred"
       ],
       "supportRows": []
+    },
+    {
+      "id": "browser-processor-storage-built-partial-2026-10-07",
+      "revision": "30034b55b0df75f3d989a502fc815a7d7e0042d1",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-browser-processor-storage.json"
+      ],
+      "environment": "Owned local Node24.14/npm11.9/TypeScript5.9.3 and ordinary installed seven-package405-file SDK; native headless Chromium149/WebKit26.5 Storage/WebLocks/WebCrypto software flows. No phone/physical/service/publication.",
+      "reproduction": "Exact immutable producer, ordinary consumer, native proofs/outputs, meaningful feature/guard OLD failures and literal retention in linked receipt; final exact integration gates resolve its neutral retained recordRef.",
+      "scope": "Selected cooperative durable browser processor storage/caller built and qualified:11 source tests,10 ordinary consumers,9 checks per native browser. Reload inactive and permissions fresh. General E10 remains open; existing tab-only Settings unchanged.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable software browser contexts and clean ordinary SDK consumer; physical checks deferred"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14257,7 +14282,8 @@
         "extension-raw-reservation-built-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "processor-management-built-partial-2026-10-07",
-        "processor-native-exact-local-gates-2026-10-07"
+        "processor-native-exact-local-gates-2026-10-07",
+        "browser-processor-storage-built-partial-2026-10-07"
       ],
       "dependencies": [
         "M01",

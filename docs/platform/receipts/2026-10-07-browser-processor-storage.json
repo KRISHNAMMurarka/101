@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "result": "pass selected cooperative browser processor storage implementation and runtime; whole E10 open",
+  "profile": "browser-processor-installation-storage/1",
+  "localOnly": true,
+  "base": "db6ca8cd3c86d9f2789eb3dd21b590b072328174",
+  "qualifiedSourceTree": "30034b55b0df75f3d989a502fc815a7d7e0042d1",
+  "sourceSha256": {
+    "packages/device-web/src/processor-installation-storage.ts": "8542829c82a15d82dd4763a3fbb47ddd55b814c2904b0ae388a7aa1058404628",
+    "packages/device-web/src/processor-installation-storage.test.ts": "458b962a09f5362c6466a2340db1c5396a05701e52eae50e431fa46d86287ca9",
+    "packages/device-web/src/index.ts": "f96712d0babbf86713db2166fab9be95d3e93ebdaa5276d9a4eb5875191d2d8e",
+    "examples/extension-installation/browser-storage.ts": "38b3d60452078f9239a60febb001cd91ddbfa10bad389376972d0c2c09891659",
+    "tools/build-sdk.mjs": "02027047ca39899f2aac114ba13446ea2816ccdcf2f8d5c2a8cc3ef9f6a873a7",
+    "tools/qa-sdk-consumer.mjs": "77971dac0daa1369ef592468b899f631b4f2eff12f3bd3890a44063ce427dee0",
+    "tests/sdk-distribution.test.ts": "17092fd84e0a7a27db4214c1c0f6713a779876a6e316001cf368807cf25b812b",
+    "tools/qa-browser-processor-storage.mjs": "5898b3bdcde62eead8773e0c9e2b006852185d911f74ac32ad3929b1d148b808",
+    "app/settings/processors/trusted-processors.ts": "1f093765557ce9c9c150af1bbeb80bbee280017d5c7687bb899aafe00f6b153a",
+    "examples/external-processor/processor.mjs": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+    "examples/extension-installation/temperature-band-v2.mjs": "9bee907c87a6b5621a5d145bcca277838e7d8cfc8082fc156c05ca18826beca8"
+  },
+  "changes": [
+    "New exact-owner opaque 4MiB UTF-8 browser Storage adapter, exclusive WebLock CAS, actual stored-byte currentness, intrinsic native signal fences and one raw pending write reservation.",
+    "Stable close retires commits immediately and awaits the actual issued request; no hidden browser/WebCrypto quiescence promise.",
+    "Ordinary public browser-storage caller verifies the existing genuine fixed signed publisher bundle; inactive reload restores releases/history/tombstones but no trust, approvals, activation or resource grants.",
+    "Root corrected GREEN provenance to bind exact current new production and caller leaves to both served proof and SDK manifest before qualification.",
+    "Reproduced late approval loss during native-backed read, then moved fresh guard checking after initial read and before final raw comparison/native-equivalent synchronous commit. Trusted injected final read/write must not call authority/clock callbacks or mutate consent."
+  ],
+  "featureOld": {
+    "path": "/tmp/101-browser-processor-storage-old-retained.json",
+    "sha256": "fe4bae420bd837f26a83e195b3f3b426aef28a52f88bd1980b1b66b0842a59d4"
+  },
+  "guardOld": {
+    "path": "/tmp/101-browser-processor-storage-guard-old-retained.json",
+    "sha256": "b54161e6150ca2cce7624be143a8cafcfcc8e8287d367695d8d8e3c87f9fea79"
+  },
+  "guardOldOutcome": {
+    "unitTests": 11,
+    "pass": 10,
+    "fail": 1,
+    "nativePhase": "native-guard-read-reentry",
+    "actualNativeWrites": 1,
+    "currentSignalStillLive": true,
+    "expectedNativeWrites": 0,
+    "ownedCleanupSettled": true
+  },
+  "priorSourceReview": {
+    "path": "/tmp/101-browser-processor-storage-production-independent-review.json",
+    "sha256": "aa93139d8f558a835b81928b96f1cf9135577e410a29e7988d74e8b1447d8642"
+  },
+  "guardOrderingAssessment": {
+    "path": "/tmp/101-browser-processor-storage-guard-ordering-assessment.json",
+    "sha256": "824525fe11e53b9f86a073a85f96d95679cdd7c2910937a1cf2afefc8cd527b9"
+  },
+  "focused": {
+    "record": {
+      "path": "/tmp/101-browser-processor-storage-guard-fixed-unit.json",
+      "sha256": "c6c90d23070f31931725b6670a4bfb8b5d7bc731dcc376b9df57d8356752aa7b"
+    },
+    "tests": 11,
+    "pass": 11,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "loadedCurrentSourceFiles": 38,
+    "scope": "Faithful trusted host fixtures; native browser work separately recorded."
+  },
+  "installedSdk": {
+    "build": {
+      "path": "/tmp/101-browser-processor-storage-sdk-build-fixed.json",
+      "sha256": "48bd2b631497dae638f35e373a90d50432c9c11d5ca870a1d9bd89c46779c578"
+    },
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-wbMHiv/manifest.json",
+      "sha256": "0f1d1b7f1f587ef655ba4d2c117c56ebd1d42301751528f38c544622f4a8582e"
+    },
+    "contentAudit": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-wbMHiv/content-audit.json",
+      "sha256": "bf362577922be6c6cabf42ee3ea1cd663a9e25dbd74088ada7eb05655c835d7b"
+    },
+    "nodeExampleCompiler": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-wbMHiv/node-example-compiler.json",
+      "sha256": "88dfde386ab0d76b76dcbff43636537a457b92b4a583ce6747ea355fe9231210"
+    },
+    "sourceTree": "30034b55b0df75f3d989a502fc815a7d7e0042d1",
+    "sourceFiles": 183,
+    "packages": 7,
+    "packedInstalledPublicFiles": 405,
+    "ordinaryConsumer": {
+      "path": "/tmp/101-browser-processor-storage-sdk-consumer-fixed.json",
+      "sha256": "f21a6b81f6c654267aeef19486a8e69e70303a57057bbe36fddfe40306de5708"
+    },
+    "consumerReceipt": {
+      "path": "/tmp/101-sdk-consumer-BcUDnp/receipt.json",
+      "sha256": "22ede0cf957d2d6cbad7f18ae45ba51fd035171df05315c2f13181a81fb74818"
+    },
+    "consumerChecks": 10,
+    "fileCountScope": "Exact405 public SDK payloads; initial offline filesystem406 additionally contains npm metadata. Fixed external processor package is separately tested by ordinary consumer, not an eighth SDK package."
+  },
+  "nativeBrowser": [
+    {
+      "engine": "chromium",
+      "version": "149.0.7827.55",
+      "runner": {
+        "path": "/tmp/101-browser-processor-storage-chromium-final.json",
+        "sha256": "f67eaca119d84077a2da968a41a1c821c4c79e7aca0c3e8eca3866df5056d698"
+      },
+      "execution": {
+        "path": "/tmp/101-browser-processor-storage-chromium-final-qa.json",
+        "sha256": "012c2c5dea0cb6ecf5ab4813f817441a22ccc33da2e4c2262e85281a4b6c9dc8"
+      },
+      "receipt": {
+        "path": "/tmp/101-browser-processor-storage-chromium-final-child-receipt.json",
+        "sha256": "ed5a0441e5c72a640f3d3d392037d250e1f8b0cce22b5c8de12051a5e9f3a9f5"
+      },
+      "proof": {
+        "path": "/tmp/101-browser-processor-storage-chromium-final-served-proof.json",
+        "sha256": "e86eca6279df8a67e4a67a9670a8728048f2360bd87288b1cc7b98b7bf405152"
+      },
+      "checks": [
+        "actual default native Storage and Web Locks commit and close",
+        "native-backed read revocation refuses write with live signal and unchanged original bytes",
+        "reviewed update and explicit retained rollback precede inactive reload",
+        "durable reload is inactive without grants",
+        "genuine separate subscribe/write and subscribe/invoke live grants",
+        "actual cross-page revision synchronously retires activation and output",
+        "release and publisher revocation survive native storage reload",
+        "reviewed removal drops source releases while retaining revocation history",
+        "queued genuine lock request aborts and close awaits its actual return"
+      ],
+      "servedPublicModulesVerified": 124,
+      "pageErrors": 0,
+      "foreignRequests": 0,
+      "cleanup": {
+        "ownedStorageRemoved": true,
+        "ownedLocksSettled": true,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "runner": {
+        "path": "/tmp/101-browser-processor-storage-webkit-final.json",
+        "sha256": "cf4dd334a83c83b325c8c020e079d5c39cf4efb29beaebe98db9d2a354234603"
+      },
+      "execution": {
+        "path": "/tmp/101-browser-processor-storage-webkit-final-qa.json",
+        "sha256": "f0168c79d715bd0dc1c75dce6a61752d109fbe6f67674521e60cb1883175b628"
+      },
+      "receipt": {
+        "path": "/tmp/101-browser-processor-storage-webkit-final-child-receipt.json",
+        "sha256": "80b16522fa32a38e0b376c2e62cf995ae7ffee010b0180cde014733804cd5643"
+      },
+      "proof": {
+        "path": "/tmp/101-browser-processor-storage-webkit-final-served-proof.json",
+        "sha256": "5b01e9e31ffd185026e7130c02815c251dc9a7fb250fa4e653ce398db60f0d05"
+      },
+      "checks": [
+        "actual default native Storage and Web Locks commit and close",
+        "native-backed read revocation refuses write with live signal and unchanged original bytes",
+        "reviewed update and explicit retained rollback precede inactive reload",
+        "durable reload is inactive without grants",
+        "genuine separate subscribe/write and subscribe/invoke live grants",
+        "actual cross-page revision synchronously retires activation and output",
+        "release and publisher revocation survive native storage reload",
+        "reviewed removal drops source releases while retaining revocation history",
+        "queued genuine lock request aborts and close awaits its actual return"
+      ],
+      "servedPublicModulesVerified": 124,
+      "pageErrors": 0,
+      "foreignRequests": 0,
+      "cleanup": {
+        "ownedStorageRemoved": true,
+        "ownedLocksSettled": true,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      }
+    }
+  ],
+  "preservation": {
+    "path": "/tmp/101-browser-processor-storage-software-literal-preserved.json",
+    "sha256": "caafa5037eab05e680caaee841fdb796dd46f1e1224f5faff8aaee9573285bb5"
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-07-browser-processor-storage/integration-gates",
+    "requirement": "All five AGENTS gates must pass on the exact integrated candidate; fresh build precedes rendered checks. Resolve retained record for actual tree, outputs and counts."
+  },
+  "taskDisposition": {
+    "E10": "PARTIAL/OPEN. Selected durable local-compute processor browser adapter/caller built and software-qualified. General extensions/native privileges/dependencies/assets/isolation and final acceptance remain open.",
+    "U12": "No promotion. Existing processor Settings page remains tab-only; this independent SDK caller does not implement persistent provider/account Settings."
+  },
+  "scopeLimits": [
+    "Cooperative same-origin trusted host profile, not malicious same-origin code isolation, host rollback prevention, eviction recovery or OS power-loss durability.",
+    "Opaque document schema/integrity/version/tombstone policy remains in existing installer; no duplicated schema or trust/activation/permission persistence.",
+    "Injected final native-equivalent synchronous read/write segment must not invoke authority/clock callbacks or mutate consent; arbitrary alternating callbacks are not made mutually atomic.",
+    "Read/byte/quota/unavailable negatives use truthful unit ports; actual full browser quota exhaustion and unsupported-platform matrix remain unqualified.",
+    "Actual returned native request settlement is observed; browser-internal work, hidden installer WebCrypto work and physical device effects are not inferred.",
+    "Initial eight-journey passes on original cfc81 SDK are retained historical software evidence and did not cover the subsequently reproduced guard defect.",
+    "No phone/physical/hardware/service/publication, support-row acceptance or whole E10/U12 completion."
+  ],
+  "independentExactReview": {
+    "recordRef": "refs/codex/evidence/2026-10-07-browser-processor-storage/integration-review",
+    "requirement": "Passive exact-candidate source/evidence review must be CLEAR before commit; historical source BLOCK and reproduced bug are retained separately."
+  },
+  "finalRuntimeDeltaPreservation": {
+    "path": "/tmp/101-browser-processor-storage-final-runtime-delta-preserved.json",
+    "sha256": "13e053fe40f0c3350b9fb840cced99bce88792e6a042aaf4e07696d99f4ce975"
+  },
+  "priorExactLintFailure": {
+    "path": "/tmp/101-browser-processor-storage-exact-required-gates.json",
+    "sha256": "a3df95b425fb88ab2ae3d42e33583521a72196630ec3b4842744bb7052445b8e"
+  },
+  "qualificationSourceDelta": {
+    "sdkProducerTree": "30034b55b0df75f3d989a502fc815a7d7e0042d1",
+    "finalNativeExecutionTree": "ea660f93e04952f43de1479c7aa13eb719242a36",
+    "sdkProducerLeavesChanged": [],
+    "changes": [
+      "QA-only removal of an unused relative import; same native9-check flows rerun.",
+      "Canonical receipt/checklist/evidence linkage outside SDK producer inventory."
+    ],
+    "scope": "All183 immutable SDK source pins still equal current source; seven/405 installed/artifact bytes unchanged. Actual native final proof hashes bind final helper and tree separately."
+  }
+}

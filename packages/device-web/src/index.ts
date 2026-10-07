@@ -85,3 +85,6 @@ export type { BrowserScreenPreviewFrame, BrowserScreenPreviewFacts, BrowserScree
 
 export { BROWSER_BLE_SWITCH_LIMITS, createBrowserBleSwitchProvider } from './browser-ble-switch.ts';
 export type { BrowserBleSwitchFailure, BrowserBleSwitchResult, BrowserBleSwitchProfile, NativeBleSwitchProperties, NativeBleSwitchCharacteristic, NativeBleSwitchService, NativeBleSwitchServer, NativeBleSwitchDevice, NativeBleSwitchManager, BrowserBleSwitchEnvironment, BrowserBleSwitchSelection, BrowserBleSwitchCaptureRequest, BrowserBleSwitchCaptureGrant, BrowserBleSwitchActivation, BrowserBleSwitchOptions, BrowserBleSwitchSnapshot, BrowserBleSwitchProvider, BrowserBleSwitchOutputReport, BrowserBleSwitchOutputRequest, BrowserBleSwitchOutputGrant, BrowserBleSwitchOutputActivation, BrowserBleSwitchOutputDeliveryLimits, BrowserBleSwitchOutputStatus, BrowserBleSwitchOutputRecord } from './browser-ble-switch.ts';
+
+export { createBrowserProcessorInstallationStorage } from './processor-installation-storage.ts';
+export type { BrowserProcessorInstallationStorageOptions, BrowserProcessorInstallationStorageSession, BrowserProcessorInstallationStorageSnapshot } from './processor-installation-storage.ts';
