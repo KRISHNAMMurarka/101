@@ -1,0 +1,411 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-07",
+  "localOnly": true,
+  "result": "pass selected HID/Serial output and HID/Serial/BLE caller recovery software; exact gates/local commit pending",
+  "base": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
+  "candidateSourceTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+  "sourceCommit": null,
+  "sourceSha256": {
+    "packages/device-web/src/browser-hid-switch.ts": "3522a8bc8d4db9bcbe4914e11ddfde672b05aea207559d12ad996bbb4261f110",
+    "packages/device-web/src/browser-hid-switch.test.ts": "c465ab700145ea5b4dcb9ac23ba848292380e05ec7c291477bbd486a1fdc651b",
+    "examples/browser-resources/hid-switch-output.ts": "e6b628c0775f186d1941d8f1a1a93581619d9a241e344633fd4ada782eb0d543",
+    "tools/qa-hid-switch-output.mjs": "18b410d2f6bc12f2e5e832868ce0ecf357a97d606a7e96183f5c647ff1ab952b",
+    "packages/device-web/src/browser-serial-switch.ts": "e3c29bdb0eeb5638d21aa30f7a4aa14c41a96dacb8457a94e46a0ca9c57673c5",
+    "packages/device-web/src/browser-serial-switch.test.ts": "410102b5a100455f93f8a7afada3ac9ab6aaea0f52f6fcaffbae233848f34bbc",
+    "examples/browser-resources/serial-switch-output.ts": "afba64c20933e03c4fbddf5cbeb6194e0deba9544bc83660913a4ac9c3ad4275",
+    "tools/qa-serial-switch-output.mjs": "c69066917e33a8026cd3aec0cb4c16bd5251486e906b303b1acd7534283a101c",
+    "packages/device-web/src/index.ts": "0d5b6238dde9a4781814165119d8c1831c5a58950720f3fb662726c1626f957a",
+    "tools/build-sdk.mjs": "09a36ac714b1be28020ab705c3e7a0395fa766a728e2f7f8c641e14e7faaedf0",
+    "tools/qa-sdk-consumer.mjs": "acc0c3c8a51421a1ddaa8732dfcab5964a89f0483530fa9964d25be472be357b",
+    "examples/browser-resources/ble-switch-output.ts": "14b6644053c27389a7732ac7b85c6ec0b3202381e3cd50002367323b960d6823",
+    "packages/device-web/src/browser-ble-switch.test.ts": "54c366e89f6d3698cae84ec79704ebd736924be4965d355406d826708e737f78"
+  },
+  "tasks": [
+    "A02",
+    "A03",
+    "A04",
+    "N02"
+  ],
+  "tally": {
+    "total": 272,
+    "completed": 120,
+    "open": 152
+  },
+  "contract": {
+    "owner": "Each existing provider owns one selected capture device/activation. Private exact issued handles only; no second chooser or public raw native owner. Input-only profiles preserve their previous contract.",
+    "hid": "Optional closed reviewed output:{reportId:0..255,format:boolean-byte/1}, actual exactly matching absolute8-bit output layout and current sendReport. Report ID is the native argument; exactly one owned false0/true1 byte. No feature report, fallback or arbitrary raw bytes.",
+    "serial": "Optional reviewed writeFormat:boolean-byte/1. Same private opened port and genuine intrinsic WritableStream/getWriter/write/releaseLock. Real continuous read remains independent; no extra port, arbitrary raw protocol, writer.close or automatic reset.",
+    "authority": "Default-deny separate exact output request/signal/expiry no later than capture. Independently approved reliable application event subscribe to command invoke; exact same owned Connection plus actual running OperationRecord supplies numeric deadline/age/rate. All callbacks precede final fresh clock and intrinsic/private state issuance fence.",
+    "limits": "Each one output sink/write/byte,32 attempts,2Hz,max age100ms,16 records. Caller four registrations,two routes,two pending and31 command IDs. Existing capture quotas/timers retained. HID combined9 listeners; Serial combined8. Native/read/write cleanup reservations remain actual until their issued work settles.",
+    "retirement": "Stop/revoke/expiry retires authority without reset. HID owned close waits actual sendReport; Serial reader cancel/read and actual write settle, both locks release before owned close. Late genuine sink unregister false/throw quarantines. Unreturned/unknown issued work is held uncertain, never treated as native cancellation.",
+    "observation": "API-returned/rejected/uncertain is separate from independent input-report/read state. Cancelled issued commands remain uncertain after later API return; no physical acknowledgement or device observation fabricated.",
+    "callerRecovery": "Actual direct clock exceptions after binding or before publication now call owned Stop and return unavailable. All three actual public callers witnessed OLD throws after genuine capture/output binding with nativeWrites0; corrected tests verify no residual authority, actual cleanup settlement and fresh route/write recovery. Denied route setup retains explicit Stop/reselect recovery; in-place denied-route retry is not claimed.",
+    "publicExamples": [
+      "@101/connect/examples/hid-switch-output",
+      "@101/connect/examples/serial-switch-output"
+    ],
+    "wholeScope": "A02/A03/A04/N02 stay OPEN. Physical hardware/native chooser/permissions/unplug/reconnect/latency, other vendor/HID/USB protocols, Modbus/CRC/register/scaling/bounded retries/TCP and broad resource matrix remain deferred."
+  },
+  "focused": {
+    "hid": {
+      "receipt": {
+        "path": "/tmp/101-hid-caller-clock-fixed.json",
+        "sha256": "c2203a3951ad0c5127ef508468703335dca4ae26d0154183cae2297864e42169"
+      },
+      "counts": {
+        "tests": 37,
+        "pass": 37,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "loadedCurrentModules": 122
+    },
+    "serial": {
+      "receipt": {
+        "path": "/tmp/101-serial-caller-clock-fixed.json",
+        "sha256": "12d0bbc2539790e76c11eb5ea4452a06b1c1bf037d3bb905183007ce4837dfca"
+      },
+      "counts": {
+        "tests": 30,
+        "pass": 30,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "loadedCurrentModules": 122
+    },
+    "ble": {
+      "receipt": {
+        "path": "/tmp/101-ble-caller-clock-fixed-settled.json",
+        "sha256": "6504242ad341e813be3b291d0015191a74603edadde6b4cab28706534d4f2418"
+      },
+      "counts": {
+        "tests": 48,
+        "pass": 48,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "loadedCurrentModules": 122
+    }
+  },
+  "staticChecks": {
+    "path": "/tmp/101-switch-output-clock-types-lint.json",
+    "sha256": "4f0201420f9354e2dbb354f233acf8c72e90955cfa6173e18c58fdac5fba9957"
+  },
+  "browser": {
+    "hid": {
+      "source": {
+        "receipt": {
+          "path": "/tmp/101-hid-output-recovered-source-public.json",
+          "sha256": "829ab275af23f1447c455945c6378356a8a0a55fa3e05755a49ca19cd827f94d"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-hid-switch-output-proof-ogmqwN/provenance.json",
+          "sha256": "e851711a60cb069b66d6734716733efe4ab871b28271d090c644b231c58c5464",
+          "dependencyCount": 125,
+          "installedFileCount": 0,
+          "compilerDeclarationCount": 59
+        },
+        "sourceTree": null,
+        "callerTree": null,
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      },
+      "installed": {
+        "receipt": {
+          "path": "/tmp/101-hid-output-recovered-installed-public.json",
+          "sha256": "6329eb31100a261239200a3682dd2a58e4773a654acbf749b49032f38358ff54"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-hid-switch-output-proof-tGMxah/provenance.json",
+          "sha256": "32a375580da0a1b75907e213a241ab659ae230b54f67603fd35446dff96400f9",
+          "dependencyCount": 173,
+          "installedFileCount": 391,
+          "compilerDeclarationCount": 182
+        },
+        "sourceTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "callerTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      }
+    },
+    "serial": {
+      "source": {
+        "receipt": {
+          "path": "/tmp/101-serial-output-recovered-source-public.json",
+          "sha256": "c64a5ff1c5616b8129494e1a57e9bfe81e8b98fb34ed12228d1d093f8425b760"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-serial-switch-output-proof-JlGiM9/provenance.json",
+          "sha256": "c34c16a76b2ffd00a8fa3f0a93c628bad73b9a3e8daa936cb5f85b65422f9bb6",
+          "dependencyCount": 125,
+          "installedFileCount": 0,
+          "compilerDeclarationCount": 59
+        },
+        "sourceTree": null,
+        "callerTree": null,
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      },
+      "installed": {
+        "receipt": {
+          "path": "/tmp/101-serial-output-recovered-installed-public.json",
+          "sha256": "763321b4f73a3d28d1bc93df127fda97bc23a9fcb4ffdd346105282ba7ebf4a2"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-serial-switch-output-proof-Elb6l8/provenance.json",
+          "sha256": "3c0aad5fe451843aca3bbbe69c8e7b23258d2884a8402c5aa8643dc6c21b5f14",
+          "dependencyCount": 173,
+          "installedFileCount": 391,
+          "compilerDeclarationCount": 182
+        },
+        "sourceTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "callerTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      }
+    },
+    "ble": {
+      "source": {
+        "receipt": {
+          "path": "/tmp/101-ble-output-recovered-source-public.json",
+          "sha256": "39b3a3ff202098ab53fde6ae97c5f53e3ee79bc76a0568037c4e04ca6ed27c19"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-ble-switch-output-proof-sMEdyf/provenance.json",
+          "sha256": "42da55cb80fef2d61bf598b059ecb9b3fb76ba05f4f566b7d40a8b4bff1b1297",
+          "dependencyCount": 125,
+          "installedFileCount": 0,
+          "compilerDeclarationCount": 59
+        },
+        "sourceTree": null,
+        "callerTree": null,
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      },
+      "installed": {
+        "receipt": {
+          "path": "/tmp/101-ble-output-recovered-installed-public.json",
+          "sha256": "dfc7784137e099626be5c0d3153ef924a7d5f5699e754d83b380cf13b94dd120"
+        },
+        "runs": 4,
+        "checksPerRun": 15,
+        "provenance": {
+          "path": "/private/tmp/101-ble-switch-output-proof-n94Gid/provenance.json",
+          "sha256": "9d2b2d574241f6dcdc249a0d68d93288fc29258e93b75f9fc1aaef0df9b520e8",
+          "dependencyCount": 173,
+          "installedFileCount": 391,
+          "compilerDeclarationCount": 182
+        },
+        "sourceTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "callerTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "guardedCandidateTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+        "cleanup": {
+          "browsers": 0,
+          "contexts": 0,
+          "pages": 0,
+          "launchPending": 0,
+          "loopbackServerListening": false,
+          "nativeHttpSockets": 0,
+          "inflightRequests": 0,
+          "callerDirectoryRemoved": true,
+          "installedConsumerRetained": true,
+          "errors": []
+        }
+      }
+    }
+  },
+  "currentSdk": {
+    "receipt": {
+      "path": "/tmp/101-switch-output-recovered-sdk.json",
+      "sha256": "3f0acc87c7adcca7df863094952c198ad1bd343fc2ab6d85461944d72a83f419"
+    },
+    "producerTree": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+    "manifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-4TU2YY/manifest.json",
+      "sha256": "bdeeb742d2195daca06d055d2beaf4992dcf71bce8c9c4e3293fe559be4b70c8"
+    },
+    "consumer": {
+      "path": "/tmp/101-sdk-consumer-LcHRWZ/receipt.json",
+      "sha256": "8d03be0fb3d389d3737982974919ad3fe7440a4d65daed1a261d9cfe8b3eedeb"
+    },
+    "sourceFiles": 173,
+    "installedFiles": 391,
+    "tarballs": 7,
+    "ordinaryConsumerChecks": 10
+  },
+  "history": [
+    {
+      "classification": "Original authored HID/Serial source and original173/391/7 SDK; historical after caller recovery correction.",
+      "source": {
+        "path": "/tmp/101-hid-serial-output-final-source.json",
+        "sha256": "edafc182beff2c3577694811fe484739f3a72d6641fda95a599a2241b4f4681f"
+      },
+      "sdk": {
+        "path": "/tmp/101-hid-serial-output-sdk.json",
+        "sha256": "3386a9c631ff9a4abe9c87dba627def2cb0d2832b21592c62a4b4656efc3e466"
+      }
+    },
+    {
+      "classification": "Absent installed output methods only after genuine public factory/inert-native0 prefix; missing feature, not capture bug.",
+      "receipts": [
+        {
+          "path": "/tmp/101-hid-output-old-installed-public.json",
+          "sha256": "83d934045154a3d565c2cdbfa582c1a4a8cf894119134fd2238e918dc8329c73"
+        },
+        {
+          "path": "/tmp/101-serial-output-old-installed-public.json",
+          "sha256": "9bf653e7bf12dd3b3ac675d83e402fe20e863b0d43a0d0c52a4bfda44371ba49"
+        }
+      ]
+    },
+    {
+      "classification": "Actual OLD direct clock exceptions after captureSources1/outputSinks1/nativeWrites0.",
+      "receipts": [
+        {
+          "path": "/tmp/101-hid-caller-clock-old.json",
+          "sha256": "af1bc4a0aefa7ebd01d10c7ffb810c3ebf3b5c2e61084c423306f703526964b8"
+        },
+        {
+          "path": "/tmp/101-serial-caller-clock-old-valid.json",
+          "sha256": "36f65e33f346d5811079c567415e1ddf84bca067ccf61bc97c7d92fc87cfd61a"
+        },
+        {
+          "path": "/tmp/101-ble-caller-clock-old.json",
+          "sha256": "d1f0b317e4b8272f3f96ade4d2e600482df27f3e4298fe9f3e8b14d77d771532"
+        }
+      ]
+    },
+    {
+      "classification": "Initial Serial test fixture wrongly exposed writable before selecting unopened port; prefix-invalid failure is not bug evidence. Genuine original open creates stream; original close checks lock then removes it.",
+      "receipt": {
+        "path": "/tmp/101-serial-caller-clock-old.json",
+        "sha256": "23dd95e29512c612018145ab395c94210f57536528570673c4548ab69d9900aa"
+      }
+    },
+    {
+      "classification": "Initial BLE corrected test retried at nativePending0 while actual raw/cleanup reservation still pending. Provider properly returned busy; fixture now waits genuine whole cleanup. No provider change for this.",
+      "receipt": {
+        "path": "/tmp/101-ble-caller-clock-retry-diagnosis.json",
+        "sha256": "eb58018c9359302284e2b2230d96681f84a17efa114fb14862859fe8457e4180"
+      }
+    },
+    {
+      "classification": "Initial HID review blocked unwitnessed caller recovery; root then reproduced and repaired actual path. Initial Serial leaf review CLEAR before sibling clock recovery extension.",
+      "receipts": [
+        {
+          "path": "/tmp/101-hid-output-source-independent-review.json",
+          "sha256": "d67d6123bb756d3c5afefccac3f0a2bac70ca86752aa5f5e7a7ba4067e9540ba"
+        },
+        {
+          "path": "/tmp/101-serial-output-draft-independent-review.json",
+          "sha256": "36ce8e1d013ca7fc54741a352343e50e14b143b7faced9ce1b85d625c7805cfb"
+        }
+      ]
+    }
+  ],
+  "independentSourceReview": {
+    "path": "/tmp/101-hid-output-repaired-source-independent-review.json",
+    "sha256": "17fcc065cd483cf4222f07cf26b15a80148cea041f24395b9264afd35becaa48"
+  },
+  "preservation": {
+    "path": "/tmp/101-switch-output-software-preservation-complete.json",
+    "sha256": "434500e939ca51b1ca3f44640791931f01c90909d622a3e8885800f4920ab058"
+  },
+  "softwareScope": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "sourceRuns": 12,
+    "installedRuns": 12,
+    "checksPerRun": 15,
+    "defaultNativeChooserCalls": 0,
+    "genuineOwnedWorker": true,
+    "hidAndBle": "Three writes/three independent reports/one held response,seven replies per run.",
+    "serial": "Three writes/seven independently requested reports/one held response,eleven replies; reports paced to retain real read timeout.",
+    "physicalQualification": false,
+    "policyEnforcementQualified": false,
+    "nativeWorkerExitObserved": false
+  },
+  "requiredGates": {
+    "status": "pending exact final candidate"
+  },
+  "remaining": [
+    "Physical/device testing intentionally deferred by user.",
+    "Software Worker ports do not qualify hardware, driver quiescence or operating-system permissions.",
+    "Trusted host environment/numeric same-clock fences do not establish arbitrary-host authentication.",
+    "No support catalog row accepted and no full checklist row closed by partial software evidence."
+  ]
+}

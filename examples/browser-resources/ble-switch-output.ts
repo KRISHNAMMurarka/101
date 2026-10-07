@@ -64,23 +64,27 @@ export function createBrowserBleSwitchOutputCaller(options: BrowserBleSwitchOutp
     },
     connectOutput(purpose: string) {
       const turn = epoch; if (!active || !current(turn) || command || commandRoute) return { ok: false as const, reason: 'busy' as const };
-      const bound = provider.bindOutput(active, { purpose }); if (!bound.ok) return bound;
-      if (!current(turn)) return { ok: false as const, reason: 'cancelled' as const };
-      const device = parseDeviceDescriptor({ ...bound.value.device, id: bound.value.device.id + ':commands', capabilities: bound.value.device.capabilities.map(row => ({ ...row, kind: 'event' as const, permissions: ['subscribe'] })) });
-      const source = runtime.registerSource({ device, capability: 'switch-setting' });
-      if (!current(turn)) { runtime.unregister(source); return { ok: false as const, reason: 'cancelled' as const }; } endpoints.add(source); command = source;
-      if (!runtime.setReadiness(source, 'available').ok || !current(turn)) { stop(); return { ok: false as const, reason: 'cancelled' as const }; }
-      const at = now(); if (!current(turn) || !Number.isFinite(at) || at >= bound.value.expiresAt) { stop(); return { ok: false as const, reason: 'expired' as const }; }
-      const route = runtime.route({ ...scope, from: source, to: bound.value.sink, queueCapacity: 1, leaseMs: Math.max(1, Math.floor(Math.min(30000, bound.value.expiresAt - at))) });
-      if (!current(turn)) { route.stop('late-ble-command-route'); stop(); return { ok: false as const, reason: 'cancelled' as const }; }
-      routes.set(route.id, route); commandRoute = route; operation = 0; const started = route.start();
-      if (!started.ok || !current(turn)) { route.stop('denied'); runtime.unregister(source); endpoints.delete(source); command = undefined; return { ok: false as const, reason: 'denied' as const }; }
-      return bound;
+      try {
+        const bound = provider.bindOutput(active, { purpose }); if (!bound.ok) return bound;
+        if (!current(turn)) return { ok: false as const, reason: 'cancelled' as const };
+        const device = parseDeviceDescriptor({ ...bound.value.device, id: bound.value.device.id + ':commands', capabilities: bound.value.device.capabilities.map(row => ({ ...row, kind: 'event' as const, permissions: ['subscribe'] })) });
+        const source = runtime.registerSource({ device, capability: 'switch-setting' });
+        if (!current(turn)) { runtime.unregister(source); return { ok: false as const, reason: 'cancelled' as const }; } endpoints.add(source); command = source;
+        if (!runtime.setReadiness(source, 'available').ok || !current(turn)) { stop(); return { ok: false as const, reason: 'cancelled' as const }; }
+        const at = now(); if (!current(turn) || !Number.isFinite(at) || at >= bound.value.expiresAt) { stop(); return { ok: false as const, reason: 'expired' as const }; }
+        const route = runtime.route({ ...scope, from: source, to: bound.value.sink, queueCapacity: 1, leaseMs: Math.max(1, Math.floor(Math.min(30000, bound.value.expiresAt - at))) });
+        if (!current(turn)) { route.stop('late-ble-command-route'); stop(); return { ok: false as const, reason: 'cancelled' as const }; }
+        routes.set(route.id, route); commandRoute = route; operation = 0; const started = route.start();
+        if (!started.ok || !current(turn)) { route.stop('denied'); runtime.unregister(source); endpoints.delete(source); command = undefined; return { ok: false as const, reason: 'denied' as const }; }
+        return bound;
+      } catch { stop(); return { ok: false as const, reason: 'unavailable' as const }; }
     },
     set(value: boolean, deadline?: number) {
       const turn = epoch; if (!current(turn) || !command || !commandRoute || commandRoute.status().state !== 'active' || operation >= 31) return { ok: false as const, reason: 'denied' as const };
-      const at = now(); if (!current(turn) || !Number.isFinite(at)) return { ok: false as const, reason: 'cancelled' as const };
-      const result = runtime.publish(command, value, { timestamp: at, clockDomain: runtime.clockDomain, operationId: String(++operation), deadline: deadline ?? at + 100 }); runtime.flush(); return result;
+      try {
+        const at = now(); if (!current(turn) || !Number.isFinite(at)) return { ok: false as const, reason: 'cancelled' as const };
+        const result = runtime.publish(command, value, { timestamp: at, clockDomain: runtime.clockDomain, operationId: String(++operation), deadline: deadline ?? at + 100 }); runtime.flush(); return result;
+      } catch { stop(); return { ok: false as const, reason: 'unavailable' as const }; }
     },
     tick() { runtime.flush(); }, stop,
     state() { return Object.freeze({ held, delivered, releases, lastObservation: last, provider: provider.snapshot(), output: provider.outputStatus() }); },

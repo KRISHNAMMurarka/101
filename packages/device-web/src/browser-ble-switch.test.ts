@@ -1,3 +1,4 @@
+import { createBrowserBleSwitchOutputCaller } from '../../../examples/browser-resources/ble-switch-output.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createDeviceRuntime, parseDeviceDescriptor } from '@101/connect';
@@ -513,3 +514,55 @@ test('output attempt/rate/history limits stay finite inside the original capture
   const rate = outputFixture(); try { const active = await rate.start(), bound = rate.bind(active); assert.ok('started' in bound && bound.started.ok); rate.send(true); await reached(() => rate.provider.outputStatus().rawPending === 0); rate.send(false); await reached(() => rate.provider.outputStatus().rawPending === 0); assert.equal(rate.written.length, 1); }
   finally { await rate.close(); }
 });
+
+// Actual public caller + existing native-shaped software fixture. A user clock
+// failure is injected only at the direct caller callback after genuine binding;
+// provider/runtime calls remain unchanged and no hardware is accessed.
+for (const site of ['connectOutput', 'set'] as const) {
+  test(`public ble output caller retires provisional state after clock failure in ${site}`, async context => {
+    const owner = new AbortController(), capture = new AbortController(), output = new AbortController();
+    const target = new EventTarget(), document = new EventTarget(); let writes = 0, failing = false, witnessed = false;
+    const device = new Device(), manager = new Manager(device), characteristic = device.gatt.service.characteristic;
+    characteristic.properties.write = true;
+    Object.defineProperty(characteristic, 'writeValueWithResponse', { value: async () => { writes++; } });
+    const reviewedProfile = { ...profile, writeFormat: 'boolean-byte/1' as const };
+    const caller = createBrowserBleSwitchOutputCaller({ ownerSignal: owner.signal, reviewedProfile,
+      now() {
+        const directCaller = new Error().stack?.split('\n')[2] ?? '';
+        if (failing && directCaller.includes(`Object.${site} `)) {
+          const state = caller.state(); witnessed = state.provider.activeSources === 1 && state.output.activeSinks === 1;
+          context.diagnostic(JSON.stringify({ site, directCaller, captureSources: state.provider.activeSources, outputSinks: state.output.activeSinks, nativeWrites: writes }));
+          throw Error('owned-caller-clock-failure');
+        } return 1000;
+      },
+      environment: { bluetooth: manager, target, document, secureContext: () => true, userActivation: () => true, hidden: () => false, focused: () => true, policy: () => 'allowed' },
+      authorizeCapture(request) { return { request, signal: capture.signal, expiresAt: 31000 }; },
+      authorizeOutput(request) { return { request, signal: output.signal, expiresAt: 31000 }; },
+      authorizeRoutes(request) {
+        if (request.sourceOperation === 'subscribe' &&
+          ((request.source.capabilityId === 'switch' && request.sinkOperation === 'write') ||
+          (request.source.capabilityId === 'switch-setting' && request.sinkOperation === 'invoke')))
+          return { expiresAt: 31000, maxAgeMs: 100, maxHz: request.sinkOperation === 'invoke' ? 2 : 20 };
+      } });
+    try {
+      assert.ok((await caller.activate('actual-software-clock-recovery')).ok);
+      if (site === 'set') assert.ok(caller.connectOutput('actual-software-command-route').ok);
+      failing = true; let result: { ok: boolean; reason?: string } | undefined;
+      assert.doesNotThrow(() => { result = site === 'connectOutput' ? caller.connectOutput('throwing-clock') : caller.set(true); });
+      assert.ok(witnessed, 'failure must follow actual capture and output binding');
+      assert.equal(result?.ok, false); assert.equal(result?.reason, 'unavailable');
+      assert.equal(writes, 0, 'caller failure must issue no native write');
+      assert.equal(caller.state().provider.activeSources, 0); assert.equal(caller.state().output.activeSinks, 0);
+      failing = false;
+      for (let turn = 0; turn < 256 && (caller.state().provider.rawPending || caller.state().provider.cleanupPending); turn++) await Promise.resolve();
+      assert.equal(caller.state().provider.nativePending, 0); assert.equal(caller.state().provider.rawPending, 0); assert.equal(caller.state().provider.cleanupPending, 0);
+      const retry = await caller.activate('fresh-software-clock-recovery');
+      if (!retry.ok) context.diagnostic(JSON.stringify({ retry, state: caller.state(), connected: device.gatt.connected, starts: characteristic.starts, stops: characteristic.stops, disconnects: device.gatt.disconnects }));
+      assert.ok(retry.ok);
+      assert.ok(caller.connectOutput('fresh-software-output-recovery').ok);
+      assert.ok(caller.set(true).ok);
+      for (let turn = 0; turn < 256 && caller.state().output.records.at(-1)?.outcome !== 'api-returned'; turn++) await Promise.resolve();
+      assert.equal(caller.state().output.records.at(-1)?.outcome, 'api-returned'); assert.equal(writes, 1);
+    } finally { failing = false; owner.abort(); await caller.close(); }
+  });
+}

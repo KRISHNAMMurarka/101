@@ -2899,6 +2899,56 @@ seven replies and one held response per run. Worker terminate API return is
 observed; native Worker exit, BLE radio/peripheral, Permissions-Policy enforcement
 and hardware behavior remain unqualified. Whole A03/N02 remain open.
 
+### Selected HID and Serial switch output
+
+The existing `createBrowserHidSwitchProvider` and
+`createBrowserSerialSwitchProvider` add `inspectOutput(activation)`,
+`bindOutput(activation, { purpose })` and `outputStatus()`. Input-only reviewed
+profiles retain their existing capture behavior. The exact private current
+activation owns the output; no second native chooser or raw device is exposed.
+
+HID declares `output: { reportId, format: 'boolean-byte/1' }` with an integer report
+ID in 0–255 and requires its actual matching absolute eight-bit output report.
+`sendReport` receives the ID separately and one owned false byte 0 / true byte 1.
+Serial declares `writeFormat: 'boolean-byte/1'` and uses its same opened port's
+actual `WritableStream` writer. There is no raw-byte/vendor fallback, feature
+report, extra port, automatic reset, Modbus register or CRC meaning inferred.
+
+Output approval defaults to denial and binds the exact request, intrinsic signal
+and expiry within capture consent. A separate reliable application event source
+requires real `subscribe` → `invoke` approval for `app:hid-switch-setting/1` or
+`app:serial-switch-setting/1`. Exact numeric limits from the same actual
+`Connection` and its running `OperationRecord` narrow deadline, age to 100 ms
+and cadence to 2 Hz. Callbacks precede a final fresh clock and private/intrinsic
+issuance fence. A profile declaration cannot grant a command.
+
+Each output owns one sink/write/byte, at most 32 attempts and 16 history entries.
+The public caller has four registrations, two routes, two runtime pending slots
+and 31 command IDs. Original capture quotas and timers remain; HID adds two
+listeners for a combined nine, Serial adds two for a combined eight. Declining
+unissued output preserves independent input. Route denial requires explicit
+Stop, actual cleanup settlement and fresh selection; in-place retry is not
+claimed. Direct caller clock exceptions retire provisional state and return
+`unavailable`; regressions cover this recovery in HID, Serial and BLE callers.
+
+HID close waits for the actual issued `sendReport` Promise. Serial retains the
+actual continuous read/cancel and issued write, releases both locks, then closes
+the owned port. Stop/revoke/expiry removes local authority without reset bytes;
+unknown issued returns quarantine pending work. API return is separate from
+independently routed input reports or read state. A cancelled issued command
+stays uncertain even after its response returns; physical acknowledgement and
+native cancellation are not inferred.
+
+`@101/connect/examples/hid-switch-output` and
+`@101/connect/examples/serial-switch-output` export their respective
+`createBrowser…SwitchOutputCaller`, `check…SwitchOutputWithoutDevice` and
+`run…SwitchOutputWorkerFixture`. The current seven-package offline SDK has 173
+source inputs and 391 installed files. Each corrected HID, Serial and BLE caller
+passes four source and four ordinary installed Chromium/WebKit runs, 15 checks
+per run. Native-shaped software ports and genuine owned Workers establish the
+selected software contract; hardware, policy enforcement, native Worker exit and
+whole A02/A03/A04/N02 remain unqualified. [Evidence](receipts/2026-10-07-switch-output.json).
+
 ## Disposable coordinator, directory and gateway stack
 
 `node tools/disposable-stack.mjs --exercise` creates, exercises and removes a

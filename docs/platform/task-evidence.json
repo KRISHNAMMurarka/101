@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 126,
+  "revision": 128,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -11169,6 +11169,87 @@
         "completed": 120,
         "open": 152
       }
+    },
+    {
+      "id": "a03-ble-byte-output-exact-local-gates-2026-10-07",
+      "revision": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A03",
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-ble-switch-output.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; exact12-path committed source/canonical candidate; source/ordinary installed Chromium/WebKit trusted software GATT and genuine Worker target.",
+      "reproduction": "All5 actual gates pass: 2122 unit / 34 rendered, zero fail/cancel/skip/todo; freshbuild/types/lint. Source46/121loadeddeps plus source4\u00d715/125inputs and installed4\u00d715/SDK171/385/7/consumer10. Semantic and exact canonical/SDK ancestry reviews CLEAR.",
+      "scope": "Selected BLE byte-output software built/qualified/committed locally. WholeA03/N02 remain OPEN: physical radio/peripheral/chooser/permissions/reconnection/vendor/wider profiles deferred. No native hardware/support/policy/Worker exit/publication promotion; later metadata awaits coherent gates.",
+      "failure": null,
+      "equipment": [
+        "Owned headless browser Worker and software GATT; physical devices deferred"
+      ],
+      "supportRows": [],
+      "requiredGates": {
+        "status": "pass",
+        "sourceCommit": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
+        "exactCommittedTree": "4ad178e6a10b36586d2b87338e3d3258ff59cc00",
+        "receipt": {
+          "path": "/tmp/101-ble-output-exact-required-gates.json",
+          "sha256": "998fd9908111099604b2aae4e5f2122a443460abd97971c02f77c40dcfa27789"
+        },
+        "unit": 2122,
+        "rendered": 34,
+        "skipped": 0,
+        "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; SDK source/installed scope retains distinct immutable producer/caller02db."
+      },
+      "actualLocalCommit": {
+        "path": "/tmp/101-ble-output-exact-commit.json",
+        "sha256": "1033c26e0d9ba25d4f162bceceed08b21da382ef4d33f8330e7eb0b76988d7f6"
+      },
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
+    },
+    {
+      "id": "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
+      "revision": "745f131f48e0b3d7b1798ed1ebc8f401cbe98c8b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A02",
+        "A03",
+        "A04",
+        "N02"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-07-switch-output.json"
+      ],
+      "environment": "Owned macOS arm64 Node24.14.0; actual public runtime/native-shaped software ports and owned headless Chromium/WebKit Workers; physical devices deferred.",
+      "reproduction": "HID37/Serial30/BLE48 focused zero fail/cancel/skip; actual OLD direct clock failures and corrected setup/publication cleanup+fresh generation recovery. Current173source/391installed/7tar/consumer10 SDK; each of three callers4 source\u00d715 and4 ordinary installed\u00d715 pass. Passive corrected source review CLEAR; exact final gates/local commit pending.",
+      "scope": "Selected HID/Serial byte output and HID/Serial/BLE caller recovery built/qualified in software. WholeA02/A03/A04/N02OPEN; physical/general hardware and Modbus/vendor profiles deferred. Support rows unchanged.",
+      "failure": null,
+      "equipment": [
+        "Owned software Worker/native-shaped ports; physical devices deferred"
+      ],
+      "supportRows": [],
+      "tally": {
+        "total": 272,
+        "completed": 120,
+        "open": 152
+      }
     }
   ],
   "tasks": [
@@ -12155,7 +12236,9 @@
         "v07-browser-screen-preview-software-partial-2026-10-07",
         "n02-a03-browser-ble-switch-software-partial-2026-10-07",
         "screen-ble-haptic-exact-local-gates-2026-10-07",
-        "a03-selected-ble-byte-output-software-2026-10-07"
+        "a03-selected-ble-byte-output-software-2026-10-07",
+        "a03-ble-byte-output-exact-local-gates-2026-10-07",
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
       ],
       "dependencies": [
         "C01",
@@ -12783,7 +12866,8 @@
     {
       "id": "A02",
       "records": [
-        "pending-A02"
+        "pending-A02",
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12800,7 +12884,9 @@
         "pending-A03",
         "n02-a03-browser-ble-switch-software-partial-2026-10-07",
         "screen-ble-haptic-exact-local-gates-2026-10-07",
-        "a03-selected-ble-byte-output-software-2026-10-07"
+        "a03-selected-ble-byte-output-software-2026-10-07",
+        "a03-ble-byte-output-exact-local-gates-2026-10-07",
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
       ],
       "dependencies": [
         "M01",
@@ -12814,7 +12900,8 @@
     {
       "id": "A04",
       "records": [
-        "pending-A04"
+        "pending-A04",
+        "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07"
       ],
       "dependencies": [
         "M01",

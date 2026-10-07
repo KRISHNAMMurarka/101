@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "date": "2026-10-07",
   "localOnly": true,
-  "result": "pass selected reviewed BLE boolean-byte/1 output software contract; exact gates/local commit pending",
+  "result": "pass selected reviewed BLE boolean-byte/1 software contract; exact required gates passed and local source committed",
   "profile": "app:ble-switch-setting/1",
   "base": "d18ff0b5761588e8de2edba8be9e48ec922b7092",
   "candidateSourceTree": "02db0a4c2a8bc516076d2690164fd5359920aa9b",
-  "sourceCommit": null,
+  "sourceCommit": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
   "sourceSha256": {
     "packages/device-web/src/browser-ble-switch.ts": "3e0dc0bb9b5034b86ab3c22018eee2e7f953b35503b14addddbdb1320c6b4464",
     "packages/device-web/src/browser-ble-switch.test.ts": "ecab820feac23be06516a51b70cdfbcc5f2c3c940df9c02c79cce79af5753543",
@@ -206,13 +206,39 @@
     "errors": []
   },
   "requiredGates": {
-    "status": "pending exact final candidate",
-    "scope": "Current source/installed proof belongs to immutable producer/caller02db; all-five repository gates must qualify the final source/canonical candidate."
+    "status": "pass",
+    "sourceCommit": "3c5ae4d9cf50eadc3ce3da92c4ddec8a3e5a4eeb",
+    "exactCommittedTree": "4ad178e6a10b36586d2b87338e3d3258ff59cc00",
+    "receipt": {
+      "path": "/tmp/101-ble-output-exact-required-gates.json",
+      "sha256": "998fd9908111099604b2aae4e5f2122a443460abd97971c02f77c40dcfa27789"
+    },
+    "unit": 2122,
+    "rendered": 34,
+    "skipped": 0,
+    "scope": "All five actual gates passed exact committed source/canonical candidate before local commit. Later documentary bytes await the next coherent candidate; SDK source/installed scope retains distinct immutable producer/caller02db."
   },
   "remaining": [
     "Whole A03/N02 remain open: actual radio/peripheral, native chooser/permissions/reconnection, undocumented vendor protocols, physical state/safe-state/latency and broader profiles.",
     "Trusted environment/software GATT and honest same-clock numeric route/operation snapshot are policy seams, not arbitrary-host authentication.",
     "Browser-internal quiescence/native Worker exit unobserved; only exact owned bookkeeping/API return claimed.",
     "No phone/pointer/device hardware, remote service/push/publication/deploy used."
-  ]
+  ],
+  "committedSourceTree": "4ad178e6a10b36586d2b87338e3d3258ff59cc00",
+  "actualLocalCommit": {
+    "path": "/tmp/101-ble-output-exact-commit.json",
+    "sha256": "1033c26e0d9ba25d4f162bceceed08b21da382ef4d33f8330e7eb0b76988d7f6"
+  },
+  "independentExactCandidateReview": {
+    "path": "/tmp/101-ble-output-exact-independent-review.json",
+    "sha256": "ee6ce94bf305eb6f8dc73280ed7423333a0862f1c72743afd08a8738849e8689"
+  },
+  "finalBuildPreservation": {
+    "path": "/tmp/101-ble-output-final-build-preservation.json",
+    "sha256": "b5233b06cbd164b2879768a29ada655a92adbf9b3bb8b414f79ba825b27edb38"
+  },
+  "currentCallerRecovery": {
+    "receipt": "docs/platform/receipts/2026-10-07-switch-output.json",
+    "scope": "Earlier46-test/source/installed proof remains bound to earlier committed producer/caller. Three caller clock-recovery paths now have actual OLD RED/current115 combined focused and fresh173/391/7 SDK; no hardware promotion."
+  }
 }
