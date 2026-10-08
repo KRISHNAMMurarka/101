@@ -267,3 +267,6 @@ export type { MotorAxisResult, MotorAxisEpoch, MotorAxisSessionToken, MotorAxisI
 
 export { createOpcUaJsonTelemetryConnector, parseOpcUaJsonProfile, decodeOpcUaJsonTelemetry, opcUaSequenceGap, OPCUA_JSON_LIMITS } from './opcua-json-telemetry.ts';
 export type { OpcUaJsonProfile, OpcUaJsonRecord, OpcUaJsonDecoded, OpcUaJsonApprovalRequest, OpcUaJsonApproval, OpcUaJsonReading, OpcUaJsonOptions, OpcUaJsonConnector } from './opcua-json-telemetry.ts';
+
+export { createRosbridgePoseConnector, decodeRosbridgePose, ROSBRIDGE_POSE_PROFILE, ROSBRIDGE_POSE_LIMITS, ROSBRIDGE_POSE_VALUE_SCHEMA } from './rosbridge-pose-connector.ts';
+export type { RosbridgePoseSelection, RosbridgePoseRequest, RosbridgePoseGrant, DecodedRosbridgePose, RosbridgePoseReceipt, RosbridgePoseConnectorOptions, RosbridgePoseConnector } from './rosbridge-pose-connector.ts';

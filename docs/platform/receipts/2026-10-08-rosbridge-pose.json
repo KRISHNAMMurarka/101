@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/rosbridge-pose-connector.ts": "38a5e3248c6ad1ebfb167b704c90d9e9d8e7189700faeac5330bd3eb17780472",
+    "packages/hub-server/src/rosbridge-pose-connector.test.ts": "a3da86e3d87fd802f74c52b73c670ec835e90f1001bccdc53b7909785da72036",
+    "examples/rosbridge-pose/peer.mjs": "b50b05c131c2c8957cfc9dd01b4e938da7a94169c4adb5875655b8b25e8895dd",
+    "examples/rosbridge-pose/consumer.mjs": "167d938cff6c1cf9f99a55da0c7c3303e15a442bd2d8b22d1300d32ba08d61b7",
+    "tools/qa-rosbridge-pose.mjs": "a316993e235d9d921dc1bdba4b930ec29464bc8b3e57ad86936ec2f74990cda6",
+    "tools/qa-installed-rosbridge-pose.mjs": "36488b5205795074accda971422c4c3c3b704fcaec919e5f0dd5b684f50cd741"
+  },
+  "profile": {
+    "id": "app:rosbridge2-pose-stamped-readonly/1",
+    "version": "1.0.0",
+    "protocol": "rosbridge2.1.0 JSON WebSocket",
+    "topic": "/101/robot/pose",
+    "interfaceType": "geometry_msgs/msg/PoseStamped",
+    "frameId": "map",
+    "endpoint": "Canonical ws://127.0.0.1:port/rosbridge only",
+    "direction": "read-only subscribe/unsubscribe; no native server acknowledgment, publication id/type/sequence or command"
+  },
+  "bounds": {
+    "messageBytes": 2048,
+    "totalReceivedAndSentBytesEach": 65536,
+    "receivedMessages": 128,
+    "lifetimeAttempts": 8,
+    "openingMs": 500,
+    "standingSubscriptionMs": 30000,
+    "firstSampleQuietAndReceiptAgeMs": 250,
+    "ownedSockets": 1,
+    "pendingControlWrites": 2
+  },
+  "semantics": {
+    "position": "unchanged metre x/y/z within [-100,100]",
+    "orientation": "unchanged near-unit xyzw within [-1,1], squared-norm tolerance0.002; no normalization",
+    "rosTime": "raw signed int32 sec and nanosec0..999999999; zero/repeat/backward preserved unmapped, no ROS replay sequence",
+    "frame": "exact enrolled raw map string; source basis/origin/TF unestablished",
+    "schema": "bounded raw numeric record; no fabricated native spatial basis",
+    "qos": "requested keep_last depth1/best_effort/volatile/infinite deadline and lifespan; actual DDS unverified",
+    "freshness": "immutable local gateway receipt, separate from ROS capture",
+    "clockMapping": null,
+    "physical": false,
+    "physicalState": "unverified",
+    "signalSupport": "Selected standard-prototype native Node signals; proxy/inherited rejected, cross-realm/subclass acceptance unqualified"
+  },
+  "authority": "Immutable exact endpoint/topic/interface/frame/profile/QoS/scope/purpose/generation/original absolute deadline and native owner/caller/grant fences. Public read/write registrations require separate grants. Every issued native write, WebSocket/TCP close and peer ChildProcess close is independently joined.",
+  "validation": {
+    "originalFocusedTests": 23,
+    "reviewNewRegressionChecks": 3,
+    "reviewAffectedFocusedChecks": 6,
+    "currentAllFocusedCoveredByRequiredUnitGate": true,
+    "actualSeparatePeerScenarios": 23,
+    "strictNoUncheckedIndexedAccess": true,
+    "sixFileLintErrors": 0,
+    "sourceProof": {
+      "path": "/tmp/101-rosbridge-pose-draft/evidence/review-1/source-receipt.json",
+      "sha256": "47bdcc2b2b3bded64442662a14632624c990684a748f62d98aeaff27749283b7",
+      "gitBlob": "a8625be1e955973f3107426c985cd56826ee5a3d",
+      "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-045"
+    },
+    "independentInitialReview": {
+      "path": "/tmp/101-rosbridge-pose-initial-review.json",
+      "sha256": "b4ed60bdc2c53af00ea4f9be0b32b86c7bf2e32e4171eec7a7c841d5994f6234",
+      "gitBlob": "5054f612cecd514c2500a943e83df812a380713f",
+      "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-092"
+    },
+    "independentFinalSourceReview": {
+      "path": "/tmp/101-rosbridge-pose-final-source-review.json",
+      "sha256": "ef1865e6a7e999224eaf022d3617f95f65f5b40e4bdf3979e05783e8256e4682",
+      "gitBlob": "129a7628c288c0f93b9ca600d10f3c75ac88e06c",
+      "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-093"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/rosbridge-pose-connector-ozPnyS/receipt.json",
+        "sha256": "bd88c65eee91c6394d99a08c9c5ba8867b3c21a089a0f68cbcad4631018079db",
+        "gitBlob": "2fa943442e5872279dd67baee604c70c81d55c77",
+        "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-053"
+      },
+      "publicEntry": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkFiles": 411,
+      "finalSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "hostDependency": {
+        "name": "ws",
+        "version": "8.21.0",
+        "sourceFiles": 19,
+        "optionalNativeAddons": false
+      },
+      "actualCopiedAndExecutedArtifacts": 29,
+      "artifactSha256": {
+        "packages/hub-server/src/rosbridge-pose-connector.ts": "38a5e3248c6ad1ebfb167b704c90d9e9d8e7189700faeac5330bd3eb17780472",
+        "packages/hub-server/src/rosbridge-pose-connector.test.ts": "a3da86e3d87fd802f74c52b73c670ec835e90f1001bccdc53b7909785da72036",
+        "examples/rosbridge-pose/peer.mjs": "b50b05c131c2c8957cfc9dd01b4e938da7a94169c4adb5875655b8b25e8895dd",
+        "examples/rosbridge-pose/consumer.mjs": "167d938cff6c1cf9f99a55da0c7c3303e15a442bd2d8b22d1300d32ba08d61b7",
+        "tools/qa-rosbridge-pose.mjs": "a316993e235d9d921dc1bdba4b930ec29464bc8b3e57ad86936ec2f74990cda6",
+        "tools/qa-installed-rosbridge-pose.mjs": "36488b5205795074accda971422c4c3c3b704fcaec919e5f0dd5b684f50cd741",
+        "host-ws/LICENSE": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+        "host-ws/README.md": "bb979132f3cbff08ce47f36d041e18071f8f534d01f591c0b129ba7abf1e480e",
+        "host-ws/browser.js": "010da44addea1d88b2b732540c3f1fd0cbcb28926b96623d4c64222e0ead2d0e",
+        "host-ws/index.js": "924564d5be26d59b9682c4263f68320e48dde7240bd2d1ad17ec305537429dd2",
+        "host-ws/lib/buffer-util.js": "8b0a45739132f82e25ea13163780abf547ccfe989267f3eb7abb475beec92da3",
+        "host-ws/lib/constants.js": "391e823142b8b370e55a2fd32b022deaf03b8415c56000009674ebc86a0b4f86",
+        "host-ws/lib/event-target.js": "c45d3c6e12d170c860c0c3f1a050aa0f864d9806632b609a1e607d675aba128c",
+        "host-ws/lib/extension.js": "852564f0f6b460287043803eae732666fb5610f676874354fc89f06aa4e986ed",
+        "host-ws/lib/limiter.js": "e0469d4b83f6ba764b15f80e1766b75c136fbff68f048f4c050f0b1c7f065f69",
+        "host-ws/lib/permessage-deflate.js": "02c31796f0132a335d4efe7b7adcebadbb69543a1ce65ae04aaccc3530e27ab9",
+        "host-ws/lib/receiver.js": "4879edbf8e48d04d09783cf9c04b5e25f5a448247bb01279438ded2899747220",
+        "host-ws/lib/sender.js": "d0791d30c3defd44dcabbddb879a901c757993fea2c00a7ffea01d53b23b4b77",
+        "host-ws/lib/stream.js": "a56fcb6e2b152097ee820b6f5410b1f71e59819b45d08d9f8bda588fe39070ec",
+        "host-ws/lib/subprotocol.js": "be3f6323d6f549568577dcba9004c1479d95c65a7abb0fe0c582875b9fac0b7c",
+        "host-ws/lib/validation.js": "41ce8e83d0d434132e1704895fedb91f6703a701b42d91c80954ab29b2845593",
+        "host-ws/lib/websocket-server.js": "29029a4d346800c792300df153df2007e9805d9d7b67b0883f9730b64f25b1c8",
+        "host-ws/lib/websocket.js": "48fdb0f54c1f8ce580d3cfa2908fe7d96fe18f06f9d82306950441cb09b5db26",
+        "host-ws/package.json": "584ce6e7516587ba249dc910b0c04e2753f6b3f451fc3a5bc324f7735bdacc71",
+        "host-ws/wrapper.mjs": "fe154662301fd558f935f9c217fccbe7a7dac02ff39e648a000589403ff27c7f",
+        "connectorPath": "d860ab579a7b62bde87b801517835f6b1f4fda90260298fd2cdf7b6c08a2da21",
+        "callerPath": "b58a2309893b6f3784de7ff8934db07d5535d8c4095626a04c91527a2ec81fd4",
+        "peerPath": "b50b05c131c2c8957cfc9dd01b4e938da7a94169c4adb5875655b8b25e8895dd",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "finalArtifactSha256": {
+        "packages/hub-server/src/rosbridge-pose-connector.ts": "38a5e3248c6ad1ebfb167b704c90d9e9d8e7189700faeac5330bd3eb17780472",
+        "packages/hub-server/src/rosbridge-pose-connector.test.ts": "a3da86e3d87fd802f74c52b73c670ec835e90f1001bccdc53b7909785da72036",
+        "examples/rosbridge-pose/peer.mjs": "b50b05c131c2c8957cfc9dd01b4e938da7a94169c4adb5875655b8b25e8895dd",
+        "examples/rosbridge-pose/consumer.mjs": "167d938cff6c1cf9f99a55da0c7c3303e15a442bd2d8b22d1300d32ba08d61b7",
+        "tools/qa-rosbridge-pose.mjs": "a316993e235d9d921dc1bdba4b930ec29464bc8b3e57ad86936ec2f74990cda6",
+        "tools/qa-installed-rosbridge-pose.mjs": "36488b5205795074accda971422c4c3c3b704fcaec919e5f0dd5b684f50cd741",
+        "host-ws/LICENSE": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+        "host-ws/README.md": "bb979132f3cbff08ce47f36d041e18071f8f534d01f591c0b129ba7abf1e480e",
+        "host-ws/browser.js": "010da44addea1d88b2b732540c3f1fd0cbcb28926b96623d4c64222e0ead2d0e",
+        "host-ws/index.js": "924564d5be26d59b9682c4263f68320e48dde7240bd2d1ad17ec305537429dd2",
+        "host-ws/lib/buffer-util.js": "8b0a45739132f82e25ea13163780abf547ccfe989267f3eb7abb475beec92da3",
+        "host-ws/lib/constants.js": "391e823142b8b370e55a2fd32b022deaf03b8415c56000009674ebc86a0b4f86",
+        "host-ws/lib/event-target.js": "c45d3c6e12d170c860c0c3f1a050aa0f864d9806632b609a1e607d675aba128c",
+        "host-ws/lib/extension.js": "852564f0f6b460287043803eae732666fb5610f676874354fc89f06aa4e986ed",
+        "host-ws/lib/limiter.js": "e0469d4b83f6ba764b15f80e1766b75c136fbff68f048f4c050f0b1c7f065f69",
+        "host-ws/lib/permessage-deflate.js": "02c31796f0132a335d4efe7b7adcebadbb69543a1ce65ae04aaccc3530e27ab9",
+        "host-ws/lib/receiver.js": "4879edbf8e48d04d09783cf9c04b5e25f5a448247bb01279438ded2899747220",
+        "host-ws/lib/sender.js": "d0791d30c3defd44dcabbddb879a901c757993fea2c00a7ffea01d53b23b4b77",
+        "host-ws/lib/stream.js": "a56fcb6e2b152097ee820b6f5410b1f71e59819b45d08d9f8bda588fe39070ec",
+        "host-ws/lib/subprotocol.js": "be3f6323d6f549568577dcba9004c1479d95c65a7abb0fe0c582875b9fac0b7c",
+        "host-ws/lib/validation.js": "41ce8e83d0d434132e1704895fedb91f6703a701b42d91c80954ab29b2845593",
+        "host-ws/lib/websocket-server.js": "29029a4d346800c792300df153df2007e9805d9d7b67b0883f9730b64f25b1c8",
+        "host-ws/lib/websocket.js": "48fdb0f54c1f8ce580d3cfa2908fe7d96fe18f06f9d82306950441cb09b5db26",
+        "host-ws/package.json": "584ce6e7516587ba249dc910b0c04e2753f6b3f451fc3a5bc324f7735bdacc71",
+        "host-ws/wrapper.mjs": "fe154662301fd558f935f9c217fccbe7a7dac02ff39e648a000589403ff27c7f",
+        "connectorPath": "d860ab579a7b62bde87b801517835f6b1f4fda90260298fd2cdf7b6c08a2da21",
+        "callerPath": "b58a2309893b6f3784de7ff8934db07d5535d8c4095626a04c91527a2ec81fd4",
+        "peerPath": "b50b05c131c2c8957cfc9dd01b4e938da7a94169c4adb5875655b8b25e8895dd",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "helperCompilerAndReceiptFiles": 5,
+      "publicDelivered": 1,
+      "publicReadWriteDeniedFirst": true,
+      "immutable250msStale": true,
+      "finalStatus": {
+        "phase": "closed",
+        "generation": 3,
+        "attempts": 2,
+        "receivedMessages": 5,
+        "receivedBytes": 1010,
+        "sentBytes": 410,
+        "rawSockets": 0,
+        "rawWrites": 0,
+        "timers": 0,
+        "waiters": 0,
+        "reason": "revoked"
+      },
+      "peer": {
+        "type": "closed",
+        "connections": 1,
+        "publications": 6,
+        "receivedBytes": 410,
+        "sentBytes": 1212,
+        "transcript": [
+          {
+            "op": "subscribe",
+            "id": "73bf2c12-0049-48ff-bc07-49939dd034d1",
+            "topic": "/101/robot/pose",
+            "type": "geometry_msgs/msg/PoseStamped",
+            "throttle_rate": 50,
+            "queue_length": 1,
+            "compression": "none",
+            "qos": {
+              "history": "keep_last",
+              "depth": 1,
+              "reliability": "best_effort",
+              "durability": "volatile",
+              "deadline": "infinite",
+              "lifespan": "infinite"
+            }
+          },
+          {
+            "op": "unsubscribe",
+            "id": "73bf2c12-0049-48ff-bc07-49939dd034d1",
+            "topic": "/101/robot/pose"
+          }
+        ],
+        "rawSockets": 0,
+        "peers": 0,
+        "timers": 0,
+        "listener": false,
+        "failure": null
+      },
+      "postCallerArtifactMutation": {
+        "status": "rejected",
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/rosbridge-pose-connector-ozPnyS/peer.mjs",
+        "sha256": "3170e4fb36bd3d684795168b40b3097d2dc4b4ecf663c5b05dd8fd9c4b00bb50",
+        "afterActualCaller": true
+      },
+      "scope": "Ordinary installed public seven-package SDK with separately compiled gateway and copied pinned host ws dependency. Selected software protocol peer only; no released gateway SDK, actual ROS/DDS/robot/hardware qualification."
+    }
+  },
+  "retainedFailures": {
+    "originalHandoffSha256": "8b1a31dae321d2bcf20af81bb857111fdfee07556f866770f793cc83d323083f",
+    "initialAbsentModuleAndFourAuthoredRepairs": true,
+    "reviewOldFailures": 2,
+    "reviewRed": {
+      "path": "/tmp/101-rosbridge-pose-draft/evidence/review-1/red.log",
+      "sha256": "a62b6a577d81507eb12d37de4077cf6f9791e100c0a5578706976886c60e3f45",
+      "gitBlob": "22d96885ee43679d8059739596676592f7bbfe33",
+      "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-038"
+    },
+    "reviewGreen": {
+      "path": "/tmp/101-rosbridge-pose-draft/evidence/review-1/green-focused.log",
+      "sha256": "07b6b0f0cba71cd0461e6a66ceed4e21abbc0f3a25c382a8160716a2e84cab78",
+      "gitBlob": "007766d2be5524a26aadf6ae66d8b47581df2134",
+      "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-044"
+    },
+    "details": "Rejected write settlement and exit-only peer cleanup reproduced against exact original bytes before repair. New failed-startup native-close case is an expected negative control, not invented historical evidence."
+  },
+  "primarySources": [
+    {
+      "repo": "RobotWebTools/rosbridge_suite",
+      "branchObserved": "ros2",
+      "commit": "ae4d7f8c08408cc6c7430425c2c0eebd3e225ed8",
+      "path": "ROSBRIDGE_PROTOCOL.md",
+      "url": "https://raw.githubusercontent.com/RobotWebTools/rosbridge_suite/ae4d7f8c08408cc6c7430425c2c0eebd3e225ed8/ROSBRIDGE_PROTOCOL.md",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/RobotWebTools-rosbridge_suite--ROSBRIDGE_PROTOCOL.md",
+      "sha256": "ec715a96d9940cb9fe453331ac3021dbff768df244f2f46de7b08b390894bd93",
+      "lines": 597
+    },
+    {
+      "repo": "RobotWebTools/rosbridge_suite",
+      "branchObserved": "ros2",
+      "commit": "ae4d7f8c08408cc6c7430425c2c0eebd3e225ed8",
+      "path": "rosbridge_library/src/rosbridge_library/capabilities/subscribe.py",
+      "url": "https://raw.githubusercontent.com/RobotWebTools/rosbridge_suite/ae4d7f8c08408cc6c7430425c2c0eebd3e225ed8/rosbridge_library/src/rosbridge_library/capabilities/subscribe.py",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/RobotWebTools-rosbridge_suite--rosbridge_library--src--rosbridge_library--capabilities--subscribe.py",
+      "sha256": "aea7c592be04132da2124cac05a84d7ea4a06ad841ad00a926f850a03377adc3",
+      "lines": 391
+    },
+    {
+      "repo": "ros2/common_interfaces",
+      "branchObserved": "rolling",
+      "commit": "40455bd4e4a2a8f18c85b221b31ae42727cba0b6",
+      "path": "geometry_msgs/msg/PoseStamped.msg",
+      "url": "https://raw.githubusercontent.com/ros2/common_interfaces/40455bd4e4a2a8f18c85b221b31ae42727cba0b6/geometry_msgs/msg/PoseStamped.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-common_interfaces--geometry_msgs--msg--PoseStamped.msg",
+      "sha256": "31898ab0eb64a6c44c27ab4959819a32ec3bc3ee847c8fe1b01c897d48e311e5",
+      "lines": 4
+    },
+    {
+      "repo": "ros2/common_interfaces",
+      "branchObserved": "rolling",
+      "commit": "40455bd4e4a2a8f18c85b221b31ae42727cba0b6",
+      "path": "geometry_msgs/msg/Pose.msg",
+      "url": "https://raw.githubusercontent.com/ros2/common_interfaces/40455bd4e4a2a8f18c85b221b31ae42727cba0b6/geometry_msgs/msg/Pose.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-common_interfaces--geometry_msgs--msg--Pose.msg",
+      "sha256": "3eceb77c63ebbb544c11d7f991e475e9819e0cf534deb1a879392c1b3dc997de",
+      "lines": 4
+    },
+    {
+      "repo": "ros2/common_interfaces",
+      "branchObserved": "rolling",
+      "commit": "40455bd4e4a2a8f18c85b221b31ae42727cba0b6",
+      "path": "geometry_msgs/msg/Point.msg",
+      "url": "https://raw.githubusercontent.com/ros2/common_interfaces/40455bd4e4a2a8f18c85b221b31ae42727cba0b6/geometry_msgs/msg/Point.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-common_interfaces--geometry_msgs--msg--Point.msg",
+      "sha256": "eb4c07e591cf0269ccb17245dcd4f998162feb09cc8add85fa082c8a30bfc91d",
+      "lines": 4
+    },
+    {
+      "repo": "ros2/common_interfaces",
+      "branchObserved": "rolling",
+      "commit": "40455bd4e4a2a8f18c85b221b31ae42727cba0b6",
+      "path": "geometry_msgs/msg/Quaternion.msg",
+      "url": "https://raw.githubusercontent.com/ros2/common_interfaces/40455bd4e4a2a8f18c85b221b31ae42727cba0b6/geometry_msgs/msg/Quaternion.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-common_interfaces--geometry_msgs--msg--Quaternion.msg",
+      "sha256": "298495eb67a139642ffd37cc9029eae085e6c39a8789828b7517868a487939ed",
+      "lines": 6
+    },
+    {
+      "repo": "ros2/common_interfaces",
+      "branchObserved": "rolling",
+      "commit": "40455bd4e4a2a8f18c85b221b31ae42727cba0b6",
+      "path": "std_msgs/msg/Header.msg",
+      "url": "https://raw.githubusercontent.com/ros2/common_interfaces/40455bd4e4a2a8f18c85b221b31ae42727cba0b6/std_msgs/msg/Header.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-common_interfaces--std_msgs--msg--Header.msg",
+      "sha256": "d2cea14630e39ed0fa5b432ba9160a7c38855b9427d3344f99e83e83facb53c2",
+      "lines": 9
+    },
+    {
+      "repo": "ros2/rcl_interfaces",
+      "branchObserved": "rolling",
+      "commit": "614f3c4942e1a67a568546cb805ff3e0ff7777f5",
+      "path": "builtin_interfaces/msg/Time.msg",
+      "url": "https://raw.githubusercontent.com/ros2/rcl_interfaces/614f3c4942e1a67a568546cb805ff3e0ff7777f5/builtin_interfaces/msg/Time.msg",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-rcl_interfaces--builtin_interfaces--msg--Time.msg",
+      "sha256": "dc5a01ddde3aecffee21eb24974fe77cc969f873218a2b1811aa0ac8a456b8bd",
+      "lines": 11
+    },
+    {
+      "repo": "ros2/ros2_documentation",
+      "branchObserved": "rolling",
+      "commit": "a2f0aa76f61144a4ac3bcda0401e9d4e9a840f22",
+      "path": "source/ROS-Framework/interfaces/Working-with-interfaces/Quaternion-Fundamentals.rst",
+      "url": "https://raw.githubusercontent.com/ros2/ros2_documentation/a2f0aa76f61144a4ac3bcda0401e9d4e9a840f22/source/ROS-Framework/interfaces/Working-with-interfaces/Quaternion-Fundamentals.rst",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-ros2_documentation--source--ROS-Framework--interfaces--Working-with-interfaces--Quaternion-Fundamentals.rst",
+      "sha256": "c9465d6cd1bf581316ce5da55b4e4915cd8d05a35849acffd6af354ebcec3a07",
+      "lines": 262
+    },
+    {
+      "repo": "ros2/ros2_documentation",
+      "branchObserved": "rolling",
+      "commit": "a2f0aa76f61144a4ac3bcda0401e9d4e9a840f22",
+      "path": "source/ROS-Framework/interfaces/topics/About-Quality-of-Service-Settings.rst",
+      "url": "https://raw.githubusercontent.com/ros2/ros2_documentation/a2f0aa76f61144a4ac3bcda0401e9d4e9a840f22/source/ROS-Framework/interfaces/topics/About-Quality-of-Service-Settings.rst",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-ros2_documentation--source--ROS-Framework--interfaces--topics--About-Quality-of-Service-Settings.rst",
+      "sha256": "bda1a288ac738380b5b5f75e740b0861d47a7e3cdca13190a22d82b0409d9f33",
+      "lines": 351
+    },
+    {
+      "repo": "ros-infrastructure/rep",
+      "branchObserved": "master",
+      "commit": "11ca24a41f31480dfb9562ba99f2a5b93d3ebda5",
+      "path": "rep-0103.rst",
+      "url": "https://raw.githubusercontent.com/ros-infrastructure/rep/11ca24a41f31480dfb9562ba99f2a5b93d3ebda5/rep-0103.rst",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros-infrastructure-rep--rep-0103.rst",
+      "sha256": "bf397ddcab96cc1d10d8f5893960cb1d5e50154dd96462433a5ac342237a0c20",
+      "lines": 225
+    },
+    {
+      "repo": "ros2/design",
+      "branchObserved": "gh-pages",
+      "commit": "93a415bf928751d37fce6f83215c521658e20c93",
+      "path": "articles/130_ros_time.md",
+      "url": "https://raw.githubusercontent.com/ros2/design/93a415bf928751d37fce6f83215c521658e20c93/articles/130_ros_time.md",
+      "localPath": "/tmp/101-ros2-connector-plan/sources/ros2-design--articles--130_ros_time.md",
+      "sha256": "90c5ba7f4e1296ce59182d1fd15374044ef06d7862fa3e363de8f62a0cc4c6db",
+      "lines": 194
+    }
+  ],
+  "retainedEvidence": {
+    "path": "/tmp/101-rosbridge-pose-evidence-manifest.json",
+    "sha256": "4e7c2e0a64ed5803a76162fdd74883dd61964ad2b5b044fdf269422537ceb38d",
+    "gitBlob": "5ce0c61cfcbc8955784faffac49c1c97aba2a1cc",
+    "ref": "refs/codex/evidence/2026-10-08-rosbridge-pose/evidence-manifest",
+    "entryCount": 112,
+    "policy": "Exact reviewed current and rejected sources, genuine failures, primary sources, installed artifacts and actual mutation bytes retained locally. Installed SDK and host dependency hashes are in the exact installed receipt; unchanged seven-package release remains separately retained."
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-rosbridge-pose/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-rosbridge-pose/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact frozen candidate result proves broad gates; fresh build before rendered; no red commit."
+  },
+  "acceptance": {
+    "A12": "partial",
+    "supportRows": [],
+    "open": [
+      "Actual ROS/rclpy/rosbridge type resolution and DDS/RMW QoS",
+      "Services/actions and robot command authority/local safety",
+      "Qualified simulator and representative hardware receipt",
+      "Source-clock mapping, frame basis/origin/calibration/TF and physical accuracy",
+      "Secure remote bridge/graph identity and full A12 acceptance"
+    ]
+  }
+}

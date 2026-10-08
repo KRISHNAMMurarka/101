@@ -20,6 +20,7 @@
     "./nec32-ir-receive-gateway": "./src/nec32-ir-receive-gateway.ts",
     "./mechanical-relay-gateway": "./src/mechanical-relay-gateway.ts",
     "./motor-axis-gateway": "./src/motor-axis-gateway.ts",
-    "./opcua-json-telemetry": "./src/opcua-json-telemetry.ts"
+    "./opcua-json-telemetry": "./src/opcua-json-telemetry.ts",
+    "./rosbridge-pose-connector": "./src/rosbridge-pose-connector.ts"
   }
 }

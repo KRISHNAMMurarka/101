@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 177,
+  "revision": 178,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13023,6 +13023,32 @@
         "No hardware required for A15 research; each later implemented profile needs its named native/kernel/library/firmware/owner/equipment qualification"
       ],
       "supportRows": []
+    },
+    {
+      "id": "rosbridge-pose-2026-10-08",
+      "revision": "38a5e3248c6ad1ebfb167b704c90d9e9d8e7189700faeac5330bd3eb17780472",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-rosbridge-pose.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0, ws8.21.0, unchanged verified seven-package SDK, owned separate documented rosbridge2.1.0 JSON WebSocket peer",
+      "reproduction": "23 original focused checks plus3 new settlement and6 affected checks;23 actual-peer source scenarios; strict types/six-file lint; ordinary installed public caller/actual post-caller artifact mutation; exact frozen candidate gates referenced by receipt",
+      "scope": "Selected read-only raw metre/xyzw PoseStamped numeric record with unmapped ROS time/frame/requested QoS and original scoped authority; no actual ROS/DDS, services/actions/commands/robot/simulator/hardware/fullA12 acceptance",
+      "failure": null,
+      "equipment": [
+        "Admitted actual ROS/rosbridge/RMW graph, independently qualified simulator and representative robot hardware; safe local command policy and source-clock/frame calibration required for remaining scope"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14841,7 +14867,8 @@
     {
       "id": "A12",
       "records": [
-        "pending-A12"
+        "pending-A12",
+        "rosbridge-pose-2026-10-08"
       ],
       "dependencies": [
         "M01",
