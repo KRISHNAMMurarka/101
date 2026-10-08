@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "status": "fail-unqualified-native-blur",
+  "localOnly": true,
+  "sourceBase": "5dc3a7fee2eb92f78be3ef7cf078be7de53ee66d",
+  "sourceUnchanged": true,
+  "physical": false,
+  "supportRows": [],
+  "failure": "Neither headed Chromium page-front nor actual CUA key/tab actions generated blur while audio was active. This fails the probe prerequisite and does not establish a player blur defect or passing blur behavior.",
+  "headedChromium": {
+    "proof": {
+      "path": "/private/tmp/101-audio-player-browser-DVEnqV/receipt.json",
+      "sha256": "5b253d30591e42c40c987e5d4e19150b27de1461879b2d426de1685543471da7",
+      "gitBlob": "3fcd6a952f912fcc7507be9bdface2073f443c8b",
+      "ref": "refs/codex/evidence/2026-10-09-controller5-preflight/raw-01113"
+    },
+    "browser": "149.0.7827.55",
+    "playwright": "1.61.1",
+    "headless": false,
+    "mutedOutput": true,
+    "browserBundlePinned": true,
+    "cleanup": "Browser/server no longer running; pending/issued operation counters zero"
+  },
+  "desktopCua": {
+    "proof": {
+      "path": "/private/tmp/101-audio-headed-focus/cua-receipt.json",
+      "sha256": "072fd89c6e0b5e7c213e7646280095ec57f994387437629ccefbc4eee7f428db",
+      "gitBlob": "6588f871c4ab54a39740585fdb8b59d5c0a94a59",
+      "ref": "refs/codex/evidence/2026-10-09-controller5-preflight/raw-01108"
+    },
+    "activeNativeBlurGenerated": false,
+    "observed": "Two contexts closed, three tracks ended and the element detached on the existing playback deadline, not active native blur",
+    "cleanup": "Owned tabs closed; owned server stopped; pending/background operation counters zero",
+    "browserRuntimePinned": false,
+    "mutedOutput": "not established; raw server scope text mentioning muted is inherited from the earlier probe and not evidence of CUA launch settings"
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-controller5-preflight-evidence/raw-evidence-manifest.json",
+    "sha256": "c1cb06c615d77947c41238d98e3796e2006891fc2670eaf54448dbb6597d2182",
+    "gitBlob": "7497eff6d2628e49f84ec9f074a57c08f8a64c5a",
+    "ref": "refs/codex/evidence/2026-10-09-controller5-preflight/manifest",
+    "entries": 1118,
+    "uniqueBlobs": 907
+  },
+  "acceptance": {
+    "U03": "partial",
+    "V03": "partial",
+    "nativeBlur": "unqualified",
+    "physicalOutput": "unqualified",
+    "otherEnginesPermissionDeviceLossAssistiveTechnology": "open"
+  }
+}

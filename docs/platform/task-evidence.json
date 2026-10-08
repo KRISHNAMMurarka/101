@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 186,
+  "revision": 187,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13231,6 +13231,59 @@
         "Actual speakers/headphones, supported browser/OS focus and permission environments, named assistive technology for remaining acceptance"
       ],
       "supportRows": []
+    },
+    {
+      "id": "mcp3008-iio-ch0-2026-10-09",
+      "revision": "0de2dba6f8b351b0b4cd27ddbb87c2580b2f6eecbd9f68653492bf0fdd1d27ef",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A16",
+        "Q03",
+        "Q08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-mcp3008-iio-ch0.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0; separately owned ordinary-file ABI producer and unchanged seven-package installed SDK; native denied all hosts",
+      "reproduction": "Exact independently reviewed isolated six-source candidate,61 focused checks, eleven authentic public source scenarios, actual ordinary installed caller and16 owned-copy byte-fence negatives after natural caller close; required exact integrated gates in receipt",
+      "scope": "Selected documented channel0 unsigned ADC code0..1023 ABI software with exact bytes/identity/authority/read receipt and genuine joined file/process cleanup. No native sysfs/SPI/calibration/reference/electrical/capture-age or full A16/Q03/Q08 acceptance",
+      "failure": null,
+      "equipment": [
+        "Qualified exact Linux/driver/SPI/MCP3008 target with physical electrical/reference/calibration/conversion timing for remaining acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "audio-native-blur-attempts-2026-10-09",
+      "revision": "5dc3a7fee2eb92f78be3ef7cf078be7de53ee66d",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "V03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-audio-native-blur-attempts.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Actual headed Chrome149.0.7827.55/Playwright1.61.1 and separate actual desktop CUA Chrome tabs; CUA executable/version not pinned",
+      "reproduction": "Retained headed page-front and CUA native-key/tab attempts; active focus-loss prerequisite was not generated; owned browser/tab/server cleanup retained",
+      "scope": "Failed native-blur probe prerequisites only; existing playback expiry cleanup observed. No new player defect or blur/physical/full U03/V03 acceptance",
+      "failure": "Active native blur was not generated in either approach; native focus and physical output remain unqualified",
+      "equipment": [
+        "Supported actual native focus environment and physical speakers/headphones; other engines/permission/device-loss/assistive technology remain open"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14706,7 +14759,8 @@
         "pending-V03",
         "v03-private-application-audio-installed-2026-10-06",
         "local-audio-player-built-source-partial-2026-10-08",
-        "audio-player-browser-2026-10-09"
+        "audio-player-browser-2026-10-09",
+        "audio-native-blur-attempts-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15120,7 +15174,8 @@
       "id": "A16",
       "records": [
         "pending-A16",
-        "tmp102-hwmon-2026-10-09"
+        "tmp102-hwmon-2026-10-09",
+        "mcp3008-iio-ch0-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15936,7 +15991,8 @@
         "local-player-combined-software-build-2026-10-07",
         "local-gamepad-player-built-source-partial-2026-10-08",
         "local-audio-player-built-source-partial-2026-10-08",
-        "audio-player-browser-2026-10-09"
+        "audio-player-browser-2026-10-09",
+        "audio-native-blur-attempts-2026-10-09"
       ],
       "dependencies": [
         "C01",
@@ -16287,7 +16343,8 @@
       "id": "Q03",
       "records": [
         "pending-Q03",
-        "tmp102-hwmon-2026-10-09"
+        "tmp102-hwmon-2026-10-09",
+        "mcp3008-iio-ch0-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [
@@ -16345,7 +16402,8 @@
       "id": "Q08",
       "records": [
         "pending-Q08",
-        "tmp102-hwmon-2026-10-09"
+        "tmp102-hwmon-2026-10-09",
+        "mcp3008-iio-ch0-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [

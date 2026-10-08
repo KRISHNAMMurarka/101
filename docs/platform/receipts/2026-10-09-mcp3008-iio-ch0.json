@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/mcp3008-iio-ch0.ts": "0de2dba6f8b351b0b4cd27ddbb87c2580b2f6eecbd9f68653492bf0fdd1d27ef",
+    "packages/hub-server/src/mcp3008-iio-ch0.test.ts": "7b676da185cd11a83caa747d648782afc22476ad8570eea501bf3b7ff3720c91",
+    "examples/mcp3008-iio-ch0/producer.mjs": "1670ed76f492bfd8c2877a4753f1de71b4d8df328ab539ff6af060e292582052",
+    "examples/mcp3008-iio-ch0/consumer.mjs": "e4ed8a5c33b14ba1873cc5cd14df595dbda084bc1c3752360da459ecdb00ff03",
+    "tools/qa-mcp3008-iio-ch0.mjs": "a7893d61a1a65005d8c6ee654b64b11edca1e59f34ca8eb601e34b11b2f0b75e",
+    "tools/qa-installed-mcp3008-iio-ch0.mjs": "99ca8103522b0cd5e0450a1d5dcde6767d6d57e102177fadb6f01851fa4074ff"
+  },
+  "profile": {
+    "id": "mcp3008-iio-ch0-abi-file/1",
+    "nativeProfile": "linux-mcp3008-iio-ch0-raw-read/1",
+    "nativeAdmission": "denied all hosts before authorizer/filesystem/process/timer effects, even invalid input",
+    "direction": "Read independently enrolled parent/iio:deviceN/in_voltage0_raw ordinary file only; channel0 single-ended",
+    "identity": "Frozen canonical bigint dev/ino for exact parent, IIO directory and raw file; fixed paths with no enumeration or re-enrollment",
+    "ancestorPolicy": "Host-controlled stable ancestors required; persistent changes detected; no hostile symlink-race or invisible ABA confinement claim"
+  },
+  "primarySources": [
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/drivers/iio/adc/mcp320x.c?ref=v6.10",
+      "bytes": 13718,
+      "evidence": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/primary/linux-v6.10-mcp320x.c",
+        "sha256": "c32088f0f10e96471e93c2160ac2b13baedc80837d85dc0100237a7de12bdd48",
+        "gitBlob": "da1421bd7b62944a28a6ef8ab41ca9ed6ab94a28",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03783"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/Documentation/ABI/testing/sysfs-bus-iio?ref=v6.10",
+      "bytes": 103188,
+      "evidence": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/primary/linux-v6.10-iio-abi.txt",
+        "sha256": "b67a3e6a4d8bad35a3baa57bff82afa92c37cb0e3eedf0247090b2f0c7012707",
+        "gitBlob": "7cee78ad410856ff9b35bcba4b56c8688be7d586",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03781"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/drivers/iio/industrialio-core.c?ref=v6.10",
+      "bytes": 58275,
+      "evidence": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/primary/linux-v6.10-industrialio-core.c",
+        "sha256": "c23c0d73db917e4b51ac348499625324a0fe0b3f4a70a0545f0eebdd84c4f6eb",
+        "gitBlob": "fa7cc051b4c49b276c9ab4829df824fcd9d02a9b",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03782"
+      }
+    },
+    {
+      "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP3004-MCP3008-Data-Sheet-DS20001295.pdf",
+      "bytes": 1021574,
+      "evidence": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/primary/mcp3008-DS20001295.pdf",
+        "sha256": "26a503d76279cc10e40cfc36e80bb87fd33d0de80093d1bdcc4dc29435b10f72",
+        "gitBlob": "4a1847776c95b47a02204e9bf1008091d6a84396",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03784"
+      }
+    }
+  ],
+  "semantics": {
+    "unit": "1",
+    "range": [
+      0,
+      1023
+    ],
+    "nativeText": "Complete unsigned canonical decimal ASCII code and LF; reject sign, leading zero, trimming, CRLF, high bits, trailing data and absent LF",
+    "read": "One retained O_RDONLY|O_NOFOLLOW|O_NONBLOCK data handle; ordinary-file size1..64 before positioned65-byte sentinel read; exact complete byte count and unchanged opened/path identity and size afterward",
+    "authority": "Original same-object frozen standing request binds scope/purpose/profile/paths/budgets/action/deadline; genuine owner/caller/grant signals; separate public SDK source/sink/scope grant",
+    "clock": "Actual read-completion monotonic receipt recorded before post-read metadata; later SDK publication does not renew the timestamp",
+    "quality": "ABI validity only; nominal reference may be null or frozen rational configuration provenance with measured:false; no volts, calibration, clipping, saturation, capture age or clock mapping",
+    "lifecycle": "Preissue reservations for metadata/open/read/close; late handles adopted after cancellation; retirement withdraws publication immediately and joins every issued operation; unconfirmed close retains capacity. Actual fixture child joins issued file/IPC/pipe work plus separate natural exit/close",
+    "physical": false
+  },
+  "bounds": {
+    "sessionMs": 30000,
+    "readMs": 1000,
+    "receiptAgeMs": 1000,
+    "pollMs": 1000,
+    "readsPerSession": 30,
+    "startsPerLifetime": 8,
+    "payloadBytes": 64,
+    "sentinelReadBytes": 65,
+    "dataHandles": 1,
+    "inFlightReads": 1,
+    "cadenceRetainedAcrossRestarts": true
+  },
+  "validation": {
+    "acceptedPlan": {
+      "path": "/private/tmp/101-mcp3008-iio-plan/manifest-review-2.json",
+      "sha256": "2c5d96fd7bde6cc7e7ccfb24b56e9f5c7612b0edc96a4471439d1bc1f2f08c91",
+      "gitBlob": "7f50179fbb7cd50f375bcc6d72ecf0b1abbc27f4",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01986"
+    },
+    "planAcceptance": {
+      "path": "/private/tmp/101-mcp3008-root-evidence/plan-acceptance.json",
+      "sha256": "fb3a4361eb24a5fa456401cf745e6c34bdc19850530258e45685a63d098f65a1",
+      "gitBlob": "4bdd60d4965a9d38397d053dbbc7a2a4ec63deee",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03779"
+    },
+    "isolatedOwnerRuling": {
+      "path": "/private/tmp/101-mcp3008-isolated-owner-ruling.json",
+      "sha256": "ed04247454c8b4a11fb2e86308b368967cc237da94c60c13b989f904ac6ca34d",
+      "gitBlob": "7a4fa3aec5d193786524c7b54da721d26e73928f",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01998"
+    },
+    "task0PremiseFailure": {
+      "path": "/private/tmp/101-tmp102-owner-migration/lane-6E7wMd/premise-failure-report.json",
+      "sha256": "7ef349f8cd6e7960cfbd783b5e638069b2b3551ab854b8a927e66f2929823902",
+      "gitBlob": "02a36a2b429f418d615f33119b4dd41f34c106af",
+      "ref": "refs/codex/evidence/2026-10-09-controller5-preflight/raw-01117"
+    },
+    "tmp102Unchanged": {
+      "packages/hub-server/src/tmp102-hwmon.ts": "cb1b502a6e3336ea86120218032604e61173b1b4b884d89efbd8fd576085db1a",
+      "packages/hub-server/src/tmp102-hwmon.test.ts": "023fd482735c1553c777da65827f95cd6ef1d71d79abddf106f325043754e115",
+      "tools/qa-tmp102-hwmon.mjs": "8da4aed1b001b989e60274859781b4674572bff80ad4d6c9dc28eb6b8e8e37bd",
+      "tools/qa-installed-tmp102-hwmon.mjs": "6ce16325685a6004a7b1e899e11ecd72b49f751b691c54e7a635f3f644b2e087"
+    },
+    "sharedOwnerExtractionOrMigration": false,
+    "workerManifest": {
+      "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/manifest.json",
+      "sha256": "5331c196e9c9ea18620790b44b6c82dc6b260c62ccb2bcedb290e848ac3f3334",
+      "gitBlob": "b4e8c08d7fa01b32f35414e89adbec8d982bbe4b",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01966"
+    },
+    "sourceReview": {
+      "path": "/private/tmp/101-mcp3008-independent-source-review/review-1.json",
+      "sha256": "e8d39df77f01e7f15e07e4cb3d100554fbacc617ab07a88b9cc1ad0a984fb0aa",
+      "gitBlob": "67269bf9c4e92e5a5b8b47320a2b732345b953a9",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01997"
+    },
+    "sourceAcceptance": {
+      "path": "/private/tmp/101-mcp3008-root-evidence/source-acceptance.json",
+      "sha256": "02e9e19d19d9bb682660dae8625be7465a797cce7a0d5a17b59a0bba052942e6",
+      "gitBlob": "b19e295fb1167d2c3faed5bd4e9350df44054bac",
+      "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03788"
+    },
+    "focused": {
+      "exitCode": 0,
+      "pass": 61,
+      "fail": 0,
+      "skip": 0,
+      "log": {
+        "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/final-focused.log",
+        "sha256": "c7477d377b102c12074416f09ed96386dd5a977c8a4d54fbcd9e4cc6e78bfb50",
+        "gitBlob": "56ac57e2e7eedec1c6fb7046ad2fcd377de27308",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01961"
+      }
+    },
+    "strictNoUnchecked": {
+      "exitCode": 0,
+      "log": {
+        "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/final-strict.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01964"
+      }
+    },
+    "sourcePublic": {
+      "proof": {
+        "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/evidence/mcp3008-source-gAnDGQ/receipt.json",
+        "sha256": "daaa3c9cf8c7d699aea7f0a2b0b48b506613b043ea7c3f683b7b352216cc28e0",
+        "gitBlob": "3d4abad7ba505bb41c5e1e6c761f525b0f9587e7",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01554"
+      },
+      "scenarioCount": 11,
+      "sourceCompilerRuntimeFiles": 399,
+      "executedArtifacts": 12,
+      "actualNaturalCallerAndProducerClose": true
+    },
+    "sourceOwnedByteControls": {
+      "proof": {
+        "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/evidence/mcp3008-mutations-9Xjsfd/receipt.json",
+        "sha256": "e895bf1b8e8da981c361ecf94682bbedc133cdbfdb26e963761ff6e72e13ecf4",
+        "gitBlob": "4c915f6bc14aad237eb35f2a901f69da660a5cca",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01549"
+      },
+      "count": 12,
+      "meaning": "Expected fingerprint rejection on individually owned copied bytes after caller; authentic malformed/missing/replacement child cases are separate"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/mcp3008-iio-ch0-LFXJHJ/receipt.json",
+        "sha256": "692ab1e968ef36989929850be364a3cfbdef9847bcacd6b087243e134888cf8d",
+        "gitBlob": "ac5a52855836ef46c412e6d5baba6e4f573558c0",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03793"
+      },
+      "wrapper": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/installed.json",
+        "sha256": "f666c58bdda1a7bd257c23daee7a45bd2b537101fe23cbb5d9300031ce97cf4f",
+        "gitBlob": "d35bc052f574a9978aa6b28c9309f4a603f1628e",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-02002"
+      },
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "dependencyFiles": 1283,
+      "sourceCompilerRuntimeFiles": 399,
+      "executedArtifacts": 12,
+      "publicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "actualNaturalCallerAndProducerClose": true,
+      "providerStatusAfterClose": {
+        "phase": "closed",
+        "reason": "closed",
+        "generation": 2,
+        "readings": 0,
+        "attempts": 2,
+        "pendingOperations": 0,
+        "openHandles": 0,
+        "inFlightReads": 0,
+        "unconfirmedCloses": 0,
+        "timers": 0,
+        "nativeErrno": null
+      },
+      "producerOwnershipAfterClose": {
+        "pendingOperations": 0,
+        "timers": 0,
+        "waiters": 0,
+        "childClosed": true
+      },
+      "compiledGatewaySeparately": true,
+      "sdkRebuiltOrInstalled": false,
+      "postCallerCopyMutation": {
+        "path": "/private/tmp/101-mcp3008-root-evidence/mcp3008-mutations-dbwzAj/receipt.json",
+        "sha256": "2a0782b48e0ec3da41180a69b26b7bf310237b850fc1b4fa82ea6379304a8996",
+        "gitBlob": "3258f3e3d991bbb5917ca85db29015acd40183f5",
+        "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-03366"
+      },
+      "postCallerCopyMutationCount": 16,
+      "authoritativeUnchanged": true
+    },
+    "redEvidence": {
+      "meaning": "New feature missing provider/caller/helper and producer ownership-status RED to GREEN; no existing bug repair or authentic old-red claim",
+      "logs": [
+        {
+          "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/missing-provider-red.log",
+          "sha256": "15ba6159465b28bb056d53128b9982d89f5b53bb4073d6643bdeca4ad0c5e77d",
+          "gitBlob": "ef7437fa715d9c79e25c0ec379e14ecf45a04da3",
+          "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01968"
+        },
+        {
+          "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/missing-caller-red.log",
+          "sha256": "2dceafc790ad527f409e8ea64da4a429e3ac7d600e98ab23a0656dc127c34c8a",
+          "gitBlob": "b8aab5fe75cbc117fde37968188f81c5556e692e",
+          "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01967"
+        },
+        {
+          "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/missing-qa-red.log",
+          "sha256": "0146f4366e2a79ff6d4ed4253634f6585a8c021d39104dce191dedbec365dc0f",
+          "gitBlob": "90d373c446a97616cb75f6feefb5a32585ea95ab",
+          "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01969"
+        },
+        {
+          "path": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/additional-red.log",
+          "sha256": "da3038cee9357ddc29e90bca4fc926a4de83dd12ab5303be25d53a67bd4e3fb3",
+          "gitBlob": "d0026e60e08ffce0dd12c4fc00430df15d008051",
+          "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/raw-01521"
+        }
+      ]
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-mcp3008-retained-evidence/raw-evidence-manifest.json",
+    "sha256": "1d3e7dde7a5c2fdcd67bad632c8fd59884f7e0150086a86173801273d1b89c72",
+    "gitBlob": "30c1bded2ee1c4176ccce3fad84cba33130224f1",
+    "ref": "refs/codex/evidence/2026-10-09-mcp3008-iio/manifest",
+    "entries": 5499,
+    "uniqueBlobs": 3055
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-mcp3008-iio/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-mcp3008-iio/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-mcp3008-iio/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact integrated frozen candidate; fresh build before rendered; never commit red. Source/installed receipts do not establish broad gates."
+  },
+  "acceptance": {
+    "A16": "partial",
+    "Q03": "partial",
+    "Q08": "partial",
+    "supportRows": [],
+    "physical": false,
+    "open": [
+      "Actual native sysfs completeness, exact Linux/driver/SPI/MCP3008 target qualification",
+      "Physical electrical/reference/calibration/conversion capture and age",
+      "Broader heterogeneous sensors and full A16/Q03/Q08"
+    ]
+  }
+}
