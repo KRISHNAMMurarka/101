@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 178,
+  "revision": 179,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13049,6 +13049,32 @@
         "Admitted actual ROS/rosbridge/RMW graph, independently qualified simulator and representative robot hardware; safe local command policy and source-clock/frame calibration required for remaining scope"
       ],
       "supportRows": []
+    },
+    {
+      "id": "zigbee2mqtt-bridge-2026-10-09",
+      "revision": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-zigbee2mqtt-bridge.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0, MQTT5.16.0, owned Mosquitto2.1.2, unchanged verified seven-package SDK and separate native-format software producer",
+      "reproduction": "Reviewed frozen six and1683 source closure; source and ordinary installed public property/event callers; actual copied acceptance controls; four genuine root old cleanup regressions repaired; actual post-caller artifact mutation rejection; exact candidate gates referenced by receipt",
+      "scope": "Selected read-only WXKG01LM reported battery/actions, cached/capture-unknown provenance, exact authority and native lifecycle only; no commissioned Zigbee, Matter/Thread, authenticated remote broker, commands, hardware or full A06 acceptance",
+      "failure": null,
+      "equipment": [
+        "Commissioned selected physical Zigbee gateway and target firmware; Matter/Thread controller/fabric and independently enrolled device; source-clock/radio-loss/battery/action qualification for remaining scope"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14778,7 +14804,8 @@
     {
       "id": "A06",
       "records": [
-        "pending-A06"
+        "pending-A06",
+        "zigbee2mqtt-bridge-2026-10-09"
       ],
       "dependencies": [
         "M01",

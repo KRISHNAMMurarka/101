@@ -270,3 +270,6 @@ export type { OpcUaJsonProfile, OpcUaJsonRecord, OpcUaJsonDecoded, OpcUaJsonAppr
 
 export { createRosbridgePoseConnector, decodeRosbridgePose, ROSBRIDGE_POSE_PROFILE, ROSBRIDGE_POSE_LIMITS, ROSBRIDGE_POSE_VALUE_SCHEMA } from './rosbridge-pose-connector.ts';
 export type { RosbridgePoseSelection, RosbridgePoseRequest, RosbridgePoseGrant, DecodedRosbridgePose, RosbridgePoseReceipt, RosbridgePoseConnectorOptions, RosbridgePoseConnector } from './rosbridge-pose-connector.ts';
+
+export { createZigbee2MqttBridge, parseZigbee2MqttProfile, zigbee2MqttTopics, decodeZigbee2MqttMessage, ZIGBEE_LIMITS } from './zigbee2mqtt-bridge.ts';
+export type { Zigbee2MqttProfile, ZigbeeAction, ZigbeeDecoded, ZigbeeApprovalRequest, ZigbeeReading, Zigbee2MqttBridge } from './zigbee2mqtt-bridge.ts';

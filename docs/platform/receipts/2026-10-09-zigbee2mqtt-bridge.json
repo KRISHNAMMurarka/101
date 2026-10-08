@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/zigbee2mqtt-bridge.ts": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
+    "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "34c5f3fb6850b7656085abf465c480ac73893e114f74ec25de65855a64ed97c3",
+    "examples/zigbee2mqtt-bridge/producer.mjs": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+    "examples/zigbee2mqtt-bridge/consumer.mjs": "1b0d16c27e1b37fdefbec367c3a3a8510078812cb69ccd875d55371673eb3681",
+    "tools/qa-zigbee2mqtt-bridge.mjs": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+    "tools/qa-installed-zigbee2mqtt-bridge.mjs": "052ace4d92f2d005b8962e0b4a744fb5a816936132a34fb40d78f5b1047ed003"
+  },
+  "profile": {
+    "id": "example:zigbee2mqtt-switch",
+    "revision": 1,
+    "producerContract": {
+      "repo": "Koenkk/zigbee2mqtt",
+      "tag": "2.14.2",
+      "commit": "5c0c1c60078e1737c5dee5f8217583bca7610e66"
+    },
+    "model": "WXKG01LM",
+    "ieeeAddress": "0x0000000000000007",
+    "endpoint": "Canonical mqtt://127.0.0.1:port only",
+    "topics": [
+      "zigbee2mqtt/bridge/devices",
+      "zigbee2mqtt/bridge/state",
+      "zigbee2mqtt/0x0000000000000007",
+      "zigbee2mqtt/0x0000000000000007/availability"
+    ],
+    "direction": "Read-only selected native reported battery/actions; metadata requires independent host enrollment"
+  },
+  "bounds": {
+    "messages": 256,
+    "totalBytes": 1048576,
+    "payloadBytes": 8192,
+    "metadataBytes": 16384,
+    "sessionMs": 30000,
+    "startupMs": 5000,
+    "closeObservationMs": 2000,
+    "jsonDepth": 8,
+    "jsonNodes": 512,
+    "devices": 16,
+    "exposes": 32,
+    "propertyReceiptAgeMs": 5000,
+    "eventReceiptAgeMs": 1000
+  },
+  "semantics": {
+    "battery": "Native numeric0..100 percent; cached fields possible even in non-retained state; action-only packets never renew battery snapshot",
+    "actions": [
+      "single",
+      "double",
+      "triple",
+      "quadruple",
+      "hold",
+      "release",
+      "many"
+    ],
+    "holdAndRelease": "Bridge-inferred native events, no synthesized held state",
+    "repeatedActions": "Identical native QoS0 packets remain distinct; no payload/MQTT-DUP deduplication or inferred upstream exactly-once",
+    "mqtt": "MQTT5 clean start; no automatic reconnect/offline queue; exact four literal subscriptions QoS1 with retain-as-published; native state QoS0 and availabilityQoS1",
+    "readiness": "SUBACK plus compatible selected retained metadata and online bridge/device required; cached state discarded; every pending-SUBACK packet is charged; offline/incompatibility permanently retires instance",
+    "captureTimeKnown": false,
+    "sourceClockMapping": null,
+    "nativeEventSequenceKnown": false,
+    "receiptClock": "Immutable local zigbee-gateway-monotonic receipt",
+    "physical": false,
+    "physicalState": "unverified",
+    "signalSupport": "Selected standard-prototype Node native signals; proxy/inherited rejected; cross-realm/subclass unqualified"
+  },
+  "authority": "Immutable exact private approval binds selected profile/topics/endpoint/scope/purpose/generation/original absolute caller deadline and budgets. Native owner/caller/grant cancellation fences every acquisition and reading. Distinct property/event source registrations use separately authorized public write/push routes; the provider standing grant is independent. Every issued native leg and owned child exit/close is independently joined; cleanup failure preserves original rejection.",
+  "validation": {
+    "sourceProof": {
+      "path": "/tmp/101-zigbee2mqtt-bridge-draft/evidence/review-2/source-qa-final.json",
+      "sha256": "1f55825ff20e3096b171f3cf4015a059829b136873faa6e1e7f0920935f09c4f",
+      "gitBlob": "15f19d93a723d1b1510372e08452a62d55cc04b1",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0055"
+    },
+    "independentFinalSourceReview": {
+      "path": "/tmp/101-zigbee2mqtt-final-source-review.json",
+      "sha256": "c725abf256c84d9cde3877c618931df62495ddb47e5c68ed448c621adcd6fe7c",
+      "gitBlob": "d99834c1485d1047b0224767ab2108e5639b71f3",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0178"
+    },
+    "repair1Manifest": {
+      "path": "/tmp/101-zigbee2mqtt-bridge-draft/evidence/review-1/manifest-review-1.json",
+      "sha256": "cf87a72cef464fcc090029521d7aedcd56550c26ee294616215b86e97e2492df",
+      "gitBlob": "08e7d127965a17bb278a635cab718e6d451dff92",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0121"
+    },
+    "repair2Manifest": {
+      "path": "/tmp/101-zigbee2mqtt-bridge-draft/evidence/review-2/manifest-review-2.json",
+      "sha256": "d5191f5bb03022503f20a5312ef22112c3c72844e2c59cde2f424665c3212634",
+      "gitBlob": "31904347dce017142a37dfbb7df7a1dd260cb0e4",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0054"
+    },
+    "sourceClosureFiles": 1683,
+    "currentAllFocusedCoveredByRequiredUnitGate": true,
+    "strictNoUncheckedIndexedAccess": true,
+    "sixFileLintErrors": 0,
+    "explicitCopiedSdkFenceControls": {
+      "checks": 5,
+      "proof": {
+        "path": "/tmp/101-zigbee2mqtt-bridge-draft/evidence/review-2/controlled-copy-green.log",
+        "sha256": "160d80f4e6d31b6b5332527f3a68983ed2328ec18b690af1e645347112beb0e6",
+        "gitBlob": "3bbd0f2d578758070503636d942a33d507db54d2",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0072"
+      },
+      "scope": "Copied-only five acceptance mutations; parser child does not execute ordinary public SDK caller"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/zigbee2mqtt-bridge-RerSxZ/receipt.json",
+        "sha256": "8e3ec654ff96b303ad06d371077fe438c5507286e74f8c5cdddd9cdd432603d9",
+        "gitBlob": "2f4dc7d12f96a5281c563b233b862d618b4be76a",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0179"
+      },
+      "publicResolution": "/private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkFiles": 411,
+      "dependencyFiles": 1283,
+      "sourceHelperCompilerRuntimeClosureFiles": 1684,
+      "actualCopiedAndExecutedArtifacts": 12,
+      "artifactSha256": {
+        "packages/hub-server/src/zigbee2mqtt-bridge.ts": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
+        "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "34c5f3fb6850b7656085abf465c480ac73893e114f74ec25de65855a64ed97c3",
+        "examples/zigbee2mqtt-bridge/producer.mjs": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+        "examples/zigbee2mqtt-bridge/consumer.mjs": "1b0d16c27e1b37fdefbec367c3a3a8510078812cb69ccd875d55371673eb3681",
+        "tools/qa-zigbee2mqtt-bridge.mjs": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+        "tools/qa-installed-zigbee2mqtt-bridge.mjs": "052ace4d92f2d005b8962e0b4a744fb5a816936132a34fb40d78f5b1047ed003",
+        "providerPath": "d95eb4d8e10e39a8be8751f7e649df9ccef8acf36ab0e4159e0c50622846acf3",
+        "callerPath": "e6c957d37791d255b122542290a75a25496da02c35c41d492bf220db69b5a719",
+        "producerPath": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+        "runnerPath": "10827e864058a6c7b64c450e8c801770aa82df1c96a471dd9799183378eb489b",
+        "helperPath": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587"
+      },
+      "finalArtifactSha256": {
+        "packages/hub-server/src/zigbee2mqtt-bridge.ts": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
+        "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "34c5f3fb6850b7656085abf465c480ac73893e114f74ec25de65855a64ed97c3",
+        "examples/zigbee2mqtt-bridge/producer.mjs": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+        "examples/zigbee2mqtt-bridge/consumer.mjs": "1b0d16c27e1b37fdefbec367c3a3a8510078812cb69ccd875d55371673eb3681",
+        "tools/qa-zigbee2mqtt-bridge.mjs": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+        "tools/qa-installed-zigbee2mqtt-bridge.mjs": "052ace4d92f2d005b8962e0b4a744fb5a816936132a34fb40d78f5b1047ed003",
+        "providerPath": "d95eb4d8e10e39a8be8751f7e649df9ccef8acf36ab0e4159e0c50622846acf3",
+        "callerPath": "e6c957d37791d255b122542290a75a25496da02c35c41d492bf220db69b5a719",
+        "producerPath": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+        "runnerPath": "10827e864058a6c7b64c450e8c801770aa82df1c96a471dd9799183378eb489b",
+        "helperPath": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587"
+      },
+      "checks": {
+        "separatePropertyAndEventGrants": true,
+        "identicalEventsPreserved": true,
+        "retainedDiscarded": true,
+        "captureUnknown": true,
+        "offlineWithdrawn": true,
+        "actualProducerClose": true,
+        "retired": true
+      },
+      "finalStatus": {
+        "phase": "closed",
+        "reason": "offline",
+        "messages": 15,
+        "receivedBytes": 845,
+        "delivered": 10,
+        "nativeClients": 0,
+        "failures": []
+      },
+      "broker": {
+        "version": "mosquitto version 2.1.2",
+        "ownedPid": 43618,
+        "binaryPath": "/opt/homebrew/Cellar/mosquitto/2.1.2_1/sbin/mosquitto",
+        "binarySha256": "5badf1e2df8e854e8bae75543b27718d4213b9962dd9f503ff28ea4815b11cac",
+        "actualChildClose": true,
+        "naturalExitCode": 0
+      },
+      "runner": {
+        "naturallyExited": true,
+        "childSocketsTimersSettled": true
+      },
+      "postCallerArtifactMutation": {
+        "path": "/tmp/101-zigbee2mqtt-post-caller-mutation.json",
+        "sha256": "a7157cc308f2d21e3519d563b1225bf9c1ade9bf94c8ac46e38a37a8c3dee123",
+        "gitBlob": "f01b4eb45a3565f33279c340cc1b6342c8506c1d",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-0180"
+      },
+      "scope": "Verified installed public SDK caller with separately compiled selected gateway; no released gateway SDK export, commissioned Zigbee gateway, native capture clock, Matter/Thread, outbound commands or physical effect proof."
+    }
+  },
+  "retainedFailures": {
+    "originalOwnedChildCloseFailures": 2,
+    "originalOldRed": {
+      "path": "/tmp/101-zigbee2mqtt-root-review/old-red.log",
+      "sha256": "184439c83b8c55c188b993fe2b83f2a1e7bb984da020cc20c696e75a89dfe815",
+      "gitBlob": "8d316c985d0b84faa2b9242505a91dcb59342e80",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-3595"
+    },
+    "repair1ControlledChildClose": {
+      "path": "/tmp/101-zigbee2mqtt-root-review/controlled-old-red.json",
+      "sha256": "9797f25d7dc3a1b4a64dd3bf988ce4fba0aea5d0ee10cfcc47e7454c445eb22a",
+      "gitBlob": "3f440d7e553f92b183b34eb01a0f0c00cd496d57",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-3597"
+    },
+    "repair1InvalidAdmission": {
+      "path": "/tmp/101-zigbee2mqtt-root-review/invalid-copy-old-red-final.json",
+      "sha256": "606f023c5974738b71d4e869ad21968654537ced91ea2607bda87e5a0f11344a",
+      "gitBlob": "b1cea8e12038ef1a2e6e2d4c8d9a903f976a0ced",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-3594"
+    },
+    "rootTestCleanupDiagnosis": {
+      "path": "/tmp/101-zigbee2mqtt-root-review/invalid-copy-first-diagnosis.json",
+      "sha256": "310f3b435fe5f164751fea1577781672b213bed0a8c972357d91162afb4ec389",
+      "gitBlob": "c0425376a609f34f79d4fd32ea628c113339c807",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-3592"
+    },
+    "details": "All four root defects reproduced against actual old implementations before narrow repair; root first admission test cleanup API failure retained separately. Native QoS0 broker-dropping quota fixture attempts are retained as methodology failures; paced actual wire crossed unchanged byte quota."
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-zigbee2mqtt-evidence-manifest-raw.json",
+    "sha256": "4847a9f35ed68aaf29c1130b8690cadaa4066b61b42a0fd30daaa3ece2ae40e5",
+    "gitBlob": "8d880d71aacc655abf20d184fb1d2f1e641edfd3",
+    "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-manifest-raw",
+    "entryCount": 3610,
+    "policy": "Exact current/rejected source, genuine failures, frozen plan/primary sources, actual installed artifacts/mutation bytes, unchanged SDK/dependency/source/compiler/runtime bytes retained locally; no external publication.",
+    "rawByteCorrection": {
+      "schemaVersion": 1,
+      "issue": "Git path conversion changed retained Node executable bytes; actual source/runtime bytes and validation were unchanged.",
+      "oldEvidenceManifest": "/tmp/101-zigbee2mqtt-evidence-manifest.json",
+      "oldMismatch": {
+        "path": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+        "expectedSha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+        "retainedBlobSha256": "6922839a451114ea93d3c819e031cec7b4e8dfac128fcfd9a92b937b6b2b564b",
+        "gitBlob": "b182f42024dcc9f0a3149f4f92a6fc1ee36a1080",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/evidence-1895"
+      },
+      "correctedRawBlob": "34f87d8731d1ed58eaabbf53dd8c0d20c7c75442",
+      "correctedRawRef": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/raw-runtime-node",
+      "method": "git hash-object --no-filters; exact cat-file bytes SHA256 matched actual executable.",
+      "actualRuntimeSha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+      "scope": "Evidence retention correction before frozen candidate gates; source/installed qualification does not change. Earlier normalized evidence refs remain preserved as rejected retention."
+    }
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-zigbee2mqtt-bridge/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact frozen candidate result proves gates; fresh local build before rendered; no red commit."
+  },
+  "acceptance": {
+    "A06": "partial",
+    "supportRows": [],
+    "open": [
+      "Commissioned Zigbee gateway/target firmware, actual enrollment and radio/device loss",
+      "Selected Matter/Thread implementation and commissioned fabric acceptance",
+      "Source capture-clock mapping, actual battery/action semantics and delivery qualification",
+      "Secure remote broker authentication/identity and outbound commands",
+      "Representative physical gateway/device receipts and full A06 qualification"
+    ]
+  }
+}
