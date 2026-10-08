@@ -239,3 +239,22 @@ export { createNec32IrEmitterGateway, compileNec32IrFrame, NEC32_IR_PROFILE, NEC
 export type { Nec32IrFailure, Nec32IrResult, Nec32IrEpoch, Nec32IrScope, Nec32IrCode, SelectedNec32IrEmitter,
   Nec32IrCompiledFrame, Nec32IrProviderContext, Nec32IrEmitterProvider, Nec32IrApprovalRequest, Nec32IrGrant,
   Nec32IrOptions, Nec32IrEmission, Nec32IrGateway } from './nec32-ir-emitter-gateway.ts';
+
+export { createNec32IrReceiveGateway, decodeNominalNecInverseByteCapture, NEC32_IR_RECEIVE_PROFILE,
+  NEC32_IR_RECEIVE_LIMITS } from './nec32-ir-receive-gateway.ts';
+export type { ReceiveClassification as Nec32IrReceiveClassification, DecodeResult as Nec32IrDecodeResult,
+  ReceiveEpoch as Nec32IrReceiveEpoch, ReceiveScope as Nec32IrReceiveScope,
+  ReceiveApprovalRequest as Nec32IrReceiveApprovalRequest, ReceiveGrant as Nec32IrReceiveGrant,
+  ReceiveProviderContext as Nec32IrReceiveProviderContext, Nec32IrReceiveProvider,
+  ReceiveCandidate as Nec32IrReceiveCandidate, ReceiveFailure as Nec32IrReceiveFailure,
+  ReceiveResult as Nec32IrReceiveResult, ReceiveOptions as Nec32IrReceiveOptions,
+  ReceiveGateway as Nec32IrReceiveGateway } from './nec32-ir-receive-gateway.ts';
+
+export { createMechanicalRelayGateway, MECHANICAL_RELAY_PROFILE, MECHANICAL_RELAY_LIMITS } from './mechanical-relay-gateway.ts';
+export type { MechanicalRelayEpoch, MechanicalRelayActuatorProvider, MechanicalRelayFeedbackSample,
+  MechanicalRelayFeedbackProvider, MechanicalRelayOptions, MechanicalRelayGateway,
+  RelayState as MechanicalRelayState, RelayFailure as MechanicalRelayFailure,
+  RelayResult as MechanicalRelayResult, RelayScope as MechanicalRelayScope,
+  RelayProviderContext as MechanicalRelayProviderContext, RelayApprovalRequest as MechanicalRelayApprovalRequest,
+  RelayGrant as MechanicalRelayGrant, RelaySetCompletion as MechanicalRelaySetCompletion,
+  RelayFeedbackObservation as MechanicalRelayFeedbackObservation } from './mechanical-relay-gateway.ts';

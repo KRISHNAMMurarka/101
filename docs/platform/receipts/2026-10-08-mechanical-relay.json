@@ -1,0 +1,967 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-paired-software-relay-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+    "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+    "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+    "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+    "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+    "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272",
+    "packages/hub-server/package.json": "1d895fe4ae68e27dcc04d6642816844685f4e9ad7b0bee02b9fc70fa55c69b7b",
+    "packages/hub-server/src/index.ts": "4b3fcfc91a6c76ef1666dd390395d9148fb9ab90b9ac228a2ee450e232bf82d9"
+  },
+  "selectedProfile": {
+    "id": "app:single-relay-software-interlocked/1",
+    "states": [
+      "off",
+      "on"
+    ],
+    "physical": false,
+    "watchdogMs": 250,
+    "limits": {
+      "starts": 8,
+      "lifetimeSetAttempts": 16,
+      "lifetimeObservations": 32,
+      "rawSets": 1,
+      "rawObservations": 1,
+      "operationMs": 500,
+      "sessionMs": 60000,
+      "publicFeedbackMaxAgeMs": 250,
+      "childLineBytes": 1024,
+      "childOutputBytes": 16384
+    }
+  },
+  "authorityAndOwnership": "Separate private activation, per-set and per-observation grants remain independent from exact seven-part ordinary public command/feedback routes. Reserve attempts/replay/raw slots before authorizers. The pair of distinct exact provider objects is claimed with rollback; ownership stays held through independently tracked opening, set and observation work, release/off, Stop, first settlements, one close each and final settlements. A shared unresolved retirement promise is published before withdrawal/abort/callouts. Both overlap orders are tested; no pending leg can release either owner token early.",
+  "commandResult": "Software provider completion establishes dispatch only, effect=issued-uncertain, observedState=unknown, physical=false, physicalState=unverified. No automatic retry or stale reconnect replay.",
+  "feedback": "Separate independently scripted child, not actuator register or physical sensor. Observation states/limitSafe/sequence are software-state, physical=false/unverified, captureTimeKnown=false, sourceClockMapping=null. Receipt metadata retains source clock/time, generation, gateway receipt sequence and monotonic clock domain. Public publication uses immutable gateway receivedAt, valid quality and provenance; reads after250ms fail without refreshing the timestamp. Matching scripted state is a relation only, not causal actuation evidence.",
+  "localPolicy": "Actual child opens with interlock-open, rejects on SET before register change, and separately exercises local interlock-trip release. A single250ms timer constant is advertised and used by the child watchdog. Observed timings use explicit -20/+500ms scheduler tolerance; no hard real-time or hardware watchdog claim. Stop/release/close use owned child generation plus random128-bit token and finish with zero waiters/timers/running children.",
+  "validation": {
+    "focusedCases": 12,
+    "sourceCaller": {
+      "schemaVersion": 1,
+      "status": "pass",
+      "environment": {
+        "node": "v24.14.0",
+        "platform": "darwin"
+      },
+      "sourceSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272"
+      },
+      "result": {
+        "status": "pass",
+        "kind": "separate-process-loopback-mechanical-relay-pair",
+        "checks": {
+          "deniedControlStartsNoChild": true,
+          "approvedPublicRoutePrivateSetDenied": true,
+          "privateSetUsesActuatorChild": true,
+          "commandCompletionDoesNotClaimObservation": true,
+          "independentFeedbackAuthority": true,
+          "exactPublicCommandAndFeedbackRoutes": true,
+          "feedbackSourceSoftwareState": true,
+          "physicalFalseAndUnverified": true,
+          "captureTimeUnknown": true,
+          "freshnessGatewayReceipt": true,
+          "publicFeedbackExpiresFromImmutable250msReceipt": true,
+          "publicFeedbackCarriesClockQualityAndProvenance": true,
+          "synchronousWithdrawalOnStop": true,
+          "bothChildrenSettled": true,
+          "childLocalInterlockDeniesOnWithoutRegisterChange": true,
+          "childLocalInterlockTripReleasesWithoutFeedbackClaim": true,
+          "childLocalWatchdogUses250msWithSchedulerTolerance": true,
+          "childLineAndOutputBoundsEnforced": true
+        },
+        "limitations": {
+          "hardware": "unverified",
+          "physicalWatchdog": "unverified",
+          "physicalSensor": "unverified",
+          "matchingFeedbackMeaning": "independently-scripted-software-state-only",
+          "sourceClockMapping": null,
+          "schedulerQualification": "software watchdog observed with 250ms -20/+500 scheduler tolerance; no hard real-time guarantee"
+        },
+        "feedbackProvenance": {
+          "feedbackGeneration": 2,
+          "gatewayReceiptSequence": 1,
+          "receiptClockDomain": "mechanical-relay-gateway-monotonic",
+          "receiptAt": 379.614458,
+          "providerKind": "software-fixture",
+          "sourceClockId": "software-feedback-f692d49b0f0b51d3",
+          "sourceMonotonicNs": "2600477603854166",
+          "sourceClockMapping": null,
+          "independentlyScripted": true,
+          "physical": false,
+          "physicalState": "unverified",
+          "captureTimeKnown": false,
+          "freshnessBasis": "gateway-receipt"
+        },
+        "actuatorCommands": [
+          "open",
+          "set",
+          "release",
+          "stop",
+          "close"
+        ],
+        "feedbackCommands": [
+          "open",
+          "read",
+          "stop",
+          "close"
+        ],
+        "actuatorLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "feedbackLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "childBounds": {
+          "actuator": {
+            "receivedBytes": 656,
+            "sentBytes": 405,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          },
+          "feedback": {
+            "receivedBytes": 595,
+            "sentBytes": 327,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          }
+        },
+        "watchdogElapsedMs": 249.96287500000005
+      },
+      "scope": "Selected paired software relay fixtures only. Command completion and independently scripted software feedback do not verify physical actuation, carrier, watchdog hardware, sensor hardware, or target state."
+    },
+    "installedCaller": {
+      "schemaVersion": 1,
+      "status": "pass",
+      "sourceSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272"
+      },
+      "copiedSourceSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272"
+      },
+      "artifactPaths": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-0.bin",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-1.bin",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-2.bin",
+        "examples/mechanical-relay/consumer.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-3.bin",
+        "tools/qa-mechanical-relay.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-4.bin",
+        "tools/qa-installed-mechanical-relay.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/source-5.bin",
+        "gatewayPath": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/gateway.mjs",
+        "callerPath": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/consumer.mjs",
+        "fixturePath": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/software-relay-fixtures.mjs",
+        "resolverPath": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/resolve.mjs"
+      },
+      "artifactSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272",
+        "gatewayPath": "67802ee62305ded73d8e835e14c7cd5226ef4cd0d35b2752f967b45d31a9ab41",
+        "callerPath": "e223f19eb60f3f34f0ad1d6be046dc634432a47a69aa532b0e148a73c1194e1a",
+        "fixturePath": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "finalArtifactSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "a9229f3bbca6a5e1d4a93777746f043cd077293ed98a152436f67786ef2b2272",
+        "gatewayPath": "67802ee62305ded73d8e835e14c7cd5226ef4cd0d35b2752f967b45d31a9ab41",
+        "callerPath": "e223f19eb60f3f34f0ad1d6be046dc634432a47a69aa532b0e148a73c1194e1a",
+        "fixturePath": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "installedPublicEntry": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "finalSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "result": {
+        "status": "pass",
+        "kind": "separate-process-loopback-mechanical-relay-pair",
+        "checks": {
+          "deniedControlStartsNoChild": true,
+          "approvedPublicRoutePrivateSetDenied": true,
+          "privateSetUsesActuatorChild": true,
+          "commandCompletionDoesNotClaimObservation": true,
+          "independentFeedbackAuthority": true,
+          "exactPublicCommandAndFeedbackRoutes": true,
+          "feedbackSourceSoftwareState": true,
+          "physicalFalseAndUnverified": true,
+          "captureTimeUnknown": true,
+          "freshnessGatewayReceipt": true,
+          "publicFeedbackExpiresFromImmutable250msReceipt": true,
+          "publicFeedbackCarriesClockQualityAndProvenance": true,
+          "synchronousWithdrawalOnStop": true,
+          "bothChildrenSettled": true,
+          "childLocalInterlockDeniesOnWithoutRegisterChange": true,
+          "childLocalInterlockTripReleasesWithoutFeedbackClaim": true,
+          "childLocalWatchdogUses250msWithSchedulerTolerance": true,
+          "childLineAndOutputBoundsEnforced": true
+        },
+        "limitations": {
+          "hardware": "unverified",
+          "physicalWatchdog": "unverified",
+          "physicalSensor": "unverified",
+          "matchingFeedbackMeaning": "independently-scripted-software-state-only",
+          "sourceClockMapping": null,
+          "schedulerQualification": "software watchdog observed with 250ms -20/+500 scheduler tolerance; no hard real-time guarantee"
+        },
+        "feedbackProvenance": {
+          "feedbackGeneration": 2,
+          "gatewayReceiptSequence": 1,
+          "receiptClockDomain": "mechanical-relay-gateway-monotonic",
+          "receiptAt": 376.195708,
+          "providerKind": "software-fixture",
+          "sourceClockId": "software-feedback-16626ca632e76e9f",
+          "sourceMonotonicNs": "2600477603854166",
+          "sourceClockMapping": null,
+          "independentlyScripted": true,
+          "physical": false,
+          "physicalState": "unverified",
+          "captureTimeKnown": false,
+          "freshnessBasis": "gateway-receipt"
+        },
+        "actuatorCommands": [
+          "open",
+          "set",
+          "release",
+          "stop",
+          "close"
+        ],
+        "feedbackCommands": [
+          "open",
+          "read",
+          "stop",
+          "close"
+        ],
+        "actuatorLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "feedbackLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "childBounds": {
+          "actuator": {
+            "receivedBytes": 656,
+            "sentBytes": 391,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          },
+          "feedback": {
+            "receivedBytes": 595,
+            "sentBytes": 319,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          }
+        },
+        "watchdogElapsedMs": 252.16558300000008
+      }
+    },
+    "independentReview": {
+      "schemaVersion": 1,
+      "review": "A09 mechanical relay repaired frozen delta independent review",
+      "reviewedAt": "2026-10-08T16:43:57.032672+00:00",
+      "status": "clear",
+      "findings": [],
+      "scope": "Read-only delta review against evidence/rejected-independent-review-six. No repository or scratch source was modified; no installed SDK, external service, or hardware action was performed.",
+      "priorBlockedReview": {
+        "path": "/tmp/101-mechanical-relay-independent-review.json",
+        "sha256": "36437bc0b62fc5bafa6ef76ee5c49135556faf2808fd33ecb25d9e4a79f73c01",
+        "status": "blocked",
+        "preserved": true
+      },
+      "manifest": {
+        "path": "/tmp/101-mechanical-relay-draft/evidence/final-sha256.json",
+        "sha256": "4ea3d38ee78cd0509ecab01557f9155f55c7ed0cda51b8fef0bd30c218ebc08b",
+        "schemaVersion": 2,
+        "status": "repaired-frozen",
+        "allRecordedSixAndEvidenceHashesMatch": true
+      },
+      "sourceSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "7292aa8307f3e4592402794f3ca654ced4f862c0e8df98c74123d876f6b78763",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "87cdd44f20e5d4dfdc7461800af6ed6321a530fdafc5ad59b8351714eea9d232",
+        "examples/mechanical-relay/consumer.mjs": "e9cf105d335434e78351339213c6b78c61bad43b4d02f5080a9a5e7b223a104f",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "8d164e485ac13a98b25a528394e4523e4613ffe95b8bfaf279a89003ea46010d"
+      },
+      "rejectedSourceSha256": {
+        "packages/hub-server/src/mechanical-relay-gateway.ts": "7f0687e00606d709324c943b9f7f09a3f4e4926ed0ef5b8e3696fb7e6f8b2575",
+        "packages/hub-server/src/mechanical-relay-gateway.test.ts": "528d2c86d7a3810cea542312abdaa351c4d55e049ad59f7df2f37c34013c9047",
+        "examples/mechanical-relay/software-relay-fixtures.mjs": "6cdae7691e04ac12b4ed4464f6783656f7f7d4ca4b649cb545d456034d3f9f25",
+        "examples/mechanical-relay/consumer.mjs": "d116fb25f854b5e7053aab5fa17d6535d2f46cef02b2fa9120c355d8ef3cbf00",
+        "tools/qa-mechanical-relay.mjs": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+        "tools/qa-installed-mechanical-relay.mjs": "bdcc300054b9addfa454920e8b117d0b0e9d00bfa49df9a7dff0192a53522a8f"
+      },
+      "repairAssessment": [
+        {
+          "finding": "A09-REVIEW-01 concurrent operation ownership",
+          "result": "clear",
+          "evidence": "ActiveSession now tracks openOperation, setOperation, and feedbackOperation separately; retirement snapshots and joins all three plus release and both provider settlements before close/token release. Independent held-set/completed-observe Stop and held-observe/completed-set close cases both kept the exact pair busy, reached zero raw slots after release, and allowed acquisition only afterward.",
+          "paths": [
+            "packages/hub-server/src/mechanical-relay-gateway.ts:174",
+            "packages/hub-server/src/mechanical-relay-gateway.ts:310",
+            "packages/hub-server/src/mechanical-relay-gateway.test.ts:250"
+          ]
+        },
+        {
+          "finding": "A09-REVIEW-02 public feedback freshness and provenance",
+          "result": "clear",
+          "evidence": "The public source/sink and exact feedback route grant use 250 ms. The runtime clock is explicitly the gateway monotonic domain, publish uses immutable gateway receivedAt with valid quality, and delivered provenance binds feedback generation, gateway receipt sequence, source clock/time, null mapping, software-fixture kind, and unverified physical/capture fields. The actual source caller rejects a one-shot read after receivedAt+250 ms.",
+          "paths": [
+            "examples/mechanical-relay/consumer.mjs:250",
+            "examples/mechanical-relay/consumer.mjs:282",
+            "examples/mechanical-relay/consumer.mjs:363",
+            "packages/hub-server/src/mechanical-relay-gateway.ts:537"
+          ]
+        },
+        {
+          "finding": "A09-REVIEW-03 exact watchdog timing",
+          "result": "clear",
+          "evidence": "One WATCHDOG_MS=250 constant drives both HELLO metadata and the timer. Independent execution observed 251.56 ms after SET completion; source QA observed 251.30 ms and records a 250 ms -20/+500 software-scheduler tolerance with no hard real-time or hardware-watchdog claim.",
+          "paths": [
+            "examples/mechanical-relay/software-relay-fixtures.mjs:8",
+            "examples/mechanical-relay/software-relay-fixtures.mjs:83",
+            "examples/mechanical-relay/consumer.mjs:479"
+          ]
+        },
+        {
+          "finding": "A09-REVIEW-04 interlock producer fidelity",
+          "result": "clear",
+          "evidence": "interlock-open now reaches ready and rejects only on SET with the retained off register; the adapter maps the distinct result to interlock-open. interlock-trip accepts on, emits a child-local release, and remains separate from feedback/physical evidence. Both owned children settle and exit.",
+          "paths": [
+            "examples/mechanical-relay/software-relay-fixtures.mjs:71",
+            "examples/mechanical-relay/software-relay-fixtures.mjs:85",
+            "examples/mechanical-relay/consumer.mjs:445"
+          ]
+        },
+        {
+          "finding": "A09-REVIEW-05 exact bounds and installed artifact closure",
+          "result": "clear",
+          "evidence": "Both directions enforce 1024 bytes per line and 16384 cumulative bytes. The installed helper retains fixed paths/hashes for all six copied sources and the transpiled gateway, rewritten caller, fixture, and resolver; after caller cleanup it rehashes every artifact and requires exact equality, then performs the existing repository-source and full installed-SDK manifest/package rechecks.",
+          "paths": [
+            "examples/mechanical-relay/software-relay-fixtures.mjs:9",
+            "examples/mechanical-relay/consumer.mjs:6",
+            "tools/qa-installed-mechanical-relay.mjs:31",
+            "tools/qa-installed-mechanical-relay.mjs:73"
+          ]
+        }
+      ],
+      "independentReproductions": {
+        "overlapBothOrders": {
+          "script": "/tmp/101-mechanical-relay-overlap-both-orders-current.mjs",
+          "scriptSha256": "7262ede1430960a1804db2b16df01defc5f6273fa08a2aa77b67f15782e8c742",
+          "log": "/tmp/101-mechanical-relay-overlap-both-orders-current.log",
+          "logSha256": "c292d14910de98fa2b1794e2f6407e0279c4040668ebb53e9906e974ef5810b3",
+          "result": {
+            "setThenObserve": "pass",
+            "observeThenSet": "pass"
+          }
+        },
+        "watchdog": {
+          "script": "/tmp/101-mechanical-relay-watchdog-repro.mjs",
+          "scriptSha256": "378c20ee5223405a794af6e2121c3e4ac4c477d4a2a64553f01f36dcd9948217",
+          "log": "/tmp/101-mechanical-relay-watchdog-current.log",
+          "logSha256": "b3674cc856884573497c8d989329d755a1ca749ce18078df288729cdb27360b5",
+          "observedMs": 251.561583,
+          "advertisedMs": 250
+        },
+        "focused": {
+          "log": "/tmp/101-mechanical-relay-independent-focused-current.log",
+          "logSha256": "1fa71dcf67b72d70f50edd68f803dc5e81ff96f9c03292c1e5861d278a2d7fd8",
+          "tests": 12,
+          "pass": 12,
+          "fail": 0,
+          "skipped": 0
+        },
+        "sourceQa": {
+          "log": "/tmp/101-mechanical-relay-independent-source-current.log",
+          "logSha256": "540a72de2660e7686d8e63469beda94da9a86c26c05eaa048de351411c6610c8",
+          "status": "pass",
+          "watchdogElapsedMs": 251.303417,
+          "publicStaleAfter250": true,
+          "publicProvenanceDelivered": true,
+          "interlockOpenAndTrip": true,
+          "zeroOwnedChildWork": true
+        }
+      },
+      "workerEvidence": {
+        "focusedTests": {
+          "sha256": "0166c8db370c913b1ed96008674c2d2e49f7370f88cd13ce8d23d11dc8c9b873",
+          "result": "12 passed, 0 failed"
+        },
+        "strictTypesNoUncheckedIndexedAccess": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "result": "pass"
+        },
+        "scopedLint": {
+          "sha256": "adacbf1103895872fbc72b14cc36b1435264945ef52f97ce33658ca717f17fb4",
+          "result": "6 files, 0 errors, 0 warnings"
+        },
+        "sourceQa": {
+          "sha256": "c53dc23a877d56c4671ef9435a98d80a25a2f13098910aa01c5f5add5c5228a4",
+          "result": "pass"
+        },
+        "watchdog": {
+          "sha256": "1ae872a296b1ca09d749c57bc1dbe9b2ba9655d8c36db6042893d618e8dc7825",
+          "result": "252.76 ms observed from completion"
+        }
+      },
+      "unchangedClearProperties": [
+        "Private activation/set/feedback authority remains closed, exact, separately granted, and fenced by current owner/control/caller signals and earliest deadlines.",
+        "Public command and feedback routes remain independently authorized by exact seven-part keys.",
+        "Replay and lifetime quotas remain reserved before authorizer/provider callouts; provider-pair ownership uses exact distinct object identity with rollback before open.",
+        "Shared retirement is installed before synchronous withdrawal and reentrant lifecycle callbacks; each still-owned provider is released/stopped/closed once and only after joined settlement.",
+        "Command completion, independently scripted feedback, interlock, and watchdog evidence remain software-only and do not claim physical actuation, causation, sensor state, or hard real-time behavior."
+      ],
+      "qualification": {
+        "sourceDraft": "clear at the six hashes in this report",
+        "installedQa": "pending parent integration and not claimed",
+        "hardware": "unverified and outside this review",
+        "A09": "remains partial until selected physical actuator and independent feedback hardware are separately qualified"
+      },
+      "verdict": "Clear for parent-owned integration and installed qualification. No remaining actionable finding in the repaired bounded delta. Any source change requires affected-slice re-review."
+    },
+    "nativeConsumerTypes": "Current integrated strict native consumer typecheck passed.",
+    "sdkManifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+      "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+    },
+    "sdkRebuild": "Unchanged seven-package installed SDK reused. All copied/executed provider/caller/fixture artifacts, repository sources and SDK closure are rehashed after actual owned-child cleanup."
+  },
+  "retainedFailures": [
+    "Actual absent-module failed regression and exact initial tests retained.",
+    "Initial independent review reproduced ownership release with a held set overwritten by an observation, excess public sample age/missing delivered provenance, advertised/watchdog timing mismatch, activation-level rather than SET-level interlock behavior, broader-than-planned child bounds and incomplete copied/executed closure proof.",
+    "Exact rejected six plus old manifest, literal blocked review, repro scripts/logs and meaningful current regressions are preserved. Repaired final independent review is clear; original failed evidence is not replaced by green summaries."
+  ],
+  "primarySources": [
+    "https://www.kernel.org/doc/html/latest/userspace-api/gpio/chardev.html",
+    "https://docs.kernel.org/6.18/userspace-api/gpio/gpio-v2-line-set-values-ioctl.html",
+    "https://docs.kernel.org/6.12/userspace-api/gpio/gpio-v2-get-line-ioctl.html",
+    "https://docs.kernel.org/userspace-api/gpio/gpio-v2-line-event-read.html",
+    "https://libgpiod.readthedocs.io/en/v2.3/python_line_request.html",
+    "https://libgpiod.readthedocs.io/en/master/core_line_settings.html",
+    "https://cdn.kernel.org/doc/html/latest/admin-guide/gpio/gpio-sim.html"
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/final-sha256.json",
+      "sha256": "4ea3d38ee78cd0509ecab01557f9155f55c7ed0cda51b8fef0bd30c218ebc08b",
+      "gitBlob": "8ab7326feab6615a0baf7bde799dae9372ec4f46",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-000"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/focused-tests-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-001"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/focused-tests-final.log",
+      "sha256": "9ba33f3568f0209fda533468f1b36546ce989c1141851f6c534d71ad540b286c",
+      "gitBlob": "8b34c475eb1189cec4ecdb7ee16d702349086c4c",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-002"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/focused-tests-repaired-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-003"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/focused-tests-repaired-final.log",
+      "sha256": "0166c8db370c913b1ed96008674c2d2e49f7370f88cd13ce8d23d11dc8c9b873",
+      "gitBlob": "7b2887876733b6726b3ed238af71c86b1d223772",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-004"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/initial-test/mechanical-relay-gateway.test.ts",
+      "sha256": "9b9cb5e5ceddee1e2edcd1aab4f7558c99c0e96f0d1c4cf566ce56e733df6736",
+      "gitBlob": "b3de78087d93dd0d0d1ef8cbf2915b450d0c4257",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-005"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/red-absent-import.log",
+      "sha256": "88fd4d3088a62e7e08cfb309c630b6094cd57e2ddc75351d0c3b7f40ef2dc9b3",
+      "gitBlob": "63f136cf317e092255dc3c0130918745d7d129db",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-006"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/register-connect.mjs",
+      "sha256": "cae91c134e2a76de9daee8dcb5d618a00513761fe427c1eaf80cf6bb81746724",
+      "gitBlob": "9c600694b6461878ddd12753ee0661cd0da3f5d5",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-007"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/evidence/final-sha256.json",
+      "sha256": "aa21d387a15caff662702c3cfadabb21db2f1a4ea423b9dbb0c7648b96fcc36c",
+      "gitBlob": "cc8bda873c1bc560926e70e283b99b761b2f3e06",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-008"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/examples/mechanical-relay/consumer.mjs",
+      "sha256": "d116fb25f854b5e7053aab5fa17d6535d2f46cef02b2fa9120c355d8ef3cbf00",
+      "gitBlob": "6e9f67d5fac24e5083e364a4057f308932b882fa",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-009"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/examples/mechanical-relay/software-relay-fixtures.mjs",
+      "sha256": "6cdae7691e04ac12b4ed4464f6783656f7f7d4ca4b649cb545d456034d3f9f25",
+      "gitBlob": "484851f9cdfd252436caa3ae5dbf87c2f176f723",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-010"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/packages/hub-server/src/mechanical-relay-gateway.test.ts",
+      "sha256": "528d2c86d7a3810cea542312abdaa351c4d55e049ad59f7df2f37c34013c9047",
+      "gitBlob": "8a045d93e44b390830b1efdf4404a18ae169f161",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-011"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/packages/hub-server/src/mechanical-relay-gateway.ts",
+      "sha256": "7f0687e00606d709324c943b9f7f09a3f4e4926ed0ef5b8e3696fb7e6f8b2575",
+      "gitBlob": "b57c34a0f2960874d3ce2f689bab34a01b485e45",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-012"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/tools/qa-installed-mechanical-relay.mjs",
+      "sha256": "bdcc300054b9addfa454920e8b117d0b0e9d00bfa49df9a7dff0192a53522a8f",
+      "gitBlob": "3233248e662dcd74cd13806f5f11ae20ec97dd10",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-013"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/rejected-independent-review-six/tools/qa-mechanical-relay.mjs",
+      "sha256": "4a00beb0662a70de5cb51c183913121e1307c270fca6521a1d4c75fce4735589",
+      "gitBlob": "9f96b64769a47bfbc7b6dfac52481e3e209f5f27",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-014"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/cross-operation-unit.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-015"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/cross-operation-unit.log",
+      "sha256": "684bb2fddcb38071c3347fc0ef2e8742a7ee90cb0f4b1234c5c757c8bb69f263",
+      "gitBlob": "deb926f431ab8d557bcf684a448b3a19b89db4e2",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-016"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/cross-operation.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-017"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/cross-operation.log",
+      "sha256": "5099c10062dc75b4064482828f94106a683241e1e1114b24afd884f0ff4b8b65",
+      "gitBlob": "e0d659c9e7d454cb771db60e2cea1fde8d3cba6b",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-018"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/gateway-provenance-unit.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-019"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/gateway-provenance-unit.log",
+      "sha256": "accf6a2b45eb3db0d87a29f9460a21bf6d656089724ef922263a3428e7a339e7",
+      "gitBlob": "14e381896a45b375c2f91dac451351a4d5b20c0c",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-020"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/public-freshness.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-021"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/public-freshness.log",
+      "sha256": "7ae416751bea4987c54a599511c597ed3841dd0b4bd3596fc0420223913ac376",
+      "gitBlob": "e798eb19a25664649ad9582d8478964985023be2",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-022"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/watchdog.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-023"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/review-red/watchdog.log",
+      "sha256": "0cd82036a07e2093320b2496d859762c43eb3e906d33b5dcbfa87fe9ea0c0576",
+      "gitBlob": "dbb568e7ede9b21b4a62ecd7a406e26600d2d572",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-024"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-025"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint-final.log",
+      "sha256": "adacbf1103895872fbc72b14cc36b1435264945ef52f97ce33658ca717f17fb4",
+      "gitBlob": "c34158d333044318187eb46f82c5c11a628ed04a",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-026"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint-repaired-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-027"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint-repaired-final.log",
+      "sha256": "adacbf1103895872fbc72b14cc36b1435264945ef52f97ce33658ca717f17fb4",
+      "gitBlob": "c34158d333044318187eb46f82c5c11a628ed04a",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-028"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-029"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/scoped-lint.log",
+      "sha256": "adacbf1103895872fbc72b14cc36b1435264945ef52f97ce33658ca717f17fb4",
+      "gitBlob": "c34158d333044318187eb46f82c5c11a628ed04a",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-030"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/source-qa-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-031"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/source-qa-final.log",
+      "sha256": "fff226b2848d40221a726087a30ba2d74e831abaee5faa2460ca6effd40740ba",
+      "gitBlob": "81c14a6b53e0e218462d2e8cf40e54ffb8bf9774",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-032"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/source-qa-repaired-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-033"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/source-qa-repaired-final.log",
+      "sha256": "c53dc23a877d56c4671ef9435a98d80a25a2f13098910aa01c5f5add5c5228a4",
+      "gitBlob": "b80a6f2c110bc7e14f6b0661fcadbf4d3f44867f",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-034"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/targeted-types-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-035"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/targeted-types-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-036"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/targeted-types-no-unchecked-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-037"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/targeted-types-no-unchecked-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-038"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/watchdog-repaired-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-039"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-draft/evidence/watchdog-repaired-final.log",
+      "sha256": "1ae872a296b1ca09d749c57bc1dbe9b2ba9655d8c36db6042893d618e8dc7825",
+      "gitBlob": "073048caad215fd15528a94b3aa47a39d3a63d61",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-040"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-cross-operation-current.log",
+      "sha256": "a0c7e78e22a447e2f94e3b896d2532648321c86fb06494fd51a10be685c5dbb3",
+      "gitBlob": "646e23709faec99d91cd057e9d7951d5e7f381ab",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-041"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-cross-operation-repro.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-042"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-cross-operation-repro.log",
+      "sha256": "5099c10062dc75b4064482828f94106a683241e1e1114b24afd884f0ff4b8b65",
+      "gitBlob": "e0d659c9e7d454cb771db60e2cea1fde8d3cba6b",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-043"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-cross-operation-repro.mjs",
+      "sha256": "9f5a123a7152bf52dc559c2eace4d6f6c8ff824b2e094b7c88aecfa77168bf5b",
+      "gitBlob": "c6009cb7d9b072b6997411e4454ecf49c1ba0899",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-044"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-focused-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-045"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-focused-current.log",
+      "sha256": "1fa71dcf67b72d70f50edd68f803dc5e81ff96f9c03292c1e5861d278a2d7fd8",
+      "gitBlob": "66644ae2cc8b0169db6873797fdf749e5e9d2a04",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-046"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-review-final.json",
+      "sha256": "a0b1b8dea35ad68326c7257f13cc3cf90c51c69ef0b04d6c58706e64e55b8bd5",
+      "gitBlob": "fd8d7dbeeb2fe38ac3da9bbd3ee84d69a124bba8",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-047"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-review.json",
+      "sha256": "36437bc0b62fc5bafa6ef76ee5c49135556faf2808fd33ecb25d9e4a79f73c01",
+      "gitBlob": "6b26f5bebce858e9a1654a1c381b32f112d99224",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-048"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-source-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-049"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-independent-source-current.log",
+      "sha256": "540a72de2660e7686d8e63469beda94da9a86c26c05eaa048de351411c6610c8",
+      "gitBlob": "99a725ee22c998c64a2b2cb40703bb3da8340182",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-050"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-installed-pre-receipt-helper.mjs",
+      "sha256": "8d164e485ac13a98b25a528394e4523e4613ffe95b8bfaf279a89003ea46010d",
+      "gitBlob": "b784a780c1e5bfe2e78ae4e0d6e8c0b04871c8d8",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-051"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-focused.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-052"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-focused.log",
+      "sha256": "de89218d86be76c83a216154bbfeeea833c34959565a4c1696aa0fd88c111b4c",
+      "gitBlob": "fdef3e22829b88d814c68cfeb9b1367fffc75f81",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-053"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-installed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-054"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-installed.log",
+      "sha256": "ef9f01358cc9946f969e04b24ea44c9b9800f056935abb65079a0eaaeb8da9f0",
+      "gitBlob": "7f2459224087ae991529ff895bf555e8fd72dc83",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-055"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-source-receipt.json",
+      "sha256": "c4cea365f592fdb00851bd7a6c5f7c481093ec835eaf793f6befe9346983bd79",
+      "gitBlob": "fbbea7e026cfc619745ae20cfbca19edf4fa9d1a",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-056"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-source.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-057"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-integrated-source.log",
+      "sha256": "a343d969a811d8167201867738e894634af8ebc2a6441f86fee89902961dc32e",
+      "gitBlob": "9dc17c5cbc61e179bc22a03a1cdd9832524ebeeb",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-058"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-next-plan.json",
+      "sha256": "55bf7be8db8a1300f01ca1ad1d9ecdffc22979c7f29f713c8f44e1321b705a5d",
+      "gitBlob": "715fd5a11b3020388c2366974a8c24e8db7d9d95",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-059"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-overlap-both-orders-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-060"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-overlap-both-orders-current.log",
+      "sha256": "c292d14910de98fa2b1794e2f6407e0279c4040668ebb53e9906e974ef5810b3",
+      "gitBlob": "fa731b54816578bc24f694b3073a419c8408f349",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-061"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-overlap-both-orders-current.mjs",
+      "sha256": "7262ede1430960a1804db2b16df01defc5f6273fa08a2aa77b67f15782e8c742",
+      "gitBlob": "32c20942ffb8f645432d60b30bf3418f9af21832",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-062"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-public-freshness-repro.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-063"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-public-freshness-repro.log",
+      "sha256": "94d349efeaaf817138c80b9f35cb87be819afc208f40682e1dca9ad2384a87c2",
+      "gitBlob": "70beb1764bad6784614fbe24caf0008ff1e7603a",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-064"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-public-freshness-repro.mjs",
+      "sha256": "1748ee0f0f199bdba34b2d8b5f2824e46dd8a5f0675e8d94047d291290fefc81",
+      "gitBlob": "aac6fe25049b10aea4a560934b2c77a0c64e0239",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-065"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-installed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-066"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-installed.log",
+      "sha256": "576f23322bbd91a08e7ad2774bfd4f3b3b62b4470c8f63379d43ddb6f012103f",
+      "gitBlob": "7259e388ba436f53ea88edef7f256819d53bc671",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-067"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-068"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-069"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-source-receipt.json",
+      "sha256": "b7eb3121f2bb6014d413dd7f474a7abc84012541773fd5adc064920559615d49",
+      "gitBlob": "ad9d2cceb7171f50962492d57d650f591a11c20b",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-070"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-source.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-071"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-receipt-final-source.log",
+      "sha256": "8822465b19decb30f9e9b5d78ca6e23ed29a615de8c5256c24b85298364471f1",
+      "gitBlob": "5bd1a62ab5fe90691a3e767fe895b0b9c407d394",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-072"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-watchdog-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-073"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-watchdog-current.log",
+      "sha256": "b3674cc856884573497c8d989329d755a1ca749ce18078df288729cdb27360b5",
+      "gitBlob": "60b639102eeb67304b8589a36df87c610e1177b4",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-074"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-watchdog-repro.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-075"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-watchdog-repro.log",
+      "sha256": "897afc262ad980783a0b1f5f430fad6f31a99d0ba3cb06026b938238405a4374",
+      "gitBlob": "5aa9816dce0c77ed397895b1bf55aac4e93d1a44",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-076"
+    },
+    {
+      "path": "/private/tmp/101-mechanical-relay-watchdog-repro.mjs",
+      "sha256": "378c20ee5223405a794af6e2121c3e4ac4c477d4a2a64553f01f36dcd9948217",
+      "gitBlob": "020f07071a326147121b6b0d6dc995391b2822e4",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-077"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/mechanical-relay-connector-tF10vY/receipt.json",
+      "sha256": "75c5a687b7829e1fbe7734d191dcc69cf4c5025fea7560ab92ae71aec290fd07",
+      "gitBlob": "1475325b5c22485213b282a84c77d668a5460137",
+      "ref": "refs/codex/evidence/2026-10-08-mechanical-relay/evidence-078"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-receive-relay-camera/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-receive-relay-camera/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact candidate result proves broad gates; never commit a red gate."
+  },
+  "acceptance": "A09 stays partial. Paired software dispatch, independently scripted feedback, local fixture interlock/watchdog and ownership settlement only. Physical actuator/contact/limit sensor, local electrical/mechanical release and hardwired interlock/watchdog, power loss, enclosure/isolation and low-energy representative hardware acceptance remain open. No checkbox/support-row promotion."
+}

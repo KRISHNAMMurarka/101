@@ -84,6 +84,10 @@ async function appScanner() {
   return {
     state, open: () => evaluate('openScanner()') as Promise<void>,
     grant: () => resolve({ granted: true }), deny: () => resolve({ granted: false }), reject: () => reject(Error('private native error')),
+    permissionCompletion() {
+      const accept = resolve, decline = reject;
+      return { grant: () => accept({ granted: true }), deny: () => accept({ granted: false }), reject: () => decline(Error('retired native error')) };
+    },
     freshPermission() { permission = new Promise((yes, no) => { resolve = yes; reject = no; }); },
     background() { context.AppState.currentState = 'background'; background('background'); },
     foreground() { context.AppState.currentState = 'active'; background('active'); },
@@ -104,9 +108,10 @@ for (const reason of ['background', 'unmount', 'navigate'] as const) {
 test('actual App catches current camera rejection and suppresses a retired rejection', async () => {
   for (const retired of [false, true]) {
     const app = await appScanner(), opening = app.open();
+    const currentGuidance = app.state.error;
     if (retired) app.background();
     app.reject(); await assert.doesNotReject(opening);
-    if (retired) assert.equal(app.state.error, undefined);
+    if (retired) assert.equal(app.state.error, currentGuidance);
     else assert.match(String(app.state.error), /camera|scan|paste/i);
   }
 });
@@ -153,4 +158,38 @@ test('scanner lifetime rejects superseded permissions and background or unmounte
   assert.equal(scanner.open(next, true), true);
   scanner.unmount(); scanner.mount(true);
   assert.equal(scanner.canScan(next, true), false);
+});
+
+
+test('actual App explains a first refused camera prompt after foreground retirement', async () => {
+  const app = await appScanner();
+  app.state.error = 'That connection link could not be read. Scan or paste a new one.';
+  const opening = app.open();
+  app.background(); app.foreground(); app.deny(); await opening;
+  assert.equal(app.state.scannerOpen, false, 'Retired permission must not mount a camera');
+  assert.equal(app.state.clears, 0, 'Retired permission must not clear pairing intake');
+  assert.match(String(app.state.error), /camera.*pairing code.*paste/i,
+    'The first refused prompt must explain camera use and manual recovery without requiring another Scan');
+});
+
+
+test('retired refusal cannot replace manual-entry guidance or open a replacement camera', async () => {
+  const app = await appScanner(), firstCompletion = app.permissionCompletion();
+  const first = app.open();
+  app.background(); app.foreground(); app.freshPermission();
+  const second = app.open(); app.navigate();
+  assert.equal(app.state.error, undefined, 'Manual entry owns its current feedback');
+  firstCompletion.deny(); await first;
+  assert.equal(app.state.error, undefined, 'Retired denial must not restore camera guidance');
+  app.grant(); await second;
+  assert.equal(app.state.scannerOpen, false);
+  assert.equal(app.state.clears, 0);
+});
+
+test('inactive Scan does not replace the current pairing feedback', async () => {
+  const app = await appScanner(); app.background();
+  app.state.error = 'Current pairing feedback';
+  await app.open();
+  assert.equal(app.state.error, 'Current pairing feedback');
+  assert.equal(app.state.scannerOpen, false);
 });

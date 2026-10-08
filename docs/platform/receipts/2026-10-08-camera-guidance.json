@@ -1,0 +1,586 @@
+{
+  "schemaVersion": 1,
+  "status": "first-camera-refusal-guidance-resolved-selected-simulator-flow-full-native-acceptance-open",
+  "localOnly": true,
+  "finding": "IOS-AUDIT-01",
+  "supersedesFindingState": {
+    "receipt": "docs/platform/receipts/2026-10-08-ios-simulator.json",
+    "originalSourceAppSha256": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+    "originalObservation": "First camera refusal retained prior invalid-link feedback until a second Scan attempt. Original native screenshot/failed configuration/audit evidence remains preserved."
+  },
+  "sourceSha256": {
+    "apps/controller-native/App.tsx": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+    "apps/controller-native/src/motion-controller.ts": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+    "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+    "apps/controller-native/src/native-identity.ts": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18",
+    "apps/controller-native/src/scanner-session.test.ts": "6ff3b3eb5d6c4ca408e772aacf4bfe3d0eb2abde863f3185abc3ebe2484eb420"
+  },
+  "change": "After a valid foreground scanner generation is reserved and before requesting absent camera permission, show the existing camera-only-pairing/paste guidance. Preserve all generation/foreground fences. Retired asynchronous permission callbacks cannot open a scanner or overwrite current feedback.",
+  "regression": {
+    "oldPinned": "Actual old App/helper and same regression retained; first-refusal guidance assertion failed after modeled native-prompt background/foreground and denied completion.",
+    "currentFocusedScannerCases": 15,
+    "combinedReceiverAndScannerCases": 25,
+    "harnessScope": "Actual App function extracted with TypeScript AST, React state harness and unavailable Expo permission bridge replacement. Source regression is not native acceptance.",
+    "independentReview": {
+      "schemaVersion": 1,
+      "status": "clear",
+      "scope": "Independent read-only review of the IOS-AUDIT-01 scratch guidance repair. App.tsx and scanner-session.test.ts reviewed; scanner-session.ts confirmed unchanged. No repository/native source changes or simulator claims reviewed.",
+      "reviewedSha256": {
+        "/tmp/101-ios-refusal-regression/App.tsx": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+        "/tmp/101-ios-refusal-regression/src/scanner-session.test.ts": "6ff3b3eb5d6c4ca408e772aacf4bfe3d0eb2abde863f3185abc3ebe2484eb420",
+        "/tmp/101-ios-refusal-regression/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2"
+      },
+      "baselineSha256": {
+        "/tmp/101-ios-refusal-old-regression/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+        "/tmp/101-ios-refusal-old-regression/src/scanner-session.test.ts": "54e305afad6afeb7fdd8137aa482be7765d6ab0c4659a504c19a76c017d8675e"
+      },
+      "assessment": {
+        "currentOwnership": "The new setError executes synchronously only after scanner.begin confirms a mounted foreground attempt and before the permission await. There is no yield between generation acquisition and the write. Permission resolution/rejection still checks scanner.current(expected, active) before any later feedback or camera state change.",
+        "replacementAndNavigation": "A replacement begin retires the old generation. Manual-entry navigation retires the current generation and clears error; both old and replacement permission completions remain stale and cannot restore guidance or mount a camera. The added captured-completion regression exercises this ordering.",
+        "backgroundInactiveUnmount": "Inactive begin returns before the new write. Background and unmount retire the pending generation; a later permission result cannot alter camera state or feedback. Guidance already published by the foreground attempt may remain after retirement, but it is purpose/manual-recovery text and does not claim that denial occurred.",
+        "cancelRequestCloseAcceptedScan": "Existing actual-handler regressions still fence queued camera callbacks on Cancel, request-close, navigation, background, unmount and accepted scan. The delta does not weaken these generation checks.",
+        "truthfulness": "\u201c101 Link needs the camera only to read the pairing code. You can paste the code instead.\u201d truthfully states the purpose and equivalent recovery before requesting permission. It does not state that permission was denied or that an AppState transition occurred.",
+        "testRealism": "The VM fixture executes the actual TSX handlers and the real scanner-session module while stubbing React state and the unavailable Expo permission bridge. It proves callback/feedback ownership only."
+      },
+      "evidence": {
+        "oldRegression": {
+          "status": "expected-fail",
+          "path": "/tmp/101-ios-refusal-guidance-old-pinned.log",
+          "sha256": "85020f1fec854e45c72e9df4f5878b2940619be4b0661de3671fc5a6e16d8887",
+          "detail": "The old App retains the prior invalid-link message in the first-refusal retirement sequence."
+        },
+        "scratch": {
+          "status": "pass",
+          "cases": 15,
+          "path": "/tmp/101-ios-refusal-guidance-scratch-final.log",
+          "sha256": "e9e9e5447b3cc967ebae32a1f4676f2a1659d42e3b182cf6b91585b82baa9bb4"
+        }
+      },
+      "findings": [],
+      "limitations": "This clear verdict covers source callback ownership and truthful pre-request guidance. Actual iOS permission/AppState sequencing, simulator observation and native acceptance remain pending; no causal claim about the OS prompt changing AppState is made."
+    }
+  },
+  "ios": {
+    "sourceHead": "a924e8b2d05de940b0f22205449553a6cc3790a0",
+    "inputPinsUnchanged": 516,
+    "sourceMapExactSources": {
+      "apps/controller-native/App.tsx": {
+        "sourceMapSource": "/apps/controller-native/App.tsx",
+        "sha256": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/motion-controller.ts": {
+        "sourceMapSource": "/apps/controller-native/src/motion-controller.ts",
+        "sha256": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/scanner-session.ts": {
+        "sourceMapSource": "/apps/controller-native/src/scanner-session.ts",
+        "sha256": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/native-identity.ts": {
+        "sourceMapSource": "/apps/controller-native/src/native-identity.ts",
+        "sha256": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18",
+        "equalToPinnedRepository": true
+      }
+    },
+    "sourceMapSourceCount": 826,
+    "sourceMapSha256": "fec591e71c964df8ed237f2cb5760e650f6d77a7ffb01190af40d2f4efa98407",
+    "bundleSha256": "56480b54a50c500267f8cca8f26b3b7815336e3e3ab801a092e9a21fb42c8a3f",
+    "phone": {
+      "CFBundleIdentifier": "com.oneohone.link",
+      "DTPlatformName": "iphonesimulator",
+      "DTSDKName": "iphonesimulator26.5",
+      "MinimumOSVersion": "16.4",
+      "CFBundleVersion": "1"
+    },
+    "embeddedWatch": {
+      "CFBundleIdentifier": "com.oneohone.link.watchkitapp",
+      "DTPlatformName": "watchsimulator",
+      "DTSDKName": "watchsimulator26.5",
+      "MinimumOSVersion": "10.0",
+      "CFBundleVersion": null
+    },
+    "archive": {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/101Link-camera-guidance-ios-watch-simulator-release.zip",
+      "bytes": 28134004,
+      "sha256": "71b4fc1dd97e8733901aa44a8249d2e37ab76a11366ba10c6c5c1702de8d81b1",
+      "exactFiles": 99
+    },
+    "signing": "Standard Xcode ad-hoc simulator signing, no distribution identity/certificate/provisioning requested. Intended release signing unqualified.",
+    "simulatorEntitlements": {
+      "101Link.app-Simulated.xcent": {
+        "application-identifier": "D2Z55G42SY.com.oneohone.link",
+        "keychain-access-groups": [
+          "D2Z55G42SY.com.oneohone.link"
+        ]
+      },
+      "101Link.app.xcent": {}
+    },
+    "installedExactFiles": 99,
+    "audit": {
+      "schemaVersion": 1,
+      "finding": "IOS-AUDIT-01",
+      "status": "resolved-in-selected-native-simulator-flow",
+      "sourceAppSha256": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+      "artifactVerification": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/artifact-verification.json",
+      "runtime": {
+        "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+        "version": "26.5",
+        "buildversion": "23F77"
+      },
+      "nativeObservation": true,
+      "steps": [
+        {
+          "action": "Fresh installed app, Enter code instead, type invalid-pairing-code, Connect",
+          "observed": "That connection link could not be read. Scan or paste a new one."
+        },
+        {
+          "action": "Back to choices",
+          "observed": "Invalid-link feedback remains before Scan; Scan code and Enter code instead available."
+        },
+        {
+          "action": "First Scan code",
+          "observed": "Native OS prompt: \u201c101 Link\u201d would like to access the Camera. Scan a local 101 pairing QR code. Don\u2019t Allow/Allow."
+        },
+        {
+          "action": "Don\u2019t Allow once; no second Scan click",
+          "observed": "101 Link needs the camera only to read the pairing code. You can paste the code instead. Scan code and Enter code instead both available; prior invalid-link error absent."
+        },
+        {
+          "action": "Enter code instead after refusal",
+          "observed": "Pairing code field with invalid-pairing-code, Connect and Back visible; manual entry usable."
+        }
+      ],
+      "screenshots": [
+        {
+          "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/first-camera-permission-prompt.png",
+          "bytes": 314846,
+          "sha256": "decad8f7ff493d04a8113c8846a964095b1e6d8108ffca3c67188cbb728cfaa3",
+          "width": 1206,
+          "height": 2622
+        },
+        {
+          "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/immediate-first-refusal-guidance.png",
+          "bytes": 180212,
+          "sha256": "8786c74c5618e9fe2b4d82b2d83f6134c861cc059724c32dd0cd6bd8da7e361f",
+          "width": 1206,
+          "height": 2622
+        },
+        {
+          "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/invalid-pairing-before-first-scan.png",
+          "bytes": 175481,
+          "sha256": "e2c47ff2304260b32609e6040abc07165a5668ae89efabd40d4af8ef8faccdc2",
+          "width": 1206,
+          "height": 2622
+        },
+        {
+          "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/manual-entry-after-refusal.png",
+          "bytes": 161966,
+          "sha256": "2989fced0c50a7f889d142f0896b4d9a993efc880425f8410820e9d5185febb6",
+          "width": 1206,
+          "height": 2622
+        }
+      ],
+      "limitations": [
+        "No physical camera/barcode, approved camera session or enrolled connection tested.",
+        "No native AppState transition trace; background retirement mechanism remains an inference supported by source regression.",
+        "No new identity/watch/sensor, accessibility or performance qualification.",
+        "Resolution is this selected first-refusal recovery flow, not full iOS release acceptance."
+      ]
+    },
+    "cleanup": {
+      "schemaVersion": 1,
+      "ownedUUID": "D9177E10-9B23-4821-8E77-706BBC95E7D0",
+      "commands": [
+        {
+          "command": [
+            "xcrun",
+            "simctl",
+            "shutdown",
+            "D9177E10-9B23-4821-8E77-706BBC95E7D0"
+          ],
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "atEpochMs": 1791477524230
+        },
+        {
+          "command": [
+            "xcrun",
+            "simctl",
+            "delete",
+            "D9177E10-9B23-4821-8E77-706BBC95E7D0"
+          ],
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": "",
+          "atEpochMs": 1791477524385
+        }
+      ],
+      "ownedUUIDAbsentAfterDeletion": true,
+      "otherDevicesMutated": false,
+      "scope": "Only the exact newly created disposable UUID was installed/launched/shut down/deleted; other devices were read-only."
+    },
+    "inputQualification": {
+      "pinsVerifiedAtBuild": 516,
+      "laterChangedInputs": [
+        "packages/hub-server/package.json",
+        "packages/hub-server/src/index.ts"
+      ],
+      "reason": "Final relay export integration changes Hub package/index inputs outside the native bundle. No Hub source is present in the verified source-map closure; every other pinned input and all four native source-map contents remain exact. No assertion that all broad package pins still match after integration.",
+      "sourceMapContainsHubServer": false,
+      "otherPinnedInputsMatchFinalSource": true
+    }
+  },
+  "android": {
+    "schemaVersion": 1,
+    "status": "pass",
+    "sourceHead": "a924e8b2d05de940b0f22205449553a6cc3790a0",
+    "sourceSha256": {
+      "apps/controller-native/App.tsx": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+      "apps/controller-native/src/motion-controller.ts": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+      "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+      "apps/controller-native/src/native-identity.ts": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18"
+    },
+    "sourceMapExactSources": {
+      "apps/controller-native/App.tsx": {
+        "sourceMapSource": "/apps/controller-native/App.tsx",
+        "sha256": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/motion-controller.ts": {
+        "sourceMapSource": "/apps/controller-native/src/motion-controller.ts",
+        "sha256": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/scanner-session.ts": {
+        "sourceMapSource": "/apps/controller-native/src/scanner-session.ts",
+        "sha256": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+        "equalToPinnedRepository": true
+      },
+      "apps/controller-native/src/native-identity.ts": {
+        "sourceMapSource": "/apps/controller-native/src/native-identity.ts",
+        "sha256": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18",
+        "equalToPinnedRepository": true
+      }
+    },
+    "sourceMapSourceCount": 824,
+    "sourceMapSha256": "71a5ec5b8aba339e960a301c7349415485c99f31438ef6c341e7ae69be6e9d5e",
+    "inputPinsUnchanged": 525,
+    "artifact": {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/app-release.apk",
+      "bytes": 51431770,
+      "sha256": "8866b22bc3768e5adc096dd162c2689a53c8d24b1072dff683c2074fa5913aab"
+    },
+    "build": [
+      "./gradlew",
+      "assembleRelease",
+      "-PreactNativeArchitectures=arm64-v8a",
+      "--no-daemon",
+      "--offline"
+    ],
+    "environment": "macOS arm64; existing local Android SDK; Gradle9.3.1/JDK25.0.2/Node24.14.0",
+    "signing": "Existing development signing identity only; intended distribution signing and install/update remain unqualified.",
+    "physicalAcceptance": "Artifact-only; no new device installation, native camera or sensor acceptance claimed.",
+    "apkBundle": {
+      "entry": "assets/index.android.bundle",
+      "bytes": 3150608,
+      "sha256": "a0a8cc69914898369414b9a417208d6c8f2209fc62c77beaa3d0825733012144",
+      "equalToFreshGradleBundle": true,
+      "freshGradleBundlePath": "/Users/km/Desktop/games/101/apps/controller-native/android/app/build/generated/assets/react/release/index.android.bundle"
+    },
+    "signatureVerification": {
+      "exitCode": 0,
+      "log": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/signature-verification.log",
+      "identity": "Android Debug development certificate; no intended distribution claim."
+    },
+    "verificationHistory": [
+      "Initial verification asserted an incorrect generated-bundle directory and failed after successful simulator cleanup. Actual Gradle output path was read, then APK asset bytes matched the fresh bundle exactly. No build or app failure inferred."
+    ],
+    "inputQualification": {
+      "pinsVerifiedAtBuild": 525,
+      "laterChangedInputs": [
+        "packages/hub-server/package.json",
+        "packages/hub-server/src/index.ts"
+      ],
+      "reason": "Final relay export integration changes Hub package/index inputs outside the native bundle. No Hub source is present in the verified source-map closure; every other pinned input and all four native source-map contents remain exact. No assertion that all broad package pins still match after integration.",
+      "sourceMapContainsHubServer": false,
+      "otherPinnedInputsMatchFinalSource": true
+    }
+  },
+  "retainedEvidence": [
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/app-stderr.log",
+      "sha256": "67fce0e6a21858805e9ca50c197e29a35d720a1176debe9d1717cadb41c68051",
+      "gitBlob": "7b6ad79efc36f6a2a7182dd0109be41fc68d3a8b",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-000"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/app-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-001"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/artifact-operations.json",
+      "sha256": "2a3e204971c9b972430b0d1238fbc8530808bebccceccdf01a7bbbe5d5ae0bf6",
+      "gitBlob": "c4dcd0f37b189ed5564864e77d8d2c58361d925f",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-002"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/artifact-verification.json",
+      "sha256": "025cde43af4f6675f124507fb48252792db42e4c63bcb73e13a4d89cb0949920",
+      "gitBlob": "68a0fc91623d6596463d19e96a67469bbff389de",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-003"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/audit-observations.json",
+      "sha256": "af9c4c2a8124c095b4b3abf4c4054598325be4bc77763f9ccae245707509a49f",
+      "gitBlob": "130489e3f3681a06cc8d4cfd33525658bdb60dc8",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-004"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/build-command.json",
+      "sha256": "763e64577c9f9508ddc8d3e7a3b9330a286ccf6428f40f8d1a3165664a4b6d3c",
+      "gitBlob": "2229211d8313cd1e8de1020f003acefa51dfb55e",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-005"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/build.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-006"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/build.log",
+      "sha256": "6caa1317f19c5ce349e41a7befdcc1282be0d0aee49c8a4c584e482c0c8eb758",
+      "gitBlob": "613568e613fac6e892e398717e42190b830d2310",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-007"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/first-camera-permission-prompt.png",
+      "sha256": "decad8f7ff493d04a8113c8846a964095b1e6d8108ffca3c67188cbb728cfaa3",
+      "gitBlob": "f97d7d1e4d7353a70cdb80e667e56d4ef5aaf34e",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-008"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/immediate-first-refusal-guidance.png",
+      "sha256": "8786c74c5618e9fe2b4d82b2d83f6134c861cc059724c32dd0cd6bd8da7e361f",
+      "gitBlob": "67d50b7f9266d28f06c611b1d168ae649b8e88df",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-009"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/input-manifest.json",
+      "sha256": "844dd466ff1367e13ffa40a000c0612190b8263f67ccc909e697496d4e422fc6",
+      "gitBlob": "bafa797b665c9a018abc7c6d2b02e0c5bb0d08e3",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-010"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/input-verification.json",
+      "sha256": "4846f1528209e0d67db90d1fbb00706909d488082b9e943f46d3b6e7486d8105",
+      "gitBlob": "a92ee68fb563cbae60af59da8513eae90799e9b1",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-011"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/installed-container-verification.json",
+      "sha256": "73e10f354df46fe8afc3de1fd792b108b46175745c81b5307a43e58cb3a815d1",
+      "gitBlob": "118250077878e2488723752dcf0806217db48949",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-012"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/invalid-pairing-before-first-scan.png",
+      "sha256": "e2c47ff2304260b32609e6040abc07165a5668ae89efabd40d4af8ef8faccdc2",
+      "gitBlob": "d6e2d297654861d1f88c0a57befd5ae777c51583",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-013"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/manual-entry-after-refusal.png",
+      "sha256": "2989fced0c50a7f889d142f0896b4d9a993efc880425f8410820e9d5185febb6",
+      "gitBlob": "3ec3893fa13872eb937b6585f519dbe00f3d1eea",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-014"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/owned-simulator.json",
+      "sha256": "8558afae63f486589dbe09cb8134ae2cb4fe931a37ec5790bf12ee76c8e93b11",
+      "gitBlob": "7a8fac7ca3609e3ab00e1036d49bb9c7b045b857",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-015"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-camera-guidance-blu560wk/simulator-cleanup.json",
+      "sha256": "8b707c5c8c642a5f5b046c40893b7d7523142e1ef4abb987d74c2360acc6b0b1",
+      "gitBlob": "953d6a1419f988e655fdda027e47652b56ed8375",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-016"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/build-command.json",
+      "sha256": "8750030db849f9d61598f976e1fee860bf6e5c767938446ca079d0326ccb5c04",
+      "gitBlob": "ec0a55ec274366147318df247cf4715675a27c1d",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-017"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/build.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-018"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/build.log",
+      "sha256": "7ebc5b35961cab0330bf4fa463613e7d0040f8ccc9afddcdade8dca3bc4ff74a",
+      "gitBlob": "36539df1d2e6d2d5f5759ceac2d30a72884b57db",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-019"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/input-manifest.json",
+      "sha256": "9609f79caa99090319d03053e454d64a95059d42b69267c5e23bc7eed800755e",
+      "gitBlob": "7f2c503270fb9b6f2af99a2f7e45057e90606503",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-020"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/input-verification.json",
+      "sha256": "01936db4586b7a6a04cfe51ddabb32d40664130e6c9e8ce1a7cc9d39eefd6a07",
+      "gitBlob": "5c51ce20bab427b0c5568b1b8020590b697888c1",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-021"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/manifest.json",
+      "sha256": "60cd01140c01959b02e7c38d0806ab6371e8f0a52d509fe5c2fb0cf1f7066cba",
+      "gitBlob": "96ebc089aee6eabce0a6b13b49c94d4d5ef76972",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-022"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/signature-verification.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-023"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-camera-guidance-7otfwy1y/signature-verification.log",
+      "sha256": "a2825c1fdb1b0fabafc3336a6786e65e2b10762f0303f9999ccae562afed0a70",
+      "gitBlob": "f6a0adc10ef9f2d8261c01715893cfcb1ce19c5e",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-024"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-old-regression/App.tsx",
+      "sha256": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+      "gitBlob": "ab3266551ee12c79c3bc95903d746f3578529635",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-025"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-old-regression/src/scanner-session.test.ts",
+      "sha256": "54e305afad6afeb7fdd8137aa482be7765d6ab0c4659a504c19a76c017d8675e",
+      "gitBlob": "db329fa3e278d5e1899da6a97a06e07ff98a6942",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-026"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-old-regression/src/scanner-session.ts",
+      "sha256": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+      "gitBlob": "72e3a8812728e7a65786a344c23e2456a22ba32e",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-027"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-repair-plan.json",
+      "sha256": "a01ed4e1c9c19e2ff8cbb874cb12a9588766c96efec505aa66e6c24dd622e9d4",
+      "gitBlob": "2bba32fe07030e909a8dfabdb3292af1ad9cdfae",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-028"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-guidance-old-pinned.log",
+      "sha256": "85020f1fec854e45c72e9df4f5878b2940619be4b0661de3671fc5a6e16d8887",
+      "gitBlob": "15366857f7e0daf057e0f5232f250d5a5e91041c",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-029"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-guidance-old-pinned.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-030"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-guidance-scratch-final.log",
+      "sha256": "e9e9e5447b3cc967ebae32a1f4676f2a1659d42e3b182cf6b91585b82baa9bb4",
+      "gitBlob": "993aa9c685923fbe1a6644e775692d40d0f09426",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-031"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-guidance-scratch-final.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-032"
+    },
+    {
+      "path": "/private/tmp/101-ios-refusal-guidance-independent-review.json",
+      "sha256": "d77db20ac39d280260ac4d13bd9ad4a84d543aa58bf7deaaf8a8106c1c45d029",
+      "gitBlob": "daec4f6a56fe4a4118ef222ea8186f03a8281648",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-033"
+    },
+    {
+      "path": "/private/tmp/101-receive-camera-focused-types-fixed.log",
+      "sha256": "d5ee3b1895700952e1de1e32a34349ac411a0c00b255e2e6bee98cfd7ef06d25",
+      "gitBlob": "24a3ff666a91e413e0a14258ce26b54e4b8d2cf8",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-034"
+    },
+    {
+      "path": "/private/tmp/101-receive-camera-focused-types-fixed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-035"
+    },
+    {
+      "path": "/private/tmp/101-receiver-native-types-fixed.log",
+      "sha256": "1b3b46b3f438bb986f08b0f3ea781c31ee5b1886527476dd10b5ebc7233db3f1",
+      "gitBlob": "068fdd0120dad2471ed2f1d589c1d326dad5243a",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-036"
+    },
+    {
+      "path": "/private/tmp/101-receiver-native-types-fixed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-037"
+    },
+    {
+      "path": "/private/tmp/101-build-camera-guidance-ios.py",
+      "sha256": "f005994e1f03d32f40c7423c9d32eab2acc5f28a9819b0e392ff737ecd038365",
+      "gitBlob": "042a623c8ea5aaae54bf3512cb7c0299fed1acf1",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-038"
+    },
+    {
+      "path": "/private/tmp/101-verify-install-camera-guidance-ios.py",
+      "sha256": "46d15538db0afd236faab496e9b6dfe3c1d26fcf7e199e4576ae4eac7add6dc7",
+      "gitBlob": "6e153c6a0379b4fda888ba56f4dc2d219bce3f90",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-039"
+    },
+    {
+      "path": "/private/tmp/101-build-camera-guidance-android.py",
+      "sha256": "06184277f585f5b503c6885141d1b8fdbdb378b831f843102f4094caf26dab63",
+      "gitBlob": "964afaafec03f5eba6ea66e08c4b720860f44a41",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-040"
+    },
+    {
+      "path": "/private/tmp/101-camera-guidance-simulators-before.json",
+      "sha256": "f1a7aa6966a38412062bf896ffad85abba5a9e4264232efed4fe91133810b5d7",
+      "gitBlob": "155a5c4a19b1839605427d1686d251916bc81712",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-041"
+    },
+    {
+      "path": "/private/tmp/101-camera-guidance-runtimes.json",
+      "sha256": "3d37e79a172238e5fc7bfdc12982a97cdd7f04e986074396cb88c2c8feb0befc",
+      "gitBlob": "924cabbb75b12ea5d1d9e395b4f1eddce4d8b689",
+      "ref": "refs/codex/evidence/2026-10-08-camera-guidance/evidence-042"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-receive-relay-camera/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-receive-relay-camera/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact candidate result proves broad gates; never commit a red gate."
+  },
+  "acceptance": "IOS-AUDIT-01 is resolved for the actual selected first-refusal recovery flow. N04/D03/N13/K05 remain partial: no physical camera/barcode/sensor, approved scanner session, enrolled connection, watch operation, intended distribution identity/install/update or full accessibility/performance acceptance. Android is a verified local artifact with development signing, not new physical acceptance."
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 172,
+  "revision": 175,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12866,6 +12866,87 @@
         "Physical intended phone/watch and release identity required for full qualification"
       ],
       "supportRows": []
+    },
+    {
+      "id": "ir-receive-2026-10-08",
+      "revision": "c5116f9aa8fe6cdfb9e236d7caacf737af697978d4102122f6a3f34fd858d6ff",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-ir-receive.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; unchanged verified installed seven-package SDK; exact separately owned nominal MODE2 software receiver children.",
+      "reproduction": "10 focused receiver cases,25 combined scanner checks, original failed review/typecheck sources and logs, independent reentry and stricter-consumer delta reviews, source and installed SDK callers; exact candidate gates referenced by receipt. Exact copied/executed closure mutation rejection and final installed receipt retained.",
+      "scope": "Selected nominal demodulated inverse-byte software capture with independent private/public authority, immediate public withdrawal and exact provider settlement. Candidate remains unreviewed; hardware reception/tolerance/carrier and review-to-emitter learning remain open.",
+      "failure": null,
+      "equipment": [
+        "Selected physical IR receiver, resolution/timing instruments and permission/firmware evidence required for hardware acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "camera-guidance-2026-10-08",
+      "revision": "cdd9cf0781947dd8a5e8e2888ebce5eb8b492356ce875f4361e58a83382078db",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N04",
+        "D03",
+        "N13",
+        "K05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-camera-guidance.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Xcode26.6; owned fresh iPhone17 iOS26.5 simulator; offline Android arm64 development-signed Release artifact.",
+      "reproduction": "Actual old App first-refusal regression fails;15 current scanner checks pass. Exact source maps and archive/APK bytes verified,99 installed iOS files read back, first OS prompt denied once and immediate guidance/manual entry observed. Own simulator deleted; full candidate gates referenced by receipt.",
+      "scope": "Selected IOS-AUDIT-01 first-refusal recovery resolved. Physical camera/media/motion, intended signing/install/update, approved scanner session/enrolled connection, companion operation and full accessibility/performance remain unqualified.",
+      "failure": null,
+      "equipment": [
+        "Physical intended phone/watch and release identity required for full qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "mechanical-relay-2026-10-08",
+      "revision": "9050d04e54754a2032fc01f8f8923de1b0c4e45a3fe5ee5fe42f7e815d8c3e1e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A09"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-mechanical-relay.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; unchanged verified installed seven-package SDK; distinct actual actuator and independently scripted feedback child processes.",
+      "reproduction": "12 focused checks, literal initial blocked review/repro failures and exact rejected six, final clear independent delta review, source and installed SDK callers, strict native consumer typecheck; candidate gates referenced by receipt.",
+      "scope": "Selected off/on software dispatch, receipt-time250ms feedback freshness/provenance, fixture interlock/watchdog and paired ownership/settlement. Physical actuation/sensor/interlock/watchdog/release and feedback causation remain unverified.",
+      "failure": null,
+      "equipment": [
+        "Selected isolated low-energy actuator, independent contact/limit sensor and hardwired interlock/watchdog instruments required for hardware acceptance"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -13468,7 +13549,8 @@
         "pending-D03",
         "d03-browser-chooser-partial-2026-10-06",
         "successor-repairs-2026-10-08",
-        "ios-simulator-2026-10-08"
+        "ios-simulator-2026-10-08",
+        "camera-guidance-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13912,7 +13994,8 @@
         "pointer-native-partial-2026-10-02",
         "phone-motion-lifecycle-2026-10-08",
         "successor-repairs-2026-10-08",
-        "ios-simulator-2026-10-08"
+        "ios-simulator-2026-10-08",
+        "camera-guidance-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14053,7 +14136,8 @@
         "pending-N13",
         "phone-motion-lifecycle-2026-10-08",
         "successor-repairs-2026-10-08",
-        "ios-simulator-2026-10-08"
+        "ios-simulator-2026-10-08",
+        "camera-guidance-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14621,7 +14705,8 @@
     {
       "id": "A08",
       "records": [
-        "pending-A08"
+        "pending-A08",
+        "ir-receive-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14635,7 +14720,8 @@
     {
       "id": "A09",
       "records": [
-        "pending-A09"
+        "pending-A09",
+        "mechanical-relay-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -16354,7 +16440,8 @@
       "id": "K05",
       "records": [
         "pending-K05",
-        "ios-simulator-2026-10-08"
+        "ios-simulator-2026-10-08",
+        "camera-guidance-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [

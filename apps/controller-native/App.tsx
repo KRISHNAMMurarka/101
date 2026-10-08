@@ -441,6 +441,8 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     const scanner = scannerSession.current;
     const expected = scanner.begin(AppState.currentState === "active");
     if (expected === undefined) return;
+    if (!cameraPermission?.granted)
+      setError("101 Link needs the camera only to read the pairing code. You can paste the code instead.");
     try {
       const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
       if (!scanner.current(expected, AppState.currentState === "active")) return;
