@@ -258,3 +258,9 @@ export type { MechanicalRelayEpoch, MechanicalRelayActuatorProvider, MechanicalR
   RelayProviderContext as MechanicalRelayProviderContext, RelayApprovalRequest as MechanicalRelayApprovalRequest,
   RelayGrant as MechanicalRelayGrant, RelaySetCompletion as MechanicalRelaySetCompletion,
   RelayFeedbackObservation as MechanicalRelayFeedbackObservation } from './mechanical-relay-gateway.ts';
+
+export { createMotorAxisGateway, MOTOR_AXIS_PROFILE, MOTOR_AXIS_LIMITS } from './motor-axis-gateway.ts';
+export type { MotorAxisResult, MotorAxisEpoch, MotorAxisSessionToken, MotorAxisInvalidation, MotorAxisOpenContext,
+  MotorAxisOperationContext, MotorAxisActuatorProvider, MotorAxisFeedbackSample, MotorAxisFeedbackProvider,
+  MotorAxisScope, MotorAxisApprovalRequest, MotorAxisGrant, MotorAxisOptions, MotorAxisSetReceipt,
+  MotorAxisObservation, MotorAxisGateway } from './motor-axis-gateway.ts';

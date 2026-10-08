@@ -18,6 +18,7 @@
     "./onvif-snapshot-gateway": "./src/onvif-snapshot-gateway.ts",
     "./nec32-ir-emitter-gateway": "./src/nec32-ir-emitter-gateway.ts",
     "./nec32-ir-receive-gateway": "./src/nec32-ir-receive-gateway.ts",
-    "./mechanical-relay-gateway": "./src/mechanical-relay-gateway.ts"
+    "./mechanical-relay-gateway": "./src/mechanical-relay-gateway.ts",
+    "./motor-axis-gateway": "./src/motor-axis-gateway.ts"
   }
 }

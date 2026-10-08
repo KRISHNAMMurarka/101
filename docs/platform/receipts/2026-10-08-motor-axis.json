@@ -1,0 +1,1708 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+    "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+    "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+    "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+    "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+    "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9"
+  },
+  "selectedProfile": {
+    "id": "app:bounded-linear-axis-mm-software/1",
+    "position": {
+      "unit": "mm",
+      "min": 0,
+      "max": 10,
+      "resolution": 1
+    },
+    "parkMm": 0,
+    "softwareSlewMmPerSecond": 50,
+    "nominalStepMs": 20,
+    "deadmanMs": 250,
+    "physical": false
+  },
+  "authorityAndOwnership": {
+    "privateActions": [
+      "activate-axis",
+      "set-axis-position",
+      "observe-axis-position"
+    ],
+    "privateKey": [
+      "principalId",
+      "applicationId",
+      "sessionId",
+      "axisId",
+      "profileId",
+      "generation",
+      "purpose",
+      "originalDeadline",
+      "action",
+      "operationId-for-SET-and-OBSERVE",
+      "targetMm-for-SET"
+    ],
+    "publicRoutes": [
+      "exact-scope-and-registration-subscribe/invoke",
+      "exact-scope-and-registration-read/write"
+    ],
+    "limits": {
+      "starts": 8,
+      "lifetimeSetAttempts": 16,
+      "lifetimeObserveAttempts": 32,
+      "rawSetPending": 1,
+      "rawObservePending": 1,
+      "operationMs": 500,
+      "sessionMs": 60000,
+      "feedbackMaxAgeMs": 250,
+      "lineBytes": 1024,
+      "totalBytes": 16384
+    },
+    "retirement": "Immediate endpoint withdrawal; native branded signals, original deadline and exact generation/token fences; raw reservations and both opening legs retained through outcome/retirement settlement; exact release/Stop/close, no stale replay or orphan waiters."
+  },
+  "commandResult": "Software provider completion is issued-uncertain, observed position unknown and physical state unverified. Public route cancellation/deadline and continuing effect authority stay live through exact route/epoch release.",
+  "feedback": "Independently scripted3mm feedback contradicts4mm target through actual ordinary read/write route. Immutable gateway receipt250ms age with source clock identity/raw monotonic timestamp and null mapping; unknown capture time/software-state/physicalfalse. No causal or physical observation claim.",
+  "localPolicy": "Virtual1mm steps/nominal20ms scheduler,50mm/s model,250ms deadman, interlock-open refusal and child interlock-trip invalidation. Software release returns toward0; no hardware/safety/hard-real-time qualification.",
+  "validation": {
+    "focusedGatewayCases": 24,
+    "sourceProtocolCases": 31,
+    "strictNoUncheckedIndexedAccess": "/tmp/101-motor-axis-repair/evidence/gateway-final-types.log",
+    "sixFileLint": "/tmp/101-motor-axis-repair/evidence/startup-final-six-lint.log",
+    "independentReview": "/tmp/101-motor-axis-final-source-review.json",
+    "sourceCaller": {
+      "schemaVersion": 1,
+      "status": "pass",
+      "environment": {
+        "node": "v24.14.0",
+        "platform": "darwin"
+      },
+      "sourceSha256": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+        "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+        "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+        "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9"
+      },
+      "result": {
+        "status": "pass",
+        "kind": "separate-process-loopback-motor-axis-pair",
+        "checks": {
+          "deniedControlStartsNoChild": true,
+          "approvedPublicRoutePrivateSetDenied": true,
+          "privateSetUsesActuatorChild": true,
+          "nominalVirtualSteps": true,
+          "schedulerQualifiedVirtualTiming": true,
+          "commandCompletionDoesNotClaimObservation": true,
+          "independentFeedbackAuthority": true,
+          "exactPublicCommandAndFeedbackRoutes": true,
+          "contradictoryFeedbackDeliveredThroughPublicReadWrite": true,
+          "publicCommandSignalAndOriginalDeadlineRetained": true,
+          "feedbackSourceSoftwareState": true,
+          "physicalFalseAndUnverified": true,
+          "captureTimeUnknown": true,
+          "freshnessGatewayReceipt": true,
+          "noCrossProcessClockComparison": true,
+          "actualChildDeadmanRetiresSession": true,
+          "actualChildInterlockOpenDeniesNoChange": true,
+          "actualChildInterlockTripRetiresSession": true,
+          "synchronousWithdrawalOnPolicyInvalidation": true,
+          "bothChildrenSettled": true
+        },
+        "limitations": {
+          "hardware": "unverified",
+          "physicalPosition": "unverified",
+          "physicalSlew": "unverified",
+          "physicalDeadman": "unverified",
+          "physicalInterlock": "unverified",
+          "sourceClockMapping": null,
+          "softwareTiming": "scheduler-qualified-not-hard-real-time",
+          "matchingFeedbackMeaning": "independently-scripted-software-state-only"
+        },
+        "commandResults": [
+          {
+            "ok": false,
+            "reason": "denied"
+          },
+          {
+            "ok": true,
+            "value": {
+              "operationId": "2",
+              "targetMm": 4,
+              "providerCompletion": true,
+              "effect": "issued-uncertain",
+              "observedPositionMm": "unknown",
+              "physical": false,
+              "physicalState": "unverified"
+            }
+          }
+        ],
+        "observedRelation": "contradicts-target",
+        "actuatorCommands": [
+          "open",
+          "set-position",
+          "release",
+          "stop",
+          "close"
+        ],
+        "feedbackCommands": [
+          "open",
+          "observe",
+          "observe",
+          "stop",
+          "close"
+        ],
+        "actuatorLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "feedbackLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "childBounds": {
+          "actuator": {
+            "receivedBytes": 1731,
+            "sentBytes": 449,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          },
+          "feedback": {
+            "receivedBytes": 942,
+            "sentBytes": 488,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          }
+        },
+        "interlockOpenScenario": {
+          "actuatorLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          },
+          "feedbackLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        "interlockScenario": {
+          "withdrawals": 1,
+          "actuatorLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          },
+          "feedbackLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        "publicAuthorityScenarios": [
+          {
+            "mode": "expiry",
+            "results": [
+              {
+                "ok": false,
+                "reason": "cancelled",
+                "issued": true,
+                "effect": "uncertain"
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          },
+          {
+            "mode": "revoke",
+            "results": [
+              {
+                "ok": false,
+                "reason": "cancelled",
+                "issued": true,
+                "effect": "uncertain"
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          },
+          {
+            "mode": "revoke-completed",
+            "results": [
+              {
+                "ok": true,
+                "value": {
+                  "operationId": "1",
+                  "targetMm": 4,
+                  "providerCompletion": true,
+                  "effect": "issued-uncertain",
+                  "observedPositionMm": "unknown",
+                  "physical": false,
+                  "physicalState": "unverified"
+                }
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          }
+        ]
+      },
+      "protocolChecks": [
+        "startup-expiry",
+        "set-send-bounds",
+        "read-send-bounds",
+        "close-unopened",
+        "unknown-key",
+        "duplicate-key",
+        "stale-close",
+        "stale-release",
+        "stale-stop",
+        "partial-line",
+        "invalid-utf8",
+        "input-total",
+        "exact-provider-restart-no-history-replay",
+        "actuator:slow",
+        "actuator:fault-after-step",
+        "actuator:stale-session",
+        "actuator:invalid-utf8-output",
+        "actuator:unknown-output",
+        "actuator:duplicate-key-output",
+        "actuator:oversize-line",
+        "actuator:oversize-total",
+        "feedback:slow",
+        "feedback:fault",
+        "feedback:stale-session",
+        "feedback:out-of-range",
+        "feedback:oversize-line",
+        "feedback:oversize-total",
+        "duplicate-output-cannot-complete-new-operation",
+        "feedback:match-script",
+        "feedback:duplicate-sequence",
+        "feedback:stale-sequence"
+      ],
+      "startupFaultCases": [
+        {
+          "mode": "startup-expiry",
+          "lifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        {
+          "mode": "set-send-bounds",
+          "lifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        {
+          "mode": "read-send-bounds",
+          "lifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        {
+          "mode": "close-unopened",
+          "lifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        }
+      ],
+      "scope": "Selected paired software axis fixtures only. Virtual register steps, command completion and independently scripted feedback do not verify physical position, motion, slew, limits, deadman, interlock, force, flow or target state."
+    },
+    "installedCaller": {
+      "schemaVersion": 1,
+      "status": "pass",
+      "sourceSha256": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+        "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+        "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+        "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9"
+      },
+      "copiedSourceSha256": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+        "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+        "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+        "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9"
+      },
+      "artifactPaths": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-0.bin",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-1.bin",
+        "examples/motor-axis/software-axis-fixtures.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-2.bin",
+        "examples/motor-axis/consumer.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-3.bin",
+        "tools/qa-motor-axis.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-4.bin",
+        "tools/qa-installed-motor-axis.mjs": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-5.bin",
+        "gatewayPath": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/gateway.mjs",
+        "callerPath": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/consumer.mjs",
+        "fixturePath": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/software-axis-fixtures.mjs",
+        "resolverPath": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/resolve.mjs"
+      },
+      "artifactSha256": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+        "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+        "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+        "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9",
+        "gatewayPath": "ffb2bbb191ad07de49dd0761146f1c73342220afaba99b23f6c1285ef26e6892",
+        "callerPath": "9dd2c3a588d672a3919536bcf2d677ec58b1fdb3a7b86b45ffc0dc58b58233a8",
+        "fixturePath": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "finalArtifactSha256": {
+        "packages/hub-server/src/motor-axis-gateway.ts": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+        "packages/hub-server/src/motor-axis-gateway.test.ts": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+        "examples/motor-axis/software-axis-fixtures.mjs": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "examples/motor-axis/consumer.mjs": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+        "tools/qa-motor-axis.mjs": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+        "tools/qa-installed-motor-axis.mjs": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9",
+        "gatewayPath": "ffb2bbb191ad07de49dd0761146f1c73342220afaba99b23f6c1285ef26e6892",
+        "callerPath": "9dd2c3a588d672a3919536bcf2d677ec58b1fdb3a7b86b45ffc0dc58b58233a8",
+        "fixturePath": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259"
+      },
+      "installedPublicEntry": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "finalSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "result": {
+        "status": "pass",
+        "kind": "separate-process-loopback-motor-axis-pair",
+        "checks": {
+          "deniedControlStartsNoChild": true,
+          "approvedPublicRoutePrivateSetDenied": true,
+          "privateSetUsesActuatorChild": true,
+          "nominalVirtualSteps": true,
+          "schedulerQualifiedVirtualTiming": true,
+          "commandCompletionDoesNotClaimObservation": true,
+          "independentFeedbackAuthority": true,
+          "exactPublicCommandAndFeedbackRoutes": true,
+          "contradictoryFeedbackDeliveredThroughPublicReadWrite": true,
+          "publicCommandSignalAndOriginalDeadlineRetained": true,
+          "feedbackSourceSoftwareState": true,
+          "physicalFalseAndUnverified": true,
+          "captureTimeUnknown": true,
+          "freshnessGatewayReceipt": true,
+          "noCrossProcessClockComparison": true,
+          "actualChildDeadmanRetiresSession": true,
+          "actualChildInterlockOpenDeniesNoChange": true,
+          "actualChildInterlockTripRetiresSession": true,
+          "synchronousWithdrawalOnPolicyInvalidation": true,
+          "bothChildrenSettled": true
+        },
+        "limitations": {
+          "hardware": "unverified",
+          "physicalPosition": "unverified",
+          "physicalSlew": "unverified",
+          "physicalDeadman": "unverified",
+          "physicalInterlock": "unverified",
+          "sourceClockMapping": null,
+          "softwareTiming": "scheduler-qualified-not-hard-real-time",
+          "matchingFeedbackMeaning": "independently-scripted-software-state-only"
+        },
+        "commandResults": [
+          {
+            "ok": false,
+            "reason": "denied"
+          },
+          {
+            "ok": true,
+            "value": {
+              "operationId": "2",
+              "targetMm": 4,
+              "providerCompletion": true,
+              "effect": "issued-uncertain",
+              "observedPositionMm": "unknown",
+              "physical": false,
+              "physicalState": "unverified"
+            }
+          }
+        ],
+        "observedRelation": "contradicts-target",
+        "actuatorCommands": [
+          "open",
+          "set-position",
+          "release",
+          "stop",
+          "close"
+        ],
+        "feedbackCommands": [
+          "open",
+          "observe",
+          "observe",
+          "stop",
+          "close"
+        ],
+        "actuatorLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "feedbackLifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        },
+        "childBounds": {
+          "actuator": {
+            "receivedBytes": 1731,
+            "sentBytes": 449,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          },
+          "feedback": {
+            "receivedBytes": 942,
+            "sentBytes": 488,
+            "lineBytes": 1024,
+            "outputBytes": 16384
+          }
+        },
+        "interlockOpenScenario": {
+          "actuatorLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          },
+          "feedbackLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        "interlockScenario": {
+          "withdrawals": 1,
+          "actuatorLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          },
+          "feedbackLifecycle": {
+            "waiters": 0,
+            "timers": 0,
+            "childRunning": false
+          }
+        },
+        "publicAuthorityScenarios": [
+          {
+            "mode": "expiry",
+            "results": [
+              {
+                "ok": false,
+                "reason": "cancelled",
+                "issued": true,
+                "effect": "uncertain"
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          },
+          {
+            "mode": "revoke",
+            "results": [
+              {
+                "ok": false,
+                "reason": "cancelled",
+                "issued": true,
+                "effect": "uncertain"
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          },
+          {
+            "mode": "revoke-completed",
+            "results": [
+              {
+                "ok": true,
+                "value": {
+                  "operationId": "1",
+                  "targetMm": 4,
+                  "providerCompletion": true,
+                  "effect": "issued-uncertain",
+                  "observedPositionMm": "unknown",
+                  "physical": false,
+                  "physicalState": "unverified"
+                }
+              }
+            ],
+            "actuatorLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            },
+            "feedbackLifecycle": {
+              "waiters": 0,
+              "timers": 0,
+              "childRunning": false
+            }
+          }
+        ]
+      }
+    },
+    "installedReceiptPath": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/receipt.json",
+    "sdkStatus": "Unchanged verified seven-package SDK; separately compiled gateway/caller/producer, all six source copies plus four executed artifacts pinned before/after; manifest/package files revalidated after actual child cleanup. This is not a released SDK gateway qualification.",
+    "artifactMutationRejection": "Actual owned executed fixture changed after caller; verifier failed expected final artifact equality while SDK fingerprints stayed unchanged. Initial external-runner missing TypeScript resolution preserved separately; it was no mutation proof."
+  },
+  "retainedFailures": {
+    "originalSevenFindingReview": "/tmp/101-motor-axis-initial-review.json",
+    "gatewayRedLogs": [
+      "/tmp/101-motor-axis-repair/evidence/review-regressions-red.log",
+      "/tmp/101-motor-axis-repair/evidence/review-additional-red.log",
+      "/tmp/101-motor-axis-repair/evidence/gateway-delta-red.log"
+    ],
+    "protocolAndStartup": "/tmp/101-motor-protocol-evidence",
+    "originalFrozenLane": [
+      {
+        "path": "/tmp/101-motor-axis-draft/packages/hub-server/src/motor-axis-gateway.ts",
+        "sha256": "15f7a2bb425af53f8d28de007d13e77de655031795e0bd6f939656f2d2bd574d",
+        "gitBlob": "3e54296b61d4c1a1cd3a7fb7a9c5f647a0783fec",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-000"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/packages/hub-server/src/motor-axis-gateway.test.ts",
+        "sha256": "34664a9851ae5025fb29138a43e2087996b2995a1b9a7c3c6889d606b056c110",
+        "gitBlob": "aa329c9583cdbb2f4c67775cd7a876a2dd2d9cf7",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-001"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/examples/motor-axis/software-axis-fixtures.mjs",
+        "sha256": "d29cee051902bcb37d682bb3438eb2c3445abb6304d81e62d00a822e50086482",
+        "gitBlob": "88b8db7b3741c2792dc22f02186feec59c0078e0",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-002"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/examples/motor-axis/consumer.mjs",
+        "sha256": "1feada84195158d2a6c2317c25a962c2d325d6ee9165fae3561d14d1bef1c0df",
+        "gitBlob": "7d6787fad3e2c967be29b4c1b04af2354dd2cfc3",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-003"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/tools/qa-motor-axis.mjs",
+        "sha256": "82c9849378808a609debe1ba4a8a5c0116b16deccc61dbf30e1616a9a81beac6",
+        "gitBlob": "a3a07e7374e48fa8da450942118e52cf081b5297",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-004"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/tools/qa-installed-motor-axis.mjs",
+        "sha256": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9",
+        "gitBlob": "7effd4f15d0e59a260e7e3f4b57d68d2b30a1fa3",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-005"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/debug-runtime.mjs",
+        "sha256": "41a0736e5bfab80fa0f0c06a649c6d70d3026db1c60951d30f9bcfb50612d355",
+        "gitBlob": "1133c155f51bfa9d1b9e8d4409db73754fd96e1f",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-006"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/final-sha256.json",
+        "sha256": "51973cc13c5b01b46511b6b219c449129798fde72b79a7536b72c911420d2990",
+        "gitBlob": "2db56db5e92cfa29aa5c3f03ea615125cac4fe07",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-007"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-after-abort-fix.log",
+        "sha256": "393098baf7c55e2c3e1a2305ca3044db3aa3eb268b3fca307929a05bb763a81f",
+        "gitBlob": "9adce2f600a6cae8972ab3d13b2cc894d1dc625b",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-008"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-current.log",
+        "sha256": "539fd1b40b21ddffafefd656794ddda6fff6867c6cc4490bcb2dd20bae3d0ba7",
+        "gitBlob": "b3317868dfdb24b34ccd5cacb5df38f1773184f1",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-009"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-final.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-010"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-final.log",
+        "sha256": "6db59665d9fac45ebefd14d840af8a30774ec75f4b39f741217de250213532ef",
+        "gitBlob": "a8303ec691d985b5e84b0463e6d53acf537a32f3",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-011"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-green.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-012"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-green.log",
+        "sha256": "01f69a8b5d08e040c205d865f3ae28b9cb752b9c5e05015a7d2b4ce1c8636c71",
+        "gitBlob": "e55079ba6c5a62697f7ac9fab5ea7de699292706",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-013"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-initial.exit",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-014"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-initial.log",
+        "sha256": "e19835bedcec52dfa67c029cb532cff63d4879208161b689814c837168463e67",
+        "gitBlob": "9af280b0b7cc5ee14b61bde042425bc3fa7cfa7f",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-015"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/focused-tests-with-ownership.log",
+        "sha256": "1889521f36bda81bad157e9e536ee91b41b7d59d98a9518169fe92483b7103fa",
+        "gitBlob": "c47b45cfa4ed586d67d464f9797d6e6d48aa6612",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-016"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/initial-test/motor-axis-gateway.test.ts",
+        "sha256": "06148374ce221bdcfc9ff5af6b5acd43cf94fb6db45b5771bab2713dc86cd211",
+        "gitBlob": "eaf516565918374c0a911730a8862891b9fc6247",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-017"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/lint-six-results.json",
+        "sha256": "19ab54689897b4ec32f1cf328a14f77777e36394c79aac153a19d8b7dfe06d27",
+        "gitBlob": "701a8a2e7db128d5285fb94fa97e764197718ebd",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-018"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/lint-six.mjs",
+        "sha256": "61fcbe48d1b9b335c8214f82b4debddab5bc505438463c4bc22f4c38c3954524",
+        "gitBlob": "9927cee4c92c061d83daff1d536da6d5ad6246fd",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-019"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-abort-authorizer.exit",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-020"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-abort-authorizer.log",
+        "sha256": "235cf7c2f5808a55e20f850fdc4c43dc0e7ae91b0be1ad930279cc5b1a2d0535",
+        "gitBlob": "ed7b233805dda5ebf291669aede09c9ea2438921",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-021"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-absent-import.exit",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-022"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-absent-import.log",
+        "sha256": "a4f2c236cb5dec2b21c9f9704c4127baa7515cf7463cbf95e5bf8fcafd235d1a",
+        "gitBlob": "379f8aeec413a7d5b43394452cf554390d3c8d78",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-023"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-policy-invalidation-order.exit",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-024"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/red-policy-invalidation-order.log",
+        "sha256": "dae6d6ca4e9024f73f2f2094a78b3caa26ef57dfff48920dd1e9e4f18456072d",
+        "gitBlob": "36bdf048052d9e5852aeb2ab3340c47abed5c646",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-025"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/register-connect.mjs",
+        "sha256": "cae91c134e2a76de9daee8dcb5d618a00513761fe427c1eaf80cf6bb81746724",
+        "gitBlob": "9c600694b6461878ddd12753ee0661cd0da3f5d5",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-026"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/scoped-lint-final.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-027"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/scoped-lint-final.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-028"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/scoped-lint-initial.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-029"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/scoped-lint-initial.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-030"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-after-policy-fix.log",
+        "sha256": "dae6d6ca4e9024f73f2f2094a78b3caa26ef57dfff48920dd1e9e4f18456072d",
+        "gitBlob": "36bdf048052d9e5852aeb2ab3340c47abed5c646",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-031"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-after-release-fix.log",
+        "sha256": "56f1b2b1c30c4accfd69f2e85ab878b8de8287a84f1e770a72eac064e65ce7f0",
+        "gitBlob": "0a27d9df40e19c9876ed164f752e9ef1971394ea",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-032"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug.log",
+        "sha256": "cf3aabb745d57e03b68c8ad2e8d21e8836aa5239ebd3a3610e763315512fa590",
+        "gitBlob": "492f7eb7ea8123f53d3b32439703482d6d3881d5",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-033"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug2.log",
+        "sha256": "cf3aabb745d57e03b68c8ad2e8d21e8836aa5239ebd3a3610e763315512fa590",
+        "gitBlob": "492f7eb7ea8123f53d3b32439703482d6d3881d5",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-034"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug3.log",
+        "sha256": "d770ba114286526dcee4329c5ab72c3e691a549997919beba4fac787d0f87d67",
+        "gitBlob": "cb3813672a3f017d90707c146de42117d9502316",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-035"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug4.log",
+        "sha256": "9dc3a2bdbaf96ad9d69f58b2fe87c9669f2c20d596d52aee41a4c0f242ea3574",
+        "gitBlob": "e1048b4def2eb147f20cb1f7ac73513106f6c9c8",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-036"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug5.log",
+        "sha256": "32e8ea824c9509d22aed50d65438c8f6770293cbb08213d744f2a20204d49010",
+        "gitBlob": "288c83c4ea6cca99779a1d3a7715ad34d3e57c48",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-037"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-debug6.log",
+        "sha256": "f0ef922c791b9eb14550fa03b9de1419d303e9c3c7acad379a3cd3cebabe85e8",
+        "gitBlob": "0947b01e332c58b1cea41d4e650db41a45a61335",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-038"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-final.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-039"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-final.log",
+        "sha256": "acc18cf78c1eedb03192a3ec350bdd7252b0dfe2d8ff1a83234fd79df426e4fa",
+        "gitBlob": "24e94373d6021ea52ef5958f35c62f634421ea15",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-040"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-freshness-interlocks.log",
+        "sha256": "132e1fc70e01c5177bf40e5525a36d0e8016fcd6dea0888c58aad48007c44657",
+        "gitBlob": "20405e7083f31e6313c2e9f7b99566613aa65eef",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-041"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-initial.exit",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-042"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-qa-initial.log",
+        "sha256": "d9f11a0401daee4381b954bc078dae65f8b54113b359555772468f4ce5d8e8b3",
+        "gitBlob": "13f3dd7de03a6d20b387afe1aba0127a3de76603",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-043"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-receipt-current.json",
+        "sha256": "1c6a3cdfac0a833feba70460949cd715f750809089a8aa5d8cc7e77294203755",
+        "gitBlob": "4cc6d00d489219216b09f0f99a7e1e92a0514b4a",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-044"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-receipt-final.json",
+        "sha256": "bde6263a87b93fad15372bdf8157a3f2c5f739bbf150c7d8738471b95738a1e1",
+        "gitBlob": "5668f96846a022f202c103cb49183cfaa37cdab7",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-045"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/source-receipt.json",
+        "sha256": "faa044fcd73b9ae382d11612737d12abe72a28b7207cd38a93dbb7886663435a",
+        "gitBlob": "b2c4d66802e4a0eefdbd2f4c15ef45324658f090",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-046"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-final.exit",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-047"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-final.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-048"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-initial.exit",
+        "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "gitBlob": "0cfbf08886fca9a91cb753ec8734c84fcbe52c9f",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-049"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-initial.log",
+        "sha256": "3b32d54f4d9599847feaf337ca33f29c4bdb31243163f2a82ddd08dc4cfeebc9",
+        "gitBlob": "092006249e3e1472e5b0f4b98cc7b50a55b787a4",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-050"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-second.log",
+        "sha256": "2f8aff9b92fd728340664271b8e587cdc081a8179ea069de673da26c258ad2eb",
+        "gitBlob": "3c19f2fedd24b28ea9c255e117fa9b6b8768f4b7",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-051"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/targeted-types-third.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-052"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/tsconfig.json",
+        "sha256": "e5960f99fab9926108646164be4e37dee961a1312024041ce4db8242aed09e20",
+        "gitBlob": "c5063a13f1246175ec8337aa04730f951cd45422",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-053"
+      },
+      {
+        "path": "/tmp/101-motor-axis-draft/evidence/tsconfig.tsbuildinfo",
+        "sha256": "6c46d9edff9fee49127ed65fc6741116ed5ba19457e80bf68da8364eb24f6f96",
+        "gitBlob": "c2d0eae307e879bd7b16bb60745d27c3d10f8c9c",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-054"
+      },
+      {
+        "path": "/tmp/101-motor-interface-next-plan.json",
+        "sha256": "0621773db3dda87b5449e46df83482ed9698e3e57637e82a53fd0294d27ecc96",
+        "gitBlob": "44a0e75c5be48a517314ac6e3eeed033983cb847",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-055"
+      },
+      {
+        "path": "/tmp/101-motor-interface-root-approval.json",
+        "sha256": "dd63d4f622959d06a1feb5dbd32e5fb97e44f6f6857915f40d3ff2617a9a27ec",
+        "gitBlob": "5e18530f2dde53c4e9914b19dc86b68d2da519bd",
+        "ref": "refs/codex/evidence/2026-10-08-motor-axis-draft/evidence-056"
+      }
+    ],
+    "firstStrictTypingFailure": "/tmp/101-motor-axis-repair/evidence/gateway-strict-types.log"
+  },
+  "primarySources": [
+    {
+      "title": "Linux kernel PWM interface",
+      "url": "https://www.kernel.org/doc/html/latest/driver-api/pwm.html",
+      "facts": [
+        "The kernel API applies period, duty cycle, and enabled state together.",
+        "Consumers cannot rely on a disabled PWM producing a particular output state.",
+        "pwm_get_state reports the last requested state and may differ from what hardware implemented; it is not independent position feedback.",
+        "A later hardware adapter must use an appropriate selected driver and cannot infer motion from command state."
+      ]
+    },
+    {
+      "title": "Linux GPIO character-device v2 API",
+      "url": "https://www.kernel.org/doc/html/latest/userspace-api/gpio/chardev.html",
+      "facts": [
+        "The official documentation warns against userspace bit-banging when a proper subsystem driver exists and points to PWM/SPI/I2C subsystems.",
+        "GPIO edge events carry timestamps plus request-wide and per-line sequence numbers; the default clock is monotonic and not wall time."
+      ]
+    },
+    {
+      "title": "Linux GPIO v2 line event read",
+      "url": "https://docs.kernel.org/userspace-api/gpio/gpio-v2-line-event-read.html",
+      "facts": [
+        "Edge events are kernel-buffered and read in detection order.",
+        "Logical polarity can differ from physical polarity, so an eventual limit/interlock adapter needs an exact selected configuration and independent validation."
+      ]
+    },
+    {
+      "title": "Linux IIO buffers",
+      "url": "https://docs.kernel.org/driver-api/iio/buffers.html",
+      "facts": [
+        "Buffered sensor data must be interpreted from scan metadata including endian, signedness, valid bits, storage bits, repetition, and shift.",
+        "A later physical feedback adapter must bind and validate the selected scan layout rather than assume a byte format."
+      ]
+    },
+    {
+      "title": "Linux IIO core elements",
+      "url": "https://docs.kernel.org/driver-api/iio/core.html",
+      "facts": [
+        "IIO exposes an explicit device timestamp clock and timestamp acquisition.",
+        "A later physical adapter must retain source clock identity and supply an explicit mapping before source capture time can be compared with gateway time."
+      ]
+    },
+    {
+      "title": "Node.js timers",
+      "url": "https://nodejs.org/api/timers.html",
+      "facts": [
+        "Node makes no guarantee that a callback fires at the exact requested delay or in a guaranteed order.",
+        "Promisified timers accept AbortSignal cancellation.",
+        "The software fixture can test configuration, ordering, cancellation, and observed tolerances but cannot establish hard real-time slew/deadman behavior."
+      ]
+    }
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/consumer.mjs",
+      "sha256": "9dd2c3a588d672a3919536bcf2d677ec58b1fdb3a7b86b45ffc0dc58b58233a8",
+      "gitBlob": "07513e8c874210d06c4b9f88ae4bcded596a1444",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-000"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/gateway.mjs",
+      "sha256": "ffb2bbb191ad07de49dd0761146f1c73342220afaba99b23f6c1285ef26e6892",
+      "gitBlob": "7fc1739510b9d47535109622a0383ceccf75fcdd",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-001"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/receipt.json",
+      "sha256": "fe9ae296ec3e991f4e909f5075e70508696bbdba7271e6903115924525c9d900",
+      "gitBlob": "9d5a628d370b0bb5ed9497d2657dbc7248dd0dcf",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-002"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/resolve.mjs",
+      "sha256": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+      "gitBlob": "bd82c5e1471344287eaef4c7b37bb6c61e7a00af",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-003"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/software-axis-fixtures.mjs",
+      "sha256": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+      "gitBlob": "92aaf9a04128f40d24a9c8e6adca06bd740b3a0c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-004"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-0.bin",
+      "sha256": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+      "gitBlob": "f7f43b560f2cef35c0b11f7b761b64b6d7cba491",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-005"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-1.bin",
+      "sha256": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+      "gitBlob": "b6491e09a248792a938d18792ad71eb753f2e3bb",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-006"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-2.bin",
+      "sha256": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+      "gitBlob": "92aaf9a04128f40d24a9c8e6adca06bd740b3a0c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-007"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-3.bin",
+      "sha256": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+      "gitBlob": "2bae64713f9ccf4dd35f615648e948157212cbe0",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-008"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-4.bin",
+      "sha256": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+      "gitBlob": "ebce74db378ee625eeeada57d1e255d9de831007",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-009"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-GiIhrb/source-5.bin",
+      "sha256": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9",
+      "gitBlob": "7effd4f15d0e59a260e7e3f4b57d68d2b30a1fa3",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-010"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/software-axis-fixtures.mjs",
+      "sha256": "485a0a57156ec5c56ba7749544c0dfc9938da88385abee98fa4f5625a1705c37",
+      "gitBlob": "15d88038cda5ddc5694973e4410001a202769860",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-011"
+    },
+    {
+      "path": "/tmp/101-motor-axis-exact-gates.py",
+      "sha256": "f780e006ea1ffb217ca1fb681a83480da7d0b095971e9dcab90ab3f25cfda29f",
+      "gitBlob": "4145681d5543e9aeb0d8aa1b04d9fb4bbbdd2e34",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-012"
+    },
+    {
+      "path": "/tmp/101-motor-axis-final-source-review.json",
+      "sha256": "624b784f24fac997768367e6bee8c0ba95500134f12ea824d87da6944ed6f3bb",
+      "gitBlob": "48d092377d8ceed5f109ace8bffa82d8cbb73434",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-013"
+    },
+    {
+      "path": "/tmp/101-motor-axis-gateway-final-review.json",
+      "sha256": "53926d7eeb7fb042799a3e78cbebdde33f17fafefc9a778242f928d664ac592a",
+      "gitBlob": "c602476d2753c18e76eb7ba42366449a2434e99a",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-014"
+    },
+    {
+      "path": "/tmp/101-motor-axis-initial-review.json",
+      "sha256": "519d3f1dbbcce6df9ead29a7adf9284c5e0cb41fbc81ad8254930a242f30d136",
+      "gitBlob": "7c792f4ad902ea16e934f25b3ca37b3df2a06b93",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-015"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation-final.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-016"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation-final.log",
+      "sha256": "2193e4705181f04bd8a0eef0431037ad296cbf37179ed7662191cf9e5ebf1664",
+      "gitBlob": "e14465b01888cd41d76dfcebceeccbd05f3a5e76",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-017"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation-initial.mjs",
+      "sha256": "6751eb654f4db7fc6bf8c7cfd06f788bcffd0b31190c0fcf7b0879d55c18f848",
+      "gitBlob": "59709a927bb74f5e45f418de0a7eda201bb5d69c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-018"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-019"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation.log",
+      "sha256": "7a41afd543ecfd2c1def87ccfd497598457b0ab7c3cf859300ec94d762b2d71b",
+      "gitBlob": "f1aa98344ddb6d3ace64b5040c064178ebbc8a56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-020"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed-mutation.mjs",
+      "sha256": "a46bc862ed43b03f338056b337cfb2c7ad7ec770debc95469e888dc0130f26ac",
+      "gitBlob": "e3c0dca8f435347701bb403b415af6501b098575",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-021"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-022"
+    },
+    {
+      "path": "/tmp/101-motor-axis-installed.log",
+      "sha256": "12b35319cf764b4174b7f0d367f48e946c9e95f84f748c8acfc9525d83001e17",
+      "gitBlob": "43515d5b20beaf6a643ddf85036028a950a75933",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-023"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/final-six-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-024"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/final-six-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-025"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/final-six-sha256.json",
+      "sha256": "3efebb00566b9e5dedc7e1b04bcf4155f0a2233254e0b537cef46312ef4e7f58",
+      "gitBlob": "d20231a3690564fd1123429884ead3331f997d19",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-026"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-delta-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-027"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-delta-red.log",
+      "sha256": "d24e0f372b5e9db7717fdd7faed321da989c74dd1268a08754b61d4bdec9668f",
+      "gitBlob": "d7366aa928506b998deb5b39ac6a9be879a3141f",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-028"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-final-focused.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-029"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-final-focused.log",
+      "sha256": "7c5f9ec35331b5371205fbba1803790fd5b66144db3a5363b66c344c46489b6a",
+      "gitBlob": "65197e6bf89a52d456b0f827c6a744a09f2ecc47",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-030"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-final-types.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-031"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-final-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-032"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-focused-green.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-033"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-focused-green.log",
+      "sha256": "4593583e6c0d2b78b3454b40b7e4e00318f866d1e47cfb59aae1b1ad0ace3d99",
+      "gitBlob": "f62857dd92195cce3cfaf51388a0b3ac2f9f8075",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-034"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-strict-types-green.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-035"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-strict-types-green.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-036"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-strict-types.exit",
+      "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+      "gitBlob": "0cfbf08886fca9a91cb753ec8734c84fcbe52c9f",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-037"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/gateway-strict-types.log",
+      "sha256": "482aeb90b0a2f6c81de764e06cb2cc5a57b54b83e60083ec379e7250deb80504",
+      "gitBlob": "5650424056f6dd904ce3e56d80799319fabab450",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-038"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/lint-six-results.json",
+      "sha256": "19ab54689897b4ec32f1cf328a14f77777e36394c79aac153a19d8b7dfe06d27",
+      "gitBlob": "701a8a2e7db128d5285fb94fa97e764197718ebd",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-039"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/lint-six.mjs",
+      "sha256": "2fadb90efc4089868cc9c779e7507980cd3cf8261ca57d2824be3898276cebed",
+      "gitBlob": "b278e7b2beac35ad2ff50ef9e679073aabecfea2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-040"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/rejected-gateway-delta.ts",
+      "sha256": "1eb7ebe37251fe45b53fc5ca098c071f3df73eb9df0770fd6cd3aa34f2ea8cfe",
+      "gitBlob": "70bb1df2b4b74dfb4aaa1b212870db00bfe150b0",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-041"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/rejected-source-manifest.json",
+      "sha256": "21c92a22d0942d29f9dbe01797458c96da3860c9867336f1cd34098b0bb976f4",
+      "gitBlob": "59026192d3fcb78cdf15eb3dca5b5ade40da14ec",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-042"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/repair-gateway.py",
+      "sha256": "c4ce559d7d188447044565d71a8cf2163f9757110cb246f21693f11ba5a24989",
+      "gitBlob": "663e4606b53cb8a0bce9314a383e3e3aaa97ced8",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-043"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/review-additional-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-044"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/review-additional-red.log",
+      "sha256": "fd875d487f91cbbac237d177079b971611a6a0e19e1f372bcdfc91cbc0e97302",
+      "gitBlob": "7015e0c26a2cd21e15e356f520173125b87f168e",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-045"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/review-regressions-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-046"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/review-regressions-red.log",
+      "sha256": "42444fdee2cfe3e6544e3ce1adf00ef375c02079458081a6fb82227f160ad217",
+      "gitBlob": "17b4e67e53a3a2b089d20b3d5b519059cc543c03",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-047"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/startup-final-six-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-048"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/startup-final-six-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-049"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/tsconfig.json",
+      "sha256": "19a92684cc6abd3c7c0dcd70022ccbaef0287ca8f41fbc2978ff50e94e848501",
+      "gitBlob": "c559fef954c414030544304a0354c1a4d4f7b54a",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-050"
+    },
+    {
+      "path": "/tmp/101-motor-axis-repair/evidence/tsconfig.tsbuildinfo",
+      "sha256": "3cb532a39b2d4fdded5dcb80cd9201f5e9ff0c628cbe4336cafd800379cf9990",
+      "gitBlob": "906fdd0b562d78cabab9cdda20ad1e3d0614d803",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-051"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/debug-public.log",
+      "sha256": "5ffade26e3183ba60c454a132c407e09ccf72570d2a2a5c4135c96396613cb73",
+      "gitBlob": "fafe7151ccf4d66bcb144a07fe3aae52d03f2175",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-052"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/debug-public.mjs",
+      "sha256": "25874a95e95252bbcc8b65d31ac1a49ec09d3a16edae7de00827a0f35f60b7a6",
+      "gitBlob": "50d1d0741ee9d10d6c6eff5a9fe4d089d338e43f",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-053"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/final-sha256.json",
+      "sha256": "b1580593e678fdfc296565873cd004a00b2e63b9cf0b5d8b89eaedde1d445c50",
+      "gitBlob": "389cb5e3b4f184b8c01b081304d4184b03c558b2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-054"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-protocol-final.log",
+      "sha256": "3c7a22f5d29f529ca21951f1ed2a0fd413eb653110d611b67c42ecc0cc717b5e",
+      "gitBlob": "b67ec910632ce3b4881eb0c751d44d57a960f487",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-055"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-protocol.log",
+      "sha256": "0783af357e2285b4b51a384c84dca75f91e6e8ea998223bbf8fead9eafe0cddc",
+      "gitBlob": "e092bb1dd7ebbdacce9c9908f6b5ae1eec356e86",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-056"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-public-authority-final.log",
+      "sha256": "410338ce2d45fc271a7d76e3c795cd9c52b15628394e6b5ea6c04386721c8426",
+      "gitBlob": "001e8c186428d961f28e2f28175910b1a7d4c6ea",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-057"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-public-authority.log",
+      "sha256": "e3166ba31998668845a6c5bb429156a2ed12aeba93617bb9697e58a16822971b",
+      "gitBlob": "f8dfdd406d313e0ae96b66842f45bb4382c17130",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-058"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-replay.log",
+      "sha256": "af9eb0529b2ac01fc33c9e10d0d52cb9fefdb4460a0945ffc065fdb5d8a27f2d",
+      "gitBlob": "23f4aa3e84c5ee9dd41c51d460628dd9679f1c20",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-059"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/green-startup-waiter.log",
+      "sha256": "97bbb9b75e1d7654effb6272becf0af3fc4ffe70deb1d06f376d0d4d972196be",
+      "gitBlob": "73a9ed430b4d7a1196d3cc410cff1df89fa16c9f",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-060"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/interim-source.json",
+      "sha256": "f03b3ce5b025c6db4538cf7e61b57585cacd4c280dee5acd07be030b456f765e",
+      "gitBlob": "f7c13bb9febf7aeef503dfe7ffe84bf4135f56d9",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-061"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/interim-source.log",
+      "sha256": "e55fe5f0a39768254835b6dc03d69dbb6667044dbf66288d945d1771e8e3daa1",
+      "gitBlob": "a158be27036108a0e1f46dcf6e00cb1cccd703d2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-062"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/lint-owned-final.log",
+      "sha256": "de95b0d8ea4e2d6982dec655dfda01e16de09ece0e7df3554425919f815c7ca2",
+      "gitBlob": "1a3b8daff252a910327a43589b4dc47dcce140ae",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-063"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/lint-owned.log",
+      "sha256": "de95b0d8ea4e2d6982dec655dfda01e16de09ece0e7df3554425919f815c7ca2",
+      "gitBlob": "1a3b8daff252a910327a43589b4dc47dcce140ae",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-064"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/lint-owned.mjs",
+      "sha256": "2d53c1ea59ea644183588423b55a221e89bf7a62f3d19e4796d78f03900b3445",
+      "gitBlob": "08c9efc0e4836f96d60cc10b94642bd1608f2f3c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-065"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/lint-results.json",
+      "sha256": "ebd1f94995dd994ed67154c8fd182fa43636096dfc1865fa849a7ea22f09f83e",
+      "gitBlob": "1b25306b8e5c3067c025add03ff1bcb5936c65cd",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-066"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/lint-startup-final.log",
+      "sha256": "de95b0d8ea4e2d6982dec655dfda01e16de09ece0e7df3554425919f815c7ca2",
+      "gitBlob": "1a3b8daff252a910327a43589b4dc47dcce140ae",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-067"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/protocol.test.mjs",
+      "sha256": "ab83638dce1ba3e004b19854cd434af9d6566ae5b2239b62970a870859c9e0ac",
+      "gitBlob": "83ffa9bb857f878084c65116f352ec827c6892f1",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-068"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/provider-under-test.mjs",
+      "sha256": "03c7487fc67b1ae1a5282832b5df3a59412c39f93c0062c0ea1f8b9ec225ed11",
+      "gitBlob": "8b27d152f6f03837278b78e7761aaad9c422c80c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-069"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/public-authority.test.mjs",
+      "sha256": "cb64078cf92f647b2c13f7f0ef462703b33b6b108b7fb3f94bd38f57c36bbaa7",
+      "gitBlob": "733b0a3dae47a61ad014516f5cfe932a81280fce",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-070"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-protocol.log",
+      "sha256": "6fc3a6ca7e1e2ff0a1097fe85ee705e33904dab52cc10d090a6e608cfccb024a",
+      "gitBlob": "cb7bfa5b64a0c65256db5eb7ec43da272c5fe45e",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-071"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-authority.log",
+      "sha256": "f6dc6ce836af06b9747851cfe5045418ee8153ab584f846ce24330248a3a15d5",
+      "gitBlob": "c1d336d8289b6cec77e1386ffab1fe347eb737ac",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-072"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-completed.log",
+      "sha256": "0470506e1eda657eaf792439383714c3a2dee44f0ecde30c602b0294cbd6ca1b",
+      "gitBlob": "5e0bbd56f8471edf1aec162283dd25fa6de68ab2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-073"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-expiry.log",
+      "sha256": "3acb9259a1c36d7ee6e407de00d2f5d1d6030d2f05d30735bd691a22960c127e",
+      "gitBlob": "4662a9a7a399b523a7c2352e4840c87c6f00ffcb",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-074"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-expiry.mjs",
+      "sha256": "d1f772b29d9c76d804135a70c5d87fd05dff8c0c2e80671e20952e82766c6203",
+      "gitBlob": "b84c2c7c4819a18afd17e3fe9d5d71f7791f8989",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-075"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-revoke.log",
+      "sha256": "65626a9acf8f858c1889b95f6b7771b5102aee884693b701e5685e7facdd58f9",
+      "gitBlob": "02fd91327a30ea57bf23911e302c732632aff07d",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-076"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-public-revoke.mjs",
+      "sha256": "aa2575aa0a9d74fd8aa02efbec75768f81e95c8a0820542dcc7a39dee96f7116",
+      "gitBlob": "3b14a626918f4a43a49c4b16fc92ac17418ce083",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-077"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-replay.log",
+      "sha256": "85ba1636975a415398811f4e697e566b01bf6c1a21c3b62f04aace876a866380",
+      "gitBlob": "163ec3d3b5ed3868ca9f7bd5ce33cf25ce95d3d0",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-078"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/red-startup-waiter.log",
+      "sha256": "94a2d09cc82877a4c9940d90dd9cf89bed5037ec7d0eaefd2dd8bd92e00cd400",
+      "gitBlob": "72323476190b200adcdcfb3a19126b4e2c357d5e",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-079"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/register-connect.mjs",
+      "sha256": "cae91c134e2a76de9daee8dcb5d618a00513761fe427c1eaf80cf6bb81746724",
+      "gitBlob": "9c600694b6461878ddd12753ee0661cd0da3f5d5",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-080"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected-startup-delta/consumer.mjs",
+      "sha256": "d30395e2fa7f0545034db802621b5bece60839c791e36518cfdf9fe94493fa0e",
+      "gitBlob": "71aa9a177da90acb7517e3e8b4e19a18fc158a2c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-081"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected-startup-delta/qa-motor-axis.mjs",
+      "sha256": "cc4172e9c7a1e36ed43c883be21e2f50b63fcc564d53eea94b2dc04f64555b63",
+      "gitBlob": "7d666e67a141afd7827632bf702878641a3c563f",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-082"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected-startup-delta/software-axis-fixtures.mjs",
+      "sha256": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+      "gitBlob": "92aaf9a04128f40d24a9c8e6adca06bd740b3a0c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-083"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected3/consumer.mjs",
+      "sha256": "1feada84195158d2a6c2317c25a962c2d325d6ee9165fae3561d14d1bef1c0df",
+      "gitBlob": "7d6787fad3e2c967be29b4c1b04af2354dd2cfc3",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-084"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected3/qa-motor-axis.mjs",
+      "sha256": "82c9849378808a609debe1ba4a8a5c0116b16deccc61dbf30e1616a9a81beac6",
+      "gitBlob": "a3a07e7374e48fa8da450942118e52cf081b5297",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-085"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/rejected3/software-axis-fixtures.mjs",
+      "sha256": "d29cee051902bcb37d682bb3438eb2c3445abb6304d81e62d00a822e50086482",
+      "gitBlob": "88b8db7b3741c2792dc22f02186feec59c0078e0",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-086"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/replay.test.mjs",
+      "sha256": "9730d00f5d972fc0f570b76b2255ff8e7cc9c1cb0067cd8e1dfcdaa182b8346a",
+      "gitBlob": "90d355457dac5e4bf34ba580856848fcb94b0907",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-087"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-adverse.json",
+      "sha256": "442b9e8a57367bdf68b0bc39192f991560f664ca10b76db4534bfe2c6217986d",
+      "gitBlob": "7fd4241dc8a9b3bebfb01a7710b1b751c2eea7ad",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-088"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-adverse.log",
+      "sha256": "132c9f9747ac2ef8f70ae20e8d45eaedd82161a4fa4f0ba70282fc80fbbd2163",
+      "gitBlob": "33866ac8d90620bc05cda2587fbfe720aafb5c34",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-089"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-authority.json",
+      "sha256": "fb1adfb12e6990d15eba35b744092ae2a039e4f653e83f3ec392f854d3ac1db5",
+      "gitBlob": "1441571be7e277ecc08689a9896abeb9af6d52bc",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-090"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-authority.log",
+      "sha256": "1ea50adf769e04590122708af88f402034a07ca9e9ea97c390035c50083f8a29",
+      "gitBlob": "56ad93c8896e7f127ace4434fba87c2515aa61aa",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-091"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-feedback.json",
+      "sha256": "18bd57a0fe6168cfae5632a0c64f628926e011710b85ddeea3d34ef2d6d0c2d5",
+      "gitBlob": "67c78ad6aec6787812f88923c5ef8120476280d4",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-092"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-feedback.log",
+      "sha256": "cf016b15a59078daf67f8e1a1a066e22c955f33ec72f72b17fab24b258074b17",
+      "gitBlob": "769cfb2ea75ad09a25b69f340cf80bb9bf13442a",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-093"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-new.json",
+      "sha256": "a38c240f3a27ddd88f5c3d3b4abc312adc883c8eedc8a049660aa442b3750c87",
+      "gitBlob": "cfcb07cb32d01d2f35f4ac879a0c28442ec29796",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-094"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-new.log",
+      "sha256": "5125322cd4f2cc77e656602775b3b10de168f4c2043e6d4c051faecf7e0fe320",
+      "gitBlob": "ee29420a2f7d931eb1e3846d44a27451fa90bed2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-095"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-protocol.json",
+      "sha256": "b8055e741cdd91f53e25f7464dddfade39ac652d85cb83401c8dc9193574ed99",
+      "gitBlob": "65a5d6bfcf67a8b41d0749b62fd13f5ce97d2051",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-096"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-protocol.log",
+      "sha256": "0e94e9c820e96cb2d716a8c6363b037f9a1bd1c093741fe8899319dbf947b4dd",
+      "gitBlob": "084c21bf52d38dd6d9e03a0f65188f98c44c7bca",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-097"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-qa-final.log",
+      "sha256": "6a7620023bc7cea6b4951244f82a445cd69d86e129c12466f5c417a83b1b6c00",
+      "gitBlob": "f0174b73ba4bfd00356ce363b97fcca61b4356e2",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-098"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-receipt-final.json",
+      "sha256": "33c8ba44c714383487784f5a7fcc0e5af003bb6c763c89092d16b205aca00a95",
+      "gitBlob": "9d6dbc9e81e556e8044b1345be9b4a2b24bec6d6",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-099"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-startup-final.json",
+      "sha256": "9408b63370d25f4d0b427d4966f094dc7a23fb38ef34ba829ebe6ad143fdb4b1",
+      "gitBlob": "aa26964f9aafbc6bd2e2f43b82b0a324e6442ea9",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-100"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/source-startup-final.log",
+      "sha256": "5535bda3df31bd22b6f38a71d8da28b9ea9f18dfeb44a5d337e6f7322144311a",
+      "gitBlob": "6a6506d38c04e53054d903a4c04f2eec82b83899",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-101"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/startup-final-sha256.json",
+      "sha256": "391098a2183b73c87f321ff5c440308e3f7e4dd350b0974514cd8688de1ed9fe",
+      "gitBlob": "ff93391369282b08a25772c7c97ba2b69702d123",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-102"
+    },
+    {
+      "path": "/tmp/101-motor-protocol-evidence/startup-waiter-regression.mjs",
+      "sha256": "6ff6362d9ef0ec87b12c9f6c47a46be6f65a1916281abd07efc6503e0c126d13",
+      "gitBlob": "3a93f9c38c74bd1b76d399a95ee1a439d9de36f3",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-103"
+    },
+    {
+      "path": "/tmp/101-motor-axis-record-evidence.py",
+      "sha256": "802eb6aacf5b6f7adc3fa194355470e1ada20d91561beb04c95e7c2f8bbe5683",
+      "gitBlob": "0630f6fc7b55a3372a90f1a32f2f41eefa816118",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-104"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/consumer.mjs",
+      "sha256": "9dd2c3a588d672a3919536bcf2d677ec58b1fdb3a7b86b45ffc0dc58b58233a8",
+      "gitBlob": "07513e8c874210d06c4b9f88ae4bcded596a1444",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-105"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/gateway.mjs",
+      "sha256": "ffb2bbb191ad07de49dd0761146f1c73342220afaba99b23f6c1285ef26e6892",
+      "gitBlob": "7fc1739510b9d47535109622a0383ceccf75fcdd",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-106"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/resolve.mjs",
+      "sha256": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+      "gitBlob": "bd82c5e1471344287eaef4c7b37bb6c61e7a00af",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-107"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-0.bin",
+      "sha256": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+      "gitBlob": "f7f43b560f2cef35c0b11f7b761b64b6d7cba491",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-108"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-1.bin",
+      "sha256": "ec4eaf54531d8a2374ae0a26cd9eae5c11f8384e8966668990c2149de7f1eb4e",
+      "gitBlob": "b6491e09a248792a938d18792ad71eb753f2e3bb",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-109"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-2.bin",
+      "sha256": "a4a76b4b5e4d70b4f69e46c53030e5709f759d74a7ec52749f5341701bb46d8a",
+      "gitBlob": "92aaf9a04128f40d24a9c8e6adca06bd740b3a0c",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-110"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-3.bin",
+      "sha256": "72c48d8d174041974ec4c89564628b4ade9e3ed437d10e1e64395af47faecc44",
+      "gitBlob": "2bae64713f9ccf4dd35f615648e948157212cbe0",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-111"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-4.bin",
+      "sha256": "51b5d76ad74e071d052daf96366aa3ed2d6d22f34eec2d2d7439eba2364b85cc",
+      "gitBlob": "ebce74db378ee625eeeada57d1e255d9de831007",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-112"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/motor-axis-connector-eqGtJa/source-5.bin",
+      "sha256": "0d5b35b3fa0e4b693caf59ac937158e01abe896bd6a16b0236100e83ac79a3f9",
+      "gitBlob": "7effd4f15d0e59a260e7e3f4b57d68d2b30a1fa3",
+      "ref": "refs/codex/evidence/2026-10-08-motor-axis/evidence-113"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-motor-axis/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-motor-axis/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact frozen candidate result proves broad gates. Fresh build required before rendered checks; never commit red."
+  },
+  "acceptance": "A10 stays partial. Selected bounded software axis only. Physical actuator/drive/mechanics, independent calibrated position/limit sensor, hardwired interlock/deadman, power-loss behavior, measured slew/release/holding/current/force and broader motor/servo/valve profiles remain open. No task-checkbox or support-row promotion."
+}

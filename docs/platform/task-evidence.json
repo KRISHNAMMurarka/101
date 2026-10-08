@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 175,
+  "revision": 176,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12947,6 +12947,32 @@
         "Selected isolated low-energy actuator, independent contact/limit sensor and hardwired interlock/watchdog instruments required for hardware acceptance"
       ],
       "supportRows": []
+    },
+    {
+      "id": "motor-axis-2026-10-08",
+      "revision": "720dd6f23aa08dc614e20a1f475fe54eaad67dacceeacfe02c799a7bcab6552b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-motor-axis.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; unchanged verified seven-package SDK; distinct actual software actuator and independently scripted feedback children.",
+      "reproduction": "24 focused gateway cases,31 actual producer/protocol/source checks, preserved genuine old red regressions and rejected bytes, clear independent gateway/protocol/startup delta reviews, ordinary installed SDK caller and executed artifact mutation rejection; exact candidate gates referenced by receipt.",
+      "scope": "Selected0..10mm integer software axis, virtual limits/slew/deadman/interlock, original authority and paired ownership/settlement. Physical actuator/position/limits/safety/power-loss and broader motor/servo/valve acceptance remain unverified.",
+      "failure": null,
+      "equipment": [
+        "Selected physical actuator/drive/mechanics, independent position and limit sensors, hardwired interlock/deadman and timing/current/travel instruments required for physical acceptance"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14735,7 +14761,8 @@
     {
       "id": "A10",
       "records": [
-        "pending-A10"
+        "pending-A10",
+        "motor-axis-2026-10-08"
       ],
       "dependencies": [
         "M01",
