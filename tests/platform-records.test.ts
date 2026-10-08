@@ -40,6 +40,13 @@ test('checked tasks require scoped passing evidence, while failed receipts remai
   assert.deepEqual(auditPlatformRecords(input), []);
 });
 
+test('open tasks cannot omit a record that declares evidence for them', () => {
+  const input = fixture();
+  input.evidence.records[0].tasks.push('T01');
+  assert.ok(auditPlatformRecords(input).some(error =>
+    error === 'foundation: task T01 omits evidence reference'));
+});
+
 test('catalog rows cannot advertise current acceptance using historical or incomplete qualification', () => {
   const input = fixture();
   input.catalog.rows[0].accepted = true;
@@ -112,6 +119,7 @@ test('a current failed receipt for the accepted target blocks support even when 
     failure: 'Current runtime reproduction failed', levels: ['runtime'],
     supportTargets: { embedded: structuredClone(row.target) } };
   input.evidence.records.push(failure);
+  input.evidence.tasks[0].records.push(failure.id);
   assert.ok(auditPlatformRecords(input).some(error => error.includes('embedded') && error.includes('current fail receipt')));
   failure.supportTargets.embedded.runtimeVersion = 'older-version';
   assert.deepEqual(auditPlatformRecords(input), [], 'a failure for a different target must not block this version');
@@ -126,6 +134,7 @@ test('an accepted row cannot cite failed or pending records as support evidence'
   input.evidence.records[0].historical = false;
   const pending = { ...input.evidence.records[0], id: 'pending-probe', result: 'pending', levels: ['runtime'] };
   input.evidence.records.push(pending);
+  input.evidence.tasks[0].records.push(pending.id);
   row.evidence.runtime.push(pending.id);
   assert.ok(auditPlatformRecords(input).some(error => error.includes('pending-probe') && error.includes('passing')));
 });

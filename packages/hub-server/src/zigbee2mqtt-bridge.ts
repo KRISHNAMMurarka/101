@@ -143,11 +143,22 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
   let caller:AbortSignal|undefined,grant:AbortSignal|undefined,expiresAt=0,client:MqttClient|undefined,retirement:Promise<void>|undefined;
   let timer:ReturnType<typeof setTimeout>|undefined,subscribed=false,metadata=false,bridgeOnline=false,deviceOnline=false;
   const detach:(()=>void)[]=[],cancel=new Set<()=>void>(),legs:Promise<unknown>[]=[],failures:string[]=[];
+  function recordFailure(error:unknown):void {
+    if(failures.length>=32)return;
+    let message='Unclassified gateway failure';
+    if(typeof error==='string')message=error;
+    else if(error&&typeof error==='object'&&!types.isProxy(error)&&types.isNativeError(error)){
+      const property=Object.getOwnPropertyDescriptor(error,'message');
+      if(property&&Object.hasOwn(property,'value')&&typeof property.value==='string')message=property.value;
+    }
+    // Unknown thrown values are never coerced or allowed to interrupt native cleanup.
+    failures.push(message.slice(0,256));
+  }
   const failure=(r:string)=>Object.freeze({ok:false as const,reason:r});
   function current(run:number,ready=false):boolean {
     return run===epoch && (ready?phase==='ready':phase==='connecting'||phase==='ready') && !!caller && !!grant && !aborted(owner)&&!aborted(caller)&&!aborted(grant)&&performance.now()<expiresAt;
   }
-  function track<T>(promise:Promise<T>):Promise<T> {legs.push(promise);void promise.catch(e=>failures.push(String(e)));return promise;}
+  function track<T>(promise:Promise<T>):Promise<T> {legs.push(promise);void promise.catch(recordFailure);return promise;}
   function wait<T>(native:Promise<T>,deadline:number):Promise<T> {
     return new Promise((resolve,reject)=>{
       let settled=false;
@@ -158,8 +169,8 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
     });
   }
   function retire(code:string,cause?:unknown):Promise<void> {
-    if(cause)failures.push(String(cause));if(retirement)return retirement;
-    phase='retiring';reason=code;epoch++;if(timer)clearTimeout(timer);for(const d of detach.splice(0))d();for(const c of [...cancel])c();
+    if(retirement){if(cause!==undefined)recordFailure(cause);return retirement;}
+    phase='retiring';reason=code;epoch++;if(cause!==undefined)recordFailure(cause);if(timer)clearTimeout(timer);for(const d of detach.splice(0))d();for(const c of [...cancel])c();
     const active=client;
     // Fence and create the shared retirement promise before any external callout.
     retirement=Promise.resolve().then(async()=>{
@@ -178,9 +189,9 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
         phase='closed';
       }finally{if(timeout)clearTimeout(timeout);}
     });
-    try{onUnavailable(code);}catch(e){failures.push(String(e));}return retirement;
+    try{onUnavailable(code);}catch(e){recordFailure(e);}return retirement;
   }
-  function watch(signal:AbortSignal,code:string){const fn=()=>{void retire(code).catch(e=>failures.push(String(e)));};Reflect.apply(add,signal,['abort',fn,{once:true}]);detach.push(()=>Reflect.apply(remove,signal,['abort',fn]));if(aborted(signal))fn();}
+  function watch(signal:AbortSignal,code:string){const fn=()=>{void retire(code).catch(recordFailure);};Reflect.apply(add,signal,['abort',fn,{once:true}]);detach.push(()=>Reflect.apply(remove,signal,['abort',fn]));if(aborted(signal))fn();}
   async function start(input:Readonly<{purpose:string;signal:AbortSignal;deadline:number}>):Promise<Readonly<{ok:true}|{ok:false;reason:string}>> {
     if(phase!=='idle')return failure(phase==='ready'||phase==='connecting'?'busy':'closed');
     const r=object(input,['purpose','signal','deadline']),purpose=text(r.purpose);if(!genuineSignal(r.signal))invalid();caller=r.signal;
@@ -189,14 +200,14 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
     if(aborted(owner)||aborted(caller)){await retire('cancelled');return failure(reason);}
     const request:ZigbeeApprovalRequest=Object.freeze({action:'read',endpoint,profile,topics,scope,purpose,originalDeadline:r.deadline,generation:run,captureTimeKnown:false,
       sessionMs:30000,messageLimit:256,totalByteLimit:1048576,budgets:ZIGBEE_LIMITS});
-    let approved:Record<string,unknown>|undefined;try{approved=object(authorize(request),['request','signal','expiresAt']);}catch(e){failures.push(String(e));}
+    let approved:Record<string,unknown>|undefined;try{approved=object(authorize(request),['request','signal','expiresAt']);}catch(e){recordFailure(e);}
     if(!approved||approved.request!==request||!genuineSignal(approved.signal)||aborted(approved.signal)||typeof approved.expiresAt!=='number'||!Number.isFinite(approved.expiresAt)||approved.expiresAt<=performance.now()||aborted(owner)||aborted(caller)||epoch!==run||phase!=='connecting'){
       await retire('denied');return failure(reason);
     }
     grant=approved.signal;expiresAt=Math.min(r.deadline,approved.expiresAt);const startupDeadline=Math.min(expiresAt,startedAt+ZIGBEE_LIMITS.startupMs);
     watch(owner,'owner-aborted');watch(caller,'cancelled');watch(grant,'revoked');
     if(!current(run)){await retire('cancelled');return failure(reason);}
-    timer=setTimeout(()=>{void retire('expired').catch(e=>failures.push(String(e)));},Math.max(1,expiresAt-performance.now()));
+    timer=setTimeout(()=>{void retire('expired').catch(recordFailure);},Math.max(1,expiresAt-performance.now()));
     let prerequisitesResolve!:()=>void;
     const prerequisites=new Promise<void>(resolve=>{prerequisitesResolve=resolve;});
     const ready=()=>{if(current(run)&&subscribed&&metadata&&bridgeOnline&&deviceOnline)prerequisitesResolve();};
@@ -204,21 +215,21 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
       const active=mqttConnect(endpoint,{protocolVersion:5,clean:true,reconnectPeriod:0,resubscribe:false,queueQoSZero:false,reconnectOnConnackError:false,
         connectTimeout:Math.max(1,startupDeadline-performance.now()),keepalive:5,properties:{sessionExpiryInterval:0,receiveMaximum:1,maximumPacketSize:ZIGBEE_LIMITS.metadataBytes+1024}});
       client=active;nativeClients=1;
-      active.on('error',e=>{void retire('transport-error',e).catch(e=>failures.push(String(e)));});
-      active.on('close',()=>{if(phase==='ready'||phase==='connecting')void retire('transport-closed').catch(e=>failures.push(String(e)));});
+      active.on('error',e=>{void retire('transport-error',e).catch(recordFailure);});
+      active.on('close',()=>{if(phase==='ready'||phase==='connecting')void retire('transport-closed').catch(recordFailure);});
       active.on('message',(topic,bytes,packet)=>{
         if(epoch!==run||client!==active||phase!=='ready'&&phase!=='connecting')return;
-        messages++;receivedBytes+=bytes.byteLength;if(messages>ZIGBEE_LIMITS.messages||receivedBytes>ZIGBEE_LIMITS.totalBytes){void retire('quota').catch(e=>failures.push(String(e)));return;}
-        if(!current(run)){void retire('expired-or-revoked').catch(e=>failures.push(String(e)));return;}
+        messages++;receivedBytes+=bytes.byteLength;if(messages>ZIGBEE_LIMITS.messages||receivedBytes>ZIGBEE_LIMITS.totalBytes){void retire('quota').catch(recordFailure);return;}
+        if(!current(run)){void retire('expired-or-revoked').catch(recordFailure);return;}
         try{
           if((topic===topics[2]&&packet.qos!==0)||(topic===topics[3]&&packet.qos!==1)||((topic===topics[0]||topic===topics[1])&&packet.qos!==0))invalid();
           const d=decodeZigbee2MqttMessage(topic,bytes,packet.retain,profile);
-          if(d.kind==='metadata'){if(!d.compatible){void retire('metadata-incompatible').catch(e=>failures.push(String(e)));return;}metadata=true;ready();return;}
-          if(d.kind==='bridge-status'||d.kind==='device-status'){if(!d.online){void retire('offline').catch(e=>failures.push(String(e)));return;}if(d.kind==='bridge-status')bridgeOnline=true;else deviceOnline=true;ready();return;}
+          if(d.kind==='metadata'){if(!d.compatible){void retire('metadata-incompatible').catch(recordFailure);return;}metadata=true;ready();return;}
+          if(d.kind==='bridge-status'||d.kind==='device-status'){if(!d.online){void retire('offline').catch(recordFailure);return;}if(d.kind==='bridge-status')bridgeOnline=true;else deviceOnline=true;ready();return;}
           if(d.kind!=='state'||!current(run,true)||d.retained||d.battery===undefined&&d.action===undefined)return;
           const reading:ZigbeeReading=Object.freeze({decoded:d,localSequence:delivered+1,receivedAt:performance.now(),receiptClockId:'zigbee-gateway-monotonic',payloadSha256:createHash('sha256').update(bytes).digest('hex'),receivedQos:0,mqttDup:packet.dup});
           if(!current(run,true))return;onReading(reading);if(!current(run,true))return;delivered++;
-        }catch(e){void retire('protocol-or-callback',e).catch(e=>failures.push(String(e)));}
+        }catch(e){void retire('protocol-or-callback',e).catch(recordFailure);}
       });
       const connected=track(new Promise<void>((resolve,reject)=>{
         const cleanup=()=>{active.off('connect',ok);active.off('error',bad);active.off('close',closed);};
@@ -230,7 +241,7 @@ export function createZigbee2MqttBridge(options:Readonly<{endpoint:string;profil
       const grants=await wait(subscription,startupDeadline);if(!current(run)||grants.length!==topics.length||grants.some((g,i)=>g.topic!==topics[i]||g.qos!==1))throw new Error('subscription-denied');
       subscribed=true;ready();await wait(prerequisites,startupDeadline);if(!current(run)||!metadata||!bridgeOnline||!deviceOnline)throw new Error('stale-bootstrap');
       phase='ready';reason='ready';return Object.freeze({ok:true});
-    }catch(e){void retire(reason==='connecting'?'startup-failed':reason,e).catch(e=>failures.push(String(e)));return failure(reason);}
+    }catch(e){void retire(reason==='connecting'?'startup-failed':reason,e).catch(recordFailure);return failure(reason);}
   }
   return Object.freeze({start,stop:()=>retire('stopped'),close:()=>retire('closed'),status:()=>Object.freeze({phase,reason,messages,receivedBytes,delivered,nativeClients,failures:Object.freeze([...failures])})});
 }

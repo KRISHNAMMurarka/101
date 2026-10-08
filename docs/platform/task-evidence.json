@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 180,
+  "revision": 183,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13054,7 +13054,7 @@
       "id": "zigbee2mqtt-bridge-2026-10-09",
       "revision": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
       "result": "pass",
-      "historical": false,
+      "historical": true,
       "levels": [
         "implementation",
         "contract",
@@ -13099,6 +13099,81 @@
       "failure": null,
       "equipment": [
         "Separately admitted existing Linux CAN/clock/namespace/interface and actual-version probe evidence; normative/manufacturer profile and representative calibrated industrial gateway/target for remaining scope"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "evidence-links-2026-10-09",
+      "revision": "355ed05e6395f576e42d586632f0cafd7f390a9043c7840799c1aa33df56788c",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "C07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-evidence-links.json"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0; actual ledger and source auditor with no support/checkbox promotion",
+      "reproduction": "Smallest backreference regression failed on original auditor; all11 focused tests and actual repaired ledger audit pass; exact integrated gates required by receipt before local commit.",
+      "scope": "Bidirectional evidence/task references only; four missing accepted partial evidence links restored. Existing results/scopes/qualifications remain distinct.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "zigbee-diagnostics-2026-10-09",
+      "revision": "bc813245ad27a89c2d547ad29101394cb991cf9b797cdd41db58d0211fca8a75",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-zigbee-diagnostics.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0, owned Mosquitto2.1.2, MQTT5.16.0, unchanged seven-package installed SDK and native-format software producer",
+      "reproduction": "Observed old diagnostic coercion failure;3 focused checks pass, fresh source and ordinary installed public SDK callers pass,12 actual executed-copy mutations reject/restored. Original accepted wave retained as historical source revision. Exact integrated gates required by receipt.",
+      "scope": "Current selected read-only Zigbee2MQTT reported battery/actions and bounded inert diagnostics/native cleanup; no commissioned hardware, source capture, Matter/Thread physical acceptance or full A06 promotion",
+      "failure": null,
+      "equipment": [
+        "Commissioned selected Zigbee gateway/target and Matter/Thread controller/device for remaining scope"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "matter-ws-switch-2026-10-09",
+      "revision": "2dc07b4cf348e3ab51d5d4ef280236e3aa1bb3c0eadd2aa30d18c23746ea8d37",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-matter-ws-switch.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0, WS8.21.0, separately owned native-format software producer, unchanged verified seven-package installed SDK",
+      "reproduction": "Reviewed six-source contract and actual original failures; source and ordinary installed public SDK callers with three owner/caller/grant revocations; eleven actual executed-copy mutation controls after natural caller closure; exact integrated gates required by receipt",
+      "scope": "Selected read-only Matter Server1.4.0 schema13 inventory/Switch position/InitialPress, lossless unsigned64 provenance, separate standing/public authority and joined native cleanup. No native controller, authentication/commissioning/CASE, Thread, physical capture/device or full A06 acceptance",
+      "failure": null,
+      "equipment": [
+        "Commissioned selected Matter controller/fabric/device, Thread and physical timing for remaining acceptance"
       ],
       "supportRows": []
     }
@@ -13162,7 +13237,8 @@
       "id": "C07",
       "records": [
         "pending-C07",
-        "contract-2026-10-02"
+        "contract-2026-10-02",
+        "evidence-links-2026-10-09"
       ],
       "dependencies": [],
       "equipment": []
@@ -14128,7 +14204,8 @@
         "pointer-provider-2026-10-02",
         "pointer-native-partial-2026-10-02",
         "phone-motion-lifecycle-2026-10-08",
-        "successor-repairs-2026-10-08"
+        "successor-repairs-2026-10-08",
+        "phone-neutral-calibration-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14149,7 +14226,8 @@
         "phone-motion-lifecycle-2026-10-08",
         "successor-repairs-2026-10-08",
         "ios-simulator-2026-10-08",
-        "camera-guidance-2026-10-08"
+        "camera-guidance-2026-10-08",
+        "phone-neutral-calibration-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14291,7 +14369,8 @@
         "phone-motion-lifecycle-2026-10-08",
         "successor-repairs-2026-10-08",
         "ios-simulator-2026-10-08",
-        "camera-guidance-2026-10-08"
+        "camera-guidance-2026-10-08",
+        "phone-neutral-calibration-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14831,7 +14910,9 @@
       "id": "A06",
       "records": [
         "pending-A06",
-        "zigbee2mqtt-bridge-2026-10-09"
+        "zigbee2mqtt-bridge-2026-10-09",
+        "zigbee-diagnostics-2026-10-09",
+        "matter-ws-switch-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -14952,7 +15033,8 @@
     {
       "id": "A14",
       "records": [
-        "pending-A14"
+        "pending-A14",
+        "onvif-snapshot-2026-10-08"
       ],
       "dependencies": [
         "M01",

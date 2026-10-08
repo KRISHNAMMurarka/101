@@ -276,3 +276,6 @@ export type { Zigbee2MqttProfile, ZigbeeAction, ZigbeeDecoded, ZigbeeApprovalReq
 
 export { createCanDiagnosticConnector, parseCanDiagnosticProfile, decodeCanDiagnosticFrame, encodeCanPortRecord, parseCanPortRecord, CAN_DIAGNOSTIC_LIMITS } from './canopen-diagnostic-gateway.ts';
 export type { CanDiagnosticProfile, CanDiagnosticRecord, CanDiagnosticReading, CanDiagnosticApprovalRequest, CanDiagnosticApproval, CanDiagnosticOptions, CanDiagnosticConnector } from './canopen-diagnostic-gateway.ts';
+
+export { createMatterWsSwitchConnector, decodeMatterSwitchMessage, MATTER_WS_SWITCH_PROFILE, MATTER_WS_SWITCH_LIMITS, MATTER_WS_SWITCH_POSITION_SCHEMA, MATTER_WS_SWITCH_EVENT_SCHEMA } from './matter-ws-switch.ts';
+export type { MatterSwitchRequest, MatterSwitchMessage, MatterPositionReceipt, MatterPressReceipt } from './matter-ws-switch.ts';

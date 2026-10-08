@@ -5,6 +5,30 @@ const profile = { id: 'example:zigbee2mqtt-switch', revision: 1, ieeeAddress: '0
 function checkedSettlement(results:PromiseSettledResult<unknown>[]) {const errors=results.filter(r=>r.status==='rejected').map(r=>(r as PromiseRejectedResult).reason);assert.equal(errors.length,0,errors.map(String).join('\n'));}
 const api = await import('./zigbee2mqtt-bridge.ts').catch(() => undefined);
 const bytes = (value: unknown) => Buffer.from(typeof value === 'string' ? value : JSON.stringify(value));
+test('unknown authorizer and withdrawal failures never invoke diagnostic coercion', async () => {
+  assert.ok(api);
+  for (const nullPrototype of [true, false]) {
+    let coercions = 0, withdrawals = 0;
+    const thrown: unknown = nullPrototype ? Object.create(null) : {
+      toString() { coercions++; throw new Error('diagnostic coercion must not execute'); },
+    };
+    const owner = new AbortController();
+    const connector = api.createZigbee2MqttBridge({ endpoint: 'mqtt://127.0.0.1:44444', profile,
+      ownerSignal: owner.signal, scope: { principalId: 'p', applicationId: 'a', sessionId: 's' },
+      authorize() { throw thrown; }, onReading() { assert.fail('denied input'); },
+      onUnavailable() { withdrawals++; throw thrown; } });
+    try {
+      assert.equal((await connector.start({ purpose: 'bounded denied read', signal: owner.signal,
+        deadline: performance.now() + 1000 })).ok, false);
+      await connector.close();
+      assert.equal(coercions, 0);
+      assert.equal(withdrawals, 1);
+      assert.equal(connector.status().phase, 'closed');
+      assert.equal(connector.status().nativeClients, 0);
+      assert.ok(connector.status().failures.every(message => message.length <= 256));
+    } finally { await Promise.resolve().then(() => connector.close()).catch(() => {}); }
+  }
+});
 function metadata() { return [{ ieee_address: profile.ieeeAddress, friendly_name: profile.ieeeAddress, supported: true, disabled: false, interview_state: 'SUCCESSFUL', definition: { model: 'WXKG01LM', exposes: [
   { type: 'numeric', name: 'battery', property: 'battery', access: 1, unit: '%' },
   { type: 'enum', name: 'action', property: 'action', access: 1, values: ['single','double','triple','quadruple','hold','release','many'] },
@@ -59,6 +83,40 @@ test('native retained prerequisites allow only new state and offline withdraws s
     assert.equal(c.status().delivered,2);await publisher.publishAsync('zigbee2mqtt/'+profile.ieeeAddress+'/availability',bytes({state:'offline'}),{qos:1,retain:false});await until(()=>withdraw.length===1);assert.notEqual(c.status().phase,'ready');
     await c.close();assert.equal(c.status().nativeClients,0);assert.equal(c.status().phase,'closed');
   }finally{await Promise.allSettled([c.close(),publisher.endAsync(true)]);await broker.close();}
+});
+
+test('unknown reading failures retire actual MQTT ownership without invoking object hooks', async () => {
+  assert.ok(api);
+  const { startOwnedZigbeeBroker } = await import('../../../tools/qa-zigbee2mqtt-bridge.mjs');
+  const { connectAsync } = await import('mqtt');
+  const broker = await startOwnedZigbeeBroker();
+  const publisher = await connectAsync(broker.endpoint, { protocolVersion: 5, reconnectPeriod: 0 });
+  const owner = new AbortController(), grant = new AbortController();
+  let hooks = 0, withdrawals = 0;
+  const thrown = new Proxy(Object.create(null), { get() { hooks++; throw new Error('object hook'); },
+    getOwnPropertyDescriptor() { hooks++; throw new Error('descriptor hook'); } });
+  const connector = api.createZigbee2MqttBridge({ endpoint: broker.endpoint, profile, ownerSignal: owner.signal,
+    scope: { principalId: 'p', applicationId: 'a', sessionId: 's' },
+    authorize: request => ({ request, signal: grant.signal, expiresAt: request.originalDeadline }),
+    onReading() { throw thrown; }, onUnavailable() { withdrawals++; throw Object.create(null); } });
+  try {
+    for (const [topic, value, qos] of [['zigbee2mqtt/bridge/devices', metadata(), 0],
+      ['zigbee2mqtt/bridge/state', { state: 'online' }, 0],
+      ['zigbee2mqtt/' + profile.ieeeAddress + '/availability', { state: 'online' }, 1]] as const)
+      await publisher.publishAsync(topic, bytes(value), { qos, retain: true });
+    assert.equal((await connector.start({ purpose: 'reported switch failure proof', signal: owner.signal,
+      deadline: performance.now() + 10000 })).ok, true);
+    await publisher.publishAsync('zigbee2mqtt/' + profile.ieeeAddress, bytes({ action: 'single' }), { qos: 0 });
+    const deadline = performance.now() + 1500;
+    while (!withdrawals) { assert.ok(performance.now() < deadline); await new Promise(resolve => setTimeout(resolve, 5)); }
+    await connector.close();
+    assert.equal(hooks, 0);
+    assert.equal(withdrawals, 1);
+    assert.equal(connector.status().phase, 'closed');
+    assert.equal(connector.status().nativeClients, 0);
+    assert.equal(connector.status().delivered, 0);
+    assert.ok(connector.status().failures.length <= 32);
+  } finally { checkedSettlement(await Promise.allSettled([connector.close(), publisher.endAsync(true), broker.close()])); }
 });
 
 test('native held SUBACK charges quotas and close joins held issued leg',async()=>{

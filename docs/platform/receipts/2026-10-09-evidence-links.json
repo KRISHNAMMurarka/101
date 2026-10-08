@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "status": "local-regression-and-audit-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "tools/audit-platform-records.mjs": "b883fedb1c78772c65daf5819ba19069fc0a66e118ef1b70bcf0e522ff105087",
+    "tests/platform-records.test.ts": "d8ed51e2816c9d85b8db027cad97dda1c4ab0ac0d3f76cf7fa8a8fa72b60fb5f"
+  },
+  "behavior": "Every evidence record that names a canonical task must appear in that task's evidence references, including open/partial tasks. Existing scope, results and checkboxes are preserved.",
+  "repairedLinks": [
+    {
+      "record": "phone-neutral-calibration-2026-10-08",
+      "tasks": [
+        "N03",
+        "N04",
+        "N13"
+      ]
+    },
+    {
+      "record": "onvif-snapshot-2026-10-08",
+      "tasks": [
+        "A14"
+      ]
+    }
+  ],
+  "validation": {
+    "oldRegression": "Observed expected backreference assertion fail against retained actual old auditor before repair",
+    "actualLedgerOldRed": "The repaired auditor exposed exactly four omitted links before data repair",
+    "focused": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0,
+      "skip": 0
+    },
+    "actualLedgerAudit": "pass"
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-platform-backreference-repair/raw-evidence-manifest.json",
+    "sha256": "26c9d6c8d21903157a693f7aff433e6ce5191528fd70ac64dca218cc43174b07",
+    "gitBlob": "ceb936a92823ac8c98ccf1d9cf13ba3b2608da4e",
+    "ref": "refs/codex/evidence/2026-10-09-platform-backreference/manifest",
+    "entryCount": 8
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/gates",
+    "policy": "Exact integrated candidate gates required before local commit; this focused receipt makes no broad-gate claim."
+  },
+  "acceptance": {
+    "tasks": [
+      "C07"
+    ],
+    "supportRows": [],
+    "physical": false
+  }
+}

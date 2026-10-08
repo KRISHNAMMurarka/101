@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/matter-ws-switch.ts": "2dc07b4cf348e3ab51d5d4ef280236e3aa1bb3c0eadd2aa30d18c23746ea8d37",
+    "packages/hub-server/src/matter-ws-switch.test.ts": "3026f5a4ed3956c0fbdca694d0ed1f068a679838f61f595a73f3ecc2e7bb93d4",
+    "examples/matter-ws-switch/producer.mjs": "515a927978cd6b88ac144a497922ac8edc485cfc479a2e026bb6beb140b65b9a",
+    "examples/matter-ws-switch/consumer.mjs": "4971f9268b87351c499fcc54ad5aa87d89a6320bbb399557dc9dbd4f1b05bb8a",
+    "tools/qa-matter-ws-switch.mjs": "3b639f123579a4362bf315e188381cdb6ebf398d503aae06853b4c9cc07a2626",
+    "tools/qa-installed-matter-ws-switch.mjs": "287aad047f66d7166ba82e11f6ce41a0fc9d98e5a87ffeea8019fbf62bf3a360"
+  },
+  "profile": {
+    "id": "example:matter-server-switch/1",
+    "revision": 1,
+    "producerContract": {
+      "server": "MatterjsServer1.4.0",
+      "serverCommit": "83b79084",
+      "matterJs": "0.17.9",
+      "matterJsCommit": "2a7d4bfe",
+      "schemaVersion": 13,
+      "minimumSupportedSchemaVersion": 11,
+      "sdkVersion": "matter-server/1.4.0 (matter.js/0.17.9)"
+    },
+    "endpoint": "Canonical ws://127.0.0.1:port/ws only",
+    "nodeId": "7",
+    "endpointId": 1,
+    "clusterId": 59,
+    "eventId": 1,
+    "featureMap": 2,
+    "numberOfPositions": 2,
+    "direction": "Observe selected live reported position and InitialPress; one fixed start_listening request, no device commands"
+  },
+  "bounds": {
+    "messageBytes": 32768,
+    "messages": 256,
+    "totalBytes": 1048576,
+    "outboundBytes": 4096,
+    "inventoryNodes": 16,
+    "attributeKeys": 64,
+    "jsonDepth": 8,
+    "jsonNodes": 2048,
+    "stringBytes": 1024,
+    "attempts": 8,
+    "sessionMs": 30000,
+    "openingMs": 2000,
+    "maxAgeMs": 1000,
+    "closeObservationMs": 2000,
+    "controlFrames": 64,
+    "controlPayloadBytes": 125,
+    "controlBytes": 4096
+  },
+  "semantics": {
+    "authority": "Private immutable exact request binds entire fabric inventory/event stream, profile, scope, generation, original purpose/deadline and limits; selected-only authority rejected before native effects. Separate ordinary public position/event routes need independent grants. Genuine direct-prototype Node owner/caller/grant signals only.",
+    "numbers": "Private lossless numeric tokens retain uint64 decimal lexemes through BigInt validation before narrowing; quoted/fractional/exponent/-0/prototype/duplicate key/quota inputs reject.",
+    "position": "Live integer0|1|null. Null withdraws position only and closes old route; fresh live position needs new public route authority. Cache, metadata and events never renew original position age.",
+    "events": "Reliable InitialPress event1/info priority1, newPosition0|1. Strict increasing uint64 event watermark within connection; no held/release synthesis or upstream loss claim.",
+    "fabricClaims": "Unauthenticated software producer claims from initial unwrapped server info. Both later wrapped updates and repeated unwrapped info compare fabric/compressed IDs; any changed validated claim retires with fabric-claim-changed before another reading. Exact matching metadata creates no authority, target or freshness. Wrapped update cannot satisfy initial handshake.",
+    "clock": "Immutable matter-ws-gateway-monotonic receipt age. Native timestamp type0 unverified system-ms/unknown boot;1 unverified POSIX-ms;2 server POSIX fallback. No epoch offset, source mapping or device capture claim.",
+    "scalarSchemaLimitation": "Existing public scalar schema has unit1/min0/max1. Wire decoder and receipt types enforce integer0|1; schema alone does not enforce integrality.",
+    "lifecycle": "Every genuine pre-upgrade TCP/WS close and issued application/pong write independently retained. autoPong:false exact echo. Original deadline withdrawal precedes callbacks; observation timeout never releases ownership/restart. Caller and producer IPC writes and genuine child exit/close independently joined.",
+    "diagnostics": "Retirement invalidates first. Unknown thrown values never coerce; native Error own-data message only,256 characters each/32 entries.",
+    "physical": false,
+    "clockMapping": null,
+    "captureTimeKnown": false
+  },
+  "validation": {
+    "acceptedPlan": {
+      "design": {
+        "path": "/private/tmp/101-matter-ws-switch-plan/design-review-1.md",
+        "sha256": "fe481ae7a3a337528a020d63edfb3f3d9c6f78223f63f94b77ccfe0ab852d684",
+        "gitBlob": "72d32145f69ea03fe906325df0b6989e7b45e1ab",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21362"
+      },
+      "implementation": {
+        "path": "/private/tmp/101-matter-ws-switch-plan/implementation-plan-review-1.md",
+        "sha256": "24dfcde4b08ea4ecc2120e9f05fb6f6b65b650cdf89ec58dfdb6663142b30dc6",
+        "gitBlob": "a707dcba0f5cf5e39182366d59ed2edc5a2d26bd",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21365"
+      },
+      "fabricAddendum": {
+        "path": "/private/tmp/101-matter-ws-switch-plan/fabric-claim-consistency-addendum.md",
+        "sha256": "22d68d5e8ff58b427f502a7eb07ba8f5d7aeae4d06e5d3f9c6fd9c658465e9eb",
+        "gitBlob": "b6c37e83b492f68dc97337c2c043b2275edfecfd",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21364"
+      }
+    },
+    "workerManifest": {
+      "path": "/private/tmp/101-matter-ws-switch-draft/evidence/owned-evidence-manifest.json",
+      "sha256": "d43ace34df52c937223dde148073cd1eeb8ca658861f32540d3970bd66fa0020",
+      "gitBlob": "23421f41939e7b10f4d9f0a13b794dc04b2e7a99",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21275"
+    },
+    "workerReport": {
+      "path": "/private/tmp/101-matter-ws-switch-draft/evidence/report.md",
+      "sha256": "8b64f16953349f7312d8ffeb1f9b99277c6d985c122021e9d18249d660858d48",
+      "gitBlob": "3204518e642f8e1e6d25389ce3d23cf41e5ed74d",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21284"
+    },
+    "originalExactSourceReview": {
+      "path": "/private/tmp/101-matter-independent-source-review/review-1.json",
+      "sha256": "c51a088c16153703f5458166cc7d9562d65ac815bf2b42ad9197905280c56832",
+      "gitBlob": "3c00c3742693540ee41e83e733d4c0b1c575fdae",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-06115"
+    },
+    "acceptedNarrowSourceReview": {
+      "path": "/private/tmp/101-matter-independent-source-review/review-2.json",
+      "sha256": "ecf6baf62a8b43573180f5acaa01a221944b599af1cece05bc4d31b67e1cf45b",
+      "gitBlob": "52f010790e0dcede333d063422e1f3f0222926dc",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-06116"
+    },
+    "retainedFocusedOriginal": 26,
+    "retainedOwnershipCorrectionSelectors": 16,
+    "fabricConsistencySelectors": 7,
+    "fabricActualOldRedCases": 4,
+    "fabricOldRed": {
+      "path": "/private/tmp/101-matter-ws-switch-draft/evidence/review3-fabric-old-red.log",
+      "sha256": "bcd63f38490c438122987899af83da50131992fb5b2a7cae848c7c3736985443",
+      "gitBlob": "8e3df88910c65b790a25136425bfc3638df4d878",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21330"
+    },
+    "fabricGreen": {
+      "path": "/private/tmp/101-matter-ws-switch-draft/evidence/review3-fabric-green.log",
+      "sha256": "d2c52725ba2638e2711d0c8b8756435c4d45f85e5893648df83fb5b81b5aa4de",
+      "gitBlob": "2adfe28823975738e160bc5031e17fcdc5ff2525",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21328"
+    },
+    "strictNoUncheckedIndexedAccess": true,
+    "sourceProof": {
+      "path": "/private/tmp/101-matter-ws-switch-draft/evidence/101-matter-source-wr6j0Q/receipt.json",
+      "sha256": "554592517e2f7fff43e8fbc97f6de23fdd4409c1806ece0ac42b07a8359341d4",
+      "gitBlob": "b4c4e7358f774df6f2cdc027ea94130b0b0d379a",
+      "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21218"
+    },
+    "sourceFiles": 418,
+    "historicalCopiedInstalledControls": {
+      "checks": 5,
+      "proof": {
+        "path": "/private/tmp/101-matter-ws-switch-draft/evidence/101-matter-controls-UTGmwl/receipt.json",
+        "sha256": "bd3e393d137efabe5495e7b6fd2c487a350d45b0f27fca65d13d938ae1313d88",
+        "gitBlob": "07325c40ee083c02c07c8e2d3e8421c77be825da",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-16518"
+      },
+      "scope": "Historical accepted pre-R5 source freeze and unchanged helper controls; no claim to current R5 installed qualification"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/matter-ws-switch-d7R4pY/receipt.json",
+        "sha256": "f4940564b70c63f5d000642776b6e6e52b7ee4c90819fc0ec97aeb0db38d022e",
+        "gitBlob": "7db535216d19030b8e1803d5ca5319557dc046a3",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-21396"
+      },
+      "publicResolution": "/private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "wsDependencyFiles": 19,
+      "sourceCompilerRuntimeFiles": 418,
+      "executedCopiedArtifacts": 11,
+      "actualChildClose": true,
+      "naturalExitCode": 0,
+      "checks": {
+        "deniedFirstOrdinaryRoutes": true,
+        "separateGrants": true,
+        "cacheNeverPublished": true,
+        "uint64Preserved": true,
+        "propertyStaleWhileEventsContinue": true,
+        "nullSourceOnlyWithdrawal": true,
+        "newAuthorizedPropertyRoute": true,
+        "eventRouteContinuous": true,
+        "offlineWithdrawn": true,
+        "actualChildClose": true,
+        "naturalExitCode": 0
+      },
+      "publicRevocations": [
+        {
+          "kind": "owner",
+          "immediateSdkWithdrawal": true,
+          "lateGenerationRejected": true,
+          "actualChildClose": true,
+          "naturalExitCode": 0
+        },
+        {
+          "kind": "caller",
+          "immediateSdkWithdrawal": true,
+          "lateGenerationRejected": true,
+          "actualChildClose": true,
+          "naturalExitCode": 0
+        },
+        {
+          "kind": "grant",
+          "immediateSdkWithdrawal": true,
+          "lateGenerationRejected": true,
+          "actualChildClose": true,
+          "naturalExitCode": 0
+        }
+      ],
+      "finalStatus": {
+        "phase": "closed",
+        "reason": "unavailable",
+        "generation": 2,
+        "attempts": 1,
+        "localSequence": 7,
+        "messages": 15,
+        "receivedBytes": 3067,
+        "controls": 0,
+        "controlReceivedBytes": 0,
+        "sentBytes": 63,
+        "controlSentBytes": 0,
+        "rawSockets": 0,
+        "nativeClients": 0,
+        "rawTcpSockets": 0,
+        "rawWsSockets": 0,
+        "rawWrites": 0,
+        "timers": 0,
+        "waiters": 0,
+        "failures": []
+      },
+      "postCallerArtifactExpectedNegatives": 11,
+      "postCallerMutation": {
+        "path": "/private/tmp/101-matter-root-evidence/post-caller-mutation.json",
+        "sha256": "aafad252adcca7e9c3063c818bed3539353c4b990936841379f53cd82f199939",
+        "gitBlob": "2505bb1cc324da0857b471722508440b0b513e72",
+        "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/evidence-13119"
+      }
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-matter-root-evidence/raw-evidence-manifest.json",
+    "sha256": "081bfe2cc379bb449d44e6ce66c88b7225e95dc2f4ec31957907ff6089c9ea70",
+    "gitBlob": "f72e4ef6367aef1df6a4ab084d54d73b0f60a34c",
+    "ref": "refs/codex/evidence/2026-10-09-matter-ws-switch/manifest",
+    "entryCount": 21889,
+    "uniqueBlobs": 1400
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact integrated candidate only; fresh local build before rendered HTML; no red commit. Focused receipts make no broad-gate claim before gates."
+  },
+  "acceptance": {
+    "A06": "partial",
+    "supportRows": [],
+    "physical": false,
+    "open": [
+      "Native maintained Matter controller/fabric authentication, commissioning and CASE",
+      "Thread and independently enrolled physical switch hardware",
+      "Actual native capture/timestamp semantics, clock mapping and loss",
+      "Device commands and representative physical acceptance; full A06"
+    ]
+  }
+}

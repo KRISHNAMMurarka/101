@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/zigbee2mqtt-bridge.ts": "bc813245ad27a89c2d547ad29101394cb991cf9b797cdd41db58d0211fca8a75",
+    "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "20c7f9942b34ff194dc760974ac7b490584fcb4feb6d312bd0025b47d7a599d5",
+    "examples/zigbee2mqtt-bridge/producer.mjs": "195843d13d796aad3ed4d276798af86d59268145734bbb7bc3cc7193de9e20e3",
+    "examples/zigbee2mqtt-bridge/consumer.mjs": "1b0d16c27e1b37fdefbec367c3a3a8510078812cb69ccd875d55371673eb3681",
+    "tools/qa-zigbee2mqtt-bridge.mjs": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+    "tools/qa-installed-zigbee2mqtt-bridge.mjs": "052ace4d92f2d005b8962e0b4a744fb5a816936132a34fb40d78f5b1047ed003"
+  },
+  "priorWave": "docs/platform/receipts/2026-10-09-zigbee2mqtt-bridge.json",
+  "behavior": "Unknown thrown values no longer run string coercion or object hooks during diagnostics. Retirement invalidates authority before bounded diagnostics; actual MQTT ownership is joined even when reading or withdrawal callbacks throw.",
+  "bounds": {
+    "diagnosticEntries": 32,
+    "diagnosticCharactersEach": 256
+  },
+  "validation": {
+    "originalImplementation": {
+      "path": "/private/tmp/101-zigbee-diagnostic-repair/zigbee2mqtt-bridge.ts.old.bin",
+      "sha256": "de4e6977d3fde504e515bdf816238b4ba760463480ed8bbb9626fd9a56952c52",
+      "gitBlob": "e46fa2430832cbcdd5a8a4f80a08194a3f33897c",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3418"
+    },
+    "regressionAtOldRed": {
+      "path": "/private/tmp/101-zigbee-diagnostic-repair/regression-test-at-old-red.bin",
+      "sha256": "191fe7486fa22f833e4c9c1e562b0f562ac16406181ad7471c6da3a311194f7e",
+      "gitBlob": "b9c8195c08ce4a290bb6fc97236778054da2e59a",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3414"
+    },
+    "actualOldRed": {
+      "path": "/private/tmp/101-zigbee-diagnostic-repair/old-red.log",
+      "sha256": "a3d10b2e2a2a32db2936c5006af9c7d1ae2a0d41dbcd58b933b0a360ed2e993b",
+      "gitBlob": "7542b65ed1361b97fea89e19e0133cf8f7f04b00",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3409"
+    },
+    "focused": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skip": 0,
+      "proof": {
+        "path": "/private/tmp/101-zigbee-diagnostic-repair/focused-green.log",
+        "sha256": "5426742dd6e586100e06e6fd7dd39b137b8ba1983f974ffa242157f6238c96c0",
+        "gitBlob": "1761d2fc4f11b06c27aea1cf750efbe12542ef26",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3394"
+      }
+    },
+    "sourceProof": {
+      "path": "/private/tmp/101-zigbee-diagnostic-repair/source-proof.json",
+      "sha256": "f62044c695288e63d4642b72faf052b0a5943c6994244e758bcf560dbdf0bf1e",
+      "gitBlob": "35c16e1a33517df9e0d33ad5f4a1a9b099ee3ddf",
+      "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3415"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/zigbee2mqtt-bridge-ar85S4/receipt.json",
+        "sha256": "390aa333abd7ce62d62c2db3c6dbc0f76e63707b2ece3231100f2ca9ad7159af",
+        "gitBlob": "09bc16b9201425253475dda159ecc36df9be6ef6",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3384"
+      },
+      "publicResolution": "/private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkFiles": 411,
+      "dependencyFiles": 1283,
+      "sourceCompilerRuntimeFiles": 1684,
+      "executedCopiedArtifacts": 12,
+      "runner": {
+        "naturallyExited": true,
+        "childSocketsTimersSettled": true
+      },
+      "broker": {
+        "version": "mosquitto version 2.1.2",
+        "ownedPid": 78974,
+        "binaryPath": "/opt/homebrew/Cellar/mosquitto/2.1.2_1/sbin/mosquitto",
+        "binarySha256": "5badf1e2df8e854e8bae75543b27718d4213b9962dd9f503ff28ea4815b11cac",
+        "actualChildClose": true,
+        "naturalExitCode": 0
+      },
+      "checks": {
+        "separatePropertyAndEventGrants": true,
+        "identicalEventsPreserved": true,
+        "retainedDiscarded": true,
+        "captureUnknown": true,
+        "offlineWithdrawn": true,
+        "actualProducerClose": true,
+        "retired": true
+      },
+      "finalStatus": {
+        "phase": "closed",
+        "reason": "offline",
+        "messages": 15,
+        "receivedBytes": 845,
+        "delivered": 10,
+        "nativeClients": 0,
+        "failures": []
+      },
+      "postCallerArtifactExpectedNegatives": 12,
+      "postCallerMutation": {
+        "path": "/private/tmp/101-zigbee-diagnostic-repair/post-caller-mutation.json",
+        "sha256": "5afb55ca3c81c24354240ff34b11ffb67273b3da1cd56d41a515e121c62821f7",
+        "gitBlob": "cd661989d522b29c3b0e2268759806bcd1ba3e09",
+        "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/evidence-3411"
+      }
+    },
+    "newSourceProofCoversChangedProvider": true,
+    "unchangedProducerCallerAndHelpers": true
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-zigbee-diagnostic-repair/raw-evidence-manifest.json",
+    "sha256": "12a413e0ea2978e6aa45d7faf1e484acdce68dc66ada8661439976dab44ef506",
+    "bytes": 1232051,
+    "gitBlob": "21149a042a9eb48726b53ca808062058ec88e87b",
+    "ref": "refs/codex/evidence/2026-10-09-zigbee-diagnostics/manifest",
+    "entryCount": 3419
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-matter-ws-switch/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact integrated candidate required before local commit; focused receipt makes no broad-gate claim."
+  },
+  "acceptance": {
+    "A06": "partial",
+    "supportRows": [],
+    "physical": false,
+    "open": [
+      "Commissioned Zigbee gateway/device, physical native semantics and source timing",
+      "Matter/Thread native controller/fabric and actual physical qualification",
+      "Authenticated remote broker and outbound commands; full A06 acceptance"
+    ]
+  }
+}

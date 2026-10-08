@@ -54,6 +54,10 @@ export function auditPlatformRecords({ checklist, catalog, evidence, exists }) {
     if (canonical.get(task.id) && !task.records.some(ref => records.get(ref)?.result === 'pass' && records.get(ref)?.tasks.includes(task.id)))
       errors.push(`${task.id}: checked task needs passing evidence`);
   }
+  for (const record of records.values()) for (const task of record.tasks) {
+    if (canonical.has(task) && !taskRecords.get(task)?.records.includes(record.id))
+      errors.push(`${record.id}: task ${task} omits evidence reference`);
+  }
   for (const task of tasks) if (!taskRecords.has(task.id)) errors.push(`${task.id}: missing task evidence record`);
   const supportIds = new Set();
   for (const row of catalog.rows) {
