@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-neutral-calibration-software-repair-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "apps/controller-native/src/motion-controller.ts": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+    "apps/controller-native/src/motion-controller.lifecycle.test.ts": "701ffca6c09194c8c3b6578f5bbf395b8f4fee95856440af1baf7ad351413d07"
+  },
+  "behavior": "Set neutral requires an active controller and a pose received within1000ms on the local monotonic clock. Invalid or expired receipt age is retired without changing prior neutral. Repeated attempts retain fresh-reading recovery guidance; only a new callback restores eligibility. Stop clears pose and receipt age.",
+  "clockMeaning": "Receipt recency only. Native capture-time origin, sensor freshness/accuracy and delayed/replayed native callbacks are not qualified.",
+  "regression": {
+    "old": {
+      "total": 14,
+      "pass": 12,
+      "fail": 2
+    },
+    "currentSelector": {
+      "total": 20,
+      "pass": 20,
+      "fail": 0
+    },
+    "dependentSelector": {
+      "total": 16,
+      "pass": 16,
+      "fail": 0
+    },
+    "recoveryMessageOldFailure": 1,
+    "scope": "Actual transpiled native controller and real motion pipeline; controlled Expo sensor bridge, platform/axes and monotonic receipt clock. Existing axis/sample-rate selector adds6 cases, not new physical evidence."
+  },
+  "android": {
+    "schemaVersion": 1,
+    "sourceSha256": {
+      "apps/controller-native/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+      "apps/controller-native/src/motion-controller.ts": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+      "apps/controller-native/src/motion-controller.lifecycle.test.ts": "701ffca6c09194c8c3b6578f5bbf395b8f4fee95856440af1baf7ad351413d07",
+      "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2"
+    },
+    "artifact": {
+      "path": "/Users/km/Desktop/games/101/release/android-calibration-final-w44so4ym/app-release.apk",
+      "bytes": 51431742,
+      "sha256": "1605388ff9bb9456939721b6a4344423ea392c7b46cb22244827861f7fca54df"
+    },
+    "build": "ANDROID_HOME=/Users/km/Library/Android/sdk ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon --offline",
+    "environment": "macOS arm64; existing local Android SDK; Gradle9.3.1/JDK25.0.2/Node24.14.0",
+    "signing": "Existing development signing identity; intended distribution signing and install/update unqualified.",
+    "physicalAcceptance": "No Android device attached at current ADB readback; no new physical sensor/camera claim."
+  },
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-phone-calibration-plan.txt",
+      "sha256": "a7be167c553cc78317d423ef332a82a66229d415cd74d3501009f80e6caf2e32",
+      "gitBlob": "5d037f301d1aebe5e224ee7fb3107a885651b951",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/plan"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-old-source.ts",
+      "sha256": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
+      "gitBlob": "b73cb298028c2571ccfc1db0526bb60cd296ed4b",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/old-source"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-old.log",
+      "sha256": "ebc96f3abdb91fb0bef4bb7d6ee5c1f7d26432e112448bbacd3fe5f411d403e4",
+      "gitBlob": "a25e1df76a0350e1f4f3aa6d9918eade98967fe0",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/old-regression"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-recovery-old-source.ts",
+      "sha256": "a773cc1066fe4889b18478d6e1ae13c8df9aababc04c4cecf1b18ea81696832c",
+      "gitBlob": "aa5bc4739bb7aed6c5808a69e7258f08a7b2c6e7",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/recovery-old-source"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-recovery-old.log",
+      "sha256": "4a0c8045d95b93af8fb8a68e7451080ec4129bf5fd2e404a1d0e5e4e235bd950",
+      "gitBlob": "e4f404440758008ef7830524975e9b81effee927",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/recovery-old-regression"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-current.log",
+      "sha256": "45d5a8275c792e45474ddff083df04746e32fd8555353c6250b6fd179f441178",
+      "gitBlob": "5cf2421cd042a00589a849c6e4ff04f641b8c233",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/current-regression"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-dependent.log",
+      "sha256": "cf473969046a8da6e3e04c1178653ab3074dd8fe09028fb457a56e03a7dba6a4",
+      "gitBlob": "67460a053ac15bcf68697ed39e08d99f0975c3f3",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/dependent-regression"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-typecheck.log",
+      "sha256": "1b3b46b3f438bb986f08b0f3ea781c31ee5b1886527476dd10b5ebc7233db3f1",
+      "gitBlob": "068fdd0120dad2471ed2f1d589c1d326dad5243a",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/native-typecheck"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/lint"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-initial-independent-review.json",
+      "sha256": "0c7b4e542cd969826ace370e109942296633008fad3d1ce0cac4093465da310d",
+      "gitBlob": "034b9a26879037b69b3121b72c251543d163077b",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/initial-review"
+    },
+    {
+      "path": "/tmp/101-phone-calibration-independent-review.json",
+      "sha256": "966d31449ba707610fa80c6969c3bf912deb05cdf433205a329be1b58fb6ed41",
+      "gitBlob": "69c61009bd204074a5e7ad038d6813fcd2d61e9e",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/final-review"
+    },
+    {
+      "path": "/tmp/101-android-calibration-final-release-build.log",
+      "sha256": "d2b9a189604d51184252f7aa17786f5474b4a737be083f907932dc4f2635ff8c",
+      "gitBlob": "e1a73629ae4bc4a5f7c6bbd680c96ab9c6730b2b",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/android-build"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-calibration-final-w44so4ym/manifest.json",
+      "sha256": "7290590e666bcd27fb85ebed04e1fe836acec42f7e63605db8bda8bf03439dfa",
+      "gitBlob": "b72dc37ba1c57810512ab6380c6e4a9f336a0aa5",
+      "ref": "refs/codex/evidence/2026-10-08-phone-calibration/android-manifest"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-platform-next/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-platform-next/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only an exact candidate result proves required broad gates. No local commit with a red gate."
+  },
+  "acceptance": "No checkbox or support-row promotion. Physical sensor/permission/lifecycle, iOS and intended signing/install/update remain open."
+}

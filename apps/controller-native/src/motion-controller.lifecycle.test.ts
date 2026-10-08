@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import ts from "typescript";
+import * as motionRuntime from "@101/motion";
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -13,6 +14,7 @@ function deferred<T>() {
 
 function fixture() {
   const availability = deferred<boolean>();
+  let receivedNow = 0;
   const listeners: Array<{ callback: (measurement: unknown) => void; removed: boolean }> = [];
   let availabilityCalls = 0;
   let failRemoval = false;
@@ -32,33 +34,20 @@ function fixture() {
   const source = readFileSync(new URL("./motion-controller.ts", import.meta.url), "utf8");
   const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   const exports: Record<string, unknown> = {};
-  class Pipeline {
-    calibration = { neutral: [0, 0, 0, 1], sensitivity: 1 };
-    process(sample: unknown) { return sample; }
-    reset() {}
-    calibrateNeutral(sample: unknown) { this.calibration.neutral = (sample as { orientation: number[] }).orientation; }
-    setSensitivity() {}
-    setDeadZone() {}
-  }
   const modules: Record<string, unknown> = {
     "react-native": { Platform: platform },
     "expo-sensors": { DeviceMotion: sensors },
     "./motion-axes": { expoAngularVelocity: () => [0, 0, 0] },
-    "@101/motion": {
-      MotionPipeline: Pipeline,
-      MotionGestureRecognizer: class { update() { return {}; } reset() {} },
-      quaternionFromDeviceOrientation: () => [0, 0, 0, 1],
-      quaternionToAngles: () => ({ roll: 0, pitch: 0, yaw: 0 }),
-    },
+    "@101/motion": motionRuntime,
   };
-  runInNewContext(compiled, { exports, require(name: string) { assert.ok(name in modules); return modules[name]; }, Date, Math, Error });
+  runInNewContext(compiled, { exports, require(name: string) { assert.ok(name in modules); return modules[name]; }, Date, Math, Error, performance: { now: () => receivedNow } });
   const Controller = exports.NativeMotionController as new (emit: (value: unknown) => void) => {
-    start(): Promise<boolean>; stop(): void; readonly active: boolean; calibrateNeutral(): void;
+    start(): Promise<boolean>; stop(): void; readonly active: boolean; calibrateNeutral(): void; readonly calibration: { neutral: readonly number[] };
   };
   const emitted: unknown[] = [];
   const controller = new Controller(value => emitted.push(value));
   return { controller, availability, listeners, emitted, availabilityCalls: () => availabilityCalls,
-    hooks, platform, sensors, createController: () => new Controller(value => emitted.push(value)),
+    hooks, platform, sensors, receiveAt(value: number) { receivedNow = value; }, createController: () => new Controller(value => emitted.push(value)),
     failRemoval(value: boolean) { failRemoval = value; } };
 }
 
@@ -211,4 +200,55 @@ test("current sensor errors and permission denial remain visible", { timeout: 3_
   const asking = ios.controller.start(); ios.availability.resolve(true);
   await assert.rejects(asking, /permission was not granted/);
   assert.equal(ios.listeners.length, 0);
+});
+
+
+test("neutral calibration rejects a stalled active sensor without changing the prior neutral", async () => {
+  const f = fixture();
+  const starting = f.controller.start(); f.availability.resolve(true);
+  assert.equal(await starting, true);
+  f.receiveAt(50);
+  f.listeners[0]!.callback({ rotation: { alpha: 0.3, beta: 0.2, gamma: 0.1, timestamp: 9999999999999 } });
+  f.receiveAt(100);
+  assert.doesNotThrow(() => f.controller.calibrateNeutral());
+  const before = Array.from(f.controller.calibration.neutral);
+  f.receiveAt(200);
+  f.listeners[0]!.callback({ rotation: { alpha: 0.6, beta: 0.4, gamma: 0.2, timestamp: 9999999999999 } });
+  f.receiveAt(1201);
+  assert.throws(() => f.controller.calibrateNeutral(), /fresh motion reading/i);
+  assert.deepEqual(Array.from(f.controller.calibration.neutral), before);
+  // Only a new local callback restores eligibility; the native clock is unchanged.
+  f.receiveAt(1210);
+  f.listeners[0]!.callback({ rotation: { alpha: 0.6, beta: 0.4, gamma: 0.2, timestamp: 9999999999999 } });
+  assert.doesNotThrow(() => f.controller.calibrateNeutral());
+  assert.notDeepEqual(Array.from(f.controller.calibration.neutral), before);
+  f.controller.stop();
+});
+
+test("a recent received pose can calibrate independently of native timestamp origin", async () => {
+  const f = fixture();
+  const starting = f.controller.start(); f.availability.resolve(true);
+  assert.equal(await starting, true);
+  f.receiveAt(4000);
+  f.listeners[0]!.callback({ rotation: { alpha: 0.4, beta: 0, gamma: 0, timestamp: 1 } });
+  f.receiveAt(5000);
+  assert.doesNotThrow(() => f.controller.calibrateNeutral());
+  assert.notDeepEqual(Array.from(f.controller.calibration.neutral), [0, 0, 0, 1]);
+  f.controller.stop();
+});
+
+test("invalid or regressing receipt clocks cannot revive a cached calibration pose", async () => {
+  for (const invalidNow of [Number.NaN, Number.POSITIVE_INFINITY, 199, 1201]) {
+    const f = fixture();
+    const starting = f.controller.start(); f.availability.resolve(true);
+    assert.equal(await starting, true);
+    f.receiveAt(200);
+    f.listeners[0]!.callback({ rotation: { alpha: 0.5, beta: 0, gamma: 0, timestamp: 1 } });
+    f.receiveAt(invalidNow);
+    assert.throws(() => f.controller.calibrateNeutral(), /fresh motion reading/i);
+    f.receiveAt(201);
+    assert.throws(() => f.controller.calibrateNeutral(), /fresh motion reading/i);
+    assert.deepEqual(Array.from(f.controller.calibration.neutral), [0, 0, 0, 1]);
+    f.controller.stop();
+  }
 });

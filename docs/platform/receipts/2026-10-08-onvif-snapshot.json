@@ -1,0 +1,398 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-loopback-onvif-snapshot-software-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/onvif-snapshot-gateway.ts": "ceb594c6107807641ee640792cff401a06eb002cbd15dcdeb18a764b22a3be88",
+    "packages/hub-server/src/onvif-snapshot-gateway.test.ts": "9ee3646cbb3a050d2b95f296738a6aaa0a09fe5820021e0a77521e1a45406ea6",
+    "examples/onvif-snapshot/software-camera.mjs": "53f1bc96ffea407c8b8a1abaaaaa4d6233e998f78aa649402c316c8947bed628",
+    "examples/onvif-snapshot/consumer.mjs": "ed1a57ed84b044b3fbe1854eb0dc7fd10eb63239668e6acab00daa13f1be6964",
+    "tools/qa-onvif-snapshot.mjs": "97b391bc7e9ba70ade3e5e6b2f82441a1bebacc0232d603a3e90077bc3b291e5",
+    "tools/qa-installed-onvif-snapshot.mjs": "776841c0528cb9a4bce2f0b6792a39fdcf592184be11c9b8e9e5f6e5d199c2cb",
+    "packages/hub-server/src/index.ts": "d48ad79919d47a8302c317a462a8ff22b71d2e1b4c68b9c29c3a97136d2027ec",
+    "packages/hub-server/package.json": "473af442bdbcaa9cb69ccd3fba8494ad796a89247919fccc839a27147a791dcd",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+    "THIRD_PARTY_LICENSES.json": "4661872a1caea40fbf81b5402c49eda07972ef1ab83e46dd0f42874474ca45a5"
+  },
+  "selectedProfile": {
+    "service": "ONVIF Media1 GetSnapshotUri",
+    "endpoint": "Literal127.0.0.1, one selected port, fixed /onvif/media_service and one exact snapshot path/profile",
+    "transport": "Plain HTTP within selected loopback software fixture; no remote authentication or broader camera identity claim.",
+    "limits": {
+      "attempts": 8,
+      "captures": 16,
+      "rawOperations": 1,
+      "soapBytes": 16384,
+      "snapshotBytes": 1048576,
+      "headerBytes": 8192,
+      "operationMs": 5000,
+      "sessionMs": 60000
+    }
+  },
+  "authority": "Private control resolves selected URI; private media approves each GET. Public SDK capture route and exact resource-read grants remain separate. Opaque current epochs and intrinsic signals fence issued operations; capture remains reserved through hashing, Stop joins actual socket/hash settlement, close releases its own owner listener.",
+  "deadline": "Each live request and final delivery uses the earliest caller/control/media absolute deadline. Timer expiry is explicit. An expired epoch requires Stop and new Start/grant; no automatic retry or authority extension.",
+  "media": "Actual changing encoded JPEG fixture bytes. Only bounded HTTP/JPEG framing is validated; no general hostile image decoder claim. Blob AssetReference retains application/octet-stream and adjacent image/jpeg metadata; public verified resource read checks scope, length and digest. Physical source unverified and native capture time unknown.",
+  "validation": {
+    "focusedGatewayCases": 16,
+    "sourceCaller": {
+      "status": "pass",
+      "kind": "separate-process-loopback-onvif-snapshot",
+      "digests": [
+        "f0f7d6d93d89697867d278fc92bfdacac7711f7218817fdea5663554d68ea303",
+        "48f7f5bb7ac5a8daa3f23b7ed2da27567dcf0a6e327e7da0adf4c63a51b37ef4"
+      ],
+      "operations": [
+        {
+          "operation": "GetSnapshotUri"
+        },
+        {
+          "operation": "GetSnapshot",
+          "sequence": 1
+        },
+        {
+          "operation": "GetSnapshot",
+          "sequence": 2
+        }
+      ],
+      "checks": {
+        "deniedControlNoWire": true,
+        "deniedMediaNoGet": true,
+        "deniedPublicRouteNoCapture": true,
+        "actualSdkRoute": true,
+        "stableUriChangingJpeg": true,
+        "separateMediaGrantPerGet": true,
+        "deniedResourceReadNoChunks": true,
+        "approvedVerifiedBlobRead": true,
+        "corruptResourceRejected": true,
+        "revokedResourceReadRejected": true,
+        "blobReferenceWithJpegMetadata": true,
+        "StopJoinedSocket": true,
+        "physicalSource": "unverified"
+      },
+      "openScope": [
+        "remote-authentication",
+        "playback",
+        "PTZ",
+        "firmware",
+        "physical-camera-qualification"
+      ]
+    },
+    "installedCaller": {
+      "status": "pass",
+      "kind": "separate-process-loopback-onvif-snapshot",
+      "digests": [
+        "f0f7d6d93d89697867d278fc92bfdacac7711f7218817fdea5663554d68ea303",
+        "48f7f5bb7ac5a8daa3f23b7ed2da27567dcf0a6e327e7da0adf4c63a51b37ef4"
+      ],
+      "operations": [
+        {
+          "operation": "GetSnapshotUri"
+        },
+        {
+          "operation": "GetSnapshot",
+          "sequence": 1
+        },
+        {
+          "operation": "GetSnapshot",
+          "sequence": 2
+        }
+      ],
+      "checks": {
+        "deniedControlNoWire": true,
+        "deniedMediaNoGet": true,
+        "deniedPublicRouteNoCapture": true,
+        "actualSdkRoute": true,
+        "stableUriChangingJpeg": true,
+        "separateMediaGrantPerGet": true,
+        "deniedResourceReadNoChunks": true,
+        "approvedVerifiedBlobRead": true,
+        "corruptResourceRejected": true,
+        "revokedResourceReadRejected": true,
+        "blobReferenceWithJpegMetadata": true,
+        "StopJoinedSocket": true,
+        "physicalSource": "unverified"
+      },
+      "openScope": [
+        "remote-authentication",
+        "playback",
+        "PTZ",
+        "firmware",
+        "physical-camera-qualification"
+      ]
+    },
+    "sdkManifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+      "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+    },
+    "dependency": {
+      "name": "@xmldom/xmldom",
+      "version": "0.8.14",
+      "packageSha256": "e71fcabd7a3bd3010abc4371f6f795b7ce807c45f66be5b18f9bc1a82cf3ae53",
+      "entrySha256": "9deb4e9d6d730a51c1c2b05238f8684d01e87f72b9861ba2adcad537ffc56586",
+      "files": [
+        {
+          "path": "CHANGELOG.md",
+          "bytes": 26749,
+          "sha256": "3b7ef252d66436f363c5beeeb0d09f86d5bc4ff18dfab624b8ce0d5a31bd4790"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 1298,
+          "sha256": "4da724fc305d81606b245b324d4d2586916b9d248b23d82183df753ace0fdf71"
+        },
+        {
+          "path": "SECURITY.md",
+          "bytes": 3989,
+          "sha256": "cc9b93b10a08a7b9396a2c615973b18af541b63f6ba8fe37bb954ce3de6f98f4"
+        },
+        {
+          "path": "index.d.ts",
+          "bytes": 3791,
+          "sha256": "70136a94076aa14a7665b91ffe86d38fe931033891bb188a2106d9b61ec8625f"
+        },
+        {
+          "path": "lib/.eslintrc.yml",
+          "bytes": 36,
+          "sha256": "70c75c46006491756923a455fc4b6b4aae4ac514eb5fcc0e837eb5137a80b93e"
+        },
+        {
+          "path": "lib/conventions.js",
+          "bytes": 7352,
+          "sha256": "9ceee011f51db3a4581029a7dce1e9bf1fa5c37ad928b63c3625dda9a907fd55"
+        },
+        {
+          "path": "lib/dom-parser.js",
+          "bytes": 10312,
+          "sha256": "03915c54c4bf44cfee38807af253abaabb022c27652918e8a233fae2d92fe1d2"
+        },
+        {
+          "path": "lib/dom.js",
+          "bytes": 73603,
+          "sha256": "582c570b64d51edf2ce4e88e5dc20bcce3579d0357c80ebacefc676edf9b880b"
+        },
+        {
+          "path": "lib/entities.js",
+          "bytes": 44465,
+          "sha256": "332cda4081c610fdadc0266867ee5ed9f945c99d471ea7234ec61ba00cbf0e40"
+        },
+        {
+          "path": "lib/index.js",
+          "bytes": 173,
+          "sha256": "9deb4e9d6d730a51c1c2b05238f8684d01e87f72b9861ba2adcad537ffc56586"
+        },
+        {
+          "path": "lib/sax.js",
+          "bytes": 18739,
+          "sha256": "b887f6178ab8bfe07279e33c99ba3b31a9b0cc26eb154b107630f0b818fd074f"
+        },
+        {
+          "path": "package.json",
+          "bytes": 1907,
+          "sha256": "e71fcabd7a3bd3010abc4371f6f795b7ce807c45f66be5b18f9bc1a82cf3ae53"
+        },
+        {
+          "path": "readme.md",
+          "bytes": 12680,
+          "sha256": "c7f099b9bc1e997f97aaab31e5039bfd7bc747eddff85b256675d05f2e1ef178"
+        }
+      ]
+    },
+    "independentReview": "Clear after repairing two blocking findings; all failed drafts and literal regressions retained.",
+    "licenseScope": "Exact existing xmldom0.8.14 declaration and local package terms; existing optional-target/no-text inventory gaps remain, no legal approval claim."
+  },
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-camera-gateway-next-plan.json",
+      "sha256": "17b4c32e607b7ffecf8ef007021ced3cb054529db38ca363e405489a49a25db4",
+      "gitBlob": "d483a90aaea3582eb426fb30f4ea411503e4e8d5",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/plan"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/tdd-red.literal.log",
+      "sha256": "1d8a3ecccf71fa466770c7f14e43fccf645190ec81eb9fd04c76cd6f6e288102",
+      "gitBlob": "d928577611731ef25a5a9700e060ec7754aa56a4",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/absent-feature"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/review-regressions-red.literal.log",
+      "sha256": "847dc60e53c3ba5bb04e090b847856b9eb4fb10b9090d6713e14ccd920e43dfa",
+      "gitBlob": "5e3aad2445b86256b9518b3c3ab52f37040c52f9",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/draft-regressions-old"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-review-regressions-old.log",
+      "sha256": "f9223ec0dac93cd79629090f07f7ded1b248180e2222bc65ef2db412943ce81d",
+      "gitBlob": "004868025f0d4b1c823368726f95fcf4f9103c17",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/parent-regressions-old"
+    },
+    {
+      "path": "/tmp/101-onvif-early-timer-classification-old.log",
+      "sha256": "f4040f12dacdbb701ffda0751ef82fc86eba56954c04ff27501442c411a57257",
+      "gitBlob": "7ad9b1d62bdbb667c159b1ffb0786e1cacc9f0a6",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/timer-classification-old"
+    },
+    {
+      "path": "/tmp/101-onvif-early-timer-classification-old-source.ts",
+      "sha256": "ce8bf6d12f001130df256482337495a5af4a1a412d5eeb296e5d28025556942e",
+      "gitBlob": "e5c93b82a721b6484d9ac8cf38657fc2fc3ee003",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/timer-classification-old-source"
+    },
+    {
+      "path": "/tmp/101-onvif-dependency-mutation-preload.mjs",
+      "sha256": "784bb9fb777c4ca6143e250e786e1bc7d6e4d09b6439793df9a46224df9aff2c",
+      "gitBlob": "3740f75244d0c7c321862726898fbf664330a7f8",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/dependency-mutation-preload"
+    },
+    {
+      "path": "/tmp/101-onvif-dependency-provenance-regression.mjs",
+      "sha256": "9a69f168b1cb675712d0d2908ebde0312006c15282047ed511c0a59476d94784",
+      "gitBlob": "fa6b1062880ce6b3e408753ca09fcfd573310aa9",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/dependency-provenance-regression"
+    },
+    {
+      "path": "/tmp/101-onvif-dependency-provenance-old.log",
+      "sha256": "2c1f81a18f30bbc007b0f13297e57f048930ace098546a91954c05623f2e3528",
+      "gitBlob": "3aceadbcf41c534230bac334c0abc023cc1e4f56",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/dependency-provenance-old"
+    },
+    {
+      "path": "/tmp/101-onvif-dependency-provenance-current.log",
+      "sha256": "74383df5ae7a9f7072d6e5645681ca859847b9e0ceb40d33cd19dde398bbfb3a",
+      "gitBlob": "f09035b46830848968c1b9773f8ef9b4aa96e0bf",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/dependency-provenance-current"
+    },
+    {
+      "path": "/tmp/101-onvif-independent-review-blocked.json",
+      "sha256": "52b3d90fd2745823260824e690d17abe6ad12c605538b4a1dd149420cd6368c2",
+      "gitBlob": "d52c195e2e5cae55c38c9d62336f84900e80fd4f",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/independent-review-blocked"
+    },
+    {
+      "path": "/tmp/101-onvif-independent-review.json",
+      "sha256": "17053f2cc4d951dd43e2dabdf6c7f42c279e92eb5762a5fd262405d7e6ee2dd5",
+      "gitBlob": "eb9657d3f4a97362784521d260f517751ecf0e28",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/independent-review-final"
+    },
+    {
+      "path": "/tmp/101-onvif-control-expiry-live-get-review.log",
+      "sha256": "91bfa741415fcc477a6c65876f1e8e720133027b2fd38e3c2591d853be7e6c5f",
+      "gitBlob": "af8cbab8798bc4895833097b1048194b5aa9a7b8",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/review-live-get-old"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-review-regressions-current.log",
+      "sha256": "08e53c4807b51546581646b8e81212bcd180449f9a50bedf688dd022bc954bb0",
+      "gitBlob": "0d13c92412d4ce0a745eb4df3ce610d8a35b5754",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/focused-final"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-repair-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/lint-final"
+    },
+    {
+      "path": "/tmp/101-onvif-final-source.log",
+      "sha256": "cc0b6c92104a1ee7286e24aa1215378b3a456d943e9c37345654692f26667a9a",
+      "gitBlob": "63046301fde48b2b64f82f923310e6eda0ed8686",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/source-log-final"
+    },
+    {
+      "path": "/tmp/101-onvif-final-source-receipt.json",
+      "sha256": "3304c31bc6e68109ea22b7425aef412ec25983de4e7831d042d03713ca422536",
+      "gitBlob": "c6673476ac49de97aa179b8bbc5d8b1bfd07e3b9",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/source-receipt-final"
+    },
+    {
+      "path": "/tmp/101-onvif-final-installed.log",
+      "sha256": "27d81407d52938c4aeb5119906cbafa0236b375d9a40a3788f8d6791e730e044",
+      "gitBlob": "d9e7b8a38dfa42770caf2a398317484c35d362a3",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/installed-log-final"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/onvif-snapshot-5m9zS4/receipt.json",
+      "sha256": "e0e773c3201b3f00e2cc84a83bca8dba83f978e8fc7b6d07c46aaf5b5009261c",
+      "gitBlob": "5ae65c4b8b866d1e833a6bb416e3646306aa227c",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/installed-receipt-final"
+    },
+    {
+      "path": "/tmp/101-onvif-license-inventory.log",
+      "sha256": "fcaecef43a8a16b892b3c34aaf3ed71ecd639a24c8c0ccdb7d6cf213a5998bd5",
+      "gitBlob": "04a3a85d872d60d1ba2afea11c08a14688142848",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/license-inventory"
+    },
+    {
+      "path": "/tmp/101-onvif-license-focused.log",
+      "sha256": "44e15bbd43d308d7e5463cdc5b4329822a0ccdab7846aaf6f510b02679abaa31",
+      "gitBlob": "807eca01626d10b65bb6fa94965ff7fa3b14a06c",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/license-focused"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/examples/onvif-snapshot/consumer.mjs",
+      "sha256": "9753979657663f21e3df8250ab758db834f8c1e50f4a328f3885272c9f85f4b8",
+      "gitBlob": "19ff94009ef3b6990b460f2e95c356a15092753a",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-2"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/examples/onvif-snapshot/software-camera.mjs",
+      "sha256": "53f1bc96ffea407c8b8a1abaaaaa4d6233e998f78aa649402c316c8947bed628",
+      "gitBlob": "6ca3301c6cb2b4b9e1af9aad9b0c3824f169c69b",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-3"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/packages/hub-server/src/onvif-snapshot-gateway.test.ts",
+      "sha256": "8e294b4a4dc6935b320da196b42f14158fd5282e8e0aad268b1c5533cb7f74b0",
+      "gitBlob": "eabca59357dd2520926ea5d45e190e25bb086826",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-7"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/packages/hub-server/src/onvif-snapshot-gateway.ts",
+      "sha256": "6a9c5d1e9d7ea9bae2d47401f3174c3c09fad2d60ea7ba3c56190a9be87e27a0",
+      "gitBlob": "8995c9a214142adb428445bb2b7a9fe0caac2dd5",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-8"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/tools/qa-installed-onvif-snapshot.mjs",
+      "sha256": "d26477e3aa6053715089d8fbe01256870c873d3878c8eb278da59f284d1c7bac",
+      "gitBlob": "a275217cc9cbe039217e2858956515ba285d7f14",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-10"
+    },
+    {
+      "path": "/tmp/101-onvif-draft/evidence/initial-source/tools/qa-onvif-snapshot.mjs",
+      "sha256": "97b391bc7e9ba70ade3e5e6b2f82441a1bebacc0232d603a3e90077bc3b291e5",
+      "gitBlob": "2ff45df6f7c483acd6f0d444d85b0b60f86dd4de",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/initial-source-11"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-rejected-source/onvif-snapshot-gateway.test.ts",
+      "sha256": "983be7f0e6e18aead7b920fc0c05d7db4c0d3aaf15db568b84bf4cb25c9f0a3a",
+      "gitBlob": "3457a5f7a26b91782c79810ce8cf9cdd760e7989",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/parent-rejected-source-0"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-rejected-source/onvif-snapshot-gateway.ts",
+      "sha256": "d12487a3e73ab26ea6b3a096afb3ff840a2a0834a1c1067e4095873f7cb220f3",
+      "gitBlob": "41a23930322756816d412d46807e00252b659f8a",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/parent-rejected-source-1"
+    },
+    {
+      "path": "/tmp/101-onvif-parent-rejected-source/qa-installed-onvif-snapshot.mjs",
+      "sha256": "0f7e4b91f023cf54c999c88bbd102300074ba8fff78c28da9c04030929627328",
+      "gitBlob": "dcc904a5fe406bbd3c27c7d7cc581b21abf50107",
+      "ref": "refs/codex/evidence/2026-10-08-onvif-snapshot/parent-rejected-source-2"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-platform-next/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-platform-next/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only an exact candidate result proves broad gates. No local commit with a red gate."
+  },
+  "acceptance": "A14 stays partial. Remote/authenticated cameras, playback/RTSP/DVR/NVR recording, PTZ/vendor controls, firmware-specific and physical qualification remain open. No checkbox/support-row promotion."
+}

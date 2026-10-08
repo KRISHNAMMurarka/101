@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 168,
+  "revision": 170,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12677,7 +12677,7 @@
       "id": "phone-motion-lifecycle-2026-10-08",
       "revision": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
       "result": "pass",
-      "historical": false,
+      "historical": true,
       "levels": [
         "implementation",
         "contract"
@@ -12756,6 +12756,61 @@
       "failure": null,
       "equipment": [
         "Target phone/camera and selected printer required for physical qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "phone-neutral-calibration-2026-10-08",
+      "revision": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N03",
+        "N04",
+        "N13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-phone-calibration.json",
+        "docs/platform/receipts/2026-10-08-phone-motion.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0, actual native controller and motion pipeline with controlled sensor bridge; existing offline Android SDK.",
+      "reproduction": "Retained actual old2-failure regression, current20-case selector,16dependent checks, native typecheck/lint, independent review and fresh development-signed Android build; exact broad candidate gates referenced by receipt.",
+      "scope": "Selected local callback-age neutral-calibration repair. Native capture-time accuracy, physical sensor/OS lifecycle, iOS and distribution signing/install/update remain open.",
+      "failure": null,
+      "equipment": [
+        "Target phone required for physical qualification; none attached at current ADB readback"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "onvif-snapshot-2026-10-08",
+      "revision": "ceb594c6107807641ee640792cff401a06eb002cbd15dcdeb18a764b22a3be88",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A14"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-onvif-snapshot.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; existing verified installed seven-package SDK; exact copied xmldom0.8.14 package; separate owned loopback software camera.",
+      "reproduction": "16 focused gateway cases; source and installed ONVIF snapshot QA; actual copied-parser mutation rejects before caller; independent repaired review and exact candidate gates referenced by receipt.",
+      "scope": "Selected loopback Media1 snapshot with separate private control/media and public invocation/resource-read authority. Physical source and capture time unknown; remote authentication, playback/recording/PTZ/vendor controls and firmware qualification remain open.",
+      "failure": null,
+      "equipment": [
+        "Selected physical camera/firmware required for acceptance; no support row promoted"
       ],
       "supportRows": []
     }

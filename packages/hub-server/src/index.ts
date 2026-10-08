@@ -229,3 +229,8 @@ export type { ModbusRtuFailure, ModbusRtuResult, ModbusRtuEpoch, ModbusRtuRegist
 export { createIppJobGateway, IPP_JOB_LIMITS } from './ipp-job-gateway.ts';
 export type { IppFailure, IppResult, IppEpoch, IppPrinter, IppScope, IppApprovalRequest, IppGrant,
   IppOptions, IppOperation, IppSubmission, IppGateway } from './ipp-job-gateway.ts';
+
+export { createOnvifSnapshotGateway, ONVIF_SNAPSHOT_LIMITS } from './onvif-snapshot-gateway.ts';
+export type { OnvifSnapshotFailure, OnvifSnapshotResult, OnvifSnapshotEpoch, OnvifSnapshotScope, SelectedOnvifCamera,
+  OnvifSnapshotApprovalRequest, OnvifSnapshotGrant, OnvifSnapshotOptions, OnvifSnapshotOperation,
+  OnvifSnapshot, OnvifSnapshotGateway } from './onvif-snapshot-gateway.ts';

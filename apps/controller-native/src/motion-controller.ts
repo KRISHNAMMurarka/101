@@ -34,6 +34,7 @@ export class NativeMotionController {
   private removing = false;
   private acquiring = false;
   private latestRaw?: MotionSample;
+  private latestReceivedAt?: number;
   private lastTimestamp?: number;
   private smoothedIntervalMs?: number;
   private sampleRate = 0;
@@ -110,6 +111,7 @@ export class NativeMotionController {
     this.startPromise = undefined;
     if (this.subscription) this.removeSubscription(this.subscription);
     this.latestRaw = undefined;
+    this.latestReceivedAt = undefined;
     this.lastTimestamp = undefined;
     this.smoothedIntervalMs = undefined;
     this.sampleRate = 0;
@@ -139,6 +141,11 @@ export class NativeMotionController {
 
   calibrateNeutral() {
     if (!this.active || !this.latestRaw) throw new Error("Start motion sensing before calibration");
+    const age = performance.now() - (this.latestReceivedAt ?? Number.NaN);
+    if (!Number.isFinite(age) || age < 0 || age > MAX_CALIBRATION_SAMPLE_AGE_MS) {
+      this.latestReceivedAt = undefined;
+      throw new Error("Wait for a fresh motion reading before setting neutral");
+    }
     this.pipeline.calibrateNeutral(this.latestRaw);
   }
 
@@ -157,6 +164,7 @@ export class NativeMotionController {
 
   private process(measurement: DeviceMotionMeasurement, revision: number) {
     if (!this.active || revision !== this.revision) return;
+    const receivedAt = performance.now();
     const rotation = measurement.rotation ?? { alpha: 0, beta: 0, gamma: 0 };
     const rate = measurement.rotationRate ?? { alpha: 0, beta: 0, gamma: 0 };
     const acceleration = measurement.accelerationIncludingGravity ?? measurement.acceleration ?? { x: 0, y: 0, z: 0 };
@@ -179,6 +187,7 @@ export class NativeMotionController {
     this.trackSampleRate(timestamp);
     if (!this.active || revision !== this.revision) return;
     this.latestRaw = raw;
+    this.latestReceivedAt = receivedAt;
     this.emit({
       raw,
       filtered,
@@ -216,6 +225,8 @@ export class NativeMotionController {
 
 /** Beyond this the device stopped delivering rather than sampling slowly. */
 const MAX_SAMPLE_INTERVAL_MS = 1_000;
+/** Local callback recency only; the native timestamp has a separate clock origin. */
+const MAX_CALIBRATION_SAMPLE_AGE_MS = 1_000;
 /** No consumer sensor exceeds this; a higher figure means the clock, not the sensor. */
 const MAX_REPORTED_HZ = 1_000;
 const SAMPLE_RATE_SMOOTHING = 0.2;

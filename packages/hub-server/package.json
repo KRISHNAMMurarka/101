@@ -7,12 +7,14 @@
     "@101/device-model": "0.1.0",
     "@101/pairing": "0.1.0",
     "@101/protocol": "0.1.0",
+    "@xmldom/xmldom": "0.8.14",
     "mqtt": "5.16.0",
     "ws": "8.21.0"
   },
   "exports": {
     ".": "./src/index.ts",
     "./hosted-application": "./src/hosted-application.ts",
-    "./loopback-relay": "./src/loopback-relay.ts"
+    "./loopback-relay": "./src/loopback-relay.ts",
+    "./onvif-snapshot-gateway": "./src/onvif-snapshot-gateway.ts"
   }
 }
