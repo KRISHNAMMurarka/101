@@ -273,3 +273,6 @@ export type { RosbridgePoseSelection, RosbridgePoseRequest, RosbridgePoseGrant, 
 
 export { createZigbee2MqttBridge, parseZigbee2MqttProfile, zigbee2MqttTopics, decodeZigbee2MqttMessage, ZIGBEE_LIMITS } from './zigbee2mqtt-bridge.ts';
 export type { Zigbee2MqttProfile, ZigbeeAction, ZigbeeDecoded, ZigbeeApprovalRequest, ZigbeeReading, Zigbee2MqttBridge } from './zigbee2mqtt-bridge.ts';
+
+export { createCanDiagnosticConnector, parseCanDiagnosticProfile, decodeCanDiagnosticFrame, encodeCanPortRecord, parseCanPortRecord, CAN_DIAGNOSTIC_LIMITS } from './canopen-diagnostic-gateway.ts';
+export type { CanDiagnosticProfile, CanDiagnosticRecord, CanDiagnosticReading, CanDiagnosticApprovalRequest, CanDiagnosticApproval, CanDiagnosticOptions, CanDiagnosticConnector } from './canopen-diagnostic-gateway.ts';

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 179,
+  "revision": 180,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13075,6 +13075,32 @@
         "Commissioned selected physical Zigbee gateway and target firmware; Matter/Thread controller/fabric and independently enrolled device; source-clock/radio-loss/battery/action qualification for remaining scope"
       ],
       "supportRows": []
+    },
+    {
+      "id": "canopen-diagnostics-2026-10-09",
+      "revision": "bd559bc65515bf6a6aa5d42daad10be7bd3048d1d3a2a479ca21f1188b40de88",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-canopen-diagnostics.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0, existing host Clang, separate owned C scripted process, unchanged verified seven-package SDK; corrected strict Linux build/refusal only",
+      "reproduction": "18 focused, strict/noUnchecked and owned lint; two actual C protocols/four refusals/six public source scenarios; root actual ordinary installed SDK caller/natural close; 19 owned fences and12 actual post-caller copied artifact controls; exact candidate gates referenced by receipt; genuine app ambient type integration failure repaired with isolated NODE_ENV and final source/installed proofs refreshed",
+      "scope": "Selected heartbeat and once-only Device type/Error register/SDO abort raw diagnostic integers with original authority and receipt age; no native CAN/vcan/clock admission, normative/manufacturer profile, calibrated physical quantity, hardware or full A11 acceptance",
+      "failure": null,
+      "equipment": [
+        "Separately admitted existing Linux CAN/clock/namespace/interface and actual-version probe evidence; normative/manufacturer profile and representative calibrated industrial gateway/target for remaining scope"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14880,7 +14906,8 @@
       "id": "A11",
       "records": [
         "pending-A11",
-        "opcua-json-telemetry-2026-10-08"
+        "opcua-json-telemetry-2026-10-08",
+        "canopen-diagnostics-2026-10-09"
       ],
       "dependencies": [
         "M01",

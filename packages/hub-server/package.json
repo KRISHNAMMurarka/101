@@ -22,6 +22,7 @@
     "./motor-axis-gateway": "./src/motor-axis-gateway.ts",
     "./opcua-json-telemetry": "./src/opcua-json-telemetry.ts",
     "./rosbridge-pose-connector": "./src/rosbridge-pose-connector.ts",
-    "./zigbee2mqtt-bridge": "./src/zigbee2mqtt-bridge.ts"
+    "./zigbee2mqtt-bridge": "./src/zigbee2mqtt-bridge.ts",
+    "./canopen-diagnostic-gateway": "./src/canopen-diagnostic-gateway.ts"
   }
 }

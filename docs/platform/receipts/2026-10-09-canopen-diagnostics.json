@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-scripted-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/canopen-diagnostic-gateway.ts": "bd559bc65515bf6a6aa5d42daad10be7bd3048d1d3a2a479ca21f1188b40de88",
+    "packages/hub-server/src/canopen-diagnostic-gateway.test.ts": "2846d583eae8f400eb33d492b1a061ecdc852013c973592124d612a38a2dc7ab",
+    "examples/canopen-diagnostics/native-port.c": "c2e0639f6406cb532d0de4b9c184a861a230ef3fc746e89f2ec48f05af10a564",
+    "examples/canopen-diagnostics/consumer.mjs": "fd1a0c37578222da1726108ccc57c3d7ac9bb3034022e2717939ceb84c97f7cc",
+    "tools/qa-canopen-diagnostics.mjs": "f8a93eff83049ef1105913fed0df5824655bf24cc8cc4ffc63212c64c0c784ae",
+    "tools/qa-installed-canopen-diagnostics.mjs": "368a3e25391354855295027fb0f6eccbe302946e175d7d6f8c1ea038db6a9c4f"
+  },
+  "profile": {
+    "protocol": "CANopen CC selected diagnostic integers over an owned C scripted process",
+    "nodeId": 1,
+    "selectedReads": [
+      "0x1000:00 uint32 Device type",
+      "0x1001:00 uint8 Error register"
+    ],
+    "heartbeatStates": [
+      0,
+      4,
+      5,
+      127
+    ],
+    "direction": "observe plus once-only selected expedited upload requests; no arbitrary transmit/NMT/PDO/retries",
+    "publicNativeEntry": "blocked-native-environment before authorizer/spawn; native C launcher refuses with exit78",
+    "diagnosticUnit": "1; raw native integers, no physical quantity/calibration claim"
+  },
+  "bounds": {
+    "rawFrames": 256,
+    "rawBytes": 4096,
+    "sessionMs": 30000,
+    "heartbeatAgeMs": 1000,
+    "readMs": 1000,
+    "pipeBytes": 65536,
+    "recordsEachDirection": 512,
+    "stderrBytes": 4096,
+    "rawWrites": 4,
+    "publicReliableQueue": 64
+  },
+  "semantics": {
+    "authority": "Genuine standard Node owner/caller/grant signals; immutable private exact-request identity binds scope, original purpose/deadline, generation, enrolled artifact/profile/targets and limits; public route grants are separate",
+    "deadlines": "Original parent hrtime absolute bound intersected with grant; each read min(original bound, initial read start+1000ms). Scripted child uses bounded relative execution budget in its own CLOCK_MONOTONIC; no clock-origin equivalence claim.",
+    "delivery": "Existing reliable sample-subscribe/property-write route preserves both unpaced native response records; localSequence operationId and min(original caller deadline, immutable receipt+1000ms)",
+    "freshness": "Only heartbeat refreshes native heartbeat freshness; SDO response/dispatch/public admission does not",
+    "timing": "can-gateway-harness-monotonic parent pipe receipt only; nativeMonotonicNs/kernelTimestamp/receiverOverflow null; sourceTimeMapped false and capture unknown",
+    "qualityAndLoss": "Native measurement quality not provided and CAN loss unknown; local ordinals do not establish bus loss or node authentication",
+    "retirement": "Invalidation before unavailable callback; every issued write/end retained independently; actual ChildProcess close required before slot/restart release",
+    "physical": false
+  },
+  "validation": {
+    "focusedTests": 18,
+    "strictNoUncheckedIndexedAccess": true,
+    "actualSourceCProtocols": 2,
+    "actualSourceRefusalCases": 4,
+    "actualPublicSourceScenarios": [
+      "normal",
+      "route-expiry",
+      "route-revoke-after-read",
+      "gateway-expiry",
+      "gateway-revoke-opening",
+      "sdo-abort"
+    ],
+    "unchangedSourceChecksReused": false,
+    "sourceClosureCurrentFilesVerified": 375,
+    "sourceReviewPath": "/tmp/101-canopen-final-source-review.json",
+    "sourceProofPath": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-can-source-qMqTi1/receipt.json",
+    "ownedFenceExpectedNegatives": 19,
+    "installed": {
+      "proofPath": "/private/tmp/101-sdk-consumer-DQOPkU/canopen-diagnostics-olxAbl/receipt.json",
+      "publicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "dependencyFiles": 1283,
+      "sourceCompilerHelperRuntimeClosureFiles": 507,
+      "executedCopiedArtifacts": 12,
+      "checks": {
+        "routeDenied": true,
+        "typedDiagnosticValues": true,
+        "originalCallerDeadlineBound": true,
+        "exactScope": true,
+        "sourceRetired": true,
+        "actualChildCloseJoined": true,
+        "noCallbacksAfterClose": true,
+        "nativeEvidenceNotFabricated": true
+      },
+      "finalStatus": {
+        "phase": "closed",
+        "nativeChildren": 0,
+        "rawWrites": 0,
+        "rawFrames": 5,
+        "rawBytes": 80,
+        "pipeBytes": 1024,
+        "delivered": 5,
+        "rejected": 0,
+        "reason": "closed",
+        "childClosed": true,
+        "childExitCode": 0,
+        "childExitSignal": null
+      },
+      "postCallerArtifactExpectedNegatives": 12,
+      "postCallerMutationPath": "/tmp/101-canopen-post-caller-mutation-repaired.json",
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/canopen-diagnostics-olxAbl/receipt.json",
+        "sha256": "0c22d924f884c7cea6ec8e8f78d5d2c7819aeb01f456327096a0f5bcb17ed3ef",
+        "gitBlob": "e26943b9b0748fa00e2072d60aa40ce96eaa2ce1",
+        "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/repair-evidence-0509"
+      },
+      "postCallerMutation": {
+        "path": "/tmp/101-canopen-post-caller-mutation-repaired.json",
+        "sha256": "79c56ff3ff7849da0bf318e17719357b2016a50a9e2f92bf04d3f53164d7b015",
+        "gitBlob": "0d3044647d17491c296dd5889375f12564dc98c4",
+        "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/repair-evidence-2229"
+      },
+      "originalProofHistorical": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/canopen-diagnostics-NXXqtz/receipt.json",
+        "sha256": "248596ab972be129dc652a35d75019dcc0ceea6b5c79d5289c4e5efc6a3f4628",
+        "gitBlob": "a1ee9626b549d9712cb92a46867851c722e586d9",
+        "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/evidence-0509"
+      }
+    },
+    "linuxBuildOnly": {
+      "path": "/tmp/101-can-linux-compile-root-4/result.json",
+      "sha256": "b6973d0c4bab4feee6374defcf50e35c386f97cd8461a7224887fb94503cf39e",
+      "sourceSha256": "c2e0639f6406cb532d0de4b9c184a861a230ef3fc746e89f2ec48f05af10a564",
+      "binarySha256": "86d2a25ba7fb083d8e7d19bd30d0cd05cf8849837921034145c2fc8c4a5ff9a4",
+      "result": "GCC12.2 strict compile0/no warnings; exact binary --native actual exit78 blocked. No CAN/socket/clock probe/link/kernel/capabilities/download. Container exited/absent.",
+      "image": "node@sha256:6dac556d980b7f0e5498d08f08cee0ca67798b4ad6c23964a9214920e67758d0",
+      "environment": "Linux6.10.14 aarch64,Node24.21.0/libuv1.52.1",
+      "failureLineage": "Root wrapper1 JS escaping failed before cc; wrapper2 actual old C strict failure; wrapper3 compiled corrected C but root make-dependency target parser failed before receipt; wrapper4 exact acceptance success. Preserve all.",
+      "clockResearch": "/tmp/101-can-linux-clock-research/sources-complete.json SHA f5e8bc3204f1c2407d148eaacf74ce7453e802b4a735442a77ad64a205f65403; actual-version Node fast/slow hrtimeBigInt\u2192uv_hrtime\u2192CLOCK_MONOTONIC six primary source pins. No eight-bracket actual probe/native admission executed.",
+      "proof": {
+        "path": "/tmp/101-can-linux-compile-root-4/result.json",
+        "sha256": "b6973d0c4bab4feee6374defcf50e35c386f97cd8461a7224887fb94503cf39e",
+        "gitBlob": "830b9893de7dd52b1787f387876698b28d0283ea",
+        "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/evidence-2212"
+      }
+    },
+    "sourceReview": {
+      "path": "/tmp/101-canopen-final-source-review.json",
+      "sha256": "c985291027abd924a9b1f49d4ebdc5a38c1a9c65954f7265542f81c62e700218",
+      "gitBlob": "c68dc11f524eff300bc333e41e19b7302f86067a",
+      "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/evidence-2213"
+    },
+    "sourceProof": {
+      "path": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-can-source-qMqTi1/receipt.json",
+      "sha256": "2a24ed8d078a76938181290401d8e2728973ffc4631e1a42eddbddb5ad489b03",
+      "gitBlob": "4e3fc2f82d2e1f4f84c3e0413ab0df630a349ba9",
+      "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/repair-evidence-2242"
+    },
+    "originalSourceProofHistorical": {
+      "path": "/tmp/101-canopen-diagnostics-draft/evidence/source-six-final.json",
+      "sha256": "67dbf5985a393c5ec5c471cbbaf79bcb902aeb7521cdcc0e64d1af0094dcc718",
+      "gitBlob": "41d584b090a2be0d7d4ac62811fb06a6e83b856e",
+      "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics-draft/frozen-0606"
+    },
+    "sourceReviewScope": "Original independent full source review plus retained one-line root environment repair and exact repaired candidate independent integration review; original proof does not purport to cover changed bytes."
+  },
+  "retainedFailures": {
+    "provider": [
+      "Actual old malformed FRAME accounting after parsing",
+      "Actual old completed SDO replay while raw write held"
+    ],
+    "publicCaller": "Actual old latest queue replaced the first distinct burst response; reliable bounded delivery repaired without pacing/changing native producer",
+    "linuxCompiler": "Actual old strict GCC C failure: four misleading indentation diagnostics and one signed comparison; corrected exact source compiled without suppressing warnings",
+    "methodology": "Wrapper1 syntax before compiler and wrapper3 dependency parser receipt failure retained separately; neither relabelled a passing compiler result",
+    "evidencePath": "/tmp/101-canopen-diagnostics-draft/evidence/implementation-addendum.md",
+    "evidence": {
+      "path": "/tmp/101-canopen-diagnostics-draft/evidence/implementation-addendum.md",
+      "sha256": "d1fc2755d3e171b527573f64765e24d81c409e9d72f31505c93bdb9835967463",
+      "gitBlob": "f4ad0baf06a5bec42c436d6454d91b9a57ba9610",
+      "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics-draft/frozen-0067"
+    },
+    "rootTypeIntegrationRepair": {
+      "path": "/tmp/101-canopen-root-type-repair.json",
+      "sha256": "9e1ee63a45c2fb70afea40a02f48c08d2559f840d0b6a34f4db770d6f416d044",
+      "gitBlob": "1eb16d41616beec07e2c6a9118b56851e050e664",
+      "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/repair-evidence-2237"
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-canopen-evidence-manifest-raw-repaired.json",
+    "ref": "refs/codex/evidence/2026-10-09-canopen-diagnostics/evidence-manifest-raw-repaired",
+    "sha256": "5dd4c3d41e4139424968302fed09ef7c5a650c2632499cd34689ddf5baec77ec",
+    "gitBlob": "c8a3d415b4cf9d72b7f552ae4a535723392f2e7e",
+    "entryCount": 5180,
+    "method": "git hash-object --no-filters; git cat-file raw bytes independently SHA256 checked. Frozen draft refs verified by successor before reuse."
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-canopen-diagnostics/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-canopen-diagnostics/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-canopen-diagnostics/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact frozen candidate only; fresh local build before rendered; no red commit"
+  },
+  "acceptance": {
+    "A11": "partial",
+    "supportRows": [],
+    "open": [
+      "Separately admitted Linux CAN socket/clock/namespace/interface, actual-version clock bracketing and faithful native timestamp/error/loss proof",
+      "Normative CiA/manufacturer dictionary/profile and calibrated typed physical quantities",
+      "Representative authorized physical industrial gateway/target and bus enrollment",
+      "Secure remote/native publisher identity and full A11 acceptance"
+    ]
+  }
+}
