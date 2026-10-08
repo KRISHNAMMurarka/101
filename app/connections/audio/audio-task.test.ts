@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createBrowserApplicationAudio, createDeviceRuntime } from '@101/connect';
 import type { BrowserApplicationAudioEnvironment } from '@101/connect';
-import type { AudioOutputPort, AudioTone } from './audio-task.ts';
+import type { AudioOutputPort, AudioTone, AudioTaskSnapshot } from './audio-task.ts';
 
 const api = await import('./audio-task.ts').catch((error: unknown) => {
   if (error && typeof error === 'object' && 'code' in error && error.code === 'ERR_MODULE_NOT_FOUND') return undefined;
@@ -113,6 +113,41 @@ test('separate actual SDK owner and private route decisions produce one current 
     assert.equal(f.routing[0]!.gains[0]!.gain.value, 0); assert.equal(f.task.setMuted(false), true); assert.equal(f.routing[0]!.gains[0]!.gain.value, 0.5);
     const text = JSON.stringify(f.task.snapshot()); assert.equal(text.includes('registrationId'), false); assert.equal(text.includes('sampleRate'), false); }
   finally { await f.close(); }
+});
+
+test('settled playback notifies the page that preparation is complete', async () => {
+  const delayed = gate<void>(), snapshots: AudioTaskSnapshot[] = [];
+  const f = fixture({ play: delayed.promise, notify() { snapshots.push(f.task.snapshot()); } });
+  try {
+    const starting = f.task.start(f.approve()); await turn();
+    assert.equal(snapshots.at(-1)?.phase, 'opening');
+    assert.equal(snapshots.at(-1)?.rawPending, 1);
+    delayed.resolve(); assert.equal(await starting, true);
+    assert.equal(snapshots.at(-1)?.phase, 'active');
+    assert.equal(snapshots.at(-1)?.rawPending, 0, 'The rendered controls must receive the completed preparation state');
+    assert.equal(f.task.setMuted(true), true);
+    assert.equal(f.task.setVolume(0.2), true);
+  } finally { delayed.resolve(); await f.close(); }
+});
+
+for (const interruption of ['stop', 'close', 'throw'] as const) test(`completed playback observer ${interruption} prevents a successful start`, async () => {
+  let interrupted = false;
+  const f = fixture({ notify() {
+    const snapshot = f.task.snapshot();
+    if (interrupted || snapshot.phase !== 'active' || snapshot.rawPending !== 0) return;
+    interrupted = true;
+    if (interruption === 'stop') void f.task.stop();
+    else if (interruption === 'close') void f.close();
+    else throw new Error('Observer stopped the completed setup');
+  } });
+  try {
+    assert.equal(await f.task.start(f.approve()), false);
+    assert.equal(interrupted, true); await turn();
+    assert.equal(f.attached(), undefined);
+    assert.equal(f.task.snapshot().rawPending, 0);
+    assert.equal(f.task.snapshot().owned.producers, 0);
+    assert.equal(f.task.snapshot().owned.outputs, 0);
+  } finally { await f.close(); }
 });
 
 for (const cause of ['stop', 'close', 'owner', 'hide', 'blur', 'source-ended', 'routing-loss'] as const) test(`${cause} clears output synchronously and retires owned producer plus SDK clones`, async () => {

@@ -24,6 +24,7 @@
     "./rosbridge-pose-connector": "./src/rosbridge-pose-connector.ts",
     "./zigbee2mqtt-bridge": "./src/zigbee2mqtt-bridge.ts",
     "./canopen-diagnostic-gateway": "./src/canopen-diagnostic-gateway.ts",
-    "./matter-ws-switch": "./src/matter-ws-switch.ts"
+    "./matter-ws-switch": "./src/matter-ws-switch.ts",
+    "./tmp102-hwmon": "./src/tmp102-hwmon.ts"
   }
 }

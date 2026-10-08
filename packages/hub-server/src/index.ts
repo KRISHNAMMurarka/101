@@ -279,3 +279,6 @@ export type { CanDiagnosticProfile, CanDiagnosticRecord, CanDiagnosticReading, C
 
 export { createMatterWsSwitchConnector, decodeMatterSwitchMessage, MATTER_WS_SWITCH_PROFILE, MATTER_WS_SWITCH_LIMITS, MATTER_WS_SWITCH_POSITION_SCHEMA, MATTER_WS_SWITCH_EVENT_SCHEMA } from './matter-ws-switch.ts';
 export type { MatterSwitchRequest, MatterSwitchMessage, MatterPositionReceipt, MatterPressReceipt } from './matter-ws-switch.ts';
+
+export { createTmp102HwmonConnector, parseTmp102HwmonProfile, decodeTmp102Temperature, TMP102_HWMON_LIMITS, TMP102_HWMON_VALUE_SCHEMA } from './tmp102-hwmon.ts';
+export type { Tmp102FileIdentity, Tmp102HwmonProfile, DecodedTmp102Temperature, Tmp102TemperatureReading, Tmp102HwmonApprovalRequest, Tmp102HwmonApproval, Tmp102HwmonOptions, Tmp102HwmonConnector } from './tmp102-hwmon.ts';

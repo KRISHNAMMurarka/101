@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 183,
+  "revision": 186,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12230,7 +12230,7 @@
       "id": "local-audio-player-built-source-partial-2026-10-08",
       "revision": "d2c209fd1fd98cac00d2a82c641702c0b9edfdc3",
       "result": "pass",
-      "historical": false,
+      "historical": true,
       "levels": [
         "implementation",
         "contract"
@@ -13174,6 +13174,61 @@
       "failure": null,
       "equipment": [
         "Commissioned selected Matter controller/fabric/device, Thread and physical timing for remaining acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "tmp102-hwmon-2026-10-09",
+      "revision": "cb1b502a6e3336ea86120218032604e61173b1b4b884d89efbd8fd576085db1a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A16",
+        "Q03",
+        "Q08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-tmp102-hwmon.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0, separately owned ordinary file producer and unchanged seven-package installed SDK; native profile denied",
+      "reproduction": "Reviewed fixed-file contract and original failures; actual default workspace old-red/current-green and narrow accepted review; refreshed eleven source SDK scenarios, ordinary installed caller and twelve actual post-caller copied-artifact mutations; required exact integrated gates in receipt",
+      "scope": "Selected TMP102 documented integer millidegree ABI software, exact identity/byte/authority/receipt semantics and genuine cleanup. Native sysfs/I2C, physical calibration/conversion, broader sensors and full A16/Q03/Q08 remain open",
+      "failure": null,
+      "equipment": [
+        "Qualified Linux driver/I2C/TMP102 target and calibration for remaining physical acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "audio-player-browser-2026-10-09",
+      "revision": "424af9ca2d7cc895c061aa2cea6935fbcd73c7cd832dbdb86715d62f85b62fd2",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "V03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-audio-player-browser.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0, Playwright1.61.1 and explicit pinned Chrome149.0.7827.55; headless muted output",
+      "reproduction": "Original unit and actual player failure;42 current source checks, reviewed completion ordering, actual built-page keyboard/expiry/navigation with genuine native object retention and postcleanup input rechecks; exact candidate gates required",
+      "scope": "Selected local tone player software/browser acceptance and native cleanup. Headless native focus was not generated; native permission/device-loss, other engines, physical sound/AT and complete U03/V03 remain open",
+      "failure": null,
+      "equipment": [
+        "Actual speakers/headphones, supported browser/OS focus and permission environments, named assistive technology for remaining acceptance"
       ],
       "supportRows": []
     }
@@ -14650,7 +14705,8 @@
       "records": [
         "pending-V03",
         "v03-private-application-audio-installed-2026-10-06",
-        "local-audio-player-built-source-partial-2026-10-08"
+        "local-audio-player-built-source-partial-2026-10-08",
+        "audio-player-browser-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15063,7 +15119,8 @@
     {
       "id": "A16",
       "records": [
-        "pending-A16"
+        "pending-A16",
+        "tmp102-hwmon-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15878,7 +15935,8 @@
         "feedback-player-built-partial-2026-10-07",
         "local-player-combined-software-build-2026-10-07",
         "local-gamepad-player-built-source-partial-2026-10-08",
-        "local-audio-player-built-source-partial-2026-10-08"
+        "local-audio-player-built-source-partial-2026-10-08",
+        "audio-player-browser-2026-10-09"
       ],
       "dependencies": [
         "C01",
@@ -16228,7 +16286,8 @@
     {
       "id": "Q03",
       "records": [
-        "pending-Q03"
+        "pending-Q03",
+        "tmp102-hwmon-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [
@@ -16285,7 +16344,8 @@
     {
       "id": "Q08",
       "records": [
-        "pending-Q08"
+        "pending-Q08",
+        "tmp102-hwmon-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [

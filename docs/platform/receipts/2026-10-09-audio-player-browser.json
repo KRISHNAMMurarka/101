@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-player-source-and-chromium-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "app/connections/audio/audio-task.ts": "424af9ca2d7cc895c061aa2cea6935fbcd73c7cd832dbdb86715d62f85b62fd2",
+    "app/connections/audio/audio-task.test.ts": "0838e712a17af993101ec7ba5701a37a52517b7714c58dcb6f064123a6b93f71",
+    "app/connections/audio/AudioView.tsx": "f5d299c113f2be2eb2de774993eaf0c9c60d9c535e0dd46831698da40a70c178",
+    "app/connections/audio/page.tsx": "6bd57a5d73b3812eccf18e5d7b137ece96d18c04d4d2d50cbe91cd3994267658",
+    "tools/qa-audio-player-browser.mjs": "368238ef6ff91054fd2d1000e1a76dc9d479dc7493e0e42cf9eeff68a9e7485f"
+  },
+  "page": "/connections/audio",
+  "resolvedFinding": {
+    "id": "AUDIO-COMPLETION-01",
+    "problem": "Actual browser playback became active while rendered Mute/volume stayed disabled and status still reported earlier work. Last observer snapshot preceded setupFinished.",
+    "repair": "Mark completed native setup before the existing active notification, then evaluate liveness after that callout. Completion-only Stop/Close/throw returns false and independently joins cleanup.",
+    "oldSource": {
+      "path": "/private/tmp/101-audio-browser-audit/old-audio-task.ts",
+      "sha256": "19da8f54741d78e643725a4a84bb278033c8f3c0833033225525f43a87bc16ef",
+      "gitBlob": "d1dc28e5320dac5baa2bd059269fdcf1c0c8365e",
+      "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01123"
+    },
+    "originalRegression": {
+      "path": "/private/tmp/101-audio-browser-audit/old-red-unit.log",
+      "sha256": "83c0d417fc04dce8c2272b06141559c81344e476baefad5ded42aba2d6acd268",
+      "gitBlob": "755e55dfe50db2111b3337423883b34241250468",
+      "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01125"
+    },
+    "firstRepairObserverOldRed": {
+      "path": "/private/tmp/101-audio-browser-audit/review1-old-red-unit.log",
+      "sha256": "a4977ba76bb2f634ec34aa749045a689b135b48ef45d7014cb27f58743597306",
+      "gitBlob": "3a7589c048439c1429d766cc2c41b42a89eafa8d",
+      "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01129"
+    },
+    "acceptedSourceReview": {
+      "path": "/private/tmp/101-audio-completion-review/review-2.json",
+      "sha256": "ffa1a902fb7eb0b821f182111ee9d8b853314d6aa6f9cc172a8a4fe58e9e8882",
+      "gitBlob": "54f0d960d65bb8ab945b35b86e7293190168eba7",
+      "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01153"
+    }
+  },
+  "validation": {
+    "focusedUnit": {
+      "count": 42,
+      "proof": {
+        "path": "/private/tmp/101-audio-browser-audit/green-final-unit.log",
+        "sha256": "92a1131d325b93311b590658a0b8fc57f64364d436c72dafad6ba3eded9691bd",
+        "gitBlob": "c8c04c606a5201fdb225307a13ce456d1f218ef9",
+        "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01115"
+      }
+    },
+    "browserProof": {
+      "path": "/private/tmp/101-audio-player-browser-DcImb5/receipt.json",
+      "sha256": "39075ba4de71dd6b8a960b07b2fdaa34bd4aed603f02d308b7a80bd65d9f1659",
+      "gitBlob": "df547dcdf5823335366a8b53d023d87a6f0cf5ff",
+      "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01158"
+    },
+    "browserVersion": "149.0.7827.55",
+    "playwrightVersion": "1.61.1",
+    "node": "v24.14.0",
+    "actualExecutable": "/Users/km/Library/Caches/ms-playwright/chromium-1228/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+    "launch": {
+      "headless": true,
+      "args": [
+        "--mute-audio",
+        "--enable-automation"
+      ],
+      "executablePath": "/Users/km/Library/Caches/ms-playwright/chromium-1228/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "bundle": "/Users/km/Library/Caches/ms-playwright/chromium-1228/chrome-mac-arm64/Google Chrome for Testing.app",
+      "actualBrowserCommandLine": [
+        "/Users/km/Library/Caches/ms-playwright/chromium-1228/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+        "--disable-field-trial-config",
+        "--disable-background-networking",
+        "--disable-background-timer-throttling",
+        "--disable-backgrounding-occluded-windows",
+        "--disable-back-forward-cache",
+        "--disable-breakpad",
+        "--disable-client-side-phishing-detection",
+        "--disable-component-extensions-with-background-pages",
+        "--disable-component-update",
+        "--no-default-browser-check",
+        "--disable-default-apps",
+        "--disable-dev-shm-usage",
+        "--disable-edgeupdater",
+        "--disable-extensions",
+        "--disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,Translate,AutoDeElevate,RenderDocument,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion",
+        "--enable-features=CDPScreenshotNewSurface",
+        "--allow-pre-commit-input",
+        "--disable-hang-monitor",
+        "--disable-ipc-flooding-protection",
+        "--disable-popup-blocking",
+        "--disable-prompt-on-repost",
+        "--disable-renderer-backgrounding",
+        "--force-color-profile=srgb",
+        "--metrics-recording-only",
+        "--no-first-run",
+        "--password-store=basic",
+        "--use-mock-keychain",
+        "--no-service-autorun",
+        "--export-tagged-pdf",
+        "--disable-search-engine-choice-screen",
+        "--unsafely-disable-devtools-self-xss-warnings",
+        "--edge-skip-compat-layer-relaunch",
+        "--disable-infobars",
+        "--disable-search-engine-choice-screen",
+        "--disable-sync",
+        "--enable-unsafe-swiftshader",
+        "--headless",
+        "--hide-scrollbars",
+        "--mute-audio",
+        "--blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4",
+        "--no-sandbox",
+        "--mute-audio",
+        "--enable-automation",
+        "--user-data-dir=/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/playwright_chromiumdev_profile-z2gdAR",
+        "--remote-debugging-pipe",
+        "--no-startup-window",
+        "--noerrdialogs",
+        "--flag-switches-begin",
+        "--flag-switches-end",
+        "--enable-unsafe-swiftshader"
+      ],
+      "browser": "149.0.7827.55",
+      "playwright": "1.61.1"
+    },
+    "buildInputPins": 1108,
+    "resolvedModulePins": 157,
+    "inputScope": "Complete built client/server, page source, lockfile, helper, Node binary, actual Chrome app/framework/resources, Playwright package files and actual resolved Node/SSR modules. First resolution pins retained; all checked after browser/server teardown. OS frameworks/physical output are not qualified.",
+    "positiveScenarios": [
+      "quiet arrival and separate keyboard approvals",
+      "native playback acceptance with keyboard volume/mute/Stop",
+      "five-second review expiry with zero observed native audio calls",
+      "ten-second original active expiry and native cleanup",
+      "actual client navigation with retained original native objects and cleanup"
+    ],
+    "nativeCleanup": "Every active case retains exactly two genuine AudioContexts, three genuine tracks and one element through closed/ended/paused+detached readback before page closure. No object-count reset may pass vacuously. Actual browser/server/pending/issued closure zero; no foreign requests or errors.",
+    "observer": "Bounded method-forward observation retains genuine objects, values and native promises; overflow flags failure without suppressing native forwarding. No fake AudioContext/stream/producer.",
+    "viewport": {
+      "phoneWidth": 320,
+      "desktopWidth": 1280,
+      "horizontalOverflow": false,
+      "reducedMotion": "requested reduce",
+      "manualScreenshotReview": "Root inspected both retained sizes: readable monochrome copy, visible status focus and wrapped controls. Full-page snapshot includes fixed mobile navigation; focus obstruction/AT/complete responsive matrix not qualified."
+    },
+    "screenshots": [
+      {
+        "path": "/private/tmp/101-audio-player-browser-DcImb5/desktop-stopped.png",
+        "sha256": "51085770c8ada17fe62e6c824516e7aff0790c876648186f39bc1bef3612bc2b",
+        "gitBlob": "a691bc2b57618a26f293d7fbad77780ec484b861",
+        "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01156"
+      },
+      {
+        "path": "/private/tmp/101-audio-player-browser-DcImb5/phone-expired.png",
+        "sha256": "9f87fafe8dce69391a6d26ac418d2a7526627c233cff69b531af0eb4d232e00f",
+        "gitBlob": "512acfb19ff4245e9a70b8e2e0bd7e18caf06a86",
+        "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/evidence-01157"
+      }
+    ],
+    "unqualifiedNativeFocus": {
+      "scenario": "blur",
+      "reason": "Actual owned second page/bringToFront did not generate native focus loss in headless Chrome. Recovered with real Stop and joined native cleanup. No synthetic blur event or native-focus success claim.",
+      "sourceUnitCoverage": "Source software tests cover hide/blur/page closure; native OS/browser focus and visibility qualification remains open."
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-audio-root-evidence/raw-evidence-manifest.json",
+    "sha256": "8011a53d940f439d634f0951be107306cea3266e944139a784c218b41eef1c86",
+    "gitBlob": "5fbce2c0173876386b6322a41ee3313ffd29fd0b",
+    "ref": "refs/codex/evidence/2026-10-09-audio-player-browser/manifest",
+    "entryCount": 1162,
+    "uniqueBlobs": 935
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-audio-player-browser/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-audio-player-browser/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-audio-player-browser/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "One combined TMP102/audio exact candidate; fresh build before rendered tests. Current browser artifact bytes retained before later candidate build. No broad gate claim before execution."
+  },
+  "acceptance": {
+    "U03": "partial",
+    "V03": "partial",
+    "supportRows": [],
+    "physical": false,
+    "formalAccessibilityConformance": false,
+    "releaseRecommendation": "not established by this scoped audit",
+    "open": [
+      "Native browser/OS blur and visibility transitions; other browser engines",
+      "Actual permission denial/autoplay recovery and device/output loss in native browser",
+      "Named assistive technology, complete keyboard focus obstruction/reflow/contrast and field performance checks",
+      "Physical speaker/headphone output, destination changes/latency, capture and full U03/V03"
+    ]
+  }
+}

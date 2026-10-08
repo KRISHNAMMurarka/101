@@ -282,7 +282,7 @@ export function createLocalAudioTask(options: {
       let played: Promise<void>;
       try { played = output.play(privateStream); } finally { if (!alive(run)) clearOutput(run); }
       await track(run, played, () => { if (run.retired) clearOutput(run); }); if (!usable(run)) return false;
-      phase = 'active'; reason = 'active'; emit(); return alive(run);
+      run.setupFinished = true; phase = 'active'; reason = 'active'; emit(); return alive(run);
     } catch { if (alive(run)) void retire('unavailable'); return false; }
     finally { run.setupFinished = true; if (run.retired) { closeTone(run); finish(run); } }
   }

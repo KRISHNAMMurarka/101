@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/tmp102-hwmon.ts": "cb1b502a6e3336ea86120218032604e61173b1b4b884d89efbd8fd576085db1a",
+    "packages/hub-server/src/tmp102-hwmon.test.ts": "023fd482735c1553c777da65827f95cd6ef1d71d79abddf106f325043754e115",
+    "examples/tmp102-hwmon/producer.mjs": "0fa62e6096bd7f43f79c57d688447518d9c7ac36e4913b12cc3a841ecc951281",
+    "examples/tmp102-hwmon/consumer.mjs": "a25d5affcb9db44db96f125a9c5de0f23cb1d8740beb74cf14001c63fd3a159e",
+    "tools/qa-tmp102-hwmon.mjs": "8da4aed1b001b989e60274859781b4674572bff80ad4d6c9dc28eb6b8e8e37bd",
+    "tools/qa-installed-tmp102-hwmon.mjs": "6ce16325685a6004a7b1e899e11ecd72b49f751b691c54e7a635f3f644b2e087"
+  },
+  "profile": {
+    "id": "tmp102-hwmon-abi-file/1",
+    "nativeProfile": "linux-tmp102-hwmon-temperature-read/1",
+    "nativeAdmission": "denied all hosts before authorizer/filesystem effects",
+    "direction": "Read fixed enrolled name/temp1_input ordinary files only",
+    "ancestorPolicy": "Host-controlled stable ancestors; persistent changes detectable; no invisible ABA or race-proof openat confinement claim",
+    "identity": "Frozen canonical bigint dev/ino for enrolled parent/hwmon/name/temperature; fixed paths; no enumeration or automatic re-enrollment"
+  },
+  "primarySources": [
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/drivers/hwmon/tmp102.c?ref=v6.10",
+      "bytes": 7662,
+      "evidence": {
+        "path": "/private/tmp/101-tmp102-hwmon-plan/evidence/primary/linux-v6.10-tmp102-api-response.bin",
+        "sha256": "b168400d20689d3124833d7bc58c0601ec3bca6f52fb8e9f15f47d15032a2edb",
+        "gitBlob": "8af44a33055f3273736af4d4b20ed026e0d2388b",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09388"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/Documentation/hwmon/tmp102.rst?ref=v6.10",
+      "bytes": 938,
+      "evidence": {
+        "path": "/private/tmp/101-tmp102-hwmon-plan/evidence/primary/linux-v6.10-tmp102.rst",
+        "sha256": "c684629937f12848dbe0e9af5358a904396970a6267affa4d7075b4491bcb8f7",
+        "gitBlob": "b1f585531a88dab97f4d1f1530f0b7b4b9cac5a9",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09389"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/Documentation/ABI/testing/sysfs-class-hwmon?ref=v6.10",
+      "bytes": 20241,
+      "evidence": {
+        "path": "/private/tmp/101-tmp102-hwmon-plan/evidence/primary/linux-v6.10-hwmon-abi.txt",
+        "sha256": "dde265e65b9308a0f1a2a4bfa34389d966313ec7b94a453aaf4c923ff8922888",
+        "gitBlob": "cfd0d0bab48398543835888f51ce97261924c6e3",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09386"
+      }
+    },
+    {
+      "url": "https://api.github.com/repos/torvalds/linux/contents/Documentation/hwmon/sysfs-interface.rst?ref=v6.10",
+      "bytes": 18066,
+      "evidence": {
+        "path": "/private/tmp/101-tmp102-hwmon-plan/evidence/primary/linux-v6.10-hwmon-sysfs-interface.rst",
+        "sha256": "97304e541af2980bb2d963a1333e14fc04844be1f62376295c1f63a68f73c750",
+        "gitBlob": "f76e9f8cc1adae19cdfbd4a7e8761c4feb479a0b",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09387"
+      }
+    },
+    {
+      "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf",
+      "bytes": 1151760,
+      "evidence": {
+        "path": "/private/tmp/101-tmp102-hwmon-plan/evidence/primary/tmp102-SBOS397I.pdf",
+        "sha256": "c9da6620ef95f75ce94372f670a84d168e05922dd32cebfaa6517083f15ebfaf",
+        "gitBlob": "08b534332c8c6dee522bdb235b312bb64add2bb8",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09390"
+      }
+    }
+  ],
+  "semantics": {
+    "unit": "Cel",
+    "range": [
+      -55,
+      150
+    ],
+    "nativeText": "Complete canonical signed integer millidegrees and LF; exact ASCII name tmp102 LF",
+    "read": "O_RDONLY|O_NOFOLLOW|O_NONBLOCK; genuine handle identity/ordinary-file stat size1..64 before65-byte sentinel read; exact bytesRead and unchanged complete size/identity afterward",
+    "conversion": "Reported finite scalar raw integer/1000 plus frozen exact raw integer/rational numerator denominator1000/canonical decimal/raw SHA256 and byte length. -62 millidegrees remains -0.062 Celsius; driver truncation is not reconstructed",
+    "authority": "Exact frozen private standing request/profile/scope/purpose/generation/original deadline and genuine direct-prototype owner/caller/grant signals before filesystem effect; separate ordinary SDK subscribe/write grant",
+    "clock": "Original actual read-completion performance.now before post-read metadata; immutable tmp102-gateway-monotonic timestamp; SDK publication receipt remains distinct",
+    "quality": "Accepted ABI data only; calibration/error/conversion capture age/source-clock mapping unknown",
+    "lifecycle": "Issued metadata/open/read/close independently owned; late handles adopted and closed after cancellation; unsuccessful close never releases ownership. Separate real producer child adopts exit/close/IPC before enrollment; terminal drain and sibling cleanup retain all issued operations; quotas checked before deadlines",
+    "physical": false
+  },
+  "bounds": {
+    "sessionMs": 30000,
+    "readMs": 1000,
+    "pollMs": 1000,
+    "receiptAgeMs": 1000,
+    "readsPerSession": 30,
+    "startsPerLifetime": 8,
+    "payloadBytes": 64,
+    "sentinelReadBytes": 65,
+    "temperatureHandles": 1,
+    "metadataHandles": 1,
+    "inFlightReads": 1
+  },
+  "validation": {
+    "acceptedPlan": {
+      "path": "/private/tmp/101-tmp102-hwmon-plan/manifest-review-1.json",
+      "sha256": "68ef4f047e8d4a3549819860df02d0d08b76fa55c5f964309dcfb9337c546a35",
+      "gitBlob": "6f3f33d369799a86059fc0cb77992dab39ae3510",
+      "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09399"
+    },
+    "approval": {
+      "path": "/private/tmp/101-tmp102-hwmon-root-approval.json",
+      "sha256": "abfa6e05a148e1e5036fd2c776f5310b6405dc2331707ee9dcd55c1b32b4bc03",
+      "gitBlob": "aa99356ccafb45ec44f7482b1df252d42d1ac0d3",
+      "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09401"
+    },
+    "workerManifest": {
+      "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review3-six-manifest.json",
+      "sha256": "261ae5cdeaabc72d19ac552c6665b944ca0a883769dfe480e45eba7f4b516c30",
+      "gitBlob": "565dbc96da1f2e1acd3b43b384eee784748c43f7",
+      "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02184",
+      "historicalBeforeDefaultRepair": true
+    },
+    "workerReport": {
+      "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review3-report.md",
+      "sha256": "1d2489ebd560bfae61594f13a9701debcdf5f1ba25ba037a3a4c9afca9627f88",
+      "gitBlob": "88c5e7d59b428175f662c66858332d6074205b4e",
+      "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02183",
+      "historicalBeforeDefaultRepair": true
+    },
+    "sourceReview": {
+      "path": "/private/tmp/101-tmp102-independent-source-review/review-3.json",
+      "sha256": "f30f05b728668fcba6575176544a89b93b4efe55d99d54aeecc1c1e88fad2068",
+      "gitBlob": "3bde50a3e29efedd007c1f99eb8395b7050c3070",
+      "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09404",
+      "scope": "Accepted provider/producer/helper contract at pre-default six-file freeze; current two-line default delta independently accepted below"
+    },
+    "retainedEarlierRejectedReviews": [
+      {
+        "path": "/private/tmp/101-tmp102-independent-source-review/review-1.json",
+        "sha256": "0fd8493e23802220b21f6af70b16219ec3bbcea6f513f131ec8094f707f75b5d",
+        "gitBlob": "daf91c8dafd6d253b5d6a4af16b050a19f3f690f",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09402"
+      },
+      {
+        "path": "/private/tmp/101-tmp102-independent-source-review/review-2.json",
+        "sha256": "a516342b2ff31f9148b6bec14f5317ddf7f306aa9c587bf757698383f5b2eba6",
+        "gitBlob": "27653d4ffe85321a1e50fd981eeb0261d4496da8",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09403"
+      }
+    ],
+    "historical59Focused": "Prior exact earlier source freeze only; current six affected exceptional selectors plus refreshed execution proof; full current suite belongs to candidate gates",
+    "sourcePublic": {
+      "proof": {
+        "path": "/Users/km/Desktop/games/101/evidence/tmp102-source-Q5cKwW/receipt.json",
+        "sha256": "16b55b2c3a591e4cf3d4e217346849f40b39dc292d22b1292dbee23d6cd7421f",
+        "gitBlob": "8aa449e447b3f3d1714ad2010b1ba7dc61c87343",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-00004"
+      },
+      "wrapper": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/source.json",
+        "sha256": "df4d5b0cf2154ecd0ef0b2530a5a9a7beaa8cc73c86cd8d32fe1d66058edcbee",
+        "gitBlob": "a12875508a8756c2247df01ad17bd28501811a5c",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02153"
+      },
+      "scenarioCount": 11,
+      "sourceCompilerRuntimeFiles": 399,
+      "actualCallerAndProducerNaturalClose": true,
+      "currentSourcePins": true
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/tmp102-hwmon-Z6nfJF/receipt.json",
+        "sha256": "3f5b3c7c2817ec374c6e6f25f0ddf476d82f8e68646189315cb30ded81dba4db",
+        "gitBlob": "88d4fec172e40c1260345436523459ce5453e8c6",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02110"
+      },
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "publicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "actualCallerAndProducerNaturalClose": true,
+      "providerPendingHandlesReadsTimersAfterClose": 0,
+      "compiledGatewaySeparately": true,
+      "postCallerMutation": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/current-post-caller-mutation.json",
+        "sha256": "aa097a3758c700486a69a782ad9af98ed7eddbb558f484f98cd86e03cd07fdd7",
+        "gitBlob": "b550b33bdc20a360c8bcdbfe8d265dea5e978b8a",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02132"
+      },
+      "postCallerMutationCount": 12,
+      "wrapper": {
+        "path": "/private/tmp/101-tmp102-root-installed.json",
+        "sha256": "b67f2b9aa85a3e288dcae2850fb2c6a0c624f630515373a6dcd0c816f84529fd",
+        "gitBlob": "657f5cb0398d8e430c8f876a6448c2ce4145fb74",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02156"
+      },
+      "sourceCompilerRuntimeFiles": 400,
+      "installedDependencies": 1283,
+      "currentSourcePins": true
+    },
+    "genuineOldReds": {
+      "review-r1-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r1-old-red.txt",
+        "sha256": "235f8413b9e64e2c55dd5eae74f6190dc953c193b9bb4316363b986811fe82c5",
+        "gitBlob": "9e69fb43e6c77bd253c4265b448b77c2c2e0c598",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02135"
+      },
+      "review-r2-startup-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r2-startup-old-red.txt",
+        "sha256": "b7ad3fe854ebdff5d6e4f9dc0d78daaee7d6acb75215148ffc17c6339bc6dda5",
+        "gitBlob": "7f228f76b589ee928a77cdea25674be7a620cede",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02154"
+      },
+      "review-r2-failure-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r2-failure-old-red.txt",
+        "sha256": "f5db66bd594f793e705387277d0f1863c62af22a4c80991ff7c1e6626c27a34c",
+        "gitBlob": "77ca14ddeb5d590e6d5843181cded9f6a51cb3e3",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02139"
+      },
+      "review-r2-rejected-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r2-rejected-old-red.txt",
+        "sha256": "cbb074500b8ec58878fd70a852b52641e4730c8c513e8abb007c6fd4552307c0",
+        "gitBlob": "43e04924fd99ce4a833a2df4097b33b6bc8c19a6",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02151"
+      },
+      "review-r2-held-cleanup-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r2-held-cleanup-old-red.txt",
+        "sha256": "4643917769ea556c1b56a3d812fc483515e8d55c41e8d0f2e5bd709dcbdb75ad",
+        "gitBlob": "a5fab2cf3c4553881d7581e7a06efc654e44fdd7",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02141"
+      },
+      "review-r2-producer-terminal-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review-r2-producer-terminal-old-red.txt",
+        "sha256": "275b9c1f46b7bd6ce27ba61372023b911d453939ca9595983d76792d6164cf7a",
+        "gitBlob": "8e8d2e3af691c0a320e866224a36ebaa67f39ac0",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02148"
+      },
+      "review3-quota-old-red.txt": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/review3-quota-old-red.txt",
+        "sha256": "ae76533a01f6f968afe4e09d463712edbf567dd07f1c77dc154d9bdeb6b4da74",
+        "gitBlob": "d7c6c85fa93bb9902020632449c689097c30b799",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02181"
+      }
+    },
+    "historicalCurrentAffectedSelectors": 6,
+    "historicalSourcePublic": {
+      "proof": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/tmp102-source-mUgemF/receipt.json",
+        "sha256": "03b280351e8c2b45a382fe5215e093066de620f2913888a0c9ab59c821a212c7",
+        "gitBlob": "58dcd0fde026ec15e8ea706de7a1f40a3f38b466",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09332"
+      },
+      "scenarioCount": 11,
+      "sourceCompilerRuntimeFiles": 399,
+      "actualCallerAndProducerNaturalClose": true,
+      "historicalBeforeDefaultRepair": true
+    },
+    "historicalOwnedCopiedControls": {
+      "proof": {
+        "path": "/private/tmp/101-tmp102-hwmon-draft/evidence/tmp102-mutations-Nep6lY/receipt.json",
+        "sha256": "00054b5856c26e89fab241f8b12db3bdd7311110a18f0578c076d403dd444f74",
+        "gitBlob": "e2b49eccc7bbbbf97e8cdf5abe6a36ee76ce0946",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-05342"
+      },
+      "count": 16,
+      "authoritativeUnchanged": true,
+      "historicalBeforeDefaultRepair": true
+    },
+    "historicalInstalled": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/tmp102-hwmon-Kfn0Cq/receipt.json",
+        "sha256": "35174cd256d62a71564fecdcaf6cdc706f45a571166067feaa0a967928b69c3e",
+        "gitBlob": "a7a4be8b0f048174c69ec644395a810b9063bfac",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-02099"
+      },
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "publicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "actualCallerAndProducerNaturalClose": true,
+      "providerPendingHandlesReadsTimersAfterClose": 0,
+      "compiledGatewaySeparately": true,
+      "postCallerMutation": {
+        "path": "/private/tmp/101-tmp102-root-evidence/post-caller-mutation.json",
+        "sha256": "4a18ebc7d17e9fb2b802c4abd25fa8b89436f14eb78b98d4aa122d0052a53ae9",
+        "gitBlob": "f4d7437a4e2f86c31d93968b4614a65e30892751",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/evidence-09417"
+      },
+      "postCallerMutationCount": 12,
+      "historicalBeforeDefaultRepair": true
+    },
+    "defaultWorkRootRepair": {
+      "behavior": "Default caller uses canonical existing OS temporary directory; producer owns only unique mkdtemp subtree. Explicit invalid custom root still fails before spawn.",
+      "oldConsumer": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/consumer.mjs",
+        "sha256": "b22f54cfb5aa8cc80e466cfa44b68469bea675ce1715d7f0fa1dc7d45ae06fbf",
+        "gitBlob": "43a718a286a6e7ce73762515bd8c0b5cb0820607",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02131"
+      },
+      "oldTest": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/tmp102-hwmon.test.ts",
+        "sha256": "434a1a327d84f331a8334765525fb3b641092c89bdaae82e810028d931a49b94",
+        "gitBlob": "e2f9852379b16a858c5b7d0bcfdd6437b1c11964",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02155"
+      },
+      "executedDefaultRegression": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/default-regression.test.ts",
+        "sha256": "023fd482735c1553c777da65827f95cd6ef1d71d79abddf106f325043754e115",
+        "gitBlob": "8ea6c7b580b33c559818682f5cb6626eee56bf17",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02135"
+      },
+      "oldRed": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/old-red.log",
+        "sha256": "52899d880d566bdae754047b4c09a46551e06c50552a4d2294df1934b895e472",
+        "gitBlob": "9240883de5f3629fa2e7a686f3fc8d3ed2451df7",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02149"
+      },
+      "focusedGreen": {
+        "path": "/private/tmp/101-tmp102-root-default-repair/green.log",
+        "sha256": "7b5a9340c3bf92108af830a0b693b075193106321147f671866842db2b6b762e",
+        "gitBlob": "7ac8ae367b147136148031d1c4e74d6fa2a61f41",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02136"
+      },
+      "independentReview": {
+        "path": "/private/tmp/101-tmp102-default-repair-review/review-1.json",
+        "sha256": "40c7f9a59486e6b4e99138bd0f320d7703bc23362809566fff768ec8220c860a",
+        "gitBlob": "7082c3ae35e8a40aacc063b3fd775fb2e4eaf021",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02128"
+      },
+      "preservedFailedCandidateRef": "refs/codex/evidence/2026-10-09-tmp102-hwmon/failed-candidate-1",
+      "preservedFailedCandidateTree": "05b03668914537d9097d05801ad6977453ab490d",
+      "failedGateResult": {
+        "path": "/private/tmp/101-tmp102-audio-candidate-gates/result.json",
+        "sha256": "80f88a3d25a55df458536d74fe2b26cbbd9bffb2ef7148cce05def0bc66e456f",
+        "gitBlob": "e150e1e656355ee18700024e7c011a5a2f8c3a06",
+        "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-evidence-02124"
+      },
+      "failedGateCounts": {
+        "unit": 3063,
+        "pass": 3062,
+        "fail": 1
+      },
+      "freshSourceScenarios": 11,
+      "freshInstalledActualMutationControls": 12
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-tmp102-root-evidence/raw-evidence-manifest.json",
+    "sha256": "4d8662c390730259e0133afd3da0d13b35297110442fda9884a1a593b6e413a8",
+    "gitBlob": "82590054f56696d2bf8b60e6c1696a13260fe51a",
+    "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/manifest",
+    "entryCount": 9422,
+    "uniqueBlobs": 2249,
+    "scope": "Original accepted provider/producer contract and pre-default source/installed proofs retained; historical current-source claims superseded by default repair manifest"
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-tmp102-hwmon/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-tmp102-hwmon/gates",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-tmp102-hwmon/integration-review",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact integrated candidate; fresh build before rendered tests; no red commit. Source and selected installed receipts do not establish broad gates."
+  },
+  "acceptance": {
+    "A16": "partial",
+    "Q03": "partial",
+    "Q08": "partial",
+    "supportRows": [],
+    "physical": false,
+    "open": [
+      "Actual admitted Linux/sysfs completeness and target/kernel/driver binding",
+      "I2C/TMP102 hardware, conversion timing, calibration and accuracy",
+      "Broader heterogeneous sensors, real gateway and full A16/Q03/Q08"
+    ]
+  },
+  "retainedDefaultRepairEvidence": {
+    "path": "/tmp/101-tmp102-root-default-repair/raw-evidence-manifest.json",
+    "sha256": "b55fdc05ee06b6876b2b4b419c52b47e1e6a38aeecc623eb87fd72962266902f",
+    "gitBlob": "190b3c2ce5733d7e6e400082c4dba0e98ca5e707",
+    "ref": "refs/codex/evidence/2026-10-09-tmp102-hwmon/default-repair-manifest",
+    "entryCount": 2158,
+    "uniqueBlobs": 2098
+  }
+}
