@@ -4171,3 +4171,203 @@ connectors, dependencies/assets, native privileges, total RSS and full S14
 qualification remain open.
 
 [Scoped four-lane local software evidence](receipts/2026-10-08-local-software.json) retains genuine OLD witnesses, the independent source review and matching public callers from the seven-package SDK (186 inputs, 411 installed files). The final Node-only consumer records seven checks and strict NodeNext/Bundler types. All four checklist rows and broader qualification remain open; final candidate gates have separate retained evidence.
+
+## Scoped Modbus register connector
+
+The explicit Node provider `@101/hub-server` exports
+`createModbusRegisterConnector`. A host fixes a literal-IP endpoint, a reviewed
+unit ID and at most sixteen register entries. Each entry declares its address,
+read or write direction, unit, scale and offset. The selected protocol supports
+FC03 reads of one unsigned holding register and FC06 writes of one register.
+It neither probes addresses nor guesses their physical meaning. The wire format
+follows the [Modbus application specification](https://www.modbus.org/file/secure/modbusprotocolspecification.pdf).
+
+Construction is inert. `start({purpose})` requires an exact host connection
+approval and returns an opaque generation handle. Every `read` and `write`
+requires a separate approval tied to the fixed endpoint, profile, unit,
+resource, address and requested raw value. Approvals use genuine abort signals
+and absolute host deadlines. Runtime registrations and RouteGrants remain
+separate. Remote endpoints require a trusted TLS chain, server name and enrolled
+SHA256 leaf-certificate pin; the plain literal-loopback option is an owned
+software-fixture path with no cryptographic peer identity.
+
+One socket and one transaction are admitted at a time. Transaction IDs, unit,
+function, length and exact write echo are validated within bounded bytes and
+operations. There is no automatic retry, reconnect or offline command queue.
+`stop()` fences the old generation immediately and waits for actual socket
+close. A successful write echo is target acknowledgement; a separate readback
+is an observation. Cancellation after issuance is uncertain: this protocol
+cannot undo a target write or enforce an actuator's local safety policy.
+`examples/modbus-register/consumer.mjs` supplies a real TCP server and separately
+authorized SDK command/readback caller.
+
+`createModbusRtuConnector` supplies the selected serial RTU counterpart through
+an independently enrolled host serial capability. It validates FC03/FC06,
+low-byte-first CRC16, unit ID, exact register, scaling, exception and trailing
+bytes. The adapter must supply per-character receive timestamps and an explicit
+watermark proving complete ordered delivery through the t3.5 boundary. Missing,
+failed or insufficient watermarks deny the reply. A JavaScript timer alone does
+not establish physical serial silence.
+
+One transaction and port remain reserved, with no discovery, probing, retry,
+reconnect or queued replay. Stop revokes immediately and waits for both actual
+port close and any issued write promise. Separate owner operation grants and
+public resource route grants preserve the original command deadline. A valid
+FC06 echo is protocol acknowledgement; readback is a separate observation.
+`tools/qa-installed-modbus-rtu.mjs <consumer-directory>` runs the separate child
+byte-stream caller with the verified installed public SDK. The
+[selected RTU evidence](receipts/2026-10-08-modbus-rtu.json) qualifies software
+framing and lifecycle; a physical serial adapter and target remain separate.
+
+## Selected C resource lifecycle package
+
+`bindings/resource-runtime/c/one01_rss_runtime.h` exposes inert construction,
+host-approved start/read, current local handles, expiry, Stop and destruction.
+The selected macOS arm64 producer reads its own process resident memory through
+`task_info`; it cannot select another PID, path or operation. This is a resource
+lifecycle API beyond the existing inert wire codecs. Its pointers are local
+identities under a cooperative host, not serialized credentials or protection
+against hostile same-process memory.
+
+The fixed child and Node bridge in `examples/native-resource-runtime` use a
+private verified executable copy, bounded private stdio commands and two fresh
+generations. Native registration, each native read and the public runtime route
+require separate approvals. Stop invalidates admission before callbacks and
+retains the raw process reservation until actual exit. Native timestamps retain
+their CLOCK_MONOTONIC domain; host receipts retain their separate clock. A HELLO
+anchor maps absolute deadlines conservatively with a five-millisecond allowance
+within a ten-second lifetime. System sleep and divergence beyond that bound are
+unqualified.
+
+`node tools/build-native-resource-runtime.mjs` builds a local static library,
+header, license and profile archive, verifies its exact contents and links a
+clean extracted C consumer. The C API is confined to its creating thread.
+Nested start/read returns busy before consuming quota; Stop inside a callback
+revokes immediately, and destruction waits for the active call to unwind.
+Foreign-thread operations cannot retire the owner's runtime.
+
+`bindings/resource-runtime/swift` and `bindings/resource-runtime/kotlin` supply
+the corresponding Swift and Kotlin/JVM lifecycle APIs. Swift uses macOS
+`task_info` directly; Kotlin uses the fixed C runtime through JNI. Every runtime
+and handle belongs to its creating thread. Kotlin rejects a foreign-thread close
+before changing its token. The JNI slot table reserves, pins and releases slots
+under a process-wide mutex, retaining callback-time destruction until the outer
+native call returns.
+
+`node tools/build-native-language-runtime.mjs` builds Swift and Kotlin archives
+with independently enumerated payloads, metadata, license, fixture and sources.
+Extracted Swift dylib and Kotlin JAR/JNI callers read actual own-process RSS and
+reject stopped handles. Swift and Kotlin consume the same seventeen-case JSON
+fixture; the C harness covers corresponding lifecycle semantics in seven groups.
+JDK and Kotlin stdlib dependencies are declared and remain external.
+[Matching package evidence](receipts/2026-10-08-native-resource-languages.json)
+records exact hashes and extracted callers. These selected packages do not
+qualify other OSes, Android JNI, application installation or physical devices.
+
+The Node bridge accepts exact `{request, expiresAt, signal}` native grants with
+genuine abort signals. Revocation aborts the corresponding signal. Its final
+registration and read checks have no host callbacks between the joint signal,
+deadline and active-generation gate and native issuance or sample admission.
+
+Connector transport writers now receive `ConnectorWriteContext.deadline` in the
+connector's `now()` domain. It forwards the original command bound. Cleanup also
+checks its absolute logical and wall deadlines; starting another transport
+cannot renew either lifetime.
+
+## Selected MQTT5 connector
+
+The explicit Node provider `@101/hub-server` exports `createMqttConnector` and
+`parseMqttConnectorProfile`. A reviewed decoder and closed profile bind exact
+topic names to resource IDs, directions, QoS, freshness and expiry. Wildcard
+topics and retained incoming messages are rejected. The host approves the full
+profile before a clean MQTT5 session opens; runtime resource registrations and
+RouteGrants remain separate. The transport has bounded messages, payloads and
+outstanding publications, with no automatic reconnect, offline queue or replay.
+
+Cancellation fences logical authority immediately. A publication already
+issued retains its raw reservation until its callback or actual transport
+closure. Concurrent close callers join the same teardown. Broker PUBACK means
+dispatch, a correlated application acknowledgement means target acceptance,
+and a subsequent source sample supplies observed state. The selected producer
+deduplicates command IDs and enforces the original absolute command expiry
+before an effect.
+
+This initial selected profile requires explicit `same-process-monotonic` clock
+relation: the owned local producer and consumer share the same clock origin.
+Unknown remote clock origins are rejected. General device clock synchronization,
+remote TLS qualification and physical equipment evidence remain separate work.
+`tools/qa-mqtt-connector.mjs` runs the selected caller against an owned disposable
+Mosquitto broker without starting a system service.
+
+### Enrolled remote MQTT producer clocks
+
+`createClockedMqttConnector` adds a separately approved remote clock authority
+for one signed Boolean state/command profile. The connection approval binds
+the endpoint, fresh client/session nonce, reviewed decoder and profile, enrolled
+producer boot clock and key, five exact topics, QoS and bounded capacity.
+`createMqttClockAuthority` uses the public `RemoteClockMap` with four observed
+timestamps. Its assumptions are a maximum 200 ms round trip, 25 ms uncertainty,
+100 ppm relative drift and five-second map age. An unavailable or excessive
+mapping refuses samples and commands.
+
+Each accepted sample retains its remote source time, conservative local interval
+and local receipt time. The original runtime command deadline maps to an early
+producer deadline; receipt cannot renew it. Signed source and acknowledgement
+frames must match the current client/session, and acknowledgements must also
+match the command's fresh nonce. A producer keeps bounded session retirement,
+replay records and command watermarks; numeric command ID reuse in a new approved
+session does not authorize an old response.
+
+Clock pings share the four raw publication slots and 32-attempt connection quota
+with commands. Concurrent synchronization callers join one exchange; a timeout
+retains an unresolved raw publication until its callback or confirmed closure.
+`tools/qa-mqtt-clocked-connector.mjs` runs an actual separate producer process
+with a different monotonic clock origin against an owned loopback broker.
+`tools/qa-installed-clocked-mqtt.mjs <consumer-directory>` repeats that caller
+with the verified installed public SDK and separately compiled Node provider.
+These fixtures demonstrate enrolled key possession. Remote broker TLS/ACL and
+physical device identity or behavior require their own qualification.
+
+## Selected macOS desktop input
+
+The local desktop Hub contains a macOS native pointer, button and keyboard
+provider. An explicit selection requests native user confirmation for the
+focused window after a short countdown. Permission, stable process identity,
+window and display geometry, scale, rotation, deadline and revocation are checked
+before native issuance. The selected inputs are normalized pointer positions,
+left/right buttons, arrows, Space, Return, Escape and Tab. A thirty-second lease
+limits native authority; the public runtime route requires a separate grant.
+
+Stop revokes logical authority immediately. Held input release remains owned
+until confirmed, with visible retry when cleanup fails. Native confirmation and
+application shutdown work run off the UI thread; shutdown waits for background
+settlement. Native issuance does not claim an acknowledgement from the receiving
+application.
+
+The dedicated Android desktop-control session accepts one explicitly selected
+paired peer with a closed touch layout. Phone probes and frames use the same
+monotonic clock. Four timestamps establish a bounded public clock map, and the
+original phone capture deadline carries through the public route and native
+deadline check. Loss, Stop and replacement revoke the old route before any new
+selection. Pairing itself grants no native operation.
+
+[Selected build evidence](receipts/2026-10-08-native-desktop-control.json) records
+the local macOS application bundle and standalone arm64 Android APK. The APK
+uses the repository's development signing configuration. Actual phone and OS
+permission/input journeys, distribution signing, Windows/Linux implementations,
+general multi-monitor support and installation/update acceptance remain open.
+
+
+### Native phone motion lifecycle
+
+The reference phone controller reserves one pending motion start before entering sensor APIs. Stop fences late listener callbacks and retired start results, clears old calibration input, and preserves any failed native-listener removal across component replacement. A replacement must retry that cleanup before installing a listener; it cannot replace an active or pending sensor owner. Backgrounding retires sensing, and foreground delivery checks the current controller identity.
+
+[Source regressions, independent review and immutable local Android package](receipts/2026-10-08-phone-motion.json) establish the selected software lifecycle. Native permissions, sensor behavior, lock/background conditions and install/update acceptance remain device checks; the package currently uses the existing development signing identity.
+
+## Selected loopback IPP job gateway
+
+`@101/hub-server` exports `createIppJobGateway` and `IPP_JOB_LIMITS`. The selected IPP/1.1 profile supports one host-selected `ipp://127.0.0.1:<port>/ipp/print` endpoint, registered PDF bytes, Print-Job, Get-Printer-Attributes, Get-Job-Attributes and Cancel-Job. The public job route, printer owner and job owner approve independently; each operation keeps its original absolute deadline and opaque current epoch. Limits allow 64 KiB documents and responses, one raw operation, four submissions and eight operations per epoch. Remote IPP/IPPS destinations require a separately reviewed transport.
+
+A valid Print-Job reply establishes target acknowledgement. Cancel-Job acceptance is followed by a separate status query; server canceled or completed state does not prove physical output or halt. Issued failures are uncertain and never automatically retried. Attempted local job IDs remain fenced for this gateway object lifetime; unknown remote job IDs require operator reconciliation across a process restart. Stop retires authority immediately and joins actual document-read and socket settlement.
+
+[Reviewed source and separate-process software caller evidence](receipts/2026-10-08-ipp-job.json) records the selected software path. The fixture performs no physical printing. The [installed public SDK caller and successor repair receipt](receipts/2026-10-08-successor-repairs.json) records ordinary installed resolution, the separately compiled gateway and exact integrated gate references. Remote printer identity, physical output and durable restart reconciliation remain open.

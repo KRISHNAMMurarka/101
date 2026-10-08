@@ -122,17 +122,21 @@ test('interrupted stages restore no grant and resume needs a fresh current owner
 });
 
 test('expiry removes producer data and local copies while required redacted audit survives for thirty days', async () => {
-  const f = setup(), ports = await f.ports(); await seedTelemetry(ports);
+  const f = setup();
+  try {
+  const ports = await f.ports(); await seedTelemetry(ports);
   const exported = required(await f.controller.exportPage({ kind: 'telemetry', purpose: 'owner-copy', destinationId: 'local-recipient',
     resourceId: 'example:rss', fields: ['residentBytes'] }));
   const batch = { batchId: 'local-batch-1', records: exported.records };
   required(await f.controller.storeLocalTelemetryCopy(batch, { purpose: 'owner-copy', destinationId: 'local-recipient' }));
   f.time(1100); const swept = required(await f.controller.sweep()); assert.equal(swept.telemetryRemoved, 1); assert.equal(swept.copiesRemoved, 1);
-  const raw = JSON.stringify(f.storage.rows.get('owner-a')); assert.equal(raw.includes('4321'), false);
+  // Audit UUIDs can legitimately contain the same digits as a sample. Check
+  // the sensitive field/value rather than matching unrelated identity bytes.
+  const raw = JSON.stringify(f.storage.rows.get('owner-a')); assert.equal(raw.includes('"residentBytes":4321'), false);
   assert.ok(raw.includes('expiry')); assert.equal(raw.includes('private-backend-detail'), false);
   f.time(1100 + 30 * 86400000); required(await f.controller.sweep());
   assert.equal(JSON.stringify(f.storage.rows.get('owner-a')).includes('"action":"expiry"'), false);
-  f.controller.close();
+  } finally { f.controller.close(); }
 });
 
 test('a changed source or deletion rejects a late local recipient copy and duplicates stay idempotent', async () => {

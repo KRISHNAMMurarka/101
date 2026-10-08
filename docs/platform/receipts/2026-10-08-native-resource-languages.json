@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-native-language-distributions-built-full-acceptance-open",
+  "localOnly": true,
+  "base": "da8e80ecec528daa1a608bbbf9aee95c8ecd7afe",
+  "sourceSha256": {
+    "bindings/resource-runtime/c/one01_rss_runtime.h": "faf09836d3c5aa16baf89fbf2457e463097612dd32eeddfa4b9d155b839e47c4",
+    "bindings/resource-runtime/c/one01_rss_runtime.c": "de87d21fd6f9226e36bb2a92ba2896df9c208b793c88d6aaedaec2cd8f8003e0",
+    "bindings/resource-runtime/c/one01_rss_runtime_test.c": "f44bbdda248538ff5d2d2005f5ca33f05a51f7e48ac44ea713d05835ff15a18a",
+    "examples/native-resource-runtime/rss-agent.c": "c0e94381aba672b4594a604d1b8197545d26165daabdfc40a6c8d2a913e5d954",
+    "examples/native-resource-runtime/process-port.mjs": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355",
+    "examples/native-resource-runtime/consumer.mjs": "95457f5d4a956c17233969d0318342643ca56770834016a6ba24e1d5c7874843",
+    "tools/qa-native-resource-runtime.mjs": "3f73a293b6cbc5df2aef41cc36e445733b81e3cd981e5d90561bc8284d2de7ba",
+    "tests/native-resource-runtime.test.ts": "a185ad31ab11f053a38e97b5805b764d4835871047e7da7b0686fc2b616ec20a",
+    "tools/build-native-resource-runtime.mjs": "04255720eafa4c9c93b8226d2fcd9bb1a8adc443ab69f0554ef0a1bba35cca02",
+    "LICENSE": "ccf0230d4bb914c7ab5b99667da9b5657967811ae66d544975194063e20c13eb",
+    "bindings/resource-runtime/swift/Package.swift": "4738e0f3354cc69ce74bcdd1138496c9f2044123c1c9f0f25ab43eae27dd77b6",
+    "bindings/resource-runtime/swift/Sources/One01ResourceRss/ResourceRssRuntime.swift": "8bea0a259e9cd61b40ad019996d098ef5afc017fd7548e1ef310fdba6c67c418",
+    "bindings/resource-runtime/swift/Sources/One01ResourceRssCaller/main.swift": "2a4451d4926607386680fe96ca3178b9a3cd14dff0c1a6b22684b9526483dddb",
+    "bindings/resource-runtime/swift/Tests/One01ResourceRssTests/ResourceRssTests.swift": "cddb6af3501ce2e47a61725162fa9daf4cb4a43d12833a0f83cbc09ae778e8a6",
+    "bindings/resource-runtime/swift/Tests/One01ResourceRssTests/Fixtures/rss-cases.json": "f815ab986cfd7d835424eddafd91a8210d2bddb2011995432847a5732f2fbc68",
+    "bindings/resource-runtime/kotlin/src/main/kotlin/one01/resourcerss/ResourceRssRuntime.kt": "6f9c0679280a4ad4f97bea089bcfaaaf6fd3ea6f8548e3a63718caedb0bb71a8",
+    "bindings/resource-runtime/kotlin/src/main/c/one01_rss_jni.c": "f92a74a0491b0936f05c7e54c1f54243b3cb0a43baa8f79d5e51aa2a6dc033bf",
+    "bindings/resource-runtime/kotlin/src/caller/kotlin/one01/resourcerss/ResourceRssCaller.kt": "daa5e5c7923ff898fc4e369fd6520321f34595cecb0f3f14af8f357c05355b27",
+    "bindings/resource-runtime/kotlin/src/test/kotlin/one01/resourcerss/ResourceRssTests.kt": "74f91608d701a127b334556c18b5e169bdb280f15a7e3dea96316b1c941961ab",
+    "bindings/resource-runtime/kotlin/src/test/c/jni-slots-harness.c": "55ee44752fe6e2d903a6630ea1e72907c1b754955bd502bdfb2e6d0ab5603738",
+    "tools/build-native-language-runtime.mjs": "b5b08fc529fa585f0b930b191e954569bc01422cd60c954e0804f242d748bdc9",
+    "tools/build-pointer-bindings.mjs": "226b117a8b5baf2f77afda45e16301777749228742c1e1944e165a248bbcc472"
+  },
+  "artifacts": {
+    "cManifest": "/Users/km/Desktop/games/101/release/native-resource-runtime-JYQ7ye/manifest.json",
+    "languageManifest": "/Users/km/Desktop/games/101/release/native-language-runtime-ZuVrsB/manifest.json"
+  },
+  "implemented": "macOS own-process RSS resource lifecycle in C, Swift and Kotlin/JVM JNI with separate registration/read approvals, opaque local handles, owner-thread checks, bounded generations/reads, callback reentry reservation and Stop/destruction fencing.",
+  "conformance": {
+    "swiftCanonicalCases": 17,
+    "kotlinCanonicalCases": 17,
+    "swiftTestGroups": 3,
+    "cTestGroups": 7,
+    "cFixtureRelationship": "C exercises corresponding lifecycle semantics in its native harness; it does not consume the Swift/Kotlin JSON fixture.",
+    "addedChecks": [
+      "Swift nested read/start refusal",
+      "C nested start/read and callback destruction",
+      "C foreign-thread refusal",
+      "Kotlin foreign close refusal",
+      "Two simultaneous JNI constructors retain distinct slots",
+      "Kotlin independent owner-thread instances"
+    ]
+  },
+  "distribution": {
+    "languages": [
+      "c",
+      "swift",
+      "kotlin"
+    ],
+    "inventories": "Exact independent relative path allowlists, archive equality and extracted payload hashes.",
+    "callers": "Extracted Swift dylib and Kotlin JAR/JNI callers read actual own RSS and reject stopped handles. Extracted C static library links a native consumer and fixed child with installed public SDK caller.",
+    "dependencies": "JDK and Kotlin stdlib remain external and are declared, not redistributed.",
+    "trust": "Cooperative same-user creating-thread APIs, not hostile-process or remote authority."
+  },
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-rss-reentrant-old.log",
+      "sha256": "ba9140168db7ee3189a250a6ae43cc3b7eb17fe3dcc46860989d460b667707e6",
+      "gitBlob": "f2a5d7c19ca8310daf023c1d069634eccccb40ca",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-0"
+    },
+    {
+      "path": "/tmp/101-rss-reentrant-current.log",
+      "sha256": "779c100e881b91723b743ed3b77bbe77796a91d87cc54b173a80a4857a01651a",
+      "gitBlob": "bf141dd57968c174a8f80950227a49c871f37954",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-1"
+    },
+    {
+      "path": "/tmp/101-resource-swift-reentry-old.log",
+      "sha256": "734f04590c1588958da7c95da3c7df89473877144e987af4a18f09f1c1e09667",
+      "gitBlob": "b8a908ca4685722985f455a609ca2b9f96b22179",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-2"
+    },
+    {
+      "path": "/tmp/101-resource-swift-reentry-green.log",
+      "sha256": "b25ea8bb543bd3bdb629133f231a2cc182ede9b789d33d33706ec459f8f5f60b",
+      "gitBlob": "700e3a43b3909c8841b82f89020d14d911343bc4",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-3"
+    },
+    {
+      "path": "/tmp/101-jni-slots-old.log",
+      "sha256": "be03f0d778a3cc9954e92e9774ffed471f05b32badead78df8df7b1e39ed2590",
+      "gitBlob": "83a3cd39608c303330930db5be4580a8fd09fe50",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-4"
+    },
+    {
+      "path": "/tmp/101-jni-slots-green.log",
+      "sha256": "71515ca435e775f4b9005a5c76018fad6285884cdd43c338c37f611cf95239b5",
+      "gitBlob": "d7cd8eee4eeca6e3bafb0de1d68c6e3881f7360e",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-5"
+    },
+    {
+      "path": "/tmp/101-resource-kotlin-owner-old.log",
+      "sha256": "fcc4bacd6454228397ec64447dd2efdab8a543ea0866c72b6199e23caae9eb2f",
+      "gitBlob": "4e723f4bb6076b4bdbcb1083c6d692ae79890bf4",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-6"
+    },
+    {
+      "path": "/tmp/101-native-language-reentry-repair-receipt.json",
+      "sha256": "ff1306a8f5df4c91742190189775d8587133bdeae98ea1c25b4ad7d70524f20e",
+      "gitBlob": "3e71fe03193bd5e9005f2ad2481dc0b91488c4e1",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-7"
+    },
+    {
+      "path": "/tmp/101-native-language-reentry-independent-review.json",
+      "sha256": "9f3a50cb5e35e6f20b62b03d7a088c69275dac95475cdbcde0d8d83b701d5fa6",
+      "gitBlob": "a6a66feb352763b63cd3c17610a95e963f8955bc",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-8"
+    },
+    {
+      "path": "/tmp/101-native-language-artifact-builder-review.json",
+      "sha256": "f1e9ee34723b0e62ad9615b70cf4117e7cedf181c8b957c7baea30e16b99db9a",
+      "gitBlob": "ba0988138e268986a99cea88dd595487eaa250dc",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-9"
+    },
+    {
+      "path": "/tmp/101-native-runtime-inventory-old.log",
+      "sha256": "e306d2736e0c9d88d5b88f587a74f3c8505a76f98f6820f00059eb086602f712",
+      "gitBlob": "27d3e50099dfabeb10836adcc03ae308118298cc",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-10"
+    },
+    {
+      "path": "/tmp/101-native-runtime-inventory-current.log",
+      "sha256": "d988bfae3f7e306f98a918b997b191d14250ad029ece010b190d6606b389676b",
+      "gitBlob": "3c26ab436e095d8daf5bcca075c0bac83ddbd601",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-11"
+    },
+    {
+      "path": "/tmp/101-native-language-distribution-final-build.log",
+      "sha256": "bfbd9d4b34c5264ca0126e3eb7aaf2708b97eea51ad039820636e4e66898e631",
+      "gitBlob": "01c7394e84f752f7e6253abb725e5d72e95329e5",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-12"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/native-resource-runtime-JYQ7ye/manifest.json",
+      "sha256": "ae67eac905343c5071b4ce2cea7e200f794f41965d069add7ef939c52b862f79",
+      "gitBlob": "d16df93573fe6438ceb2da39cd36575977af35f0",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-13"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/native-language-runtime-ZuVrsB/manifest.json",
+      "sha256": "ea5d7f04d9cabe397e3dd8064d3f77f846e26c9b67a45a905f97445a7b52ab97",
+      "gitBlob": "184c3573b7ab2564375fe7b64b6a2dc70ef06fe2",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-14"
+    },
+    {
+      "path": "/tmp/101-sdk-consumer-DQOPkU/current-native-c-lifecycle/receipt.json",
+      "sha256": "b42b218d9134e7e523e0dd68db5e7eee211f3ced075c287c6e0acb3e5a3f120b",
+      "gitBlob": "ea408106f60af5027215c61d8737c9786c429bee",
+      "ref": "refs/codex/evidence/2026-10-08-native-languages/literal-15"
+    }
+  ],
+  "open": [
+    "Other OSes and Android JNI",
+    "General native operations and profiles",
+    "Native application installation/update",
+    "Physical-device evidence",
+    "Sleep/drift beyond C bridge assumptions",
+    "Full E12/K03 acceptance and exact candidate gates"
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Result ref is written only after the exact frozen candidate gates finish; no green result is implied by focused checks."
+  },
+  "priorCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate-9ec-failed",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates-9ec-failed",
+    "result": "fail",
+    "explanation": "2741/2742 unit checks; one child launch timeout before application startup, cause remains unknown. The other four gates passed. Current requiredCandidateGates awaits the repaired phone-inclusive candidate."
+  }
+}

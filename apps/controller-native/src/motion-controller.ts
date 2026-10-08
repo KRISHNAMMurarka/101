@@ -20,10 +20,19 @@ export interface MotionReadout {
   sampleRate: number;
 }
 
+// One native sensor listener has one cleanup owner, including after its UI is
+// unmounted. A failed removal must be retried before a replacement can listen.
+const listenerOwnership: { owner?: NativeMotionController } = {};
+
 export class NativeMotionController {
   private readonly pipeline = new MotionPipeline();
   private readonly recognizer = new MotionGestureRecognizer();
   private subscription?: { remove(): void };
+  private startPromise?: Promise<boolean>;
+  private revision = 0;
+  private listenerRevision?: number;
+  private removing = false;
+  private acquiring = false;
   private latestRaw?: MotionSample;
   private lastTimestamp?: number;
   private smoothedIntervalMs?: number;
@@ -32,37 +41,104 @@ export class NativeMotionController {
   constructor(private readonly emit: (readout: MotionReadout) => void) {}
 
   get active() {
-    return Boolean(this.subscription);
+    return Boolean(listenerOwnership.owner === this && this.subscription && this.listenerRevision === this.revision);
   }
 
   get calibration() {
     return { ...this.pipeline.calibration, neutral: [...this.pipeline.calibration.neutral] as const };
   }
 
-  async start() {
-    if (this.subscription) return true;
-    if (!(await DeviceMotion.isAvailableAsync())) throw new Error("Motion sensors are unavailable on this device");
-    if (motionPermissionRequired()) {
-      const permission = await DeviceMotion.requestPermissionsAsync();
-      if (!permission.granted) throw new Error("Motion permission was not granted");
-    }
-    DeviceMotion.setUpdateInterval(16);
-    this.subscription = DeviceMotion.addListener((measurement) => this.process(measurement));
-    return true;
+  start(): Promise<boolean> {
+    if (this.active) return Promise.resolve(true);
+    if (this.startPromise) return this.startPromise;
+    const revision = this.revision;
+    // Publish the pending start before calling the sensor module: its callbacks
+    // can synchronously reenter start or Stop.
+    const opening = Promise.resolve().then(async () => {
+      if (revision !== this.revision) return false;
+      const previous = listenerOwnership.owner;
+      if (previous && previous !== this) {
+        if (previous.active || previous.startPromise || previous.acquiring || previous.removing) throw new Error("Motion sensing is already in use");
+        previous.stop();
+        if (previous.subscription) throw new Error("Motion listener could not be removed");
+      }
+      if (revision !== this.revision) return false;
+      if (this.subscription) {
+        this.removeSubscription(this.subscription);
+        if (revision !== this.revision) return false;
+        if (this.subscription) throw new Error("Motion listener could not be removed");
+      }
+      if (listenerOwnership.owner && listenerOwnership.owner !== this) throw new Error("Motion sensing is already in use");
+      listenerOwnership.owner = this;
+      const available = await DeviceMotion.isAvailableAsync();
+      if (revision !== this.revision) return false;
+      if (!available) throw new Error("Motion sensors are unavailable on this device");
+      if (motionPermissionRequired()) {
+        const permission = await DeviceMotion.requestPermissionsAsync();
+        if (revision !== this.revision) return false;
+        if (!permission.granted) throw new Error("Motion permission was not granted");
+      }
+      DeviceMotion.setUpdateInterval(16);
+      if (revision !== this.revision) return false;
+      const created: { current?: { remove(): void } } = {};
+      this.acquiring = true;
+      let listener: { remove(): void };
+      try {
+        listener = DeviceMotion.addListener((measurement) => {
+          if (created.current && this.subscription === created.current && this.listenerRevision === revision && this.revision === revision)
+            this.process(measurement, revision);
+        });
+      } finally { this.acquiring = false; }
+      created.current = listener;
+      this.subscription = listener;
+      this.listenerRevision = revision;
+      if (revision !== this.revision) { this.removeSubscription(listener); return false; }
+      return true;
+    }).catch((reason: unknown) => {
+      if (revision !== this.revision) return false;
+      throw reason;
+    }).finally(() => {
+      if (this.startPromise === opening) this.startPromise = undefined;
+      this.releaseIdleOwner();
+    });
+    this.startPromise = opening;
+    return opening;
   }
 
   stop() {
-    this.subscription?.remove();
-    this.subscription = undefined;
+    this.revision++;
+    this.startPromise = undefined;
+    if (this.subscription) this.removeSubscription(this.subscription);
+    this.latestRaw = undefined;
     this.lastTimestamp = undefined;
     this.smoothedIntervalMs = undefined;
     this.sampleRate = 0;
     this.recognizer.reset();
     this.pipeline.reset();
+    this.releaseIdleOwner();
+  }
+
+  private removeSubscription(listener: { remove(): void }) {
+    if (this.removing) return;
+    this.removing = true;
+    try {
+      listener.remove();
+      if (this.subscription === listener) {
+        this.subscription = undefined;
+        this.listenerRevision = undefined;
+      }
+    } catch {
+      // Retain the exact handle and its module-level owner for retry.
+    } finally { this.removing = false; }
+  }
+
+  private releaseIdleOwner() {
+    if (listenerOwnership.owner === this && !this.subscription && !this.acquiring && !this.removing && !this.startPromise)
+      listenerOwnership.owner = undefined;
   }
 
   calibrateNeutral() {
-    if (!this.latestRaw) throw new Error("Start motion sensing before calibration");
+    if (!this.active || !this.latestRaw) throw new Error("Start motion sensing before calibration");
     this.pipeline.calibrateNeutral(this.latestRaw);
   }
 
@@ -79,7 +155,8 @@ export class NativeMotionController {
     this.pipeline.reset();
   }
 
-  private process(measurement: DeviceMotionMeasurement) {
+  private process(measurement: DeviceMotionMeasurement, revision: number) {
+    if (!this.active || revision !== this.revision) return;
     const rotation = measurement.rotation ?? { alpha: 0, beta: 0, gamma: 0 };
     const rate = measurement.rotationRate ?? { alpha: 0, beta: 0, gamma: 0 };
     const acceleration = measurement.accelerationIncludingGravity ?? measurement.acceleration ?? { x: 0, y: 0, z: 0 };
@@ -96,10 +173,12 @@ export class NativeMotionController {
       acceleration: [acceleration.x ?? 0, acceleration.y ?? 0, acceleration.z ?? 0],
       angularVelocity: expoAngularVelocity(rate, Platform.OS),
     };
-    this.latestRaw = raw;
+    if (!this.active || revision !== this.revision) return;
     const filtered = this.pipeline.process(raw);
     const gestures = this.recognizer.update(filtered);
     this.trackSampleRate(timestamp);
+    if (!this.active || revision !== this.revision) return;
+    this.latestRaw = raw;
     this.emit({
       raw,
       filtered,

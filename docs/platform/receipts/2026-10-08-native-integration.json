@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-native-software-integrated-exact-result-ref-controls-local-commit",
+  "sourceSha256": {
+    "tools/qa-installed-modbus-rtu.mjs": "80abdaa9226437365a39d706de1bee8b9dc03ce0589e487a5ce973ea2b1650be",
+    "tools/qa-native-desktop-input.mjs": "6e2e373c9a5e859d674dc946d8e330c343f7b8d04efda8c419b890544f880b6b",
+    "tests/native-desktop-input.test.ts": "093c24888816919d3a6ca0b08666f5644770e379c7703d09f3a6e8f8ab8d7842",
+    "packages/device-runtime/src/owner-data.test.ts": "f804e1a0d175b23fbd2db679f40e2204e72a1922c47c167e17fffa999d037ab2"
+  },
+  "testRepair": "Owner expiry privacy assertion now checks the actual sensitive field/value; a genuine retained audit UUID containing sample digits cannot falsely fail it. Finally always retires test ownership. No runtime policy changed.",
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-native-wave-integration-deltas-review.json",
+      "sha256": "5665d15f3f69d2dc82e4a92d78a6f46442879df0aaf1a15f75a523d32c72d6af",
+      "gitBlob": "cd7cd5b27e6de1f71f91c0734d3ab1a63030dd84",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-0"
+    },
+    {
+      "path": "/tmp/101-owner-expiry-uuid-old.log",
+      "sha256": "c0014b62f8a92a9eb70e34654e47f825aad16195c46c760520cd1954d98afc51",
+      "gitBlob": "a513bafeeb6d14e351be000eb20715d7d29a9918",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-1"
+    },
+    {
+      "path": "/tmp/101-owner-expiry-uuid-current.log",
+      "sha256": "6a3c32c3e65df5691b6116dedf59ddec4ec81e9f3724f8c04ce261a5dd5fa459",
+      "gitBlob": "5c3551510941cba2ebc5cab88a53645f8e61488e",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-2"
+    },
+    {
+      "path": "/tmp/101-owner-expiry-focused-current.log",
+      "sha256": "fa86f4b8342026757eded5f5d02f072994f036bcfdf265f614551044dc086770",
+      "gitBlob": "50384cf3a30088b76e0ee7c850eb639e44d26789",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-3"
+    },
+    {
+      "path": "/tmp/101-installed-rtu-qa-boundary-old-complete.log",
+      "sha256": "d133b2e2dff1c4772b5931268c13f6f6b6a2242ea629db5af340c5cef3c178c0",
+      "gitBlob": "a5bd178c093822c135a0a0ac6a5c1c3f239ba985",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-4"
+    },
+    {
+      "path": "/tmp/101-installed-rtu-qa-boundary-current.log",
+      "sha256": "b46b168e5cbc894600aec46f928909dd7fd0570fddeb4e5b46137e190f6d56ba",
+      "gitBlob": "0c1085ec8243710cc23afe445c20fc3173b275a3",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-5"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/modbus-rtu-connector-0Oc2hA/receipt.json",
+      "sha256": "52583654f71f9db9b14d4298de8e3ba6335353c2f43f17ba897ab5b9cfb2b2e5",
+      "gitBlob": "54b768f6e275a9602fd5af8bc495eb9a1f9dd359",
+      "ref": "refs/codex/evidence/2026-10-08-native-integration/literal-6"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-successor-repairs/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-successor-repairs/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only the exact candidate result ref determines broad gate success. Focused checks do not imply it. Local commit requires every listed command to pass."
+  },
+  "priorCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate-9ec-failed",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates-9ec-failed",
+    "result": "fail",
+    "explanation": "2741/2742 unit checks; one child launch timeout before application startup, cause remains unknown. The other four gates passed. Current requiredCandidateGates awaits the repaired phone-inclusive candidate."
+  },
+  "successorRepairs": "docs/platform/receipts/2026-10-08-successor-repairs.json"
+}

@@ -1,3 +1,6 @@
+mod native_input;
+mod native_input_approval;
+mod native_input_controller;
 mod replay_storage;
 mod signaling;
 mod storage;
@@ -9,8 +12,11 @@ use std::{
 };
 
 use mdns_sd::{ServiceDaemon, ServiceInfo};
-use serde::Serialize;
-use serde_json::Value;
+use serde::{Deserialize, Serialize};
+use std::sync::atomic::{AtomicBool, Ordering};
+use serde_json::{json, Value};
+use native_input::{Button, Key};
+use native_input_controller::{clock_sample, deadline_from_native_ns, mac_controller, MacInputController};
 use signaling::{ip_strings, router, ApiError, HttpState, SignalingBroker};
 use storage::{
     list_game_packages_at, load_settings,
@@ -435,6 +441,108 @@ mod tests {
     }
 }
 
+#[derive(Deserialize)]
+#[serde(tag = "type", rename_all = "lowercase", deny_unknown_fields)]
+enum DesktopInputEvent {
+    Pointer { x: f64, y: f64 },
+    Key { key: String, down: bool },
+    Button { button: String, down: bool, x: f64, y: f64 },
+}
+fn native_error(error: native_input_controller::ControlError) -> String {
+    use native_input::InputError;
+    use native_input_controller::ControlError;
+    match error {
+        ControlError::Busy | ControlError::Native(InputError::Busy) =>
+            "Control is still stopping. Wait, then retry.",
+        ControlError::Native(InputError::ReleasePending) =>
+            "A held input still needs release. Keep the Hub open and choose Retry release.",
+        ControlError::Native(InputError::PermissionDenied) =>
+            "Allow Accessibility access for 101 Hub in System Settings, then choose the window again.",
+        ControlError::MissingLabel =>
+            "A named app window could not be selected. Bring the intended window to the front and retry.",
+        ControlError::Denied | ControlError::Cancelled => "Window selection was cancelled.",
+        ControlError::Native(InputError::FocusLost | InputError::GeometryChanged) =>
+            "The selected window changed or moved out of front. Choose it again to resume.",
+        ControlError::InvalidDeadline | ControlError::Native(InputError::Expired | InputError::Revoked |
+            InputError::StaleLease | InputError::Stopped) =>
+            "Control has stopped or this input arrived too late. Choose the window again to resume.",
+        _ => "Local input is unavailable. Stop control, then choose the window again.",
+    }.to_owned()
+}
+#[tauri::command]
+fn native_input_status(input: State<'_, Arc<MacInputController>>) -> Value {
+    let status = input.status();
+    json!({ "selecting": status.selecting, "pendingReleases": status.pending_releases,
+      "target": status.target.map(|target| json!({ "application": target.application, "window": target.window,
+        "pid": target.pid, "windowId": target.window_id, "displayId": target.display_id })) })
+}
+#[tauri::command]
+fn native_input_clock() -> Value {
+    let sample = clock_sample();
+    json!({ "nativeNowNs": sample.native_now_ns, "maxCommandMs": sample.max_command_ms })
+}
+#[tauri::command]
+async fn native_input_select(input: State<'_, Arc<MacInputController>>) -> Result<Value, String> {
+    let input = Arc::clone(&input);
+    let receipt = tauri::async_runtime::spawn_blocking(move || input.select_and_confirm())
+      .await.map_err(|_| "Native selection unavailable".to_owned())?.map_err(native_error)?;
+    Ok(json!({ "token": receipt.token, "target": { "application": receipt.target.application,
+      "window": receipt.target.window, "pid": receipt.target.pid, "windowId": receipt.target.window_id,
+      "displayId": receipt.target.display_id } }))
+}
+#[tauri::command]
+async fn native_input_event(input: State<'_, Arc<MacInputController>>, token: String,
+    event: DesktopInputEvent, deadline_ns: String) -> Result<(), String> {
+    let deadline = deadline_from_native_ns(&deadline_ns).map_err(native_error)?;
+    let input = Arc::clone(&input);
+    tauri::async_runtime::spawn_blocking(move || match event {
+      DesktopInputEvent::Pointer { x, y } => input.move_pointer(&token, x, y, deadline),
+      DesktopInputEvent::Key { key, down } => {
+        let key = match key.as_str() {
+          "Left" => Key::Left, "Right" => Key::Right, "Up" => Key::Up, "Down" => Key::Down,
+          "Space" => Key::Space, "Return" => Key::Return, "Escape" => Key::Escape, "Tab" => Key::Tab,
+          _ => return Err(native_input_controller::ControlError::Native(native_input::InputError::InvalidCoordinate)),
+        };
+        input.set_key(&token, key, down, deadline)
+      },
+      DesktopInputEvent::Button { button, down, x, y } => {
+        let button = match button.as_str() {
+          "Left" => Button::Left, "Right" => Button::Right,
+          _ => return Err(native_input_controller::ControlError::Native(native_input::InputError::InvalidCoordinate)),
+        };
+        input.set_button(&token, button, down, x, y, deadline)
+      },
+    }).await.map_err(|_| "Native input unavailable".to_owned())?.map_err(native_error)
+}
+#[tauri::command]
+async fn native_input_stop(input: State<'_, Arc<MacInputController>>) -> Result<(), String> {
+    let input = Arc::clone(&input);
+    tauri::async_runtime::spawn_blocking(move || input.stop()).await
+      .map_err(|_| "Native stop unavailable".to_owned())?.map_err(native_error)
+}
+#[tauri::command]
+async fn native_input_retry(input: State<'_, Arc<MacInputController>>) -> Result<Value, String> {
+    let input = Arc::clone(&input);
+    let report = tauri::async_runtime::spawn_blocking(move || input.retry_releases()).await
+      .map_err(|_| "Native release retry unavailable".to_owned())?.map_err(native_error)?;
+    Ok(json!({ "eventIssued": report.event_issued, "processEnded": report.process_ended }))
+}
+
+fn begin_native_shutdown(handle: tauri::AppHandle, ready: Arc<AtomicBool>, attempt: Arc<AtomicBool>) {
+    if attempt.compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst).is_err() { return; }
+    tauri::async_runtime::spawn(async move {
+        let input = Arc::clone(&handle.state::<Arc<MacInputController>>());
+        let result = tauri::async_runtime::spawn_blocking(move || input.shutdown()).await;
+        if matches!(result, Ok(Ok(()))) {
+            ready.store(true, Ordering::SeqCst);
+            handle.exit(0);
+        } else {
+            // Keep the window and its Retry control available after failure.
+            attempt.store(false, Ordering::SeqCst);
+        }
+    });
+}
+
 pub fn run() {
     let application = tauri::Builder::default()
         .setup(|app| {
@@ -446,9 +554,16 @@ pub fn run() {
             let manager = Arc::new(HubManager::new(paths)?);
             tauri::async_runtime::block_on(manager.start())?;
             app.manage(manager);
+            app.manage(Arc::new(mac_controller()));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            native_input_status,
+            native_input_clock,
+            native_input_select,
+            native_input_event,
+            native_input_stop,
+            native_input_retry,
             hub_status,
             get_settings,
             update_settings,
@@ -464,7 +579,24 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while building 101 Hub");
 
-    application.run(|app, event| {
+    let close_ready = Arc::new(AtomicBool::new(false));
+    let close_attempt = Arc::new(AtomicBool::new(false));
+    application.run(move |app, event| {
+        match &event {
+            tauri::RunEvent::WindowEvent { event: tauri::WindowEvent::CloseRequested { api, .. }, .. } => {
+                if !close_ready.load(Ordering::SeqCst) {
+                    api.prevent_close();
+                    begin_native_shutdown(app.clone(), Arc::clone(&close_ready), Arc::clone(&close_attempt));
+                }
+            },
+            tauri::RunEvent::ExitRequested { api, .. } => {
+                if !close_ready.load(Ordering::SeqCst) {
+                    api.prevent_exit();
+                    begin_native_shutdown(app.clone(), Arc::clone(&close_ready), Arc::clone(&close_attempt));
+                }
+            },
+            _ => {}
+        }
         if matches!(event, tauri::RunEvent::Exit) {
             let manager = app.state::<Arc<HubManager>>();
             tauri::async_runtime::block_on(manager.stop());

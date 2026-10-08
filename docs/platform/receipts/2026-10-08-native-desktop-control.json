@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-native-software-built-device-acceptance-open",
+  "localOnly": true,
+  "base": "da8e80ecec528daa1a608bbbf9aee95c8ecd7afe",
+  "sourceSha256": {
+    "apps/desktop-hub/package.json": "43ab074b51ffe2bdea1b2af57a1712da0e2473f52049482394da073f8ddb3711",
+    "apps/desktop-hub/vite.config.ts": "481a8884cf88e06fb5ed684198742ea703965ff772780524d83e2c4f26e9dbf6",
+    "apps/desktop-hub/src/main.ts": "a35c3fb38d30ed74272819c11bf37398128b0e5e3a108642acf83164e35cb7a8",
+    "apps/desktop-hub/src/style.css": "fe3af850408742913e95f3b30f1803a541dc27f9117ac24ac6966e35c11937a6",
+    "apps/desktop-hub/src/desktop-input.ts": "451b7a63875c57c7ff3e30b10ed41b12bf3861a54ebbab315e6692657efb4e17",
+    "apps/desktop-hub/src/desktop-input.test.ts": "4cef02317c2d5dac92e9dadfbe6b0e30e35fe1404d54c7549a4c2629bef5f8d2",
+    "apps/desktop-hub/src/desktop-controller.ts": "eefa3091201ba93a6512c095148fc84a0168ea30bc86ab5253a6170633b93882",
+    "apps/desktop-hub/src/desktop-controller.test.ts": "95ecd062bb186ef3972af4fca5923101b8299053057b4a537a53e4d46a5cdf39",
+    "apps/desktop-hub/src-tauri/tauri.conf.json": "0b9b07e246d61301a0d327adb923c15df081a5b8ee900d1095d7d99c511b86b4",
+    "apps/desktop-hub/src-tauri/src/lib.rs": "c71b400feff4822c48ace92e30d36fbca7ae066acd57f0bf6f41783d20f8cca4",
+    "apps/desktop-hub/src-tauri/src/native_input.rs": "6bbd58af5554bf8f3cc043166d8cb7662e78bcc9dc0257991d69af6f293e127b",
+    "apps/desktop-hub/src-tauri/src/native_input_approval.rs": "7bb990489ef49d34daef4054281670ac41f48e9e8e7592e1aa57c34befc6dd1d",
+    "apps/desktop-hub/src-tauri/src/native_input_controller.rs": "f60dc6e91d4216fc1bcc18d80b29a3af5b792e1d838089363e47ce1b34dc5f73",
+    "apps/desktop-hub/src-tauri/Cargo.lock": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+    "apps/controller-native/src/controller-session.ts": "918b75f3374f759b55fda6a0a1d6c571c69479b71713b4320b8e1ff7fec6186f",
+    "apps/controller-native/src/desktop-clock.ts": "e0975d4086b91577f97cc5c1f09b30bd2c183e24036cd9ac7b3da664b8818293",
+    "apps/controller-native/src/desktop-clock.test.ts": "d49e697e15c8b7cb780b363916c73c4534b9c86ee85345ea1a6b56e5e1c0c8f1",
+    "apps/controller-native/android/app/build.gradle": "f7d40eea2f010894e53de1d7ec2690861d4a828c07b19791d0f1df7811f64f30",
+    "tests/native-input-harness.rs": "fe8305682fa0ac83d31ad642285c97a5c6e44f6753e480caadefaad4b1170fe2",
+    "tests/native-input-controller-harness.rs": "8b16551dfd2ae92c491577c7dda61a7a2009921dfb307d5d4a533f295e704876",
+    "package-lock.json": "281b60f165aa17044d2edc0952430c8484469bb225f18bdb49d1783f6999773a",
+    "tools/qa-native-desktop-input.mjs": "6e2e373c9a5e859d674dc946d8e330c343f7b8d04efda8c419b890544f880b6b",
+    "tests/native-desktop-input.test.ts": "093c24888816919d3a6ca0b08666f5644770e379c7703d09f3a6e8f8ab8d7842"
+  },
+  "artifacts": [
+    {
+      "path": "/Users/km/Desktop/games/101/apps/desktop-hub/src-tauri/target/release/bundle/macos/101 Hub.app/Contents/MacOS/oneohone-hub",
+      "bytes": 12293152,
+      "sha256": "7a5323c87939ef66b2d75bb1157d4f60d46cbc803d33e1c76afc9eb36fe87a86"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/apps/desktop-hub/src-tauri/target/release/bundle/macos/101 Hub.app/Contents/Info.plist",
+      "bytes": 988,
+      "sha256": "2dd0480fceef03787374a4de35e93b86fedd4ad76ed753d574491e7347b22744"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/apps/controller-native/android/app/build/outputs/apk/release/app-release.apk",
+      "bytes": 51427026,
+      "sha256": "a953c058c6b2759d1172d9334130afcd2c303d79d2bcad11cd51e22e4e406a86",
+      "historicalArtifact": "Earlier selected input candidate APK was superseded by the immutable phone-motion artifact in 2026-10-08-phone-motion.json; current Gradle output path no longer identifies these historical bytes."
+    }
+  ],
+  "implemented": [
+    "macOS permissioned native keyboard, button and normalized pointer events with independent native user confirmation and public resource route grants.",
+    "Focused window, stable process identity, display geometry, scale, rotation, deadline and revocation checks before native issuance.",
+    "Thirty-second native lease, held input tracking, immediate logical Stop and retained retry ownership for unconfirmed native release.",
+    "Native confirmation runs off the UI thread; application exit waits for confirmed background cleanup.",
+    "Dedicated paired Android desktop control source; selected exact peer only, closed controls, monotonic clock exchange, original capture deadline and route/Stop fences.",
+    "Pairing race reservation, late page-close fencing, cleanup before replacement, monochrome chrome and visible keyboard focus."
+  ],
+  "validation": {
+    "focusedSoftwareTests": 15,
+    "tauriAppBuild": "pass",
+    "androidArm64ReleaseBuild": "pass",
+    "nativeBackendAndController": "17 backend and 10 controller Rust injected-port cases pass through the regular Node unit discovery wrapper. No actual OS event delivery qualification.",
+    "finalTestOnlyDelta": "Const/tuple typing and awaited test cleanup repaired lint errors; focused checks retain same assertions."
+  },
+  "signing": {
+    "android": "Existing repository release configuration uses its development signing key; production identity and upgrade qualification remain open.",
+    "desktop": "Local application bundle built. Notarization, distribution signing and installer qualification are not claimed."
+  },
+  "clockAssumptions": {
+    "phoneAndHost": "Distinct performance.now domains; selected sole ordered reliable peer supplies four timestamps.",
+    "maxRttMs": 200,
+    "maxUncertaintyMs": 20,
+    "maxMapAgeMs": 500,
+    "maxDriftPpm": 100,
+    "originalPhoneCommandAgeMs": 250,
+    "nativeIpcRttMs": 200,
+    "limits": "Clock labels are fixed declarations. No cryptographic per-boot probe identity, physical capture or OS delivery acknowledgement is claimed."
+  },
+  "open": [
+    "Connected phone installation, permission/lifecycle and actual input walkthrough",
+    "Real macOS OS denial/revocation and target event observation",
+    "Windows/Linux native backends",
+    "Historical macOS minimum-version execution",
+    "General multi-monitor/safe-area/device matrix",
+    "Final signing, licenses, installation/update and complete N05/N09/K04/K06 acceptance"
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-native-desktop-final-focused.log",
+      "sha256": "65edb468c7051b5721c6ca49dfd8265fb335ce9982a59b55c1e772362cabc064",
+      "gitBlob": "f3984b868f84c2bcf038878d60f2386e67d8d53c",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-0"
+    },
+    {
+      "path": "/tmp/101-native-desktop-app-final-build.log",
+      "sha256": "b7b872dcbb088ff0c3de127212b468dd1aa7c7cac51aab9dd5e0c232e990e2cd",
+      "gitBlob": "c6945c9bd26fe9590add920526785e1d489b9653",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-1"
+    },
+    {
+      "path": "/tmp/101-android-controller-release-build.log",
+      "sha256": "af547147c4a5d0a31a52bec55a5bb49456718d60ac25d662bbec4467dd0125a1",
+      "gitBlob": "fec0522a047f5ebcbb84126126efb265d26f3d87",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-2"
+    },
+    {
+      "path": "/tmp/101-desktop-pair-race-old.log",
+      "sha256": "c033a9156795b39947fb3c051c941331198a95d1435a0a5667e1ba649457f680",
+      "gitBlob": "c8fde435c5b6a260ab2346250322902f39d2f873",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-3"
+    },
+    {
+      "path": "/tmp/101-desktop-pair-race-current.log",
+      "sha256": "0b484b77e82fe5595c80fc76a7c440abc7063168cdda52a442fa97d67bd54e5f",
+      "gitBlob": "493c6c840cd1c00cd3a11bfd0006917714492d02",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-4"
+    },
+    {
+      "path": "/tmp/101-macos-native-input-independent-review.json",
+      "sha256": "8e3115c2e7a0bdd12e719dac969a5b4c949104cf2f109e6ce56a8106112bde2e",
+      "gitBlob": "2983d77e0cc1839aee0f23e458728c3d5fb955f1",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-5"
+    },
+    {
+      "path": "/tmp/101-macos-native-input-repairs-review.json",
+      "sha256": "88a66998762ac824039cf6afb560c6c54df363cf7a6465753b47d4f56a4b9e53",
+      "gitBlob": "536e530d73ace51a0a41c5a136ce2923db55278d",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-6"
+    },
+    {
+      "path": "/tmp/101-native-desktop-independent-review.json",
+      "sha256": "a8b0c840065b0937978b4982d6343735169c2a766ae48d64669c0c6b52f36bb6",
+      "gitBlob": "225d336692aef169d9fea6ce1332ab4b1eb65f9f",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-7"
+    },
+    {
+      "path": "/tmp/101-native-desktop-final-independent-review.json",
+      "sha256": "dda7a17d12cb5e0096d9b14a16bb8df0e92c09b2b4177f10959f650f88ff6271",
+      "gitBlob": "870c17e0d71978ac15ac37e8c9b670bbc015f085",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-8"
+    },
+    {
+      "path": "/tmp/101-native-desktop-repairs-final-review.json",
+      "sha256": "8f6df1bbdb226831742f42e410246bf20e36128e450614494daee11fa1fcc673",
+      "gitBlob": "b99304044de04dfe000cdca4051b398385361bbf",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-9"
+    },
+    {
+      "path": "/tmp/101-desktop-c-final-repairs-review.json",
+      "sha256": "7e01409995dd53a202c2559731fafd1e4920952f95d2b04f398a68eeea2f8bc4",
+      "gitBlob": "89d9c3b149a9a08d6131a7adfec24c831140292c",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-10"
+    },
+    {
+      "path": "/tmp/101-native-language-reentry-independent-review.json",
+      "sha256": "9f3a50cb5e35e6f20b62b03d7a088c69275dac95475cdbcde0d8d83b701d5fa6",
+      "gitBlob": "a6a66feb352763b63cd3c17610a95e963f8955bc",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop/literal-11"
+    },
+    {
+      "path": "/tmp/101-native-desktop-rust-discovered.log",
+      "sha256": "73acaf2fa51af249a5a1130b8d64d7eb5b3d761b2243c58f87e1d3044722bb5c",
+      "gitBlob": "acb057a07677a77b911b03983c082dbc09f3123b",
+      "ref": "refs/codex/evidence/2026-10-08-native-desktop-rust/literal-0"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Result ref is written only after the exact frozen candidate gates finish; no green result is implied by focused checks."
+  },
+  "priorCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate-9ec-failed",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates-9ec-failed",
+    "result": "fail",
+    "explanation": "2741/2742 unit checks; one child launch timeout before application startup, cause remains unknown. The other four gates passed. Current requiredCandidateGates awaits the repaired phone-inclusive candidate."
+  }
+}

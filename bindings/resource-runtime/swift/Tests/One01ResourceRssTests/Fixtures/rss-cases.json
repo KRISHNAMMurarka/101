@@ -1,0 +1,10 @@
+{
+  "profile": "self-current-rss-macos-mach/1",
+  "clock": "CLOCK_MONOTONIC-ns",
+  "cases": [
+    "denied-register", "expired-register", "stop-during-register", "accepted-register",
+    "busy-register", "foreign-handle", "denied-read", "expired-read", "current-rss-read",
+    "delayed-read-approval", "current-revoked", "stop-during-read", "old-generation-stale",
+    "replacement-read", "thirty-two-reads", "stop-stale", "two-generation-limit"
+  ]
+}

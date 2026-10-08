@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-loopback-ipp-software-and-installed-caller-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/ipp-job-gateway.ts": "01311d62347762db2d66b4f0a560d1f623beeb347d55aea4175a1760610226c3",
+    "packages/hub-server/src/ipp-job-gateway.test.ts": "bf9c90bce463b9196343e8056de2f379943178c301249d2fa9df85298fe1ded9",
+    "examples/ipp-job/consumer.mjs": "fa3c31537ba8eaa361990c8fbe9789f5fca72025d699abb975ab118059af1809",
+    "examples/ipp-job/software-printer.mjs": "add73f524465487eaa8f08bd51494cc6a1b6727ca9a5ca7d46bc3cd46bce66bb",
+    "tools/qa-ipp-job.mjs": "9c76322347081840855dae07d587bebd1ad543db2ebc0fbc02890407722d8b5e"
+  },
+  "integrationSourceSha256": {
+    "packages/hub-server/src/index.ts": "1f4550b538bf0ebdca357afdb6ff211fb41cf30f90e30636dfd6ee812e791e5c"
+  },
+  "implemented": "IPP/1.1 Get-Printer-Attributes, Print-Job, Get-Job-Attributes and Cancel-Job for one explicitly selected loopback printer and host-registered PDF. Public job route authority, independent printer/job grants, exact identities, original deadlines and opaque generations remain separate.",
+  "bounds": {
+    "printerUri": "ipp://127.0.0.1:<selected-port>/ipp/print",
+    "documentBytes": 65536,
+    "responseBytes": 65536,
+    "responseAttributesBytes": 4096,
+    "startAttempts": 8,
+    "submissionsPerEpoch": 4,
+    "operationsPerEpoch": 8,
+    "rawOperations": 1,
+    "maximumOperationMs": 5000,
+    "maximumPrinterGrantMs": 60000
+  },
+  "evidenceSemantics": "Print acknowledgement is target-acknowledged. Cancel request acceptance is distinct from subsequently observed server canceled state; neither proves physical output or recovery.",
+  "stop": "Stop fences new authority before callouts, aborts cooperative document reads and network requests, and retains ownership until actual provider and socket settlement. It cannot undo issued jobs.",
+  "validation": {
+    "focusedChecks": 13,
+    "focusedChecksScope": "exact reviewed five-file lane in isolated worktree",
+    "typecheck": "pass-in-isolated-worktree",
+    "targetedLint": "pass-in-isolated-worktree",
+    "separateProcessCaller": "pass",
+    "independentReview": "clear",
+    "rootIntegration": "copied-and-exported-exact-reviewed-files",
+    "installedSdkCaller": "pass",
+    "requiredCandidateGates": "see-canonical-exact-result-ref",
+    "rootPublicExport": "pass-on-current-root"
+  },
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-ipp-review-old.log",
+      "sha256": "5ac896602af4119d31228c0b93c2df5a7df200473fe6b5ebddec965c4df0ae16",
+      "gitBlob": "dc595399770d9a2fdd1dcd89fd25ed4ff432ed23",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-0"
+    },
+    {
+      "path": "/tmp/101-ipp-review-green.log",
+      "sha256": "14383bc4b97fd748f57e795ac744964cfce2f5c472e8f75147a91bde9a741744",
+      "gitBlob": "9d11e045ae5aaced632973ce21469f00ed388ca7",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-1"
+    },
+    {
+      "path": "/tmp/101-ipp-review-repair-receipt.json",
+      "sha256": "d5252aabd2c3a4abec69d9d1b76767df3fa0642ea4ccf2e2207fd32761384a32",
+      "gitBlob": "9bac39916bfe02fadb4c954cb53185074cd184e2",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-2"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-old.log",
+      "sha256": "4871d73ee76b01f9cb6cb2b8d5c7c17c45a3ee8f6f362dd0a8181c8a71995c0a",
+      "gitBlob": "ed7aa3cf2f7b65a25b655039b3db62cf701d0a9a",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-3"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-green.log",
+      "sha256": "6d52f2830e8b5dc54dd8370305c7a8b87c8e95d3b2c82f1d5a4af58bfbff0ba6",
+      "gitBlob": "ce188751e85377f1bcc7aca03ac66b04257fcae3",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-4"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-caller.log",
+      "sha256": "32329bb67c9da3af7ca9a3a5d50a00b28c997dfec35b8c027b8e55b94d8223e7",
+      "gitBlob": "011bacef3d94cfe6ab791c814d10c2016520e05b",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-5"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-caller-receipt.json",
+      "sha256": "9a6c560d20084485149f8346646a51b2f39305d06d047467dfcc7f6580a8a3bf",
+      "gitBlob": "c176b2c5c10f4d548c840d1e97a9db3e8b13371b",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-6"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-7"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-eslint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-8"
+    },
+    {
+      "path": "/tmp/101-ipp-cancel-repair-receipt.json",
+      "sha256": "ce61fb184e07ad5e09a2ba8fdddc0a8e8fa52f7b2df9a1af016ca66e22b73769",
+      "gitBlob": "0fcd0a82c9baaab1a9061132f78a795becdc999b",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-9"
+    },
+    {
+      "path": "/tmp/101-ipp-final-independent-review.json",
+      "sha256": "c300f4e5658552da78c54a27d47009f4cd27d4b044a224177c14e0b53df30658",
+      "gitBlob": "d8665099a5b5c0689e66d8d7eca2a61285945041",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-10"
+    },
+    {
+      "path": "/tmp/101-ipp-next-lane.json",
+      "sha256": "fd6cf197c64bed740d8acc0857c52db4a317083ca1fb593f86c142c3ac8a46e1",
+      "gitBlob": "ca76b42dd396b7fd92caf776e186564e9d4609f5",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/literal-11"
+    },
+    {
+      "path": "/tmp/101-ipp-root-public-export.log",
+      "sha256": "aa86d15c86452ba996899f57ddf4983ba38eba277cbcba5117a302ead45f2ba6",
+      "gitBlob": "e93f7ce1603be6ef8deb7daba5c595517c7b16b2",
+      "ref": "refs/codex/evidence/2026-10-08-ipp-job/root-public-export"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/ipp-job-connector-9KrLAf/receipt.json",
+      "sha256": "58eb803d0306f760541d5e398d581ceec1a524d068bf716883eea82d6ca65d80",
+      "gitBlob": "43c6878e8d380e2b149832790fc0f8be3f053ea2",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/ipp-installed-receipt"
+    }
+  ],
+  "officialSpecifications": [
+    "https://www.rfc-editor.org/rfc/rfc8010.html",
+    "https://www.rfc-editor.org/rfc/rfc8011.html#section-4.3.3.2"
+  ],
+  "open": [
+    "Remote printer transport, authenticated identity and physical output qualification",
+    "Durable reconciliation across gateway/process restart for uncertain issued jobs",
+    "Broader A13 physical/remote/durable-reconciliation acceptance; exact local candidate result is retained at requiredCandidateGates.resultRef."
+  ],
+  "limits": [
+    "Selected loopback URI fixes endpoint/port/path but does not authenticate the serving process across connections; no remote/physical printer or output claim.",
+    "Replay fence lasts only for the gateway object lifetime; an issued unknown remote job needs operator reconciliation and must not be automatically resubmitted across process restart.",
+    "Raw socket close and uncooperative document provider settlement can remain pending beyond operation deadline; ownership is held rather than falsely released. The synchronous-fault test proves retention until its fake socket emits close, not a finite upper bound for a never-closing socket."
+  ],
+  "priorCandidateGates": {
+    "candidateTree": "29556b1c05bce40a7b16acb6ee6e39b14810a45e",
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate-295-failed",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates-295-failed",
+    "result": "fail",
+    "scope": "Prior 87-file candidate excludes IPP. Unit gate failed on child startup; other four gates passed. Those results do not validate this integration."
+  },
+  "installedSdkCallerReceipt": "docs/platform/receipts/2026-10-08-successor-repairs.json",
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-successor-repairs/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-successor-repairs/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only the exact candidate result ref determines broad gate success. Focused checks do not imply it. Local commit requires every listed command to pass."
+  }
+}

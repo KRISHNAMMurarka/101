@@ -205,3 +205,27 @@ export type { HostedApplicationOptions, HostedApplicationApprovalRequest, Hosted
 
 export { AUTHENTICATED_LOOPBACK_RELAY_PROFILE, AUTHENTICATED_LOOPBACK_RELAY_LIMITS, createAuthenticatedLoopbackRelay, connectAuthenticatedRelay } from './loopback-relay.ts';
 export type { RelayEnrollment, AuthenticatedLoopbackRelayOptions, RelayPairRequest, RelayApprovalRequest, RelayApproval, RelayAuthorize, RelayCredential, AuthenticatedRelayClientOptions, AuthenticatedRelayClient } from './loopback-relay.ts';
+
+export { createModbusRegisterConnector, MODBUS_REGISTER_LIMITS } from './modbus-register.ts';
+export type { ModbusFailure, ModbusResult, ModbusEpoch, ModbusRegister, ModbusProfile, ModbusEndpoint, ModbusApprovalRequest,
+  ModbusApproval, ModbusRegisterOptions, ModbusReading, ModbusRegisterConnector } from './modbus-register.ts';
+
+export { createMqttConnector, parseMqttConnectorProfile, MQTT_CONNECTOR_LIMITS } from './mqtt-connector.ts';
+export type { MqttTopicBinding, MqttConnectionTopic, MqttConnectorProfile, MqttConnectionRequest,
+  MqttConnectionApproval, MqttConnectorOptions, MqttConnector } from './mqtt-connector.ts';
+
+export { createMqttClockAuthority, signMqttClockFrame, verifyMqttClockFrame } from './mqtt-clock.ts';
+export type { MqttClockTopics, MqttClockApprovalRequest, MqttClockApproval, MqttClockOptions,
+  MqttClockPacket, MqttClockPublish, QualifiedMqttClockSource, MqttClockAuthority } from './mqtt-clock.ts';
+export { createClockedMqttConnector } from './mqtt-clocked-connector.ts';
+export type { ClockedMqttTopicAuthority, ClockedMqttConnectionRequest, ClockedMqttConnectionApproval,
+  ClockedMqttProvenance, ClockedMqttConnectorOptions, ClockedMqttConnector } from './mqtt-clocked-connector.ts';
+
+export { createModbusRtuConnector, MODBUS_RTU_LIMITS } from './modbus-rtu.ts';
+export type { ModbusRtuFailure, ModbusRtuResult, ModbusRtuEpoch, ModbusRtuRegister, ModbusRtuProfile,
+  ModbusRtuPortSpec, ModbusRtuSerialPort, ModbusRtuApprovalRequest, ModbusRtuApproval,
+  ModbusRtuOptions, ModbusRtuReading, ModbusRtuConnector } from './modbus-rtu.ts';
+
+export { createIppJobGateway, IPP_JOB_LIMITS } from './ipp-job-gateway.ts';
+export type { IppFailure, IppResult, IppEpoch, IppPrinter, IppScope, IppApprovalRequest, IppGrant,
+  IppOptions, IppOperation, IppSubmission, IppGateway } from './ipp-job-gateway.ts';

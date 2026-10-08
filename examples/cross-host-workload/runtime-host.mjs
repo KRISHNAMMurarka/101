@@ -5,8 +5,8 @@ import { createHash } from 'node:crypto';
 import { createDeviceRuntime, createRouteGroupController, createEphemeralWebIdentity,
   RemoteResourcePublisher, RemoteResourceReceiver, authenticatedPeerScope,
   createApplicationSnapshot, restoreApplicationSnapshot, parseDeviceDescriptor } from '@101/connect';
-import { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256,
-  connectAuthenticatedRelay } from '@101/hub-server';
+import { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256 } from '@101/hub-server/hosted-application';
+import { connectAuthenticatedRelay } from '@101/hub-server/loopback-relay';
 
 // This clock starts after static ESM imports, not at process/loader bootstrap.
 const moduleBodyEnteredAt = performance.now();

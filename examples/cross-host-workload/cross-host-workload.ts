@@ -9,9 +9,9 @@ import type { Socket } from 'node:net';
 import { createDeviceRuntime, createWorkloadHandoff, createApplicationSnapshot, restoreApplicationSnapshot,
   createEphemeralWebIdentity, RemoteResourcePublisher, RemoteResourceReceiver, authenticatedPeerScope, parseDeviceDescriptor } from '@101/connect';
 import type { HandoffHost, HandoffEpoch, JsonValue, Connection, EndpointHandle, DeviceRuntime } from '@101/connect';
-import { createAuthenticatedLoopbackRelay, connectAuthenticatedRelay,
-  hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256 } from '@101/hub-server';
-import type { AuthenticatedRelayClient } from '@101/hub-server';
+import { createAuthenticatedLoopbackRelay, connectAuthenticatedRelay } from '@101/hub-server/loopback-relay';
+import { hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256 } from '@101/hub-server/hosted-application';
+import type { AuthenticatedRelayClient } from '@101/hub-server/loopback-relay';
 import { createCoordinatorFixtures } from '../../tools/qa-https-coordinator.mjs';
 
 export const CROSS_HOST_WORKLOAD_PROFILE = 'loopback-node-workload-handoff/1' as const;

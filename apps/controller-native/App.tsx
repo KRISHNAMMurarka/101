@@ -35,6 +35,7 @@ import { CONTROLLER_PRESETS, DEFAULT_PRESET } from "./src/presets";
 import { ticketFromInput } from "./src/pairing-code";
 import { createSavedPairingStore } from "./src/saved-pairing";
 import { pinchDistance, zoomFromPinch } from "./src/scanner-controls";
+import { createScannerSession } from "./src/scanner-session";
 import { DARK_SURFACE, radius, space, type, useLayout, useTheme, type Theme } from "./src/theme";
 import { Button, Label, StateDot } from "./src/ui";
 import privateCue from "./assets/private-cue.wav";
@@ -94,10 +95,11 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const [speakerPlaybackFailed, setSpeakerPlaybackFailed] = useState(false);
   const [latency, setLatency] = useState<number>();
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [scannerGeneration, setScannerGeneration] = useState<number>();
   const [scannerZoom, setScannerZoom] = useState(0);
   const [scannerTorch, setScannerTorch] = useState(false);
   const [scannerMessage, setScannerMessage] = useState("");
-  const scanClaimedRef = useRef(false);
+  const scannerSession = useRef(createScannerSession());
   const pinchRef = useRef<{ distance: number; zoom: number } | undefined>(undefined);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [codeEntryOpen, setCodeEntryOpen] = useState(false);
@@ -117,6 +119,23 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   const connectBusy = useRef(false);
   const connectRevision = useRef(0);
   const cancelPendingConnect = useCallback(() => { connectRevision.current++; haptics.cancel(); }, [haptics]);
+
+  const closeScanner = useCallback(() => {
+    scannerSession.current.retire();
+    pinchRef.current = undefined;
+    setScannerOpen(false);
+    setScannerTorch(false);
+  }, []);
+
+  useEffect(() => {
+    const scanner = scannerSession.current;
+    scanner.mount(AppState.currentState === "active");
+    const listener = AppState.addEventListener("change", (state) => {
+      scanner.setForeground(state === "active");
+      if (state !== "active") closeScanner();
+    });
+    return () => { listener.remove(); scanner.unmount(); };
+  }, [closeScanner]);
 
   const haptic = useCallback((pattern: "tap" | "impact" | "warning") => haptics.play(pattern), [haptics]);
 
@@ -145,6 +164,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
 
   const connect = useCallback(async (value: string) => {
     if (connectBusy.current) return;
+    closeScanner();
     if (value.length > 400_000) { setError("That code is too large. Open a new connection link on the game screen."); return; }
     const input = value.trim();
     // Returning silently here made Connect look like a dead button: nothing moved, nothing
@@ -189,9 +209,10 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       connectBusy.current = false;
       setConnectionPending(false);
     }
-  }, [haptics]);
+  }, [closeScanner, haptics]);
 
   const reviewPairing = useCallback((input: string, source: PairingCandidate["source"]) => {
+    closeScanner();
     const result = pairIntake.current!.receive(input, source);
     if (result.status === "unchanged" || result.status === "rate-limited") return;
     if (result.status === "review") {
@@ -202,7 +223,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       setPairReview(undefined);
       setError(result.status === "expired" ? "This code expired. Open a new one on the game screen." : "That connection link could not be read. Scan or paste a new one.");
     }
-  }, []);
+  }, [closeScanner]);
 
   const requestConnection = () => {
     if (pairingInput.length <= 400_000 && /^(101C2|101J2)\./.test(pairingInput.trim())) void connect(pairingInput);
@@ -256,6 +277,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   useEffect(() => {
     if (!deviceId) return;
     const motion = new NativeMotionController((readout) => {
+      if (motionRef.current !== motion || AppState.currentState !== "active") return;
       const activeLayout = layoutRef.current;
       if (activeLayout.motion) {
         const x = clamp(readout.angles.roll / (Math.PI / 3));
@@ -339,6 +361,10 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
     const appState = AppState.addEventListener("change", (state) => {
       setAppActive(state === "active");
       if (state !== "active") {
+        motion.stop();
+        setMotionEnabled(false);
+        setMotionReadout(undefined);
+        readoutRenderedAt.current = 0;
         // React effects run later; revoke the host's ready belief before an in-flight cue can use
         // the background player during that gap.
         session.setSpeakerReady(false);
@@ -351,10 +377,10 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
       pairIntake.current!.clear();
       link.remove();
       appState.remove();
+      motionRef.current = undefined;
       motion.stop();
       void session.disconnect();
       sessionRef.current = undefined;
-      motionRef.current = undefined;
     };
   }, [cancelPendingConnect, deviceId, haptic, haptics, reviewPairing, speaker]);
 
@@ -378,12 +404,17 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   }), [haptic]);
 
   const enableMotion = async () => {
+    const motion = motionRef.current;
+    if (!motion) { setError("Motion sensing is still starting. Try again in a moment."); return; }
+    if (AppState.currentState !== "active") return;
     try {
-      await motionRef.current?.start();
+      const started = await motion.start();
+      if (!started || !motion.active || motionRef.current !== motion || AppState.currentState !== "active") return;
       setMotionEnabled(true);
       setError(undefined);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Motion sensors could not start");
+      if (motionRef.current === motion && AppState.currentState === "active")
+        setError(reason instanceof Error ? reason.message : "Motion sensors could not start");
     }
   };
 
@@ -406,21 +437,35 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   };
 
   const openScanner = async () => {
-    const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
-    if (permission.granted) {
+    closeScanner();
+    const scanner = scannerSession.current;
+    const expected = scanner.begin(AppState.currentState === "active");
+    if (expected === undefined) return;
+    try {
+      const permission = cameraPermission?.granted ? cameraPermission : await requestCameraPermission();
+      if (!scanner.current(expected, AppState.currentState === "active")) return;
+      if (!permission.granted) {
+        closeScanner();
+        setError("101 Link needs the camera only to read the pairing code. You can paste the code instead.");
+        return;
+      }
+      if (!scanner.open(expected, AppState.currentState === "active")) return;
       pairIntake.current!.clear();
-      scanClaimedRef.current = false;
       pinchRef.current = undefined;
       setScannerZoom(0);
       setScannerTorch(false);
       setScannerMessage("");
+      setScannerGeneration(expected);
       setScannerOpen(true);
+    } catch {
+      if (!scanner.current(expected, AppState.currentState === "active")) return;
+      closeScanner();
+      setError("The camera could not open. Try scanning again, or paste the pairing code.");
     }
-    else setError("101 Link needs the camera only to read the pairing code on your game screen.");
   };
 
-  const acceptScan = (data: string) => {
-    if (scanClaimedRef.current) return;
+  const acceptScan = (data: string, expected: number | undefined) => {
+    if (!scannerSession.current.canScan(expected, AppState.currentState === "active")) return;
     const result = pairIntake.current!.receive(data, "scan");
     if (result.status === "unchanged" || result.status === "rate-limited") return;
     if (result.status !== "review") {
@@ -429,9 +474,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
         : "That isn't a 101 Link code. Keep scanning.");
       return;
     }
-    scanClaimedRef.current = true;
-    setScannerOpen(false);
-    setScannerTorch(false);
+    closeScanner();
     setPairingInput(result.candidate.input);
     setPairReview(result.candidate);
     setError(undefined);
@@ -452,6 +495,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
   };
 
   const disconnect = async () => {
+    closeScanner();
     cancelPendingConnect();
     pairIntake.current!.clear();
     setPairReview(undefined);
@@ -499,7 +543,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
           pairingInput={pairingInput}
           manualAnswer={manualAnswer}
           onScan={() => void openScanner()}
-          onOpenCodeEntry={() => { setCodeEntryOpen(true); setError(undefined); }}
+          onOpenCodeEntry={() => { closeScanner(); setCodeEntryOpen(true); setError(undefined); }}
           onCancelCodeEntry={() => setCodeEntryOpen(false)}
           onChangeCode={(value) => { pairIntake.current!.clear(); setPairReview(undefined); setPairingInput(value); }}
           onConnect={requestConnection}
@@ -569,16 +613,17 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
         <Text style={[type.label, { color: t.faint, textAlign: "center" }]}>{deviceId || "…"}</Text>
       </Sheet>
 
-      <Modal animationType="fade" visible={scannerOpen} onRequestClose={() => setScannerOpen(false)}>
+      <Modal animationType="fade" visible={scannerOpen && appActive} onRequestClose={closeScanner}>
         <View style={{ flex: 1, backgroundColor: "#000" }}>
-          <CameraView
+          {scannerOpen && appActive ? <CameraView
+            key={scannerGeneration}
             barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
             facing="back"
             zoom={scannerZoom}
             enableTorch={scannerTorch}
-            onBarcodeScanned={({ data }) => acceptScan(data)}
+            onBarcodeScanned={({ data }) => acceptScan(data, scannerGeneration)}
             style={StyleSheet.absoluteFill}
-          />
+          /> : null}
           <View
             style={StyleSheet.absoluteFill}
             onStartShouldSetResponder={() => true}
@@ -623,7 +668,7 @@ function GameControllerApp({ onOpenPointerLab }: { onOpenPointerLab: () => void 
               {/* The camera feed is black whatever the player's theme is, so this control is styled
                   from the dark palette explicitly. Styled from the app theme it rendered near-black
                   on black in light mode, which left the only way out of the scanner invisible. */}
-              <Button label="Cancel" wide palette={DARK_SURFACE} onPress={() => { setScannerOpen(false); setScannerTorch(false); }} />
+              <Button label="Cancel" wide palette={DARK_SURFACE} onPress={closeScanner} />
             </ScrollView>
           </SafeAreaView>
         </View>

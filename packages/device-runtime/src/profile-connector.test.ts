@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import test from 'node:test';
 import { createNodeMemoryProfile } from '../../../examples/device-profiles/node-memory-profile.ts';
 import { createProfileConnector, createTrustedConnectorProfileRegistry } from './profile-connector.ts';
-import type { ConnectorDecodedOutput, ConnectorProfileSample } from './profile-connector.ts';
+import type { ConnectorDecodedOutput, ConnectorProfileSample, ConnectorWriteContext } from './profile-connector.ts';
 import type { DeliveryContext, Observation } from './types.ts';
 
 const artifact = new TextEncoder().encode('explicit-reviewed-fixture-json-decoder');
@@ -39,6 +39,26 @@ function command(current: () => boolean = () => true) {
     source: { registrationId: 'control', deviceId: 'owner', capabilityId: 'enabled' } };
   return { controller, context, observation, evidence };
 }
+
+test('transport writers receive the original absolute deadline and cleanup cannot stay current after clock expiry', async () => {
+  const contexts: ConnectorWriteContext[] = [];
+  let finishCleanup: (() => void) | undefined;
+  const f = await fixture({ timeoutMs: 20, write(_bytes, context) {
+    const selected = context as ConnectorWriteContext; contexts.push(selected);
+    if (selected.cleanup) return new Promise<void>(resolve => { finishCleanup = resolve; });
+  } });
+  try {
+    assert.ok(f.connector.start().ok);
+    const request = command(); const pending = f.connector.apply('sampling', request.observation, request.context);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(contexts[0]?.deadline, 120);
+    f.connector.release('sampling', 'revoked', { routeId: 'route-1' });
+    assert.equal(contexts[1]?.cleanup, true); assert.equal(contexts[1]?.deadline, 120);
+    assert.equal(contexts[1]?.isCurrent(), true);
+    f.now(121); assert.equal(contexts[1]?.isCurrent(), false);
+    await pending;
+  } finally { f.connector.close(); finishCleanup?.(); }
+});
 
 test('registry admits only a verified exact pin and never activates from metadata', async () => {
   const f = await fixture(); assert.equal(f.counters().factories, 0);

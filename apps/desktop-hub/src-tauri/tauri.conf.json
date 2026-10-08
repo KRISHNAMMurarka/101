@@ -30,6 +30,7 @@
     "active": true,
     "targets": "all",
     "category": "Game",
+    "macOS": { "minimumSystemVersion": "11.0" },
     "shortDescription": "Private local gaming session coordinator",
     "longDescription": "101 Hub launches and coordinates local-first 101 gaming sessions without accounts, telemetry, or cloud gameplay servers."
   }

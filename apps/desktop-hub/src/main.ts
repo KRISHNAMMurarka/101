@@ -1,6 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { encodePairingTicket } from "@101/protocol";
 import QRCode from "qrcode";
+import { createDesktopInputBridge } from "./desktop-input";
+import { createDesktopController, type DesktopController } from "./desktop-controller";
 import type { CreatedSession, HubSettings, HubStatus, InstalledGame, ReplayCatalog, ReplayDeletion, StoredReplay } from "./types";
 import "./style.css";
 
@@ -26,6 +28,18 @@ app.innerHTML = `
     </dl>
   </section>
   <div id="notice" role="status" aria-live="polite"></div>
+  <section class="panel desktop-input" aria-labelledby="desktop-input-heading">
+    <h3 id="desktop-input-heading">Select a local app</h3>
+    <p>Focus the intended window during the five-second countdown, then confirm its name in the system prompt. The selected window must remain in front for controller input.</p>
+    <p id="native-input-status" role="status" aria-live="polite">Local input is off.</p>
+    <div class="actions"><button id="desktop-pair">PAIR A DESKTOP CONTROLLER</button>
+      <button id="native-input-select">CHOOSE WINDOW</button>
+      <button id="native-input-stop" class="secondary">STOP CONTROL</button>
+      <button id="native-input-retry" class="secondary">RETRY RELEASE</button></div>
+    <div id="desktop-pairing" class="pairing hidden"><canvas id="desktop-pair-qr"></canvas><code id="desktop-pair-code"></code>
+      <label>Paired controller<select id="desktop-controller-choice"></select></label>
+      <button id="desktop-controller-select" class="secondary">SELECT THIS CONTROLLER</button></div>
+  </section>
   <section class="grid">
     <article class="panel">
       <span class="eyebrow">PAIR A DEVICE</span><h3>New local session</h3>
@@ -36,7 +50,7 @@ app.innerHTML = `
     <article class="panel">
       <span class="eyebrow">NETWORK</span><h3>Reachable addresses</h3>
       <code id="endpoint">Starting…</code><ul id="addresses"></ul>
-      <p class="muted">Control and realtime gameplay move to encrypted peer-to-peer WebRTC channels after signaling.</p>
+      <p class="muted">Control and gameplay connect directly between your paired devices.</p>
     </article>
     <article class="panel">
       <span class="eyebrow">LOCAL LIBRARY</span><h3>Game packages</h3>
@@ -64,7 +78,7 @@ app.innerHTML = `
       <p class="muted">Settings, installed packages, and deterministic replay data stay here. No telemetry service is configured.</p>
     </article>
   </section>
-  <footer>101 Hub · protocol v2 · local-first / account-free</footer>
+  <footer>101 Hub · on your devices · no account needed</footer>
 `;
 
 const byId = <T extends HTMLElement>(id: string) => {
@@ -76,6 +90,88 @@ const byId = <T extends HTMLElement>(id: string) => {
 let status: HubStatus | undefined;
 let settings: HubSettings | undefined;
 let activeSession: { sessionId: string; hostToken: string } | undefined;
+const desktopInput = createDesktopInputBridge({
+  invoke: (command, args) => invoke(command, args), now: () => performance.now(),
+  principalId: "local-hub-user", applicationId: "desktop-hub", sessionId: "local-desktop",
+  authorizeRoute: (request) => request.principalId === "local-hub-user" &&
+    request.applicationId === "desktop-hub" && request.sessionId === "local-desktop" &&
+    request.sourceOperation === "subscribe" && request.sinkOperation === "invoke" &&
+    request.source.deviceId.startsWith("local:desktop-source-") &&
+    request.sink.deviceId.startsWith("local:desktop-sink-")
+    ? { expiresAt: performance.now() + 30_000, maxAgeMs: 500 } : undefined,
+});
+async function refreshNativeInput() {
+  try {
+    const state = await invoke<{ selecting: boolean; pendingReleases: number;
+      target?: { application: string; window: string } }>("native_input_status");
+    byId("native-input-status").textContent = state.pendingReleases
+      ? "Control is stopping or a release needs retry."
+      : state.selecting ? "Waiting for the selected app window and confirmation…"
+      : state.target ? `Controlling ${state.target.application} — ${state.target.window}. Stop control when done.`
+      : "Local input is off.";
+  } catch { byId("native-input-status").textContent = "Local input status is unavailable."; }
+}
+async function selectNativeInput() {
+  byId("native-input-status").textContent = "Focus the intended app window now. A system confirmation follows in five seconds.";
+  try {
+    if (!desktopController || !await desktopController.approveWindow()) throw new Error("Select one paired controller first");
+  } catch (error) { notify(error, true); await desktopInput.stop().catch(() => {}); }
+  await refreshNativeInput();
+}
+let desktopController: DesktopController | undefined;
+let desktopPairingPending: Promise<void> | undefined;
+let desktopDisposed = false;
+function createDesktopPairing(): Promise<void> {
+  if (desktopPairingPending) return desktopPairingPending;
+  // Reserve ownership before any network, native or rendering callback.
+  const task = Promise.resolve().then(async () => {
+  if (desktopDisposed || !status?.running) throw new Error("The Hub is not listening");
+  const currentStatus = status, currentSettings = settings;
+  const previous = desktopController;
+  await previous?.stop();
+  if (desktopController === previous) desktopController = undefined;
+  await desktopInput.stop();
+  if (desktopDisposed) return;
+  const sessionId = `DESK${crypto.randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase()}`;
+  const phoneEndpoint = currentStatus.addresses[0] ? `http://${currentStatus.addresses[0]}:${currentSettings?.port ?? 10101}` : currentStatus.endpoint;
+  const response = await fetch(`${currentStatus.endpoint}/v1/sessions`, { method: "POST", headers: { "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(10_000),
+    body: JSON.stringify({ sessionId, hostName: currentSettings?.hostName, endpoint: phoneEndpoint }) });
+  if (!response.ok) throw new Error("Desktop pairing could not start");
+  const created = await response.json() as CreatedSession;
+  if (desktopDisposed) return;
+  const code = encodePairingTicket(created.ticket);
+  await QRCode.toCanvas(byId<HTMLCanvasElement>("desktop-pair-qr"), code, { width: 220, margin: 2 });
+  if (desktopDisposed) return;
+  byId("desktop-pair-code").textContent = code;
+  byId("desktop-pairing").classList.remove("hidden");
+  const controller = createDesktopController({ endpoint: currentStatus.endpoint, sessionId, hostToken: created.hostToken,
+    bridge: desktopInput, now: () => performance.now(), onChange: () => {
+      if (desktopDisposed || desktopController !== controller) return;
+      const select = byId<HTMLSelectElement>("desktop-controller-choice"); select.replaceChildren();
+      for (const candidate of desktopController?.candidates() ?? []) {
+        const option = document.createElement("option"); option.value = candidate.id;
+        option.textContent = candidate.label; select.append(option);
+      }
+    } });
+  desktopController = controller;
+  try { await controller.start(); }
+  catch (error) {
+    await controller.stop();
+    if (desktopController === controller) desktopController = undefined;
+    throw error;
+  }
+  if (desktopDisposed || desktopController !== controller) await controller.stop();
+  });
+  const settled = task.finally(() => { if (desktopPairingPending === settled) desktopPairingPending = undefined; });
+  desktopPairingPending = settled;
+  return settled;
+}
+async function selectDesktopController() {
+  const id = byId<HTMLSelectElement>("desktop-controller-choice").value;
+  if (!desktopController || !await desktopController.selectController(id)) throw new Error("Choose one currently paired controller");
+  byId("native-input-status").textContent = "Controller selected. Choose the app window and confirm it in the system prompt.";
+}
 
 async function refresh(background = false) {
   // Background status polling must not replace a keyboard interaction in history.
@@ -286,8 +382,19 @@ function escapeHtml(value: string) {
 
 function formatBytes(bytes: number) { return bytes < 1024 ? `${bytes} B` : `${(bytes / 1024).toFixed(1)} KB`; }
 
+byId("desktop-pair").addEventListener("click", () => void createDesktopPairing().catch((e) => notify(e, true)));
+byId("desktop-controller-select").addEventListener("click", () => void selectDesktopController().catch((e) => notify(e, true)));
+byId("native-input-select").addEventListener("click", () => void selectNativeInput());
+byId("native-input-stop").addEventListener("click", () => void (desktopController?.stopControl() ?? desktopInput.stop()).then(refreshNativeInput).catch((e) => notify(e, true)));
+byId("native-input-retry").addEventListener("click", () => void invoke("native_input_retry").then(refreshNativeInput).catch((e) => notify(e, true)));
+void refreshNativeInput();
+const nativeInputTimer = window.setInterval(() => void refreshNativeInput(), 3_000);
 byId("retry-replays").addEventListener("click", () => void refreshReplayHistory());
-window.addEventListener("pagehide", () => { replayDisposed = true; replayEpoch += 1; });
+window.addEventListener("pagehide", () => {
+  replayDisposed = true; replayEpoch += 1; desktopDisposed = true;
+  window.clearInterval(nativeInputTimer); window.clearInterval(hubRefreshTimer);
+  void desktopController?.stop().catch(() => {}); void desktopInput.close().catch(() => {});
+});
 
 byId("refresh").addEventListener("click", () => void refresh());
 byId("create-session").addEventListener("click", () => void createSession());
@@ -299,4 +406,4 @@ byId("open-paired-session").addEventListener("click", () => {
 });
 
 void refresh();
-window.setInterval(() => void refresh(true), 3_000);
+const hubRefreshTimer = window.setInterval(() => void refresh(true), 3_000);

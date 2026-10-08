@@ -1,4 +1,5 @@
 import { ControllerInputModel, type ControllerInputSnapshot } from "@101/link-controller";
+import { answerClockProbe, sessionInputNow } from "./desktop-clock";
 import { HttpControllerSignalingClient, SignaledLinkTransport } from "@101/pairing";
 import {
   INPUT_Q1_FORMAT,
@@ -332,7 +333,10 @@ export class ControllerSession {
     } else if (message.type === "calibration.request") {
       this.events.calibration(message.mode);
     } else if (message.type === "ping") {
-      this.transport?.sendReliable({ type: "pong", sentAt: message.sentAt, receivedAt: Date.now() });
+      const gameId = this.assignment?.gameId;
+      answerClockProbe(message, gameId, this.deviceId,
+        () => sessionInputNow(gameId, () => Date.now(), () => performance.now()),
+        response => this.transport?.sendReliable(response));
     } else if (message.type === "pong") {
       this.events.latency(Math.max(0, Date.now() - message.sentAt));
     }
@@ -344,7 +348,7 @@ export class ControllerSession {
       deviceId: this.deviceId,
       playerId: this.assignment?.playerId ?? "player-1",
       sequence: ++this.sequence,
-      timestamp: Date.now(),
+      timestamp: sessionInputNow(this.assignment?.gameId, () => Date.now(), () => performance.now()),
       source,
       actions: snapshot.actions,
       axes: snapshot.axes,

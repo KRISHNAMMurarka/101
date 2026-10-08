@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-repairs-and-local-android-build-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "apps/controller-native/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+    "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+    "apps/controller-native/src/scanner-session.test.ts": "87393ade9f4cbdacefe77b9f5e102b05b5b17fedab4d6151dc20842654db01c1",
+    "packages/hub-server/package.json": "4df166c7eecb769e3a9a7e356d6c1c5e6cdc0122fe88ced5cc154d36269bd23c",
+    "examples/cross-host-workload/cross-host-workload.ts": "a3dfef4329d8f08fe1157cd3e8b0cb41291aeb5ea530a3c0523f5ffa3a69f638",
+    "examples/cross-host-workload/runtime-host.mjs": "72b37fc747a5c74ec5e421331cc8f764aa88027dd54f63330dd4dc0351ab298c",
+    "tools/qa-cross-host-workload.mjs": "8300016f73d0cefa77d81f868107684ba190e53fb0082cfbc18013d0e19957b8",
+    "tests/cross-host-import-closure.test.ts": "37456740c74d8651c1de25af092b83df1803a9c460447ba045206c352387a70f",
+    "tools/qa-installed-ipp-job.mjs": "b8a12bd65f55538ad7b7efc5bd11d9b8dfead3cb6a8f96d15a6616eb7eecfce7",
+    "tests/cross-host-workload.test.ts": "9e9a38ed5870ee99bbb229faa9b6bf47174c8ef9a87b979536c281f7d986310a",
+    "tests/cross-host-keeper.test.ts": "76b540af24325bc5fbe77582ff04cc26f773637f4f9b2c36cbe5f46a8f536cda",
+    "tests/cross-host-test-helpers.ts": "af6b464d401a5081dd01766a377c6d184e75f79a14591493c0ab63f628881818"
+  },
+  "independentSourceReviewTree": "403c5464b095027f3e2f7a5a0768ccb3fb81d7c9",
+  "scanner": {
+    "implemented": "Reserve a mounted foreground generation before async permission; retire permission and camera callbacks on background, unmount, Cancel, request-close, navigation and accepted scan. Handle current permission failures and suppress retired results. Camera element is absent when closed/inactive, and old callbacks remain retired after reopening.",
+    "regressions": {
+      "old": {
+        "total": 12,
+        "pass": 1,
+        "fail": 11
+      },
+      "current": {
+        "total": 12,
+        "pass": 12,
+        "fail": 0
+      }
+    },
+    "scope": "AST-extracted actual App handlers and plain TS lifetime logic; native typecheck/lint and fresh Android build. No physical permission/camera/OS lifecycle proof."
+  },
+  "host": {
+    "implemented": "Exact public Hub hosted-application/loopback-relay leaf exports remove unused index/MQTT from actual host closure. Installed resolver retains exact keys and ordinary public SDK declarations. Manifest guard accepts exactly current builder audit inputs. Strict compiler runs in a short-lived separate process; every declaration and source pin remains rechecked.",
+    "focusedChecks": 7,
+    "installedChecks": 27,
+    "installedScenarios": 3,
+    "startupBoundsMs": 2500,
+    "rootCause": "OS-stall mechanism remains unknown. Instrumented failed child produced no earliest Node import marker; same actual installed host was ready146-148ms under lean parent, full lean workload passed, and complete isolated-compiler QA then passed. This establishes verifier isolation success, not OS-stall causality or an end-to-end performance guarantee.",
+    "scope": "Actual local independent Node/native software processes, TLS identity/owner gates and exact installed SDK. No physical-host/network-loss proof.",
+    "testProcessIsolation": {
+      "implemented": "Unchanged complete keeper regression now runs in its own discovered test process, separate from the native SIGKILL regression. Common helpers preserve the actual runner path and startup diagnostics.",
+      "keeperBodySha256": "efeb8b8552aa14d8142efe71840d05c945c44831a033a3a2fa019263b1de17ac",
+      "deadlineMs": 2500,
+      "removedTests": 0,
+      "focusedChecks": 7,
+      "scope": "Process isolation retains every actual keeper assertion. Full new candidate gates required; OS-stall mechanism remains unknown.",
+      "review": "Clear of correctness/security findings; one trailing blank line removed after review, with unchanged helper functions."
+    }
+  },
+  "ipp": {
+    "installedCaller": "pass",
+    "sdkManifest": "release/sdk-9hyFWZ/manifest.json",
+    "scope": "Ordinary installed public SDK plus separately compiled gateway and independent loopback software printer. Acknowledged jobs/cancel requests and subsequently observed software server state only; physical output, remote process authentication and restart reconciliation unverified."
+  },
+  "android": {
+    "schemaVersion": 1,
+    "sourceSha256": {
+      "apps/controller-native/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+      "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+      "apps/controller-native/src/scanner-session.test.ts": "87393ade9f4cbdacefe77b9f5e102b05b5b17fedab4d6151dc20842654db01c1",
+      "apps/controller-native/src/motion-controller.ts": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
+      "apps/controller-native/src/motion-controller.lifecycle.test.ts": "dca5e63ac090f41f55e9a3721c60707ce9b0991a7a6b3d7d5b20d0f148c273af"
+    },
+    "artifact": {
+      "path": "/Users/km/Desktop/games/101/release/android-scanner-dycngh_3/app-release.apk",
+      "bytes": 51431502,
+      "sha256": "3f082126b24cfa633da4d3a224a10e2d05f5492f5aafe00ced7ff647e964fbcc"
+    },
+    "build": "ANDROID_HOME=/Users/km/Library/Android/sdk ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon --offline",
+    "environment": "macOS arm64, Gradle9.3.1/JDK25.0.2/Node24.14.0; existing local AndroidSDK",
+    "signing": "Existing development signing identity; intended distribution signing and install/update not qualified."
+  },
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-scanner-old-App.tsx",
+      "sha256": "8d9e0590b6d6c0c73b94c13fb57ad94be4e34cba721c33c88d2f66bbd5b59486",
+      "gitBlob": "4e79f9f7253621e04d7d392ecf68230cc80eb676",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/scanner-old-source"
+    },
+    {
+      "path": "/tmp/101-scanner-final-old-regression.log",
+      "sha256": "d0e0cd472d92d455bdc76c29c8ef03d815cfde20ddafe74e3edd449c1a295c09",
+      "gitBlob": "46dab2c9dc8e04d213ccedf500f69c1a379f4c2d",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/scanner-old"
+    },
+    {
+      "path": "/tmp/101-scanner-final-regression.log",
+      "sha256": "205a5affddf71ddd8ea692f4db5dbfd8e2f0a995debacec9e705203ac8f95ab1",
+      "gitBlob": "f3558c6dde7ebb0929d112cd2bf0f0177f9ee250",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/scanner-current"
+    },
+    {
+      "path": "/tmp/101-scanner-current-regression.log",
+      "sha256": "90850b8b846b17021c0eb722b52bff8a75b37dc90813f8b1d852e78873414106",
+      "gitBlob": "6b1ab45a73956afcd7f32f31b59e0860e2ec0cb5",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/scanner-nearest"
+    },
+    {
+      "path": "/tmp/101-scanner-final-native-typecheck.log",
+      "sha256": "1b3b46b3f438bb986f08b0f3ea781c31ee5b1886527476dd10b5ebc7233db3f1",
+      "gitBlob": "068fdd0120dad2471ed2f1d589c1d326dad5243a",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/scanner-typecheck"
+    },
+    {
+      "path": "/tmp/101-successor-targeted-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/targeted-lint"
+    },
+    {
+      "path": "/tmp/101-host-closure-old-regression.log",
+      "sha256": "1bd3a1684d9c7c5b0ba3a57055afb4fae9d9ecb06b4272b630cda977e5d5056b",
+      "gitBlob": "0c6b0ae282942b56f083b50fedc2677b6a255ccb",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/host-closure-old"
+    },
+    {
+      "path": "/tmp/101-host-current-focused.log",
+      "sha256": "2cc82431f80ad0c4ee8d70aa5b2a35a914c6829968cfdb7bdd31fb50ddc78eca",
+      "gitBlob": "f02d62285495fd5d50aae932b6dc6d23427008f0",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/host-focused"
+    },
+    {
+      "path": "/tmp/101-host-closure-ab-receipt.json",
+      "sha256": "4eb914fbb121c5ee1438bbb03acb1c3f61980890e74c11451acc7dbdf02202b2",
+      "gitBlob": "7fea5064f881e5bc968f4a818e0083824e262ae1",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/host-ab"
+    },
+    {
+      "path": "/tmp/101-cross-host-sdk-manifest-old.log",
+      "sha256": "824c5c9fc989e3aaa82fff1fd34c16ab9e3dfea26d826020c3ae8ac258ec9b5d",
+      "gitBlob": "2d4ec958d415d13bf75aa7efce2c41a00bcc5c16",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/sdk-manifest-old"
+    },
+    {
+      "path": "/tmp/101-successor-cross-host-installed.log",
+      "sha256": "29c11d5b4c5f60c9135643c88906dcf94e806b4164d6ccb1103599bf2e8ee91b",
+      "gitBlob": "40a89e9efc3e971869fb20c4be864a0d01e110c6",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/installed-startup-failure"
+    },
+    {
+      "path": "/tmp/101-cross-host-installed-entry-diagnostic-v2.log",
+      "sha256": "1c2b21d24db322cb890e877a740d9ef7365ca90b67cc515fcbd50b11741909fa",
+      "gitBlob": "f7517e908a8b2306b998b3568e0e9482cb85283f",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/entry-diagnostic"
+    },
+    {
+      "path": "/tmp/101-installed-host-lean-parent-diagnostic.json",
+      "sha256": "ffa27c4c6d40d76aa7cca41ec0e03bd1e03983feaa0111af32230f2ab9886251",
+      "gitBlob": "2504e63b492fceb1f5f8b498f4071d5859b6b3b9",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/lean-startup"
+    },
+    {
+      "path": "/tmp/101-installed-runtime-lean-diagnostic.json",
+      "sha256": "c5121dceefd8d82fa4d93da4cab22860ef49d1bbc175846faf914e6259f2e796",
+      "gitBlob": "0de7cbeb17e2911cbabf0a6518d71b25ea180f1a",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/lean-workload"
+    },
+    {
+      "path": "/tmp/101-successor-cross-host-installed-isolated-compiler.log",
+      "sha256": "3298f41936174b9e3df9a6639fafa688cdc820c3b876af00e1d281b64a54e777",
+      "gitBlob": "f3e874bdcaf9c785eac4b443eeeac3d7071fe1b5",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/installed-workload"
+    },
+    {
+      "path": "/tmp/101-ipp-installed-caller.log",
+      "sha256": "857a400a012ba3735430492c987901fc67f7034c09dbec796c9168fceb586204",
+      "gitBlob": "d290041ffe504c093da32708de907b919a47756a",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/ipp-installed-log"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/ipp-job-connector-9KrLAf/receipt.json",
+      "sha256": "58eb803d0306f760541d5e398d581ceec1a524d068bf716883eea82d6ca65d80",
+      "gitBlob": "43c6878e8d380e2b149832790fc0f8be3f053ea2",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/ipp-installed-receipt"
+    },
+    {
+      "path": "/tmp/101-successor-repair-independent-review.json",
+      "sha256": "cc4ed0ca6b24e426518730f418d6dc21f8fee4c85da6b5eb52748c3e524c98e5",
+      "gitBlob": "4d2a8f8cdee2fdfd9c3dd9eb60d2611ca4ba992c",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/independent-review"
+    },
+    {
+      "path": "/tmp/101-android-scanner-release-build.log",
+      "sha256": "83aaed5eca01f406611b82086f7657bb94798c46224b1a747ac4ba7a00f85f23",
+      "gitBlob": "607d797219678b69c2fd3b63cc8689d1f4b87123",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/android-build"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-scanner-dycngh_3/manifest.json",
+      "sha256": "ea61149d4ff3b0b59026fedce153509422bd20e304de4730c6a3439a879b7fa3",
+      "gitBlob": "184181f8932668306d24a7a3496598899bbbaf32",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/android-manifest"
+    },
+    {
+      "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-cross-host-failure-provenance-lzzipH/receipt.json",
+      "sha256": "419784a9b69ee62932529c23d56873b1c068ae5d54ca7ab7bf1ed9da0e7a107d",
+      "gitBlob": "7af70d3c386246e94a78ac7529f33227e9196ef8",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/failure-provenance"
+    },
+    {
+      "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-cross-host-failure-provenance-GMPyqg/receipt.json",
+      "sha256": "9f859ba4d01be19b73e278644bdcf26372675e530cf007423f15514101428175",
+      "gitBlob": "902eee80f350b9833a90e05d53a183734efa3a62",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/entry-provenance"
+    },
+    {
+      "path": "/private/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-cross-host-provenance-PGIlMg/receipt.json",
+      "sha256": "24fefe21a20b4caf53bd5e79801c7ac899333dbafc2a39b263fdcd78e73a220d",
+      "gitBlob": "54a3f24870b73d739e5aa20af3f437e227d13c5b",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/installed-provenance"
+    },
+    {
+      "path": "/tmp/101-cross-host-compiler-isolation-independent-review.json",
+      "sha256": "8902d7a1ca07db406767741721772db7582f98da80908d08e8fb5a7a0e23e59b",
+      "gitBlob": "7ba08e67359758f92177782bdd598eb3ac2d81ae",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/compiler-isolation-review"
+    },
+    {
+      "path": "/tmp/101-cross-host-compiler-isolation-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/compiler-isolation-lint"
+    },
+    {
+      "path": "/tmp/101-keeper-original-body.ts",
+      "sha256": "efeb8b8552aa14d8142efe71840d05c945c44831a033a3a2fa019263b1de17ac",
+      "gitBlob": "649bdb8d4b0a162683094194d0590d444f499db7",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/keeper-original"
+    },
+    {
+      "path": "/tmp/101-keeper-isolation-source-comparison.json",
+      "sha256": "3e8ce77555c7201b9c1bc42678f7b49b3ea859a3dc579a7d20e2c6302859e512",
+      "gitBlob": "4b96a13197df164026035cc976a9d050c232909b",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/keeper-comparison"
+    },
+    {
+      "path": "/tmp/101-keeper-isolation-focused.log",
+      "sha256": "537b2f881ccbadec82aa298d0dce33aac06a73adbd5a0081d648dfc3497c22a2",
+      "gitBlob": "7e1e282335d76cd211e0b6c44557b4f33f2a7d11",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/keeper-focused"
+    },
+    {
+      "path": "/tmp/101-keeper-isolation-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/keeper-lint"
+    },
+    {
+      "path": "/tmp/101-successor-gates-574-failed.json",
+      "sha256": "ddc45d09e212e0ffa3d795e8d4f74ea4d0837344e491c7e46264bde4684e4014",
+      "gitBlob": "c2188e5187639f36b0f21196dc4595642ed45b8d",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/failed-574-result"
+    },
+    {
+      "path": "/tmp/101-keeper-isolation-independent-review.json",
+      "sha256": "d834e81a187e1f8578f8f2d2d412849d896c050fb86f7fcf33afa8bbf1b330aa",
+      "gitBlob": "af71aff3b6dd515851e0eb474f881bff2d80eaec",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/keeper-review"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-successor-repairs/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-successor-repairs/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only the exact candidate result ref determines broad gate success. Focused checks do not imply it. Local commit requires every listed command to pass."
+  },
+  "priorFailedCandidate": {
+    "tree": "57497d596a3b90e7736775f34a4a5f9f8ce9ce31",
+    "resultRef": "refs/codex/evidence/2026-10-08-successor-repairs/gates-574-failed",
+    "result": "fail",
+    "unit": {
+      "total": 2779,
+      "pass": 2778,
+      "fail": 1,
+      "skipped": 0
+    },
+    "scope": "One unchanged keeper startup failure at2500ms before child milestones; no red commit. Types/lint passed; build/rendered were not run on this rejected tree."
+  },
+  "acceptance": "No checkbox/support-row promotion. Remaining physical, broader connector/provider and distribution-signing acceptance stays open.",
+  "independentCompilerDeltaReviewTree": "88bab9e3dd09901845495d53b63e44a6b5131707",
+  "independentKeeperDeltaReviewTree": "7e9328e5963775cbcc4941b47ee7adb83657fcd0"
+}

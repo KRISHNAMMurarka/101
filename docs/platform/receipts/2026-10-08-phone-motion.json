@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-phone-software-and-fresh-android-build-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "apps/controller-native/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+    "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+    "apps/controller-native/src/scanner-session.test.ts": "87393ade9f4cbdacefe77b9f5e102b05b5b17fedab4d6151dc20842654db01c1",
+    "apps/controller-native/src/motion-controller.ts": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
+    "apps/controller-native/src/motion-controller.lifecycle.test.ts": "dca5e63ac090f41f55e9a3721c60707ce9b0991a7a6b3d7d5b20d0f148c273af"
+  },
+  "artifact": {
+    "path": "/Users/km/Desktop/games/101/release/android-scanner-dycngh_3/app-release.apk",
+    "bytes": 51431502,
+    "sha256": "3f082126b24cfa633da4d3a224a10e2d05f5492f5aafe00ced7ff647e964fbcc"
+  },
+  "artifactManifest": "/Users/km/Desktop/games/101/release/android-scanner-dycngh_3/manifest.json",
+  "implemented": [
+    "Pending starts share one reserved promise before callouts; stopped openings issue no new sensor request, and retired rejections resolve false while current errors remain visible.",
+    "Exact listener callbacks are generation-fenced; stale acquired listener cleanup preserves a later start.",
+    "One module-level native-listener cleanup owner survives UI replacement; failed removal retains the handle and blocks replacement until retry actually succeeds. Active and pending owners cannot be silently replaced.",
+    "Foreground identity checks fence motion delivery and asynchronous enabled/error state. Background and unmount retire sensing and clear old calibration samples."
+  ],
+  "validation": [
+    "Original implementation2-failure witness retained. Independent review3 findings repaired using actual-class VM regressions;17 final focused checks, native typecheck and targeted lint pass.",
+    "Local offline arm64 Android assembleRelease passes; immutable APK and exact hashes recorded. No phone installation/sensor/permission or physical lifecycle claim.",
+    "Current App scanner lifetime12 checks and11 genuine old failures, final native typecheck, independent review and new offline Android package; literal evidence in successor repairs receipt."
+  ],
+  "limitations": [
+    "Active calibration still uses the last raw sample without a receipt-age limit; silent sensor stall not qualified.",
+    "Native OS behavior, background/lock/battery-saver, permissions, gameplay and install/update require device acceptance; iOS, other providers and full tasks remain open.",
+    "Development-signed Android build does not establish intended distribution signing."
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-phone-motion-lifecycle-receipt.json",
+      "sha256": "060de43971cd8382d5df9ae1be621e2ed62dbe2ba2270b4510e1a47573e9dc45",
+      "gitBlob": "594e09147775040dcd240ed3cefaf7dfd8cb8eef",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-0"
+    },
+    {
+      "path": "/tmp/101-phone-motion-old.log",
+      "sha256": "3a3ebb64ca503ab13f862828fcb4cefc0d94267f190113ae26014321d7b1906f",
+      "gitBlob": "ec4d95a61dcd10b7eeb22ac5f0509e54021a84be",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-1"
+    },
+    {
+      "path": "/tmp/101-phone-motion-green.log",
+      "sha256": "addba50687cfd30274abad41080edc385793c9ee549d6d0969b36d944443688e",
+      "gitBlob": "bd81a2de68160191480383a027591c57b7cac707",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-2"
+    },
+    {
+      "path": "/tmp/101-phone-motion-independent-review.json",
+      "sha256": "111ceef1fa4e719e1e89c87e1969639bf6e16fccb90f0519802eede5aaa7e59a",
+      "gitBlob": "b41fd1d8d9a8bf462815d528346fdbcb912e70f0",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-3"
+    },
+    {
+      "path": "/tmp/101-phone-motion-review-old.log",
+      "sha256": "3a8934e2471563d6a085692cdd7d763949ab2371c67bba10a4cda0abc0376927",
+      "gitBlob": "3311e6461f938829d6bb98fc53b3ce529b4d8243",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-4"
+    },
+    {
+      "path": "/tmp/101-phone-motion-pending-owner-old-complete.log",
+      "sha256": "262ba97bd9ec7cca9407f1051eda850abd50ffcb53c0466c4a77635051f939b1",
+      "gitBlob": "16225fd4af40222c5bda1d1bb02e0803302ad2e1",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-5"
+    },
+    {
+      "path": "/tmp/101-phone-motion-final-focused.log",
+      "sha256": "aa6c87414bd5bb25e1e840e795ad33c1c311e0c34dac6b23e54bd81399d1606f",
+      "gitBlob": "b2a377f03ea7a66731bb09d6f880574f7b09bdfd",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-6"
+    },
+    {
+      "path": "/tmp/101-phone-motion-final-typecheck.log",
+      "sha256": "7411480635fa73c5db73dc552a15e46ca60dee3d1d41fccd5b79967d4def92ab",
+      "gitBlob": "33a630f67c0f06ecddb7bb6efce1aa2de154238a",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-7"
+    },
+    {
+      "path": "/tmp/101-phone-motion-final-eslint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-8"
+    },
+    {
+      "path": "/tmp/101-phone-motion-final-independent-review.json",
+      "sha256": "316ec1f816b59311c4917d7920e0595647bc73e743637b94a265dfa25ea9704b",
+      "gitBlob": "e11caec8f717c8d6011a1c63558c0abf3780bbf6",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-9"
+    },
+    {
+      "path": "/tmp/101-android-motion-release-build.log",
+      "sha256": "0fbb9c5f3bbd99c7b51ca8545e00bb82489e6b07f16024ce4c351998ba55c12c",
+      "gitBlob": "ef83404d965b34535556da9728c870e67f246a30",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-10"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-motion-xq3_oc7e/manifest.json",
+      "sha256": "1a2ea7a003ff0404aea0b8f43f6804edd6a05e2740ad6628cb62353a06accfaf",
+      "gitBlob": "cd38d287cdf5dcc8f99177f6499dcdd68657c8c5",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-11"
+    },
+    {
+      "path": "/tmp/101-native-connectors-final-gates-failed.json",
+      "sha256": "f2806355b417b875021957fd514178820b60fd497349231e875fac600d6b535c",
+      "gitBlob": "1fc057319afda2453c409e1815789f5e7d079f42",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-12"
+    },
+    {
+      "path": "/tmp/101-node-minimal-launch-diagnostic.json",
+      "sha256": "0169ec866d95a3d05eeac9f70d6678a03d79d2cd7664d591dfa07e137064ca8d",
+      "gitBlob": "d370f27e765f828ad2547366dd2ac44050dca04f",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-13"
+    },
+    {
+      "path": "/tmp/101-native-keeper-after-launch-diagnostic.log",
+      "sha256": "e7a133e541e695827608060c9c110c6d340f1e15e5c918bfa6b25245fca89c46",
+      "gitBlob": "74dbdd6044957a15383d1c9f4ff0722438f432c7",
+      "ref": "refs/codex/evidence/2026-10-08-phone-motion/literal-14"
+    },
+    {
+      "path": "/tmp/101-android-scanner-release-build.log",
+      "sha256": "83aaed5eca01f406611b82086f7657bb94798c46224b1a747ac4ba7a00f85f23",
+      "gitBlob": "607d797219678b69c2fd3b63cc8689d1f4b87123",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/android-build"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/android-scanner-dycngh_3/manifest.json",
+      "sha256": "ea61149d4ff3b0b59026fedce153509422bd20e304de4730c6a3439a879b7fa3",
+      "gitBlob": "184181f8932668306d24a7a3496598899bbbaf32",
+      "ref": "refs/codex/evidence/2026-10-08-successor-repairs/android-manifest"
+    }
+  ],
+  "priorFullCandidate": {
+    "tree": "9ec3f68ae80703c2022f235d199ea54c61042ab7",
+    "ref": "refs/codex/evidence/2026-10-08-native-connectors/gates-9ec-failed",
+    "result": "fail",
+    "explanation": "2741/2742 unit tests; one pre-application child launch timeout, root cause unknown. Other four required gates passed. Subsequent isolated keeper check passes; neither isolated success nor normal10-launch diagnostic replaces a full candidate gate."
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-successor-repairs/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-successor-repairs/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only the exact candidate result ref determines broad gate success. Focused checks do not imply it. Local commit requires every listed command to pass."
+  },
+  "motionReviewSourceSha256": {
+    "apps/controller-native/App.tsx": "8d9e0590b6d6c0c73b94c13fb57ad94be4e34cba721c33c88d2f66bbd5b59486",
+    "apps/controller-native/src/motion-controller.ts": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
+    "apps/controller-native/src/motion-controller.lifecycle.test.ts": "dca5e63ac090f41f55e9a3721c60707ce9b0991a7a6b3d7d5b20d0f148c273af"
+  },
+  "priorArtifact": {
+    "path": "/Users/km/Desktop/games/101/release/android-motion-xq3_oc7e/app-release.apk",
+    "bytes": 51429258,
+    "sha256": "9d7e6a0cf5f88a7441c6befdd0acc3c514bbadbaf626bf52087bc1e597ad66c9"
+  },
+  "priorArtifactManifest": "/Users/km/Desktop/games/101/release/android-motion-xq3_oc7e/manifest.json",
+  "scannerLifecycleReceipt": "docs/platform/receipts/2026-10-08-successor-repairs.json"
+}

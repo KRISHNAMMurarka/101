@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 161,
+  "revision": 168,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12460,6 +12460,304 @@
         "Owned disposable local Node software fixtures; independently enrolled local TLS/P256 endpoints"
       ],
       "supportRows": []
+    },
+    {
+      "id": "a04-selected-connectors-native-runtime-2026-10-08",
+      "revision": "6c2281a320fb97b7b1699ea76afcfa4da222a1b6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-connectors-native-runtime.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64 Node24.14/clang21; actual owned local TCP/Mosquitto2.1.2/C child and installed seven-package SDK.",
+      "reproduction": "Exact-map Modbus TCP/TLS FC03/FC06 provider, fixed unit/scaling, separate per-operation authority, strict response framing, opaque epochs, Stop and uncertainty.",
+      "scope": "General serial/RTU CRC and physical device profile/effect qualification. Full task acceptance remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "a05-selected-connectors-native-runtime-2026-10-08",
+      "revision": "6c2281a320fb97b7b1699ea76afcfa4da222a1b6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-connectors-native-runtime.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64 Node24.14/clang21; actual owned local TCP/Mosquitto2.1.2/C child and installed seven-package SDK.",
+      "reproduction": "Reviewed exact-topic MQTT5 source/command provider, QoS 0/1, retained rejection, producer deduplication/original absolute expiry, immutable complete authority, raw-slot and shared teardown fencing.",
+      "scope": "Separate-process clock mapping, remote TLS/ACL qualification and physical device evidence. Full task acceptance remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "e12-selected-connectors-native-runtime-2026-10-08",
+      "revision": "6c2281a320fb97b7b1699ea76afcfa4da222a1b6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-connectors-native-runtime.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64 Node24.14/clang21; actual owned local TCP/Mosquitto2.1.2/C child and installed seven-package SDK.",
+      "reproduction": "Real macOS arm64 C own-RSS lifecycle ABI, fixed private child and Node bridge, signal-only registration/read grants, verified private executable copy, absolute native deadline and Stop settlement; exact-inventory static library archive and clean consumer.",
+      "scope": "Swift/Kotlin lifecycle APIs, other OSes/app installation, physical qualification and sleep/drift beyond explicit mapping bounds. Full task acceptance remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "k03-selected-connectors-native-runtime-2026-10-08",
+      "revision": "6c2281a320fb97b7b1699ea76afcfa4da222a1b6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-connectors-native-runtime.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64 Node24.14/clang21; actual owned local TCP/Mosquitto2.1.2/C child and installed seven-package SDK.",
+      "reproduction": "Real macOS arm64 C own-RSS lifecycle ABI, fixed private child and Node bridge, signal-only registration/read grants, verified private executable copy, absolute native deadline and Stop settlement; exact-inventory static library archive and clean consumer.",
+      "scope": "Swift/Kotlin lifecycle APIs, other OSes/app installation, physical qualification and sleep/drift beyond explicit mapping bounds. Full task acceptance remains open.",
+      "failure": null,
+      "equipment": [
+        "Owned disposable local software fixtures"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "a05-enrolled-remote-clock-2026-10-08",
+      "revision": "4148d43081d9f7e59737e34390a5a1cab134b153bc55eefd1e399d983592f308",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-remote-mqtt-clock.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64 Node24.14, owned Mosquitto2.1.2 loopback broker, separate Node producer and installed seven-package SDK.",
+      "reproduction": "Signed approved producer/session clock mapping; stale-session ACK replay, fresh ID1 session, forged source and expired command refusal; raw ping capacity retains unresolved callback.",
+      "scope": "One signed Boolean source/command profile. Remote TLS/ACL, physical target and complete A05 acceptance remain open; candidate gates pending.",
+      "failure": null,
+      "equipment": [
+        "Owned loopback software broker and separate producer process"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "native-desktop-control-2026-10-08",
+      "revision": "6bbd58af5554bf8f3cc043166d8cb7662e78bcc9dc0257991d69af6f293e127b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N05",
+        "N09",
+        "K04",
+        "K06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-native-desktop-control.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64; exact compiler/build and source pins in receipt.",
+      "reproduction": "Matching focused checks and local artifact build/extracted callers in receipt.",
+      "scope": "Selected macOS native input and dedicated paired Android control software and local app/APK builds. No physical device/OS event, signing, installation/update or full task acceptance.",
+      "failure": null,
+      "equipment": [
+        "Owned local software fixtures; no physical qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "native-resource-languages-2026-10-08",
+      "revision": "8bea0a259e9cd61b40ad019996d098ef5afc017fd7548e1ef310fdba6c67c418",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E12",
+        "K03"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-native-resource-languages.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64; exact compiler/build and source pins in receipt.",
+      "reproduction": "Matching focused checks and local artifact build/extracted callers in receipt.",
+      "scope": "Selected macOS own-RSS C/Swift/Kotlin lifecycle APIs and exact-inventory local distributions with extracted callers. Other OSes/Android, installation and full task acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned local software fixtures; no physical qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "a04-selected-modbus-rtu-2026-10-08",
+      "revision": "cbe2767c1509996ae7416156ad7903474a3c019713d76ba8620a1ca8ac0b75bb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A04"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-modbus-rtu.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local Node 24.14/macOS arm64; separate owned byte-stream producer and verified installed seven-package SDK.",
+      "reproduction": "Six focused checks, old held-write/delayed-byte witnesses, source caller and installed caller in receipt.",
+      "scope": "Selected RTU software protocol and separately approved resource caller; physical serial identity/timing and full A04 acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owned local software byte-stream fixture"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "phone-motion-lifecycle-2026-10-08",
+      "revision": "c61cf9bc84fc1f95b4a0504d4d7c2275be86d489af281fba94a75d9922625664",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "tasks": [
+        "N03",
+        "N04",
+        "N13",
+        "I12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-phone-motion.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64, Gradle9.3.1/JDK25.0.2/Node24.14.0; existing local AndroidSDK",
+      "reproduction": "Retained OLD failures;17 focused actual-class regressions, native typecheck/lint, independent review and local offline Android build.",
+      "scope": "Selected phone motion software lifecycle and local Android artifact; no physical sensor/permission/install or full task acceptance.",
+      "failure": null,
+      "equipment": [
+        "Exact target phone/runtime required for remaining physical acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "a13-selected-loopback-ipp-2026-10-08",
+      "revision": "01311d62347762db2d66b4f0a560d1f623beeb347d55aea4175a1760610226c3",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-ipp-job.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64, Node24.14; isolated reviewed lane and separate loopback software printer process.",
+      "reproduction": "Retained OLD failures, 13 focused source checks, strict type/lint, separate-process public route caller and independent review. Final root integration gates remain pending.",
+      "scope": "Selected loopback IPP software profile with ordinary installed public SDK caller; exact integrated gates are referenced by receipt. Physical/remote printer and durable reconciliation acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Selected physical printer and target firmware required for physical qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "successor-repairs-2026-10-08",
+      "revision": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N03",
+        "N04",
+        "N13",
+        "D02",
+        "D03",
+        "R09",
+        "A13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-successor-repairs.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0, existing exact installed seven-package SDK, local offline Android Gradle9.3.1/JDK25.0.2 build.",
+      "reproduction": "Retained actual old/current scanner and import-closure regressions, installed cross-host strict compiler plus27actual native checks, installed IPP child caller and exact local commit gates referenced by receipt.",
+      "scope": "Selected scanner software lifetime, exact Hub import closure/verifier isolation and loopback IPP installed caller. Physical camera/motion/printer, signing/install/update and full tasks remain open.",
+      "failure": null,
+      "equipment": [
+        "Target phone/camera and selected printer required for physical qualification"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -13044,7 +13342,8 @@
         "d02-invitation-connection-partial-2026-10-06",
         "u10-invitation-copy-expiry-2026-10-06",
         "d02-s06-invitation-admission-partial-2026-10-08",
-        "d02-local-software-partial-2026-10-08"
+        "d02-local-software-partial-2026-10-08",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13059,7 +13358,8 @@
       "id": "D03",
       "records": [
         "pending-D03",
-        "d03-browser-chooser-partial-2026-10-06"
+        "d03-browser-chooser-partial-2026-10-06",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13481,7 +13781,9 @@
       "records": [
         "pending-N03",
         "pointer-provider-2026-10-02",
-        "pointer-native-partial-2026-10-02"
+        "pointer-native-partial-2026-10-02",
+        "phone-motion-lifecycle-2026-10-08",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13498,7 +13800,9 @@
       "records": [
         "pending-N04",
         "pointer-provider-2026-10-02",
-        "pointer-native-partial-2026-10-02"
+        "pointer-native-partial-2026-10-02",
+        "phone-motion-lifecycle-2026-10-08",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13513,7 +13817,8 @@
     {
       "id": "N05",
       "records": [
-        "pending-N05"
+        "pending-N05",
+        "native-desktop-control-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13573,7 +13878,8 @@
     {
       "id": "N09",
       "records": [
-        "pending-N09"
+        "pending-N09",
+        "native-desktop-control-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13634,7 +13940,9 @@
     {
       "id": "N13",
       "records": [
-        "pending-N13"
+        "pending-N13",
+        "phone-motion-lifecycle-2026-10-08",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13864,7 +14172,8 @@
         "pointer-provider-2026-10-02",
         "pointer-ui-chromium-2026-10-02",
         "i08-haptic-retirement-software-partial-2026-10-07",
-        "screen-ble-haptic-exact-local-gates-2026-10-07"
+        "screen-ble-haptic-exact-local-gates-2026-10-07",
+        "phone-motion-lifecycle-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14140,7 +14449,9 @@
       "records": [
         "pending-A04",
         "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
-        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07"
+        "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07",
+        "a04-selected-connectors-native-runtime-2026-10-08",
+        "a04-selected-modbus-rtu-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14154,7 +14465,9 @@
     {
       "id": "A05",
       "records": [
-        "pending-A05"
+        "pending-A05",
+        "a05-selected-connectors-native-runtime-2026-10-08",
+        "a05-enrolled-remote-clock-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14266,7 +14579,9 @@
     {
       "id": "A13",
       "records": [
-        "pending-A13"
+        "pending-A13",
+        "a13-selected-loopback-ipp-2026-10-08",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14719,7 +15034,8 @@
       "records": [
         "pending-R09",
         "r09-cross-host-workload-built-2026-10-07",
-        "workload-resource-source-commit-2026-10-07"
+        "workload-resource-source-commit-2026-10-07",
+        "successor-repairs-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -15020,7 +15336,9 @@
         "structured-telemetry-swift-built-partial-2026-10-07",
         "structured-telemetry-kotlin-built-partial-2026-10-07",
         "structured-telemetry-c-built-partial-2026-10-07",
-        "bindings-device-backup-required-gates-failed-2026-10-07"
+        "bindings-device-backup-required-gates-failed-2026-10-07",
+        "e12-selected-connectors-native-runtime-2026-10-08",
+        "native-resource-languages-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -15899,7 +16217,9 @@
         "pending-K03",
         "directory-native-bindings-partial-2026-10-06",
         "native-binding-contents-built-partial-2026-10-07",
-        "processor-native-exact-local-gates-2026-10-07"
+        "processor-native-exact-local-gates-2026-10-07",
+        "k03-selected-connectors-native-runtime-2026-10-08",
+        "native-resource-languages-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [
@@ -15910,7 +16230,8 @@
       "id": "K04",
       "records": [
         "pending-K04",
-        "k04-offline-android-build-partial-2026-10-06"
+        "k04-offline-android-build-partial-2026-10-06",
+        "native-desktop-control-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [
@@ -15930,7 +16251,8 @@
     {
       "id": "K06",
       "records": [
-        "pending-K06"
+        "pending-K06",
+        "native-desktop-control-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [

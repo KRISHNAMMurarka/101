@@ -7,6 +7,9 @@ import type { DeliveryContext, Observation } from './types.ts';
 export interface ConnectorDecodeContext { readonly clockId: string; readonly generation: number }
 export interface ConnectorWriteContext extends ConnectorDecodeContext {
   readonly signal: AbortSignal; readonly commandId: string; readonly cleanup: boolean;
+  /** Absolute deadline in this connector's options.now() domain. Forward the
+   * original bound; starting a transport must never renew the command lifetime. */
+  readonly deadline: number;
   /** A writer must check this immediately before effects, including after its own awaits. */
   isCurrent(): boolean;
 }
@@ -187,15 +190,25 @@ export function createProfileConnector(options: ProfileConnectorOptions): Profil
     if (generation !== epoch || commandId >= Number.MAX_SAFE_INTEGER || !policy) { drainCleanup(); return; }
     const controller = new AbortController(), slot = { controller, generation: epoch }; cleanup = slot; inFlightWrites++;
     const id = String(++commandId);
-    const context: ConnectorWriteContext = Object.freeze({ signal: controller.signal, clockId, generation: epoch, commandId: id, cleanup: true,
-      isCurrent: () => cleanup === slot && generation === epoch && !controller.signal.aborted });
     let timer: ReturnType<typeof setTimeout> | undefined;
     const complete = () => { if (timer) clearTimeout(timer); controller.abort(); inFlightWrites--; if (cleanup === slot) cleanup = undefined; if (!closed) drainCleanup(); };
     try {
       const started = performance.now();
+      const at = now(), lifetime = Math.min(policy.deadlineMs, manifest.budgets.callbackTimeoutMs);
+      if (typeof at !== 'number' || !Number.isFinite(at) || at < lastNow || at < 0 || at + lifetime > Number.MAX_SAFE_INTEGER) { complete(); return; }
+      lastNow = at;
+      const deadline = at + lifetime, wallDeadline = started + lifetime;
+      const context: ConnectorWriteContext = Object.freeze({ signal: controller.signal, clockId, generation: epoch, commandId: id, cleanup: true, deadline,
+        isCurrent() {
+          if (cleanup !== slot || generation !== epoch || controller.signal.aborted) return false;
+          let checked: number; try { checked = now(); } catch { return false; }
+          if (typeof checked !== 'number' || !Number.isFinite(checked) || checked < lastNow) return false;
+          lastNow = checked;
+          return cleanup === slot && generation === epoch && !controller.signal.aborted && checked < deadline && performance.now() < wallDeadline;
+        } });
       const payload = bytes(retired.encodeCommand(Object.freeze({ resourceId: resource.capability.id, commandId: id, value: policy.safeState }), context), manifest.budgets.maxCommandBytes);
       if (!context.isCurrent() || performance.now() - started > manifest.budgets.callbackTimeoutMs) { complete(); return; }
-      timer = setTimeout(() => controller.abort(), Math.min(policy.deadlineMs, manifest.budgets.callbackTimeoutMs));
+      timer = setTimeout(() => controller.abort(), Math.max(0, wallDeadline - performance.now()));
       Promise.resolve(write(payload, context)).then(complete, complete);
     } catch { complete(); }
   }
@@ -351,7 +364,8 @@ export function createProfileConnector(options: ProfileConnectorOptions): Profil
         const started = performance.now();
         const payload = bytes(decoder.encodeCommand(Object.freeze({ resourceId, commandId: id, value }), Object.freeze({ clockId, generation: epoch })), manifest.budgets.maxCommandBytes);
         if (!current(item) || performance.now() - started > manifest.budgets.callbackTimeoutMs) { finish(item); return; }
-        const writeContext: ConnectorWriteContext = Object.freeze({ signal: controller.signal, clockId, generation: epoch, commandId: id, cleanup: false, isCurrent: () => current(item) });
+        const writeContext: ConnectorWriteContext = Object.freeze({ signal: controller.signal, clockId, generation: epoch, commandId: id, cleanup: false,
+          deadline: item.deadline, isCurrent: () => current(item) });
         inFlightWrites++;
         let returned: void | Promise<void>;
         try { returned = write(payload, writeContext); }

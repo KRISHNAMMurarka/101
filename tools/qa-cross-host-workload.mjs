@@ -10,6 +10,10 @@ import { tmpdir } from 'node:os';
 const root = resolve(import.meta.dirname, '..'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const sdkNames = ['connect', 'device-model', 'device-runtime', 'device-web', 'transport-webrtc', 'transport-websocket', 'vision'];
 const sourceNames = ['hub-server', 'pairing', 'protocol', 'input'];
+const sourceLeafEntries = {
+  '@101/hub-server/hosted-application': 'packages/hub-server/src/hosted-application.ts',
+  '@101/hub-server/loopback-relay': 'packages/hub-server/src/loopback-relay.ts',
+};
 const owned = ['examples/cross-host-workload/cross-host-workload.ts', 'examples/cross-host-workload/runtime-host.mjs', 'tests/cross-host-workload.test.ts', 'tools/qa-cross-host-workload.mjs'];
 const sourceClosure = new Map(), compilePins = new Map();
 let featureCleanup;
@@ -29,7 +33,7 @@ if (new URL(import.meta.url).search === '?host-loader') {
     const path = process.env.CROSS_HOST_RESOLUTIONS;
     assert.ok(realpathSync(path) === path && /\/101-cross-host-exports-[A-Za-z0-9]+\/resolution\.json$/.test(path));
     const record = json(path, 16384); assert.ok(typeof record.sourceRoot === 'string');
-    const permitted = new Set([...sdkNames, ...sourceNames].map(name => '@101/' + name));
+    const permitted = new Set([...sdkNames, ...sourceNames].map(name => '@101/' + name).concat(Object.keys(sourceLeafEntries)));
     assert.deepEqual(Object.keys(record.entries).sort(), [...permitted].sort());
     for (const value of Object.values(record.entries)) { assert.ok(typeof value === 'string' && value.startsWith('file:')); assert.equal(existsSync(fileURLToPath(value)), true); }
     installHook(record.entries, record.sourceRoot);
@@ -39,6 +43,7 @@ if (new URL(import.meta.url).search === '?host-loader') {
   assert.ok(args.length === 1 && ['--source', '--feature-red'].includes(args[0]) || args.length === 2 && args[0] === '--sdk-root' && args[1]);
   assert.equal(process.version, 'v24.14.0'); assert.equal(process.env.NODE_OPTIONS, undefined); assert.equal(process.env.NODE_PATH, undefined);
   const entries = Object.fromEntries([...sourceNames, ...sdkNames].map(name => ['@101/' + name, pathToFileURL(join(root, 'packages', name, 'src/index.ts')).href]));
+  for (const [specifier, path] of Object.entries(sourceLeafEntries)) entries[specifier] = pathToFileURL(join(root, path)).href;
   const nativeLibrary = createRequire(import.meta.url).resolve('ws'), wsDirectory = dirname(nativeLibrary);
   assert.equal(json(join(wsDirectory, 'package.json'), 65536).version, '8.21.0');
   const nativePins = inventory(wsDirectory, 64), before = Object.fromEntries(owned.filter(path => existsSync(join(root, path))).map(path => [path, hash(readFileSync(join(root, path)))]));
@@ -51,7 +56,7 @@ if (new URL(import.meta.url).search === '?host-loader') {
       const manifest = JSON.parse(manifestBytes); assert.equal(manifest.source.tree, receipt.source.tree); assert.deepEqual(manifest.source.sha256, receipt.source.sha256);
       assert.equal(manifest.packages.length, 7); let packedFiles = 0;
       for (const [path, digest] of Object.entries(manifest.source.sha256)) {
-        assert.match(path, /^(LICENSE|schemas\/device-descriptor\.schema\.json|(packages|examples)\/[A-Za-z0-9_./-]+)$/); assert.equal(path.includes('..'), false);
+        assert.match(path, /^(LICENSE|schemas\/device-descriptor\.schema\.json|(packages|examples)\/[A-Za-z0-9_./-]+|tests\/sdk-contents\.test\.ts|tools\/(audit-sdk-contents\.py|qa-sdk-contents\.mjs))$/); assert.equal(path.includes('..'), false);
         assert.equal(hash(execFileSync('git', ['show', manifest.source.tree + ':' + path], { cwd: root, maxBuffer: 2 * 1024 * 1024 })), digest);
       }
       for (const name of sdkNames) {
@@ -82,7 +87,6 @@ if (new URL(import.meta.url).search === '?host-loader') {
       assert.equal(existsSync(join(root, owned[0])), true, 'Actual native producer succeeded; missing cross-host workload runner is the unimplemented feature');
       throw Error('Feature-absence proof requires the old runner to be absent');
     }
-    const { default: ts } = await import('typescript');
     let leaf = join(root, owned[0]);
     if (consumer) {
       for (const path of [owned[0], owned[1], owned[3], 'tools/qa-https-coordinator.mjs']) {
@@ -90,22 +94,17 @@ if (new URL(import.meta.url).search === '?host-loader') {
       }
       leaf = join(external, owned[0]);
     }
-    const options = { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
-      strict: true, noUncheckedIndexedAccess: true, skipLibCheck: false, noEmit: true, allowJs: true, allowImportingTsExtensions: true,
-      lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], types: ['node'], typeRoots: [join(root, 'node_modules/@types')] };
-    const compilerHost = ts.createCompilerHost(options);
-    compilerHost.resolveModuleNames = (names, containingFile) => names.map(name => {
-      // SDK modules use ordinary NodeNext installed declaration resolution from
-      // the external consumer anchor. Public source hub remains explicit.
-      if (consumer && sdkNames.map(value => '@101/' + value).includes(name)) return ts.resolveModuleName(name, leaf, options, compilerHost).resolvedModule;
-      if (sourceNames.map(value => '@101/' + value).includes(name)) return { resolvedFileName: fileURLToPath(entries[name]), extension: ts.Extension.Ts };
-      return ts.resolveModuleName(name, containingFile, options, compilerHost).resolvedModule;
-    });
-    const program = ts.createProgram([leaf], options, compilerHost), diagnostics = ts.getPreEmitDiagnostics(program);
-    for (const source of program.getSourceFiles()) { assert.ok(compilePins.size < 1024); compilePins.set(source.fileName, hash(readFileSync(source.fileName))); }
-    compilerReceipt = { version: ts.version, strict: true, noUncheckedIndexedAccess: true, skipLibCheck: false, declarationPins: Object.fromEntries(compilePins),
-      diagnostics: diagnostics.length, installedSdkUsesOrdinaryNodeNextDeclarations: !!consumer, sourceHubExplicit: true };
-    assert.equal(diagnostics.length, 0, ts.formatDiagnosticsWithColorAndContext(diagnostics, { getCurrentDirectory: () => root, getCanonicalFileName: value => value, getNewLine: () => '\n' }));
+    // Keep the strict compiler's heap out of the native runtime parent. The
+    // actual caller, declarations, options and immutable pins are unchanged.
+    const compilerInput = { root, leaf, consumer: !!consumer, entries, sdkNames, sourceNames, sourceLeafEntries,
+      typescriptUrl: pathToFileURL(createRequire(import.meta.url).resolve('typescript')).href };
+    const compilerOutput = execFileSync(process.execPath, ['--input-type=module', '-e',
+      `import { readFileSync } from 'node:fs'; const compile = ${compileCaller.toString()};
+       console.log(JSON.stringify(await compile(JSON.parse(readFileSync(0, 'utf8')))));`],
+    { input: JSON.stringify(compilerInput), encoding: 'utf8', timeout: 120000, maxBuffer: 2 * 1024 * 1024 });
+    compilerReceipt = JSON.parse(compilerOutput);
+    assert.equal(compilerReceipt.diagnostics, 0);
+    for (const [file, digest] of Object.entries(compilerReceipt.declarationPins)) compilePins.set(file, digest);
     const { runCrossHostWorkloadQualification } = await import(pathToFileURL(leaf).href);
     const proof = await runCrossHostWorkloadQualification({ signal: new AbortController().signal });
     for (const [path, digest] of Object.entries(before)) assert.equal(hash(readFileSync(join(root, path))), digest);
@@ -161,6 +160,39 @@ if (new URL(import.meta.url).search === '?host-loader') {
   }
 }
 
+async function compileCaller({ root, leaf, consumer, entries, sdkNames, sourceNames, sourceLeafEntries, typescriptUrl }) {
+  const { default: assert } = await import('node:assert/strict');
+  const { readFileSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { fileURLToPath } = await import('node:url');
+  const { createHash } = await import('node:crypto');
+  const { default: ts } = await import(typescriptUrl);
+  const pins = new Map();
+  const options = { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    strict: true, noUncheckedIndexedAccess: true, skipLibCheck: false, noEmit: true, allowJs: true, allowImportingTsExtensions: true,
+    lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], types: ['node'], typeRoots: [join(root, 'node_modules/@types')] };
+  const compilerHost = ts.createCompilerHost(options);
+  compilerHost.resolveModuleNames = (names, containingFile) => names.map(name => {
+    // SDK modules use ordinary NodeNext installed declaration resolution from
+    // the external consumer anchor. Public source hub remains explicit.
+    if (consumer && sdkNames.map(value => '@101/' + value).includes(name)) return ts.resolveModuleName(name, leaf, options, compilerHost).resolvedModule;
+    if (sourceNames.map(value => '@101/' + value).includes(name) || Object.hasOwn(sourceLeafEntries, name))
+      return { resolvedFileName: fileURLToPath(entries[name]), extension: ts.Extension.Ts };
+    return ts.resolveModuleName(name, containingFile, options, compilerHost).resolvedModule;
+  });
+  const program = ts.createProgram([leaf], options, compilerHost), diagnostics = ts.getPreEmitDiagnostics(program);
+  for (const source of program.getSourceFiles()) {
+    assert.ok(pins.size < 1024);
+    pins.set(source.fileName, createHash('sha256').update(readFileSync(source.fileName)).digest('hex'));
+  }
+  const receipt = { version: ts.version, strict: true, noUncheckedIndexedAccess: true, skipLibCheck: false, declarationPins: Object.fromEntries(pins),
+    diagnostics: diagnostics.length, installedSdkUsesOrdinaryNodeNextDeclarations: !!consumer, sourceHubExplicit: true };
+  assert.equal(diagnostics.length, 0, ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+    getCurrentDirectory: () => root, getCanonicalFileName: value => value, getNewLine: () => '\n',
+  }));
+  return receipt;
+}
+
 function inventory(directory, limit) {
   const value = {}; let visits = 0;
   function walk(current, prefix) {
@@ -176,7 +208,8 @@ function inventory(directory, limit) {
 
 async function nativePrefix() {
   const { createCoordinatorFixtures } = await import('./qa-https-coordinator.mjs');
-  const { createHostedApplication, hostedApplicationRequirements, createAuthenticatedLoopbackRelay, connectAuthenticatedRelay, HOSTED_APPLICATION_SOURCE_SHA256 } = await import('@101/hub-server');
+  const { createHostedApplication, hostedApplicationRequirements, HOSTED_APPLICATION_SOURCE_SHA256 } = await import('@101/hub-server/hosted-application');
+  const { createAuthenticatedLoopbackRelay, connectAuthenticatedRelay } = await import('@101/hub-server/loopback-relay');
   const { createEphemeralWebIdentity, createDeviceRuntime, createWorkloadHandoff, RemoteResourcePublisher, RemoteResourceReceiver } = await import('@101/connect');
   const fixture = createCoordinatorFixtures(), owner = new AbortController(), publicationOwner = new AbortController(), commandOwner = new AbortController(), outputOwner = new AbortController();
   const now = performance.now.bind(performance), deadline = now() + 8000, clients = [], openings = [], requirements = hostedApplicationRequirements('prefix-host');

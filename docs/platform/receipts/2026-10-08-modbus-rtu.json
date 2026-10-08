@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-modbus-rtu-software-built-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/modbus-rtu.ts": "cbe2767c1509996ae7416156ad7903474a3c019713d76ba8620a1ca8ac0b75bb",
+    "packages/hub-server/src/modbus-rtu.test.ts": "8ff9785b300d9f01edc3cd442a43a6d5c08ba8f9adeed5d08bb370374d0f16c4",
+    "examples/modbus-rtu/consumer.mjs": "7a51bb69de53c11203c1363e7420b02bf3ea3e9023e352dab6b91d8aa6a1fb11",
+    "examples/modbus-rtu/producer.mjs": "585ac17f53038535c272fa646327c6e322b68d04c15bda1cb3844c14a7b30111",
+    "tools/qa-modbus-rtu.mjs": "5bdeeff8a1077246bee387b17bdc5c9ef49d6ff7945938730555ad48b15878fc",
+    "tools/qa-installed-modbus-rtu.mjs": "80abdaa9226437365a39d706de1bee8b9dc03ce0589e487a5ce973ea2b1650be"
+  },
+  "profile": "selected-rtu-single-holding-register/1",
+  "implemented": "Closed FC03/FC06 one-register RTU profile, reviewed unit/register direction/scaling and enrolled host port identity, genuine independent connection/operation signals and original deadlines, CRC/exception/trailing-byte validation, opaque generations and bounded work.",
+  "timing": "The serial adapter supplies genuine per-character timestamps and a watermark confirming complete ordered byte delivery through the physical t3.5 boundary. Missing/short/failed watermark denies reply. The included child pipe demonstrates receipt-domain framing only.",
+  "stop": "Logical authority retires immediately; Stop joins the actual issued write promise and actual port closure before releasing raw ownership. Issued writes cannot be undone and failures remain uncertain.",
+  "validation": {
+    "focusedChecks": 6,
+    "typecheck": "pass",
+    "targetedLint": "pass",
+    "separateProcessCaller": "pass",
+    "installedSdkCaller": "pass"
+  },
+  "officialSpecifications": [
+    "https://www.modbus.org/file/secure/modbusoverserial.pdf",
+    "https://www.modbus.org/file/secure/modbusprotocolspecification.pdf"
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/tmp/101-modbus-rtu-missing-old.log",
+      "sha256": "09a075d8f7ff0395a5e2bc935075b01ce5d784afc6c7ad9885973d5cdb1cf544",
+      "gitBlob": "e93790eb63f9b536b14cc739a8d14db633630de8",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-0"
+    },
+    {
+      "path": "/tmp/101-modbus-rtu-review-old.log",
+      "sha256": "fa3996ea69df745ee99105d97e75775452a311ce10207eef77cbfab2729b94e2",
+      "gitBlob": "94863b7207ca06750f0fb41627b877ba72976f6a",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-1"
+    },
+    {
+      "path": "/tmp/101-modbus-rtu-review-green.log",
+      "sha256": "fe58df023f28b49c93f210e821f2c33264a11aa67ef5f6fa09322b06750864ba",
+      "gitBlob": "025e2939d996422c05501a4773c80d8e2c1cfa29",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-2"
+    },
+    {
+      "path": "/tmp/101-modbus-rtu-review-caller-receipt.json",
+      "sha256": "89b8c5a8fb303a523513d5e410b6684bd4422474d8ca1836322a1999fcb8edf1",
+      "gitBlob": "9d76c3ade32a6be201447aa7c7da8e5de607fa1b",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-3"
+    },
+    {
+      "path": "/tmp/101-modbus-rtu-independent-review.json",
+      "sha256": "41623086fc970b193bab9456cfb99867d96dabda08432cf1ad6c2e96d7d08bb4",
+      "gitBlob": "4bfd5445771e2dbbdb4228d05a8e507928deb4a4",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-4"
+    },
+    {
+      "path": "/tmp/101-modbus-rtu-repairs-independent-review.json",
+      "sha256": "7fb3fb858fd98779d136dbe232d867d0e0a52cca77192bddcbbcba49e085b884",
+      "gitBlob": "a5b843977ddec979b778d04fdbd212992f89605e",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-5"
+    },
+    {
+      "path": "/tmp/101-sdk-consumer-DQOPkU/modbus-rtu-connector/receipt.json",
+      "sha256": "3637f11cc1423521af13c97fac60c29246d0038ffa0c011a4011afaf80597b46",
+      "gitBlob": "8a510a1ddc1ec14413261d0891dadb9b435f2222",
+      "ref": "refs/codex/evidence/2026-10-08-modbus-rtu/literal-6"
+    }
+  ],
+  "open": [
+    "Actual OS serial adapter with enrolled physical port and certified watermark/timing",
+    "Physical target read/write/exception/disconnect behavior",
+    "General register profiles and full A04 acceptance",
+    "Exact candidate gates"
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Result ref is written only after the exact frozen candidate gates finish; no green result is implied by focused checks."
+  },
+  "currentInstalledCaller": {
+    "path": "/private/tmp/101-sdk-consumer-DQOPkU/modbus-rtu-connector-0Oc2hA/receipt.json",
+    "sha256": "52583654f71f9db9b14d4298de8e3ba6335353c2f43f17ba897ab5b9cfb2b2e5"
+  },
+  "priorCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-native-connectors-candidate-9ec-failed",
+    "resultRef": "refs/codex/evidence/2026-10-08-native-connectors/gates-9ec-failed",
+    "result": "fail",
+    "explanation": "2741/2742 unit checks; one child launch timeout before application startup, cause remains unknown. The other four gates passed. Current requiredCandidateGates awaits the repaired phone-inclusive candidate."
+  }
+}
