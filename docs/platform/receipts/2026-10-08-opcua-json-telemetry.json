@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-installed-pass",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/opcua-json-telemetry.ts": "0e8fab6bfd074566192140c9e7c7d4ede92f28192a30809f3befbb2e485316be",
+    "packages/hub-server/src/opcua-json-telemetry.test.ts": "97250e763d2da92c69490457b4dccc393a56f63cdfa42b0d0d9980e3535f0142",
+    "examples/opcua-json-telemetry/producer.mjs": "fb4ecd5e23d8213418aa61df0600c828f4458b8a4abe0adfad9a2b8c78ebc030",
+    "examples/opcua-json-telemetry/consumer.mjs": "321bbd9f4236a260ed9d7fe66aa336e8cf2e7b7fe84ad7e25e9011bcbfc44d69",
+    "tools/qa-opcua-json-telemetry.mjs": "ac59c5d6ddf6d6dd206f91cf23963335dc0bdd63b763869c364daec8a805fc1b",
+    "tools/qa-installed-opcua-json-telemetry.mjs": "986b7ae4c494e94f11a4461c993255e701dc3a1acf13a1079c959cde94033c19"
+  },
+  "profile": {
+    "protocol": "OPC UA Part14 JSON PubSub full keyframe over MQTT5",
+    "field": "Double temperature, Cel, enrolled UN/CEFACT unitId4408652",
+    "metadata": "Exact publisher/writer/class/version/field/unit enrollment is reviewed host data; not discovery or authenticated publisher identity",
+    "endpoint": "Explicit loopback broker only",
+    "direction": "read-only",
+    "mqtt": "QoS1, application/json, non-retained, no automatic reconnect"
+  },
+  "bounds": {
+    "messages": 256,
+    "payloadBytes": 8192,
+    "totalBytes": 1048576,
+    "sessionMs": 30000,
+    "receiveTimeoutMsRange": [
+      250,
+      5000
+    ],
+    "preSubscriptionTraffic": "Owned current-epoch packets consume quotas before SUBACK; no telemetry/freshness before live activation"
+  },
+  "semantics": {
+    "nativeQuality": "Good/Uncertain/Bad and raw field/dataset codes preserved; Bad suppresses temperature; a valid diagnostic record does not make Bad a valid physical measurement",
+    "nativeSequence": "UInt32 wrap/gap arithmetic; duplicates/replay rejected, gaps reported",
+    "utc": "Source/server/dataset UTC strings and picoseconds preserved; no source-to-gateway mapping",
+    "freshness": "Immutable gateway monotonic receipt",
+    "clockMapping": null,
+    "publicRoute": "Separately approved exact sample subscribe / property write route; native status record and original UTC provenance",
+    "physical": false,
+    "physicalState": "unverified"
+  },
+  "validation": {
+    "focusedTests": 16,
+    "strictNoUncheckedIndexedAccess": true,
+    "sixFileLintErrors": 0,
+    "sourceFingerprintCount": 1548,
+    "sourceProof": {
+      "path": "/tmp/101-opcua-json-telemetry-draft/evidence/review-final-source-qa.json",
+      "sha256": "792d95d863bb8505c5a8b41bb3084cae1f3bf9c66ba08f1671cf34611719be1d",
+      "gitBlob": "3fba6498bae429e7eb25a4dadcbf54f8cc5308f4",
+      "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1912"
+    },
+    "independentInitialReview": {
+      "path": "/tmp/101-opcua-json-telemetry-initial-review.json",
+      "sha256": "68cef9e4eb94053eea0623b08012ff6214b7665a75ee477b0898f78580443782",
+      "gitBlob": "88aa3eda0a43bb52125bf1c5ba419e5a602eeea1",
+      "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1950"
+    },
+    "independentFinalReview": {
+      "path": "/tmp/101-opcua-json-telemetry-final-source-review.json",
+      "sha256": "e507f395154c17ca3be658a657b04bf9a8f9652ec92e3466c6bc9297aa879075",
+      "gitBlob": "8169f7adeed6fb35e215fd51d46c97f9b1a16f8d",
+      "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1951"
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/opcua-json-telemetry-rn7mTQ/receipt.json",
+        "sha256": "26fd3f2f3d946d33ddd2e9a21ef712bc4b61a54484507ed9f791151e14969a1d",
+        "gitBlob": "a8bb79ce9fa88861e96d05f7bb786bc8f4ef552a",
+        "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1934"
+      },
+      "publicEntry": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "finalSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "sdkFiles": 411,
+      "dependencyFiles": 1283,
+      "sourceCompilerRuntimeClosureFiles": 1682,
+      "actualCopiedExecutedArtifacts": 11,
+      "artifactSha256": {
+        "packages/hub-server/src/opcua-json-telemetry.ts": "0e8fab6bfd074566192140c9e7c7d4ede92f28192a30809f3befbb2e485316be",
+        "packages/hub-server/src/opcua-json-telemetry.test.ts": "97250e763d2da92c69490457b4dccc393a56f63cdfa42b0d0d9980e3535f0142",
+        "examples/opcua-json-telemetry/producer.mjs": "fb4ecd5e23d8213418aa61df0600c828f4458b8a4abe0adfad9a2b8c78ebc030",
+        "examples/opcua-json-telemetry/consumer.mjs": "321bbd9f4236a260ed9d7fe66aa336e8cf2e7b7fe84ad7e25e9011bcbfc44d69",
+        "tools/qa-opcua-json-telemetry.mjs": "ac59c5d6ddf6d6dd206f91cf23963335dc0bdd63b763869c364daec8a805fc1b",
+        "tools/qa-installed-opcua-json-telemetry.mjs": "986b7ae4c494e94f11a4461c993255e701dc3a1acf13a1079c959cde94033c19",
+        "providerPath": "f3c0de81b657af191dee87d6a0a6e4f6bc90400c552be41d36ca9092bbd87ef5",
+        "callerPath": "84732974d2fb66e41f79e850f868edde8eb1d09d13cd887db6d362a49018b6e5",
+        "producerPath": "fb4ecd5e23d8213418aa61df0600c828f4458b8a4abe0adfad9a2b8c78ebc030",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+        "runnerPath": "acd6e54473b2e2f2d8ae0660112149c75f8b1be5398bf294d5ae07fcb96e63f2"
+      },
+      "finalArtifactSha256": {
+        "packages/hub-server/src/opcua-json-telemetry.ts": "0e8fab6bfd074566192140c9e7c7d4ede92f28192a30809f3befbb2e485316be",
+        "packages/hub-server/src/opcua-json-telemetry.test.ts": "97250e763d2da92c69490457b4dccc393a56f63cdfa42b0d0d9980e3535f0142",
+        "examples/opcua-json-telemetry/producer.mjs": "fb4ecd5e23d8213418aa61df0600c828f4458b8a4abe0adfad9a2b8c78ebc030",
+        "examples/opcua-json-telemetry/consumer.mjs": "321bbd9f4236a260ed9d7fe66aa336e8cf2e7b7fe84ad7e25e9011bcbfc44d69",
+        "tools/qa-opcua-json-telemetry.mjs": "ac59c5d6ddf6d6dd206f91cf23963335dc0bdd63b763869c364daec8a805fc1b",
+        "tools/qa-installed-opcua-json-telemetry.mjs": "986b7ae4c494e94f11a4461c993255e701dc3a1acf13a1079c959cde94033c19",
+        "providerPath": "f3c0de81b657af191dee87d6a0a6e4f6bc90400c552be41d36ca9092bbd87ef5",
+        "callerPath": "84732974d2fb66e41f79e850f868edde8eb1d09d13cd887db6d362a49018b6e5",
+        "producerPath": "fb4ecd5e23d8213418aa61df0600c828f4458b8a4abe0adfad9a2b8c78ebc030",
+        "resolverPath": "8ea890169f8c2e6c0812f8cf0504d8c06c7e7c8901baf245d1fa9721b9818259",
+        "runnerPath": "acd6e54473b2e2f2d8ae0660112149c75f8b1be5398bf294d5ae07fcb96e63f2"
+      },
+      "runner": {
+        "naturallyExited": true,
+        "childSocketsTimersSettled": true
+      },
+      "broker": {
+        "version": "mosquitto version 2.1.2",
+        "ownedPid": 28980,
+        "settled": true
+      },
+      "checks": {
+        "nativeQualityPreserved": true,
+        "originalUtcPreserved": true,
+        "routeDenied": true,
+        "gapObserved": true,
+        "replayRejected": true,
+        "retired": true
+      },
+      "scope": "Verified installed public SDK caller with separately compiled selected gateway; no released gateway SDK export, physical publisher, secure remote broker, CAN/CANopen or certification proof."
+    },
+    "controlledMutationRegressions": {
+      "status": "pass",
+      "cases": [
+        "artifacts",
+        "sdk-receipt",
+        "dependency-receipt"
+      ],
+      "redSha256": "c7942efa1519e059ad7b559c118f2c2203ab00aaa112361d64c492e9a66f8d8d",
+      "greenSha256": "d0f8f1c1557465bf5bce802ced3a8d8c044f018183f048d85b14a740f71af622",
+      "qualification": false
+    }
+  },
+  "retainedFailures": {
+    "originalManifestSha256": "bc3b5491033c34d9ef13d3b256b7786d857cf946cccd46ef3bc69885d2c308af",
+    "details": {
+      "path": "/tmp/101-opcua-json-telemetry-draft/evidence/review-repairs.md",
+      "sha256": "c8218525d0d838e7755b059e176e735fa4d5926c3b23ed9f90a8eb841cf0268d",
+      "gitBlob": "ef1a90f88ff6fb285f9fc13467b68ae6d055e66f",
+      "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1916"
+    },
+    "scope": "Original sources and actual old-runtime red evidence retained. ESM resolver-only correction isolated for old missing-fence probes; three independent artifact/SDK-receipt/dependency-receipt cases use disposable SDK copies, not a modified authoritative SDK."
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-opcua-gateway-research-evidence-manifest.json",
+    "sha256": "18ea523669d6cab7ec2aef4f6883541a8a263cbcd1d471de0d1367812440ee73",
+    "gitBlob": "db8660d2f8b0bd15326a00b10727becea708d262",
+    "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-manifest",
+    "entryCount": 1960,
+    "policy": "Exact scratch sources, rejected regressions, controlled mutation copies, actual installed artifacts and research metadata retained locally. Executed source/compiler/runtime/dependency closure hashes remain in exact installed proof; unchanged SDK release artifacts retain prior qualification."
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-opcua-gateway-research/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-opcua-gateway-research/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact frozen candidate result proves these broad gates; fresh build before rendered checks; no red commit."
+  },
+  "acceptance": {
+    "A11": "partial",
+    "supportRows": [],
+    "open": [
+      "CAN/CANopen profiles",
+      "physical industrial publisher/gateway/target and firmware",
+      "secure remote broker and actual publisher authorization",
+      "native UA object model/unit enrollment and certification",
+      "qualified source clock/measurement accuracy",
+      "full A11 representative environment"
+    ]
+  }
+}

@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 1,
+  "status": "research-contract-accepted",
+  "localOnly": true,
+  "task": "A15",
+  "scope": "Research and recording only, before implementation/support claims",
+  "document": "docs/platform/GATEWAY-PROFILE-RESEARCH-2026-10-08.md",
+  "documentSha256": "de0758f99e7bde786def3877f5a91329f84768508a432e85e6c8c09d7f32335f",
+  "profileSelection": {
+    "schema": "a15-research-proposed-profiles/1",
+    "status": "research-only proposed permitted profiles",
+    "notSDKManifest": true,
+    "noImplementationOrSupportClaim": true,
+    "policyBudgetsAreProposedNotMeasured": true,
+    "commonLimits": {
+      "grantMaximumMilliseconds": 30000,
+      "nativeReadInFlight": 1,
+      "nativeReleaseCannotBeInferredFromTimeout": true,
+      "nativePollWaitMaximumMilliseconds": 1000,
+      "callerSuppliedOriginalOperationDeadlineRequired": true
+    },
+    "profiles": [
+      {
+        "family": "GPIO/I2C/SPI",
+        "id": "linux-gpio-v2-single-input-edge/1",
+        "nativeVersion": "Linux GPIO character-device API v2; exact future kernel/build enrollment required",
+        "selector": "one enrolled stable chip identity and line offset",
+        "operation": "input edges only",
+        "typedOutput": "logical edge enum and bounded numeric sequence; native nanosecond clock provenance",
+        "sources": [
+          "gpio-api",
+          "gpio-events"
+        ],
+        "firstSoftwareCheck": "native-event fixtures and original authority/lifecycle deadlines",
+        "equipment": "Linux board, safely wired input and named kernel/driver",
+        "limits": {
+          "lines": 1,
+          "applicationQueueEvents": 32,
+          "acceptedEventsPerSecond": 50
+        },
+        "failure": "denied, busy, unsupported API, source loss/sequence gap, cancelled, uncertain native release"
+      },
+      {
+        "family": "GPIO/I2C/SPI",
+        "id": "linux-tmp102-hwmon-temperature-read/1",
+        "nativeVersion": "TMP102 driver/hwmon ABI; TI SBOS397I June 2024 wire reference",
+        "selector": "one already provisioned TMP102 parent I2C path/address and hwmon identity",
+        "operation": "temp1_input read only",
+        "typedOutput": "signed integer millidegrees Celsius; explicit exact Cel conversion with provenance",
+        "sources": [
+          "tmp102-driver",
+          "hwmon-abi",
+          "tmp102-datasheet",
+          "i2c-api"
+        ],
+        "firstSoftwareCheck": "actual ABI text fixtures including read-not-ready/error and signed exact conversion",
+        "equipment": "TMP102 board, reference thermometer, wiring/address and native driver",
+        "limits": {
+          "channels": 1,
+          "readsPerSecond": 1,
+          "responseBytes": 64
+        },
+        "failure": "missing, denied, source error, startup unavailable, malformed, stale/unknown conversion age"
+      },
+      {
+        "family": "GPIO/I2C/SPI",
+        "id": "linux-mcp3008-iio-ch0-raw-read/1",
+        "nativeVersion": "Linux mcp320x IIO direct-mode MCP3008; Microchip DS20001295E 2022",
+        "selector": "one already provisioned SPI controller/chip select and single-ended channel0",
+        "operation": "in_voltage0_raw read only",
+        "typedOutput": "integer0..1023 unit1 with nominal reference provenance",
+        "sources": [
+          "mcp3008-datasheet",
+          "mcp3008-driver",
+          "spi-api"
+        ],
+        "firstSoftwareCheck": "producer ABI integer fixtures, errors and changed identity",
+        "equipment": "MCP3008 board and safe reference/input source",
+        "limits": {
+          "channels": 1,
+          "readsPerSecond": 1,
+          "responseBytes": 64
+        },
+        "failure": "unsupported/missing driver, denied, native read failure, invalid code, uncertain device presence"
+      },
+      {
+        "family": "NFC/RFID",
+        "id": "linux-pcsc-reader-presence/1",
+        "nativeVersion": "pcsc-lite API docs2.4.1; installed build and reader driver enrollment required",
+        "selector": "one enrolled contactless-capable reader identity",
+        "operation": "bounded SCardGetStatusChange only; exact context cancellation/release",
+        "typedOutput": "presence boolean plus explicit native state bitmask/diagnostic; no UID/authentication",
+        "sources": [
+          "pcsc-api",
+          "pcsc-project"
+        ],
+        "firstSoftwareCheck": "state-bitmask/return-code fixtures and cancelled/timeout reader wait",
+        "equipment": "named reader/firmware/driver and approved test cards",
+        "limits": {
+          "readers": 1,
+          "waitMilliseconds": 1000,
+          "applicationQueueEvents": 16
+        },
+        "failure": "no service, unknown/unavailable reader, mute, cancelled, timeout, denied, native release uncertainty"
+      },
+      {
+        "family": "legacy RF",
+        "id": "rtl2832-receive-iq-capture/1",
+        "nativeVersion": "Osmocom librtlsdr exact artifact/version to be pinned before implementation",
+        "selector": "one receiver serial/USB identity, explicit frequency/rate/gain settings",
+        "operation": "finite receive capture; no TX, bias tee, detach, direct sampling or remote service",
+        "typedOutput": "bounded interleaved unsigned-byte I/Q resource; raw capture only",
+        "sources": [
+          "rtl-recorder",
+          "rtl-api",
+          "rtl-license"
+        ],
+        "firstSoftwareCheck": "native byte fixture, quotas, callback after cancel and actual native join",
+        "equipment": "named dongle/tuner and owner-approved test reception/signal source",
+        "limits": {
+          "nativeBufferCount": 2,
+          "nativeBufferBytes": 16384,
+          "totalCaptureBytes": 65536,
+          "captureMilliseconds": 5000
+        },
+        "failure": "unsupported tuner/settings, denied, short/lost capture, overload, cancelled, uncertain native release; protocol decode unsupported"
+      },
+      {
+        "family": "HDMI-CEC",
+        "id": "linux-cec-no-initiator-monitor/1",
+        "nativeVersion": "Linux CEC userspace ioctl ABI; exact kernel/adapter required",
+        "selector": "one enrolled CEC adapter",
+        "operation": "NO_INITIATOR|MONITOR then receive; CAP_NET_ADMIN must already be granted",
+        "typedOutput": "bounded native frame bytes, rx status and timestamp; no inferred TV state",
+        "sources": [
+          "cec-mode",
+          "cec-receive"
+        ],
+        "firstSoftwareCheck": "message/status fixtures, wrong length, timeout and disconnection/release",
+        "equipment": "CEC-capable adapter and approved source/display topology",
+        "limits": {
+          "adapters": 1,
+          "frameBytes": 16,
+          "applicationQueueFrames": 32,
+          "acceptedFramesPerSecond": 20
+        },
+        "failure": "denied capability, unsupported mode, busy, receive timeout, unplug, malformed frame"
+      },
+      {
+        "family": "building automation",
+        "id": "bacnet-ip-selected-ai-read/1",
+        "nativeVersion": "ANSI/ASHRAE135-2024 reference plus selected target Protocol_Revision/PICS; actual implementation artifact pending",
+        "selector": "one BACnet/IPv4 unicast peer/port+Device instance+AnalogInput instance",
+        "operation": "ReadProperty Present_Value/Units/Status_Flags/Out_Of_Service only",
+        "typedOutput": "REAL plus units enum/native flags; non-atomic tuple; fault/out-of-service suppression",
+        "sources": [
+          "bacnet-standard-access",
+          "bacnet-revision",
+          "bacnet-maintainer",
+          "bacnet-ai"
+        ],
+        "firstSoftwareCheck": "pinned local maintainer producer wire with ACK/errors/mismatch/timeout fixtures",
+        "equipment": "named controller firmware/PICS and safely observed AnalogInput with physical reference",
+        "limits": {
+          "peers": 1,
+          "objects": 1,
+          "simultaneousRequests": 1,
+          "properties": 4,
+          "tuplePollsPerSecond": 1,
+          "segmentedResponsesPermitted": false
+        },
+        "failure": "denied, no reply, Error/Abort/Reject, wrong peer/invoke/object/type, unknown units, partial/quality-invalid tuple"
+      },
+      {
+        "family": "low-power radio",
+        "id": "chirpstack-v4-selected-uplink-mqtt/1",
+        "nativeVersion": "ChirpStack v4 integration UplinkEvent/Protobuf JSON; selected LoRaWAN1.0.4 ClassA device region",
+        "selector": "one enrolled broker, applicationId/devEui exact up topic and device session provenance",
+        "operation": "uplink subscription only; no commissioning/keys/downlinks",
+        "typedOutput": "opaque payload bytes/counters, server UTC/radio metadata provenance; no decoder units or MIC proof",
+        "sources": [
+          "chirpstack-mqtt",
+          "chirpstack-events",
+          "chirpstack-proto",
+          "lorawan-access"
+        ],
+        "firstSoftwareCheck": "official producer JSON/proto/defaults and owned broker lifecycle/replay caller",
+        "equipment": "commissioned named node/gateway/region/server build",
+        "limits": {
+          "topics": 1,
+          "wildcardsPermitted": false,
+          "jsonBytes": 8192,
+          "payloadBytes": 256,
+          "eventsPerSecond": 5,
+          "applicationQueueEvents": 16
+        },
+        "failure": "denied ACL, incompatible producer settings, wrong identity/topic, malformed data, stale/retained/duplicate message, session change/source loss"
+      },
+      {
+        "family": "analog capture",
+        "id": "mcp3008-ch0-low-rate-code-capture/1",
+        "nativeVersion": "same MCP3008/IIO direct-read implementation; no buffered waveform profile",
+        "selector": "same SPI enrolled path, channel0 and nominal reference; calibration revision if subsequently provided",
+        "operation": "low-rate direct raw-code reads",
+        "typedOutput": "code0..1023 unit1, nominal scale provenance, unknown source capture time; volts only with reviewed calibration/conversion",
+        "sources": [
+          "mcp3008-driver",
+          "iio-buffers"
+        ],
+        "firstSoftwareCheck": "raw/scale/calibration-unavailable fixtures and irregular/late poll handling",
+        "equipment": "ADC board, measured reference and safe calibrated input; saturation/timing/reference-drift evidence",
+        "limits": {
+          "channels": 1,
+          "readsPerSecond": 1,
+          "responseBytes": 64,
+          "uniformSamplingClaim": false,
+          "bufferedCaptureClaim": false
+        },
+        "failure": "calibration unavailable, invalid/error code, nominal reference changed, stale/lost source, uncertain capture time"
+      }
+    ],
+    "preImplementationGates": [
+      "review exact A01 profile manifest and bounded public caller",
+      "freeze exact native binaries/OS/kernel/firmware and actual producer output",
+      "resource owner plus native OS/driver/broker authority",
+      "choose native dependency distribution and file-level license policy",
+      "BACnet normative clause/PICS review",
+      "RF application decoder if wanted is separately selected",
+      "ChirpStack actual QoS/retained/contentType/session behavior must be frozen",
+      "Q03 fixtures, Q02 installed public caller, Q08 physical device qualification"
+    ],
+    "researchAcceptanceHardwareRequired": false
+  },
+  "primarySources": {
+    "schema": "a15-research-sources/1",
+    "observedDate": "2026-10-08",
+    "method": "Read official documentation through web tool; independent URL retrieval hashes retain mutable research source identities without copying complete documents. These are not implementation dependency approval/pins. No hardware or service was contacted.",
+    "sources": [
+      {
+        "id": "gpio-api",
+        "url": "https://docs.kernel.org/userspace-api/gpio/chardev.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "API v2, introduced 5.10; input line request, timestamp clock domain and sequence fields",
+        "observedAt": "2026-10-08T17:50:11.586948+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/userspace-api/gpio/chardev.html",
+        "httpStatus": 200,
+        "retrievedBytes": 42326,
+        "retrievedSha256": "7e43d92dd6e9a7da8162a4b20782d2d5e8fa5363c2cb1f9e4ad4b15e333ea188",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "gpio-events",
+        "url": "https://docs.kernel.org/userspace-api/gpio/gpio-v2-line-event-read.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Logical polarity; bounded event buffer overflow and loss; old events remain after reconfiguration",
+        "observedAt": "2026-10-08T17:50:11.587365+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/userspace-api/gpio/gpio-v2-line-event-read.html",
+        "httpStatus": 200,
+        "retrievedBytes": 15688,
+        "retrievedSha256": "40e7d35af6f7575568e6590d6c573cd3583af0bd4b97e8032415986b6dc9a78a",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "tmp102-driver",
+        "url": "https://docs.kernel.org/hwmon/tmp102.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Selected TMP102 hwmon temperature input and conversion interval",
+        "observedAt": "2026-10-08T17:50:11.588787+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/hwmon/tmp102.html",
+        "httpStatus": 200,
+        "retrievedBytes": 13990,
+        "retrievedSha256": "686b764233a8a7f251af80d5ab0e34511d0ba163174624286ad00084ae834a8e",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "hwmon-abi",
+        "url": "https://raw.githubusercontent.com/torvalds/linux/master/Documentation/ABI/testing/sysfs-class-hwmon",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Temperature input ABI and millidegrees Celsius",
+        "observedAt": "2026-10-08T17:50:11.588866+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/torvalds/linux/master/Documentation/ABI/testing/sysfs-class-hwmon",
+        "httpStatus": 200,
+        "retrievedBytes": 20703,
+        "retrievedSha256": "687fdee89a5370852322f35b543f2aab4b753a4505c2970254db5eaf3330579c",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "tmp102-datasheet",
+        "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "SBOS397I June 2024 signed register coding and 0.0625 Celsius resolution",
+        "observedAt": "2026-10-08T17:50:11.588954+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://www.ti.com/lit/ds/symlink/tmp102.pdf",
+        "httpStatus": 200,
+        "retrievedBytes": 1151760,
+        "retrievedSha256": "c9da6620ef95f75ce94372f670a84d168e05922dd32cebfaa6517083f15ebfaf",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "i2c-api",
+        "url": "https://docs.kernel.org/i2c/dev-interface.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Combined I2C_RDWR requires I2C_FUNC_I2C; alternative only",
+        "observedAt": "2026-10-08T17:50:11.589030+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/i2c/dev-interface.html",
+        "httpStatus": 200,
+        "retrievedBytes": 23500,
+        "retrievedSha256": "f5acf38ac02ec6f5df97226b75b9bccf645ea4e368f5d05d2a752ad6c2a65155",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "mcp3008-datasheet",
+        "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP3004-MCP3008-Data-Sheet-DS20001295.pdf",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "DS20001295E 2022 selected ADC wire format",
+        "observedAt": "2026-10-08T17:50:11.589091+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://ww1.microchip.com/downloads/aemDocuments/documents/MSLD/ProductDocuments/DataSheets/MCP3004-MCP3008-Data-Sheet-DS20001295.pdf",
+        "httpStatus": 200,
+        "retrievedBytes": 1021574,
+        "retrievedSha256": "26a503d76279cc10e40cfc36e80bb87fd33d0de80093d1bdcc4dc29435b10f72",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "mcp3008-driver",
+        "url": "https://raw.githubusercontent.com/torvalds/linux/master/drivers/iio/adc/mcp320x.c",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "MCP3008 ten-bit direct-mode conversion and regulator-based nominal scale",
+        "observedAt": "2026-10-08T17:50:11.589143+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/torvalds/linux/master/drivers/iio/adc/mcp320x.c",
+        "httpStatus": 200,
+        "retrievedBytes": 13639,
+        "retrievedSha256": "c93a478d8bcc10b3a8e28d17a86b06e750413267c29788c97768cdb12dd11574",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "spi-api",
+        "url": "https://docs.kernel.org/spi/spidev.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "SPI has no low-level acknowledgement, synchronous request limitations",
+        "observedAt": "2026-10-08T17:50:11.804108+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/spi/spidev.html",
+        "httpStatus": 200,
+        "retrievedBytes": 21293,
+        "retrievedSha256": "70e3e40c1249e2e5f2dadaa67ad3e7c75ccad9cedf617b1e06cf93443061f642",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "pcsc-api",
+        "url": "https://pcsclite.apdu.fr/api/group__API.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Documentation 2.4.1; exact state wait/cancellation/context API",
+        "observedAt": "2026-10-08T17:50:11.879794+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://pcsclite.apdu.fr/api/group__API.html",
+        "httpStatus": 200,
+        "retrievedBytes": 170772,
+        "retrievedSha256": "5d18b385a1d839fcbd7d71a8b9a549cdf6da90b383b8625b673cc69ee565c334",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "pcsc-project",
+        "url": "https://pcsclite.apdu.fr/",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "BSD-like main license, other file licenses; platform distinctions",
+        "observedAt": "2026-10-08T17:50:11.892255+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://pcsclite.apdu.fr/",
+        "httpStatus": 200,
+        "retrievedBytes": 13585,
+        "retrievedSha256": "46569e505957a7982c82d8fbe0f7b5a9a613234bdac9587dd00ad59d5d493ac3",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "rtl-recorder",
+        "url": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/src/rtl_sdr.c",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Official bounded I/Q recorder; reset, read, cancellation and release",
+        "observedAt": "2026-10-08T17:50:11.931230+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/src/rtl_sdr.c",
+        "httpStatus": 200,
+        "retrievedBytes": 6774,
+        "retrievedSha256": "ce65b98d2251e45fc00e07bf4172dfb2610cc3d06cb5ce0d276792f380a87d41",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "rtl-api",
+        "url": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/include/rtl-sdr.h",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Explicit asynchronous buffers, native cancellation and lifecycle",
+        "observedAt": "2026-10-08T17:50:11.957996+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/include/rtl-sdr.h",
+        "httpStatus": 200,
+        "retrievedBytes": 13318,
+        "retrievedSha256": "e97437079f7de47414b565b75ccf48a59f51e2d61709ee21980f93a35ea630c6",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "rtl-license",
+        "url": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/COPYING",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "GPL license text, exact dependency adoption deferred",
+        "observedAt": "2026-10-08T17:50:11.988030+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/osmocom/rtl-sdr/master/COPYING",
+        "httpStatus": 200,
+        "retrievedBytes": 17987,
+        "retrievedSha256": "ab15fd526bd8dd18a9e77ebc139656bf4d33e97fc7238cd11bf60e2b9b8666c6",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "cec-mode",
+        "url": "https://docs.kernel.org/userspace-api/media/cec/cec-ioc-g-mode.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "NO_INITIATOR monitor; CAP_NET_ADMIN; monitor-all separate capability",
+        "observedAt": "2026-10-08T17:50:12.050741+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/userspace-api/media/cec/cec-ioc-g-mode.html",
+        "httpStatus": 200,
+        "retrievedBytes": 29525,
+        "retrievedSha256": "60ba2b6f9b9ec5df72a834506f5783cadc2bba4f361fe772403080b1d0a085ad",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "cec-receive",
+        "url": "https://docs.kernel.org/userspace-api/media/cec/cec-ioc-receive.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "cec_msg length/payload/status/time, receive errors",
+        "observedAt": "2026-10-08T17:50:12.087329+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/userspace-api/media/cec/cec-ioc-receive.html",
+        "httpStatus": 200,
+        "retrievedBytes": 39768,
+        "retrievedSha256": "05b8cbd3810ae6eb1555f12b75886488c0f0eb2a3675e0fac87852c4a03a0f46",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "bacnet-standard-access",
+        "url": "https://bacnet.org/buy/",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "135-2024 public read-only preview and purchase; full normative clauses not retrieved",
+        "observedAt": "2026-10-08T17:50:12.307068+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://bacnet.org/buy/",
+        "httpStatus": 200,
+        "retrievedBytes": 70095,
+        "retrievedSha256": "f33d8d5ad75cd55fb9881e1fc34ec8fea68aede32e88284d24568e2fd5c76257",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "bacnet-revision",
+        "url": "https://bacnet.org/updates/",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "135-2024/addenda protocol revision 31; actual endpoint revision independently frozen",
+        "observedAt": "2026-10-08T17:50:12.309414+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://bacnet.org/updates/",
+        "httpStatus": 200,
+        "retrievedBytes": 64730,
+        "retrievedSha256": "475249fa5cb9da3543c3db3d8de33cf986a0a2ac1ea941de56de4ff115194759",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "bacnet-maintainer",
+        "url": "https://raw.githubusercontent.com/bacnet-stack/bacnet-stack/master/README.md",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Maintainer supported datalinks and per-file license exceptions",
+        "observedAt": "2026-10-08T17:50:12.331611+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/bacnet-stack/bacnet-stack/master/README.md",
+        "httpStatus": 200,
+        "retrievedBytes": 8969,
+        "retrievedSha256": "39b01bd480f441fca1a1ad48b27cb7276c133dbfa03491bfac70aab99db4fdb0",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "bacnet-ai",
+        "url": "https://raw.githubusercontent.com/bacnet-stack/bacnet-stack/master/src/bacnet/basic/object/ai.c",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "AnalogInput read properties and typed producer semantics",
+        "observedAt": "2026-10-08T17:50:12.350885+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/bacnet-stack/bacnet-stack/master/src/bacnet/basic/object/ai.c",
+        "httpStatus": 200,
+        "retrievedBytes": 88939,
+        "retrievedSha256": "cce5011666b12aca438a24c91399955ae78300ff8ed8a6f9d0fd8665e0bf1dd5",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "chirpstack-mqtt",
+        "url": "https://www.chirpstack.io/docs/chirpstack/integrations/mqtt.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Exact application/device uplink topic; command topic distinct",
+        "observedAt": "2026-10-08T17:50:12.470390+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://www.chirpstack.io/docs/chirpstack/integrations/mqtt.html",
+        "httpStatus": 200,
+        "retrievedBytes": 26417,
+        "retrievedSha256": "742edf91e99bd0066f81de52f76da3e271c9631e3583e67920dc5c213d5196f4",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "chirpstack-events",
+        "url": "https://www.chirpstack.io/docs/chirpstack/integrations/events.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Protobuf JSON mapping and official example, not mandatory field schema",
+        "observedAt": "2026-10-08T17:50:12.671078+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://www.chirpstack.io/docs/chirpstack/integrations/events.html",
+        "httpStatus": 200,
+        "retrievedBytes": 33518,
+        "retrievedSha256": "b9d70294135bbdd9f53077e3df1f67f726e583ad924cadef9e3dc5e5488ece1a",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "chirpstack-proto",
+        "url": "https://raw.githubusercontent.com/chirpstack/chirpstack/master/api/proto/integration/integration.proto",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "UplinkEvent fields/native types, counters and payload bytes",
+        "observedAt": "2026-10-08T17:50:12.763415+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://raw.githubusercontent.com/chirpstack/chirpstack/master/api/proto/integration/integration.proto",
+        "httpStatus": 200,
+        "retrievedBytes": 7563,
+        "retrievedSha256": "54415137adbd75a4c175b074744a3afcdb9791124451ab4b70651e8e0f3783e6",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "lorawan-access",
+        "url": "https://lora-alliance.org/resource_hub/lorawan-104-specification-package/",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Selected 1.0.4 public package; certification tool member-only",
+        "observedAt": "2026-10-08T17:50:12.764551+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://lora-alliance.org/resource_hub/lorawan-104-specification-package/",
+        "httpStatus": 200,
+        "retrievedBytes": 226457,
+        "retrievedSha256": "b651b1915c0acde69d4ca0310d884db60ed56ede1319d9d5f352a6f4d2bcf1d5",
+        "storedSourceBytes": false
+      },
+      {
+        "id": "iio-buffers",
+        "url": "https://docs.kernel.org/driver-api/iio/buffers.html",
+        "authority": "official standard owner, OS maintainer, vendor, or project maintainer",
+        "purpose": "Conditional future buffered scan metadata only; not MCP3008 buffer support",
+        "observedAt": "2026-10-08T17:50:12.783215+00:00",
+        "webResearchRead": true,
+        "resolvedUrl": "https://docs.kernel.org/driver-api/iio/buffers.html",
+        "httpStatus": 200,
+        "retrievedBytes": 40617,
+        "retrievedSha256": "dc823ac0856b191303afdcc0bbea6654ff17df382415bf59641aea3e8e05a21c",
+        "storedSourceBytes": false
+      }
+    ]
+  },
+  "validation": {
+    "schema": "a15-research-validation/1",
+    "readOnlyRepository": true,
+    "inputPinsEnd": {
+      "AGENTS.md": "11ead2000c009222764d5a7435b497751ce69f760839423cd061090c8f0f061c",
+      "docs/platform/MASTER-CHECKLIST.md": "4d43befe3bbed7880ed628654a469ff90c7a369ab0f8c3e0314894a4b0b312af",
+      "docs/platform/task-evidence.json": "ba6a0f2d66c72c0df0e522b316deca0f22a50cd02fa1c8faad3a5773dc16fabb",
+      "docs/platform/RELEASE-CONTRACT.md": "0c001b52a61194e07798201f43633974297892e861ea34871a15d31c96474dcb",
+      "docs/platform/support-catalog.json": "a5d965ee3be2b5f354dce2939e579aea061c3dce3451f691ef6da1a37012fe1a",
+      "docs/platform/RESEARCH-2026-10-01.md": "b584a691d630161367e483bb12a29999f6035a6317cc47170060af12639af51b",
+      "docs/superpowers/specs/2026-10-01-universal-device-platform-design.md": "80ba8e1fec1f63f10d7a6e990182504986f7666e9da25c2bf3193813122705dd",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+      "packages/device-runtime/src/resource.ts": "b0800be230405ec823e82f4a0a62d789c21077e17cdf85ce951dd66a3b8baaa0",
+      "packages/hub-server/src/gateway-inventory.ts": "9ee7f586d7c89ec61d672ca6204c894dbc77faa04b1ca536f575496dc7cbd493"
+    },
+    "inputPinsChangedDuringResearch": [],
+    "profileCount": 9,
+    "familyCount": 7,
+    "familyCoverage": [
+      "GPIO/I2C/SPI",
+      "HDMI-CEC",
+      "NFC/RFID",
+      "analog capture",
+      "building automation",
+      "legacy RF",
+      "low-power radio"
+    ],
+    "officialSourceCount": 25,
+    "independentSourceHashFetchFailures": [],
+    "sourceFixturesExecuted": false,
+    "hardwareExecuted": false,
+    "nativeDependenciesInstalled": false,
+    "servicesStarted": false,
+    "review": "JSON parses; nine unique research IDs; every source ID resolves; family coverage seven. Proposed software limits are planning budgets, not measured physical/performance evidence."
+  },
+  "rootReview": {
+    "path": "/tmp/101-further-gateway-profile-root-review.json",
+    "sha256": "f2f0786d37e3371038e2560d57aa1030b79640d82bbaeadb0163d47b92372987",
+    "gitBlob": "f06bf0deb08d618c2da095263979da31271161ac",
+    "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-1952"
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-opcua-gateway-research-evidence-manifest.json",
+    "sha256": "18ea523669d6cab7ec2aef4f6883541a8a263cbcd1d471de0d1367812440ee73",
+    "gitBlob": "db8660d2f8b0bd15326a00b10727becea708d262",
+    "ref": "refs/codex/evidence/2026-10-08-opcua-gateway-research/evidence-manifest",
+    "entryCount": 1960,
+    "policy": "Exact scratch sources, rejected regressions, controlled mutation copies, actual installed artifacts and research metadata retained locally. Executed source/compiler/runtime/dependency closure hashes remain in exact installed proof; unchanged SDK release artifacts retain prior qualification."
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-opcua-gateway-research/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-opcua-gateway-research/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only exact frozen candidate result proves these broad gates; fresh build before rendered checks; no red commit."
+  },
+  "acceptance": {
+    "A15": "research deliverable accepted",
+    "implementation": false,
+    "nativeRuntime": false,
+    "physical": false,
+    "supportRows": [],
+    "A16": "open",
+    "Q03": "open",
+    "Q08": "open",
+    "futureGate": "Every actual connector needs its own exact native/profile/caller/permission/license/equipment qualification. These proposed profiles are not SDK manifests."
+  }
+}

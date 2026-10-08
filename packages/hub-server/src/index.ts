@@ -264,3 +264,6 @@ export type { MotorAxisResult, MotorAxisEpoch, MotorAxisSessionToken, MotorAxisI
   MotorAxisOperationContext, MotorAxisActuatorProvider, MotorAxisFeedbackSample, MotorAxisFeedbackProvider,
   MotorAxisScope, MotorAxisApprovalRequest, MotorAxisGrant, MotorAxisOptions, MotorAxisSetReceipt,
   MotorAxisObservation, MotorAxisGateway } from './motor-axis-gateway.ts';
+
+export { createOpcUaJsonTelemetryConnector, parseOpcUaJsonProfile, decodeOpcUaJsonTelemetry, opcUaSequenceGap, OPCUA_JSON_LIMITS } from './opcua-json-telemetry.ts';
+export type { OpcUaJsonProfile, OpcUaJsonRecord, OpcUaJsonDecoded, OpcUaJsonApprovalRequest, OpcUaJsonApproval, OpcUaJsonReading, OpcUaJsonOptions, OpcUaJsonConnector } from './opcua-json-telemetry.ts';

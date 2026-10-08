@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 176,
+  "revision": 177,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12973,6 +12973,56 @@
         "Selected physical actuator/drive/mechanics, independent position and limit sensors, hardwired interlock/deadman and timing/current/travel instruments required for physical acceptance"
       ],
       "supportRows": []
+    },
+    {
+      "id": "opcua-json-telemetry-2026-10-08",
+      "revision": "0e8fab6bfd074566192140c9e7c7d4ede92f28192a30809f3befbb2e485316be",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-opcua-json-telemetry.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; MQTT5.16.0, owned Mosquitto2.1.2, unchanged verified seven-package SDK, independent software producer",
+      "reproduction": "16 focused cases, strict types/six-file lint, actual source and ordinary installed public callers, faithful pending-SUBACK message/byte red regressions, independent artifact/SDK-receipt/dependency-receipt mutation rejection, exact frozen candidate gates referenced by receipt",
+      "scope": "Selected read-only OPC UA JSON keyframe temperature with native quality/raw UTC/UInt32 sequence; no physical publisher, secure remote broker, CAN/CANopen, certified stack or full A11 acceptance",
+      "failure": null,
+      "equipment": [
+        "Named industrial gateway/publisher/target firmware, enrolled units/status/clocks and broker authorization required for representative physical qualification"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "gateway-profile-research-2026-10-08",
+      "revision": "de0758f99e7bde786def3877f5a91329f84768508a432e85e6c8c09d7f32335f",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract"
+      ],
+      "tasks": [
+        "A15"
+      ],
+      "paths": [
+        "docs/platform/GATEWAY-PROFILE-RESEARCH-2026-10-08.md",
+        "docs/platform/receipts/2026-10-08-gateway-profile-research.json"
+      ],
+      "environment": "Local repository/primary official documentation readback; nine proposed profiles, seven families, 25 independently retrieved source hashes; no native runtime/dependency/service/hardware execution",
+      "reproduction": "Frozen draft/input/source metadata verification, source-backed independent root contract review, machine-readable profile/family/source coverage and exact candidate metadata/broad gates referenced by receipt",
+      "scope": "Full A15 research/recording deliverable only; proposed read-only first profiles and explicit permission/license/equipment/future implementation gates; no connector implementation, SDK profile or support qualification",
+      "failure": null,
+      "equipment": [
+        "No hardware required for A15 research; each later implemented profile needs its named native/kernel/library/firmware/owner/equipment qualification"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -14776,7 +14826,8 @@
     {
       "id": "A11",
       "records": [
-        "pending-A11"
+        "pending-A11",
+        "opcua-json-telemetry-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -14834,7 +14885,8 @@
     {
       "id": "A15",
       "records": [
-        "pending-A15"
+        "pending-A15",
+        "gateway-profile-research-2026-10-08"
       ],
       "dependencies": [
         "M01",
