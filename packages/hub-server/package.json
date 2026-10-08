@@ -15,6 +15,7 @@
     ".": "./src/index.ts",
     "./hosted-application": "./src/hosted-application.ts",
     "./loopback-relay": "./src/loopback-relay.ts",
-    "./onvif-snapshot-gateway": "./src/onvif-snapshot-gateway.ts"
+    "./onvif-snapshot-gateway": "./src/onvif-snapshot-gateway.ts",
+    "./nec32-ir-emitter-gateway": "./src/nec32-ir-emitter-gateway.ts"
   }
 }

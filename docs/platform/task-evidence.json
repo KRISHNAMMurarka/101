@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 170,
+  "revision": 172,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -12813,6 +12813,59 @@
         "Selected physical camera/firmware required for acceptance; no support row promoted"
       ],
       "supportRows": []
+    },
+    {
+      "id": "ir-emitter-2026-10-08",
+      "revision": "7b85a2b6ca81dd7e551a4fe42b70ae58151feca4975a64e77e78d59f288dd243",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-ir-emitter.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; unchanged verified installed seven-package SDK; exact separately owned software emitter child.",
+      "reproduction": "23 focused cases, preserved failed drafts/review regressions and two rejected candidates, clear independent core/lint/reentry reviews, refreshed actual source and installed callers; exact candidate gates referenced by receipt.",
+      "scope": "Selected nominal one-shot NEC inverse-byte software dispatch with independent private/public authority and exact provider ownership/settlement. Physical carrier/hardware, appliance meaning/receipt/ack/state remain open.",
+      "failure": null,
+      "equipment": [
+        "Selected nearby physical IR emitter and carrier/timing instruments required for hardware acceptance"
+      ],
+      "supportRows": []
+    },
+    {
+      "id": "ios-simulator-2026-10-08",
+      "revision": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "N04",
+        "D03",
+        "N13",
+        "K05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-08-ios-simulator.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Xcode26.6; iOS/watch simulator26.5; own disposable iPhone17 simulator runtime23F77.",
+      "reproduction": "Two exact local Release artifacts,99 installed files read back, actual Expo native identity create/load/remove/cold relaunch, invalid-paste and camera-refusal retry, portrait/landscape screenshots, owned simulator cleanup; retained failed configurations and open audit finding.",
+      "scope": "Selected simulator artifact and identity lifecycle only. IOS-AUDIT-01 initial refusal guidance remains open; physical devices/media/motion, intended distribution signing/install/update, enrolled sign/verify and full accessibility/performance remain unqualified.",
+      "failure": null,
+      "equipment": [
+        "Physical intended phone/watch and release identity required for full qualification"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -13414,7 +13467,8 @@
       "records": [
         "pending-D03",
         "d03-browser-chooser-partial-2026-10-06",
-        "successor-repairs-2026-10-08"
+        "successor-repairs-2026-10-08",
+        "ios-simulator-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13857,7 +13911,8 @@
         "pointer-provider-2026-10-02",
         "pointer-native-partial-2026-10-02",
         "phone-motion-lifecycle-2026-10-08",
-        "successor-repairs-2026-10-08"
+        "successor-repairs-2026-10-08",
+        "ios-simulator-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -13997,7 +14052,8 @@
       "records": [
         "pending-N13",
         "phone-motion-lifecycle-2026-10-08",
-        "successor-repairs-2026-10-08"
+        "successor-repairs-2026-10-08",
+        "ios-simulator-2026-10-08"
       ],
       "dependencies": [
         "C01",
@@ -14550,7 +14606,8 @@
     {
       "id": "A07",
       "records": [
-        "pending-A07"
+        "pending-A07",
+        "ir-emitter-2026-10-08"
       ],
       "dependencies": [
         "M01",
@@ -16296,7 +16353,8 @@
     {
       "id": "K05",
       "records": [
-        "pending-K05"
+        "pending-K05",
+        "ios-simulator-2026-10-08"
       ],
       "dependencies": [],
       "equipment": [

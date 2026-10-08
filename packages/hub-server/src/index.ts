@@ -234,3 +234,8 @@ export { createOnvifSnapshotGateway, ONVIF_SNAPSHOT_LIMITS } from './onvif-snaps
 export type { OnvifSnapshotFailure, OnvifSnapshotResult, OnvifSnapshotEpoch, OnvifSnapshotScope, SelectedOnvifCamera,
   OnvifSnapshotApprovalRequest, OnvifSnapshotGrant, OnvifSnapshotOptions, OnvifSnapshotOperation,
   OnvifSnapshot, OnvifSnapshotGateway } from './onvif-snapshot-gateway.ts';
+
+export { createNec32IrEmitterGateway, compileNec32IrFrame, NEC32_IR_PROFILE, NEC32_IR_LIMITS } from './nec32-ir-emitter-gateway.ts';
+export type { Nec32IrFailure, Nec32IrResult, Nec32IrEpoch, Nec32IrScope, Nec32IrCode, SelectedNec32IrEmitter,
+  Nec32IrCompiledFrame, Nec32IrProviderContext, Nec32IrEmitterProvider, Nec32IrApprovalRequest, Nec32IrGrant,
+  Nec32IrOptions, Nec32IrEmission, Nec32IrGateway } from './nec32-ir-emitter-gateway.ts';

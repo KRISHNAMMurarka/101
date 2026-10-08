@@ -1,0 +1,1061 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-nec-inverse-byte-one-shot-software-verified-physical-acceptance-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "7b85a2b6ca81dd7e551a4fe42b70ae58151feca4975a64e77e78d59f288dd243",
+    "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d7d7df3a44f1ea23dada9fe42e5c40b12a0651f1ea8af5cc68225374a4da5130",
+    "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+    "examples/ir-emitter/consumer.mjs": "b81c21d2d67e152849df2784eab75f0004c79c705aff69f113015a89c62c3562",
+    "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+    "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d",
+    "packages/hub-server/package.json": "b6b5fb1a76fb3eb07801ee7c19e2f79423c6a7483b6596e977443d195e97210d",
+    "packages/hub-server/src/index.ts": "121c86a935a45a1f5fe4fa5170cb1480078609b4c8ff4fd9db19ada621e46aee"
+  },
+  "selectedProfile": {
+    "id": "app:nec-inverse-byte-command-one-shot/1",
+    "carrierHz": 38000,
+    "codebook": "Owner-selected immutable opaque codeId to 8-bit address/command pairs; at most16 entries, unique IDs and byte pairs. No raw patterns, repeats, appliance labels or arbitrary carrier.",
+    "frame": "[address, address XOR0xff, command, command XOR0xff], each byte LSB first",
+    "timingsMicros": {
+      "leader": [
+        9000,
+        4500
+      ],
+      "zero": [
+        560,
+        565
+      ],
+      "one": [
+        560,
+        1690
+      ],
+      "finalMark": 560,
+      "count": 67,
+      "total": 68060
+    },
+    "canonicalEnvelope": "ASCII IRN1, u32be carrier,4 frame bytes,u16be count,67 u32be timings;282 bytes.",
+    "fixture": {
+      "address": 52,
+      "command": 162,
+      "frameHex": "34cba25d",
+      "sha256": "334f1028fb8488a2ca7f43d27b75c4a2a0d762509740bb5a00f1472f78205f8e"
+    },
+    "limits": {
+      "starts": 8,
+      "emissionAttempts": 16,
+      "retainedReplayRecords": 16,
+      "rawOperations": 1,
+      "codebookEntries": 16,
+      "operationMs": 500,
+      "sessionMs": 60000,
+      "minimumSpacingMs": 108
+    }
+  },
+  "authorityAndLifetime": "Private activation and per-emission approval are separate from the ordinary reliable public SDK invocation route. Reserve before authorizer/compiler/hash/provider callouts. Original owner/control/operation signals and earliest absolute deadline remain binding. Replay records survive Stop/restart; quota is checked before the next authorizer call.",
+  "ownership": "Exact in-process selected provider object has one owner token across instances. Stop/timeout/revoke/fault retains ownership through Stop, current operation and first whenSettled, provider close and final whenSettled; then releases only its token. Non-owner or former-owner close is inert. Owner listener detaches on close. This does not establish cross-process or physical hardware exclusivity. A shared unresolved retirement promise is installed before detach/abort/provider callouts; reentrant Stop or close joins one exact cleanup chain and cannot close twice or release ownership before settlement.",
+  "softwareProvider": "A separately owned Node child validates canonical envelope and hash, holds the software frame duration and reports completion. Every open uses a fresh child plus random128-bit token and generation; stale EMIT/STOP rejected. Receipt is written after close/exit with zero waiters/timers. No GPIO, serial, shell, network or firmware transport.",
+  "validation": {
+    "focusedGatewayCases": 23,
+    "sourceCaller": {
+      "status": "pass",
+      "kind": "separate-process-loopback-nec32-emitter",
+      "checks": {
+        "deniedControlNoChild": true,
+        "deniedRouteNoEmission": true,
+        "approvedRoutePrivateDeniedNoChildEmit": true,
+        "approvedExactCode": true,
+        "routeRevocation": true,
+        "closeSettled": true,
+        "restartUsesFreshOwnedChild": true,
+        "zeroWaitersAndTimersAfterChildExit": true,
+        "providerCompletionOnly": true,
+        "physicalCarrierUnverified": true,
+        "targetAcknowledgementFalse": true,
+        "observedStateFalse": true
+      },
+      "limitations": {
+        "providerIdentity": "exact-in-process-provider-object",
+        "hardware": "unverified",
+        "applianceMeaning": "opaque-codebook-only",
+        "targetAcknowledgement": false,
+        "independentlyObservedState": false
+      },
+      "childMessages": [
+        "hello",
+        "ready",
+        "completed",
+        "stopped",
+        "closed",
+        "hello",
+        "ready",
+        "stopped",
+        "closed"
+      ],
+      "childCommands": [
+        "open",
+        "emit",
+        "stop",
+        "close",
+        "open",
+        "stop",
+        "close"
+      ],
+      "lifecycle": {
+        "waiters": 0,
+        "timers": 0,
+        "childRunning": false
+      }
+    },
+    "installedCaller": {
+      "schemaVersion": 1,
+      "status": "pass",
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "sdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "finalSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+      "sourceSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "7b85a2b6ca81dd7e551a4fe42b70ae58151feca4975a64e77e78d59f288dd243",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d7d7df3a44f1ea23dada9fe42e5c40b12a0651f1ea8af5cc68225374a4da5130",
+        "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+        "examples/ir-emitter/consumer.mjs": "b81c21d2d67e152849df2784eab75f0004c79c705aff69f113015a89c62c3562",
+        "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+        "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d"
+      },
+      "copiedSourceSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "7b85a2b6ca81dd7e551a4fe42b70ae58151feca4975a64e77e78d59f288dd243",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d7d7df3a44f1ea23dada9fe42e5c40b12a0651f1ea8af5cc68225374a4da5130",
+        "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+        "examples/ir-emitter/consumer.mjs": "b81c21d2d67e152849df2784eab75f0004c79c705aff69f113015a89c62c3562",
+        "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+        "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d"
+      },
+      "installedPublicEntry": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "compiledProviderSha256": "e47c34076512b7bf645e453bb09c444d535401715a706b569e6edeb7463fe354",
+      "result": {
+        "status": "pass",
+        "kind": "separate-process-loopback-nec32-emitter",
+        "checks": {
+          "deniedControlNoChild": true,
+          "deniedRouteNoEmission": true,
+          "approvedRoutePrivateDeniedNoChildEmit": true,
+          "approvedExactCode": true,
+          "routeRevocation": true,
+          "closeSettled": true,
+          "restartUsesFreshOwnedChild": true,
+          "zeroWaitersAndTimersAfterChildExit": true,
+          "providerCompletionOnly": true,
+          "physicalCarrierUnverified": true,
+          "targetAcknowledgementFalse": true,
+          "observedStateFalse": true
+        },
+        "limitations": {
+          "providerIdentity": "exact-in-process-provider-object",
+          "hardware": "unverified",
+          "applianceMeaning": "opaque-codebook-only",
+          "targetAcknowledgement": false,
+          "independentlyObservedState": false
+        },
+        "childMessages": [
+          "hello",
+          "ready",
+          "completed",
+          "stopped",
+          "closed",
+          "hello",
+          "ready",
+          "stopped",
+          "closed"
+        ],
+        "childCommands": [
+          "open",
+          "emit",
+          "stop",
+          "close",
+          "open",
+          "stop",
+          "close"
+        ],
+        "lifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        }
+      },
+      "scope": "Actual separate child software NEC32 caller using the verified installed public SDK and separately compiled gateway. Provider completion only; no physical carrier, appliance acknowledgement, observed appliance state, GPIO, remote service or firmware claim."
+    },
+    "independentReview": {
+      "schemaVersion": 1,
+      "review": "independent-read-only-a07-ir-emitter-final-delta-review",
+      "status": "clear",
+      "verdict": "No remaining actionable finding in the final frozen six-file IR draft. The exact sources below are clear for parent-owned integration, installed qualification, and repository gates.",
+      "reviewedAt": "2026-10-08T15:22:50Z",
+      "designSha256": "47e73deccdf73386a1cbe22d2959b860697d6321b36749b16f08801c0c1f1677",
+      "priorBlockedReport": {
+        "path": "/tmp/101-ir-emitter-stop-close-review-blocked.json",
+        "sha256": "fd263379e3729447f56308379592cb14bf75a11e1328009180da403d95c101cb"
+      },
+      "sourceSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "11e85d04730bcd54290fff7d8c682ca4818ea96b2c91bfc4b40aa18cbaee1c98",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "7d950a35d393572cfc9117670eb63f3a17c99043570010ce8fceaa53df34ca98",
+        "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+        "examples/ir-emitter/consumer.mjs": "eb7a5c68c4f8746dfff2f4402006451343346c895c149e419ff0e95aec1d0722",
+        "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+        "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d"
+      },
+      "reviewedFixes": {
+        "ownedProviderRetirement": {
+          "status": "clear",
+          "evidence": "stopActive retains the exact provider ownership token while it requests stop, joins the current operation and first whenSettled result, invokes providerClose, joins final settlement, clears the matching active epoch, and only then releases providerOwners. This applies to Stop, close, activation expiry, provider rejection, and effectful open/transmit failure. Never-owner and former-owner gateways cannot call provider lifecycle hooks.",
+          "executionPath": "packages/hub-server/src/nec32-ir-emitter-gateway.ts:169-184",
+          "independentRegression": {
+            "script": "/tmp/101-ir-emitter-stop-close-regression.mjs",
+            "log": "/tmp/101-ir-emitter-stop-close-regression-final-independent.log",
+            "logSha256": "47e71fddc9cd87ffe0283918a21e2da887b5e45b4a2cc5c36c4cacb81b47f5ad",
+            "exitCode": 0,
+            "observed": "After Stop: opened=false, stops=1, closes=1, phase=idle; later close remains idempotent with closes=1."
+          },
+          "adjacentChecks": "The focused ownership-transfer test proves a never-owner cannot close the first session, Stop closes before a second gateway acquires the provider, and a late close from the former owner does not affect the new owner. The consumer proves Stop leaves no child, waiters, or timers and restart creates a fresh child/token."
+        },
+        "installedSdkPostVerification": {
+          "status": "clear",
+          "evidence": "After the installed caller returns, the helper rereads the consumer receipt, requires the same manifest path and fingerprint, calls installedSdk again to rehash the bounded manifest and every installed SDK package file, and requires the same directory and manifest SHA before writing its proof.",
+          "executionPath": "tools/qa-installed-ir-emitter.mjs:40-50",
+          "qualification": "The helper is structurally clear; actual installed execution remains parent-owned after integration."
+        }
+      },
+      "inheritedClearReview": [
+        "Exact provider-object exclusivity, fresh private activation and emission grants, independent public route authority, replay fencing across Stop/restart, bounded lifetime attempts/records, and before-callout reservation remain intact.",
+        "Issued cancellation and deadline paths retain raw ownership through provider settlement; Stop has no undo or target-effect claim.",
+        "The reviewed NEC frame remains 38 kHz, four inverse-paired bytes, 67 timings, 68060 microseconds, and one non-repeating canonical envelope derived from the immutable selected codebook snapshot.",
+        "The child binds generation and a fresh 128-bit token, rejects stale session work, uses bounded I/O/timers, and exits under owned cleanup.",
+        "Source QA pins and rechecks all six files; the installed helper uses the ordinary verified public SDK and preserves conservative software-only claims."
+      ],
+      "verification": {
+        "focusedGateway": {
+          "log": "/tmp/101-ir-emitter-draft/evidence/green-gateway-final-review.log",
+          "logSha256": "71881a18943fa36fdcec25c076cb7f9eef4f39dd573bbe9e9319cee3e2d7b898",
+          "result": "17 passed, 0 failed, 0 skipped"
+        },
+        "combinedPriorRegressions": {
+          "log": "/tmp/101-ir-emitter-draft/evidence/green-independent-review-final.log",
+          "logSha256": "3a673e8ce48197b470adb97d32c023bce3be14f02af11a1f64c1bae2c36f202b"
+        },
+        "settlementRegression": {
+          "log": "/tmp/101-ir-emitter-draft/evidence/green-independent-settlement-final.log",
+          "logSha256": "a673a78eb14663cb6814207f7c56584435fc5c10b3aa24f71a2b616ff6b352dc"
+        },
+        "sourceQa": {
+          "log": "/tmp/101-ir-emitter-draft/evidence/source-qa-final-review.log",
+          "logSha256": "f696fb210fb9763c67732fe3c68f3024f76639dee2a3430d47b9afeb9f5bfc46",
+          "receipt": "/tmp/101-ir-emitter-draft/evidence/source-receipt-final-review.json",
+          "receiptSha256": "18b54864889e9640cbbd5754e87faeb29bfb1c5548ec247a125ae710ab400099"
+        }
+      },
+      "findings": [],
+      "constraints": {
+        "draftMutated": false,
+        "repositoryMutated": false,
+        "broadGatesRun": false,
+        "installedQualified": false,
+        "parentOwnedRemainingWork": "Run the integrated installed QA and exact frozen repository gates."
+      }
+    },
+    "sdkManifest": {
+      "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+      "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+    },
+    "sdkRebuild": "Not needed: Hub leaf and fixture lie outside the unchanged seven SDK package source manifest. Installed QA revalidates the SDK and copied six-file closure after caller cleanup.",
+    "lintDeltaReview": {
+      "schemaVersion": 1,
+      "status": "clear",
+      "scope": "Read-only review of the three A07 lint-only edits against rejected candidate tree 54fdac7ecddc4b39aa7e3a837004026bca9565e6; broad candidate gates and integration receipt rebinding remain pending.",
+      "baselineCandidateTree": "54fdac7ecddc4b39aa7e3a837004026bca9565e6",
+      "reviewedSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "3e47052e6b60503062e02b9510edafd84fe91e92f89a2f9f9326a75df89b5f47",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d6424b8c1dcdb38c0f000394deee2aca3d4c92dc350949c8c1e8548c8a2fd092",
+        "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+        "examples/ir-emitter/consumer.mjs": "b81c21d2d67e152849df2784eab75f0004c79c705aff69f113015a89c62c3562",
+        "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+        "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d"
+      },
+      "deltaAssessment": {
+        "examples/ir-emitter/consumer.mjs": "The conditional expression in the child exit handler became an equivalent if/else. It evaluates the same captured error once and invokes the same reject(error) or resolve() branch.",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "The gateway binding became an explicitly typed const initialized by the inert constructor. The authorizer closure is invoked only by the later start() call, after const initialization, so the reentrant-Stop test semantics are unchanged.",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "Only comments were added inside the three intentional cleanup catch blocks; control flow, awaited settlement, exact-token ownership and fault swallowing are byte-for-byte unchanged apart from comments."
+      },
+      "validation": {
+        "focused": {
+          "status": "pass",
+          "cases": 17,
+          "log": "/tmp/101-ir-emitter-lint-repair-focused.log",
+          "sha256": "6fa5750cc9059a2bc0fa20b74f1b52ed5c06a96299d5599a910fa401dff2e112"
+        },
+        "sourceCaller": {
+          "status": "pass",
+          "receipt": "/tmp/101-ir-emitter-lint-repair-source-receipt.json",
+          "receiptSha256": "2c6b0a78daf63bfd33c36d3d7775bc0a32c57b037acfb1ac3112f733e68fed00",
+          "logSha256": "6b6fb5a2305aebefb15918dbbbe6b21436ef69f6de9e9562db1ce20e50bcf92c"
+        },
+        "installedCaller": {
+          "status": "pass",
+          "receipt": "/private/tmp/101-sdk-consumer-DQOPkU/ir-emitter-connector-3RxzAI/receipt.json",
+          "receiptSha256": "9aa8828436b05edb9174072fc56c741553d35cd5e6f89a1ac897b14292fcf7d4",
+          "logSha256": "e15595ccf8cdc703ead079607acbeeb94a4aece08a7c9ee782345eaf1a91e455",
+          "sdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+        },
+        "hashConsistency": "pass; actual six files, source receipt sourceSha256, installed receipt sourceSha256 and copiedSourceSha256 all agree; source and installed result objects are identical; installed SDK manifest hash is unchanged before/after execution."
+      },
+      "findings": [],
+      "pending": "The repository A07 receipt still belongs to the prior candidate until the parent rebinds its source hashes and creates a replacement exact candidate. The final result ref remains intentionally absent until all required gates pass; this narrow clear verdict makes no broad-gate claim."
+    },
+    "reviewScope": "Original independent core clear, lint-only delta clear and final retirement-reentry clear are separately pinned. Final23-case/source/installed evidence matches the current six; prior reports and rejected candidate trees remain literal history.",
+    "retirementReentryReview": {
+      "schemaVersion": 1,
+      "review": "A07 IR emitter stop/close reentry repair",
+      "reviewedAt": "2026-10-08T16:08:55.328346+00:00",
+      "status": "clear",
+      "findings": [],
+      "scope": {
+        "mode": "independent read-only bounded delta review",
+        "baselineTree": "ff455ca684862f157282544e77aa9b16b94beb02",
+        "changedPaths": [
+          "packages/hub-server/src/nec32-ir-emitter-gateway.ts",
+          "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts"
+        ],
+        "excluded": [
+          "broad repository gates",
+          "deployment or remote mutation",
+          "physical IR carrier, appliance acknowledgement, and observed appliance state"
+        ]
+      },
+      "sourceSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "7b85a2b6ca81dd7e551a4fe42b70ae58151feca4975a64e77e78d59f288dd243",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d7d7df3a44f1ea23dada9fe42e5c40b12a0651f1ea8af5cc68225374a4da5130",
+        "examples/ir-emitter/software-emitter.mjs": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+        "examples/ir-emitter/consumer.mjs": "b81c21d2d67e152849df2784eab75f0004c79c705aff69f113015a89c62c3562",
+        "tools/qa-ir-emitter.mjs": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+        "tools/qa-installed-ir-emitter.mjs": "62df97fa105d9b7d37f2b203fa31c70db5d4b0eda5f5cd8def3432361652ac4d"
+      },
+      "baselineSourceSha256": {
+        "packages/hub-server/src/nec32-ir-emitter-gateway.ts": "3e47052e6b60503062e02b9510edafd84fe91e92f89a2f9f9326a75df89b5f47",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "d6424b8c1dcdb38c0f000394deee2aca3d4c92dc350949c8c1e8548c8a2fd092"
+      },
+      "assessment": [
+        {
+          "property": "callback reentry joins one retirement",
+          "result": "clear",
+          "evidence": "stopActive stores one unresolved promise at gateway lines 170-174 before detach, abort, provider.stop, or provider.whenSettled can reenter; every later stop/close observes and awaits that promise."
+        },
+        {
+          "property": "exceptions cannot skip cleanup",
+          "result": "clear",
+          "evidence": "provider stop, initial settlement, close, and final settlement faults remain contained; the shared promise resolves through both fulfillment and rejection continuations only after the cleanup chain has completed."
+        },
+        {
+          "property": "exact ownership and single close",
+          "result": "clear",
+          "evidence": "the exact provider token is tested before close and retained until operation plus provider settlement, close, and final settlement finish; token release occurs once at lines 180-187. Six real-hook cases cover stop, close, and whenSettled reentry through both public Stop and close, including a held-settlement competitor."
+        },
+        {
+          "property": "regression containment",
+          "result": "clear",
+          "evidence": "Only the gateway and its test differ from the immutable baseline tree within the six-file lane; the child, consumer, source QA, and installed QA hashes are unchanged."
+        }
+      ],
+      "evidenceSha256": {
+        "/tmp/101-ir-emitter-stop-reentry-old.log": "84dd316e0233fc1facfb6dad512a9e37ce5c262970c4de9227b3329b9f4bdb97",
+        "/tmp/101-ir-emitter-stop-reentry-current.log": "47e71fddc9cd87ffe0283918a21e2da887b5e45b4a2cc5c36c4cacb81b47f5ad",
+        "/tmp/101-ir-emitter-stop-reentry-focused-old.log": "3badc4b942c0176f403e0a6f50784ff9ffc237bab04e47eaa54ce3349768dbde",
+        "/tmp/101-ir-emitter-stop-reentry-focused-current.log": "b27210476589f12eeb3520587db7589715b664832a1dc67e6cfc80ba09d5bef9",
+        "/tmp/101-ir-emitter-stop-reentry-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "/tmp/101-ir-emitter-stop-reentry-source.log": "8f58e474ad0cdf4a2b634646c37630039672fe4d8b7a3bfb362696edd0d15181",
+        "/tmp/101-ir-emitter-stop-reentry-installed.log": "41deddf357db9c2b8b7448b99943f2399d6e6d622349b8a5d0a727cb19fad00f",
+        "/tmp/101-ir-emitter-stop-reentry-source-receipt.json": "32253a54613e60598c92a830a94b5ab6ea12dde3329edb3d901596c974be49ba",
+        "/private/tmp/101-sdk-consumer-DQOPkU/ir-emitter-connector-AQgaOf/receipt.json": "ba91c2430934b17fa1e4ed0718016b91002cb1ad1dce71412a0374fd781f867a"
+      },
+      "validation": {
+        "oldDirectRegression": "failed with two closes",
+        "oldFocused": "4 passed, 2 failed",
+        "currentDirectRegression": "passed with one close",
+        "currentFocused": "23 passed, 0 failed",
+        "scopedLint": "passed",
+        "sourceQa": "passed",
+        "installedQa": "passed with source and copied-source hashes equal and SDK manifest stable before/after",
+        "installedSdkManifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "qualification": "The bounded reentry repair is clear for integration. A new exact candidate must still complete the repository-required gates before commit; the rejected ff455 candidate is not qualified by this report."
+    }
+  },
+  "primarySources": [
+    "https://www.renesas.com/en/document/dst/upd62a-data-sheet",
+    "https://developer.android.com/reference/android/hardware/ConsumerIrManager",
+    "https://android.googlesource.com/platform/hardware/libhardware/+/5122502/include/hardware/consumerir.h"
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/private/tmp/101-ir-emitter-next-plan.json",
+      "sha256": "47e73deccdf73386a1cbe22d2959b860697d6321b36749b16f08801c0c1f1677",
+      "gitBlob": "39009f520c6f90e78554060796b669726c7f421c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-000"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-absent-module.log",
+      "sha256": "b7f1129156afd87b0befae9eeadf8861f0604fba8c783504ed479287472c5a62",
+      "gitBlob": "03aa0ca2fe78e70d4fdf1072541f6d9f9e340133",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-001"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-sync-transmit-cleanup.log",
+      "sha256": "fef5b22e2b67f11e811d029bddb0a9725539fe09f891f2a051df29cc2e7985b4",
+      "gitBlob": "c33ae0103f078517faeea72c3d50263e49f37d2c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-002"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-active-deadline-stop.log",
+      "sha256": "9680aafb069789267bf32a8232dbcf9dace96e2c4ae59cf3842604f511a1cc1e",
+      "gitBlob": "a227d1b7559ffa8647ed17ec02678dc9ea50a69d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-003"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-independent-review-current.log",
+      "sha256": "80510c1dfb3e0a4439f69e292789b4909e73f69f3b17bfb2949913384af5345a",
+      "gitBlob": "cc789d851f737d5728faac2c1f5378e5df83f2d3",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-004"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-independent-settlement-current.log",
+      "sha256": "eef89445bee608971563da5745cf7e7d2a08fd007b3d84f9c4930d34805a20f4",
+      "gitBlob": "77a013d86dc8a7cafd5c670b2bd6896161589bae",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-005"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-independent-stop-close-current.log",
+      "sha256": "4e794454d6db02d5a1c1418c6479dd5766c69632fe482044643795846de0b52b",
+      "gitBlob": "2bd85c6546a7e1d800f92de0101eed4dc671f840",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-006"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/red-independent-child-generation-current.log",
+      "sha256": "c5cfa880c02f0acacada76f5fab26b566ee01e217928ed65521dcae5b224e71b",
+      "gitBlob": "10790f0e91cc5ea0a1c25bb9aea0cac7dcd9e718",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-007"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/green-gateway-final-review.log",
+      "sha256": "71881a18943fa36fdcec25c076cb7f9eef4f39dd573bbe9e9319cee3e2d7b898",
+      "gitBlob": "32e91004fa543a92247762e8b879f89412c3a1ed",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-008"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/targeted-types-final-review.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-009"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/green-independent-review-final.log",
+      "sha256": "3a673e8ce48197b470adb97d32c023bce3be14f02af11a1f64c1bae2c36f202b",
+      "gitBlob": "992465172bc9e6b7d31c79dab9e8694917a10624",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-010"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/green-independent-settlement-final.log",
+      "sha256": "a673a78eb14663cb6814207f7c56584435fc5c10b3aa24f71a2b616ff6b352dc",
+      "gitBlob": "ec8958cd3c72565ac73e6e36734758f811f075ca",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-011"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/green-independent-stop-close-final.log",
+      "sha256": "47e71fddc9cd87ffe0283918a21e2da887b5e45b4a2cc5c36c4cacb81b47f5ad",
+      "gitBlob": "ccccd67d6de29709f6c90553a978f9577dcc1dec",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-012"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/green-child-generation-token.log",
+      "sha256": "e26fb18ce058824979de63bdcda71f595e5b030a9d2c797e9ee618a66c0d1c42",
+      "gitBlob": "fbff514c83fd514287a0a2ffd74f70db6d5df714",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-013"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/examples/ir-emitter/consumer.mjs",
+      "sha256": "f1aed646e7eaf195352252bb94789e2a801b6b2cd4e522308e0954f77cebe7aa",
+      "gitBlob": "6253581dd9e6cb18f75f8cebbb5fbe5dc6965ef5",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-014"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/examples/ir-emitter/software-emitter.mjs",
+      "sha256": "9e07a1091824e8044ff32f5c6c3a7c844fa138bb238250b37f4bfa10868a8b63",
+      "gitBlob": "6fe5ea5915175f17982279c3bc4cb646ff30679d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-015"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+      "sha256": "d183e99ecbb8ae9fc96e43eef2946de187f8c8644f0bb7b92500347cf2350eec",
+      "gitBlob": "3a492c100220c781d8212473c90e036dfe1dcbe4",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-016"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/packages/hub-server/src/nec32-ir-emitter-gateway.ts",
+      "sha256": "9fc452208ba74d672a4ece657e24f2a11105a0baffbc69f7af2e2207ab9fa3d2",
+      "gitBlob": "c5e6c1b50f09d42f2faa42295f51702d1097750c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-017"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/tools/qa-installed-ir-emitter.mjs",
+      "sha256": "ad6da5f00facd8c65ce671bd07bf4e118c29479fe66f331629c1d24151e0a682",
+      "gitBlob": "5d7ce16e25c9781d03a9ea56e7c2d45f985b5149",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-018"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/independent-review-initial/tools/qa-ir-emitter.mjs",
+      "sha256": "81ee2e1d7668e344b2245a61f07542175f284d2831df50df09686d2ec186bda2",
+      "gitBlob": "c9fc1e2d01fdf086cb7e9c8d7677c54855859462",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-019"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/examples/ir-emitter/consumer.mjs",
+      "sha256": "bc7b45c5e71f45ea09d960acfc1c9066070d9be43e7014301f25ec6b70d906b1",
+      "gitBlob": "2ebbd9bd50aafea557fa83d14530cd72fd4500b8",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-020"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/examples/ir-emitter/software-emitter.mjs",
+      "sha256": "84a2ea491f05cee58fea993695d0d380f13bc9e552c88e4dcba8a2d00755017b",
+      "gitBlob": "5bba00130fc40161e5f2c7792a089fe083bee72e",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-021"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+      "sha256": "6147ba57ac79c069880a28aaa8e3aa95aefc595768ab9800be6f32f4ee60bc7d",
+      "gitBlob": "3ca9b0635c5f9770635902183b6ed13222331e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-022"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/packages/hub-server/src/nec32-ir-emitter-gateway.ts",
+      "sha256": "5beeeb0efa626d82cd829ffac3f8faf73fb8ef137dee4213c3cab40cfe39379f",
+      "gitBlob": "34471885047368d2d1999fdc06fd16add4443a60",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-023"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/tools/qa-installed-ir-emitter.mjs",
+      "sha256": "0adf3b5a888b960cd963936a15bfda89666433ffa1ad23c30ae5d5f99b877f11",
+      "gitBlob": "b06665e011d115fd438e61b2520221daf8a2d667",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-024"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-draft/evidence/stop-close-review-initial/tools/qa-ir-emitter.mjs",
+      "sha256": "47cef3226ba796946e2809e8237ec8b47f90f0c6528824139763af374c87bad5",
+      "gitBlob": "85b240c719024465ae9c1abf337b83df50311d0f",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-025"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-independent-review-blocked.json",
+      "sha256": "77b664c788b1ba5fb70a6c5e4e0c7debece51666cc926901062726a064a85e2c",
+      "gitBlob": "f01edddd3cf132883cf7ec4f804f1a4be14f1613",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-026"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-stop-close-review-blocked.json",
+      "sha256": "fd263379e3729447f56308379592cb14bf75a11e1328009180da403d95c101cb",
+      "gitBlob": "c3552aa509767183686d2b343fba59b8c156714d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-027"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-independent-review.json",
+      "sha256": "ce8cce77b798ef8b99135ec68db6f1b980228353127f3e02f5c9d465ab3d7fd7",
+      "gitBlob": "0a34f48569b73daeef6661e5233ff32504780f15",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-028"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-independent-regressions.mjs",
+      "sha256": "e1c485b59aed8e8a6a44f07d92a0e038ce1cea32295f1c260106beb331cdbfec",
+      "gitBlob": "eb7cbaf9cc264122764b76eab948ca983a0a7170",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-029"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-independent-regressions.log",
+      "sha256": "80510c1dfb3e0a4439f69e292789b4909e73f69f3b17bfb2949913384af5345a",
+      "gitBlob": "cc789d851f737d5728faac2c1f5378e5df83f2d3",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-030"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-settlement-regression.mjs",
+      "sha256": "a750421d84956b806b4c372ded2509efe14829be18c94e9a77222fb40fd995f9",
+      "gitBlob": "74e43afdcce96703ab95e001f5692b601353f08c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-031"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-settlement-regression.log",
+      "sha256": "eef89445bee608971563da5745cf7e7d2a08fd007b3d84f9c4930d34805a20f4",
+      "gitBlob": "77a013d86dc8a7cafd5c670b2bd6896161589bae",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-032"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-child-generation-regression.mjs",
+      "sha256": "576ee6dea6b2fa98698caa7f373a9d1c106f3e1b9e8adca3c2b85ac6c7612686",
+      "gitBlob": "dca659ca22dc5c0af9d6699d950860602af761fd",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-033"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-child-generation-regression.log",
+      "sha256": "c5cfa880c02f0acacada76f5fab26b566ee01e217928ed65521dcae5b224e71b",
+      "gitBlob": "10790f0e91cc5ea0a1c25bb9aea0cac7dcd9e718",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-034"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-stop-close-regression.mjs",
+      "sha256": "6fce55c65063ca87fdb99ac62f68070d1c27c84a8188cb321003962ea91373bc",
+      "gitBlob": "6ee5a203bba2bb8481966d9f5beb24cdd7d3e125",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-035"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-stop-close-regression.log",
+      "sha256": "4e794454d6db02d5a1c1418c6479dd5766c69632fe482044643795846de0b52b",
+      "gitBlob": "2bd85c6546a7e1d800f92de0101eed4dc671f840",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-036"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-stop-close-regression-final-independent.log",
+      "sha256": "47e71fddc9cd87ffe0283918a21e2da887b5e45b4a2cc5c36c4cacb81b47f5ad",
+      "gitBlob": "ccccd67d6de29709f6c90553a978f9577dcc1dec",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-037"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-final-source.log",
+      "sha256": "f696fb210fb9763c67732fe3c68f3024f76639dee2a3430d47b9afeb9f5bfc46",
+      "gitBlob": "725d598ce91fb3befc55ca3abe1a894986e90e31",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-038"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-final-source-receipt.json",
+      "sha256": "18b54864889e9640cbbd5754e87faeb29bfb1c5548ec247a125ae710ab400099",
+      "gitBlob": "4c20e022c8c40d9ccfa51236ac047a797005b8bb",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-039"
+    },
+    {
+      "path": "/private/tmp/101-ir-emitter-final-installed.log",
+      "sha256": "e6e3ad6e97c31f9d8ec87edb7a88ff678889cc9a7d94373dc2377e473290a30b",
+      "gitBlob": "9516c025e537bc73cb619a32b130e2e66f1faee6",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-040"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/ir-emitter-connector-yxeAJw/receipt.json",
+      "sha256": "eb56559bd922cef5422a1576ef2552275b50a01069c709f970b3e3e542d88711",
+      "gitBlob": "243b0bfdf2513d4a93b1a2e6976082839c391892",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-041"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-result.json",
+      "sha256": "9560a222abe766afb7b3917d517e63cb1e10e7051ecc20f8bcd87f3b5cd24090",
+      "gitBlob": "ffd8bbd6dd6be2288f169b37aec3770bb6c15b04",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-042"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-043"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-types.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-044"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-types.json",
+      "sha256": "8881291339740321616b23f2822b558c5bb2fb85977293064e6487b688497d90",
+      "gitBlob": "27e9cf89132eeef9e36a6cc80941774a9df12c57",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-045"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-lint.log",
+      "sha256": "b97c60510e2738bd0f69911b28a7c06b160ef87a4777e4cb7a08a707ce4150f6",
+      "gitBlob": "53bc05a75323db13fdae870a63555b4d817bd80a",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-046"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-lint.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-047"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-lint.json",
+      "sha256": "af20d3ece9e6d8932db9c1614a41ebcf7e04975d6d88cb92ffd8a2973ee36b0a",
+      "gitBlob": "5ffe808103742ea49b9902da5398c67e4f92570c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-048"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-unit.log",
+      "sha256": "0ac06a4b2b5d47f7a87473866f6529dbf9fe92337568b0097e58d0a26ef7e3dd",
+      "gitBlob": "c955e85b50c7c84f403b280dc578a90024a82054",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-049"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-unit.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-050"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-54fd-unit.json",
+      "sha256": "59a16e4a315370e99f73ec2470ec951c119771ab4c4d566182941a4f27854bd9",
+      "gitBlob": "b1ce84102e1e2d345768d4b962ba4ff6c34f5302",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-051"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-focused.log",
+      "sha256": "6fa5750cc9059a2bc0fa20b74f1b52ed5c06a96299d5599a910fa401dff2e112",
+      "gitBlob": "32e0d607910b61642cd199f8bf3fb50b2c50b0a6",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-052"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-focused.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-053"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-source.log",
+      "sha256": "6b6fb5a2305aebefb15918dbbbe6b21436ef69f6de9e9562db1ce20e50bcf92c",
+      "gitBlob": "4c057107e7e3c6c33b0034caa435667cbe12fc4d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-054"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-source.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-055"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-source-receipt.json",
+      "sha256": "2c6b0a78daf63bfd33c36d3d7775bc0a32c57b037acfb1ac3112f733e68fed00",
+      "gitBlob": "c69b97a42bab27ffa0b6d8e742bf991e9d8f08a6",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-056"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-installed.log",
+      "sha256": "e15595ccf8cdc703ead079607acbeeb94a4aece08a7c9ee782345eaf1a91e455",
+      "gitBlob": "f9b026d3afa9f8c242dfbbdbdc4823a027a70ecf",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-057"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-repair-installed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-058"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-lint-delta-review.json",
+      "sha256": "3dc5ed5865ef297b6d63e6b5ec48b0d6282b9b5d293d46b0fb6b786a4f3c2d8c",
+      "gitBlob": "945dc97eef5c02f0340cd44fbdc50d0454c72c0a",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-059"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/ir-emitter-connector-3RxzAI/receipt.json",
+      "sha256": "9aa8828436b05edb9174072fc56c741553d35cd5e6f89a1ac897b14292fcf7d4",
+      "gitBlob": "8b8572880ee977b8a991ec460c728127281e670c",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-060"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-result.json",
+      "sha256": "4e94fab227121655b23293e21ee1b23608401a558e4d3203fd745255b8947b33",
+      "gitBlob": "bb532fea8f58beff169113070c74bb39001aa777",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-061"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-types.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-062"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-types.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-063"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-types.json",
+      "sha256": "c859f565e5748899ef9b8b2658d28e44e8ca96209109873fa5bcdac177af27d2",
+      "gitBlob": "e1cb4e5f3b8ee2d7ff665b5093314034d6045e24",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-064"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-lint.log",
+      "sha256": "2b2a54e815187a2482afb433308decd6c59db546b0c94ee54d433e13590d14e7",
+      "gitBlob": "4b53e4399c81b92a74c0543041efdbd989ef555f",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-065"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-066"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-lint.json",
+      "sha256": "87094b300c9bdd88bab998a73e5bbe0faefa19bb45d795ed762d0f91eae9d41a",
+      "gitBlob": "24abf4d0e7cb861d6c63b9edb8105f4fb601bb0e",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-067"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-unit.log",
+      "sha256": "c8d4dccb09a7f49bdcd631623687c49b601834db6a941d5aba0ab6fb7c615cec",
+      "gitBlob": "9d8427cf35a5fd8e148fb017eea638df4e76db0d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-068"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-unit.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-069"
+    },
+    {
+      "path": "/tmp/101-ir-ios-rejected-ff455-unit.json",
+      "sha256": "0ed2affadee0af2902acdba03f6a6683dbb8c945a7f1dd92eac428bb51edc5a3",
+      "gitBlob": "e64fe200a2b86b63c988c0479d8b074d2907e24b",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-070"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-regression.mjs",
+      "sha256": "e93a00b387a42fd304737da78d5b04b449da248ec528aeb6ddf274bb214be0c7",
+      "gitBlob": "852b82386154a2ed2c1c7423561f7ba7561c58c7",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-071"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-old.log",
+      "sha256": "84dd316e0233fc1facfb6dad512a9e37ce5c262970c4de9227b3329b9f4bdb97",
+      "gitBlob": "29dc74713534b1ac56052652deb9717718781a13",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-072"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-old.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-073"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-old-source.ts",
+      "sha256": "3e47052e6b60503062e02b9510edafd84fe91e92f89a2f9f9326a75df89b5f47",
+      "gitBlob": "be38a7971bb6edb185f2dc92de9d5ad15eb815f9",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-074"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-initial-test.ts",
+      "sha256": "ac30f4fce6a40f054c285f1f71abadbf42377e6ddbaf8e965c0ae57d58354cdb",
+      "gitBlob": "11dfec5f7ce73a6b34ccf6de24e8769147427f03",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-075"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-focused-old.log",
+      "sha256": "3badc4b942c0176f403e0a6f50784ff9ffc237bab04e47eaa54ce3349768dbde",
+      "gitBlob": "75f8d49e0020dbd2ecfeee72113f096e72375323",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-076"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-focused-old.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "gitBlob": "d00491fd7e5bb6fa28c517a0bb32b8b506539d4d",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-077"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-focused-current.log",
+      "sha256": "b27210476589f12eeb3520587db7589715b664832a1dc67e6cfc80ba09d5bef9",
+      "gitBlob": "73960010d9867edc697f2bcfbb41276090de99d3",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-078"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-focused-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-079"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-current.log",
+      "sha256": "47e71fddc9cd87ffe0283918a21e2da887b5e45b4a2cc5c36c4cacb81b47f5ad",
+      "gitBlob": "ccccd67d6de29709f6c90553a978f9577dcc1dec",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-080"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-current.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-081"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-lint.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-082"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-lint.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-083"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-source.log",
+      "sha256": "8f58e474ad0cdf4a2b634646c37630039672fe4d8b7a3bfb362696edd0d15181",
+      "gitBlob": "0f82b40b14cb47f091d58c1c72e2b8378ba91db5",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-084"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-source.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-085"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-source-receipt.json",
+      "sha256": "32253a54613e60598c92a830a94b5ab6ea12dde3329edb3d901596c974be49ba",
+      "gitBlob": "5949ffaa2ef84bfee40de2a96e9f82db15bbb42a",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-086"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-installed.log",
+      "sha256": "41deddf357db9c2b8b7448b99943f2399d6e6d622349b8a5d0a727cb19fad00f",
+      "gitBlob": "b568916b95b360e8123f08908a1e0efabb16287f",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-087"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-installed.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-088"
+    },
+    {
+      "path": "/tmp/101-ir-emitter-stop-reentry-independent-review.json",
+      "sha256": "3c4c1c2eaeddb7fa46e5e987a694cf11d90a1e932099041f2501025ed9cadc82",
+      "gitBlob": "f537dbf8b345b1d3eab8ee310c3b36f3b41b99c1",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-089"
+    },
+    {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/ir-emitter-connector-AQgaOf/receipt.json",
+      "sha256": "ba91c2430934b17fa1e4ed0718016b91002cb1ad1dce71412a0374fd781f867a",
+      "gitBlob": "c0a73e26edf48817982dc1a58315edfcf56bac7a",
+      "ref": "refs/codex/evidence/2026-10-08-ir-emitter/evidence-090"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-ir-ios/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-ir-ios/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only an exact candidate result proves broad gates. No local commit with a red gate."
+  },
+  "acceptance": "A07 stays partial. Completion proves selected software provider dispatch only. Physical carrier/timing/power, nearby emitter, hardware permissions, firmware and real appliance receipt/meaning/acknowledgement/state remain unverified. No automatic retry, undo, checkbox or support-row promotion.",
+  "rejectedCandidates": [
+    {
+      "schemaVersion": 1,
+      "status": "rejected-no-commit",
+      "tree": "54fdac7ecddc4b39aa7e3a837004026bca9565e6",
+      "treeRef": "refs/codex/evidence/2026-10-08-ir-ios/rejected-54fd-lint",
+      "reason": "Five new IR lint style errors; no build or rendered gate run for this red candidate.",
+      "gates": {
+        "types": {
+          "schemaVersion": 1,
+          "name": "types",
+          "tree": "54fdac7ecddc4b39aa7e3a837004026bca9565e6",
+          "command": [
+            "npx",
+            "tsc",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 4.026,
+          "log": "/tmp/101-ir-ios-final-types.log"
+        },
+        "lint": {
+          "schemaVersion": 1,
+          "name": "lint",
+          "tree": "54fdac7ecddc4b39aa7e3a837004026bca9565e6",
+          "command": [
+            "npm",
+            "run",
+            "lint"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 22.746,
+          "log": "/tmp/101-ir-ios-final-lint.log"
+        },
+        "unit": {
+          "schemaVersion": 1,
+          "name": "unit",
+          "tree": "54fdac7ecddc4b39aa7e3a837004026bca9565e6",
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 305.779,
+          "log": "/tmp/101-ir-ios-final-unit.log"
+        }
+      },
+      "unitTests": 2815,
+      "unitSkipped": 0,
+      "runnerSetup": "The initial parallel wrappers contended over write-tree before lint ran. The wrapper was corrected to readonly comparisons; actual lint then ran and failed on five style errors. No source or gate deadline changed."
+    },
+    {
+      "schemaVersion": 1,
+      "status": "rejected-no-commit",
+      "tree": "ff455ca684862f157282544e77aa9b16b94beb02",
+      "treeRef": "refs/codex/evidence/2026-10-08-ir-ios/rejected-ff455-retire-reentry",
+      "reason": "Type/lint/unit gates passed, but a concrete adjacent reentry regression closed the provider twice. Build/rendered were not run; candidate was never committed.",
+      "gates": {
+        "types": {
+          "schemaVersion": 1,
+          "name": "types",
+          "tree": "ff455ca684862f157282544e77aa9b16b94beb02",
+          "command": [
+            "npx",
+            "tsc",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 2.964,
+          "log": "/tmp/101-ir-ios-final-types.log"
+        },
+        "lint": {
+          "schemaVersion": 1,
+          "name": "lint",
+          "tree": "ff455ca684862f157282544e77aa9b16b94beb02",
+          "command": [
+            "npm",
+            "run",
+            "lint"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 22.183,
+          "log": "/tmp/101-ir-ios-final-lint.log"
+        },
+        "unit": {
+          "schemaVersion": 1,
+          "name": "unit",
+          "tree": "ff455ca684862f157282544e77aa9b16b94beb02",
+          "command": [
+            "npm",
+            "run",
+            "test:unit"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 303.018,
+          "log": "/tmp/101-ir-ios-final-unit.log"
+        }
+      },
+      "unitTests": 2815,
+      "regression": "Actual provider.stop and whenSettled reentry each produce two closes;6-case old focused regression has4 pass and2 fail."
+    }
+  ]
+}

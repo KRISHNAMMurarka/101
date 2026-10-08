@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-ios-watch-simulator-build-native-identity-lifecycle-verified-full-release-open",
+  "localOnly": true,
+  "sourceHead": "a47c51dda9929ad40a6a64c30baff94f80209c0b",
+  "sourceSha256": {
+    "apps/controller-native/App.tsx": "8a0fa336cbc6ddd376f63e0bef2aa812ec3b0b7c3be1892081527f5a6d6f8753",
+    "apps/controller-native/src/motion-controller.ts": "e3ace4a5f247dab5e23d4a31a994102a358e2b39c9fb83d741a3382b89f82d01",
+    "apps/controller-native/src/scanner-session.ts": "b7d4d90614a99a8aae66201d90bd58bd1e420c186b15c341fa13ade37edbd0a2",
+    "apps/controller-native/src/native-identity.ts": "35ed6db459adcda8038974757081bc926c26ad44c99ea40885d2c6eab870bf18"
+  },
+  "inputQualification": "513 exact native/generated/watch/package input pins matched at artifact verification on the recorded source head. The later Hub IR integration changes package/index inputs outside the native bundle; this receipt does not assert all513 pins still match a later candidate tree.",
+  "environment": {
+    "xcode": "26.6 (17F113)",
+    "sdk": "iOS/watchOS simulator26.5",
+    "runtime": {
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+      "version": "26.5",
+      "buildversion": "23F77",
+      "name": "iOS 26.5"
+    },
+    "physicalDevice": false
+  },
+  "artifacts": {
+    "unsigned": {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/101Link-ios-watch-simulator-release.zip",
+      "bytes": 27971854,
+      "sha256": "54e1f179d07cb503162303a9fdc28977b729836a58ca5a2565bce62b4e3cffe7",
+      "verifiedFiles": 67,
+      "bundle": {
+        "bytes": 3146268,
+        "sha256": "8a35c44ceea3bac241c3461889380ed898bc6a6931c095ed94a95cc0a0e17bf2",
+        "formatPrefixHex": "c61fbc03c103191f"
+      },
+      "phone": {
+        "CFBundleIdentifier": "com.oneohone.link",
+        "CFBundleVersion": "1",
+        "MinimumOSVersion": "16.4",
+        "DTPlatformName": "iphonesimulator",
+        "DTSDKName": "iphonesimulator26.5"
+      },
+      "embeddedWatch": {
+        "CFBundleIdentifier": "com.oneohone.link.watchkitapp",
+        "CFBundleVersion": null,
+        "MinimumOSVersion": "10.0",
+        "DTPlatformName": "watchsimulator",
+        "DTSDKName": "watchsimulator26.5",
+        "WKCompanionAppBundleIdentifier": "com.oneohone.link"
+      },
+      "signing": "CODE_SIGNING_ALLOWED=NO; simulator only; no intended distribution identity claim"
+    },
+    "xcodeSimulatorSigned": {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/101Link-xcode-ios-watch-simulator-release.zip",
+      "bytes": 28075039,
+      "sha256": "fab9cbbcec7062cc570fdc31390171235a382729ad20e8fd6c2fd9118ee4eb47",
+      "verifiedFiles": 99,
+      "bundleSha256": "256106ab8be69f4f39c42bf7b91e19bf05056971b30e2c63057751de6a8f53b5",
+      "sourceMapSha256": "8d03c0ba270fba36955a2ae9d9b6b3f7d3ceae028424bbe8ccb184b1b3cd12a5",
+      "signing": "Standard Xcode simulator ad-hoc (-) signing. No developer team/certificate/provisioning requested; simulator entitlements only. Intended release signing unqualified.",
+      "entitlements": {
+        "101Link.app-Simulated.xcent": {
+          "application-identifier": "D2Z55G42SY.com.oneohone.link",
+          "keychain-access-groups": [
+            "D2Z55G42SY.com.oneohone.link"
+          ]
+        },
+        "101Link.app.xcent": {}
+      }
+    },
+    "bundleComparison": {
+      "equalLength": true,
+      "bodyEqualOutsideSourceHashAndFooter": true,
+      "changedBytes": 40,
+      "headerSourceHashMatchesPlainJs": true,
+      "sourceMapFilenameOnlyChangeReconstructsPriorHeaderHash": true,
+      "footerHashVerified": true
+    },
+    "sourceMap": "All826 source-map contents identical across successful builds; App, motion-controller, scanner-session and native-identity contents equal exact recorded repository bytes. Only sourceMappingURL filename changes Hermes header/footer hash; bytecode body is identical."
+  },
+  "retainedFailures": [
+    "First unsigned xcodebuild exited65: globally forcing iphonesimulator incorrectly selected the watch icon target SDK. Corrected command leaves each target its own SDK.",
+    "Unsigned app installed/launched but actual native Keychain returned OS-34018; simulator securityd reported missing application identifier/keychain groups. Product showed readable recovery and disabled connection. No product code changed for this build configuration.",
+    "Manual test-signed copy verified its signature but launch was rejected by FBS/RBS/launchd163. Standard Xcode simulator signing succeeded; no custom entitlement bypass or developer certificate requested.",
+    "Initial same-Hermes-byte assertion failed. Literal comparison established only40 header/footer bytes changed; exact source-map filename substitution reconstructs the prior source hash. It did not establish a code regression.",
+    "Stale UI control and ScreenCaptureKit capture failures were repaired by tool reset; no product failure inferred."
+  ],
+  "installReadback": {
+    "schemaVersion": 1,
+    "status": "pass",
+    "udid": "BC8118AF-2832-483C-AC19-93C6C5F25C9B",
+    "installedAppPath": "/Users/km/Library/Developer/CoreSimulator/Devices/BC8118AF-2832-483C-AC19-93C6C5F25C9B/data/Containers/Bundle/Application/A5DE9EA0-78F5-40C8-9712-35BD84B118A9/101Link.app",
+    "exactVerifiedArtifactFiles": 99,
+    "bundleSha256": "256106ab8be69f4f39c42bf7b91e19bf05056971b30e2c63057751de6a8f53b5",
+    "scope": "Readback of installed app container on controller-owned simulator only; no physical/signing identity/companion launch claim"
+  },
+  "audit": {
+    "schemaVersion": 1,
+    "sourceHead": "a47c51dda9929ad40a6a64c30baff94f80209c0b",
+    "runtime": {
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+      "version": "26.5",
+      "buildversion": "23F77",
+      "name": "iOS 26.5"
+    },
+    "physicalDevice": false,
+    "method": "Manual live native accessibility/screenshot interaction through cua_repl; exact simulator CLI installation/readback/lifecycle records. No mocked Expo bridge for these observations.",
+    "observations": [
+      {
+        "id": "IOS01",
+        "result": "pass",
+        "detail": "Corrected target-specific SDK unsigned Release build and standard Xcode ad-hoc signed Release build both passed; iOS/watch simulator targets, embedded companion,513 unchanged input pins,826 identical source-map contents."
+      },
+      {
+        "id": "IOS02",
+        "result": "pass",
+        "detail": "Installed and launched without Metro;99 installed signed app files match the verified artifact copy exactly."
+      },
+      {
+        "id": "IOS03",
+        "result": "partial",
+        "detail": "Typed invalid pairing input, activated Connect, observed That connection link could not be read. Scan or paste a new one. Back returns to pairing choices. Deep-link delivery not tested."
+      },
+      {
+        "id": "IOS04",
+        "result": "partial",
+        "detail": "Refused the native camera prompt. Returned to pairing choices; retry Scan displayed101 Link needs the camera only to read the pairing code. You can paste the code instead. Manual entry remained present. Initial refused attempt retained prior input-error text until retry; no approved camera or barcode capture claim."
+      },
+      {
+        "id": "IOS05",
+        "result": "not-verified",
+        "detail": "Cold app termination/relaunch tested; active scanner modal background/foreground and active connection retirement were not tested on this simulator."
+      },
+      {
+        "id": "IOS06",
+        "result": "pass",
+        "detail": "Unsigned app actual native storage rejected with OS-34018 and readable retry/disabled connection. Standard Xcode simulator-entitled app loaded absent identity, explicitly created test identity, cold relaunch loaded saved identity, explicit removal returned absent, second cold relaunch again loaded absent. Native metadata validates public-key digest via actual Expo SHA256 bridge. Same-key fingerprint equality, sign/verify enrollment and physical persistence are not claimed."
+      },
+      {
+        "id": "IOS07",
+        "result": "partial",
+        "detail": "Portrait pairing and named actions observed. Landscape screenshot recorded; some recovery content below fold. Touch-scroll reachability and virtual keyboard, full reflow/VoiceOver/physical ergonomics remain unverified."
+      }
+    ],
+    "captureRecovery": "One stale native-control state followed by ScreenCaptureKit audio/video stream failure; cua runtime reset/rebind restored control. No product failure inferred from tool capture failure.",
+    "findings": [
+      {
+        "id": "IOS-AUDIT-01",
+        "severity": "medium",
+        "surface": "First camera refusal after prior invalid-code error",
+        "observed": "After refusing the first OS permission prompt, pairing choices returned with prior invalid-code message. Retry Scan replaced it with current camera guidance.",
+        "impact": "First-time refusal takes another Scan attempt to explain the permission outcome.",
+        "status": "open; current retry path works, but immediate guidance is not accepted as complete.",
+        "suggestedAcceptance": "Actual App regression should show current denial guidance without permitting a retired permission callback to reopen camera or alter a replacement attempt."
+      }
+    ],
+    "releaseVerdict": "Selected build, actual Expo storage lifecycle and limited recovery verified; full native release acceptance remains open.",
+    "weightedScore": null,
+    "scoreLimit": "No full-release score: physical, accessibility, motion/camera and performance evidence absent.",
+    "notVerified": [
+      "Physical phone/watch, actual sensor/camera media",
+      "Intended distribution signing and install/update",
+      "Actual enrolled sign/verify/RTC pointer route",
+      "Full keyboard/VoiceOver/switch-device accessibility",
+      "WatchConnectivity/companion launch or motion",
+      "Latency, capture age/accuracy, thermals/energy",
+      "Full landscape touch-scroll and virtual keyboard"
+    ],
+    "screenshots": {
+      "identity-absent-after-removal.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-absent-after-removal.png",
+        "bytes": 251669,
+        "sha256": "8f4fd95d8296de37aece197fa97dbf424d1c0e159cf10737ed38dd661a834a62",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      },
+      "identity-created.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-created.png",
+        "bytes": 233605,
+        "sha256": "a0a5bf2a99a801e3d5ce36794ee961d08f4845cce94cede4e54f4da12924ab4a",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      },
+      "identity-reloaded.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-reloaded.png",
+        "bytes": 233605,
+        "sha256": "a0a5bf2a99a801e3d5ce36794ee961d08f4845cce94cede4e54f4da12924ab4a",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      },
+      "invalid-pairing-recovery.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/invalid-pairing-recovery.png",
+        "bytes": 174653,
+        "sha256": "457f853b0a9426719b1a69eb47322019b08cf65b70eab8fe8078f2a15a4751bb",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      },
+      "landscape-pairing.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/landscape-pairing.png",
+        "bytes": 176315,
+        "sha256": "140ecab749a6303cdbc4854f551ba596efa3d20b939c45ffb167f84c6c62761b",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      },
+      "unsigned-identity-unavailable.png": {
+        "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/unsigned-identity-unavailable.png",
+        "bytes": 235765,
+        "sha256": "9c28e11aaa3f0dda6300c9a560e85a0f41ccc645bec103a71e87a88f3b339e6b",
+        "pixelWidth": 1206,
+        "pixelHeight": 2622
+      }
+    }
+  },
+  "cleanup": {
+    "schemaVersion": 1,
+    "udid": "BC8118AF-2832-483C-AC19-93C6C5F25C9B",
+    "name": "101-owned-calibration-ios-simulator-vgpozmtc",
+    "ownershipRecordSha256": "df3ef6dfb1fe616bda61d40ec236c22c9f7c04e02f1fb514aaf70decac46f011",
+    "beforeState": "Booted",
+    "operations": [
+      {
+        "command": [
+          "xcrun",
+          "simctl",
+          "shutdown",
+          "BC8118AF-2832-483C-AC19-93C6C5F25C9B"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "atEpochMs": 1791473558078
+      },
+      {
+        "command": [
+          "xcrun",
+          "simctl",
+          "delete",
+          "BC8118AF-2832-483C-AC19-93C6C5F25C9B"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "atEpochMs": 1791473558226
+      }
+    ],
+    "ownedUUIDAbsentAfterDeletion": true,
+    "otherDevicesMutated": false
+  },
+  "primarySources": [
+    "https://developer.apple.com/documentation/security/errsecmissingentitlement",
+    "https://developer.apple.com/documentation/security/sharing-access-to-keychain-items-among-a-collection-of-apps",
+    "https://developer.apple.com/forums/thread/114456"
+  ],
+  "retainedEvidence": [
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/app-stderr.log",
+      "sha256": "d12d1ab4d8e3ace45fe5ec0cb309eeffc1601242beb39dff79ba922540aa846a",
+      "gitBlob": "2e91bb6e6bd2a31ed76725df0c72584bc9a62901",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-000"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/app-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-001"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/artifact-verification.json",
+      "sha256": "28c6d569bc82ca8e76d15579794cfd1721dd15de35a037a7d8a2686e4d879393",
+      "gitBlob": "26727234bf456741e6c8a350eeface021da48c93",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-002"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/audit-observations.json",
+      "sha256": "0cc4052f8b313c08552bc4070ed62425d78134b7b6225287a339117e3d20ab87",
+      "gitBlob": "452c597cbe436c764e73a3b6395d3afc74f43460",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-003"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/audit-plan.json",
+      "sha256": "99363f1632cd6044f682e4d35b94db7cf0688c24e98838068c2f694be9458018",
+      "gitBlob": "56ab1b54b8b92f1f4f8207deb1f52fa19d625e1a",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-004"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/build-command.json",
+      "sha256": "4cb0b2845761b60fb88795e3e64d6c9d364a32a5083b36411c5e7d81a8222132",
+      "gitBlob": "37513602784631d89bc9b378c16e14a9284fd38b",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-005"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/build.exit",
+      "sha256": "979b894f2d91bf199766571d58024f020d1a44a417da5f48e1fa1cdf554a14f5",
+      "gitBlob": "1479e19b5fdf6c32d2eb41dad16203706f7d663d",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-006"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/build.log",
+      "sha256": "ad08a7f6e4a022e150d65e57ca91255bb99a9913d46497e109cf0764a87d9b5a",
+      "gitBlob": "3ca68147477983bb145659ec976af36cc61aa7df",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-007"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-absent-after-removal.png",
+      "sha256": "8f4fd95d8296de37aece197fa97dbf424d1c0e159cf10737ed38dd661a834a62",
+      "gitBlob": "5523759318099c01932a5e68843deebcc845facf",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-008"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-created.png",
+      "sha256": "a0a5bf2a99a801e3d5ce36794ee961d08f4845cce94cede4e54f4da12924ab4a",
+      "gitBlob": "f01db6bdc46f47f0dacc582a089d2405bb270623",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-009"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-relaunch.json",
+      "sha256": "4227d4a83c38b62b141cc04aa67937b365254f3fd55e2c29e38727d41a52c534",
+      "gitBlob": "1c025db4fc80f7005ddad341cbc2513586ad5ca2",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-010"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/identity-reloaded.png",
+      "sha256": "a0a5bf2a99a801e3d5ce36794ee961d08f4845cce94cede4e54f4da12924ab4a",
+      "gitBlob": "f01db6bdc46f47f0dacc582a089d2405bb270623",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-011"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/input-manifest.json",
+      "sha256": "88633b72001cb7f3dfe444b4ebd02b9171da6800aa492237f8b7dbcda96217a8",
+      "gitBlob": "16eb05f46a6f808678e91f39436790f2007915e3",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-012"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/install-launch.json",
+      "sha256": "14e36d868cb7c5c177bf7ddfeae7ac9ecbcd8d8e6943b79f10016dcfa7da9fb8",
+      "gitBlob": "5c1872d8e0ed4060dec68b541a287afa4b3a2a49",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-013"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/installed-container-verification.json",
+      "sha256": "83bbe96acd59a0d0e4b6099a2dbdf4f03b36935fdd64423e3e29c7eea01780ff",
+      "gitBlob": "fc4a63598673ca9d40f566f6c76c8b4fd2b99fbe",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-014"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/invalid-pairing-recovery.png",
+      "sha256": "457f853b0a9426719b1a69eb47322019b08cf65b70eab8fe8078f2a15a4751bb",
+      "gitBlob": "c7d82e0119a1ebe44ea3bdc97e121a1d9e9a9cc2",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-015"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/landscape-pairing.png",
+      "sha256": "140ecab749a6303cdbc4854f551ba596efa3d20b939c45ffb167f84c6c62761b",
+      "gitBlob": "d80d59a878f4f6acb35999bd6edb3c3f4f3f181d",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-016"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/relaunch-app-stderr.log",
+      "sha256": "58c6f3f5f342b73ec653b02f6e91dcd40e3c55eb7c0d6eba4542e8ae27cf7537",
+      "gitBlob": "b0629bca3adbd6c23868a2b5d64ceb06aad19d45",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-017"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/relaunch-app-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-018"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/removed-identity-relaunch-stderr.log",
+      "sha256": "77da0e0fd8a08b2548846700af1dcd8298b13b00b790d5d05969eaa0aedb469b",
+      "gitBlob": "63877499adc161010a1f46f63f65d36648eaa4d3",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-019"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/removed-identity-relaunch-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-020"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/removed-identity-relaunch.json",
+      "sha256": "ab82543899a04cc4aa3af2ae426c1014108e52dc70d3da32f3588b14553c5db1",
+      "gitBlob": "2ab3042b4ab31c87460097d10f086fd24301e43b",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-021"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/retry-build-command.json",
+      "sha256": "78ddaaf4a155b1403171da9f7298a85e4bb38be9fd85a72a6b7ceee1638efafe",
+      "gitBlob": "83bd506adc59a748a8ba560f10acb4aa0835b24a",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-022"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/retry-build.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-023"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/retry-build.log",
+      "sha256": "8e88739e0137261701567397b39c2045db55c794ca28c8675bc15a96a7b63bf4",
+      "gitBlob": "0a465326cfebb29d2a8ee0308f4f20e07a006efc",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-024"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/retry-input-manifest.json",
+      "sha256": "473dcdc5faae301b41f1b223ce01731a6e74f758f040a07d10167460b8766fc6",
+      "gitBlob": "bb52cbf89b70262e5b2d7d39dc7595a6c2abcb86",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-025"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/signed-app-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-026"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/signed-app-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-027"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-boot.log",
+      "sha256": "bb5e41fe0187061fde3218bdf61595f584896631d350c8d9768a6c45e2941cf1",
+      "gitBlob": "c24f404a75ba0456b4d2ade9ebc508ed464d921f",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-028"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-cleanup.json",
+      "sha256": "e09369bae38bf10893ae4ddd9972575c90d5c1deddcaea89e559dc63e248cd2b",
+      "gitBlob": "eafef77086c762a472e647a776b1d9b0c20713a1",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-029"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-owner.json",
+      "sha256": "df3ef6dfb1fe616bda61d40ec236c22c9f7c04e02f1fb514aaf70decac46f011",
+      "gitBlob": "043abdb99b4053bdb3ea0535b5d1be8aed232084",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-030"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/test-signed-launch-diagnostic.log",
+      "sha256": "2efa9dbae39ded465f130827aed7aeafd71ce0327852a72e3911acc3e2aaf8c8",
+      "gitBlob": "8248ab5d59f5238bf3ae050e27c86d94ca9c8c13",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-031"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/unsigned-archive-verification.json",
+      "sha256": "f3f2fe0a04dcd6bcd891abf04da11c1846ad4f90c8b9323bac9d741439f8dab3",
+      "gitBlob": "cdca76324fd6ab54ca9e4dbee4984a3cc58c87fe",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-032"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/unsigned-identity-unavailable.png",
+      "sha256": "9c28e11aaa3f0dda6300c9a560e85a0f41ccc645bec103a71e87a88f3b339e6b",
+      "gitBlob": "22edde15abc9b0b1c36d7016ba5f1692f76e4f68",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-033"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/unsigned-keychain-diagnostic.log",
+      "sha256": "f43637f0db2d9248de54aacf309551d4e7f20fea58ee63ae2bf3602ac52f6f59",
+      "gitBlob": "c120a42ede07f3d61d46d41b6ffcf3a767411aaf",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-034"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-app-stderr.log",
+      "sha256": "4fdae6292c4f8f3c072c2145d1bee10e06694b02eaf14a549077238df51c991d",
+      "gitBlob": "f3ffcd56e83044f4fe511cecb4fc6a8cc3b4695c",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-035"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-app-stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gitBlob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-036"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-artifact-verification.json",
+      "sha256": "172bd5c9ef50205549c6bb303fc07c79452a07aac0d6a6e8d50cebd924cff3b1",
+      "gitBlob": "752f53c7b8f1fb1125933a4b8fc70b4c6df84ee3",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-037"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-build-command.json",
+      "sha256": "c5ed883f5b6b0aaa0e004da86b9770d3cb6a48ac8aa9f7df9862429656633cca",
+      "gitBlob": "3710c170ce44e20a34b142e0304e812b4c4442f0",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-038"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-build.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gitBlob": "573541ac9702dd3969c9bc859d2b91ec1f7e6e56",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-039"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/xcode-signed-build.log",
+      "sha256": "f2adfe0a6de6307db026787c3e03c7445d290e5a175abdbb30a2ea2fad1bc09c",
+      "gitBlob": "b326bcf8a197366cce4479758a40a0ec662dfc17",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-040"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-test-signing/com.oneohone.link.test-entitlements.plist",
+      "sha256": "93094d7fd898d7c00a5f2c222b366799677729bde91baf58d12841cc25f0d1e0",
+      "gitBlob": "100fa1e4ef3944565e391fc618576689f5624c76",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-041"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-test-signing/com.oneohone.link.watchkitapp.test-entitlements.plist",
+      "sha256": "008446fb22b6e7f026979ef08f08fdb09c16199f19f1bdd55543f540c16e52e4",
+      "gitBlob": "1a88a1cff2a6397d159de89a189ba0fbaee08fdc",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-042"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-test-signing/embedded-entitlements.plist",
+      "sha256": "8f73a467820a806639446533ed28fd63746fda71b98210c32451887a5cb45d5e",
+      "gitBlob": "d57794c88b3a2cdd18c7d71b553aa2ff26577fcf",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-043"
+    },
+    {
+      "path": "/Users/km/Desktop/games/101/release/ios-simulator-vgpozmtc/simulator-test-signing/signing-receipt.json",
+      "sha256": "5d7feb4f1942ff032b76ce012ab73cfb806c647e14e134b39fbc7453e63187b9",
+      "gitBlob": "893c8bb3e77c9e86907277b7b3b6e1d1ac16b2a9",
+      "ref": "refs/codex/evidence/2026-10-08-ios-simulator/evidence-044"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-08-ir-ios/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-08-ir-ios/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only an exact candidate result proves broad gates. No local commit with a red gate."
+  },
+  "acceptance": "N04/D03/N13/K05 remain partial. Simulator lifecycle and limited UI recovery only: no physical sensor/camera, intended distribution identity/install/update, watch launch/communication, enrolled sign/verify or full accessibility/performance acceptance. IOS-AUDIT-01 remains open. No checkbox/support-row promotion."
+}
