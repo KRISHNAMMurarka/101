@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { test, type TestContext } from 'node:test';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { createServer } from 'node:net';
 import { decodeMatterSwitchMessage as decode, createMatterWsSwitchConnector as create } from './matter-ws-switch.ts';
@@ -15,6 +18,13 @@ const press = '{"event":"node_event","data":{"node_id":7,"endpoint_id":1,"cluste
 const bytes = (s: string) => Buffer.from(s);
 const position = (v: string) => '{"event":"attribute_updated","data":[7,"1/59/1",' + v + ']}';
 const scope = Object.freeze({ principalId: 'operator', applicationId: 'test', sessionId: 'local' });
+async function ownedScratch(t: TestContext, prefix: string) {
+    const directory = await mkdtemp(join(tmpdir(), prefix));
+    // Register before copying or importing fixtures, so setup failures also
+    // remove this run. Each body joins its native work in finally first.
+    t.after(() => rm(directory, { recursive: true, force: true }));
+    return directory;
+}
 test('lossless parser preserves original uint64 identities and timestamp types', () => {
     assert.deepEqual(decode(bytes(info)), { kind: 'serverInfo', fabricId: '9007199254740993', compressedFabricId: '18446744073709551615' });
     for (const n of ['9007199254740992', '9007199254740993', '18446744073709551615'])
@@ -325,8 +335,8 @@ finally {
     await q.close();
 } });
 test('actual child exit cannot replace held native child close even on failure', async (t) => {
-    const { ChildProcess } = await import('node:child_process'), { mkdtemp, writeFile } = await import('node:fs/promises'), { runMatterChild } = await import('../../../tools/qa-matter-ws-switch.mjs');
-    const directory = await mkdtemp('/tmp/101-matter-child-proof-'), original = ChildProcess.prototype.emit;
+    const { ChildProcess } = await import('node:child_process'), { writeFile } = await import('node:fs/promises'), { runMatterChild } = await import('../../../tools/qa-matter-ws-switch.mjs');
+    const directory = await ownedScratch(t, '101-matter-child-proof-'), original = ChildProcess.prototype.emit;
     for (const failure of [false, true]) {
         let release: (() => void) | undefined, settled = false;
         const runner = directory + '/' + (failure ? 'failed' : 'success') + '.mjs';
@@ -337,15 +347,20 @@ test('actual child exit cannot replace held native child close even on failure',
         } return Reflect.apply(original, this, [name, ...args]); });
         const running = runMatterChild(runner);
         void running.then(() => { settled = true; }, () => { settled = true; });
-        await until(() => !!release);
-        assert.equal(settled, false);
-        release!();
-        if (failure)
-            await assert.rejects(running);
-        else
-            assert.equal((await running).actualChildClose, true);
-        assert.equal(settled, true);
-        t.mock.restoreAll();
+        try {
+            await until(() => !!release);
+            assert.equal(settled, false);
+            release!();
+            if (failure)
+                await assert.rejects(running);
+            else
+                assert.equal((await running).actualChildClose, true);
+            assert.equal(settled, true);
+        } finally {
+            t.mock.restoreAll();
+            release?.();
+            await Promise.allSettled([running]);
+        }
     }
 });
 test('held genuine pre-upgrade TCP close survives observation timeout and blocks restart', async (t) => {
@@ -428,21 +443,21 @@ test('approval expiry accessor cannot extend the original standing deadline',asy
 test('synchronous native connect failure never leaves a fabricated WS reservation',async t=>{const {Socket}=await import('node:net');const x=connector('ws://127.0.0.1:9/ws');t.mock.method(Socket.prototype,'connect',()=>{throw new Error('native connect failed before OS effect');});try{assert.equal((await x.start()).ok,false);await until(()=>x.c.status().phase==='idle');assert.equal(x.c.status().rawWsSockets,0);assert.equal(x.c.status().rawTcpSockets,0);assert.equal(x.c.status().rawSockets,0);assert.equal(x.c.status().rawWrites,0);}finally{t.mock.restoreAll();await x.c.close();}});
 test('synchronous native HTTP construction failure cannot release a fabricated WS owner',async t=>{const http=await import('node:http');const x=connector('ws://127.0.0.1:9/ws');t.mock.method(http.default,'request',()=>{throw new Error('native request construction failed');});try{assert.equal((await x.start()).ok,false);await until(()=>x.c.status().phase==='idle');assert.equal(x.c.status().rawWsSockets,0);assert.equal(x.c.status().rawSockets,0);}finally{t.mock.restoreAll();await x.c.close();}});
 for(const failed of [false,true]) test('copied public caller joins actual IPC response write before advancing '+(failed?'including rejection':'success'),async t=>{
- const {ChildProcess}=await import('node:child_process'),{mkdtemp,writeFile}=await import('node:fs/promises'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs');
- const directory=await mkdtemp('/tmp/101-matter-response-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined});
+ const {ChildProcess}=await import('node:child_process'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs');
+ const directory=await ownedScratch(t,'101-matter-response-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined});
  const {runMatterWsSwitchConsumer}=await import('node:url').then(({pathToFileURL})=>import(pathToFileURL((prepared.artifactPaths as Record<string,string>).caller!).href));
- const nativePrototype=ChildProcess.prototype as import('node:child_process').ChildProcess & {spawn:(...args:unknown[])=>unknown};const originalSpawn=nativePrototype.spawn;let release:((error?:Error)=>void)|undefined,response=false,advanced=false,held=false;const trace:string[]=[];
+ const nativePrototype=ChildProcess.prototype as import('node:child_process').ChildProcess & {spawn:(...args:unknown[])=>unknown};const originalSpawn=nativePrototype.spawn;let release:((error?:Error)=>void)|undefined,response=false,advanced=false,held=false,retiring=false;const trace:string[]=[];
  t.mock.method(nativePrototype,'spawn',function(this:import('node:child_process').ChildProcess,...spawnArgs:unknown[]){const result=Reflect.apply(originalSpawn,this,spawnArgs);const original=this.send;
  this.send=function(this:import('node:child_process').ChildProcess,message:unknown,...args:unknown[]){const kind=(message as {kind?:string}).kind;if(kind==='position1'&&held)advanced=true;if(kind!=='position0'||held)return Reflect.apply(original,this,[message,...args]);held=true;const callback=args.at(-1) as (e?:Error|null)=>void;
  this.on('message',(m:unknown)=>{if((m as {id?:number}).id===(message as {id:number}).id){response=true;trace.push('authentic IPC response received');}});
- return Reflect.apply(original,this,[message,...args.slice(0,-1),(error?:Error|null)=>{release=e=>callback(e??error);trace.push('actual write callback held');}]);} as typeof this.send;return result;});
+ return Reflect.apply(original,this,[message,...args.slice(0,-1),(error?:Error|null)=>{let released=false;release=e=>{if(!released){released=true;callback(e??error);}};trace.push('actual write callback held');if(retiring)release();}]);} as typeof this.send;return result;});
  const running=runMatterWsSwitchConsumer();void running.catch(()=>{});
  try{await until(()=>response&&!!release);await new Promise(r=>setTimeout(r,75));assert.equal(advanced,false,'ordinary caller advanced before native write settled');release!(failed?new Error('actual held response-write rejected'):undefined);if(failed)await assert.rejects(running);else assert.equal((await running).status,'pass');trace.push(failed?'write rejection remained failure after independent child joins':'actual caller returned after all child closes');}
- finally{release?.();await Promise.allSettled([running]);t.mock.restoreAll();await writeFile(directory+'/trace.json',JSON.stringify(trace));}
+ finally{retiring=true;release?.();await Promise.allSettled([running]);t.mock.restoreAll();t.diagnostic(JSON.stringify(trace));}
 });
-test('copied public caller joins close IPC write after authentic child close including rejection',async t=>{const {ChildProcess}=await import('node:child_process'),{mkdtemp,writeFile}=await import('node:fs/promises'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs'),{pathToFileURL}=await import('node:url');const nativePrototype=ChildProcess.prototype as import('node:child_process').ChildProcess & {spawn:(...args:unknown[])=>unknown};const originalSpawn=nativePrototype.spawn;
- for(const failed of [false,true]){const directory=await mkdtemp('/tmp/101-matter-close-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined}),{runMatterWsSwitchConsumer}=await import(pathToFileURL((prepared.artifactPaths as Record<string,string>).caller!).href);let held=false,closed=false,release:((error?:Error)=>void)|undefined,settled=false;const trace:string[]=[];
- t.mock.method(nativePrototype,'spawn',function(this:import('node:child_process').ChildProcess,...spawnArgs:unknown[]){const result=Reflect.apply(originalSpawn,this,spawnArgs);const original=this.send;this.send=function(this:import('node:child_process').ChildProcess,message:unknown,...args:unknown[]){if((message as {kind?:string}).kind!=='close'||held)return Reflect.apply(original,this,[message,...args]);held=true;const last=args.at(-1),callback=typeof last==='function'?last as (e?:Error|null)=>void:undefined;trace.push(callback?'caller supplied native close-write callback':'caller omitted native close-write callback');this.once('close',()=>{closed=true;trace.push('authentic child close observed');});return Reflect.apply(original,this,[message,...(callback?args.slice(0,-1):args),(error?:Error|null)=>{release=e=>callback?.(e??error);trace.push('actual close-write callback held');}]);} as typeof this.send;return result;});const running=runMatterWsSwitchConsumer();void running.then(()=>{settled=true;},()=>{settled=true;});try{await until(()=>closed&&!!release);const completed=await Promise.race([running.then(()=>true,()=>true),new Promise<boolean>(r=>setTimeout(()=>r(false),500))]);assert.equal(completed,false,'ordinary caller settled before native close-write callback');assert.equal(settled,false);release!(failed?new Error('actual held close-write rejected'):undefined);if(failed)await assert.rejects(running);else assert.equal((await running).status,'pass');trace.push(failed?'write rejection remained failure':'caller returned only after write settled');}finally{release?.();await Promise.allSettled([running]);t.mock.restoreAll();await writeFile(directory+'/trace.json',JSON.stringify(trace));}
+test('copied public caller joins close IPC write after authentic child close including rejection',async t=>{const {ChildProcess}=await import('node:child_process'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs'),{pathToFileURL}=await import('node:url');const nativePrototype=ChildProcess.prototype as import('node:child_process').ChildProcess & {spawn:(...args:unknown[])=>unknown};const originalSpawn=nativePrototype.spawn;
+ for(const failed of [false,true]){const directory=await ownedScratch(t,'101-matter-close-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined}),{runMatterWsSwitchConsumer}=await import(pathToFileURL((prepared.artifactPaths as Record<string,string>).caller!).href);let held=false,closed=false,release:((error?:Error)=>void)|undefined,settled=false,retiring=false;const trace:string[]=[];
+ t.mock.method(nativePrototype,'spawn',function(this:import('node:child_process').ChildProcess,...spawnArgs:unknown[]){const result=Reflect.apply(originalSpawn,this,spawnArgs);const original=this.send;this.send=function(this:import('node:child_process').ChildProcess,message:unknown,...args:unknown[]){if((message as {kind?:string}).kind!=='close'||held)return Reflect.apply(original,this,[message,...args]);held=true;const last=args.at(-1),callback=typeof last==='function'?last as (e?:Error|null)=>void:undefined;trace.push(callback?'caller supplied native close-write callback':'caller omitted native close-write callback');this.once('close',()=>{closed=true;trace.push('authentic child close observed');});return Reflect.apply(original,this,[message,...(callback?args.slice(0,-1):args),(error?:Error|null)=>{let released=false;release=e=>{if(!released){released=true;callback?.(e??error);}};trace.push('actual close-write callback held');if(retiring)release();}]);} as typeof this.send;return result;});const running=runMatterWsSwitchConsumer();void running.then(()=>{settled=true;},()=>{settled=true;});try{await until(()=>closed&&!!release);const completed=await Promise.race([running.then(()=>true,()=>true),new Promise<boolean>(r=>setTimeout(()=>r(false),500))]);assert.equal(completed,false,'ordinary caller settled before native close-write callback');assert.equal(settled,false);release!(failed?new Error('actual held close-write rejected'):undefined);if(failed)await assert.rejects(running);else assert.equal((await running).status,'pass');trace.push(failed?'write rejection remained failure':'caller returned only after write settled');}finally{retiring=true;release?.();await Promise.allSettled([running]);t.mock.restoreAll();t.diagnostic(JSON.stringify(trace));}
  }});
 test('constructor scope and start require exact inert own data records without invoking traps',async()=>{
  const options:Options={endpoint:'ws://127.0.0.1:9/ws',scope,ownerSignal:new AbortController().signal,authorize:()=>undefined,onPosition:()=>{},onPress:()=>{},onUnavailable:()=>{}};let traps=0;
@@ -459,15 +474,26 @@ test('partially issued native TCP remains owned through held close after connect
  t.mock.method(Socket.prototype,'emit',function(this:import('node:net').Socket,name:string,...args:unknown[]){if(this===native.socket&&name==='close'){release=()=>Reflect.apply(originalEmit,this,[name,...args]);return true;}return Reflect.apply(originalEmit,this,[name,...args]);});
  const x=connector('ws://127.0.0.1:9/ws');try{assert.equal((await x.start()).ok,false);assert.equal(x.c.status().rawTcpSockets,1);await until(()=>!!release);assert.equal(x.c.status().phase,'retiring');assert.equal((await x.start()).ok,false);await assert.rejects(x.c.stop(),/close unconfirmed/);assert.equal(x.c.status().rawTcpSockets,1);release!();await until(()=>x.c.status().phase==='idle');assert.equal(x.c.status().rawSockets,0);}finally{native.socket?.destroy();release?.();t.mock.restoreAll();await x.c.close();}
 });
-for(const failed of [false,true]) test('actual copied producer joins native ready IPC callback before disconnect '+(failed?'rejection':'success'),async()=>{
- const {fork}=await import('node:child_process'),{mkdtemp,writeFile}=await import('node:fs/promises'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs'),{pathToFileURL}=await import('node:url');
- const directory=await mkdtemp('/tmp/101-matter-producer-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined}),preload=directory+'/hold-native-send.mjs';
- await writeFile(preload,"const original=process.send.bind(process);let release;process.send=function(message,...args){if(message.kind!=='ready')return original(message,...args);const last=args.at(-1),callback=typeof last==='function'?last:undefined;return original(message,...(callback?args.slice(0,-1):args),error=>{release=()=>callback?.("+(failed?"new Error('held producer ready write rejected')":"error")+");});};process.on('SIGUSR2',()=>release?.());\n");
+for(const failed of [false,true]) test('actual copied producer joins native ready IPC callback before disconnect '+(failed?'rejection':'success'),async t=>{
+ const {fork}=await import('node:child_process'),{writeFile}=await import('node:fs/promises'),{prepareMatterExecution}=await import('../../../tools/qa-matter-ws-switch.mjs'),{pathToFileURL}=await import('node:url');
+ const directory=await ownedScratch(t,'101-matter-producer-write-'),prepared=prepareMatterExecution({work:directory,installed:undefined}),preload=directory+'/hold-native-send.mjs';
+ await writeFile(preload,"const original=process.send.bind(process);let release,releaseRequested=false;process.send=function(message,...args){if(message.kind!=='ready')return original(message,...args);const last=args.at(-1),callback=typeof last==='function'?last:undefined;return original(message,...(callback?args.slice(0,-1):args),error=>{let released=false;release=()=>{if(!released){released=true;callback?.("+(failed?"new Error('held producer ready write rejected')":"error")+");}};if(releaseRequested)release();});};process.on('SIGUSR2',()=>{releaseRequested=true;release?.();});\n");
  const child=fork((prepared.artifactPaths as Record<string,string>).producer!,[],{execArgv:['--import',pathToFileURL(preload).href],env:{NODE_ENV:'production'},stdio:['ignore','ignore','pipe','ipc']});
  const exit=new Promise<{code:number|null,signal:NodeJS.Signals|null}>((resolve,reject)=>{child.once('error',reject);child.once('exit',(code,signal)=>resolve({code,signal}));});void exit.catch(()=>{});
  const close=new Promise<void>(resolve=>child.once('close',()=>resolve()));let closed=false;void close.then(()=>{closed=true;});let ready=false;child.on('message',(m:unknown)=>{if((m as {kind?:string}).kind==='ready')ready=true;});const trace:string[]=[];
  try{await until(()=>ready);trace.push('authentic producer ready IPC received');await new Promise(r=>setTimeout(r,50));const write=new Promise<void>((resolve,reject)=>child.send({kind:'close'},error=>error?reject(error):resolve()));void write.catch(()=>{});await write;await new Promise(r=>setTimeout(r,200));assert.equal(closed,false,'producer disconnected before native ready write callback');child.kill('SIGUSR2');const result=await exit;await close;assert.equal(result.signal,null);assert.equal(result.code,failed?1:0);trace.push(failed?'native write rejection kept failing natural exit':'natural exit followed callback release');}
- finally{if(!closed)child.kill('SIGUSR2');await Promise.allSettled([exit,close]);await writeFile(directory+'/trace.json',JSON.stringify(trace));}
+ finally{
+  let cleanupWrite:Promise<void>|undefined;
+  if(!closed){
+   if(child.connected){
+    cleanupWrite=new Promise<void>((resolve,reject)=>child.send({kind:'close'},error=>error?reject(error):resolve()));
+    void cleanupWrite.catch(()=>{if(!closed)child.kill('SIGTERM');});
+   }else child.kill('SIGTERM');
+   child.kill('SIGUSR2');
+  }
+  await Promise.allSettled([exit,close,...(cleanupWrite?[cleanupWrite]:[])]);
+  t.diagnostic(JSON.stringify(trace));
+ }
 });
 test('callback thrown inert and hostile objects cannot escape retirement diagnostics',async()=>{
  let coerced=0;for(const thrown of [Object.create(null) as object,{toString(){coerced++;throw new Error('diagnostic coercion must never run');}},new Proxy(new Error('proxy failure'),{get(){coerced++;throw new Error('proxy trap');}})]){

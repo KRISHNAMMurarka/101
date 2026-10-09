@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "result": "pass",
+  "localOnly": true,
+  "baseCommit": "a87674c587aa8f44e34f3e0233699c8c8930395f",
+  "tasks": [
+    "Q05",
+    "U03",
+    "U12"
+  ],
+  "sourceSha256": {
+    "packages/hub-server/src/matter-ws-switch.test.ts": "408ee8d181ad2b8ce3d55ea045dbfd02a2ac81e760f9f908bb3105fbb78f60c8",
+    "tools/qa-durable-processor-management.mjs": "987e62eaa0ba3a8a929038861fa9c444ccae479fdf3e282f23738094b3813818",
+    "tools/qa-reading-connections.mjs": "da607d466f36d1296245f7258f29e8e62c83d0ecc70cdcab65a3e83835990604"
+  },
+  "evidenceRef": "refs/codex/evidence/2026-10-10-batches/runtime-evidence",
+  "evidenceTree": "0d9517ef44ec901b4ce983726d15e1ee665540bf",
+  "scratch": {
+    "oldOriginalTree": "8e57e6ddc9987899100b4f389afd669ff86062c8",
+    "oldNormalAndSetup": [
+      {
+        "phase": "old",
+        "failure": false,
+        "closed": {
+          "code": 0,
+          "signal": null
+        },
+        "created": 7,
+        "remaining": 7,
+        "cleanupPassed": false
+      },
+      {
+        "phase": "old",
+        "failure": true,
+        "closed": {
+          "code": 1,
+          "signal": null
+        },
+        "created": 6,
+        "remaining": 6,
+        "cleanupPassed": false
+      }
+    ],
+    "newNormalAndSetup": [
+      {
+        "phase": "new",
+        "failure": false,
+        "closed": {
+          "code": 0,
+          "signal": null
+        },
+        "created": 7,
+        "remaining": 0,
+        "cleanupPassed": true
+      },
+      {
+        "phase": "new",
+        "failure": true,
+        "closed": {
+          "code": 1,
+          "signal": null
+        },
+        "created": 6,
+        "remaining": 0,
+        "cleanupPassed": true
+      }
+    ],
+    "oldAfterReady": {
+      "phase": "old",
+      "closed": {
+        "code": 1,
+        "signal": null
+      },
+      "authenticReady": true,
+      "injectedBeforeCloseCommand": true,
+      "timedOut": true,
+      "created": 1,
+      "remaining": 1,
+      "ownedChildAbsent": true,
+      "cleanupPassed": false
+    },
+    "newAfterReady": {
+      "phase": "new",
+      "closed": {
+        "code": 1,
+        "signal": null
+      },
+      "authenticReady": true,
+      "injectedBeforeCloseCommand": true,
+      "timedOut": false,
+      "created": 1,
+      "remaining": 0,
+      "ownedChildAbsent": true,
+      "cleanupPassed": true
+    },
+    "changes": [
+      "Register run-folder removal immediately after allocation, before fixture copy/import.",
+      "Release held callbacks, request native producer close, join issued write plus actual exit and close before removal.",
+      "Latch early release requests and invoke native callbacks once.",
+      "Keep compact trace diagnostics in retained logs instead of abandoned fixture copies."
+    ],
+    "scope": "Selected Matter test fixture ownership only. Expected injected test failures retain exit1; only the diagnostic cleanup assertions pass. No Matter commissioning/fabric/hardware acceptance."
+  },
+  "readingWebkit": {
+    "status": "pass",
+    "sourceTree": "8e57e6ddc9987899100b4f389afd669ff86062c8",
+    "checks": [
+      {
+        "engine": "webkit",
+        "record": true,
+        "independentConsent": true,
+        "stopCleared": true,
+        "responsive": true,
+        "visibleFocus": true,
+        "reducedMotion": true
+      },
+      {
+        "engine": "webkit",
+        "array": true,
+        "optionalAbsence": true,
+        "originalExpiry": true
+      }
+    ],
+    "engines": [
+      {
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "nativeProductPages": 2,
+        "nativeRTCCreated": 4,
+        "nativeRTCClosed": 4
+      }
+    ],
+    "pageErrors": 0,
+    "foreignRequests": 0,
+    "cleanup": {
+      "pagesClosed": true,
+      "contextCloseAwaited": true,
+      "browserClosed": true
+    },
+    "history": "Earlier strict WebKit failures remain preserved; this current passing execution does not establish the cause of those failures."
+  },
+  "durableProcessorBrowser": {
+    "chromium": {
+      "status": "pass",
+      "browserVersion": "149.0.7827.55",
+      "journey": [
+        "explicit-browser-read-no-tab-migration",
+        "native-locked-signed-inactive-save",
+        "inactive-fresh-lifetime-independent-input-output",
+        "source-removal-retains-publisher-block-on-fresh-lifetime"
+      ],
+      "pageErrors": 0,
+      "foreignRequests": 0,
+      "failedBuildRequests": [],
+      "matchedBuildResponses": 55,
+      "cleanup": {
+        "pageTaskCloseAwaited": true,
+        "observedNativeReturnsSettled": true,
+        "ownedProbeRemoved": true,
+        "ownedPrefixLockSettled": true,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      },
+      "finalPinsVerified": true
+    },
+    "webkit": {
+      "status": "pass",
+      "browserVersion": "26.5",
+      "journey": [
+        "explicit-browser-read-no-tab-migration",
+        "native-locked-signed-inactive-save",
+        "inactive-fresh-lifetime-independent-input-output",
+        "source-removal-retains-publisher-block-on-fresh-lifetime"
+      ],
+      "pageErrors": 0,
+      "foreignRequests": 0,
+      "failedBuildRequests": [],
+      "matchedBuildResponses": 55,
+      "cleanup": {
+        "pageTaskCloseAwaited": true,
+        "observedNativeReturnsSettled": true,
+        "ownedProbeRemoved": true,
+        "ownedPrefixLockSettled": true,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      },
+      "finalPinsVerified": true
+    }
+  },
+  "browserBuild": {
+    "actualBuiltTree": "8e57e6ddc9987899100b4f389afd669ff86062c8",
+    "qualificationTree": "ee3160fc1f2318ec389c08ca40f8e9b2fb4db9c8",
+    "equivalence": "All159 selected product/runtime/source pins and308 compiled inputs were checked against immutable tree/build hashes. Only the separately pinned QA tool and unrelated Matter tests changed; shipped UI/runtime source did not change.",
+    "qualification": "Actual Settings links create fresh component/task lifetimes in the same native document. Full-document cold reopen is excluded."
+  },
+  "preservedFailures": [
+    "Original Chromium response.body lookup failure.",
+    "Response-only join attempt with same failure.",
+    "Native response metadata diagnostic identifies200 GET HistoryView script, no ServiceWorker.",
+    "Request-owned forced-reload attempt confirms net::ERR_ABORTED, retaining failure and completing cleanup.",
+    "Initial full Matter focused run44/46: two native startup deadlines failed; not treated as passing.",
+    "Invalid latch-setup probe had no authentic ready; literal copied setup retained, native child absent before removal."
+  ],
+  "requiredGateRef": "refs/codex/evidence/2026-10-10-batches/batch-1/gates",
+  "requiredGatePolicy": "All five required gates must pass against the frozen exact candidate before local commit. Result is stored in the named local Git evidence ref.",
+  "taskDisposition": {
+    "Q05": "Selected fixture failure/cleanup gaps completed; full lifecycle/physical matrix remains open.",
+    "U03": "Current strict selected WebKit readings check completed; full general/physical connection scope remains open.",
+    "U12": "Selected browser-saved reviewed-processor management now qualified in native Chromium/WebKit; general management, native/physical scope and cold reopen remain open."
+  },
+  "tally": {
+    "total": 272,
+    "completed": 123,
+    "open": 149
+  },
+  "supportRowsAccepted": 0,
+  "independentReview": {
+    "result": "accept",
+    "scope": "Final literal Matter test ownership/callback latches and durable QA request/response cleanup; actual retained C/W reports checked.",
+    "sourceSha256": {
+      "packages/hub-server/src/matter-ws-switch.test.ts": "408ee8d181ad2b8ce3d55ea045dbfd02a2ac81e760f9f908bb3105fbb78f60c8",
+      "tools/qa-durable-processor-management.mjs": "987e62eaa0ba3a8a929038861fa9c444ccae479fdf3e282f23738094b3813818"
+    },
+    "remainingActionableFindings": [],
+    "qualificationLimits": "Full-document cold reopen, general/physical qualification and final candidate gates are separate."
+  }
+}

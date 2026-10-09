@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 196,
+  "revision": 197,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13634,6 +13634,32 @@
       "scope": "Selected trusted local-compute activation/rollback storage-revision fence. Concurrent revocation/removal cannot start further reviewed work; explicit cleanup remains. Exact reviewed-source OLD/GREEN and one ordinary installed release-revocation race. Full S13/E10 acceptance and support remain open. Existing-policy dependency mutation and genuine v2 source substitution are also refused by an ordinary installed caller before work; not a new production repair.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "lifecycle-browser-batch-2026-10-10",
+      "revision": "408ee8d181ad2b8ce3d55ea045dbfd02a2ac81e760f9f908bb3105fbb78f60c8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "U03",
+        "U12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-10-lifecycle-browser-batch.json",
+        "packages/hub-server/src/matter-ws-switch.test.ts",
+        "tools/qa-durable-processor-management.mjs",
+        "tools/qa-reading-connections.mjs"
+      ],
+      "environment": "Local macOS; Node24.14.0; actual owned Node IPC/TCP/WebSocket fixture processes; native headless Chromium149.0.7827.55 and WebKit from installed Playwright; unchanged immutable production app build. No physical/account/remote result.",
+      "reproduction": "Run the retained scratch probes from evidenceRef; normal and setup-copy failure plus authentic-ready failure. Run qa-reading-connections.mjs --engine webkit with retained served proof. Run qa-durable-processor-management.mjs for Chromium/WebKit with processors-settings-link-served-proof.json; preserve all response/request/hash failures. Required exact candidate gate result is recorded separately at requiredGateRef.",
+      "scope": "Selected run-folder/native ownership defects fixed; current strict WebKit reading expiry and browser-saved processor management checks completed. Settings-link tasks share one native document; cold reopen excluded. Full Q05/U03/U12 and support acceptance remain open.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -16353,7 +16379,8 @@
         "local-audio-player-built-source-partial-2026-10-08",
         "audio-player-browser-2026-10-09",
         "audio-native-blur-attempts-2026-10-09",
-        "audio-native-app-focus-2026-10-09"
+        "audio-native-app-focus-2026-10-09",
+        "lifecycle-browser-batch-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16511,7 +16538,8 @@
         "processor-management-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
         "browser-history-privacy-built-partial-2026-10-07",
-        "durable-processor-management-built-source-partial-2026-10-07"
+        "durable-processor-management-built-source-partial-2026-10-07",
+        "lifecycle-browser-batch-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16727,7 +16755,8 @@
       "records": [
         "pending-Q05",
         "native-startup-isolated-diagnostic-2026-10-08",
-        "native-startup-failure-diagnostics-2026-10-08"
+        "native-startup-failure-diagnostics-2026-10-08",
+        "lifecycle-browser-batch-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [

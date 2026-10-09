@@ -41,13 +41,20 @@ const report = { schemaVersion: 1, status: 'pending', phase: 'source-build-pins'
   engine, browserVersion: undefined, sourceTree: undefined, actualServedProof: undefined, prefix: undefined,
   sourcePins: {}, buildInputs: [], pageErrors: 0, foreignRequests: 0, requestCount: 0, matchedBuildResponses: 0,
   requestsBlocked: 0, requestsOverLimit: false, webSocketsBlocked: 0, journey: [],
-  finalPinsVerified: false, retirements: [], failure: undefined, secondaryFailures: [],
+  finalPinsVerified: false, retirements: [], failure: undefined, secondaryFailures: [], failedBuildRequests: [],
   cleanup: { pageTaskCloseAwaited: false, observedNativeReturnsSettled: false, ownedProbeRemoved: false,
     ownedPrefixLockSettled: false, pagesClosed: false, contextCloseAwaited: false, browserClosed: false },
   childToolsIssued: 0, workerExitObserved: false,
   scope: 'Owned local software reviewed persistence/inactive fresh lifetime only. Existing durable SDK adapter ancestry is bound, not requalified. No account, connector, native-device or whole U12/E10 acceptance; cross-page/native queued-close/quota fault journeys remain separate.' };
 let failure, proof, sourceRoot, proofSHA, browser, context, page;
-const build = new Map(), pendingResponses = new Set(), seenBuild = new Set();
+const build = new Map(), pendingResponses = new Set(), pendingRequests = new Map(), seenBuild = new Set();
+async function settleBuildResponses() {
+  // Adopt requests before headers arrive. A Settings link can start a prefetch
+  // while navigation is rendering; join it and its body before replacing the
+  // document. Read failures remain failed evidence and do not skip cleanup.
+  while (pendingResponses.size || pendingRequests.size)
+    await Promise.allSettled([...pendingResponses, ...[...pendingRequests.values()].map(value => value.closed)]);
+}
 function diagnostic(cause) {
   const bounded = (value, limit) => typeof value === 'string' ? value.replaceAll(probe, '[owned probe]').slice(0, limit) : '';
   return { name: bounded(cause instanceof Error ? cause.name : 'UnknownThrownValue', 128),
@@ -148,13 +155,30 @@ try {
     } });
   }, ownerKey);
   page = await context.newPage(); page.on('pageerror', () => { report.pageErrors++; });
+  page.on('request', request => {
+    if (!build.has(request.url())) return;
+    let finish; const closed = new Promise(resolveClosed => { finish = resolveClosed; });
+    pendingRequests.set(request, { closed, finish });
+  });
+  const requestFinished = (request, failed) => {
+    const owned = pendingRequests.get(request); if (!owned) return;
+    if (failed) {
+      const detail = { url: request.url(), reason: request.failure()?.errorText ?? 'Native request failed' };
+      if (report.failedBuildRequests.length < 16) report.failedBuildRequests.push(detail);
+      retain(Error(`Build asset request failed: ${detail.url}: ${detail.reason}`));
+    }
+    pendingRequests.delete(request); owned.finish();
+  };
+  page.on('requestfinished', request => requestFinished(request, false));
+  page.on('requestfailed', request => requestFinished(request, true));
   page.on('response', response => { const expected = build.get(response.url()); if (!expected) return;
     const returned = response.body().then(content => { assert.equal(response.status(), 200); assert.equal(hash(content), expected); seenBuild.add(response.url()); });
-    pendingResponses.add(returned); void returned.then(() => pendingResponses.delete(returned), () => {}); });
+    pendingResponses.add(returned); void returned.then(() => pendingResponses.delete(returned), cause => { pendingResponses.delete(returned); retain(cause); }); });
   await page.exposeFunction('__durableProcessorRetired', detail => { report.retirements.push(detail); });
   await page.addInitScript(() => window.addEventListener('101-processor-management-retired', event => { void globalThis.__durableProcessorRetired(event.detail); }));
   report.phase = 'genuine-existing-caller-prefix';
   assert.equal((await page.goto(new URL('/settings/processors', origin).href, { waitUntil: 'networkidle' }))?.status(), 200);
+  await settleBuildResponses();
   assert.equal(await page.getByRole('heading', { name: 'Manage reviewed processors', exact: true }).count(), 1);
   assert.equal(await page.locator('[data-processor-phase]').getAttribute('data-processor-phase'), 'idle');
   const inert = await page.evaluate(() => globalThis.__durableProcessorOldNative);
@@ -191,14 +215,23 @@ try {
   }
   async function enterFreshPage() {
     const before = report.retirements.length;
+    await settleBuildResponses();
     await page.locator('main').getByRole('link', { name: 'Back to Settings', exact: true }).click(); await page.waitForURL(url => url.pathname === '/settings');
+    await page.getByRole('heading', { name: 'Settings', exact: true }).waitFor();
+    await page.waitForLoadState('networkidle');
+    await settleBuildResponses();
     for (let turn = 0; report.retirements.length === before && turn < 100; turn++) await new Promise(resolveWait => setTimeout(resolveWait, 10));
     const closed = report.retirements.at(-1); assert.ok(report.retirements.length > before);
     assert.ok(closed.closeAwaited && closed.phase === 'closed' && closed.rawPending === 0 && closed.storagePending === 0
       && closed.routes === 0 && closed.registrations === 0 && !closed.timerArmed && !closed.flushArmed && closed.cleanupFailures === 0);
-    assert.equal((await page.goto(new URL('/settings/processors', origin).href, { waitUntil: 'networkidle' }))?.status(), 200);
+    const beforeNative = await page.evaluate(() => globalThis.__durableProcessorOldNative);
+    await page.getByRole('link', { name: 'Manage reviewed processors', exact: true }).click();
+    await page.waitForURL(url => url.pathname === '/settings/processors');
+    await page.getByRole('heading', { name: 'Manage reviewed processors', exact: true }).waitFor();
+    await page.waitForLoadState('networkidle');
+    await settleBuildResponses();
     const inert = await page.evaluate(() => globalThis.__durableProcessorOldNative);
-    assert.deepEqual(inert, { publicVerifyKeys: 0, verifiedTrue: 0, verifiedFalse: 0, cryptoPending: 0, ownerReads: 0, ownerWrites: 0, ownerLocks: 0, lockPending: 0 });
+    assert.deepEqual(inert, beforeNative, 'A new task reached through Settings cannot read or verify saved state before approval');
     assert.equal(await page.locator('[data-processor-phase]').getAttribute('data-processor-phase'), 'idle');
     await activate('Manage processors'); await chooseBrowser();
   }
@@ -239,8 +272,12 @@ finally {
   if (page && !page.isClosed()) {
     try {
       const review = page.getByRole('button', { name: 'Decline management', exact: true }); if (await review.count()) await activate('Decline management');
+      await settleBuildResponses();
       const before = report.retirements.length; await page.locator('main').getByRole('link', { name: 'Back to Settings', exact: true }).click();
       await page.waitForURL(url => url.pathname === '/settings');
+      await page.getByRole('heading', { name: 'Settings', exact: true }).waitFor();
+      await page.waitForLoadState('networkidle');
+      await settleBuildResponses();
       for (let turn = 0; report.retirements.length === before && turn < 100; turn++) await new Promise(resolveWait => setTimeout(resolveWait, 10));
       const retired = report.retirements.at(-1);
       report.cleanup.pageTaskCloseAwaited = report.retirements.length > before && retired.closeAwaited === true && retired.phase === 'closed'
@@ -252,7 +289,7 @@ finally {
           nativeReturnsSettled: observed.cryptoPending === 0 && observed.lockPending === 0 }; }, probe);
       report.cleanup.ownedProbeRemoved = ending.probeRemoved; report.cleanup.ownedPrefixLockSettled = ending.prefixLockSettled;
       report.cleanup.observedNativeReturnsSettled = ending.nativeReturnsSettled;
-      await Promise.all([...pendingResponses]); report.matchedBuildResponses = seenBuild.size;
+      await settleBuildResponses(); report.matchedBuildResponses = seenBuild.size;
       assert.equal(report.pageErrors, 0); assert.equal(report.foreignRequests, 0);
       assert.equal(report.requestsBlocked, 0); assert.equal(report.requestsOverLimit, false); assert.equal(report.webSocketsBlocked, 0);
     } catch (cause) { retain(cause); }
@@ -263,13 +300,15 @@ finally {
   report.cleanup.pagesClosed = !page || page.isClosed();
   // Final acceptance follows every close callout and response read.
   try {
-    await Promise.all([...pendingResponses]);
+    await settleBuildResponses();
     assert.equal(pendingResponses.size, 0);
+    assert.equal(pendingRequests.size, 0);
     for (const [name, complete] of Object.entries(report.cleanup)) assert.equal(complete, true, name);
     assert.equal(report.pageErrors, 0); assert.equal(report.foreignRequests, 0);
     assert.equal(report.requestsBlocked, 0); assert.equal(report.requestsOverLimit, false); assert.equal(report.webSocketsBlocked, 0);
     assert.equal(report.finalPinsVerified, true); assert.ok(report.matchedBuildResponses > 0);
   } catch (cause) { retain(cause); }
+  if (failure) report.status = 'fail';
   writeFileSync(output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
   process.stdout.write(JSON.stringify({ status: report.status, phase: report.failure?.phase, receipt: output,
     sha256: hash(readFileSync(output)), cleanup: report.cleanup, finalPinsVerified: report.finalPinsVerified, childToolsIssued: 0 }) + '\n');
