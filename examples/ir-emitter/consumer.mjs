@@ -1,76 +1,312 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
+import { readFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash, randomBytes } from 'node:crypto';
 import { createDeviceRuntime, parseDeviceDescriptor } from '@101/connect';
 import { createNec32IrEmitterGateway } from '../../packages/hub-server/src/nec32-ir-emitter-gateway.ts';
 
-function softwareProvider() {
-  let child, exitPromise = Promise.resolve(), settlement = Promise.resolve(), buffer = '', outputBytes = 0, spawnCount = 0;
-  let liveTimers = 0, session;
-  const waiters = new Set(), messages = [], sentTypes = [];
-  const schedule = (callback, delay) => { let live = true; liveTimers++; const id = setTimeout(() => {
-    if (!live) return; live = false; liveTimers--; callback();
-  }, delay); return { cancel() { if (!live) return; live = false; liveTimers--; clearTimeout(id); } }; };
-  const within = (promise, timeout, message) => new Promise((resolve, reject) => { const timer = schedule(() => reject(new Error(message)), timeout);
-    Promise.resolve(promise).then(value => { timer.cancel(); resolve(value); }, error => { timer.cancel(); reject(error); }); });
-  const settleWaiters = error => { for (const item of waiters) { item.timer.cancel(); item.reject(error); } waiters.clear(); };
-  const waitFor = (match, timeout = 500) => new Promise((resolve, reject) => {
-    const item = { match, resolve, reject, timer: undefined };
-    item.timer = schedule(() => { waiters.delete(item); reject(new Error('software emitter deadline')); }, timeout);
-    waiters.add(item);
-  });
-  const line = raw => {
-    if (raw.length > 1024) throw new Error('software emitter line too large'); const value = JSON.parse(raw); messages.push(value);
-    for (const item of waiters) if (item.match(value)) { item.timer.cancel(); waiters.delete(item); item.resolve(value); break; }
+export function softwareProvider(options) {
+  const receiver = false;
+  const producer = realpathSync(fileURLToPath(new URL(receiver ? './software-receiver.mjs' : './software-emitter.mjs', import.meta.url)));
+  const observer = realpathSync(fileURLToPath(new URL('../../tools/qa-ir-provider-runtime-observer.mjs', import.meta.url)));
+  const executable = realpathSync(process.execPath);
+  const cwd = realpathSync(fileURLToPath(new URL('.', pathToFileURL(producer))));
+  const startupEnvironment = Object.freeze(process.platform === 'darwin' ? { __CF_USER_TEXT_ENCODING: `0x${process.getuid().toString(16).toUpperCase()}:0:0` } : {});
+  const frozenCopy = value => { const copy = JSON.parse(JSON.stringify(value)); const freeze = item => { if (item && typeof item === 'object') { for (const part of Object.values(item)) freeze(part); Object.freeze(item); } return item; }; return freeze(copy); };
+  const fileHash = path => createHash('sha256').update(readFileSync(path)).digest('hex');
+  const own = (value, keys) => {
+    if (!value || typeof value !== 'object' || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) throw new TypeError('Invalid software provider options');
+    const result = Object.create(null);
+    for (const key of Reflect.ownKeys(value)) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (typeof key !== 'string' || !keys.includes(key) || !descriptor?.enumerable || !Object.hasOwn(descriptor, 'value')) throw new TypeError('Invalid software provider options');
+      result[key] = descriptor.value;
+    }
+    if (!keys.every(key => Object.hasOwn(result, key))) throw new TypeError('Invalid software provider options');
+    return result;
   };
-  const launch = async () => {
-    if (child && child.exitCode === null) return;
-    child = spawn(process.execPath, [new URL('./software-emitter.mjs', import.meta.url).pathname], { stdio: ['pipe', 'pipe', 'pipe'] }); spawnCount++;
-    buffer = ''; outputBytes = 0; let stderr = 0;
-    exitPromise = new Promise((resolve, reject) => { child.once('error', reject); child.once('exit', (code, signal) => {
-      const error = code === 0 ? undefined : new Error(`software emitter exited ${code ?? signal}`); settleWaiters(error ?? new Error('software emitter exited'));
-      child = undefined; session = undefined; if (error) reject(error); else resolve();
-    }); }); void exitPromise.catch(() => {});
-    child.stderr.on('data', chunk => { stderr += chunk.length; if (stderr > 16_384) child?.kill('SIGKILL'); });
-    child.stdout.on('data', chunk => { try { outputBytes += chunk.length; if (outputBytes > 16_384) throw new Error('software emitter output too large');
-      buffer += chunk.toString('utf8'); while (buffer.includes('\n')) { const end = buffer.indexOf('\n'); const raw = buffer.slice(0, end); buffer = buffer.slice(end + 1); line(raw); }
-    } catch (error) { settleWaiters(error); child?.kill('SIGKILL'); } });
-    try {
-      const hello = await waitFor(value => value?.type === 'hello', 1500);
-      assert.deepEqual(hello, { type: 'hello', revision: 1, profileId: 'app:nec-inverse-byte-command-one-shot/1',
-        carrierRanges: [{ minHz: 38000, maxHz: 38000 }] });
-    } catch (error) {
-      const running = child; running?.kill('SIGKILL');
-      await within(exitPromise.catch(() => {}), 1000, 'startup cleanup timeout').catch(() => {});
-      if (child === running) child = undefined; throw error;
+  const actualPins = () => ({ executablePath: executable, executableSha256: fileHash(executable), producerSha256: fileHash(producer), observerPath: observer, observerSha256: fileHash(observer) });
+  const observedPins = actualPins();
+  const supplied = options === undefined ? observedPins : own(own(options, ['runtimePins']).runtimePins, Object.keys(observedPins));
+  if (supplied.executablePath !== executable || supplied.observerPath !== observer ||
+    !['executableSha256', 'producerSha256', 'observerSha256'].every(key => typeof supplied[key] === 'string' && /^[a-f0-9]{64}$/.test(supplied[key]))) throw new TypeError('Invalid software runtime pins');
+  assert.deepEqual({ ...supplied }, observedPins, 'Software runtime pins changed');
+  const pins = Object.freeze({ ...supplied });
+  const deferred = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); void promise.catch(() => {}); return { promise, resolve, reject }; };
+  const empty = Promise.resolve(); const messages = [], commandTypes = []; let current, sequence = 0, spawnCount = 0;
+  const removeAbortListener = EventTarget.prototype.removeEventListener;
+  const aborted = signal => Reflect.apply(Object.getOwnPropertyDescriptor(AbortSignal.prototype, 'aborted').get, signal, []);
+  const schedule = (epoch, callback, delay) => {
+    const record = { active: true, id: undefined, cancel() { if (!record.active) return; record.active = false; clearTimeout(record.id); epoch.timers.delete(record); } };
+    epoch.timers.add(record); record.id = setTimeout(() => { if (!record.active) return; record.cancel(); callback(); }, Math.max(0, Math.ceil(delay))); return record;
+  };
+  const failure = (epoch, error) => { const value = error instanceof Error ? error : new Error('Software provider failure'); epoch.failures.push(value); return value; };
+  const rejectWaiters = (epoch, error, includeCleanup = false) => {
+    for (const waiter of [...epoch.waiters]) if (includeCleanup || !waiter.cleanup) { epoch.waiters.delete(waiter); waiter.timer.cancel(); waiter.task.reject(error); }
+  };
+  const waitFor = (epoch, channel, match, delay, cleanup = false) => {
+    const task = deferred(); const waiter = { task, match, channel, cleanup, timer: undefined };
+    epoch.waiters.add(waiter); waiter.timer = schedule(epoch, () => {
+      epoch.waiters.delete(waiter); const error = new Error('Software provider deadline'); waiter.task.reject(error);
+      fail(epoch, error); checkJoined(epoch);
+    }, delay);
+    return task.promise;
+  };
+  const deliver = (epoch, channel, value) => {
+    for (const waiter of [...epoch.waiters]) if (waiter.channel === channel && waiter.match(value)) {
+      epoch.waiters.delete(waiter); waiter.timer.cancel(); waiter.task.resolve(value); break;
     }
   };
-  const send = message => { if (!child?.stdin.writable) throw new Error('software emitter unavailable'); sentTypes.push(message.type);
-    child.stdin.write(`${JSON.stringify(message)}\n`); };
-  const provider = {
-    supported: true, carrierRanges: Object.freeze([{ minHz: 38000, maxHz: 38000 }]),
-    async open(context) { await launch(); const token = randomBytes(16).toString('hex');
-      const waiting = waitFor(value => value?.type === 'ready' && value.generation === context.generation && value.token === token);
-      send({ type: 'open', generation: context.generation, token, deadline: context.deadline }); await waiting;
-      session = Object.freeze({ generation: context.generation, token }); return 'ready'; },
-    async transmit(envelope, context) { if (!session || session.generation !== context.generation) return 'rejected';
-      const sha256 = createHash('sha256').update(envelope).digest('hex');
-      const waiting = waitFor(value => (value?.type === 'completed' || value?.type === 'cancelled' || value?.type === 'rejected') && value.operationId === context.operationId,
-        Math.max(1, Math.ceil(context.deadline - performance.now())));
-      send({ type: 'emit', generation: context.generation, token: session.token, operationId: context.operationId, deadline: context.deadline,
-        envelope: Buffer.from(envelope).toString('base64'), sha256 });
-      const result = await waiting; return result.type === 'completed' && result.sha256 === sha256 ? 'completed' : 'rejected'; },
-    stop() { if (!child?.stdin.writable || !session) return; const stopping = session;
-      const waiting = waitFor(value => value?.type === 'stopped' && value.generation === stopping.generation && value.token === stopping.token);
-      send({ type: 'stop', generation: stopping.generation, token: stopping.token });
-      settlement = waiting.then(() => { if (session === stopping) session = undefined; }); },
-    async close() { if (!child) return; const running = child; const waiting = waitFor(value => value?.type === 'closed');
-      try { send({ type: 'close' }); await waiting; await within(exitPromise, 1000, 'close timeout'); }
-      catch { running.kill('SIGKILL'); await within(exitPromise.catch(() => {}), 1000, 'kill timeout').catch(() => {}); } },
-    whenSettled() { return settlement; },
+  const listen = (epoch, target, event, callback) => {
+    epoch.registrations++;
+    const wrapped = (...args) => { epoch.callbacks++; try { callback(...args); } catch (error) { fail(epoch, error); } finally { epoch.callbacks--; checkJoined(epoch); } };
+    epoch.listeners.push({ target, event, wrapped });
+    try { target.on(event, wrapped); } finally { epoch.registrations--; }
   };
-  return { provider, messages, sentTypes, spawnCount: () => spawnCount,
-    status: () => Object.freeze({ waiters: waiters.size, timers: liveTimers, childRunning: Boolean(child) }) };
+  const request = (value, operation) => {
+    const context = own(value, operation ? ['generation', 'purpose', 'deadline', 'signal', 'operationId'] : ['generation', 'purpose', 'deadline', 'signal']);
+    if (!Number.isSafeInteger(context.generation) || context.generation < 1 || typeof context.purpose !== 'string' || !context.purpose ||
+      !Number.isFinite(context.deadline) || context.deadline <= performance.now() || aborted(context.signal) ||
+      (operation && (typeof context.operationId !== 'string' || !context.operationId))) throw new TypeError('Invalid software request');
+    return context;
+  };
+  const activity = (epoch, context) => {
+    epoch.operations++;
+    const abort = () => fail(epoch, new Error('Software request cancelled'));
+    let timer, listening = false, finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      try {
+        timer?.cancel();
+        if (listening) context.signal.removeEventListener('abort', abort);
+      } catch (error) { fail(epoch, error); throw error; }
+      finally {
+        // An own removal override may throw before removing the native listener.
+        try { if (listening) Reflect.apply(removeAbortListener, context.signal, ['abort', abort]); }
+        catch (error) { fail(epoch, error); }
+        finally { epoch.operations--; checkJoined(epoch); }
+      }
+    };
+    try {
+      timer = schedule(epoch, abort, context.deadline - performance.now());
+      epoch.registrations++;
+      try { listening = true; context.signal.addEventListener('abort', abort, { once: true }); }
+      finally { epoch.registrations--; }
+      return finish;
+    } catch (error) {
+      try { finish(); } catch { /* finish retained the cleanup failure. */ }
+      throw error;
+    }
+  };
+  const isCurrent = (epoch, context) => !epoch.fenced && current === epoch && !aborted(context.signal) && performance.now() < context.deadline;
+  function fail(epoch, error) { failure(epoch, error); beginClose(epoch); }
+  function beginClose(epoch) {
+    if (!epoch.fenced) { epoch.fenced = true; epoch.stoppingSession = epoch.session; epoch.session = undefined; rejectWaiters(epoch, new Error('Software provider stopped')); }
+    if (epoch.closeStarted || epoch.settled) return epoch.raw.promise;
+    epoch.closeStarted = true; epoch.phase = 'closing'; epoch.driverActive = true;
+    epoch.escalation = schedule(epoch, () => {
+      failure(epoch, new Error('Software cleanup observation deadline'));
+      if (epoch.child && !epoch.childClosed && !epoch.killRequested) {
+        epoch.killRequested = true; try { epoch.child.kill('SIGKILL'); } catch (error) { failure(epoch, error); }
+      }
+      checkJoined(epoch);
+    }, 1000);
+    void Promise.resolve().then(async () => {
+      await epoch.adopted.promise;
+      if ((epoch.noProcess && !epoch.child) || (epoch.spawnError && !epoch.spawnSeen && epoch.child?.pid === undefined)) return;
+      const session = epoch.stoppingSession;
+      if (session && !epoch.terminal && epoch.stdin?.writable) {
+        try {
+          const stopped = waitFor(epoch, 'protocol', value => value.type === 'stopped' && value.generation === session.generation && value.token === session.token, 500, true);
+          await Promise.all([stopped, write(epoch, { type: 'stop', ...session }, true)]);
+        } catch (error) { failure(epoch, error); }
+      }
+      if (!epoch.terminal && epoch.stdin?.writable) {
+        try {
+          const closed = waitFor(epoch, 'protocol', value => value.type === 'closed', 500, true);
+          await Promise.all([closed, write(epoch, { type: 'close' }, true)]);
+        } catch (error) { failure(epoch, error); }
+      }
+      try { if (epoch.stdin && !epoch.stdin.destroyed) epoch.stdin.end(); } catch (error) { failure(epoch, error); }
+    }).catch(error => failure(epoch, error)).finally(() => { epoch.driverActive = false; checkJoined(epoch); });
+    return epoch.raw.promise;
+  }
+  function write(epoch, message, cleanup = false) {
+    const task = deferred(); const record = { task, callbackObserved: false, callIssued: false, type: message.type };
+    epoch.writes.add(record);
+    try {
+      const payload = `${JSON.stringify(message)}\n`;
+      if ((!cleanup && epoch.fenced) || !epoch.stdin?.writable) throw new Error('Software provider unavailable');
+      Array.prototype.push.call(commandTypes, message.type); record.callIssued = true;
+      epoch.stdin.write(payload, error => {
+        if (record.callbackObserved) { fail(epoch, new Error('Duplicate software write callback')); return; }
+        record.callbackObserved = true; epoch.writes.delete(record);
+        if (error) { fail(epoch, error); task.reject(error); } else task.resolve();
+        checkJoined(epoch);
+      });
+    } catch (error) {
+      if (!record.callIssued) epoch.writes.delete(record);
+      // A throwing issued write remains owned until its actual callback arrives.
+      fail(epoch, error); task.reject(error); checkJoined(epoch);
+    }
+    return task.promise;
+  }
+  function validateProof(epoch, value) {
+    const keys = ['schemaVersion', 'phase', 'nonce', 'epoch', 'pid', 'ppid', 'nodeVersion', 'platform', 'architecture', 'execPath', 'executable', 'executableSha256', 'argv', 'execArgv', 'cwd', 'environment', 'producer', 'producerSha256', 'observer', 'observerSha256', 'clockDomain', 'exitCode'];
+    const record = own(value, keys);
+    if (record.schemaVersion !== 1 || !['before', 'after'].includes(record.phase) || record.nonce !== epoch.nonce || record.epoch !== epoch.id ||
+      record.pid !== epoch.child.pid || record.ppid !== process.pid || record.nodeVersion !== process.version || record.platform !== process.platform || record.architecture !== process.arch ||
+      record.execPath !== executable || record.executable !== executable || record.executableSha256 !== pins.executableSha256 ||
+      record.producer !== producer || record.producerSha256 !== pins.producerSha256 || record.observer !== observer || record.observerSha256 !== pins.observerSha256 ||
+      !record.clockDomain || !Number.isFinite(own(record.clockDomain, ['timeOrigin']).timeOrigin)) throw new Error('Invalid software runtime origin');
+    assert.deepEqual(record.argv, [executable, producer]); assert.deepEqual(record.execArgv, ['--import', pathToFileURL(observer).href]);
+    assert.deepEqual(record.environment, epoch.environment); assert.equal(record.cwd, cwd);
+    if (record.phase === 'before') { if (epoch.before || record.exitCode !== null) throw new Error('Duplicate software origin'); epoch.before = frozenCopy(value); }
+    else {
+      if (!epoch.before || epoch.after || !Number.isInteger(record.exitCode)) throw new Error('Invalid terminal software origin');
+      const normalize = item => { const { phase: ignoredPhase, exitCode: ignoredCode, ...rest } = item; void ignoredPhase; void ignoredCode; return rest; };
+      assert.deepEqual(normalize(record), normalize(epoch.before)); epoch.after = frozenCopy(value);
+    }
+    deliver(epoch, 'proof', value);
+  }
+  function adopt(epoch, child) {
+    // Retain the exact returned handle even if spawn or listener registration fenced admission.
+    epoch.child = child; epoch.spawning = false; epoch.registrations++;
+    try {
+      listen(epoch, child, 'spawn', () => { epoch.spawnSeen = true; });
+      listen(epoch, child, 'error', error => { epoch.spawnError = error; fail(epoch, error); rejectWaiters(epoch, error, true); });
+      listen(epoch, child, 'exit', (code, signal) => {
+        epoch.terminal = { code, signal }; if (code !== 0) failure(epoch, new Error('Software process failed'));
+        beginClose(epoch);
+        // A successful terminal event can precede delivery of buffered closed stdout.
+        rejectWaiters(epoch, new Error('Software process exited'), epoch.streams.some(stream => stream.index === 1 && stream.ended));
+      });
+      listen(epoch, child, 'close', (code, signal) => { epoch.childClosed = true; epoch.childClose = { code, signal }; });
+      const streams = [child.stdin, child.stdout, child.stderr, child.stdio[3]];
+      epoch.stdin = streams[0];
+      for (const [index, stream] of streams.entries()) {
+        const state = { index, stream, created: Boolean(stream), closed: !stream, ended: index === 0 || !stream, buffer: Buffer.alloc(0), bytes: 0 };
+        epoch.streams.push(state);
+        if (!stream) continue;
+        listen(epoch, stream, 'error', error => fail(epoch, error));
+        listen(epoch, stream, 'close', () => { state.closed = true; });
+        if (index > 0) listen(epoch, stream, 'end', () => {
+          state.ended = true;
+          if (index === 1 && epoch.terminal) rejectWaiters(epoch, new Error('Software process output ended'), true);
+        });
+        if (index > 0) listen(epoch, stream, 'data', chunk => {
+          state.bytes += chunk.length; if (state.bytes > 16384) throw new Error('Software output too large');
+          if (index === 2) return;
+          state.buffer = Buffer.concat([state.buffer, chunk]); let newline;
+          while ((newline = state.buffer.indexOf(10)) >= 0) {
+            const raw = state.buffer.subarray(0, newline); state.buffer = state.buffer.subarray(newline + 1);
+            if (raw.length > 8192) throw new Error('Software line too large');
+            const value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(raw));
+            if (index === 3) validateProof(epoch, value);
+            else { Array.prototype.push.call(messages, Object.freeze(value)); if (value.type === 'closed') epoch.protocolClosed = true; deliver(epoch, 'protocol', value); }
+          }
+          if (state.buffer.length > 8192) throw new Error('Software line too large');
+        });
+      }
+    } catch (error) { fail(epoch, error); }
+    finally { epoch.registrations--; epoch.adopted.resolve(); checkJoined(epoch); }
+  }
+  function checkJoined(epoch) {
+    if (epoch.settled || epoch.joining || epoch.spawning || (!epoch.child && !epoch.noProcess) || epoch.registrations || epoch.callbacks || epoch.operations || epoch.driverActive || epoch.waiters.size || epoch.writes.size || (epoch.child && !epoch.childClosed) || epoch.streams.some(stream => !stream.closed)) return;
+    const noProcess = epoch.noProcess || (!epoch.spawnSeen && epoch.child?.pid === undefined && ['ENOENT', 'EACCES'].includes(epoch.spawnError?.code));
+    if (!noProcess && !epoch.terminal) return;
+    epoch.joining = true;
+    for (const timer of [...epoch.timers]) timer.cancel();
+    if (!noProcess) {
+      if (!epoch.before || !epoch.after || epoch.after.exitCode !== epoch.terminal.code || !epoch.protocolClosed) failure(epoch, new Error('Software closure proof incomplete'));
+      for (const stream of epoch.streams) if (stream.index > 0 && (!stream.ended || stream.buffer.length)) failure(epoch, new Error('Software stream drain incomplete'));
+    }
+    try { assert.deepEqual(actualPins(), pins, 'Software runtime changed after execution'); } catch (error) { failure(epoch, error); }
+    for (const item of epoch.listeners) {
+      epoch.registrations++; try { item.target.off(item.event, item.wrapped); } catch (error) { failure(epoch, error); } finally { epoch.registrations--; }
+    }
+    epoch.listeners.length = 0; epoch.noProcess = noProcess; epoch.settled = true; epoch.phase = 'settled'; epoch.child = undefined;
+    if (epoch.failures.length) epoch.raw.reject(new AggregateError(epoch.failures, 'Software provider failed after raw settlement')); else epoch.raw.resolve();
+  }
+  const provider = {
+    supported: true,
+    ...(receiver ? { mode: 'LIRC_MODE_MODE2', resolutionMicros: 1 } : { carrierRanges: Object.freeze([{ minHz: 38000, maxHz: 38000 }]) }),
+    async open(value) {
+      const context = request(value, false);
+      if (current && !current.settled) throw new Error('Software provider busy');
+      const epoch = { id: ++sequence, phase: 'opening', raw: deferred(), adopted: deferred(), child: undefined, spawning: true, spawnIssued: false, fenced: false, closeStarted: false,
+        settled: false, joining: false, driverActive: false, registrations: 0, callbacks: 0, operations: 0, writes: new Set(), waiters: new Set(), timers: new Set(), listeners: [], streams: [], failures: [] };
+      current = epoch; let finish;
+      try {
+        finish = activity(epoch, context);
+        if (!isCurrent(epoch, context)) throw new Error('Software open retired');
+        assert.deepEqual(actualPins(), pins, 'Software runtime changed before execution');
+        if (!isCurrent(epoch, context)) throw new Error('Software open retired');
+        epoch.nonce = randomBytes(16).toString('hex');
+        epoch.environment = Object.freeze({ LANG: 'C', LC_ALL: 'C', TZ: 'UTC', ...startupEnvironment, IR_OBSERVER_NONCE: epoch.nonce, IR_OBSERVER_EPOCH: String(epoch.id),
+          IR_OBSERVER_EXECUTABLE: executable, IR_OBSERVER_EXECUTABLE_SHA256: pins.executableSha256, IR_OBSERVER_PRODUCER: producer,
+          IR_OBSERVER_PRODUCER_SHA256: pins.producerSha256, IR_OBSERVER_OBSERVER: observer, IR_OBSERVER_OBSERVER_SHA256: pins.observerSha256 });
+        const hello = waitFor(epoch, 'protocol', item => item.type === 'hello', 1500);
+        const before = waitFor(epoch, 'proof', item => item.phase === 'before', 1500);
+        if (!isCurrent(epoch, context)) throw new Error('Software open retired');
+        spawnCount++; epoch.spawnIssued = true;
+        let child;
+        try { child = spawn(executable, ['--import', pathToFileURL(observer).href, producer], {
+          env: epoch.environment, cwd, shell: false, detached: false, windowsHide: true, stdio: ['pipe', 'pipe', 'pipe', 'pipe'],
+        }); } catch (error) { epoch.spawnUnconfirmed = true; fail(epoch, error); throw error; }
+        adopt(epoch, child);
+        const [greeting] = await Promise.all([hello, before]);
+        assert.deepEqual(greeting, receiver ? { type: 'hello', revision: 1, profileId: 'app:nec-inverse-byte-demodulated-nominal/1', mode: 'LIRC_MODE_MODE2', resolutionMicros: 1, carrierMeasurement: false }
+          : { type: 'hello', revision: 1, profileId: 'app:nec-inverse-byte-command-one-shot/1', carrierRanges: [{ minHz: 38000, maxHz: 38000 }] });
+        if (!isCurrent(epoch, context)) throw new Error('Software open retired');
+        const token = randomBytes(16).toString('hex');
+        const ready = waitFor(epoch, 'protocol', item => item.type === 'ready' && item.generation === context.generation && item.token === token, 500);
+        await Promise.all([ready, write(epoch, { type: 'open', generation: context.generation, token, deadline: context.deadline })]);
+        if (!isCurrent(epoch, context)) throw new Error('Software open retired');
+        epoch.session = Object.freeze({ generation: context.generation, token }); epoch.phase = 'ready'; return 'ready';
+      } catch (error) { if (!epoch.spawnIssued) { epoch.spawning = false; epoch.noProcess = true; rejectWaiters(epoch, error, true); epoch.adopted.resolve(); } fail(epoch, error); throw error; } finally { finish?.(); }
+    },
+    stop() { if (current) beginClose(current); },
+    close() { return current ? beginClose(current) : empty; },
+    whenSettled() { return current?.raw.promise ?? empty; },
+  };
+  if (receiver) provider.capture = async value => {
+    const context = request(value, true), epoch = current;
+    if (!epoch?.session || epoch.session.generation !== context.generation || !isCurrent(epoch, context)) throw new Error('Software capture unavailable');
+    let finish;
+    try {
+      finish = activity(epoch, context);
+      if (!isCurrent(epoch, context)) throw new Error('Software capture retired');
+      const result = waitFor(epoch, 'protocol', item => ['capture', 'cancelled', 'rejected'].includes(item.type) && item.operationId === context.operationId, Math.max(1, context.deadline - performance.now()));
+      const [reply] = await Promise.all([result, write(epoch, { type: 'capture', ...epoch.session, operationId: context.operationId, deadline: context.deadline })]);
+      if (!isCurrent(epoch, context) || reply.type !== 'capture') throw new Error('Software capture rejected'); return reply.packets;
+    } catch (error) { fail(epoch, error); throw error; } finally { finish?.(); }
+  };
+  else provider.transmit = async (envelope, value) => {
+    const context = request(value, true), epoch = current;
+    if (!epoch?.session || epoch.session.generation !== context.generation || !isCurrent(epoch, context)) return 'rejected';
+    let finish;
+    try {
+      finish = activity(epoch, context);
+      if (!isCurrent(epoch, context)) throw new Error('Software transmit retired');
+      const bytes = Buffer.from(envelope), sha256 = createHash('sha256').update(bytes).digest('hex');
+      const result = waitFor(epoch, 'protocol', item => ['completed', 'cancelled', 'rejected'].includes(item.type) && item.operationId === context.operationId, Math.max(1, context.deadline - performance.now()));
+      const [reply] = await Promise.all([result, write(epoch, { type: 'emit', ...epoch.session, operationId: context.operationId, deadline: context.deadline, envelope: bytes.toString('base64'), sha256 })]);
+      return isCurrent(epoch, context) && reply.type === 'completed' && reply.sha256 === sha256 ? 'completed' : 'rejected';
+    } catch (error) { fail(epoch, error); throw error; } finally { finish?.(); }
+  };
+  const status = () => Object.freeze({ waiters: current?.waiters.size ?? 0, timers: current?.timers.size ?? 0, childRunning: Boolean(current && !current.settled) });
+  const lifecycleStatus = () => Object.freeze({ phase: current?.phase ?? 'idle', epoch: current?.id ?? 0, fenced: current?.fenced ?? false,
+    spawnCount, spawnUnconfirmed: current?.spawnUnconfirmed ?? false, spawnObserved: current?.spawnSeen ?? false, noProcessConfirmed: current?.noProcess ?? false,
+    terminal: current?.terminal ? Object.freeze({ ...current.terminal }) : null, childClose: current?.childClose ? Object.freeze({ ...current.childClose }) : null,
+    streams: Object.freeze((current?.streams ?? []).map(item => Object.freeze({ index: item.index, created: item.created, closed: item.closed, ended: item.ended }))),
+    pendingWrites: current?.writes.size ?? 0, operations: current?.operations ?? 0, ...status(), rawPending: current && !current.settled ? 1 : 0,
+    outcome: current?.settled ? (current.failures.length ? 'failed' : 'settled') : 'pending', failures: Object.freeze((current?.failures ?? []).map(error => error.message)) });
+  const runtimeProof = () => Object.freeze({ before: current?.before ? frozenCopy(current.before) : null, after: current?.after ? frozenCopy(current.after) : null,
+    pins, epoch: current?.id ?? 0, settled: current?.settled ?? true });
+  return { provider, messages, ...(receiver ? { commands: commandTypes } : { sentTypes: commandTypes }), spawnCount: () => spawnCount, status, lifecycleStatus, runtimeProof };
 }
 
 export async function runIrEmitterConsumer() {

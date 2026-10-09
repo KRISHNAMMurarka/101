@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
 const paths = ['packages/hub-server/src/nec32-ir-emitter-gateway.ts', 'packages/hub-server/src/nec32-ir-emitter-gateway.test.ts',
-  'examples/ir-emitter/software-emitter.mjs', 'examples/ir-emitter/consumer.mjs', 'tools/qa-ir-emitter.mjs',
+  'examples/ir-emitter/software-emitter.mjs', 'examples/ir-emitter/consumer.mjs', 'tools/qa-ir-provider-runtime-observer.mjs', 'tools/qa-ir-emitter.mjs',
   'tools/qa-installed-ir-emitter.mjs'];
 const before = Object.fromEntries(await Promise.all(paths.map(async path => [path, await readFile(new URL(`../${path}`, import.meta.url))])));
 const sourceSha256 = Object.fromEntries(Object.entries(before).map(([path, bytes]) =>

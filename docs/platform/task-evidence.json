@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 188,
+  "revision": 189,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13361,6 +13361,33 @@
         "Selected physical headset and authorized native audio transport/permissions for independent audio/control/sensor qualification"
       ],
       "supportRows": []
+    },
+    {
+      "id": "ir-provider-lifecycle-2026-10-09",
+      "revision": "465099e178a234c59dd6208599027a9b8905e9cf748af6ef6cf7ba034bce999f",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A07",
+        "A08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-ir-provider-lifecycle.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; explicit closed child environment; unchanged ordinary installed seven-package SDK.",
+      "reproduction": "61 current factory fixtures; retained semantic REDs and failures; independent core/environment/style/topology/expiry reviews; actual source+installed two-child pairs and all four functional IR caller entrypoints; exact candidate gates referenced by receipt.",
+      "scope": "Software provider startup/origin/shared raw cleanup and ordinary caller compatibility. No captured review-to-emitter learning, physical carrier/reception/emission, target receipt/meaning/ack/state, support-row or full A07/A08 claim.",
+      "failure": null,
+      "equipment": [
+        "Selected physical IR receiver/emitter, timing/carrier instruments and target firmware required for physical acceptance"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -15115,7 +15142,8 @@
       "id": "A07",
       "records": [
         "pending-A07",
-        "ir-emitter-2026-10-08"
+        "ir-emitter-2026-10-08",
+        "ir-provider-lifecycle-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15130,7 +15158,8 @@
       "id": "A08",
       "records": [
         "pending-A08",
-        "ir-receive-2026-10-08"
+        "ir-receive-2026-10-08",
+        "ir-provider-lifecycle-2026-10-09"
       ],
       "dependencies": [
         "M01",

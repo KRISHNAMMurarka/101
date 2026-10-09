@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-provider-lifecycle-and-entrypoints-verified-learning-physical-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "examples/ir-receive/consumer.mjs": "5ff60b509a5214fd0dd9b6e9ddf653f41e9726a288f1bae9f792bdac8b821e0f",
+    "examples/ir-emitter/consumer.mjs": "917ba3089ae3178b6248fae9b26d52e7b6f5f2b26581c67d96289f7ebcd1f94c",
+    "tools/qa-ir-provider-runtime-observer.mjs": "465099e178a234c59dd6208599027a9b8905e9cf748af6ef6cf7ba034bce999f",
+    "tools/qa-ir-receive.mjs": "25ef6138064509f08c7da45015c959ffccd3d92242c244a8fbf1f8d034c0d6eb",
+    "tools/qa-ir-emitter.mjs": "72049d65fb7e8bfb56cd4665bf9ea267cb63847ae8357a3772a473a2de8ce30a",
+    "tools/qa-installed-ir-receive.mjs": "1209a7aecce1f6cc270dfa2a833b3bdb9a4b5b3402b57689e29f400857d0611f",
+    "tools/qa-installed-ir-emitter.mjs": "e47c592f01eb38a9de7e694d35ff778867198ada0301f27b3fd477782717bc35"
+  },
+  "outcome": "Existing IR software providers reserve work before callbacks, fence cancellation and expiry, pin a closed startup environment and actual before/after runtime origins, and share cleanup that joins actual exit, child close, every created pipe and each write callback before releasing ownership. Both installed QA tools preserve byte-exact copied topology and native private TypeScript while public SDK imports remain ordinary installed JS.",
+  "validation": {
+    "currentFactoryFixtures": 61,
+    "semanticFactoryFailures": "Original factory14; subsequent lifecycle20+2 interim registration regressions; environment3; scopes and actual failed fixtures preserved separately, not a unique summed defect count.",
+    "qualifierObservationRegression": "Three genuine old-observer semantic REDs and three repaired passive-flow/no-process/overflow GREENs; initial unrelated realm setup failure retained.",
+    "entrypointPackaging": "Four faithful old copy/enrollment REDs; four repaired setup GREENs, then four fresh setup GREENs against final style bytes.",
+    "style": "Ten old lint violations preserved; three repaired provider/helper and four QA files pass targeted lint; final receive tail passes targeted lint.",
+    "actualFinalStylePairs": {
+      "sourceReceiptSha256": "06a206f2996aeaaa6f82959cf9e24c2f9b50ab335938a82b8f06277256460e9c",
+      "installedReceiptSha256": "15da9148f1d7a73e333d63a22c7cb68f8675e9275d01e8508ff789223fc816f8",
+      "children": 4,
+      "exitCodes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "childCloseCodes": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "streamsClosed": 16,
+      "allActualWriteCallbacksReturned": true,
+      "rawPending": 0,
+      "operationDeadlineMs": 500,
+      "postPins": [
+        152,
+        431
+      ],
+      "scope": "Exact pre-tail full modules. Final receive tail changes preserve factory declaration/body; observer, producer, gateway, SDK and toolchain fingerprints remain unchanged. No unchanged factory rerun credit inferred."
+    },
+    "actualFourEntrypoints": [
+      {
+        "id": "source-receive",
+        "receiptSha256": "2485774ffb2aa4675b933e07bf3b1d316e07f09ad51e0d038458c5369dd069c4",
+        "nodeExitCode": 0,
+        "postPins": 565,
+        "helloMessages": 7,
+        "lifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        }
+      },
+      {
+        "id": "source-emitter",
+        "receiptSha256": "898c8dbc16a59a0be50d6835cb5a35fd881be02ae0b1b50d398a7715f1c64a10",
+        "nodeExitCode": 0,
+        "postPins": 565,
+        "helloMessages": 2,
+        "lifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        }
+      },
+      {
+        "id": "installed-receive",
+        "receiptSha256": "629f98e7114125a7c6a0bf1df405a01345819ed63c7d5b13133bfafa9b2f10a7",
+        "nodeExitCode": 0,
+        "postPins": 565,
+        "helloMessages": 7,
+        "lifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        }
+      },
+      {
+        "id": "installed-emitter",
+        "receiptSha256": "0db29fc311b2a0e2b93bb8d8219397b5114d2bfc1fff6c31ef4b44afcc427b7c",
+        "nodeExitCode": 0,
+        "postPins": 565,
+        "helloMessages": 2,
+        "lifecycle": {
+          "waiters": 0,
+          "timers": 0,
+          "childRunning": false
+        }
+      }
+    ]
+  },
+  "closedEnvironment": "Darwin explicitly includes trusted UID-derived __CF_USER_TEXT_ENCODING; retained UID501 agrees with actual0x1F5:0:0. No ambient merge or deletion from observed readback. Linux/win32 eleven-key checks are synthetic pure contracts, not native startup evidence.",
+  "unchangedSDK": {
+    "manifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+    "publicSourcePins": 135,
+    "installedDistributionFiles": 411,
+    "installedPins": 414,
+    "buildInstall": false
+  },
+  "preservedFailures": {
+    "firstActualRun": "One receiver exited1 before producer hello because macOS inserted an unplanned environment key. Actual500ms deadline also expired; environment mismatch is established fatal, not proved the sole cause. All actual work joined; no emitter or installed child was issued. Repaired later passes do not retroactively identify the original startup latency.",
+    "historicalSnapshot": "First preflight receive failed full-source snapshot was not retained directly: saved consumer.mjs was emitter. Independently derived recovery matches expected receive hashes and remains labelled derived; no original executed-source or extra historical RED claim.",
+    "receiveExpiryScenario": "Existing full receiver QA failed issued activation expired at100ms session grant before candidate;152 post-pins matched. Tail repair records original issuer expiry, uses400ms session grant within unchanged start400/runtime500ms cap, requests later capture500ms, asserts live route, then waits recorded grant expiry and checks withdrawal before stop. Gateway clamps candidate effective deadline to session grant, so this proves controlling session authority expiry without claiming which equal-deadline timer wins. Original80ms capture-expiry check remains unchanged.",
+    "rootSetup": "Pre-Node release ordering failure, strict copy preparation guard failures and initial observer fixture realm setup failure are retained separately from semantic regressions."
+  },
+  "proofLimits": [
+    "Four functional demo entrypoints rely on the reviewed factory internal runtime validation/shared cleanup; no extra external all-demo-child origin/pipe observer credit is claimed.",
+    "Existing codecs, private gateway profiles and actual waveform producers remain byte exact. No new public SDK schema, SDK build/install, dependency or service.",
+    "No reviewed capture-to-codebook-to-emitter learning workflow, measured carrier/tolerance, physical receipt/emission/appliance meaning/acknowledgement/state, support-row or full A07/A08 acceptance. Both tasks stay partial."
+  ],
+  "independentReviews": [
+    {
+      "sha256": "132471869af92c8f5d9bdfd321623128805e83cf1e104e7c99a3e899481207b5",
+      "scope": "core lifecycle and retained evidence limitation"
+    },
+    {
+      "sha256": "207171a0c4ecb0f134a40b2801a269965b0b393252011fda1711490010586126",
+      "scope": "passive root qualifier revision2"
+    },
+    {
+      "sha256": "d04b4875ecb0f230d04a44af2ca2fdf7f3c46f708c3429f0d9f57a5167972ebc",
+      "scope": "explicit Darwin environment contract"
+    },
+    {
+      "sha256": "dc76e247d11f1729993f13d4cab683efcff225999926c4dcf2f85ca94ca54de0",
+      "scope": "style and four QA topology changes"
+    },
+    {
+      "sha256": "2d1a9af927009605e73641c9d99f8a928000abec160ea47e6e241d8fd50f9a93",
+      "scope": "final composed setup annex"
+    },
+    {
+      "sha256": "6e6fbfa16c054702bd7d465b315bc1cb9cd752988bfad14929bd92a420d1d2f8",
+      "scope": "receive expiry scenario preserving operation cap"
+    }
+  ],
+  "rawEvidenceManifests": [
+    {
+      "sha256": "7bb0cf4f9da55ef822268c6fcc23b07bebc2b3d8b24100a8293aef8719a3e544",
+      "gitBlob": "055a5ac2cf3bbae674a48a0d2a4ed4d3a38b39c7",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-initial-raw/manifest"
+    },
+    {
+      "sha256": "d433ee61a350006d6b1b5f29387633d5eba7842c4193f427b7736111ecc90cd6",
+      "gitBlob": "52058777586df99f66b9f27251577a0ba67f8af1",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-first-actual-failure/manifest"
+    },
+    {
+      "sha256": "d16a475fb794f792a589424f61970ebd43db147ac927e862086bc4fe64b217c3",
+      "gitBlob": "16f84fe5a1e7607823275908f34be84b47f6ca29",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-environment-raw/manifest"
+    },
+    {
+      "sha256": "5815c80c3abc0489f28c12aa19d6df0b5fe9db853550a6629f285ee1ebb3d3b6",
+      "gitBlob": "646a59793ee08c29005d36f878647edbd343ba39",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-actual-green/manifest"
+    },
+    {
+      "sha256": "f39b78922f951aba89961596ef0a01c291a4fbe045042b16ecb643ec56e831ad",
+      "gitBlob": "56081e0d6131f6ea994664d400cf40a100a27edf",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-integration-delta-raw/manifest"
+    },
+    {
+      "sha256": "12d4dcca6282955f53c2c88f9a43c4ad4a85428c5f8be39711849680b2136eb3",
+      "gitBlob": "9fdf668c06a9e5ab4256c4c5e41604514d58bb9c",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-final-pairs-and-expiry-red/manifest"
+    },
+    {
+      "sha256": "2ad84976b486ab68df207dca0f5938c6bd471c1324f7454cc84b31786df1eb14",
+      "gitBlob": "2cc7c3716048c78b2daeb3fc5198f3c1e561e24d",
+      "ref": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-entrypoints-green/manifest"
+    }
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-integrated/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-ir-prerequisite/controller-7-integrated/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only completed green results for the exact referenced tree permit local commit. Fresh build required before rendered gate; local build does not publish."
+  }
+}
