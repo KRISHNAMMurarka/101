@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "status": "fail-unqualified-native-blur",
+  "localOnly": true,
+  "sourceChanged": false,
+  "physical": false,
+  "supportRows": [],
+  "decision": {
+    "path": "/tmp/101-audio-native-app-focus/decision.json",
+    "sha256": "471232fdc9aa1e5f197952abb4cda8a1fce13fc017d60533ebfe46d8b68f7d74",
+    "gitBlob": "f40f0945c66ea31e8a482313696b28a309e08359",
+    "ref": "refs/codex/evidence/2026-10-09-audio-native-app-focus/raw-0610"
+  },
+  "rawReceipt": {
+    "path": "/tmp/101-audio-native-app-focus/cua-receipt.json",
+    "sha256": "91414b8faf2697fd3af032d2b0ad56a2bb52c5dd595c829ebc5d80900e89e266",
+    "gitBlob": "9b683bb263792600dc31e59c6e7e3694e4328b46",
+    "ref": "refs/codex/evidence/2026-10-09-audio-native-app-focus/raw-0609"
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-audio-native-app-focus/raw-manifest.json",
+    "sha256": "c3551d24bfaede6080fdd53d7d1df49ad7cc917a6b56bb472684b9ac6875bf71",
+    "gitBlob": "572e930c8a123cf016e3854d32e876a94c8688e1",
+    "ref": "refs/codex/evidence/2026-10-09-audio-native-app-focus/manifest",
+    "entries": 615,
+    "uniqueBlobs": 578
+  },
+  "observed": "Actual native audio objects2contexts/3tracks/1element active; element muted before play. Calculator window Raise and Zero click did not transfer active document focus. Original playback deadline released native audio; no active blur generated.",
+  "cleanup": "Owned Calculator and browser tab closed; server request/background counters0 and actual process exit1 after EOF, expected failed verdict; serverListening:false alone was not used as exit proof",
+  "scope": "Observed existing expiry cleanup, failed active blur prerequisite only; no new player defect, passing blur, browser runtime pin, physical sound/acoustics/AT/permission/device-loss or full U03/V03 acceptance",
+  "acceptance": {
+    "U03": "partial",
+    "V03": "partial",
+    "nativeBlur": "unqualified"
+  }
+}

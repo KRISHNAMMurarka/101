@@ -1,0 +1,472 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-synthetic-source-and-observed-installed-software-pass",
+  "localOnly": true,
+  "sourceBase": "d07db69e1e2fbcd2d3a560cdbfc1545fbe750122",
+  "sourceSha256": {
+    "examples/heart-rate/consumer.mjs": "d47a1968cfa7782e9525e6b5e45c520cbea0be431cd1946fba86daae180440bd",
+    "examples/heart-rate/port.mjs": "455dd9de5f8b1a00f8f0f08a6536189acb5855604a4f64e85acd4bdec32e85d9",
+    "examples/heart-rate/producer.py": "7c93bfb27bc57b129b3ec916470b84a1f9975b73b4f5b8e5b566d75c3ea0fc9c",
+    "packages/hub-server/src/heart-rate-measurement.test.ts": "1ae37cdd5f52efad7f68fafe7f12dd7b430c6b39df41a41a3b8f8b38a95cee4f",
+    "packages/hub-server/src/heart-rate-measurement.ts": "abe779726d83ff4c9bf29321d58f6aaeb06e8fbbe2bfb32af629b5a6f5fbe9dc",
+    "packages/hub-server/src/heart-rate-software.test.ts": "b00b34f0e1015e452c63b467262bf6984724d576daa2f9c51a1221a11438295b",
+    "packages/hub-server/src/heart-rate-software.ts": "836934f5b924e6d2804dbcb2953f05f2ceff2ae98e3b2059197c02890f8b4f9b",
+    "tools/qa-heart-rate-software.mjs": "ea4544febb0ddbea19a5ba9fa90d0d301d279694494142fe52d0dc660542c741",
+    "tools/qa-installed-heart-rate-software.mjs": "3a7854cbc3d4d01e8040bf52105573e3f4d112376d8e6908cd9977665b616bdd"
+  },
+  "profile": {
+    "id": "app:hrs-1.0-heart-rate-notifications/1",
+    "serviceUUID": "0000180d-0000-1000-8000-00805f9b34fb",
+    "characteristicUUID": "00002a37-0000-1000-8000-00805f9b34fb",
+    "nativeAdmission": "Denied on every host before authority, port, timer, process or device effects",
+    "direction": "Explicit trusted software notification input; typed bpm output only"
+  },
+  "primarySources": [
+    {
+      "url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/HRS_v1.0/out/en/index-en.html",
+      "bytes": 83635,
+      "evidence": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/primary/hrs-1.0.html",
+        "sha256": "53a30094a4afec875d5fac158af8d32e57d124078d2b7e390f5bbe420bd91d22",
+        "gitBlob": "71dfc852127076d3191ea2460522866eb32260ff",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01494"
+      }
+    },
+    {
+      "url": "https://www.bluetooth.com/wp-content/uploads/Files/Specification/HTML/HRP_v1.0/out/en/index-en.html",
+      "bytes": 144227,
+      "evidence": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/primary/hrp-1.0.html",
+        "sha256": "cdce44851dcfe49c1fa730bd1ca391ae14713d78d093936033ef39a4049752c1",
+        "gitBlob": "117b0b0f686d16069340741eb898f4c6513fffe9",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01491"
+      }
+    },
+    {
+      "url": "https://btprodspecificationrefs.blob.core.windows.net/gatt-specification-supplement/GATT_Specification_Supplement.pdf",
+      "bytes": 612415,
+      "evidence": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/primary/gss-2026-09-09.pdf",
+        "sha256": "34ad6b5f2e48c29759c2ef17f01502cb60080aff5d213712a6f581c56c9150b8",
+        "gitBlob": "040512f50aec5b5a2f810291f4cfb287dc5d8f48",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01489"
+      }
+    }
+  ],
+  "producer": {
+    "selected": "Official BlueZ5.87 example HeartRateMeasurementChrc.hr_msrmt_cb",
+    "immutableCommit": "65d11edee469c24dcc8d075b8be9c040cebaaf98",
+    "source": {
+      "path": "/private/tmp/101-band-heart-rate-plan/bluez-5.87-example-gatt-server.py",
+      "sha256": "a190508dd5bafd048ead4404535610c8c827181917cb569530f8de36ad329fd6",
+      "gitBlob": "83b700901b9f18b44d314185985cca8b74cd9aa7",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01427"
+    },
+    "methodSha256": "dd53fdcd2ea14b69dcdf106d501b960c933d5f738b7a46f7067df97d55426849",
+    "astSha256": "a8568f9ae00d3cad913fce6579b1a3104d31b0015526043294adfb7aaee4eac6",
+    "method": "Exact extracted AST method executed by real isolated Python with selected deterministic randint90..130 and integer Byte substitute; full D-Bus service is not imported",
+    "fixture": true,
+    "observedSyntheticBpm": [
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100
+    ],
+    "nativeBluetoothOrLiveMeasurement": false
+  },
+  "semantics": {
+    "parser": "Collector ignores RFU; flags select exact uint8 or uint16 little-endian bpm, optional uint16 energy and nonempty even-length RR suffix; selected MTU23 bounds value20 bytes. Contact support must stay consistent within a generation.",
+    "encodedRange": "0..65535 is encoded integer validity only, not physiological or medical validity",
+    "typedPublicResources": [
+      "heart-rate bpm"
+    ],
+    "unavailable": [
+      "contact/RR public resources",
+      "energy/calories public resource",
+      "feedback",
+      "vendor sensors",
+      "native transport"
+    ],
+    "energyConflict": "HRS1.0 states kJ while current GSS states J; private parser retains unscaled field and publishes no energy or calorie value",
+    "captureTimeKnown": false,
+    "measurementAgeKnown": false,
+    "authority": "Original frozen same-object private request binds exact scope/purpose/profile/service/characteristic/resource/generation/budgets/deadline; genuine independent owner/caller/grant signals. Separate real public SDK route scope/source/sink authority uses an explicit trusted purpose closure, since SDK has no purpose field.",
+    "lifecycle": "Reserve issued work before callouts; revoke/stop/expiry immediately withdraws source, then joins actual private authorizer/open/stop/close/whenSettled and composed public Connection.whenSettled/real held sink.apply. Nonundefined stop return retains permanent uncertainty and port ownership even after returned genuine Promise settles. Confirmed no-process startup failures join actual close and stdio without inventing exit; actual spawned failures join exit and close."
+  },
+  "bounds": {
+    "ports": 1,
+    "sources": 1,
+    "startsPerLifetime": 16,
+    "sessionMs": 30000,
+    "openingMs": 5000,
+    "frameBytes": 20,
+    "maxHz": 20,
+    "burstFrames": 4,
+    "framesPerSession": 600,
+    "retainedSampleHistory": 0,
+    "latestRuntimeValue": 1,
+    "publicReceiptAgeMs": 1000
+  },
+  "validation": {
+    "plan": {
+      "path": "/private/tmp/101-band-heart-rate-plan/manifest.json",
+      "sha256": "15dd4e3af4b523358f5a1f7f365a466c4043fad984ad17bc0267ac3ce80eae52",
+      "gitBlob": "b69fe794a127d7c3e0e387960e4343eafd5630f7",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01436"
+    },
+    "planReview": {
+      "path": "/private/tmp/101-band-heart-rate-independent-plan-review/review-1.json",
+      "sha256": "9fb745a687d9cb527059ac2e02000afd10d80de3729a98dd04a9737c61e68209",
+      "gitBlob": "fd4d907499bd4ca6cd80f2987b535652b749daf4",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01426"
+    },
+    "implementationAddendum": {
+      "path": "/private/tmp/101-band-heart-rate-root-evidence/implementation-addendum.md",
+      "sha256": "bf90d257f1cc1361d5dc3df32b4a222900494920b7c87c26f829091fe493dcea",
+      "gitBlob": "ef7b39260321d3ea94d6c8870cdffbe540f54a17",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01442"
+    },
+    "sourceHookClarification": {
+      "path": "/private/tmp/101-band-heart-rate-root-evidence/source-hook-clarification.json",
+      "sha256": "4e2ae5fb0301d807e6cbf173ee7759fe815d4e4a52cd096d9efe6fc3a03ca5a1",
+      "gitBlob": "d2dec007d7a83ac507f5b95fd3f28c44d4dec330",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01512"
+    },
+    "sourceReview1": {
+      "path": "/private/tmp/101-heart-rate-independent-source-review/review-1.json",
+      "sha256": "aecfac1ce2e618d2a72512c7042db27ca5523c2533f31bc0b026ed5fd3122930",
+      "gitBlob": "0319755526c2f2590f2d8f80074f3042cd6277ee",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01513"
+    },
+    "sourceReview2": {
+      "path": "/private/tmp/101-heart-rate-independent-source-review/review-2.json",
+      "sha256": "904d732f07502fc1e97b67f9071bc792db1c478416dc0ff8a8671a69e83ffd1e",
+      "gitBlob": "e38a6887e63a3b8ef74abcc005baeae09f415a02",
+      "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01514"
+    },
+    "authenticRepairEvidence": {
+      "sixStopAndSignalOldRedNewGreen": true,
+      "actualSpawnRegressions": 3,
+      "oldSources": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/old-regression-sources.json",
+        "sha256": "054a3675f1d24824938577d676a5419b9e85f8979112be986836e3b4e7e4e7c1",
+        "gitBlob": "4c5722dc58cd886b43db710e382dce38444bf707",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06393"
+      },
+      "oldSpawnTrace": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/spawn-red-trace.json",
+        "sha256": "14b2635a2274973d07ac89a84127fd26484e61c3d2f0421d5a2c4c1e2e0b804c",
+        "gitBlob": "289e3a527d81e12b9410197e1b3211ee90fd26a4",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06403"
+      },
+      "joinedNewSpawnTrace": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/spawn-green-joined-trace.json",
+        "sha256": "699439b352e68f6bd4aecf55326f0bf1cd771e0c23af846ac4b0326ef622b956",
+        "gitBlob": "8cb0e853bed76be207e85401e58d32e5cfb5e655",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06400"
+      },
+      "limitations": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/repair-limitations.json",
+        "sha256": "b1fe6e1b1a7599abb6d2fc883fc05e9e8f53343d77edc0da649af4513a64bdec",
+        "gitBlob": "af9f8dd68eb2774c1d17d91f82552d99cb9adb93",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06397"
+      },
+      "firstRepairedPortAttempt": "Failed stdin close listener ordering was retained, explicitly terminated and joined; only corrected joined result accepted",
+      "exactPreRepairTimerSourceAvailable": false,
+      "timerHistory": "Retained RED/GREEN logs exist, but exact old timer bytes were unavailable; no reconstruction or old-byte authenticity claim"
+    },
+    "initialInstalledFailure": {
+      "proof": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/installed-run.log",
+        "sha256": "34b113b08cb944ef0ef39776ca8c6a129ad95c4b33f0ba06ef5003309b564c7b",
+        "gitBlob": "1b1a63df58fab9916db005eec4bbd4d79f6e13b2",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01477"
+      },
+      "failure": "Caller stderr budget8192 exceeded during first ordinary qualification; original helper did not retain underlying stderr or completed scenario receipts",
+      "cause": "Unconfirmed. Giant generated-source diagnostic or unsettled top-level await is a read-only hypothesis, not reproduced cause.",
+      "narrowDiagnosis": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/narrow-installed-pipeline/result.json",
+        "sha256": "de2f86a4935448fb21b97d0612cd002a2c8cf069c22cc6fe68600c00c0adbd30",
+        "gitBlob": "055d89cab4e1d91134f671b4e2df3edb2c3dcd71",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01487"
+      },
+      "fullUnchangedRetry": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/installed-attempt-2/result.json",
+        "sha256": "5bd4933228b20b9ea8feffb3877f0d6b7ad901f472329394cb0732b03c93a2e5",
+        "gitBlob": "2f60a8397116421a5cb6e69ae6dc447230b7113a",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01467"
+      },
+      "retryObserved": "All ten required callers plus separate runtime enrollment exited/closed naturally, actualstderr0, all streams closed; original cap and source unchanged",
+      "fixOrUnqualifiedReliabilityClaim": false
+    },
+    "runtimeBoundary": "Pinned host Node24.14.0 and Python3.13.14, exact recorded ordinary modules/nonOS native images before and after isolated -I -S -B execution. Explicit trusted host OS/system-cache boundary, no copied-runtime or complete OS closure claim. Source-only exact-path/hash fence and retained transform pairs; ordinary installed run transforms no SDK TS.",
+    "historicalFrozenSourceAndAcceptance": {
+      "workerManifest": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/manifest.json",
+        "sha256": "62576acfeb258d54a557924f7d293fc8501a855a182eace328e2a3f7d5e6520e",
+        "gitBlob": "793fe419f69c2031437bd4ae016034bcbb091e96",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06411"
+      },
+      "patch": {
+        "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate.patch",
+        "sha256": "9730126c52444d794dfe8ce66e32e936fefc8b04c535ea36974f838a363989cd",
+        "gitBlob": "6e8f4faefe9e43261959765d42869bc1454cfb8b",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-04943"
+      },
+      "rootSourceAcceptance": {
+        "path": "/private/tmp/101-band-heart-rate-root-evidence/source-acceptance.json",
+        "sha256": "db735ea6632841982d26074939fbd393fabfdfbc65311b4839d53900fe415d3d",
+        "gitBlob": "aedcc52f38b8f85d32d76eb546c58a79cc634ed6",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01501"
+      },
+      "gatewayFocusedTests": 23,
+      "unchangedParserTestsPreviouslyVerified": 2,
+      "copiedCompilerTypecheck": {
+        "proof": {
+          "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/typecheck-green.json",
+          "sha256": "42db3dc9acfbf9b839a24401e6bb169cbaa5e7ce4bda76020356366a0c6716c5",
+          "gitBlob": "1ab647e2c7171b84d641d2d3513473ee1941b6ba",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06408"
+        },
+        "version": "5.9.3",
+        "diagnostics": 0,
+        "scope": "Two production roots, not a broad repository gate"
+      },
+      "sourcePublic": {
+        "proof": {
+          "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/heart-rate-application-emXHcI/receipt.json",
+          "sha256": "c4cb7d88c59d538b9b548f8f49760e1d59e28d222997b6fd56d709f1da44e5d5",
+          "gitBlob": "4a2b9d1e8f3928875c6ebb1815d3349568e847eb",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06020"
+        },
+        "executions": 10,
+        "separateZeroFrameEnrollment": true,
+        "transformedSourcePairs": 121,
+        "closedFiles": 1096,
+        "runtimePins": 40,
+        "copiedSdkSource": true,
+        "ownedPostCallerCopyControls": 28,
+        "mutationProof": {
+          "path": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/evidence/heart-rate-mutations-k3hKSC/receipt.json",
+          "sha256": "6a306a3c97930c7aec8605d24a3e716e9ecc2e2c45a6a7e2b51bb2fcb37f03a3",
+          "gitBlob": "1eb3d1a74036fef17dd640d88ed5ee288ff9d95e",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06389"
+        }
+      },
+      "installed": {
+        "proof": {
+          "path": "/private/tmp/101-sdk-consumer-DQOPkU/heart-rate-application-BN79rN/receipt.json",
+          "sha256": "25573cc298767bba22a6212e041aeadc91e81ba5d4017761cac4aefca9d4bdf7",
+          "gitBlob": "226a354718c4a34653d2ab11b623fa9236d97ef3",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06556"
+        },
+        "wrapper": {
+          "path": "/private/tmp/101-band-heart-rate-root-evidence/installed.json",
+          "sha256": "02f023c03f3002594b86cbd6b9e2b3674539eb57c4dd9f2c17558170ee49431a",
+          "gitBlob": "1d941a1493d051e34203ece4d4bad68ba7b3d00d",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01478"
+        },
+        "rootReadback": {
+          "path": "/private/tmp/101-band-heart-rate-root-evidence/installed-acceptance.json",
+          "sha256": "adf573f2130dca6d87521112d6d728ad8e89ed0e4af112d63483931814d22aae",
+          "gitBlob": "bd1a5409ac36a31fbf53fbfa6edcd09757dfb1ee",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01443"
+        },
+        "executions": 10,
+        "separateZeroFrameEnrollment": true,
+        "sdkPackages": 7,
+        "sdkFiles": 411,
+        "sdkManifest": {
+          "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+          "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+        },
+        "ordinaryPublicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+        "sourceTransformPairs": 0,
+        "compiledProviderAndParserSeparately": true,
+        "sdkRebuiltOrInstalled": false,
+        "closedFiles": 747,
+        "runtimePins": 40,
+        "naturalExitAndCloseZero": true,
+        "observedLifecycleCountersZero": true,
+        "heldApplyComposition": true,
+        "synchronousRegistrationLoss": true,
+        "ownedCopyControls": 28,
+        "mutationProof": {
+          "path": "/private/tmp/101-sdk-consumer-DQOPkU/heart-rate-mutations-1vlAlE/receipt.json",
+          "sha256": "602062db78dd39746cff8f7370aa5df08841c1d8c51a1e3ad3e65aaedbaf1472",
+          "gitBlob": "0d29da71c35b62d06bbe9a0704fbb851155ad2a9",
+          "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-06936"
+        },
+        "mutationMeaning": "Fingerprint negatives on individually owned copied bytes after actual caller close; behavioral denied/revoked/held cases are distinct"
+      }
+    },
+    "rootGateRepair": {
+      "manifest": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/manifest.json",
+        "sha256": "74acf385dbd151a2d00f7520e49bb817b2bb87c32145ffa5275e7e5b88266877",
+        "gitBlob": "b5e7f9b1e0d5359c8f37c9c515c47d8476b724ab",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-02280"
+      },
+      "qualification": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/qualification.json",
+        "sha256": "0044fc72178cc562e770f5c652235f09073b81fa0bf4680423b58bd5feb29144",
+        "gitBlob": "e3fd6582fa12ad86ed155164ed8c13cc23eccc91",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-02281"
+      },
+      "review": {
+        "path": "/private/tmp/101-heart-rate-independent-integration-review/repair-review.json",
+        "sha256": "d3c6d911d10e77de04387df35c6f3576ab40245f1ca3ab43a3b91ef7890c2b2f",
+        "gitBlob": "f7da6d1688470c184d2f0d11d7bc2f1c1e728799",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-01517"
+      },
+      "failedTree": "3db344818e02063271876e7199cf971949a4589f",
+      "failedGates": {
+        "path": "/private/tmp/101-heart-rate-candidate-gates/result.json",
+        "sha256": "fb9ebd3216adb1f66d8372917283e270fc156e5e86384304f99307f1529a6240",
+        "gitBlob": "10e4100978fe3ec6aed7fe9d7b0bb7e2da189106",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-01515"
+      },
+      "changes": [
+        "Test key tuple literal type",
+        "Two test closure variables const",
+        "Intentional control-regex lint comment",
+        "Loss-callback catch explanatory comment"
+      ],
+      "productionExecutableBehaviorChanged": false,
+      "proofPolicy": "All nine current source bytes were recopied and source/ordinary installed callers freshly qualified after the gate repair; historical source and failed gate evidence remain retained."
+    },
+    "focusedTests": {
+      "total": 25,
+      "gateway": 23,
+      "parser": 2,
+      "fail": 0,
+      "proof": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/evidence/focused.log",
+        "sha256": "2e4129c82c0122ca56c7030e7f84d5f58c84592201da698dc0340555551c0e18",
+        "gitBlob": "73b26ab51d5dbb1c49a28b3929125138e2130031",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-01536"
+      }
+    },
+    "sourcePublic": {
+      "proof": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/evidence/heart-rate-application-2UHnOy/receipt.json",
+        "sha256": "9e5b1056d5508a8769eea40f0121eec7c88baa7b2e20e2bfefcc806d7e1a2fa9",
+        "gitBlob": "9d98998d362fb64ba0c0af224224184ccd922a58",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-01941"
+      },
+      "executions": 10,
+      "separateZeroFrameEnrollment": true,
+      "retainedUniqueSourcePairs": 121,
+      "executedSourceTransformationsRequiredCallers": 1210,
+      "closedFiles": 1096,
+      "runtimePins": 40,
+      "copiedSdkSource": true,
+      "ordinarySourceSdkFiles": 260,
+      "ownedPostCallerCopyControls": 28,
+      "mutationProof": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/evidence/heart-rate-mutations-Wi2NQe/receipt.json",
+        "sha256": "5e6a1fc7b8a3e81a01059795291fb5b9e0b654663672947880540d89dda52210",
+        "gitBlob": "7d23c01d8019b874359e2987c2d12c077127746f",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-02253"
+      }
+    },
+    "installed": {
+      "proof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/heart-rate-application-LqydZo/receipt.json",
+        "sha256": "22ce2246323f166ee75f5a8c7cb963e8764d5a1bc03aad003366207747bcbb72",
+        "gitBlob": "fb1eb8e89446e7689a6dcb1c40f5e77a68fb3d62",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-07480"
+      },
+      "wrapper": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/evidence/installed.json",
+        "sha256": "203f7a6ef5e7fd60b6ee0066e3690a93f8b07780e88dd0d4cb8756b2dcec9ef9",
+        "gitBlob": "4e1a732019c75782045169445885dd548829386d",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-02278"
+      },
+      "rootReadback": {
+        "path": "/private/tmp/101-heart-rate-root-review-3/qualification.json",
+        "sha256": "0044fc72178cc562e770f5c652235f09073b81fa0bf4680423b58bd5feb29144",
+        "gitBlob": "e3fd6582fa12ad86ed155164ed8c13cc23eccc91",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-02281"
+      },
+      "executions": 10,
+      "separateZeroFrameEnrollment": true,
+      "sdkPackages": 7,
+      "sdkFiles": 411,
+      "sdkManifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-9hyFWZ/manifest.json",
+        "sha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c"
+      },
+      "ordinaryPublicResolution": "file:///private/tmp/101-sdk-consumer-DQOPkU/node_modules/@101/connect/dist/index.js",
+      "sourceTransformPairs": 0,
+      "compiledProviderAndParserSeparately": true,
+      "sdkRebuiltOrInstalled": false,
+      "closedFiles": 747,
+      "runtimePins": 40,
+      "naturalExitAndCloseZero": true,
+      "observedLifecycleCountersZero": true,
+      "heldApplyComposition": true,
+      "synchronousRegistrationLoss": true,
+      "ownedCopyControls": 28,
+      "mutationProof": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/heart-rate-mutations-bn87S4/receipt.json",
+        "sha256": "12f5057dae26b5327a5ec7436bb561e322dd20bd80df2a6dfafb423bd6ec79a4",
+        "gitBlob": "bd5c2de5f9ee96ae7a62dec0137aca8a3c7953b0",
+        "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/raw-07917"
+      },
+      "mutationMeaning": "Fingerprint negatives on individually owned copied bytes after actual caller close; behavioral denied/revoked/held cases are distinct"
+    }
+  },
+  "retainedEvidence": {
+    "path": "/tmp/101-heart-rate-root-review-3-retained/raw-evidence-manifest.json",
+    "sha256": "50f48a20a9e4d6feb76b4ec5a2246710d8b3f2bb9a279ff7227cdd57ba8f82be",
+    "gitBlob": "9a583b7db1ad3e9dc08c81b27a50f98ba7580836",
+    "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/root-review-3/manifest",
+    "entries": 8387,
+    "uniqueBlobs": 2851
+  },
+  "historicalPinLimitations": {
+    "path": "/private/tmp/101-heart-rate-retained-evidence/historical-path-readbacks.json",
+    "sha256": "a1168cca8e1fe73578c51d12a9e66dacf667e2ddfe4eb883f972a81c579d2007",
+    "gitBlob": "2bae07b891ef5a94190c8ca83bac99e2322c9d9f",
+    "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/raw-01516"
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-heart-rate-software/candidate-2",
+    "resultRef": "refs/codex/evidence/2026-10-09-heart-rate-software/gates-2",
+    "integrationReviewRef": "refs/codex/evidence/2026-10-09-heart-rate-software/integration-review-2",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Exact frozen integrated candidate, fresh build before rendered; never commit red"
+  },
+  "acceptance": {
+    "W05": "partial",
+    "physical": false,
+    "supportRows": [],
+    "open": [
+      "Physical selected band/standard notification target and native permissions/transport",
+      "Meaningful actual samples and independently permitted feedback/vendor resources",
+      "Full W05 form-factor and physical qualification"
+    ]
+  },
+  "historicalRetainedEvidence": {
+    "path": "/tmp/101-heart-rate-retained-evidence/raw-evidence-manifest.json",
+    "sha256": "8935ad6ed73ace0bb5f4e55e5a48cd32697e1b8b408228e09919282f36c3f55f",
+    "gitBlob": "675de9b5e90a6847f37a64984996965b3a1ab8bf",
+    "ref": "refs/codex/evidence/2026-10-09-heart-rate-software/manifest",
+    "entries": 7406,
+    "uniqueBlobs": 2670
+  }
+}

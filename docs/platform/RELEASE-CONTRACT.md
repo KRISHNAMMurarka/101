@@ -21,6 +21,8 @@ The foundation at `32e0e37` first implemented `@101/connect` 0.1.0 with descript
 
 Selected TMP102 reported-temperature and [MCP3008 channel0 reported-code](receipts/2026-10-09-mcp3008-iio-ch0.json) ordinary-file software retain documented producer semantics and separate private/public authority through source and installed SDK callers. Their native profiles remain denied on every host; calibration, physical target/driver qualification and full heterogeneous acceptance remain open. They add no support row.
 
+The [selected standard heart-rate software notification profile](receipts/2026-10-09-heart-rate-software.json) has reviewed synthetic source and observed ordinary installed delivery only. Native band transport/permissions, actual samples and permitted feedback remain open; this adds no support row or full W05 acceptance.
+
 The table sets required qualification work and version targets, not broad compatibility promises. Later supported versions are added as new catalog combinations with their own receipts. A candidate version unavailable here remains open; a simulator is never promoted to a physical result. The full 272-task vision remains required even if a smaller intermediate candidate is useful.
 
 Browser versions are frozen from actual runtime readback, rather than a mutable label such as “latest”. Browser API availability is probed through the relevant provider; labels do not imply WebHID/WebBLE/WebSerial support, system input, background execution or permission. WebRTC direct LAN is the first transport; HTTPS identity/coordinator, relay and bounded WSS are separately qualified. WebTransport/QUIC stay candidates until T13's caller and measurements justify them.
