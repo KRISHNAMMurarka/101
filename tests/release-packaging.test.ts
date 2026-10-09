@@ -1,23 +1,50 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 
+const digest = (value: string) => createHash('sha256').update(value).digest('hex');
+const fixtureLegalText = 'Fixture terms — exact bytes\n';
+const fixtureLegalHash = digest(fixtureLegalText);
+const fixtureLock = JSON.stringify({ packages: {
+  'node_modules/runtime-fixture': { version: '1.0.0', license: 'MIT' },
+} });
+const fixtureCargoLock = 'version = 4\n\n[[package]]\nname = "oneohone-hub"\nversion = "0.1.0"\n\n[[package]]\nname = "native-fixture"\nversion = "1.0.0"\nsource = "registry+https://github.com/rust-lang/crates.io-index"\n';
+// Exact collector-format records, including text provenance and honest coverage.
+const fixtureTexts = [{ sha256: fixtureLegalHash, bytes: Buffer.byteLength(fixtureLegalText), text: fixtureLegalText }];
+const fixtureCoverage = { complete: true, lockedPackages: 1, missingPackages: 0, packagesWithoutText: 0,
+  distinctTexts: 1, textBytes: Buffer.byteLength(fixtureLegalText) };
 const fixtureLicenseInventory = JSON.stringify({ schemaVersion: 1, generatedFrom: 'package-lock.json',
-  packages: [{ name: 'runtime-fixture', version: '1.0.0', license: 'MIT' }] }, null, 2) + '\n';
+  lockSha256: digest(fixtureLock), packages: [{ name: 'runtime-fixture', version: '1.0.0', license: 'MIT',
+    installedPath: 'node_modules/runtime-fixture', coverage: 'local-texts', licenseFiles: [{ path: 'LICENSE', sha256: fixtureLegalHash }] }],
+  licenseTexts: fixtureTexts, coverage: { ...fixtureCoverage,
+    scope: 'Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate.' } }, null, 2) + '\n';
+const fixtureRustInventory = JSON.stringify({ schemaVersion: 1, generatedFrom: 'apps/desktop-hub/src-tauri/Cargo.lock',
+  lockSha256: digest(fixtureCargoLock), metadataSha256: digest('owned offline metadata fixture'),
+  packages: [{ name: 'native-fixture', version: '1.0.0', license: 'MIT', source: 'registry+https://github.com/rust-lang/crates.io-index',
+    coverage: 'local-texts', licenseFiles: [{ path: 'LICENSE', sha256: fixtureLegalHash }] }],
+  licenseTexts: fixtureTexts, coverage: { ...fixtureCoverage,
+    scope: 'Exact ordinary local crate legal files from locked offline Cargo metadata; missing texts, other sources/assets/models and redistribution review remain separate.' } }, null, 2) + '\n';
+function metadataBytes(path: string) {
+  return path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory
+    : path === 'THIRD_PARTY_RUST_LICENSES.json' ? fixtureRustInventory : `fixture ${path}`;
+}
 
 function fixture(states: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), '101-package-contract-'));
   mkdirSync(join(root, 'tools'));
-  copyFileSync(resolve(import.meta.dirname, '../tools/package-release.mjs'), join(root, 'tools/package-release.mjs'));
+  for (const name of ['package-release.mjs', 'license-inventory-validation.mjs', 'generate-license-inventory.mjs']) {
+    copyFileSync(resolve(import.meta.dirname, '../tools', name), join(root, 'tools', name));
+  }
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'local-packaging-fixture', version: '0.1.0', private: true,
     scripts: { build: 'node emit.mjs web', 'desktop:app': 'node emit.mjs hub', 'native:export': 'node emit.mjs link', 'watch:wear:build': 'node emit.mjs wear' } }));
-  writeFileSync(join(root, 'package-lock.json'), JSON.stringify({ packages: {
-    'node_modules/runtime-fixture': { version: '1.0.0', license: 'MIT' },
-  } }));
+  writeFileSync(join(root, 'package-lock.json'), fixtureLock);
+  mkdirSync(join(root, 'apps/desktop-hub/src-tauri'), { recursive: true });
+  writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock);
+  writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), '[package]\nname = "oneohone-hub"\nversion = "0.1.0"\n');
   writeFileSync(join(root, 'emit.mjs'), `
     import { appendFileSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
@@ -43,7 +70,7 @@ function fixture(states: Record<string, string> = {}) {
   for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
     'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
     mkdirSync(resolve(root, path, '..'), { recursive: true });
-    writeFileSync(join(root, path), path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory : `fixture ${path}`);
+    writeFileSync(join(root, path), metadataBytes(path));
   }
   mkdirSync(join(root, 'release/sdk-existing'), { recursive: true });
   writeFileSync(join(root, 'release/sdk-existing/keep.tgz'), 'prior immutable artifact');
@@ -104,7 +131,7 @@ test('the web release artifact carries its license, model attribution and locked
     const artifact = resolve(f.manifests()[0].path, '..', 'web');
     for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
       'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
-      assert.equal(readFileSync(join(artifact, path), 'utf8'), path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory : `fixture ${path}`);
+      assert.equal(readFileSync(join(artifact, path), 'utf8'), metadataBytes(path));
     }
   } finally { f.close(); }
 });
@@ -152,7 +179,7 @@ test('a stale JavaScript license inventory cannot be packaged as a release', () 
       if (drift === 'version') inventory.packages[0].version = '0.9.0';
       if (drift === 'license') inventory.packages[0].license = 'Apache-2.0';
       if (drift === 'missing') inventory.packages = [];
-      if (drift === 'extra') inventory.packages.push({ name: 'not-locked', version: '1.0.0', license: 'MIT' });
+      if (drift === 'extra') inventory.packages.push({ ...inventory.packages[0], name: 'not-locked' });
       writeFileSync(join(f.root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(inventory));
       const result = f.run(['--release', 'web']);
       assert.equal(result.status, 1, `${drift}: ${result.stdout}${result.stderr}`);
@@ -261,5 +288,101 @@ test('unknown, mixed, duplicate and conflicting arguments fail before invoking o
       assert.equal(f.manifests().length, 0); assert.equal(existsSync(join(f.root, 'invoked.log')), false);
     }
     assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');
+  } finally { f.close(); }
+});
+
+
+test('web packaging rejects stale Rust lock provenance before invoking a successful producer', () => {
+  const f = fixture();
+  try {
+    const inventory = JSON.parse(fixtureRustInventory);
+    // Only a comment changes; third-party identity membership stays identical.
+    writeFileSync(join(f.root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock + '# changed exact lock bytes\n');
+    writeFileSync(join(f.root, 'THIRD_PARTY_RUST_LICENSES.json'), JSON.stringify(inventory));
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    const { path, value } = f.manifests()[0];
+    assert.match(value.skipped[0].reason, /Rust.*lock/i);
+    assert.deepEqual(value.produced, []);
+    assert.equal(existsSync(join(f.root, 'invoked.log')), false);
+    assert.equal(existsSync(resolve(path, '..', 'web')), false);
+  } finally { f.close(); }
+});
+
+test('web packaging rejects broken embedded license provenance for both inventories before building', () => {
+  for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+    for (const drift of ['lock', 'text', 'bytes', 'reference', 'package', 'coverage', 'duplicate']) {
+      const f = fixture();
+      try {
+        const inventory = JSON.parse(metadataBytes(file));
+        if (drift === 'lock') inventory.lockSha256 = '0'.repeat(64);
+        if (drift === 'text') inventory.licenseTexts[0].text += 'changed';
+        if (drift === 'bytes') inventory.licenseTexts[0].bytes++;
+        if (drift === 'reference') inventory.licenseTexts = [];
+        if (drift === 'package') {
+          if (file === 'THIRD_PARTY_LICENSES.json') inventory.packages[0].installedPath = 'node_modules/substitute';
+          else inventory.packages[0].name = 'substitute';
+        }
+        if (drift === 'coverage') inventory.coverage.textBytes++;
+        if (drift === 'duplicate') inventory.packages.push(inventory.packages[0]);
+        writeFileSync(join(f.root, file), JSON.stringify(inventory));
+        const result = f.run(['--release', 'web']);
+        assert.equal(result.status, 1, `${file} ${drift}: ${result.stdout}${result.stderr}`);
+        const { path, value } = f.manifests()[0];
+        assert.deepEqual(value.produced, []);
+        assert.equal(existsSync(join(f.root, 'invoked.log')), false);
+        assert.equal(existsSync(resolve(path, '..', 'web')), false);
+      } finally { f.close(); }
+    }
+  }
+});
+
+test('valid inventories with missing local legal texts retain their incomplete coverage', () => {
+  const f = fixture();
+  try {
+    for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+      const inventory = JSON.parse(metadataBytes(file));
+      inventory.packages[0].coverage = 'no-local-text'; inventory.packages[0].licenseFiles = [];
+      inventory.licenseTexts = [];
+      inventory.coverage = { ...inventory.coverage, complete: false, packagesWithoutText: 1, distinctTexts: 0, textBytes: 0 };
+      writeFileSync(join(f.root, file), JSON.stringify(inventory));
+    }
+    const result = f.run(['--release', 'web']); assert.equal(result.status, 0, result.stdout + result.stderr);
+    const { path, value } = f.manifests()[0]; assert.equal(value.packagingComplete, true); assert.equal(value.releaseAccepted, false);
+    for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+      const copied = JSON.parse(readFileSync(resolve(path, '..', 'web', file), 'utf8'));
+      assert.equal(copied.coverage.complete, false); assert.equal(copied.coverage.packagesWithoutText, 1);
+    }
+  } finally { f.close(); }
+});
+
+
+test('packaging fixtures preserve the actual JavaScript and Rust collector output contract', async () => {
+  const f = fixture();
+  try {
+    const root = realpathSync(f.root), installed = join(root, 'node_modules/runtime-fixture');
+    mkdirSync(installed, { recursive: true });
+    writeFileSync(join(installed, 'package.json'), JSON.stringify({ name: 'runtime-fixture', version: '1.0.0' }));
+    writeFileSync(join(installed, 'LICENSE'), fixtureLegalText);
+    const js = await import('../tools/generate-license-inventory.mjs');
+    assert.deepEqual(await js.collectLicenseInventory({ root }), JSON.parse(fixtureLicenseInventory));
+    const cargoHome = join(root, 'cargo-cache'), directory = join(cargoHome, 'registry/src/owned/native-fixture-1.0.0');
+    mkdirSync(directory, { recursive: true });
+    const manifest_path = join(directory, 'Cargo.toml');
+    writeFileSync(manifest_path, '[package]\nname = "native-fixture"\nversion = "1.0.0"\n');
+    writeFileSync(join(directory, 'LICENSE'), fixtureLegalText);
+    const metadataBytes = Buffer.from(JSON.stringify({ version: 1, workspace_members: ['owned-workspace'], packages: [
+      { name: 'oneohone-hub', version: '0.1.0', id: 'owned-workspace', source: null,
+        manifest_path: join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), license: 'MIT', license_file: null },
+      { name: 'native-fixture', version: '1.0.0', id: 'owned-native', source: 'registry+https://github.com/rust-lang/crates.io-index',
+        manifest_path, license: 'MIT', license_file: null },
+    ] }));
+    const rust = await import('../tools/generate-rust-license-inventory.mjs');
+    const collect = rust.collectRustLicenseInventory as unknown as (options: {
+      root: string; cargoHome: string; metadataBytes: Buffer;
+    }) => Promise<Record<string, unknown>>;
+    const result = await collect({ root, cargoHome, metadataBytes });
+    assert.equal(result.metadataSha256, createHash('sha256').update(metadataBytes).digest('hex'));
+    assert.deepEqual({ ...result, metadataSha256: digest('owned offline metadata fixture') }, JSON.parse(fixtureRustInventory));
   } finally { f.close(); }
 });

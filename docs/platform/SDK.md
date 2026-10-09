@@ -3930,6 +3930,16 @@ JavaScript collector's legal-file limits and byte-preserving reader. A successfu
 collection atomically replaces the existing Rust inventory; absent packages or
 texts remain incomplete, and a failed collection preserves prior inventory bytes.
 
+The local web packager checks both committed inventories before starting its build.
+Each inventory must match its exact lock-file hash and locked package identities;
+embedded UTF-8 legal texts must match their sizes, hashes and package references.
+Coverage counts must agree with the records. Serialized inventory metadata is
+bounded to 32 MiB, with the collectors' package and text bounds retained. A stale
+lock pin or broken text provenance rejects the web target. Run
+`npm run license:inventory` to recollect the available ordinary local sources.
+Valid incomplete coverage remains incomplete and does not confer redistribution
+approval. See the [selected packaging admission evidence](receipts/2026-10-09-release-inventory-admission.json).
+
 ## Local application sharing task
 
 Sharing offers two explicitly started local control sets and either one shared

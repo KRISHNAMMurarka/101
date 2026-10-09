@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 189,
+  "revision": 190,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13388,6 +13388,36 @@
         "Selected physical IR receiver/emitter, timing/carrier instruments and target firmware required for physical acceptance"
       ],
       "supportRows": []
+    },
+    {
+      "id": "release-inventory-admission-2026-10-09",
+      "revision": "a7247e56032d361c1dddc150a8652d7fdd0922a5b4cfe8c2ed35073807c5f40a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10"
+      ],
+      "paths": [
+        "tools/package-release.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tests/release-packaging.test.ts",
+        "THIRD_PARTY_RUST_LICENSES.json",
+        "docs/platform/receipts/2026-10-09-release-inventory-admission.json"
+      ],
+      "environment": "macOS arm64; Node24.14.0; actual owned npm/CLI packaging fixtures and locked offline local Cargo metadata; unchanged collectors.",
+      "reproduction": "Meaningful old successful-producer acceptance RED; focused admission/metadata fixture checks; actual producer-format fixture; current stale inventory rejection and exact offline regeneration with unchanged package/text rows; independent byte-pinned code review and exact candidate gates.",
+      "scope": "Selected web packaging lock/text inventory admission only. Both full K09/K10 remain open; honest incomplete coverage, legal review, native/model terms and every-binary provenance are not supplied by this check.",
+      "failure": null,
+      "equipment": [
+        "Current ordinary local lock files, installed JavaScript sources and offline Cargo cache; missing terms/source targets remain separate"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -16957,7 +16987,8 @@
         "pending-K09",
         "k09-js-inventory-2026-10-05",
         "k09-built-partial-2026-10-06",
-        "k09-rust-texts-partial-2026-10-06"
+        "k09-rust-texts-partial-2026-10-06",
+        "release-inventory-admission-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [
@@ -16969,7 +17000,8 @@
       "records": [
         "pending-K10",
         "sdk-distributions-2026-10-02",
-        "k10-sdk-manifest-2026-10-05"
+        "k10-sdk-manifest-2026-10-05",
+        "release-inventory-admission-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [

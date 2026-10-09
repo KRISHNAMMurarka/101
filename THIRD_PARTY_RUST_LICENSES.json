@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "generatedFrom": "apps/desktop-hub/src-tauri/Cargo.lock",
-  "lockSha256": "09732cf101b6a328918524e5a5552411530568ba09e5e31bd51388d7063df0cb",
-  "metadataSha256": "86ec9f26f1833fcba8d9c6b66a2ce286b83aacee8a87a89c69c6e675377085f9",
+  "lockSha256": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+  "metadataSha256": "983b99ad9607bd016d78bb527893605e267c3ae2d33f0138b2222bb17ad10b1c",
   "packages": [
     {
       "name": "adler2",

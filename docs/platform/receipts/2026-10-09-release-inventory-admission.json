@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-license-inventory-packaging-admission-verified-complete-redistribution-open",
+  "localOnly": true,
+  "baseRevision": "aff81ae0bacffeec714b08df1afbfc035b09a387",
+  "sourceSha256": {
+    "tools/package-release.mjs": "4b90eee30dceeef9228e1abfb65d5fef6f1e263ab2d97e3a1b09e988e5e81dfa",
+    "tools/license-inventory-validation.mjs": "a7247e56032d361c1dddc150a8652d7fdd0922a5b4cfe8c2ed35073807c5f40a",
+    "tests/release-packaging.test.ts": "7d51025ced33bb7f86ae09a8b4211555ebc77d6842f72070a78e362ce809e0e1",
+    "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+  },
+  "outcome": "The web target verifies both copied license inventories against their exact current lock bytes before invoking its build. It checks JavaScript installed-path/name/version/license identities, locked crates.io identities minus the exact first-party Cargo manifest, embedded UTF-8 sizes/hashes, required text references and internally consistent explicit coverage.",
+  "validation": {
+    "meaningfulOld": {
+      "nodeExitCode": 1,
+      "assertion": "Unchanged packager admitted a same-membership stale Rust lock pin and reported one produced/zero skipped; expected rejection assertion failed.",
+      "logSha256": "606e86d36811f93b74f8eb3cf7c916da3395860cb9dec23fce302ce17a2f3ff5"
+    },
+    "focusedPackagingFixtures": 18,
+    "actualCollectorFormatFixture": 1,
+    "scopedTypes": "Passed after correcting only the fixture call signature for the unchanged Rust collector; first inferred-type diagnostic retained.",
+    "currentInputs": {
+      "status": "current-lock-regeneration-and-read-only-admission-pass",
+      "originalRejection": {
+        "name": "Error",
+        "message": "Rust license inventory: License inventory lock hash does not match apps/desktop-hub/src-tauri/Cargo.lock; run npm run license:inventory"
+      },
+      "originalLockSha256": "09732cf101b6a328918524e5a5552411530568ba09e5e31bd51388d7063df0cb",
+      "currentLockSha256": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+      "metadataSha256": "983b99ad9607bd016d78bb527893605e267c3ae2d33f0138b2222bb17ad10b1c",
+      "regenerated": {
+        "path": "/private/tmp/101-controller-7-root/release-inventory-fix/candidate/THIRD_PARTY_RUST_LICENSES.json",
+        "bytes": 1050804,
+        "sha256": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+      },
+      "packages": 456,
+      "licenseTexts": 244,
+      "coverage": {
+        "complete": false,
+        "lockedPackages": 456,
+        "missingPackages": 0,
+        "packagesWithoutText": 40,
+        "distinctTexts": 244,
+        "textBytes": 785129,
+        "scope": "Exact ordinary local crate legal files from locked offline Cargo metadata; missing texts, other sources/assets/models and redistribution review remain separate."
+      },
+      "packageRowsUnchanged": true,
+      "licenseTextRowsUnchanged": true,
+      "inputPinsUnchanged": true,
+      "before": [
+        {
+          "path": "package-lock.json",
+          "sha256": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d"
+        },
+        {
+          "path": "THIRD_PARTY_LICENSES.json",
+          "sha256": "4661872a1caea40fbf81b5402c49eda07972ef1ab83e46dd0f42874474ca45a5"
+        },
+        {
+          "path": "THIRD_PARTY_RUST_LICENSES.json",
+          "sha256": "8d945894e3ffa69a6172eaacd1e91abd402af88b45259ac8461fd3facc23fe98"
+        },
+        {
+          "path": "apps/desktop-hub/src-tauri/Cargo.lock",
+          "sha256": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69"
+        },
+        {
+          "path": "apps/desktop-hub/src-tauri/Cargo.toml",
+          "sha256": "cd635d531a38850c1632c6ae4af91a1bcb477257ee455123439e5b3ebbce5b4f"
+        }
+      ],
+      "nativeBuilds": 0,
+      "installs": 0,
+      "networkRequests": 0,
+      "qualification": "exact local bytes only; missing legal texts and redistribution review remain open"
+    },
+    "productionArtifactRebuilt": false,
+    "exactCandidateGateEvidenceRef": "refs/codex/evidence/2026-10-09-release-inventory/controller-7-integrated/gates"
+  },
+  "bounds": {
+    "coverageComplete": false,
+    "javascriptMissingPackages": 116,
+    "javascriptPackagesWithoutText": 68,
+    "rustPackagesWithoutText": 40,
+    "fullK09": false,
+    "fullK10": false,
+    "releaseAccepted": false,
+    "supportRows": [],
+    "scope": "Selected local metadata admission only. Missing target/legal texts, native/model terms, redistribution review, every-binary provenance and cross-build source drift remain separate."
+  },
+  "retainedRawEvidence": {
+    "manifestPath": "/private/tmp/101-controller-7-root/release-inventory-fix/raw-source-manifest.json",
+    "manifestSha256": "dd414cb39a0c08b551664c7f46bbf5e781c34b0ba76722c64d916b7312c684c1",
+    "manifestBlob": "52380ba422a3db692636c58f7797f7a03c47cab3",
+    "manifestRef": "refs/codex/evidence/2026-10-09-release-inventory/controller-7-source/manifest",
+    "entries": 30
+  },
+  "independentReview": {
+    "status": "accepted-frozen-v2-for-root-integration-and-exact-candidate-gates",
+    "reportPath": "/tmp/101-controller-7-release-inventory-review/report.json",
+    "reportSha256": "d713e81acf5c5ec16941df1ad022b19ff8b6c8c282e6a91d9b1c93b8b153ad8d",
+    "manifestPath": "/tmp/101-controller-7-release-inventory-review/manifest.json",
+    "manifestSha256": "ace947c98d35e3ac42c67f80ae256d641feb96fb3adc8cb535b4083f9fa51773",
+    "runtimeExecutionByReviewer": false
+  }
+}

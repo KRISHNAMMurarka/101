@@ -14,6 +14,7 @@ import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rm, writeFile }
 import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
+import { auditReleaseLicenseInventories } from "./license-inventory-validation.mjs";
 import * as zlib from "node:zlib";
 
 const run = promisify(execFile);
@@ -43,7 +44,7 @@ const TARGETS = [
     profile: "production",
     description: "Standalone browser build of the launcher, all ten games and the Labs",
     async build() {
-      await auditJavaScriptLicenseInventory();
+      await auditReleaseLicenseInventories(ROOT);
       await npm("build");
       return collect("dist", "web", WEB_METADATA);
     },
@@ -199,32 +200,6 @@ async function auditWebContents(directory, contents) {
       [...localPaths].some((localPath) => text.includes(localPath)))
       throw new Error(`Web artifact contains private key text or a local source path: ${path}`);
   }
-}
-
-async function auditJavaScriptLicenseInventory() {
-  const lock = JSON.parse(await readFile(join(ROOT, "package-lock.json"), "utf8"));
-  const inventory = JSON.parse(await readFile(join(ROOT, "THIRD_PARTY_LICENSES.json"), "utf8"));
-  if (inventory.schemaVersion !== 1 || inventory.generatedFrom !== "package-lock.json" || !Array.isArray(inventory.packages)) {
-    throw new Error("JavaScript license inventory has an unsupported or invalid format");
-  }
-  const locked = Object.entries(lock.packages ?? {})
-    .filter(([path, pkg]) => path.includes("node_modules/") && pkg.version)
-    .map(([path, pkg]) => ({
-      name: pkg.name ?? path.split("node_modules/").at(-1),
-      version: pkg.version,
-      license: pkg.license ?? "UNKNOWN",
-    }))
-    .sort(compareLicenseEntries);
-  const listed = inventory.packages
-    .map(({ name, version, license }) => ({ name, version, license }))
-    .sort(compareLicenseEntries);
-  if (JSON.stringify(listed) !== JSON.stringify(locked)) {
-    throw new Error("JavaScript license inventory does not match package-lock.json; run npm run license:inventory");
-  }
-}
-
-function compareLicenseEntries(a, b) {
-  return a.name.localeCompare(b.name) || a.version.localeCompare(b.version) || a.license.localeCompare(b.license);
 }
 
 async function inspectArtifact(path, fingerprint = false) {
