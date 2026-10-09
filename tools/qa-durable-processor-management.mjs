@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { existsSync, lstatSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { tmpdir } from 'node:os';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -21,8 +20,10 @@ assert.ok(origin.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].inc
   && origin.pathname === '/' && !origin.username && !origin.password && !origin.search && !origin.hash);
 const engine = options.get('--engine'); assert.ok(['chromium', 'webkit'].includes(engine));
 const proofPath = options.get('--served-proof'); assert.ok(proofPath && isAbsolute(proofPath));
-const work = mkdtempSync(join(tmpdir(), '101-durable-processor-management-'));
-const output = options.get('--output') ?? join(work, 'receipt.json'); assert.ok(isAbsolute(output) && !existsSync(output));
+const outputDirectory = fileURLToPath(new URL('../outputs/qa/', import.meta.url));
+if (!options.has('--output')) mkdirSync(outputDirectory, { recursive: true });
+const output = options.get('--output') ?? join(outputDirectory, `durable-processor-management-${randomUUID()}.json`);
+assert.ok(isAbsolute(output) && !existsSync(output));
 const hash = value => createHash('sha256').update(value).digest('hex'), sha = /^[a-f0-9]{64}$/;
 function regular(path, limit = 2 * 1024 * 1024) {
   assert.ok(isAbsolute(path)); const before = lstatSync(path); assert.ok(before.isFile() && !before.isSymbolicLink() && before.size <= limit);

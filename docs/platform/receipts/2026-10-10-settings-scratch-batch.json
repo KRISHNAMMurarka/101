@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "batch": 2,
+  "result": "pass",
+  "localOnly": true,
+  "baseCommit": "92fd895a096a0f26c34033171185aa7e0cb6561d",
+  "tasks": [
+    "Q05",
+    "U05",
+    "U12"
+  ],
+  "sourceSha256": {
+    "app/settings/SettingsView.tsx": "92a28ec97bf05c20319d8772c2b9af337c09ece0bb0195e2830384ad19722233",
+    "tools/qa-reading-connections.mjs": "cbfd35689f357280cb9ccb99747a15e5ab811cbee73a706c2e1a0e849b9bcff3",
+    "tools/qa-durable-processor-management.mjs": "dd6287e0d2479d2c6a81d87eeda7e7a142857a67d00b9842f00e3b5bbfdca45a"
+  },
+  "evidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-2/runtime-evidence",
+  "evidenceTree": "1d5eb2454296de490e6f63650bd9118e054e9d89",
+  "settingsCopy": {
+    "old": {
+      "status": "fail",
+      "serverSha256": "d0cb36df6c20e08b2c252b8cde6bd768652e5d8b24587879e6237fbf4f2d8a07",
+      "sectionText": "Reviewed processorsTry a reviewed number rule on this page. Install a version, then separately allow it to read your entered number and change the page indicator.Manage reviewed processorsInstalled versions stay only in that page. Leaving or reloading it forgets them.",
+      "failure": {
+        "name": "AssertionError",
+        "message": "Settings must explain both supported storage choices"
+      }
+    },
+    "new": {
+      "status": "pass",
+      "serverSha256": "6a628b4b8a935294746d128480742526dbf4cb60759927e03534a0ff22c636eb",
+      "sectionText": "Reviewed processorsTry a reviewed number rule on this page. Install a version, then separately allow it to read your entered number and change the page indicator.Manage reviewed processorsChoose to keep reviewed versions only for this page or save them on this browser. Each visit needs fresh approval before live use."
+    },
+    "scope": "Actual server-rendered Settings section before and after a fresh local build. Existing processor tab/browser storage and live permissions are unchanged; this is a truthful description repair, not new browser/device qualification."
+  },
+  "qaTemporaryFolders": {
+    "old": {
+      "phase": "old-validated",
+      "kind": "Actual CLI pre-browser build-pin failure; cleanup probe only, no product qualification",
+      "results": [
+        {
+          "tool": "tools/qa-reading-connections.mjs",
+          "toolSha256": "da607d466f36d1296245f7258f29e8e62c83d0ecc70cdcab65a3e83835990604",
+          "nativeChildExitCode": 1,
+          "noBrowserIssued": true,
+          "remainingFolders": [
+            "101-reading-connections-7OaRAI"
+          ],
+          "remainingCount": 1,
+          "receipt": "outputs/batches/2026-10-10-settings-cleanup/old-validated-reading-failed-proof.json"
+        },
+        {
+          "tool": "tools/qa-durable-processor-management.mjs",
+          "toolSha256": "987e62eaa0ba3a8a929038861fa9c444ccae479fdf3e282f23738094b3813818",
+          "nativeChildExitCode": 1,
+          "noBrowserIssued": true,
+          "remainingFolders": [
+            "101-durable-processor-management-Vgr9dp"
+          ],
+          "remainingCount": 1,
+          "receipt": "outputs/batches/2026-10-10-settings-cleanup/old-validated-processors-failed-proof.json"
+        }
+      ]
+    },
+    "new": {
+      "phase": "new",
+      "kind": "Actual CLI pre-browser build-pin failure; cleanup probe only, no product qualification",
+      "results": [
+        {
+          "tool": "tools/qa-reading-connections.mjs",
+          "toolSha256": "cbfd35689f357280cb9ccb99747a15e5ab811cbee73a706c2e1a0e849b9bcff3",
+          "nativeChildExitCode": 1,
+          "noBrowserIssued": true,
+          "remainingFolders": [],
+          "remainingCount": 0,
+          "receipt": "outputs/batches/2026-10-10-settings-cleanup/new-reading-failed-proof.json"
+        },
+        {
+          "tool": "tools/qa-durable-processor-management.mjs",
+          "toolSha256": "dd6287e0d2479d2c6a81d87eeda7e7a142857a67d00b9842f00e3b5bbfdca45a",
+          "nativeChildExitCode": 1,
+          "noBrowserIssued": true,
+          "remainingFolders": [],
+          "remainingCount": 0,
+          "receipt": "outputs/batches/2026-10-10-settings-cleanup/new-processors-failed-proof.json"
+        }
+      ]
+    },
+    "defaultOutputs": [
+      {
+        "tool": "tools/qa-reading-connections.mjs",
+        "receipt": "outputs/qa/reading-connections-f6a13310-8005-47b5-9df5-7837ccb70a71.json",
+        "failedProofRemainsFailure": true,
+        "durableReceipt": true,
+        "remainingScratch": 0,
+        "noBrowserIssued": true
+      },
+      {
+        "tool": "tools/qa-durable-processor-management.mjs",
+        "receipt": "outputs/qa/durable-processor-management-d1105f41-c2be-4384-996c-24d2dfe36eb1.json",
+        "failedProofRemainsFailure": true,
+        "durableReceipt": true,
+        "remainingScratch": 0,
+        "noBrowserIssued": true
+      }
+    ],
+    "scope": "Actual CLI pre-browser build-pin rejection. OLD creates one unused temp folder per tool; NEW creates none. Explicit output semantics and wx exclusive write are retained. Defaults are unique small repo receipts. The expected bad-proof execution stays failed; only cleanup/default receipt assertions pass."
+  },
+  "scratchCleanup": {
+    "removedCount": 299,
+    "allocatedBytesFreed": 672804864,
+    "allocatedGBFreed": 0.672804864,
+    "preservedRegularFiles": 14991,
+    "preservedBytes": 484390722,
+    "retainedRef": "refs/codex/evidence/2026-10-10-macos-scratch/retained-tree",
+    "retainedTree": "443a8a02318259a18f55ccf5a6cf638ea48a17d7",
+    "manifestRef": "refs/codex/evidence/2026-10-10-macos-scratch/manifest",
+    "openOwnedPathsBeforeRemoval": [],
+    "activeScratchCommandsBeforeRemoval": [],
+    "remainingMac101Roots": [],
+    "remainingPrivateTmp101Roots": []
+  },
+  "recovery": "The manifest Git blob lists original root names, SHA-256 and Git blobs. git show refs/codex/evidence/2026-10-10-macos-scratch/retained-tree:<root-name>/<relative-file> recovers exact retained bytes. All non-dependency regular files and literal symlinks are retained; installed node_modules directories were discarded. The earlier heart-rate, CANopen and MCP3008 draft sources remain in docs/platform/recovered-drafts/2026-10-09/.",
+  "preservedInvalidProbe": "One observer accessed an undefined JSON field as mandatory and raised KeyError after the actual subprocess exited. Its original report/log and observer diagnostic are retained and excluded from qualification; the observer was corrected before OLD/NEW comparisons.",
+  "independentReview": {
+    "result": "accept",
+    "remainingActionableFindings": [],
+    "sourceSha256": {
+      "app/settings/SettingsView.tsx": "92a28ec97bf05c20319d8772c2b9af337c09ece0bb0195e2830384ad19722233",
+      "tools/qa-reading-connections.mjs": "cbfd35689f357280cb9ccb99747a15e5ab811cbee73a706c2e1a0e849b9bcff3",
+      "tools/qa-durable-processor-management.mjs": "dd6287e0d2479d2c6a81d87eeda7e7a142857a67d00b9842f00e3b5bbfdca45a"
+    },
+    "scope": "Three literal changed source files and focused OLD/NEW/explicit/default-output evidence. No edits or launches by reviewer; historical cleanup is supported separately by the saved hash verification/open-path/process checks."
+  },
+  "requiredGateRef": "refs/codex/evidence/2026-10-10-batches/batch-2/gates",
+  "requiredGatePolicy": "All five exact frozen candidate gates must pass before local commit. Named local Git evidence ref stores actual result and raw logs.",
+  "parentTasksRemainOpen": [
+    "Q05",
+    "U05",
+    "U12"
+  ],
+  "tally": {
+    "total": 272,
+    "completed": 123,
+    "open": 149
+  },
+  "supportRowsAccepted": 0
+}

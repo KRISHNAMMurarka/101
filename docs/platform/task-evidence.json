@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 197,
+  "revision": 198,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13660,6 +13660,32 @@
       "scope": "Selected run-folder/native ownership defects fixed; current strict WebKit reading expiry and browser-saved processor management checks completed. Settings-link tasks share one native document; cold reopen excluded. Full Q05/U03/U12 and support acceptance remain open.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "settings-scratch-batch-2026-10-10",
+      "revision": "92a28ec97bf05c20319d8772c2b9af337c09ece0bb0195e2830384ad19722233",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "U05",
+        "U12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-10-settings-scratch-batch.json",
+        "app/settings/SettingsView.tsx",
+        "tools/qa-reading-connections.mjs",
+        "tools/qa-durable-processor-management.mjs"
+      ],
+      "environment": "Local macOS; Node24.14.0; fresh compiled production server HTML and actual CLI pre-browser rejected-pin executions. Historical scratch hash/custody/open-path/process verification. No new browser/device or physical acceptance.",
+      "reproduction": "Retained settings-copy-check.mjs fails against the old built Settings section and passes after the fresh build. qa-temp-probe.py OLD/NEW executes each actual CLI with the same stale proof and joins its failure before diagnostic cleanup; NEW default-output probe confirms durable small receipt and zero temp. preserve/remove-macos-scratch.py verify all retained hashes/Git tree bindings and no open paths or commands before removing299 enumerated roots. Required gates remain separate in named Git ref.",
+      "scope": "Correct stale processor storage/liveness description and eliminate unused temporary folders in two current browser QA tools. Safely clear historical macOS 101 scratch while retaining recovery custody. Full Q05/U05/U12 and support acceptance remain open.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -16417,7 +16443,8 @@
         "pending-U05",
         "u10-invitation-copy-expiry-2026-10-06",
         "u05-controller-player-chrome-built-partial-2026-10-07",
-        "recording-controller-source-commit-2026-10-07"
+        "recording-controller-source-commit-2026-10-07",
+        "settings-scratch-batch-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16539,7 +16566,8 @@
         "processor-native-exact-local-gates-2026-10-07",
         "browser-history-privacy-built-partial-2026-10-07",
         "durable-processor-management-built-source-partial-2026-10-07",
-        "lifecycle-browser-batch-2026-10-10"
+        "lifecycle-browser-batch-2026-10-10",
+        "settings-scratch-batch-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16756,7 +16784,8 @@
         "pending-Q05",
         "native-startup-isolated-diagnostic-2026-10-08",
         "native-startup-failure-diagnostics-2026-10-08",
-        "lifecycle-browser-batch-2026-10-10"
+        "lifecycle-browser-batch-2026-10-10",
+        "settings-scratch-batch-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [

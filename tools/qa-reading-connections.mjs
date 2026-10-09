@@ -1,10 +1,9 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { createHash, randomUUID } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 // Root owns execution, the already-built loopback server and actual source/resolver
 // capture. This helper never starts a server, compiles, installs or touches devices.
@@ -20,8 +19,9 @@ assert.ok(served.schemaVersion === 1 && served.origin === origin.origin && typeo
 const root = resolve(served.sourceRoot), sdkEntry = args.includes('--sdk-entry') ? resolve(value('--sdk-entry')) : resolve(root, 'packages/connect/src/index.ts');
 const selectedEngine = args.includes('--engine') ? value('--engine') : undefined;
 assert.ok(selectedEngine === undefined || ['chromium', 'webkit'].includes(selectedEngine), 'explicit supported QA engine');
-const work = mkdtempSync(join(tmpdir(), '101-reading-connections-'));
-const output = args.includes('--output') ? resolve(value('--output')) : join(work, 'receipt.json');
+const outputDirectory = fileURLToPath(new URL('../outputs/qa/', import.meta.url));
+if (!args.includes('--output')) mkdirSync(outputDirectory, { recursive: true });
+const output = args.includes('--output') ? resolve(value('--output')) : join(outputDirectory, `reading-connections-${randomUUID()}.json`);
 assert.ok(!existsSync(output), 'QA receipt must be new');
 const report = { schemaVersion: 1, status: 'pending', mode: featureRed ? 'old-feature-absence' : 'selected-source-ui',
   phase: 'source-build-pins', servedProofSHA: hash(servedBytes), servedSourceTree: served.sourceTree,
