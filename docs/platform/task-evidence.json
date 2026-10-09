@@ -13335,6 +13335,32 @@
         "Supported actual native-focus environment and physical speakers/headphones; other engines/permission/device-loss/assistive technology remain open"
       ],
       "supportRows": []
+    },
+    {
+      "id": "headset-sbc-software-2026-10-09",
+      "revision": "ecdef0cfb797822862c59cf12e0fb946cb98b6c1ec1add137de26210b8debf15",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "W06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-09-headset-sbc-software.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0/pinned FFmpeg9.0 synthesized tone; source and unchanged seven-package ordinary installed JS SDK; native denied all hosts",
+      "reproduction": "Fixed external core/SDK/enrollment,30 pure checks,40 source+40 native installed fake-port scenarios,12 independent copied negatives,one actual encoder+decoder per SDK path. Actual1120-byte public delivery,4096PCM bytes/2048samples/2014nonzero; raw/stdio/private/public returns joined. Exact integration gates retained by gate manifest.",
+      "scope": "Selected software SBC codec/resource only. Native transport, acoustic playback, controls/vendor sensors, physical headset and full W06 remain open; no support row.",
+      "failure": null,
+      "equipment": [
+        "Selected physical headset and authorized native audio transport/permissions for independent audio/control/sensor qualification"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -15319,7 +15345,8 @@
     {
       "id": "W06",
       "records": [
-        "pending-W06"
+        "pending-W06",
+        "headset-sbc-software-2026-10-09"
       ],
       "dependencies": [
         "M01",

@@ -1,0 +1,558 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-software-source-and-ordinary-installed-consumer-validated",
+  "localOnly": true,
+  "sourceBase": "78aceadcda1bf12bcddefd4531ed3a7611ba0256",
+  "sourceSha256": {
+    "packages/hub-server/src/headset-sbc.ts": "ecdef0cfb797822862c59cf12e0fb946cb98b6c1ec1add137de26210b8debf15",
+    "packages/hub-server/src/headset-sbc.test.ts": "4e70e72726bac2d170e434ae73ccf65039a3d06348225c655f7af1b273828087",
+    "examples/headset-sbc/codec.mjs": "5b6b485a2288472df08fcd56a4018f94aeab3f18f2c22ed6f208614fe42113f8",
+    "examples/headset-sbc/consumer.mjs": "508070f598ba1e447cc43c17c28d46d20b36b2ddc66398ed6263a1266869024b",
+    "tools/qa-headset-sbc.mjs": "c080bdee8aa1b4003dc595ac36f038008b5c55e4a75d4a8bb45c461e28ac6740",
+    "tools/qa-installed-headset-sbc.mjs": "f3e2846b6a15b79d6bcfefcb251e3facacca3150f63833a587143f74a424275a"
+  },
+  "profile": {
+    "id": "headset-sbc-codec-resource/1",
+    "selectedFormat": "mono44100Hz/16blocks/8subbands/loudness/bitpool31/16frames",
+    "producer": "Pinned FFmpeg9.0 fixed440Hz synthesized sine; software tone, not user audio",
+    "delivery": "Public scalar generation notice and independently authorized integrity-verified blob",
+    "nativeAdmission": "Denied on darwin/linux/win32/unknown before native device/transport effects"
+  },
+  "counts": {
+    "pureTests": 30,
+    "sourceFixtureScenarios": 40,
+    "installedFixtureScenarios": 40,
+    "individualOwnedCopyNegatives": 12,
+    "actualEncodersPerSDKPath": 1,
+    "actualDecodersPerSDKPath": 1
+  },
+  "actualPublicConsumers": [
+    {
+      "kind": "source",
+      "receipt": {
+        "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/actual-source-consumer/receipts/consumer.json",
+        "bytes": 1288822,
+        "sha256": "ac48719be3b3c52802adae7d125dd14c3206ad4136be5a22bf96477a5689ecac",
+        "gitBlob": "b5ff32d5e4ec609a713f9b3195f807c30372f27d",
+        "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-ac48719be3b3c52802adae7d125dd14c3206ad4136be5a22bf96477a5689ecac"
+      },
+      "producedBytes": 1120,
+      "deliveredBytes": 1120,
+      "producerSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+      "deliveredSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+      "decoded": {
+        "format": "mono-S16LE",
+        "sampleRateHz": 44100,
+        "samples": 2048,
+        "pcmBytes": 4096,
+        "nonzeroSamples": 2014,
+        "pcmSha256": "72d70e32dac2f1955038cdf2d76ab55475f7318eb536fde7e468c87360951f52",
+        "synthetic": false
+      },
+      "lifecycle": {
+        "profile": {
+          "phase": "closed",
+          "generation": 1,
+          "pendingAuthorizers": 0,
+          "pendingIssues": 0,
+          "pendingRaw": 0,
+          "uncertainProcesses": 0,
+          "timers": 0,
+          "listeners": 0
+        },
+        "portPending": 0,
+        "route": {
+          "state": "closed",
+          "reason": "unavailable",
+          "pending": 0
+        },
+        "listeners": 0,
+        "ownedByteBuffers": 0,
+        "ownedTimers": 0
+      },
+      "rawPending": 0,
+      "codecs": [
+        {
+          "action": "encode-selected-sbc",
+          "argv": [
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-protocol_whitelist",
+            "pipe",
+            "-f",
+            "lavfi",
+            "-i",
+            "sine=frequency=440:sample_rate=44100:samples_per_frame=128",
+            "-map",
+            "0:a:0",
+            "-frames:a",
+            "16",
+            "-ac",
+            "1",
+            "-ar",
+            "44100",
+            "-c:a",
+            "sbc",
+            "-q:a",
+            "31",
+            "-threads",
+            "1",
+            "-filter_threads",
+            "1",
+            "-f",
+            "sbc",
+            "pipe:1"
+          ],
+          "environment": {
+            "PATH": "/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC",
+            "AV_LOG_FORCE_NOCOLOR": "1",
+            "DYLD_PRINT_LIBRARIES": "1"
+          },
+          "executablePath": "/opt/homebrew/Cellar/ffmpeg/9.0/bin/ffmpeg",
+          "executableSha256": "d1dffe4871ee17878b18e3f305f650265c5b06cbab8007df5bc4dccca71a672f",
+          "spawned": true,
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "close": {
+            "code": 0,
+            "signal": null
+          },
+          "stdioClosed": true,
+          "stdoutBytes": 1120,
+          "stderrBytes": 85642,
+          "status": "success",
+          "stderrSha256": "9ea6a042eed088aa96f47e9218cdda6900bdce404cbbd42529a86e0855f4876b",
+          "stdoutSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+          "rawSettled": true,
+          "observedEnrolledNonOSOrigins": 20
+        },
+        {
+          "action": "decode-verified-sbc",
+          "argv": [
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-protocol_whitelist",
+            "pipe",
+            "-threads",
+            "1",
+            "-f",
+            "sbc",
+            "-i",
+            "pipe:0",
+            "-map",
+            "0:a:0",
+            "-ac",
+            "1",
+            "-ar",
+            "44100",
+            "-c:a",
+            "pcm_s16le",
+            "-threads",
+            "1",
+            "-filter_threads",
+            "1",
+            "-f",
+            "s16le",
+            "pipe:1"
+          ],
+          "environment": {
+            "PATH": "/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC",
+            "AV_LOG_FORCE_NOCOLOR": "1",
+            "DYLD_PRINT_LIBRARIES": "1"
+          },
+          "executablePath": "/opt/homebrew/Cellar/ffmpeg/9.0/bin/ffmpeg",
+          "executableSha256": "d1dffe4871ee17878b18e3f305f650265c5b06cbab8007df5bc4dccca71a672f",
+          "spawned": true,
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "close": {
+            "code": 0,
+            "signal": null
+          },
+          "stdioClosed": true,
+          "stdoutBytes": 4096,
+          "stderrBytes": 85642,
+          "status": "success",
+          "stderrSha256": "a449b39456188e0e3aa24e3765099d7452ae6a27b14aa6a2f462217c3499a3d7",
+          "stdoutSha256": "72d70e32dac2f1955038cdf2d76ab55475f7318eb536fde7e468c87360951f52",
+          "rawSettled": true,
+          "observedEnrolledNonOSOrigins": 20
+        }
+      ]
+    },
+    {
+      "kind": "ordinary-installed",
+      "receipt": {
+        "path": "/private/tmp/101-sdk-consumer-DQOPkU/headset-sbc-actual-controller-6/receipts/consumer.json",
+        "bytes": 1288822,
+        "sha256": "e339f2eaa9f1a4bc69e46ad82844dd2f1bc15657b5a58ed716cb493d5ed47efa",
+        "gitBlob": "55a280d83345423af57975c995c376cb09f20d32",
+        "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-e339f2eaa9f1a4bc69e46ad82844dd2f1bc15657b5a58ed716cb493d5ed47efa"
+      },
+      "producedBytes": 1120,
+      "deliveredBytes": 1120,
+      "producerSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+      "deliveredSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+      "decoded": {
+        "format": "mono-S16LE",
+        "sampleRateHz": 44100,
+        "samples": 2048,
+        "pcmBytes": 4096,
+        "nonzeroSamples": 2014,
+        "pcmSha256": "72d70e32dac2f1955038cdf2d76ab55475f7318eb536fde7e468c87360951f52",
+        "synthetic": false
+      },
+      "lifecycle": {
+        "profile": {
+          "phase": "closed",
+          "generation": 1,
+          "pendingAuthorizers": 0,
+          "pendingIssues": 0,
+          "pendingRaw": 0,
+          "uncertainProcesses": 0,
+          "timers": 0,
+          "listeners": 0
+        },
+        "portPending": 0,
+        "route": {
+          "state": "closed",
+          "reason": "unavailable",
+          "pending": 0
+        },
+        "listeners": 0,
+        "ownedByteBuffers": 0,
+        "ownedTimers": 0
+      },
+      "rawPending": 0,
+      "codecs": [
+        {
+          "action": "encode-selected-sbc",
+          "argv": [
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-protocol_whitelist",
+            "pipe",
+            "-f",
+            "lavfi",
+            "-i",
+            "sine=frequency=440:sample_rate=44100:samples_per_frame=128",
+            "-map",
+            "0:a:0",
+            "-frames:a",
+            "16",
+            "-ac",
+            "1",
+            "-ar",
+            "44100",
+            "-c:a",
+            "sbc",
+            "-q:a",
+            "31",
+            "-threads",
+            "1",
+            "-filter_threads",
+            "1",
+            "-f",
+            "sbc",
+            "pipe:1"
+          ],
+          "environment": {
+            "PATH": "/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC",
+            "AV_LOG_FORCE_NOCOLOR": "1",
+            "DYLD_PRINT_LIBRARIES": "1"
+          },
+          "executablePath": "/opt/homebrew/Cellar/ffmpeg/9.0/bin/ffmpeg",
+          "executableSha256": "d1dffe4871ee17878b18e3f305f650265c5b06cbab8007df5bc4dccca71a672f",
+          "spawned": true,
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "close": {
+            "code": 0,
+            "signal": null
+          },
+          "stdioClosed": true,
+          "stdoutBytes": 1120,
+          "stderrBytes": 85642,
+          "status": "success",
+          "stderrSha256": "eb5bd46078adeca3b4a0255d3bcdc1c5f56d5acd5cd67b529ad0b2b710dd38f5",
+          "stdoutSha256": "b849c8d6654d470a42d4f887ae97df52047cc17aa65ac05519767bbd0df5032c",
+          "rawSettled": true,
+          "observedEnrolledNonOSOrigins": 20
+        },
+        {
+          "action": "decode-verified-sbc",
+          "argv": [
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-protocol_whitelist",
+            "pipe",
+            "-threads",
+            "1",
+            "-f",
+            "sbc",
+            "-i",
+            "pipe:0",
+            "-map",
+            "0:a:0",
+            "-ac",
+            "1",
+            "-ar",
+            "44100",
+            "-c:a",
+            "pcm_s16le",
+            "-threads",
+            "1",
+            "-filter_threads",
+            "1",
+            "-f",
+            "s16le",
+            "pipe:1"
+          ],
+          "environment": {
+            "PATH": "/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC",
+            "AV_LOG_FORCE_NOCOLOR": "1",
+            "DYLD_PRINT_LIBRARIES": "1"
+          },
+          "executablePath": "/opt/homebrew/Cellar/ffmpeg/9.0/bin/ffmpeg",
+          "executableSha256": "d1dffe4871ee17878b18e3f305f650265c5b06cbab8007df5bc4dccca71a672f",
+          "spawned": true,
+          "exit": {
+            "code": 0,
+            "signal": null
+          },
+          "close": {
+            "code": 0,
+            "signal": null
+          },
+          "stdioClosed": true,
+          "stdoutBytes": 4096,
+          "stderrBytes": 85642,
+          "status": "success",
+          "stderrSha256": "b3b3b9a2cb8896324d38f4958385c9f6143b550128ea8cb97d1295280f882287",
+          "stdoutSha256": "72d70e32dac2f1955038cdf2d76ab55475f7318eb536fde7e468c87360951f52",
+          "rawSettled": true,
+          "observedEnrolledNonOSOrigins": 20
+        }
+      ]
+    }
+  ],
+  "authorityAndSettlement": [
+    "Original frozen same-object private action/scope/purpose/generation/path/hash/budget/deadline request and genuine separate owner/caller/action grants. One encoder and decoder sequentially within original5000ms bound.",
+    "Independent public source/sink/scope/revision/operations route authority and actual original SDK resource request. Parsed reference is a distinct object; immutable fields/digest/count/scope match.",
+    "Whole actual apply, runtime.whenSettled, private session, resource authorizer/next/terminal-return wrapper, codec child/stdio/stdin-end callback and port joins. Abort/timeout is not raw settlement.",
+    "Original absolute monotonic deadline retained; early timer delivery reschedules. Early authority retirement is classified separately from elapsed original deadline. Missed fixture entry reports prerequisite failure and unwinds actual finally."
+  ],
+  "runtime": {
+    "nodeVersion": "v24.14.0",
+    "nodeSha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+    "platform": "darwin",
+    "architecture": "arm64",
+    "sourceCaller": "Exact current-context VM bytes forwarding actual public source exports",
+    "installedCaller": "Exact copied glue/native ESM ordinary public exports; no source alias, SDK rebuild or install",
+    "installedWorkspace": "/private/tmp/101-sdk-consumer-DQOPkU",
+    "sourceSDKPins": 135,
+    "installedSDKPins": 414,
+    "trustBoundary": "Stable ambient filesystem/host OS and20 enrolled non-OS origins. Post-load observation, not atomic exec/loading confinement. Exact upstream-built binary provenance unproved."
+  },
+  "evidence": {
+    "finalSource": {
+      "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/final-source-freeze/manifest.json",
+      "bytes": 2699,
+      "sha256": "122cedc3947556cb575a2f674179ce27fa26e9a19d4d0e7f939ef977b7f99265",
+      "gitBlob": "1824aac77c8d37db545f7d82ca9de26822404374",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-122cedc3947556cb575a2f674179ce27fa26e9a19d4d0e7f939ef977b7f99265"
+    },
+    "coreApproval": {
+      "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/core-approval-final/approval.json",
+      "bytes": 135089,
+      "sha256": "98e891eee676f6d2dc1913e987d9308af5371f047663a11e8ce4c5ecc08acf4b",
+      "gitBlob": "bbb81544c74810691924e6165279319c97e283c5",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-98e891eee676f6d2dc1913e987d9308af5371f047663a11e8ce4c5ecc08acf4b"
+    },
+    "enrollment": {
+      "path": "/tmp/101-headset-sbc-root-evidence/offline-execution-admission-revision-3.json",
+      "bytes": 19964,
+      "sha256": "d3fc1220726f3c2b7dd6a353e2c365eac09e2a26f2ea4283c6207c02d009cbdf",
+      "gitBlob": "b41b50a392127b1a89eb8cf2b231580b576eb3b8",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-dialect-ir-prerequisite/raw-00093"
+    },
+    "sourceFixtures": {
+      "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/full-source-fixtures/receipts/result.json",
+      "bytes": 15661,
+      "sha256": "d820a4a5d833458748a1998274a27ad779e50718ed62ac3e2b40e5636b3c00a1",
+      "gitBlob": "d5646477db239f83ded567c40ded1a50aef862ab",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-d820a4a5d833458748a1998274a27ad779e50718ed62ac3e2b40e5636b3c00a1"
+    },
+    "installedFixtures": {
+      "path": "/private/tmp/101-sdk-consumer-DQOPkU/headset-sbc-fixtures-controller-6/result.json",
+      "bytes": 48232,
+      "sha256": "879497dba8204b47a4315352a9e0cd26d2e2dc9a283cb247cc6e7efc71eb310b",
+      "gitBlob": "eeecc3756d274c5186c48fa6d8424fa3fe712c0e",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-879497dba8204b47a4315352a9e0cd26d2e2dc9a283cb247cc6e7efc71eb310b"
+    },
+    "copyNegatives": {
+      "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/copied-negatives/cases/result.json",
+      "bytes": 7137,
+      "sha256": "7733656d9df766ca2b87455350a592ddbf80def10929dbebf2b31f2cd70a5ae5",
+      "gitBlob": "c2f611373cf7b118a7afb6ed6c50dfe4d57d4510",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-7733656d9df766ca2b87455350a592ddbf80def10929dbebf2b31f2cd70a5ae5"
+    },
+    "pureTests": {
+      "path": "/tmp/101-controller-6-headset-sbc-feature-revision-3/evidence/pure-profile-result.json",
+      "bytes": 998,
+      "sha256": "c7a3c41b7b2ebe1e8c4d860d802866f0f8946743ae2e2ee4032c130dcc7a8ca4",
+      "gitBlob": "6130a690d81089a1bf7965b05afda19d70a851a6",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-c7a3c41b7b2ebe1e8c4d860d802866f0f8946743ae2e2ee4032c130dcc7a8ca4"
+    },
+    "independentFinalReview": {
+      "path": "/tmp/101-controller-6-sbc-c4-review/review-final.json",
+      "bytes": 22128,
+      "sha256": "9ff173c8a9d6a2eeb3c64f25ab2cb82096d8b522d923b47f4a2a6909898afcea",
+      "gitBlob": "c2cd70556fec98516dcce6e73db662733af7fb9c",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer/sha256-9ff173c8a9d6a2eeb3c64f25ab2cb82096d8b522d923b47f4a2a6909898afcea"
+    },
+    "selectedContractRed": {
+      "path": "/tmp/101-controller-6-sbc-missing-feature-red/result.json",
+      "bytes": 1584,
+      "sha256": "a8a1f119e27ff31122db308cccdbf42ea855183e62ffcd5fb9a0abb8e955e7ae",
+      "gitBlob": "627d17d8924e91edd8ece768b7e595b800922f95",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-actual-codec-contract-red/raw-00020"
+    },
+    "C3OldReds": {
+      "path": "/tmp/101-controller-6-sbc-expiry-diagnostics/evidence/manifest.json",
+      "bytes": 4239,
+      "sha256": "b3fd09c4662ef64451334f573cba47974f4ec92490ef104e927716d04ae1e71b",
+      "gitBlob": "3fd7df4c00122e383f8a19f521801b0eec3e582a",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-expiry-profile-2/sha256-b3fd09c4662ef64451334f573cba47974f4ec92490ef104e927716d04ae1e71b"
+    },
+    "C3NarrowGreen": {
+      "path": "/tmp/101-controller-6-sbc-expiry-green-revision-3/evidence/manifest.json",
+      "bytes": 4555,
+      "sha256": "5b36394e373b70214552429a72d29e9fd17d4ea160008be41ae0dc6f6d6698e3",
+      "gitBlob": "aa7ec54b36ee52f93705cd002b51799936df0b2c",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-c3-c4-lint/sha256-5b36394e373b70214552429a72d29e9fd17d4ea160008be41ae0dc6f6d6698e3"
+    },
+    "C4OldRed": {
+      "path": "/tmp/101-controller-6-sbc-prehold-diagnostics/evidence/manifest.json",
+      "bytes": 3661,
+      "sha256": "b095de5cc3f0151d8485671d2d7f8a4d68371658ff0f20910610c5a6218e39c8",
+      "gitBlob": "1a79fbb03ce35466cfe2b621977a333103293778",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-c3-c4-lint/sha256-b095de5cc3f0151d8485671d2d7f8a4d68371658ff0f20910610c5a6218e39c8"
+    },
+    "C4NarrowGreen": {
+      "path": "/tmp/101-controller-6-sbc-prehold-green/evidence/manifest.json",
+      "bytes": 3914,
+      "sha256": "3dfb8cf7a0d2bfb0b64ff896c4b6f3a5cb2ba23cd54180dbdb867c65ca0a6fbc",
+      "gitBlob": "80e05481060078ad2e4669583887e5bad2002824",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-c3-c4-lint/sha256-3dfb8cf7a0d2bfb0b64ff896c4b6f3a5cb2ba23cd54180dbdb867c65ca0a6fbc"
+    },
+    "sourceAuthority": {
+      "path": "/tmp/101-headset-sbc-plan/source-authority.json",
+      "bytes": 11047,
+      "sha256": "f68297f26295dc0af172b075823fad7de712584c14416386bc9d43020f807fc5",
+      "gitBlob": "e5a1b783d6601b54fdffe5124984adc3f901544e",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-source-authority/sha256-f68297f26295dc0af172b075823fad7de712584c14416386bc9d43020f807fc5"
+    },
+    "dyldSourceAuthority": {
+      "path": "/tmp/101-controller-6-dyld-dialect-research/research-packet.json",
+      "bytes": 10493,
+      "sha256": "e32abe9a4682e9788cc23415200a2df46094f51ac2c8e1c302e3837c0a09a7fd",
+      "gitBlob": "ee529b2f5706129c61bd871fff67b7821d838ea4",
+      "ref": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-dialect-ir-prerequisite/raw-00049"
+    },
+    "rawRetention": [
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/actual-codec-contract-red-raw-evidence-manifest.json",
+        "sha256": "26dcc6f2484e40fb6f2236eae2b2bec7b1c8452b953f1ed6fb00b538aad695e0",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-actual-codec-contract-red"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/c3-c4-lint-raw-evidence-manifest.json",
+        "sha256": "c9f13470cce351e49b80a97dcd04127e0e3426df5ada4727284366633dd58574",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-c3-c4-lint"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/complete-consumer-raw-evidence-manifest.json",
+        "sha256": "64b6cd22796f931ce8669a4fe62417445ba046918c4741ca13ed8117a1dda389",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-complete-consumer"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/dialect-ir-raw-evidence-manifest.json",
+        "sha256": "3e87294875301fe0f7a335b52fdc3f230b795a9fa5729453eee575340c5fb38b",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-dialect-ir-prerequisite"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/expiry-profile-2-raw-evidence-manifest.json",
+        "sha256": "0624e007235f81463c2896cdf440f894ef87a866e3ec809dabc7e7807a2623b3",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-expiry-profile-2"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/profile-consumer-regressions-raw-evidence-manifest.json",
+        "sha256": "705a404760ab15c30c3f7c821f70eb692009cd78d9ba2c78bb97acfe7efede97",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-profile-consumer-regressions"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/raw-evidence-manifest.json",
+        "sha256": "337cb4518e48d5e7091a8eab88704737277b0256822f0e8d69e5f760830e29d2",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-diagnostics"
+      },
+      {
+        "path": "/tmp/101-controller-6-sbc-retained/source-authority-raw-evidence-manifest.json",
+        "sha256": "37e2cc605e72657dd07534c72d59368e5466ec66ca5e7515c2bc7aac3756d68a",
+        "namespace": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-source-authority"
+      }
+    ]
+  },
+  "preservedFailuresAndLimits": [
+    "Earlier actual encoder loader-dialect failure is retained. Producer bytes were withheld until strict source-corroborated parsing passed; no fallback producer.",
+    "Old C3 cancellation required declared expired-callback rescue after its pending-state RED; rescued old pass is not normal success. New C3 GREEN had no rescue.",
+    "Old C4 main observer stayed pending despite observed private/native retirement; unavailable full-close counters are not invented. New missed-entry negative rejected and joined actual finally; it is not held-decoder-entry proof.",
+    "Immediate-close listener old RED/new native-listener checks, held-decoder raw apply old RED/new GREEN and all invalid earlier diagnostic setups are retained. Interim type/lint errors are retained; overwritten interim typing source is not reconstructed.",
+    "Five uncertain alias directories remain untouched. SBC literal is the synthesized tone. No raw PCM is retained."
+  ],
+  "repositoryGatePolicy": {
+    "requiredBeforeLocalCommit": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "exactCandidateEvidenceRef": "refs/codex/evidence/2026-10-09-headset-sbc/controller-6-final-gates/manifest"
+  },
+  "physical": false,
+  "fullW06": false,
+  "supportRows": [],
+  "declinedToJudge": [
+    "Native headset discovery/connection/permissions/device loss",
+    "Bluetooth A2DP/AVDTP/RTP/L2CAP/AVRCP/HFP transport",
+    "Acoustic playback/quality, controls and vendor sensors",
+    "Physical headset/full W06 acceptance"
+  ]
+}

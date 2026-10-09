@@ -228,3 +228,5 @@ public caller. Exported `EmbeddedRuntime` construction remains supported; its
 implementation-facing registry/lease/dispatch helpers are explicitly experimental
 outside `DeviceRuntime`. [Exact software evidence](receipts/2026-10-07-runtime-settlement.json)
 does not qualify the Node engine floor, hardware or release support rows.
+
+The [selected SBC software audio-resource profile](receipts/2026-10-09-headset-sbc-software.json) has independently reviewed source and ordinary installed SDK delivery with actual pinned encoder/decoder effects. Native headset transport, acoustic playback, controls/sensors and full W06 remain open; no support row is added.
