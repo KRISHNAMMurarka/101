@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 193,
+  "revision": 196,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13504,6 +13504,136 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "console-access-2026-10-09",
+      "revision": "8f9d8097af589ed95cfb12463754704755ad70e2252a43927ccc1ba9ca4aaa8a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract"
+      ],
+      "tasks": [
+        "N11"
+      ],
+      "paths": [
+        "docs/platform/CONSOLE-ACCESS.md",
+        "docs/platform/receipts/2026-10-09-console-access.json",
+        "docs/platform/support-catalog.json",
+        "docs/platform/RELEASE-CONTRACT.md"
+      ],
+      "environment": "Local macOS repository; primary vendor public documentation checked 9 October 2026. No console runtime or physical result.",
+      "reproduction": "Read the linked Nintendo, Sony and Microsoft primary sources, inspect exact route distinctions and run the platform record audit. Independent decision review and integrated gates are retained under receipt refs.",
+      "scope": "Release-local unavailable native Nintendo/PlayStation/GDKX boundaries and distinct Xbox UWP/WebView2 candidate. Contract research only; receiver implementation and full N11 acceptance remain open.",
+      "failure": null,
+      "equipment": [
+        "Owner-approved activated Xbox console and identified Windows UWP toolchain for the viable receiver; other console routes require separately admitted vendor authority"
+      ],
+      "supportRows": [
+        "console-nintendo-native",
+        "console-playstation5-native",
+        "console-xbox-gdk-native",
+        "console-xbox-uwp-receiver"
+      ],
+      "supportTargets": {
+        "console-nintendo-native": {
+          "os": "Nintendo Switch / Switch 2",
+          "osVersion": "not qualified; exact console OS build required",
+          "runtime": "vendor-approved native application",
+          "runtimeVersion": "not admitted or qualified; exact installed build required",
+          "formFactor": "console",
+          "transport": "no console provider qualified",
+          "connector": "Nintendo console provider not admitted",
+          "connectorVersion": "not admitted or qualified",
+          "profiles": [],
+          "resources": [],
+          "unavailable": [
+            "console system input and navigation",
+            "control of other games or applications",
+            "protected capture and account access",
+            "all native resources until a permitted provider is implemented and qualified"
+          ]
+        },
+        "console-playstation5-native": {
+          "os": "PlayStation 5",
+          "osVersion": "not qualified; exact console OS build required",
+          "runtime": "vendor-approved native application",
+          "runtimeVersion": "not admitted or qualified; exact installed build required",
+          "formFactor": "console",
+          "transport": "no console provider qualified",
+          "connector": "PlayStation provider not admitted",
+          "connectorVersion": "not admitted or qualified",
+          "profiles": [],
+          "resources": [],
+          "unavailable": [
+            "console system input and navigation",
+            "control of other games or applications",
+            "protected capture and account access",
+            "all native resources until a permitted provider is implemented and qualified"
+          ]
+        },
+        "console-xbox-gdk-native": {
+          "os": "Xbox One / Series X|S",
+          "osVersion": "not qualified; exact console OS build required",
+          "runtime": "GDKX application",
+          "runtimeVersion": "not admitted or qualified; exact installed build required",
+          "formFactor": "console",
+          "transport": "no console provider qualified",
+          "connector": "GDKX provider not admitted",
+          "connectorVersion": "not admitted or qualified",
+          "profiles": [],
+          "resources": [],
+          "unavailable": [
+            "console system input and navigation",
+            "control of other games or applications",
+            "protected capture and account access",
+            "all native resources until a permitted provider is implemented and qualified"
+          ]
+        },
+        "console-xbox-uwp-receiver": {
+          "os": "Xbox One / Series X|S",
+          "osVersion": "not qualified; exact console OS build required",
+          "runtime": "WinUI 2 UWP / WebView2 application",
+          "runtimeVersion": "not admitted or qualified; exact installed build required",
+          "formFactor": "console",
+          "transport": "no console provider qualified",
+          "connector": "UWP receiver not implemented",
+          "connectorVersion": "not admitted or qualified",
+          "profiles": [],
+          "resources": [],
+          "unavailable": [
+            "console system input and navigation",
+            "control of other games or applications",
+            "protected capture and account access",
+            "all native resources until a permitted provider is implemented and qualified"
+          ]
+        }
+      }
+    },
+    {
+      "id": "processor-activation-revision-2026-10-09",
+      "revision": "bd56963d703b4f72ac52029ccdb67221a288c471fd1953d402d46747233b8bb5",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "S13",
+        "E10"
+      ],
+      "paths": [
+        "packages/device-runtime/src/processor-installation.ts",
+        "packages/device-runtime/src/processor-installation.test.ts",
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-09-processor-activation.json"
+      ],
+      "environment": "macOS local repository; Node24.14.0; native WebCrypto P-256; fresh immutable-tree seven-package SDK tarballs installed offline in an outside-repository ordinary Node consumer. No browser, Worker, native provider or physical result.",
+      "reproduction": "Run processor-installation.test.ts (28 checks; eight meaningful OLD regressions retained), build SDK from source tree a5debfc76056fb4bb05969d33cef142780c0afff, run qa-sdk-consumer.mjs --node-only and retained ordinary activation-consumer.mjs. Receipt names durable source/installed/final-gate refs. Retained activation-negative-consumer.mjs adds three ordinary installed policy refusal checks with zero work callbacks and unchanged 411 package-file inventory.",
+      "scope": "Selected trusted local-compute activation/rollback storage-revision fence. Concurrent revocation/removal cannot start further reviewed work; explicit cleanup remains. Exact reviewed-source OLD/GREEN and one ordinary installed release-revocation race. Full S13/E10 acceptance and support remain open. Existing-policy dependency mutation and genuine v2 source substitution are also refused by an ordinary installed caller before work; not a new production repair.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -14397,7 +14527,8 @@
     {
       "id": "S13",
       "records": [
-        "pending-S13"
+        "pending-S13",
+        "processor-activation-revision-2026-10-09"
       ],
       "dependencies": [
         "C01",
@@ -14662,7 +14793,8 @@
     {
       "id": "N11",
       "records": [
-        "pending-N11"
+        "pending-N11",
+        "console-access-2026-10-09"
       ],
       "dependencies": [
         "C01",
@@ -16077,7 +16209,8 @@
         "processor-management-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
         "browser-processor-storage-built-partial-2026-10-07",
-        "durable-processor-management-built-source-partial-2026-10-07"
+        "durable-processor-management-built-source-partial-2026-10-07",
+        "processor-activation-revision-2026-10-09"
       ],
       "dependencies": [
         "M01",

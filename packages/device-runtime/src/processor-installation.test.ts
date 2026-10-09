@@ -343,3 +343,76 @@ test('read approval cannot return a release changed by another controller while 
     } finally { reader.close(); s.store.close(); }
   }
 });
+
+for (const mode of ['activateReviewed', 'rollbackReviewed'] as const) {
+  for (const change of ['revokeRelease', 'revokePublisher', 'remove'] as const) {
+    test(`${mode} runs no reviewed callbacks after another controller changes its approved release`, async () => {
+      const s = await setup(), release = await s.release();
+      success(await s.store.install(release, source));
+      if (mode === 'rollbackReviewed') {
+        success(await s.store.activateReviewed(s.activation(release)));
+        const newer = await s.release('2.0.0', 2);
+        success(await s.store.install(newer, source));
+        success(await s.store.activateReviewed(s.activation(newer)));
+      }
+      let approve!: (value: ProcessorInstallationApproval) => void, entered!: () => void;
+      const waiting = new Promise<void>(resolve => { entered = resolve; });
+      const reader = api!.createProcessorInstallation({ ...s.options, authorize(scope) {
+        if (scope.action !== (mode === 'activateReviewed' ? 'activate-reviewed' : 'rollback-reviewed')) return s.options.authorize();
+        entered(); return new Promise<ProcessorInstallationApproval>(resolve => { approve = resolve; });
+      } });
+      let factories = 0, processes = 0, resets = 0;
+      const request = s.activation(release, { trusted: { manifest: release.manifest, source,
+        factory(configuration: { onAt: number; offAt: number }) {
+          factories++; const implementation = createTemperatureBand(configuration);
+          return { process(input: { temperature: number }) { processes++; return implementation.process(input); },
+            reset() { resets++; implementation.reset(); } };
+        } } });
+      let pending: ReturnType<typeof reader.activateReviewed> | undefined;
+      try {
+        pending = reader[mode](request); await waiting;
+        if (change === 'revokeRelease') success(await s.store.revokeRelease(release.packageId, release.version));
+        else if (change === 'revokePublisher') success(await s.store.revokePublisher(release.publisherId));
+        else success(await s.store.remove(release.packageId));
+        approve({ expiresAt: 61_000, isCurrent: () => true });
+        const result = await pending;
+        assert.equal(factories, 0, 'an already changed release cannot begin conformance or registry construction');
+        assert.equal(processes, 0); assert.equal(resets, 0);
+        assert.deepEqual(result, { ok: false, reason: 'conflict' });
+      } finally {
+        approve?.({ expiresAt: 61_000, isCurrent: () => false }); reader.close(); s.store.close(); await pending;
+      }
+    });
+  }
+}
+
+for (const stage of ['factory', 'process'] as const) {
+  test(`an owner revision change inside the reviewed ${stage} fences the next work callback`, async () => {
+    const s = await setup(), release = await s.release(); success(await s.store.install(release, source));
+    const original = s.db.values.get(s.store.key)!;
+    success(await s.store.revokeRelease(release.packageId, release.version));
+    const revoked = s.db.values.get(s.store.key)!;
+    // Both records are actual signed-release storage producer output. The test
+    // storage installs the newer record synchronously inside a reviewed callback.
+    s.db.values.set(s.store.key, original);
+    const reader = api!.createProcessorInstallation(s.options);
+    let factories = 0, processes = 0, staleWork = 0;
+    try {
+      const result = await reader.activateReviewed(s.activation(release, { trusted: { manifest: release.manifest, source,
+        factory(configuration: { onAt: number; offAt: number }) {
+          if (s.db.values.get(s.store.key) !== original) staleWork++;
+          factories++; const implementation = createTemperatureBand(configuration);
+          if (stage === 'factory') s.db.values.set(s.store.key, revoked);
+          return { process(input: { temperature: number }) {
+            if (s.db.values.get(s.store.key) !== original) staleWork++;
+            processes++; if (stage === 'process') s.db.values.set(s.store.key, revoked);
+            return implementation.process(input);
+          }, reset: implementation.reset };
+        } } }));
+      assert.equal(staleWork, 0, 'no next factory or process may run from the replaced owner revision');
+      assert.equal(factories, 1); assert.equal(processes, stage === 'factory' ? 0 : 1);
+      assert.deepEqual(result, { ok: false, reason: 'conflict' });
+      assert.equal(s.db.values.get(s.store.key), revoked);
+    } finally { reader.close(); s.store.close(); }
+  });
+}

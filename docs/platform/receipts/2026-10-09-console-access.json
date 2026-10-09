@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "status": "contract-decision-only-viable-receiver-open",
+  "localOnly": true,
+  "checkedDate": "2026-10-09",
+  "baseCommit": "2c2d938b174681379d72c862f3f4ff2e146e7316",
+  "decisionDocument": {
+    "path": "docs/platform/CONSOLE-ACCESS.md",
+    "sha256": "8f9d8097af589ed95cfb12463754704755ad70e2252a43927ccc1ba9ca4aaa8a"
+  },
+  "task": "N11",
+  "taskComplete": false,
+  "supportRows": {
+    "console-nintendo-native": {
+      "status": "unsupported",
+      "accepted": false
+    },
+    "console-playstation5-native": {
+      "status": "unsupported",
+      "accepted": false
+    },
+    "console-xbox-gdk-native": {
+      "status": "unsupported",
+      "accepted": false
+    },
+    "console-xbox-uwp-receiver": {
+      "status": "candidate",
+      "accepted": false
+    }
+  },
+  "sources": [
+    {
+      "url": "https://developer.nintendo.com/the-process",
+      "scope": "Registration and separate Switch development application"
+    },
+    {
+      "url": "https://developer.nintendo.com/home/developing-for-switch2",
+      "scope": "Public new-development-access notice checked on decision date; existing approvals not inferred"
+    },
+    {
+      "url": "https://sonyinteractive.com/en/news/blog/complimentary-development-hardware/",
+      "publicationDate": "2022-07-26",
+      "scope": "Partner/concept/hardware route; no private SDK terms"
+    },
+    {
+      "url": "https://partners.playstation.net/",
+      "scope": "Public entry point only; no extractable program terms read"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/gaming/game-publishing/onboarding/onboarding-join-id-at-xbox",
+      "updatedDate": "2026-08-07",
+      "scope": "Managed Xbox development onboarding"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/gaming/gdk/docs/gdk-dev/whatsnew/release-notes?view=gdk-2604",
+      "scope": "Public PC GDK versus GDKX console platforms"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/previous-versions/windows/uwp/xbox-apps/devkit-activation",
+      "updatedDate": "2023-09-23",
+      "scope": "Retail Developer Mode separate from managed kits; previous-version publication requires current route confirmation"
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/remote-debugging-xbox",
+      "updatedDate": "2026-08-03",
+      "scope": "Documented Xbox UWP/WebView2 route; no current application artifact claimed"
+    }
+  ],
+  "validationScope": "Primary-source research and repository contract/catalog coherence only. No console implementation, runtime, physical, account, SDK or API permission result.",
+  "independentReviewRef": "refs/codex/evidence/2026-10-09-console-access/controller-8-review/manifest",
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-integrated-v5/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-integrated-v5/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Completed green results on the exact referenced tree are required for local commit."
+  },
+  "limits": [
+    "No supported console row or usable native resource is added.",
+    "Nintendo/PlayStation/GDKX unavailable means this release scope, not permanent platform impossibility.",
+    "Xbox UWP remains candidate and keeps full N11 acceptance open.",
+    "Desktop browser and Windows receipts cannot prove a console wrapper or native API.",
+    "No new service, account, activation, agreement, SDK download, publication, console install or console control."
+  ],
+  "earlierValidation": {
+    "failedCandidateTree": "60965845bea1a0a23d539d4b6bff4167275dcab5",
+    "fullUnit": {
+      "tests": 3244,
+      "pass": 3233,
+      "fail": 11,
+      "skipped": 0
+    },
+    "buildAndRendered": "not attempted after red unit gate",
+    "failedGateRef": "refs/codex/evidence/2026-10-09-console-access/controller-8-failed-gates/manifest",
+    "startupDiagnosisRef": "refs/codex/evidence/2026-10-09-console-access/controller-8-startup-diagnosis/manifest",
+    "scope": "Failed candidate is preserved and uncommitted; subsequent 126/126 scoped recovery is not a broad gate. Final combined candidate includes separately reviewed S13 source fix.",
+    "additionalFailedGate": {
+      "tree": "47a258282f193fda3cb6889e466b3bec514aa0d9",
+      "unitTests": 3252,
+      "unitPass": 3247,
+      "unitFail": 5,
+      "ref": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-failed-v2/manifest",
+      "buildAndRendered": "not attempted after red unit gate",
+      "commitMade": false
+    }
+  }
+}

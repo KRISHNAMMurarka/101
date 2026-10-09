@@ -50,3 +50,16 @@ another rule later in globals.css can override it. Contextual media/theme overri
 legitimate; duplicate selector lists within the same scope are not.
 Use ResizeObserver to measure canvases, cancel animation/timer work on unmount, and
 release held input on disconnect. Always retain visible focus and reduced-motion behavior.
+
+## Scratch and Linux test cleanup
+
+- Save unique draft source, patches and needed evidence inside this repository before
+  deleting a run folder. Historical exact bytes may use reachable local Git evidence
+  refs with a recovery manifest; `/private/tmp` is never durable custody.
+- Delete each owned scratch folder when its run finishes, including failed runs.
+  First join its child processes, callbacks and cleanup work. Keep compact evidence,
+  not installed SDK copies, review checkouts, dependencies or build caches.
+- Tests requiring Linux use `/Users/km/Dev/vm`. Read its `README.md` first, list
+  machines before and after, and remove each owned machine when its test ends using
+  the lab's commands. Preserve needed results before removal; leave other projects'
+  machines and the shared base image alone.

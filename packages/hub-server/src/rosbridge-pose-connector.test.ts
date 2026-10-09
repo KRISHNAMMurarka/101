@@ -111,9 +111,9 @@ test('held native subscribe/unsubscribe callbacks remain reserved after logical 
     const { createRequire } = await import('node:module');
     const Ws = createRequire(import.meta.url)('ws').WebSocket;
     const original = Ws.prototype.send, held: (() => void)[] = [];
-    Ws.prototype.send = function (data: unknown, options: unknown, callback: (error?: Error) => void) { return original.call(this, data, options, (error?: Error) => { held.push(() => callback(error)); }); };
     const { launchPeer, makeConnector, delay } = await import('../../../examples/rosbridge-pose/consumer.mjs');
     const peer = await launchPeer(), h = makeConnector(peer.endpoint);
+    Ws.prototype.send = function (data: unknown, options: unknown, callback: (error?: Error) => void) { return original.call(this, data, options, (error?: Error) => { held.push(() => callback(error)); }); };
     try {
         const opening = h.connect();
         await delay(30);
@@ -178,9 +178,9 @@ test('synchronous native send fault owns opening/write settlement without orphan
     const { createRequire } = await import('node:module');
     const Ws = createRequire(import.meta.url)('ws').WebSocket, original = Ws.prototype.send;
     const errors: unknown[] = [], capture = (e: unknown) => errors.push(e);
-    process.on('unhandledRejection', capture);
     const { launchPeer, makeConnector, delay } = await import('../../../examples/rosbridge-pose/consumer.mjs');
     const peer = await launchPeer(), h = makeConnector(peer.endpoint);
+    process.on('unhandledRejection', capture);
     Ws.prototype.send = function () { throw Error('actual send setup fault'); };
     try {
         assert.equal((await h.connect()).ok, false);

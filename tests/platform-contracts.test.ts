@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 import test from "node:test";
 import { discoverUnitTests } from "../tools/unit-test-files.mjs";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
@@ -478,7 +478,7 @@ test("the documented path is the path that runs", () => {
 
   for (const { name, definedIn } of promises) {
     const callers = files.filter((path) => {
-      if (path.split("/Desktop/games/101/")[1]?.startsWith(definedIn)) return false;
+      if (relative(resolve(import.meta.dirname, ".."), path).startsWith(definedIn)) return false;
       return new RegExp(`\\b${name}\\b`).test(readFileSync(path, "utf8"));
     });
     assert.ok(callers.length > 0,

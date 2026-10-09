@@ -23,6 +23,8 @@ Selected TMP102 reported-temperature and [MCP3008 channel0 reported-code](receip
 
 The [selected standard heart-rate software notification profile](receipts/2026-10-09-heart-rate-software.json) has reviewed synthetic source and observed ordinary installed delivery only. Native band transport/permissions, actual samples and permitted feedback remain open; this adds no support row or full W05 acceptance.
 
+The [console access decision](CONSOLE-ACCESS.md), checked 9 October 2026, keeps Nintendo/PlayStation/GDKX native routes unavailable in this local release and records Xbox UWP/WebView2 as a separate unimplemented candidate. N11 remains open; these contract decisions grant no resources or accepted console support.
+
 The table sets required qualification work and version targets, not broad compatibility promises. Later supported versions are added as new catalog combinations with their own receipts. A candidate version unavailable here remains open; a simulator is never promoted to a physical result. The full 272-task vision remains required even if a smaller intermediate candidate is useful.
 
 Browser versions are frozen from actual runtime readback, rather than a mutable label such as “latest”. Browser API availability is probed through the relevant provider; labels do not imply WebHID/WebBLE/WebSerial support, system input, background execution or permission. WebRTC direct LAN is the first transport; HTTPS identity/coordinator, relay and bounded WSS are separately qualified. WebTransport/QUIC stay candidates until T13's caller and measurements justify them.

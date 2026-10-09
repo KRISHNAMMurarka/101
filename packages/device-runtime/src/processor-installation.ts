@@ -340,35 +340,44 @@ export function createProcessorInstallation(options: ProcessorInstallationOption
       if (!await bounded(verifyProcessorExtensionRelease(entry.release, unbase64(entry.sourceBase64), expected.key))) fail('integrity'); check(id);
       const approval = await approve(id, { action: rollback ? 'rollback-reviewed' : 'activate-reviewed',
         packageId: entry.release.packageId, version: entry.release.version, publisherId: entry.release.publisherId, release: entry.release });
-      const registration: TrustedProcessorRegistration = { manifest, source, factory(configuration) {
+      let callbackRaw = raw;
+      function checkCallback(): void {
         if (!guard(id, approval, entry.release, expected)) fail('denied');
+        // Another controller may replace this owner's document while approval,
+        // conformance or registry hashing awaits. Fence work before the final CAS.
+        if (callbackRaw === undefined || !storage.isCurrent(key, callbackRaw)) fail('conflict');
+        check(id);
+      }
+      const registration: TrustedProcessorRegistration = { manifest, source, factory(configuration) {
+        checkCallback();
         const implementation = factory(configuration);
-        if (!guard(id, approval, entry.release, expected)) {
-          try { implementation.reset(); } catch { /* Retire a late reviewed instance. */ } fail('denied');
+        try { checkCallback(); } catch (error) {
+          try { implementation.reset(); } catch { /* Retire a late reviewed instance. */ } throw error;
         }
         return implementation;
       } };
-      if (!guard(id, approval, entry.release, expected)) fail('denied');
+      checkCallback();
       const conformanceRegistration: TrustedProcessorRegistration = { manifest, source, factory(configuration) {
         const implementation = registration.factory(configuration);
         return { process(inputs) {
-          if (!guard(id, approval, entry.release, expected)) fail('denied');
+          checkCallback();
           const result = implementation.process(inputs);
-          if (!guard(id, approval, entry.release, expected)) fail('denied'); return result;
-        }, reset() { implementation.reset(); } };
+          checkCallback(); return result;
+        }, reset() { checkCallback(); implementation.reset(); checkCallback(); } };
       } };
       const report = await bounded(runProcessorConformance(conformanceRegistration, fixture)); check(id);
-      if (!guard(id, approval, entry.release, expected)) fail('denied'); if (report.outcome !== 'passed') fail('conformance');
+      checkCallback(); if (report.outcome !== 'passed') fail('conformance');
       const registry = createProcessorRegistry(); await bounded(registry.registerTrusted(registration)); check(id);
-      if (!guard(id, approval, entry.release, expected)) fail('denied');
+      checkCallback();
       const processor = registry.resolve({ id: manifest.id, version: manifest.version, codeSha256: manifest.codeSha256, configuration });
       let attached = false;
       try {
-        if (!guard(id, approval, entry.release, expected)) fail('denied');
+        checkCallback();
         const switched = item.selectedVersion !== entry.release.version;
         item.selectedVersion = entry.release.version;
         const newRaw = await save(id, signal, raw, doc, approval, entry.release, expected, switched ? item.packageId : undefined);
-        if (!guard(id, approval, entry.release, expected)) fail('denied');
+        callbackRaw = newRaw;
+        checkCallback();
         const value: Active = { release: entry.release, raw: newRaw, approval, trust: expected, processor,
           retireOwned: retireOwned as () => void, retired: false, checking: false, detach() {} };
         active.add(value); attached = true;

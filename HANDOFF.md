@@ -18,7 +18,7 @@ physical hardware and are listed at the end.
 ## Prompt for the next agent
 
 > You are working on **Project 101**, a local-first, browser-first gaming platform at
-> `/Users/km/Desktop/games/101` where "anything can be a controller". It is a npm-workspace monorepo
+> `/Users/km/Dev/101` where "anything can be a controller". It is a npm-workspace monorepo
 > (`apps/*`, `packages/*`, `games/*`), TypeScript strict, tests run on Node with
 > `--experimental-strip-types`.
 >

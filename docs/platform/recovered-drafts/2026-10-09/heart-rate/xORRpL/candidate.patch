@@ -1,0 +1,616 @@
+--- /dev/null
++++ b/examples/heart-rate/consumer.mjs
+@@ -0,0 +1,60 @@
++import assert from 'node:assert/strict';
++import {createDeviceRuntime} from '@101/connect';
++import {createHeartRateSoftwareGateway} from '../../packages/hub-server/src/heart-rate-software.ts';
++import {createHeartRateSoftwarePort} from './port.mjs';
++const turn=()=>new Promise(resolve=>setImmediate(resolve));
++const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
++/** Caller owns public Connection settlement. Gateway owns private port/process settlement only. */
++export async function runHeartRateSoftwareExample({python,pythonSha256,selectedSource,selectedSourceSha256,pycachePrefix,scenario='normal'}){
++ const scope=Object.freeze({principalId:'fixture-owner',applicationId:'heart-rate-fixture',sessionId:'fixture-session'}),purpose='reported-heart-rate-fixture';
++ const owner=new AbortController(),caller=new AbortController(),grant=new AbortController();const now=()=>performance.now();
++ let source,sink,route,fenced=false,closing,listenerRecord,privateCalls=0,publicCalls=0,heldResolve,heldApply;
++ const observed=[];if(scenario==='held-apply')heldApply=new Promise(resolve=>{heldResolve=resolve});
++ const runtime=createDeviceRuntime({now,clockDomain:'heart-rate-host-receipt',authorize:request=>{
++  publicCalls++;if(scenario==='public-denied'||fenced||purpose!=='reported-heart-rate-fixture'||request.principalId!==scope.principalId||request.applicationId!==scope.applicationId||request.sessionId!==scope.sessionId||request.source.registrationId!==source?.id||request.sink.registrationId!==sink?.id||request.source.capabilityId!=='heart-rate'||request.sink.capabilityId!=='heart-rate')return;
++  return{expiresAt:now()+5000,maxHz:20,maxAgeMs:1000};
++ }});
++ const software=createHeartRateSoftwarePort({python,pythonSha256,selectedSource,selectedSourceSha256,pycachePrefix});
++ const gateway=createHeartRateSoftwareGateway({mode:'software-notification',runtime,ownerSignal:owner.signal,scope,selectedPort:software.port,now,authorizeNotifications:request=>{
++  privateCalls++;assert.equal(request.purpose,purpose);assert.deepEqual({principalId:request.principalId,applicationId:request.applicationId,sessionId:request.sessionId},scope);assert.equal(request.resource.capabilityId,'heart-rate');assert.equal(request.profile.characteristicUUID,'00002a37-0000-1000-8000-00805f9b34fb');assert.ok(Object.isFrozen(request)&&Object.isFrozen(request.profile)&&Object.isFrozen(request.budgets)&&Object.isFrozen(request.resource));
++  if(scenario==='private-denied')return;return{request,signal:grant.signal,expiresAt:request.deadline};
++ }});
++ function close(){
++  if(closing)return closing;let finish,failed;closing=new Promise((resolve,reject)=>{finish=resolve;failed=reject});fenced=true;
++  if(listenerRecord){listenerRecord.retired=true;listenerRecord.dispose?.();}route?.stop('fixture-consumer-close');gateway.stop();
++  const privateCleanup=gateway.close();const publicCleanup=route?.whenSettled?.();
++  Promise.all([privateCleanup,publicCleanup??Promise.resolve()]).then(()=>{if(sink)runtime.unregister(sink);runtime.close();finish();},failed);return closing;
++ }
++ let privateSettledBeforeHeldApply=false,registrationLossHandled=false;
++ try{
++  const active=await gateway.start({purpose,signal:caller.signal,deadline:now()+10000});
++  if(scenario==='private-denied'){assert.equal(active.ok,false);assert.equal(software.status().childRunning,false);await close();return{status:'pass',scenario,privateCalls,publicCalls,fixture:true,producerNotLaunched:true,producerClosed:true,observedCount:0,resources:['heart-rate'],feedback:'absent',vendorSensors:'absent',nativeAdmission:'denied-all-hosts',physical:false,fullW05Acceptance:false,supportRows:[]};}
++  assert.equal(active.ok,true);if(!active.ok)throw Error('private capture not ready');source=active.value.source;
++  assert.equal(active.value.device.capabilities.length,1);assert.equal(active.value.device.capabilities[0].value.unit,'bpm');
++  const destination={...active.value.device,id:'fixture-heart-rate-destination',label:'Synthetic fixture destination',capabilities:active.value.device.capabilities.map(c=>({...c,kind:'property',permissions:['write']}))};
++  sink=runtime.registerSink({device:destination,capability:'heart-rate',apply:observation=>{
++   if(fenced)return;assert.equal(observation.clockDomain,runtime.clockDomain);assert.equal(observation.provenance.captureTimeKnown,false);assert.equal(observation.provenance.measurementAgeKnown,false);assert.equal(observation.provenance.fixture,true);observed.push(observation.value);return heldApply;
++  },release(){}});assert.equal(runtime.setReadiness(sink,'available').ok,true);
++  route=runtime.route({from:source,to:sink,...scope});assert.equal(typeof route.whenSettled,'function','Actual public settlement API required');const started=route.start();
++  if(scenario==='public-denied'){assert.equal(started.ok,false);await software.tick();runtime.flush();assert.deepEqual(observed,[]);await close();}
++  else{
++   assert.equal(started.ok,true);
++   listenerRecord={retired:false,dispose:undefined};const reserved=listenerRecord;
++   if(scenario==='close-registration-race')route.stop('synchronous-loss-before-registration');
++   const dispose=route.onClose(()=>{reserved.retired=true;void close();});reserved.dispose=dispose;
++   if(reserved.retired||fenced){dispose();await close();registrationLossHandled=true;assert.deepEqual(observed,[]);}
++   else{
++    const count=scenario==='normal'?11:1;
++    for(let i=0;i<count;i++){if(i)await sleep(60);await software.tick();runtime.flush();await turn();}
++    assert.deepEqual(observed,Array.from({length:count},(_,i)=>90+i));
++    if(scenario==='caller-revoke')caller.abort();if(scenario==='grant-revoke')grant.abort();if(scenario==='owner-revoke')owner.abort();if(scenario==='route-revoke')runtime.revoke(route);
++    if(scenario==='held-apply'){
++     const composed=close();let done=false;void composed.then(()=>{done=true});await gateway.close();await turn();assert.equal(software.status().childRunning,false);assert.equal(route.status().state,'closed');assert.equal(done,false,'composed close must await actual sink.apply');privateSettledBeforeHeldApply=true;heldResolve();await composed;
++    }else await close();
++   }
++  }
++  await close();assert.equal(close(),closing);assert.equal(gateway.snapshot().rawPending,0);assert.equal(gateway.snapshot().listeners,0);assert.equal(gateway.snapshot().timers,0);assert.deepEqual(software.status(),{childRunning:false,waiters:0,listeners:0,pendingWrites:0,frames:scenario==='normal'?11:registrationLossHandled?0:1,fenced:true});
++  const producer=software.evidence();assert.deepEqual(producer.producerExit,{code:0,signal:null});assert.deepEqual(producer.producerClose,producer.producerExit);assert.ok(producer.runtimeBefore&&producer.runtimeAfter);
++  return{status:'pass',scenario,fixture:true,physical:false,supportRows:[],fullW05Acceptance:false,feedback:'absent',vendorSensors:'absent',resources:['heart-rate'],nativeAdmission:'denied-all-hosts',captureTimeKnown:false,measurementAgeKnown:false,producerClosed:true,producer,privateCalls,publicCalls,syntheticHeartRateBpm:observed,privateSettledBeforeHeldApply,registrationLossHandled,lifecycle:software.status()};
++ }finally{if(heldResolve)heldResolve();await close();}
++}
+--- /dev/null
++++ b/examples/heart-rate/port.mjs
+@@ -0,0 +1,63 @@
++import assert from 'node:assert/strict';
++import {spawn} from 'node:child_process';
++import {randomBytes,createHash} from 'node:crypto';
++import {readFileSync,realpathSync,mkdirSync,readdirSync} from 'node:fs';
++import {fileURLToPath} from 'node:url';
++const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
++/** The executable/selected-source closure is enrolled by the local QA owner, never by child messages. */
++export function createHeartRateSoftwarePort({python,pythonSha256,selectedSource,selectedSourceSha256,pycachePrefix}){
++ python=realpathSync(python);selectedSource=realpathSync(selectedSource);assert.equal(hash(python),pythonSha256);assert.equal(hash(selectedSource),selectedSourceSha256);
++ mkdirSync(pycachePrefix,{recursive:true});assert.deepEqual(readdirSync(pycachePrefix),[]);
++ let child,context,identity,opened=false,closed=false,fenced=false,buffer='',receivedBytes=0,sequence=0,pendingWrite=0;
++ let naturalExit,actualClose,exitResult,closeResult,closing,runtimeBefore,runtimeAfter,lastValueSequence=0;
++ const waiters=new Set(),listeners=[],writes=new Set(),commands=[];let lastFault;
++ function listen(target,name,callback,once=false){target[once?'once':'on'](name,callback);listeners.push(()=>target.removeListener(name,callback));}
++ function fail(error){lastFault??=error;fenced=true;try{context?.onLost()}catch{}for(const w of [...waiters]){waiters.delete(w);clearTimeout(w.timer);w.reject(error);}child?.kill('SIGKILL');}
++ function wait(type,timeout=3000){return new Promise((resolve,reject)=>{const w={type,resolve,reject,timer:undefined};w.timer=setTimeout(()=>{waiters.delete(w);reject(Error('fixed IPC timeout'));fail(Error('fixed IPC timeout'));},timeout);waiters.add(w);});}
++ function onLine(raw){
++  assert.ok(Buffer.byteLength(raw)<=65536);const value=JSON.parse(raw);assert.equal(typeof value,'object');
++  if(value.type==='hello'){assert.deepEqual(Object.keys(value).sort(),['type','fixture','profileId','sourceSha256','methodSha256','astSha256','feedback','vendorSensors','runtime'].sort());assert.equal(value.fixture,true);assert.equal(value.profileId,'app:hrs-1.0-heart-rate-notifications/1');assert.equal(value.sourceSha256,selectedSourceSha256);assert.equal(value.methodSha256,'dd53fdcd2ea14b69dcdf106d501b960c933d5f738b7a46f7067df97d55426849');assert.equal(value.astSha256,'a8568f9ae00d3cad913fce6579b1a3104d31b0015526043294adfb7aaee4eac6');assert.equal(value.feedback,'absent');assert.equal(value.vendorSensors,'absent');runtimeBefore=value.runtime;}
++  else if(value.type==='closed'){assert.deepEqual(Object.keys(value).sort(),['runtime','type']);runtimeAfter=value.runtime;}
++  else{
++   assert.ok(identity&&value.generation===identity.generation&&value.token===identity.token);
++   if(value.type==='value'){
++    assert.deepEqual(Object.keys(value).sort(),['type','generation','token','sequence','fixture','bytes'].sort());assert.equal(value.fixture,true);assert.equal(value.sequence,lastValueSequence+1);lastValueSequence=value.sequence;
++    assert.ok(Array.isArray(value.bytes)&&value.bytes.length>=2&&value.bytes.length<=20&&value.bytes.every(b=>Number.isInteger(b)&&b>=0&&b<=255));
++    if(!fenced&&!context.signal.aborted)context.onValue(Uint8Array.from(value.bytes));
++   }else assert.ok(['ready','stopped'].includes(value.type)&&Object.keys(value).length===3);
++  }
++  const matching=[...waiters].filter(w=>w.type===value.type);assert.equal(matching.length,1,'unsolicited/replayed IPC');const w=matching[0];waiters.delete(w);clearTimeout(w.timer);w.resolve(value);
++ }
++ function send(message){
++  assert.ok(child?.stdin.writable);assert.ok(pendingWrite<1);const text=JSON.stringify(message)+'\n';assert.ok(Buffer.byteLength(text)<=1024);commands.push(message.type);pendingWrite++;
++  let complete;const token=new Promise((resolve,reject)=>{complete=error=>error?reject(error):resolve();});writes.add(token);token.catch(fail).finally(()=>{writes.delete(token);pendingWrite--;});
++  try{child.stdin.write(text,complete);}catch(error){complete(error);}
++ }
++ async function open(c){
++  assert.equal(closed,false);assert.equal(child,undefined);context=c;fenced=false;identity={generation:c.generation,token:randomBytes(16).toString('hex')};
++  assert.equal(hash(python),pythonSha256);assert.equal(hash(selectedSource),selectedSourceSha256);
++  const hello=wait('hello');child=spawn(python,['-I','-S','-B','-X',`pycache_prefix=${pycachePrefix}`,fileURLToPath(new URL('./producer.py',import.meta.url)),selectedSource],{env:{LANG:'C',TZ:'UTC'},stdio:['pipe','pipe','pipe']});
++  naturalExit=new Promise(resolve=>listen(child,'exit',(code,signal)=>{exitResult={code,signal};resolve(exitResult);},true));
++  actualClose=new Promise(resolve=>listen(child,'close',(code,signal)=>{closeResult={code,signal};for(const dispose of listeners.splice(0))dispose();child=undefined;for(const w of [...waiters]){waiters.delete(w);clearTimeout(w.timer);w.reject(Error('producer closed'));}resolve(closeResult);},true));
++  listen(child,'error',fail);for(const stream of [child.stdin,child.stdout,child.stderr])listen(stream,'error',fail);
++  listen(child.stdout,'data',chunk=>{try{receivedBytes+=chunk.length;assert.ok(receivedBytes<=524288);buffer+=chunk.toString('utf8');assert.ok(Buffer.byteLength(buffer)<=131072);while(buffer.includes('\n')){const at=buffer.indexOf('\n');const line=buffer.slice(0,at);buffer=buffer.slice(at+1);onLine(line);}}catch(error){fail(error);}});
++  listen(child.stderr,'data',chunk=>{if(chunk.length)fail(Error('producer stderr; fixed diagnostic only'));});
++  await hello;if(fenced||c.signal.aborted)throw Error('retired startup');assert.equal(runtimeBefore.executable,python);assert.equal(runtimeBefore.sha256,pythonSha256);
++  const ready=wait('ready');send({type:'open',...identity});await ready;opened=true;return'ready';
++ }
++ function stop(){fenced=true;}
++ function close(){
++  if(closing)return closing;closed=true;fenced=true;
++  closing=(async()=>{
++   if(!child)return;await Promise.all([...writes]);
++   // A start canceled before ready is still joined; close may supersede pending readiness.
++   if(identity&&opened){const stopped=wait('stopped');send({type:'stop',...identity});await stopped;}
++   const ack=wait('closed');send({type:'close'});await ack;child?.stdin.end();
++   await Promise.all([actualClose,naturalExit,...writes]);assert.deepEqual(exitResult,{code:0,signal:null});assert.deepEqual(closeResult,exitResult);assert.equal(buffer,'');if(lastFault)throw lastFault;
++  })();return closing;
++ }
++ async function tick(){assert.ok(!fenced&&context&&!context.signal.aborted);assert.ok(sequence<11);const value=wait('value');send({type:'tick',...identity,sequence:++sequence});await value;await Promise.all([...writes]);}
++ return{port:Object.freeze({kind:'software-notification',providerId:'selected-bluez-5.87-software',open,stop,close,whenSettled:async()=>{if(closing)await closing;await Promise.all([...writes]);}}),tick,
++  status:()=>({childRunning:!!child,waiters:waiters.size,listeners:listeners.length,pendingWrites:writes.size,frames:lastValueSequence,fenced}),
++  evidence:()=>({fixture:true,commands:[...commands],runtimeBefore,runtimeAfter,producerExit:exitResult,producerClose:closeResult})};
++}
+--- /dev/null
++++ b/examples/heart-rate/producer.py
+@@ -0,0 +1,145 @@
++"""Execute only the exact pinned BlueZ fake notification callback, with no BlueZ imports."""
++import sys
++import os
++if not (sys.flags.isolated and sys.flags.no_site and sys.flags.dont_write_bytecode and sys.flags.ignore_environment):
++    raise RuntimeError('isolated startup required')
++if not sys.pycache_prefix or not os.path.isdir(sys.pycache_prefix) or os.listdir(sys.pycache_prefix):
++    raise RuntimeError('owned empty pycache prefix required')
++import ast
++import json
++import hashlib
++import types
++import ctypes
++
++SOURCE_SHA = 'a190508dd5bafd048ead4404535610c8c827181917cb569530f8de36ad329fd6'
++METHOD_SHA = 'dd53fdcd2ea14b69dcdf106d501b960c933d5f738b7a46f7067df97d55426849'
++AST_SHA = 'a8568f9ae00d3cad913fce6579b1a3104d31b0015526043294adfb7aaee4eac6'
++PROFILE = 'app:hrs-1.0-heart-rate-notifications/1'
++def digest(path):
++    with open(path, 'rb') as file:
++        return hashlib.sha256(file.read()).hexdigest()
++
++def native_images():
++    if sys.platform == 'darwin':
++        host = ctypes.CDLL(None)
++        count = host._dyld_image_count
++        count.restype = ctypes.c_uint32
++        name = host._dyld_get_image_name
++        name.argtypes = [ctypes.c_uint32]
++        name.restype = ctypes.c_char_p
++        return sorted(set(os.fsdecode(name(i)) for i in range(count()) if name(i)))
++    if sys.platform.startswith('linux'):
++        with open('/proc/self/maps', encoding='utf-8') as maps:
++            return sorted(set(line.rstrip().split()[-1] for line in maps if '/' in line and line.rstrip().split()[-1].startswith('/')))
++    raise RuntimeError('native dependency readback unavailable')
++
++def runtime_readback():
++    modules = []
++    intrinsic = []
++    for name, module in sorted(sys.modules.items()):
++        spec = getattr(module, '__spec__', None)
++        origin = getattr(spec, 'origin', None)
++        if origin in ('built-in', 'frozen'):
++            intrinsic.append({'name': name, 'origin': origin})
++        elif origin and os.path.isfile(origin):
++            path = os.path.realpath(origin)
++            modules.append({'name': name, 'path': path, 'sha256': digest(path)})
++        elif name != '__main__' and origin is not None:
++            raise RuntimeError('unrecorded module origin: ' + name)
++    native = []
++    boundary = []
++    for image in native_images():
++        path = os.path.realpath(image)
++        if path.startswith(('/usr/lib/', '/System/Library/', '/Library/Apple/')):
++            boundary.append({'path': path, 'reason': 'trusted-host-OS-or-system-cache'})
++        elif os.path.isfile(path):
++            native.append({'path': path, 'sha256': digest(path)})
++        else:
++            raise RuntimeError('unrecorded non-OS native dependency: ' + image)
++    executable = os.path.realpath(sys.executable)
++    return {'executable': executable, 'sha256': digest(executable), 'version': sys.version,
++            'isolated': sys.flags.isolated, 'noSite': sys.flags.no_site,
++            'dontWriteBytecode': sys.flags.dont_write_bytecode,
++            'ignoreEnvironment': sys.flags.ignore_environment,
++            'pycachePrefix': sys.pycache_prefix, 'sysPath': sys.path,
++            'intrinsicModules': intrinsic, 'ordinaryModules': modules,
++            'nonOSNativeDependencies': native, 'trustedOSBoundary': boundary}
++
++if len(sys.argv) != 2:
++    raise RuntimeError('explicit selected source required')
++source_path = os.path.realpath(sys.argv[1])
++if digest(source_path) != SOURCE_SHA:
++    raise RuntimeError('selected source pin')
++with open(source_path, 'r', encoding='utf-8') as file:
++    source = file.read()
++tree = ast.parse(source)
++selected_class = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == 'HeartRateMeasurementChrc')
++selected_method = next(node for node in selected_class.body if isinstance(node, ast.FunctionDef) and node.name == 'hr_msrmt_cb')
++if hashlib.sha256(ast.get_source_segment(source, selected_method).encode()).hexdigest() != METHOD_SHA:
++    raise RuntimeError('selected method pin')
++if hashlib.sha256(ast.dump(selected_method, include_attributes=False).encode()).hexdigest() != AST_SHA:
++    raise RuntimeError('selected AST pin')
++if len(selected_method.args.args) != 1 or selected_method.args.args[0].arg != 'self' or selected_method.decorator_list:
++    raise RuntimeError('selected method structure')
++frames = []
++random_index = 0
++def selected_random(low, high):
++    global random_index
++    if (low, high) != (90, 130):
++        raise RuntimeError('selected synthetic randint contract')
++    value = 90 + random_index % 41
++    random_index += 1
++    return value
++
++def changed(interface, value, invalidated):
++    if interface != 'org.bluez.GattCharacteristic1' or list(value) != ['Value'] or invalidated != []:
++        raise RuntimeError('selected output schema')
++    frames.append(value['Value'])
++
++selected_globals = {'dbus': types.SimpleNamespace(Byte=int), 'randint': selected_random,
++                    'GATT_CHRC_IFACE': 'org.bluez.GattCharacteristic1', 'print': lambda *args: None}
++exec(compile(ast.Module(body=[selected_method], type_ignores=[]), '<pinned-BlueZ-selected-method>', 'exec'), selected_globals)
++callback = selected_globals['hr_msrmt_cb']
++receiver = types.SimpleNamespace(service=types.SimpleNamespace(energy_expended=0),
++                                hr_ee_count=0, notifying=True, PropertiesChanged=changed)
++def emit(value):
++    sys.stdout.write(json.dumps(value, separators=(',', ':')) + '\n')
++    sys.stdout.flush()
++
++emit({'type': 'hello', 'fixture': True, 'profileId': PROFILE, 'sourceSha256': SOURCE_SHA,
++      'methodSha256': METHOD_SHA, 'astSha256': AST_SHA, 'feedback': 'absent',
++      'vendorSensors': 'absent', 'runtime': runtime_readback()})
++session = None
++sequence = 0
++for raw in sys.stdin.buffer:
++    if len(raw) > 1024:
++        raise RuntimeError('IPC line budget')
++    message = json.loads(raw)
++    kind = message.get('type')
++    if kind == 'open' and set(message) == {'type', 'generation', 'token'} and session is None:
++        if type(message['generation']) is not int or not 1 <= message['generation'] <= 16 or not isinstance(message['token'], str) or len(message['token']) != 32:
++            raise RuntimeError('IPC identity')
++        session = {'generation': message['generation'], 'token': message['token']}
++        emit({'type': 'ready', **session})
++    elif kind == 'tick' and set(message) == {'type', 'generation', 'token', 'sequence'} and session and all(message[key] == session[key] for key in session):
++        if type(message['sequence']) is not int or message['sequence'] != sequence + 1 or sequence >= 11:
++            raise RuntimeError('IPC sequence budget')
++        sequence += 1
++        callback(receiver)
++        if len(frames) != 1:
++            raise RuntimeError('selected callback output count')
++        emit({'type': 'value', **session, 'sequence': sequence, 'fixture': True, 'bytes': frames.pop()})
++    elif kind == 'stop' and set(message) == {'type', 'generation', 'token'} and session and all(message[key] == session[key] for key in session):
++        previous = session
++        session = None
++        receiver.notifying = False
++        emit({'type': 'stopped', **previous})
++    elif kind == 'close' and set(message) == {'type'}:
++        session = None
++        receiver.notifying = False
++        emit({'type': 'closed', 'runtime': runtime_readback()})
++        break
++    else:
++        raise RuntimeError('IPC state/schema')
++else:
++    raise RuntimeError('EOF without explicit close')
+--- /dev/null
++++ b/packages/hub-server/src/heart-rate-measurement.test.ts
+@@ -0,0 +1,23 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import { decodeHeartRateMeasurement } from './heart-rate-measurement.ts';
++
++test('selected official producer Flags/optional energy and ignored collector RFU',()=>{
++ const decode=(bytes:number[])=>decodeHeartRateMeasurement(Uint8Array.from(bytes));
++ assert.deepEqual(decode([14,90,0,0]),{kind:'measurement',heartRateBpm:90,heartRateFormat:'uint8',contactSupported:true,contact:'detected',energyCount:0,rrIntervalTicks:[]});
++ assert.deepEqual(decode([14,100,10,0]),{kind:'measurement',heartRateBpm:100,heartRateFormat:'uint8',contactSupported:true,contact:'detected',energyCount:10,rrIntervalTicks:[]});
++ assert.deepEqual(decode([0xe6,91]),decode([6,91]));
++});
++test('complete lengths, uint16 LE, encoded zero/max, RR ticks and immutable view copy',()=>{
++ assert.equal(decodeHeartRateMeasurement(Uint8Array.of(0,0)).kind,'measurement');
++ const r=decodeHeartRateMeasurement(Uint8Array.of(0x11,0x34,0x12,0,4));
++ assert.deepEqual(r,{kind:'measurement',heartRateBpm:4660,heartRateFormat:'uint16',contactSupported:false,contact:'unsupported',energyCount:null,rrIntervalTicks:[1024]});
++ assert.ok(Object.isFrozen(r));if(r.kind==='measurement')assert.ok(Object.isFrozen(r.rrIntervalTicks));
++ assert.equal(decodeHeartRateMeasurement(Uint8Array.of(1,255,255)).kind,'measurement');
++ const bytes=Uint8Array.of(99,0,90,99);assert.equal(decodeHeartRateMeasurement(bytes.subarray(1,3)).kind,'measurement');
++ for(const value of [[],[1,0],[8,90,0],[16,90],[16,90,0],[0,90,0],[1,90,0,0],Array(21).fill(0)])assert.equal(decodeHeartRateMeasurement(Uint8Array.from(value)).kind,'invalid');
++ for(const value of [[],{},'90',new DataView(new ArrayBuffer(2)),null])assert.equal(decodeHeartRateMeasurement(value).kind,'invalid');
++ for(const [flags,length]of [[16,20],[24,20],[17,19],[25,19]])assert.equal(decodeHeartRateMeasurement(new Uint8Array(length).fill(0).map((v,i)=>i===0?flags:v)).kind,'measurement');
++ assert.equal(decodeHeartRateMeasurement(Uint8Array.of(2,90)).kind,'measurement');
++ assert.equal(decodeHeartRateMeasurement(Uint8Array.of(4,90)).kind,'measurement');
++});
+--- /dev/null
++++ b/packages/hub-server/src/heart-rate-measurement.ts
+@@ -0,0 +1,16 @@
++/** Selected MTU23 collector grammar; encoded values are not physiology accuracy claims. */
++export type HeartRateDecodeResult = Readonly<{kind:'measurement';heartRateBpm:number;heartRateFormat:'uint8'|'uint16';contactSupported:boolean;contact:'unsupported'|'detected'|'not-detected';energyCount:number|null;rrIntervalTicks:readonly number[]}>|Readonly<{kind:'invalid';reason:'type'|'length'|'truncated'|'trailing'|'rr-layout'}>;
++const lengthGet=Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype),'byteLength')!.get!;
++const invalid=(reason:'type'|'length'|'truncated'|'trailing'|'rr-layout'):HeartRateDecodeResult=>Object.freeze({kind:'invalid',reason});
++export function decodeHeartRateMeasurement(input:unknown):HeartRateDecodeResult{
++ let bytes:Uint8Array;
++ try{if(!(input instanceof Uint8Array))return invalid('type');const length=Reflect.apply(lengthGet,input,[]) as number;if(length<2||length>20)return invalid('length');bytes=new Uint8Array(length);Uint8Array.prototype.set.call(bytes,input);}catch{return invalid('type');}
++ const flags=bytes[0]!,wide=(flags&1)!==0;let offset=wide?3:2;if(bytes.length<offset)return invalid('truncated');
++ const heartRateBpm=wide?bytes[1]!|(bytes[2]!<<8):bytes[1]!;let energyCount:number|null=null;
++ if(flags&8){if(bytes.length<offset+2)return invalid('truncated');energyCount=bytes[offset]!|(bytes[offset+1]!<<8);offset+=2;}
++ const rrIntervalTicks:number[]=[];
++ if(flags&16){if(bytes.length-offset<2||(bytes.length-offset)%2!==0)return invalid('rr-layout');for(;offset<bytes.length;offset+=2)rrIntervalTicks.push(bytes[offset]!|(bytes[offset+1]!<<8));}
++ else if(offset!==bytes.length)return invalid('trailing');
++ const contactSupported=(flags&4)!==0;
++ return Object.freeze({kind:'measurement',heartRateBpm,heartRateFormat:wide?'uint16':'uint8',contactSupported,contact:!contactSupported?'unsupported':flags&2?'detected':'not-detected',energyCount,rrIntervalTicks:Object.freeze(rrIntervalTicks)});
++}
+--- /dev/null
++++ b/packages/hub-server/src/heart-rate-software.test.ts
+@@ -0,0 +1,79 @@
++import test from 'node:test';
++import assert from 'node:assert/strict';
++import {createHeartRateSoftwareGateway} from './heart-rate-software.ts';
++
++test('native admission denies before reading provider or authority',()=>{
++ let calls=0;
++ for(const mode of ['browser-native','native-ios','native-android','native-macos','native-windows','native-linux','unknown']){
++  const options={mode,get selectedPort(){calls++;throw Error();}};
++  assert.throws(()=>createHeartRateSoftwareGateway(options as never),/unsupported/);
++ }
++ assert.equal(calls,0);
++});
++import type {HeartRateNotificationContext,HeartRateNotificationRequest,HeartRateNotificationGrant} from './heart-rate-software.ts';
++const {createDeviceRuntime}=await import(process.env.HEART_RATE_SDK_ENTRY??new URL('../../device-runtime/src/index.ts',import.meta.url).href);
++function deferred<T>(){let resolve!:(v:T)=>void;const promise=new Promise<T>(r=>{resolve=r});return{promise,resolve};}
++const turn=()=>new Promise<void>(r=>setImmediate(r));
++function fixture(change:Record<string,unknown>={}){
++ let at=1000,open=0,stop=0,close=0,ctx:HeartRateNotificationContext|undefined;
++ const owner=new AbortController(),caller=new AbortController(),grant=new AbortController();
++ const runtime=createDeviceRuntime({now:()=>at,clockDomain:'heart-receipt',authorize:()=>({expiresAt:9000,maxAgeMs:1000,maxHz:20})});
++ const port={kind:'software-notification' as const,providerId:'selected-fixture',open(c:HeartRateNotificationContext){open++;ctx=c;return Promise.resolve('ready' as const)},stop(){stop++},close(){close++;return Promise.resolve()},whenSettled(){return Promise.resolve()}};
++ const authorize=(request:HeartRateNotificationRequest)=>({request,signal:grant.signal,expiresAt:request.deadline});
++ const gateway=createHeartRateSoftwareGateway({mode:'software-notification',runtime,ownerSignal:owner.signal,scope:{principalId:'owner',applicationId:'example',sessionId:'session'},selectedPort:port,now:()=>at,authorizeNotifications:authorize,...change} as never);
++ const start=()=>gateway.start({purpose:'reported-heart-rate-fixture',signal:caller.signal,deadline:3000});
++ return{runtime,gateway,owner,caller,grant,port,start,get context(){return ctx!},get calls(){return{open,stop,close}},setNow(v:number){at=v}};
++}
++test('original private grant, independently typed publication and synchronous withdrawal',async()=>{
++ const f=fixture();const a=await f.start();assert.equal(a.ok,true);if(!a.ok)throw Error();
++ const values:number[]=[];const sink=f.runtime.registerSink({device:{...a.value.device,id:'fixture-destination',capabilities:a.value.device.capabilities.map((c:object)=>({...c,permissions:['write']}))},capability:'heart-rate',apply:(s:{value:number})=>{values.push(s.value)},release(){}});
++ f.runtime.setReadiness(sink,'available',9000);const route=f.runtime.route({from:a.value.source,to:sink,principalId:'owner',applicationId:'example',sessionId:'session'});assert.equal(route.start().ok,true);
++ f.context.onValue(Uint8Array.of(14,90,0,0));f.runtime.flush();assert.deepEqual(values,[90]);
++ f.gateway.stop();assert.equal(route.status().state,'closed');f.context.onValue(Uint8Array.of(6,91));f.runtime.flush();assert.deepEqual(values,[90]);await f.gateway.close();await route.whenSettled();f.runtime.close();assert.deepEqual(f.calls,{open:1,stop:1,close:1});assert.equal(f.gateway.snapshot().rawPending,0);assert.equal(f.gateway.snapshot().listeners,0);
++});
++for(const fault of ['copied-request','accessor','expired','overlong','revoked'])test(`private ${fault} denies before port effects`,async()=>{
++ let reads=0;
++ const f=fixture({authorizeNotifications:(request:HeartRateNotificationRequest)=>{
++  if(fault==='accessor')return{get request(){reads++;return request},signal:new AbortController().signal,expiresAt:3000};
++  const signal=new AbortController();if(fault==='revoked')signal.abort();return{request:fault==='copied-request'?{...request}:request,signal:signal.signal,expiresAt:fault==='expired'?999:fault==='overlong'?3001:3000};
++ }});assert.equal((await f.start()).ok,false);await f.gateway.close();f.runtime.close();assert.equal(f.calls.open,0);assert.equal(reads,0);
++});
++for(const revoke of ['owner','caller','grant'])test(`${revoke} abort fences source and joins port`,async()=>{
++ const f=fixture();assert.equal((await f.start()).ok,true);f[revoke].abort();assert.equal(f.gateway.snapshot().activeSources,0);f.context.onValue(Uint8Array.of(6,90));await f.gateway.close();f.runtime.close();assert.equal(f.gateway.snapshot().listeners,0);
++});
++test('held authorizer reservation survives stop and late grant cannot open',async()=>{
++ const held=deferred<HeartRateNotificationGrant|undefined>();let request:HeartRateNotificationRequest|undefined;
++ const f=fixture({authorizeNotifications:(r:HeartRateNotificationRequest)=>{request=r;return held.promise}});
++ const starting=f.start();await turn();assert.equal(f.gateway.snapshot().rawPending,1);f.gateway.stop();assert.equal((await starting).ok,false);assert.equal((await f.start()).ok,false);
++ const closing=f.gateway.close();let done=false;void closing.then(()=>{done=true});await turn();assert.equal(done,false);held.resolve({request:request!,signal:f.grant.signal,expiresAt:3000});await closing;assert.equal(f.calls.open,0);f.runtime.close();
++});
++test('held open and actual close keep ownership after logical stop',async()=>{
++ const opening=deferred<'ready'>(),closing=deferred<void>();const f=fixture();f.port.open=()=>opening.promise;f.port.close=()=>closing.promise;
++ // A new fixture captures modified methods at construction.
++ const g=fixture({selectedPort:f.port});const pending=g.start();await turn();g.gateway.stop();assert.equal((await pending).ok,false);let done=false;const close=g.gateway.close();void close.then(()=>{done=true});await turn();assert.equal(done,false);closing.resolve();await turn();assert.equal(done,false);opening.resolve('ready');await close;assert.equal(g.gateway.snapshot().rawPending,0);g.runtime.close();await f.gateway.close();f.runtime.close();
++});
++test('reentrant authorizer observes reserved admission and frozen exact scope',async()=>{
++ let f:ReturnType<typeof fixture>;let reentry:Promise<unknown>|undefined;
++ f=fixture({authorizeNotifications:(request:HeartRateNotificationRequest)=>{assert.ok(Object.isFrozen(request)&&Object.isFrozen(request.profile)&&Object.isFrozen(request.resource)&&Object.isFrozen(request.budgets));reentry=f.start();f.gateway.stop();return{request,signal:f.grant.signal,expiresAt:3000}}});
++ assert.equal((await f.start()).ok,false);assert.deepEqual(await reentry,{ok:false,reason:'busy'});await f.gateway.close();assert.equal(f.calls.open,0);f.runtime.close();
++});
++test('contact support toggle, malformed value, backwards receipt clock, budgets retire',async()=>{
++ for(const why of ['contact','malformed','clock','quota']){
++  const f=fixture();assert.equal((await f.start()).ok,true);f.context.onValue(Uint8Array.of(6,90));
++  if(why==='contact')f.context.onValue(Uint8Array.of(0,90));
++  if(why==='malformed')f.context.onValue(Uint8Array.of(16,90));
++  if(why==='clock'){f.setNow(999);f.context.onValue(Uint8Array.of(6,90));}
++  if(why==='quota')for(let i=0;i<5;i++)f.context.onValue(Uint8Array.of(6,90));
++  assert.equal(f.gateway.snapshot().activeSources,0);await f.gateway.close();f.runtime.close();
++ }
++});
++test('expiry and stale port callback cannot revive a generation',async()=>{
++ const f=fixture();assert.equal((await f.start()).ok,true);f.setNow(3000);f.gateway.sweep();assert.equal(f.gateway.snapshot().activeSources,0);f.context.onValue(Uint8Array.of(6,90));await f.gateway.close();f.runtime.close();
++});
++test('timer budgets have one expiry plus opening; ready removes opening timer',async()=>{
++ const f=fixture();const result=await f.start();assert.equal(result.ok,true);assert.equal(f.gateway.snapshot().timers,1);await f.gateway.close();f.runtime.close();
++});
++test('raw stop is reserved before a reentrant cleanup callout',async()=>{
++ const f=fixture();let g:ReturnType<typeof fixture>,rawAtStop=-1;
++ f.port.stop=()=>{rawAtStop=g.gateway.snapshot().rawPending;g.gateway.close();};g=fixture({selectedPort:f.port});assert.equal((await g.start()).ok,true);g.gateway.stop();assert.ok(rawAtStop>=1,'raw stop issuance must already own a token');await g.gateway.close();g.runtime.close();await f.gateway.close();f.runtime.close();
++});
+--- /dev/null
++++ b/packages/hub-server/src/heart-rate-software.ts
+@@ -0,0 +1,109 @@
++import type {DeviceDescriptor,DeviceRuntime,EndpointHandle} from '@101/connect';
++import {decodeHeartRateMeasurement} from './heart-rate-measurement.ts';
++
++export const HEART_RATE_SOFTWARE_PROFILE=Object.freeze({id:'app:hrs-1.0-heart-rate-notifications/1' as const,revision:1 as const,serviceUUID:'0000180d-0000-1000-8000-00805f9b34fb',characteristicUUID:'00002a37-0000-1000-8000-00805f9b34fb'});
++/** Selected software budgets; not Bluetooth specification measurement/rate guarantees. */
++export const HEART_RATE_SOFTWARE_LIMITS=Object.freeze({ports:1,sources:1,attempts:16,captureMs:30000,openingMs:5000,frameBytes:20,maxHz:20,burstFrames:4,framesPerCapture:600,retainedSamples:0,latestRuntimeValues:1,expiryTimers:1,openingTimers:1});
++export interface HeartRateScope{readonly principalId:string;readonly applicationId:string;readonly sessionId:string}
++export interface HeartRateNotificationRequest extends HeartRateScope{readonly action:'subscribe-reported-heart-rate';readonly purpose:string;readonly providerId:string;readonly profile:typeof HEART_RATE_SOFTWARE_PROFILE;readonly generation:number;readonly resource:Readonly<{capabilityId:'heart-rate';operation:'subscribe'}>;readonly deadline:number;readonly budgets:typeof HEART_RATE_SOFTWARE_LIMITS}
++export interface HeartRateNotificationGrant{readonly request:HeartRateNotificationRequest;readonly signal:AbortSignal;readonly expiresAt:number}
++export interface HeartRateNotificationContext{readonly generation:number;readonly signal:AbortSignal;readonly deadline:number;readonly onValue:(bytes:Uint8Array)=>void;readonly onLost:()=>void}
++export interface HeartRateSoftwarePort{readonly kind:'software-notification';readonly providerId:string;open(context:HeartRateNotificationContext):Promise<'ready'>;stop():void;close():Promise<void>;whenSettled():Promise<void>}
++export interface HeartRateSoftwareOptions{readonly mode:'software-notification';readonly runtime:DeviceRuntime;readonly ownerSignal:AbortSignal;readonly scope:HeartRateScope;readonly selectedPort:HeartRateSoftwarePort;readonly now:()=>number;readonly authorizeNotifications:(request:HeartRateNotificationRequest)=>HeartRateNotificationGrant|undefined|Promise<HeartRateNotificationGrant|undefined>}
++export type HeartRateFailure='unsupported'|'invalid'|'closed'|'busy'|'quota'|'denied'|'expired'|'cancelled'|'stopped'|'lost'|'provider'|'clock'|'malformed'|'contact-changed';
++export type HeartRateResult<T>=Readonly<{ok:true;value:T}>|Readonly<{ok:false;reason:HeartRateFailure}>;
++export interface HeartRateActivation{readonly source:EndpointHandle;readonly device:DeviceDescriptor;readonly connectionGeneration:number;readonly expiresAt:number}
++export interface HeartRateSnapshot{readonly phase:'idle'|'opening'|'active'|'retiring'|'closed';readonly reason:HeartRateFailure|'idle'|'active';readonly attempts:number;readonly generation:number;readonly activeSources:number;readonly rawPending:number;readonly cleanupFailed:boolean;readonly listeners:number;readonly timers:number;readonly frames:number}
++export interface HeartRateSoftwareGateway{start(intent:Readonly<{purpose:string;signal:AbortSignal;deadline:number}>):Promise<HeartRateResult<HeartRateActivation>>;stop():void;close():Promise<void>;sweep():void;snapshot():HeartRateSnapshot}
++const abortedGet=Object.getOwnPropertyDescriptor(AbortSignal.prototype,'aborted')!.get!,then=Promise.prototype.then,add=EventTarget.prototype.addEventListener,remove=EventTarget.prototype.removeEventListener;
++const owners=new WeakMap<object,symbol>();let instances=0;
++const aborted=(v:AbortSignal)=>Reflect.apply(abortedGet,v,[]) as boolean;
++function isSignal(v:unknown):v is AbortSignal{try{aborted(v as AbortSignal);return true}catch{return false}}
++function own(v:unknown,required:readonly string[]):Record<string,unknown>{
++ if(!v||typeof v!=='object'||![Object.prototype,null].includes(Object.getPrototypeOf(v)))throw Error('data');const result:Record<string,unknown>=Object.create(null),keys=Reflect.ownKeys(v);
++ if(keys.length!==required.length)throw Error('data');for(const k of keys){if(typeof k!=='string'||!required.includes(k))throw Error('data');const d=Object.getOwnPropertyDescriptor(v,k);if(!d?.enumerable||!('value'in d))throw Error('data');result[k]=d.value;}return result;
++}
++const text=(v:unknown):v is string=>typeof v==='string'&&v.length>0&&v.length<=160&&v.trim()===v&&!/[\u0000-\u001f\u007f-\u009f]/.test(v);
++const fail=<T=never>(reason:HeartRateFailure):HeartRateResult<T>=>Object.freeze({ok:false,reason});
++interface Session{generation:number;retired:boolean;controller:AbortController;caller?:AbortSignal;grant?:Readonly<{signal:AbortSignal;expiresAt:number}>;deadline:number;source?:EndpointHandle;portOwned:boolean;openIssued:boolean;contactSupported?:boolean;frames:number;tokens:number;tokenAt:number;operations:Set<Promise<void>>;removers:(()=>void)[];timers:Set<ReturnType<typeof setTimeout>>;cancel:(result:HeartRateResult<HeartRateActivation>)=>void;retirement?:Promise<void>;expiryTimer?:ReturnType<typeof setTimeout>;openingTimer?:ReturnType<typeof setTimeout>}
++/** Explicit trusted software port only. No native adapter, automatic discovery or persistent sample history. */
++export function createHeartRateSoftwareGateway(input:HeartRateSoftwareOptions):HeartRateSoftwareGateway{
++ const admission=Object.getOwnPropertyDescriptor(input,'mode');if(!admission||!('value'in admission)||admission.value!=='software-notification')throw new TypeError('unsupported-heart-rate-native-admission');
++ let v:Record<string,unknown>,scope:Readonly<HeartRateScope>,p:Record<string,unknown>;
++ try{v=own(input,['mode','runtime','ownerSignal','scope','selectedPort','now','authorizeNotifications']);const s=own(v.scope,['principalId','applicationId','sessionId']);if(!Object.values(s).every(text)||!isSignal(v.ownerSignal)||typeof v.now!=='function'||typeof v.authorizeNotifications!=='function')throw Error();scope=Object.freeze({...s}) as unknown as HeartRateScope;p=own(v.selectedPort,['kind','providerId','open','stop','close','whenSettled']);if(p.kind!=='software-notification'||!text(p.providerId)||['open','stop','close','whenSettled'].some(k=>typeof p[k]!=='function'))throw Error();}catch{throw new TypeError('Invalid software heart-rate options');}
++ const runtime=v.runtime as DeviceRuntime,port=v.selectedPort as HeartRateSoftwarePort,owner=v.ownerSignal as AbortSignal,now=v.now as()=>number,authorize=v.authorizeNotifications as HeartRateSoftwareOptions['authorizeNotifications'];
++ const open=p.open as HeartRateSoftwarePort['open'],portStop=p.stop as HeartRateSoftwarePort['stop'],portClose=p.close as HeartRateSoftwarePort['close'],settled=p.whenSettled as HeartRateSoftwarePort['whenSettled'];
++ const portId=p.providerId as string,ownerToken=Symbol(),instance=++instances;if(!Number.isSafeInteger(instance))throw new RangeError('Heart-rate instance budget');
++ let session:Session|undefined,closed=aborted(owner),attempts=0,generation=0,lastClock=-1,readingClock=false,dispatching=false,reason:HeartRateSnapshot['reason']=closed?'closed':'idle',closePromise:Promise<void>|undefined;
++ function live(s:Session):boolean{return session===s&&!s.retired&&!closed&&s.generation===generation&&!aborted(owner)&&(!s.caller||!aborted(s.caller))&&(!s.grant||!aborted(s.grant.signal));}
++ function time(s:Session):number{if(readingClock){retire(s,'clock');throw Error();}readingClock=true;try{const at=now();if(!live(s)||!Number.isFinite(at)||at<0||at>Number.MAX_SAFE_INTEGER-30000||at<lastClock){retire(s,'clock');throw Error();}lastClock=at;return at;}catch{retire(s,'clock');throw Error();}finally{readingClock=false;}}
++ function current(s:Session):boolean{if(!live(s)){if(!s.retired)retire(s,'cancelled');return false;}let at:number;try{at=time(s)}catch{return false;}if(!live(s))return false;if(at>=s.deadline){retire(s,'expired');return false;}return live(s);}
++ function uncertain(s:Session):void{s.operations.add(new Promise<void>(()=>{}));}
++ /** Token is in the raw set before a callout, including reentrant stop/close. */
++ function issue<T>(s:Session,call:()=>unknown,synchronous:boolean,uncertainOnThrow=false):Promise<T>{
++  let release!:()=>void;const token=new Promise<void>(r=>{release=r});s.operations.add(token);
++  const finish=()=>{s.operations.delete(token);release();};let value:unknown;
++  try{value=call();}catch(e){if(uncertainOnThrow)uncertain(s);finish();return Promise.reject(e);}
++  return new Promise<T>((resolve,reject)=>{
++   try{Reflect.apply(then,value,[ (result:T)=>{finish();resolve(result)},(error:unknown)=>{finish();reject(error)} ]);}
++   catch{if(synchronous){finish();resolve(value as T);}else{uncertain(s);finish();reject(Error('Port Promise contract'));}}
++  });
++ }
++ function listener(s:Session,signal:AbortSignal):void{const callback=()=>retire(s,'cancelled');const dispose=()=>Reflect.apply(remove,signal,['abort',callback]);s.removers.push(dispose);Reflect.apply(add,signal,['abort',callback,{once:true}]);if(!live(s)){dispose();retire(s,'cancelled');}}
++ function timer(s:Session,ms:number,callback:()=>void):ReturnType<typeof setTimeout>{const id=setTimeout(()=>{s.timers.delete(id);callback();},Math.max(1,ms));s.timers.add(id);if(s.retired){clearTimeout(id);s.timers.delete(id);}return id;}
++ function retire(s:Session,why:HeartRateFailure):void{
++  if(s.retired)return;s.retired=true;reason=why;s.cancel(fail(why));
++  let finished!:()=>void;const retiring=new Promise<void>(r=>{finished=r});s.retirement=retiring;
++  for(const id of s.timers)clearTimeout(id);s.timers.clear();for(const dispose of s.removers.splice(0))try{dispose()}catch{cleanupFailed=true;}
++  s.controller.abort();const source=s.source;s.source=undefined;if(source)try{runtime.setReadiness(source,'unavailable');runtime.unregister(source);}catch{cleanupFailed=true;uncertain(s);}
++  if(s.portOwned&&owners.get(port)===ownerToken){
++   void issue(s,()=>{const value=Reflect.apply(portStop,port,[]);if(value!==undefined)cleanupFailed=true;return value;},true,true).catch(()=>{cleanupFailed=true;uncertain(s);});
++   void issue(s,()=>Reflect.apply(portClose,port,[]),false,true).catch(()=>{cleanupFailed=true;uncertain(s);});
++   void issue(s,()=>Reflect.apply(settled,port,[]),false,true).catch(()=>{cleanupFailed=true;uncertain(s);});
++  }
++  void(async()=>{await Promise.resolve();while(s.operations.size)await Promise.all([...s.operations]);if(session===s)session=undefined;if(s.portOwned&&owners.get(port)===ownerToken)owners.delete(port);finished();})().catch(()=>{cleanupFailed=true;});
++ }
++ let cleanupFailed=false;
++ function notification(s:Session,bytes:Uint8Array):void{
++  if(!live(s)||!s.source)return;if(dispatching){retire(s,'provider');return;}dispatching=true;
++  try{
++   if(!current(s))return;const result=decodeHeartRateMeasurement(bytes);if(!current(s))return;if(result.kind!=='measurement'){retire(s,'malformed');return;}
++   if(s.contactSupported!==undefined&&result.contactSupported!==s.contactSupported){retire(s,'contact-changed');return;}s.contactSupported=result.contactSupported;
++   const at=time(s);if(!current(s))return;s.tokens=Math.min(4,s.tokens+Math.max(0,at-s.tokenAt)*20/1000);s.tokenAt=at;
++   if(s.tokens<1||s.frames>=600){retire(s,'quota');return;}s.tokens--;s.frames++;
++   const provenance=Object.freeze({provider:'software-heart-rate-notifications',profileId:HEART_RATE_SOFTWARE_PROFILE.id,profileRevision:1,connectionGeneration:s.generation,samplePoint:'software-notification-receipt',captureTimeKnown:false,measurementAgeKnown:false,clockMappingEstablished:false,physical:'unverified',fixture:true});
++   const publish=runtime.publish,clockDomain=runtime.clockDomain;if(!current(s)||!s.source)return;
++   const response=Reflect.apply(publish,runtime,[s.source,result.heartRateBpm,{timestamp:at,clockDomain,quality:'valid',provenance}]) as ReturnType<DeviceRuntime['publish']>;
++   if(!current(s))return;if(!response.ok||response.value.rejected>0)retire(s,'provider');
++  }catch{if(!s.retired)retire(s,'provider');}finally{dispatching=false;}
++ }
++ async function begin(s:Session,intent:unknown):Promise<void>{
++  try{
++   const requestInput=own(intent,['purpose','signal','deadline']);if(!text(requestInput.purpose)||!isSignal(requestInput.signal)||typeof requestInput.deadline!=='number'||!Number.isFinite(requestInput.deadline))throw Error('invalid');
++   s.caller=requestInput.signal;const at=time(s);if(!live(s)||aborted(s.caller)||requestInput.deadline<=at||requestInput.deadline>at+30000)throw Error('invalid');s.deadline=requestInput.deadline;
++   listener(s,owner);listener(s,s.caller);if(!current(s))return;s.expiryTimer=timer(s,s.deadline-at,()=>retire(s,'expired'));s.openingTimer=timer(s,Math.min(5000,s.deadline-at),()=>{if(!s.source)retire(s,'expired');});
++   const request:HeartRateNotificationRequest=Object.freeze({...scope,action:'subscribe-reported-heart-rate',purpose:requestInput.purpose,providerId:portId,profile:HEART_RATE_SOFTWARE_PROFILE,generation:s.generation,resource:Object.freeze({capabilityId:'heart-rate',operation:'subscribe'}),deadline:s.deadline,budgets:HEART_RATE_SOFTWARE_LIMITS});
++   const approved=await issue<HeartRateNotificationGrant|undefined>(s,()=>authorize(request),true);if(!current(s))return;
++   let grant:Record<string,unknown>;try{grant=own(approved,['request','signal','expiresAt']);}catch{retire(s,'denied');return;}
++   const fresh=time(s);if(!current(s))return;if(grant.request!==request||!isSignal(grant.signal)||aborted(grant.signal)||typeof grant.expiresAt!=='number'||!Number.isFinite(grant.expiresAt)||grant.expiresAt<=fresh||grant.expiresAt>s.deadline){retire(s,'denied');return;}
++   s.grant=Object.freeze({signal:grant.signal,expiresAt:grant.expiresAt});s.deadline=grant.expiresAt;listener(s,s.grant.signal);if(!current(s))return;if(s.expiryTimer){clearTimeout(s.expiryTimer);s.timers.delete(s.expiryTimer);}s.expiryTimer=timer(s,s.deadline-fresh,()=>retire(s,'expired'));
++   if(owners.has(port)){retire(s,'busy');return;}owners.set(port,ownerToken);s.portOwned=true;if(!current(s))return;
++   const context:HeartRateNotificationContext=Object.freeze({generation:s.generation,signal:s.controller.signal,deadline:s.deadline,onValue:(bytes:Uint8Array)=>notification(s,bytes),onLost:()=>retire(s,'lost')});
++   s.openIssued=true;const ready=await issue<'ready'>(s,()=>Reflect.apply(open,port,[context]),false,true);if(!current(s))return;if(ready!=='ready'){retire(s,'provider');return;}
++   const device:DeviceDescriptor=Object.freeze({schemaVersion:1,id:`software-heart-rate-${instance}:generation-${s.generation}`,label:'Reported heart rate',revision:1,adapter:Object.freeze({id:'app:software-heart-rate-notifications',version:'1.0.0'}),runtime:Object.freeze({platform:'software-notification-fixture'}),capabilities:Object.freeze([Object.freeze({id:'heart-rate',semantic:'sensor:reported-heart-rate/1',schemaVersion:1,kind:'sample',value:Object.freeze({type:'scalar',unit:'bpm',min:0,max:65535}),delivery:Object.freeze({mode:'latest',maxHz:20,maxAgeMs:1000}),permissions:Object.freeze(['subscribe'])})])}) as DeviceDescriptor;
++   const register=runtime.registerSource;if(!current(s))return;const source=Reflect.apply(register,runtime,[{device,capability:'heart-rate'}]) as EndpointHandle;
++   if(!current(s)){try{runtime.unregister(source)}catch{cleanupFailed=true;uncertain(s);}return;}s.source=source;
++   const setReady=runtime.setReadiness;if(!current(s))return;const readiness=Reflect.apply(setReady,runtime,[source,'available',s.deadline]) as ReturnType<DeviceRuntime['setReadiness']>;if(!current(s))return;if(!readiness.ok){retire(s,'provider');return;}
++   if(s.openingTimer){clearTimeout(s.openingTimer);s.timers.delete(s.openingTimer);}reason='active';s.cancel(Object.freeze({ok:true,value:Object.freeze({source,device,connectionGeneration:s.generation,expiresAt:s.deadline})}));
++  }catch{if(!s.retired)retire(s,'provider');}
++ }
++ return Object.freeze({
++  start(intent:Readonly<{purpose:string;signal:AbortSignal;deadline:number}>){if(closed||aborted(owner))return Promise.resolve(fail('closed'));if(session||dispatching)return Promise.resolve(fail('busy'));if(attempts>=16)return Promise.resolve(fail('quota'));
++   attempts++;generation++;let cancel!:(result:HeartRateResult<HeartRateActivation>)=>void;const result=new Promise<HeartRateResult<HeartRateActivation>>(r=>{cancel=r});
++   const s:Session={generation,retired:false,controller:new AbortController(),deadline:Infinity,portOwned:false,openIssued:false,frames:0,tokens:4,tokenAt:lastClock,operations:new Set(),removers:[],timers:new Set(),cancel};session=s;reason='idle';void begin(s,intent);return result;},
++  stop(){if(session)retire(session,'stopped');},
++  close(){if(closePromise)return closePromise;let finish!:()=>void;closePromise=new Promise<void>(r=>{finish=r});closed=true;const s=session;if(s)retire(s,'closed');void(s?.retirement??Promise.resolve()).then(finish);return closePromise;},
++  sweep(){if(session)current(session);},
++  snapshot(){return Object.freeze({phase:closed?'closed':session?.retired?'retiring':session?.source?'active':session?'opening':'idle',reason,attempts,generation,activeSources:session?.source?1:0,rawPending:session?.operations.size??0,cleanupFailed,listeners:session?.removers.length??0,timers:session?.timers.size??0,frames:session?.frames??0});},
++ });
++}
+--- /dev/null
++++ b/tools/qa-heart-rate-software.mjs
+@@ -0,0 +1,82 @@
++import assert from 'node:assert/strict';
++import {spawn,spawnSync} from 'node:child_process';
++import {createHash} from 'node:crypto';
++import {createRequire} from 'node:module';
++import {chmodSync,copyFileSync,cpSync,existsSync,lstatSync,mkdirSync,mkdtempSync,readFileSync,readdirSync,realpathSync,renameSync,writeFileSync} from 'node:fs';
++import {dirname,join,resolve,sep} from 'node:path';
++import {fileURLToPath,pathToFileURL} from 'node:url';
++
++export const HEART_RATE_SOURCES=Object.freeze(['packages/hub-server/src/heart-rate-measurement.ts','packages/hub-server/src/heart-rate-measurement.test.ts','packages/hub-server/src/heart-rate-software.ts','packages/hub-server/src/heart-rate-software.test.ts','examples/heart-rate/producer.py','examples/heart-rate/port.mjs','examples/heart-rate/consumer.mjs','tools/qa-heart-rate-software.mjs','tools/qa-installed-heart-rate-software.mjs']);
++export const HEART_RATE_BASE='5dc3a7fee2eb92f78be3ef7cf078be7de53ee66d';
++const names=['connect','device-model','device-runtime','device-web','vision','transport-webrtc','transport-websocket'];
++export const fileHash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
++export function ordinaryFiles(root){assert.ok(lstatSync(root).isDirectory()&&!lstatSync(root).isSymbolicLink());return readdirSync(root,{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name)).flatMap(e=>{const path=join(root,e.name);assert.ok(e.isFile()||e.isDirectory(),`Nonordinary closure path: ${path}`);return e.isDirectory()?ordinaryFiles(path):[path];});}
++export const fingerprints=paths=>Object.fromEntries([...new Set(paths)].sort().map(path=>{assert.ok(lstatSync(path).isFile()&&!lstatSync(path).isSymbolicLink());return[path,fileHash(path)];}));
++export function createHeartRateClosureFence(paths){const before=fingerprints(paths);return Object.freeze({before,verify(){assert.deepEqual(fingerprints(Object.keys(before)),before,'Heart-rate execution closure changed');return before;}});}
++export const sanitizedEnvironment=()=>({NODE_ENV:'production',LANG:'C',TZ:'UTC'});
++function nodeReadback(){const nonOSNativeDependencies=[],trustedOSBoundary=[];for(const path of process.report.getReport().sharedObjects){if(path.startsWith('/usr/lib/')||path.startsWith('/System/Library/')||path.startsWith('/Library/Apple/'))trustedOSBoundary.push({path,reason:'trusted-host-OS-or-system-cache'});else{assert.ok(existsSync(path),`Unrecorded non-OS Node dependency ${path}`);const actual=realpathSync(path);nonOSNativeDependencies.push({path:actual,sha256:fileHash(actual)});}}return{executable:realpathSync(process.execPath),sha256:fileHash(realpathSync(process.execPath)),version:process.version,execArgv:process.execArgv,moduleLoadList:process.moduleLoadList,nonOSNativeDependencies,trustedOSBoundary};}
++export function sourceSdkInputs(repoRoot){repoRoot=realpathSync(repoRoot);const entries=names.map(name=>({name:'@101/'+name,directory:join(repoRoot,'packages',name)}));const paths=entries.flatMap(e=>[join(e.directory,'package.json'),...ordinaryFiles(join(e.directory,'src'))]);return{entries,paths,before:fingerprints(paths)};}
++export function installedHeartRateInputs(consumerInput){const consumer=realpathSync(consumerInput),receiptPath=join(consumer,'receipt.json');assert.ok(!lstatSync(receiptPath).isSymbolicLink());const receipt=JSON.parse(readFileSync(receiptPath));assert.equal(receipt.status,'pass');assert.equal(fileHash(receipt.manifest.path),receipt.manifest.sha256);const manifest=JSON.parse(readFileSync(receipt.manifest.path));assert.equal(manifest.packages.length,7);const entries=[],paths=[receiptPath,realpathSync(receipt.manifest.path)];
++ for(const pkg of manifest.packages){assert.ok(names.includes(pkg.name.replace('@101/','')));const directory=join(consumer,'node_modules',pkg.name);assert.equal(realpathSync(directory),directory);const files=ordinaryFiles(directory);assert.equal(files.length,pkg.files.length);for(const f of pkg.files){assert.ok(typeof f.path==='string'&&!f.path.startsWith('/')&&!f.path.split('/').some(p=>!p||p==='.'||p==='..'));assert.equal(fileHash(join(directory,f.path)),f.sha256);}entries.push({name:pkg.name,directory});paths.push(...files);}
++ assert.equal(new Set(entries.map(e=>e.name)).size,7);return{consumer,receiptPath,manifestPath:realpathSync(receipt.manifest.path),sdkManifest:receipt.manifest,entries,paths,before:fingerprints(paths)};
++}
++export async function runHeartRateOwnedCaller(runner,config,extraEnvironment={}){
++ const environment=sanitizedEnvironment();const child=spawn(realpathSync(process.execPath),['--no-addons',runner,JSON.stringify({...config,runnerSha256:fileHash(runner),nodeSha256:fileHash(realpathSync(process.execPath))})],{env:environment,stdio:['ignore','pipe','pipe']});
++ let stdout=Buffer.alloc(0),stderr=Buffer.alloc(0),fault;let exited,closed;const exit=new Promise(resolve=>child.once('exit',(code,signal)=>{exited={code,signal};resolve(exited)}));const close=new Promise(resolve=>child.once('close',(code,signal)=>{closed={code,signal};resolve(closed)}));
++ const fail=error=>{fault??=error;child.kill('SIGKILL');};child.on('error',fail);for(const stream of [child.stdout,child.stderr])stream.on('error',fail);
++ child.stdout.on('data',bytes=>{if(stdout.length+bytes.length>2*1024*1024)fail(Error('Caller output budget'));else stdout=Buffer.concat([stdout,bytes]);});child.stderr.on('data',bytes=>{if(stderr.length+bytes.length>8192)fail(Error('Caller stderr budget'));else stderr=Buffer.concat([stderr,bytes]);});
++ const timer=setTimeout(()=>fail(Error('Caller logical observation deadline')),15000);await Promise.all([exit,close]);clearTimeout(timer);if(fault)throw fault;assert.deepEqual(closed,{code:0,signal:null},stderr.toString());assert.deepEqual(exited,closed);const value=JSON.parse(stdout.toString());assert.equal(value.result.status,'pass');return{...value,callerClose:closed,callerExit:exited,environment,excludedHostEnvironment:Object.keys(extraEnvironment)};
++}
++function compilerInputs(repoRoot){const selected=dirname(realpathSync(createRequire(join(repoRoot,'package.json')).resolve('typescript/package.json')));assert.equal(JSON.parse(readFileSync(join(selected,'package.json'))).version,'5.9.3');return{directory:selected,paths:ordinaryFiles(selected)};}
++export function prepareHeartRateArtifacts({root,repoRoot,work,selectedSource,sdkInputs,installed=false}){
++ root=realpathSync(root);repoRoot=realpathSync(repoRoot);work=realpathSync(work);selectedSource=realpathSync(selectedSource);assert.equal(fileHash(selectedSource),'a190508dd5bafd048ead4404535610c8c827181917cb569530f8de36ad329fd6');const artifacts={};
++ for(const [index,path]of HEART_RATE_SOURCES.entries()){const copied=join(work,`source-${index}.bin`);copyFileSync(join(root,path),copied);assert.equal(fileHash(copied),fileHash(join(root,path)));artifacts[path]=copied;}
++ for(const [name,path]of [['producer.py','examples/heart-rate/producer.py'],['port.mjs','examples/heart-rate/port.mjs'],['helper.mjs','tools/qa-heart-rate-software.mjs']]){const copied=join(work,name);copyFileSync(join(root,path),copied);artifacts[name]=copied;}
++ const producerSource=join(work,'selected-bluez-source.py');copyFileSync(selectedSource,producerSource);artifacts.selectedSource=producerSource;
++ const compiler=compilerInputs(repoRoot);cpSync(compiler.directory,join(work,'compiler'),{recursive:true});const copiedCompiler=ordinaryFiles(join(work,'compiler'));assert.deepEqual(copiedCompiler.map(p=>[p.slice(join(work,'compiler').length),fileHash(p)]),compiler.paths.map(p=>[p.slice(compiler.directory.length),fileHash(p)]));
++ const compile=join(work,'compile.mjs');writeFileSync(compile,`import ts from './compiler/lib/typescript.js';import {createRequire} from 'node:module';import {readFileSync,writeFileSync,realpathSync} from 'node:fs';import {pathToFileURL} from 'node:url';import assert from 'node:assert/strict';
++const origin=realpathSync(createRequire(import.meta.url).resolve('./compiler/lib/typescript.js'));assert.equal(ts.version,'5.9.3');
++for(const [input,output]of ${JSON.stringify([[artifacts[HEART_RATE_SOURCES[0]],join(work,'heart-rate-measurement.mjs')],[artifacts[HEART_RATE_SOURCES[2]],join(work,'heart-rate-software.mjs')]])}){
++let source=readFileSync(input,'utf8').replace("'./heart-rate-measurement.ts'","'./heart-rate-measurement.mjs'");writeFileSync(output,ts.transpileModule(source,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText);}
++console.log(JSON.stringify({status:'pass',compilerOrigin:origin,version:ts.version,nodeExecutable:realpathSync(process.execPath),nativeDependencies:process.report.getReport().sharedObjects}));`);artifacts.compilerRunner=compile;
++ const compiled=spawnSync(realpathSync(process.execPath),['--no-addons',compile],{env:sanitizedEnvironment(),encoding:'utf8',maxBuffer:2*1024*1024});assert.equal(compiled.status,0,compiled.stderr);const compilerReadback=JSON.parse(compiled.stdout);assert.equal(compilerReadback.compilerOrigin,join(work,'compiler/lib/typescript.js'));
++ artifacts.parser=join(work,'heart-rate-measurement.mjs');artifacts.gateway=join(work,'heart-rate-software.mjs');
++ const source=readFileSync(join(root,'examples/heart-rate/consumer.mjs'),'utf8'),needle="'../../packages/hub-server/src/heart-rate-software.ts'";assert.equal(source.split(needle).length,2);const consumer=join(work,'consumer.mjs');writeFileSync(consumer,source.replace(needle,"'./heart-rate-software.mjs'"));artifacts.consumer=consumer;
++ let sdkPaths;if(installed)sdkPaths=sdkInputs.paths;else{mkdirSync(join(work,'node_modules/@101'),{recursive:true});for(const entry of sdkInputs.entries){const target=join(work,'node_modules',entry.name);mkdirSync(target,{recursive:true});copyFileSync(join(entry.directory,'package.json'),join(target,'package.json'));cpSync(join(entry.directory,'src'),join(target,'src'),{recursive:true});}sdkPaths=ordinaryFiles(join(work,'node_modules'));}
++ const resolver=join(work,'resolver.mjs');writeFileSync(resolver,"export const entry=import.meta.resolve('@101/connect');export * from '@101/connect';\n");artifacts.resolver=resolver;
++ const expectedLoads=fingerprints([...Object.values(artifacts),...sdkPaths]);const runner=join(work,'runner.mjs');writeFileSync(runner,`import assert from 'node:assert/strict';import {registerHooks,stripTypeScriptTypes} from 'node:module';import {fileURLToPath} from 'node:url';import {realpathSync,readFileSync,writeFileSync,mkdirSync} from 'node:fs';import {createHash} from 'node:crypto';
++const startup=JSON.parse(process.argv[2]);const startupHash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');assert.equal(startupHash(realpathSync(process.execPath)),startup.nodeSha256);assert.equal(startupHash(realpathSync(import.meta.filename)),startup.runnerSha256);const expectedLoads=${JSON.stringify(expectedLoads)};const sourceTransformEnabled=${JSON.stringify(!installed)};const transformed=[];const allowed=new Set(${JSON.stringify([...Object.values(artifacts),consumer,resolver,runner,...sdkPaths])});const transformedDirectory=new URL('./transformed/',import.meta.url);mkdirSync(transformedDirectory,{recursive:true});const loaded=new Set();registerHooks({load(url,context,next){if(url.startsWith('file:')){const path=realpathSync(fileURLToPath(url));assert.ok(allowed.has(path),'Unrecorded loaded application/SDK module '+path);assert.equal(startupHash(path),expectedLoads[path],'Pre-load source path/hash mismatch');loaded.add(path);}else assert.ok(url.startsWith('node:'),'Unrecorded module URL');const result=next(url,context);if(url.startsWith('file:')&&result.source!==null&&result.source!==undefined)assert.equal(createHash('sha256').update(result.source).digest('hex'),expectedLoads[realpathSync(fileURLToPath(url))],'Actual loaded bytes differ');if(url.startsWith('file:')&&url.endsWith('.ts')){assert.equal(sourceTransformEnabled,true,'Source transform denied in ordinary installed mode');const input=result.source.toString(),output=stripTypeScriptTypes(input,{mode:'strip',sourceUrl:url}),path=realpathSync(fileURLToPath(url)),key=createHash('sha256').update(path).digest('hex'),inputFile=fileURLToPath(new URL(key+'.input.ts',transformedDirectory)),outputFile=fileURLToPath(new URL(key+'.output.mjs',transformedDirectory));writeFileSync(inputFile,input);writeFileSync(outputFile,output);transformed.push({path,inputFile,outputFile,inputSha256:createHash('sha256').update(input).digest('hex'),outputSha256:createHash('sha256').update(output).digest('hex'),mode:'strip',owner:'explicit-source-only-owned-hook'});return{...result,format:'module',source:output};}return result;}});
++const {runHeartRateSoftwareExample}=await import('./consumer.mjs');const {entry}=await import('./resolver.mjs');const {createHeartRateClosureFence}=await import('./helper.mjs');
++const fence=createHeartRateClosureFence(${JSON.stringify([...Object.values(artifacts),...copiedCompiler,...sdkPaths])});const result=await runHeartRateSoftwareExample(JSON.parse(process.argv[2]));fence.verify();
++const hash=p=>createHash('sha256').update(readFileSync(p)).digest('hex');for(const row of transformed){assert.equal(hash(row.inputFile),row.inputSha256);assert.equal(hash(row.outputFile),row.outputSha256);assert.equal(hash(row.path),row.inputSha256);}const shared=process.report.getReport().sharedObjects;console.log(JSON.stringify({entry,result,node:{executable:realpathSync(process.execPath),sha256:hash(realpathSync(process.execPath)),version:process.version,execArgv:process.execArgv,moduleLoadList:process.moduleLoadList,sharedObjects:shared},transformedSource:transformed,loadedOrdinaryNodeModules:[...loaded].sort().map(path=>({path,sha256:hash(path)})),compiler:${JSON.stringify(compilerReadback)}}));`);artifacts.runner=runner;
++ return{artifacts,copiedCompiler,compilerPaths:compiler.paths,compilerReadback,sdkPaths,producerSource};
++}
++function pinRuntimeEvidence(execution){
++ const paths=[execution.node.executable],boundaries=[];for(const image of execution.node.sharedObjects){if(image.startsWith('/usr/lib/')||image.startsWith('/System/Library/')||image.startsWith('/Library/Apple/'))boundaries.push({path:image,reason:'trusted-host-OS-or-system-cache'});else{assert.ok(existsSync(image));paths.push(realpathSync(image));}}
++ if(execution.result.producerNotLaunched)return{paths,boundaries,python:null};const python=execution.result.producer.runtimeAfter;assert.equal(python.isolated,1);assert.equal(python.noSite,1);assert.equal(python.dontWriteBytecode,1);assert.equal(python.ignoreEnvironment,1);assert.ok(!python.sysPath.some(p=>p.includes('site-packages')));
++ paths.push(python.executable,...python.ordinaryModules.map(m=>m.path),...python.nonOSNativeDependencies.map(m=>m.path));for(const m of [...python.ordinaryModules,...python.nonOSNativeDependencies])assert.equal(fileHash(m.path),m.sha256);assert.equal(fileHash(python.executable),python.sha256);boundaries.push(...python.trustedOSBoundary);return{paths:[...new Set(paths)],boundaries,python};
++}
++export function runHeartRateCopyMutationChecks(receipt,{workRoot}){
++ assert.equal(receipt.status,'pass');assert.ok(receipt.executions.every(e=>e.callerClose.code===0&&e.result.producerClosed));const work=realpathSync(mkdtempSync(join(workRoot,'heart-rate-mutations-'))),controls=[];
++ const representatives=[...Object.entries(receipt.artifacts),['compiler',receipt.compilerReadback.compilerOrigin],['node-runtime',receipt.executions[0].node.executable],['sdk',receipt.sdkPaths.find(p=>p.endsWith('index.ts')||p.endsWith('index.js'))],['source-receipt',receipt.receiptPath],['sdk-manifest-or-source-closure',receipt.sdkManifest?.path??receipt.sourceClosurePath]];
++ const python=receipt.runtimeClosures.find(r=>r.python)?.python;if(python){representatives.push(['python-runtime',python.executable],['python-module',python.ordinaryModules.find(m=>m.path.endsWith('.py'))?.path],['python-extension',python.ordinaryModules.find(m=>m.path.endsWith('.so'))?.path],['nonOS-native-dependency',python.nonOSNativeDependencies.find(m=>m.path!==python.executable)?.path]);}
++ const authoritative=fingerprints(Object.keys(receipt.closure));const authoritativeStats=Object.fromEntries(Object.keys(authoritative).map(p=>{const st=lstatSync(p);return[p,{mode:st.mode,uid:st.uid,dev:st.dev,ino:st.ino}]}));for(const [name,path]of representatives){assert.ok(path,`Required mutation class missing: ${name}`);const copy=join(work,`copy-${controls.length}.bin`);const sourceSha=fileHash(path),sourceStat=lstatSync(path);copyFileSync(path,copy);assert.equal(realpathSync(copy),copy);assert.ok(copy.startsWith(work+sep));const copiedStat=lstatSync(copy);assert.ok(copiedStat.isFile()&&!copiedStat.isSymbolicLink()&&copiedStat.nlink===1&&copiedStat.uid===process.getuid());assert.ok(copiedStat.dev!==sourceStat.dev||copiedStat.ino!==sourceStat.ino,'Owned copy must not alias authoritative source');assert.equal(fileHash(copy),sourceSha);chmodSync(copy,(copiedStat.mode&0o777)|0o200);assert.equal(fileHash(path),sourceSha);const fence=createHeartRateClosureFence([copy]),original=readFileSync(copy),mutated=Buffer.concat([original,Buffer.from('\nOWNED-HEART-RATE-MUTATION\n')]);writeFileSync(copy,mutated);const changed=join(work,`changed-${controls.length}.bin`);copyFileSync(copy,changed);assert.throws(()=>fence.verify());writeFileSync(copy,original);fence.verify();controls.push({name,path:copy,originalSha256:createHash('sha256').update(original).digest('hex'),changedSha256:fileHash(changed),rejected:true,restored:true});}
++ assert.deepEqual(fingerprints(Object.keys(authoritative)),authoritative);for(const [p,before]of Object.entries(authoritativeStats)){const st=lstatSync(p);assert.deepEqual({mode:st.mode,uid:st.uid,dev:st.dev,ino:st.ino},before,'Authoritative identity/permissions changed');}const result={schemaVersion:1,status:'pass',kind:'owned-copy-mutations-after-actual-caller-close',controls,authoritativeUnchanged:true};const path=join(work,'receipt.json');writeFileSync(path,JSON.stringify(result,null,2)+'\n');return{...result,receiptPath:path};
++}
++export async function runHeartRateSoftwareQa({root=resolve(import.meta.dirname,'..'),repoRoot=root,workRoot,selectedSource,python,installedInputs,scenarios=['normal','private-denied','public-denied','caller-revoke','grant-revoke','owner-revoke','route-revoke','held-apply','close-registration-race']}){
++ root=realpathSync(root);repoRoot=realpathSync(repoRoot);workRoot=realpathSync(workRoot);python=realpathSync(python);assert.ok(!process.env.NODE_OPTIONS&&!process.env.NODE_PATH,'QA owner must use a clean Node startup');const sources=HEART_RATE_SOURCES.map(p=>join(root,p));const sdk=installedInputs??sourceSdkInputs(repoRoot),original=fingerprints([...sources,...sdk.paths,...compilerInputs(repoRoot).paths,realpathSync(process.execPath),python,realpathSync(selectedSource)]);
++ const work=realpathSync(mkdtempSync(join(workRoot,'heart-rate-application-'))),prepared=prepareHeartRateArtifacts({root,repoRoot,work,selectedSource,sdkInputs:sdk,installed:!!installedInputs});const sourceClosurePath=join(work,'source-closure.json');writeFileSync(sourceClosurePath,JSON.stringify({schemaVersion:1,status:'pass',repositoryBase:HEART_RATE_BASE,files:original},null,2)+'\n');
++ const authoritativeFence=createHeartRateClosureFence(Object.keys(original)),initialFence=createHeartRateClosureFence([...Object.values(prepared.artifacts),...prepared.copiedCompiler,...prepared.sdkPaths,sourceClosurePath]);const executions=[],runtimeClosures=[];const enrollmentCache=join(work,'pycache-enrollment');mkdirSync(enrollmentCache);const runtimeEnrollment=await runHeartRateOwnedCaller(prepared.artifacts.runner,{python,pythonSha256:fileHash(python),selectedSource:prepared.producerSource,selectedSourceSha256:fileHash(prepared.producerSource),pycachePrefix:enrollmentCache,scenario:'close-registration-race'});const enrolled=pinRuntimeEvidence(runtimeEnrollment),runtimeFence=createHeartRateClosureFence(enrolled.paths),enrolledPaths=new Set(enrolled.paths);initialFence.verify();authoritativeFence.verify();
++ for(const scenario of scenarios){const pycachePrefix=join(work,'pycache-'+scenario);mkdirSync(pycachePrefix);runtimeFence.verify();initialFence.verify();const execution=await runHeartRateOwnedCaller(prepared.artifacts.runner,{python,pythonSha256:fileHash(python),selectedSource:prepared.producerSource,selectedSourceSha256:fileHash(prepared.producerSource),pycachePrefix,scenario});assert.equal(readdirSync(pycachePrefix).length,0);const entry=fileURLToPath(execution.entry);const expected=installedInputs?join(installedInputs.consumer,'node_modules/@101/connect')+sep:join(work,'node_modules/@101/connect')+sep;assert.ok(entry.startsWith(expected),'Actual public SDK resolution must use selected copied/installed graph');executions.push(execution);const closure=pinRuntimeEvidence(execution);assert.ok(closure.paths.every(p=>enrolledPaths.has(p)),'Unenrolled actual runtime/module/dependency');runtimeClosures.push(closure);runtimeFence.verify();initialFence.verify();authoritativeFence.verify();}
++ // Owned hostile fixtures are executable; clean witnesses must not load them.
++ const hostile=join(work,'hostile');mkdirSync(hostile);const marker=join(hostile,'startup-marker');const preload=join(hostile,'preload.cjs'),site=join(hostile,'sitecustomize.py');writeFileSync(preload,`require('node:fs').writeFileSync(${JSON.stringify(marker)},'owned-node-preload');`);writeFileSync(site,`open(${JSON.stringify(marker)},'w').write('owned-python-startup')\n`);
++ const baseline=spawnSync(realpathSync(process.execPath),['--no-addons','--require',preload,'-e','0'],{env:sanitizedEnvironment(),encoding:'utf8'});assert.equal(baseline.status,0);assert.ok(existsSync(marker));renameSync(marker,join(hostile,'baseline-node-marker'));
++ const pythonBaseline=spawnSync(python,['-I','-S','-B','-c',`import sys;sys.path.insert(0,${JSON.stringify(hostile)});import sitecustomize`],{env:{LANG:'C',TZ:'UTC'},encoding:'utf8'});assert.equal(pythonBaseline.status,0,pythonBaseline.stderr);assert.ok(existsSync(marker));renameSync(marker,join(hostile,'baseline-python-marker'));
++ const hostileInput={NODE_OPTIONS:'--require '+preload,NODE_PATH:hostile,PYTHONPATH:hostile,PYTHONHOME:hostile,PYTHONSTARTUP:site,PYTHONPYCACHEPREFIX:hostile,DYLD_INSERT_LIBRARIES:preload,LD_PRELOAD:preload};const previous=Object.fromEntries(Object.keys(hostileInput).map(k=>[k,process.env[k]]));Object.assign(process.env,hostileInput);let isolated;
++ try{const pycachePrefix=join(work,'pycache-hostile');mkdirSync(pycachePrefix);isolated=await runHeartRateOwnedCaller(prepared.artifacts.runner,{python,pythonSha256:fileHash(python),selectedSource:prepared.producerSource,selectedSourceSha256:fileHash(prepared.producerSource),pycachePrefix,scenario:'normal'},hostileInput);}finally{for(const [key,value]of Object.entries(previous)){if(value===undefined)delete process.env[key];else process.env[key]=value;}}
++ assert.equal(existsSync(marker),false);assert.ok(!isolated.loadedOrdinaryNodeModules.some(m=>m.path.startsWith(hostile)));assert.ok(!isolated.result.producer.runtimeAfter.ordinaryModules.some(m=>m.path.startsWith(hostile)));executions.push(isolated);runtimeClosures.push(pinRuntimeEvidence(isolated));
++ runtimeFence.verify();assert.ok(pinRuntimeEvidence(isolated).paths.every(p=>enrolledPaths.has(p)));initialFence.verify();authoritativeFence.verify();const runtimePaths=runtimeClosures.flatMap(r=>r.paths);const transformedPaths=executions.flatMap(e=>e.transformedSource.flatMap(r=>[r.inputFile,r.outputFile]));const finalFence=createHeartRateClosureFence([...Object.keys(original),...Object.values(prepared.artifacts),...prepared.copiedCompiler,...prepared.sdkPaths,sourceClosurePath,...runtimePaths,...transformedPaths]);finalFence.verify();
++ const receipt={schemaVersion:1,status:'pass',kind:installedInputs?'copied-application-ordinary-installed-public-SDK-pinned-host-runtimes':'copied-application-and-source-public-SDK-pinned-host-runtimes',repositoryBase:HEART_RATE_BASE,fixture:true,physical:false,fullW05Acceptance:false,supportRows:[],feedback:'absent',vendorSensors:'absent',nativeAdmission:'denied-all-hosts',captureTimeKnown:false,measurementAgeKnown:false,artifacts:prepared.artifacts,sdkPaths:prepared.sdkPaths,sdkManifest:installedInputs?.sdkManifest??null,compilerReadback:prepared.compilerReadback,runtimeEnrollment,runtimeEnrollmentBefore:runtimeFence.before,runtimeEnrollmentPostVerified:true,sourceClosurePath,closure:finalFence.before,executions,runtimeClosures,hostileStartupControl:{ownedFixturesExecutable:true,unrecordedCodeLoaded:false,excludedVariables:Object.keys(hostileInput)},trustedBoundary:'Pinned host Node/Python and recorded non-OS loaded files; host OS/system-cached dependencies trusted explicitly. No copied-runtime or complete-OS-closure claim.',nodeOwner:nodeReadback()};
++ const receiptPath=join(work,'receipt.json');writeFileSync(receiptPath,JSON.stringify(receipt,null,2)+'\n');const result={...receipt,receiptPath};const mutations=runHeartRateCopyMutationChecks(result,{workRoot});writeFileSync(join(work,'mutations-reference.json'),JSON.stringify({path:mutations.receiptPath,sha256:fileHash(mutations.receiptPath)},null,2)+'\n');return{...result,mutations};
++}
++if(process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href){const [root,repoRoot,workRoot,selectedSource,python]=process.argv.slice(2);assert.ok(root&&repoRoot&&workRoot&&selectedSource&&python,'Explicit candidate/repository/work/source/interpreter required');const receipt=await runHeartRateSoftwareQa({root,repoRoot,workRoot,selectedSource,python});console.log(JSON.stringify({status:receipt.status,receiptPath:receipt.receiptPath,sha256:fileHash(receipt.receiptPath),mutationReceipt:receipt.mutations.receiptPath}));}
+--- /dev/null
++++ b/tools/qa-installed-heart-rate-software.mjs
+@@ -0,0 +1,12 @@
++import assert from 'node:assert/strict';
++import {realpathSync} from 'node:fs';
++import {resolve} from 'node:path';
++import {pathToFileURL} from 'node:url';
++import {fileHash,installedHeartRateInputs,runHeartRateSoftwareQa} from './qa-heart-rate-software.mjs';
++/** Integration owner only; reuse current consumer, no SDK build/install or SDK mutation. */
++export async function runInstalledHeartRateSoftwareQa(consumer,{root=resolve(import.meta.dirname,'..'),repoRoot=root,selectedSource,python}={}){
++ const inputs=installedHeartRateInputs(consumer);assert.ok(!inputs.consumer.startsWith(realpathSync(repoRoot)+'/'));
++ const result=await runHeartRateSoftwareQa({root,repoRoot,workRoot:inputs.consumer,selectedSource,python,installedInputs:inputs});
++ assert.deepEqual(installedHeartRateInputs(consumer).before,inputs.before);return result;
++}
++if(process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1])).href){const [consumer,selectedSource,python]=process.argv.slice(2);assert.ok(consumer&&selectedSource&&python,'Existing consumer, exact selected source and interpreter required');const result=await runInstalledHeartRateSoftwareQa(consumer,{selectedSource,python});console.log(JSON.stringify({status:result.status,receiptPath:result.receiptPath,sha256:fileHash(result.receiptPath),mutationReceipt:result.mutations.receiptPath}));}

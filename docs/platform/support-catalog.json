@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 30,
+  "revision": 31,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3510,6 +3510,199 @@
         "owned software audio oscillator/canvas/application projection only; no user camera/mic/speaker/hardware/phone/OS permission/control qualification",
         "source/native PCM/capture/scanout clocks remain unknown or explicitly unmapped; no achieved latency or bitrate/SLO claims",
         "no encoded/remote transport policy or physical camera-control claim"
+      ]
+    },
+    {
+      "id": "console-nintendo-native",
+      "status": "unsupported",
+      "accepted": false,
+      "target": {
+        "os": "Nintendo Switch / Switch 2",
+        "osVersion": "not qualified; exact console OS build required",
+        "runtime": "vendor-approved native application",
+        "runtimeVersion": "not admitted or qualified; exact installed build required",
+        "formFactor": "console",
+        "transport": "no console provider qualified",
+        "connector": "Nintendo console provider not admitted",
+        "connectorVersion": "not admitted or qualified",
+        "profiles": [],
+        "resources": [],
+        "unavailable": [
+          "console system input and navigation",
+          "control of other games or applications",
+          "protected capture and account access",
+          "all native resources until a permitted provider is implemented and qualified"
+        ]
+      },
+      "qualificationTasks": [
+        "N11",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [
+          "console-access-2026-10-09"
+        ],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Release-local access decision checked 9 October 2026; CONSOLE-ACCESS.md defines its exact route.",
+        "Empty resources and native evidence grant no usable console capability.",
+        "Research does not establish SDK access, an installed receiver or physical support."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "console-playstation5-native",
+      "status": "unsupported",
+      "accepted": false,
+      "target": {
+        "os": "PlayStation 5",
+        "osVersion": "not qualified; exact console OS build required",
+        "runtime": "vendor-approved native application",
+        "runtimeVersion": "not admitted or qualified; exact installed build required",
+        "formFactor": "console",
+        "transport": "no console provider qualified",
+        "connector": "PlayStation provider not admitted",
+        "connectorVersion": "not admitted or qualified",
+        "profiles": [],
+        "resources": [],
+        "unavailable": [
+          "console system input and navigation",
+          "control of other games or applications",
+          "protected capture and account access",
+          "all native resources until a permitted provider is implemented and qualified"
+        ]
+      },
+      "qualificationTasks": [
+        "N11",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [
+          "console-access-2026-10-09"
+        ],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Release-local access decision checked 9 October 2026; CONSOLE-ACCESS.md defines its exact route.",
+        "Empty resources and native evidence grant no usable console capability.",
+        "Research does not establish SDK access, an installed receiver or physical support."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "console-xbox-gdk-native",
+      "status": "unsupported",
+      "accepted": false,
+      "target": {
+        "os": "Xbox One / Series X|S",
+        "osVersion": "not qualified; exact console OS build required",
+        "runtime": "GDKX application",
+        "runtimeVersion": "not admitted or qualified; exact installed build required",
+        "formFactor": "console",
+        "transport": "no console provider qualified",
+        "connector": "GDKX provider not admitted",
+        "connectorVersion": "not admitted or qualified",
+        "profiles": [],
+        "resources": [],
+        "unavailable": [
+          "console system input and navigation",
+          "control of other games or applications",
+          "protected capture and account access",
+          "all native resources until a permitted provider is implemented and qualified"
+        ]
+      },
+      "qualificationTasks": [
+        "N11",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [
+          "console-access-2026-10-09"
+        ],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Release-local access decision checked 9 October 2026; CONSOLE-ACCESS.md defines its exact route.",
+        "Empty resources and native evidence grant no usable console capability.",
+        "Research does not establish SDK access, an installed receiver or physical support."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
+      ]
+    },
+    {
+      "id": "console-xbox-uwp-receiver",
+      "status": "candidate",
+      "accepted": false,
+      "target": {
+        "os": "Xbox One / Series X|S",
+        "osVersion": "not qualified; exact console OS build required",
+        "runtime": "WinUI 2 UWP / WebView2 application",
+        "runtimeVersion": "not admitted or qualified; exact installed build required",
+        "formFactor": "console",
+        "transport": "no console provider qualified",
+        "connector": "UWP receiver not implemented",
+        "connectorVersion": "not admitted or qualified",
+        "profiles": [],
+        "resources": [],
+        "unavailable": [
+          "console system input and navigation",
+          "control of other games or applications",
+          "protected capture and account access",
+          "all native resources until a permitted provider is implemented and qualified"
+        ]
+      },
+      "qualificationTasks": [
+        "N11",
+        "Q04",
+        "Q08",
+        "Q10"
+      ],
+      "evidence": {
+        "implementation": [],
+        "contract": [
+          "console-access-2026-10-09"
+        ],
+        "runtime": [],
+        "physical": []
+      },
+      "limitations": [
+        "Release-local access decision checked 9 October 2026; CONSOLE-ACCESS.md defines its exact route.",
+        "Empty resources and native evidence grant no usable console capability.",
+        "Research does not establish SDK access, an installed receiver or physical support.",
+        "Documented retail Developer Mode/UWP route remains viable candidate work; N11 stays open."
+      ],
+      "requiredLevels": [
+        "implementation",
+        "contract",
+        "runtime",
+        "physical"
       ]
     }
   ]

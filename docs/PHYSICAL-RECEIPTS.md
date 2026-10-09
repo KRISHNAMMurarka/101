@@ -10,7 +10,7 @@ Ordered to minimise setup changes — both phones once, then both people once, t
 ## Before you start
 
 ```bash
-cd /Users/km/Desktop/games/101
+cd /Users/km/Dev/101
 npm run build      # note the build id it prints
 npm run start      # production server, port 3000
 ```

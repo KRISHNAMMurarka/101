@@ -3,7 +3,7 @@
 Working document for whoever picks this up next. Every task is written to be handed to an agent as
 its own prompt.
 
-**Repository:** `/Users/km/Desktop/games/101`
+**Repository:** `/Users/km/Dev/101`
 **Branch:** `main` — push only to `github.com/KRISHNAMMurarka/101`
 **Last commit at time of writing:** `8de58b1`
 
@@ -29,7 +29,7 @@ These override anything below. They come from the project owner and are not nego
 ### The gate — run all four before every commit
 
 ```bash
-cd /Users/km/Desktop/games/101
+cd /Users/km/Dev/101
 npx tsc --noEmit
 npm run lint
 npm run test:unit

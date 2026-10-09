@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "scope": "Read-only recovery of real draft source and patches. Earlier versions retained for recovery; not merged over current accepted implementation and not claimed as new qualification.",
+  "head": "2c2d938b174681379d72c862f3f4ff2e146e7316",
+  "entries": [
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate.patch",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate.patch",
+      "bytes": 79744,
+      "sha256": "699e5b89fffb239681874dfffdd95895b3b9be072f060ba9dd38c9117a8b376c",
+      "repositorySource": null,
+      "matchesCurrentSource": null,
+      "currentSourceSha256": null
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/tools/qa-heart-rate-software.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/tools/qa-heart-rate-software.mjs.txt",
+      "bytes": 25697,
+      "sha256": "8195410e7169e7a32e5bca67135e391c1a4a022b873681ddcd43d6d374169550",
+      "repositorySource": "tools/qa-heart-rate-software.mjs",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "ea4544febb0ddbea19a5ba9fa90d0d301d279694494142fe52d0dc660542c741"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/tools/qa-installed-heart-rate-software.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/tools/qa-installed-heart-rate-software.mjs.txt",
+      "bytes": 1348,
+      "sha256": "3a7854cbc3d4d01e8040bf52105573e3f4d112376d8e6908cd9977665b616bdd",
+      "repositorySource": "tools/qa-installed-heart-rate-software.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "3a7854cbc3d4d01e8040bf52105573e3f4d112376d8e6908cd9977665b616bdd"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/examples/heart-rate/producer.py",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/examples/heart-rate/producer.py.txt",
+      "bytes": 7419,
+      "sha256": "7c93bfb27bc57b129b3ec916470b84a1f9975b73b4f5b8e5b566d75c3ea0fc9c",
+      "repositorySource": "examples/heart-rate/producer.py",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "7c93bfb27bc57b129b3ec916470b84a1f9975b73b4f5b8e5b566d75c3ea0fc9c"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/examples/heart-rate/port.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/examples/heart-rate/port.mjs.txt",
+      "bytes": 7168,
+      "sha256": "1ffb32c27df673c8818a270c973d52f55f4e0c2e365514c8246cb90983255dc7",
+      "repositorySource": "examples/heart-rate/port.mjs",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "455dd9de5f8b1a00f8f0f08a6536189acb5855604a4f64e85acd4bdec32e85d9"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/examples/heart-rate/consumer.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/examples/heart-rate/consumer.mjs.txt",
+      "bytes": 7199,
+      "sha256": "d47a1968cfa7782e9525e6b5e45c520cbea0be431cd1946fba86daae180440bd",
+      "repositorySource": "examples/heart-rate/consumer.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "d47a1968cfa7782e9525e6b5e45c520cbea0be431cd1946fba86daae180440bd"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/packages/hub-server/src/heart-rate-software.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/packages/hub-server/src/heart-rate-software.test.ts.txt",
+      "bytes": 8310,
+      "sha256": "e0a8be796e590f4412db0ea58fef9b7843293f97730f6d5f26638bf27f3a969e",
+      "repositorySource": "packages/hub-server/src/heart-rate-software.test.ts",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "b00b34f0e1015e452c63b467262bf6984724d576daa2f9c51a1221a11438295b"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/packages/hub-server/src/heart-rate-software.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/packages/hub-server/src/heart-rate-software.ts.txt",
+      "bytes": 17219,
+      "sha256": "4dc84f2d820c848f4459e5429758e66e8162ba3a1be1dea415be58279a12d1c2",
+      "repositorySource": "packages/hub-server/src/heart-rate-software.ts",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "836934f5b924e6d2804dbcb2953f05f2ceff2ae98e3b2059197c02890f8b4f9b"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/packages/hub-server/src/heart-rate-measurement.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/packages/hub-server/src/heart-rate-measurement.test.ts.txt",
+      "bytes": 2123,
+      "sha256": "1ae37cdd5f52efad7f68fafe7f12dd7b430c6b39df41a41a3b8f8b38a95cee4f",
+      "repositorySource": "packages/hub-server/src/heart-rate-measurement.test.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "1ae37cdd5f52efad7f68fafe7f12dd7b430c6b39df41a41a3b8f8b38a95cee4f"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/candidate/packages/hub-server/src/heart-rate-measurement.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/candidate/packages/hub-server/src/heart-rate-measurement.ts.txt",
+      "bytes": 1963,
+      "sha256": "abe779726d83ff4c9bf29321d58f6aaeb06e8fbbe2bfb32af629b5a6f5fbe9dc",
+      "repositorySource": "packages/hub-server/src/heart-rate-measurement.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "abe779726d83ff4c9bf29321d58f6aaeb06e8fbbe2bfb32af629b5a6f5fbe9dc"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate.patch",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate.patch",
+      "bytes": 83600,
+      "sha256": "9730126c52444d794dfe8ce66e32e936fefc8b04c535ea36974f838a363989cd",
+      "repositorySource": null,
+      "matchesCurrentSource": null,
+      "currentSourceSha256": null
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/tools/qa-heart-rate-software.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/tools/qa-heart-rate-software.mjs.txt",
+      "bytes": 26243,
+      "sha256": "ea4544febb0ddbea19a5ba9fa90d0d301d279694494142fe52d0dc660542c741",
+      "repositorySource": "tools/qa-heart-rate-software.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "ea4544febb0ddbea19a5ba9fa90d0d301d279694494142fe52d0dc660542c741"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/tools/qa-installed-heart-rate-software.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/tools/qa-installed-heart-rate-software.mjs.txt",
+      "bytes": 1348,
+      "sha256": "3a7854cbc3d4d01e8040bf52105573e3f4d112376d8e6908cd9977665b616bdd",
+      "repositorySource": "tools/qa-installed-heart-rate-software.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "3a7854cbc3d4d01e8040bf52105573e3f4d112376d8e6908cd9977665b616bdd"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/examples/heart-rate/producer.py",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/examples/heart-rate/producer.py.txt",
+      "bytes": 7419,
+      "sha256": "7c93bfb27bc57b129b3ec916470b84a1f9975b73b4f5b8e5b566d75c3ea0fc9c",
+      "repositorySource": "examples/heart-rate/producer.py",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "7c93bfb27bc57b129b3ec916470b84a1f9975b73b4f5b8e5b566d75c3ea0fc9c"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/examples/heart-rate/port.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/examples/heart-rate/port.mjs.txt",
+      "bytes": 7832,
+      "sha256": "b57a3e7906ff13dc7008541a02d92427d1375eaffdbc7388065bf2ec515e8172",
+      "repositorySource": "examples/heart-rate/port.mjs",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "455dd9de5f8b1a00f8f0f08a6536189acb5855604a4f64e85acd4bdec32e85d9"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/examples/heart-rate/consumer.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/examples/heart-rate/consumer.mjs.txt",
+      "bytes": 7199,
+      "sha256": "d47a1968cfa7782e9525e6b5e45c520cbea0be431cd1946fba86daae180440bd",
+      "repositorySource": "examples/heart-rate/consumer.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "d47a1968cfa7782e9525e6b5e45c520cbea0be431cd1946fba86daae180440bd"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-software.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-software.test.ts.txt",
+      "bytes": 10843,
+      "sha256": "44e73b0a987119661577dedcb559e0121bbb62e027ab9217107bf73877ce46c4",
+      "repositorySource": "packages/hub-server/src/heart-rate-software.test.ts",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "b00b34f0e1015e452c63b467262bf6984724d576daa2f9c51a1221a11438295b"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-software.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-software.ts.txt",
+      "bytes": 17310,
+      "sha256": "26190e44e8588be86e305db0cb0245749661210cb9c697b89837114db4b6dc80",
+      "repositorySource": "packages/hub-server/src/heart-rate-software.ts",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "836934f5b924e6d2804dbcb2953f05f2ceff2ae98e3b2059197c02890f8b4f9b"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-measurement.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-measurement.test.ts.txt",
+      "bytes": 2123,
+      "sha256": "1ae37cdd5f52efad7f68fafe7f12dd7b430c6b39df41a41a3b8f8b38a95cee4f",
+      "repositorySource": "packages/hub-server/src/heart-rate-measurement.test.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "1ae37cdd5f52efad7f68fafe7f12dd7b430c6b39df41a41a3b8f8b38a95cee4f"
+    },
+    {
+      "original": "/private/tmp/101-heart-rate-software-draft/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-measurement.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/heart-rate/xORRpL/review-2/candidate/packages/hub-server/src/heart-rate-measurement.ts.txt",
+      "bytes": 1963,
+      "sha256": "abe779726d83ff4c9bf29321d58f6aaeb06e8fbbe2bfb32af629b5a6f5fbe9dc",
+      "repositorySource": "packages/hub-server/src/heart-rate-measurement.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "abe779726d83ff4c9bf29321d58f6aaeb06e8fbbe2bfb32af629b5a6f5fbe9dc"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/tools/qa-installed-canopen-diagnostics.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/tools/qa-installed-canopen-diagnostics.mjs.txt",
+      "bytes": 10141,
+      "sha256": "368a3e25391354855295027fb0f6eccbe302946e175d7d6f8c1ea038db6a9c4f",
+      "repositorySource": "tools/qa-installed-canopen-diagnostics.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "368a3e25391354855295027fb0f6eccbe302946e175d7d6f8c1ea038db6a9c4f"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/tools/qa-canopen-diagnostics.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/tools/qa-canopen-diagnostics.mjs.txt",
+      "bytes": 11845,
+      "sha256": "f8a93eff83049ef1105913fed0df5824655bf24cc8cc4ffc63212c64c0c784ae",
+      "repositorySource": "tools/qa-canopen-diagnostics.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "f8a93eff83049ef1105913fed0df5824655bf24cc8cc4ffc63212c64c0c784ae"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/examples/canopen-diagnostics/native-port.c",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/examples/canopen-diagnostics/native-port.c",
+      "bytes": 14543,
+      "sha256": "c2e0639f6406cb532d0de4b9c184a861a230ef3fc746e89f2ec48f05af10a564",
+      "repositorySource": "examples/canopen-diagnostics/native-port.c",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "c2e0639f6406cb532d0de4b9c184a861a230ef3fc746e89f2ec48f05af10a564"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/examples/canopen-diagnostics/consumer.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/examples/canopen-diagnostics/consumer.mjs.txt",
+      "bytes": 8851,
+      "sha256": "fd1a0c37578222da1726108ccc57c3d7ac9bb3034022e2717939ceb84c97f7cc",
+      "repositorySource": "examples/canopen-diagnostics/consumer.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "fd1a0c37578222da1726108ccc57c3d7ac9bb3034022e2717939ceb84c97f7cc"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/packages/hub-server/src/canopen-diagnostic-gateway.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/packages/hub-server/src/canopen-diagnostic-gateway.ts.txt",
+      "bytes": 29283,
+      "sha256": "ea76034621fb85b0762953945a13944038c24d9cdec6e943976be7c169cdc47c",
+      "repositorySource": "packages/hub-server/src/canopen-diagnostic-gateway.ts",
+      "matchesCurrentSource": false,
+      "currentSourceSha256": "bd559bc65515bf6a6aa5d42daad10be7bd3048d1d3a2a479ca21f1188b40de88"
+    },
+    {
+      "original": "/private/tmp/101-canopen-diagnostics-draft/packages/hub-server/src/canopen-diagnostic-gateway.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/canopen/packages/hub-server/src/canopen-diagnostic-gateway.test.ts.txt",
+      "bytes": 17288,
+      "sha256": "2846d583eae8f400eb33d492b1a061ecdc852013c973592124d612a38a2dc7ab",
+      "repositorySource": "packages/hub-server/src/canopen-diagnostic-gateway.test.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "2846d583eae8f400eb33d492b1a061ecdc852013c973592124d612a38a2dc7ab"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate.patch",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate.patch",
+      "bytes": 93613,
+      "sha256": "d8bcff4bf71a0a87e980411d4bb71bee0ec1077bb924fd69a0b6511b11298a45",
+      "repositorySource": null,
+      "matchesCurrentSource": null,
+      "currentSourceSha256": null
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/tools/qa-installed-mcp3008-iio-ch0.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/tools/qa-installed-mcp3008-iio-ch0.mjs.txt",
+      "bytes": 5357,
+      "sha256": "99ca8103522b0cd5e0450a1d5dcde6767d6d57e102177fadb6f01851fa4074ff",
+      "repositorySource": "tools/qa-installed-mcp3008-iio-ch0.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "99ca8103522b0cd5e0450a1d5dcde6767d6d57e102177fadb6f01851fa4074ff"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/tools/qa-mcp3008-iio-ch0.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/tools/qa-mcp3008-iio-ch0.mjs.txt",
+      "bytes": 12837,
+      "sha256": "a7893d61a1a65005d8c6ee654b64b11edca1e59f34ca8eb601e34b11b2f0b75e",
+      "repositorySource": "tools/qa-mcp3008-iio-ch0.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "a7893d61a1a65005d8c6ee654b64b11edca1e59f34ca8eb601e34b11b2f0b75e"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/examples/mcp3008-iio-ch0/consumer.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/examples/mcp3008-iio-ch0/consumer.mjs.txt",
+      "bytes": 14209,
+      "sha256": "e4ed8a5c33b14ba1873cc5cd14df595dbda084bc1c3752360da459ecdb00ff03",
+      "repositorySource": "examples/mcp3008-iio-ch0/consumer.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "e4ed8a5c33b14ba1873cc5cd14df595dbda084bc1c3752360da459ecdb00ff03"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/examples/mcp3008-iio-ch0/producer.mjs",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/examples/mcp3008-iio-ch0/producer.mjs.txt",
+      "bytes": 3503,
+      "sha256": "1670ed76f492bfd8c2877a4753f1de71b4d8df328ab539ff6af060e292582052",
+      "repositorySource": "examples/mcp3008-iio-ch0/producer.mjs",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "1670ed76f492bfd8c2877a4753f1de71b4d8df328ab539ff6af060e292582052"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/packages/hub-server/src/mcp3008-iio-ch0.test.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/packages/hub-server/src/mcp3008-iio-ch0.test.ts.txt",
+      "bytes": 36128,
+      "sha256": "7b676da185cd11a83caa747d648782afc22476ad8570eea501bf3b7ff3720c91",
+      "repositorySource": "packages/hub-server/src/mcp3008-iio-ch0.test.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "7b676da185cd11a83caa747d648782afc22476ad8570eea501bf3b7ff3720c91"
+    },
+    {
+      "original": "/private/tmp/101-mcp3008-iio-isolated-draft/lane-MZ95qA/candidate/packages/hub-server/src/mcp3008-iio-ch0.ts",
+      "recovered": "docs/platform/recovered-drafts/2026-10-09/mcp3008/lane-MZ95qA/candidate/packages/hub-server/src/mcp3008-iio-ch0.ts.txt",
+      "bytes": 20376,
+      "sha256": "0de2dba6f8b351b0b4cd27ddbb87c2580b2f6eecbd9f68653492bf0fdd1d27ef",
+      "repositorySource": "packages/hub-server/src/mcp3008-iio-ch0.ts",
+      "matchesCurrentSource": true,
+      "currentSourceSha256": "0de2dba6f8b351b0b4cd27ddbb87c2580b2f6eecbd9f68653492bf0fdd1d27ef"
+    }
+  ],
+  "storageFormat": "Historical source files append .txt to their original filename so build, lint and test discovery cannot execute archival drafts. Remove only the appended .txt when intentionally restoring a source file. File bytes and recorded hashes are unchanged."
+}

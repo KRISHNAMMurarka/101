@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-activation-storage-revision-fence-qualified-full-scope-open",
+  "localOnly": true,
+  "baseCommit": "2c2d938b174681379d72c862f3f4ff2e146e7316",
+  "sourceSha256": {
+    "packages/device-runtime/src/processor-installation.ts": "bd56963d703b4f72ac52029ccdb67221a288c471fd1953d402d46747233b8bb5",
+    "packages/device-runtime/src/processor-installation.test.ts": "82666004613ea629f0a04d9008652195740ac9a251383adc8e802c6a45adb5e1"
+  },
+  "outcome": "A reviewed activation or rollback stops when another controller replaces the captured owner document. Checks surround factory, conformance process/reset and asynchronous approval/conformance/registry boundaries. After successful compare-and-swap the check follows the committed revision before a handle attaches. Existing deliberate disposal of a created instance still performs trusted cleanup reset after authority is lost.",
+  "meaningfulOld": {
+    "finding": "S13-ACTIVATION-REVISION-001",
+    "sourceSha256": "2a310d5ef69f817c4fb943f9e141970b9cb4c9c5ec3c00c060ceef677572b706",
+    "independentActual": "While activation owner approval awaited, another controller persistently revoked the actual signed release. Resuming a current host grant returned conflict only after three factory and fifteen process calls against the revoked revision. No active handle, Worker, native or provider effect was exercised.",
+    "rootRegressions": {
+      "approvalCases": 6,
+      "callbackCases": 2,
+      "approvalMutations": [
+        "revokeRelease",
+        "revokePublisher",
+        "remove"
+      ],
+      "operations": [
+        "activateReviewed",
+        "rollbackReviewed"
+      ],
+      "actualFailures": "All six held-approval cases observed factoryCalls 3 rather than 0. Two actual signed-document callback replacements observed staleWork 17 or 16 rather than 0.",
+      "fixtureScope": "Actual installed and revoked signed-release documents produced by the real controller; no fabricated persisted release fields."
+    }
+  },
+  "validation": {
+    "newRegressionTests": 8,
+    "newRegressionPass": 8,
+    "affectedTests": 28,
+    "affectedPass": 28,
+    "affectedFail": 0,
+    "affectedSkipped": 0,
+    "affectedElapsedSeconds": 2.6421793336048722,
+    "independentFixReview": {
+      "decision": "accept",
+      "reportSha256": "6c74cfa77c2597f5a3735ec21cf138d664f7c483df30ed849d32367a1309e986",
+      "scope": "Exact source/test pins; approval/callback fencing, post-save raw transition, trusted cleanup, incumbent preservation and reused actual OLD/GREEN evidence."
+    },
+    "freshSdkBuild": {
+      "command": [
+        "node",
+        "tools/build-sdk.mjs",
+        "a5debfc76056fb4bb05969d33cef142780c0afff"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 8.57512787496671,
+      "sourceTree": "a5debfc76056fb4bb05969d33cef142780c0afff",
+      "builderSha256": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b"
+    },
+    "sdkConsumer": {
+      "command": [
+        "node",
+        "tools/qa-sdk-consumer.mjs",
+        "/Users/km/Desktop/games/101/release/sdk-H4xnec/manifest.json",
+        "--node-only"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 19.4076273329556,
+      "manifest": {
+        "path": "/Users/km/Desktop/games/101/release/sdk-H4xnec/manifest.json",
+        "bytes": 98467,
+        "sha256": "939ba9adeeeb5a0b9145839e0a731c9cc30a20bb308d688bc5a7b922b5df17d9"
+      },
+      "qaSha256": "1cdf67bb6a128d9a73daf478debcf647522da6e1f260edaca524686a8a5827c1"
+    },
+    "sdkConsumerScope": "Fresh outside-repository offline install of seven local tarballs; initial inventory 412 entries includes the package lock, 411 package files. Strict type/public API/ordinary Node/generated device/external processor checks passed. Browser checks deliberately excluded by --node-only.",
+    "installedSelectedCaller": {
+      "command": [
+        "node",
+        "activation-consumer.mjs"
+      ],
+      "cwd": "/tmp/101-sdk-consumer-4N8Cfl",
+      "exitCode": 0,
+      "elapsedSeconds": 0.9556516669690609,
+      "sourceTree": "a5debfc76056fb4bb05969d33cef142780c0afff",
+      "installedPackageFilesBefore": 411,
+      "installedPackageFilesAfter": 411,
+      "installedExactBytesStable": true,
+      "scriptSha256": "0a1e669d99ca21b89fb08d254d4e3430d8abb6538de76db59db1cace3cefa996",
+      "nodeOptions": "",
+      "nodePath": ""
+    },
+    "installedCallerOutcome": {
+      "ok": false,
+      "reason": "conflict",
+      "storedRevocation": true,
+      "factoryCalls": 0,
+      "processCalls": 0,
+      "events": [],
+      "actualWorkers": 0,
+      "actualNativeOrProviderEffects": 0
+    },
+    "installedCallerScope": "One actual activateReviewed/revokeRelease race using ordinary @101/connect import, native P-256 signature verification, host storage CAS and reviewed own fixture JS. No TypeScript flags, source forwarding, SDK private imports or package aliases. All 411 installed package files match tarball inventory before and after.",
+    "installedNegativeCaller": {
+      "command": [
+        "node",
+        "activation-negative-consumer.mjs"
+      ],
+      "cwd": "/tmp/101-sdk-consumer-4N8Cfl",
+      "exitCode": 0,
+      "elapsedSeconds": 0.13447741698473692,
+      "sourceTree": "a5debfc76056fb4bb05969d33cef142780c0afff",
+      "scriptSha256": "7fc4b6323b9f1d3f5494a540bb5eed417bd6fe2ce900672260d7483e91821479",
+      "replacementSourceSha256": "9bee907c87a6b5621a5d145bcca277838e7d8cfc8082fc156c05ca18826beca8",
+      "installedPackageFilesBefore": 411,
+      "installedPackageFilesAfter": 411,
+      "installedExactBytesStable": true
+    },
+    "installedNegativeCases": {
+      "scope": "Three negative checks on existing installed public local-compute policy; no production code change or invented OLD failure",
+      "rows": [
+        {
+          "case": "actual-signed-envelope-dependency-mutation",
+          "result": {
+            "ok": false,
+            "reason": "invalid"
+          },
+          "persistence": 0,
+          "approval": 0,
+          "factory": 0
+        },
+        {
+          "case": "actual-v1-envelope-genuine-v2-source-substitution",
+          "result": {
+            "ok": false,
+            "reason": "integrity"
+          },
+          "persistence": 0,
+          "approval": 0,
+          "factory": 0
+        },
+        {
+          "case": "installed-v1-genuine-v2-trusted-source-substitution",
+          "result": {
+            "ok": false,
+            "reason": "untrusted"
+          },
+          "callbackDeltas": {
+            "factory": 0,
+            "process": 0,
+            "reset": 0,
+            "persistence": 0,
+            "approval": 0
+          }
+        }
+      ],
+      "finalCounts": {
+        "factory": 0,
+        "process": 0,
+        "reset": 0,
+        "persistence": 1,
+        "approval": 1
+      },
+      "activeHandles": 0,
+      "actualWorkers": 0,
+      "nativeProviderEffects": 0
+    },
+    "installedNegativeScope": "Three additional selected existing-policy checks, not a new source repair: actual signed v1 dependency mutation, genuine v2 source substitution at installation and a mismatched trusted source at reviewed activation. Refused before owner approval/persistence or factory/process/reset work, except one legitimate unchanged v1 install establishing the third case. No additional SDK build, unchanged lifecycle replay or native effect."
+  },
+  "rawEvidence": {
+    "sourceAndReviews": {
+      "ref": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-source/manifest",
+      "blob": "86edf6768f9f29771e92e6112ee37ee584fe2f42",
+      "sha256": "821e7cdf78e7fa2fc17f02df289b10bf3ca1ad8a74c859e3d2bcab283ce98206",
+      "entries": 30
+    },
+    "installed": {
+      "ref": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-installed/manifest",
+      "blob": "184c8f9f903192b84e41b44f57a010a5c33d0b4f",
+      "sha256": "d03d19346d59dbe53210b236f9c526ee30910e47bd73d473f0eb441f110a38b9",
+      "entries": 35
+    },
+    "negativeQualification": {
+      "path": "/private/tmp/101-controller-8-root/s13-activation-fence/negative-retained-manifest.json",
+      "bytes": 4408,
+      "sha256": "ffaedec76746f585fe955d51d82e7f23c4e85a676642c08b6441d994f9a0a864",
+      "blob": "54b5c3fadea92a8b0d08cc137886f50be90a8de2",
+      "ref": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-negative/manifest",
+      "entries": 11
+    }
+  },
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-integrated-v5/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-integrated-v5/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only completed green results for the exact final integrated tree permit local commit. Fresh build precedes rendered tests."
+  },
+  "earlierGateFailure": {
+    "scope": "Earlier console contract-only candidate tree 60965845bea1a0a23d539d4b6bff4167275dcab5 before this source repair",
+    "fullUnitTests": 3244,
+    "fullUnitPass": 3233,
+    "fullUnitFail": 11,
+    "failedGateRef": "refs/codex/evidence/2026-10-09-console-access/controller-8-failed-gates/manifest",
+    "diagnosisRef": "refs/codex/evidence/2026-10-09-console-access/controller-8-startup-diagnosis/manifest",
+    "actual": "First isolated run 121/126 with five failures; exact native producers then observed enrolling in 48.3/45.0ms; subsequent scope 126/126 with original limits. Full gate remains separately required; sole failure cause not established."
+  },
+  "limits": [
+    "Trusted cooperative local-compute host factory/source binding and synchronous reset remain caller obligations. This is not an arbitrary code sandbox, native quiescence guarantee or hang preemption.",
+    "No connector/native/dependency/asset profile, publisher provisioning, every-runtime/physical qualification, support promotion or external publication.",
+    "Cleanup resets deliberately dispose already-created instances after loss of authority; they are not new conformance work.",
+    "Full S13 and E10 remain open; this receipt covers the selected race and installed Node path only."
+  ],
+  "additionalFailedGate": {
+    "tree": "47a258282f193fda3cb6889e466b3bec514aa0d9",
+    "unit": {
+      "tests": 3252,
+      "pass": 3247,
+      "fail": 5,
+      "skipped": 0,
+      "elapsedSeconds": 455.8438839581795
+    },
+    "typesExitCode": 0,
+    "lintExitCode": 0,
+    "buildAndRendered": "not attempted after red unit gate",
+    "failedGateRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-failed-v2/manifest",
+    "failures": "Two scoped-agent IPC startup and three TMP102 producer startup checks; no code or deadline change to those paths. Native-entry diagnostics later take 44/49ms; sole transient cause remains unestablished.",
+    "commitMade": false
+  },
+  "additionalFailedGateV4": {
+    "tree": "1edc46381946ab8945428264a834ca062fecc9a1",
+    "resultRef": "refs/codex/evidence/2026-10-09-processor-activation/controller-8-integrated-v4/gates",
+    "unitReported": {
+      "tests": 3244,
+      "pass": 3224,
+      "fail": 20,
+      "skipped": 0
+    },
+    "complete": false,
+    "actual": "Unit command ended red. Two bounded processor timeouts, native broker/peer startup failures and an authority-fixture failure. A leaked test method after native peer startup failure hung the next ROS test; exact owned worker was stopped and its native peer termination observed. This count is not a complete passing qualification. Types/lint passed; build/rendered not attempted after red. Sole transient startup/compute cause remains unestablished.",
+    "commitMade": false
+  },
+  "integrationGateRepair": {
+    "date": "2026-10-10",
+    "path": "packages/hub-server/src/rosbridge-pose-connector.test.ts",
+    "scope": "Move test-owned WebSocket method replacement and unhandled-rejection listener installation after successful native peer setup, immediately before their existing protected cleanup blocks. Actual startup failure cannot leak either into the next test. No native deadline or runtime change.",
+    "evidenceRef": "refs/codex/evidence/2026-10-10-native-startup-cleanup/manifest",
+    "meaningfulOldFailed": true,
+    "sameNativeFailureCleanupPassed": true,
+    "normalTestPass": 26,
+    "fullCandidateGatesStillRequired": true
+  }
+}
