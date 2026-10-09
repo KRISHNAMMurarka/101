@@ -95,6 +95,9 @@ const OUT = await mkdtemp(join(ROOT, "release", "package-"));
 
 const produced = [];
 const skipped = [];
+const version = JSON.parse(await readFile(join(ROOT, "package.json"), "utf8")).version;
+const admittedSource = await sourceProvenance();
+const builderSha256 = await fileSha256(fileURLToPath(import.meta.url));
 
 for (const target of selected) {
   process.stdout.write(`\n▸ ${target.name} — ${target.description}\n`);
@@ -112,16 +115,40 @@ for (const target of selected) {
   }
 }
 
+let finishedSource = null, verificationError = null;
+try { finishedSource = await sourceProvenance(); }
+catch (error) { verificationError = firstMeaningfulLine(error); }
+const inputsStable = finishedSource !== null && JSON.stringify(admittedSource) === JSON.stringify(finishedSource);
+const beforeFiles = new Map(admittedSource.inputs.files.map((entry) => [entry.path, entry]));
+const afterFiles = new Map((finishedSource?.inputs.files ?? []).map((entry) => [entry.path, entry]));
+const changedInputs = finishedSource ? [...new Set([...beforeFiles.keys(), ...afterFiles.keys()])].sort()
+  .filter((path) => JSON.stringify(beforeFiles.get(path)) !== JSON.stringify(afterFiles.get(path)))
+  .map((path) => ({ path, before: beforeFiles.get(path) ?? null, after: afterFiles.get(path) ?? null })) : [];
+if (!inputsStable) {
+  // These copies belong exclusively to this invocation. Earlier runs survive.
+  for (const artifact of produced.splice(0)) {
+    await rm(join(ROOT, artifact.artifact), { recursive: true, force: true });
+    skipped.push({ target: artifact.target, profile: artifact.profile,
+      reason: verificationError ? `Build input verification failed: ${verificationError}` : "Build inputs changed during packaging" });
+  }
+}
+
 const manifest = {
   schemaVersion: 2,
-  version: JSON.parse(await readFile(join(ROOT, "package.json"), "utf8")).version,
-  source: await sourceProvenance(),
+  version,
+  source: admittedSource,
+  buildInputVerification: {
+    stable: inputsStable,
+    after: finishedSource ? { ...finishedSource, inputs: { scope: finishedSource.inputs.scope, sha256: finishedSource.inputs.sha256 } } : null,
+    error: verificationError,
+    changedInputs,
+  },
   environment: { node: process.versions.node, npm: (await run("npm", ["--version"])).stdout.trim(), platform: process.platform, arch: process.arch },
-  builderSha256: await fileSha256(fileURLToPath(import.meta.url)),
+  builderSha256,
   mode,
   requiredTargets: mode === "release" ? selected.map((target) => target.name) : [],
-  status: mode === "diagnostic" ? "diagnostic" : skipped.length ? "incomplete" : "complete",
-  packagingComplete: mode === "release" && skipped.length === 0,
+  status: mode === "diagnostic" ? "diagnostic" : skipped.length || !inputsStable ? "incomplete" : "complete",
+  packagingComplete: mode === "release" && skipped.length === 0 && inputsStable,
   releaseAccepted: false,
   produced,
   skipped,
@@ -136,7 +163,7 @@ if (skipped.length) {
 console.log(mode === "release"
   ? `\nRequired production packaging ${manifest.packagingComplete ? "passed" : "failed"}. Release acceptance remains separate.`
   : "\nDiagnostic report only; no release acceptance.");
-if (mode === "release" && skipped.length) process.exitCode = 1;
+if (mode === "release" && (skipped.length || !inputsStable)) process.exitCode = 1;
 
 // iOS and watchOS deliberately have no target here. Both need a provisioning profile tied to a
 // registered Apple Developer account, so a repository cannot produce an installable build for
@@ -243,17 +270,35 @@ async function fileSha256(path) {
 
 async function sourceProvenance() {
   let revision = null, tree = null, workingTreeClean = null;
+  let gitRoot = null;
   try {
-    const gitRoot = (await run("git", ["rev-parse", "--show-toplevel"], { cwd: ROOT })).stdout.trim();
-    if (resolve(gitRoot) === resolve(ROOT)) {
-      revision = (await run("git", ["rev-parse", "HEAD"], { cwd: ROOT })).stdout.trim();
-      tree = (await run("git", ["rev-parse", "HEAD^{tree}"], { cwd: ROOT })).stdout.trim();
-      workingTreeClean = !(await run("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: ROOT })).stdout.trim();
-    }
+    gitRoot = (await run("git", ["rev-parse", "--show-toplevel"], { cwd: ROOT })).stdout.trim();
   } catch { /* A fixture or source archive may have no Git history. */ }
-  let packageLockSha256 = null;
-  try { packageLockSha256 = await fileSha256(join(ROOT, "package-lock.json")); } catch { /* Lockfile not present. */ }
-  return { revision, tree, workingTreeClean, packageLockSha256 };
+  let scope = "declared-packaging-files-only";
+  let paths = ["package.json", "package-lock.json", "apps/desktop-hub/src-tauri/Cargo.lock", ...WEB_METADATA,
+    "tools/package-release.mjs", "tools/license-inventory-validation.mjs", "tools/generate-license-inventory.mjs", "tools/web-artifact-validation.mjs"];
+  if (gitRoot && resolve(gitRoot) === resolve(ROOT)) {
+    revision = (await run("git", ["rev-parse", "HEAD"], { cwd: ROOT })).stdout.trim();
+    tree = (await run("git", ["rev-parse", "HEAD^{tree}"], { cwd: ROOT })).stdout.trim();
+    workingTreeClean = !(await run("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: ROOT })).stdout.trim();
+    const listed = (await run("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], { cwd: ROOT, maxBuffer: 16 * 1024 * 1024 })).stdout;
+    paths = [...paths, ...listed.split("\0").filter(Boolean)];
+    scope = "git-versioned-and-unignored-files-plus-declared-packaging-files";
+  }
+  const files = [];
+  for (const path of [...new Set(paths)].sort()) {
+    try {
+      const info = await lstat(join(ROOT, path));
+      if (!info.isFile()) throw new Error(`Build input is not a regular file: ${path}`);
+      files.push({ path, bytes: info.size, sha256: await fileSha256(join(ROOT, path)) });
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+      files.push({ path, missing: true });
+    }
+  }
+  const packageLockSha256 = files.find((entry) => entry.path === "package-lock.json")?.sha256 ?? null;
+  return { revision, tree, workingTreeClean, packageLockSha256,
+    inputs: { scope, sha256: createHash("sha256").update(JSON.stringify(files)).digest("hex"), files } };
 }
 
 function firstMeaningfulLine(error) {

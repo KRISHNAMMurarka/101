@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-build-input-snapshot-fence-qualified-full-provenance-open",
+  "localOnly": true,
+  "baseCommit": "45578e46d7b46ef6dc1b3d02d0f925cbf35ecbde",
+  "sourceSha256": {
+    "tools/package-release.mjs": "f26ec3a31afb827e0a425cbaad4d3050819314c11468071f31f452cb814d6022",
+    "tests/release-packaging.test.ts": "c188a1f776dfae8f8910f0fcd432e4b238e72775baccdcaa169355dea9390154"
+  },
+  "outcome": "The application collector records the admitted source and builder bytes before producing artifacts, compares exact source snapshots afterward, and withdraws only this invocation copies if inputs changed or final verification failed. It retains an incomplete release or diagnostic manifest with original admitted provenance, changed-input details or an explicit unverified/error result. Stable initial dirty inputs remain eligible; prior artifacts survive.",
+  "validation": {
+    "meaningfulOld": {
+      "baseline": {
+        "cases": 4,
+        "sourceSha256": "84c950462537d54655276bf5b486271428f41b4f4d26df6c190ca4be27bcb7ea",
+        "actual": "Successful producer changed lock, builder, imported helper or already-dirty Git source; unchanged packager exited0 with one artifact and packagingComplete true. Lock case copied an inventory tied to the earlier lock.",
+        "manifestRef": "refs/codex/evidence/2026-10-09-package-build-inputs/controller-8-old/manifest"
+      },
+      "initialRepair": {
+        "cases": 2,
+        "sourceSha256": "a090bc001e6b4b4bd322ce472a47ad6bc9fc05ba116879763004c05da4488166",
+        "actual": "Final input snapshot threw on a lock replaced with a directory; release and diagnostic fixtures retained a copy but no manifest. Both expected-manifest assertions failed before the catch/withdrawal repair."
+      }
+    },
+    "focusedPackagingTests": 28,
+    "focusedFail": 0,
+    "focusedSkipped": 0,
+    "changedFileLintExitCode": 0,
+    "independentBetweenTargetDrift": "Diagnostic hub/link fixture withdraws both current copies and preserves prior sentinel; retained original v1 evidence is reused for unchanged code paths.",
+    "actualWeb": {
+      "command": [
+        "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+        "tools/package-release.mjs",
+        "--release",
+        "web"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.293702875263989,
+      "newOwnedOutputs": [
+        "/Users/km/Desktop/games/101/release/package-DaP3Ui"
+      ],
+      "manifest": {
+        "path": "/Users/km/Desktop/games/101/release/package-DaP3Ui/manifest.json",
+        "bytes": 467047,
+        "sha256": "9253ba78eb0a6dc7f5ce96deb5dba31e13bb14a844a2d452186b2234b4dd7f41"
+      },
+      "status": "complete",
+      "packagingComplete": true,
+      "releaseAccepted": false,
+      "inputScope": "git-versioned-and-unignored-files-plus-declared-packaging-files",
+      "beforeInputFiles": 1722,
+      "inputComparisonStable": true,
+      "changedInputCount": 0,
+      "producedCount": 1,
+      "artifacts": [
+        {
+          "target": "web",
+          "bytes": 58371575,
+          "sha256": "21b93b56e4bc152b75e1f835879c1ba772aa0c92629b107250cf30586fd76000",
+          "files": 606
+        }
+      ]
+    },
+    "actualWebScope": "One real current-source local web package build before ledger/receipt integration; exact v2 source pins match. Final integrated tree has separate broad gates."
+  },
+  "inputScopes": {
+    "git": "Versioned and unignored files plus explicitly declared packaging files, including package/lock and imported builder helpers. Actual local web run captured 1722 files unchanged.",
+    "sourceArchive": "Only explicit package/lock, web legal metadata and builder/helper files; no clean revision or comprehensive source-archive claim.",
+    "missing": "Missing admitted paths are recorded explicitly; unsupported or unreadable final inputs leave verification null/unstable, never a partial accepted snapshot."
+  },
+  "independentReviews": [
+    {
+      "decision": "blocker",
+      "scope": "initial source; final snapshot failure and between-target drift",
+      "report": {
+        "path": "/private/tmp/101-controller-8-packaging-review/report.json",
+        "bytes": 13058,
+        "sha256": "f7ad2926e57d51cd8e0dc8d73b7e36f03bbe4ed9385fae030e6e85ac17d6e147"
+      }
+    },
+    {
+      "decision": "accept",
+      "scope": "affected snapshot failure repair and reused unchanged observations",
+      "report": {
+        "path": "/private/tmp/101-controller-8-packaging-v2-review/report.json",
+        "bytes": 9642,
+        "sha256": "4ae60ed1a5d7c8256e8b619e4c40496a55602f198353ec7530d38f2e002a81f8"
+      }
+    }
+  ],
+  "reviewFinding": "PACKAGING-G3-REVIEW-001 P2 resolved by exact v2 catch/unverified-withdraw-report repair. Initial blocker retained.",
+  "rawEvidence": {
+    "path": "/private/tmp/101-controller-8-root/packaging-g3/v2-raw-manifest.json",
+    "bytes": 304116,
+    "sha256": "786d5b179957faba1133e405a14463b6218c11549dedf429563aab8120898a13",
+    "blob": "76cc831503a7dab70d893554eb55e52bb5c46ef5",
+    "ref": "refs/codex/evidence/2026-10-09-package-build-inputs/controller-8-source/manifest",
+    "entries": 666
+  },
+  "proofLimits": [
+    "Snapshots compare start/end bytes; a temporary mutation restored between reads is not detected. This is not atomic build or module-loading confinement.",
+    "Ignored installed dependency trees, environment secrets, globally installed/native tool binaries, all native targets and every-binary provenance remain separate.",
+    "Actual web packagingComplete true remains releaseAccepted false. Full K10, reproducibility/upgrade acceptance, support, signing and publication remain open. No SDK build/install, native build or external write."
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-package-build-inputs/controller-8-integrated/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-package-build-inputs/controller-8-integrated/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only completed green results for exact referenced tree permit local commit; rebuild before rendered tests."
+  }
+}

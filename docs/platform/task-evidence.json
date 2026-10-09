@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 192,
+  "revision": 193,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13478,6 +13478,32 @@
         "Selected physical receiver/emitter, timing/carrier instruments and target firmware remain required for physical acceptance"
       ],
       "supportRows": []
+    },
+    {
+      "id": "package-build-inputs-2026-10-09",
+      "revision": "f26ec3a31afb827e0a425cbaad4d3050819314c11468071f31f452cb814d6022",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K10"
+      ],
+      "paths": [
+        "tools/package-release.mjs",
+        "tests/release-packaging.test.ts",
+        "docs/platform/receipts/2026-10-09-package-build-inputs.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; exact owned fixture producers and actual local web build; existing dependencies unchanged.",
+      "reproduction": "Four genuine baseline input-drift RED cases and two initial-repair snapshot-failure RED cases; 28 current packaging checks and lint; independent v1 blocker/v2 acceptance and between-target evidence; one actual 606-file web package from 1722 unchanged admitted inputs. Exact integrated gates in receipt refs.",
+      "scope": "Selected application packaging input snapshot fence and owned-copy withdrawal. Full every-binary/native/toolchain provenance, transient restored mutations, ignored dependencies, release acceptance and complete K10 remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -17063,7 +17089,8 @@
         "pending-K10",
         "sdk-distributions-2026-10-02",
         "k10-sdk-manifest-2026-10-05",
-        "release-inventory-admission-2026-10-09"
+        "release-inventory-admission-2026-10-09",
+        "package-build-inputs-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [

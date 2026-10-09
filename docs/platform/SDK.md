@@ -2355,6 +2355,10 @@ Every manifest records `releaseAccepted: false`; successful packaging alone
 does not establish signing, installation, support or publication approval. See
 [required-target QA](REQUIRED-TARGET-PACKAGING-QA-2026-10-02.md).
 
+The collector records admitted source and builder bytes before building and compares them again afterward. Changed inputs or a failed final snapshot withdraw this invocation's copies and retain an incomplete release or diagnostic report. Stable initial dirty inputs remain eligible, and earlier artifacts survive. Git sources cover versioned and unignored files plus the declared package, locks, legal metadata and builder helpers; source archives cover only those declared packaging files. The manifest names the scope and preserves missing paths explicitly.
+
+[Current build-input evidence](receipts/2026-10-09-package-build-inputs.json) includes authentic drift and failed-snapshot regressions, independent review, and one actual local web package with 1722 stable input files and 606 copied output files. These are before/after snapshots: changes restored between reads, ignored installed dependencies, global/native toolchains and complete K10 acceptance remain unverified.
+
 ## Secure WebSocket fallback
 
 `@101/transport-websocket` and the facade export `SecureWebSocketTransport`, `WSS_SUBPROTOCOL` and their public types. The selected direct fallback is explicit: the host supplies a canonical `wss:` endpoint, a current identity, a new connection epoch and separate resource approvals. User info, query/fragment fields and control characters are rejected. The browser default uses native `WebSocket`; a server port is a trusted adapter from the host's own TLS listener. Supplying a port does not establish that TLS occurred.

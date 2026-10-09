@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 
-const digest = (value: string) => createHash('sha256').update(value).digest('hex');
+const digest = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
 const fixtureWebRuntimePaths = [
   'client/models/pose_landmarker_lite.task', 'client/models/hand_landmarker.task',
   'client/mediapipe/wasm/vision_wasm_internal.js', 'client/mediapipe/wasm/vision_wasm_internal.wasm',
@@ -58,7 +58,7 @@ function fixture(states: Record<string, string> = {}) {
   writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock);
   writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), '[package]\nname = "oneohone-hub"\nversion = "0.1.0"\n');
   writeFileSync(join(root, 'emit.mjs'), `
-    import { appendFileSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+    import { appendFileSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
     import { gzipSync } from 'node:zlib';
     const target = process.argv[2], state = ${JSON.stringify(states)}[target] ?? 'ok';
@@ -72,7 +72,11 @@ function fixture(states: Record<string, string> = {}) {
     if (state === 'symlink') { writeFileSync('private-fixture.txt', 'outside artifact'); symlinkSync(process.cwd() + '/private-fixture.txt', path); }
     else if (state === 'private-key-content') writeFileSync(path, '-----BEGIN PRIVATE KEY-----\\nfixture\\n-----END PRIVATE KEY-----');
     else if (state === 'local-path-content') writeFileSync(path, 'workspace: ' + process.cwd());
-    else writeFileSync(path, 'production-path fixture bytes for ' + target);
+    else writeFileSync(path, 'production-path fixture bytes for ' + target + (['source-drift', 'source-stable'].includes(state) ? readFileSync('build-source.txt', 'utf8') : ''));
+    if (state === 'source-drift') appendFileSync('build-source.txt', ' changed during producer');
+    if (state === 'lock-drift') appendFileSync('package-lock.json', '\\n ');
+    if (state === 'builder-drift') appendFileSync('tools/package-release.mjs', '\\n// changed while running\\n');
+    if (state === 'helper-drift') appendFileSync('tools/web-artifact-validation.mjs', '\\n// changed after import\\n');
     if (target === 'web') {
       for (const asset of ${JSON.stringify(fixtureWebRuntimePaths)}) {
         mkdirSync(dirname('dist/' + asset), { recursive: true }); writeFileSync('dist/' + asset, 'public asset');
@@ -89,6 +93,7 @@ function fixture(states: Record<string, string> = {}) {
       if (state === 'empty-css') writeFileSync('dist/client/_next/static/css/fixture.css', '');
       if (state === 'missing-font') rmSync('dist/client/_next/static/media/fixture.woff2');
     }
+    if (state === 'input-not-regular') { rmSync('package-lock.json'); mkdirSync('package-lock.json'); }
     if (state === 'mismatched-compression' && target === 'web') {
       mkdirSync('dist/client/_next/static', { recursive: true });
       writeFileSync('dist/client/_next/static/fixture.js', 'public asset');
@@ -440,3 +445,76 @@ test('web packaging rejects dangling manifest imports and unsafe dependency path
     } finally { f.close(); }
   }
 });
+
+for (const drift of ['lock-drift', 'builder-drift', 'helper-drift', 'source-drift']) {
+  test(`packaging rejects ${drift} during a successful producer`, () => {
+    const f = fixture({ web: drift });
+    try {
+      if (drift === 'source-drift') {
+        writeFileSync(join(f.root, '.gitignore'), 'dist/\nrelease/\ninvoked.log\n');
+        writeFileSync(join(f.root, 'build-source.txt'), 'committed source');
+        for (const args of [['init', '--quiet'], ['add', '.'], ['-c', 'user.name=Owned fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '--quiet', '-m', 'Owned source fixture']]) {
+          const git = spawnSync('git', args, { cwd: f.root, encoding: 'utf8' }); assert.equal(git.status, 0, git.stderr);
+        }
+        writeFileSync(join(f.root, 'build-source.txt'), 'dirty source consumed by producer');
+      }
+      const result = f.run(['--release', 'web']);
+      const record = f.manifests()[0];
+      const copied = resolve(record.path, '..', 'web/THIRD_PARTY_LICENSES.json');
+      const proof = { drift, status: result.status, stdout: result.stdout, stderr: result.stderr, manifest: record.value,
+        originalLockSha256: digest(fixtureLock), currentLockSha256: digest(readFileSync(join(f.root, 'package-lock.json'))),
+        copiedInventoryLockSha256: existsSync(copied) ? JSON.parse(readFileSync(copied, 'utf8')).lockSha256 : null,
+        invoked: readFileSync(join(f.root, 'invoked.log'), 'utf8'),
+        finalSource: drift === 'source-drift' ? readFileSync(join(f.root, 'build-source.txt'), 'utf8') : null };
+      assert.equal(result.status, 1, JSON.stringify(proof));
+      assert.equal(record.value.packagingComplete, false);
+      assert.equal(record.value.buildInputVerification.stable, false);
+      assert.ok(record.value.buildInputVerification.changedInputs.length > 0);
+      assert.deepEqual(record.value.produced, []);
+      assert.equal(existsSync(resolve(record.path, '..', 'web')), false);
+    } finally { f.close(); }
+  });
+}
+
+test('a stable initially dirty source remains eligible for packaging with exact input provenance', () => {
+  const f = fixture({ web: 'source-stable' });
+  try {
+    writeFileSync(join(f.root, '.gitignore'), 'dist/\nrelease/\ninvoked.log\n');
+    writeFileSync(join(f.root, 'build-source.txt'), 'committed source');
+    for (const args of [['init', '--quiet'], ['add', '.'], ['-c', 'user.name=Owned fixture', '-c', 'user.email=fixture@example.invalid', 'commit', '--quiet', '-m', 'Owned source fixture']]) {
+      const git = spawnSync('git', args, { cwd: f.root, encoding: 'utf8' }); assert.equal(git.status, 0, git.stderr);
+    }
+    writeFileSync(join(f.root, 'build-source.txt'), 'dirty source consumed by producer');
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    const { value, path } = f.manifests()[0];
+    assert.equal(value.packagingComplete, true);
+    assert.equal(value.source.workingTreeClean, false);
+    assert.equal(value.buildInputVerification.stable, true);
+    assert.deepEqual(value.buildInputVerification.changedInputs, []);
+    assert.equal(value.source.inputs.files.find((entry: { path: string }) => entry.path === 'build-source.txt').sha256, digest('dirty source consumed by producer'));
+    assert.match(readFileSync(resolve(path, '..', 'web/server/index.js'), 'utf8'), /dirty source consumed by producer/);
+  } finally { f.close(); }
+});
+
+for (const mode of ['release', 'diagnostic']) {
+  test(`a failed final input snapshot withdraws copies and retains a ${mode} report`, () => {
+    const f = fixture({ web: 'input-not-regular' });
+    try {
+      const result = f.run(mode === 'release' ? ['--release', 'web'] : ['web']);
+      const owned = readdirSync(join(f.root, 'release')).find(name => name.startsWith('package-'))!;
+      const manifestPath = join(f.root, 'release', owned, 'manifest.json');
+      assert.equal(existsSync(manifestPath), true, result.stdout + result.stderr);
+      const value = JSON.parse(readFileSync(manifestPath, 'utf8'));
+      assert.equal(result.status, mode === 'release' ? 1 : 0, result.stdout + result.stderr);
+      assert.equal(value.status, mode === 'release' ? 'incomplete' : 'diagnostic');
+      assert.equal(value.packagingComplete, false);
+      assert.equal(value.buildInputVerification.stable, false);
+      assert.equal(value.buildInputVerification.after, null);
+      assert.match(value.buildInputVerification.error, /not a regular file/);
+      assert.deepEqual(value.produced, []);
+      assert.equal(existsSync(join(f.root, 'release', owned, 'web')), false);
+      assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');
+    } finally { f.close(); }
+  });
+}
