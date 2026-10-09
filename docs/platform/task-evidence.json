@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 191,
+  "revision": 192,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13446,6 +13446,38 @@
         "Ordinary current local web build output and exact copied manifests; complete target-specific content review remains separate"
       ],
       "supportRows": []
+    },
+    {
+      "id": "ir-learning-2026-10-09",
+      "revision": "4c432dd411e78e11232f34550cb7168d1209f31ee362c8f9b92d7b848b3006ca",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A07",
+        "A08"
+      ],
+      "paths": [
+        "packages/hub-server/src/nec32-ir-learning.ts",
+        "packages/hub-server/src/nec32-ir-learning.test.ts",
+        "examples/ir-learning/consumer.mjs",
+        "tools/qa-ir-learning.mjs",
+        "tools/qa-installed-ir-learning.mjs",
+        "docs/platform/receipts/2026-10-09-ir-learning.json",
+        "docs/platform/SDK.md"
+      ],
+      "environment": "macOS arm64/Node24.14.0; closed native software producer environment; unchanged ordinary seven-package JavaScript SDK ancestor.",
+      "reproduction": "Retained authentic baseline/F1/F2/accounting OLD and52 coordinator/10zero-issued/3accounting GREEN; independent exact core/caller/observer/source/installed release reviews; one fresh source and one fresh installed Rx1Tx1 attempt with actual original/raw joins; exact candidate gates via receipt refs.",
+      "scope": "Selected nominal software captured draft, fresh owner review, independent public/private one-shot dispatch, denied replay and retained original close failures only after real joins. No physical waveform/carrier/reception/appliance meaning/ack/state, support-row or full A07/A08 acceptance.",
+      "failure": null,
+      "equipment": [
+        "Selected physical receiver/emitter, timing/carrier instruments and target firmware remain required for physical acceptance"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -15201,7 +15233,8 @@
       "records": [
         "pending-A07",
         "ir-emitter-2026-10-08",
-        "ir-provider-lifecycle-2026-10-09"
+        "ir-provider-lifecycle-2026-10-09",
+        "ir-learning-2026-10-09"
       ],
       "dependencies": [
         "M01",
@@ -15217,7 +15250,8 @@
       "records": [
         "pending-A08",
         "ir-receive-2026-10-08",
-        "ir-provider-lifecycle-2026-10-09"
+        "ir-provider-lifecycle-2026-10-09",
+        "ir-learning-2026-10-09"
       ],
       "dependencies": [
         "M01",

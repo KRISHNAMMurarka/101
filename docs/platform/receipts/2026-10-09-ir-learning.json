@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-nominal-software-learning-qualified-physical-open",
+  "localOnly": true,
+  "sourceSha256": {
+    "packages/hub-server/src/nec32-ir-learning.ts": "4c432dd411e78e11232f34550cb7168d1209f31ee362c8f9b92d7b848b3006ca",
+    "packages/hub-server/src/nec32-ir-learning.test.ts": "a1d5da0518e063383806969907c863b4f521e678c5894909f98dbc42a1af8c2d",
+    "examples/ir-learning/consumer.mjs": "070326563ec4a3ba348c9a03499f267dce1b4c54343d795278a8719f8b076e27",
+    "tools/qa-ir-learning.mjs": "95352056000823b5a093d0abd6fd66f32502051bdb49684aa8feae20a1683709",
+    "tools/qa-installed-ir-learning.mjs": "347b41137bc18ff50ca197896c58ecafee9f80b9c0a30e76e8551d58a23ba659"
+  },
+  "baseCommit": "0b0770de09518fafa7552391b5e53cca11d0ff93",
+  "outcome": "One genuine private capture delivered through actual public SDK read seals an inert draft only under original capture/public authority. A fresh same-session owner review admits one immutable learned byte pair. Independent public invocation and private activation/emission authority permit one nominal software dispatch; replay remains denied. Shared close retains original failures and joins all actual work before returning its original result.",
+  "validation": {
+    "coordinatorFocusedTests": 52,
+    "zeroIssuedPreflightTests": 10,
+    "exactAccountingCases": 3,
+    "retainedChecksRerun": false,
+    "meaningfulOld": "Authentic missing-review source baseline and repaired F1 exact1450 expiry/seal, F2 original held joins/sentinel errors, and exact byte-pin accounting OLD counterexamples retained. Setup/prototype/old fulfillment-expectation failures are preserved separately and earn no extra semantic RED credit.",
+    "source": {
+      "nodeExitCode": 0,
+      "actualReceivers": 1,
+      "actualEmitters": 1,
+      "childExitCodes": [
+        0,
+        0
+      ],
+      "childCloseCodes": [
+        0,
+        0
+      ],
+      "pipesActuallyClosed": 8,
+      "actualWriteCallbacksReturned": 8,
+      "originalPromisesActuallyJoined": 20,
+      "outerPostPinsMatched": 158,
+      "innerPostPinsMatched": 151,
+      "loadedModules": 128,
+      "nativePublicResolutions": 3,
+      "publicEntry": "packages/connect/src/index.ts",
+      "observerResult": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-source-positive/source-observer-result.json",
+        "bytes": 179911,
+        "sha256": "94b5270d8b664e314388f01469b123c61d8cedba5c89c954ed43381798dd2615"
+      },
+      "runnerResult": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-source-positive/source-runner-result.json",
+        "bytes": 49714,
+        "sha256": "b33775f9621d072a68f67b0ae62889916dadd2e4acd97df9c29babc4b5dc28b0"
+      },
+      "acceptance": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-source-positive/source-positive-acceptance.json",
+        "bytes": 2584,
+        "sha256": "62908467662f5cd4904fc294325e14b22cdaafcda65a713571e88a9dc8e52c00"
+      }
+    },
+    "installed": {
+      "nodeExitCode": 0,
+      "actualReceivers": 1,
+      "actualEmitters": 1,
+      "childExitCodes": [
+        0,
+        0
+      ],
+      "childCloseCodes": [
+        0,
+        0
+      ],
+      "pipesActuallyClosed": 8,
+      "actualWriteCallbacksReturned": 8,
+      "originalPromisesActuallyJoined": 20,
+      "outerPostPinsMatched": 441,
+      "innerPostPinsMatched": 433,
+      "nativePublicResolutions": 3,
+      "publicEntry": "ordinary ancestor @101/connect/dist/index.js",
+      "observerResult": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-installed-positive/installed-observer-result.json",
+        "bytes": 253367,
+        "sha256": "0d604817c5043db4c155acaa1ded4d4f534f7bc5cc9450033683cb6fef54e7c0"
+      },
+      "runnerResult": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-installed-positive/installed-runner-result.json",
+        "bytes": 52581,
+        "sha256": "e1e091e02e23065fadabd39cc59829cbe7d7009bbca3f1aedbd3852fe05e9832"
+      },
+      "acceptance": {
+        "path": "/private/tmp/101-controller-8-root/ir-learning-installed-positive/installed-positive-acceptance.json",
+        "bytes": 4475,
+        "sha256": "e16f32be515eb4707e26dbadfb6ada7705c6f63a88ee243f33f12dc205f45af2"
+      }
+    },
+    "observedDataflow": {
+      "actualPair": {
+        "address": 52,
+        "command": 162
+      },
+      "actualIRN1Bytes": 282,
+      "actualEmitCommandsPerMode": 1,
+      "demodulatedIRR1Sha256": "3c91737f3cc95e56142ea7cc32dab23070d78ac5d2bba37208ac920a5922684d",
+      "configuredIRN1Sha256": "334f1028fb8488a2ca7f43d27b75c4a2a0d762509740bb5a00f1472f78205f8e",
+      "domainsDistinct": true,
+      "alternatePairSourceFixture": "0x12/0x7e genuine source SDK/private gateway path; independently retained literal inverse-byte/digest checks, no third actual executable producer."
+    }
+  },
+  "limits": {
+    "captureReviewEmissionMsMaximum": 500,
+    "inertRetentionMsMaximum": 60000,
+    "outerCheckpointMs": 5000,
+    "sourceAttempts": 1,
+    "installedAttempts": 1,
+    "checkpointReached": false,
+    "SDKBuildInstall": false,
+    "physical": false,
+    "fullA07A08": false,
+    "supportPromotion": false
+  },
+  "unchangedSDK": {
+    "packages": 7,
+    "sourcePins": 135,
+    "ordinaryInstalledPins": 414,
+    "manifestSha256": "ba282ba35d889db8461cf20262998ee0391785f548613718273cd8be90f8ae9c",
+    "topology": "Installed callers use13 exact copied local example/private/validator files, no child node_modules or aliases. Both factory consumers and coordinator resolve the same ordinary ancestor public JavaScript entry. Local private .ts uses native Node stripping."
+  },
+  "independentReviews": [
+    {
+      "scope": "exact v2 core source, seal-time authority, shared close/error identities and held joins",
+      "report": {
+        "path": "/private/tmp/101-controller-8-ir-v2-core-review/report.json",
+        "bytes": 25505,
+        "sha256": "470df54544af806d5ae0bb97b188242b6fb55ec7d8d408a994039f684b80b82d"
+      }
+    },
+    {
+      "scope": "exact v2 callers, accounting and source/installed composition",
+      "report": {
+        "path": "/private/tmp/101-controller-8-ir-v2-caller-review/report.json",
+        "bytes": 20213,
+        "sha256": "786ba017fc7de6292a8cd6f291d541a83e3a3c37cd3b9eb61872914380b0b634"
+      }
+    },
+    {
+      "scope": "current-base passive actual observer and bounded source release",
+      "report": {
+        "path": "/private/tmp/101-controller-8-ir-positive-observer-review/report.json",
+        "bytes": 63980,
+        "sha256": "6202ab006c33f16ca2db40725124fb306db0559be4ba85564cf3d827210b98d2"
+      }
+    },
+    {
+      "scope": "accepted source prerequisite and fresh installed release/topology",
+      "report": {
+        "path": "/private/tmp/101-controller-8-ir-installed-release-review/report.json",
+        "bytes": 140883,
+        "sha256": "7db894d6683300df2b76876a183d414d1c64946faf525f0385ad3e29b40a4f8b"
+      }
+    }
+  ],
+  "ancillaryEvidenceDisposition": {
+    "finding": "IR-V2-EVIDENCE-001",
+    "disposition": {
+      "path": "/private/tmp/101-controller-8-root/ir-v2-ancillary-evidence-disposition.json",
+      "bytes": 2409,
+      "sha256": "1f2a3cecdb18830d6d20cea0ae3f56ef413b37c06a06b75d1b5d1193965de1ba"
+    },
+    "truth": "Exactly one stale zero-byte nested pin for the freeze script own stdout is excluded; true completed1378-byte output was already retained in prior raw manifest/blob/ref. All executable source and meaningful RED/GREEN pins match. Original frozen packet remains unchanged; no blanket all-nested-pins-match claim."
+  },
+  "rawEvidenceManifests": [
+    {
+      "path": "/private/tmp/101-controller-8-root/ir-v2-source-review-raw-manifest.json",
+      "bytes": 15069,
+      "sha256": "b35dc6757d35d3da2f7b765d4d6b8cc8f247dd5fa8ffb95411515ee9ad5252f2",
+      "blob": "a155a7a0360dc6984af50c4a9e70e5b464b9c262",
+      "ref": "refs/codex/evidence/2026-10-09-ir-learning/controller-8-source-review/manifest"
+    },
+    {
+      "path": "/private/tmp/101-controller-8-root/ir-learning-source-positive-raw-manifest.json",
+      "bytes": 12720,
+      "sha256": "ae7c5066903d5e70b55d5acb3d52b70293725ce79a36067e530817d9025cda9e",
+      "blob": "fefe5398f62e4bac4f390640a5a720d0f597c4fe",
+      "ref": "refs/codex/evidence/2026-10-09-ir-learning/controller-8-source-positive/manifest"
+    },
+    {
+      "path": "/private/tmp/101-controller-8-root/ir-learning-installed-positive-raw-manifest.json",
+      "bytes": 13323,
+      "sha256": "d7f42d18e8263da708febbd029def9578b988a26a708fd0780755db491d05830",
+      "blob": "ba9872fb97013effae9e2c4245cc1c329f4f60b9",
+      "ref": "refs/codex/evidence/2026-10-09-ir-learning/controller-8-installed-positive/manifest"
+    }
+  ],
+  "proofLimits": [
+    "Selected nominal software workflow only; actual captured receipt timing representation is reconstructed-selected-nominal, received carrier/capture time/measurement age unknown.",
+    "Configured38000Hz and provider-completed software dispatch do not prove measured waveform/carrier/reception/tolerance, physical emitter, appliance meaning, target acknowledgement or observed state.",
+    "This is a local coordinator and exact copied caller qualification, no new public SDK package export, dependency, service, SDK build/install, or physical/support/full A07/A08 acceptance. Both checklist tasks remain partial."
+  ],
+  "requiredCandidateGates": {
+    "candidateRef": "refs/codex/evidence/2026-10-09-ir-learning/controller-8-integrated/candidate",
+    "resultRef": "refs/codex/evidence/2026-10-09-ir-learning/controller-8-integrated/gates",
+    "commands": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "policy": "Only completed green results for the exact referenced tree permit local commit. Fresh build before rendered; local build does not publish."
+  }
+}
