@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "status": "selected-web-required-file-admission-verified-full-artifact-scope-open",
+  "localOnly": true,
+  "baseRevision": "704c25d0b88188b0a9996e113e39f1bbb3a04465",
+  "sourceSha256": {
+    "tools/web-artifact-validation.mjs": "835a89457cc1afaddce8b7bf1b9a777e21d883658ad7c182c328a83e689a81bf",
+    "tools/package-release.mjs": "84c950462537d54655276bf5b486271428f41b4f4d26df6c190ca4be27bcb7ea",
+    "tests/release-packaging.test.ts": "e0b92b9eb9acb15745a0205edf9c5bc32444bfce2a933ca808e6d8c9bec8353b"
+  },
+  "outcome": "After fingerprinting the copied web output, packaging requires 14 nonempty bootstrap/model/WASM files and verifies all file/css/assets/import/dynamicImports references in the client Vite manifest, including agreement with the browser-entry manifest.",
+  "validation": {
+    "meaningfulOld": {
+      "processExitCode": 0,
+      "expectedRejection": 1,
+      "packagingComplete": true,
+      "produced": 1,
+      "omittedOnly": "client/models/hand_landmarker.task",
+      "assertionRecordSha256": "34876acb1d4e71ef5b8dd891e8a51b1c212a442530c31cda05eb8b9d2541c51d",
+      "meaning": "The successful fixture producer copied actual freshly gated build output and removed only the hand model. The unchanged packager falsely accepted it; this is the semantic expected-rejection counterexample."
+    },
+    "copiedActualProducerOutput": {
+      "files": 600,
+      "manifestSha256": "b1da30ea6441bfdf80a7df2e1b8b04591186253c02ee396633c2ebf8a0ea60aa",
+      "sourceRevision": "704c25d0b88188b0a9996e113e39f1bbb3a04465",
+      "sourceRebuiltForQualification": false,
+      "records": [
+        {
+          "variant": "intact",
+          "command": [
+            "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+            "tools/package-release.mjs",
+            "--release",
+            "web"
+          ],
+          "cwd": "/private/tmp/101-controller-7-root/web-required-assets/qualified-intact",
+          "environment": {
+            "PATH": "/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC"
+          },
+          "exitCode": 0,
+          "expected": 0,
+          "durationMs": 883,
+          "packagingComplete": true,
+          "produced": 1,
+          "skipped": [],
+          "manifestPath": "/private/tmp/101-controller-7-root/web-required-assets/qualified-intact/release/package-8UG87S/manifest.json",
+          "manifestSha256": "243156b5bc41e726793b40e1d9aaf54d2f921c6e8b134ac888123d196dc3fc68",
+          "copiedCandidatePresent": true,
+          "sourceOutputRebuilt": false,
+          "physical": false
+        },
+        {
+          "variant": "missing-model",
+          "command": [
+            "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+            "tools/package-release.mjs",
+            "--release",
+            "web"
+          ],
+          "cwd": "/private/tmp/101-controller-7-root/web-required-assets/qualified-missing-model",
+          "environment": {
+            "PATH": "/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC"
+          },
+          "exitCode": 1,
+          "expected": 1,
+          "durationMs": 659,
+          "packagingComplete": false,
+          "produced": 0,
+          "skipped": [
+            {
+              "target": "web",
+              "profile": "production",
+              "reason": "Missing or empty required web asset: client/models/hand_landmarker.task"
+            }
+          ],
+          "manifestPath": "/private/tmp/101-controller-7-root/web-required-assets/qualified-missing-model/release/package-8NmNXc/manifest.json",
+          "manifestSha256": "fb170ba1b6faae81f55c6640c2944ad11f550e1a73c02b2f3a7e3971977e1e7c",
+          "copiedCandidatePresent": false,
+          "sourceOutputRebuilt": false,
+          "physical": false
+        },
+        {
+          "variant": "empty-model",
+          "command": [
+            "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+            "tools/package-release.mjs",
+            "--release",
+            "web"
+          ],
+          "cwd": "/private/tmp/101-controller-7-root/web-required-assets/qualified-empty-model",
+          "environment": {
+            "PATH": "/Users/km/.nvm/versions/node/v24.14.0/bin:/usr/bin:/bin",
+            "LANG": "C",
+            "LC_ALL": "C",
+            "TZ": "UTC"
+          },
+          "exitCode": 1,
+          "expected": 1,
+          "durationMs": 673,
+          "packagingComplete": false,
+          "produced": 0,
+          "skipped": [
+            {
+              "target": "web",
+              "profile": "production",
+              "reason": "Missing or empty required web asset: client/models/hand_landmarker.task"
+            }
+          ],
+          "manifestPath": "/private/tmp/101-controller-7-root/web-required-assets/qualified-empty-model/release/package-OGhpqP/manifest.json",
+          "manifestSha256": "fb170ba1b6faae81f55c6640c2944ad11f550e1a73c02b2f3a7e3971977e1e7c",
+          "copiedCandidatePresent": false,
+          "sourceOutputRebuilt": false,
+          "physical": false
+        }
+      ]
+    },
+    "focusedChecks": {
+      "initialFunctionalPassed": 20,
+      "initialSetupFailures": 1,
+      "failure": "Missing unchanged Rust collector helper in the isolated candidate fixture; retained setup failure is not asset regression credit.",
+      "repair": "Copied the unchanged helper; the affected actual collector-format selector passed. Full suite is verified only by the exact candidate gate reference."
+    },
+    "exactCandidateGateEvidenceRef": "refs/codex/evidence/2026-10-09-web-required-assets/controller-7-integrated/gates"
+  },
+  "bounds": {
+    "requiredFiles": 14,
+    "manifestBytes": 2097152,
+    "manifestEntries": 4096,
+    "pathsOrImportsPerField": 4096,
+    "pathCharacters": 2048,
+    "scope": "Selected declared local file profile; ordinary copied files must exist with nonzero bytes. Manifest bytes are checked against the copied fingerprint before interpretation.",
+    "fullHtmlCssWorkerPwaServerDependencyGraph": false,
+    "modelFormatOrInference": false,
+    "fullK12": false,
+    "legalReview": false,
+    "crossBuildSourceDriftFence": false,
+    "releaseAccepted": false,
+    "supportRows": []
+  },
+  "retainedRawEvidence": {
+    "manifestPath": "/private/tmp/101-controller-7-root/web-required-assets/raw-source-manifest.json",
+    "manifestSha256": "c6f71e457c9d70030ccd54a46a0dfe7f60a3a61e83d98eea74100b846aee3404",
+    "manifestBlob": "0ab5d91b1a99945c0b3e0950dfcdbf6f737f3f91",
+    "manifestRef": "refs/codex/evidence/2026-10-09-web-required-assets/controller-7-source/manifest",
+    "entries": 647,
+    "uniqueBytes": 601
+  },
+  "independentReview": {
+    "status": "ACCEPTED-G2-SELECTED-WEB-FILE-ADMISSION-SOURCE-FOR-ROOT-INTEGRATION-AND-EXACT-CANDIDATE-GATES",
+    "reportPath": "/tmp/101-controller-7-web-assets-review/report.json",
+    "reportSha256": "b49bcfebc12da6ce22b1348f16d5eb841fd12bd5eeff27ffb99416965775c496",
+    "manifestPath": "/tmp/101-controller-7-web-assets-review/manifest.json",
+    "manifestSha256": "e26c40d18c9ec0076b579e5477e3a6a88998ce1a012ca0be5720167893846f27",
+    "blockingFindings": [],
+    "runtimeExecutionByReviewer": false
+  },
+  "styleRepair": {
+    "firstCandidateTree": "00670d293d2d0244574d400054eb8cf9f98650cb",
+    "firstGateFailure": "eslint no-control-regex rejected the unchanged selected control-character range. Types passed on that first tree; no other broad gate ran.",
+    "correction": "Equivalent character-code check <=32 with all other helper bytes unchanged; exact independent semantic review accepted it.",
+    "affectedChecks": {
+      "helperStyle": "pass",
+      "assetFixtureGroups": 2,
+      "resultSha256": "b845862625180f42466f56043d571140c1ad52d533b5fccc0d7a8f0f172edca6"
+    },
+    "rawManifestSha256": "922a7a2215ede24c4969377f6d451d2f18f5264b34911e7686e03f7bc6c5580f",
+    "rawManifestRef": "refs/codex/evidence/2026-10-09-web-required-assets/controller-7-style-repair/manifest",
+    "reportSha256": "67b0011203c177d63120d7a19bc72bbed6459780abde8b7fa9a9d4fc1b7f2630",
+    "reviewManifestSha256": "41dd43873ac719a7d96b43e214c307ec425e74ab188f014911bc880d8d529426",
+    "reviewerExecution": false
+  }
+}

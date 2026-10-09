@@ -7,6 +7,18 @@ import { join, resolve } from 'node:path';
 import test from 'node:test';
 
 const digest = (value: string) => createHash('sha256').update(value).digest('hex');
+const fixtureWebRuntimePaths = [
+  'client/models/pose_landmarker_lite.task', 'client/models/hand_landmarker.task',
+  'client/mediapipe/wasm/vision_wasm_internal.js', 'client/mediapipe/wasm/vision_wasm_internal.wasm',
+  'client/mediapipe/wasm/vision_wasm_nosimd_internal.js', 'client/mediapipe/wasm/vision_wasm_nosimd_internal.wasm',
+  'client/sw.js', 'client/link.webmanifest', 'client/manifest.webmanifest', 'client/icons/101-link.svg', 'server/BUILD_ID',
+  'client/_next/static/chunks/fixture.js', 'client/_next/static/chunks/dependency.js',
+  'client/_next/static/css/fixture.css', 'client/_next/static/media/fixture.woff2',
+];
+const fixtureWebManifest = {
+  'virtual:vinext-app-browser-entry': { file: '_next/static/chunks/fixture.js', imports: ['dependency'], css: ['_next/static/css/fixture.css'] },
+  dependency: { file: '_next/static/chunks/dependency.js', assets: ['_next/static/media/fixture.woff2'] },
+};
 const fixtureLegalText = 'Fixture terms — exact bytes\n';
 const fixtureLegalHash = digest(fixtureLegalText);
 const fixtureLock = JSON.stringify({ packages: {
@@ -36,7 +48,7 @@ function metadataBytes(path: string) {
 function fixture(states: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), '101-package-contract-'));
   mkdirSync(join(root, 'tools'));
-  for (const name of ['package-release.mjs', 'license-inventory-validation.mjs', 'generate-license-inventory.mjs']) {
+  for (const name of ['package-release.mjs', 'license-inventory-validation.mjs', 'generate-license-inventory.mjs', 'web-artifact-validation.mjs']) {
     copyFileSync(resolve(import.meta.dirname, '../tools', name), join(root, 'tools', name));
   }
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'local-packaging-fixture', version: '0.1.0', private: true,
@@ -46,7 +58,7 @@ function fixture(states: Record<string, string> = {}) {
   writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock);
   writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), '[package]\nname = "oneohone-hub"\nversion = "0.1.0"\n');
   writeFileSync(join(root, 'emit.mjs'), `
-    import { appendFileSync, mkdirSync, symlinkSync, writeFileSync } from 'node:fs';
+    import { appendFileSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
     import { gzipSync } from 'node:zlib';
     const target = process.argv[2], state = ${JSON.stringify(states)}[target] ?? 'ok';
@@ -61,6 +73,22 @@ function fixture(states: Record<string, string> = {}) {
     else if (state === 'private-key-content') writeFileSync(path, '-----BEGIN PRIVATE KEY-----\\nfixture\\n-----END PRIVATE KEY-----');
     else if (state === 'local-path-content') writeFileSync(path, 'workspace: ' + process.cwd());
     else writeFileSync(path, 'production-path fixture bytes for ' + target);
+    if (target === 'web') {
+      for (const asset of ${JSON.stringify(fixtureWebRuntimePaths)}) {
+        mkdirSync(dirname('dist/' + asset), { recursive: true }); writeFileSync('dist/' + asset, 'public asset');
+      }
+      mkdirSync('dist/client/.vite', { recursive: true });
+      const manifest = ${JSON.stringify(fixtureWebManifest)};
+      if (state === 'dangling-import') manifest['virtual:vinext-app-browser-entry'].imports = ['not-in-manifest'];
+      if (state === 'unsafe-path') manifest.dependency.file = '../outside.js';
+      writeFileSync('dist/client/.vite/manifest.json', JSON.stringify(manifest));
+      writeFileSync('dist/client/vinext-client-entry-manifest.json', JSON.stringify({ appBrowserEntry: '_next/static/chunks/fixture.js' }));
+      if (state === 'missing-model') rmSync('dist/client/models/hand_landmarker.task');
+      if (state === 'empty-model') writeFileSync('dist/client/models/hand_landmarker.task', '');
+      if (state === 'missing-dependency') rmSync('dist/client/_next/static/chunks/dependency.js');
+      if (state === 'empty-css') writeFileSync('dist/client/_next/static/css/fixture.css', '');
+      if (state === 'missing-font') rmSync('dist/client/_next/static/media/fixture.woff2');
+    }
     if (state === 'mismatched-compression' && target === 'web') {
       mkdirSync('dist/client/_next/static', { recursive: true });
       writeFileSync('dist/client/_next/static/fixture.js', 'public asset');
@@ -385,4 +413,30 @@ test('packaging fixtures preserve the actual JavaScript and Rust collector outpu
     assert.equal(result.metadataSha256, createHash('sha256').update(metadataBytes).digest('hex'));
     assert.deepEqual({ ...result, metadataSha256: digest('owned offline metadata fixture') }, JSON.parse(fixtureRustInventory));
   } finally { f.close(); }
+});
+
+
+test('web packaging rejects absent and empty declared runtime assets after a successful producer', () => {
+  for (const state of ['missing-model', 'empty-model', 'missing-dependency', 'empty-css', 'missing-font']) {
+    const f = fixture({ web: state });
+    try {
+      const result = f.run(['--release', 'web']); assert.equal(result.status, 1, state + ': ' + result.stdout + result.stderr);
+      const { path, value } = f.manifests()[0]; assert.deepEqual(value.produced, []);
+      assert.equal(value.packagingComplete, false); assert.match(value.skipped[0].reason, /required web asset/i);
+      assert.equal(readFileSync(join(f.root, 'invoked.log'), 'utf8'), 'web\n');
+      assert.equal(existsSync(resolve(path, '..', 'web')), false);
+    } finally { f.close(); }
+  }
+});
+
+test('web packaging rejects dangling manifest imports and unsafe dependency paths', () => {
+  for (const state of ['dangling-import', 'unsafe-path']) {
+    const f = fixture({ web: state });
+    try {
+      const result = f.run(['--release', 'web']); assert.equal(result.status, 1, state + ': ' + result.stdout + result.stderr);
+      const { path, value } = f.manifests()[0]; assert.deepEqual(value.produced, []);
+      assert.match(value.skipped[0].reason, /web (?:manifest|asset path)/i);
+      assert.equal(existsSync(resolve(path, '..', 'web')), false);
+    } finally { f.close(); }
+  }
 });

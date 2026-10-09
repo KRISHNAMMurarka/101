@@ -15,6 +15,7 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { auditReleaseLicenseInventories } from "./license-inventory-validation.mjs";
+import { auditWebRuntimeAssets } from "./web-artifact-validation.mjs";
 import * as zlib from "node:zlib";
 
 const run = promisify(execFile);
@@ -166,6 +167,7 @@ async function collect(source, destination, metadata = []) {
           throw new Error(`Unexpected web artifact file: ${entry.path}`);
         }
       }
+      await auditWebRuntimeAssets(to, fingerprint.contents);
       await auditWebContents(to, fingerprint.contents);
     }
     return { artifact: relative(ROOT, to).replaceAll("\\", "/"), ...fingerprint };

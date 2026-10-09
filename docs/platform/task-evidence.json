@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 190,
+  "revision": 191,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13418,6 +13418,34 @@
         "Current ordinary local lock files, installed JavaScript sources and offline Cargo cache; missing terms/source targets remain separate"
       ],
       "supportRows": []
+    },
+    {
+      "id": "web-required-assets-2026-10-09",
+      "revision": "857c347b25113b5e3fec9d97a0a248652f56fd54f68339f01d71e8255d2a17d8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K12"
+      ],
+      "paths": [
+        "tools/web-artifact-validation.mjs",
+        "tools/package-release.mjs",
+        "tests/release-packaging.test.ts",
+        "docs/platform/receipts/2026-10-09-web-required-assets.json"
+      ],
+      "environment": "Local macOS arm64/Node24.14.0; actual owned npm/CLI packaging fixtures copy pinned fresh 600-file build output.",
+      "reproduction": "Successful old producer omitted only the hand model and old packager falsely accepted it. Repaired exact CLI admits intact copied output and rejects missing/empty model output, removing its owned negative candidate. Independent byte-pinned review accepted the selected file contract; exact candidate gates referenced by receipt.",
+      "scope": "14 selected bootstrap/model/WASM files and declared client Vite file/css/assets/import/dynamicImports references only. Complete transitive runtime/private-content audit, legal/model validity, cross-build source drift and full K12 remain open.",
+      "failure": null,
+      "equipment": [
+        "Ordinary current local web build output and exact copied manifests; complete target-specific content review remains separate"
+      ],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -17028,7 +17056,8 @@
         "native-binding-contents-built-partial-2026-10-07",
         "processor-native-exact-local-gates-2026-10-07",
         "seven-package-sdk-content-audit-2026-10-07",
-        "telemetry-sdk-exact-local-gates-2026-10-07"
+        "telemetry-sdk-exact-local-gates-2026-10-07",
+        "web-required-assets-2026-10-09"
       ],
       "dependencies": [],
       "equipment": [

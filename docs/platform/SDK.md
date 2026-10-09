@@ -3940,6 +3940,16 @@ lock pin or broken text provenance rejects the web target. Run
 Valid incomplete coverage remains incomplete and does not confer redistribution
 approval. See the [selected packaging admission evidence](receipts/2026-10-09-release-inventory-admission.json).
 
+After copying and fingerprinting web output, the packager requires 14 nonempty
+bootstrap, model and MediaPipe runtime files. Every file, CSS and asset reference
+in the client Vite manifest must resolve to a nonempty copied file; imports and
+dynamic imports must resolve to manifest entries, and the browser entry must
+agree with its separate manifest. Manifest reads are bounded to 2 MiB and must
+match the fingerprint. Missing files reject the web target and remove its owned
+candidate. This selected file check does not establish the complete HTML/CSS,
+worker, PWA or server dependency graph, model validity or redistribution approval.
+See the [required web asset evidence](receipts/2026-10-09-web-required-assets.json).
+
 ## Local application sharing task
 
 Sharing offers two explicitly started local control sets and either one shared
