@@ -89,14 +89,25 @@ try {
     finally { await bridge.close(); }
   }
   {
-    const registration = new AbortController(); let startWrites = 0, opened = 0;
+    const registration = new AbortController(); let startWrites = 0, opened = 0, expiresAt, observedAfterExpiry;
     const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration, 10); }, authorizeRead() {},
+      authorizeRegistration(request) { const grant = approval(request, registration); expiresAt = grant.expiresAt; return grant; }, authorizeRead() {},
       onProcess(child) { opened++; const write = child.stdin.write.bind(child.stdin);
         child.stdin.write = (...args) => { if (String(args[0]).startsWith('START ')) startWrites++; return write(...args); };
-        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30);
+        // Pinning happens before this observer. Use the ordinary grant so its
+        // preparation can finish, then wait for its actual monotonic expiry
+        // after observing the real child; no assumption about filesystem speed.
+        const sleeper = new Int32Array(new SharedArrayBuffer(4));
+        while (performance.now() < expiresAt)
+          Atomics.wait(sleeper, 0, 0, Math.max(1, Math.ceil(expiresAt - performance.now())));
+        observedAfterExpiry = performance.now();
       } });
-    try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 1); assert.equal(startWrites, 0);
+    try { const starting = bridge.start();
+      assert.ok(Number.isFinite(observedAfterExpiry) && observedAfterExpiry >= expiresAt, 'Actual child observer reaches grant expiry');
+      // Check before yielding: an overdue startup timer must not substitute
+      // for the synchronous authority fence after the process observer.
+      assert.equal(bridge.status().phase, 'retiring');
+      assert.equal((await starting).ok, false); assert.equal(opened, 1); assert.equal(startWrites, 0);
       reviewChecks.push('post-observer-expiry-zero-native-start'); }
     finally { await bridge.close(); }
   }

@@ -1,0 +1,950 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "batch": 3,
+  "result": "pass",
+  "localOnly": true,
+  "baseCommit": "6358405b6dd408ca1febca4fafed224a04ea383a",
+  "tasks": [
+    "Q05",
+    "Q07",
+    "U12"
+  ],
+  "sourceSha256": {
+    "tools/qa-durable-processor-management.mjs": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+    "tools/qa-native-resource-runtime.mjs": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910"
+  },
+  "scratchCleanup": {
+    "allSelectedNativeRunFoldersRemoved": true,
+    "failedEmptyFoldersRemoved": 2,
+    "noInstalledCopiesCreated": true,
+    "allocatedGBFreedThisBatch": 0
+  },
+  "scope": "New native documents in one isolated BrowserContext, including inert arrival, signed read-only inactive restoration, independent fresh input/output approvals, actual number/indicator effect and retained publisher revocation. Default same-document Settings-link paths also qualified. No browser restart/profile persistence, simultaneous cross-page operation, queued-close/quota fault, physical device, account/provider or full task acceptance.",
+  "requiredGateRef": "refs/codex/evidence/2026-10-10-batches/batch-3/gates",
+  "requiredGatePolicy": "All five required exact frozen candidate gates, including a fresh build before rendered tests, must pass before local commit. Both engines/default and cold-document journeys must also pass on that exact fresh candidate build. Actual gates/raw logs and final native-evidence reference are retained in the named Git gate document. Earlier green gates/failed fresh-native qualification are preserved separately; no reused failed or source-drifted result.",
+  "parentTasksRemainOpen": [
+    "Q05",
+    "Q07",
+    "U12"
+  ],
+  "tally": {
+    "total": 272,
+    "completed": 123,
+    "open": 149
+  },
+  "supportRowsAccepted": 0,
+  "repositoryGateRegression": {
+    "firstCandidateTree": "19585c3948131c9ced2d1f2cf23ffa0f019e1931",
+    "firstFailedGateRef": "refs/codex/evidence/2026-10-10-batches/batch-3/first-final-gate-failure/gates",
+    "diagnosticEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/native-fixture-gate-diagnosis",
+    "diagnosticEvidenceTree": "acee98d4fd7221eae60258fda5f56a1e353c5670",
+    "originalUnitResult": {
+      "tests": 3252,
+      "passed": 3247,
+      "failed": 5
+    },
+    "diagnosis": "Two Matter producer-ready assertions and two Mosquitto executable-discovery failures passed their exact diagnostic selectors with original native limits. ROS startup-close failure reproduced independently: test checked release after arbitrary100ms rather than actual native closure. Native executable help then completed within0.006s; original failures retained. Environmental slowdown is inferred, not proved as the sole cause.",
+    "repair": "Both ROS native-close cleanup checks now wait for the authentic native ChildProcess close event with a cancellable1500ms observation bound, matching the existing fixture bound. They still withhold the original native close event and assert the actual public startup/close promise remains unresolved until release; no replacement events, product deadline widening or failure filtering.",
+    "focusedResult": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "log": "outputs/batches/2026-10-10-batch-3-final-gates/ros-native-close-fixed.log",
+      "logSha256": "31c7749d5c9c0d965b9c1336d8834f8e7a08b7339324c966d79426547fe6d43c"
+    },
+    "sourcePath": "packages/hub-server/src/rosbridge-pose-connector.test.ts",
+    "sourceSha256": "a8f557587f10a4b6fe356f209ee8f218c3ba97f3f37358c3df66aa82ee31ba0e",
+    "nativeExpiryFixture": {
+      "firstFailedTree": "87af85699b382b60e2355bd1e420106b55108caf",
+      "firstFailedGateRef": "refs/codex/evidence/2026-10-10-batches/batch-3/macos-qualified-unit-failure",
+      "firstFullUnitResult": {
+        "tests": 3252,
+        "passed": 3251,
+        "failed": 1
+      },
+      "oldSourceSha256": "3f73a293b6cbc5df2aef41cc36e445733b81e3cd981e5d90561bc8284d2de7ba",
+      "sourcePath": "tools/qa-native-resource-runtime.mjs",
+      "sourceSha256": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910",
+      "diagnosis": "A10ms fixture registration grant can expire during actual executable pin/copy before onProcess. The bridge correctly issues zero children; the post-observer-expiry fixture wrongly assumed a child had already been spawned.",
+      "regression": "Pass through the actual private image write, then hold its real return for30ms using native Atomics.wait. The literal old fixture fails opened0 versus expected1. No fake spawn, clock, grant or native callback.",
+      "repair": "Use the existing ordinary9000ms fixture grant, observe the actual child, then block until its genuine monotonic expiry. Before yielding, assert the observed expiry outside the bridge-caught callback and require synchronous retiring phase, preventing an overdue startup timer from masking the authority fence. Then require failed start, exactly one child, zero native START writes and await actual bridge close.",
+      "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355",
+      "productionAuthorityAndLifecycleLimitsChanged": false,
+      "unitTimeoutMs": 20000,
+      "expiryFixtureGrantMs": {
+        "before": 10,
+        "after": 9000,
+        "ordinaryExistingGrant": true,
+        "actualExpiryAwaited": true
+      },
+      "evidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/native-expiry-fixture-regression",
+      "evidenceTree": "17b82e69fd734092daa4eeb3dc18ea7f08f1be4c",
+      "oldRegression": {
+        "command": [
+          "node",
+          "--import",
+          "/Users/km/Dev/101/outputs/batches/2026-10-10-native-expiry-regression/actual-pin-delay.mjs",
+          "tools/qa-native-resource-runtime.mjs",
+          "--source"
+        ],
+        "exitCode": 1,
+        "elapsedSeconds": 0.7756395409815013,
+        "expectedFailure": "Actual private image write completes, then its30ms return delay expires the10ms fixture grant before native spawn; old fixture wrongly expects one child",
+        "logSha256": "6b89dcf5a7e2c67f1979b0b6d83549bd999a08b1446023bf3b75415aeda68e00"
+      },
+      "newRegression": {
+        "command": [
+          "node",
+          "--import",
+          "./outputs/batches/2026-10-10-native-expiry-regression/actual-pin-delay.mjs",
+          "tools/qa-native-resource-runtime.mjs",
+          "--source"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.516968708019704,
+        "logSha256": "d6f1ca39e5f55209a96696f62e9e080a1b62a3a86d1a12678b324b45080378f7",
+        "qaSourceSha256": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910",
+        "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355"
+      },
+      "originalNativeUnitTest": {
+        "command": [
+          "node",
+          "--experimental-strip-types",
+          "--test",
+          "tests/native-resource-runtime.test.ts"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 12.042661500163376,
+        "logSha256": "f17a657655506befe3a0af70e84687e9051791be9983bbe195dd2409611b79ce",
+        "qaSourceSha256": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910",
+        "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355"
+      },
+      "scope": "Fixture observation repair. OS executable-bootstrap stalls seen in earlier runs are separately retained and have no claimed OS fix. Final exact candidate gates and fresh browser evidence remain required before integration.",
+      "finalEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/native-expiry-fixture-final",
+      "finalEvidenceTree": "6224bc14eba33fb81ab43193dfa8a4e8403fc2a8",
+      "independentReview": {
+        "result": "accept",
+        "reviewer": "independent read-only native_expiry_review subagent",
+        "sourceSha256": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910",
+        "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355",
+        "remainingActionableFindings": [],
+        "resolvedFindings": [
+          "Assert actual expiry and retiring phase synchronously before yielding so an overdue startup timer cannot mask a missing expiry fence."
+        ],
+        "diagnosticMutation": "Deliberately rejected module-load removal of only the synchronous post-observer authority fence. Production source bytes unchanged; real native fixtures. Old weak test passes, strengthened test fails starting versus retiring.",
+        "runtimeInspected": [
+          "pre-review-missing-fence.json",
+          "reviewed-missing-fence.json",
+          "reviewed-real-pin-delay.json",
+          "reviewed-original-native-test.json"
+        ],
+        "logHashesVerified": true,
+        "reviewWasReadOnly": true,
+        "originalNativeTestTimeoutMs": 20000
+      },
+      "missingFenceCoverage": {
+        "deliberatelyRejectedMutation": true,
+        "productionFileChanged": false,
+        "oldWeakFixture": {
+          "command": [
+            "node",
+            "--experimental-loader",
+            "./outputs/batches/2026-10-10-native-expiry-regression/omit-expiry-fence.loader.mjs",
+            "tools/qa-native-resource-runtime.mjs",
+            "--source"
+          ],
+          "exitCode": 0,
+          "elapsedSeconds": 12.966359375044703,
+          "logSha256": "065c10a1a5f394634b3c888973eb20342b725626cce3f5ab495781be4d9536dd",
+          "qaSourceSha256": "8c73be37920583929df873e91e3a2ef777902f8a9712a8391c6d1f73e82fb427",
+          "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355"
+        },
+        "strengthenedFixture": {
+          "command": [
+            "node",
+            "--experimental-loader",
+            "./outputs/batches/2026-10-10-native-expiry-regression/omit-expiry-fence.loader.mjs",
+            "tools/qa-native-resource-runtime.mjs",
+            "--source"
+          ],
+          "exitCode": 1,
+          "elapsedSeconds": 9.71237041708082,
+          "logSha256": "2eab088088d6b1ebe0a8959c70d093e180be9384ce127600fe66974f68eda399",
+          "qaSourceSha256": "86acd3cdbcaa8e863fe64b837d01ef2a1fb8a4a69b5c3a37d412c1138ed5c910",
+          "productionBridgeSha256": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355"
+        },
+        "expectedFailure": "Synchronous bridge phase is starting rather than retiring, before timers can run.",
+        "realNativeChildAndClock": true
+      }
+    }
+  },
+  "historicalQualification": {
+    "qualificationSourceTree": "8b97c8779ebdf4beb53b72952eef5b23a18cef19",
+    "actualBuiltSourceTree": "3ce0985354af4cd7e268c512851379b6aecf40c9",
+    "buildBinding": {
+      "sourceInputs": 159,
+      "unchangedBuiltInputs": 158,
+      "compiledInputs": 600,
+      "servedProofSha256": "b0c9c1701915f60f054ac4f0021a840eebfc401705555677d671844e3a43b6e0",
+      "scope": "158 selected existing runtime/product inputs byte-equal the already freshly built required candidate3ce0985354af4cd7e268c512851379b6aecf40c9; standalone QA tool separately pinned. Actual600 compiled inputs hashed before/after. This batch changes QA, native-close test observations and evidence; existing product/runtime bytes remain unchanged. Final required candidate gates and fresh-built native requalification are bound separately in requiredGateRef."
+    },
+    "evidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/runtime-evidence",
+    "evidenceTree": "b28e2d6a618b787b98b3985d4bd80d229573dac1",
+    "runtime": [
+      {
+        "receipt": "outputs/batches/2026-10-10-cold-document/joined-settings-link-chromium.json",
+        "receiptSha256": "f37fc9899f784c22543f4b631ee65144e87f6df324e180a05434ff73c6a5ceaf",
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55",
+        "nativeNodeExitCode": 0,
+        "status": "pass",
+        "documentMode": "settings-link-same-document",
+        "documentReopens": [],
+        "documentRetirements": [
+          {
+            "pageOrdinal": 1,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          }
+        ],
+        "journeys": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "requestCount": 78,
+        "matchedBuildResponses": 55,
+        "failedOriginRequests": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "finalPinsVerified": true,
+        "ownedRunRemoved": true
+      },
+      {
+        "receipt": "outputs/batches/2026-10-10-cold-document/joined-cold-chromium.json",
+        "receiptSha256": "ec80cc13696a3130ea811a37bbdab8aeddd80a425f7121dee497911ddfb2f8fe",
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55",
+        "nativeNodeExitCode": 0,
+        "status": "pass",
+        "documentMode": "new-native-page-same-context",
+        "documentReopens": [
+          {
+            "previousPageOrdinal": 1,
+            "newPageOrdinal": 2,
+            "previousTaskClosed": true,
+            "previousNativeReturnsSettled": true,
+            "previousPageClosed": true,
+            "distinctNativeDocument": true,
+            "arrivalNative": {
+              "publicVerifyKeys": 0,
+              "verifiedTrue": 0,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 0,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            },
+            "restoredNative": {
+              "publicVerifyKeys": 1,
+              "verifiedTrue": 2,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 1,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            }
+          },
+          {
+            "previousPageOrdinal": 2,
+            "newPageOrdinal": 3,
+            "previousTaskClosed": true,
+            "previousNativeReturnsSettled": true,
+            "previousPageClosed": true,
+            "distinctNativeDocument": true,
+            "arrivalNative": {
+              "publicVerifyKeys": 0,
+              "verifiedTrue": 0,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 0,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            },
+            "restoredNative": {
+              "publicVerifyKeys": 1,
+              "verifiedTrue": 2,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 1,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            }
+          }
+        ],
+        "documentRetirements": [
+          {
+            "pageOrdinal": 1,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          },
+          {
+            "pageOrdinal": 2,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          },
+          {
+            "pageOrdinal": 3,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 4,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          }
+        ],
+        "journeys": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "requestCount": 204,
+        "matchedBuildResponses": 55,
+        "failedOriginRequests": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "finalPinsVerified": true,
+        "ownedRunRemoved": true
+      },
+      {
+        "receipt": "outputs/batches/2026-10-10-cold-document/joined-cold-webkit.json",
+        "receiptSha256": "83cd32e2ffdc218f65d38c3737888c2d291056404ed2482fac0af5f1d4be06f4",
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "nativeNodeExitCode": 0,
+        "status": "pass",
+        "documentMode": "new-native-page-same-context",
+        "documentReopens": [
+          {
+            "previousPageOrdinal": 1,
+            "newPageOrdinal": 2,
+            "previousTaskClosed": true,
+            "previousNativeReturnsSettled": true,
+            "previousPageClosed": true,
+            "distinctNativeDocument": true,
+            "arrivalNative": {
+              "publicVerifyKeys": 0,
+              "verifiedTrue": 0,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 0,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            },
+            "restoredNative": {
+              "publicVerifyKeys": 1,
+              "verifiedTrue": 2,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 1,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            }
+          },
+          {
+            "previousPageOrdinal": 2,
+            "newPageOrdinal": 3,
+            "previousTaskClosed": true,
+            "previousNativeReturnsSettled": true,
+            "previousPageClosed": true,
+            "distinctNativeDocument": true,
+            "arrivalNative": {
+              "publicVerifyKeys": 0,
+              "verifiedTrue": 0,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 0,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            },
+            "restoredNative": {
+              "publicVerifyKeys": 1,
+              "verifiedTrue": 2,
+              "verifiedFalse": 0,
+              "cryptoPending": 0,
+              "ownerReads": 1,
+              "ownerWrites": 0,
+              "ownerLocks": 0,
+              "lockPending": 0
+            }
+          }
+        ],
+        "documentRetirements": [
+          {
+            "pageOrdinal": 1,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          },
+          {
+            "pageOrdinal": 2,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          },
+          {
+            "pageOrdinal": 3,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          }
+        ],
+        "journeys": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "requestCount": 220,
+        "matchedBuildResponses": 56,
+        "failedOriginRequests": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "finalPinsVerified": true,
+        "ownedRunRemoved": true
+      },
+      {
+        "receipt": "outputs/batches/2026-10-10-cold-document/joined-settings-link-webkit.json",
+        "receiptSha256": "724b48c7efa52a93ea0078bfdee60e54c15a585c61f65e71ce1d54be4a41fa21",
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "nativeNodeExitCode": 0,
+        "status": "pass",
+        "documentMode": "settings-link-same-document",
+        "documentReopens": [],
+        "documentRetirements": [
+          {
+            "pageOrdinal": 1,
+            "rootUnmounted": true,
+            "queuedLinkSetupRetired": true,
+            "prefetchReturnsJoined": 0,
+            "nativeCryptoPending": 0,
+            "nativeLockPending": 0,
+            "nativeDocumentBlank": true
+          }
+        ],
+        "journeys": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "requestCount": 82,
+        "matchedBuildResponses": 56,
+        "failedOriginRequests": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "finalPinsVerified": true,
+        "ownedRunRemoved": true
+      }
+    ],
+    "startupNegativeCleanup": {
+      "kind": "Genuine real local HTTP request with initial headers intentionally withheld; cleanup evidence only, no product journey qualification",
+      "old": {
+        "nativeNodeExitCode": 1,
+        "status": "fail",
+        "originReleaseRequiredBeforeCleanup": true,
+        "nativeOriginTrace": [
+          {
+            "event": "native-http-request",
+            "elapsedSeconds": 0.332,
+            "path": "/settings/processors"
+          },
+          {
+            "event": "origin-release",
+            "elapsedSeconds": 75.009
+          },
+          {
+            "event": "origin-response-issued",
+            "elapsedSeconds": 75.009
+          },
+          {
+            "event": "native-node-exit",
+            "elapsedSeconds": 105.083,
+            "exitCode": 1
+          }
+        ],
+        "cleanup": {
+          "pageTaskCloseAwaited": false,
+          "observedNativeReturnsSettled": false,
+          "ownedProbeRemoved": false,
+          "ownedPrefixLockSettled": false,
+          "documentsRetired": false,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        }
+      },
+      "new": {
+        "nativeNodeExitCode": 1,
+        "status": "fail",
+        "closedBeforeOriginRelease": true,
+        "nativeOriginTrace": [
+          {
+            "event": "native-http-request",
+            "elapsedSeconds": 0.404,
+            "path": "/settings/processors"
+          },
+          {
+            "event": "native-node-exit",
+            "elapsedSeconds": 60.486,
+            "exitCode": 1
+          },
+          {
+            "event": "origin-response-issued",
+            "elapsedSeconds": 60.487
+          }
+        ],
+        "cleanup": {
+          "pageTaskCloseAwaited": false,
+          "observedNativeReturnsSettled": false,
+          "ownedProbeRemoved": false,
+          "ownedPrefixLockSettled": false,
+          "documentsRetired": false,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "failure": {
+          "name": "TimeoutError",
+          "message": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:65488/settings/processors\", waiting until \"networkidle\"\u001b[22m\n",
+          "stack": "page.goto: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:65488/settings/processors\", waiting until \"networkidle\"\u001b[22m\n\n    at /Users/km/Dev/101/tools/qa-durable-processor-management.mjs:257:28",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "chromium",
+          "browserVersion": "149.0.7827.55"
+        },
+        "secondaryFailures": [
+          {
+            "name": "Error",
+            "message": "Native request/body observation timed out: 1 requests, 0 bodies",
+            "stack": "Error: Native request/body observation timed out: 1 requests, 0 bodies\n    at Timeout.<anonymous> (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:60:37)\n    at listOnTimeout (node:internal/timers:605:17)\n    at process.processTimers (node:internal/timers:541:7)",
+            "phase": "genuine-existing-caller-prefix",
+            "engine": "chromium",
+            "browserVersion": "149.0.7827.55"
+          },
+          {
+            "name": "Error",
+            "message": "Native request failed: http://127.0.0.1:65488/settings/processors: net::ERR_ABORTED",
+            "stack": "Error: Native request failed: http://127.0.0.1:65488/settings/processors: net::ERR_ABORTED\n    at requestFinished (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:105:14)\n    at _Page.<anonymous> (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:110:43)\n    at _Page._callHandler (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10379:33)\n    at _Page.emit (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10369:16)\n    at _BrowserContext._onRequestFailed (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:60694:16)\n    at Proxy.<anonymous> (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:60636:113)\n    at Proxy._callHandler (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10379:33)\n    at Proxy.emit (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10369:16)\n    at Connection.dispatch (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:62251:25)\n    at Immediate._onImmediate (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:62311:85)",
+            "phase": "genuine-existing-caller-prefix",
+            "engine": "chromium",
+            "browserVersion": "149.0.7827.55"
+          },
+          {
+            "name": "AssertionError",
+            "message": "pageTaskCloseAwaited\n\nfalse !== true\n",
+            "stack": "AssertionError [ERR_ASSERTION]: pageTaskCloseAwaited\n\nfalse !== true\n\n    at file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:392:75",
+            "phase": "genuine-existing-caller-prefix",
+            "engine": "chromium",
+            "browserVersion": "149.0.7827.55"
+          }
+        ]
+      },
+      "nativeTimeoutBoundSeconds": 30,
+      "ownedRunFoldersRemoved": true,
+      "allOriginThreadsJoined": true,
+      "meaning": "The expected stalled startup stays failed. NEW bounds request/body observation, retains native timeout/request failure and still joins actual context/browser close before writing the FAIL receipt."
+    },
+    "preservedFailedStages": {
+      "originalColdWebKit": "No accepted receipt; original wrapper failed while awaiting missing native terminal events. Original log retained; exit code was not saved by that wrapper.",
+      "observationalWebKit": "Two native diagnostic CLI copies exited13 with no receipt. Context trace shows prefetch parent requests completing during context close and a build script starting without a terminal event.",
+      "parentRequestAdoption": "One real WebKit pass followed adoption of parent requests; later same-document Chromium still exited13 with no receipt. Diagnostic context trace shows two prefetches starting during context close.",
+      "diagnosticChromium": "Actual diagnostic CLI exit13, no accepted receipt, both parent requests lack terminal events after native owners closed.",
+      "boundedWaitOrdering": "The first bounded-wait source still queried the uncommitted document before joining its stalled request. Its actual FAIL receipt is retained; the origin released before cleanup. One observer assertion was incorrectly placed before its HTTP-thread cleanup; exact owned observer process was stopped and joined after its native browser had already closed, with listenerabsence and empty run folder verified. Original invalid observer retained and excluded.",
+      "freshBuildBeforeProducerFix": "Fresh exact-candidate3ce build completed all4processor UIjourneys but defaultChromium retained two realRSCparent net::ERR_ABORTED during nativeblank teardown; not accepted. Actual FAILreceipt/execution and joined owners retained. Static/native trace identified still-mounted Link producers and unjoined async setup/decoder owners.",
+      "finalRepair": "Move bounded request observation before any final DOM lookup. Unmount actual React root, call actual navigation epoch retirement, join issued native digests before actual cache pending/fetchPromise owners, then retire each actual native document to about:blank while context is alive, join parent requests/build body reads before native close, and bound pre-close observation. Never synthesize terminal callbacks or filter native errors. All final4 selected positive executions pass with zero failures."
+    },
+    "independentReview": {
+      "result": "accept",
+      "reviewer": "independent read-only cold_document_review subagent",
+      "sourceSha256": "c04ddd8a86b19f4a93d3676bee6d6daa7552cbd5bdd27274325c5603fa49b3a9",
+      "sourceTree": "8b97c8779ebdf4beb53b72952eef5b23a18cef19",
+      "remainingActionableFindings": [],
+      "resolvedFindings": [
+        "Bound pre-close request/body observations, retaining timeout as failure and closing actual context/browser.",
+        "Join outstanding requests before any final document lookup; real stalled startup closes before origin release.",
+        "Unmount actual framework root and notify actual navigation epoch to retire future Link setup.",
+        "Join actual native digest returns before actual cache pending/fetchPromise owners, then all HTTP/body returns before native document/owner close."
+      ],
+      "runtimeInspected": [
+        "joined-settings-link-chromium.json",
+        "joined-cold-chromium.json",
+        "joined-cold-webkit.json",
+        "joined-settings-link-webkit.json",
+        "joined-executions.json",
+        "joined-stalled-request-executions.json",
+        "producer-native-trace.json"
+      ],
+      "nativeCacheJoinLane": "Chromium cold final retirement actually joins4 cache promises; all native request errors remain failures.",
+      "scope": "Accept selected local software journeys at exact c04d on immutable freshly built3ce product inputs. Final frozen candidate broad gates and native checks on its newly built output remain required before integration; no restart/profile/physical/full task acceptance."
+    },
+    "retainedServerDiagnostic": {
+      "rawEvidence": "producer-owned-server-joined-output.txt",
+      "scope": "One stream-closed diagnostic observed when joining shared server used for earlier failed native qualification and later positive journeys; no requestURL/timestamp. Retained, not filtered. Final fresh candidate uses a new server and preserves its output."
+    },
+    "qaSourceSha256": "c04ddd8a86b19f4a93d3676bee6d6daa7552cbd5bdd27274325c5603fa49b3a9",
+    "scope": "Historical exact c04 QA qualification only. These earlier runtime and review receipts do not qualify the new invocation-count/visit-cleanup fixture; current acceptance is bound separately below."
+  },
+  "arrivalAndCleanupFixture": {
+    "sourceSha256": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+    "oldSourceSha256": "c04ddd8a86b19f4a93d3676bee6d6daa7552cbd5bdd27274325c5603fa49b3a9",
+    "originalFreshCandidateFailure": {
+      "candidateTree": "f06a225e9dfe9830ed9ef0fe96f633cca795567c",
+      "fiveGreenGatesRef": "refs/codex/evidence/2026-10-10-batches/batch-3/expiry-fixed-node2419-green-gates",
+      "fiveGreenGatesTree": "c4740717fa5c1cb1cce5b5aae82e68641055438e",
+      "browserFailureRef": "refs/codex/evidence/2026-10-10-batches/batch-3/expiry-fixed-browser-failure",
+      "browserFailureTree": "bc0258945c100520695c8a326ba29e1cf15dabff",
+      "selectedBrowserJourneysPassed": 3,
+      "failedJourney": "settings-link-webkit",
+      "diagnosis": "Only aggregate cryptoPending differed by1 during inert arrival. The same unapproved visit had no task owner, so an unconditional retirement-event assertion skipped document cleanup. That historical pending operation identity cannot be proved retroactively."
+    },
+    "repair": "Count native importKey and verify invocations synchronously before the actual call, including throws and rejections. Inert arrival compares those invocation/results and owner storage/lock activity, keeping aggregate pending visible in receipts and joined at settled/retirement boundaries. Track approval and actual task retirement per processor-page visit; a never-approved idle visit requires observed inert departure rather than a nonexistent task callback. Retain task assertion failure while independently unmounting actual framework producers, joining issued native/cache/HTTP/body returns and retiring actual documents. Preserve bounded stalled-startup owner close.",
+    "regressionEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/inert-arrival-regression",
+    "regressionEvidenceTree": "02bbfe455768cd61b109e8869b760f2bb3db8e1a",
+    "nativeTraceScope": "Real native browser/WebCrypto and actual immutable f06 compiled product. Diagnostic copies delay delivery of the genuine native framework SHA256 result by1000ms and trace its actual minified app-rsc-cache-busting stack. No synthesized native crypto, task retirement, clock, storage or lock outputs. Diagnostic copies are not final candidate acceptance. Historical cryptoPending1 operation identity cannot be established retroactively.",
+    "old": {
+      "nativeExitCode": 1,
+      "literalSourceSHA": "c04ddd8a86b19f4a93d3676bee6d6daa7552cbd5bdd27274325c5603fa49b3a9",
+      "diagnosticSourceSHA": "dc40cee7d16e82571b3c71dcb28b7dfe6962b39974c847305fc2acf4a0463665",
+      "receiptSHA": "73334f116dc12fffe60b411c38af7b20a1619451992be218a7a8ce0132c6e453",
+      "logSHA": "0c1da802971feef0ce9e429ab3758ab21d8f124cbf8c24597f9de885819a8b6b",
+      "pendingNativeArrivalMethods": [
+        [
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest"
+        ]
+      ],
+      "cleanup": {
+        "pageTaskCloseAwaited": false,
+        "observedNativeReturnsSettled": false,
+        "ownedProbeRemoved": false,
+        "ownedPrefixLockSettled": false,
+        "documentsRetired": false,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      }
+    },
+    "new": {
+      "nativeExitCode": 0,
+      "literalSourceSHA": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+      "diagnosticSourceSHA": "e5b8dfeff10a25475db64c221f6f8e3557a6082861ebae4ed4731a11c70d398e",
+      "receiptSHA": "7af23b7499d66f17f9a7469ad3911df6160ea031aad743c6ed264fd68163f39f",
+      "logSHA": "0252ce17e827c4954571812a791bcd51403619090abe2c03694b8e3442ac2241",
+      "pendingNativeArrivalMethods": [
+        [
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest",
+          "digest"
+        ],
+        [
+          "digest",
+          "digest"
+        ],
+        [
+          "digest",
+          "digest"
+        ]
+      ],
+      "cleanup": {
+        "pageTaskCloseAwaited": true,
+        "observedNativeReturnsSettled": true,
+        "ownedProbeRemoved": true,
+        "ownedPrefixLockSettled": true,
+        "documentsRetired": true,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      }
+    },
+    "negativeCleanup": {
+      "early-failure": {
+        "nativeExitCode": 1,
+        "failure": {
+          "name": "Error",
+          "message": "Diagnostic failure before any management approval",
+          "stack": "Error: Diagnostic failure before any management approval\n    at file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/early-failure-native-trace.mjs:324:9",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "webkit",
+          "browserVersion": "26.5"
+        },
+        "secondaryFailures": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "receiptSHA": "8aab3ed922b2c2a7d70cba7c504beb9e7b34dad3327fb2d77ee425408871f330",
+        "logSHA": "e4d5a9537f6ece62cdb8f8fd31949eeb1a3cf2144dea9461f57a98bc1a48f020",
+        "serverJoined": true,
+        "ownedProfileRemoved": true
+      },
+      "retirement-failure": {
+        "nativeExitCode": 1,
+        "failure": {
+          "name": "Error",
+          "message": "Diagnostic assertion after genuine retirement event",
+          "stack": "Error: Diagnostic assertion after genuine retirement event\n    at observeTaskRetirement (file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/retirement-failure-native-trace.mjs:81:107)\n    at returnToSettings (file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/retirement-failure-native-trace.mjs:213:48)\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:502:9)\n    at async enterFreshPage (file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/retirement-failure-native-trace.mjs:356:47)\n    at async file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/retirement-failure-native-trace.mjs:403:3",
+          "phase": "durable-software-journey",
+          "engine": "webkit",
+          "browserVersion": "26.5"
+        },
+        "secondaryFailures": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "receiptSHA": "093e8a75e5c6807ec1f2f66f3ef8abbbf73b8a92ece01b44345262e1ad7caaba",
+        "logSHA": "37525b635f87496f964ac01c13a26293d5191069b598fbe200f5f47f1a0795fc",
+        "serverJoined": true,
+        "ownedProfileRemoved": true
+      },
+      "unauthorized-import": {
+        "nativeExitCode": 1,
+        "failure": {
+          "name": "AssertionError",
+          "message": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   importKeyCalls: 1,\n-   importKeyCalls: 0,\n    lockPending: 0,\n    ownerLocks: 0,\n    ownerReads: 0,\n    ownerWrites: 0,\n    publicVerifyKeys: 0,\n",
+          "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n+   importKeyCalls: 1,\n-   importKeyCalls: 0,\n    lockPending: 0,\n    ownerLocks: 0,\n    ownerReads: 0,\n    ownerWrites: 0,\n    publicVerifyKeys: 0,\n\n    at file:///Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/unauthorized-import-native-trace.mjs:324:10",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "webkit",
+          "browserVersion": "26.5"
+        },
+        "secondaryFailures": [],
+        "cleanup": {
+          "pageTaskCloseAwaited": true,
+          "observedNativeReturnsSettled": true,
+          "ownedProbeRemoved": true,
+          "ownedPrefixLockSettled": true,
+          "documentsRetired": true,
+          "pagesClosed": true,
+          "contextCloseAwaited": true,
+          "browserClosed": true
+        },
+        "receiptSHA": "69f297f6683bdd864f06d261abf53df1382675d66892698bf58eb1286b5812e1",
+        "logSHA": "6d037527b01b02474c8fbf5425d9c7f0306273d47cf37f41fbe3656798e77db1",
+        "serverJoined": true,
+        "ownedProfileRemoved": true
+      }
+    },
+    "startupNegative": {
+      "kind": "Real native request/startup-negative cleanup only; no product journey qualification",
+      "label": "new",
+      "command": [
+        "node",
+        "/Users/km/Dev/101/tools/qa-durable-processor-management.mjs",
+        "http://127.0.0.1:55226/",
+        "--served-proof",
+        "/Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/stalled-fixed-served-proof.json",
+        "--engine",
+        "chromium",
+        "--output",
+        "/Users/km/Dev/101/outputs/batches/2026-10-10-inert-arrival-regression/stalled-fixed.json"
+      ],
+      "qaToolSHA": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+      "nativeNodeExitCode": 1,
+      "status": "fail",
+      "failure": {
+        "name": "TimeoutError",
+        "message": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:55226/settings/processors\", waiting until \"networkidle\"\n",
+        "stack": "page.goto: Timeout 30000ms exceeded.\nCall log:\n  - navigating to \"http://127.0.0.1:55226/settings/processors\", waiting until \"networkidle\"\n\n    at /Users/km/Dev/101/tools/qa-durable-processor-management.mjs:301:28",
+        "phase": "genuine-existing-caller-prefix",
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55"
+      },
+      "secondaryFailures": [
+        {
+          "name": "Error",
+          "message": "Native request/body observation timed out: 1 requests, 0 bodies",
+          "stack": "Error: Native request/body observation timed out: 1 requests, 0 bodies\n    at Timeout.<anonymous> (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:90:37)\n    at listOnTimeout (node:internal/timers:635:17)\n    at process.processTimers (node:internal/timers:571:7)",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "chromium",
+          "browserVersion": "149.0.7827.55"
+        },
+        {
+          "name": "Error",
+          "message": "Native request failed: http://127.0.0.1:55226/settings/processors: net::ERR_ABORTED",
+          "stack": "Error: Native request failed: http://127.0.0.1:55226/settings/processors: net::ERR_ABORTED\n    at requestFinished (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:139:14)\n    at _Page.<anonymous> (file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:144:43)\n    at _Page._callHandler (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10379:33)\n    at _Page.emit (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10369:16)\n    at _BrowserContext._onRequestFailed (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:60694:16)\n    at Proxy.<anonymous> (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:60636:113)\n    at Proxy._callHandler (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10379:33)\n    at Proxy.emit (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:10369:16)\n    at Connection.dispatch (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:62251:25)\n    at Immediate._onImmediate (/Users/km/Dev/101/node_modules/playwright-core/lib/coreBundle.js:62311:85)",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "chromium",
+          "browserVersion": "149.0.7827.55"
+        },
+        {
+          "name": "AssertionError",
+          "message": "pageTaskCloseAwaited\n\nfalse !== true\n",
+          "stack": "AssertionError [ERR_ASSERTION]: pageTaskCloseAwaited\n\nfalse !== true\n\n    at file:///Users/km/Dev/101/tools/qa-durable-processor-management.mjs:452:75",
+          "phase": "genuine-existing-caller-prefix",
+          "engine": "chromium",
+          "browserVersion": "149.0.7827.55"
+        }
+      ],
+      "cleanup": {
+        "pageTaskCloseAwaited": false,
+        "observedNativeReturnsSettled": false,
+        "ownedProbeRemoved": false,
+        "ownedPrefixLockSettled": false,
+        "documentsRetired": false,
+        "pagesClosed": true,
+        "contextCloseAwaited": true,
+        "browserClosed": true
+      },
+      "nativeOriginTrace": [
+        {
+          "event": "native-http-request",
+          "elapsedSeconds": 0.671,
+          "path": "/settings/processors"
+        },
+        {
+          "event": "native-node-exit",
+          "elapsedSeconds": 60.755,
+          "exitCode": 1
+        },
+        {
+          "event": "origin-response-issued",
+          "elapsedSeconds": 60.756
+        }
+      ],
+      "originJoined": true,
+      "ownedRunRemoved": true
+    },
+    "productionCodeChanged": false,
+    "productionAuthorityAndLifecycleLimitsChanged": false,
+    "independentReview": {
+      "result": "accept",
+      "reviewer": "independent read-only cold_document_review subagent",
+      "sourceSha256": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+      "previousSourceSha256": "c04ddd8a86b19f4a93d3676bee6d6daa7552cbd5bdd27274325c5603fa49b3a9",
+      "remainingActionableFindings": [],
+      "resolvedFindings": [
+        "Synchronous import/verify invocations count before actual Reflect.apply, including throw/reject; excluding only aggregate cryptoPending does not waive verification attempts.",
+        "Full arrival pending snapshots remain visible and aggregate native returns remain joined.",
+        "Per-visit approval/retirementStart tracking prevents stale same-document closure credit; unapproved departures require actual idle/routes/registrations/effects proof.",
+        "Independent cleanup catches preserve assertion failure while actual root/epoch/cache/blank retirement continues.",
+        "Exact-source startup negative exits60.755s before origin reply60.756s with original30s navigation+30s observation, actual ERR_ABORTED retained, native owners/origin/profile joined."
+      ],
+      "regressionEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-3/inert-arrival-regression",
+      "regressionEvidenceTree": "02bbfe455768cd61b109e8869b760f2bb3db8e1a",
+      "runtimeInspected": [
+        "old-execution.json",
+        "new-execution.json",
+        "early-failure-execution.json",
+        "retirement-failure-execution.json",
+        "unauthorized-import-execution.json",
+        "stalled-request-executions.json"
+      ],
+      "reviewWasReadOnly": true,
+      "scope": "Source mechanism and genuine diagnostic regression accepted. Historical pending1 operation identity remains unproved. Diagnostic source copies are not literal final candidate qualification. Exact frozen candidate five gates and literal fresh-build four browser journeys remain required."
+    },
+    "currentQualification": {
+      "requiredGateRef": "refs/codex/evidence/2026-10-10-batches/batch-3/gates",
+      "freshNativeRuntimeRef": "refs/codex/evidence/2026-10-10-batches/batch-3/final-runtime-evidence",
+      "expectedQAsha256": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+      "supportedInstalledNodeVersion": "v24.19.0",
+      "nodeExecutableSha256": "9caea9deafcb0c7f22fac3206c32f0dcaf8d1f13460b0be3017fa09e7a4be4f6",
+      "integrationPolicy": "Local integration requires all five exact frozen candidate gates and all four default/cold Chromium/WebKit journeys on its newly built immutable output. The named gate document records the candidate, logs, source/build hashes, independent binding review and joined owners. Earlier green f06 gates or c04 runtime receipts cannot satisfy this condition."
+    }
+  },
+  "installedRuntimeComparison": {
+    "earlierNodeVersion": "v24.14.0",
+    "currentInstalledNodeVersion": "v24.19.0",
+    "comparisonRef": "refs/codex/evidence/2026-10-10-batches/batch-3/installed-runtime-comparison",
+    "comparisonTree": "dee967312b117613ad5d8a253c8bdc40e152534a",
+    "oldFailedRequiredGateRef": "refs/codex/evidence/2026-10-10-batches/batch-3/expiry-fixed-original-runtime-failure",
+    "oldFailedRequiredGateTree": "95fdbc2d76cc08ed8a0d228dc2da4348670aab46",
+    "scope": "Already-installed supported runtime selected only through the owned run PATH. No global runtime/install or OS settings change, no claimed OS fix, filters, production deadline widening or automatic retry. Earlier native bootstrap failures remain retained."
+  }
+}

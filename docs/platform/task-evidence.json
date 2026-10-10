@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 198,
+  "revision": 201,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13686,6 +13686,32 @@
       "scope": "Correct stale processor storage/liveness description and eliminate unused temporary folders in two current browser QA tools. Safely clear historical macOS 101 scratch while retaining recovery custody. Full Q05/U05/U12 and support acceptance remain open.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "processor-cold-document-2026-10-10",
+      "revision": "aa19b563f0bfa2100ee04acc77d66f6a5a17100593869653db5a62f67228be03",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q07",
+        "U12"
+      ],
+      "paths": [
+        "tools/qa-durable-processor-management.mjs",
+        "docs/platform/receipts/2026-10-10-processor-cold-document.json",
+        "packages/hub-server/src/rosbridge-pose-connector.test.ts",
+        "tools/qa-native-resource-runtime.mjs"
+      ],
+      "environment": "Local macOS; current exact-candidate qualification uses already-installed supported Node24.19.0 via per-run PATH; historical Node24.14.0 receipts remain separately bound. Actual isolated Chromium149.0.7827.55/WebKit26.5, native WebCrypto/localStorage/Web Locks and owned immutable local production server. Separate real stalled HTTP startup-negative and native framework-digest/cleanup diagnostics. No remote/physical/profile-restart result.",
+      "reproduction": "Run qa-durable-processor-management.mjs with retained served-proof.json in each engine, default and --cold-document. Retained stalled-request-probe.py executes literal OLD CLI and NEW against real header-withholding local origins, joins expected failures and browser/origin owners before removing folders. Runtime, diagnostic and required final candidate gate refs named in receipt. Both ROS native-close tests await actual event observation with the existing1500ms bound; the independently reproduced original fixed-delay failure and exact selector pass are preserved in the receipt. Native RSS post-observer-expiry fixture now uses the existing ordinary9000ms grant and observes actual monotonic expiry after a real child is issued, requiring synchronous retiring phase before any yield. A deliberately rejected module-load removal of that exact fence passed the old weak check but fails the strengthened check; actual production bytes remain unchanged. The genuine old actual-write-delay failure, repaired probe and unchanged20s-bound native unit entry point are retained in the receipt; production bridge bytes and authority/lifecycle limits are unchanged. The inert-arrival regression preserves literal c04 failure against actual delayed native framework digest returns and reviewed current-source pass. Invocation counts still reject an actual preapproval rejected key import. Per-visit ownership and independent producer cleanup retain deliberately expected early/retirement assertion failures with all cleanup complete. Current startup-negative retains the real timeout and closes before the origin replies. Historical c04 runtime/review evidence is explicitly separated from current source; only the named exact candidate five gates and four fresh native journeys permit integration.",
+      "scope": "New native documents in one isolated BrowserContext, including inert arrival, signed read-only inactive restoration, independent fresh input/output approvals, actual number/indicator effect and retained publisher revocation. Default same-document Settings-link paths also qualified. No browser restart/profile persistence, simultaneous cross-page operation, queued-close/quota fault, physical device, account/provider or full task acceptance.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -16567,7 +16593,8 @@
         "browser-history-privacy-built-partial-2026-10-07",
         "durable-processor-management-built-source-partial-2026-10-07",
         "lifecycle-browser-batch-2026-10-10",
-        "settings-scratch-batch-2026-10-10"
+        "settings-scratch-batch-2026-10-10",
+        "processor-cold-document-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16785,7 +16812,8 @@
         "native-startup-isolated-diagnostic-2026-10-08",
         "native-startup-failure-diagnostics-2026-10-08",
         "lifecycle-browser-batch-2026-10-10",
-        "settings-scratch-batch-2026-10-10"
+        "settings-scratch-batch-2026-10-10",
+        "processor-cold-document-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [
@@ -16810,7 +16838,8 @@
         "peer-loopback-webkit-2026-10-02",
         "peer-loopback-firefox-2026-10-02",
         "resource-loopback-chromium-2026-10-02",
-        "resource-loopback-webkit-2026-10-02"
+        "resource-loopback-webkit-2026-10-02",
+        "processor-cold-document-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [

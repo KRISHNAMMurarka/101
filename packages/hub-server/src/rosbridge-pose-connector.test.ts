@@ -283,21 +283,35 @@ test('failed native unsubscribe does not discard held subscribe callback settlem
         await peer.close();
     }
 });
+async function waitForNativeClose(observed: Promise<void>) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+        await Promise.race([observed, new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(Error('native child close was not observed')), 1500);
+        })]);
+    }
+    finally {
+        clearTimeout(timer);
+    }
+}
 test('peer cleanup joins native ChildProcess close after successful report and exit', async () => {
     const { ChildProcess } = await import('node:child_process');
     const original = ChildProcess.prototype.emit;
     let release: (() => void) | undefined;
+    let closeObserved!: () => void;
+    const observed = new Promise<void>(resolve => { closeObserved = resolve; });
     ChildProcess.prototype.emit = function (event: string | symbol, ...args: unknown[]) { if (event === 'close') {
         release = () => { Reflect.apply(original, this, [event, ...args]); };
+        closeObserved();
         return true;
     } return Reflect.apply(original, this, [event, ...args]); };
-    const { launchPeer, delay } = await import('../../../examples/rosbridge-pose/consumer.mjs');
+    const { launchPeer } = await import('../../../examples/rosbridge-pose/consumer.mjs');
     let peer: Awaited<ReturnType<typeof launchPeer>> | undefined;
     try {
         peer = await launchPeer();
         let settled = false;
         const closing = peer.close().then(() => { settled = true; });
-        await delay(80);
+        await waitForNativeClose(observed);
         assert.ok(release, 'native close must be observed after actual child exit');
         assert.equal(settled, false, 'exit and IPC report must not replace native child close');
         release();
@@ -314,17 +328,20 @@ test('failed peer startup also waits for native child close without orphan rejec
     const { ChildProcess } = await import('node:child_process');
     const original = ChildProcess.prototype.emit;
     let release: (() => void) | undefined;
+    let closeObserved!: () => void;
+    const observed = new Promise<void>(resolve => { closeObserved = resolve; });
     const errors: unknown[] = [], capture = (e: unknown) => errors.push(e);
     process.on('unhandledRejection', capture);
     ChildProcess.prototype.emit = function (event: string | symbol, ...args: unknown[]) { if (event === 'close') {
         release = () => { Reflect.apply(original, this, [event, ...args]); };
+        closeObserved();
         return true;
     } return Reflect.apply(original, this, [event, ...args]); };
     const { launchPeer, delay } = await import('../../../examples/rosbridge-pose/consumer.mjs');
     let settled = false;
     const startup = launchPeer('invalid-fixture-mode').then(() => { assert.fail('invalid mode must fail'); }, () => { settled = true; });
     try {
-        await delay(100);
+        await waitForNativeClose(observed);
         assert.ok(release);
         assert.equal(settled, false, 'failed startup exit still owns native close');
         release();
