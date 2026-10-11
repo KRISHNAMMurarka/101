@@ -32,7 +32,7 @@ export default function CameraView() {
     [error, setError] = useState<CameraTaskReason | undefined>(undefined);
   const current = useRef<LocalCameraTask | undefined>(undefined), canvas = useRef<HTMLCanvasElement>(null), inventoryButton = useRef<HTMLButtonElement>(null),
     captureTitle = useRef<HTMLHeadingElement>(null), settingTitle = useRef<HTMLHeadingElement>(null), status = useRef<HTMLParagraphElement>(null),
-    generation = useRef({ epoch: 0 });
+    generation = useRef({ epoch: 0 }), stopFocusPending = useRef(false);
   useEffect(() => {
     const lifetime = generation.current, epoch = ++lifetime.epoch, owner = new AbortController(), ownedCanvas = canvas.current;
     const owns = () => lifetime.epoch === epoch && current.current === installed && !owner.signal.aborted;
@@ -70,6 +70,12 @@ export default function CameraView() {
   const captureHandle = snapshot.captureReview?.handle, controlHandle = snapshot.controlReview?.handle;
   useEffect(() => { if (captureHandle) captureTitle.current?.focus(); }, [captureHandle]);
   useEffect(() => { if (controlHandle) settingTitle.current?.focus(); }, [controlHandle]);
+  useEffect(() => {
+    if (!stopFocusPending.current || snapshot.phase !== 'stopped' || snapshot.rawPending > 0 || snapshot.owned.callers > 0) return;
+    // Focus after the recovery action is enabled in the committed DOM.
+    stopFocusPending.current = false;
+    (snapshot.cleanupUnconfirmed ? status.current : inventoryButton.current)?.focus();
+  }, [snapshot.phase, snapshot.rawPending, snapshot.owned.callers, snapshot.cleanupUnconfirmed]);
   const unavailable = snapshot.phase === 'closed' || snapshot.cleanupUnconfirmed || snapshot.rawPending > 0;
   const list = async () => {
     const installed = current.current; if (!installed) return; setError(undefined);
@@ -87,9 +93,8 @@ export default function CameraView() {
     if (!result.ok) setError(result.reason); setSnapshot(installed.snapshot());
   };
   const stop = () => {
-    const installed = current.current; if (!installed) return; setError(undefined); setSetting('');
-    void installed.stop().then(() => { if (current.current === installed) { setSnapshot(installed.snapshot());
-      if (installed.snapshot().cleanupUnconfirmed) status.current?.focus(); else inventoryButton.current?.focus(); } });
+    const installed = current.current; if (!installed) return; stopFocusPending.current = true; setError(undefined); setSetting('');
+    void installed.stop().then(() => { if (current.current === installed) setSnapshot(installed.snapshot()); });
   };
   const reviewSetting = (axis: CameraAxis) => {
     setError(undefined); const result = current.current?.reviewControl(axis);
@@ -106,6 +111,7 @@ export default function CameraView() {
   const captureReview = snapshot.captureReview, controlReview = snapshot.controlReview;
   const statusText = snapshot.phase === 'stopping' ? 'Access stopped. Previously issued work is still finishing; a new choice is blocked until it returns.' :
     snapshot.phase === 'inventory' ? 'Listing cameras. No camera preview has started. You can stop.' :
+      snapshot.phase === 'choice' && snapshot.choices.length === 0 ? 'No camera is available here. Check camera access in your browser settings, then use Stop camera access and list cameras again.' :
       snapshot.rawPending > 0 && snapshot.phase === 'active' ? 'The setting request is finishing. You can stop; an already sent request may still take effect.' : messages[error ?? snapshot.reason];
   return <main className={styles.page} data-camera-phase={snapshot.phase} data-camera-raw={snapshot.rawPending} data-camera-preview={snapshot.previewVisible}>
     <Link href="#camera-choice" className={styles.skip}>Skip to camera choice</Link>

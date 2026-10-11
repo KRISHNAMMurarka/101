@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "base": "6eaca52a12f9eb6c042c341d4efacd1b593ff3d8",
+  "localOnly": true,
+  "routes": [
+    "/connections/camera",
+    "/connections/microphone"
+  ],
+  "result": "Selected Chromium native inventory/keyboard recovery passes eight checks after empty camera status and post-Stop focus repair. WebKit native observation prerequisite remains unavailable; full tasks/support remain open.",
+  "preliminarySourceTree": "34cfafd7af4b34fb32d74f3e29484c74c6a46e91",
+  "sourceSha256": {
+    "app/connections/camera/CameraView.tsx": "62714d2c3da760b13ad02afa02eb88844becfaf266d0caf1c25ddf0d9d085e3c",
+    "app/connections/camera/camera-task.ts": "08872d1db59939487e735dee44de28dfdf253fc11df73370719a1eedaec55f32",
+    "app/connections/microphone/MicrophoneView.tsx": "09b39fd05914447025d618d489ea21bc332a300fdd21562d27eb3cdbed804d81",
+    "app/connections/microphone/microphone-task.ts": "3722fb427c0961a9546e736bf0bd9b67c1f7d134017d14f49c5b75b3b331fc43",
+    "tools/qa-media-inventory-player.mjs": "f51a0c6ddfdab5e5e65338643c755b198a8ef65927fe9893925f010bfe753278",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d"
+  },
+  "productionChanges": [
+    "An empty camera list now explains camera access and names the enabled Stop camera access/retry action.",
+    "Below the existing page attempt limit, Stop requests focus; a post-commit effect focuses the recovery action after React enables it, or the status if cleanup is unconfirmed."
+  ],
+  "oldRegressions": [
+    {
+      "ref": "refs/codex/evidence/2026-10-11-successor-media-inventory/regression-old",
+      "receipt": "chromium.json",
+      "sha256": "f82534acb1c87c3f964c13d3dd594640a979127abfd078bb1b8bd7881a35841c",
+      "actualFailure": "Empty inventory must explain the missing input instead of requiring a disabled choice",
+      "captureCalls": 0,
+      "statusText": "Choose one camera, then review how it may be used on this page.",
+      "cleanupQualified": false
+    },
+    {
+      "ref": "refs/codex/evidence/2026-10-11-successor-media-inventory/stop-focus-regression-old",
+      "receipt": "chromium.json",
+      "sha256": "753b59fa266a6b13529b326e529d19235f8a3134959a910ad5fbb86e12fc6fa2",
+      "actualFailure": "Visible List cameras focus did not recover within the original 5000ms bound after Stop. Enabled list; document focused; activeElement body.",
+      "cleanupQualified": false
+    }
+  ],
+  "preliminaryChromium": {
+    "ref": "refs/codex/evidence/2026-10-11-successor-media-inventory/preliminary-native",
+    "receipt": "chromium.json",
+    "sha256": "c2645740ff6d837c1b1f51988dcd49a7716a2f6908512450945414bafaf29a36",
+    "harnessSHA": "61d9420767cd675442d36c3a87fd1e8307a71747fc4a7b0eada856258beac0eb",
+    "browserVersion": "149.0.7827.55",
+    "checks": [
+      "camera-inert-arrival-no-inventory-or-capture",
+      "camera-actual-native-empty-inventory-actionable-guidance-no-capture",
+      "camera-keyboard-stop-visible-focus-fresh-native-inventory",
+      "camera-keyboard-navigation-native-inventory-returns-joined",
+      "microphone-inert-arrival-no-inventory-or-capture",
+      "microphone-actual-native-empty-inventory-actionable-guidance-no-capture",
+      "microphone-keyboard-stop-visible-focus-fresh-native-inventory",
+      "microphone-keyboard-navigation-native-inventory-returns-joined"
+    ],
+    "native": [
+      {
+        "kind": "camera",
+        "stage": "arrival",
+        "enumerations": [],
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "arrival",
+        "enumerations": [],
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "retirements": []
+      }
+    ],
+    "retirements": [
+      {
+        "phase": "closed",
+        "rawPending": 0,
+        "captureCallbacksPending": 0,
+        "cleanupUnconfirmed": false,
+        "owned": {
+          "callers": 0,
+          "timers": 0
+        }
+      }
+    ],
+    "nativeChild": {
+      "pid": 83997,
+      "spawnfile": "/Users/km/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+      "executableOrLauncherSHA": "11e393326c7d20a7c56641a7c65def33ea9c280da3b0b74cf8563b07989a0ee3",
+      "code": 0,
+      "signal": null,
+      "actualCloseObserved": true
+    },
+    "cleanup": {
+      "nativeInventoryReturnsJoined": true,
+      "requestsJoinedBeforePageClose": true,
+      "pageClosed": true,
+      "requestsJoinedBeforeContextClose": true,
+      "contextCloseAwaited": true,
+      "browserCloseAwaited": true,
+      "browserServerCloseAwaited": true,
+      "actualNativeChildCloseAwaited": true,
+      "ownedCloseOperations": [
+        {
+          "label": "Page close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Context close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Browser close",
+          "settled": true,
+          "status": "fulfilled"
+        }
+      ],
+      "allIssuedCloseReturnsJoined": true,
+      "trackedPreCloseRequestsAndIssuedRouteBodyReturnsJoined": true,
+      "watchdogCleared": true,
+      "signalListenersRemoved": true,
+      "finalPinsVerified": true
+    },
+    "lateRequestAnnouncements": [],
+    "servedJavaScriptFiles": 30
+  },
+  "webKit": {
+    "qualified": false,
+    "ref": "refs/codex/evidence/2026-10-11-successor-media-inventory/preliminary-native",
+    "receipt": "webkit.json",
+    "sha256": "a23fff2926ebc648fed760f56d587a1ead1a44a0d7a434d4f798e3a888cd4af2",
+    "browserVersion": "26.5",
+    "diagnosticStatus": "fail",
+    "failure": "page.waitForFunction: Timeout 5000ms exceeded.",
+    "observed": "Built UI shows empty-camera guidance, but passive native enumeration observations remain empty after keyboard List cameras. Native policy inspection is null. No native inventory/capture or keyboard recovery qualification is claimed.",
+    "nativeChild": {
+      "pid": 85060,
+      "spawnfile": "/Users/km/Library/Caches/ms-playwright/webkit-2311/pw_run.sh",
+      "executableOrLauncherSHA": "a85baad3d8c07173ac387a59b41500c382b21ed692afe0964d29aac247ccc63b",
+      "code": 0,
+      "signal": null,
+      "actualCloseObserved": true
+    },
+    "cleanup": {
+      "nativeInventoryReturnsJoined": true,
+      "requestsJoinedBeforePageClose": true,
+      "pageClosed": true,
+      "requestsJoinedBeforeContextClose": true,
+      "contextCloseAwaited": true,
+      "browserCloseAwaited": true,
+      "browserServerCloseAwaited": true,
+      "actualNativeChildCloseAwaited": true,
+      "ownedCloseOperations": [
+        {
+          "label": "Page close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Context close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Browser close",
+          "settled": true,
+          "status": "fulfilled"
+        }
+      ],
+      "allIssuedCloseReturnsJoined": true,
+      "trackedPreCloseRequestsAndIssuedRouteBodyReturnsJoined": true,
+      "watchdogCleared": true,
+      "signalListenersRemoved": true,
+      "finalPinsVerified": true
+    }
+  },
+  "profile": "Fresh owned headless browser/context, loopback only, 390x844, reduced motion, real restrictive camera/microphone response policy. Native enumerateDevices/getUserMedia observation preserves original calls and promises. RSC prefetch is explicitly aborted; native keyboard navigation is retained.",
+  "limits": [
+    "No capture approvals or streams, capture refusal, physical input/settings, device loss, positive OS permission, named assistive technology, every browser or whole task/support acceptance.",
+    "No microphone task retirement diagnostic exists; native enumeration returns and UI Stop/navigation are observed, with no claim of a measured zero-owned microphone task snapshot.",
+    "Late request announcements during page closure are separately recorded; terminal events for them are not claimed. Pre-close requests and actual issued route/body jobs are joined; page/context/browser/native child and parent server closures are actual.",
+    "The selected journey uses two inventories. Fourth-attempt quota recovery is not qualified; the pre-existing disabled recovery-button/focus limitation remains open."
+  ],
+  "preservedHistoricalAttempts": {
+    "anonymous-placeholder-expectation": "refs/codex/evidence/2026-10-11-successor-media-inventory/initial-probe",
+    "reverse-tab-browser-blur": "refs/codex/evidence/2026-10-11-successor-media-inventory/repair-keyboard-failure",
+    "first-stop-focus-assertion": "refs/codex/evidence/2026-10-11-successor-media-inventory/stop-focus-first-failure",
+    "implicit-output-status-selector": "refs/codex/evidence/2026-10-11-successor-media-inventory/microphone-selector-failure"
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "gatesRef": "refs/codex/evidence/2026-10-11-successor-media-inventory/final-gates",
+    "nativeRef": "refs/codex/evidence/2026-10-11-successor-media-inventory/final-native",
+    "bindingRef": "refs/codex/evidence/2026-10-11-successor-media-inventory/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-11-successor-media-inventory/acceptance",
+    "note": "Preliminary receipts stay bound to their actual historical source/build/harness. Final exact candidate requires ordinary full gates and a fresh build/native run with verified native observer installation."
+  },
+  "supportRows": [],
+  "independentReview": {
+    "ref": "refs/codex/evidence/2026-10-11-successor-media-inventory/independent-review",
+    "receipt": "review.json",
+    "critical": 0,
+    "important": 0,
+    "minorResolution": "Each historical failure record now uses its own preserved harness SHA; product and helper source are unchanged from the reviewed candidate. Exact corrected-tree final gates/native binding remain required."
+  }
+}

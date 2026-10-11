@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 208,
+  "revision": 209,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13924,6 +13924,126 @@
       "reproduction": "After one real NotAllowedError and zero pending/resolved streams, Review is enabled and Stop disabled; actual status still requires Stop. Regression fails as expected. Separate late prefetch closure timeout also retained; batch-7/guidance-regression-old and first-native-failure preserve exact bytes.",
       "scope": "Historical old-copy regression and QA navigation/request ownership failures only; corrected selected pass does not erase those outcomes or qualify full scope.",
       "failure": "Refusal guidance must not require disabled Stop; separate original30000ms response closure deadline retained."
+    },
+    {
+      "revision": "61d9420767cd675442d36c3a87fd1e8307a71747fc4a7b0eada856258beac0eb",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-media-inventory-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "media-inventory-player-browser-2026-10-11",
+      "result": "pass",
+      "historical": false,
+      "environment": "Local macOS; native Chromium149.0.7827.55; owned loopback fresh build and restrictive camera/microphone policy; actual preliminary source/build pins in receipt.",
+      "reproduction": "Run qa-media-inventory-player.mjs ORIGIN ABS_PROOF chromium ABS_FRESH_OUTPUT against the pinned current local build. Eight selected native inventory/keyboard/retry/navigation checks pass; exact candidate gates/fresh native binding are separately required before integration.",
+      "scope": "Selected empty camera/microphone inventory, actionable recovery, camera post-Stop focus repair and keyboard Stop/retry/navigation only. No capture/native-device/AT/full-task/support acceptance.",
+      "failure": null
+    },
+    {
+      "revision": "13a9417baf67fe153cd049295abd58f544d7c18284165e4ae930587464cf7275",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-media-inventory-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "camera-empty-inventory-old-failure-2026-10-11",
+      "result": "fail",
+      "historical": true,
+      "environment": "Actual native Chromium on original main player/tree4ecf0991; restrictive real media policy.",
+      "reproduction": "Run preserved regression-old helper/proof; native enumeration returns anonymous placeholders, provider exposes empty choices, built UI still requires choosing a camera.",
+      "scope": "Original actual camera empty-inventory guidance failure only; original HTTP cleanup joins also failed and remain recorded.",
+      "failure": "Empty inventory must explain the missing input instead of requiring a disabled choice"
+    },
+    {
+      "revision": "0b98d66af1d9cf582c71c9cf098e167d00096a1e978126b64014929e8f6b923e",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-media-inventory-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "camera-stop-focus-old-failure-2026-10-11",
+      "result": "fail",
+      "historical": true,
+      "environment": "Actual native Chromium on preliminary repaired-status player; original Stop focus callback unchanged.",
+      "reproduction": "Run preserved stop-focus-regression-old helper/proof; Stop reaches stopped with the recovery button enabled but visible focus absent for the original five-second bound.",
+      "scope": "Original actual camera post-Stop focus failure only; distinct historical native/HTTP diagnostics preserved.",
+      "failure": "Visible List cameras focus did not recover within the original 5000ms bound after Stop. Enabled list; document focused; activeElement body."
+    },
+    {
+      "revision": "61d9420767cd675442d36c3a87fd1e8307a71747fc4a7b0eada856258beac0eb",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-media-inventory-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "media-inventory-webkit-unqualified-2026-10-11",
+      "result": "unavailable",
+      "historical": false,
+      "environment": "Actual native WebKit26.5; policy inspection null; UI empty state visible but native inventory observer did not see a call.",
+      "reproduction": "Preserved preliminary-native/webkit.json failed at original5000ms native enumeration observation prerequisite; all actual child/server closures joined.",
+      "scope": "No WebKit inventory/capture/recovery qualification. Preserve failed native diagnostic rather than substitute modeled media or extend the original deadline.",
+      "failure": "page.waitForFunction: Timeout 5000ms exceeded."
     }
   ],
   "tasks": [
@@ -14934,7 +15054,11 @@
         "a03-ble-byte-output-exact-local-gates-2026-10-07",
         "a02-a04-selected-switch-output-caller-recovery-software-2026-10-07",
         "a02-a04-switch-output-recovery-exact-local-gates-2026-10-07",
-        "local-gamepad-player-built-source-partial-2026-10-08"
+        "local-gamepad-player-built-source-partial-2026-10-08",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -15439,7 +15563,11 @@
         "v05-camera-zoom-exact-local-gates-2026-10-07",
         "camera-pan-tilt-built-partial-2026-10-07",
         "camera-player-built-partial-2026-10-07",
-        "local-player-combined-software-build-2026-10-07"
+        "local-player-combined-software-build-2026-10-07",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "M01",
@@ -16655,7 +16783,11 @@
         "lifecycle-browser-batch-2026-10-10",
         "screen-player-browser-2026-10-11",
         "screen-player-webkit-policy-unqualified-2026-10-11",
-        "screen-player-guidance-old-failure-2026-10-11"
+        "screen-player-guidance-old-failure-2026-10-11",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16757,7 +16889,11 @@
         "pending-U09",
         "screen-player-browser-2026-10-11",
         "screen-player-webkit-policy-unqualified-2026-10-11",
-        "screen-player-guidance-old-failure-2026-10-11"
+        "screen-player-guidance-old-failure-2026-10-11",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16777,7 +16913,11 @@
         "camera-player-built-partial-2026-10-07",
         "microphone-player-built-partial-2026-10-07",
         "feedback-player-built-partial-2026-10-07",
-        "local-player-combined-software-build-2026-10-07"
+        "local-player-combined-software-build-2026-10-07",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16799,7 +16939,11 @@
         "local-player-combined-software-build-2026-10-07",
         "screen-player-browser-2026-10-11",
         "screen-player-webkit-policy-unqualified-2026-10-11",
-        "screen-player-guidance-old-failure-2026-10-11"
+        "screen-player-guidance-old-failure-2026-10-11",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -17051,7 +17195,11 @@
         "processor-browser-restart-2026-10-11",
         "screen-player-browser-2026-10-11",
         "screen-player-webkit-policy-unqualified-2026-10-11",
-        "screen-player-guidance-old-failure-2026-10-11"
+        "screen-player-guidance-old-failure-2026-10-11",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17083,7 +17231,11 @@
         "processor-browser-restart-2026-10-11",
         "screen-player-browser-2026-10-11",
         "screen-player-webkit-policy-unqualified-2026-10-11",
-        "screen-player-guidance-old-failure-2026-10-11"
+        "screen-player-guidance-old-failure-2026-10-11",
+        "media-inventory-player-browser-2026-10-11",
+        "camera-empty-inventory-old-failure-2026-10-11",
+        "camera-stop-focus-old-failure-2026-10-11",
+        "media-inventory-webkit-unqualified-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
