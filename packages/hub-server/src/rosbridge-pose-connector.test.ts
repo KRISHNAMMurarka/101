@@ -249,17 +249,20 @@ test('failed native unsubscribe does not discard held subscribe callback settlem
     const { createRequire } = await import('node:module');
     const Ws = createRequire(import.meta.url)('ws').WebSocket, original = Ws.prototype.send;
     let release: (() => void) | undefined;
-    Ws.prototype.send = function (raw: string, options: unknown, callback: (error?: Error) => void) {
-        return original.call(this, raw, options, (error?: Error) => {
-            if (JSON.parse(raw).op === 'subscribe')
-                release = () => callback(error);
-            else
-                callback(error ?? Error('issued unsubscribe callback failure'));
-        });
-    };
     const { launchPeer, makeConnector, delay } = await import('../../../examples/rosbridge-pose/consumer.mjs');
-    const peer = await launchPeer(), h = makeConnector(peer.endpoint);
+    let peer: Awaited<ReturnType<typeof launchPeer>> | undefined;
+    let h: ReturnType<typeof makeConnector> | undefined;
     try {
+        peer = await launchPeer();
+        h = makeConnector(peer.endpoint);
+        Ws.prototype.send = function (raw: string, options: unknown, callback: (error?: Error) => void) {
+            return original.call(this, raw, options, (error?: Error) => {
+                if (JSON.parse(raw).op === 'subscribe')
+                    release = () => callback(error);
+                else
+                    callback(error ?? Error('issued unsubscribe callback failure'));
+            });
+        };
         const opening = h.connect();
         await delay(30);
         assert.ok(release);
@@ -279,8 +282,12 @@ test('failed native unsubscribe does not discard held subscribe callback settlem
     finally {
         Ws.prototype.send = original;
         release?.();
-        await h.connector.close();
-        await peer.close();
+        try {
+            await h?.connector.close();
+        }
+        finally {
+            await peer?.close();
+        }
     }
 });
 async function waitForNativeClose(observed: Promise<void>) {
@@ -300,15 +307,15 @@ test('peer cleanup joins native ChildProcess close after successful report and e
     let release: (() => void) | undefined;
     let closeObserved!: () => void;
     const observed = new Promise<void>(resolve => { closeObserved = resolve; });
-    ChildProcess.prototype.emit = function (event: string | symbol, ...args: unknown[]) { if (event === 'close') {
-        release = () => { Reflect.apply(original, this, [event, ...args]); };
-        closeObserved();
-        return true;
-    } return Reflect.apply(original, this, [event, ...args]); };
     const { launchPeer } = await import('../../../examples/rosbridge-pose/consumer.mjs');
     let peer: Awaited<ReturnType<typeof launchPeer>> | undefined;
     try {
         peer = await launchPeer();
+        ChildProcess.prototype.emit = function (event: string | symbol, ...args: unknown[]) { if (event === 'close') {
+            release = () => { Reflect.apply(original, this, [event, ...args]); };
+            closeObserved();
+            return true;
+        } return Reflect.apply(original, this, [event, ...args]); };
         let settled = false;
         const closing = peer.close().then(() => { settled = true; });
         await waitForNativeClose(observed);

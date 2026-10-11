@@ -75,10 +75,54 @@ test('real file signed reports preserve receipt/unknowns and owner sequence acro
   await c.close();assert.equal(c.status().phase,'closed');assert.equal(c.status().pendingOperations,0);assert.equal(c.status().timers,0);
  }finally{await c.close();await f.cleanup();}
 });
-test('identical polling reports are separate observations no faster than original 1000ms',async()=>{
+test('identical polling reports remain separate observations with advancing receipts',async()=>{
  const f=await fixture();const c=createTmp102HwmonConnector(f.options);try{assert.ok((await c.start(f.request())).ok);await until(()=>f.readings.length===2,1800);
- assert.ok(f.readings[1]!.receivedAt-f.readings[0]!.receivedAt>=995);assert.equal(f.readings[1]!.decoded.reportedCelsius,25);assert.equal(f.readings[1]!.localSequence,2);
+ assert.ok(f.readings[1]!.receivedAt>f.readings[0]!.receivedAt);assert.equal(f.readings[1]!.decoded.reportedCelsius,25);assert.equal(f.readings[1]!.localSequence,2);
  }finally{await c.close();await f.cleanup();}
+});
+test('slow metadata cannot compress the original interval between actual temperature reads',async t=>{
+ const f=await fixture(),originalOpen=fs.open.bind(fs),issuedAt:number[]=[];
+ mock.method(fs,'open',async(...args:Parameters<typeof fs.open>)=>{
+  const h=await originalOpen(...args);
+  if(args[0]===join(f.profile.hwmonRealPath,'temp1_input')){
+   const stat=h.stat.bind(h),read=h.read.bind(h);let stats=0;
+   mock.method(h,'stat',async(...a:Parameters<typeof h.stat>)=>{const result=await stat(...a);
+    if(++stats===2)await new Promise(r=>setTimeout(r,200));return result;});
+   mock.method(h,'read',(...a:Parameters<typeof h.read>)=>{issuedAt.push(performance.now());return read(...a);});
+  }
+  return h;
+ });
+ const c=createTmp102HwmonConnector(f.options);
+ try{assert.ok((await c.start(f.request())).ok);await until(()=>f.readings.length===2,1800);
+  assert.equal(issuedAt.length,2);const interval=issuedAt[1]!-issuedAt[0]!;t.diagnostic(JSON.stringify({nativeReadIntervalMs:interval}));
+  assert.ok(interval>=995,'The fixed 1000ms cadence applies to actual data-read issues after metadata');
+  assert.deepEqual(f.readings.map(r=>[r.decoded.reportedCelsius,r.localSequence]),[[25,1],[25,2]]);
+ }finally{await c.close();await f.cleanup();}
+});
+test('explicit restart retains the original interval between actual temperature reads',async()=>{
+ const f=await fixture(),originalOpen=fs.open.bind(fs),issuedAt:number[]=[];
+ mock.method(fs,'open',async(...args:Parameters<typeof fs.open>)=>{const h=await originalOpen(...args);
+  if(args[0]===join(f.profile.hwmonRealPath,'temp1_input')){const read=h.read.bind(h);
+   mock.method(h,'read',(...a:Parameters<typeof h.read>)=>{issuedAt.push(performance.now());return read(...a);});}return h;});
+ const c=createTmp102HwmonConnector(f.options);
+ try{assert.ok((await c.start(f.request())).ok);await c.stop();assert.ok((await c.start(f.request())).ok);
+  assert.equal(issuedAt.length,2);assert.ok(issuedAt[1]!-issuedAt[0]!>=995,'Restart cannot reset the fixed data-read cadence');
+  assert.deepEqual(f.readings.map(r=>r.localSequence),[1,2]);
+ }finally{await c.close();await f.cleanup();}
+});
+test('caller cancellation during a restart cadence wait joins ownership without a late data read',async()=>{
+ const f=await fixture(),originalOpen=fs.open.bind(fs),issuedAt:number[]=[];
+ mock.method(fs,'open',async(...args:Parameters<typeof fs.open>)=>{const h=await originalOpen(...args);
+  if(args[0]===join(f.profile.hwmonRealPath,'temp1_input')){const read=h.read.bind(h);
+   mock.method(h,'read',(...a:Parameters<typeof h.read>)=>{issuedAt.push(performance.now());return read(...a);});}return h;});
+ const c=createTmp102HwmonConnector(f.options);let restarted:ReturnType<typeof c.start>|undefined;
+ try{assert.ok((await c.start(f.request())).ok);await c.stop();restarted=c.start(f.request());
+  await until(()=>c.status().phase==='ready'&&c.status().pendingOperations===0&&c.status().openHandles===1);
+  assert.equal(issuedAt.length,1,'The restart remains paced before any second data-read intention');
+  f.caller.abort();assert.equal((await restarted).ok,false);await c.stop();
+  assert.equal(c.status().timers,0);assert.equal(c.status().openHandles,0);assert.equal(c.status().pendingOperations,0);
+  await new Promise(r=>setTimeout(r,1100));assert.equal(issuedAt.length,1);assert.equal(f.readings.length,1);
+ }finally{f.caller.abort();await c.close();await restarted;await f.cleanup();}
 });
 test('fixed file replacement invalidates retained enrollment across starts',async()=>{
  const f=await fixture();const c=createTmp102HwmonConnector(f.options);try{assert.ok((await c.start(f.request())).ok);await c.stop();

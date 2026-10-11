@@ -94,7 +94,7 @@ export function createTmp102HwmonConnector(input:Tmp102HwmonOptions):Tmp102Hwmon
  const owner=signal(o.ownerSignal);if(typeof o.authorize!=='function'||typeof o.onTemperature!=='function'||typeof o.onUnavailable!=='function')bad();
  const authorize=o.authorize as Tmp102HwmonOptions['authorize'],onTemperature=o.onTemperature as Tmp102HwmonOptions['onTemperature'],onUnavailable=o.onUnavailable as Tmp102HwmonOptions['onUnavailable'];
  const fixed=Object.freeze({name:profile.hwmonRealPath+'/name',temperature:profile.hwmonRealPath+'/temp1_input'});
- let session:Session|undefined,phase:'idle'|'opening'|'ready'|'retiring'|'closed'='idle',reason='idle',generation=0,attempts=0,sequence=0,terminal=false,nativeErrno:string|null=null;
+ let session:Session|undefined,phase:'idle'|'opening'|'ready'|'retiring'|'closed'='idle',reason='idle',generation=0,attempts=0,sequence=0,terminal=false,nativeErrno:string|null=null,lastIssuedDataRead=-Infinity;
  function current(s:Session):boolean{return session===s&&!s.retired&&!terminal&&!aborted(owner)&&!aborted(s.caller)&&(!s.grant||!aborted(s.grant.signal))&&now()<s.deadline;}
  function fence(s:Session):void{if(!current(s))throw Error('retired-or-expired');}
  function own<T>(s:Session,issue:()=>Promise<T>,cleanup=false):Promise<T>{
@@ -142,12 +142,18 @@ export function createTmp102HwmonConnector(input:Tmp102HwmonOptions):Tmp102Hwmon
   const stat=await checked(s,()=>h.handle.stat({bigint:true}));if(!stat.isFile()||!same(stat,profile.enrolledIdentities[h.kind==='name'?'name':'temperature']))throw Error('opened-identity-changed');return stat;
  }
  async function read(s:Session,h:OwnedHandle):Promise<{bytes:Buffer;receivedAt:number}>{
+  // Pace data-read intentions, including restarts; metadata latency must not
+  // shorten the fixed interval. Retirement cancels the timer and wakes the wait.
+  if(h.kind==='temperature')while(now()<lastIssuedDataRead+1000){
+   let wake!:()=>void;const wait=new Promise<void>(done=>{wake=done;});timer(s,wake,lastIssuedDataRead+1000-now());
+   await Promise.race([wait,s.failure]);fence(s);
+  }
   const readStart=now(),bound=Math.min(s.deadline,readStart+1000);s.readDeadline=bound;
   const timeout=timer(s,()=>{void retire(s,'expired');},bound-now());
   try{await identities(s);const before=await handleStat(s,h);if(before.size<1n||before.size>64n)throw Error('invalid-size');
    fence(s);if(now()>=bound)throw Error('expired');const buffer=Buffer.alloc(65);s.inFlightReads++;
    let result:Awaited<ReturnType<FileHandle['read']>>,receivedAt:number;
-   try{result=await own(s,()=>h.handle.read(buffer,0,65,0));receivedAt=now();}finally{s.inFlightReads--;}
+   try{result=await own(s,()=>{if(h.kind==='temperature')lastIssuedDataRead=now();return h.handle.read(buffer,0,65,0);});receivedAt=now();}finally{s.inFlightReads--;}
    fence(s);if(receivedAt>=bound)throw Error('expired');
    const after=await handleStat(s,h);await identities(s);fence(s);
    if(now()>=bound||result.bytesRead!==Number(before.size)||after.size!==before.size)throw Error('incomplete-file');
@@ -155,14 +161,14 @@ export function createTmp102HwmonConnector(input:Tmp102HwmonOptions):Tmp102Hwmon
   }finally{clear(s,timeout);s.readDeadline=undefined;}
  }
  async function observe(s:Session,h:OwnedHandle):Promise<boolean>{
-  const start=now();try{if(s.readings>=30)throw Error('read-budget');const r=await read(s,h),decoded=decodeTmp102Temperature(r.bytes);fence(s);
+  try{if(s.readings>=30)throw Error('read-budget');const r=await read(s,h),decoded=decodeTmp102Temperature(r.bytes);fence(s);
    if(sequence>=Number.MAX_SAFE_INTEGER)throw Error('sequence-budget');sequence++;s.readings++;
    const provenance:Readonly<JsonObject>=Object.freeze({profileId:profile.profileId,revision:profile.revision,readReceivedAt:r.receivedAt,
     rawMilliCelsius:decoded.rawMilliCelsius,rationalCelsius:decoded.rationalCelsius,exactDecimalCelsius:decoded.exactDecimalCelsius,rawSha256:decoded.rawSha256,rawBytes:decoded.rawBytes,
     calibrationRevision:null,absoluteErrorBound:null,sourceClock:null,sourceTimeMapped:false,conversionAgeMs:null,captureUnknown:true,physical:false});
    onTemperature(Object.freeze({decoded,localSequence:sequence,receivedAt:r.receivedAt,receiptClockId:'tmp102-gateway-monotonic',provenance}));fence(s);
    if(s.readings>=30){void retire(s,'read-budget');return true;}
-   timer(s,()=>{if(current(s))void observe(s,h);else void retire(s,'expired');},Math.max(0,start+1000-now()));return true;
+   timer(s,()=>{if(current(s))void observe(s,h);else void retire(s,'expired');},Math.max(0,lastIssuedDataRead+1000-now()));return true;
   }catch(error){const n=nativeReason(error);nativeErrno=n.errno;if(!s.retired)void retire(s,now()>=s.deadline?'expired':n.reason);return false;}
  }
  async function begin(s:Session,request:Tmp102HwmonApprovalRequest):Promise<boolean>{

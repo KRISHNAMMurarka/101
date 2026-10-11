@@ -85,10 +85,11 @@ test('nonreturning computation is terminated by the real parent deadline', async
 });
 
 test('guest allocation cannot grow beyond the fixed arena and oversized output is refused', async () => {
-  const oversized = await executorApi().createNodeProcessorExecutor(await signed(script('const bytes = new Uint8Array(65537); return { switch: true };')));
+  // Exercise memory/output refusal independently of the dedicated compute-deadline tests.
+  const oversized = await executorApi().createNodeProcessorExecutor(await signed(script('const bytes = new Uint8Array(65537); return { switch: true };'), 65536, 100));
   try { assert.deepEqual(await oversized.process({ temperature: 31 }), { ok: false, reason: 'memory' }); }
   finally { await oversized.close(); }
-  const invalid = await executorApi().createNodeProcessorExecutor(await signed(script('return { switch: { nested: true } };')));
+  const invalid = await executorApi().createNodeProcessorExecutor(await signed(script('return { switch: { nested: true } };'), 65536, 100));
   try { assert.deepEqual(await invalid.process({ temperature: 31 }), { ok: false, reason: 'output' }); }
   finally { await invalid.close(); }
 });

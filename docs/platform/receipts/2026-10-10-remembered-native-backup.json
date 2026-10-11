@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "result": "Selected native remembered-browser qualification passes22 checks on the preserved candidate; refreshed final-tree gates/runtime/review must be bound in the referenced acceptance record before integration.",
+  "localOnly": true,
+  "base": "18367303a64b922df6294026ecc34b5c9d87cfce",
+  "profile": "remembered-device-metadata/1",
+  "sourceSha256": {
+    "tools/qa-remembered-public-backup.mjs": "ebe9a746ba408060495678e7c2c07d5aa809b970121e793ce89994d154f1b806",
+    "tools/qa-remembered-source.mjs": "e8272307584ab370cfeb7347ea71ef0c6ce6c614de41af2c262a50c6a931bb78",
+    "app/devices/remembered-devices.ts": "b1816dd61b74ad1e7c97e0168985594b1ddb936d0287a1bbdb001e953d0810dd",
+    "app/devices/enrolled-device.ts": "5637396095c38c0b9e21465f49a161cbe95caaee3c2612110b09a56a5aeadcda",
+    "app/devices/EnrolledDevices.tsx": "7c54ac6d8c670dfb099e5c256af5c304469572ffe7138fb4735d8e665ec7429d",
+    "packages/hub-server/src/rosbridge-pose-connector.test.ts": "7fbd839e13a2bf82dd142b096189f96569ae387af6f9d5070787fc2bcf72b3bf",
+    "packages/device-runtime/src/processor-executor.test.ts": "30973777c77f376fb27cfcaa5bd5283e994655341eb39eccf44b4837ec693548",
+    "packages/hub-server/src/tmp102-hwmon.ts": "248cd804465c3013f9d04e20e2c0d239f756a333ca371e7d3608036904673cc8",
+    "packages/hub-server/src/tmp102-hwmon.test.ts": "7b18632d939797871a36cf427523aeaff5b6c816d180bf40c0ef06f77a23b95a"
+  },
+  "productionBehaviorChanged": true,
+  "plan": {
+    "outcome": "Qualify the existing reviewed manual public metadata copy/unchanged empty-store restore through actual built player UI and native Storage/Web Locks.",
+    "owners": "Root owns compilation, immutable application build/server, profile and evidence integration. QA owns actual browser contexts/pages, observed returns and SDK software peer.",
+    "inputs": "Public SDK ephemeral native P256 identities and bilateral complete native RTC comparison; explicitly remembered reported name and actual source key ID. No seeded positive identity or saved credential.",
+    "negativeAcceptance": [
+      "nonempty, corrupt and future saved stores survive restore attempts",
+      "reviewed raw bytes changed by an actual owned native write refuse confirmation",
+      "closed backup fields and actual30second expiry refuse writes",
+      "exclusive native lock queued cancellation/unmount joins its actual rejection without a granted callback or later write"
+    ]
+  },
+  "runtime": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-native",
+    "requirement": "Literal current QA on an exact fresh built candidate, native Chromium149.0.7827.55 and WebKit26.5,11checks each, zero retries/filter/skip; source/build/native-return pins before and after cleanup.",
+    "fixtureRecordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-native",
+    "native": "Actual browser localStorage, exclusive Web Locks, WebCrypto and RTCPeerConnection. Source fixture is compiled from the matching actual public SDK facade closure with the installed Vite build, not a replacement port or installed package.",
+    "requiredFinalRecordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-native",
+    "diagnosticChecks": 22,
+    "diagnosticPassed": 22,
+    "diagnosticQualifiesIntegration": false,
+    "historicalDiagnosticRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-browser-diagnostic",
+    "historicalBuildRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-failed-gates",
+    "historicalBuildRecordPath": "diagnostic-build.log",
+    "qualifiedInitialCandidate": "b6cbe55945c7496425eef9db8e08e4800407c1c9"
+  },
+  "qualification": [
+    "Hydrated player arrival and distinct new native document remain inert for remembered get/set/remove/clear/locks and pairing crypto/peers. Framework URL digests are separately included in total crypto invocations/pending returns and joined.",
+    "Actual bilateral native P256/SDP-bound pairing with identical complete comparison digest on both screens, explicit UI remember review/confirmation, one native exclusive granted callback and closed canonical schemaVersion1 public key ID/reported label only. Source descriptor publication supplies no input approval or bind.",
+    "Cancel export exposes no copy; confirmed readonly manual copy equals producer-derived public metadata; focus/selection, keyboard controls and390px reduced-motion layout verified. Closing the copy retires it.",
+    "Nonempty restore refuses an overwrite. Explicit forgetting makes the native store empty; cancelled import is inert; approved restore produces offline records without new pairing crypto, peer or preview. Distinct new native document requires an explicit read and remains offline.",
+    "Export and empty import confirmation refuse reviewed raw revision changes from owned native writes. Passive native traces require get/get/set within the actual exclusive callback for successful save, forgetting and restore. The separate faithful source fixtures exercise mutation between first/final reads; native traces establish execution order, not a deterministic cross-process race proof.",
+    "Corrupt/future stores and a deliberately open-field imported document preserve actual storage. Actual elapsed30second review expiry denies confirmation; no synthetic clock or shortened production bound.",
+    "A real separate native page holds the exact exclusive lock. Player confirmation is actually queued; cancel or real framework unmount aborts it, actual request return settles without a grant/write, then the held owner returns before retirement. Each owning document joins native crypto/RTC/lock returns, framework prefetch owners and HTTP/body reads before that document is blanked or closed; the source-held lock can remain while the app document retires, then joins before source retirement. All owners retire before explicit owned storage removal and context/browser close."
+  ],
+  "focusedSource": {
+    "recordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/initial-diagnostics",
+    "commands": [
+      "node --test app/devices/remembered-devices.test.ts",
+      "node --test app/devices/enrolled-device.test.ts"
+    ],
+    "tests": 38,
+    "pass": 38,
+    "fail": 0,
+    "skip": 0,
+    "cancel": 0,
+    "environment": "Already-installed supported Node24.19.0, faithful source fixtures; no new product source changes."
+  },
+  "historicalFailures": {
+    "recordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/initial-diagnostics",
+    "initialSourceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/initial-qa-source",
+    "initialSourceTree": "f2cd18c22cbce63e24361719c58c19dd2cb125e3",
+    "preserved": [
+      "Initial Chromium startup timed out before native enrollment and lacked a live framework root at cleanup; SSR heading alone was inadequate live-lifetime evidence. No product failure/repair claim. Actual context/browser/server owners closed and profiles removed.",
+      "Diagnostic WebKit observed5 real navigation digests and failed the overstrict all-crypto-zero assertion. Current observer separates only digest invocations from pairing calls and still joins every native crypto return.",
+      "Independent review required gating storage removal on observed native/document retirement, observing native removeItem/clear, passive final-read ordering and resolving the absent-copy assertion from the new current page instead of an about:blank old locator."
+    ],
+    "diagnosticAppBuild": "75f0a13871e996d30fe74ad63101cbf902160f48",
+    "diagnosticAppQualification": "Diagnostic startup/instrumentation observations only; final exact candidate fresh build and literal runtime qualification are separately bound.",
+    "firstRequiredGate": {
+      "candidateTree": "82c6d0c4098ded7a689258a8668c9dbb642c90ce",
+      "recordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/failed-gates",
+      "candidateRef": "refs/codex/evidence/2026-10-10-batches/batch-4/failed-candidate",
+      "typesAndLintPassed": true,
+      "unit": {
+        "tests": 3250,
+        "pass": 3227,
+        "fail": 23,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "qualification": false,
+      "detail": "Native startup/dependency-probe/response deadlines failed during a measured transient macOS runtime-start slowdown. An owned ROS test file hung after failed setup leaked its send override; only that owned file was explicitly terminated and joined, so two later tests were not run. Broad gate remains failed. A trivial runtime invocation took2.836s before reporting only12ms uptime; a later unchanged actual ROS fixture became ready in121ms and closed natively in131ms. No provenance/path/runtime substitution fixed this; exact cause of transient OS startup delay remains unproven. All failure logs and process retirement are retained."
+    },
+    "foregroundRequiredGate": {
+      "recordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/foreground-failed-gates",
+      "candidateRef": "refs/codex/evidence/2026-10-10-batches/batch-4/foreground-failed-candidate",
+      "candidateTree": "e7d8f9f73802165d667e3ea74d5c037607a6ff31",
+      "unit": {
+        "tests": 3252,
+        "pass": 3229,
+        "fail": 23,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "qualification": false,
+      "allTestsRun": true,
+      "detail": "Temporary Interactive scheduling passed123selectednative checks but did not make full macOS run reliable under oversubscription. Native unavailable/start/readiness/response and executable-probe deadlines failed, with authentic cleanup observed; no test limits changed. Hosted observer shows actual child spawn then no ready before retirement, not an epoch-declaration validation error. Shared lab denies new test capacity while host load exceeds available cores. Other already-installed supported Node24.14.0 passes the exact2failed selectors; selected comparison alone never substitutes full gates."
+    },
+    "supportedRuntimeRequiredGate": {
+      "recordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-failed-gates",
+      "candidateRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-failed-candidate",
+      "candidateTree": "792cc26622208b190254c31a9fee5bc865b9a014",
+      "nodeVersion": "v24.14.0",
+      "unit": {
+        "tests": 3252,
+        "pass": 3236,
+        "fail": 16,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "qualification": false,
+      "allTestsRun": true,
+      "detail": "Full native wait returned without external termination.16failures remain: catalog review conflict (exact failing match term unresolved), memory probe received timeout before its expected memory refusal,4Matter IPC waits,5MCP enrollment/finish setup waits,1IR child response wait,1TMP polling-spacing assertion and3cross-host startup failures. Cross-host records show actual child close with no module-body milestones. macOS transient startup delay and denied lab capacity are retained observations; no precise external cause or supported runtime cure is established."
+    }
+  },
+  "requiredGates": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-gates",
+    "requirement": "Exact frozen candidate: types, lint, full unfiltered unit suite, fresh build, then rendered HTML. Already-installed supported Node24.14.0 via per-run PATH; no global runtime change. Commit only when all five and fresh native browser executions pass.",
+    "requiredFinalRecordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-gates",
+    "historicalFailedRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-failed-gates",
+    "historicalExecutionMitigation": {
+      "processType": "Interactive",
+      "temporaryOneShot": true,
+      "why": "macOS launchd.plist manual documents throttled CPU/I/O for unspecified/Standard jobs. Identical123native checks on tree9f7 with identical installed runtime/dependencies failed in Standard context (121run/92pass/29fail; success-close setup deadlock required owned termination and2later tests were unrunt), then all123passed in Interactive context. This is a temporary foreground execution setting for explicitly requested verification, not a global configuration, fixture deadline or production change. The precise OS mechanism for the observed transient pre-runtime delay remains unproven.",
+      "preservedEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/unblocking-diagnostics",
+      "testBoundsChanged": false,
+      "automaticRetries": 0,
+      "finalRuntime": {
+        "nodeVersion": "v24.14.0",
+        "nodeExecutable": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+        "sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+        "alreadyInstalled": true,
+        "declaredRootEngine": ">=22.13.0",
+        "selectedComparisonRef": "refs/codex/evidence/2026-10-10-batches/batch-4/unblocking-diagnostics",
+        "selectedChecks": 2,
+        "selectedPassed": 2,
+        "selectedComparisonQualifiesFullSuite": false
+      }
+    },
+    "currentExecution": "Direct owned local process with already-installed Node24.14.0; no scheduling override, global runtime change, deadline enlargement or automatic retry. First current unfiltered gate is3255/3255pass; final exact candidate is recorded separately after this receipt refresh."
+  },
+  "independentReview": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-review",
+    "requirement": "Passive precise source/evidence review; accepted source/build pins and all acknowledgements bound before local integration.",
+    "requiredFinalRecordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-review",
+    "historicalPendingRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/pending-review"
+  },
+  "cleanup": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-native",
+    "requirement": "Own real browser/controller/document and lock/native returns; join literal CLI exits and native server wait. Remove every owned profile/run only after actual context/browser close, no Linux machines needed, no broad process/path deletion."
+  },
+  "scopeLimits": [
+    "Software source descriptor only; no hardware or physical identity continuity, assistive-tech detection, named screen-reader or OS-device receipt.",
+    "New documents share an isolated native browser context. This does not qualify browser/profile restart, cross-profile migration or account backup.",
+    "Manual textarea copy/paste only; no downloads, native clipboard/file picker, reconnect, resource permission, credentials or private keys restored. Existing8record/8KiB closed schema limits unchanged.",
+    "Fixture detach calls and absence of a source approval/publish path are source policy. Literal source sample/listener metrics are not independent native measurements.",
+    "Whole stored-data/restore/device/browser/lifecycle matrices B05/B06/U02/Q05/Q07 remain OPEN. No support rows accepted, push/deploy/publication or new service."
+  ],
+  "supportRowsAccepted": 0,
+  "taskDisposition": {
+    "B05": "PARTIAL/OPEN. Selected22native remembered UI checks and full3255test initial candidate pass; exact final-tree acceptance is external. Broader deliverable remains open.",
+    "B06": "PARTIAL/OPEN. Selected22native remembered UI checks and full3255test initial candidate pass; exact final-tree acceptance is external. Broader deliverable remains open.",
+    "U02": "PARTIAL/OPEN. Selected22native remembered UI checks and full3255test initial candidate pass; exact final-tree acceptance is external. Broader deliverable remains open.",
+    "Q05": "PARTIAL/OPEN. Selected22native remembered UI checks and full3255test initial candidate pass; exact final-tree acceptance is external. Broader deliverable remains open.",
+    "Q07": "PARTIAL/OPEN. Selected22native remembered UI checks and full3255test initial candidate pass; exact final-tree acceptance is external. Broader deliverable remains open."
+  },
+  "testSetupRepair": {
+    "path": "packages/hub-server/src/rosbridge-pose-connector.test.ts",
+    "productionBehaviorChanged": false,
+    "change": "Install the held-subscribe WebSocket send override only after actual peer readiness, protect all setup with optional owned handles, restore the original prototype on failure and join peer cleanup even if connector cleanup rejects. The successful-close test likewise installs its held native child-close override only after actual readiness, so failed startup can join its own close before the test tries to exercise successful close.",
+    "regression": "The literal selected old and repaired test both withhold an actually received native ready message. OLD leaves the prototype changed; NEW preserves the original. Both reach the unchanged1500ms startup rejection and join actual child close. These deliberately negative invocations are cleanup evidence, never passing unit qualification.",
+    "preFixEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/pre-fix-diagnostics",
+    "fixedEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/foreground-failed-diagnostics",
+    "startupAndCloseBoundsChanged": false,
+    "closeRegression": "OLD withholds an actual ready message, intercepts actual child close during setup and never settles; the bounded owner termination returns cancelled pending-promise test exit1. NEW retains the unchanged actual startup rejection but delivers real close, restores the prototype and settles without forced termination. Exact old source is retained at close-setup-old-source; negative observer records are in final runtime evidence."
+  },
+  "acceptance": {
+    "status": "selected-scope-pass; final integration requires matching external binding",
+    "integrationBindingRef": "refs/codex/evidence/2026-10-11-controller/batch-4/acceptance",
+    "initialCandidate": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+    "initialUnfilteredUnit": {
+      "tests": 3255,
+      "pass": 3255,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "initialUnitRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-checks",
+    "finalRequiredGateRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-gates",
+    "finalFreshRuntimeRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-native",
+    "finalIndependentReviewRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-review",
+    "condition": "The acceptance record must clear this exact frozen Git tree and all required gates/runtime/review before local commit. Scope does not close broader task/support rows."
+  },
+  "testFixtureRepair": {
+    "path": "packages/device-runtime/src/processor-executor.test.ts",
+    "beforeEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/supported-runtime-failed-gates",
+    "change": "Only the memory/output refusal test signs its two real scripts with an explicit legal100ms compute budget, retaining the65536-byte arena,65537-byte allocation and invalid nested output. Default5ms fixtures, production limits, source/signature/worker execution and dedicated20ms nonreturning deadline tests are unchanged.",
+    "cause": "Actual old unfiltered invocation returned timeout instead of memory; the unrelated5ms parent/interpreter compute bound prevented the intended memory assertion.",
+    "afterEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/pending-checks",
+    "fullSuiteQualified": true,
+    "afterScope": {
+      "selected": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "wholeProcessorFile": {
+        "tests": 11,
+        "pass": 11,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "nativeWaitsReturned": true,
+      "sourceCandidateTree": "f230b81b6328d27676275d1887a21c94e0dbb346",
+      "wholeUnfilteredSuiteQualified": false
+    },
+    "currentUnfilteredScope": {
+      "candidateTree": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+      "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-checks",
+      "summary": {
+        "tests": 3255,
+        "pass": 3255,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "wholeUnfilteredSuiteQualified": true,
+      "nativeWaitReturned": true,
+      "scope": "This current full-suite result is separate from the historical focused afterScope. Final exact-tree integration requires the final-gates and acceptance refs."
+    }
+  },
+  "pendingBlockers": [],
+  "catalogConflictDiagnostic": {
+    "afterEvidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/pending-checks",
+    "actualObserver": "Actual unchanged test fixture, genuine independent reports and stored known/submission/release/source/docs/provenance/report hashes. Two observed reports and every hash comparison pass during the focused invocation.",
+    "focusedResult": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "historicalFailingTermEstablished": false,
+    "fixtureChanged": false,
+    "fullGateConflictResolved": false,
+    "currentUnfilteredGatePass": true
+  },
+  "productionBehaviorScope": "Remembered backup/restore production bytes remain unchanged. The same pending candidate now includes the separate TMP102 data-read cadence correction, whose source and acceptance are recorded in 2026-10-10-tmp102-cadence.json.",
+  "relatedCadenceReceipt": "docs/platform/receipts/2026-10-10-tmp102-cadence.json",
+  "additionalStartupComparisons": {
+    "macRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/reduced-load-comparison",
+    "macCandidateTree": "6baea47b0f9df3bf55215ed69cc01056da585cf4",
+    "macSelected": {
+      "tests": 19,
+      "pass": 18,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "macFailure": "First cross-host keeper runtime child closes before any module-body/identity/hello milestone; original2500ms control/startup bounds unchanged.",
+    "linuxRecordRef": "refs/codex/evidence/2026-10-10-batches/batch-4/linux-startup-comparison",
+    "linuxCandidateTree": "6baea47b0f9df3bf55215ed69cc01056da585cf4",
+    "linuxSelected": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "linuxRuntime": "Official checksum-verified Node24.14.0 linux-arm64 on Ubuntu24.04 shared lab; network verified OFFLINE(after-cut) before the exact existing keeper test.",
+    "linuxCleanup": "Only owned101-20261010-130832-7f7159 machine stopped/removed with the lab tool; native stop/driver waits returned; machines empty before/after.",
+    "fullSuiteQualified": false,
+    "preciseMacCauseEstablished": false
+  },
+  "validatedOn": "2026-10-11",
+  "historicalFailureCause": "Prior Mac native startup and catalog conflict causes remain unproven. Current candidate passes the actual unfiltered full suite without changing those production/fixture bounds; old failures remain in their immutable refs.",
+  "initialCurrentQualification": {
+    "candidateTree": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+    "unitRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-checks",
+    "unit": {
+      "tests": 3255,
+      "pass": 3255,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "nativeRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-native",
+    "nativeChecks": 22,
+    "nativeAllCleanupJoined": true,
+    "sourceReviewRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-checks",
+    "sourceReview": "independent CLEAR-for-source only",
+    "noSourceChangesAfterInitialQualification": true
+  }
+}

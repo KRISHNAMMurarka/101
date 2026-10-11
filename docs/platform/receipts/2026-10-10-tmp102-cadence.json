@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "profile": "tmp102-hwmon-abi-file/1",
+  "acceptance": {
+    "status": "selected-source-and-installed-scope-pass; exact final-tree integration is external",
+    "integrationBindingRef": "refs/codex/evidence/2026-10-11-controller/batch-4/acceptance",
+    "initialCandidate": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+    "initialUnitRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-checks",
+    "initialUnit": {
+      "tests": 3255,
+      "pass": 3255,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "finalRequiredGateRef": "refs/codex/evidence/2026-10-11-controller/batch-4/final-gates",
+    "condition": "Acceptance clears only the matching final frozen tree; physical/native support and full tasks remain open."
+  },
+  "productionBehaviorChanged": true,
+  "sourceSha256": {
+    "packages/hub-server/src/tmp102-hwmon.ts": "248cd804465c3013f9d04e20e2c0d239f756a333ca371e7d3608036904673cc8",
+    "packages/hub-server/src/tmp102-hwmon.test.ts": "7b18632d939797871a36cf427523aeaff5b6c816d180bf40c0ef06f77a23b95a"
+  },
+  "oldSourceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/pending-candidate",
+  "oldSourcePath": "packages/hub-server/src/tmp102-hwmon.ts",
+  "oldSourceSha256": "cb1b502a6e3336ea86120218032604e61173b1b4b884d89efbd8fd576085db1a",
+  "evidenceRef": "refs/codex/evidence/2026-10-10-batches/batch-4/tmp102-cadence",
+  "problem": "Scheduling from before metadata let genuine temperature data-read intentions occur less than1000ms apart. Stop/start also discarded the implied cadence, allowing immediate additional data-read intentions.",
+  "observedOld": {
+    "slowMetadataNativeIssueIntervalMs": 796.7033329999999,
+    "slowMetadataRegression": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "exactOldSourceReplayRestartAndCancellation": {
+      "tests": 2,
+      "pass": 0,
+      "fail": 2,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "method": "Native file metadata and data operations are delegated unchanged. Only delivery of one genuine stat result is delayed200ms, within the unchanged1000ms read bound. Genuine data-read intention timestamps use performance.now; no synthetic bytes, clocks, approvals or identities."
+  },
+  "repair": "A connector-wide last-issued temperature-read timestamp survives stop/start. The cadence wait rechecks native monotonic time after each real owned timer return, races original session retirement, and fences before metadata/read work. The timestamp is set inside the reserved own() issue callback, immediately before the genuine data-handle read. Name/metadata reads do not consume cadence. Next polling schedules from the issued data read.",
+  "bounds": {
+    "pollMs": 1000,
+    "readMs": 1000,
+    "sessionMs": 30000,
+    "readings": 30,
+    "attempts": 8,
+    "grantCallerOwnerExpiryChanged": false,
+    "automaticRetries": 0
+  },
+  "receiptSemantics": "Actual read-completion timestamps remain immutable before post-read metadata and publication. Different read latencies can make completion receipts closer than issuance intervals, so the receipt regression asserts distinct advancing observations; the independent native intention regression owns cadence.",
+  "after": {
+    "selectedRegressions": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "wholeTmp102File": {
+      "tests": 63,
+      "pass": 63,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "nativeWaitsReturned": true,
+    "fixedIntervalObservedInLog": true,
+    "fullUnitGateQualified": true
+  },
+  "cleanup": "Each regression joins connector stop/close, real native file operations and closes, restores native method observers, and removes its owned real file fixture. The cancellation case waits past the original cadence boundary and observes no second data-read issue, with zero owned handles/timers/operations.",
+  "qualificationLimits": [
+    "The new cadence source has a current ordinary installed SDK execution with five native file readings, explicit restart and actual caller/producer natural close; exact final-tree integration requires the external acceptance binding. Earlier source/installed receipts remain historical.",
+    "Ordinary independently enrolled software files only. Linux/sysfs/I2C, physical TMP102, calibration, conversion timing and full sensor support remain open.",
+    "Mac cross-host startup remains unqualified; separate exact older-candidate Linux comparison passed1test and its owned machine was removed."
+  ],
+  "taskDisposition": {
+    "A16": "partial/open; source correction and scoped regression evidence only",
+    "Q03": "partial/open; source correction and scoped regression evidence only",
+    "Q08": "partial/open; source correction and scoped regression evidence only"
+  },
+  "validatedOn": "2026-10-11",
+  "installedCurrent": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-4/initial-sdk",
+    "status": "pass",
+    "candidateTree": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+    "sdkSourceTree": "b6cbe55945c7496425eef9db8e08e4800407c1c9",
+    "sdkFiles": 411,
+    "publicResolution": "file:///private/tmp/101-sdk-consumer-YDs0qK/node_modules/@101/connect/dist/index.js",
+    "actualCallerClosed": {
+      "code": 0,
+      "signal": null
+    },
+    "actualCallerNaturalExit": {
+      "code": 0,
+      "signal": null
+    },
+    "producerClosed": true,
+    "producerExit": {
+      "code": 0,
+      "signal": null
+    },
+    "observedReadings": 5,
+    "scope": "Ordinary file ABI reported Celsius/public SDK only; no native sysfs/I2C/calibration/physical/full A16 acceptance.",
+    "binding": "Exact source/runtime/compiler/installed-file closure hashes and copied executed artifacts are retained. Later metadata-only final-tree changes do not alter those source bytes. This is ordinary-file software ABI evidence, not native sysfs/I2C/calibration."
+  }
+}

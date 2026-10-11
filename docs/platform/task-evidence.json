@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 201,
+  "revision": 205,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13712,6 +13712,60 @@
       "scope": "New native documents in one isolated BrowserContext, including inert arrival, signed read-only inactive restoration, independent fresh input/output approvals, actual number/indicator effect and retained publisher revocation. Default same-document Settings-link paths also qualified. No browser restart/profile persistence, simultaneous cross-page operation, queued-close/quota fault, physical device, account/provider or full task acceptance.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "remembered-native-backup-2026-10-10",
+      "revision": "ebe9a746ba408060495678e7c2c07d5aa809b970121e793ce89994d154f1b806",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "B05",
+        "B06",
+        "U02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-10-remembered-native-backup.json",
+        "tools/qa-remembered-public-backup.mjs",
+        "tools/qa-remembered-source.mjs",
+        "packages/hub-server/src/rosbridge-pose-connector.test.ts",
+        "packages/device-runtime/src/processor-executor.test.ts"
+      ],
+      "environment": "Local macOS26.5.2, installed Node24.14.0, actual isolated Chromium149.0.7827.55/WebKit26.5, native WebCrypto/RTC/Storage/Web Locks and an exact fresh local build. Direct owned process; no scheduling/deadline/global-runtime changes. Physical/account/browser-restart scopes remain open.",
+      "reproduction": "Current literal remembered-browser QA passes11 coherent checks per engine,22total, with actual expiry, queued lock cancellation/unmount, independent document retirement, and joined browser/server/native returns. Preserved source treeb6cbe559 passes3255/3255unfiltered unit tests, zero skip/cancel. The two ROS setup cleanup repairs and memory-only fixture correction retain their authentic old failures. The receipt names immutable historical failures and new source/build/caller byte evidence; matching exact final-tree gates, fresh native executions, independent review and integration acceptance are bound externally before commit.",
+      "scope": "Selected native public metadata manual copy and unchanged-empty-store offline restore pass. Remembered production bytes remain unchanged; separate TMP102 cadence repair shares this candidate. B05/B06/U02/Q05/Q07 remain open; no support rows accepted.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "tmp102-cadence-2026-10-10",
+      "revision": "248cd804465c3013f9d04e20e2c0d239f756a333ca371e7d3608036904673cc8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "A16",
+        "Q03",
+        "Q08"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-10-tmp102-cadence.json",
+        "packages/hub-server/src/tmp102-hwmon.ts",
+        "packages/hub-server/src/tmp102-hwmon.test.ts"
+      ],
+      "environment": "Local macOS, installed supported Node24.14.0, genuine owned ordinary file metadata/read/close and native monotonic timers; original bounds and approvals retained.",
+      "reproduction": "Old real file regression measures796.703333ms between genuine temperature read intentions; old exact-source replay also fails restart interval and queued-cancellation expectations. Current three regressions pass and whole TMP102 file63/63passes, zero skip/cancel. Connector-wide issuance timestamp survives restart, cadence wait settles on original retirement, and cancellation observes no late second read after1100ms. Current unfiltered candidate3255/3255passes. Fresh seven-package SDK build and offline external consumer, selected compiled Node dependencies and current TMP102 installed caller all return0; five actual file readings, explicit restart and caller/producer natural close are retained with exact source/artifact/dependency hashes.",
+      "scope": "Narrow production1Hz actual data-read cadence repair; immutable completion receipts and original read/session/approval limits. Current source and ordinary installed public SDK proof pass. A16/Q03/Q08 remain open for native sysfs/I2C, calibration, physical and broader heterogeneous acceptance; final exact-tree integration is separately bound.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -15610,7 +15664,8 @@
       "records": [
         "pending-A16",
         "tmp102-hwmon-2026-10-09",
-        "mcp3008-iio-ch0-2026-10-09"
+        "mcp3008-iio-ch0-2026-10-09",
+        "tmp102-cadence-2026-10-10"
       ],
       "dependencies": [
         "M01",
@@ -16109,7 +16164,8 @@
         "telemetry-sdk-exact-local-gates-2026-10-07",
         "browser-history-privacy-built-partial-2026-10-07",
         "remembered-public-backup-built-partial-2026-10-07",
-        "bindings-device-backup-required-gates-failed-2026-10-07"
+        "bindings-device-backup-required-gates-failed-2026-10-07",
+        "remembered-native-backup-2026-10-10"
       ],
       "dependencies": [
         "M01",
@@ -16131,7 +16187,8 @@
         "selected-managed-telemetry-owner-2026-10-07",
         "telemetry-sdk-exact-local-gates-2026-10-07",
         "remembered-public-backup-built-partial-2026-10-07",
-        "bindings-device-backup-required-gates-failed-2026-10-07"
+        "bindings-device-backup-required-gates-failed-2026-10-07",
+        "remembered-native-backup-2026-10-10"
       ],
       "dependencies": [
         "M01",
@@ -16399,7 +16456,8 @@
         "enrolled-structured-preview-built-partial-2026-10-07",
         "bindings-device-backup-required-gates-failed-2026-10-07",
         "local-player-combined-software-build-2026-10-07",
-        "local-gamepad-player-built-source-partial-2026-10-08"
+        "local-gamepad-player-built-source-partial-2026-10-08",
+        "remembered-native-backup-2026-10-10"
       ],
       "dependencies": [
         "C01",
@@ -16788,7 +16846,8 @@
       "records": [
         "pending-Q03",
         "tmp102-hwmon-2026-10-09",
-        "mcp3008-iio-ch0-2026-10-09"
+        "mcp3008-iio-ch0-2026-10-09",
+        "tmp102-cadence-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [
@@ -16813,7 +16872,8 @@
         "native-startup-failure-diagnostics-2026-10-08",
         "lifecycle-browser-batch-2026-10-10",
         "settings-scratch-batch-2026-10-10",
-        "processor-cold-document-2026-10-10"
+        "processor-cold-document-2026-10-10",
+        "remembered-native-backup-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [
@@ -16839,7 +16899,8 @@
         "peer-loopback-firefox-2026-10-02",
         "resource-loopback-chromium-2026-10-02",
         "resource-loopback-webkit-2026-10-02",
-        "processor-cold-document-2026-10-10"
+        "processor-cold-document-2026-10-10",
+        "remembered-native-backup-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [
@@ -16851,7 +16912,8 @@
       "records": [
         "pending-Q08",
         "tmp102-hwmon-2026-10-09",
-        "mcp3008-iio-ch0-2026-10-09"
+        "mcp3008-iio-ch0-2026-10-09",
+        "tmp102-cadence-2026-10-10"
       ],
       "dependencies": [],
       "equipment": [
