@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "batch": 5,
+  "baseCommit": "73708b0af288e4abad5a6b1d7bc2e01f7002d5be",
+  "result": "pass for selected native software journeys; exact final candidate integration requires external gates and binding",
+  "localOnly": true,
+  "tasks": [
+    "U04",
+    "U12",
+    "E10",
+    "Q05",
+    "Q07"
+  ],
+  "sourceSha256": {
+    "tools/qa-watch-sharing-flow.mjs": "bf0b0f897f4c31614e61fe0ded5c1b9609ff497fe01acbd413cf35fa1f97d155",
+    "tools/qa-durable-processor-management.mjs": "2deba3cb95730afc036ef62f691ced10c8e74ed9f412af828f0b425e9f70980f"
+  },
+  "productionFilesChanged": false,
+  "watchSharing": {
+    "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/watch-native",
+    "executedSourceTree": "002550b7c97642b0b411f0b166d96fbeab14cd10",
+    "executedCommit": "73708b0af288e4abad5a6b1d7bc2e01f7002d5be",
+    "actualReceiptSHA": "a47c4f42968ac3b4dfe6c3e4631f43bf34381a51643224e182c715cbcad0db2a",
+    "checks": 30,
+    "engines": [
+      {
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55",
+        "checks": 15,
+        "nativePeerSummary": {
+          "issued": 4,
+          "closed": 4,
+          "open": 0,
+          "deviceCalls": 0,
+          "pendingKeyReturns": 0
+        },
+        "allCleanupJoined": true,
+        "keyboardActivations": 45,
+        "quietOriginalExpiry": {
+          "start": {
+            "emittedAt": "5015.300000190735",
+            "emissions": 20,
+            "expiresAt": 34794.90000009537,
+            "now": 5064.400000095367
+          },
+          "end": {
+            "emittedAt": null,
+            "emissions": 20,
+            "active": "false",
+            "now": 34810.90000009537
+          },
+          "zeroProducerEventsDuringWait": true,
+          "causality": "Original source consent is inactive at its deadline. A receiver freshness/deadman may retire sooner; no sole-timer causality claim."
+        }
+      },
+      {
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "checks": 15,
+        "nativePeerSummary": {
+          "issued": 4,
+          "closed": 4,
+          "open": 0,
+          "deviceCalls": 0,
+          "pendingKeyReturns": 0
+        },
+        "allCleanupJoined": true,
+        "keyboardActivations": 45,
+        "quietOriginalExpiry": {
+          "start": {
+            "emittedAt": "7152",
+            "emissions": 36,
+            "expiresAt": 36692,
+            "now": 7198
+          },
+          "end": {
+            "emittedAt": null,
+            "emissions": 36,
+            "active": "false",
+            "now": 36724
+          },
+          "zeroProducerEventsDuringWait": true,
+          "causality": "Original source consent is inactive at its deadline. A receiver freshness/deadman may retire sooner; no sole-timer causality claim."
+        }
+      }
+    ],
+    "sourcePinsVerified": 184,
+    "compiledPinsVerified": 600,
+    "servedModuleRecordsVerified": 92,
+    "independentReviewRef": "refs/codex/evidence/2026-10-11-controller/batch-5/watch-review",
+    "scope": [
+      "Owned page-control software producer only; actual public SDK/runtime bytes and private native browser RTC endpoints.",
+      "Observers can display only. Endpoint comparison does not identify an account/person or confer source/display approval.",
+      "No device, getUserMedia, screen chooser, OS pointer, physical hardware, account administration, remote network, persistence or whole-U04 claim.",
+      "Returned host key work and native JS peer closure are observed; browser-internal crypto/DTLS quiescence is not independently asserted.",
+      "The parent owns loopback app service closure. This harness awaits its owned pages, contexts, native browser child/server and response reads."
+    ],
+    "staleRawHeader": {
+      "field": "gitBoundSourcePins",
+      "rawValue": 174,
+      "actualVerified": 184,
+      "treatment": "Original executed proof retained unchanged. Actual immutable native batch verified all184; final selected-input binding records current counts."
+    }
+  },
+  "processorRestart": {
+    "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/processor-native",
+    "executedSourceTree": "98233e12872ac7e1ab5184e3c368b9e11f08a5d8",
+    "actualBuildSourceTree": "002550b7c97642b0b411f0b166d96fbeab14cd10",
+    "unchangedProductionBuildInputs": true,
+    "sourcePinsVerified": 176,
+    "compiledPinsVerified": 600,
+    "nativeJourneys": [
+      {
+        "label": "chromium-cold-browser",
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55",
+        "receiptSHA": "b6f074a4ad03e15854abe8336c8850ab3ab2153e862646a41ee581eac00c3875",
+        "elapsedSeconds": 7.119902124628425,
+        "documentMode": "same-owned-profile-new-native-browser-process",
+        "reopens": 2,
+        "journey": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "nativeChildren": 3,
+        "allCleanupJoined": true,
+        "ownedProfileRemoved": true
+      },
+      {
+        "label": "webkit-cold-browser",
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "receiptSHA": "46984e7b61f9dc18ff75242645434ae725890a215041881c3f7c26efd38087e6",
+        "elapsedSeconds": 17.09654412511736,
+        "documentMode": "same-owned-profile-new-native-browser-process",
+        "reopens": 2,
+        "journey": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "nativeChildren": 3,
+        "allCleanupJoined": true,
+        "ownedProfileRemoved": true
+      },
+      {
+        "label": "chromium-cold-document",
+        "engine": "chromium",
+        "browserVersion": "149.0.7827.55",
+        "receiptSHA": "85bc47841ad0a8473e9ee800160097a3ca5f3a32f9a68b1c14110f27742a17a1",
+        "elapsedSeconds": 4.563012917060405,
+        "documentMode": "new-native-page-same-context",
+        "reopens": 2,
+        "journey": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "nativeChildren": 0,
+        "allCleanupJoined": true,
+        "ownedProfileRemoved": false
+      },
+      {
+        "label": "webkit-cold-document",
+        "engine": "webkit",
+        "browserVersion": "26.5",
+        "receiptSHA": "467e19f47123f7eeac888e9a0889957a4c2e0ae8895f3c5b34bc68d08856d378",
+        "elapsedSeconds": 7.54950754204765,
+        "documentMode": "new-native-page-same-context",
+        "reopens": 2,
+        "journey": [
+          "explicit-browser-read-no-tab-migration",
+          "native-locked-signed-inactive-save",
+          "inactive-fresh-lifetime-independent-input-output",
+          "source-removal-retains-publisher-block-on-fresh-lifetime"
+        ],
+        "nativeChildren": 0,
+        "allCleanupJoined": true,
+        "ownedProfileRemoved": false
+      }
+    ],
+    "nativeChildProcessesJoined": 6,
+    "storageStateImported": false,
+    "allOwnedProfilesRemoved": true,
+    "scope": "Actual spawned executable or WebKit launcher script SHA and reported native version; not exhaustive browser binary/dependency closure. No browser-internal process-tree quiescence, account, physical, named AT, default-user-profile or profile portability claim.",
+    "rawHeaderDistinction": {
+      "field": "gitBoundSourcePins",
+      "rawValue": 176,
+      "actualGitBlobs": 174,
+      "installedDependencyManifests": 2,
+      "manifestPaths": [
+        "node_modules/vite/package.json",
+        "node_modules/playwright/package.json"
+      ],
+      "treatment": "Original executed proof retained unchanged. All176 source/dependency input hashes verified; only174 are Git blobs. Final selected-input binding keeps the distinction."
+    }
+  },
+  "negativeInputBinding": {
+    "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/processor-native",
+    "path": "negative-receipt.json",
+    "result": "actual omitted required application input refused before native browser/profile dispatch",
+    "browserProcessesIssued": 0,
+    "profilesCreated": 0
+  },
+  "retainedFailures": [
+    {
+      "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/watch-parent-proof-failure",
+      "classification": "Parent omitted transport-webrtc ports.ts source pin; literal QA refused before browser launch. No product bug."
+    },
+    {
+      "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/processor-parent-binding-failure",
+      "classification": "Parent initially included intentionally changed QA helper in unchanged production-input assertion. No browser/profile/server dispatched."
+    },
+    {
+      "evidenceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/processor-headless-binding-failure",
+      "classification": "New QA incorrectly assumed public executablePath equals actual headless executable. Real native spawn disproved this before app navigation; child closed0/null and profile/server joined. Corrected observer fingerprints actual spawned executable; no product file change."
+    }
+  ],
+  "cleanup": {
+    "allSelectedNativeChildrenAndReturnedHTTPWorkJoined": true,
+    "appServersJoinedAndListenersAbsent": true,
+    "allOwnedRunFoldersRemovedAfterStoredBlobReadback": true,
+    "allOwnedProfilesRemovedAfterActualNativeChildClose": true,
+    "nativeChildNormalExitRequired": true
+  },
+  "requiredFinalRecordRef": "refs/codex/evidence/2026-10-11-controller/batch-5/final-gates",
+  "requiredFinalReviewRef": "refs/codex/evidence/2026-10-11-controller/batch-5/final-review",
+  "requiredAcceptanceRef": "refs/codex/evidence/2026-10-11-controller/batch-5/acceptance",
+  "integrationPolicy": "Before local commit, all exact frozen candidate gates (types, lint, unfiltered unit, fresh build, rendered HTML and platform-record checks) must pass. Acceptance must bind the actual native source trees above to unchanged current selected application/runtime, harness, lock/manifest and emitted inputs. Historical native records are not relabeled as final candidate execution. Any selected runtime/harness/build-byte/toolchain change requires new genuine native execution; unrelated QA-only input deltas must be enumerated and independently reviewed.",
+  "scopeLimits": [
+    "Selected owner/two-observer page-control software, native browser RTC and reviewed processor private-profile persistence only.",
+    "No account/person identity, remote network, physical capture/device, named screen reader, user-default-profile, profile portability, simultaneous cross-page operations, native quota/queued-close fault qualification or whole task acceptance.",
+    "The actual spawned Chromium executable and WebKit launcher script are fingerprinted. Playwright manifest/lock and reported browser versions are recorded; exhaustive installed dependency/browser binary closure and browser-internal crypto/DTLS/process-tree quiescence are not asserted.",
+    "Prior source-contract and Settings/default/new-document receipts remain historical at their exact source trees. These new scoped native proofs supersede their earlier UNRUN/restart deferral descriptions for the selected software cases only."
+  ],
+  "taskDispositionsChanged": 0,
+  "supportRowsAccepted": 0,
+  "tally": {
+    "total": 272,
+    "completed": 123,
+    "open": 149
+  }
+}

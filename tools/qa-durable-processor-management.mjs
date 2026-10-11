@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,11 +14,20 @@ while (args.length) {
   const name = args.shift();
   if (name === '--feature-red' && !featureRed) { featureRed = true; continue; }
   if (name === '--cold-document' && !coldDocument) { coldDocument = true; continue; }
-  assert.ok(['--served-proof', '--engine', '--output'].includes(name) && !options.has(name));
+  assert.ok(['--served-proof', '--engine', '--output', '--cold-browser'].includes(name) && !options.has(name));
   const value = args.shift(); assert.ok(value && !value.startsWith('--')); options.set(name, value);
 }
 assert.ok(origin.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(origin.hostname)
   && origin.pathname === '/' && !origin.username && !origin.password && !origin.search && !origin.hash);
+const coldBrowser = options.has('--cold-browser');
+assert.ok(!coldBrowser || (!coldDocument && !featureRed), 'Choose only one fresh-lifetime mode');
+const profileParent = options.get('--cold-browser');
+if (coldBrowser) {
+  assert.ok(isAbsolute(profileParent));
+  const stat = lstatSync(profileParent);
+  assert.ok(stat.isDirectory() && !stat.isSymbolicLink());
+  assert.equal(realpathSync(profileParent), resolve(profileParent));
+}
 const engine = options.get('--engine'); assert.ok(['chromium', 'webkit'].includes(engine));
 const proofPath = options.get('--served-proof'); assert.ok(proofPath && isAbsolute(proofPath));
 const outputDirectory = fileURLToPath(new URL('../outputs/qa/', import.meta.url));
@@ -44,13 +53,15 @@ const report = { schemaVersion: 1, status: 'pending', phase: 'source-build-pins'
   sourcePins: {}, buildInputs: [], pageErrors: 0, foreignRequests: 0, requestCount: 0, matchedBuildResponses: 0,
   requestsBlocked: 0, requestsOverLimit: false, webSocketsBlocked: 0, journey: [],
   finalPinsVerified: false, retirements: [], failure: undefined, secondaryFailures: [], failedBuildRequests: [], failedOriginRequests: [],
-  documentMode: coldDocument ? 'new-native-page-same-context' : 'settings-link-same-document', documentReopens: [], documentRetirements: [],
-  processorVisits: [], nativeArrivals: [],
+  documentMode: coldBrowser ? 'same-owned-profile-new-native-browser-process' : coldDocument ? 'new-native-page-same-context' : 'settings-link-same-document', documentReopens: [], documentRetirements: [],
+  processorVisits: [], nativeArrivals: [], browserProcesses: [], profile: undefined,
   cleanup: { pageTaskCloseAwaited: false, observedNativeReturnsSettled: false, ownedProbeRemoved: false,
     ownedPrefixLockSettled: false, documentsRetired: false, pagesClosed: false, contextCloseAwaited: false, browserClosed: false },
   childToolsIssued: 0, workerExitObserved: false,
-  scope: 'Owned local software reviewed persistence/inactive fresh lifetime. Optional cold-document opens distinct native pages in the same isolated browser context; no browser restart/profile persistence claim. Existing durable SDK adapter ancestry is bound, not requalified. No account, connector, native-device or whole U12/E10 acceptance; simultaneous cross-page/native queued-close/quota fault journeys remain separate.' };
-let failure, proof, sourceRoot, proofSHA, browser, context, page;
+  scope: 'Owned local software reviewed persistence/inactive fresh lifetime. Optional cold-document opens distinct native pages in the same isolated browser context. Optional cold-browser uses three sequential native browser processes over one newly created private profile; no storage-state import/export, default user profile, profile portability or browser-internal process-tree quiescence claim. Existing durable SDK adapter ancestry is bound, not requalified. No account, connector, native-device or whole U12/E10 acceptance; simultaneous cross-page/native queued-close/quota fault journeys remain separate.' };
+let failure, proof, sourceRoot, proofSHA, browser, context, page, engines, ownedProfile;
+const nativeChildren = [];
+let activeProcess;
 const build = new Map(), pendingResponses = new Set(), pendingRequests = new Map(), seenBuild = new Set();
 const ownedPages = [];
 const currentVisits = new Map();
@@ -108,6 +119,125 @@ function guards() {
   for (const [path, expected] of Object.entries(report.sourcePins)) assert.equal(hash(regular(join(sourceRoot, path))), expected);
   for (const item of report.buildInputs) assert.equal(hash(regular(item.path, 32 * 1024 * 1024)), item.sha256);
   assert.equal(hash(regular(proof.buildRecord.path)), proof.buildRecord.sha256);
+}
+async function launchOwnedBrowser() {
+  if (!coldBrowser) {
+    browser = await engines[engine].launch({ headless: true });
+    context = await browser.newContext(); report.browserVersion = browser.version(); return;
+  }
+  assert.ok(!activeProcess, 'Previous native browser must close before profile reuse');
+  const require = createRequire(import.meta.url), childProcess = require('node:child_process');
+  const nativeSpawn = childProcess.spawn, before = nativeChildren.length;
+  // Passive test observer: the actual spawn arguments, ChildProcess, PID,
+  // exit and close events remain unchanged. No browser return is fabricated.
+  childProcess.spawn = function (...args) {
+    const ownsProfile = Array.isArray(args[1]) && args[1].includes(`--user-data-dir=${ownedProfile}`);
+    const executable = ownsProfile ? realpathSync(args[0]) : undefined;
+    const executableSHA = ownsProfile ? hash(regular(executable, 512 * 1024 * 1024)) : undefined;
+    const child = Reflect.apply(nativeSpawn, this, args);
+    if (ownsProfile) {
+      const record = { ordinal: nativeChildren.length + 1, pid: child.pid, executable: args[0], executableSHA,
+        profileArgument: `--user-data-dir=${ownedProfile}`, launchReturned: false, contextCloseAwaited: false,
+        browserCloseAwaited: false, nativeCloseObserved: false, nativeCloseAwaited: false };
+      const closed = new Promise(resolveClosed => child.once('close', (code, signal) => {
+        Object.assign(record, { nativeCloseObserved: true, exitCode: code, signal }); resolveClosed();
+      }));
+      nativeChildren.push({ child, record, closed }); report.browserProcesses.push(record);
+    }
+    return child;
+  };
+  try {
+    context = await engines[engine].launchPersistentContext(ownedProfile, { headless: true });
+    browser = context.browser(); assert.ok(browser);
+    assert.equal(nativeChildren.length - before, 1, 'Exactly one actual persistent native browser child is required');
+    activeProcess = nativeChildren.at(-1);
+    assert.equal(hash(regular(realpathSync(activeProcess.record.executable), 512 * 1024 * 1024)), activeProcess.record.executableSHA);
+    if (before) {
+      assert.equal(activeProcess.record.executable, report.browserProcesses[0].executable);
+      assert.equal(activeProcess.record.executableSHA, report.browserProcesses[0].executableSHA);
+    }
+    assert.ok(Number.isInteger(activeProcess.record.pid) && activeProcess.record.pid > 0);
+    assert.ok(!report.browserProcesses.slice(0, -1).some(record => record.pid === activeProcess.record.pid));
+    activeProcess.record.launchReturned = true;
+    const version = browser.version();
+    if (report.browserVersion) assert.equal(version, report.browserVersion);
+    report.browserVersion = version;
+    assert.ok(context.pages().every(selected => selected.url() === 'about:blank'), 'Owned profile cannot restore an active app document');
+  } finally { childProcess.spawn = nativeSpawn; }
+}
+async function joinNativeChildren() {
+  for (const entry of nativeChildren) {
+    if (entry.record.nativeCloseAwaited) continue;
+    let timer;
+    try {
+      await Promise.race([entry.closed, new Promise((_, reject) => {
+        timer = setTimeout(() => reject(Error(`Native browser child ${entry.record.pid} did not close`)), 30_000);
+      })]);
+      entry.record.nativeCloseAwaited = true;
+    } finally { clearTimeout(timer); }
+    assert.equal(entry.record.exitCode, 0, 'Native browser must exit normally');
+    assert.equal(entry.record.signal, null, 'A killed native browser does not qualify persistence');
+  }
+}
+async function closeForRestart() {
+  assert.ok(coldBrowser && activeProcess);
+  await settleBuildResponses();
+  await context.close(); activeProcess.record.contextCloseAwaited = true;
+  await browser.close(); activeProcess.record.browserCloseAwaited = true;
+  await joinNativeChildren();
+  assert.ok(ownedPages.every(selected => selected.isClosed()));
+  assert.equal(pendingRequests.size, 0); assert.equal(pendingResponses.size, 0);
+  const previous = activeProcess.record;
+  activeProcess = undefined; context = undefined; browser = undefined;
+  return previous;
+}
+async function configureContext() {
+  // Deny before dispatch. No remote request or socket is issued by this task.
+  await context.route('**/*', async route => {
+    report.requestCount = Math.min(1025, report.requestCount + 1);
+    let allowed = false;
+    try { const url = new URL(route.request().url()); allowed = url.protocol === origin.protocol && url.origin === origin.origin; } catch { /* Invalid URL is denied. */ }
+    if (!allowed || report.requestCount > 1024) {
+      if (!allowed) report.foreignRequests = Math.min(1025, report.foreignRequests + 1);
+      if (report.requestCount > 1024) report.requestsOverLimit = true;
+      report.requestsBlocked = Math.min(1025, report.requestsBlocked + 1); await route.abort(); return;
+    }
+    await route.continue();
+  });
+  assert.equal(typeof context.routeWebSocket, 'function', 'WebSocket denial must be supported before page activity');
+  await context.routeWebSocket('**/*', socket => {
+    report.webSocketsBlocked = Math.min(1025, report.webSocketsBlocked + 1); socket.close();
+  });
+  await context.addInitScript(({ ownerKey, ownedOrigin }) => {
+    if (location.origin !== ownedOrigin) return;
+    const observed = { importKeyCalls: 0, verifyCalls: 0, publicVerifyKeys: 0, verifiedTrue: 0, verifiedFalse: 0,
+      cryptoPending: 0, ownerReads: 0, ownerWrites: 0, ownerLocks: 0, lockPending: 0 };
+    globalThis.__durableProcessorOldNative = observed;
+    for (const name of ['importKey', 'verify', 'digest']) {
+      const native = SubtleCrypto.prototype[name];
+      Object.defineProperty(SubtleCrypto.prototype, name, { configurable: true, writable: true, value(...args) {
+        if (name === 'importKey') observed.importKeyCalls++;
+        if (name === 'verify') observed.verifyCalls++;
+        observed.cryptoPending++; let issued;
+        try { issued = Reflect.apply(native, this, args); } catch (cause) { observed.cryptoPending--; throw cause; }
+        void Promise.prototype.then.call(issued, result => { observed.cryptoPending--;
+          if (name === 'importKey' && result.type === 'public' && result.usages.join(',') === 'verify' && !result.extractable) observed.publicVerifyKeys++;
+          if (name === 'verify') observed[result === true ? 'verifiedTrue' : 'verifiedFalse']++;
+        }, () => { observed.cryptoPending--; });
+        return issued;
+      } });
+    }
+    for (const name of ['getItem', 'setItem']) { const native = Storage.prototype[name];
+      Object.defineProperty(Storage.prototype, name, { configurable: true, writable: true, value(...args) {
+        if (args[0] === ownerKey) observed[name === 'getItem' ? 'ownerReads' : 'ownerWrites']++; return Reflect.apply(native, this, args);
+      } }); }
+    const native = LockManager.prototype.request;
+    Object.defineProperty(LockManager.prototype, 'request', { configurable: true, writable: true, value(...args) {
+      const own = args[0] === `${ownerKey}:storage-lock`; if (own) { observed.ownerLocks++; observed.lockPending++; }
+      let issued; try { issued = Reflect.apply(native, this, args); } catch (cause) { if (own) observed.lockPending--; throw cause; }
+      if (own) void Promise.prototype.then.call(issued, () => { observed.lockPending--; }, () => { observed.lockPending--; }); return issued;
+    } });
+  }, { ownerKey, ownedOrigin: origin.origin });
 }
 async function activate(name) {
   const button = page.getByRole('button', { name, exact: true }); await button.click({ trial: true }); await button.focus();
@@ -247,54 +377,14 @@ try {
     assert.equal(content.toString('utf8'), sources[index]); assert.equal(content.length, release.source.byteLength);
     assert.equal(hash(content), release.source.sha256); assert.equal(hash(content), release.manifest.codeSha256); }
   report.sourceTree = proof.sourceTree; report.actualServedProof = { path: proofPath, sha256: proofSHA, sourceTree: proof.sourceTree };
-  const require = createRequire(join(sourceRoot, 'package.json')), engines = require('playwright');
-  browser = await engines[engine].launch({ headless: true }); report.browserVersion = browser.version(); context = await browser.newContext();
-  // Deny before dispatch. No remote request or socket is issued by this task.
-  await context.route('**/*', async route => {
-    report.requestCount = Math.min(1025, report.requestCount + 1);
-    let allowed = false;
-    try { const url = new URL(route.request().url()); allowed = url.protocol === origin.protocol && url.origin === origin.origin; } catch { /* Invalid URL is denied. */ }
-    if (!allowed || report.requestCount > 1024) {
-      if (!allowed) report.foreignRequests = Math.min(1025, report.foreignRequests + 1);
-      if (report.requestCount > 1024) report.requestsOverLimit = true;
-      report.requestsBlocked = Math.min(1025, report.requestsBlocked + 1); await route.abort(); return;
-    }
-    await route.continue();
-  });
-  assert.equal(typeof context.routeWebSocket, 'function', 'WebSocket denial must be supported before page activity');
-  await context.routeWebSocket('**/*', socket => {
-    report.webSocketsBlocked = Math.min(1025, report.webSocketsBlocked + 1); socket.close();
-  });
-  await context.addInitScript(({ ownerKey, ownedOrigin }) => {
-    if (location.origin !== ownedOrigin) return;
-    const observed = { importKeyCalls: 0, verifyCalls: 0, publicVerifyKeys: 0, verifiedTrue: 0, verifiedFalse: 0,
-      cryptoPending: 0, ownerReads: 0, ownerWrites: 0, ownerLocks: 0, lockPending: 0 };
-    globalThis.__durableProcessorOldNative = observed;
-    for (const name of ['importKey', 'verify', 'digest']) {
-      const native = SubtleCrypto.prototype[name];
-      Object.defineProperty(SubtleCrypto.prototype, name, { configurable: true, writable: true, value(...args) {
-        if (name === 'importKey') observed.importKeyCalls++;
-        if (name === 'verify') observed.verifyCalls++;
-        observed.cryptoPending++; let issued;
-        try { issued = Reflect.apply(native, this, args); } catch (cause) { observed.cryptoPending--; throw cause; }
-        void Promise.prototype.then.call(issued, result => { observed.cryptoPending--;
-          if (name === 'importKey' && result.type === 'public' && result.usages.join(',') === 'verify' && !result.extractable) observed.publicVerifyKeys++;
-          if (name === 'verify') observed[result === true ? 'verifiedTrue' : 'verifiedFalse']++;
-        }, () => { observed.cryptoPending--; });
-        return issued;
-      } });
-    }
-    for (const name of ['getItem', 'setItem']) { const native = Storage.prototype[name];
-      Object.defineProperty(Storage.prototype, name, { configurable: true, writable: true, value(...args) {
-        if (args[0] === ownerKey) observed[name === 'getItem' ? 'ownerReads' : 'ownerWrites']++; return Reflect.apply(native, this, args);
-      } }); }
-    const native = LockManager.prototype.request;
-    Object.defineProperty(LockManager.prototype, 'request', { configurable: true, writable: true, value(...args) {
-      const own = args[0] === `${ownerKey}:storage-lock`; if (own) { observed.ownerLocks++; observed.lockPending++; }
-      let issued; try { issued = Reflect.apply(native, this, args); } catch (cause) { if (own) observed.lockPending--; throw cause; }
-      if (own) void Promise.prototype.then.call(issued, () => { observed.lockPending--; }, () => { observed.lockPending--; }); return issued;
-    } });
-  }, { ownerKey, ownedOrigin: origin.origin });
+  const require = createRequire(join(sourceRoot, 'package.json')); engines = require('playwright');
+  if (coldBrowser) {
+    ownedProfile = mkdtempSync(join(profileParent, `101-processor-${engine}-`));
+    report.profile = { path: ownedProfile, newlyCreated: true, storageStateImported: false };
+    report.cleanup.nativeChildrenJoined = false;
+  }
+  await launchOwnedBrowser();
+  await configureContext();
   page = await openOwnedPage();
   beginVisit(page);
   report.phase = 'genuine-existing-caller-prefix';
@@ -337,18 +427,28 @@ try {
   }
   async function enterFreshPage() {
     const { native: beforeNative, ordinal } = await returnToSettings();
-    if (coldDocument) {
+    if (coldDocument || coldBrowser) {
       const previous = page, href = await previous.getByRole('link', { name: 'Manage reviewed processors', exact: true }).getAttribute('href');
       assert.equal(new URL(href, origin).pathname, '/settings/processors');
       const marker = randomUUID(); await previous.evaluate(marker => { globalThis.__durableProcessorPreviousDocument = marker; }, marker);
+      let previousProcess;
+      if (coldBrowser) {
+        await retireDocument(previous);
+        previousProcess = await closeForRestart();
+        await launchOwnedBrowser(); await configureContext();
+      }
       page = await openOwnedPage(); assert.notEqual(page, previous);
       beginVisit(page);
       assert.equal((await page.goto(new URL(href, origin).href, { waitUntil: 'networkidle' }))?.status(), 200);
       await settleBuildResponses();
       assert.equal(await page.evaluate(() => typeof globalThis.__durableProcessorPreviousDocument), 'undefined');
-      await retireDocument(previous); await previous.close(); assert.equal(previous.isClosed(), true);
+      if (!coldBrowser) { await retireDocument(previous); await previous.close(); }
+      assert.equal(previous.isClosed(), true);
       report.documentReopens.push({ previousPageOrdinal: ordinal, newPageOrdinal: ownedPages.length,
-        previousTaskClosed: true, previousNativeReturnsSettled: true, previousPageClosed: true, distinctNativeDocument: true });
+        previousTaskClosed: true, previousNativeReturnsSettled: true, previousPageClosed: true, distinctNativeDocument: true,
+        ...(coldBrowser ? { previousProcess: previousProcess.ordinal, newProcess: activeProcess.record.ordinal,
+          previousPID: previousProcess.pid, newPID: activeProcess.record.pid, previousNativeChildJoined: previousProcess.nativeCloseAwaited,
+          sameOwnedProfile: true } : {}) });
     } else {
       beginVisit(page);
       await page.getByRole('link', { name: 'Manage reviewed processors', exact: true }).click();
@@ -358,12 +458,12 @@ try {
     await page.getByRole('heading', { name: 'Manage reviewed processors', exact: true }).waitFor();
     const inert = await page.evaluate(() => globalThis.__durableProcessorOldNative);
     report.nativeArrivals.push({ visitOrdinal: currentVisits.get(page).visitOrdinal, native: inert });
-    assert.deepEqual(authority(inert), coldDocument ? noAuthority : authority(beforeNative),
+    assert.deepEqual(authority(inert), coldDocument || coldBrowser ? noAuthority : authority(beforeNative),
     'A new task or document cannot read or verify saved state before approval');
     assert.equal(await page.locator('[data-processor-phase]').getAttribute('data-processor-phase'), 'idle');
     for (const key of ['routes', 'registrations', 'effects']) assert.equal(await page.locator('[data-processor-phase]').getAttribute(`data-processor-${key}`), '0');
     await activate('Manage processors'); await chooseBrowser();
-    if (coldDocument) {
+    if (coldDocument || coldBrowser) {
       const restored = await page.evaluate(() => globalThis.__durableProcessorOldNative);
       assert.ok(restored.ownerReads > 0); assert.equal(restored.ownerWrites, 0); assert.equal(restored.ownerLocks, 0);
       assert.equal(restored.cryptoPending, 0); assert.equal(restored.lockPending, 0); assert.equal(restored.verifiedFalse, 0);
@@ -439,8 +539,14 @@ finally {
     }
   }
   try { if (proof && sourceRoot && proofSHA) { guards(); report.finalPinsVerified = true; } } catch (cause) { retain(cause); }
-  try { if (context) { await context.close(); report.cleanup.contextCloseAwaited = true; } } catch (cause) { retain(cause); }
-  try { if (browser) { await browser.close(); report.cleanup.browserClosed = true; } } catch (cause) { retain(cause); }
+  try { if (context) { await context.close(); report.cleanup.contextCloseAwaited = true;
+    if (activeProcess) activeProcess.record.contextCloseAwaited = true; } } catch (cause) { retain(cause); }
+  try { if (browser) { await browser.close(); report.cleanup.browserClosed = true;
+    if (activeProcess) activeProcess.record.browserCloseAwaited = true; } } catch (cause) { retain(cause); }
+  if (coldBrowser) {
+    try { await joinNativeChildren(); report.cleanup.nativeChildrenJoined = nativeChildren.every(entry => entry.record.nativeCloseAwaited); }
+    catch (cause) { retain(cause); }
+  }
   report.cleanup.pagesClosed = ownedPages.every(selected => selected.isClosed());
   // Final acceptance follows every close callout and response read.
   try {
@@ -453,7 +559,12 @@ finally {
     assert.equal(report.pageErrors, 0); assert.equal(report.foreignRequests, 0);
     assert.equal(report.requestsBlocked, 0); assert.equal(report.requestsOverLimit, false); assert.equal(report.webSocketsBlocked, 0);
     assert.equal(report.finalPinsVerified, true); assert.ok(report.matchedBuildResponses > 0);
-    if (coldDocument && !featureRed) assert.equal(report.documentReopens.length, 2);
+    if ((coldDocument || coldBrowser) && !featureRed) assert.equal(report.documentReopens.length, 2);
+    if (coldBrowser) {
+      assert.equal(report.browserProcesses.length, 3);
+      for (const record of report.browserProcesses)
+        assert.ok(record.launchReturned && record.contextCloseAwaited && record.browserCloseAwaited && record.nativeCloseObserved && record.nativeCloseAwaited);
+    }
   } catch (cause) { retain(cause); }
   if (failure) report.status = 'fail';
   writeFileSync(output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });

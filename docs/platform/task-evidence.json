@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 205,
+  "revision": 206,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13766,6 +13766,55 @@
       "scope": "Narrow production1Hz actual data-read cadence repair; immutable completion receipts and original read/session/approval limits. Current source and ordinary installed public SDK proof pass. A16/Q03/Q08 remain open for native sysfs/I2C, calibration, physical and broader heterogeneous acceptance; final exact-tree integration is separately bound.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "watch-sharing-native-2026-10-11",
+      "revision": "bf0b0f897f4c31614e61fe0ded5c1b9609ff497fe01acbd413cf35fa1f97d155",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U04",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "tools/qa-watch-sharing-flow.mjs",
+        "docs/platform/receipts/2026-10-11-sharing-processor-restart.json"
+      ],
+      "environment": "Local macOS26.5.2, installed Node24.14.0; actual native Chromium149.0.7827.55/WebKit26.5, native Storage/Web Locks/WebCrypto/RTC, loopback build source tree002550 retained and selected production inputs unchanged. Exact executed trees and toolchain limits in receipt.",
+      "reproduction": "Run literal qa-watch-sharing-flow.mjs with retained served-proof.json; raw30-check receipt, served modules and joined native browser/server/HTTP results remain in immutable batch-5/watch-native. Earlier parent missing-source failure is retained. Final candidate gates and unchanged selected-input binding are separately required.",
+      "scope": "Selected owner and two independently approved read-only observers pass30 native Chromium/WebKit checks, genuine fixed quiet expiry, scoped revoke/decline/cancel, keyboard/focus and all eight native peer closures. Whole U04/Q05/Q07, accounts, physical and named AT remain open.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "processor-browser-restart-2026-10-11",
+      "revision": "2deba3cb95730afc036ef62f691ced10c8e74ed9f412af828f0b425e9f70980f",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U12",
+        "E10",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "tools/qa-durable-processor-management.mjs",
+        "docs/platform/receipts/2026-10-11-sharing-processor-restart.json"
+      ],
+      "environment": "Local macOS26.5.2, installed Node24.14.0; actual native Chromium149.0.7827.55/WebKit26.5, native Storage/Web Locks/WebCrypto/RTC, loopback build source tree002550 retained and selected production inputs unchanged. Exact executed trees and toolchain limits in receipt.",
+      "reproduction": "Run literal qa-durable-processor-management.mjs --cold-browser ABS_OWNED_PARENT in Chromium/WebKit with retained served proof, plus --cold-document shared-helper regressions. Native profile is never exported/reseeded; root removes it only after actual native close0/null. Retained genuine first headless executable mismatch precedes observer correction. Omitted application input is refused before dispatch. Final candidate gates and selected-input/build binding are separately required.",
+      "scope": "Selected reviewed saved processor version and publisher revocation survive three genuine native processes over one new private profile per engine; each arrival is inactive, management and independent input/output approvals are fresh. Six normal native child exits; existing cold-document cases also pass. No production change, whole task/account/device/AT/profile-portability or native fault-matrix acceptance.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -16345,7 +16394,8 @@
         "processor-native-exact-local-gates-2026-10-07",
         "browser-processor-storage-built-partial-2026-10-07",
         "durable-processor-management-built-source-partial-2026-10-07",
-        "processor-activation-revision-2026-10-09"
+        "processor-activation-revision-2026-10-09",
+        "processor-browser-restart-2026-10-11"
       ],
       "dependencies": [
         "M01",
@@ -16509,7 +16559,8 @@
         "u04-built-partial-2026-10-06",
         "u04-connected-page-sharing-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
-        "watch-sharing-built-source-partial-2026-10-07"
+        "watch-sharing-built-source-partial-2026-10-07",
+        "watch-sharing-native-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16652,7 +16703,8 @@
         "durable-processor-management-built-source-partial-2026-10-07",
         "lifecycle-browser-batch-2026-10-10",
         "settings-scratch-batch-2026-10-10",
-        "processor-cold-document-2026-10-10"
+        "processor-cold-document-2026-10-10",
+        "processor-browser-restart-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16873,7 +16925,9 @@
         "lifecycle-browser-batch-2026-10-10",
         "settings-scratch-batch-2026-10-10",
         "processor-cold-document-2026-10-10",
-        "remembered-native-backup-2026-10-10"
+        "remembered-native-backup-2026-10-10",
+        "watch-sharing-native-2026-10-11",
+        "processor-browser-restart-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -16900,7 +16954,9 @@
         "resource-loopback-chromium-2026-10-02",
         "resource-loopback-webkit-2026-10-02",
         "processor-cold-document-2026-10-10",
-        "remembered-native-backup-2026-10-10"
+        "remembered-native-backup-2026-10-10",
+        "watch-sharing-native-2026-10-11",
+        "processor-browser-restart-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
