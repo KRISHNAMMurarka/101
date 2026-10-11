@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { createMicrophoneTask } from './microphone-task';
+import { createMicrophoneTask, MICROPHONE_TASK_LIMITS } from './microphone-task';
 import type { MicrophoneReview, MicrophoneSnapshot, MicrophoneStage, MicrophoneTask } from './microphone-task';
 import styles from '../resources/resource-task.module.css';
 
@@ -28,6 +28,10 @@ const reviews: Record<MicrophoneStage, Readonly<{ title: string; scope: string; 
   source: { title: 'Allow these microphone readings?', scope: 'Allow the selected input to supply its signal levels and sampling details for this page. This permission ends with the current setup.', approve: 'Allow microphone readings' },
   display: { title: 'Allow the level display?', scope: 'Allow the signal levels to change the display below, on this page only. This permission ends with the current setup.', approve: 'Allow level display' },
 };
+function canReloadMicrophone(snapshot: MicrophoneSnapshot) {
+  return snapshot.attempts >= MICROPHONE_TASK_LIMITS.attempts && snapshot.phase === 'stopped' && !snapshot.cleanupUnconfirmed &&
+    snapshot.rawPending === 0 && Object.values(snapshot.owned).every(count => count === 0);
+}
 
 export default function MicrophoneView() {
   const [snapshot, setSnapshot] = useState<MicrophoneSnapshot>(empty), [ready, setReady] = useState(false),
@@ -58,7 +62,12 @@ export default function MicrophoneView() {
     const next = holder.current?.review(stage); setReview(next);
   };
   const stop = () => { setReview(undefined); work(task => task.stop()); };
+  const reload = () => {
+    const task = holder.current;
+    if (task && canReloadMicrophone(task.snapshot())) window.location.reload();
+  };
   const settling = snapshot.phase === 'settling', busy = settling || snapshot.rawPending > 0;
+  const inputLimitReached = snapshot.attempts >= MICROPHONE_TASK_LIMITS.attempts;
   const usingInput = snapshot.approvals.capture, selected = snapshot.selectedOrdinal ?? 0;
   const cells = snapshot.latest?.rows[0], columns = snapshot.latest?.columns;
   const rmsIndex = columns?.findIndex(column => column.key === 'rms') ?? -1, peakIndex = columns?.findIndex(column => column.key === 'peak') ?? -1;
@@ -73,15 +82,19 @@ export default function MicrophoneView() {
     </header>
     <section className={styles.panel} aria-labelledby="microphone-input-title">
       <h2 id="microphone-input-title">Choose the input</h2>
-      <p>If no inputs appear, check microphone access in your browser settings, then stop and look again. Only the input you choose is used.</p>
-      <div className={styles.actions}><button disabled={!ready || busy || snapshot.owned.runtimes > 0 || snapshot.attempts >= 4 || snapshot.cleanupUnconfirmed}
+      <p>{inputLimitReached ? 'To look for inputs again, stop and wait for cleanup, then reload this page.' :
+        'If no inputs appear, check microphone access in your browser settings, then stop and look again. Only the input you choose is used.'}</p>
+      <div className={styles.actions}><button disabled={!ready || busy || snapshot.owned.runtimes > 0 || inputLimitReached || snapshot.cleanupUnconfirmed}
         onClick={() => { setReview(undefined); work(task => task.findInputs()); }}>Find inputs</button>
-        <button disabled={!ready} onClick={stop}>Stop</button></div>
+        <button disabled={!ready} onClick={stop}>Stop</button>
+        {inputLimitReached && <button disabled={!canReloadMicrophone(snapshot)} onClick={reload}>Reload this page</button>}</div>
       {snapshot.choices.length > 0 ? <label>Input<select value={selected} disabled={busy || usingInput}
         onChange={event => { const ordinal = Number(event.target.value); setReview(undefined); work(task => task.select(ordinal)); }}>
         <option value={0} disabled>Choose an input</option>{snapshot.choices.map(choice => <option key={choice.ordinal} value={choice.ordinal}>{choice.label}</option>)}
       </select></label> : null}
       <p ref={status} className={styles.status} tabIndex={-1} role="status">{settling ? 'Stopping microphone use. Earlier work must finish before a fresh setup.' :
+        snapshot.phase === 'stopped' && inputLimitReached && !snapshot.cleanupUnconfirmed ? 'Microphone use stopped. This page reached its setup limit. Check microphone access in your browser settings, then reload this page to start again.' :
+        snapshot.phase === 'no-inputs' && inputLimitReached ? 'No input is available here. This page reached its setup limit. Check microphone access in your browser settings, then stop and wait for cleanup before reloading this page.' :
         snapshot.phase === 'finding' ? 'Finding available inputs. Microphone use is off.' : snapshot.phase === 'opening' ? 'Waiting for the selected input. You can stop while you wait.' :
         snapshot.phase === 'captured' ? 'The selected microphone is being processed. Review the remaining permissions to show its levels.' : reasons[snapshot.reason]}</p>
       {notice ? <p role="alert">{notice}</p> : null}

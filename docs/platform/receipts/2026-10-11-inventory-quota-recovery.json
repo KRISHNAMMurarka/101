@@ -1,0 +1,1034 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "base": "12f781d4d7e1fca73d152a8aa223cacc4bf017f9",
+  "localOnly": true,
+  "routes": [
+    "/connections/camera",
+    "/connections/microphone"
+  ],
+  "result": "Twelve selected Chromium native inventory/keyboard/quota reload checks pass after narrow UI recovery repair. Six ordinary native Safari UI arrival/quota/keyboard reload observations pass; active Safari inventory remains unqualified. Full tasks/support remain open.",
+  "preliminarySourceTree": "51ccbdfe4bcece7f6b66adb6cfebf15fa7f7bf2d",
+  "sourceSha256": {
+    "app/connections/camera/CameraView.tsx": "3ff6e471e4ebd9788bba21d6dd05bfe37c78a610d2a6251c97edab6bb4d6676e",
+    "app/connections/camera/camera-task.ts": "08872d1db59939487e735dee44de28dfdf253fc11df73370719a1eedaec55f32",
+    "app/connections/microphone/MicrophoneView.tsx": "1a3a9e0be4edc80cb56defbe291f487e8757e1182ba19ce836597a61506a1b41",
+    "app/connections/microphone/microphone-task.ts": "3722fb427c0961a9546e736bf0bd9b67c1f7d134017d14f49c5b75b3b331fc43",
+    "tools/qa-media-inventory-player.mjs": "25224bb16bc08d96c0394a0d7bc3dc12b074839b88604cad5c02f1ce19f6ce06",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d"
+  },
+  "productionChanges": [
+    "Views derive the unchanged attempt bounds from their exported task limits.",
+    "At the attempt limit, stopped/empty states explain reload rather than require a disabled fresh inventory; Camera Stop focuses the readable status when List cameras cannot be enabled.",
+    "A visible Reload this page action appears at the existing limit and stays disabled until actual stopped/cleanup-confirmed task state has no owned or pending work. Its click handler rechecks the current live snapshot before normal browser reload; the in-document task quota is never reset."
+  ],
+  "oldRegressions": [
+    {
+      "kind": "camera",
+      "ref": "refs/codex/evidence/2026-10-11-inventory-quota/regression-old",
+      "receipt": "camera.json",
+      "sha256": "5c347e312285448baec5e065826ab2ead8bce27f262dc7f40a956a75b4a28702",
+      "sourceTree": "50f7e942591db0affa9553e35c382e5c3165b0bf",
+      "harnessSHA": "8e868b79cf0bcebf9857633fbc506bc5888b4c11a13df7edbe03f28be320f026",
+      "failure": "Exhausted inventory must offer reload instead of a disabled fresh choice",
+      "quotaRecovery": {
+        "kind": "camera",
+        "text": "Camera access stopped. List cameras and review fresh permissions to try again.",
+        "native": {
+          "enumerations": [
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            }
+          ],
+          "captureCalls": 0,
+          "pending": 0,
+          "features": {
+            "camera": false,
+            "microphone": false
+          },
+          "available": {
+            "enumerateDevices": true,
+            "getUserMedia": true
+          },
+          "observersInstalled": {
+            "enumerateDevices": true,
+            "getUserMedia": true
+          },
+          "retirements": []
+        },
+        "statusFocus": {
+          "active": false,
+          "visible": false
+        },
+        "inventoryDisabled": true
+      },
+      "cleanupQualified": true
+    },
+    {
+      "kind": "microphone",
+      "ref": "refs/codex/evidence/2026-10-11-inventory-quota/regression-old",
+      "receipt": "microphone.json",
+      "sha256": "d56c1dcd289d7b8934455894e679f8c59546f0134cbb51072d02c5fa37d67600",
+      "sourceTree": "50f7e942591db0affa9553e35c382e5c3165b0bf",
+      "harnessSHA": "b007967abbb24ffb2908a70d8fbde6c93a4f59c4d5a7266e5d5e6a85a00ea9bd",
+      "failure": "Exhausted inventory must offer reload instead of a disabled fresh choice",
+      "quotaRecovery": {
+        "kind": "microphone",
+        "text": "Microphone use stopped. Choose an input again to continue.",
+        "native": {
+          "enumerations": [
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            },
+            {
+              "method": "enumerateDevices",
+              "status": "fulfilled",
+              "devices": [
+                {
+                  "kind": "audioinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "videoinput",
+                  "hasId": false,
+                  "hasLabel": false
+                },
+                {
+                  "kind": "audiooutput",
+                  "hasId": false,
+                  "hasLabel": false
+                }
+              ]
+            }
+          ],
+          "captureCalls": 0,
+          "pending": 0,
+          "features": {
+            "camera": false,
+            "microphone": false
+          },
+          "available": {
+            "enumerateDevices": true,
+            "getUserMedia": true
+          },
+          "observersInstalled": {
+            "enumerateDevices": true,
+            "getUserMedia": true
+          },
+          "retirements": []
+        },
+        "statusFocus": {
+          "active": true,
+          "visible": true
+        },
+        "inventoryDisabled": true
+      },
+      "cleanupQualified": true
+    }
+  ],
+  "preliminaryChromium": {
+    "ref": "refs/codex/evidence/2026-10-11-inventory-quota/preliminary-native",
+    "receipt": "chromium.json",
+    "sha256": "70cd00d05068c11b93017e2d5ae333af0ba0b4178ece2b1139fac46533adf397",
+    "harnessSHA": "784224e7d82c6854ccc3036597a40c9f5916bd047be5f3b232dd4effdfb9e2f8",
+    "browserVersion": "149.0.7827.55",
+    "checks": [
+      "camera-inert-arrival-no-inventory-or-capture",
+      "camera-actual-native-empty-inventory-actionable-guidance-no-capture",
+      "camera-keyboard-stop-visible-focus-fresh-native-inventory",
+      "camera-four-native-inventories-quota-stop-visible-status-focus-reload-guidance",
+      "camera-keyboard-reload-distinct-inert-document-fresh-native-inventory",
+      "camera-keyboard-navigation-native-inventory-returns-joined",
+      "microphone-inert-arrival-no-inventory-or-capture",
+      "microphone-actual-native-empty-inventory-actionable-guidance-no-capture",
+      "microphone-keyboard-stop-visible-focus-fresh-native-inventory",
+      "microphone-four-native-inventories-quota-stop-visible-status-focus-reload-guidance",
+      "microphone-keyboard-reload-distinct-inert-document-fresh-native-inventory",
+      "microphone-keyboard-navigation-native-inventory-returns-joined"
+    ],
+    "native": [
+      {
+        "kind": "camera",
+        "stage": "arrival",
+        "enumerations": [],
+        "documentId": "2b2dcad7-b9bd-471a-9a0e-8e3c3a5a2b33",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "2b2dcad7-b9bd-471a-9a0e-8e3c3a5a2b33",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "stopped-at-quota",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "2b2dcad7-b9bd-471a-9a0e-8e3c3a5a2b33",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "distinct-inert-reloaded-document",
+        "enumerations": [],
+        "documentId": "8faf9cc8-ecb3-49d7-a967-03bba179b259",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "fresh-reloaded-native-inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "8faf9cc8-ecb3-49d7-a967-03bba179b259",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "camera",
+        "stage": "retired-after-navigation",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "8faf9cc8-ecb3-49d7-a967-03bba179b259",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": [
+          {
+            "phase": "closed",
+            "rawPending": 0,
+            "captureCallbacksPending": 0,
+            "cleanupUnconfirmed": false,
+            "owned": {
+              "callers": 0,
+              "timers": 0
+            }
+          }
+        ]
+      },
+      {
+        "kind": "microphone",
+        "stage": "arrival",
+        "enumerations": [],
+        "documentId": "6efb7f6b-9103-4446-9b72-2370f4eacf68",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "6efb7f6b-9103-4446-9b72-2370f4eacf68",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "stopped-at-quota",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          },
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "6efb7f6b-9103-4446-9b72-2370f4eacf68",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "distinct-inert-reloaded-document",
+        "enumerations": [],
+        "documentId": "3fd322eb-84a7-4c4e-ae02-fbb223afad71",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "fresh-reloaded-native-inventory",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "3fd322eb-84a7-4c4e-ae02-fbb223afad71",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      },
+      {
+        "kind": "microphone",
+        "stage": "retired-after-navigation",
+        "enumerations": [
+          {
+            "method": "enumerateDevices",
+            "status": "fulfilled",
+            "devices": [
+              {
+                "kind": "audioinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "videoinput",
+                "hasId": false,
+                "hasLabel": false
+              },
+              {
+                "kind": "audiooutput",
+                "hasId": false,
+                "hasLabel": false
+              }
+            ]
+          }
+        ],
+        "documentId": "3fd322eb-84a7-4c4e-ae02-fbb223afad71",
+        "captureCalls": 0,
+        "pending": 0,
+        "features": {
+          "camera": false,
+          "microphone": false
+        },
+        "available": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "observersInstalled": {
+          "enumerateDevices": true,
+          "getUserMedia": true
+        },
+        "retirements": []
+      }
+    ],
+    "retirements": [
+      {
+        "phase": "closed",
+        "rawPending": 0,
+        "captureCallbacksPending": 0,
+        "cleanupUnconfirmed": false,
+        "owned": {
+          "callers": 0,
+          "timers": 0
+        }
+      }
+    ],
+    "nativeChild": {
+      "pid": 28274,
+      "spawnfile": "/Users/km/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+      "executableOrLauncherSHA": "11e393326c7d20a7c56641a7c65def33ea9c280da3b0b74cf8563b07989a0ee3",
+      "code": 0,
+      "signal": null,
+      "actualCloseObserved": true
+    },
+    "cleanup": {
+      "nativeInventoryReturnsJoined": true,
+      "requestsJoinedBeforePageClose": true,
+      "pageClosed": true,
+      "requestsJoinedBeforeContextClose": true,
+      "contextCloseAwaited": true,
+      "browserCloseAwaited": true,
+      "browserServerCloseAwaited": true,
+      "actualNativeChildCloseAwaited": true,
+      "ownedCloseOperations": [
+        {
+          "label": "Page close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Context close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Browser close",
+          "settled": true,
+          "status": "fulfilled"
+        }
+      ],
+      "allIssuedCloseReturnsJoined": true,
+      "trackedPreCloseRequestsAndIssuedRouteBodyReturnsJoined": true,
+      "watchdogCleared": true,
+      "signalListenersRemoved": true,
+      "finalPinsVerified": true
+    },
+    "lateRequestAnnouncements": [],
+    "servedJavaScriptFiles": 30
+  },
+  "nativeSafariUI": {
+    "ref": "refs/codex/evidence/2026-10-11-inventory-quota/safari-ui",
+    "receipt": "receipt.json",
+    "sha256": "649da322a817b9ea9accdea00f1b848792c354b976c07ea94eba2bcbbff2abdf",
+    "browserVersion": "26.5.2 (21624.2.5.11.8)",
+    "checks": [
+      "camera-native-ui-inert-arrival",
+      "camera-native-ui-quota-reload-guidance",
+      "camera-native-keyboard-visible-reload-focus-and-inert-return",
+      "microphone-native-ui-inert-arrival",
+      "microphone-native-ui-quota-reload-guidance",
+      "microphone-native-keyboard-visible-reload-focus-and-inert-return"
+    ],
+    "activeInventoryQualified": false,
+    "nativeAPICallCountsMeasured": false,
+    "ownedTabClosed": true,
+    "serverClosure": {
+      "pid": 54970,
+      "exitCode": -15,
+      "nativeWaitReturned": true,
+      "listenerAbsent": true,
+      "finalSourceAndBuildPinsVerified": true
+    },
+    "diagnostics": [
+      {
+        "kind": "native-key-name",
+        "outcome": "Space rejected with keyNotFound; no key event sent. Supported lowercase space used."
+      },
+      {
+        "kind": "address-autocomplete",
+        "outcome": "Native typeText/Return selected historical local port3000 and showed Cannot Connect. Exact AX setValue corrected the URL to owned port43191; no external destination or data transmission."
+      },
+      {
+        "kind": "focus-lifetime",
+        "outcome": "Real background/blur retirement repeatedly prevents active inventory qualification even after explicit native window Raise. Lifecycle handlers and deadlines remain unchanged."
+      }
+    ]
+  },
+  "profile": "Chromium: actual owned loopback build,390x844,reduced motion,native enumerateDevices/getUserMedia availability/installed observer guards,real restrictive camera/microphone policy,explicit RSC prefetch abort and native keyboard. Safari: actual installed26.5.2 normal page headers/native CUA AX and screenshot/keyboard observations in one owned tab.",
+  "limits": [
+    "Selected empty-inventory quota Stop/reload only. No positive OS capture permission, capture streams/refusal, physical devices/settings, actual assistive technology or whole task/support qualification.",
+    "Native Chromium uses a real restrictive media response policy with passively observed original calls/promises; those calls are not replaced with fabricated producer output. Original interaction/QA/closure deadlines and product limits stay unchanged.",
+    "Native Safari receipt records ordinary installed-browser UI, keyboard reload focus and inert return; its real background/blur retirement prevents active inventory qualification. Native media method/API counts and a named AT journey are not claimed for Safari.",
+    "No microphone task retirement diagnostic exists. Actual native enumeration returns and UI Stop/navigation/reload are observed without claiming a measured zero-owned microphone task retirement snapshot.",
+    "Old camera document reload occurs only after the live task reports stopped with zero raw/capture callbacks/callers/timers and confirmed cleanup. Its retired-task event is not measured across full reload. The fresh camera document later closes through measured SPA retirement.",
+    "Late request announcements during native page closure are retained separately; their terminal events are not claimed. Tracked pre-close requests and actual route/body work plus owned page/context/browser/native child/parent server close returns are joined.",
+    "Previous below-quota media receipt remains bound to its historical source and scope. This new receipt addresses its fourth-attempt limitation without rewriting those historical bytes."
+  ],
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "gatesRef": "refs/codex/evidence/2026-10-11-inventory-quota/final-gates",
+    "nativeRef": "refs/codex/evidence/2026-10-11-inventory-quota/final-native",
+    "bindingRef": "refs/codex/evidence/2026-10-11-inventory-quota/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-11-inventory-quota/acceptance",
+    "note": "Preliminary source/build/observer/native/UI receipts retain their actual identities. Exact frozen candidate requires ordinary full gates, fresh build/Chromium twelve checks and independent review/binding before local integration."
+  },
+  "supportRows": [],
+  "qaNavigationOwnershipCorrection": {
+    "finding": "Independent review found an issued native reload wait could reject without immediate observation when keyboard activation failed.",
+    "oldAndRepairedFaultRuns": [
+      {
+        "ref": "refs/codex/evidence/2026-10-11-inventory-quota/navigation-fault-old",
+        "receipt": "chromium.json",
+        "sha256": "a7fe9cf7bdce552d1cc2d7ce4966a4a57dcb3c610351c5d0d54a71eaef0c2c97",
+        "regressionSummary": "regression.json",
+        "regressionSummarySHA": "af0f03d43d413e55c5e5ac97de31da232ae5aa67a7ad5139d2350d4137fbd834",
+        "sourceTree": "c2670f72877825435d5aa788768f49c06a709113",
+        "executedFaultHarnessSHA": "5653241f492f3a46235de630cb09844d32e65fae8fbaeb815db89730dfc44312",
+        "originalHelperSHA": "784224e7d82c6854ccc3036597a40c9f5916bd047be5f3b232dd4effdfb9e2f8",
+        "actualNativePageCloseFault": true,
+        "observedUnhandledRejections": 1,
+        "nativeBrowserChild": {
+          "pid": 15135,
+          "spawnfile": "/Users/km/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+          "executableOrLauncherSHA": "11e393326c7d20a7c56641a7c65def33ea9c280da3b0b74cf8563b07989a0ee3",
+          "code": 0,
+          "signal": null,
+          "actualCloseObserved": true
+        },
+        "actualParentServerClosure": {
+          "pid": 14791,
+          "exitCode": -15,
+          "nativeWaitReturned": true,
+          "listenerAbsent": true
+        },
+        "issuedNavigationReturnsJoined": false,
+        "protectiveDiagnosticHandler": true
+      },
+      {
+        "ref": "refs/codex/evidence/2026-10-11-inventory-quota/navigation-fault-repaired",
+        "receipt": "chromium.json",
+        "sha256": "8dc20511019268883f0c5dd7da39a71fdffd5ea028558ceeb979fd62f216a0c0",
+        "regressionSummary": "regression.json",
+        "regressionSummarySHA": "4e1f3150c3c237e6ddf1b9eff905acbfe651b692ebadc1c58924392b03936f22",
+        "sourceTree": "6f29361d77ebac7523cd341906bc98abe8c5fdb4",
+        "executedFaultHarnessSHA": "4e0217aa8d8118e9b1054de5fe75a92c87a15239dbf574aa6ed9fafa5b70098d",
+        "originalHelperSHA": "25224bb16bc08d96c0394a0d7bc3dc12b074839b88604cad5c02f1ce19f6ce06",
+        "actualNativePageCloseFault": true,
+        "observedUnhandledRejections": 0,
+        "nativeBrowserChild": {
+          "pid": 28333,
+          "spawnfile": "/Users/km/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+          "executableOrLauncherSHA": "11e393326c7d20a7c56641a7c65def33ea9c280da3b0b74cf8563b07989a0ee3",
+          "code": 0,
+          "signal": null,
+          "actualCloseObserved": true
+        },
+        "actualParentServerClosure": {
+          "pid": 28060,
+          "exitCode": -15,
+          "nativeWaitReturned": true,
+          "listenerAbsent": true
+        },
+        "issuedNavigationReturnsJoined": true,
+        "protectiveDiagnosticHandler": true
+      }
+    ],
+    "repair": "The helper observes actual native navigation fulfillment/rejection immediately, retains the issued outcome, propagates failure on the normal path and joins every issued wait during failure cleanup.",
+    "limits": "The fault test closes an actual native page just after issuing the wait. A protective unhandledRejection diagnostic listener observes the old real rejection while allowing native cleanup to finish; default process interruption is not simulated or claimed. The same fault remains an expected page-closed QA failure after repair, with zero unhandled rejections and an actual rejected navigation return joined.",
+    "ordinaryFinalNativeRequired": true
+  }
+}

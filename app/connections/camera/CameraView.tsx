@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { createLocalCameraTask } from './camera-task';
+import { createLocalCameraTask, LOCAL_CAMERA_LIMITS } from './camera-task';
 import type { CameraAxis, CameraTaskReason, CameraTaskSnapshot, LocalCameraTask } from './camera-task';
 import type { BrowserCameraFrame } from '@101/connect';
 import styles from '../resources/resource-task.module.css';
@@ -26,6 +26,10 @@ const messages: Record<CameraTaskReason, string> = {
   'cleanup-unconfirmed': 'Access stopped, but cleanup could not be confirmed. Reload before trying again.',
 };
 function clear(canvas: HTMLCanvasElement | null) { canvas?.getContext('2d')?.clearRect(0, 0, 8, 8); }
+function canReloadCamera(snapshot: CameraTaskSnapshot) {
+  return snapshot.runs >= LOCAL_CAMERA_LIMITS.runs && snapshot.phase === 'stopped' && !snapshot.cleanupUnconfirmed &&
+    snapshot.rawPending === 0 && snapshot.captureCallbacksPending === 0 && snapshot.owned.callers === 0 && snapshot.owned.timers === 0;
+}
 
 export default function CameraView() {
   const [snapshot, setSnapshot] = useState<CameraTaskSnapshot>(empty), [choice, setChoice] = useState(''), [setting, setSetting] = useState(''),
@@ -74,9 +78,10 @@ export default function CameraView() {
     if (!stopFocusPending.current || snapshot.phase !== 'stopped' || snapshot.rawPending > 0 || snapshot.owned.callers > 0) return;
     // Focus after the recovery action is enabled in the committed DOM.
     stopFocusPending.current = false;
-    (snapshot.cleanupUnconfirmed ? status.current : inventoryButton.current)?.focus();
-  }, [snapshot.phase, snapshot.rawPending, snapshot.owned.callers, snapshot.cleanupUnconfirmed]);
+    (snapshot.cleanupUnconfirmed || snapshot.runs >= LOCAL_CAMERA_LIMITS.runs ? status.current : inventoryButton.current)?.focus();
+  }, [snapshot.phase, snapshot.rawPending, snapshot.owned.callers, snapshot.cleanupUnconfirmed, snapshot.runs]);
   const unavailable = snapshot.phase === 'closed' || snapshot.cleanupUnconfirmed || snapshot.rawPending > 0;
+  const inventoryLimitReached = snapshot.runs >= LOCAL_CAMERA_LIMITS.runs;
   const list = async () => {
     const installed = current.current; if (!installed) return; setError(undefined);
     const result = await installed.inventory(); if (current.current !== installed) return;
@@ -96,6 +101,10 @@ export default function CameraView() {
     const installed = current.current; if (!installed) return; stopFocusPending.current = true; setError(undefined); setSetting('');
     void installed.stop().then(() => { if (current.current === installed) setSnapshot(installed.snapshot()); });
   };
+  const reload = () => {
+    const installed = current.current;
+    if (installed && canReloadCamera(installed.snapshot())) window.location.reload();
+  };
   const reviewSetting = (axis: CameraAxis) => {
     setError(undefined); const result = current.current?.reviewControl(axis);
     if (result?.ok) setSetting(String(result.value.facts.current)); else if (result) setError(result.reason);
@@ -111,7 +120,10 @@ export default function CameraView() {
   const captureReview = snapshot.captureReview, controlReview = snapshot.controlReview;
   const statusText = snapshot.phase === 'stopping' ? 'Access stopped. Previously issued work is still finishing; a new choice is blocked until it returns.' :
     snapshot.phase === 'inventory' ? 'Listing cameras. No camera preview has started. You can stop.' :
-      snapshot.phase === 'choice' && snapshot.choices.length === 0 ? 'No camera is available here. Check camera access in your browser settings, then use Stop camera access and list cameras again.' :
+      snapshot.phase === 'stopped' && inventoryLimitReached && !snapshot.cleanupUnconfirmed ? 'Camera access stopped. This page reached its attempt limit. Check camera access in your browser settings, then reload this page before choosing again.' :
+      snapshot.phase === 'choice' && snapshot.choices.length === 0 ? (inventoryLimitReached ?
+        'No camera is available here. This page reached its attempt limit. Check camera access in your browser settings, then use Stop camera access and wait for it to finish before reloading this page.' :
+        'No camera is available here. Check camera access in your browser settings, then use Stop camera access and list cameras again.') :
       snapshot.rawPending > 0 && snapshot.phase === 'active' ? 'The setting request is finishing. You can stop; an already sent request may still take effect.' : messages[error ?? snapshot.reason];
   return <main className={styles.page} data-camera-phase={snapshot.phase} data-camera-raw={snapshot.rawPending} data-camera-preview={snapshot.previewVisible}>
     <Link href="#camera-choice" className={styles.skip}>Skip to camera choice</Link>
@@ -121,14 +133,16 @@ export default function CameraView() {
     <p ref={status} className={styles.status} role="status" aria-live="polite" tabIndex={-1}>{statusText}</p>
     <section id="camera-choice" className={styles.panel} aria-labelledby="camera-choice-title">
       <h2 id="camera-choice-title">Choose one camera</h2>
-      <button ref={inventoryButton} disabled={unavailable || snapshot.owned.callers > 0 || snapshot.phase === 'inventory' || snapshot.phase === 'opening' || snapshot.runs >= 4}
+      <button ref={inventoryButton} disabled={unavailable || snapshot.owned.callers > 0 || snapshot.phase === 'inventory' || snapshot.phase === 'opening' || inventoryLimitReached}
         onClick={() => void list()}>List cameras</button>
       <label>Camera<select value={choice} disabled={unavailable || snapshot.choices.length === 0 || snapshot.phase === 'active' || snapshot.phase === 'opening'} onChange={event => setChoice(event.currentTarget.value)}>
         <option value="">Choose a camera</option>{snapshot.choices.map(item => <option key={item.ordinal} value={String(item.ordinal)}>Camera {item.ordinal}</option>)}
       </select></label>
-      <p>The list uses numbered choices. No preview starts when you change the choice. Stop first to refresh the list.</p>
+      <p>{inventoryLimitReached ? 'To refresh this list, stop camera access and wait for cleanup, then reload this page.' :
+        'The list uses numbered choices. No preview starts when you change the choice. Stop first to refresh the list.'}</p>
       <div className={styles.actions}><button disabled={unavailable || !choice || snapshot.phase === 'active' || snapshot.phase === 'opening'} onClick={review}>Review selected camera</button>
-        <button disabled={snapshot.phase === 'idle' || snapshot.phase === 'closed' || snapshot.phase === 'stopped'} onClick={stop}>Stop camera access</button></div>
+        <button disabled={snapshot.phase === 'idle' || snapshot.phase === 'closed' || snapshot.phase === 'stopped'} onClick={stop}>Stop camera access</button>
+        {inventoryLimitReached && <button disabled={!canReloadCamera(snapshot)} onClick={reload}>Reload this page</button>}</div>
     </section>
     {captureReview && snapshot.phase === 'review' && <section className={styles.panel} aria-labelledby="camera-review-title">
       <h2 id="camera-review-title" ref={captureTitle} tabIndex={-1}>Review Camera {captureReview.handle.ordinal}</h2>

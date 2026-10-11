@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 209,
+  "revision": 211,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14044,6 +14044,199 @@
       "reproduction": "Preserved preliminary-native/webkit.json failed at original5000ms native enumeration observation prerequisite; all actual child/server closures joined.",
       "scope": "No WebKit inventory/capture/recovery qualification. Preserve failed native diagnostic rather than substitute modeled media or extend the original deadline.",
       "failure": "page.waitForFunction: Timeout 5000ms exceeded."
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "app/connections/microphone/MicrophoneView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "revision": "784224e7d82c6854ccc3036597a40c9f5916bd047be5f3b232dd4effdfb9e2f8",
+      "id": "inventory-quota-recovery-chromium-2026-10-11",
+      "result": "pass",
+      "historical": false,
+      "environment": "Local macOS native Chromium149.0.7827.55; actual preliminary source/build pins and passive native method observers with real restrictive media policy.",
+      "reproduction": "Run qa-media-inventory-player.mjs ORIGIN ABS_PROOF chromium ABS_FRESH_OUTPUT on the pinned built player. Twelve selected checks pass, including four actual inventory returns, Stop status focus, disabled-live/enabled-cleaned reload and distinct inert reload/fresh enumeration for both routes. Exact final candidate acceptance is separately required.",
+      "scope": "Selected empty camera/microphone quota recovery, native keyboard Stop/reload/fresh-inventory/navigation only. No positive capture, physical/AT/full-task/support qualification.",
+      "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "app/connections/microphone/MicrophoneView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "revision": "8e868b79cf0bcebf9857633fbc506bc5888b4c11a13df7edbe03f28be320f026",
+      "id": "camera-quota-old-failure-2026-10-11",
+      "result": "fail",
+      "historical": true,
+      "environment": "Actual native Chromium on accepted previous tree50f7e942; same real restrictive media policy, unchanged original deadlines.",
+      "reproduction": "Preserved regression-old/camera.json has four real native inventory returns and disabled fresh-inventory action; stopped guidance still asks for a fresh choice. Camera status focus is also absent; microphone focus remains visible. Actual native/process/server closes join.",
+      "scope": "Historical original camera fourth-attempt recovery failure only; no active capture/physical/AT qualification.",
+      "failure": "Exhausted inventory must offer reload instead of a disabled fresh choice"
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "app/connections/microphone/MicrophoneView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "revision": "b007967abbb24ffb2908a70d8fbde6c93a4f59c4d5a7266e5d5e6a85a00ea9bd",
+      "id": "microphone-quota-old-failure-2026-10-11",
+      "result": "fail",
+      "historical": true,
+      "environment": "Actual native Chromium on accepted previous tree50f7e942; same real restrictive media policy, unchanged original deadlines.",
+      "reproduction": "Preserved regression-old/microphone.json has four real native inventory returns and disabled fresh-inventory action; stopped guidance still asks for a fresh choice. Camera status focus is also absent; microphone focus remains visible. Actual native/process/server closes join.",
+      "scope": "Historical original microphone fourth-attempt recovery failure only; no active capture/physical/AT qualification.",
+      "failure": "Exhausted inventory must offer reload instead of a disabled fresh choice"
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "U11",
+        "V05",
+        "N02",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "app/connections/microphone/MicrophoneView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "revision": "51ccbdfe4bcece7f6b66adb6cfebf15fa7f7bf2d",
+      "id": "inventory-quota-safari-ui-2026-10-11",
+      "result": "pass",
+      "historical": false,
+      "environment": "Actual installed Safari26.5.2 via native CUA app AX/keyboard/screenshot; owned ordinary-header loopback build; source pins preserved.",
+      "reproduction": "Activate inventory four times per route, observe genuine blur retirement, disabled inventory and enabled page reload with quota guidance; native keyboard gives visible Reload focus and returns both routes to inert UI. Close only owned test tab; actual server wait and listener absence are recorded.",
+      "scope": "Six selected native Safari UI arrival/quota/keyboard reload observations only. No native API counts, active foreground inventory, positive capture, physical/AT/full-browser qualification.",
+      "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "G01"
+      ],
+      "paths": [
+        "app/connections/camera/CameraView.tsx",
+        "app/connections/microphone/MicrophoneView.tsx",
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "revision": "51ccbdfe4bcece7f6b66adb6cfebf15fa7f7bf2d",
+      "id": "inventory-active-safari-unqualified-2026-10-11",
+      "result": "unavailable",
+      "historical": false,
+      "environment": "Actual native Safari26.5.2; native control calls lose document focus and trigger real lifecycle retirement.",
+      "reproduction": "First keyboard List and following native Raise/click probes report hidden/lost-focus stop. Microphone Find also reports genuine hidden stop. The lifecycle fence is preserved; no model or deadline/focus bypass substitutes for an active native journey.",
+      "scope": "Active foreground Safari inventory and full Safari acceptance remain open. Successful quota/reload UI observations do not qualify active media or native method coverage.",
+      "failure": "Native automation could not retain the document focus required for the active inventory journey."
+    },
+    {
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "id": "inventory-navigation-wait-old-2026-10-11",
+      "revision": "5653241f492f3a46235de630cb09844d32e65fae8fbaeb815db89730dfc44312",
+      "result": "fail",
+      "historical": true,
+      "environment": "Actual native Chromium149 on pinned local build; actual native page-close fault after issued reload wait; protective unhandled-rejection observer permits real cleanup.",
+      "reproduction": "Preserved navigation-fault-old/chromium.json and regression.json record 1 unhandled native navigation rejections. Both runs intentionally fail the closed-page keyboard action and join actual normal browser child/server closes. Old navigation return had no retained join.",
+      "scope": "Selected native QA navigation-wait ownership failure path only. Expected closed-page helper failure is distinguished from the passing repaired ownership assertion. No wider product/physical/AT/support qualification.",
+      "failure": "An actual navigation wait rejected without an immediate rejection handler or retained cleanup join."
+    },
+    {
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "tools/qa-media-inventory-player.mjs",
+        "docs/platform/receipts/2026-10-11-inventory-quota-recovery.json"
+      ],
+      "equipment": [],
+      "id": "inventory-navigation-wait-repaired-2026-10-11",
+      "revision": "4e0217aa8d8118e9b1054de5fe75a92c87a15239dbf574aa6ed9fafa5b70098d",
+      "result": "pass",
+      "historical": false,
+      "environment": "Actual native Chromium149 on pinned local build; actual native page-close fault after issued reload wait; protective unhandled-rejection observer permits real cleanup.",
+      "reproduction": "Preserved navigation-fault-repaired/chromium.json and regression.json record 0 unhandled native navigation rejections. Both runs intentionally fail the closed-page keyboard action and join actual normal browser child/server closes. Repaired issued native navigation rejects as expected, is immediately observed and is joined in cleanup.",
+      "scope": "Selected native QA navigation-wait ownership failure path only. Expected closed-page helper failure is distinguished from the passing repaired ownership assertion. No wider product/physical/AT/support qualification.",
+      "failure": null
     }
   ],
   "tasks": [
@@ -15058,7 +15251,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -15567,7 +15764,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "M01",
@@ -16787,7 +16988,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16893,7 +17098,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16917,7 +17126,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16943,7 +17156,11 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -17199,7 +17416,13 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11",
+        "inventory-navigation-wait-old-2026-10-11",
+        "inventory-navigation-wait-repaired-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17235,7 +17458,14 @@
         "media-inventory-player-browser-2026-10-11",
         "camera-empty-inventory-old-failure-2026-10-11",
         "camera-stop-focus-old-failure-2026-10-11",
-        "media-inventory-webkit-unqualified-2026-10-11"
+        "media-inventory-webkit-unqualified-2026-10-11",
+        "inventory-quota-recovery-chromium-2026-10-11",
+        "camera-quota-old-failure-2026-10-11",
+        "microphone-quota-old-failure-2026-10-11",
+        "inventory-quota-safari-ui-2026-10-11",
+        "inventory-active-safari-unqualified-2026-10-11",
+        "inventory-navigation-wait-old-2026-10-11",
+        "inventory-navigation-wait-repaired-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17377,7 +17607,8 @@
     {
       "id": "G01",
       "records": [
-        "pending-G01"
+        "pending-G01",
+        "inventory-active-safari-unqualified-2026-10-11"
       ],
       "dependencies": [
         "T01"

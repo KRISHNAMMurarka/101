@@ -24,11 +24,12 @@ const required = ['app/connections/camera/page.tsx', 'app/connections/camera/Cam
   'app/connections/resources/resource-task.module.css', 'app/globals.css', 'vite.config.ts', 'package-lock.json'];
 const report = { schemaVersion: 1, status: 'pending', engine, sourceTree: proof.sourceTree,
   phase: 'source-build-pins', harnessSHA, proofSHA: hash(proofRaw), checks: [], keyboard: [], responses: [], native: [], retirements: [],
-  blockedPrefetch: [], lateRequestAnnouncements: [], errors: [], cleanupErrors: [], cleanup: {}, scope: 'Selected built camera/microphone inventory under restrictive native policy, keyboard recovery and navigation. No capture approval/refusal, streams, physical devices, settings, named assistive technology or full support acceptance.' };
+  blockedPrefetch: [], lateRequestAnnouncements: [], errors: [], cleanupErrors: [], cleanup: {}, scope: 'Selected built camera/microphone inventory under restrictive native policy, keyboard recovery, fourth-attempt quota Stop/reload into a distinct inert document, and navigation. No capture approval/refusal, streams, physical devices, settings, named assistive technology or full support acceptance.' };
 let pageClosing = false;
 let server, browser, context, page, child, childClosed, failure, closeJob;
 const responseJobs = new Set(), requests = new Map(), matched = new Map(); let count = 0, servedBytes = 0;
 const ownedCloseJobs = new Map();
+const ownedNavigationJobs = new Map();
 let activeKind;
 function guard() {
   assert.equal(hash(regular(proofPath)), report.proofSHA);
@@ -53,6 +54,19 @@ async function closeOwned(label, invoke) {
     record.settled = true; record.status = 'rejected'; throw error;
   });
   ownedCloseJobs.set(label, { record, work }); await bounded(work, label);
+}
+function observeNavigation(label, invoke) {
+  assert.ok(!ownedNavigationJobs.has(label));
+  const record = { label, settled: false, status: 'pending' };
+  // Observe rejection before keyboard activation can fail. Keep the actual
+  // issued wait until cleanup joins it, even when activation never returns.
+  const work = invoke().then(response => {
+    record.settled = true; record.status = 'fulfilled'; return { status: 'fulfilled', response };
+  }, error => {
+    record.settled = true; record.status = 'rejected'; record.error = String(error.message);
+    return { status: 'rejected', error };
+  });
+  ownedNavigationJobs.set(label, { record, work }); return work;
 }
 async function joinResponses() {
   let timer;
@@ -90,6 +104,8 @@ async function retireDocument() {
   if (await back.count()) { await back.click(); await page.waitForURL(url => url.pathname === '/connections'); }
   await page.waitForFunction(() => globalThis.__mediaInventoryQA.snapshot().pending === 0);
   const native = await nativeSnapshot();
+  assert.equal(native.captureCalls, 0);
+  report.native.push({ kind: activeKind, stage: 'retired-after-navigation', ...native });
   for (const retired of native.retirements) {
     assert.equal(retired.phase, 'closed'); assert.equal(retired.rawPending, 0); assert.equal(retired.captureCallbacksPending, 0);
     assert.equal(retired.cleanupUnconfirmed, false); assert.deepEqual(retired.owned, { callers: 0, timers: 0 });
@@ -131,6 +147,7 @@ try {
   await context.routeWebSocket('**/*', socket => { report.errors.push('Unexpected page WebSocket'); socket.close(); });
   await context.addInitScript(() => {
     const observations = { enumerations: [], captureCalls: 0, pending: 0, returnedStreams: [], retirements: [] };
+    const documentId = crypto.randomUUID();
     const media = navigator.mediaDevices, policy = document.permissionsPolicy ?? document.featurePolicy;
     const features = { camera: policy?.allowsFeature('camera') ?? null, microphone: policy?.allowsFeature('microphone') ?? null };
     const observers = {}, available = {};
@@ -156,7 +173,7 @@ try {
     }
     addEventListener('101-local-camera-retired', event => observations.retirements.push(event.detail));
     globalThis.__mediaInventoryQA = { snapshot: () => ({ enumerations: observations.enumerations.map(item => ({ ...item })),
-      captureCalls: observations.captureCalls, pending: observations.pending, features, available,
+      documentId, captureCalls: observations.captureCalls, pending: observations.pending, features, available,
       observersInstalled: Object.fromEntries(Object.keys(available).map(method => [method, navigator.mediaDevices?.[method] === observers[method]])), retirements: observations.retirements }),
       stopUnexpected: () => { for (const stream of observations.returnedStreams) for (const track of stream.getTracks()) track.stop(); } };
   });
@@ -225,6 +242,52 @@ try {
     assert.equal(retried.captureCalls, 0);
     assert.deepEqual(retried.observersInstalled, { enumerateDevices: true, getUserMedia: true });
     report.checks.push(kind + '-keyboard-stop-visible-focus-fresh-native-inventory');
+    report.phase = kind + '-quota-recovery';
+    const reload = page.getByRole('button', { name: 'Reload this page', exact: true });
+    assert.equal(await reload.count(), 0);
+    for (let attempt = 3; attempt <= 4; attempt++) {
+      await activate(stopName);
+      await status.filter({ hasText: /(?:Camera access|Microphone use) stopped/ }).waitFor();
+      assert.equal(await find.isEnabled(), true);
+      await activate(findName);
+      await page.waitForFunction(expected => globalThis.__mediaInventoryQA.snapshot().enumerations.length === expected && globalThis.__mediaInventoryQA.snapshot().pending === 0, attempt);
+      await status.filter({ hasText: /No (?:camera|input) is available/ }).waitFor();
+    }
+    assert.equal(await find.isDisabled(), true);
+    assert.equal(await reload.isDisabled(), true, 'Reload cannot leave a live inventory owner');
+    await activate(stopName);
+    await status.filter({ hasText: /(?:Camera access|Microphone use) stopped/ }).waitFor();
+    assert.match(await status.textContent(), /limit.*reload/i);
+    await page.waitForFunction(() => { const status = document.querySelector('p[role="status"]'); return status === document.activeElement && status.matches(':focus-visible'); });
+    assert.equal(await reload.isEnabled(), true);
+    const quota = await nativeSnapshot();
+    assert.equal(quota.enumerations.length, 4); assert.equal(quota.captureCalls, 0); assert.equal(quota.pending, 0);
+    assert.deepEqual(quota.observersInstalled, { enumerateDevices: true, getUserMedia: true });
+    report.native.push({ kind, stage: 'stopped-at-quota', ...quota });
+    report.checks.push(kind + '-four-native-inventories-quota-stop-visible-status-focus-reload-guidance');
+    report.phase = kind + '-fresh-document-reload';
+    const navigation = observeNavigation(kind + ' reload', () => page.waitForNavigation({ waitUntil: 'networkidle' }));
+    await activate('Reload this page'); const navigationResult = await navigation;
+    if (navigationResult.status === 'rejected') throw navigationResult.error;
+    const reloadedResponse = navigationResult.response;
+    assert.equal(reloadedResponse.status(), 200);
+    assert.equal(reloadedResponse.headers()['permissions-policy'], 'camera=(), microphone=()');
+    await find.click({ trial: true });
+    const fresh = await nativeSnapshot();
+    assert.notEqual(fresh.documentId, quota.documentId);
+    assert.deepEqual(fresh.enumerations, []); assert.equal(fresh.captureCalls, 0); assert.equal(fresh.pending, 0);
+    assert.deepEqual(fresh.available, { enumerateDevices: true, getUserMedia: true });
+    assert.deepEqual(fresh.observersInstalled, { enumerateDevices: true, getUserMedia: true });
+    assert.equal(await reload.count(), 0);
+    report.native.push({ kind, stage: 'distinct-inert-reloaded-document', ...fresh });
+    await activate(findName);
+    await page.waitForFunction(() => globalThis.__mediaInventoryQA.snapshot().enumerations.length === 1 && globalThis.__mediaInventoryQA.snapshot().pending === 0);
+    await status.filter({ hasText: /No (?:camera|input) is available/ }).waitFor();
+    const foundAfterReload = await nativeSnapshot();
+    assert.equal(foundAfterReload.captureCalls, 0);
+    assert.deepEqual(foundAfterReload.observersInstalled, { enumerateDevices: true, getUserMedia: true });
+    report.native.push({ kind, stage: 'fresh-reloaded-native-inventory', ...foundAfterReload });
+    report.checks.push(kind + '-keyboard-reload-distinct-inert-document-fresh-native-inventory');
     await activate(stopName);
     await activate('Back to Connections', 'link', true); await page.waitForURL(url => url.pathname === '/connections');
     if (kind === 'camera') await page.waitForFunction(() => globalThis.__mediaInventoryQA.snapshot().retirements.length === 1);
@@ -251,6 +314,10 @@ finally {
     try { await joinResponses(); report.cleanup.requestsJoinedBeforeContextClose = true; } catch (error) { report.cleanupErrors.push(String(error)); }
   }
   try { await closeOwned('Context close', () => context?.close()); report.cleanup.contextCloseAwaited = true; } catch (error) { report.cleanupErrors.push(String(error)); }
+  try { await bounded(Promise.all([...ownedNavigationJobs.values()].map(value => value.work)), 'Previously issued navigation returns'); }
+    catch (error) { report.cleanupErrors.push(String(error)); }
+  report.cleanup.ownedNavigationOperations = [...ownedNavigationJobs.values()].map(value => value.record);
+  report.cleanup.allIssuedNavigationReturnsJoined = report.cleanup.ownedNavigationOperations.every(value => value.settled);
   try { await closeOwned('Browser close', () => browser?.close()); report.cleanup.browserCloseAwaited = true; } catch (error) { report.cleanupErrors.push(String(error)); }
   try { await bounded(closeServer(), 'Browser server close'); report.cleanup.browserServerCloseAwaited = true; } catch (error) { report.cleanupErrors.push(String(error)); }
   if (childClosed) try { await bounded(childClosed, 'Actual native child close'); report.cleanup.actualNativeChildCloseAwaited = true; }
