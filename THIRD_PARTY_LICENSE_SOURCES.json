@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "scope": "Explicit exact installed author-supplied README legal sources. Embedded bytes preserve complete authored files; presence is not redistribution approval. Other absent texts/targets, native/model terms and legal review remain open.",
+  "packages": [
+    {
+      "name": "bplist-parser",
+      "version": "0.3.1",
+      "installedPath": "node_modules/bplist-parser",
+      "licenseFiles": [
+        {
+          "path": "README.md",
+          "sha256": "4a09c55c64d57abe284e09318763dcd69795ed7a201a84edf1bf8774c3b91a8e"
+        }
+      ]
+    },
+    {
+      "name": "esrecurse",
+      "version": "4.3.0",
+      "installedPath": "node_modules/esrecurse",
+      "licenseFiles": [
+        {
+          "path": "README.md",
+          "sha256": "a7007c78c9d9da690ef6cdb0e7a3427d05832edb00abd1f5a9882700d73be4ad"
+        }
+      ]
+    },
+    {
+      "name": "glob-to-regexp",
+      "version": "0.4.1",
+      "installedPath": "node_modules/glob-to-regexp",
+      "licenseFiles": [
+        {
+          "path": "README.md",
+          "sha256": "18a53184b61f21e9f39035c106e5e6bf885353ce4177d18e15fcb18980cb1ee2"
+        }
+      ]
+    },
+    {
+      "name": "imurmurhash",
+      "version": "0.1.4",
+      "installedPath": "node_modules/imurmurhash",
+      "licenseFiles": [
+        {
+          "path": "README.md",
+          "sha256": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c"
+        }
+      ]
+    }
+  ]
+}

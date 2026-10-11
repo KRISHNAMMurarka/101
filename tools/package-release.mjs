@@ -15,6 +15,7 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { auditReleaseLicenseInventories } from "./license-inventory-validation.mjs";
+import { DECLARED_LICENSE_SOURCES_PATH } from "./generate-license-inventory.mjs";
 import { auditWebRuntimeAssets } from "./web-artifact-validation.mjs";
 import * as zlib from "node:zlib";
 
@@ -275,7 +276,7 @@ async function sourceProvenance() {
     gitRoot = (await run("git", ["rev-parse", "--show-toplevel"], { cwd: ROOT })).stdout.trim();
   } catch { /* A fixture or source archive may have no Git history. */ }
   let scope = "declared-packaging-files-only";
-  let paths = ["package.json", "package-lock.json", "apps/desktop-hub/src-tauri/Cargo.lock", ...WEB_METADATA,
+  let paths = ["package.json", "package-lock.json", "apps/desktop-hub/src-tauri/Cargo.lock", DECLARED_LICENSE_SOURCES_PATH, ...WEB_METADATA,
     "tools/package-release.mjs", "tools/license-inventory-validation.mjs", "tools/generate-license-inventory.mjs", "tools/web-artifact-validation.mjs"];
   if (gitRoot && resolve(gitRoot) === resolve(ROOT)) {
     revision = (await run("git", ["rev-parse", "HEAD"], { cwd: ROOT })).stdout.trim();

@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { LICENSE_INVENTORY_LIMITS as limits, readLocalLicenseBytes } from './generate-license-inventory.mjs';
+import { LICENSE_INVENTORY_LIMITS as limits, readLocalLicenseBytes, readDeclaredLicenseSources } from './generate-license-inventory.mjs';
 
 const digest = value => createHash('sha256').update(value).digest('hex');
 const hash = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
@@ -90,11 +90,20 @@ async function auditJavaScript(root) {
     .filter(([path, pkg]) => path.includes('node_modules/') && pkg?.version));
   if (locked.size > limits.packages || locked.size !== inventory.packages.length)
     throw new Error('License inventory does not match package-lock.json');
+  const declared = await readDeclaredLicenseSources({ root, lockedPackages: locked });
+  if (declared.manifest ? !object(inventory.declaredSources)
+    || inventory.declaredSources.path !== declared.manifest.path || inventory.declaredSources.sha256 !== declared.manifest.sha256
+    : inventory.declaredSources !== undefined && inventory.declaredSources !== null)
+    throw new Error('License inventory declared source provenance does not match');
   for (const pkg of inventory.packages) {
     const expected = locked.get(pkg.installedPath);
     if (!localPath(pkg.installedPath) || !expected || pkg.name !== (expected.name ?? pkg.installedPath.split('node_modules/').at(-1))
       || pkg.version !== expected.version || pkg.license !== (expected.license ?? 'UNKNOWN'))
       throw new Error('License inventory does not match package-lock.json');
+    if (pkg.coverage !== 'not-installed') for (const required of declared.packages.get(pkg.installedPath)?.licenseFiles ?? []) {
+      if (!pkg.licenseFiles?.some(file => file.path === required.path && file.sha256 === required.sha256))
+        throw new Error('License inventory omits or changes a declared legal source');
+    }
     locked.delete(pkg.installedPath);
   }
   validateTexts(inventory);

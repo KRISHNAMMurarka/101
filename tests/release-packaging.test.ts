@@ -30,7 +30,7 @@ const fixtureTexts = [{ sha256: fixtureLegalHash, bytes: Buffer.byteLength(fixtu
 const fixtureCoverage = { complete: true, lockedPackages: 1, missingPackages: 0, packagesWithoutText: 0,
   distinctTexts: 1, textBytes: Buffer.byteLength(fixtureLegalText) };
 const fixtureLicenseInventory = JSON.stringify({ schemaVersion: 1, generatedFrom: 'package-lock.json',
-  lockSha256: digest(fixtureLock), packages: [{ name: 'runtime-fixture', version: '1.0.0', license: 'MIT',
+  lockSha256: digest(fixtureLock), declaredSources: null, packages: [{ name: 'runtime-fixture', version: '1.0.0', license: 'MIT',
     installedPath: 'node_modules/runtime-fixture', coverage: 'local-texts', licenseFiles: [{ path: 'LICENSE', sha256: fixtureLegalHash }] }],
   licenseTexts: fixtureTexts, coverage: { ...fixtureCoverage,
     scope: 'Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate.' } }, null, 2) + '\n';
@@ -77,6 +77,7 @@ function fixture(states: Record<string, string> = {}) {
     if (state === 'lock-drift') appendFileSync('package-lock.json', '\\n ');
     if (state === 'builder-drift') appendFileSync('tools/package-release.mjs', '\\n// changed while running\\n');
     if (state === 'helper-drift') appendFileSync('tools/web-artifact-validation.mjs', '\\n// changed after import\\n');
+    if (state === 'declared-source-drift') appendFileSync('THIRD_PARTY_LICENSE_SOURCES.json', '\\n ');
     if (target === 'web') {
       for (const asset of ${JSON.stringify(fixtureWebRuntimePaths)}) {
         mkdirSync(dirname('dist/' + asset), { recursive: true }); writeFileSync('dist/' + asset, 'public asset');
@@ -518,3 +519,69 @@ for (const mode of ['release', 'diagnostic']) {
     } finally { f.close(); }
   });
 }
+
+test('web packaging rejects omitted declared legal sources before invoking its producer', () => {
+  const f = fixture();
+  try {
+    const sources = JSON.stringify({ schemaVersion: 1, packages: [{ name: 'runtime-fixture', version: '1.0.0', installedPath: 'node_modules/runtime-fixture',
+      licenseFiles: [{ path: 'README.md', sha256: fixtureLegalHash }] }] }) + '\n';
+    writeFileSync(join(f.root, 'THIRD_PARTY_LICENSE_SOURCES.json'), sources);
+    const inventory = JSON.parse(fixtureLicenseInventory);
+    inventory.declaredSources = { path: 'THIRD_PARTY_LICENSE_SOURCES.json', sha256: digest(sources) };
+    // The embedded bytes remain internally valid, but the required README source is missing.
+    writeFileSync(join(f.root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(inventory));
+    const result = f.run(['--release', 'web']);
+    assert.equal(result.status, 1, result.stdout + result.stderr);
+    assert.deepEqual(f.manifests()[0].value.produced, []); assert.equal(existsSync(join(f.root, 'invoked.log')), false);
+  } finally { f.close(); }
+});
+
+function declareFixtureSources(root: string) {
+  const sources = JSON.stringify({ schemaVersion: 1, packages: [{ name: 'runtime-fixture', version: '1.0.0', installedPath: 'node_modules/runtime-fixture',
+    licenseFiles: [{ path: 'README.md', sha256: fixtureLegalHash }] }] }) + '\n';
+  writeFileSync(join(root, 'THIRD_PARTY_LICENSE_SOURCES.json'), sources);
+  const inventory = JSON.parse(fixtureLicenseInventory);
+  inventory.declaredSources = { path: 'THIRD_PARTY_LICENSE_SOURCES.json', sha256: digest(sources) };
+  inventory.packages[0].licenseFiles = [{ path: 'README.md', sha256: fixtureLegalHash }];
+  writeFileSync(join(root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(inventory));
+  return { sources, inventory };
+}
+
+test('packaging admits exact declared source provenance and preserves its embedded terms', () => {
+  const f = fixture(); try {
+    declareFixtureSources(f.root); const result = f.run(['--release', 'web']); assert.equal(result.status, 0, result.stdout + result.stderr);
+    const record = f.manifests()[0]; const embedded = JSON.parse(readFileSync(resolve(record.path, '..', 'web/THIRD_PARTY_LICENSES.json'), 'utf8'));
+    assert.equal(embedded.licenseTexts[0].text, fixtureLegalText); assert.equal(embedded.packages[0].licenseFiles[0].path, 'README.md');
+    assert.equal(record.value.source.inputs.files.find((entry: { path: string }) => entry.path === 'THIRD_PARTY_LICENSE_SOURCES.json').sha256, digest(readFileSync(join(f.root, 'THIRD_PARTY_LICENSE_SOURCES.json'))));
+    assert.equal(record.value.releaseAccepted, false);
+  } finally { f.close(); }
+});
+
+test('packaging rejects changed, removed or dangling declared source provenance before invoking a producer', () => {
+  for (const drift of ['manifest-hash', 'source-hash', 'removed-manifest', 'unresolved-manifest']) {
+    const f = fixture(); try {
+      const { inventory } = declareFixtureSources(f.root);
+      if (drift === 'manifest-hash') inventory.declaredSources.sha256 = '0'.repeat(64);
+      if (drift === 'source-hash') {
+        const changed = JSON.parse(readFileSync(join(f.root, 'THIRD_PARTY_LICENSE_SOURCES.json'), 'utf8'));
+        changed.packages[0].licenseFiles[0].sha256 = '0'.repeat(64); const raw = JSON.stringify(changed); writeFileSync(join(f.root, 'THIRD_PARTY_LICENSE_SOURCES.json'), raw);
+        inventory.declaredSources.sha256 = digest(raw);
+      }
+      if (drift === 'removed-manifest') rmSync(join(f.root, 'THIRD_PARTY_LICENSE_SOURCES.json'));
+      if (drift === 'unresolved-manifest') delete inventory.declaredSources;
+      writeFileSync(join(f.root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(inventory));
+      const result = f.run(['--release', 'web']); assert.equal(result.status, 1, drift + result.stdout + result.stderr);
+      assert.deepEqual(f.manifests()[0].value.produced, []); assert.equal(existsSync(join(f.root, 'invoked.log')), false);
+    } finally { f.close(); }
+  }
+});
+
+test('a declared source manifest changed during the actual producer withdraws its owned package copy', () => {
+  const f = fixture({ web: 'declared-source-drift' }); try {
+    declareFixtureSources(f.root); const result = f.run(['--release', 'web']); assert.equal(result.status, 1, result.stdout + result.stderr);
+    const record = f.manifests()[0]; assert.equal(record.value.buildInputVerification.stable, false);
+    assert.ok(record.value.buildInputVerification.changedInputs.some((entry: { path: string }) => entry.path === 'THIRD_PARTY_LICENSE_SOURCES.json'));
+    assert.deepEqual(record.value.produced, []); assert.equal(existsSync(resolve(record.path, '..', 'web')), false);
+    assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');
+  } finally { f.close(); }
+});

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 211,
+  "revision": 212,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14237,6 +14237,122 @@
       "reproduction": "Preserved navigation-fault-repaired/chromium.json and regression.json record 0 unhandled native navigation rejections. Both runs intentionally fail the closed-page keyboard action and join actual normal browser child/server closes. Repaired issued native navigation rejects as expected, is immediately observed and is joined in cleanup.",
       "scope": "Selected native QA navigation-wait ownership failure path only. Expected closed-page helper failure is distinguished from the passing repaired ownership assertion. No wider product/physical/AT/support qualification.",
       "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tools/package-release.mjs",
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-11-declared-license-sources.json"
+      ],
+      "equipment": [],
+      "id": "declared-license-sources-local-2026-10-11",
+      "revision": "4a286db76f4741d6ae0b758edc79e28f483dadc54044cc18a5e22e03cc01f8de",
+      "result": "pass",
+      "historical": false,
+      "environment": "Actual local macOS Node24.14; unchanged installed dependencies/locks/Cargo inventory; ordinary filesystem/CLI/package fixtures and direct collection/admission.",
+      "reproduction": "Regenerate the JavaScript inventory with explicit four version/file/hash-pinned author README sources. Native CLI parent returns0; read-only admission returns0; four exact source files embed unchanged, all previous texts and other rows remain unchanged. Focused60 guards pass; exact final gates/package binding remains required separately.",
+      "scope": "Selected four authored-source byte preservation, declaration/text admission and build-input drift guards only.116 absent optional targets,64 remaining JS text gaps,40 Rust text gaps and broader legal/release/full-task/support acceptance remain open.",
+      "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tools/package-release.mjs",
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-11-declared-license-sources.json"
+      ],
+      "equipment": [],
+      "id": "declared-license-readme-old-2026-10-11",
+      "revision": "102e8d897d5321f467af1fe772d402b3c3d2fb3970a6d223d6c66a9f58d06681",
+      "result": "fail",
+      "historical": true,
+      "environment": "Accepted baseline58a1e1d9 collector with a faithful exact imurmurhash0.1.4 README fixture.",
+      "reproduction": "Focused original collector regression observes licenseFiles[] rather than the explicitly required exact README.md source reference; actual parent returns1 and fixture cleanup is awaited.",
+      "scope": "Historical selected collection scope-gap regression only; fixture legal bytes are exact installed producer output, not legal approval.",
+      "failure": "Current collector omits the exact explicitly declared author README legal source; actual licenseFiles[] differs from expected README.md reference."
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tools/package-release.mjs",
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-11-declared-license-sources.json"
+      ],
+      "equipment": [],
+      "id": "declared-license-admission-old-2026-10-11",
+      "revision": "a7247e56032d361c1dddc150a8652d7fdd0922a5b4cfe8c2ed35073807c5f40a",
+      "result": "fail",
+      "historical": true,
+      "environment": "Explicit partial feature source candidate778f150a16ae1d6dc8bb44677873609d3998dd1d; configured-source generator present while validator/builder retain their unchanged baseline bytes.",
+      "reproduction": "An internally valid fixture inventory omits the configured README reference; old admission reports one produced/zero skipped and exit0, so the required rejection test returns1. Actual local package fixture/parent return and cleanup are observed.",
+      "scope": "Historical pre-repair consumer admission gap on the identified partial feature candidate only; no accepted-baseline-tree or production-artifact/redistribution qualification.",
+      "failure": "Old admission reported one produced/zero skipped and exit0; the required rejection assertion failed."
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tools/package-release.mjs",
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-11-declared-license-sources.json"
+      ],
+      "equipment": [],
+      "id": "declared-license-cli-entry-old-2026-10-11",
+      "revision": "c656ad2ecffcef7c945697a931a71b9dc4a839f8f3a27d0d78dda2c984702440",
+      "result": "fail",
+      "historical": true,
+      "environment": "Partial new collection source with unchanged old CLI entry comparison; actual macOS /var\u2192/private/var ancestor alias.",
+      "reproduction": "The actual CLI call resolves instead of refusing changed declared terms because the old entry predicate does not match the canonical module path; expected rejection assertion returns1. Canonical entry correction now passes in the actual60-test run.",
+      "scope": "Historical native macOS CLI entry failure only; importer inertness and before-write refusal are verified by repaired focused tests, with other OS/runtime coverage open.",
+      "failure": "Actual aliased CLI entry skipped the producer instead of executing the changed-source guard."
     }
   ],
   "tasks": [
@@ -17924,7 +18040,11 @@
         "k09-js-inventory-2026-10-05",
         "k09-built-partial-2026-10-06",
         "k09-rust-texts-partial-2026-10-06",
-        "release-inventory-admission-2026-10-09"
+        "release-inventory-admission-2026-10-09",
+        "declared-license-sources-local-2026-10-11",
+        "declared-license-readme-old-2026-10-11",
+        "declared-license-admission-old-2026-10-11",
+        "declared-license-cli-entry-old-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17939,7 +18059,11 @@
         "k10-sdk-manifest-2026-10-05",
         "release-inventory-admission-2026-10-09",
         "package-build-inputs-2026-10-09",
-        "sdk-local-reproducibility-2026-10-11"
+        "sdk-local-reproducibility-2026-10-11",
+        "declared-license-sources-local-2026-10-11",
+        "declared-license-readme-old-2026-10-11",
+        "declared-license-admission-old-2026-10-11",
+        "declared-license-cli-entry-old-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17968,7 +18092,11 @@
         "processor-native-exact-local-gates-2026-10-07",
         "seven-package-sdk-content-audit-2026-10-07",
         "telemetry-sdk-exact-local-gates-2026-10-07",
-        "web-required-assets-2026-10-09"
+        "web-required-assets-2026-10-09",
+        "declared-license-sources-local-2026-10-11",
+        "declared-license-readme-old-2026-10-11",
+        "declared-license-admission-old-2026-10-11",
+        "declared-license-cli-entry-old-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -18118,7 +18246,11 @@
       "records": [
         "pending-L03",
         "sdk-distributions-2026-10-02",
-        "sdk-local-reproducibility-2026-10-11"
+        "sdk-local-reproducibility-2026-10-11",
+        "declared-license-sources-local-2026-10-11",
+        "declared-license-readme-old-2026-10-11",
+        "declared-license-admission-old-2026-10-11",
+        "declared-license-cli-entry-old-2026-10-11"
       ],
       "dependencies": [
         "K01",

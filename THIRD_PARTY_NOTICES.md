@@ -40,4 +40,13 @@ and redistribution review remain separate work. Redistributions
 must include the full license texts required by their packages; this summary and
 local text coverage do not establish complete redistribution approval.
 
+For selected packages whose full authored terms are in `README.md`,
+`THIRD_PARTY_LICENSE_SOURCES.json` pins the exact installed package name, version,
+path and source-file hash. The JavaScript inventory preserves those complete
+source files without rewriting their terms. Regeneration rejects changed bytes
+or mismatched identities, and packaging checks the declaration fingerprint and
+required embedded source references. An undeclared README or a link-only license
+statement does not become collected legal text automatically. This selected
+source coverage does not establish redistribution approval.
+
 The committed MediaPipe models and WebAssembly files remain under their Apache-2.0 terms; a full copy is included at `third_party/APACHE-2.0.txt`. Their exact integrity hashes and limitations are recorded in `docs/vision.md`. No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included.

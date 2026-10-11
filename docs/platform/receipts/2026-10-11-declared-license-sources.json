@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "base": "58a1e1d9d8c06e56b2ab7db6feed70a1f99c9a9c",
+  "localOnly": true,
+  "result": "Four exact authored README legal sources are collected unchanged and admitted by local guards. Missing installed-JavaScript text entries fall68\u219264; focused60 guards pass. Full redistribution/support acceptance remains open.",
+  "sourceSha256": {
+    "tools/generate-license-inventory.mjs": "4a286db76f4741d6ae0b758edc79e28f483dadc54044cc18a5e22e03cc01f8de",
+    "tools/license-inventory-validation.mjs": "e17527d56b160ffe27e3a9a3fcd4f5ae9b17e9786e6f6764cf6eb64e13f10e07",
+    "tools/package-release.mjs": "8f4d1420b90f217f5203851cb9aa5ffbb7d9b4ad0d4c2cdcdad9db3ce5dc1479",
+    "THIRD_PARTY_LICENSE_SOURCES.json": "e1cc759e5910aefc9d48bfdea3dd4031be1fcbf707986f002ba8e511b7013893",
+    "THIRD_PARTY_LICENSES.json": "d8784a6a0cec6c43fc6a5b4459e69090df6acc99b46b8493326e7cf7a9873080",
+    "THIRD_PARTY_NOTICES.md": "cc32867d73b2c28292013ffea96d31d1168d82e07b3237e4f40d1b5c598a3858",
+    "tests/declared-license-sources.test.ts": "c636b476e28578a1f2ca536956e23a9f8216a9e937da63c47b5eaaf983c1e845",
+    "tests/release-packaging.test.ts": "953120a33c3e27501b73c2174d0315c62bbdba448acf7f11735e7edabf945cc7",
+    "tests/fixtures/license-readmes/imurmurhash-0.1.4.md": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+    "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+  },
+  "changes": [
+    "A bounded optional root declaration selects exact installed package identities and legal-source paths/hashes; automatic filename selection remains intact.",
+    "Collector verifies selected source bytes, preserves full authored files and manifest fingerprint, and rechecks declaration stability before returning an inventory.",
+    "JavaScript CLI entry canonicalizes its actual script path, so the observed macOS temporary ancestor alias cannot silently skip the writer; importing remains inert.",
+    "Admission rejects stale or dangling declaration fingerprints and missing/changed required embedded legal sources before invoking the builder.",
+    "Build input snapshots watch the optional declaration even outside Git and withdraw only their owned copies if it changes during production."
+  ],
+  "actualLocal": {
+    "ref": "refs/codex/evidence/2026-10-11-license-readme/actual-local",
+    "receipt": "receipt.json",
+    "sha256": "cf6daa759b3b40fb11dd8701fb3d5c6564d46e9eb34a74e842b297f65ca2d0bb",
+    "sourcePins": {
+      "tools/generate-license-inventory.mjs": "4a286db76f4741d6ae0b758edc79e28f483dadc54044cc18a5e22e03cc01f8de",
+      "tools/license-inventory-validation.mjs": "e17527d56b160ffe27e3a9a3fcd4f5ae9b17e9786e6f6764cf6eb64e13f10e07",
+      "tools/package-release.mjs": "8f4d1420b90f217f5203851cb9aa5ffbb7d9b4ad0d4c2cdcdad9db3ce5dc1479",
+      "THIRD_PARTY_LICENSE_SOURCES.json": "e1cc759e5910aefc9d48bfdea3dd4031be1fcbf707986f002ba8e511b7013893",
+      "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+      "apps/desktop-hub/src-tauri/Cargo.lock": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+      "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+    },
+    "collection": {
+      "command": [
+        "node",
+        "tools/generate-license-inventory.mjs"
+      ],
+      "exitCode": 0,
+      "actualNativeWaitReturned": true,
+      "elapsedSeconds": 3.1420012079179287
+    },
+    "admission": {
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {auditReleaseLicenseInventories} from \"./tools/license-inventory-validation.mjs\"; await auditReleaseLicenseInventories(process.cwd()); console.log(JSON.stringify({admission:\"pass\",legalApproval:false}));"
+      ],
+      "exitCode": 0,
+      "actualNativeWaitReturned": true
+    },
+    "inventorySHA": "d8784a6a0cec6c43fc6a5b4459e69090df6acc99b46b8493326e7cf7a9873080",
+    "previousInventorySHA": "4661872a1caea40fbf81b5402c49eda07972ef1ab83e46dd0f42874474ca45a5",
+    "beforeCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 68,
+      "distinctTexts": 380,
+      "textBytes": 785311,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "afterCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 64,
+      "distinctTexts": 384,
+      "textBytes": 799883,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "newSourceRows": [
+      {
+        "name": "bplist-parser",
+        "version": "0.3.1",
+        "license": "MIT",
+        "installedPath": "node_modules/bplist-parser",
+        "coverage": "local-texts",
+        "licenseFiles": [
+          {
+            "path": "README.md",
+            "sha256": "4a09c55c64d57abe284e09318763dcd69795ed7a201a84edf1bf8774c3b91a8e"
+          }
+        ]
+      },
+      {
+        "name": "esrecurse",
+        "version": "4.3.0",
+        "license": "BSD-2-Clause",
+        "installedPath": "node_modules/esrecurse",
+        "coverage": "local-texts",
+        "licenseFiles": [
+          {
+            "path": "README.md",
+            "sha256": "a7007c78c9d9da690ef6cdb0e7a3427d05832edb00abd1f5a9882700d73be4ad"
+          }
+        ]
+      },
+      {
+        "name": "glob-to-regexp",
+        "version": "0.4.1",
+        "license": "BSD-2-Clause",
+        "installedPath": "node_modules/glob-to-regexp",
+        "coverage": "local-texts",
+        "licenseFiles": [
+          {
+            "path": "README.md",
+            "sha256": "18a53184b61f21e9f39035c106e5e6bf885353ce4177d18e15fcb18980cb1ee2"
+          }
+        ]
+      },
+      {
+        "name": "imurmurhash",
+        "version": "0.1.4",
+        "license": "MIT",
+        "installedPath": "node_modules/imurmurhash",
+        "coverage": "local-texts",
+        "licenseFiles": [
+          {
+            "path": "README.md",
+            "sha256": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c"
+          }
+        ]
+      }
+    ],
+    "allOtherPackageRowsAndOldTextBytesUnchanged": true,
+    "selectedAuthoredSourceBytesExactlyPreserved": true,
+    "rustInventoryAndLocksUnchanged": true,
+    "networkRequests": 0
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-11-license-readme/focused",
+    "receipt": "receipt.json",
+    "sha256": "ca627ef5e3999dac81eaad4684841d99e4f08a4e9e450dc5c303dd2f8c524fac",
+    "tests": 60,
+    "pass": 60,
+    "fail": 0,
+    "skipped": 0,
+    "actualParentReturnObserved": true,
+    "scopedLintExitCode": 0
+  },
+  "oldRegressions": [
+    {
+      "ref": "refs/codex/evidence/2026-10-11-license-readme/regression-old",
+      "receipt": "receipt.json",
+      "sha256": "9fedfe5dca949681fba46b1410b451daf133fc782d24e3afb9de0bd3ac145b2c",
+      "baseHead": "58a1e1d9d8c06e56b2ab7db6feed70a1f99c9a9c",
+      "sourceTree": "fabed8a257dc212dbd288a31fbfb103f188c2fda",
+      "collectorSHA": "102e8d897d5321f467af1fe772d402b3c3d2fb3970a6d223d6c66a9f58d06681",
+      "exitCode": 1,
+      "failure": "Current collector omits the exact explicitly declared author README legal source; actual licenseFiles[] differs from expected README.md reference."
+    },
+    {
+      "ref": "refs/codex/evidence/2026-10-11-license-readme/admission-old",
+      "receipt": "receipt.json",
+      "sha256": "11531f2d841cc589233c6dd4cf4ac6c6a9f4f41ffd2b58c11c67823be6202719",
+      "actualCandidateTree": "778f150a16ae1d6dc8bb44677873609d3998dd1d",
+      "partialFeatureCandidate": true,
+      "sourceScope": "The generator has the new explicit-source reader. Packaging admission and builder are their unchanged baseline bytes; this test shows that existing consumer guard ignores a valid configured README reference omitted from internally valid inventory.",
+      "sourceSHA": {
+        "tools/generate-license-inventory.mjs": "c656ad2ecffcef7c945697a931a71b9dc4a839f8f3a27d0d78dda2c984702440",
+        "tools/license-inventory-validation.mjs": "a7247e56032d361c1dddc150a8652d7fdd0922a5b4cfe8c2ed35073807c5f40a",
+        "tools/package-release.mjs": "f26ec3a31afb827e0a425cbaad4d3050819314c11468071f31f452cb814d6022",
+        "tests/release-packaging.test.ts": "7667a5c869d55eaa7742ac763795a3d33c77cab86a56351de1cd33117109ab5a"
+      },
+      "exitCode": 1,
+      "failure": "Old admission reported one produced/zero skipped and exit0; the required rejection assertion failed."
+    },
+    {
+      "ref": "refs/codex/evidence/2026-10-11-license-readme/cli-before-fix",
+      "receipt": "receipt.json",
+      "sha256": "5dea90afaff057913002455144f3c68d321132ed3f5a8323853789099457c718",
+      "partialFeatureCandidate": true,
+      "sourceSHA": {
+        "tools/generate-license-inventory.mjs": "c656ad2ecffcef7c945697a931a71b9dc4a839f8f3a27d0d78dda2c984702440",
+        "tests/declared-license-sources.test.ts": "c636b476e28578a1f2ca536956e23a9f8216a9e937da63c47b5eaaf983c1e845"
+      },
+      "actualFocusedParentExit": 1,
+      "failure": "Actual CLI invocation resolved without expected changed-source refusal; entry-path ancestor alias mismatch is recorded as the supported cause inference."
+    }
+  ],
+  "initialFixtureDiagnostics": {
+    "byteBound": "The first excessive-package fixture hit the original131072-byte guard before the intended2048-entry guard. Its exact failure is retained; the count fixture was made smaller without weakening either bound.",
+    "collectorFormat": "The first packaging fixture format comparison correctly detected the new explicit declaredSources:null producer field; the fixture was updated to the actual collector format.",
+    "ref": "refs/codex/evidence/2026-10-11-license-readme/plan-and-drivers"
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "candidateRef": "refs/codex/evidence/2026-10-11-license-readme/final-candidate",
+    "gatesRef": "refs/codex/evidence/2026-10-11-license-readme/final-gates",
+    "packageRef": "refs/codex/evidence/2026-10-11-license-readme/final-package",
+    "bindingRef": "refs/codex/evidence/2026-10-11-license-readme/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-11-license-readme/acceptance",
+    "note": "Actual/focused source identities remain historical and scoped. Exact frozen source requires ordinary full gates, independent review and an actual local package with unchanged source inputs/exact four embedded author files before local integration."
+  },
+  "limits": [
+    "Only four explicit version/path/hash-pinned ordinary installed authored README sources are selected. Complete author files, including their license sections, are preserved exactly; headings, SPDX strings and link-only statements do not automatically qualify another README.",
+    "Text collection/presence is not a legal assessment or complete redistribution approval.116 optional locked packages remain absent,64 installed JavaScript packages still lack collected legal text, and40 Rust text gaps plus asset/model/native/distribution review remain separate.",
+    "No lockfiles, installed dependencies, Rust inventory, product surfaces, external services or remote repositories are changed. The actual collection/admission runs use filesystem-only local code and perform zero network requests.",
+    "The60 focused guards use actual local filesystem/CLI/package subprocesses with ordinary Node24 and original fixture bounds. Package fixtures do not represent a production artifact, intended distribution, platform installability or legal approval.",
+    "The original README regression uses exact installed imurmurhash0.1.4 producer bytes. The omitted-source admission regression is an explicitly identified partial feature candidate: generator support is new, while the existing validator and builder are unchanged baseline bytes. It is not mislabeled as the accepted baseline whole tree.",
+    "The macOS CLI entry failure is preserved on the partial source candidate. The observed temporary-directory ancestor alias explains the prior mismatch; canonical entry resolution is now verified by a real CLI refusal before previous inventory replacement. Other OS/runtime combinations are not qualified.",
+    "The optional declaration file is an inventory source-provenance input, like generatedFrom package-lock.json, rather than an artifact-local runtime reference. Its fingerprint and required embedded references are checked at admission; the packager watches it in both Git and source-archive roots.",
+    "Whole K09/K10/K12/L03, release/support acceptance, signing, publication, physical devices, named assistive technology and active Safari remain open. Final exact ordinary gates and actual local web package byte/input binding are required separately before this selected batch can integrate."
+  ],
+  "supportRows": []
+}
