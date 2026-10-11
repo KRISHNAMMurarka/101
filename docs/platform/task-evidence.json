@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 207,
+  "revision": 208,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13840,6 +13840,90 @@
       "scope": "Selected same-commit/current-toolchain SDK repeatability and offline local publication dry run only. Exactly15 generated output path fields differ; all other manifest data match. No clean-host/cross-toolchain/platform/app migration or update rollback qualification, every-binary provenance/legal/signature/release acceptance or publication; whole K10/K11/L03 and support remain open.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "revision": "c85d1cfb034ccea8f78941a10bc597c120be6b62a0f8dcdf0ba92ebe22bcfc69",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U11",
+        "V07",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/screen/ScreenView.tsx",
+        "tools/qa-screen-player.mjs",
+        "docs/platform/receipts/2026-10-11-screen-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "screen-player-browser-2026-10-11",
+      "result": "pass",
+      "historical": false,
+      "environment": "Local macOS, native headless Chromium149.0.7827.55, exact built player at390\u00d7844/reduced motion and real restrictive display-capture policy.",
+      "reproduction": "Run portable qa-screen-player.mjs against a pinned fresh local build and owned loopback server; actual native NotAllowedError and seven keyboard/refusal/recovery/unmount checks pass. Original source, served bytes, receipt, driver and native/server closure are retained in batch-7/guidance-regression-new.",
+      "scope": "Selected Chromium policy refusal, actionable guidance, independent fresh review, Stop/cancel and actual zero-owned task/framework cleanup only. Full U03/U09/U11/V07/Q05/Q07, positive OS capture and all support rows remain open.",
+      "failure": null
+    },
+    {
+      "revision": "c85d1cfb034ccea8f78941a10bc597c120be6b62a0f8dcdf0ba92ebe22bcfc69",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U11",
+        "V07",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/screen/ScreenView.tsx",
+        "tools/qa-screen-player.mjs",
+        "docs/platform/receipts/2026-10-11-screen-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "screen-player-webkit-policy-unqualified-2026-10-11",
+      "result": "unavailable",
+      "historical": false,
+      "environment": "Local macOS, installed native WebKit26.5; actual getDisplayMedia method present but browser policy inspection absent/null.",
+      "reproduction": "Exact built player reached two native keyboard/arrival checks; pre-capture guard refused before Choose because policy was not observable. Native capture call count0, actual normal browser child and all tracked returns joined; batch-7/diagnostic-native preserves failed literal run.",
+      "scope": "WebKit policy-refusal and later recovery journey remain unqualified; no OS chooser/capture attempted and no provider or full browser support promotion.",
+      "failure": "Native capture cannot be issued unless browser reports restrictive policy enforcement; null is not false."
+    },
+    {
+      "revision": "c85d1cfb034ccea8f78941a10bc597c120be6b62a0f8dcdf0ba92ebe22bcfc69",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U11",
+        "V07",
+        "Q05",
+        "Q07"
+      ],
+      "paths": [
+        "app/connections/screen/ScreenView.tsx",
+        "tools/qa-screen-player.mjs",
+        "docs/platform/receipts/2026-10-11-screen-player-browser.json"
+      ],
+      "equipment": [],
+      "id": "screen-player-guidance-old-failure-2026-10-11",
+      "result": "fail",
+      "historical": true,
+      "environment": "Historical exact built old player in native Chromium149.0.7827.55 with restrictive display-capture policy.",
+      "reproduction": "After one real NotAllowedError and zero pending/resolved streams, Review is enabled and Stop disabled; actual status still requires Stop. Regression fails as expected. Separate late prefetch closure timeout also retained; batch-7/guidance-regression-old and first-native-failure preserve exact bytes.",
+      "scope": "Historical old-copy regression and QA navigation/request ownership failures only; corrected selected pass does not erase those outcomes or qualify full scope.",
+      "failure": "Refusal guidance must not require disabled Stop; separate original30000ms response closure deadline retained."
     }
   ],
   "tasks": [
@@ -15390,7 +15474,10 @@
         "v07-browser-screen-preview-software-partial-2026-10-07",
         "screen-ble-haptic-exact-local-gates-2026-10-07",
         "screen-player-built-partial-2026-10-07",
-        "local-player-combined-software-build-2026-10-07"
+        "local-player-combined-software-build-2026-10-07",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [
         "M01",
@@ -16565,7 +16652,10 @@
         "audio-player-browser-2026-10-09",
         "audio-native-blur-attempts-2026-10-09",
         "audio-native-app-focus-2026-10-09",
-        "lifecycle-browser-batch-2026-10-10"
+        "lifecycle-browser-batch-2026-10-10",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16664,7 +16754,10 @@
     {
       "id": "U09",
       "records": [
-        "pending-U09"
+        "pending-U09",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16703,7 +16796,10 @@
         "camera-player-built-partial-2026-10-07",
         "microphone-player-built-partial-2026-10-07",
         "screen-player-built-partial-2026-10-07",
-        "local-player-combined-software-build-2026-10-07"
+        "local-player-combined-software-build-2026-10-07",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [
         "C01",
@@ -16952,7 +17048,10 @@
         "processor-cold-document-2026-10-10",
         "remembered-native-backup-2026-10-10",
         "watch-sharing-native-2026-10-11",
-        "processor-browser-restart-2026-10-11"
+        "processor-browser-restart-2026-10-11",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -16981,7 +17080,10 @@
         "processor-cold-document-2026-10-10",
         "remembered-native-backup-2026-10-10",
         "watch-sharing-native-2026-10-11",
-        "processor-browser-restart-2026-10-11"
+        "processor-browser-restart-2026-10-11",
+        "screen-player-browser-2026-10-11",
+        "screen-player-webkit-policy-unqualified-2026-10-11",
+        "screen-player-guidance-old-failure-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [

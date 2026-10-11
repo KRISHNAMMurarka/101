@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "base": "9a0f2e63a691f3601d7438d26f19979d5394ed4b",
+  "localOnly": true,
+  "route": "/connections/screen",
+  "result": "Selected Chromium native refusal and keyboard recovery pass7 checks after one denied-guidance sentence repair. WebKit capture-refusal path remains unqualified; complete tasks and support acceptance remain open.",
+  "sourceTree": "cbcb41be7c6256503e693ea71bf5cd744aebfd8b",
+  "sourceSha256": {
+    "app/connections/screen/ScreenView.tsx": "21f27c3c56835a6f09e247fa617d780ef82c1eac44c8288f60aa2530dc58b07d",
+    "app/connections/screen/page.tsx": "be82d7453f97079cfe3176343ba7f323dd0e82084c34182dee85fff8b1cf2fea",
+    "app/connections/screen/screen-task.ts": "f98a8e3159baf3bf957f621b8e8c712e9ae1efaeee6cb0b35fdeddf6407eeafe",
+    "examples/browser-resources/screen-preview.ts": "53e784f4918f551525b252161f71d4571ff2ab388956583f583ce8db88279192",
+    "packages/device-web/src/browser-screen-preview.ts": "1a85af96aa77ecad652e5ed2707c17c7449c78161e65e7d4ed05fb65fbec7c9c",
+    "packages/connect/src/index.ts": "4df05b7bac3a59a1acc0c5ce08fca142df835c5a6e228b7e93301b82153b88b2",
+    "app/connections/resources/resource-task.module.css": "c690626a06bd99fe8eef0a1e98abd1a837dcd0b7d3dbce674efc15cbc5b28115",
+    "app/globals.css": "38894593a8cab5530773207f33b996c7bfb288d1cb1cf66883d28140f6aa8ee6",
+    "tools/qa-screen-player.mjs": "c85d1cfb034ccea8f78941a10bc597c120be6b62a0f8dcdf0ba92ebe22bcfc69",
+    "vite.config.ts": "1da933a5835f1f00af8334f7b871fd057da73ade0ddf3d6199288b45fd83a4e4",
+    "package.json": "00c8257064d1b2a54f9e34c1858f0fcb86c6544c814978e4ba8f62f7b161504e",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d"
+  },
+  "productionChange": "After native refusal the task is already stopped. Guidance now names enabled Review screen preview rather than disabled Stop; provider/task bounds and behavior are unchanged.",
+  "oldRegression": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-7/guidance-regression-old",
+    "receipt": "chromium.json",
+    "sha256": "c4008cd0b2b277049386e0e9ae4f1f8d93e037763144f6c047296bb13957551c",
+    "status": "fail",
+    "actualNativeRefusal": "NotAllowedError",
+    "originalCaptureCalls": 1,
+    "resolvedStreams": 0,
+    "pending": 0,
+    "failure": "Refusal guidance must not require disabled Stop",
+    "separateCleanupFailure": "Original30000ms HTTP closure deadline with four late background Connections prefetch requests; actual task, native child and parent/server returns joined. Retained, not presented as green cleanup."
+  },
+  "nativeChromium": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-7/guidance-regression-new",
+    "receipt": "chromium.json",
+    "sha256": "3bdd13d90804d16ba2c81b1d0dfb7f32a8fce5c01c566fa16654dfe866279961",
+    "browserVersion": "149.0.7827.55",
+    "harnessSha256": "c85d1cfb034ccea8f78941a10bc597c120be6b62a0f8dcdf0ba92ebe22bcfc69",
+    "checks": [
+      "inert-built-player-arrival-no-capture-or-display",
+      "three-separate-native-keyboard-approvals-before-capture",
+      "actual-native-policy-refusal-or-native-capability-unavailable-guidance",
+      "refusal-guidance-names-enabled-fresh-review-instead-of-disabled-stop",
+      "fresh-review-resets-independent-approvals-stop-returns-visible-focus",
+      "keyboard-cancel-review-no-new-native-capture",
+      "actual-framework-unmount-awaited-task-close-zero-owned-work"
+    ],
+    "native": [
+      {
+        "calls": 0,
+        "pending": 0,
+        "resolved": 0,
+        "refused": [],
+        "policy": false,
+        "options": [],
+        "nativeMethodAvailable": true,
+        "retirements": []
+      },
+      {
+        "calls": 0,
+        "pending": 0,
+        "resolved": 0,
+        "refused": [],
+        "policy": false,
+        "options": [],
+        "nativeMethodAvailable": true,
+        "retirements": []
+      },
+      {
+        "calls": 1,
+        "pending": 0,
+        "resolved": 0,
+        "refused": [
+          "NotAllowedError"
+        ],
+        "policy": false,
+        "options": [
+          {
+            "video": true,
+            "audio": false
+          }
+        ],
+        "nativeMethodAvailable": true,
+        "retirements": []
+      }
+    ],
+    "retirements": [
+      {
+        "phase": "closed",
+        "rawPending": 0,
+        "framePending": 0,
+        "cleanupUnconfirmed": false,
+        "owned": {
+          "pipelines": 0,
+          "timers": 0
+        }
+      }
+    ],
+    "nativeChild": {
+      "pid": 89543,
+      "spawnfile": "/Users/km/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell",
+      "executableOrLauncherSHA": "11e393326c7d20a7c56641a7c65def33ea9c280da3b0b74cf8563b07989a0ee3",
+      "code": 0,
+      "signal": null,
+      "actualCloseObserved": true
+    },
+    "cleanup": {
+      "documentTaskAndNativeReturnsJoined": true,
+      "pageClosed": true,
+      "requestsJoinedBeforeContextClose": true,
+      "contextCloseAwaited": true,
+      "browserCloseAwaited": true,
+      "browserServerCloseAwaited": true,
+      "actualNativeChildCloseAwaited": true,
+      "ownedCloseOperations": [
+        {
+          "label": "Page close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Context close",
+          "settled": true,
+          "status": "fulfilled"
+        },
+        {
+          "label": "Browser close",
+          "settled": true,
+          "status": "fulfilled"
+        }
+      ],
+      "allIssuedCloseReturnsJoined": true,
+      "requestAndBodyReturnsJoined": true,
+      "watchdogCleared": true,
+      "signalListenersRemoved": true,
+      "finalPinsVerified": true
+    },
+    "parentResultsSha256": "87c78aa28fd9a80657ad1efeffcf6f6c7419dca6fe08d43edf79ba14ec781208",
+    "appServer": {
+      "pid": 89257,
+      "exitCode": -15,
+      "nativeWaitReturned": true,
+      "listenerAbsent": true
+    },
+    "servedProofSha256": "8d30b38c65818ae2283bc4c0e59d840f920a9e5aa37ea8f9ef4b8cf69ca31469",
+    "trackedSourcePins": 634,
+    "emittedFilePins": 600,
+    "actualServedJavaScriptModules": 54,
+    "sourcePinBinding": "Parent verified every source pin against the exact frozen preliminary Git tree; QA read all current source/emitted pins before and after and matched actual served JavaScript response bytes. Historical preliminary build and outputs retain their original tree; final metadata/build acceptance is bound separately."
+  },
+  "webKitUnqualified": {
+    "recordRef": "refs/codex/evidence/2026-10-11-controller/batch-7/diagnostic-native",
+    "receipt": "webkit.json",
+    "sha256": "40d640ab6df42951b511f44c0cff8158fd2f3a2a513581d123d84419176c53b2",
+    "browserVersion": "26.5",
+    "status": "unqualified",
+    "observedPolicy": null,
+    "nativeMethodAvailable": true,
+    "actualCaptureCalls": 0,
+    "checksPassed": 2,
+    "originalNativeResult": "fail at pre-capture restrictive-policy assertion; chooser never invoked. Actual native child0/null and all request/task/close returns joined. No simulated capability absence or policy outcome."
+  },
+  "qaHistory": {
+    "firstFailureRef": "refs/codex/evidence/2026-10-11-controller/batch-7/first-native-failure",
+    "firstResult": "Chromium real policy denial passed, then forward-only keyboard path left page and triggered blur retirement; original response closure deadline failed. All retained as failed.",
+    "diagnosticRef": "refs/codex/evidence/2026-10-11-controller/batch-7/diagnostic-native",
+    "diagnosticResult": "Reverse native keyboard and context request terminal ownership yielded6 Chromium checks; WebKit stopped before capture because policy observation was unavailable.",
+    "finalCorrection": "Await page close to end late background prefetch, then join actual context-owned request terminal events and original route/body promises before closing context/browser. No synthetic completion, producer replacement or expanded deadline."
+  },
+  "limits": {
+    "reviewMs": 5000,
+    "captureMs": 10000,
+    "keyboardSteps": 32,
+    "actionTimeoutMs": 5000,
+    "navigationTimeoutMs": 10000,
+    "cleanupTimeoutMs": 30000,
+    "qaWatchdogMs": 60000,
+    "freshContextViewport": [
+      390,
+      844
+    ],
+    "reducedMotion": "reduce"
+  },
+  "scopeLimits": [
+    "Restrictive policy header changes navigation response policy only; original native capture method, receiver, arguments and returned promise are forwarded unchanged. No successful OS chooser/capture, user chooser cancellation, physical screen, HD/cursor or mapping qualification.",
+    "Selected Chromium headless local built UI at recorded viewport/reduced-motion setting only; no Safari distribution, Firefox, named assistive technology, touch/theme/full responsive matrix or full browser/device acceptance.",
+    "Executable/launcher bytes and recorded browser version are evidence for observed child, not every internal process/library or independent clean-host provenance.",
+    "Original first QA and old-guidance failures remain preserved. New selected pass does not solve prior ordinary full-suite Zigbee timing variance or broadly qualify Q13."
+  ],
+  "taskDisposition": {
+    "U03": "PARTIAL/OPEN",
+    "U09": "PARTIAL/OPEN",
+    "U11": "PARTIAL/OPEN",
+    "V07": "PARTIAL/OPEN",
+    "Q05": "PARTIAL/OPEN",
+    "Q07": "PARTIAL/OPEN"
+  },
+  "supportRowsAccepted": 0
+}

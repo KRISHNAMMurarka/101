@@ -17,7 +17,7 @@ const messages: Record<ScreenTaskReason, string> = {
   stopped: 'Preview stopped. Review fresh permissions to choose again.', closed: 'Preview access is closed.',
   invalid: 'This preview request is no longer valid. Stop and review a fresh request.', unsupported: 'This browser cannot start this preview. You can return or try another supported browser.',
   unavailable: 'The selected preview could not start. Stop and review a fresh request or check browser permission.',
-  denied: 'Screen sharing was not allowed. Check your browser screen-sharing permission, then Stop and review a fresh choice. You can also return to Connections.', busy: 'Earlier work is still finishing. Wait before choosing again.',
+  denied: 'Screen sharing was not allowed. Check your browser screen-sharing permission, then select Review screen preview to review a fresh choice. You can also return to Connections.', busy: 'Earlier work is still finishing. Wait before choosing again.',
   lost: 'The selected surface ended. Review fresh permissions to choose again.', hidden: 'Preview stopped when this page was hidden. Review fresh permissions to choose again.',
   unfocused: 'Preview stopped when this page lost focus. Review fresh permissions to choose again.', expired: 'The brief permission window ended. Review fresh permissions to choose again.',
   cancelled: 'The request was cancelled. Wait for it to finish before choosing again.', quota: 'This page reached its attempt limit. Reload before choosing again.',
