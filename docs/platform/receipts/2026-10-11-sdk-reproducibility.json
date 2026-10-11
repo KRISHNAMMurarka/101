@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "batch": 6,
+  "baseCommit": "57ff61f532396326e8325326102e648be362f8c7",
+  "executedSourceTree": "0de697ccfb0ff4d38e3a7651b740fdf58a9cb7ad",
+  "result": "pass for selected same-commit same-toolchain local SDK artifact repeatability and two offline Node consumers; final candidate gates required separately",
+  "localOnly": true,
+  "tasks": [
+    "K11",
+    "K10",
+    "L03"
+  ],
+  "productionFilesChanged": false,
+  "evidence": {
+    "ref": "refs/codex/evidence/2026-10-11-controller/batch-6/sdk-repro-native",
+    "tree": "e0cf1f7dd470dd403a672abd1903d332e89a2a1d",
+    "files": 100,
+    "allStoredBlobsReadBack": true
+  },
+  "builds": [
+    {
+      "attempt": 1,
+      "command": [
+        "node",
+        "tools/build-sdk.mjs",
+        "57ff61f532396326e8325326102e648be362f8c7"
+      ],
+      "exitCode": 0,
+      "nativeWaitReturned": true,
+      "elapsedSeconds": 13.079897624906152,
+      "manifestPath": "/Users/km/Dev/101/release/sdk-BUcI1a/manifest.json",
+      "outputDir": "/Users/km/Dev/101/release/sdk-BUcI1a",
+      "manifestSHA": "5cdbb71a25d667ec33ae48fd748c7dabd36ccfa0e50ddab271c0511d70609ab0",
+      "logSHA": "5cdbb71a25d667ec33ae48fd748c7dabd36ccfa0e50ddab271c0511d70609ab0",
+      "packages": 7,
+      "decodedFiles": 411
+    },
+    {
+      "attempt": 2,
+      "command": [
+        "node",
+        "tools/build-sdk.mjs",
+        "57ff61f532396326e8325326102e648be362f8c7"
+      ],
+      "exitCode": 0,
+      "nativeWaitReturned": true,
+      "elapsedSeconds": 13.19037920795381,
+      "manifestPath": "/Users/km/Dev/101/release/sdk-x5wIHS/manifest.json",
+      "outputDir": "/Users/km/Dev/101/release/sdk-x5wIHS",
+      "manifestSHA": "003e7cb1f144b9a1a22d8752f029f6bedabca53ca22d751045466b7770a8fc2d",
+      "logSHA": "003e7cb1f144b9a1a22d8752f029f6bedabca53ca22d751045466b7770a8fc2d",
+      "packages": 7,
+      "decodedFiles": 411
+    }
+  ],
+  "artifactComparison": {
+    "status": "pass",
+    "packages": 7,
+    "tarballBytesEqual": true,
+    "decodedFiles": 411,
+    "decodedContentAndMetadataEqual": true,
+    "gitSourcePinsPerBuild": 186,
+    "builderSha256": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b",
+    "environment": {
+      "node": "24.14.0",
+      "npm": "11.9.0",
+      "typescript": "5.9.3"
+    },
+    "allActualCompilerDeclarationPinsVerified": true,
+    "installedCopiesNotPreserved": true
+  },
+  "packageHashes": {
+    "@101/device-model": "10573b5ab7abc0c4ae292d0ea22be3ea7bf531c100115e12b07cf9248d24ecf5",
+    "@101/device-runtime": "2e4338d5afdc2c065ff54da9dbfe6675a92cc40f3b8ed7257196d85c6c1b7dbe",
+    "@101/transport-webrtc": "d8a3954f4c208372473636b7b8409d32ad7758a95c9e48ebae4568406c884bcd",
+    "@101/transport-websocket": "9e6fa01511490c338276ae4e402e5c007f3ca5189428e23472f97ff8d61057ec",
+    "@101/device-web": "ee2fcc7dac62fca1c2d9d63bf8aa05c5f4964d4e23a4444d1ea66c379db4e70c",
+    "@101/vision": "71ee8eb3f9305a42132b8f4cee5a8b90ea4193737f99ae8646ccbf87aca6f4a0",
+    "@101/connect": "592e583de0e5a69de8c2f38caa2513f9c8e3a14f3ad0c812f883f48a9eefdc94"
+  },
+  "manifestComparison": {
+    "differences": 15,
+    "paths": [
+      "/outputDir",
+      "/packages/0/directory",
+      "/packages/0/tarball",
+      "/packages/1/directory",
+      "/packages/1/tarball",
+      "/packages/2/directory",
+      "/packages/2/tarball",
+      "/packages/3/directory",
+      "/packages/3/tarball",
+      "/packages/4/directory",
+      "/packages/4/tarball",
+      "/packages/5/directory",
+      "/packages/5/tarball",
+      "/packages/6/directory",
+      "/packages/6/tarball"
+    ],
+    "cause": "Only fresh owned absolute output directories and their package/tarball paths differ. All suffixes and all other fields match; no arbitrary normalization or timestamp exclusion. Original manifests retained."
+  },
+  "consumers": [
+    {
+      "attempt": 1,
+      "exitCode": 0,
+      "elapsedSeconds": 29.84990637516603,
+      "receiptSHA": "99bae36126cc4dc07bbfabf13daee46106095e4e7c02d58e5c31c6a4111d6914",
+      "checks": [
+        {
+          "name": "source-and-tarball-manifest",
+          "status": "pass"
+        },
+        {
+          "name": "offline-install-closed-graph-and-exact-bytes",
+          "status": "pass",
+          "packages": 7,
+          "files": 412,
+          "symlinks": 0,
+          "aliases": 0
+        },
+        {
+          "name": "strict-types:nodenext",
+          "status": "pass",
+          "skipLibCheck": false,
+          "pathAliases": false,
+          "consumerCompilerInstalled": false
+        },
+        {
+          "name": "strict-types:bundler",
+          "status": "pass",
+          "skipLibCheck": false,
+          "pathAliases": false,
+          "consumerCompilerInstalled": false
+        },
+        {
+          "name": "generated-device-project",
+          "status": "pass",
+          "source": [
+            {
+              "path": "packages/devkit/src/device-scaffold.ts",
+              "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+            },
+            {
+              "path": "tools/create-device-project.mjs",
+              "sha256": "6114f38a652ad87b4434f0941bc6841f9a8c5f33ef4fe32009a62a59c3cfa332"
+            }
+          ],
+          "project": "/tmp/101-sdk-consumer-hUWjYw/generated-device-project",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+          "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+          "guidance": {
+            "schema": "device-guidance.schema.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+            "generatedAssets": [
+              {
+                "path": "device-guidance.json",
+                "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+              },
+              {
+                "path": "device-guidance.schema.json",
+                "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+              },
+              {
+                "path": "src/devices.json",
+                "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+              },
+              {
+                "path": "src/recipe.json",
+                "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+              },
+              {
+                "path": "scripts/validate.mjs",
+                "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+              }
+            ],
+            "validation": {
+              "status": "pass",
+              "recipeId": "room-sensor:temperature-display",
+              "processorId": "room-sensor:threshold",
+              "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+            },
+            "rejectedAssets": [
+              "unknown-recipe-field",
+              "changed-processor-source",
+              "incompatible-selected-device"
+            ],
+            "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+          },
+          "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+        },
+        {
+          "name": "packed-node-javascript",
+          "status": "pass",
+          "embeddedPointer": true,
+          "embeddedSensorFeedback": true,
+          "threshold": true,
+          "structuredBatch": true,
+          "explicitBatchMigration": true,
+          "explicitUnitConversion": true,
+          "motionProcessors": true,
+          "visionProcessors": true,
+          "keyboardTextSource": true,
+          "touchContactSource": true,
+          "richInputEvents": true,
+          "resourceDocuments": true,
+          "mediaDescription": true,
+          "measurementQuality": true,
+          "observationTiming": true,
+          "deviceHealth": true,
+          "descriptorEvolution": true,
+          "discoveryEvidence": true,
+          "invitationLink": true,
+          "operationSemantics": true,
+          "moduleIdentity": true,
+          "webCryptoSignVerify": true,
+          "invitationExpiry": true,
+          "directTransportAcceptedByFacade": true,
+          "physicalWebRTC": "not-exercised",
+          "issuedStoragePromiseReservation": true,
+          "actualNodeMemoryBatch": true,
+          "publicSchemas": true,
+          "privateSubpathsRejected": 18,
+          "packedRunEntry": true,
+          "ordinaryTelemetryOwnerExport": true
+        },
+        {
+          "name": "external-processor-offline-consumer",
+          "status": "pass",
+          "package": "@example/temperature-band-processor",
+          "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+          "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+          "operations": [
+            "subscribe",
+            "invoke"
+          ]
+        }
+      ]
+    },
+    {
+      "attempt": 2,
+      "exitCode": 0,
+      "elapsedSeconds": 28.007454250007868,
+      "receiptSHA": "f66b68efa0330b2dcbdbd0e1e775f468230e8ce888df9f9e6ae9cbb5da0216ac",
+      "checks": [
+        {
+          "name": "source-and-tarball-manifest",
+          "status": "pass"
+        },
+        {
+          "name": "offline-install-closed-graph-and-exact-bytes",
+          "status": "pass",
+          "packages": 7,
+          "files": 412,
+          "symlinks": 0,
+          "aliases": 0
+        },
+        {
+          "name": "strict-types:nodenext",
+          "status": "pass",
+          "skipLibCheck": false,
+          "pathAliases": false,
+          "consumerCompilerInstalled": false
+        },
+        {
+          "name": "strict-types:bundler",
+          "status": "pass",
+          "skipLibCheck": false,
+          "pathAliases": false,
+          "consumerCompilerInstalled": false
+        },
+        {
+          "name": "generated-device-project",
+          "status": "pass",
+          "source": [
+            {
+              "path": "packages/devkit/src/device-scaffold.ts",
+              "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+            },
+            {
+              "path": "tools/create-device-project.mjs",
+              "sha256": "6114f38a652ad87b4434f0941bc6841f9a8c5f33ef4fe32009a62a59c3cfa332"
+            }
+          ],
+          "project": "/tmp/101-sdk-consumer-glEwsw/generated-device-project",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+          "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+          "guidance": {
+            "schema": "device-guidance.schema.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+            "generatedAssets": [
+              {
+                "path": "device-guidance.json",
+                "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+              },
+              {
+                "path": "device-guidance.schema.json",
+                "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+              },
+              {
+                "path": "src/devices.json",
+                "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+              },
+              {
+                "path": "src/recipe.json",
+                "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+              },
+              {
+                "path": "scripts/validate.mjs",
+                "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+              }
+            ],
+            "validation": {
+              "status": "pass",
+              "recipeId": "room-sensor:temperature-display",
+              "processorId": "room-sensor:threshold",
+              "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+            },
+            "rejectedAssets": [
+              "unknown-recipe-field",
+              "changed-processor-source",
+              "incompatible-selected-device"
+            ],
+            "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+          },
+          "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+        },
+        {
+          "name": "packed-node-javascript",
+          "status": "pass",
+          "embeddedPointer": true,
+          "embeddedSensorFeedback": true,
+          "threshold": true,
+          "structuredBatch": true,
+          "explicitBatchMigration": true,
+          "explicitUnitConversion": true,
+          "motionProcessors": true,
+          "visionProcessors": true,
+          "keyboardTextSource": true,
+          "touchContactSource": true,
+          "richInputEvents": true,
+          "resourceDocuments": true,
+          "mediaDescription": true,
+          "measurementQuality": true,
+          "observationTiming": true,
+          "deviceHealth": true,
+          "descriptorEvolution": true,
+          "discoveryEvidence": true,
+          "invitationLink": true,
+          "operationSemantics": true,
+          "moduleIdentity": true,
+          "webCryptoSignVerify": true,
+          "invitationExpiry": true,
+          "directTransportAcceptedByFacade": true,
+          "physicalWebRTC": "not-exercised",
+          "issuedStoragePromiseReservation": true,
+          "actualNodeMemoryBatch": true,
+          "publicSchemas": true,
+          "privateSubpathsRejected": 18,
+          "packedRunEntry": true,
+          "ordinaryTelemetryOwnerExport": true
+        },
+        {
+          "name": "external-processor-offline-consumer",
+          "status": "pass",
+          "package": "@example/temperature-band-processor",
+          "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+          "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+          "operations": [
+            "subscribe",
+            "invoke"
+          ]
+        }
+      ]
+    }
+  ],
+  "sourceBinding": {
+    "sourcePinsPerBuild": 186,
+    "gitAndCurrentSourcePinsVerified": true,
+    "builderSha256": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b",
+    "qaConsumerSha256": "1cdf67bb6a128d9a73daf478debcf647522da6e1f260edaca524686a8a5827c1",
+    "compiler": "TypeScript5.9.3; actual Node example declaration closures preserved, equal and currently verified. General consumer strict-type checks use the repository compiler; generated standalone project installs a separately packed compiler.",
+    "runtime": "Both recorded Node24.14.0/npm11.9.0. Exhaustive executable/dependency byte stability throughout the run is not independently asserted."
+  },
+  "cleanup": {
+    "actualProducerAndConsumerNativeReturnsJoined": true,
+    "ownedPIDsAbsentBeforeRemoval": true,
+    "allFourOwnedSDKAndConsumerDirectoriesRemoved": true,
+    "logicalBytesRemoved": 91071800,
+    "uniqueGeneratedSourceAndRuntimeCallersPreserved": true,
+    "installedSDKAndCompilerCopiesNotRetained": true
+  },
+  "integration": {
+    "requiredGates": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npm run test:unit",
+      "npm run build",
+      "node --test tests/rendered-html.test.mjs"
+    ],
+    "candidateRef": "refs/codex/evidence/2026-10-11-controller/batch-6/final-candidate",
+    "gatesRef": "refs/codex/evidence/2026-10-11-controller/batch-6/final-gates",
+    "acceptanceRef": "refs/codex/evidence/2026-10-11-controller/batch-6/acceptance",
+    "wholeTaskDispositionChanged": false,
+    "supportAcceptanceChanged": false
+  },
+  "limits": [
+    "Two independently emitted Git-snapshot builds on this existing macOS toolchain; no separate clean host/toolchain, cross-platform or every-binary claim.",
+    "Offline public Node SDK packages, strict declarations, generated project, actual Node guest runtime and external processor fixtures only; no browser or physical transport run in this lane.",
+    "SDK content audit is selected static package-content admission; decoder/ABI/platform security, all licenses/legal acceptance and release acceptance remain open.",
+    "No application installation migration, corrupt/partial update, app upgrade/rollback, native bundles/signatures or publication. Whole K10/K11/L03 remain open."
+  ],
+  "priorCandidateFailure": {
+    "candidateTree": "ccbdacf496ebf319ce247164df7cd5c99d8c9047",
+    "ref": "refs/codex/evidence/2026-10-11-controller/batch-6/failed-gates",
+    "result": "3252/3255 full unit checks pass; three existing Zigbee native broker lifecycle prerequisites fail. Types/lint/records pass; build/rendered not dispatched after failure.",
+    "classification": "Two broker discovery failures and one failed-startup close-observation failure. Exact original probe status was not logged; elapsed discovery failures are consistent with the original2000ms help-probe deadline, but no root-cause resolution is claimed.",
+    "focusedDiagnostic": "The same three checks subsequently pass with unchanged2000ms broker probe and original lifecycle timeouts; entire Zigbee file22/22passes with passive real spawn observations. A focused later pass does not replace the failed full gate.",
+    "disposition": "No production change, deadline widening, test filter in a full gate, task/support promotion or whole-Q13 variance resolution. Final gate diagnostics and evidence remain separate."
+  }
+}

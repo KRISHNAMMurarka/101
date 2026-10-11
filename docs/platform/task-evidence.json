@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 206,
+  "revision": 207,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -13815,6 +13815,31 @@
       "scope": "Selected reviewed saved processor version and publisher revocation survive three genuine native processes over one new private profile per engine; each arrival is inactive, management and independent input/output approvals are fresh. Six normal native child exits; existing cold-document cases also pass. No production change, whole task/account/device/AT/profile-portability or native fault-matrix acceptance.",
       "failure": null,
       "equipment": []
+    },
+    {
+      "id": "sdk-local-reproducibility-2026-10-11",
+      "revision": "eb0a4fdc7dfd648f6a7293a0b4f37df157dc0b1d99468a66a66eb9bdf88f0c4b",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K11",
+        "K10",
+        "L03"
+      ],
+      "paths": [
+        "tools/build-sdk.mjs",
+        "tools/qa-sdk-consumer.mjs",
+        "docs/platform/receipts/2026-10-11-sdk-reproducibility.json"
+      ],
+      "environment": "Local macOS, two independent Git-snapshot SDK outputs from commit57ff61f5/tree0de697cc; recorded Node24.14.0/npm11.9.0/TypeScript5.9.3, existing toolchain.",
+      "reproduction": "Build the exact same commit twice with build-sdk.mjs; compare all seven gzip/tarball bytes and all411 decoded file contents/metadata, then run qa-sdk-consumer.mjs --node-only against each actual manifest in two separate offline consumers. Four actual native returns0; seven checks per consumer pass, including expected malformed generated-project refusals. Original manifests, tarballs, compiler closures, commands, executed generated source and receipts preserved in immutable batch-6/sdk-repro-native.",
+      "scope": "Selected same-commit/current-toolchain SDK repeatability and offline local publication dry run only. Exactly15 generated output path fields differ; all other manifest data match. No clean-host/cross-toolchain/platform/app migration or update rollback qualification, every-binary provenance/legal/signature/release acceptance or publication; whole K10/K11/L03 and support remain open.",
+      "failure": null,
+      "equipment": []
     }
   ],
   "tasks": [
@@ -17428,7 +17453,8 @@
         "sdk-distributions-2026-10-02",
         "k10-sdk-manifest-2026-10-05",
         "release-inventory-admission-2026-10-09",
-        "package-build-inputs-2026-10-09"
+        "package-build-inputs-2026-10-09",
+        "sdk-local-reproducibility-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17439,7 +17465,8 @@
       "id": "K11",
       "records": [
         "pending-K11",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "sdk-local-reproducibility-2026-10-11"
       ],
       "dependencies": [],
       "equipment": [
@@ -17605,7 +17632,8 @@
       "id": "L03",
       "records": [
         "pending-L03",
-        "sdk-distributions-2026-10-02"
+        "sdk-distributions-2026-10-02",
+        "sdk-local-reproducibility-2026-10-11"
       ],
       "dependencies": [
         "K01",
