@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "localOnly": true,
+  "base": "9b0b1a5ac646e6380d9f47cd9dc7d82f261b1ea3",
+  "callerTree": "0b54650a59e6b837d40b3086a8b8fd287ca6c183",
+  "callerRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/source-caller",
+  "result": "Native clipboard qualification preserves authentic bounded process outcomes. One fresh ordinary installed Node SDK caller passes actual private named-pasteboard qualification. Historical timeout cause remains UNKNOWN; general/app/other-platform and full matrix acceptance remain open.",
+  "sourceSha256": {
+    "tools/clipboard-probe.mjs": "8c930edf008bb419eaf1250ba9b461e18e54c2959269f6c6c0546f680042e2b0",
+    "tools/qa-clipboard-resources.mjs": "20c3a5345387462d558b5b89c85fd743da0fbd402515d3431d0b6989a67729c7",
+    "tests/clipboard-probe-diagnostics.test.ts": "7d5c2c5e35fc3b5109ed22bd8f848fc992ef82438af4e51561b8779638162bee",
+    "examples/clipboard-resources/macos-pasteboard.swift": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+    "examples/clipboard-resources/process-port.mjs": "79ed9890a44d54f1430d78e5b073c8b4e6d8d78ede9dbca93bfe346f6ef97b78",
+    "examples/clipboard-resources/consumer.mjs": "a4aade4f0e0828437b6bd1478d76ce00039df8b576f362aefd085385342896d1",
+    "packages/device-runtime/src/clipboard-resources.test.ts": "1ffb97dac61aea70ab47299f869076f4c93a102f06cd3ddb9abfa055cf092bc4"
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/focused",
+    "receipt": "receipt.json",
+    "sha256": "83851f6da192705019f416c312686fcc6eb59446c8440173ab8e727a9e7db19f"
+  },
+  "diagnosticRegression": {
+    "oldActualCompilerStatus": 1,
+    "oldActualCompilerSignal": null,
+    "oldActualCompilerSpawnError": null,
+    "oldRegressionFailedOnDiscardedNativeOutcome": true,
+    "nativeProducerOutputMocked": false,
+    "fixtureActualCompilerArguments": [
+      "--one01-unsupported-compiler-argument"
+    ],
+    "reportedCompilerArgumentsInFixture": "Nominal original QA request; the test redirects only arguments. Status/signal/error/stdout/stderr are actual native outcomes. This negative case is no compiler-positive or pasteboard evidence.",
+    "firstOldRed": "fe1d51246af2d12d25743b8f0244105e8551e5055233c865278fe92689ff91eb",
+    "observedOldRed": "df6b8e8fae1f1fdc4a819876cd0e045708bc9d8adb5a5b485b264a7438c68e75",
+    "additionalOldObservation": "Only enriches retained native outcome; no retry for green.",
+    "greenNativeTests": 4,
+    "tests": "Real compiler nonzero plus real Node nonzero bounded tails, original five-second timeout/SIGTERM/ETIMEDOUT, and missing executable/ENOENT.",
+    "typesExit": 0,
+    "selectedLintExit": 0,
+    "allActualParentsReturned": true
+  },
+  "unchangedBehavior": {
+    "runtimeSourceChanged": false,
+    "compilerCommandTimeoutMs": 30000,
+    "compilerVersionTimeoutMs": 5000,
+    "negativePrerequisiteTimeoutMs": 5000,
+    "publicCallerTimeoutMs": 20000,
+    "fixedNativeLifetimeMs": 10000,
+    "commandsEnvironmentBufferBoundsStatusStderrAndProtocolPredicatesUnchanged": true,
+    "prewarmingDeadlineWideningOrGreenRetry": false,
+    "helperFingerprintAddedToImmutableCallerClosure": true
+  },
+  "installed": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/installed-proof-compact",
+    "receipt": "receipt.json",
+    "sha256": "0d9dda0da3687f8bde016b577cd8783fab8386012e11a2d16901c2dd3fab86f7"
+  },
+  "qualification": {
+    "sdkBase": "9b0b1a5ac646e6380d9f47cd9dc7d82f261b1ea3",
+    "sdkSourceTree": "f5250dedf9b8597b27099da5097db7a9b61715a3",
+    "sdkPackages": 7,
+    "sdkSourceInputs": 186,
+    "installedFiles": 411,
+    "actualPrivateAppKitChecks": 22,
+    "independentConsumerBoards": 2,
+    "negativeNativePrerequisites": 5,
+    "cleanup": {
+      "nativeChildrenAlive": 0,
+      "operationTimers": 0,
+      "verifiedClearedReleasedBoards": 2
+    },
+    "nativeBinarySha256": "1d50bc7c31c3b095aab594862cacfd95ed5a09f3bc783ea9f6a1c81bad3d6264",
+    "sameNativeBinaryAsEarlierFailedRun": true,
+    "originalPublicConsumerBoundMs": 20000,
+    "actualPublicConsumerElapsedMs": 10569.299166,
+    "sdkBrowserScope": "Explicit node-only consumer; no browser qualification from this run."
+  },
+  "ownedCleanup": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/native-cleanup",
+    "receipt": "receipt.json",
+    "sha256": "f5c6d78e309956a9574198ff147bb0697ab436ac2e05a9594b427207eaf7415d"
+  },
+  "ownershipGuardCorrection": {
+    "firstTwoIssuedStagesPassed": true,
+    "originalDriverStoppedBeforeClipboardPhase": true,
+    "error": "Scratch driver checked TMPDIR only; existing SDK consumer creates its fresh directory under /tmp.",
+    "correctedRootsAuthenticatedFromProducerAndManifest": true,
+    "sdkBuildOrOfflineConsumerRetried": false
+  },
+  "custodyCorrection": {
+    "existingTypeScriptDependencyTarballExcluded": true,
+    "dependencyVersionAndSHARecorded": true,
+    "initialCaptureMetadataRetained": true,
+    "neededUniqueAuthoredSourcesNativeExecutableAndSevenSDKTarballsReadBack": true,
+    "retainedSelectedFiles": 48,
+    "retainedSelectedBytes": 1312973
+  },
+  "historicalFailure": {
+    "canonical": {
+      "ref": "9b0b1a5ac646e6380d9f47cd9dc7d82f261b1ea3",
+      "receipt": "docs/platform/receipts/2026-10-12-pasteboard-installed-failure.json",
+      "sha256": "8c413e0b2324a90af26fefb96eb2085dfef1b00c1959cdc6d0be34d3de404c2e"
+    },
+    "actual": {
+      "ref": "refs/codex/evidence/2026-10-12-pasteboard-installed/investigation",
+      "receipt": "observations.json",
+      "sha256": "e34f003172d3ab8747313aa6c46d53a5fdcc69be58d0532057e5d77bbfe6bb7a"
+    },
+    "status": null,
+    "signal": "SIGTERM",
+    "error": "ETIMEDOUT",
+    "boundMs": 5000,
+    "stdoutBytes": 0,
+    "cause": "UNKNOWN",
+    "boardClearing": "UNVERIFIED",
+    "laterSameBinaryPassExplainsOriginalFailure": false
+  },
+  "exactCandidateAcceptance": {
+    "candidateRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-candidate",
+    "gateRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/independent-review",
+    "bindingRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/acceptance",
+    "requirements": [
+      "Exact frozen candidate records/audit/types/lint/full-unit/fresh-build/rendered gates all green with actual parent joins.",
+      "Final independent review and current seven source pins authenticate the caller proof; all186 SDK source pins match base, caller and final candidate, all411 packed files and actual tarballs read back from custody.",
+      "Read final-binding and acceptance for issued results; no wider support/task/release acceptance from this receipt.",
+      "Integrated candidate also includes the separately scoped production dependency review; SDK/caller source binding remains limited to the exact186/7 unchanged inputs, not a claim about all root dependencies."
+    ]
+  },
+  "limits": [
+    "Only sole-issued private named AppKit pasteboards through ordinary installed Node SDK grants and pinned local native executable. No general/user clipboard, arbitrary programs/names, application control, remote or hostile-host isolation.",
+    "Historical readiness timeout remains unexplained. This later ordinary same-binary pass does not qualify repeatability across all environments.",
+    "Other OS/runtime, active Safari, named assistive technology, physical timing, final legal/support/release and full N16/Q04/Q13 acceptance remain open."
+  ],
+  "counts": {
+    "tasks": 272,
+    "complete": 123,
+    "open": 149,
+    "supportRows": 69,
+    "acceptedSupportRows": 0
+  },
+  "publicationDeploymentRemoteWrites": false
+}

@@ -1,0 +1,11 @@
+{
+  "producer": "npm audit --omit=dev --json --workspaces=false",
+  "date": "2026-10-12",
+  "package": "braces",
+  "version": "3.0.2",
+  "reportSha256": "604e6a663ba270e920428befcd59a6cc0908b12a19b33ebcecbe6290dfaf6eb5",
+  "lockSha256": "744cbaa085745b96e5467dcc39b7d2419401d907d6a119045bb9e6c21f3c09c2",
+  "producerExitCode": 1,
+  "alteredReportBytes": false,
+  "purpose": "Authentic second advisory on a reviewed package exercises identifier matching; no synthesized advisory objects."
+}

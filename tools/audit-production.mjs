@@ -6,14 +6,15 @@
 // because that is how Expo declares itself. Deleting the gate would hide real risk; leaving it
 // permanently red would train everyone to ignore it.
 //
-// So: every advisory must either be absent, or be individually reviewed in
+// So: every root package must either be absent, or have a current review in
 // security/build-tooling-advisories.json with a dependency path, a justification and an expiry.
-// Anything unreviewed fails. Any review past its date fails. New advisories can never be
-// absorbed silently.
+// Anything unreviewed fails. Any review past its date fails. Records with advisoryIds
+// reject unlisted advisories. Legacy package-wide reviews remain visible below.
 
 import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
+import { reviewCoversAdvisories } from "./production-advisory-policy.mjs";
 
 const ALLOWLIST = new URL("../security/build-tooling-advisories.json", import.meta.url);
 const run = promisify(execFile);
@@ -34,7 +35,7 @@ const accepted = [];
 
 for (const entry of roots) {
   const record = reviewed.get(entry.name);
-  if (!record) { unreviewed.push(entry); continue; }
+  if (!record || !reviewCoversAdvisories(record, entry)) { unreviewed.push(entry); continue; }
   if (record.reviewBy < today) { expired.push({ entry, record }); continue; }
   accepted.push({ entry, record });
 }
@@ -47,6 +48,7 @@ for (const { entry, record } of accepted) {
   console.log(`  ACCEPTED  ${entry.severity.padEnd(8)} ${entry.name}`);
   console.log(`            ${record.path}`);
   console.log(`            ${record.surface} · vulnerable path reachable: ${record.vulnerableCodePathReachable} · review by ${record.reviewBy}`);
+  console.log(`            review scope: ${record.advisoryIds?.join(", ") ?? "legacy package-wide review; individual advisory assessment remains pending"}`);
 }
 
 for (const entry of unreviewed) {
@@ -104,6 +106,9 @@ async function readReviewed() {
       if (typeof record[field] !== "string" || !record[field]) throw new Error(`Allowlist entry ${record.package ?? "?"} is missing ${field}`);
     }
     if (record.surface !== "build-tooling") throw new Error(`Only build-tooling advisories may be accepted; ${record.package} claims ${record.surface}`);
+    if (record.advisoryIds !== undefined && (!Array.isArray(record.advisoryIds) || !record.advisoryIds.length ||
+      record.advisoryIds.some(id => typeof id !== "string" || !/^GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}$/.test(id)) ||
+      new Set(record.advisoryIds).size !== record.advisoryIds.length)) throw new Error(`Allowlist entry ${record.package} has invalid advisoryIds`);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(record.reviewBy)) throw new Error(`Allowlist entry ${record.package} has an invalid reviewBy date`);
     records.set(record.package, record);
   }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedFrom": "package-lock.json",
-  "lockSha256": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+  "lockSha256": "e64f3d9e2fc79dab9c6e74b30d157574684f5101565c3413318f74cfc370863c",
   "declaredSources": {
     "path": "THIRD_PARTY_LICENSE_SOURCES.json",
     "sha256": "2579f0862089ac4e7cc1be04fe70ced31ce931d254fdb19c10d98393e53bf496"
@@ -5025,7 +5025,7 @@
     },
     {
       "name": "compression",
-      "version": "1.8.1",
+      "version": "1.8.2",
       "license": "MIT",
       "installedPath": "node_modules/compression",
       "coverage": "local-texts",
@@ -11212,7 +11212,7 @@
     },
     {
       "name": "shell-quote",
-      "version": "1.10.0",
+      "version": "1.11.0",
       "license": "MIT",
       "installedPath": "node_modules/shell-quote",
       "coverage": "local-texts",
@@ -11407,7 +11407,7 @@
     },
     {
       "name": "source-map-js",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "license": "BSD-3-Clause",
       "installedPath": "node_modules/source-map-js",
       "coverage": "local-texts",

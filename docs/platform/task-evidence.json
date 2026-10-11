@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 218,
+  "revision": 220,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14689,6 +14689,89 @@
       "reproduction": "New actual independent expiry selector fails against old helper, then2ordinary native tests pass: runtime5743.270ms, expiry10364.688ms;13+1originalreviewchecks and actual public consumer retained. Original aggregate timeout and intermediate authoring scoping failure retained.",
       "scope": "QA aggregate-budget isolation only. Defaultall-case helper retained; no historical failure explanation or native behavior change. FullQ13/support/legal/release acceptance stays open.",
       "failure": null
+    },
+    {
+      "historical": false,
+      "result": "pass",
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "tools/clipboard-probe.mjs",
+        "tools/qa-clipboard-resources.mjs",
+        "tests/clipboard-probe-diagnostics.test.ts",
+        "docs/platform/receipts/2026-10-12-clipboard-probe-outcomes.json"
+      ],
+      "environment": "Actual macOS26.5.2 arm64, Node24.14.0 and Apple Swift6.3.3; original native deadlines and ordinary installed public SDK closure.",
+      "id": "clipboard-native-probe-outcomes-2026-10-12",
+      "revision": "8c930edf008bb419eaf1250ba9b461e18e54c2959269f6c6c0546f680042e2b0",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "reproduction": "Actual old Swift compiler unsupported-argument failure discards outcome fields; repaired exact helper passes4actual process regressions, including genuine five-second SIGTERM/ETIMEDOUT and ENOENT. Types/selected lint green.",
+      "scope": "QA native outcome preservation only; no native runtime/deadline/protocol change or explanation of historical failures. Full Q13/matrix acceptance stays open."
+    },
+    {
+      "historical": false,
+      "result": "pass",
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "tools/clipboard-probe.mjs",
+        "tools/qa-clipboard-resources.mjs",
+        "tests/clipboard-probe-diagnostics.test.ts",
+        "docs/platform/receipts/2026-10-12-clipboard-probe-outcomes.json"
+      ],
+      "environment": "Actual macOS26.5.2 arm64, Node24.14.0 and Apple Swift6.3.3; original native deadlines and ordinary installed public SDK closure.",
+      "id": "clipboard-installed-private-native-2026-10-12",
+      "revision": "1d50bc7c31c3b095aab594862cacfd95ed5a09f3bc783ea9f6a1c81bad3d6264",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N16",
+        "Q04"
+      ],
+      "reproduction": "Fresh seven-package immutable SDK and offline Node consumer pass; actual private AppKit caller passes22checks on2independently issued boards,5original-bound negative prerequisites;186source and411installed/packed file pins verified. All6new private boards clear/release, no live native children or operation timers; owned SDK/consumer removed after compact byte custody.",
+      "scope": "Exact selected private named-pasteboard installed Node/native software scope. Earlier same-binary native timeout cause and board clearing remain UNKNOWN/UNVERIFIED. General clipboard, app operations, other platforms and full N16/Q04/support/release acceptance remain open."
+    },
+    {
+      "id": "production-dependency-boundaries-2026-10-12",
+      "historical": false,
+      "result": "pass",
+      "revision": "f6a4b782da119d869922b6759d138d10a27e359d8d9330f7100410c302829e45",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "S16",
+        "Q10"
+      ],
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "package.json",
+        "package-lock.json",
+        "THIRD_PARTY_LICENSES.json",
+        "security/build-tooling-advisories.json",
+        "tests/dependency-security.test.ts",
+        "tools/audit-production.mjs",
+        "tools/production-advisory-policy.mjs",
+        "tests/production-advisory-review.test.ts",
+        "tests/fixtures/production-advisory-review/braces-3.0.2-audit.json",
+        "tests/fixtures/production-advisory-review/provenance.json",
+        "docs/privacy-security.md",
+        "docs/platform/receipts/2026-10-12-production-dependency-review.json"
+      ],
+      "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; Expo57 preserved, three compatible leaf updates.",
+      "reproduction": "Genuine original compression/shell/source-map regressions fail; repaired14checks pass through actual Expo compression with real HTTP aborts and all three native codecs. Native33tests, typecheck and local iOS/Android exports pass; production audit passes with six tooling exceptions. Independent candidate review found ignored advisory identifiers; genuine old gate regression reproduced with faithful npm producer output, then strict matching for the new records was repaired.",
+      "scope": "Partial repair and compatibility evidence for the five supplied advisories. Two named tooling findings are reviewed, not fixed; CSS-map input provenance and four legacy package-level reviews remain open. No exhaustive or independent full-security, physical/native-install, support/task/release acceptance."
     }
   ],
   "tasks": [
@@ -15635,7 +15718,8 @@
     {
       "id": "S16",
       "records": [
-        "pending-S16"
+        "pending-S16",
+        "production-dependency-boundaries-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -15946,7 +16030,8 @@
         "n16-built-partial-2026-10-06",
         "n16-installed-clipboard-readiness-failed-2026-10-06",
         "browser-gateway-required-gates-failed-2026-10-06",
-        "n16-installed-native-prerequisite-failed-2026-10-12"
+        "n16-installed-native-prerequisite-failed-2026-10-12",
+        "clipboard-installed-private-native-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17844,7 +17929,8 @@
     {
       "id": "Q04",
       "records": [
-        "pending-Q04"
+        "pending-Q04",
+        "clipboard-installed-private-native-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -17953,7 +18039,8 @@
       "records": [
         "pending-Q10",
         "seven-package-sdk-content-audit-2026-10-07",
-        "telemetry-sdk-exact-local-gates-2026-10-07"
+        "telemetry-sdk-exact-local-gates-2026-10-07",
+        "production-dependency-boundaries-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -17996,7 +18083,8 @@
         "rss-probe-start-diagnostics-2026-10-12",
         "rss-private-copy-rejected-full-gate-2026-10-12",
         "rss-whole-helper-outer-bound-failed-2026-10-12",
-        "rss-independent-qualification-budget-2026-10-12"
+        "rss-independent-qualification-budget-2026-10-12",
+        "clipboard-native-probe-outcomes-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [

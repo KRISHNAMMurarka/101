@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 31,
+  "revision": 32,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -2018,7 +2018,8 @@
           "128-byte scoped read/write/clear"
         ],
         "unavailable": [
-          "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open"
+          "General/user clipboard and arbitrary application/program operations",
+          "Other OS/runtime and broader readiness qualification; historical native timeout remains unexplained"
         ]
       },
       "qualificationTasks": [
@@ -2027,13 +2028,16 @@
       ],
       "evidence": {
         "implementation": [
-          "n16-built-partial-2026-10-06"
+          "n16-built-partial-2026-10-06",
+          "clipboard-installed-private-native-2026-10-12"
         ],
         "contract": [
-          "n16-built-partial-2026-10-06"
+          "n16-built-partial-2026-10-06",
+          "clipboard-installed-private-native-2026-10-12"
         ],
         "runtime": [
-          "n16-built-partial-2026-10-06"
+          "n16-built-partial-2026-10-06",
+          "clipboard-installed-private-native-2026-10-12"
         ],
         "physical": []
       },
@@ -2043,8 +2047,8 @@
         "runtime"
       ],
       "limitations": [
-        "partial: sole-issued private named pasteboard read/write/clear and public source caller built; installed-context readiness, general clipboard and application operations remain open",
-        "No accepted support, live/remote/physical or full canonical task claim."
+        "partial: one fresh installed ordinary Node SDK caller verifies22actual AppKit checks on2sole-issued private named pasteboards;5negative prerequisites use original bounds. Exact source/dependency/installed bytes and native clear/release/child/timer cleanup are bound in the receipt.",
+        "Historical native readiness timeout on the same binary remains unexplained; no accepted support, wider runtime matrix, remote/physical or full canonical task claim."
       ]
     },
     {

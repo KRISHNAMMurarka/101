@@ -1,16 +1,17 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { chmodSync, copyFileSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
+import { clipboardNativeProbe } from './clipboard-probe.mjs';
 
 const root = resolve(import.meta.dirname, '..'), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const owned = ['examples/clipboard-resources/macos-pasteboard.swift', 'examples/clipboard-resources/process-port.mjs', 'examples/clipboard-resources/consumer.mjs',
-  'packages/device-runtime/src/clipboard-resources.test.ts', 'tools/qa-clipboard-resources.mjs'];
+  'packages/device-runtime/src/clipboard-resources.test.ts', 'tools/qa-clipboard-resources.mjs', 'tools/clipboard-probe.mjs'];
 const fingerprints = Object.fromEntries(owned.map(path => [path, hash(readFileSync(join(root, path)))]));
 const environment = { ...process.env }; delete environment.NODE_OPTIONS; delete environment.NODE_PATH;
 const argument = process.argv[2];
@@ -87,10 +88,11 @@ const caller = mkdtempSync(join(consumer, 'clipboard-resources-caller-'));
 for (const name of ['macos-pasteboard.swift', 'process-port.mjs', 'consumer.mjs']) copy(join(root, 'examples/clipboard-resources', name), join(caller, name));
 const executable = join(caller, 'macos-pasteboard');
 const compilerArgs = [join(caller, 'macos-pasteboard.swift'), '-o', executable];
-const compiler = spawnSync('/usr/bin/swiftc', compilerArgs, { encoding: 'utf8', timeout: 30000, maxBuffer: 131072 });
-assert.equal(compiler.status, 0, compiler.stderr); assert.equal(compiler.stderr, ''); chmodSync(executable, 0o700);
-const compilerVersion = spawnSync('/usr/bin/swiftc', ['--version'], { encoding: 'utf8', timeout: 5000, maxBuffer: 16384 });
-assert.equal(compilerVersion.status, 0);
+const compiler = clipboardNativeProbe('compile-private-pasteboard', '/usr/bin/swiftc', compilerArgs,
+  { encoding: 'utf8', timeout: 30000, maxBuffer: 131072 });
+chmodSync(executable, 0o700);
+const compilerVersion = clipboardNativeProbe('swift-version', '/usr/bin/swiftc', ['--version'],
+  { encoding: 'utf8', timeout: 5000, maxBuffer: 16384 }, { emptyStderr: false });
 const executableSha256 = hash(readFileSync(executable));
 writeFileSync(join(caller, 'caller-inputs.json'), JSON.stringify({ executableSha256, sourceSha256: {
   'macos-pasteboard.swift': fingerprints[owned[0]], 'process-port.mjs': fingerprints[owned[1]],
@@ -98,29 +100,27 @@ writeFileSync(join(caller, 'caller-inputs.json'), JSON.stringify({ executableSha
 const negatives = [];
 for (const [name, input] of [['name-substitution', '1\tGENERAL\n'], ['oversize', '1\tWRITE\t0\tabsent\t' + '00'.repeat(129) + '\n'],
   ['malformed-bytes', Buffer.from([255, 10])], ['partial-frame', '1\tREAD']]) {
-  const started = performance.now();
-  const result = spawnSync(executable, [], { input, encoding: 'utf8', timeout: 5000, maxBuffer: 16384, env: { PATH: '/usr/bin:/bin', LC_ALL: 'C' } });
-  assert.equal(result.status, 64, JSON.stringify({ name, status: result.status, signal: result.signal,
-    error: result.error?.code, elapsedMs: performance.now() - started, stdoutBytes: Buffer.byteLength(result.stdout ?? '') }));
-  assert.equal(result.stderr, '');
+  const result = clipboardNativeProbe(name, executable, [],
+    { input, encoding: 'utf8', timeout: 5000, maxBuffer: 16384, env: { PATH: '/usr/bin:/bin', LC_ALL: 'C' } }, { status: 64 });
   const frames = result.stdout.trim().split('\n').map(line => JSON.parse(line));
   assert.equal(frames.length, 2); assert.equal(frames[0].kind, 'ready'); assert.deepEqual(frames[1], { cleared: true, kind: 'closed', released: true, version: 1 });
-  negatives.push({ name, exitCode: result.status, frames: frames.length, verifiedOwnedCleanup: true });
+  negatives.push({ name, exitCode: result.status, frames: frames.length, verifiedOwnedCleanup: true, probe: result.probe });
 }
-const substitute = spawnSync(executable, ['NSGeneralPboard'], { encoding: 'utf8', timeout: 5000, maxBuffer: 16384 });
-assert.equal(substitute.status, 64); assert.equal(substitute.stdout, ''); assert.equal(substitute.stderr, '');
-negatives.push({ name: 'program-argument-substitution', exitCode: 64, frames: 0, noNativeBoardProvisioned: true });
+const substitute = clipboardNativeProbe('program-argument-substitution', executable, ['NSGeneralPboard'],
+  { encoding: 'utf8', timeout: 5000, maxBuffer: 16384 }, { status: 64 });
+assert.equal(substitute.stdout, '');
+negatives.push({ name: 'program-argument-substitution', exitCode: 64, frames: 0, noNativeBoardProvisioned: true, probe: substitute.probe });
 writeFileSync(join(caller, 'public-resolution.mjs'), `import * as sdk from '@101/connect';
 import * as runtime from '@101/device-runtime';
 import * as model from '@101/device-model';
 if(sdk.createDeviceRuntime!==runtime.createDeviceRuntime||sdk.parseDeviceDescriptor!==model.parseDeviceDescriptor)throw Error('Public facade identity');
 for(const name of ${JSON.stringify(names)})console.log(JSON.stringify({name,url:import.meta.resolve('@101/'+name)}));\n`);
+const publicProbes = [];
 function run(name) {
-  const output = spawnSync(process.execPath, ['--no-experimental-strip-types', join(caller, name)], {
+  const output = clipboardNativeProbe(name, process.execPath, ['--no-experimental-strip-types', join(caller, name)], {
     cwd: consumer, env: environment, timeout: 20000, encoding: 'utf8', maxBuffer: 131072,
   });
-  assert.equal(output.status, 0, `Actual private AppKit caller failed: ${output.error?.code ?? output.stderr.slice(0, 2400)}`);
-  assert.equal(output.stderr, ''); return output.stdout;
+  publicProbes.push(output.probe); return output.stdout;
 }
 const resolutions = run('public-resolution.mjs').trim().split('\n').map(line => JSON.parse(line));
 for (const item of resolutions) assert.equal(item.url, pathToFileURL(join(consumer, 'node_modules', '@101', item.name, 'dist/index.js')).href);
@@ -136,7 +136,7 @@ const receipt = { schemaVersion: 1, result: 'pass', createdAt: new Date().toISOS
   environment: { node: process.version, typescript: ts.version }, sourceSha256: fingerprints,
   ...(compiledSource ? { compiledSourceSha256: compiledSource } : {}),
   ...(immutableManifest ? { immutableManifest, installedBytesSha256: installedBytes, callerTree, dependencySourceSha256: dependencySourcePins } : {}),
-  consumer, publicEsmResolutions: resolutions, callerSha256: Object.fromEntries(files(caller).map(file => [relative(caller, file), hash(readFileSync(file))])), proof, native: { sourceSha256: fingerprints[owned[0]], executableSha256, compilerArgs, compilerVersion: (compilerVersion.stderr + compilerVersion.stdout).trim(), negatives },
+  consumer, publicEsmResolutions: resolutions, callerSha256: Object.fromEntries(files(caller).map(file => [relative(caller, file), hash(readFileSync(file))])), proof, native: { sourceSha256: fingerprints[owned[0]], executableSha256, compilerArgs, compilerVersion: (compilerVersion.stderr + compilerVersion.stdout).trim(), compilerProbe: compiler.probe, compilerVersionProbe: compilerVersion.probe, negatives, publicProbes },
   scope: 'Actual AppKit read/write/clear on two sole-issued private named pasteboards through a source/binary-pinned native CLI and ordinary public Node SDK grants. Original native10s lifetime clears/releases its owned board; cancellation cannot undo issued native effects. No general/user clipboard, arbitrary names/programs, UI, application control, physical timing, remote or malicious-host isolation.' };
 const receiptPath = join(caller, 'receipt.json'); writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n');
 console.log(JSON.stringify({ receiptPath, ...receipt }));

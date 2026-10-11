@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "localOnly": true,
+  "base": "9b0b1a5ac646e6380d9f47cd9dc7d82f261b1ea3",
+  "candidateTree": "9e3884f7ae20926853b8bb55607a911653601f46",
+  "candidateRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/dependency-candidate",
+  "result": "partial-software-security-evidence",
+  "sourceSha256": {
+    "package.json": "3ccbe87e8433e82e93250bb8e20b9afe1535c811097fad5716edf3314d88718c",
+    "package-lock.json": "e64f3d9e2fc79dab9c6e74b30d157574684f5101565c3413318f74cfc370863c",
+    "THIRD_PARTY_LICENSES.json": "1a310454900ddc45f726b0e17c8a34d3cbb0d974a9a606797f43eaafbc962cd1",
+    "security/build-tooling-advisories.json": "4959633c2e576837fc65c8d4c7d1724323c5b4e6fafc196f9a4354922d967e8d",
+    "tests/dependency-security.test.ts": "f6a4b782da119d869922b6759d138d10a27e359d8d9330f7100410c302829e45",
+    "tools/audit-production.mjs": "33af0e006dc53f9725e04b56150208b28d89e579dcf485dbce2b4df0ddef1b68",
+    "tools/production-advisory-policy.mjs": "f5e624ba589cef432ce445d16ee82868c7e112cb8db0e62ed1ba81cb51c46c33",
+    "tests/production-advisory-review.test.ts": "6581b74eedd1bcb42e8551b37008e48befa10264a3a4d420ebba2bb0c6bbd093",
+    "tests/fixtures/production-advisory-review/braces-3.0.2-audit.json": "604e6a663ba270e920428befcd59a6cc0908b12a19b33ebcecbe6290dfaf6eb5",
+    "tests/fixtures/production-advisory-review/provenance.json": "7b281234614d526775b982fd21ac07217cb2ae45ce0fa5fdf5dd52f38aba9890",
+    "docs/privacy-security.md": "676103f27bd9ea5f4c9adb6c59bb19a96c968bd3ab199e852b08c7fb21ac5e8f"
+  },
+  "staticTriage": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/dependency-focused",
+    "path": "2026-10-12-production-dependencies-triage.json",
+    "sha256": "d35980baa9fb0a9cdd216f6fd02b11ae30545aaac5fc51f8d9dee7ec5c0cc51f",
+    "inputOrder": [
+      "GHSA-vfj7-8cjw-p6xm",
+      "GHSA-vc2v-76pw-4v95",
+      "GHSA-86w9-cpqp-85rv",
+      "GHSA-pqg4-j6r4-53mv",
+      "GHSA-68fv-2mgg-jv7q"
+    ],
+    "confirmed": 1,
+    "needsReview": 1,
+    "notActionable": 3,
+    "method": "Static inline triage before edits or dynamic validation; no exhaustive coverage claim."
+  },
+  "repairs": [
+    {
+      "package": "compression",
+      "from": "1.8.1",
+      "to": "1.8.2",
+      "advisory": "https://github.com/advisories/GHSA-vc2v-76pw-4v95",
+      "scope": "Supported Expo57 LAN bundle/map response close cleanup, including delayed creation after close; gzip, deflate and Brotli."
+    },
+    {
+      "package": "shell-quote",
+      "from": "1.10.0",
+      "to": "1.11.0",
+      "advisory": "https://github.com/advisories/GHSA-pqg4-j6r4-53mv",
+      "scope": "Compatible installed leaf maintenance; reject all four line terminators after comments. Vite embedded copy is separate and its observed caller is parse-only."
+    },
+    {
+      "package": "source-map-js",
+      "from": "1.2.1",
+      "to": "1.2.2",
+      "advisory": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+      "scope": "Installed leaf bounds excessive/invalid/accumulated nested offsets. Static lower-trust CSS-map producer remains unresolved."
+    }
+  ],
+  "regressions": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/dependency-focused",
+    "originalDirect": {
+      "log": "dependency-red.log",
+      "tests": 9,
+      "passed": 4,
+      "failed": 5
+    },
+    "originalLateClose": {
+      "log": "dependency-late-close-red.log",
+      "tests": 1,
+      "passed": 0,
+      "failed": 1
+    },
+    "originalExpoWrapperAfterTwoOtherLeafUpdates": {
+      "log": "dependency-focused-green.log",
+      "result": "fail",
+      "tests": 10,
+      "passed": 6,
+      "failed": 4,
+      "note": "The filename does not denote a pass: native compression was still1.8.1 after the initial install. Lock inspection and this actual wrapper run exposed it."
+    },
+    "repaired": {
+      "log": "dependency-focused-final.log",
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "cleanup": "Actual HTTP clients/servers joined; test-owned native streams destroyed after observations even on original failing runs. Late-close case models the lifecycle with real HTTP objects/native zlib, rather than a live delayed network request."
+    }
+  },
+  "nativeCompatibility": {
+    "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/dependency-focused",
+    "types": {
+      "log": "dependency-native-types.log",
+      "exitCode": 0
+    },
+    "unit": {
+      "log": "dependency-native-unit.log",
+      "exitCode": 0,
+      "tests": 33,
+      "passed": 33
+    },
+    "export": {
+      "log": "dependency-native-export.log",
+      "exitCode": 0,
+      "platforms": [
+        "ios",
+        "android"
+      ],
+      "filesReceipt": "native-export-files.json",
+      "scope": "Local compatibility export, no install/signing/physical or release acceptance."
+    }
+  },
+  "toolingReviews": {
+    "added": [
+      {
+        "package": "braces",
+        "advisory": "GHSA-vfj7-8cjw-p6xm",
+        "reviewBy": "2026-11-12",
+        "boundary": "Developer source/configuration supplies patterns; filenames are matched values."
+      },
+      {
+        "package": "node-forge",
+        "advisory": "GHSA-86w9-cpqp-85rv",
+        "reviewBy": "2026-11-12",
+        "boundary": "Observed CLI verifies locally generated signatures or matching operator-provided private-key/certificate pairs; no attacker-signature API."
+      }
+    ],
+    "existingFourPreserved": true,
+    "productionGate": {
+      "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/dependency-focused",
+      "path": "dependency-production-after-fix.log",
+      "exitCode": 0,
+      "rootPackages": 6,
+      "propagatedEntries": 21,
+      "acceptedToolingExceptions": 6
+    },
+    "remainingGateGap": "The four existing records without advisoryIds retain legacy package-wide scope and can absorb additional same-package advisories. Their individual assessment and migration remain open under S16; the two new records reject unlisted advisories.",
+    "advisoryMatching": {
+      "ref": "refs/codex/evidence/2026-10-12-clipboard-outcomes/advisory-matching",
+      "original": "advisory-matching-red.log",
+      "repaired": "advisory-matching-final-green.log",
+      "originalResult": "fail: the actual old gate returned0 for a second, unlisted advisory on a reviewed package",
+      "fixture": "Unaltered npm audit output for braces3.0.2 includes both actual advisories; source provenance is committed with fixture.",
+      "rule": "The two new records enforce all root advisory identifiers. Unknown/unlisted URLs fail; invalid identifier lists reject. Existing four package-wide scopes are logged explicitly."
+    }
+  },
+  "legalInventory": {
+    "lockSha256": "e64f3d9e2fc79dab9c6e74b30d157574684f5101565c3413318f74cfc370863c",
+    "lockedPackages": 1083,
+    "missingPackages": 116,
+    "packagesWithoutText": 60,
+    "distinctTexts": 387,
+    "textBytes": 803714,
+    "complete": false,
+    "rustGapsUnchanged": 40
+  },
+  "exactCandidateAcceptance": {
+    "candidateRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-candidate",
+    "gateRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/independent-review",
+    "bindingRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-clipboard-outcomes/acceptance",
+    "requirements": [
+      "All required gates run on the frozen integrated candidate, including fresh build before rendered tests, with actual parent joins.",
+      "Read final review/binding/acceptance for issued results; dependency partial evidence alone does not close S16 or Q10.",
+      "Use the integrated final-candidate ref for the advisory-matching repair; dependency-candidate authenticates the pre-review source snapshot that had one confirmed gate finding, not the final source."
+    ]
+  },
+  "counts": {
+    "tasks": 272,
+    "complete": 123,
+    "open": 149,
+    "supportRows": 69,
+    "acceptedRows": 0
+  },
+  "publicationDeploymentRemoteWrites": false
+}

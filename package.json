@@ -98,11 +98,14 @@
   },
   "overrides": {
     "@babel/core": "7.29.7",
+    "compression": "1.8.2",
     "fast-uri": "3.1.5",
     "js-yaml": "4.3.2",
     "nanoid": "3.3.18",
     "postcss": "8.5.26",
     "react-native": "0.86.2",
+    "shell-quote": "1.11.0",
+    "source-map-js": "1.2.2",
     "ws": "8.21.0"
   },
   "type": "module"
