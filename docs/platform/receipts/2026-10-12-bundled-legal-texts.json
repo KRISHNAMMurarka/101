@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "base": "c6f3784f2d5137db508a13da7abec50c0cd9ff35",
+  "localOnly": true,
+  "result": "Three exact installed bundled-component terms/attribution files are now explicitly selected through the existing bounded declared-source reader. Whole authored bytes are preserved. Installed packages without any collected legal text fall63to60; complete redistribution remains open.",
+  "sourceSha256": {
+    "THIRD_PARTY_LICENSE_SOURCES.json": "2579f0862089ac4e7cc1be04fe70ced31ce931d254fdb19c10d98393e53bf496",
+    "THIRD_PARTY_LICENSES.json": "ad894c527e670bb6d882eddd50d5da9be7e45df3698640fceae1ac93552cc5c9",
+    "tools/generate-license-inventory.mjs": "a560835b4ad8ffcc6f59946818719bd3148fbfaa182895b6c51a52decb3e7168",
+    "tools/license-inventory-validation.mjs": "e17527d56b160ffe27e3a9a3fcd4f5ae9b17e9786e6f6764cf6eb64e13f10e07",
+    "tools/package-release.mjs": "8f4d1420b90f217f5203851cb9aa5ffbb7d9b4ad0d4c2cdcdad9db3ce5dc1479",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+    "apps/desktop-hub/src-tauri/Cargo.lock": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+    "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+  },
+  "changes": [
+    "Add exact package/version/path/SHA256 declarations for three installed nested author files; shared collector/admission/build behavior is unchanged.",
+    "Retain two complete bundled license texts and one extracted attribution notice file. The notice references separate LICENSE terms; parent-package completeness remains unqualified.",
+    "Regenerate the inventory with all1080otherpackage rows and385oldtext bodies unchanged; one new bundled MIT file deduplicates against already collected exact bytes."
+  ],
+  "actualLocal": {
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/initial",
+    "receipt": "actual-local.json",
+    "sha256": "32a586538917b28431365835b958dba0c6a7a80fafc98aa00c8ab3c867128645",
+    "beforeCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 63,
+      "distinctTexts": 385,
+      "textBytes": 801093,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "afterCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 60,
+      "distinctTexts": 387,
+      "textBytes": 803714,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "authorFiles": [
+      {
+        "name": "@react-native/debugger-frontend",
+        "version": "0.86.2",
+        "installedPath": "node_modules/@react-native/debugger-frontend",
+        "path": "dist/third-party/LICENSE",
+        "sha256": "be635b6249bf2e3a9ab088d9be654960253291042824b62dfcf5e955625dc6fe",
+        "bytes": 1636,
+        "scope": "complete bundled BSD3 terms",
+        "priorCoverage": "no-local-text",
+        "priorLicenseFiles": [],
+        "packageJsonSha256": "c624d09fde1283fe90f7141d76b3dd74370385a21e4df2154af84e7bc4ae6053"
+      },
+      {
+        "name": "@vitejs/plugin-rsc",
+        "version": "0.5.26",
+        "installedPath": "node_modules/@vitejs/plugin-rsc",
+        "path": "dist/vendor/react-server-dom/LICENSE",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+        "bytes": 1088,
+        "scope": "complete bundled MIT terms",
+        "priorCoverage": "no-local-text",
+        "priorLicenseFiles": [],
+        "packageJsonSha256": "e12b4bf4c33982738d1b5bdc68fa7bc496f26253f64a79d5f0c207a93ca900c5"
+      },
+      {
+        "name": "react-devtools-core",
+        "version": "6.1.5",
+        "installedPath": "node_modules/react-devtools-core",
+        "path": "dist/standalone.js.LICENSE.txt",
+        "sha256": "cad5b7b8ae8720d9fd5e621c3da10874ac88c303f93e95cf31e66828d512f3ce",
+        "bytes": 985,
+        "scope": "bundled attribution notices; referenced LICENSE terms remain separate",
+        "priorCoverage": "no-local-text",
+        "priorLicenseFiles": [],
+        "packageJsonSha256": "ad322347cea0ca8abc82aad23c1b0470af897d2ecdbb7dd66357fc4a89e006f6"
+      }
+    ],
+    "otherRowsAndOldTextBytesUnchanged": true,
+    "actualInstalledBytesUnchanged": true
+  },
+  "oldRegression": {
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/initial",
+    "receipt": "red.json",
+    "sha256": "2b4e701629e27ce013721138afab5f6109335cb2c5d04a70626680018990d9d3",
+    "sourceTree": "e7cc0469a7fdff4bcdc56ed276f52d68de2402af",
+    "exitCode": 1,
+    "actualParentWaitReturned": true,
+    "failure": "Actual unchanged installed nested source exists but old inventory has no selected file/path/hash; baseline assertion fails before declaration additions."
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/initial",
+    "collection": {
+      "command": [
+        "node",
+        "--test",
+        "tests/license-texts.test.ts",
+        "tests/declared-license-sources.test.ts",
+        "tests/unlicense-texts.test.ts",
+        "tests/rust-license-texts.test.ts"
+      ],
+      "exitCode": 0,
+      "actualParentWaitReturned": true,
+      "elapsedSeconds": 2.8057518750429153,
+      "logSHA": "39e8d0b2fd082548765504aa61f86c16b56d3513441bbb42a810d9bb6c0b5677",
+      "summary": {
+        "tests": 33,
+        "pass": 33,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    "packaging": {
+      "command": [
+        "node",
+        "--test",
+        "tests/release-packaging.test.ts"
+      ],
+      "exitCode": 0,
+      "actualParentWaitReturned": true,
+      "elapsedSeconds": 119.49161233380437,
+      "logSHA": "b63d97f8c724de024ef1676720405f6b4f0728c6ac04cedcdd4905fd384a5919",
+      "summary": {
+        "tests": 32,
+        "pass": 32,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    "actualWholeFileRegression": {
+      "command": [
+        "node",
+        "outputs/batches/2026-10-12-nested-legal/regression.mjs"
+      ],
+      "exitCode": 0,
+      "actualParentWaitReturned": true,
+      "elapsedSeconds": 0.6239133332856,
+      "logSHA": "f36ab2ff6bf31ea0dfe88aa50b84ad8e06e8895a7718fbd1f31dab8fdffe57c8"
+    },
+    "totalPass": 65,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "candidateRef": "refs/codex/evidence/2026-10-12-rss-budget/final-candidate-v3",
+    "gatesRef": "refs/codex/evidence/2026-10-12-rss-budget/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-rss-budget/independent-review",
+    "packageRef": "refs/codex/evidence/2026-10-12-rss-budget/final-package",
+    "bindingRef": "refs/codex/evidence/2026-10-12-rss-budget/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-rss-budget/acceptance"
+  },
+  "limits": [
+    "Collected local text presence is the inventory metric; selected bundled files do not prove complete parent-package terms, legal review or distribution approval.",
+    "116optional packages remain absent,60installed packages have no selected legal text,40Rust text gaps remain, and asset/model/native/other legal sources and redistribution review stay open.",
+    "The separate installed private pasteboard prerequisite failure remains unexplained and unqualified. Later green checks do not resolve it.",
+    "No publication, deployment, preview URL, new service or support/full-task acceptance is authorized.",
+    "Original private RSS source-modify failure and earlier whole-helper20s interruption causes remain UNKNOWN. Paired unchanged-bound qualification passes after independent expiry isolation; final exact-tree gate/binding acceptance is required separately."
+  ],
+  "supportRows": [],
+  "rejectedFirstCandidate": {
+    "candidateTree": "5c23b611591cbc96cc0d337864851535dfd49682",
+    "gatesRef": "refs/codex/evidence/2026-10-12-nested-legal/failed-full-gates",
+    "unitPass": 3279,
+    "unitFail": 1,
+    "actualParentWaitReturned": true,
+    "buildAndRenderedNotRun": true,
+    "integrationAllowed": false,
+    "details": "docs/platform/receipts/2026-10-12-rss-probe-diagnostics.json"
+  }
+}

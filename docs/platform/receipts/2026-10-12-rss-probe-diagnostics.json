@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "base": "c6f3784f2d5137db508a13da7abec50c0cd9ff35",
+  "localOnly": true,
+  "result": "Selected QA diagnostics are red/green proven. Current paired native qualification passes after isolating the independent real observer-expiry case into its own unchanged-bound test. Prior full-gate private-copy cause remains UNKNOWN; complete Q13 and integration acceptance still require exact final gates and binding.",
+  "sourceSha256": {
+    "tools/qa-native-resource-runtime.mjs": "c1df340bffd1b7cc512d4e1eee7e9f91fb5565d65d3f46e524068abf274af337",
+    "tests/native-resource-runtime.test.ts": "a185ad31ab11f053a38e97b5805b764d4835871047e7da7b0686fc2b616ec20a",
+    "examples/native-resource-runtime/process-port.mjs": "226fab02a14cc3e9ddce50dbf881b9023bdf6b1a8271a94a00f20bb78db79355",
+    "examples/native-resource-runtime/rss-agent.c": "c0e94381aba672b4594a604d1b8197545d26165daabdfc40a6c8d2a913e5d954",
+    "bindings/resource-runtime/c/one01_rss_runtime.c": "de87d21fd6f9226e36bb2a92ba2896df9c208b793c88d6aaedaec2cd8f8003e0",
+    "bindings/resource-runtime/c/one01_rss_runtime.h": "faf09836d3c5aa16baf89fbf2457e463097612dd32eeddfa4b9d155b839e47c4"
+  },
+  "changes": [
+    "For private source modify/replace assertions, include original start result, actual bridge status and bounded child stdout/stderr tails, native close status/signal/elapsed time, spawn errors and swallowed observer exceptions.",
+    "Original native behavior, 1500ms startup, 500ms retirement and 20000ms outer test deadlines remain unchanged. No retry, prewarming, native runtime repair or signal/authority relaxation.",
+    "Isolate actual observer-expiry qualification into its own independent20s test; preserve all original cases, default all-case helper behavior and native deadlines."
+  ],
+  "rejectedFullGate": {
+    "candidateTree": "5c23b611591cbc96cc0d337864851535dfd49682",
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/failed-full-gates",
+    "receipt": "joined.json",
+    "sha256": "6e4c2ae0cdfd1627e1d0819dfc12d4303ac796a4c0900600d93168412b8c17ad",
+    "actualNativeParentsJoined": true,
+    "unit": {
+      "tests": 3280,
+      "pass": 3279,
+      "fail": 1,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "failure": "Private verified-image source-modify start returned ok:false; old assertion omitted underlying native outcome. Original compiled executable was removed by the helper finally and was not retained. Cause UNKNOWN.",
+    "integrationAllowed": false,
+    "buildAndRenderedNotRun": true
+  },
+  "diagnostics": {
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/native-diagnosis",
+    "focusedNewCompile": {
+      "receipt": "result.json",
+      "sha256": "d33f32afc6c01452303cb2f858c31d13ae9fa874383ed2ae757326b403661639",
+      "actualParentWaitReturned": true,
+      "nativeCloseReturned": true,
+      "result": "pass",
+      "scope": "One fresh exact-current-source compile, one real private-copy source mutation with authentic HELLO/READY/STOPPED frames, exit0 and actual close. Historical binary unavailable; this is not a historical-cause explanation."
+    },
+    "instrumentedWholeHelper": {
+      "receipt": "full-parent.json",
+      "sha256": "508d36e61dc4a53f363c187c31b6b1a54037e54e5d383041a2c4814d06e9c4f6",
+      "actualParentWaitReturned": true,
+      "result": "pass",
+      "elapsedSeconds": 19.4220512076281,
+      "scope": "Fresh actual compiled binary; QA observer instrumentation only; original deadlines. Not an ordinary full gate and does not explain the historical failure."
+    },
+    "oldMessageRegression": {
+      "log": "diagnostic-red.log",
+      "sha256": "e0f2b3050d668ed3fe68dfcd0d2547fba52ca1720801f3e80571bc7ca12be813",
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "mechanism": "Actual registration abort after source mutation forces the genuine negative start. Old assertion fails the diagnostic-field regression; no fake native output."
+    },
+    "newMessageRegression": {
+      "log": "diagnostic-green.log",
+      "sha256": "af913647b0b112a25cce12151aa22825d83a66db3af287efd9f657b29dfbd8d1",
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "scope": "Same actual revocation fixture, same original deadlines; assertion includes unavailable start result, no raw reservations/no live child, and actual native close diagnostics."
+    },
+    "ordinaryFocusedQualification": {
+      "receipt": "focused.json",
+      "sha256": "e5f87f01cf2c4c0fd2fb93ff430cf93689639e62a8a062bc4cdce2e3162429ba",
+      "exitCode": 1,
+      "actualParentWaitReturned": true,
+      "configuredOuterBoundMs": 20000,
+      "failure": "Unmodified public source-mode test returned inner spawnSync status:null after20010.202ms. It did not log native signal or error. The original20s outer bound was reached; exact interrupted child/bridge close callbacks were not observed.",
+      "sourceSha256": "c1df340bffd1b7cc512d4e1eee7e9f91fb5565d65d3f46e524068abf274af337"
+    }
+  },
+  "interruptedOwnedCleanup": {
+    "ref": "refs/codex/evidence/2026-10-12-nested-legal/interrupted-cleanup",
+    "receipt": "interrupted-cleanup.json",
+    "sha256": "5bd5c8254dea17215bb69c999ee22a55ec47e55925f8044cf0ebf4b0c0c62890",
+    "onlyTwoNewOwnedDirectoriesRemoved": true,
+    "binaryAndFilesRetainedAndReadBackBeforeRemoval": true,
+    "matchingNativeProcessesBeforeRemoval": 0,
+    "nativeChildCloseCallbackUnverified": true,
+    "scope": "Owned files identified within the exclusive focused-run creation window; retained bytes/metadata, rechecked paths/hashes and no matching native processes before removal. Filesystem removal is not runtime-close evidence."
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "candidateRef": "refs/codex/evidence/2026-10-12-rss-budget/final-candidate-v3",
+    "gatesRef": "refs/codex/evidence/2026-10-12-rss-budget/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-rss-budget/independent-review",
+    "packageRef": "refs/codex/evidence/2026-10-12-rss-budget/final-package",
+    "bindingRef": "refs/codex/evidence/2026-10-12-rss-budget/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-rss-budget/acceptance",
+    "scope": "Required candidate qualification inputs; issued outcomes are recorded in the binding/acceptance refs. Whole Q13, support, legal review and release acceptance remain separate and open."
+  },
+  "nextInvestigation": "Complete exact candidate review/gates/package binding; retain unknown historical native causes and incomplete installed private pasteboard qualification.",
+  "limits": [
+    "This diagnostic improvement does not remediate or qualify native private-copy startup.",
+    "Historical original private-copy failure and earlier all-case20s interruption causes remain UNKNOWN. Current paired tests avoid the invalid aggregate budget; no native behavior or deadline remediation claim.",
+    "Local legal source declaration bytes remain valid, but that integration candidate is unaccepted until its exact commit gates pass.",
+    "Installed private pasteboard qualification remains failed before public consumer; initial native clearing remains unverified.",
+    "No task, support, legal approval or release acceptance is promoted."
+  ],
+  "budgetRepair": {
+    "ref": "refs/codex/evidence/2026-10-12-rss-budget/focused",
+    "tree": "047c6531fa86b8dd9f71b317923fadcb2a129fb8",
+    "measuredOldWholeHelper": {
+      "receipt": "parent.json",
+      "sha256": "f084afec5d62c4217dc0c6ea00b9d63f56e8395312685955eebfe98667802cdd",
+      "result": "pass",
+      "elapsedMs": 19204.882833,
+      "configuredOuterBoundMs": 20000,
+      "expiryWaitMs": 9006.148041,
+      "nativeLaunches": 12,
+      "actualNativeCloses": 12,
+      "cleanup": "diagnostic-cleanup.json",
+      "scope": "One observation-only run with original bounds and exact native compiled bytes retained before cleanup. No interrupted phase was reproduced. Does not explain the earlier timeout or historical private-copy failure."
+    },
+    "contractDiagnosis": "The ordinary all-cases test combined the independent nine-second expiry wait with compilation and many child lifecycles under one20-second aggregate bound. Measured whole-helper slack was795ms; prior ordinary invocation exceeded its original20s bound. Isolate independent cases with explicit selectors rather than relaxing native or per-test limits.",
+    "change": "Optional explicit runtime / observer-expiry selectors. Default --source still runs all cases. Both groups freshly compile C harness/agent and execute original raw frame checks. Runtime retains13review cases and real public consumer; expiry retains original9sactual-grant check. Unit qualification always executes both serially, each at20000ms. Failure output retains original status/signal/error. Native runtime sources and deadlines unchanged.",
+    "red": {
+      "receipt": "group-red.json",
+      "log": "group-red.log",
+      "exitCode": 1,
+      "scope": "Actual expiry-only qualification fails against old helper because independent scope is unsupported. Original ordinary aggregate timeout retained separately."
+    },
+    "firstAttempt": {
+      "receipt": "group-green.json",
+      "log": "group-green.log",
+      "exitCode": 1,
+      "cause": "Shared approval declaration was scoped inside first runtime group; both later groups denied before execution. Corrected by hoisting unchanged helper; not a native runtime defect."
+    },
+    "focusedGreen": {
+      "receipt": "group-repaired.json",
+      "log": "group-repaired.log",
+      "sha256": "e6b9c0aa2331f5a1e21988f3ce848bb0ca1c1da13176189a074eafaf1f1ab539",
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0,
+      "runtimeMs": 5743.269625,
+      "observerExpiryMs": 10364.688083,
+      "ordinaryEnvironment": true,
+      "actualParentWaitReturned": true,
+      "sourceNote": "Subsequent indentation-only normalization and type-safe diagnosticError.code field guard. Focused source pins are recorded separately from final candidate pins; exact final tree is verified by required gates."
+    },
+    "firstCandidateGate": {
+      "candidateTree": "88d3a81bd1435993325aed76a772a7584d0db00a",
+      "exitCode": 2,
+      "failure": "Type gate rejects directError.code access in failure diagnostics. Narrow own-field access guard now preserves actual code when present; test/runtime limits unchanged. Records11/audit passed; other broad gates not run.",
+      "ref": "refs/codex/evidence/2026-10-12-rss-budget/rejected-types-gate",
+      "receipt": "results.json"
+    },
+    "finalCandidateSourceSha256": {
+      "tools/qa-native-resource-runtime.mjs": "abf756432c840ca723f3046b8a3327d62360df79801dc1e17ff881e9626db6d9",
+      "tests/native-resource-runtime.test.ts": "456ae12d98e98cfde92c8a67f6ffad18b8dd4909c3edd14f35ad6f152b975825"
+    },
+    "focusedSourceSha256": {
+      "tools/qa-native-resource-runtime.mjs": "abf756432c840ca723f3046b8a3327d62360df79801dc1e17ff881e9626db6d9",
+      "tests/native-resource-runtime.test.ts": "6aea9f60d2e8deb26b0d81aac32a59d7e18d83ee28e0a2559842f2ed89393255"
+    },
+    "focusedSourceNote": "The retained focused source snapshot includes subsequent whitespace normalization. The focused runtime result was observed before that normalization; the type guard follows later. Only final required gates bind the exact candidate bytes."
+  }
+}

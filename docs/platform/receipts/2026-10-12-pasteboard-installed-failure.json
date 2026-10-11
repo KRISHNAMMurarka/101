@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "localOnly": true,
+  "base": "c6f3784f2d5137db508a13da7abec50c0cd9ff35",
+  "sourceTree": "e7cc0469a7fdff4bcdc56ed276f52d68de2402af",
+  "result": "Unchanged installed private named-pasteboard qualification failed its first native prerequisite. No public pasteboard SDK consumer was executed; N16 remains unqualified.",
+  "evidence": {
+    "ref": "refs/codex/evidence/2026-10-12-pasteboard-installed/investigation",
+    "path": "observations.json",
+    "sha256": "e34f003172d3ab8747313aa6c46d53a5fdcc69be58d0532057e5d77bbfe6bb7a",
+    "cleanupRef": "refs/codex/evidence/2026-10-12-pasteboard-installed/cleanup"
+  },
+  "sdk": {
+    "packages": 7,
+    "sourceInputs": 186,
+    "packedFiles": 411,
+    "offlineConsumerChecks": 7,
+    "result": "pass",
+    "browser": "deferred by explicit node-only; no native browser claim"
+  },
+  "qualification": {
+    "result": "fail",
+    "reached": "first name-substitution native prerequisite before public ESM consumer invocation",
+    "status": null,
+    "signal": "SIGTERM",
+    "error": "ETIMEDOUT",
+    "originalBoundMs": 5000,
+    "elapsedMs": 5002.953833,
+    "stdoutBytes": 0,
+    "nativeParentWaitReturned": true,
+    "nativeBoardCleanup": "unverified; no ready/closed native frames"
+  },
+  "nativeProducer": {
+    "sourceSha256": "59dc0668de90d2adb81d4b9c287bebf92a80cc4e22d5f9f77e7a300aea35dbc1",
+    "executableSha256": "1d50bc7c31c3b095aab594862cacfd95ed5a09f3bc783ea9f6a1c81bad3d6264",
+    "sourceUnchanged": true
+  },
+  "diagnosticFollowup": {
+    "scope": "Same exact binary and one fresh compilation with original5s native bound; selected rejected-input executions only.",
+    "sameBinaryReturnCode": 64,
+    "sameBinaryElapsedSeconds": 0.17635637475177646,
+    "freshCompilationReturnCode": 64,
+    "freshCompilationElapsedSeconds": 2.2333196667023003,
+    "stackSample": "Terminated and joined at its2s diagnostic bound; no usable stack captured.",
+    "nativeFrames": "Later invocations emitted authentic ready/cleared/released frames; the failed initial invocation emitted none.",
+    "cause": "UNKNOWN",
+    "laterPassesResolvePriorCause": false
+  },
+  "cleanup": {
+    "ownedSdkConsumerAndReleaseAndScratchRemoved": true,
+    "uniqueEvidenceReadBackBeforeRemoval": true,
+    "nativeParentWaitsReturned": true,
+    "timedOutPrivateBoardClearingVerified": false
+  },
+  "limits": [
+    "Selected SDK offline Node checks pass; installed pasteboard qualification failed before public consumer invocation.",
+    "Physical, application/general clipboard, UI, remote, malicious-host, broader matrix, full-task/support/release and redistribution acceptance remain open.",
+    "No deadline was widened, lifecycle outcome synthesized, external service added or publication performed."
+  ],
+  "supportRows": []
+}

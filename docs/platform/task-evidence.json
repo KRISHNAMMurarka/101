@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 215,
+  "revision": 218,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14522,6 +14522,173 @@
       "scope": "Selected broker path identity and diagnostic quality only. Complete Q13, unexplained native timing failures and full support/release qualification remain open.",
       "failure": "Eight MQTT broker help discovery prerequisite failures and five ROS peer startup/close deadline failures; original native outcomes not retained.",
       "equipment": []
+    },
+    {
+      "id": "bundled-legal-local-text-2026-10-12",
+      "revision": "2579f0862089ac4e7cc1be04fe70ced31ce931d254fdb19c10d98393e53bf496",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-12-bundled-legal-texts.json"
+      ],
+      "environment": "Actual local macOS Node24.14; unchanged installed locked package bytes, locks, Rust inventory and existing bounded collector/admission/build guards.",
+      "reproduction": "Three pinned nested author files retain full exact bytes. Baseline omission observed; actual collection/admission and focused65collection/packaging guards pass. Exact frozen full gates, reviewed scope and actual local package binding remain required before integration.",
+      "scope": "Selected bundled component terms/attribution only; local text presence is not parent-package legal completeness.116optional packages absent,60installedJavaScriptwithoutselectedtext,40Rust gaps and complete redistribution/task/support/release acceptance stay open.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "bundled-legal-omission-old-2026-10-12",
+      "revision": "c6f3784f2d5137db508a13da7abec50c0cd9ff35",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "THIRD_PARTY_LICENSE_SOURCES.json",
+        "THIRD_PARTY_LICENSES.json",
+        "docs/platform/receipts/2026-10-12-bundled-legal-texts.json"
+      ],
+      "environment": "Accepted c6f3784f current collector with actual unchanged installed nested author files; no network or simulated package outcomes.",
+      "reproduction": "The smallest actual local inventory assertion fails on the first omitted nested bundled file; baseline rows for all three packages have no selected legal files. Parentwaitreturns1.",
+      "scope": "Historical selected explicit-source omission only; no complete legal acceptance.",
+      "failure": "The inventory did not select the installed nested author file/path/hash before declarations were added.",
+      "equipment": []
+    },
+    {
+      "id": "n16-installed-native-prerequisite-failed-2026-10-12",
+      "revision": "c6f3784f2d5137db508a13da7abec50c0cd9ff35",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "N16",
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-clipboard-resources.mjs",
+        "examples/clipboard-resources/macos-pasteboard.swift",
+        "docs/platform/receipts/2026-10-12-pasteboard-installed-failure.json"
+      ],
+      "environment": "Actual local macOS/Swift; fresh accepted-tree seven-package SDK and offline Node consumer pass; exact compiled private native CLI with original5s prerequisite.",
+      "reproduction": "First name-substitution prerequisite returns statusnull/SIGTERM/ETIMEDOUT after5002.954ms with zero stdout; actual parent joined. Public pasteboard consumer was not executed. Same exact binary/freshcompile later return64 with authentic ready/closed frames, leaving prior cause UNKNOWN.",
+      "scope": "Current installed private pasteboard qualification remains failed before public consumer invocation; original timed-out native board clearing is unverified. No broader OS/physical/application/clipboard/support acceptance.",
+      "failure": "Original5s native startup prerequisite missed. Later observations produced no usable stack and do not resolve the cause. Unique evidence and compiled bytes retained before owned artifact cleanup.",
+      "equipment": []
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-native-resource-runtime.mjs",
+        "tests/native-resource-runtime.test.ts",
+        "docs/platform/receipts/2026-10-12-rss-probe-diagnostics.json"
+      ],
+      "environment": "Actual local macOS arm64 Node24.14; unchanged C runtime/bridge, fresh actual compiled executables, original native deadlines and actual synchronous parent returns.",
+      "equipment": [],
+      "id": "rss-probe-start-diagnostics-2026-10-12",
+      "revision": "c1df340bffd1b7cc512d4e1eee7e9f91fb5565d65d3f46e524068abf274af337",
+      "result": "pass",
+      "historical": false,
+      "reproduction": "One genuine native registration-abort negative fixture first fails old diagnostic assertion, then passes with actual unavailable result/settled child/zero reservations. Bounded native output and observer errors now included. Ordinary whole-helper qualification remains red.",
+      "scope": "Selected QA failure observability only. No native start failure remediation or complete Q13/runtime/support/release acceptance.",
+      "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-native-resource-runtime.mjs",
+        "tests/native-resource-runtime.test.ts",
+        "docs/platform/receipts/2026-10-12-rss-probe-diagnostics.json"
+      ],
+      "environment": "Actual local macOS arm64 Node24.14; unchanged C runtime/bridge, fresh actual compiled executables, original native deadlines and actual synchronous parent returns.",
+      "equipment": [],
+      "id": "rss-private-copy-rejected-full-gate-2026-10-12",
+      "revision": "5c23b611591cbc96cc0d337864851535dfd49682",
+      "result": "fail",
+      "historical": true,
+      "reproduction": "Exact ordinary gate:3280tests/3279pass/1fail, actual native parent returned1. Private-copy source-modify start returned ok:false; original outcome and compiled binary unavailable. Build/rendered did not run.",
+      "scope": "Rejected legal-source candidate; historical original native private-copy failure cause still UNKNOWN. Later scoped diagnostics do not explain it.",
+      "failure": "Old assertion omitted native outcome. Candidate unaccepted and uncommitted."
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-native-resource-runtime.mjs",
+        "tests/native-resource-runtime.test.ts",
+        "docs/platform/receipts/2026-10-12-rss-probe-diagnostics.json"
+      ],
+      "environment": "Actual local macOS arm64 Node24.14; unchanged C runtime/bridge, fresh actual compiled executables, original native deadlines and actual synchronous parent returns.",
+      "equipment": [],
+      "id": "rss-whole-helper-outer-bound-failed-2026-10-12",
+      "revision": "c1df340bffd1b7cc512d4e1eee7e9f91fb5565d65d3f46e524068abf274af337",
+      "result": "fail",
+      "historical": false,
+      "reproduction": "Ordinary single native test returns inner spawnSync status:null after20010.202ms with original20000ms outer bound. Actual test parent returned1. Both source mutations occurred before interruption; exact current compiled bytes and two interrupted owned directories were retained/read back, with no matching processes before removing them.",
+      "scope": "Current whole-helper qualification remains red. Interrupted native/bridge close callbacks unverified; file removal is not runtime close proof. No complete qualification or integration.",
+      "failure": "Whole-helper outer bound reached; native error/signal omitted by test. Inspect phase budget and cancellation before another full gate; do not widen bounds."
+    },
+    {
+      "id": "rss-independent-qualification-budget-2026-10-12",
+      "revision": "abf756432c840ca723f3046b8a3327d62360df79801dc1e17ff881e9626db6d9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-native-resource-runtime.mjs",
+        "tests/native-resource-runtime.test.ts",
+        "docs/platform/receipts/2026-10-12-rss-probe-diagnostics.json"
+      ],
+      "environment": "Actual macOSarm64 Node24.14; ordinary paired tests, fresh native compilation per group, unchanged1500ms startup/500ms retirement/20000ms outer bounds.",
+      "equipment": [],
+      "reproduction": "New actual independent expiry selector fails against old helper, then2ordinary native tests pass: runtime5743.270ms, expiry10364.688ms;13+1originalreviewchecks and actual public consumer retained. Original aggregate timeout and intermediate authoring scoping failure retained.",
+      "scope": "QA aggregate-budget isolation only. Defaultall-case helper retained; no historical failure explanation or native behavior change. FullQ13/support/legal/release acceptance stays open.",
+      "failure": null
     }
   ],
   "tasks": [
@@ -15778,7 +15945,8 @@
         "n16-owned-filesystem-partial-2026-10-06",
         "n16-built-partial-2026-10-06",
         "n16-installed-clipboard-readiness-failed-2026-10-06",
-        "browser-gateway-required-gates-failed-2026-10-06"
+        "browser-gateway-required-gates-failed-2026-10-06",
+        "n16-installed-native-prerequisite-failed-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17823,7 +17991,12 @@
         "native-broker-probe-diagnostics-old-2026-10-12",
         "native-broker-path-2026-10-12",
         "native-broker-path-old-2026-10-12",
-        "native-probe-rejected-full-gate-2026-10-12"
+        "native-probe-rejected-full-gate-2026-10-12",
+        "n16-installed-native-prerequisite-failed-2026-10-12",
+        "rss-probe-start-diagnostics-2026-10-12",
+        "rss-private-copy-rejected-full-gate-2026-10-12",
+        "rss-whole-helper-outer-bound-failed-2026-10-12",
+        "rss-independent-qualification-budget-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18220,7 +18393,9 @@
         "declared-license-admission-old-2026-10-11",
         "declared-license-cli-entry-old-2026-10-11",
         "unlicense-local-text-2026-10-12",
-        "unlicense-omission-old-2026-10-12"
+        "unlicense-omission-old-2026-10-12",
+        "bundled-legal-local-text-2026-10-12",
+        "bundled-legal-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18241,7 +18416,9 @@
         "declared-license-admission-old-2026-10-11",
         "declared-license-cli-entry-old-2026-10-11",
         "unlicense-local-text-2026-10-12",
-        "unlicense-omission-old-2026-10-12"
+        "unlicense-omission-old-2026-10-12",
+        "bundled-legal-local-text-2026-10-12",
+        "bundled-legal-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18276,7 +18453,9 @@
         "declared-license-admission-old-2026-10-11",
         "declared-license-cli-entry-old-2026-10-11",
         "unlicense-local-text-2026-10-12",
-        "unlicense-omission-old-2026-10-12"
+        "unlicense-omission-old-2026-10-12",
+        "bundled-legal-local-text-2026-10-12",
+        "bundled-legal-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18432,7 +18611,9 @@
         "declared-license-admission-old-2026-10-11",
         "declared-license-cli-entry-old-2026-10-11",
         "unlicense-local-text-2026-10-12",
-        "unlicense-omission-old-2026-10-12"
+        "unlicense-omission-old-2026-10-12",
+        "bundled-legal-local-text-2026-10-12",
+        "bundled-legal-omission-old-2026-10-12"
       ],
       "dependencies": [
         "K01",

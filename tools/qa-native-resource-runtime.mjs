@@ -8,7 +8,10 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { registerHooks } from 'node:module';
 
-assert.deepEqual(process.argv.slice(2), ['--source']);
+const args = process.argv.slice(2), checksGroup = args.length === 1 ? 'all' : args[2];
+assert.ok(['all', 'runtime', 'observer-expiry'].includes(checksGroup));
+assert.deepEqual(args, checksGroup === 'all' ? ['--source'] : ['--source', '--checks', checksGroup]);
+const runRuntime = checksGroup !== 'observer-expiry', runObserverExpiry = checksGroup !== 'runtime';
 assert.equal(process.platform, 'darwin'); assert.equal(process.arch, 'arm64');
 const root = fileURLToPath(new URL('../', import.meta.url));
 const owned = mkdtempSync(join(tmpdir(), '101-native-rss-c-'));
@@ -48,159 +51,175 @@ try {
   const { createNativeRssBridge } = await import('../examples/native-resource-runtime/process-port.mjs');
   const reviewChecks = [];
   const scope = Object.freeze({ ownerId: 'reviewed-c-rss', applicationId: 'qa-native-rss', sessionId: 'review' });
-  {
-    const registration = new AbortController(); let opened = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return { request, expiresAt: performance.now() + 9000, signal: registration.signal }; },
-      authorizeRead() {}, onProcess() { opened++; } });
-    try { const started = await bridge.start(); assert.equal(started.ok, true, 'signal-only registration grant must start');
-      assert.equal(opened, 1); reviewChecks.push('signal-only-grant-is-authority'); }
-    finally { await bridge.close(); }
-  }
   const approval = (request, signal, ms = 9000) =>
     ({ request, expiresAt: performance.now() + ms, signal: signal.signal });
-  for (const mode of ['hidden-currentness', 'forged-signal']) {
-    const registration = new AbortController(); let opened = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { const grant = approval(request, registration);
-        return mode === 'hidden-currentness' ? { ...grant, isCurrent: () => true } :
-          { ...grant, signal: Object.create(AbortSignal.prototype) }; },
-      authorizeRead() {}, onProcess() { opened++; } });
-    try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 0);
-      reviewChecks.push(`reject-${mode}-grant`); }
-    finally { await bridge.close(); }
+  if (runRuntime) {
+    {
+      const registration = new AbortController(); let opened = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return { request, expiresAt: performance.now() + 9000, signal: registration.signal }; },
+        authorizeRead() {}, onProcess() { opened++; } });
+      try { const started = await bridge.start(); assert.equal(started.ok, true, 'signal-only registration grant must start');
+        assert.equal(opened, 1); reviewChecks.push('signal-only-grant-is-authority'); }
+      finally { await bridge.close(); }
+    }
+    for (const mode of ['hidden-currentness', 'forged-signal']) {
+      const registration = new AbortController(); let opened = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { const grant = approval(request, registration);
+          return mode === 'hidden-currentness' ? { ...grant, isCurrent: () => true } :
+            { ...grant, signal: Object.create(AbortSignal.prototype) }; },
+        authorizeRead() {}, onProcess() { opened++; } });
+      try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 0);
+        reviewChecks.push(`reject-${mode}-grant`); }
+      finally { await bridge.close(); }
+    }
+    {
+      const registration = new AbortController(); let bridge, opened = 0;
+      bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { void bridge.stop(); return approval(request, registration); },
+        authorizeRead() {}, onProcess() { opened++; } });
+      try { const started = await bridge.start(); assert.equal(started.ok, false);
+        assert.equal(opened, 0); assert.equal(bridge.status().starts, 0); reviewChecks.push('reentrant-Stop-authorizer-zero-child'); }
+      finally { await bridge.close(); }
+    }
+    {
+      const registration = new AbortController(); let opened = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { registration.abort(); return approval(request, registration); },
+        authorizeRead() {}, onProcess() { opened++; } });
+      try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 0);
+        reviewChecks.push('registration-signal-abort-in-authorizer-zero-child'); }
+      finally { await bridge.close(); }
+    }
   }
-  {
-    const registration = new AbortController(); let bridge, opened = 0;
-    bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { void bridge.stop(); return approval(request, registration); },
-      authorizeRead() {}, onProcess() { opened++; } });
-    try { const started = await bridge.start(); assert.equal(started.ok, false);
-      assert.equal(opened, 0); assert.equal(bridge.status().starts, 0); reviewChecks.push('reentrant-Stop-authorizer-zero-child'); }
-    finally { await bridge.close(); }
+  if (runObserverExpiry) {
+    {
+      const registration = new AbortController(); let startWrites = 0, opened = 0, expiresAt, observedAfterExpiry;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { const grant = approval(request, registration); expiresAt = grant.expiresAt; return grant; }, authorizeRead() {},
+        onProcess(child) { opened++; const write = child.stdin.write.bind(child.stdin);
+          child.stdin.write = (...args) => { if (String(args[0]).startsWith('START ')) startWrites++; return write(...args); };
+          // Pinning happens before this observer. Use the ordinary grant so its
+          // preparation can finish, then wait for its actual monotonic expiry
+          // after observing the real child; no assumption about filesystem speed.
+          const sleeper = new Int32Array(new SharedArrayBuffer(4));
+          while (performance.now() < expiresAt)
+            Atomics.wait(sleeper, 0, 0, Math.max(1, Math.ceil(expiresAt - performance.now())));
+          observedAfterExpiry = performance.now();
+        } });
+      try { const starting = bridge.start();
+        assert.ok(Number.isFinite(observedAfterExpiry) && observedAfterExpiry >= expiresAt, 'Actual child observer reaches grant expiry');
+        // Check before yielding: an overdue startup timer must not substitute
+        // for the synchronous authority fence after the process observer.
+        assert.equal(bridge.status().phase, 'retiring');
+        assert.equal((await starting).ok, false); assert.equal(opened, 1); assert.equal(startWrites, 0);
+        reviewChecks.push('post-observer-expiry-zero-native-start'); }
+      finally { await bridge.close(); }
+    }
   }
-  {
-    const registration = new AbortController(); let opened = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { registration.abort(); return approval(request, registration); },
-      authorizeRead() {}, onProcess() { opened++; } });
-    try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 0);
-      reviewChecks.push('registration-signal-abort-in-authorizer-zero-child'); }
-    finally { await bridge.close(); }
+  let native;
+  if (runRuntime) {
+    {
+      const registration = new AbortController(); let opened = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration); },
+        authorizeRead() {}, onProcess() { opened++; registration.abort(); } });
+      try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 1);
+        reviewChecks.push('registration-signal-abort-in-observer-fences-start'); }
+      finally { await bridge.close(); }
+    }
+    for (const mode of ['modify', 'replace']) {
+      const source = join(owned, `candidate-${mode}`), replacement = join(owned, `replacement-${mode}`);
+      copyFileSync(executable, source); chmodSync(source, 0o700);
+      writeFileSync(replacement, 'invalid-native-image');
+      const registration = new AbortController(); let bridge, opened = 0, launched;
+      const native = { stdoutTail: '', stderrTail: '', closed: false };
+      bridge = createNativeRssBridge({ executable: realpathSync(source), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration); }, authorizeRead() {}, onProcess(child) {
+          opened++; launched = child.spawnfile;
+          const observedAt = performance.now(); native.pid = child.pid; native.path = launched;
+          child.stdout.on('data', chunk => { native.stdoutTail = Buffer.concat([Buffer.from(native.stdoutTail), chunk]).subarray(-4096).toString('utf8'); });
+          child.stderr.on('data', chunk => { native.stderrTail = Buffer.concat([Buffer.from(native.stderrTail), chunk]).subarray(-4096).toString('utf8'); });
+          child.on('error', error => { native.error = { code: error.code ?? null, message: String(error.message).slice(0, 512) }; });
+          child.once('close', (code, signal) => { Object.assign(native, { closed: true, code, signal, elapsedMs: performance.now() - observedAt }); });
+          try {
+            assert.notEqual(launched, realpathSync(source), 'Launch must use the verified private copy');
+            assert.equal(lstatSync(launched).mode & 0o777, 0o500);
+            assert.equal(lstatSync(dirname(launched)).mode & 0o777, 0o700);
+            if (mode === 'modify') writeFileSync(source, 'invalid-native-image');
+            else renameSync(replacement, source);
+          } catch (error) { native.observerError = { code: error.code ?? null, message: String(error.message).slice(0, 512) }; throw error; }
+        } });
+      try { const started = await bridge.start(); assert.equal(started.ok, true,
+        `verified private image survives ${mode}: ${JSON.stringify({ started, status: bridge.status(), opened, native })}`);
+        assert.equal(opened, 1); reviewChecks.push(`verified-launch-survives-source-${mode}`); }
+      finally { await bridge.close(); if (launched) { assert.equal(existsSync(launched), false);
+        assert.equal(existsSync(dirname(launched)), false); } }
+    }
+    {
+      const registration = new AbortController(), read = new AbortController(); let nativeWrites = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration); },
+        authorizeRead(request) { registration.abort(); return approval(request, read, 900); },
+        onProcess(child) { const write = child.stdin.write.bind(child.stdin);
+          child.stdin.write = (...args) => { if (String(args[0]).startsWith('READ ')) nativeWrites++; return write(...args); }; } });
+      try { const started = await bridge.start(); assert.ok(started.ok);
+        assert.equal((await bridge.read(started.value)).ok, false);
+        assert.equal(nativeWrites, 0, 'registration abort during read authorization must precede native READ');
+        reviewChecks.push('opposite-registration-abort-in-read-authorizer-zero-native-read'); }
+      finally { await bridge.close(); }
+    }
+    for (const mode of ['read-signal-abort', 'read-approval-expiry']) {
+      const registration = new AbortController(), read = new AbortController(); let nativeWrites = 0;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration); },
+        authorizeRead(request) { const grant = approval(request, read, mode === 'read-signal-abort' ? 900 : 1);
+          if (mode === 'read-signal-abort') read.abort();
+          else Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5);
+          return grant; },
+        onProcess(child) { const write = child.stdin.write.bind(child.stdin);
+          child.stdin.write = (...args) => { if (String(args[0]).startsWith('READ ')) nativeWrites++; return write(...args); }; } });
+      try { const started = await bridge.start(); assert.ok(started.ok, JSON.stringify({ mode, started, status: bridge.status() }));
+        assert.equal((await bridge.read(started.value)).ok, false); assert.equal(nativeWrites, 0);
+        reviewChecks.push(`${mode}-zero-native-read`); }
+      finally { await bridge.close(); }
+    }
+    {
+      const registration = new AbortController(); let raw = '', child;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration, 100); },
+        authorizeRead() {}, onProcess(value) { child = value; child.stdout.on('data', chunk => { raw += String(chunk); });
+          process.kill(child.pid, 'SIGSTOP'); } });
+      try { const starting = bridge.start(); await new Promise(resolve => setTimeout(resolve, 160));
+        process.kill(child.pid, 'SIGCONT'); assert.equal((await starting).ok, false);
+        await bridge.stop(); assert.equal(raw.includes('READY 1 '), false, 'expired queued START cannot activate native RSS');
+        reviewChecks.push('queued-native-start-expiry-before-activation'); }
+      finally { if (child?.exitCode === null) { try { process.kill(child.pid, 'SIGCONT'); } catch { /* Child already exited. */ } } await bridge.close(); }
+    }
+    {
+      const registration = new AbortController(), read = new AbortController(); let raw = '', child;
+      const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
+        authorizeRegistration(request) { return approval(request, registration); },
+        authorizeRead(request) { return approval(request, read, 100); },
+        onProcess(value) { child = value; child.stdout.on('data', chunk => { raw += String(chunk); }); } });
+      try { const started = await bridge.start(); assert.ok(started.ok); process.kill(child.pid, 'SIGSTOP');
+        const pending = bridge.read(started.value);
+        await new Promise(resolve => setTimeout(resolve, 160)); process.kill(child.pid, 'SIGCONT');
+        assert.equal((await pending).ok, false); await bridge.stop();
+        assert.ok(raw.includes('DENIED 1\n'), 'expired queued READ must be denied natively');
+        assert.equal(raw.includes('SAMPLE 1 '), false, 'expired queued READ must not capture RSS');
+        reviewChecks.push('queued-native-read-expiry-before-capture'); }
+      finally { if (child?.exitCode === null) { try { process.kill(child.pid, 'SIGCONT'); } catch { /* Child already exited. */ } } await bridge.close(); }
+    }
+    const { runNativeResourceRuntimeExample } = await import('../examples/native-resource-runtime/consumer.mjs');
+    native = await runNativeResourceRuntimeExample({ executable: realpathSync(executable), sha256: executableSha256 });
+    assert.equal(native.profile, 'fixed-own-rss-c/1'); assert.ok(native.rssBytes > 0);
+    assert.equal(native.rawPending, 0); assert.equal(native.childAlive, false);
+    assert.equal(native.cleanupVerified, true);
+    assert.equal(native.oldHandleAccepted, false); assert.equal(native.copiedHandleAccepted, false);
   }
-  {
-    const registration = new AbortController(); let startWrites = 0, opened = 0, expiresAt, observedAfterExpiry;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { const grant = approval(request, registration); expiresAt = grant.expiresAt; return grant; }, authorizeRead() {},
-      onProcess(child) { opened++; const write = child.stdin.write.bind(child.stdin);
-        child.stdin.write = (...args) => { if (String(args[0]).startsWith('START ')) startWrites++; return write(...args); };
-        // Pinning happens before this observer. Use the ordinary grant so its
-        // preparation can finish, then wait for its actual monotonic expiry
-        // after observing the real child; no assumption about filesystem speed.
-        const sleeper = new Int32Array(new SharedArrayBuffer(4));
-        while (performance.now() < expiresAt)
-          Atomics.wait(sleeper, 0, 0, Math.max(1, Math.ceil(expiresAt - performance.now())));
-        observedAfterExpiry = performance.now();
-      } });
-    try { const starting = bridge.start();
-      assert.ok(Number.isFinite(observedAfterExpiry) && observedAfterExpiry >= expiresAt, 'Actual child observer reaches grant expiry');
-      // Check before yielding: an overdue startup timer must not substitute
-      // for the synchronous authority fence after the process observer.
-      assert.equal(bridge.status().phase, 'retiring');
-      assert.equal((await starting).ok, false); assert.equal(opened, 1); assert.equal(startWrites, 0);
-      reviewChecks.push('post-observer-expiry-zero-native-start'); }
-    finally { await bridge.close(); }
-  }
-  {
-    const registration = new AbortController(); let opened = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration); },
-      authorizeRead() {}, onProcess() { opened++; registration.abort(); } });
-    try { assert.equal((await bridge.start()).ok, false); assert.equal(opened, 1);
-      reviewChecks.push('registration-signal-abort-in-observer-fences-start'); }
-    finally { await bridge.close(); }
-  }
-  for (const mode of ['modify', 'replace']) {
-    const source = join(owned, `candidate-${mode}`), replacement = join(owned, `replacement-${mode}`);
-    copyFileSync(executable, source); chmodSync(source, 0o700);
-    writeFileSync(replacement, 'invalid-native-image');
-    const registration = new AbortController(); let bridge, opened = 0, launched;
-    bridge = createNativeRssBridge({ executable: realpathSync(source), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration); }, authorizeRead() {}, onProcess(child) {
-        opened++; launched = child.spawnfile;
-        assert.notEqual(launched, realpathSync(source), 'Launch must use the verified private copy');
-        assert.equal(lstatSync(launched).mode & 0o777, 0o500);
-        assert.equal(lstatSync(dirname(launched)).mode & 0o777, 0o700);
-        if (mode === 'modify') writeFileSync(source, 'invalid-native-image');
-        else renameSync(replacement, source);
-      } });
-    try { const started = await bridge.start(); assert.equal(started.ok, true, `verified private image survives ${mode}`);
-      assert.equal(opened, 1); reviewChecks.push(`verified-launch-survives-source-${mode}`); }
-    finally { await bridge.close(); if (launched) { assert.equal(existsSync(launched), false);
-      assert.equal(existsSync(dirname(launched)), false); } }
-  }
-  {
-    const registration = new AbortController(), read = new AbortController(); let nativeWrites = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration); },
-      authorizeRead(request) { registration.abort(); return approval(request, read, 900); },
-      onProcess(child) { const write = child.stdin.write.bind(child.stdin);
-        child.stdin.write = (...args) => { if (String(args[0]).startsWith('READ ')) nativeWrites++; return write(...args); }; } });
-    try { const started = await bridge.start(); assert.ok(started.ok);
-      assert.equal((await bridge.read(started.value)).ok, false);
-      assert.equal(nativeWrites, 0, 'registration abort during read authorization must precede native READ');
-      reviewChecks.push('opposite-registration-abort-in-read-authorizer-zero-native-read'); }
-    finally { await bridge.close(); }
-  }
-  for (const mode of ['read-signal-abort', 'read-approval-expiry']) {
-    const registration = new AbortController(), read = new AbortController(); let nativeWrites = 0;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration); },
-      authorizeRead(request) { const grant = approval(request, read, mode === 'read-signal-abort' ? 900 : 1);
-        if (mode === 'read-signal-abort') read.abort();
-        else Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5);
-        return grant; },
-      onProcess(child) { const write = child.stdin.write.bind(child.stdin);
-        child.stdin.write = (...args) => { if (String(args[0]).startsWith('READ ')) nativeWrites++; return write(...args); }; } });
-    try { const started = await bridge.start(); assert.ok(started.ok, JSON.stringify({ mode, started, status: bridge.status() }));
-      assert.equal((await bridge.read(started.value)).ok, false); assert.equal(nativeWrites, 0);
-      reviewChecks.push(`${mode}-zero-native-read`); }
-    finally { await bridge.close(); }
-  }
-  {
-    const registration = new AbortController(); let raw = '', child;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration, 100); },
-      authorizeRead() {}, onProcess(value) { child = value; child.stdout.on('data', chunk => { raw += String(chunk); });
-        process.kill(child.pid, 'SIGSTOP'); } });
-    try { const starting = bridge.start(); await new Promise(resolve => setTimeout(resolve, 160));
-      process.kill(child.pid, 'SIGCONT'); assert.equal((await starting).ok, false);
-      await bridge.stop(); assert.equal(raw.includes('READY 1 '), false, 'expired queued START cannot activate native RSS');
-      reviewChecks.push('queued-native-start-expiry-before-activation'); }
-    finally { if (child?.exitCode === null) { try { process.kill(child.pid, 'SIGCONT'); } catch { /* Child already exited. */ } } await bridge.close(); }
-  }
-  {
-    const registration = new AbortController(), read = new AbortController(); let raw = '', child;
-    const bridge = createNativeRssBridge({ executable: realpathSync(executable), sha256: executableSha256, scope,
-      authorizeRegistration(request) { return approval(request, registration); },
-      authorizeRead(request) { return approval(request, read, 100); },
-      onProcess(value) { child = value; child.stdout.on('data', chunk => { raw += String(chunk); }); } });
-    try { const started = await bridge.start(); assert.ok(started.ok); process.kill(child.pid, 'SIGSTOP');
-      const pending = bridge.read(started.value);
-      await new Promise(resolve => setTimeout(resolve, 160)); process.kill(child.pid, 'SIGCONT');
-      assert.equal((await pending).ok, false); await bridge.stop();
-      assert.ok(raw.includes('DENIED 1\n'), 'expired queued READ must be denied natively');
-      assert.equal(raw.includes('SAMPLE 1 '), false, 'expired queued READ must not capture RSS');
-      reviewChecks.push('queued-native-read-expiry-before-capture'); }
-    finally { if (child?.exitCode === null) { try { process.kill(child.pid, 'SIGCONT'); } catch { /* Child already exited. */ } } await bridge.close(); }
-  }
-  const { runNativeResourceRuntimeExample } = await import('../examples/native-resource-runtime/consumer.mjs');
-  const native = await runNativeResourceRuntimeExample({ executable: realpathSync(executable), sha256: executableSha256 });
-  assert.equal(native.profile, 'fixed-own-rss-c/1'); assert.ok(native.rssBytes > 0);
-  assert.equal(native.rawPending, 0); assert.equal(native.childAlive, false);
-  assert.equal(native.cleanupVerified, true);
-  assert.equal(native.oldHandleAccepted, false); assert.equal(native.copiedHandleAccepted, false);
-  console.log(JSON.stringify({ result: 'pass', sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+  console.log(JSON.stringify({ result: 'pass', checksGroup, sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     compiler, node: process.version, platform: process.platform, arch: process.arch, sourceSha256,
     executableSha256, nativeCChecks: cChecks, nativeFrameChecks: ['read-before-start-denied', 'wrong-version-closed'], reviewChecks,
     publicEntries: Object.fromEntries(loaded), native,
