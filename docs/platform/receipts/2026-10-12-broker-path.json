@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "base": "5cd95028428a7ece6de9a08f30c468146d742811",
+  "localOnly": true,
+  "result": "Broker help discovery now binds the actual executable found through POSIX-style PATH, avoiding failed current-directory canonicalization and false fingerprint identity. Selected native diagnostics remain intact. Original unlogged timing failures remain UNKNOWN.",
+  "sourceSha256": {
+    "tools/qa-zigbee2mqtt-bridge.mjs": "9c77e81d8139f393b347eecb69f3868ed5c48f540bf750235dd87dbbdff65607",
+    "tests/zigbee-broker-path.test.ts": "4b2d0a8b73542ea2a5692a8d25f16af4f652e1f4a83e14a552c27c09ec56398b",
+    "tests/zigbee-broker-probes.test.ts": "e66bcf865d76876b95fdf5c691e98f64375a0866b933f85fdd612d263a0f2f9a",
+    "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "20c7f9942b34ff194dc760974ac7b490584fcb4feb6d312bd0025b47d7a599d5"
+  },
+  "changes": [
+    "Resolve bare broker commands through PATH to the first regular executable file before running native help; skip non-executable files and preserve explicit relative/absolute paths.",
+    "Canonicalize and fingerprint that exact probed path, retaining fixed candidate precedence, accepted help predicate,2000ms timeout and authentic child cleanup.",
+    "Preserve per-candidate path and resolved executable path in failure diagnostics, alongside bounded native status/signal/error/output."
+  ],
+  "oldRegression": {
+    "ref": "refs/codex/evidence/2026-10-12-broker-path/focused",
+    "receipt": "red.json",
+    "sha256": "11e0a2688b77de0851c17ebc1bcacfb9d02893e0827c1336ce8736ea94cd8615",
+    "sourceCandidateTree": "52aa1294974734386ce99450ebb437d5bbbff289",
+    "sourceSha256": "1ea2751646f3a25e563f875425be9533cbcec62379b4573c465daf7190681a6e",
+    "tests": {
+      "tests": 3,
+      "pass": 0,
+      "fail": 3,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "exitCode": 1,
+    "actualNativeParentWaitReturned": true,
+    "failure": "Actual installed Mosquitto through an owned PATH symlink returned valid help. Default/configured bare-name discovery then failed ENOENT against cwd; with a cwd shadow it returned the unrelated cwd file as executable identity.",
+    "fixtureScope": "Actual installed2.1.2 executable through symlink; only fixed-location attempts redirected to an actually absent path. No native outcomes synthesized. PATH includes a real non-executable prior match."
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-12-broker-path/focused",
+    "receipt": "green.json",
+    "sha256": "30db2d308d4af81398969b7aefcbda42fb50a29c1737d63414bee71bd79d593a",
+    "command": [
+      "node",
+      "--test",
+      "tests/zigbee-broker-path.test.ts",
+      "tests/zigbee-broker-probes.test.ts",
+      "packages/hub-server/src/zigbee2mqtt-bridge.test.ts"
+    ],
+    "exitCode": 0,
+    "actualNativeParentWaitReturned": true,
+    "elapsedSeconds": 19.760794582776725,
+    "summary": {
+      "tests": 28,
+      "pass": 28,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "logSha256": "926bdf0a4d6ee49fbb676f6a5e4d5c74cfd07a6118119f64af21ba7d7992692a"
+  },
+  "priorRejectedGate": {
+    "candidateTree": "52aa1294974734386ce99450ebb437d5bbbff289",
+    "ref": "refs/codex/evidence/2026-10-12-native-probe/failed-full-gates",
+    "tests": 3277,
+    "pass": 3264,
+    "fail": 13,
+    "actualParentJoined": true,
+    "cause": "UNKNOWN:8 unmodified MQTT help prerequisite failures and5 peer startup/close deadlines. Selected new Zigbee diagnostics passed; no historical timing repair claimed."
+  },
+  "instrumentedFollowup": {
+    "ref": "refs/codex/evidence/2026-10-12-native-probe/after-failure-diagnostics",
+    "receipt": "observations.json",
+    "scope": "One previously failed MQTT case and one peer case pass with authentic native close. This later scope does not establish the prior failure cause. Explicit --import only; no NODE_OPTIONS override or full-gate observer."
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "candidateRef": "refs/codex/evidence/2026-10-12-broker-path/final-candidate-v2",
+    "gatesRef": "refs/codex/evidence/2026-10-12-broker-path/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-broker-path/independent-review",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-broker-path/acceptance"
+  },
+  "limits": [
+    "Current native macOS PATH behavior only; no broader Windows/Linux qualification or physical-device evidence.",
+    "The original historical unlogged Zigbee prerequisites and the separately retained3277-test13-failure gate remain unexplained; later green results do not resolve those causes.",
+    "No deadlines widened, prerequisites skipped, native lifecycle outcomes synthesized, publication authorized or complete Q13/support/release claim made."
+  ],
+  "supportRows": []
+}

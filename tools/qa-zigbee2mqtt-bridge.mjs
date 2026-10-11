@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
+import { accessSync, constants, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { createServer, connect as tcpConnect } from 'node:net';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { delimiter, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 export const zigbeeOwnedFiles=Object.freeze(['packages/hub-server/src/zigbee2mqtt-bridge.ts','packages/hub-server/src/zigbee2mqtt-bridge.test.ts','examples/zigbee2mqtt-bridge/producer.mjs','examples/zigbee2mqtt-bridge/consumer.mjs','tools/qa-zigbee2mqtt-bridge.mjs','tools/qa-installed-zigbee2mqtt-bridge.mjs']);
@@ -22,10 +22,23 @@ export function zigbeeSourceFingerprints(){
   paths.push(realpathSync(process.execPath),zigbeeBrokerBinary().path);
   return Object.fromEntries([...new Set(paths)].sort().map(p=>[p,zigbeeHash(readFileSync(p))]));
 }
+function brokerExecutablePath(command){
+  if(command.includes('/')||(process.platform==='win32'&&command.includes('\\')))return command;
+  for(const directory of (process.env.PATH??'/usr/bin:/bin').split(delimiter)){
+    const path=resolve(directory,command);
+    try{accessSync(path,constants.X_OK);if(statSync(path).isFile())return path;}catch{/* Keep searching native executable locations. */}
+  }
+  return command;
+}
 export function zigbeeBrokerBinary(){
+  const probes=[];
   let binary;for(const p of [process.env.MOSQUITTO_BIN,'/opt/homebrew/opt/mosquitto/sbin/mosquitto','/usr/sbin/mosquitto','/usr/bin/mosquitto','mosquitto'].filter(Boolean)){
-    const r=spawnSync(p,['-h'],{encoding:'utf8',timeout:2000});if(r.status===0&&r.stdout?.includes('mosquitto version')){binary={path:p,version:r.stdout.trim().split('\n')[0]};break;}}
-  assert.ok(binary,'Existing local Mosquitto required');return Object.freeze({...binary,path:realpathSync(binary.path)});
+    const executable=brokerExecutablePath(p),started=performance.now(),r=spawnSync(executable,['-h'],{encoding:'utf8',timeout:2000});
+    probes.push({path:p,executablePath:executable,timeoutMs:2000,elapsedMs:performance.now()-started,status:r.status,signal:r.signal,
+      error:r.error?{code:r.error.code,message:r.error.message.slice(0,512)}:null,
+      stdout:r.stdout?.slice(-8192)??'',stderr:r.stderr?.slice(-8192)??''});
+    if(r.status===0&&r.stdout?.includes('mosquitto version')){binary={path:executable,version:r.stdout.trim().split('\n')[0]};break;}}
+  assert.ok(binary,`Existing local Mosquitto required; probes=${JSON.stringify(probes)}`);return Object.freeze({...binary,path:realpathSync(binary.path)});
 }
 export async function startOwnedZigbeeBroker(){
   const binary=zigbeeBrokerBinary();

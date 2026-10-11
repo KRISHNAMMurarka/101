@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "base": "5cd95028428a7ece6de9a08f30c468146d742811",
+  "localOnly": true,
+  "result": "Failed Mosquitto discovery now reports authentic per-candidate status, signal, native error and bounded stdout/stderr. The original unlogged historical prerequisite failure cause remains UNKNOWN.",
+  "sourceSha256": {
+    "tools/qa-zigbee2mqtt-bridge.mjs": "1ea2751646f3a25e563f875425be9533cbcec62379b4573c465daf7190681a6e",
+    "tests/zigbee-broker-probes.test.ts": "e66bcf865d76876b95fdf5c691e98f64375a0866b933f85fdd612d263a0f2f9a",
+    "packages/hub-server/src/zigbee2mqtt-bridge.test.ts": "20c7f9942b34ff194dc760974ac7b490584fcb4feb6d312bd0025b47d7a599d5"
+  },
+  "changes": [
+    "Retain native help-probe outcomes in the failed discovery assertion, with8192-character tails per output stream and512-character error messages.",
+    "Preserve existing candidate order, acceptance predicate,2000ms help deadline, lifecycle deadlines and native cleanup joins."
+  ],
+  "currentUnchangedObservation": {
+    "ref": "refs/codex/evidence/2026-10-12-native-probe/investigation",
+    "path": "observations.json",
+    "sha256": "fd94d6faa60ac8533129d0488e9735d0afb39a52f945870320ef3acaa10e4da2",
+    "result": "Actual unmodified local Mosquitto2.1.2 help completed in307ms; separate unchanged helper also succeeded. No historical cause inference."
+  },
+  "regression": {
+    "ref": "refs/codex/evidence/2026-10-12-native-probe/investigation",
+    "baselineSourceSha256": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+    "old": {
+      "log": "red.log",
+      "sha256": "8ac3e551de8017f0535e6178bf3247cd81ca1dda5db57b351b1052acd8e24e39",
+      "tests": 3,
+      "pass": 0,
+      "fail": 3,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "repaired": {
+      "log": "green.log",
+      "sha256": "e4fc3ee983dd6c72e02f4599ce5a84d18961482a6cc1249825c99b70e55247e9",
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "fixtureScope": "Actual owned single-process executable exits17, returns unrelated help, or is killed by the original2000ms native timeout; installed fallback paths alone are redirected to an actual absent executable. No child outcomes are synthesized. Native spawnSync calls return before temporary fixture cleanup.",
+    "exitCodeObservation": "The red log records3 failures; shell output ended with a successful tail read, so no independent original red runner exit-code receipt is claimed. Green/focused parent return0 observed."
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-12-native-probe/investigation",
+    "log": "focused.log",
+    "sha256": "4948a72816573b462afb9bfd95fef3925623afe3b6e906832943489ebf451404",
+    "tests": 22,
+    "pass": 22,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "actualParentReturnObserved": true
+  },
+  "originalUnresolvedFailure": {
+    "ref": "refs/codex/evidence/2026-10-11-controller/batch-6/failed-gates",
+    "path": "unit.log",
+    "sha256": "5e13c239ac7fdd567803afb90ccbb72a276298bdd41c3b65decfdbbfa878e37d",
+    "names": [
+      "owned producer timeout joins authentic close after successful public caller",
+      "owned producer timeout joins authentic close after failed startup",
+      "owned broker failed startup retains authentic child close and directory past timeout"
+    ],
+    "cause": "UNKNOWN: original native help status/error/output not retained. Later passing tests do not resolve the original failure."
+  },
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "gatesRef": "refs/codex/evidence/2026-10-12-native-probe/failed-full-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-native-probe/independent-review",
+    "candidateRef": "refs/codex/evidence/2026-10-12-native-probe/final-candidate-v2",
+    "result": "fail",
+    "integrationAllowed": false,
+    "supersededBy": "docs/platform/receipts/2026-10-12-broker-path.json"
+  },
+  "limits": [
+    "Diagnostic evidence quality only; no claimed repair of the historical timing failure.",
+    "Q13 final exact-candidate and complete release/support acceptance remain open.",
+    "No physical devices, named assistive technology, active Safari API/capture, signing, legal approval, distribution or live service evidence."
+  ],
+  "supportRows": []
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 213,
+  "revision": 215,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14407,6 +14407,121 @@
       "reproduction": "Focused old regression reports no-local-text instead of local-texts despite a full ordinary root UNLICENSE file; actual parent returns1 and fixture finally cleanup is awaited.",
       "scope": "Historical selected local filename omission only; exact source text presence is not legal or complete task approval.",
       "failure": "Actual baseline ignores full ordinary root UNLICENSE. Observed package coverage no-local-text differs from required local-texts on exact installed stream-buffers2.2.0 author bytes."
+    },
+    {
+      "id": "native-broker-probe-diagnostics-2026-10-12",
+      "revision": "1ea2751646f3a25e563f875425be9533cbcec62379b4573c465daf7190681a6e",
+      "result": "pass",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tests/zigbee-broker-probes.test.ts",
+        "docs/platform/receipts/2026-10-12-native-probe-diagnostics.json"
+      ],
+      "environment": "Actual local macOS Node24.14.0 native synchronous child probes; no NODE_OPTIONS override.",
+      "reproduction": "Three authentic subprocess diagnostic regressions pass after the change;22 existing Zigbee tests pass. Exact ordinary frozen gates and independent review are required separately.",
+      "scope": "Selected failed-discovery diagnostic completeness only. Original unlogged historical prerequisite failure cause remains UNKNOWN; no full-task or support acceptance.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "native-broker-probe-diagnostics-old-2026-10-12",
+      "revision": "86bcb9fa701b832daaaad8eb2502768d557ae541d2bbac0c1962556a0748e587",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tests/zigbee-broker-probes.test.ts",
+        "docs/platform/receipts/2026-10-12-native-probe-diagnostics.json"
+      ],
+      "environment": "Actual local macOS Node24.14.0 native synchronous child probes; no NODE_OPTIONS override.",
+      "reproduction": "Three focused diagnostics assertions fail against the exact unchanged5cd9502 helper because native outcomes are discarded.",
+      "scope": "Selected failed-discovery diagnostic completeness only. Original unlogged historical prerequisite failure cause remains UNKNOWN; no full-task or support acceptance.",
+      "failure": "Actual old discovery error contains no native status, signal, error or output for nonzero/invalid-help/timeout probes.",
+      "equipment": []
+    },
+    {
+      "id": "native-broker-path-2026-10-12",
+      "revision": "9c77e81d8139f393b347eecb69f3868ed5c48f540bf750235dd87dbbdff65607",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tests/zigbee-broker-path.test.ts",
+        "docs/platform/receipts/2026-10-12-broker-path.json"
+      ],
+      "environment": "Actual local macOS Node24.14.0; existing installed Mosquitto2.1.2; original deadline bounds and native joins.",
+      "reproduction": "Actual installed broker through PATH now returns its exact canonical executable, ignoring a non-executable prior PATH match and unrelated cwd shadow. All28 focused native diagnostic/path/Zigbee checks pass.",
+      "scope": "Selected broker path identity and diagnostic quality only. Complete Q13, unexplained native timing failures and full support/release qualification remain open.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "native-broker-path-old-2026-10-12",
+      "revision": "1ea2751646f3a25e563f875425be9533cbcec62379b4573c465daf7190681a6e",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tests/zigbee-broker-path.test.ts",
+        "docs/platform/receipts/2026-10-12-broker-path.json"
+      ],
+      "environment": "Actual local macOS Node24.14.0; existing installed Mosquitto2.1.2; original deadline bounds and native joins.",
+      "reproduction": "Old discovery accepts authentic native help then canonicalizes against cwd. Three original native regressions return1 and cleanup joins before removal.",
+      "scope": "Selected broker path identity and diagnostic quality only. Complete Q13, unexplained native timing failures and full support/release qualification remain open.",
+      "failure": "Two ENOENT failures and one wrong cwd executable identity despite successful actual native help.",
+      "equipment": []
+    },
+    {
+      "id": "native-probe-rejected-full-gate-2026-10-12",
+      "revision": "52aa1294974734386ce99450ebb437d5bbbff289",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tests/zigbee-broker-path.test.ts",
+        "docs/platform/receipts/2026-10-12-broker-path.json"
+      ],
+      "environment": "Actual local macOS Node24.14.0; existing installed Mosquitto2.1.2; original deadline bounds and native joins.",
+      "reproduction": "Exact ordinary gate completed3277tests with3264pass/13fail and native parent returned1; selected instrumented later passes do not resolve the failure causes.",
+      "scope": "Selected broker path identity and diagnostic quality only. Complete Q13, unexplained native timing failures and full support/release qualification remain open.",
+      "failure": "Eight MQTT broker help discovery prerequisite failures and five ROS peer startup/close deadline failures; original native outcomes not retained.",
+      "equipment": []
     }
   ],
   "tasks": [
@@ -17703,7 +17818,12 @@
         "pending-Q13",
         "browser-gateway-required-gates-failed-2026-10-06",
         "native-startup-isolated-diagnostic-2026-10-08",
-        "native-startup-failure-diagnostics-2026-10-08"
+        "native-startup-failure-diagnostics-2026-10-08",
+        "native-broker-probe-diagnostics-2026-10-12",
+        "native-broker-probe-diagnostics-old-2026-10-12",
+        "native-broker-path-2026-10-12",
+        "native-broker-path-old-2026-10-12",
+        "native-probe-rejected-full-gate-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
