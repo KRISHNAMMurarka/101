@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 212,
+  "revision": 213,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14353,6 +14353,60 @@
       "reproduction": "The actual CLI call resolves instead of refusing changed declared terms because the old entry predicate does not match the canonical module path; expected rejection assertion returns1. Canonical entry correction now passes in the actual60-test run.",
       "scope": "Historical native macOS CLI entry failure only; importer inertness and before-write refusal are verified by repaired focused tests, with other OS/runtime coverage open.",
       "failure": "Actual aliased CLI entry skipped the producer instead of executing the changed-source guard."
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "THIRD_PARTY_LICENSES.json",
+        "tests/unlicense-texts.test.ts",
+        "docs/platform/receipts/2026-10-12-unlicense-text.json"
+      ],
+      "equipment": [],
+      "id": "unlicense-local-text-2026-10-12",
+      "revision": "a560835b4ad8ffcc6f59946818719bd3148fbfaa182895b6c51a52decb3e7168",
+      "result": "pass",
+      "historical": false,
+      "environment": "Actual local macOS Node24.14 filesystem/CLI guards; unchanged installed dependencies/locks/Rust inventory.",
+      "reproduction": "The conventional root UNLICENSE file now contributes exact1210-byte stream-buffers2.2.0 authored text. Direct CLI collection/admission return0; all old texts and other package rows are unchanged. Focused65 checks pass, including native CLI refusal before old output replacement. Exact frozen gates/package binding remains required separately.",
+      "scope": "Selected conventional filename omission and exact authored-file preservation only.116 absent optional targets,63 remaining JavaScript text gaps,40 Rust text gaps and broader legal/release/full-task/support acceptance remain open.",
+      "failure": null
+    },
+    {
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "K09",
+        "K10",
+        "K12",
+        "L03"
+      ],
+      "paths": [
+        "tools/generate-license-inventory.mjs",
+        "THIRD_PARTY_LICENSES.json",
+        "tests/unlicense-texts.test.ts",
+        "docs/platform/receipts/2026-10-12-unlicense-text.json"
+      ],
+      "equipment": [],
+      "id": "unlicense-omission-old-2026-10-12",
+      "revision": "4a286db76f4741d6ae0b758edc79e28f483dadc54044cc18a5e22e03cc01f8de",
+      "result": "fail",
+      "historical": true,
+      "environment": "Accepted7492181e generator and exact installed stream-buffers2.2.0 UNLICENSE/package metadata fixtures.",
+      "reproduction": "Focused old regression reports no-local-text instead of local-texts despite a full ordinary root UNLICENSE file; actual parent returns1 and fixture finally cleanup is awaited.",
+      "scope": "Historical selected local filename omission only; exact source text presence is not legal or complete task approval.",
+      "failure": "Actual baseline ignores full ordinary root UNLICENSE. Observed package coverage no-local-text differs from required local-texts on exact installed stream-buffers2.2.0 author bytes."
     }
   ],
   "tasks": [
@@ -18044,7 +18098,9 @@
         "declared-license-sources-local-2026-10-11",
         "declared-license-readme-old-2026-10-11",
         "declared-license-admission-old-2026-10-11",
-        "declared-license-cli-entry-old-2026-10-11"
+        "declared-license-cli-entry-old-2026-10-11",
+        "unlicense-local-text-2026-10-12",
+        "unlicense-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18063,7 +18119,9 @@
         "declared-license-sources-local-2026-10-11",
         "declared-license-readme-old-2026-10-11",
         "declared-license-admission-old-2026-10-11",
-        "declared-license-cli-entry-old-2026-10-11"
+        "declared-license-cli-entry-old-2026-10-11",
+        "unlicense-local-text-2026-10-12",
+        "unlicense-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18096,7 +18154,9 @@
         "declared-license-sources-local-2026-10-11",
         "declared-license-readme-old-2026-10-11",
         "declared-license-admission-old-2026-10-11",
-        "declared-license-cli-entry-old-2026-10-11"
+        "declared-license-cli-entry-old-2026-10-11",
+        "unlicense-local-text-2026-10-12",
+        "unlicense-omission-old-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18250,7 +18310,9 @@
         "declared-license-sources-local-2026-10-11",
         "declared-license-readme-old-2026-10-11",
         "declared-license-admission-old-2026-10-11",
-        "declared-license-cli-entry-old-2026-10-11"
+        "declared-license-cli-entry-old-2026-10-11",
+        "unlicense-local-text-2026-10-12",
+        "unlicense-omission-old-2026-10-12"
       ],
       "dependencies": [
         "K01",

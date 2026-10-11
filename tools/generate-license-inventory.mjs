@@ -8,7 +8,7 @@ export const LICENSE_INVENTORY_LIMITS = Object.freeze({ packages: 2048, lockByte
   packageJsonBytes: 65536, declaredSourceBytes: 131072, textBytes: 131072, filesPerPackage: 64, textTotalBytes: 16777216, directoryDepth: 2 });
 export const DECLARED_LICENSE_SOURCES_PATH = 'THIRD_PARTY_LICENSE_SOURCES.json';
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
-const rootText = /^(?:LICEN[CS]E|COPYING|COPYRIGHT|NOTICE)(?:[._-].*)?$/i;
+const rootText = /^(?:UNLICENSE|LICEN[CS]E|COPYING|COPYRIGHT|NOTICE)(?:[._-].*)?$/i;
 const legalDirectory = /^(?:licen[cs]es?|notices?|legal)$/i;
 function ordinary(value, directory = false) {
   if (value.isSymbolicLink() || !(directory ? value.isDirectory() : value.isFile())) throw new Error('License inventory requires ordinary local files and directories');

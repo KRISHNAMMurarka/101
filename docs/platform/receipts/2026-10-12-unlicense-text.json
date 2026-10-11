@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "base": "7492181e052f5f09a8d12499b5f04b1d15ed2e2a",
+  "localOnly": true,
+  "result": "Conventional root UNLICENSE files now use the existing bounded legal-file reader. The full exact installed stream-buffers2.2.0 author file is preserved; missing installed-JavaScript text entries fall64\u219263. Complete redistribution/support acceptance remains open.",
+  "sourceSha256": {
+    "tools/generate-license-inventory.mjs": "a560835b4ad8ffcc6f59946818719bd3148fbfaa182895b6c51a52decb3e7168",
+    "tools/license-inventory-validation.mjs": "e17527d56b160ffe27e3a9a3fcd4f5ae9b17e9786e6f6764cf6eb64e13f10e07",
+    "tools/package-release.mjs": "8f4d1420b90f217f5203851cb9aa5ffbb7d9b4ad0d4c2cdcdad9db3ce5dc1479",
+    "THIRD_PARTY_LICENSES.json": "1b008df307b03e17ce2027a0172b590a300b10c216ef13294e28b94418760d23",
+    "THIRD_PARTY_LICENSE_SOURCES.json": "e1cc759e5910aefc9d48bfdea3dd4031be1fcbf707986f002ba8e511b7013893",
+    "tests/unlicense-texts.test.ts": "a349be1fa3d25f5295d37fd29605654744b2330e2506b5a1f349bccfb928eb97",
+    "tests/fixtures/license-unlicense/stream-buffers-2.2.0.UNLICENSE": "ca2abdf695884c77ea4b4a5b64ca7b732d9d9dbade4eebc1c2e76c53e9e3bc83",
+    "tests/fixtures/license-unlicense/package.json": "7f6be66ac31f7dc6351d5737aa3d1cf016209b737c1b36b763cf6d5f15d112df",
+    "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+    "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+  },
+  "changes": [
+    "Add the conventional UNLICENSE root filename to the current case-insensitive legal filename selection, retaining suffix handling and all existing bounds.",
+    "Preserve the full unchanged1210-byte authored file in the actual local inventory.",
+    "Real CLI guards reject symlink, oversized and invalid UTF-8 UNLICENSE input before replacing prior inventory bytes."
+  ],
+  "actualLocal": {
+    "ref": "refs/codex/evidence/2026-10-12-unlicense/actual-local",
+    "receipt": "receipt.json",
+    "sha256": "99e3afffe2e08213d0cc37f2bde9abbe10b3f8e9054daf7b1cb2c8603ac3445c",
+    "sourcePins": {
+      "tools/generate-license-inventory.mjs": "a560835b4ad8ffcc6f59946818719bd3148fbfaa182895b6c51a52decb3e7168",
+      "tools/license-inventory-validation.mjs": "e17527d56b160ffe27e3a9a3fcd4f5ae9b17e9786e6f6764cf6eb64e13f10e07",
+      "tools/package-release.mjs": "8f4d1420b90f217f5203851cb9aa5ffbb7d9b4ad0d4c2cdcdad9db3ce5dc1479",
+      "THIRD_PARTY_LICENSE_SOURCES.json": "e1cc759e5910aefc9d48bfdea3dd4031be1fcbf707986f002ba8e511b7013893",
+      "package-lock.json": "7f9cf3475f84bea313a52754d51ed04b9cb7078e15215fd46c4b7c9dc8a91a4d",
+      "apps/desktop-hub/src-tauri/Cargo.lock": "65f2321689490015637d9b6078832f8d790e9c7868c6537163b174e74565bd69",
+      "THIRD_PARTY_RUST_LICENSES.json": "95b82e4d0640a1796d98ea8c933c151e43b3d7c9a8f6396399e817e9c6b6bfcd"
+    },
+    "collection": {
+      "command": [
+        "node",
+        "tools/generate-license-inventory.mjs"
+      ],
+      "exitCode": 0,
+      "actualNativeWaitReturned": true,
+      "elapsedSeconds": 1.5164289171807468
+    },
+    "admission": {
+      "command": [
+        "node",
+        "--input-type=module",
+        "-e",
+        "import {auditReleaseLicenseInventories} from \"./tools/license-inventory-validation.mjs\"; await auditReleaseLicenseInventories(process.cwd()); console.log(JSON.stringify({admission:\"pass\",legalApproval:false}));"
+      ],
+      "exitCode": 0,
+      "actualNativeWaitReturned": true
+    },
+    "previousInventorySHA": "d8784a6a0cec6c43fc6a5b4459e69090df6acc99b46b8493326e7cf7a9873080",
+    "inventorySHA": "1b008df307b03e17ce2027a0172b590a300b10c216ef13294e28b94418760d23",
+    "beforeCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 64,
+      "distinctTexts": 384,
+      "textBytes": 799883,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "afterCoverage": {
+      "complete": false,
+      "lockedPackages": 1083,
+      "missingPackages": 116,
+      "packagesWithoutText": 63,
+      "distinctTexts": 385,
+      "textBytes": 801093,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "newSourceRows": [
+      {
+        "name": "stream-buffers",
+        "version": "2.2.0",
+        "license": "Unlicense",
+        "installedPath": "node_modules/stream-buffers",
+        "coverage": "local-texts",
+        "licenseFiles": [
+          {
+            "path": "UNLICENSE",
+            "sha256": "ca2abdf695884c77ea4b4a5b64ca7b732d9d9dbade4eebc1c2e76c53e9e3bc83"
+          }
+        ]
+      }
+    ],
+    "allOtherPackageRowsAndOldTextBytesUnchanged": true,
+    "selectedAuthoredSourceBytesExactlyPreserved": true,
+    "rustInventoryAndLocksUnchanged": true,
+    "networkRequests": 0
+  },
+  "focused": {
+    "ref": "refs/codex/evidence/2026-10-12-unlicense/focused",
+    "receipt": "receipt.json",
+    "sha256": "0f8b51a3a88587dd7536c5e57b99946f5a3440b82a5132e9a080920c518a1b45",
+    "tests": 65,
+    "pass": 65,
+    "fail": 0,
+    "skipped": 0,
+    "actualParentReturnObserved": true,
+    "scopedLintExitCode": 0
+  },
+  "oldRegressions": [
+    {
+      "ref": "refs/codex/evidence/2026-10-12-unlicense/regression-old",
+      "receipt": "receipt.json",
+      "sha256": "abc13c9d77b2a81a4b0799b01dc49b0dc75e70367dc6ebcd7fabb701bfbe0da0",
+      "baseHead": "7492181e052f5f09a8d12499b5f04b1d15ed2e2a",
+      "baseTree": "57722ddeb801846289db6ed8e63ba0b49d1a3b5a",
+      "acceptedBaselineGeneratorBytesVerified": true,
+      "sourcePins": {
+        "tools/generate-license-inventory.mjs": "4a286db76f4741d6ae0b758edc79e28f483dadc54044cc18a5e22e03cc01f8de",
+        "tests/unlicense-texts.test.ts": "a349be1fa3d25f5295d37fd29605654744b2330e2506b5a1f349bccfb928eb97",
+        "tests/fixtures/license-unlicense/stream-buffers-2.2.0.UNLICENSE": "ca2abdf695884c77ea4b4a5b64ca7b732d9d9dbade4eebc1c2e76c53e9e3bc83",
+        "tests/fixtures/license-unlicense/package.json": "7f6be66ac31f7dc6351d5737aa3d1cf016209b737c1b36b763cf6d5f15d112df"
+      },
+      "exitCode": 1,
+      "failure": "Actual baseline ignores full ordinary root UNLICENSE. Observed package coverage no-local-text differs from required local-texts on exact installed stream-buffers2.2.0 author bytes."
+    }
+  ],
+  "exactCandidateAcceptance": {
+    "requiredBeforeIntegration": true,
+    "candidateRef": "refs/codex/evidence/2026-10-12-unlicense/final-candidate",
+    "reviewRef": "refs/codex/evidence/2026-10-12-unlicense/independent-review",
+    "gatesRef": "refs/codex/evidence/2026-10-12-unlicense/final-gates",
+    "packageRef": "refs/codex/evidence/2026-10-12-unlicense/final-package",
+    "bindingRef": "refs/codex/evidence/2026-10-12-unlicense/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-unlicense/acceptance",
+    "note": "Exact frozen source requires ordinary full gates, independent review and actual local web package source-input/full authored-file byte binding before local integration."
+  },
+  "limits": [
+    "Conventional filename discovery and exact local byte presence are not a legal assessment or complete redistribution approval.116 optional locked packages remain absent,63 installed JavaScript packages still lack collected legal text, and40 Rust text gaps plus asset/model/native/distribution review remain separate.",
+    "Only one installed package row and one new exact authored text change. The four explicitly declared README files, declaration fingerprint, all old texts, locks, installed dependencies, Rust inventory and other package rows remain unchanged.",
+    "The focused65 checks exercise actual local filesystem/CLI/package fixture guards with ordinary Node24 and original bounds. They do not establish production artifact, legal, device, assistive-technology or active Safari qualification.",
+    "The original failing regression uses exact installed stream-buffers2.2.0 UNLICENSE and package metadata bytes against the accepted7492181e generator. The observed omission is retained as a failed historical receipt.",
+    "All full K09/K10/K12/L03, release/support acceptance, signing, publication, physical devices, named assistive technology and active Safari remain open. Final exact ordinary gates and actual local web package byte/input binding are required separately before this selected batch can integrate."
+  ],
+  "supportRows": []
+}
