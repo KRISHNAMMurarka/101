@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "result": "pass-scoped-reference-correction; map-consumer-controls-failed",
+  "sourceBase": {
+    "head": "7c493f849e8ef34b24c43ea1ef4e00d7fd71579d",
+    "tree": "2e9d5e5764ad1ca71bb23739ab17c7ae417bd2f9"
+  },
+  "tasks": [
+    "U01",
+    "U02",
+    "U03",
+    "U04",
+    "U12",
+    "S16",
+    "Q10"
+  ],
+  "sourceSha256": {
+    "docs/platform/RELEASE-CONTRACT.md": "9f986a8c7513f6365ab36cd544da694e783782acbfdb209c297ba2ed3658b0d0",
+    "app/components/AppShell.tsx": "b7cbe5bc7be6df6237776dce9b11709c45ec4f3dab275b48f20cdd337810e066",
+    "app/connections/page.tsx": "df085223f4de46fae1fdf480fbae3b5820d0e5efa4d15135e45a9851c3e2812c",
+    "app/sharing/page.tsx": "04e2116f70788f02711b876f40b749b0ca6ab927dd53c42486c0cbf8e619abf9",
+    "app/settings/page.tsx": "c04e21cce9cc44d8d5fbda22539044cdf3c9b8cbb3baac3624a50b7f16569fd4",
+    "app/settings/SettingsView.tsx": "92a28ec97bf05c20319d8772c2b9af337c09ece0bb0195e2830384ad19722233"
+  },
+  "referenceCorrection": {
+    "oldErrors": 4,
+    "oldChildExit": 1,
+    "currentChildExit": 0,
+    "actualPrimary": [
+      "Play",
+      "Devices",
+      "Connections",
+      "Sharing",
+      "Settings"
+    ],
+    "genericDetailRoutes": [
+      "/devices/:id",
+      "/connections/:id"
+    ],
+    "detailsRemainTarget": true,
+    "scope": "Current route/navigation source matched to selected implemented local jobs and existing historical scoped receipts; no fresh native browser/runtime/physical support claim"
+  },
+  "postcssControls": {
+    "result": "fail",
+    "noRoot": "Current actual PostCSS empty-plugin conversion throws TypeError for valid indexed source map",
+    "projectPlugin": "Current project-configured Tailwind/PostCSS path returns generated input location rather than expected original location at first column",
+    "diagnostic": "Direct indexed consumer column0 lookup is null while eachMapping emits that exact mapping; column1 returns original position. sourceRoot is undefined and fromSourceMap throws. Raw JSON and both failed runs retained.",
+    "negativeCasesNotReached": true,
+    "fixture": "SourceMapGenerator-produced ordinary section plus valid indexed envelope, serialized to actual JSON/data-URI/local.map bytes. No fake sourceRoot or library patch.",
+    "noDependencyRepairYet": true,
+    "scope": "Selected current installed dependency contract failures, not a new security/exploitation or complete producer-origin claim"
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-12-reference-reconciliation/acceptance",
+    "rawPrefix": "focused/",
+    "controllerDiagnosis": "failed-postcss-controls.json"
+  },
+  "requiredGates": {
+    "ref": "refs/codex/evidence/2026-10-12-reference-reconciliation/acceptance",
+    "path": "gates/results.json",
+    "status": "Issued exact candidate results bind the committed reference correction; failed consumer controls remain unresolved."
+  },
+  "tally": {
+    "total": 272,
+    "complete": 123,
+    "open": 149
+  },
+  "support": {
+    "rows": 69,
+    "accepted": 0
+  },
+  "noPublicationDeploymentMessages": true,
+  "fullObjectiveComplete": false
+}

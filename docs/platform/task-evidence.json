@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 223,
+  "revision": 224,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14910,6 +14910,52 @@
       "environment": "Actual macOS26.5.2 build25F84 arm64; ordinary Node24.14.0, old0.8.14/current0.9.12 source gateway callers, owned loopback only.",
       "reproduction": "Thirty isolated original/current groups, five families at4/8/16KiB, all8gateway attempts retained plus ninth quota;240actualstarts. Historical package SHA512 and retained source pins match. All invalid cases return protocol and legal controls remain ready; actual Stop/close/listeners and children join. Raw wall/CPU/whole-child-RSS measurements preserved.",
       "scope": "Selected finite original/current parser cost calibration only: old recovery16KiB maximum4.313s per start/25.871s eight starts; current selected maximum26.896ms. No exhaustive worst-case, enforced memory bound, installed distribution, security scan, physical, remote or full task/support/release acceptance."
+    },
+    {
+      "id": "player-route-reference-correction-2026-10-12",
+      "result": "pass",
+      "historical": false,
+      "revision": "9f986a8c7513f6365ab36cd544da694e783782acbfdb209c297ba2ed3658b0d0",
+      "levels": [
+        "contract"
+      ],
+      "tasks": [
+        "U01",
+        "U02",
+        "U03",
+        "U04",
+        "U12"
+      ],
+      "paths": [
+        "docs/platform/RELEASE-CONTRACT.md",
+        "docs/platform/receipts/2026-10-12-reference-reconciliation.json"
+      ],
+      "environment": "Current local source inventory/one-off reference check; historical browser receipts remain individually scoped",
+      "reproduction": "Old contract/source alignment fails4cases with direct child exit1; corrected actual primary route rows/navigation pass exit0. Existing file links checked. No fresh UI journey claim.",
+      "scope": "Current route/navigation source matched to selected implemented local jobs and existing historical scoped receipts; no fresh native browser/runtime/physical support claim",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "postcss-indexed-map-controls-failed-2026-10-12",
+      "result": "fail",
+      "historical": false,
+      "revision": "9ad10db386da13c1f95e6a680d6298dbb306c77f57a9a3539e4595b723a7654b",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "S16",
+        "Q10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-12-reference-reconciliation.json"
+      ],
+      "environment": "Actual ordinary Node24.14.0/macOS; PostCSS8.5.26/source-map-js1.2.2 and actual installed project Tailwind plugin",
+      "reproduction": "Two authentic current consumer callers fail their first valid indexed JSON-map control; direct diagnostic records undefined sourceRoot conversion exception and zero-column mapping inconsistency. All later planned malformed-offset cases remain UNRUN.",
+      "scope": "Selected installed build-tool compatibility controls only; no new DoS, unauthenticated path, physical, whole S16/Q10 or support acceptance. Dependency unchanged; repair pending.",
+      "failure": "No-root TypeError; project-plugin original position4 instead of1. Raw first failures and exact producer JSON preserved.",
+      "equipment": []
     }
   ],
   "tasks": [
@@ -15862,7 +15908,8 @@
         "onvif-strict-xml-partial-2026-10-12",
         "legacy-advisory-scopes-partial-2026-10-12",
         "security-maintenance-procedure-local-2026-10-12",
-        "onvif-parser-cost-selected-2026-10-12"
+        "onvif-parser-cost-selected-2026-10-12",
+        "postcss-indexed-map-controls-failed-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17605,7 +17652,8 @@
     {
       "id": "U01",
       "records": [
-        "product-information-architecture-2026-10-05"
+        "product-information-architecture-2026-10-05",
+        "player-route-reference-correction-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17632,7 +17680,8 @@
         "bindings-device-backup-required-gates-failed-2026-10-07",
         "local-player-combined-software-build-2026-10-07",
         "local-gamepad-player-built-source-partial-2026-10-08",
-        "remembered-native-backup-2026-10-10"
+        "remembered-native-backup-2026-10-10",
+        "player-route-reference-correction-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17676,7 +17725,8 @@
         "inventory-quota-recovery-chromium-2026-10-11",
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
-        "inventory-quota-safari-ui-2026-10-11"
+        "inventory-quota-safari-ui-2026-10-11",
+        "player-route-reference-correction-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17696,7 +17746,8 @@
         "u04-connected-page-sharing-partial-2026-10-07",
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "watch-sharing-built-source-partial-2026-10-07",
-        "watch-sharing-native-2026-10-11"
+        "watch-sharing-native-2026-10-11",
+        "player-route-reference-correction-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -17870,7 +17921,8 @@
         "lifecycle-browser-batch-2026-10-10",
         "settings-scratch-batch-2026-10-10",
         "processor-cold-document-2026-10-10",
-        "processor-browser-restart-2026-10-11"
+        "processor-browser-restart-2026-10-11",
+        "player-route-reference-correction-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -18191,7 +18243,8 @@
         "onvif-strict-xml-partial-2026-10-12",
         "legacy-advisory-scopes-partial-2026-10-12",
         "node-22-13-current-sdk-floor-2026-10-12",
-        "onvif-parser-cost-selected-2026-10-12"
+        "onvif-parser-cost-selected-2026-10-12",
+        "postcss-indexed-map-controls-failed-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
