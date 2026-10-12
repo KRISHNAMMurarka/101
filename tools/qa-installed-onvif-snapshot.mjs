@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { cpSync, lstatSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join, relative, resolve, sep } from 'node:path';
+import { createRequire } from 'node:module';
+import { dirname, join, relative, resolve, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import ts from 'typescript';
 import { fileHash, installedSdk } from './build-pointer-bindings.mjs';
@@ -36,11 +37,11 @@ assert.ok(!sdk.directory.startsWith(root + '/'));
 const work = mkdtempSync(join(sdk.directory, 'onvif-snapshot-'));
 const sources = ['packages/hub-server/src/onvif-snapshot-gateway.ts', 'packages/hub-server/src/onvif-snapshot-gateway.test.ts',
   'examples/onvif-snapshot/consumer.mjs', 'examples/onvif-snapshot/software-camera.mjs',
-  'tools/qa-onvif-snapshot.mjs', 'tools/qa-installed-onvif-snapshot.mjs'];
+  'tools/qa-onvif-snapshot.mjs', 'tools/qa-installed-onvif-snapshot.mjs', 'packages/hub-server/package.json'];
 const sourceSha256 = Object.fromEntries(sources.map(path => [path, fileHash(join(root, path))]));
-const dependencyRoot = join(root, 'node_modules/@xmldom/xmldom');
+const dependencyRoot = dirname(createRequire(join(root, 'packages/hub-server/package.json')).resolve('@xmldom/xmldom/package.json'));
 const dependencyPackage = JSON.parse(readFileSync(join(dependencyRoot, 'package.json'), 'utf8'));
-assert.equal(dependencyPackage.name, '@xmldom/xmldom'); assert.equal(dependencyPackage.version, '0.8.14');
+assert.equal(dependencyPackage.name, '@xmldom/xmldom'); assert.equal(dependencyPackage.version, '0.9.12');
 const dependency = { name: dependencyPackage.name, version: dependencyPackage.version,
   packageSha256: fileHash(join(dependencyRoot, 'package.json')), entrySha256: fileHash(join(dependencyRoot, 'lib/index.js')),
   files: dependencyPins(dependencyRoot) };
@@ -68,6 +69,6 @@ assert.deepEqual(dependencyPins(dependencyRoot), dependency.files, 'Source depen
 const proof = { schemaVersion: 1, status: 'pass', sdkManifest: receipt.manifest, sdkManifestSha256: sdk.manifestSha256,
   sourceSha256, installedPublicEntry: installed.entry, dependency,
   compiledProviderSha256: fileHash(join(work, 'onvif-snapshot-gateway.mjs')), result,
-  scope: 'Actual separate child loopback ONVIF snapshot caller using the verified installed public SDK, exact xmldom 0.8.14, and separately compiled reviewed gateway. Physical source unverified; remote authentication, playback, PTZ, firmware, and physical qualification remain open.' };
+  scope: 'Actual separate child loopback ONVIF snapshot caller using the verified installed public SDK, exact xmldom 0.9.12 resolved from the hub-server package, and separately compiled reviewed gateway. Physical source unverified; remote authentication, playback, PTZ, firmware, and physical qualification remain open.' };
 writeFileSync(join(work, 'receipt.json'), JSON.stringify(proof, null, 2) + '\n');
 console.log(JSON.stringify({ status: 'pass', receipt: join(work, 'receipt.json'), result }));

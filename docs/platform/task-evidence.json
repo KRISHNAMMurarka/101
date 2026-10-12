@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 220,
+  "revision": 221,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14772,6 +14772,73 @@
       "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; Expo57 preserved, three compatible leaf updates.",
       "reproduction": "Genuine original compression/shell/source-map regressions fail; repaired14checks pass through actual Expo compression with real HTTP aborts and all three native codecs. Native33tests, typecheck and local iOS/Android exports pass; production audit passes with six tooling exceptions. Independent candidate review found ignored advisory identifiers; genuine old gate regression reproduced with faithful npm producer output, then strict matching for the new records was repaired.",
       "scope": "Partial repair and compatibility evidence for the five supplied advisories. Two named tooling findings are reviewed, not fixed; CSS-map input provenance and four legacy package-level reviews remain open. No exhaustive or independent full-security, physical/native-install, support/task/release acceptance."
+    },
+    {
+      "id": "advisory-scopes-original-red-2026-10-12",
+      "result": "fail",
+      "revision": "d020905a4ef4ecae97d9516d3d0b7f27ca3011d7",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "A14",
+        "S16"
+      ],
+      "failure": "Five actual malformed SOAP responses admitted; a package-wide review accepted both authentic npm advisory objects. Raw failures and legitimate controls retained.",
+      "historical": false,
+      "equipment": [],
+      "paths": [
+        "docs/platform/receipts/2026-10-12-advisory-scopes-onvif.json"
+      ],
+      "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; genuine loopback HTTP and offline installed public SDK. No publication/deployment/remote writes.",
+      "reproduction": "Run original six HTTP cases and authentic three-test npm review regression before updates; five plus two failures are observed with actual joined native parents.",
+      "scope": "Original failures preserved; current partial repairs do not erase historical outcomes or establish wider impact."
+    },
+    {
+      "id": "onvif-strict-xml-partial-2026-10-12",
+      "result": "pass",
+      "revision": "6c46ad487b13923305e93ae91bfed47218b2c2e1f1815e6026eb394bcdf88d3e",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A14",
+        "S16",
+        "Q10"
+      ],
+      "failure": null,
+      "reproduction": "Actual34gateway checks and current separately compiled/pinned installed caller pass. Original five malformed forms, eight review variants, two namespace reference forms and valid Unicode comment/prefix control are retained with genuine old-red outcomes. One independent review cycle found two issues; parent reproduced and corrected both.",
+      "scope": "Selected bounded loopback XML1.0 snapshot protocol software only. Final exact candidate gates/binding/acceptance live at receipt refs. No physical/remote/auth/playback/PTZ/firmware or whole A14/S16/Q10 promotion.",
+      "historical": false,
+      "equipment": [],
+      "paths": [
+        "docs/platform/receipts/2026-10-12-advisory-scopes-onvif.json"
+      ],
+      "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; genuine loopback HTTP and offline installed public SDK. No publication/deployment/remote writes."
+    },
+    {
+      "id": "legacy-advisory-scopes-partial-2026-10-12",
+      "result": "pass",
+      "revision": "f6600203c41cac0172166c936e9a1b5fb8bd9283de3f28f72e782c6b29911b0f",
+      "levels": [
+        "implementation",
+        "runtime"
+      ],
+      "tasks": [
+        "S16",
+        "Q10"
+      ],
+      "failure": null,
+      "reproduction": "Twenty-eight original advisory objects individually assessed; exact compatible leaves updated and all four remaining reviews name five GHSA identifiers. Faithful old-gate regression fails and current three checks pass; actual production gate passes with24entries/fourroots/20propagated/fourreviews. Five actual tooling caller controls, native types and33native tests pass.",
+      "scope": "Partial advisory-family repair/review evidence. No package-wide exceptions; remaining named exceptions are reviewed current tooling inputs, not repaired vulnerabilities. Original bounded parser cost remains uncalibrated and wider security/clean-install/floor/support acceptance stays open.",
+      "historical": false,
+      "equipment": [],
+      "paths": [
+        "docs/platform/receipts/2026-10-12-advisory-scopes-onvif.json"
+      ],
+      "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; genuine loopback HTTP and offline installed public SDK. No publication/deployment/remote writes."
     }
   ],
   "tasks": [
@@ -15719,7 +15786,10 @@
       "id": "S16",
       "records": [
         "pending-S16",
-        "production-dependency-boundaries-2026-10-12"
+        "production-dependency-boundaries-2026-10-12",
+        "advisory-scopes-original-red-2026-10-12",
+        "onvif-strict-xml-partial-2026-10-12",
+        "legacy-advisory-scopes-partial-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -16661,7 +16731,9 @@
       "id": "A14",
       "records": [
         "pending-A14",
-        "onvif-snapshot-2026-10-08"
+        "onvif-snapshot-2026-10-08",
+        "advisory-scopes-original-red-2026-10-12",
+        "onvif-strict-xml-partial-2026-10-12"
       ],
       "dependencies": [
         "M01",
@@ -18040,7 +18112,9 @@
         "pending-Q10",
         "seven-package-sdk-content-audit-2026-10-07",
         "telemetry-sdk-exact-local-gates-2026-10-07",
-        "production-dependency-boundaries-2026-10-12"
+        "production-dependency-boundaries-2026-10-12",
+        "onvif-strict-xml-partial-2026-10-12",
+        "legacy-advisory-scopes-partial-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [

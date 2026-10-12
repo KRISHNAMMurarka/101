@@ -1,5 +1,5 @@
 {
-  "$comment": "Tooling reviews name the dependency path, input boundary, reachable code and expiry. Records with advisoryIds cover only those identifiers and reject unlisted findings. The four existing records without identifiers retain legacy package-wide scope and require individual advisory assessment under S16. See docs/privacy-security.md.",
+  "$comment": "Every build-tooling review names the exact advisory identifiers, dependency path, current caller/input boundary and expiry. Missing, malformed or additional identifiers fail the production gate. Patched runtime dependencies do not qualify for tooling exceptions. See docs/privacy-security.md.",
   "reviewed": [
     {
       "package": "image-size",
@@ -7,12 +7,16 @@
       "severity": "high",
       "path": "@101/controller-native > expo > @expo/metro > metro > image-size",
       "surface": "build-tooling",
-      "justification": "Metro measures image assets while bundling the native app on a developer machine. It never runs on a player device and is not part of the web runtime or the shipped iOS/Android bundle. The parser only sees asset files committed to this repository, so there is no untrusted input path.",
+      "justification": "Metro Assets.getAssetData/getAssetSize reads image bytes from developer-selected workspace files while bundling. Both affected format detectors are installed, and filenames/extensions are not a safety guard. The supported source/configuration belongs to the developer already executing the build; no supported lower-trust image upload writes these source assets. This code is build tooling, outside the player bundle. The review covers only the two named advisories and this current input boundary.",
       "vulnerableCodePathReachable": true,
-      "fixAvailable": false,
-      "fixNotes": "Every published image-size version is in the vulnerable range, so no upgrade resolves this. npm proposes downgrading expo 57 to 53, a semver-major downgrade that would break the verified native Link build. Re-check for a patched image-size release at the review date.",
-      "reviewed": "2026-08-13",
-      "reviewBy": "2026-11-13"
+      "fixAvailable": true,
+      "fixNotes": "Upstream2.0.3 patches both advisories. Vinext now selects that compatible2.x patch through a scoped override. Metro still requires1.2.1 through ^1.0.2 and calls its default function/path-capable API; globally overriding to2.x changes that contract. No compatible1.x patch is listed. Retain this named Metro review until its caller/dependency updates; do not downgrade Expo57.",
+      "reviewed": "2026-10-12",
+      "reviewBy": "2026-11-12",
+      "advisoryIds": [
+        "GHSA-5p2g-fcmc-qvqq",
+        "GHSA-w3rx-r6r6-pgpr"
+      ]
     },
     {
       "package": "uuid",
@@ -20,38 +24,15 @@
       "severity": "moderate",
       "path": "@101/controller-native > expo > @expo/config-plugins > xcode > uuid",
       "surface": "build-tooling",
-      "justification": "The xcode package rewrites Xcode project files during iOS prebuild on a developer machine. It calls only uuid.v4(); the advisory concerns v3/v5/v6 called with an explicit buf argument, so the vulnerable code path is not reached.",
+      "justification": "The installed xcode pbxProject.generateUuid calls uuid.v4() with no buffer while rewriting a developer project. GHSA-w5hq-g745-h8pq concerns v3/v5/v6 with an explicit output buffer; none of those functions is called by this observed path. This tooling does not ship in the player bundle. The review covers the named advisory and current caller only.",
       "vulnerableCodePathReachable": false,
       "fixAvailable": true,
       "fixNotes": "Patched in uuid >= 11.1.1, but the fix lives inside a transitive dependency of Expo's own tooling. Forcing an override into xcode's internals risks breaking iOS project generation for an unreachable code path. Adopt it when Expo updates xcode upstream.",
-      "reviewed": "2026-08-13",
-      "reviewBy": "2026-11-13"
-    },
-    {
-      "package": "@xmldom/xmldom",
-      "advisory": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
-      "severity": "moderate",
-      "path": "@101/controller-native > expo > @expo/cli > @expo/plist > @xmldom/xmldom, and @101/controller-native > expo > @expo/cli > @expo/config-plugins > xcode > simple-plist > plist > @xmldom/xmldom",
-      "surface": "build-tooling",
-      "justification": "Both paths are Expo prebuild tooling that runs on a developer machine: @expo/plist and simple-plist read and rewrite Info.plist and entitlements while generating the iOS project. Neither ships in the web runtime or in the built iOS/Android bundle. The only XML they serialize is this repository's own generated app configuration, so no attacker-controlled document reaches the vulnerable path.",
-      "vulnerableCodePathReachable": false,
-      "fixAvailable": true,
-      "fixNotes": "Patched above 0.9.11, but both copies are pinned inside Expo's own CLI dependency tree. Forcing an override into plist generation risks breaking iOS prebuild for a path that only ever sees our own files. Adopt when Expo updates @expo/plist and xcode upstream.",
-      "reviewed": "2026-08-16",
-      "reviewBy": "2026-11-16"
-    },
-    {
-      "package": "fast-uri",
-      "advisory": "fast-uri host confusion and SSRF via IDN canonicalization, IPv6 normalization and percent-decoding",
-      "severity": "high",
-      "path": "@101/controller-native > expo > @expo/cli > @expo/router-server > react-server-dom-webpack > webpack > schema-utils > ajv-formats > ajv > fast-uri",
-      "surface": "build-tooling",
-      "justification": "ajv uses fast-uri to resolve $ref URIs while validating webpack loader and plugin option schemas during bundling on a developer machine. The URIs it parses come from webpack's own schema files, not from the network or from user input, and none of this runs on a player device or in the shipped bundle. The SSRF and host-confusion classes require attacker-controlled URIs, which this path does not have.",
-      "vulnerableCodePathReachable": false,
-      "fixAvailable": true,
-      "fixNotes": "Patched above 3.1.5. It sits four levels inside Expo's router-server tooling; an override would pin a transitive dependency of webpack's schema validator. Adopt when ajv or webpack updates upstream, and re-check at the review date.",
-      "reviewed": "2026-08-16",
-      "reviewBy": "2026-11-16"
+      "reviewed": "2026-10-12",
+      "reviewBy": "2026-11-12",
+      "advisoryIds": [
+        "GHSA-w5hq-g745-h8pq"
+      ]
     },
     {
       "package": "braces",

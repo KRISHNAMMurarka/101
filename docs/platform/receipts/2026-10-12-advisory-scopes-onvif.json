@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "localOnly": true,
+  "base": "d020905a4ef4ecae97d9516d3d0b7f27ca3011d7",
+  "result": "partial-software-validation",
+  "sourceSha256": {
+    "package.json": "d854923dee3980560e636162f95a2cf56feacc3b955adc8791276865f76e3b0c",
+    "package-lock.json": "fd511d524aaa1a7f93a7d7bbf1105d435ebdc367ea6cd36ecab0b6a53d2205ff",
+    "THIRD_PARTY_LICENSES.json": "0afa8f191a60d61d8e43480e816e221974a57ac438ad430e89f1f9c4af75fff7",
+    "packages/hub-server/package.json": "5b2b33f466abcd184a25d4ffacf8d9bacf5e559eb5b444ec29d09fda1669f35b",
+    "packages/hub-server/src/onvif-snapshot-gateway.ts": "6c46ad487b13923305e93ae91bfed47218b2c2e1f1815e6026eb394bcdf88d3e",
+    "packages/hub-server/src/onvif-snapshot-gateway.test.ts": "99d1706c8b23957fec76d79e8cbe47fdb2560a21097f682dad543f206cfbd163",
+    "tools/qa-installed-onvif-snapshot.mjs": "8774c19b907fd045591e960da789d04e4e27b8d56ac5facb17b52adef4161be3",
+    "tools/audit-production.mjs": "b61e6c849a4b2933f210072a04bd1fae0636b234c6922f98e64a64b6cad33105",
+    "tools/production-advisory-policy.mjs": "f6600203c41cac0172166c936e9a1b5fb8bd9283de3f28f72e782c6b29911b0f",
+    "tests/production-advisory-review.test.ts": "7a2588e43448993577fe8a1bf92450430c7d72e7ed51c733e2a46d370507bf1e",
+    "security/build-tooling-advisories.json": "7e74262d604b62f246ca3f18ecdbd8eccc8e1db13f2d4a28f4cc5b588b00c1e4"
+  },
+  "staticTriage": {
+    "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/focused",
+    "input": "2026-10-12-legacy-review-inputs.json",
+    "triage": "2026-10-12-legacy-review-triage.json",
+    "evidence": "2026-10-12-legacy-review-static-evidence.json",
+    "inputs": 28,
+    "confirmed": 1,
+    "needsReview": 4,
+    "notActionable": 23,
+    "duplicatesAndRangesPreserved": true,
+    "method": "Static inline assessment before edits/dynamic validation. Not an exhaustive repository security scan."
+  },
+  "protocolBoundary": {
+    "publicEntries": [
+      "@101/hub-server",
+      "@101/hub-server/onvif-snapshot-gateway"
+    ],
+    "input": "Response bytes from one explicitly approved loopback software camera",
+    "invariant": "Selected XML1.0 SOAP response must retain strict syntax/characters and exact supported structure before an epoch becomes ready.",
+    "strategy": "Own gateway selects0.9.12 with supported onError API. Explicit XML1.0 character/spacing and newline handling retain source distinctions; decoded namespace references must remain legal XML characters. The one known U+FFFD warning is permitted only after fatal UTF-8 decoding establishes literal valid bytes. Every other diagnostic aborts parsing.",
+    "unchangedControls": [
+      "16384 SOAP bytes",
+      "eight attempts",
+      "one raw operation",
+      "5000ms operation ceiling",
+      "exact loopback URI",
+      "independent camera/media grants",
+      "fresh resource authority",
+      "Stop/revoke/expiry joins"
+    ],
+    "scope": "Protocol admission integrity only. No broader SSRF, arbitrary URL, exfiltration, remote/physical camera or denial-of-service impact claim."
+  },
+  "dependencySelection": {
+    "hubServerXmldom": "0.8.14 to0.9.12 after actual0.8.15 patch left U+2029 residue admitted",
+    "expoPlistXmldom": "0.8.14 to0.8.15",
+    "plistXmldom": "0.9.11 to0.9.12 scoped compatible patch",
+    "fastUri": "3.1.5 to3.1.8 compatible override",
+    "vinextImageSize": "2.0.2 to2.0.3 scoped compatible patch",
+    "metroImageSize": "1.2.1 retained; named current-path review. Its default-function/filesystem API prevents an unchecked global2.x override."
+  },
+  "regressions": {
+    "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/focused",
+    "originalOnvif": {
+      "log": "onvif-original-red.log",
+      "tests": 6,
+      "passed": 1,
+      "failed": 5,
+      "actualParentExitCode": 1
+    },
+    "insufficient08Patch": {
+      "log": "onvif-focused-green.log",
+      "tests": 22,
+      "passed": 21,
+      "failed": 1,
+      "actualParentExitCode": 1,
+      "note": "Filename is not a success claim; U+2029 residue still admitted."
+    },
+    "independentReviewCases": {
+      "log": "review-all-variants-red.log",
+      "tests": 9,
+      "passed": 0,
+      "failed": 9,
+      "actualParentExitCode": 1
+    },
+    "additionalOriginalReferenceForms": {
+      "log": "original-extra-red.log",
+      "tests": 3,
+      "passed": 1,
+      "failed": 2,
+      "receipt": "original-extra-receipt.json",
+      "note": "Authentic old candidate source; literal NUL comment already denied. Both numeric namespace references admitted. Parent expectation of three failures was wrong and is retained separately."
+    },
+    "currentOnvif": {
+      "log": "onvif-corrected-focused.log",
+      "tests": 34,
+      "passed": 34,
+      "failed": 0,
+      "actualParentExitCode": 0
+    },
+    "originalAdvisoryMatching": {
+      "log": "advisory-scopes-original-red.log",
+      "tests": 3,
+      "passed": 1,
+      "failed": 2,
+      "actualParentExitCode": 1
+    },
+    "currentAdvisoryMatching": {
+      "log": "advisory-final-focused.log",
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "actualParentExitCode": 0
+    },
+    "fixture": "Unaltered committed npm audit bytes for braces3.0.2; original old gate accepted both real advisories with no identifier list. No fabricated advisory or parser/native result.",
+    "cleanup": "All actual test children and HTTP fixtures joined; temporary original runtime/test copies removed after byte retention.",
+    "failedExactGate": {
+      "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/gates-failed-control-regex",
+      "candidateTree": "28764081a6c31a8eb43b9a89efdf8cb2b6234479",
+      "result": "lint failed on explicit character escapes in the XML Char regex; equivalent standard escapes used, no rule suppression or weaker character policy. All prior successful stages retained; final all8gates still required."
+    }
+  },
+  "independentReview": {
+    "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/independent-review",
+    "candidateTree": "e0d6ebd5ba9403c3997eaa280264cf6696521a95",
+    "cycles": 1,
+    "confirmedFindings": 2,
+    "postReviewCandidateRequiresFinalGates": true
+  },
+  "toolingCompatibility": {
+    "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/focused",
+    "source": "tooling-compatibility.mjs.source",
+    "log": "tooling-compatibility-final.log",
+    "actualCallerChecks": 5,
+    "nativeTypes": {
+      "log": "native-types.log",
+      "exitCode": 0
+    },
+    "nativeUnit": {
+      "log": "native-unit.log",
+      "exitCode": 0,
+      "tests": 33,
+      "passed": 33
+    },
+    "initialQaAssumption": "Initial tooling check expected ordinary Expo plist objects. Actual producer returns null-prototype dictionaries; source and failed output retained, assertion corrected to the documented/observed producer shape. No product change or native outcome replacement."
+  },
+  "productionReviews": {
+    "remainingPackages": [
+      "braces",
+      "image-size",
+      "node-forge",
+      "uuid"
+    ],
+    "remainingNamedIds": [
+      "GHSA-vfj7-8cjw-p6xm",
+      "GHSA-5p2g-fcmc-qvqq",
+      "GHSA-w3rx-r6r6-pgpr",
+      "GHSA-86w9-cpqp-85rv",
+      "GHSA-w5hq-g745-h8pq"
+    ],
+    "packageWideExceptions": 0,
+    "removedPatchedReviews": [
+      "@xmldom/xmldom",
+      "fast-uri"
+    ],
+    "observedGate": {
+      "log": "production-scopes.log",
+      "exitCode": 0,
+      "advisoryEntries": 24,
+      "rootPackages": 4,
+      "propagatedEntries": 20,
+      "toolingExceptions": 4
+    },
+    "gateRule": "Every record requires a nonempty unique valid GHSA list. Missing/unlisted/unidentified advisories fail. Current source-backed tooling exceptions are reviews, not fixes."
+  },
+  "installedCaller": {
+    "ref": "refs/codex/evidence/2026-10-12-advisory-review-scopes/installed-proof-final",
+    "sdkSourceTree": "e0d6ebd5ba9403c3997eaa280264cf6696521a95",
+    "publicSdkPackages": 7,
+    "sdkSourceInputs": 186,
+    "installedPackedFiles": 411,
+    "parserVersion": "0.9.12",
+    "parserFiles": 15,
+    "gatewaySourceSha256": "6c46ad487b13923305e93ae91bfed47218b2c2e1f1815e6026eb394bcdf88d3e",
+    "sourcePins": 7,
+    "actualChecks": {
+      "deniedControlNoWire": true,
+      "deniedMediaNoGet": true,
+      "deniedPublicRouteNoCapture": true,
+      "actualSdkRoute": true,
+      "stableUriChangingJpeg": true,
+      "separateMediaGrantPerGet": true,
+      "deniedResourceReadNoChunks": true,
+      "approvedVerifiedBlobRead": true,
+      "corruptResourceRejected": true,
+      "revokedResourceReadRejected": true,
+      "blobReferenceWithJpegMetadata": true,
+      "StopJoinedSocket": true,
+      "physicalSource": "unverified"
+    },
+    "scope": "Node-only offline installed public SDK grants beside separately compiled/pinned current hub-server gateway and copied exact parser. The seven-package SDK does not contain hub-server or xmldom. Final binding must authenticate186unchanged selected SDK inputs and all current caller inputs; no browser/native-install/physical or root-dependency packaging acceptance."
+  },
+  "legalInventory": {
+    "lockedPackages": 1084,
+    "missingPackages": 116,
+    "packagesWithoutText": 60,
+    "distinctTexts": 387,
+    "textBytes": 803714,
+    "complete": false,
+    "rustGapsUnchanged": 40
+  },
+  "remainingUncertainty": [
+    "Original parser cost at actual16384-byte/eight-attempt bounds was not dynamically calibrated; upstream patches do not retroactively establish the original impact.",
+    "Remote/authenticated camera, playback, PTZ, firmware and physical camera qualification remain open.",
+    "Source-map lower-trust input provenance and wider independent security/incident/update procedures remain open under S16.",
+    "Whole Q10/browser/native clean install and declared Node floor qualification remain open.",
+    "Historical pasteboard timeout cause UNKNOWN and old clearing UNVERIFIED remain unchanged."
+  ],
+  "exactCandidateAcceptance": {
+    "candidateRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/final-candidate",
+    "gateRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/final-gates",
+    "reviewRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/independent-review",
+    "bindingRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/final-binding",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/acceptance",
+    "requirements": [
+      "All8 required checks on the frozen final candidate, ordinary Node profile and a fresh build before rendered tests.",
+      "Read actual final gate/binding/acceptance outputs for issued results; this partial receipt alone does not authorize integration or close A14/S16/Q10."
+    ]
+  },
+  "counts": {
+    "tasks": 272,
+    "complete": 123,
+    "open": 149,
+    "supportRows": 69,
+    "acceptedRows": 0
+  },
+  "publicationDeploymentRemoteWrites": false
+}

@@ -8,8 +8,8 @@
 //
 // So: every root package must either be absent, or have a current review in
 // security/build-tooling-advisories.json with a dependency path, a justification and an expiry.
-// Anything unreviewed fails. Any review past its date fails. Records with advisoryIds
-// reject unlisted advisories. Legacy package-wide reviews remain visible below.
+// Anything unreviewed fails. Any review past its date fails. Every record must name
+// its advisory identifiers; new findings on the same package require a new review.
 
 import { execFile } from "node:child_process";
 import { readFile } from "node:fs/promises";
@@ -48,7 +48,7 @@ for (const { entry, record } of accepted) {
   console.log(`  ACCEPTED  ${entry.severity.padEnd(8)} ${entry.name}`);
   console.log(`            ${record.path}`);
   console.log(`            ${record.surface} · vulnerable path reachable: ${record.vulnerableCodePathReachable} · review by ${record.reviewBy}`);
-  console.log(`            review scope: ${record.advisoryIds?.join(", ") ?? "legacy package-wide review; individual advisory assessment remains pending"}`);
+  console.log(`            review scope: ${record.advisoryIds.join(", ")}`);
 }
 
 for (const entry of unreviewed) {
@@ -106,9 +106,9 @@ async function readReviewed() {
       if (typeof record[field] !== "string" || !record[field]) throw new Error(`Allowlist entry ${record.package ?? "?"} is missing ${field}`);
     }
     if (record.surface !== "build-tooling") throw new Error(`Only build-tooling advisories may be accepted; ${record.package} claims ${record.surface}`);
-    if (record.advisoryIds !== undefined && (!Array.isArray(record.advisoryIds) || !record.advisoryIds.length ||
+    if (!Array.isArray(record.advisoryIds) || !record.advisoryIds.length ||
       record.advisoryIds.some(id => typeof id !== "string" || !/^GHSA-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}$/.test(id)) ||
-      new Set(record.advisoryIds).size !== record.advisoryIds.length)) throw new Error(`Allowlist entry ${record.package} has invalid advisoryIds`);
+      new Set(record.advisoryIds).size !== record.advisoryIds.length) throw new Error(`Allowlist entry ${record.package} has invalid advisoryIds`);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(record.reviewBy)) throw new Error(`Allowlist entry ${record.package} has an invalid reviewBy date`);
     records.set(record.package, record);
   }

@@ -132,6 +132,80 @@ test('invalid UTF-8 hidden in an otherwise permitted SOAP comment is rejected', 
   finally { await value.close(); }
 });
 
+for (const suffix of ['\njunk', '\rjunk', '\u2028junk', '\u2029junk', ' junk']) {
+  test(`malformed final SOAP end tag ${JSON.stringify(suffix)} cannot admit a camera session`, async () => {
+    const value = await fixture((_request, response, uri) => {
+      const malformed = soap(uri).replace('</s:Envelope>', `</s:Envelope${suffix}>`);
+      assert.ok(Buffer.byteLength(malformed) < ONVIF_SNAPSHOT_LIMITS.soapBytes);
+      send(response, 'application/soap+xml', malformed);
+    });
+    try {
+      assert.deepEqual(await value.gateway.start({ purpose: 'selected-camera', deadline: performance.now() + 1000 }),
+        { ok: false, reason: 'protocol', issued: true });
+      assert.deepEqual(value.seen.map(item => item.method), ['POST']);
+      assert.equal(value.gateway.status().rawPending, 0);
+      assert.equal(value.gateway.status().phase, 'idle');
+    } finally { await value.close(); }
+  });
+}
+
+test('ordinary XML whitespace on the final SOAP end tag preserves selected camera admission', async () => {
+  for (const suffix of [' ', '\t', '\n', '\r\n']) {
+    const value = await fixture((_request, response, uri) =>
+      send(response, 'application/soap+xml', soap(uri).replace('</s:Envelope>', `<!-- permitted </s:Envelope\u2029junk> comment --></s:Envelope${suffix}>`)));
+    try {
+      const result = await value.gateway.start({ purpose: 'selected-camera', deadline: performance.now() + 1000 });
+      assert.ok(result.ok);
+      assert.deepEqual(value.seen.map(item => item.method), ['POST']);
+      assert.equal(value.gateway.status().phase, 'ready');
+      assert.equal(value.gateway.status().rawPending, 0);
+    } finally { await value.close(); }
+  }
+});
+
+for (const [kind, characters] of [['end', ['\u0085', '\u2028', '\u2029']], ['start', ['\u0000', '\u000b', '\u000c', '\u001f', '\u0080']]] as const) {
+  for (const char of characters) {
+    test(`XML 1.0 syntax rejects ${JSON.stringify(char)} as ${kind} tag spacing`, async () => {
+      const mutate = (uri: string) => kind === 'end' ? soap(uri).replace('</s:Envelope>', `</s:Envelope${char}>`) :
+        soap(uri).replace('<s:Body>', `<s:Body${char}>`);
+      const value = await fixture((_request, response, uri) => send(response, 'application/soap+xml', mutate(uri)));
+      try {
+        assert.deepEqual(await value.gateway.start({ purpose: 'selected-camera', deadline: performance.now() + 1000 }),
+          { ok: false, reason: 'protocol', issued: true });
+        assert.deepEqual(value.seen.map(item => item.method), ['POST']);
+        assert.equal(value.gateway.status().phase, 'idle'); assert.equal(value.gateway.status().rawPending, 0);
+      } finally { await value.close(); }
+    });
+  }
+}
+
+for (const [label, mutate] of [
+  ['literal comment', (uri: string) => soap(uri).replace('<s:Body>', '<!--\u0000--><s:Body>')],
+  ['decimal reference', (uri: string) => soap(uri).replace('<s:Envelope ', '<s:Envelope xmlns:unused="&#0;" ')],
+  ['hexadecimal reference', (uri: string) => soap(uri).replace('<s:Envelope ', '<s:Envelope xmlns:unused="&#xFFFE;" ')],
+] as const) {
+  test(`XML 1.0 character validation rejects forbidden ${label}`, async () => {
+    const value = await fixture((_request, response, uri) => send(response, 'application/soap+xml', mutate(uri)));
+    try {
+      assert.deepEqual(await value.gateway.start({ purpose: 'selected-camera', deadline: performance.now() + 1000 }),
+        { ok: false, reason: 'protocol', issued: true });
+      assert.deepEqual(value.seen.map(item => item.method), ['POST']);
+      assert.equal(value.gateway.status().phase, 'idle'); assert.equal(value.gateway.status().rawPending, 0);
+    } finally { await value.close(); }
+  });
+}
+
+test('valid UTF-8 Unicode comments preserve selected camera admission', async () => {
+  const value = await fixture((_request, response, uri) => send(response, 'application/soap+xml',
+    soap(uri).replace('<s:Body>', '<!--\u0080\u0085\u2028\u2029\ufffd literal &#0; --><s:Body>')
+      .replaceAll('<s:', '<\u03c0:').replaceAll('</s:', '</\u03c0:').replace('xmlns:s=', 'xmlns:\u03c0=')));
+  try {
+    assert.ok((await value.gateway.start({ purpose: 'selected-camera', deadline: performance.now() + 1000 })).ok);
+    assert.deepEqual(value.seen.map(item => item.method), ['POST']);
+    assert.equal(value.gateway.status().phase, 'ready'); assert.equal(value.gateway.status().rawPending, 0);
+  } finally { await value.close(); }
+});
+
 test('closed SOAP parsing rejects DTD, duplicate fields, wrong namespaces, changed URI, and extensions', async () => {
   const mutations = [(uri: string) => `<!DOCTYPE x [<!ENTITY e "x">]>${soap(uri)}`,
     (uri: string) => soap(uri).replace('</trt:MediaUri>', '<tt:Uri>'+uri+'</tt:Uri></trt:MediaUri>'),

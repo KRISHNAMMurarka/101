@@ -3,7 +3,7 @@
  * authentication, or firmware operations. */
 import { request as httpRequest, type ClientRequest } from 'node:http';
 import { createAssetReference, type AssetReference } from '@101/device-model';
-import { DOMParser } from '@xmldom/xmldom';
+import { DOMParser, type Node, type Element, type ProcessingInstruction } from '@xmldom/xmldom';
 
 export const ONVIF_SNAPSHOT_LIMITS = Object.freeze({ attempts: 8, captures: 16, rawOperations: 1,
   soapBytes: 16384, snapshotBytes: 1048576, headerBytes: 8192, operationMs: 5000, sessionMs: 60000 });
@@ -80,7 +80,7 @@ function elementChildren(node: Node): Element[] {
   const output: Element[] = [];
   for (let child = node.firstChild; child; child = child.nextSibling) {
     if (child.nodeType === 1) output.push(child as Element);
-    else if (child.nodeType === 3 && child.nodeValue?.trim()) throw new Error('unexpected text');
+    else if (child.nodeType === 3 && !/^[ \t\r\n]*$/.test(child.nodeValue ?? '')) throw new Error('unexpected text');
     else if (![3, 8].includes(child.nodeType)) throw new Error('unexpected XML node');
   }
   return output;
@@ -102,22 +102,56 @@ function leaf(parent: Node, namespace: string, localName: string): string {
   }
   return value;
 }
+const invalidXmlCharacter = /[^\t\n\r\u0020-\ud7ff\ue000-\ufffd\u{10000}-\u{10ffff}]/u;
+function validateXmlCharacters(source: string): void {
+  if (invalidXmlCharacter.test(source)) throw new Error('invalid XML character');
+  // The selected parser treats U+0080 as start-tag spacing. Preserve that legal
+  // character in comments, CDATA and quoted values, but never let it disappear
+  // from an unquoted tag. This linear scan does not parse or rewrite the XML.
+  let index = 0;
+  while ((index = source.indexOf('<', index)) !== -1) {
+    const end = source.startsWith('<!--', index) ? '-->' : source.startsWith('<![CDATA[', index) ? ']]>' : undefined;
+    if (end) {
+      const closing = source.indexOf(end, index + 4);
+      if (closing === -1) throw new Error('malformed XML');
+      index = closing + end.length; continue;
+    }
+    let quote = '';
+    for (index++; index < source.length; index++) {
+      const char = source[index];
+      if (quote) { if (char === quote) quote = ''; }
+      else if (char === '"' || char === "'") quote = char;
+      else if (char === '\u0080') throw new Error('invalid XML spacing');
+      else if (char === '>') { index++; break; }
+    }
+  }
+}
 function parseSnapshotUri(bytes: Buffer, expected: string): string {
   let source: string;
   try { source = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
   catch { throw new Error('invalid UTF-8'); }
   if (/<!DOCTYPE|<!ENTITY/i.test(source)) throw new Error('DTD forbidden');
-  let parserFault: unknown;
-  const document = new DOMParser({ errorHandler: { warning(message) { parserFault = message; }, error(message) { parserFault = message; },
-    fatalError(message) { parserFault = message; } } }).parseFromString(source, 'application/xml');
-  if (parserFault || document.doctype || !document.documentElement) throw new Error('malformed XML');
+  validateXmlCharacters(source);
+  const document = new DOMParser({
+    normalizeLineEndings: value => value.replace(/\r\n?/g, '\n'),
+    onError(level, message) {
+      // A literal U+FFFD is legal XML. Fatal UTF-8 decoding above establishes
+      // that this exact parser warning cannot denote a decoder replacement.
+      if (level === 'warning' && message === 'Unicode replacement character detected, source encoding issues?') return;
+      throw new Error('malformed XML');
+    },
+  }).parseFromString(source, 'application/xml');
+  if (document.doctype || !document.documentElement) throw new Error('malformed XML');
   for (let child = document.firstChild; child; child = child.nextSibling)
     if (![1, 7, 8].includes(child.nodeType) || child.nodeType === 7 && (child as ProcessingInstruction).target !== 'xml')
       throw new Error('unexpected document node');
   const envelope = document.documentElement;
   if (envelope.namespaceURI !== SOAP || envelope.localName !== 'Envelope' || envelope.attributes.length > 8) throw new Error('SOAP Envelope');
-  for (let index = 0; index < envelope.attributes.length; index++)
-    if (envelope.attributes.item(index)?.namespaceURI !== 'http://www.w3.org/2000/xmlns/') throw new Error('SOAP Envelope attribute');
+  for (let index = 0; index < envelope.attributes.length; index++) {
+    const attribute = envelope.attributes.item(index);
+    if (attribute?.namespaceURI !== 'http://www.w3.org/2000/xmlns/' || invalidXmlCharacter.test(attribute.value))
+      throw new Error('SOAP Envelope attribute');
+  }
   const body = exactly(envelope, SOAP, 'Body');
   const response = exactly(body, MEDIA, 'GetSnapshotUriResponse');
   const mediaUri = exactly(response, MEDIA, 'MediaUri');
