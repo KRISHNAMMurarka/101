@@ -517,6 +517,12 @@ permits public issues for non-sensitive hardening ideas and ordinary bugs.
 The whole L02 deliverable remains open pending the verified reporting path and
 review against the exact accepted release artifacts and support scope.
 
+The [maintainer incident and update procedures](SECURITY-MAINTENANCE.md) define
+local triage, containment, fix validation, rollback preparation and scoped closure.
+The active integration controller has owner-authorized local triage and fix
+approval; the private contact, live support and distribution prerequisites remain
+unconfigured.
+
 
 ## Bind a remote provider
 

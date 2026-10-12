@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "result": "pass-scoped-local-procedure-definition",
+  "tasks": [
+    "S16",
+    "L02",
+    "L04",
+    "L05"
+  ],
+  "sourceBase": {
+    "head": "a8aab7423a634b0a73e2d626067f9111360d3242",
+    "tree": "c4745a50643a3b75bd5d7b43097743b5c0afd7de"
+  },
+  "sourceSha256": {
+    "docs/platform/SECURITY-MAINTENANCE.md": "85acccc9e813b14984d6a658ef6873c0348ffbcd112ced08ab698a6d9cc40686",
+    "SECURITY.md": "5cc3c20794f13eb5b42e3a8324cd11d50865716228914a86165708fc5e6c7830",
+    "docs/platform/SDK.md": "00f4aef61029ce58ddfb606ceaa575c5462144e26eedce67d4b9ef42289d72e0",
+    "docs/platform/RELEASE-CONTRACT.md": "7640412f605cecc04be38c900e9a91eee91f01d83aaec40ff03fdbbecf0120c9",
+    "docs/platform/MASTER-CHECKLIST.md": "0d0c47b53e8d3613d4c974ac577b68fd7159911a7db077d2b42479fbc3708ea5"
+  },
+  "definitionReview": {
+    "draftSteps": 8,
+    "existingLocalLinks": 551,
+    "method": "Author review against the inherited eight-step draft and local policies; existing file targets checked. No independent security scan or runtime execution claimed.",
+    "evidenceRef": "refs/codex/evidence/2026-10-12-security-procedure/acceptance",
+    "path": "definition-review-final.json"
+  },
+  "historicalOperatorEvidence": {
+    "path": "docs/platform/receipts/2026-10-06-watch-operator-drills.json",
+    "sha256": "d877b06527234f9728f3c849b0deb2b3af2e5dc7c9922ebb5001711c43193381",
+    "currentExecution": false
+  },
+  "openAssignments": {
+    "privateReportingContact": null,
+    "staffedLiveResponseCoverage": null,
+    "updateChannelOwner": null,
+    "supportedReleaseWindow": null,
+    "liveActionAuthorization": null
+  },
+  "questionAlreadyPending": "Private contact and operator/device prerequisites remain unanswered; local triage/fix approval question answered.",
+  "scope": "Maintainer procedure definition for private intake, scoped triage/containment, faithful repair validation, affected qualification reopening, versioned update and rollback preparation, authorized distribution and scoped closure. Local triage/fix approval authorized; no live contact, staffed response coverage, supported release window, current drill/security-scan result or distribution.",
+  "levels": [
+    "contract"
+  ],
+  "runtimeChanged": false,
+  "freshDrillsExecuted": false,
+  "communicationsSent": false,
+  "publicationOrDeployment": false,
+  "noNewService": true,
+  "requiredGateEvidence": {
+    "ref": "refs/codex/evidence/2026-10-12-security-procedure/acceptance",
+    "path": "gates/results.json",
+    "binding": "Issued exact candidate gates and local commit binding are retained in acceptance evidence; this definition alone is not integration authorization."
+  },
+  "taskDisposition": {
+    "S16": "open: local procedure and selected original/current parser costs defined; remaining input provenance and wider independent security/resource-cost validation unresolved",
+    "L02": "open: private reporting destination, staffed response/support window and final artifact/support reference acceptance unresolved",
+    "L04": "open: actual channel ownership/accounts/signing/service requirements unresolved",
+    "L05": "open: concrete accepted artifact/destination/live-action approval unresolved"
+  },
+  "supportAcceptance": {
+    "rows": 69,
+    "accepted": 0,
+    "changed": false
+  },
+  "tally": {
+    "total": 272,
+    "complete": 123,
+    "open": 149
+  },
+  "regression": "Documentation definition only; no implementation bug repair or old-red claim.",
+  "localOwnerRoles": {
+    "triageOwner": "active101integrationcontroller",
+    "fixApprover": "active101integrationcontroller",
+    "authority": "Explicit human authorization12October2026",
+    "scope": "Existing local repository scope only; no further local triage/fix approval question needed"
+  }
+}

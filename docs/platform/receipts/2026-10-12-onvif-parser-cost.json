@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "result": "pass-selected-cost-measurements; wider qualification open",
+  "tasks": [
+    "S16",
+    "A14",
+    "Q10"
+  ],
+  "levels": [
+    "runtime"
+  ],
+  "localOnly": true,
+  "sourceCallerOnly": true,
+  "sourceIdentities": {
+    "base": "a8aab7423a634b0a73e2d626067f9111360d3242",
+    "oldParserPackage": {
+      "version": "0.8.14",
+      "resolved": "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.14.tgz",
+      "integrity": "sha512-T4EDRUBVZYRldYApjEJiU0e1stYWaRAX7CuSnKzrpwdZKo53zGV8/pqfzV6FfwNl9YThD2OumQYvqtvjvgG7aQ=="
+    },
+    "tarballSha256": "33a066d773a23ff840252462be9e7d488d91e1931be299df1c052fc8dffbfaae",
+    "retainedParserFilesMatched": 5,
+    "oldGatewaySha256": "ceb594c6107807641ee640792cff401a06eb002cbd15dcdeb18a764b22a3be88",
+    "oldGatewayMatchesCommittedAndRetained": true,
+    "deviceModelUnchangedFromOriginal": true,
+    "currentGatewaySha256": "6c46ad487b13923305e93ae91bfed47218b2c2e1f1815e6026eb394bcdf88d3e",
+    "oldPackageFiles": {
+      "CHANGELOG.md": "3b7ef252d66436f363c5beeeb0d09f86d5bc4ff18dfab624b8ce0d5a31bd4790",
+      "LICENSE": "4da724fc305d81606b245b324d4d2586916b9d248b23d82183df753ace0fdf71",
+      "SECURITY.md": "cc9b93b10a08a7b9396a2c615973b18af541b63f6ba8fe37bb954ce3de6f98f4",
+      "index.d.ts": "70136a94076aa14a7665b91ffe86d38fe931033891bb188a2106d9b61ec8625f",
+      "lib/.eslintrc.yml": "70c75c46006491756923a455fc4b6b4aae4ac514eb5fcc0e837eb5137a80b93e",
+      "lib/conventions.js": "9ceee011f51db3a4581029a7dce1e9bf1fa5c37ad928b63c3625dda9a907fd55",
+      "lib/dom-parser.js": "03915c54c4bf44cfee38807af253abaabb022c27652918e8a233fae2d92fe1d2",
+      "lib/dom.js": "582c570b64d51edf2ce4e88e5dc20bcce3579d0357c80ebacefc676edf9b880b",
+      "lib/entities.js": "332cda4081c610fdadc0266867ee5ed9f945c99d471ea7234ec61ba00cbf0e40",
+      "lib/index.js": "9deb4e9d6d730a51c1c2b05238f8684d01e87f72b9861ba2adcad537ffc56586",
+      "lib/sax.js": "b887f6178ab8bfe07279e33c99ba3b31a9b0cc26eb154b107630f0b818fd074f",
+      "package.json": "e71fcabd7a3bd3010abc4371f6f795b7ce807c45f66be5b18f9bc1a82cf3ae53",
+      "readme.md": "c7f099b9bc1e997f97aaab31e5039bfd7bc747eddff85b256675d05f2e1ef178"
+    },
+    "currentPackageFiles": {
+      "CHANGELOG.md": "5138fc1f8c15712ed7ede448a53f06fad0c15f1f94b57b4cb74ccfe694329c5a",
+      "LICENSE": "4da724fc305d81606b245b324d4d2586916b9d248b23d82183df753ace0fdf71",
+      "SECURITY.md": "a17b482b11a4f3ff0aa20bad116c49472c5ba9417223adf915eb739d194aceea",
+      "index.d.ts": "342163401aa45f329d6b07a70d878ec9d1dfbf1630ee389ac242309178833baf",
+      "lib/.eslintrc.yml": "8962d52a0bb86f17e764dfaf160d265eaa969ed3d67da747b59c1df6eb4833c2",
+      "lib/conventions.js": "da57fbe2b07f5a4aaee9217b49778936c11a1108da1761b2f24f356a900ff124",
+      "lib/dom-parser.js": "4188e24b953e2c70b66150306c66547495ad968d040e31dd65f22a7b3485da28",
+      "lib/dom.js": "bea9ba89adfec227e9e572ee934a48223a170c5cf96b7087d7e3d3023ac47be3",
+      "lib/entities.js": "ef333b680379392e8ee120e1cc77e0a8ff99a135e3b365b048f69c0df5f571f9",
+      "lib/errors.js": "3e97f9c4f0a189346e2621b29c7c5a3899cd7375d1d15cbfbddd044fb781cb9f",
+      "lib/grammar.js": "144f27b46adfb4a139adeb7483820def568b3940a6893194c03f5a71a94babc0",
+      "lib/index.js": "418c42598a45290498f4350b6b6f531ceeb25e8d4d9a107db2448a1c0b5b784e",
+      "lib/sax.js": "324e8a0c7b475c645efcd1736b634733e133150849bff741fa0e2215e7017d02",
+      "package.json": "b61c2dd342e0e1abb800302ec62c0b06ae7a07cd9b907c88428ff80100f64c6a",
+      "readme.md": "5ee9af83f442f300bf14d6ba8a79a6708f4f721a68ce79ce6fb701bc9ccd2de7"
+    }
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "nodePath": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.5.2\nBuildVersion:\t\t25F84",
+    "architecture": "arm64",
+    "ordinaryProfile": true
+  },
+  "corpus": {
+    "sizesBytes": [
+      4096,
+      8192,
+      16384
+    ],
+    "families": [
+      "valid exact SOAP response with legal comment padding",
+      "distinct attributes",
+      "unique namespace per nested element",
+      "end-tag whitespace followed by non-whitespace",
+      "malformed repeated less-than recovery"
+    ],
+    "groups": 30,
+    "actualStarts": 240,
+    "attemptsPerGateway": 8,
+    "negativePayloadPairsByteIdentical": 12,
+    "expectedOutcomes": "Valid controls become ready; invalid families return issued protocol failure; ninth attempt returns quota without a request. All gateway/server cleanup and child joins observed."
+  },
+  "maximumPayloadMetrics": [
+    {
+      "name": "original-valid-16384",
+      "units": 0,
+      "maxStartMs": 34.78258299999999,
+      "sumStartMs": 73.71833200000003,
+      "maxRSSKiB": 114896
+    },
+    {
+      "name": "original-attributes-16384",
+      "units": 1749,
+      "maxStartMs": 61.50204200000002,
+      "sumStartMs": 259.918876,
+      "maxRSSKiB": 114688
+    },
+    {
+      "name": "original-namespaces-16384",
+      "units": 592,
+      "maxStartMs": 365.1954579999999,
+      "sumStartMs": 1395.565291,
+      "maxRSSKiB": 196640
+    },
+    {
+      "name": "original-end-tag-16384",
+      "units": 16377,
+      "maxStartMs": 524.025834,
+      "sumStartMs": 3279.3897089999996,
+      "maxRSSKiB": 113680
+    },
+    {
+      "name": "original-recovery-16384",
+      "units": 16376,
+      "maxStartMs": 4313.027375,
+      "sumStartMs": 25870.665334000005,
+      "maxRSSKiB": 144336
+    },
+    {
+      "name": "current-valid-16384",
+      "units": 0,
+      "maxStartMs": 13.577249999999992,
+      "sumStartMs": 23.814707000000027,
+      "maxRSSKiB": 115872
+    },
+    {
+      "name": "current-attributes-16384",
+      "units": 1749,
+      "maxStartMs": 15.70795799999999,
+      "sumStartMs": 39.31566699999999,
+      "maxRSSKiB": 119872
+    },
+    {
+      "name": "current-namespaces-16384",
+      "units": 592,
+      "maxStartMs": 26.379000000000005,
+      "sumStartMs": 104.08841800000006,
+      "maxRSSKiB": 133872
+    },
+    {
+      "name": "current-end-tag-16384",
+      "units": 16377,
+      "maxStartMs": 14.617207999999977,
+      "sumStartMs": 28.968208999999973,
+      "maxRSSKiB": 118128
+    },
+    {
+      "name": "current-recovery-16384",
+      "units": 16376,
+      "maxStartMs": 11.452207999999999,
+      "sumStartMs": 20.98704200000006,
+      "maxRSSKiB": 120000
+    }
+  ],
+  "costSemantics": {
+    "startWallMs": "Actual approved loopback HTTP request, parser and protocol validation; not isolated parse time",
+    "cpuMs": "Per-start process user/system CPU deltas retained in raw case receipts",
+    "maxRSSKiB": "Whole child lifetime high-water RSS in kibibytes (1024 bytes), including imports/HTTP/parser; not parser-only allocation or an enforced memory limit",
+    "sampling": "All eight lifetime attempts retained, including first cold attempt; no discarded warm-up or gate retry",
+    "originalMaximumObservedStartMs": 4313.027375,
+    "currentMaximumObservedStartMs": 26.896333
+  },
+  "boundsUnchanged": {
+    "soapBytes": 16384,
+    "attempts": 8,
+    "rawOperations": 1,
+    "operationMs": 5000,
+    "sessionMs": 60000
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-12-security-procedure/parser-calibration",
+    "inputs": "inputs.json",
+    "results": "results.json",
+    "joined": "joined.json",
+    "caller": "caller.mjs.source",
+    "runner": "run.py",
+    "rawCases": "records/; each stdout/stderr/json preserved; source paths and SHA256 pins retained in custody manifest"
+  },
+  "primarySources": [
+    "https://github.com/xmldom/xmldom/security/advisories/GHSA-x4fp-j954-r2f4",
+    "https://github.com/xmldom/xmldom/security/advisories/GHSA-8344-3jmq-59r6",
+    "https://github.com/xmldom/xmldom/security/advisories/GHSA-965w-775f-mr7g",
+    "https://github.com/xmldom/xmldom/security/advisories/GHSA-93r5-fhx6-vmg9",
+    "https://nodejs.org/docs/latest-v24.x/api/process.html#processresourceusage"
+  ],
+  "limits": [
+    "Finite known advisory-shaped corpus on this Mac/Node24.14.0 only; no exhaustive worst-case or total-process memory bound",
+    "Old0.8.14 gateway/parser bytes match committed source, historical lockfile SHA512 and five retained parser files; unchanged source device-model dependency verified",
+    "Current0.9.12 gateway uses existing repaired bytes; no fresh installed SDK/hub-server consumer, browser, remote/authenticated camera or physical claim",
+    "All invalid inputs are rejected in both selected implementations; cost measurement is not a new admission regression or code repair",
+    "Original4.31s observed start and25.87s eight-attempt recovery total do not establish an unauthenticated Internet threat; the actual path requires approved selected loopback camera authority",
+    "No independent scan/review cycle restarted; prior accepted strict-XML/advisory repairs retained",
+    "S16/A14/Q10 and support/release acceptance remain open; historical native prerequisite failures remain UNKNOWN/UNVERIFIED"
+  ],
+  "communicationsPublicationDeployment": false,
+  "cleanup": {
+    "ownedArchiveAndRestoredParserRemovedAfterVerifiedCustody": true,
+    "currentInstalledParserPreserved": true,
+    "allChildrenAndListenersJoined": true,
+    "vmUsed": false
+  },
+  "requiredGateEvidence": {
+    "ref": "refs/codex/evidence/2026-10-12-security-procedure/acceptance",
+    "path": "gates/results.json",
+    "binding": "Exact final candidate and local commit are bound by issued acceptance evidence."
+  }
+}

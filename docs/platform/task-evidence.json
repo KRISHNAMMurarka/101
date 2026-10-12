@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 222,
+  "revision": 223,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14864,6 +14864,52 @@
       "environment": "Actual macOS26.5.2 build25F84 arm64; official SHA256-pinned Node22.13.0 and bundled npm10.9.2; TypeScript5.9.3; builder Node24.14.0.",
       "reproduction": "Fresh immutable79a48255seven-package SDK and actual external offline consumer under exact Node22.13.0 pass seven producer check groups: closed412-file graph/411payload files, strict NodeNext/Bundler types, generated standalone device project, packed JavaScript and external processor. All 186 source inputs, seven tarballs and all 411 payload files match previously observed Node24.14.0 artifacts byte-for-byte; prior execution is bound rather than rerun or relabeled. First full gate retained one native IPC startup prerequisite failure; cause UNKNOWN and clearing UNVERIFIED. A diagnostic-only assertion change records future native startup outcomes without widening limits. A second full gate exposed a premature Matter test observation window; an authentic delayed-ready old-red/current-green regression confirms the phase repair while producer, consumer and grants remain unchanged.",
       "scope": "Selected current Node22.13.0 minimum on this Mac only. Browser execution explicitly deferred; no physical WebRTC, other OS/runtime, native/hub-server distribution, broader Q07/Q10 or support-row/release promotion. Exact final gates/binding/acceptance are issued separately at the scoped receipt refs."
+    },
+    {
+      "id": "security-maintenance-procedure-local-2026-10-12",
+      "historical": false,
+      "result": "pass",
+      "revision": "bf550f086196456da00f618521c12030c868b1789a79d437a76ed2453169d38c",
+      "levels": [
+        "contract"
+      ],
+      "tasks": [
+        "S16",
+        "L02",
+        "L04",
+        "L05"
+      ],
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "docs/platform/SECURITY-MAINTENANCE.md",
+        "docs/platform/receipts/2026-10-12-security-maintenance.json"
+      ],
+      "environment": "Local repository procedure definition on macOS; no fresh runtime, physical or independent security execution.",
+      "reproduction": "Review the eight-step inherited draft against repository policy, containment/settlement/data floors and exact historical O07 limits; check existing local links, ledger and unchanged task/support disposition. Exact candidate gates/binding retained at scoped evidence ref.",
+      "scope": "Maintainer procedure definition for private intake, scoped triage/containment, faithful repair validation, affected qualification reopening, versioned update and rollback preparation, authorized distribution and scoped closure. Local triage/fix approval authorized; no live contact, staffed response coverage, supported release window, current drill/security-scan result or distribution."
+    },
+    {
+      "id": "onvif-parser-cost-selected-2026-10-12",
+      "historical": false,
+      "result": "pass",
+      "revision": "d7a2439c424c2f6ee07140b78b36c5a483ce450d9c8027801b78961149e7b03b",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "S16",
+        "A14",
+        "Q10"
+      ],
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "docs/platform/receipts/2026-10-12-onvif-parser-cost.json"
+      ],
+      "environment": "Actual macOS26.5.2 build25F84 arm64; ordinary Node24.14.0, old0.8.14/current0.9.12 source gateway callers, owned loopback only.",
+      "reproduction": "Thirty isolated original/current groups, five families at4/8/16KiB, all8gateway attempts retained plus ninth quota;240actualstarts. Historical package SHA512 and retained source pins match. All invalid cases return protocol and legal controls remain ready; actual Stop/close/listeners and children join. Raw wall/CPU/whole-child-RSS measurements preserved.",
+      "scope": "Selected finite original/current parser cost calibration only: old recovery16KiB maximum4.313s per start/25.871s eight starts; current selected maximum26.896ms. No exhaustive worst-case, enforced memory bound, installed distribution, security scan, physical, remote or full task/support/release acceptance."
     }
   ],
   "tasks": [
@@ -15814,7 +15860,9 @@
         "production-dependency-boundaries-2026-10-12",
         "advisory-scopes-original-red-2026-10-12",
         "onvif-strict-xml-partial-2026-10-12",
-        "legacy-advisory-scopes-partial-2026-10-12"
+        "legacy-advisory-scopes-partial-2026-10-12",
+        "security-maintenance-procedure-local-2026-10-12",
+        "onvif-parser-cost-selected-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -16758,7 +16806,8 @@
         "pending-A14",
         "onvif-snapshot-2026-10-08",
         "advisory-scopes-original-red-2026-10-12",
-        "onvif-strict-xml-partial-2026-10-12"
+        "onvif-strict-xml-partial-2026-10-12",
+        "onvif-parser-cost-selected-2026-10-12"
       ],
       "dependencies": [
         "M01",
@@ -18141,7 +18190,8 @@
         "production-dependency-boundaries-2026-10-12",
         "onvif-strict-xml-partial-2026-10-12",
         "legacy-advisory-scopes-partial-2026-10-12",
-        "node-22-13-current-sdk-floor-2026-10-12"
+        "node-22-13-current-sdk-floor-2026-10-12",
+        "onvif-parser-cost-selected-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18780,7 +18830,8 @@
       "records": [
         "pending-L02",
         "sdk-distributions-2026-10-02",
-        "public-reference-built-partial-2026-10-07"
+        "public-reference-built-partial-2026-10-07",
+        "security-maintenance-procedure-local-2026-10-12"
       ],
       "dependencies": [
         "K01",
@@ -18816,7 +18867,8 @@
     {
       "id": "L04",
       "records": [
-        "pending-L04"
+        "pending-L04",
+        "security-maintenance-procedure-local-2026-10-12"
       ],
       "dependencies": [
         "K01",
@@ -18829,7 +18881,8 @@
     {
       "id": "L05",
       "records": [
-        "pending-L05"
+        "pending-L05",
+        "security-maintenance-procedure-local-2026-10-12"
       ],
       "dependencies": [
         "K01",
