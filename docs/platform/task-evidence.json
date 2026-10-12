@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 221,
+  "revision": 222,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14839,6 +14839,31 @@
         "docs/platform/receipts/2026-10-12-advisory-scopes-onvif.json"
       ],
       "environment": "Actual local macOS26.5.2 arm64, Node24.14.0; genuine loopback HTTP and offline installed public SDK. No publication/deployment/remote writes."
+    },
+    {
+      "id": "node-22-13-current-sdk-floor-2026-10-12",
+      "historical": false,
+      "result": "pass",
+      "revision": "5c79f8e198fd2456ea6660aaa6be218f9f44747f2306c7d0f5f97b087b2f2dfc",
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K02"
+      ],
+      "equipment": [],
+      "failure": null,
+      "paths": [
+        "docs/platform/receipts/2026-10-12-node-floor.json",
+        "tools/qa-sdk-consumer.mjs",
+        "tools/build-sdk.mjs"
+      ],
+      "environment": "Actual macOS26.5.2 build25F84 arm64; official SHA256-pinned Node22.13.0 and bundled npm10.9.2; TypeScript5.9.3; builder Node24.14.0.",
+      "reproduction": "Fresh immutable79a48255seven-package SDK and actual external offline consumer under exact Node22.13.0 pass seven producer check groups: closed412-file graph/411payload files, strict NodeNext/Bundler types, generated standalone device project, packed JavaScript and external processor. All 186 source inputs, seven tarballs and all 411 payload files match previously observed Node24.14.0 artifacts byte-for-byte; prior execution is bound rather than rerun or relabeled. First full gate retained one native IPC startup prerequisite failure; cause UNKNOWN and clearing UNVERIFIED. A diagnostic-only assertion change records future native startup outcomes without widening limits. A second full gate exposed a premature Matter test observation window; an authentic delayed-ready old-red/current-green regression confirms the phase repair while producer, consumer and grants remain unchanged.",
+      "scope": "Selected current Node22.13.0 minimum on this Mac only. Browser execution explicitly deferred; no physical WebRTC, other OS/runtime, native/hub-server distribution, broader Q07/Q10 or support-row/release promotion. Exact final gates/binding/acceptance are issued separately at the scoped receipt refs."
     }
   ],
   "tasks": [
@@ -18076,7 +18101,8 @@
         "inventory-quota-safari-ui-2026-10-11",
         "inventory-active-safari-unqualified-2026-10-11",
         "inventory-navigation-wait-old-2026-10-11",
-        "inventory-navigation-wait-repaired-2026-10-11"
+        "inventory-navigation-wait-repaired-2026-10-11",
+        "node-22-13-current-sdk-floor-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18114,7 +18140,8 @@
         "telemetry-sdk-exact-local-gates-2026-10-07",
         "production-dependency-boundaries-2026-10-12",
         "onvif-strict-xml-partial-2026-10-12",
-        "legacy-advisory-scopes-partial-2026-10-12"
+        "legacy-advisory-scopes-partial-2026-10-12",
+        "node-22-13-current-sdk-floor-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18463,7 +18490,8 @@
         "keyboard-text-2026-10-05",
         "touch-contacts-2026-10-05",
         "surface-gestures-2026-10-05",
-        "input-details-2026-10-05"
+        "input-details-2026-10-05",
+        "node-22-13-current-sdk-floor-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [

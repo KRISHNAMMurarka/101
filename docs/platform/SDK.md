@@ -465,7 +465,7 @@ invitation possession and encrypted transport replace none of them. See
 ### Interpret support and versions
 
 The canonical matrix is [support-catalog.json](support-catalog.json), schema
-version 1, currently revision 30 with 65 rows and zero accepted rows. A row is a
+version 1. Its current revision, rows and acceptance fields are authoritative. A row is a
 release claim only when `status: 'qualified'` and `accepted: true`, with its exact
 target and required current evidence. Implementation, contract, runtime and
 physical evidence are independent. `embedded`, `candidate` and `historical`
@@ -473,8 +473,9 @@ describe their recorded scopes; an unknown target inherits no evidence.
 
 [Current local SDK evidence](receipts/2026-10-07-sdk-content-audit.json) identifies
 the concrete unpublished artifact and separately bounded consumer checks. A
-successful local tarball build or example does not accept a support row. Node
-22.13 is the declared engine floor; its qualification remains open. Use the
+successful local tarball build or example does not accept a support row. The
+[current seven-package offline Node consumer passes on Node22.13.0](receipts/2026-10-12-node-floor.json),
+the declared minimum, on this Mac. Other operating systems and wider qualification remain open. Use the
 actual runtime/compiler versions in the selected receipt for tested claims.
 Phone, hardware, native OS input and broader platform acceptance remain separate.
 The [compatibility policy](RELEASE-CONTRACT.md#public-names-and-compatibility)
@@ -2340,8 +2341,9 @@ passing one concrete manifest path. [Distribution QA](SDK-DISTRIBUTION-QA-2026-1
 records strict external types, installed bytes, module identity and browser
 runtime checks. Public facade declarations include browser APIs; TypeScript
 consumers, including Node consumers, need `ES2022`, `DOM` and `DOM.Iterable` in
-their configured libraries. Node 24.14.0 and TypeScript 5.9.3 are verified here; the declared
-Node 22.13 minimum, other compiler/OS toolchains and physical WebRTC are unverified.
+their configured libraries. Node 24.14.0 and TypeScript 5.9.3 are verified here;
+[current Node-only consumers also pass on exact Node22.13.0](receipts/2026-10-12-node-floor.json)
+with TypeScript5.9.3 on this Mac. Other compiler/OS toolchains and physical WebRTC remain unverified.
 These are local dry runs of the current API, with no registry publication.
 Selected Swift/Kotlin/C pointer codecs are built separately below. Full native runtime
 bindings and future API/platform qualification remain open.

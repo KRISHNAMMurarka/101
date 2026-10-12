@@ -118,7 +118,10 @@ if (api) {
   test('read callback abort and observer cancellation fence actual native dispatch', async () => {
     const registration = signal(); const h = setup({ authorizeRead(request) { registration.abort(); return { request, signal: signal().signal, expiresAt: performance.now() + 1000 }; },
       authorizeRegistration(request) { return { request, signal: registration.signal, expiresAt: performance.now() + 9000 }; } });
-    try { const start = await h.controller.start({ purpose: 'rss', version: 1 }); assert.ok(start.ok);
+    const startupEnteredAt = performance.now();
+    try { const start = await h.controller.start({ purpose: 'rss', version: 1 });
+      assert.ok(start.ok, JSON.stringify({ operation: 'start-before-read-abort', result: start,
+        elapsedMs: performance.now() - startupEnteredAt, limits: SCOPED_AGENT_IPC_LIMITS, status: h.controller.status() }));
       assert.equal((await h.controller.readRss(start.value, delivery())).ok, false); assert.equal(h.controller.status().reads, 0);
     } finally { await h.controller.close(); }
     const second = setup({ onAgent() { void second.controller.close(); } });

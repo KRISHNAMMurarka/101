@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "localOnly": true,
+  "base": "79a4825583396259d75682fa4840d0c6cd2afbf0",
+  "result": "partial-runtime-floor-qualification",
+  "scope": "Current compiled seven-package public SDK Node-only consumers on macOS26.5.2 build25F84 arm64. No hub-server distribution, browser/native/physical or whole Q07/Q10 acceptance.",
+  "runtime": {
+    "version": "v22.13.0",
+    "npm": "10.9.2",
+    "typescript": "Version 5.9.3",
+    "platform": "darwin",
+    "arch": "arm64",
+    "hostKernel": "25.5.0",
+    "archiveUrl": "https://nodejs.org/download/release/v22.13.0/node-v22.13.0-darwin-arm64.tar.gz",
+    "manifestUrl": "https://nodejs.org/download/release/v22.13.0/SHASUMS256.txt",
+    "archiveSha256": "bc1e374e7393e2f4b20e5bbc157d02e9b1fb2c634b2f992136b38fb8ca2023b7",
+    "archiveBytes": 48561209,
+    "nodeSha256": "5c79f8e198fd2456ea6660aaa6be218f9f44747f2306c7d0f5f97b087b2f2dfc",
+    "manifestSha256": "7f2804d692de8ecc72c048c1758d97b681bab776a7981fe5af29f5def1ffb499",
+    "signatureVerification": "SHA256 matched official published manifest read independently over HTTPS; no PGP signature verification claim",
+    "persistentInstall": false
+  },
+  "sdk": {
+    "sourceRevision": "79a4825583396259d75682fa4840d0c6cd2afbf0",
+    "sourceTree": "cd9ae2f9a841c395952cb2e8590f1e755d87cc60",
+    "selectedInputs": 186,
+    "packages": 7,
+    "payloadFiles": 411,
+    "totalNodeModulesFiles": 412,
+    "topLevelPackageLockFiles": 1,
+    "workspaceAliases": 0,
+    "symlinks": 0,
+    "sourceLinks": false,
+    "registryUsedByConsumer": false,
+    "builderNode": "24.14.0",
+    "executionNode": "22.13.0"
+  },
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 7,
+      "files": 412,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass",
+      "source": [
+        {
+          "path": "packages/devkit/src/device-scaffold.ts",
+          "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+        },
+        {
+          "path": "tools/create-device-project.mjs",
+          "sha256": "6114f38a652ad87b4434f0941bc6841f9a8c5f33ef4fe32009a62a59c3cfa332"
+        }
+      ],
+      "project": "/tmp/101-sdk-consumer-bsLaxa/generated-device-project",
+      "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+      "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "guidance": {
+        "schema": "device-guidance.schema.json",
+        "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+        "generatedAssets": [
+          {
+            "path": "device-guidance.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+          },
+          {
+            "path": "device-guidance.schema.json",
+            "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+          },
+          {
+            "path": "src/devices.json",
+            "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+          },
+          {
+            "path": "src/recipe.json",
+            "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+          },
+          {
+            "path": "scripts/validate.mjs",
+            "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+          }
+        ],
+        "validation": {
+          "status": "pass",
+          "recipeId": "room-sensor:temperature-display",
+          "processorId": "room-sensor:threshold",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+        },
+        "rejectedAssets": [
+          "unknown-recipe-field",
+          "changed-processor-source",
+          "incompatible-selected-device"
+        ],
+        "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+      },
+      "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "issuedStoragePromiseReservation": true,
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true,
+      "ordinaryTelemetryOwnerExport": true
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass",
+      "package": "@example/temperature-band-processor",
+      "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+      "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "operations": [
+        "subscribe",
+        "invoke"
+      ]
+    }
+  ],
+  "browserExecution": "deferred by --node-only",
+  "processResults": [
+    {
+      "name": "sdk-build",
+      "command": [
+        "node",
+        "tools/build-sdk.mjs",
+        "79a4825583396259d75682fa4840d0c6cd2afbf0"
+      ],
+      "exitCode": 0,
+      "nativeWaitReturned": true,
+      "elapsedSeconds": 18.772127290721983,
+      "logSha256": "849aad8340f4ea0dc6bf49bc17d25fa3f030fb7c1b23967342fdb6d34ad2aa67",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "floor-consumer",
+      "command": [
+        "/Users/km/Dev/101/outputs/batches/2026-10-12-node-floor/runtime/node-v22.13.0-darwin-arm64/bin/node",
+        "tools/qa-sdk-consumer.mjs",
+        "/Users/km/Dev/101/release/sdk-NE5TkE/manifest.json",
+        "--node-only"
+      ],
+      "exitCode": 0,
+      "nativeWaitReturned": true,
+      "elapsedSeconds": 40.41676541697234,
+      "logSha256": "b0ba6ef786c56604bfbe1285f75cd42e9b61acd4d05e47cfacc3e56ea1d96ab6",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "priorNode24Binding": {
+    "currentSourceRevision": "79a4825583396259d75682fa4840d0c6cd2afbf0",
+    "priorSdkProofRef": "refs/codex/evidence/2026-10-12-advisory-review-scopes/installed-proof-final",
+    "priorExecution": "Actual Node24.14.0 offline SDK consumer, retained unaltered commands/receipt bytes",
+    "selectedSourceInputsIdentical": 186,
+    "decodedFileCountIdentical": 411,
+    "tarballs": [
+      {
+        "name": "@101/device-model",
+        "sha256": "10573b5ab7abc0c4ae292d0ea22be3ea7bf531c100115e12b07cf9248d24ecf5",
+        "files": 76
+      },
+      {
+        "name": "@101/device-runtime",
+        "sha256": "2e4338d5afdc2c065ff54da9dbfe6675a92cc40f3b8ed7257196d85c6c1b7dbe",
+        "files": 91
+      },
+      {
+        "name": "@101/transport-webrtc",
+        "sha256": "d8a3954f4c208372473636b7b8409d32ad7758a95c9e48ebae4568406c884bcd",
+        "files": 9
+      },
+      {
+        "name": "@101/transport-websocket",
+        "sha256": "9e6fa01511490c338276ae4e402e5c007f3ca5189428e23472f97ff8d61057ec",
+        "files": 9
+      },
+      {
+        "name": "@101/device-web",
+        "sha256": "ee2fcc7dac62fca1c2d9d63bf8aa05c5f4964d4e23a4444d1ea66c379db4e70c",
+        "files": 69
+      },
+      {
+        "name": "@101/vision",
+        "sha256": "71ee8eb3f9305a42132b8f4cee5a8b90ea4193737f99ae8646ccbf87aca6f4a0",
+        "files": 19
+      },
+      {
+        "name": "@101/connect",
+        "sha256": "592e583de0e5a69de8c2f38caa2513f9c8e3a14f3ad0c812f883f48a9eefdc94",
+        "files": 138
+      }
+    ],
+    "scope": "Previously observed24.14.0 and newly observed22.13.0 execute identical seven-package bytes. No fresh24.14.0 consumer claim."
+  },
+  "evidence": {
+    "runtimeAndOutcomeRef": "refs/codex/evidence/2026-10-12-node-floor/focused",
+    "installedProofRef": "refs/codex/evidence/2026-10-12-node-floor/installed-proof",
+    "bindingsRef": "refs/codex/evidence/2026-10-12-node-floor/final-binding",
+    "candidateRef": "refs/codex/evidence/2026-10-12-node-floor/final-candidate",
+    "gateRef": "refs/codex/evidence/2026-10-12-node-floor/final-gates",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-node-floor/acceptance"
+  },
+  "acceptanceRequirements": [
+    "All8required repository gates must use the frozen final candidate and ordinary Node24.14.0 profile, with a fresh build before rendered tests.",
+    "Final binding authenticates current selected source inputs and executed consumer/packed payloads; this partial receipt does not issue whole task or release acceptance."
+  ],
+  "remaining": [
+    "Other operating systems and compiler/runtime combinations",
+    "Browser/native source, keyboard and permission/recovery journeys",
+    "Physical WebRTC and heterogeneous devices",
+    "Application/gateway distributions and broader clean install/upgrade/rollback",
+    "Whole Q07/Q10 and accepted support matrix"
+  ],
+  "counts": {
+    "tasks": 272,
+    "complete": 123,
+    "open": 149,
+    "supportRows": 69,
+    "acceptedRows": 0
+  },
+  "publicationDeploymentRemoteWrites": false,
+  "gateFailureHistory": {
+    "failedCandidate": "46eaf08c06e5f4cca795f6129c079e050a23b393",
+    "evidenceRef": "refs/codex/evidence/2026-10-12-node-floor/gates-failed-startup",
+    "unit": {
+      "tests": 3320,
+      "pass": 3319,
+      "fail": 1
+    },
+    "failure": "Native scoped-agent readiness prerequisite before the read-abort assertion failed; the original assertion omitted the returned reason.",
+    "cause": "UNKNOWN; elapsed time alone does not establish the readiness failure cause.",
+    "diagnosticChange": "Retain unchanged native implementation, grants, limits and whole unit discovery. Add assertion context for the actual start result, elapsed time, limits and status.",
+    "focusedProbe": "Whole scoped-agent IPC file passed once in the ordinary profile after the diagnostic-only change. This does not establish that the original failure cause was fixed.",
+    "originalFailureClearing": "UNVERIFIED",
+    "secondFailedCandidate": {
+      "tree": "1600f95918e04ee5a756150ad70d3d8117acd8a3",
+      "evidenceRef": "refs/codex/evidence/2026-10-12-node-floor/gates-failed-matter-prerequisite",
+      "unit": {
+        "tests": 3320,
+        "pass": 3319,
+        "fail": 1
+      },
+      "failure": "Matter write-callback test condition timed out before any write trace; native caller was joined in finally.",
+      "confirmedTestContractMismatch": "The outer 2500ms write-observation window included producer readiness, although the producer response has its own existing 3000ms bound. An authentic ready frame delayed to2650ms reproduces the old test failure and passes after the observation window begins at authentic readiness.",
+      "repair": "The test races authentic producer readiness against caller settlement before starting its unchanged write-observation window. No producer/consumer implementation, native deadline, grant, discovery or unit-runner change.",
+      "controlledRegression": {
+        "oldExitCode": 1,
+        "currentExitCode": 0,
+        "testsEach": 1,
+        "fabricatedReply": false,
+        "delayedFirstAuthenticReadyFrameMs": 2650,
+        "producerResponseDeadlineMs": 3000
+      },
+      "hostStartupCostCause": "UNKNOWN; a later host-load snapshot is not a causal trace."
+    }
+  }
+}
