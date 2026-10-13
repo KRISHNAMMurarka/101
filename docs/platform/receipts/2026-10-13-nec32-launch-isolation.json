@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "25 selected NEC checks pass after fixed fixture environment isolation; exact final integration pending",
+  "tasks": [
+    "Q05"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "e12afb474e0207007e5bc0c5887a59536386ab77",
+  "sourceTree": "ca2a064c43991638cc0ca89b190c98e97903d20e",
+  "sourceSha256": {
+    "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "1b78ef0cb24ecf8b74efe35b89e7bc0ef9981b4a400d720096c4ee23088f6c11",
+    "tests/nec32-harness-cleanup.test.ts": "361da0cb4fbe7182edc3fd66f48d47887abb55501fd59b8810707ca3b5bf3917"
+  },
+  "repair": "Fixed software emitter fixture launches with explicit NODE_ENV production environment, excluding unrelated caller NODE_OPTIONS and runner-private NODE_TEST_CONTEXT; original program, stdio, protocol, actual-close join,100x5ms hello polls and400ms frame limits preserved",
+  "genuineOldRed": {
+    "tests": 2,
+    "pass": 0,
+    "fail": 2,
+    "scope": "Both actual positive-PID dispatches inherit runner context; controlled second dispatch also inherits caller NODE_OPTIONS. Actual failed body/native close already joined."
+  },
+  "selected": {
+    "tests": 25,
+    "pass": 25,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "originalRetiredGenerationMs": 441.676667
+  },
+  "regressionScope": "Actual positive-PID dispatch environment and failed-body cleanup. Controlled preload is set only in the nested real test worker; actual kernel spawn delegates unchanged, original body failure retained, genuine close held50ms and forwarded once, every observer/child joined. No fake producer, hello or frame. No general preload-execution or native timing guarantee.",
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "nativeLimitsChanged": false,
+  "productionProtocolChanged": false,
+  "fullIntegrationAcceptance": "PENDING",
+  "priorRejectedFull": {
+    "candidateTree": "d69b16a5f75eac2f00fa2279b504f845a45558cf",
+    "tests": 3358,
+    "pass": 3335,
+    "fail": 23,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "gatesGreen": 7,
+    "priorNine": {
+      "pass": 7,
+      "fail": 2
+    },
+    "scope": "Prior candidate under current conditions;10 failure files include original NEC hello and cross-host cancellation plus additional native prerequisites. New fixture source not yet full-qualified."
+  },
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/nec32-environment-focused",
+  "priorFullCustodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-loader-rejected-gates",
+  "scope": "PARTIAL Q05 fixed fixture launch configuration and genuine failed-body ownership. Historical readiness causes, exact whole-candidate gates, full lifecycle and physical/support qualification remain open.",
+  "supportRows": []
+}

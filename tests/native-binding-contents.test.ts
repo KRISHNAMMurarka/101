@@ -268,3 +268,15 @@ test('native binding content bounds explicit workspace roots without serializing
     assert.ok(!result.stdout.includes(f.root)); assert.ok(!result.stderr.includes(f.root));
   } finally { f.close(); }
 });
+for (const shape of ['missing', 'symlink-loop'] as const) {
+  test(`native binding content refuses a ${shape} workspace root without exposing it`, () => {
+    const f = fixture(), workspace = join(f.root, 'workspace');
+    try {
+      if (shape === 'symlink-loop') symlinkSync(workspace, workspace);
+      const result = f.run(['--workspace-root', workspace]);
+      assert.equal(result.status, 1); assert.equal(result.signal, null); assert.equal(result.error, undefined);
+      assert.equal(JSON.parse(result.stdout).reason, 'invalid-arguments');
+      assert.ok(!result.stdout.includes(f.root)); assert.ok(!result.stderr.includes(f.root));
+    } finally { f.close(); }
+  });
+}

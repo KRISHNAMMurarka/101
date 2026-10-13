@@ -139,7 +139,7 @@ function sourceClosure() {
 const dependencyBefore = installedDependencies(providers), sdkBefore = sdkFiles(), sourceBefore = sourceClosure();
 const sources = ['packages/hub-server/src/zigbee2mqtt-bridge.ts', 'packages/hub-server/src/zigbee2mqtt-bridge.test.ts',
   'examples/zigbee2mqtt-bridge/producer.mjs', 'examples/zigbee2mqtt-bridge/consumer.mjs',
-  'tools/qa-zigbee2mqtt-bridge.mjs', 'tools/qa-installed-zigbee2mqtt-bridge.mjs'];
+  'tools/qa-zigbee2mqtt-bridge.mjs', 'tools/qa-installed-zigbee2mqtt-bridge.mjs', 'tools/mqtt-broker-binary.mjs'];
 const sourceBytes = Object.fromEntries(sources.map(path => [path, readFileSync(join(root, path))]));
 const sourceSha256 = Object.fromEntries(sources.map(path => [path, digest(sourceBytes[path])]));
 for (const path of sources) assert.equal(sourceSha256[path], sourceBefore[join(root, path)]);
@@ -156,6 +156,8 @@ writeFileSync(producerPath, sourceBytes['examples/zigbee2mqtt-bridge/producer.mj
 assert.ok(!readFileSync(callerPath, 'utf8').includes('../../packages/'));
 const resolverPath = join(work, 'resolve.mjs'), runnerPath = join(work, 'run.mjs'), helperPath = join(work,'helper.mjs');
 writeFileSync(helperPath,sourceBytes['tools/qa-zigbee2mqtt-bridge.mjs']);
+const brokerHelperPath = join(work, 'mqtt-broker-binary.mjs');
+writeFileSync(brokerHelperPath, sourceBytes['tools/mqtt-broker-binary.mjs']);
 const brokerBinary=zigbeeBrokerBinary();
 writeFileSync(resolverPath, "export const entry=import.meta.resolve('@101/connect');export * from '@101/connect';\n");
 // The runner exits naturally: execFile resolves after child close, including stdio,
@@ -171,7 +173,7 @@ try { broker=await startOwnedZigbeeBroker();if(terminated)throw new Error('owned
 finally { await closeBroker();process.off('SIGTERM',terminate); }
 console.log(JSON.stringify({publicEntry:entry,broker:{version:broker.version,ownedPid:broker.pid,binaryPath:broker.binaryPath,binarySha256:broker.binarySha256,actualChildClose:true,naturalExitCode:broker.child.exitCode},result}));
 `);
-const artifactPaths = { ...copiedSourcePaths, providerPath, callerPath, producerPath, resolverPath, runnerPath, helperPath };
+const artifactPaths = { ...copiedSourcePaths, providerPath, callerPath, producerPath, resolverPath, runnerPath, helperPath, brokerHelperPath };
 const artifactSha256 = Object.fromEntries(Object.entries(artifactPaths).map(([name,path]) => [name,fileHash(path)]));
 for (const path of sources) assert.equal(artifactSha256[path], sourceSha256[path]);
 const fence=captureZigbeeAcceptance({artifactPaths,receiptPath,dependencyReceiptPath,readClosure:()=>({sdk:sdkFiles(),dependencies:installedDependencies(providers),source:sourceClosure()})});

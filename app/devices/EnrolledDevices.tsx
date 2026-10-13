@@ -8,11 +8,11 @@ import { REMEMBERED_DEVICE_LIMITS } from './remembered-devices';
 
 const empty: EnrolledDeviceSnapshot = Object.freeze({ state: 'idle', outcome: 'idle', rawPending: 0, timerArmed: false });
 const outcomeText: Record<string, string> = {
-  idle: 'Enroll a resource connection explicitly. Reported inputs are not already running.',
-  preparing: 'Preparing a connection code… You can cancel.', 'invitation-ready': 'Use this invitation in the resource device’s connector, then paste its complete offer here.',
-  'preparing-answer': 'Preparing the answer… You can cancel.', 'answer-ready': 'Use this answer on the resource device, then compare the complete connection code on both screens.',
+  idle: 'Pair a device to choose and preview its inputs. No input starts automatically.',
+  preparing: 'Preparing a connection code… You can cancel.', 'invitation-ready': 'Use this invitation with the other device’s compatible connector, then paste its complete reply here.',
+  'preparing-answer': 'Preparing the answer… You can cancel.', 'answer-ready': 'Use this pairing answer on the other device, then compare the complete connection code on both screens.',
   'confirmed-here': 'Confirmed here. Wait for the other screen to confirm.', 'device-enrolled': 'Device connected. Choose inputs before previewing them.',
-  cancelled: 'Cancelled. The current device is unchanged.', 'invalid-offer': 'This offer could not be used. Prepare a fresh invitation and use its complete matching offer. The current device is unchanged.',
+  cancelled: 'Cancelled. The current device is unchanged.', 'invalid-offer': 'This reply could not be used. Prepare a fresh invitation and use its complete matching reply. The current device is unchanged.',
   'identity-unavailable': 'Could not prepare the connection. Cancel, then retry.', 'connection-unavailable': 'Could not finish the connection. Prepare a fresh invitation and try again.',
   'setup-unavailable': 'The connection did not finish in time. Cancel, then retry after cleanup finishes.',
   'busy-or-unavailable': 'A connection task is still finishing or the attempt limit was reached. Wait for cleanup, or reload to start again.',
@@ -21,7 +21,7 @@ const outcomeText: Record<string, string> = {
   'preview-expired': 'Preview permission expired. Reconnect and approve again.', 'preview-unavailable': 'Input preview became unavailable. Reconnect to try again.',
   'preview-unsupported': 'This input cannot be previewed here. Choose another input or an application that supports it.',
   'connection-expired': 'This connection expired. Prepare a fresh invitation to reconnect.', 'connection-lost': 'This device stopped responding. Check the other screen, then prepare a fresh invitation.',
-  stopped: 'Connections stopped. Enroll again when you’re ready.', 'invalid-clock': 'This connection could not stay current. Reload, then enroll again.',
+  stopped: 'Connections stopped. Pair again when you’re ready.', 'invalid-clock': 'This connection could not stay current. Reload, then pair again.',
   'cleanup-unconfirmed': 'Access stopped here, but connection cleanup could not be confirmed. Reload before trying again.',
   closed: 'Connections closed.',
 };
@@ -31,7 +31,7 @@ const memoryText: Record<string, string> = {
   ready: 'Remembered devices are offline. Pair again and compare the complete codes before using any input.',
   working: 'Finishing the remembered-device change. You can cancel; issued work may still be finishing.',
   saved: 'Past device name remembered on this browser. No connection or preview permission was saved.',
-  forgotten: 'Remembered metadata removed. Any current connection is separate.', stopped: 'Remembered-device change stopped. Wait for issued work before trying again.',
+  forgotten: 'Remembered device name removed. Any current connection is separate.', stopped: 'Remembered-device change stopped. Wait for issued work before trying again.',
   unavailable: 'Browser storage is unavailable. Nothing was saved into a temporary replacement. Retry later or continue with a fresh temporary pairing.',
   quota: 'This browser could not keep another saved record. Existing data was left unchanged. Forget a remembered entry, then retry.',
   corrupt: 'Saved data could not be read safely. It was left unchanged. Continue with a fresh temporary pairing, or retry later.',
@@ -41,11 +41,11 @@ const memoryText: Record<string, string> = {
   invalid: 'This past device name could not be remembered safely. A fresh pairing can still be used temporarily.',
   closed: 'Remembered-device management closed.',
   reviewing: 'Review the exact past names and public pairing identifiers below. Confirm within 30 seconds, or cancel and review again.',
-  exported: 'Public metadata copy prepared. Keep it only if you want an offline record. It saves no connection or permission.',
+  exported: 'Copy of remembered names prepared. Keep it only if you want an offline record. It saves no connection or permission.',
   restored: 'Past names restored as offline records. Pair again and approve inputs separately before use.',
   'not-empty': 'Restore requires an empty remembered list. Existing data was left unchanged. Review and explicitly forget entries first if you want to start over.',
-  'invalid-backup': 'This text is not a supported public metadata copy. Use the complete version 1 copy with only past names and public pairing identifiers.',
-  expired: 'This review expired or could not stay current. Nothing was copied or restored. Review the metadata again.',
+  'invalid-backup': 'This text is not a supported copy of remembered names. Use a complete copy made by this page, containing only past names and public pairing identifiers.',
+  expired: 'This review expired or could not stay current. Nothing was copied or restored. Review the names again.',
 };
 
 /** Ephemeral resource task only; it never mutates the shared legacy room transport or a saved identity. */
@@ -135,40 +135,40 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
     if (review.action === 'import' || !completed) savedTitle.current?.focus();
   };
   return <article className="device-card devices-enrolled" aria-labelledby="devices-enrolled-title">
-    <div className="device-card-head"><div><h2 id="devices-enrolled-title">Enrolled resource connections</h2>
-      <p>Connect a resource device by comparing codes on both screens. Connections on this page last up to one minute.</p></div></div>
-    <p className="device-note">Enrollment checks the connection’s key, not its physical make or model. Inputs and names are reported by its connector. Nothing starts without a separate preview approval.</p>
+    <div className="device-card-head"><div><h2 id="devices-enrolled-title">Pair a device</h2>
+      <p>Connect a device by comparing codes on both screens. Connections on this page last up to one minute.</p></div></div>
+    <p className="device-note">Pairing checks the connection’s key, not its physical make or model. Inputs and names are reported by its connector. Nothing starts without a separate preview approval.</p>
     <div className="devices-flow-actions">
-      <button ref={add} className="outline-button devices-flow-button" disabled={!sessionId || snapshot.rawPending > 0 || snapshot.state === 'preparing'} onClick={() => void prepare()}>Enroll resource device</button>
-      {(current || pendingTask) && <button className="outline-button devices-flow-button" onClick={stopConnections}>Stop resource connections</button>}
+      <button ref={add} className="outline-button devices-flow-button" disabled={!sessionId || snapshot.rawPending > 0 || snapshot.state === 'preparing'} onClick={() => void prepare()}>Pair a device</button>
+      {(current || pendingTask) && <button className="outline-button devices-flow-button" onClick={stopConnections}>Stop device connections</button>}
     </div>
     <p className="devices-flow-status" role="status" aria-live="polite" data-enrollment-outcome={snapshot.outcome}>{status}</p>
     {pendingTask && <section className="devices-enrolled-task" aria-labelledby="devices-enrollment-task-title">
-      <div className="devices-flow-task-head"><h3 id="devices-enrollment-task-title" tabIndex={-1} ref={title}>Enroll a resource device</h3>
-        <button className="outline-button devices-flow-button" onClick={cancel}>Cancel enrollment</button></div>
-      <p>Keep both screens open. An invitation identifies this task and does not permit a resource operation. A new task leaves the current device running until you choose its replacement.</p>
+      <div className="devices-flow-task-head"><h3 id="devices-enrollment-task-title" tabIndex={-1} ref={title}>Pair a device</h3>
+        <button className="outline-button devices-flow-button" onClick={cancel}>Cancel pairing</button></div>
+      <p>Keep both screens open. An invitation identifies this pairing task. It does not approve access to any input. A new task leaves the current device running until you choose its replacement.</p>
       {snapshot.invitation && <>
-        <label className="devices-flow-link-label" htmlFor="devices-resource-invitation">Receiver invitation</label>
+        <label className="devices-flow-link-label" htmlFor="devices-resource-invitation">Pairing invitation</label>
         <textarea id="devices-resource-invitation" readOnly value={snapshot.invitation} onFocus={event => event.currentTarget.select()} />
-        <label className="devices-flow-link-label" htmlFor="devices-resource-offer">Complete resource offer</label>
+        <label className="devices-flow-link-label" htmlFor="devices-resource-offer">Complete device reply</label>
         <textarea id="devices-resource-offer" maxLength={65536} value={offer} onChange={event => setOffer(event.currentTarget.value)} />
-        <button className="outline-button devices-flow-button" disabled={!offer || snapshot.rawPending > 0} onClick={() => void controller.current?.acceptOffer(offer)}>Use resource offer</button>
+        <button className="outline-button devices-flow-button" disabled={!offer || snapshot.rawPending > 0} onClick={() => void controller.current?.acceptOffer(offer)}>Use device reply</button>
       </>}
-      {snapshot.answer && <><label className="devices-flow-link-label" htmlFor="devices-resource-answer">Receiver answer</label>
+      {snapshot.answer && <><label className="devices-flow-link-label" htmlFor="devices-resource-answer">Pairing answer</label>
         <textarea id="devices-resource-answer" readOnly value={snapshot.answer} onFocus={event => event.currentTarget.select()} /></>}
       {candidate?.comparison && <>
         <p>Compare every group on both screens. Confirm only if the complete codes match.</p>
-        <output aria-label="Complete resource connection code" className="devices-enrollment-digest">{candidate.comparison.match(/.{1,8}/g)?.join(' ')}</output>
+        <output aria-label="Complete connection code" className="devices-enrollment-digest">{candidate.comparison.match(/.{1,8}/g)?.join(' ')}</output>
         {candidate.phase === 'comparison' && <div className="devices-flow-actions">
           <button className="primary-button devices-flow-button" onClick={() => controller.current?.confirm(candidate.comparison!)}>The complete codes match</button>
           <button className="outline-button devices-flow-button" onClick={cancel}>Codes do not match</button>
         </div>}
       </>}
-      {candidate?.phase === 'connected' && <button className="primary-button devices-flow-button" onClick={() => controller.current?.activate()}>{current ? 'Replace current resource device' : 'Use enrolled resource device'}</button>}
+      {candidate?.phase === 'connected' && <button className="primary-button devices-flow-button" onClick={() => controller.current?.activate()}>{current ? 'Replace current device' : 'Use this device'}</button>}
     </section>}
     {current && <section className="devices-enrolled-task" aria-labelledby="devices-enrolled-inspect-title">
       <div className="devices-flow-task-head"><h3 id="devices-enrolled-inspect-title" tabIndex={-1} ref={inspectTitle}>Inspect {current.label}</h3>
-        <button ref={removeButton} className="outline-button devices-flow-button" onClick={() => setRemoving(current.handle)}>Remove resource device</button></div>
+        <button ref={removeButton} className="outline-button devices-flow-button" onClick={() => setRemoving(current.handle)}>Remove device</button></div>
       <p>Reported inputs. This connection does not give another application access or let this screen change the device.</p>
       <div className="devices-flow-actions"><button ref={rememberButton} className="outline-button devices-flow-button"
         disabled={!current.metadataReady || snapshot.rawPending > 0 || memoryPending} onClick={() => setRememberReview(current.handle)}>Remember this device in this browser</button></div>
@@ -185,7 +185,7 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
           const table = Object.hasOwn(current.readings, resource.id) ? current.readings[resource.id] : undefined, label = resource.reading?.label ?? resource.semantic;
           return <li key={resource.id}>
           <div className="devices-flow-resource-head"><h4>{label}</h4><span>{resource.previewable ? current.preview === 'receiving' && (Object.hasOwn(current.values, resource.id) || Object.hasOwn(current.readings, resource.id)) ? 'Input received' : 'Not approved or not receiving' : 'Unavailable for preview'}</span></div>
-          <p>Reported operations: {resource.permissions.map(value => operations[value] ?? value).join(', ')}{resource.unit ? ` · Unit: ${resource.unit}` : ''}</p>
+          <p>Reported actions: {resource.permissions.map(value => operations[value] ?? value).join(', ')}{resource.unit ? ` · Unit: ${resource.unit}` : ''}</p>
           {resource.reading && <><p>Preview includes every shown field. An omitted optional field is shown as Not supplied; a supplied switch is On or Off.</p>
             <ul style={{ overflowWrap: 'anywhere' }}>{resource.reading.columns.map(column => <li key={column.key}>{column.label}{column.unit && column.unit !== '1' ? ` (${column.unit})` : ''}{column.optional ? ' — optional' : ''}</li>)}</ul></>}
           {resource.previewable ? <label className="devices-enrolled-choice"><input type="checkbox" checked={chosen.includes(resource.id)}
@@ -205,32 +205,32 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
       {current.preview === 'unapproved' && <div className="devices-flow-actions"><button className="primary-button devices-flow-button" disabled={!chosen.length}
         onClick={() => controller.current?.preview(chosen)}>Approve selected input preview</button></div>}
       {(current.preview === 'waiting' || current.preview === 'receiving') && <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={stopPreview}>Stop input preview</button></div>}
-      {current.preview === 'stopped' && <p>Preview stopped and released. Use Enroll resource device to reconnect and approve a new preview.</p>}
+      {current.preview === 'stopped' && <p>Preview stopped and released. Choose “Pair a device” to reconnect and approve a new preview.</p>}
       <p><Link href="/">Choose an application</Link> for other supported inputs.</p>
       {removing === current.handle && <section className="devices-enrolled-removal" aria-labelledby="devices-remove-title">
-        <h4 id="devices-remove-title" tabIndex={-1} ref={removeTitle}>Remove this resource connection?</h4>
+        <h4 id="devices-remove-title" tabIndex={-1} ref={removeTitle}>Remove this device connection?</h4>
         <p>This closes its connection and releases this screen’s preview. It does not erase the other device or its saved settings. A remembered name stays until you separately forget it below.</p>
-        <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={cancelRemoval}>Keep resource device</button>
-          <button className="primary-button devices-flow-button" onClick={confirmRemoval}>Confirm resource removal</button></div>
+        <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={cancelRemoval}>Keep this device</button>
+          <button className="primary-button devices-flow-button" onClick={confirmRemoval}>Confirm device removal</button></div>
       </section>}
     </section>}
     <section className="devices-enrolled-task" aria-labelledby="devices-remembered-title" data-remembered-outcome={remembered?.outcome ?? 'idle'} data-remembered-pending={remembered?.pending ?? 0}>
       <h3 id="devices-remembered-title" tabIndex={-1} ref={savedTitle}>Past devices remembered on this browser</h3>
-      <p>These are offline name records, not connected or verified devices. Nothing reconnects or starts a preview from this list. Saved browser data is not an account and can be cleared. A reviewed public metadata copy below can keep past names offline. Show remembered devices again to refresh the last read.</p>
+      <p>These are offline name records, not connected or verified devices. Nothing reconnects or starts a preview from this list. Saved browser data is not an account and can be cleared. A reviewed copy below can keep past names offline. Show remembered devices again to refresh the last read.</p>
       <p role="status" aria-live="polite">{memoryText[remembered?.outcome ?? 'idle']}</p>
       <div className="devices-flow-actions"><button className="outline-button devices-flow-button" disabled={!sessionId || snapshot.rawPending > 0 || memoryPending}
         onClick={() => void controller.current?.loadRemembered()}>Show remembered devices</button>
         {memoryPending && <button className="outline-button devices-flow-button" onClick={() => controller.current?.cancelRemembering()}>Cancel remembered-device change</button>}</div>
       <div className="devices-flow-actions">
         <button className="outline-button devices-flow-button" disabled={!sessionId || snapshot.rawPending > 0 || memoryPending}
-          onClick={() => { setImporting(false); setBackupInput(''); void controller.current?.reviewRememberedExport(); }}>Review public metadata export</button>
+          onClick={() => { setImporting(false); setBackupInput(''); void controller.current?.reviewRememberedExport(); }}>Review copy of remembered names</button>
         <button className="outline-button devices-flow-button" disabled={!sessionId || snapshot.rawPending > 0 || memoryPending}
           onClick={() => { controller.current?.cancelRemembering(); setImporting(true); setBackupInput(''); }}>Restore remembered names</button>
       </div>
       {importing && !backupReview && <section className="devices-enrolled-removal" aria-labelledby="devices-backup-import-title">
-        <h4 id="devices-backup-import-title" tabIndex={-1} ref={importTitle}>Review a public metadata copy</h4>
+        <h4 id="devices-backup-import-title" tabIndex={-1} ref={importTitle}>Review a copy of remembered names</h4>
         <p>Paste a complete copy made by this page. Restore works only when this browser’s remembered list is empty. It does not merge, replace or reset saved data.</p>
-        <label className="devices-flow-link-label" htmlFor="devices-backup-import">Public metadata JSON</label>
+        <label className="devices-flow-link-label" htmlFor="devices-backup-import">Copy of remembered names</label>
         <textarea id="devices-backup-import" maxLength={REMEMBERED_DEVICE_LIMITS.documentBytes} value={backupInput} disabled={memoryPending}
           onChange={event => setBackupInput(event.currentTarget.value)} />
         <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={cancelBackup}>Cancel restore</button>
@@ -246,15 +246,15 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
           <output aria-label={`Past public pairing identifier for ${record.label}`} className="devices-enrollment-digest">{record.publicKeyId.match(/.{1,8}/g)?.join(' ')}</output>
         </li>)}</ul>}
         <p>Confirm within 30 seconds. A changed saved list requires a new review. Restore leaves an existing, unreadable or newer saved list unchanged.</p>
-        <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={cancelBackup}>Cancel metadata review</button>
+        <div className="devices-flow-actions"><button className="outline-button devices-flow-button" onClick={cancelBackup}>Cancel name review</button>
           <button className="primary-button devices-flow-button" disabled={memoryPending || snapshot.rawPending > 0} onClick={() => void confirmBackup()}>
-            {backupReview.action === 'export' ? 'Confirm public metadata copy' : 'Confirm restore into empty list'}</button></div>
+            {backupReview.action === 'export' ? 'Confirm copying remembered names' : 'Confirm restore into empty list'}</button></div>
       </section>}
       {remembered?.backupText !== undefined && <section className="devices-enrolled-removal" aria-labelledby="devices-backup-copy-title">
-        <h4 id="devices-backup-copy-title">Public metadata copy</h4><p>Select and manually copy this text if you want to keep it. Restored names stay offline. Pair again and approve inputs separately before using a device.</p>
-        <label className="devices-flow-link-label" htmlFor="devices-backup-copy">Reviewed public metadata JSON</label>
+        <h4 id="devices-backup-copy-title">Copy of remembered names</h4><p>Select and manually copy this text if you want to keep it. Restored names stay offline. Pair again and approve inputs separately before using a device.</p>
+        <label className="devices-flow-link-label" htmlFor="devices-backup-copy">Reviewed copy of remembered names</label>
         <textarea id="devices-backup-copy" ref={copyText} readOnly value={remembered.backupText} onFocus={event => event.currentTarget.select()} />
-        <button className="outline-button devices-flow-button" onClick={cancelBackup}>Close metadata copy</button>
+        <button className="outline-button devices-flow-button" onClick={cancelBackup}>Close copy</button>
       </section>}
       {remembered?.records.length === 0 && remembered.outcome === 'ready' && <p>No past devices are remembered on this browser.</p>}
       {!!remembered?.records.length && <ul className="devices-flow-resources">{remembered.records.map(record => <li key={record.publicKeyId}>

@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "copy/import and fingerprint regressions passed; final native and full gate verification pending",
+  "tasks": [
+    "A05",
+    "Q10"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceSha256": {
+    "tools/qa-mqtt-connector.mjs": "79d146271e3e5f19b3a9bc299865c334b01f314e41316e9fca7db81d73a13a59",
+    "tools/qa-zigbee2mqtt-bridge.mjs": "e96d7b13ff67936ece7696032a4c9ef5ab873c32bea2fdec0d0a40528cac1931",
+    "tools/mqtt-broker-binary.mjs": "cb022832d5583c782e75e62c7aa30f26e16fedbccd200ca5c29392a1c5c56b88",
+    "tests/mqtt-broker-binary.test.ts": "58003d0188025cfd3002fb3c9e26a51199e6a66be3243573a70aca25db5799ee",
+    "tests/mqtt-helper-import.test.ts": "ed075515f153a6e061ee00741dbd6af29ad6d6f4079a2728ed19a844d1f34be3",
+    "tests/zigbee-broker-probes.test.ts": "bd0212ebf6c6e16beb9cfb902b538533fac3bb318b43c5a27591199aa416ffc1",
+    "tools/qa-installed-connectors.mjs": "2e2a95e5dfd2c41c9304a2d995ddee2348bc4b3d504285ff970837a36ae491fd",
+    "tools/qa-installed-clocked-mqtt.mjs": "f0a9109f85e80afa66e88138ead5a8719852547baffecb61a3f695810589d542",
+    "tools/qa-installed-zigbee2mqtt-bridge.mjs": "ba524049d3bf264dcc4930b3394527becea0a8f4f5033580cb7c5e0fabfb315b",
+    "tools/qa-opcua-json-telemetry.mjs": "56b19ae486a03281a0044720158a4a6b77f4ea0e97d80d0348bfd1bbb13fb8ed",
+    "tests/mqtt-helper-artifacts.test.ts": "5fc4c993a74711ab7f48f0a7ca5c73cb2cb3524d1c232afaa8bcb4529bc020d8"
+  },
+  "repair": "MQTT and Zigbee QA tools share the existing strict successful-status and PATH-bound discovery algorithm in one inert module. Its source is included in the existing Zigbee fingerprint closure. Failed native help outcomes remain bounded and visible; broker configuration, readiness, teardown and grants are unchanged. Three installed artifact producers copy/hash the executed sibling dependency, including the Zigbee artifact fence; OPC UA fingerprints the same module.",
+  "genuineOldRed": {
+    "tests": 1,
+    "fail": 1,
+    "producer": "Owned POSIX native helper prints mosquitto version2.1.2 and exits17; real fallbackprobes resolveENOENT",
+    "actualHelpStatus": 17,
+    "actualBrokerChildLaunches": 1,
+    "expectedLaunches": 0,
+    "log": "mqtt-binary-old-red.log"
+  },
+  "preservedFullGateFailures": [
+    {
+      "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/failed-gates",
+      "candidateTree": "26b6e0e90c7afd22ee51ddfe66309b068e4a772c",
+      "unit": {
+        "tests": 3330,
+        "pass": 3329,
+        "fail": 1
+      },
+      "cause": "UNKNOWN",
+      "clearing": "UNVERIFIED"
+    },
+    {
+      "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/revised-failed-gates",
+      "candidateTree": "d8ca98a163cd5ab2a9037e26283402f2fe11eebe",
+      "unit": {
+        "tests": 3336,
+        "pass": 3320,
+        "fail": 16
+      },
+      "failures": "11discardedMQTTexecutable-discovery outcomes,1IRhello,2crosshost,2controlledhelp outcomes",
+      "cause": "UNKNOWN; sharedcause not established; admissionexit17 defect is separatelyreproduced",
+      "clearing": "UNVERIFIED; laterpassing checks do not reconstruct or clear original causes",
+      "buildAndRendered": "UNRUN"
+    }
+  ],
+  "nativeLimits": "Existing2second help,4second broker readiness and1500ms teardown escalation unchanged. Discovery algorithm was extracted without changing its admission or bounded diagnostics. No service/image, retries or deadline widening.",
+  "postFailureDiagnostics": {
+    "ordinaryNodeBootstrapMs": 336.282916,
+    "actualEmitterHelloAndCloseMs": 269.794583,
+    "brokerPath": "/opt/homebrew/Cellar/mosquitto/2.1.2_1/sbin/mosquitto",
+    "brokerVersion": "mosquitto version2.1.2",
+    "brokerWrapperTiming": "Invalid beforecall elapsedfield ignored; actualversion/path result valid",
+    "hostSnapshot": "Postfailure snapshot only, not causaltrace; no unownedprocess stopped",
+    "scope": "One current distinct-boundary invocation each, not fullgate rerun or historical clearing"
+  },
+  "custody": {
+    "focusedRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-investigation",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/acceptance",
+    "gates": "gates/results.json",
+    "binding": "acceptance.json",
+    "review": "independent-review.json",
+    "sharedDiscoveryRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/shared-discovery",
+    "copyRepairRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/copied-helper-repair",
+    "rejectedSharedGatesRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/rejected-shared-gates",
+    "setupRepairRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/fixture-parent-repair",
+    "rejectedCopyGatesRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/rejected-copy-gates"
+  },
+  "scope": "Selected source-level broker admission and import contract only; final shared-module native verification is pending. Earlier62passed checks belong to the pre-extraction candidate. Original failure causes UNKNOWN and clearing UNVERIFIED. No fullA05/Q10, service, physical device/actuator, crossnetwork or support acceptance.",
+  "tally": {
+    "total": 272,
+    "complete": 123,
+    "open": 149
+  },
+  "support": {
+    "rows": 69,
+    "accepted": 0
+  },
+  "noPublication": true,
+  "noVmUsed": true,
+  "fullObjectiveComplete": false,
+  "preExtractionTargetedPassed": {
+    "tests": 62,
+    "pass": 62,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "log": "affected-native-checks.log",
+    "command": "ordinary Node24 --test tests/mqtt-broker-binary.test.ts plus6MQTT/OPCUA/IR/crosshost/probe files; default process concurrency, no observer/filter/deadline widening",
+    "scope": "Changed discovery caller closure and originallyfailed nativecaller files; not a substitute for fullserial unit gate"
+  },
+  "importRegression": {
+    "initialForkAttempt": "Native2second startup timeout; did not reach intended assertion, retained separately",
+    "oldIsolatedImport": {
+      "tests": 1,
+      "fail": 1,
+      "failure": "ENOENT from QA module inspecting unrelated CLI argument",
+      "log": "import-old-red.log"
+    },
+    "newIsolatedImport": "Pass in actual serial shared-module attempt; no native fork or weakened production bound"
+  },
+  "sharedModuleSerialAttempt": {
+    "tests": 66,
+    "pass": 60,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0,
+    "log": "shared-focused.log",
+    "failures": "1emitterhello beforebody,2cross-host startup,3controlled native help producer startup",
+    "crossHostTrace": "Spawn returned in milliseconds; no stderr or child module milestones before unchanged2500ms termination. Distinguishes pre-body failure, not OS versus ESM cause.",
+    "cleanup": "Existing cross-host diagnostics report0processes/callbacks/sockets/timers and removed fixtures"
+  },
+  "latestDiscoveryAttempt": {
+    "tests": 8,
+    "pass": 4,
+    "fail": 4,
+    "log": "discovery-final-focused.log",
+    "scope": "Import and PATH cases pass; four help producers miss existing2second native bounds before advertised outcomes. No current success claim for those four controls."
+  },
+  "controlledProducerChange": "Help-output fixtures use a fixed POSIX producer with the same exact output bytes, exit17 and actual SIGTERM timeout; exec keeps the sleeping process in one PID. This removes an unrelated Node interpreter dependency without weakening assertions or extending the2second limit. Failed vectors are now emitted before assertion checks.",
+  "reviewIntroducedGap": {
+    "candidateTree": "888df4fb5b2c761fd27e27ce0158ba219b330b50",
+    "issue": "Three installed QA copy lists omit new mqtt-broker-binary.mjs sibling; OPC UA executed source fingerprint closure needs same file",
+    "status": "Fixed in three actual copy producers and OPC UA closure; actual producer-phase regressions four old red, four current passed"
+  },
+  "copiedHelperRegression": {
+    "old": {
+      "tests": 4,
+      "pass": 0,
+      "fail": 4,
+      "log": "helper-artifacts-genuine-old-red.log",
+      "failures": "Three actual producer phases create helper artifacts whose module import fails ERR_MODULE_NOT_FOUND; actual OPC UA fingerprint omits dependency"
+    },
+    "current": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "log": "helper-artifacts-green.log",
+      "scope": "Four actual producer/import controls passed before the fixture-parent-only repair; that new setup independently passed, final full run pending"
+    },
+    "initialFixtureIssue": "First clocked control reused a VM lexical context; preserved separately, then corrected before genuine four-case old regression",
+    "scope": "Actual existing copy/transpile producer statements and actual copied module imports, byte comparison and OPC UA source fingerprint. Existing source SDK dependencies, no native broker launch, fake SDK receipt or fresh seven-package installed qualification. All owned generated directories removed.",
+    "fixtureParent": {
+      "oldExit": 1,
+      "newExit": 0,
+      "oldLog": "fixture-parent-old-red.log",
+      "newLog": "fixture-parent-green.log",
+      "driver": "fixture-parent-check.mjs.source",
+      "scope": "Replay exact fixture setup lines against a new empty root; no native broker, SDK receipt or import substitution"
+    }
+  },
+  "copyRegressionSetupReview": "Fixed: create ignored fixture parent before mkdtemp; exact prior setup in an empty isolated root failed ENOENT, exact new setup passes; all owned temporary roots removed"
+}

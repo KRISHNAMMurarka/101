@@ -68,6 +68,28 @@ for (const engine of [chromium, webkit]) {
     await page.waitForFunction(() => Number(document.querySelector('[data-testid="sharing-surface-left"]').dataset.x) > .5);
     await page.keyboard.down('Space'); await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'true');
     await page.keyboard.up('Space'); await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'false'); checks.push('actual-keyboard-position-press-release');
+    assert.equal(await firstPad.getAttribute('aria-pressed'), 'false');
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'true');
+    assert.equal(await firstPad.getAttribute('aria-pressed'), 'true');
+    await page.keyboard.press('Enter');
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'false');
+    assert.equal(await firstPad.getAttribute('aria-pressed'), 'false'); checks.push('native-enter-toggle-and-pressed-state');
+    await firstPad.evaluate(element => element.click());
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'true');
+    await firstPad.evaluate(element => element.click());
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'false'); checks.push('button-activation-toggle-without-pointer');
+    const padBox = await firstPad.boundingBox(); assert.ok(padBox);
+    await page.mouse.move(padBox.x + padBox.width / 2, padBox.y + padBox.height / 2);
+    await page.mouse.down();
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'true');
+    await page.mouse.up();
+    // The release must follow an observed real press, so the pre-click false
+    // snapshot cannot satisfy this check. Then observe subsequent real frames.
+    await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'false');
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.equal(await surface('left').getAttribute('data-held'), 'false');
+    assert.equal(await firstPad.getAttribute('aria-pressed'), 'false'); checks.push('native-pointer-click-releases-without-retoggle');
     // Hold via native button so focus can move between two independent software controls.
     await controls('first').getByRole('button', { name: 'Press First controls', exact: true }).click();
     await page.waitForFunction(() => document.querySelector('[data-testid="sharing-surface-left"]').dataset.held === 'true');
@@ -93,6 +115,10 @@ for (const engine of [chromium, webkit]) {
     checks.push('stale-revoke-visible-safe-refresh-selected-60s');
     assert.equal(await owner('left').innerText(), 'Second controls'); assert.equal(await surface('left').getAttribute('data-held'), 'false');
     assert.equal(await controls('first').getByRole('button', { name: 'First controls input pad' }).isDisabled(), true); checks.push('transfer-releases-old-output');
+    await firstPad.evaluate(element => element.click());
+    assert.equal(await owner('left').innerText(), 'Second controls');
+    assert.equal(await surface('left').getAttribute('data-held'), 'false');
+    assert.equal(await firstPad.getAttribute('aria-pressed'), 'false'); checks.push('retired-pad-activation-cannot-reacquire-sharing');
     await slot('left').getByRole('button', { name: 'Stop sharing left side' }).click();
     assert.match(await page.getByRole('heading', { name: 'Review what will stop' }).locator('..').innerText(), /Second controls on left side/);
     await page.getByRole('button', { name: 'Keep current sharing' }).click(); assert.equal(await owner('left').innerText(), 'Second controls');

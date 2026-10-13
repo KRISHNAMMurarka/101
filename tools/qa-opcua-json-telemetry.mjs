@@ -19,7 +19,7 @@ export function opcUaQaSourceFingerprints() {
   const selected = owned.map(path=>join(root,path));
   for (const name of ['connect','device-model','device-runtime','device-web','transport-webrtc','transport-websocket','vision'])
     selected.push(...files(join(helperRoot,'packages',name,'src')));
-  selected.push(join(helperRoot,'tools/qa-mqtt-connector.mjs'), join(helperRoot,'packages/hub-server/src/mqtt-connector.ts'));
+  selected.push(join(helperRoot,'tools/qa-mqtt-connector.mjs'), join(helperRoot,'tools/mqtt-broker-binary.mjs'), join(helperRoot,'packages/hub-server/src/mqtt-connector.ts'));
   for (const name of ['caller','producer','decoder','profile']) selected.push(join(helperRoot,'examples/mqtt-connector',name+'.mjs'));
   const mqttRoot = dirname(realpathSync(join(root,'node_modules/mqtt/package.json')));
   // Existing installed graph includes transitive metadata; broker/producer/provider

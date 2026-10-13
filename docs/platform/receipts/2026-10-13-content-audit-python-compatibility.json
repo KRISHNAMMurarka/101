@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "80 real content command checks and one immutable seven-package SDK distribution check pass; full final candidate gates pending",
+  "tasks": [
+    "K12"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "4d6f5035c4aa7cca399f4fd51fc6257a3f589923",
+  "sourceTree": "97757081ef6aef105b5aa3fd01f907b5594b68f6",
+  "sourceSha256": {
+    "tools/audit-sdk-contents.py": "fae1783942c3d7062fdee658557540399b03af9e315f834614f9cdcbc4e1693d",
+    "tools/audit-native-binding-contents.py": "9e20c1a7af6b487cea086a3b950101db1d564b330e75078491cf8fbe43735edb",
+    "tests/sdk-contents.test.ts": "41561e3748e8b7ae25520a61abb5fad2372abfa3310caf80eb7460fa391443d5",
+    "tests/native-binding-contents.test.ts": "c75c6598bd648b56613902c199c4b10b38102f96724c400107cc2ef7fae68763"
+  },
+  "repair": "Use strict pathlib resolution available in default Python3.9, refuse missing or looping workspace roots without serializing them, retain both logical/canonical scan bytes and existing bounds",
+  "rootCause": "Python3.9 realpath does not accept strict; the TypeError yielded unavailable before content checks",
+  "genuineOldRed": {
+    "ordinaryContentCommands": 2,
+    "missingAndLoopingRootCommands": 4,
+    "logs": [
+      "old-red.log",
+      "native-old-red.log",
+      "path-old-red.log"
+    ]
+  },
+  "currentSelected": {
+    "tests": 80,
+    "pass": 80,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "sdkDistribution": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "actualImmutableBuilds": 2,
+    "packagesEach": 7,
+    "matchingTarballBytes": true
+  },
+  "environment": "Ordinary Node24.14.0 and default /usr/bin/python3 3.9.6 on macOS arm64",
+  "review": "No introduced Critical, Important or Minor findings on the exact four-file delta; independent read-only review",
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/python-path-focused",
+  "nativeLimitsChanged": false,
+  "archiveControlsChanged": false,
+  "privacyControlsChanged": false,
+  "scope": "PARTIAL K12 command compatibility repair. Full artifact contents, native toolchain/ABI, installer, redistribution, support and exact final integration acceptance remain open",
+  "supportRows": []
+}

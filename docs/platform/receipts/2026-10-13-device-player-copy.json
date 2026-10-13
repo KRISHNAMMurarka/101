@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "Plain pairing and remembered-name copy passes22 actual Chromium/WebKit checks on fresh built b2fc2635; exact full integration gates remain pending",
+  "tasks": [
+    "U05"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceSha256": {
+    "app/devices/EnrolledDevices.tsx": "b0b1fd83ee0601fb1368079bc9293424c9059191e906e3bd8b99fa5283fab4f7",
+    "tools/qa-devices-flow.mjs": "0979910f881ef933ba6031b74a76e0923d00c307b38f181a23bde42596c4a73d",
+    "tools/qa-remembered-public-backup.mjs": "5df767f98f326911a932689cf7e55d698fa00bbd48776b51679fabf041d33b8e"
+  },
+  "candidateTree": "b2fc26352c938f6d05c76d7ba19f51901adab8ad",
+  "change": "Use device pairing/reply/answer and remembered-name task labels on the player Devices screen; matching accessible browser selectors updated",
+  "preserved": [
+    "Full code comparison and bilateral confirmation",
+    "Invitation possession does not grant input approval",
+    "Reported metadata does not verify physical identity",
+    "Current device replacement remains explicit",
+    "One-minute connection and30-second review limits",
+    "Past public identifiers and names only; no credentials/inputs/offers/answers/connection/grants saved",
+    "Manual copy, empty-list-only restore, unchanged saved data on failure",
+    "Existing disabled, permission-denied, expiry, recovery and keyboard/focus behavior"
+  ],
+  "native": {
+    "engines": {
+      "chromium": "149.0.7827.55",
+      "webkit": "26.5"
+    },
+    "checks": 22,
+    "allPassed": true,
+    "fixture": "Fresh compilation of103 actual public SDK source inputs; native P256/RTC/Storage/Web Locks, bilateral complete comparison and explicit remember/restore reviews",
+    "cleanup": "All native returns, documents, source, storage, profiles, contexts and browsers joined; root server terminated normally, process/listener absent",
+    "scope": "Software descriptor through built player UI only; no installed, physical, assistive technology or whole U05 acceptance"
+  },
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/player-copy-browser",
+  "review": "No remaining introduced selector findings after correcting Keep/Stop references; read-only independent review",
+  "behaviorChanged": false,
+  "noNewGrantsFormatsOrPersistence": true,
+  "scope": "PARTIAL wording cleanup of the Devices pairing and remembered-name flows. Full supported surface/state matrix remains open",
+  "supportRows": []
+}

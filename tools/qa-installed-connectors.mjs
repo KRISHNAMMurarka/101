@@ -60,6 +60,7 @@ copy('examples/mqtt-connector/caller.mjs', 'caller.mjs', value => value
   .replace("from '@101/hub-server'", "from './mqtt-connector.mjs'")
   .replace("'../../packages/hub-server/src/mqtt-connector.ts'", "'./mqtt-connector.mjs'"));
 copy('tools/qa-mqtt-connector.mjs', 'mqtt-qa.mjs', value => value.replace("'../examples/mqtt-connector/caller.mjs'", "'./caller.mjs'"));
+copy('tools/mqtt-broker-binary.mjs', 'mqtt-broker-binary.mjs');
 const { runModbusRegisterConsumer } = await import(pathToFileURL(join(work, 'modbus-caller.mjs')).href);
 const { runMqttConnectorQa } = await import(pathToFileURL(join(work, 'mqtt-qa.mjs')).href);
 const modbus = await runModbusRegisterConsumer();

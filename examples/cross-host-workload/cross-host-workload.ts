@@ -97,9 +97,9 @@ class HostPort {
         try {
           const record = object(JSON.parse(line));
           if (Object.keys(record).sort().join(',') === 'at,event,kind' && record.kind === 'cross-host-startup' &&
-            ['module-body-enter', 'identity-ready', 'hello-sent'].includes(String(record.event)) &&
+            ['loader-body-enter', 'module-body-enter', 'identity-ready', 'hello-sent'].includes(String(record.event)) &&
             typeof record.at === 'number' && Number.isFinite(record.at) && record.at >= 0 &&
-            this.milestones.length < 3 && !this.milestones.some(value => value.event === record.event))
+            this.milestones.length < 4 && !this.milestones.some(value => value.event === record.event))
             this.milestones.push({ event: record.event as string, childAt: record.at, receivedAt: now() });
         } catch { /* Raw child stderr is never retained in public diagnostics. */ }
       }
@@ -534,7 +534,7 @@ export async function runCrossHostWorkloadQualification(options: { readonly sign
   if (failure) {
     if (failure instanceof Error) Object.defineProperty(failure, 'startupDiagnostics', { value: Object.freeze({
       parentClock: 'parent-performance', childClock: 'runtime-host-performance',
-      clockScope: 'Child module-body-enter excludes static ESM imports; childAt and parent times are separate clock domains.',
+      clockScope: 'Child loader-body-enter excludes its static builtin imports; module-body-enter excludes host static ESM imports. Child and parent times are separate clocks; parent receipt includes delivery and scheduling.',
       hosts: Object.freeze([...hosts].map(value => value.diagnostics())),
       cleanup: Object.freeze({ processes: [...hosts].filter(value => value.alive).length,
         callbacks: [...hosts].reduce((sum, value) => sum + value.pending(), 0), sockets: sockets.size, timers: timers.size,

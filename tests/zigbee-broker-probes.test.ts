@@ -15,11 +15,14 @@ for (const kind of ['nonzero', 'invalid-help', 'timeout'] as const) {
     const executable = join(directory, 'probe'), missing = join(directory, 'missing');
     const previous = process.env.MOSQUITTO_BIN, nativeSpawn = childProcess.spawnSync;
     const source = kind === 'timeout'
-      ? "process.stdout.write('waiting-help'); process.stderr.write('waiting-error'); setInterval(() => {}, 1000);"
+      ? "printf '%s' 'waiting-help'; printf '%s' 'waiting-error' >&2; exec /bin/sleep 30"
       : kind === 'nonzero'
-        ? "process.stdout.write('x'.repeat(20000) + 'help-tail'); process.stderr.write('y'.repeat(20000) + 'error-tail'); process.exitCode = 17;"
-        : "process.stdout.write('unrelated help'); process.stderr.write('unrelated diagnostic');";
-    writeFileSync(executable, `#!${process.execPath}\n${source}\n`);
+        ? `printf '%s' '${'x'.repeat(20000)}help-tail'; printf '%s' '${'y'.repeat(20000)}error-tail' >&2; exit 17`
+        : "printf '%s' 'unrelated help'; printf '%s' 'unrelated diagnostic' >&2";
+    // These are native help-output controls, not Node startup tests. The fixed
+    // POSIX producer preserves the same bytes, exit17 and real timeout signal.
+    // exec keeps the sleeping timeout producer in the one owned child PID.
+    writeFileSync(executable, `#!/bin/sh\n${source}\n`);
     chmodSync(executable, 0o700);
     // Only redirect installed fallback locations. Every outcome still comes
     // from the real synchronous native spawn, including timeout termination.
@@ -36,6 +39,7 @@ for (const kind of ['nonzero', 'invalid-help', 'timeout'] as const) {
           path: string; timeoutMs: number; status: number | null; signal: string | null;
           error: { code: string } | null; stdout: string; stderr: string;
         }>;
+        t.diagnostic(JSON.stringify({kind, probes, allSynchronousNativeCallsReturned: true}));
         assert.equal(probes.length, 5);
         const first = probes[0]!;
         assert.equal(first.path, executable);
@@ -57,7 +61,6 @@ for (const kind of ['nonzero', 'invalid-help', 'timeout'] as const) {
           assert.equal(probe.status, null); assert.equal(probe.signal, null);
           assert.equal(probe.error?.code, 'ENOENT');
         }
-        t.diagnostic(JSON.stringify({kind, probes, allSynchronousNativeCallsReturned: true}));
         return true;
       });
     } finally {

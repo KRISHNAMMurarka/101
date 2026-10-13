@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "generatedFrom": "package-lock.json",
-  "lockSha256": "fd511d524aaa1a7f93a7d7bbf1105d435ebdc367ea6cd36ecab0b6a53d2205ff",
+  "lockSha256": "9cd5088b365c5f202b495f3a092499152ef1a8e6aa94281d13914c883c1410d1",
   "declaredSources": {
     "path": "THIRD_PARTY_LICENSE_SOURCES.json",
     "sha256": "2579f0862089ac4e7cc1be04fe70ced31ce931d254fdb19c10d98393e53bf496"
@@ -11420,7 +11420,7 @@
     },
     {
       "name": "source-map-js",
-      "version": "1.2.2",
+      "version": "1.2.2+101.1",
       "license": "BSD-3-Clause",
       "installedPath": "node_modules/source-map-js",
       "coverage": "local-texts",
@@ -11428,6 +11428,10 @@
         {
           "path": "LICENSE",
           "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd"
+        },
+        {
+          "path": "NOTICE.101",
+          "sha256": "9a69fce61dac67859d6a79fa0b5ea5a1220459b4b6f7630614a4dc43a150cc1e"
         }
       ]
     },
@@ -14433,6 +14437,11 @@
       "text": "Copyright 2023 Abdullah Atta\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
     },
     {
+      "sha256": "9a69fce61dac67859d6a79fa0b5ea5a1220459b4b6f7630614a4dc43a150cc1e",
+      "bytes": 712,
+      "text": "101 local compatibility build: source-map-js 1.2.2+101.1\n\nDerived from the SHA512-pinned upstream source-map-js1.2.2 npm archive.\nOriginal Mozilla Foundation/contributor copyright and BSD-3-Clause conditions\nare retained in LICENSE and the unchanged source headers.\n\nLocal changes preserve absent sourceRoot conversion, zero-column section\nselection, first-local-line column offsets, first mapping names and public\nnested reverse lookup. Optional original source content remains optional.\nGenerated-only indexed mappings retain null sources during iteration/conversion.\nThe upstream1.2.2 malformed and accumulated-offset checks are retained.\nThis is a local101 build, not an upstream release or support promise.\n"
+    },
+    {
       "sha256": "9a9edad7baae52622bddf3c15b2ef8a33d2c89f2d25408ad13e8a7481c6b0c97",
       "bytes": 1104,
       "text": "MIT License\n\nCopyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
@@ -15198,8 +15207,8 @@
     "lockedPackages": 1084,
     "missingPackages": 116,
     "packagesWithoutText": 60,
-    "distinctTexts": 387,
-    "textBytes": 803714,
+    "distinctTexts": 388,
+    "textBytes": 804426,
     "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
   }
 }

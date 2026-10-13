@@ -26,6 +26,10 @@ function fingerprint(key) { return 'SHA256:' + createHash('sha256').update(Buffe
 function end(child) { return new Promise(resolve => child.once('close', resolve)); }
 function kill(child, group = false) { try { if (group) process.kill(-child.pid, 'SIGKILL'); else child.kill('SIGKILL'); } catch { /* Already settled. */ } }
 function unavailable() { throw Error('Owned SSH host unavailable'); }
+const safeErrorCode = value => typeof value === 'string' && /^[A-Z][A-Z0-9_]{0,31}$/.test(value) ? value : null;
+function startupProbe(kind, result) {
+  return Object.freeze({ kind, status: result.status, signal: result.signal, errorCode: safeErrorCode(result.error?.code) });
+}
 function current(record) { return !record.closing && record.daemon.exitCode === null && record.daemon.signalCode === null && performance.now() < record.expiresAt; }
 function sameFile(path, previous, mode) {
   try { const value = lstatSync(path); return value.isFile() && !value.isSymbolicLink() && value.uid === process.getuid() &&
@@ -60,16 +64,20 @@ export async function createDisposableLoopbackSshHost() {
   const version = spawnSync('/usr/sbin/sshd', ['-V'], { encoding: 'utf8', timeout: 1000, maxBuffer: 1024 });
   if (version.status !== 0 || version.stderr.trim() !== 'OpenSSH_10.2p1, LibreSSL 3.3.6') unavailable();
   activeFixtures++;
-  let root, daemon, daemonDone, record, lifetime;
+  let root, daemon, daemonDone, record, lifetime, nativeProbe, stopOwned;
+  let stage = 'owned-root', listenerOutcome = 'not-started', daemonErrorCode = null;
   try {
     root = await mkdtemp(join(homedir(), '.101-owned-ssh-')); await chmod(root, 0o700);
     if (!safePath(root) || realpathSync(root) !== root) unavailable();
     const env = { PATH: '/usr/bin:/bin:/usr/sbin:/sbin', HOME: root, LANG: 'C', LC_ALL: 'C' };
+    stage = 'key-generation';
     for (const name of ['host', 'client']) {
       const generated = spawnSync('/usr/bin/ssh-keygen', ['-q', '-t', 'ed25519', '-N', '', '-C', '101-disposable-' + name, '-f', join(root, name)],
         { env, encoding: 'utf8', timeout: 1000, maxBuffer: 1024 });
+      nativeProbe = startupProbe('ssh-keygen-' + name, generated);
       if (generated.status !== 0) unavailable();
     }
+    stage = 'fixture-files';
     const hostKey = (await readFile(join(root, 'host.pub'), 'utf8')).trim().split(/\s+/).slice(0, 2).join(' ');
     if (!keyPattern.test(hostKey)) unavailable();
     const clientKey = (await readFile(join(root, 'client.pub'), 'utf8')).trim();
@@ -78,6 +86,7 @@ export async function createDisposableLoopbackSshHost() {
     const nonce = randomBytes(16).toString('hex'), clockId = 'ssh:' + nonce;
     // Only this owned socket selects a high port. A subsequent bind collision
     // fails startup; no retry can retarget to another listener.
+    stage = 'port-selection';
     const selector = createServer();
     await new Promise((resolve, reject) => { selector.once('error', reject); selector.listen(0, '127.0.0.1', resolve); });
     const port = selector.address().port; await new Promise(resolve => selector.close(resolve));
@@ -92,8 +101,11 @@ export async function createDisposableLoopbackSshHost() {
       'SetEnv HOME=' + root + ' ZDOTDIR=' + root + ' PATH=/usr/bin:/bin:/usr/sbin:/sbin LANG=C LC_ALL=C METADATA_CLOCK=' + clockId,
       'ForceCommand exec ' + process.execPath + ' ' + join(root, 'metadata.mjs')].join('\n') + '\n';
     await writeFile(join(root, 'sshd_config'), config, { mode: 0o600 });
+    stage = 'configuration-validation';
     const valid = spawnSync('/usr/sbin/sshd', ['-t', '-f', join(root, 'sshd_config')], { env, encoding: 'utf8', timeout: 1000, maxBuffer: 4096 });
+    nativeProbe = startupProbe('sshd-validation', valid);
     if (valid.status !== 0) unavailable();
+    stage = 'listener-startup';
     daemon = spawn('/usr/sbin/sshd', ['-D', '-e', '-f', join(root, 'sshd_config')], { env, stdio: ['ignore', 'ignore', 'pipe'], detached: true });
     daemonDone = end(daemon);
     const expiresAt = performance.now() + SSH_HOST_LIMITS.lifetimeMs;
@@ -112,35 +124,43 @@ export async function createDisposableLoopbackSshHost() {
       })();
       return record.closePromise;
     }
+    stopOwned = stop;
     const host = Object.freeze({ identity: Object.freeze({ id: record.id, address: '127.0.0.1', port, hostKey, hostFingerprint: record.hostFingerprint, clockId }),
       credential: Object.freeze({ id: record.credentialId }),
       status: () => Object.freeze({ current: current(record), closing: record.closing, nativePending: record.clients.size, attempts: record.attempts,
         removedOwnedRoot: record.removed, timerArmed: !!lifetime && !record.closing, software: 'OpenSSH_10.2p1' }), stop });
     hosts.set(host, record); credentials.set(host.credential, record);
     lifetime = setTimeout(() => { stop().catch(() => {}); }, SSH_HOST_LIMITS.lifetimeMs);
-    daemon.once('error', () => { stop().catch(() => {}); });
+    daemon.once('error', error => { daemonErrorCode = safeErrorCode(error.code); stop().catch(() => {}); });
     daemon.once('exit', () => { stop().catch(() => {}); });
     await new Promise((resolve, reject) => {
       let bytes = '', ready = false;
-      const timer = setTimeout(() => finish(false), 1000);
-      function finish(ok) { if (ready) return; ready = true; clearTimeout(timer); daemon.stderr.off('data', listen);
+      listenerOutcome = 'pending';
+      const timer = setTimeout(() => finish(false, 'deadline'), 1000);
+      function finish(ok, outcome) { if (ready) return; ready = true; listenerOutcome = outcome; clearTimeout(timer); daemon.stderr.off('data', listen);
         if (ok) resolve(); else reject(Error('Owned SSH listener unavailable')); }
-      function listen(chunk) { if (bytes.length + chunk.byteLength > SSH_HOST_LIMITS.stderrBytes) { finish(false); return; }
-        bytes += chunk.toString('utf8'); if (bytes.includes('Server listening on 127.0.0.1 port ' + port + '.')) finish(true); }
-      daemon.stderr.on('data', listen); daemon.once('close', () => finish(false));
+      function listen(chunk) { if (bytes.length + chunk.byteLength > SSH_HOST_LIMITS.stderrBytes) { finish(false, 'output-limit'); return; }
+        bytes += chunk.toString('utf8'); if (bytes.includes('Server listening on 127.0.0.1 port ' + port + '.')) finish(true, 'ready'); }
+      daemon.stderr.on('data', listen); daemon.once('close', () => finish(false, 'daemon-close'));
     });
     // Drain logs without retaining native authentication identities or errors.
     daemon.stderr.on('data', () => {});
+    stage = 'final-currentness';
     if (!current(record)) { await stop(); unavailable(); }
     return host;
   } catch {
+    // Snapshot native state before requested teardown changes exit/signal codes.
+    // Keep only fixed labels and codes, never paths, credentials or raw output.
+    const diagnostics = Object.freeze({ stage, native: nativeProbe ?? null,
+      listener: Object.freeze({ outcome: listenerOutcome, errorCode: daemonErrorCode,
+        exitCode: daemon?.exitCode ?? null, signalCode: daemon?.signalCode ?? null }) });
     clearTimeout(lifetime);
-    if (record?.closePromise) await record.closePromise.catch(() => {});
+    if (stopOwned) await stopOwned().catch(() => {});
     else {
       if (daemon) { kill(daemon, true); await daemonDone; }
       if (root) await rm(root, { recursive: true, force: true }); activeFixtures--;
     }
-    throw Error('Owned SSH startup unavailable');
+    throw Error('Owned SSH startup unavailable', { cause: Object.freeze({ ...diagnostics, cleanupCompleted: record ? record.removed : true }) });
   }
 }
 

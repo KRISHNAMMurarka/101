@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 224,
+  "revision": 238,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -14939,7 +14939,7 @@
     {
       "id": "postcss-indexed-map-controls-failed-2026-10-12",
       "result": "fail",
-      "historical": false,
+      "historical": true,
       "revision": "9ad10db386da13c1f95e6a680d6298dbb306c77f57a9a3539e4595b723a7654b",
       "levels": [
         "runtime"
@@ -14953,9 +14953,314 @@
       ],
       "environment": "Actual ordinary Node24.14.0/macOS; PostCSS8.5.26/source-map-js1.2.2 and actual installed project Tailwind plugin",
       "reproduction": "Two authentic current consumer callers fail their first valid indexed JSON-map control; direct diagnostic records undefined sourceRoot conversion exception and zero-column mapping inconsistency. All later planned malformed-offset cases remain UNRUN.",
-      "scope": "Selected installed build-tool compatibility controls only; no new DoS, unauthenticated path, physical, whole S16/Q10 or support acceptance. Dependency unchanged; repair pending.",
+      "scope": "Original unpatched1.2.2 selected build-tool compatibility failures retained. Current local compatibility repair is separate; no DoS/unauthenticated/physical/full S16/Q10 or support acceptance.",
       "failure": "No-root TypeError; project-plugin original position4 instead of1. Raw first failures and exact producer JSON preserved.",
       "equipment": []
+    },
+    {
+      "id": "source-map-local-compatibility-2026-10-12",
+      "result": "pass",
+      "historical": false,
+      "revision": "84b89fa3277a1d5a1028887184c0df2d6c0c335d43a6a7df330829b45674291e",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S16",
+        "Q10",
+        "K11"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-12-source-map-compatibility.json",
+        "tests/source-map-compatibility.test.ts",
+        "vendor/README.md",
+        "vendor/source-map-js-1.2.2+101.1.tgz",
+        "tools/build-local-source-map.py"
+      ],
+      "environment": "Actual ordinary Node24.14.0/macOS; originalsource-map-js1.2.2 and explicitly private local1.2.2+101.1, PostCSS8.5.26 and projectTailwind plugin.",
+      "reproduction": "Original9checks fail7; first-name and optional-content failures retained. New generated-only producer4checks fail; revised57checks pass (14map/14security/2SSH/27terminal). Reproducible19file archive/shared+actualfreshPostCSS portableoffline files match. Firstfullunit3329of3330pass failed before SSH testbody, causeUNKNOWN/clearingUNVERIFIED; exact revised finalgates/review/sourcebinding issued separately.",
+      "scope": "Selected local installed build-tool indexed-map compatibility and reproducible ordinary dependency delivery only. No fresh seven-package SDK/Node22/browser/native/physical release/support acceptance; wider lower-trust producer provenance and security qualification remain open. Existing protocol/native prerequisites not repaired.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "ssh-owned-startup-outcomes-2026-10-13",
+      "result": "pass",
+      "historical": false,
+      "revision": "f14370ef7b871fe6accc119825eda22e52f124f27a5b00769ab66984df1fe0ac",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N15",
+        "Q10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-ssh-startup-diagnostics.json",
+        "examples/terminal-resources/disposable-host.mjs",
+        "tests/ssh-startup-diagnostics.test.ts"
+      ],
+      "environment": "Ordinary Node24.14.0/macOSarm64, actual selected OpenSSH10.2p1 fixture and real native filesystem/child callbacks",
+      "reproduction": "Genuine invalid configuration old lacks safe cause; controlled genuine readiness withheld old removes same owned root twice. Revised57checks pass with diagnostics and one awaited stop owner. Original unsampled startup causeUNKNOWN/clearingUNVERIFIED retained; no native bound widening.",
+      "scope": "Selected macOS arm64 disposable OpenSSH10.2p1 software fixture diagnostics and owned startup cleanup only. No historical startup cause/clearing, general IPC, installed agent, physical/remote SSH, another OS or fullN15/Q10/support acceptance.",
+      "failure": null,
+      "equipment": []
+    },
+    {
+      "id": "mqtt-broker-native-admission-2026-10-13",
+      "result": "pending",
+      "historical": false,
+      "revision": "cb022832d5583c782e75e62c7aa30f26e16fedbccd200ca5c29392a1c5c56b88",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A05",
+        "Q10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-mqtt-broker-admission.json",
+        "tools/qa-mqtt-connector.mjs",
+        "tools/qa-zigbee2mqtt-bridge.mjs",
+        "tools/mqtt-broker-binary.mjs",
+        "tests/mqtt-broker-binary.test.ts",
+        "tests/mqtt-helper-import.test.ts",
+        "tests/zigbee-broker-probes.test.ts",
+        "tools/qa-installed-connectors.mjs",
+        "tools/qa-installed-clocked-mqtt.mjs",
+        "tools/qa-installed-zigbee2mqtt-bridge.mjs",
+        "tools/qa-opcua-json-telemetry.mjs",
+        "tests/mqtt-helper-artifacts.test.ts"
+      ],
+      "environment": "Ordinary Node24.14.0/macOS arm64, native ownedPOSIX help control and existing Mosquitto2.1.2; sourceMQTT/OPCUA/IR/crosshost callers",
+      "reproduction": "Actual exit17/version text caused one old broker launch. Existing stricter admission passed62affected checks before extraction. Isolated import reproduced an introduced unrelated-argv ENOENT; pure shared module resolves it and is included in actual fingerprint closure. Current serial66checks pass60/fail6 in native startup; discovery8checks pass4/fail4 before controlled output. Exact final native/fullgate verification remains pending. Review identified omitted installed copy dependencies and OPC UA fingerprint; four actual producer/fingerprint controls failed on the old copy lists and pass after repair. Final exact full gates pending. Exact fixture setup also failed ENOENT in an empty root and passed after creating its parent; full checks remain pending.",
+      "scope": "Selected source-level broker admission and import contract only; final shared-module native verification is pending. Earlier62passed checks belong to the pre-extraction candidate. Original failure causes UNKNOWN and clearing UNVERIFIED. No fullA05/Q10, service, physical device/actuator, crossnetwork or support acceptance.",
+      "failure": "Native startup preconditions remain unresolved; original causes UNKNOWN and clearing UNVERIFIED.",
+      "equipment": []
+    },
+    {
+      "id": "matter-failed-harness-cleanup-2026-10-13",
+      "result": "pass",
+      "historical": false,
+      "revision": "84a4d1b6c16ddb3c248043e9ad6ef8082728e72baf9bcfab0cedfc439cf96dc3",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-matter-harness-cleanup.json",
+        "packages/hub-server/src/matter-ws-switch.test.ts",
+        "tests/matter-harness-cleanup.test.ts"
+      ],
+      "environment": "Node24.14.0/macOS arm64; actual TCP/WS and selected original test, genuine body assertion failure",
+      "reproduction": "Old actual failed assertion left its listener/held close alive; new natural failed-test exit preserves assertion, joins real ownership;47 selected checks pass. Unverified timing draft retained separately and excluded.",
+      "scope": "One actual pre-upgrade test cleanup path and its genuine assertion-failure regression; no general native, full lifecycle, physical or support acceptance",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "device-player-copy-2026-10-13",
+      "result": "pass",
+      "historical": false,
+      "revision": "e0c305d54bef973db0fb12f80c60da5c2dd85a8a",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-device-player-copy.json",
+        "app/devices/EnrolledDevices.tsx",
+        "tools/qa-devices-flow.mjs",
+        "tools/qa-remembered-public-backup.mjs"
+      ],
+      "environment": "Fresh built player UI, isolated native Chromium149/WebKit26.5, actual public SDK software descriptor/P256/RTC/Storage/Web Locks",
+      "reproduction": "Source audit found architecture copy; changed labels and exact selectors reviewed. Fresh22 native checks pass, including keyboard/manual copy, changed/empty/corrupt/future/expired store and actual exclusive-lock cancellation, with joined cleanup.",
+      "scope": "PARTIAL wording cleanup of the Devices pairing and remembered-name flows. Full supported surface/state matrix remains open",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "content-audit-python-compatibility-2026-10-13",
+      "revision": "4d6f5035c4aa7cca399f4fd51fc6257a3f589923",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-content-audit-python-compatibility.json",
+        "tools/audit-sdk-contents.py",
+        "tools/audit-native-binding-contents.py",
+        "tests/sdk-contents.test.ts",
+        "tests/native-binding-contents.test.ts"
+      ],
+      "environment": "Ordinary Node24.14.0 and default /usr/bin/python3 3.9.6 on macOS arm64",
+      "reproduction": "Ordinary actual SDK/native audit commands failed before content checks on Python3.9; old missing/looping-root commands failed with unavailable. Strict pathlib repair passes80 real content checks and the two-build immutable SDK distribution check.",
+      "scope": "PARTIAL K12 command compatibility repair. Full artifact contents, native toolchain/ABI, installer, redistribution, support and exact final integration acceptance remain open",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "sharing-pad-activation-2026-10-13",
+      "revision": "8eeeed010613d3d039bd4d75c229523903a028b7",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U09",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-sharing-pad-activation.json",
+        "app/sharing/SharingView.tsx",
+        "tools/qa-sharing-flow.mjs"
+      ],
+      "environment": "Fresh built player UI on macOS arm64, native Chromium149/WebKit26.5 and ordinary Node24.14.0",
+      "reproduction": "Old built pad ignores a trusted native Enter click(detail0) and has no aria-pressed. Reused existing connected-pad pattern;44 current native browser checks and24 task checks pass. Pointer release observes genuine delivered press/release and subsequent frames.",
+      "scope": "PARTIAL U09/U10/Q05 local sharing interaction repair. Named screen reader, remote/hardware journeys, whole state matrix and exact full integration remain open",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-fixture-ownership-2026-10-13",
+      "revision": "4993225b7884cc422a0598f0eed0f71c1095f4eb",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-native-fixture-ownership.json",
+        "examples/opcua-json-telemetry/consumer.mjs",
+        "examples/rosbridge-pose/consumer.mjs",
+        "examples/zigbee2mqtt-bridge/consumer.mjs",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+        "tests/fixed-producer-arguments.test.ts",
+        "tests/nec32-harness-cleanup.test.ts",
+        "tests/owned-mqtt-broker-cleanup.test.ts",
+        "tools/qa-mqtt-connector.mjs"
+      ],
+      "environment": "Ordinary Node24.14.0 on local macOS arm64 under current user-authorized conditions; scoped real native-process controls",
+      "reproduction": "NEC32 failed-body observer demonstrates early fixture completion; real ROS caller preload executes; four actual OPC UA/Zigbee dispatches inherit caller options; actual OPC UA and owned broker returns precede held genuine close. Scoped repaired tests pass24 NEC,71 related before broker edit and3 current broker checks. Full final dependency closure and integration pending.",
+      "scope": "PARTIAL Q05 fixture ownership and fixed software producer launch configuration. Nine prior readiness failures, full lifecycle matrix, native/physical/toolchain and support qualification remain open until separately verified.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-loader-milestones-2026-10-13",
+      "revision": "a3baf71b74acfb4f0d95e62777d8d2d3405bc191",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-native-loader-milestones.json",
+        "examples/cross-host-workload/cross-host-workload.ts",
+        "tests/cross-host-workload.test.ts",
+        "tests/fixed-producer-arguments.test.ts",
+        "tests/mqtt-broker-binary.test.ts",
+        "tools/mqtt-broker-binary.mjs",
+        "tools/qa-cross-host-workload.mjs"
+      ],
+      "environment": "Ordinary local Node24.14.0 on macOS arm64 under current user-authorized conditions; controlled actual native failures",
+      "reproduction": "Actual invalid loader naturally exited1 with no earlier milestone; actual failed-help producer exited17 without diagnostic PID. Existing-loader marker and authentic PID retention pass two selected controls. Prior full3357/3343pass/14fail and changed cross-host3/6pass are retained without acceptance or cause clearing.",
+      "scope": "PARTIAL Q13 bounded startup observability and lint repair. Prior full native failures, final exact candidate, physical/support and whole release qualification remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "nec32-launch-isolation-2026-10-13",
+      "revision": "e12afb474e0207007e5bc0c5887a59536386ab77",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-13-nec32-launch-isolation.json",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+        "tests/nec32-harness-cleanup.test.ts"
+      ],
+      "environment": "Ordinary local Node24.14.0 on macOS arm64 under current user-authorized conditions; actual controlled native dispatch/body failure",
+      "reproduction": "Both real positive-PID old fixture dispatches inherit runner context; controlled second also inherits caller NODE_OPTIONS. Explicit production fixture environment passes both failure/close probes and all23 existing NEC checks, including original retiredgeneration441.7ms. Original500ms/400ms bounds unchanged; full final candidate pending.",
+      "scope": "PARTIAL Q05 fixed fixture launch configuration and genuine failed-body ownership. Historical readiness causes, exact whole-candidate gates, full lifecycle and physical/support qualification remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "broker-launch-error-2026-10-14",
+      "revision": "935bcdd34cf7269c7d7a8f63b83a2f9a303b5a09",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-broker-launch-error.json",
+        "tools/qa-mqtt-connector.mjs",
+        "tests/owned-broker-launch-error.test.ts",
+        "tests/cross-host-workload.test.ts",
+        "tests/mqtt-broker-binary.test.ts"
+      ],
+      "environment": "Local Node24.14.0 on macOS arm64 under current user-authorized conditions; actual owned native launch failure",
+      "reproduction": "Admitted copied Mosquitto removed at actual launch emits genuine ENOENT. Old helper has unhandled error; original-clock variant can falsely accept another real listener during that failed launch. Both genuine old failures retained; final repair and two existing broker close controls pass4 checks. Rejected timing results, prior full3358/3359 and3358/3360, and nonacceptance OS sample retained without historical cause/clearing. Reciprocal Q05/Q13 evidence links repaired.",
+      "scope": "PARTIAL Q05/Q13 actual owned broker launch-error settlement and bounded failed-control diagnostics. Broader focused native checks remain red; historical causes, exact full integration, complete lifecycle and physical/support qualification remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -15909,7 +16214,8 @@
         "legacy-advisory-scopes-partial-2026-10-12",
         "security-maintenance-procedure-local-2026-10-12",
         "onvif-parser-cost-selected-2026-10-12",
-        "postcss-indexed-map-controls-failed-2026-10-12"
+        "postcss-indexed-map-controls-failed-2026-10-12",
+        "source-map-local-compatibility-2026-10-12"
       ],
       "dependencies": [
         "C01",
@@ -16200,7 +16506,8 @@
       "records": [
         "pending-N15",
         "n15-built-partial-2026-10-06",
-        "browser-gateway-required-gates-failed-2026-10-06"
+        "browser-gateway-required-gates-failed-2026-10-06",
+        "ssh-owned-startup-outcomes-2026-10-13"
       ],
       "dependencies": [
         "C01",
@@ -16708,7 +17015,8 @@
       "records": [
         "pending-A05",
         "a05-selected-connectors-native-runtime-2026-10-08",
-        "a05-enrolled-remote-clock-2026-10-08"
+        "a05-enrolled-remote-clock-2026-10-08",
+        "mqtt-broker-native-admission-2026-10-13"
       ],
       "dependencies": [
         "M01",
@@ -17766,7 +18074,8 @@
         "u10-invitation-copy-expiry-2026-10-06",
         "u05-controller-player-chrome-built-partial-2026-10-07",
         "recording-controller-source-commit-2026-10-07",
-        "settings-scratch-batch-2026-10-10"
+        "settings-scratch-batch-2026-10-10",
+        "device-player-copy-2026-10-13"
       ],
       "dependencies": [
         "C01",
@@ -17837,7 +18146,8 @@
         "inventory-quota-recovery-chromium-2026-10-11",
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
-        "inventory-quota-safari-ui-2026-10-11"
+        "inventory-quota-safari-ui-2026-10-11",
+        "sharing-pad-activation-2026-10-13"
       ],
       "dependencies": [
         "C01",
@@ -17865,7 +18175,8 @@
         "inventory-quota-recovery-chromium-2026-10-11",
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
-        "inventory-quota-safari-ui-2026-10-11"
+        "inventory-quota-safari-ui-2026-10-11",
+        "sharing-pad-activation-2026-10-13"
       ],
       "dependencies": [
         "C01",
@@ -18159,7 +18470,12 @@
         "microphone-quota-old-failure-2026-10-11",
         "inventory-quota-safari-ui-2026-10-11",
         "inventory-navigation-wait-old-2026-10-11",
-        "inventory-navigation-wait-repaired-2026-10-11"
+        "inventory-navigation-wait-repaired-2026-10-11",
+        "matter-failed-harness-cleanup-2026-10-13",
+        "sharing-pad-activation-2026-10-13",
+        "native-fixture-ownership-2026-10-13",
+        "nec32-launch-isolation-2026-10-13",
+        "broker-launch-error-2026-10-14"
       ],
       "dependencies": [],
       "equipment": [
@@ -18244,7 +18560,10 @@
         "legacy-advisory-scopes-partial-2026-10-12",
         "node-22-13-current-sdk-floor-2026-10-12",
         "onvif-parser-cost-selected-2026-10-12",
-        "postcss-indexed-map-controls-failed-2026-10-12"
+        "postcss-indexed-map-controls-failed-2026-10-12",
+        "source-map-local-compatibility-2026-10-12",
+        "ssh-owned-startup-outcomes-2026-10-13",
+        "mqtt-broker-native-admission-2026-10-13"
       ],
       "dependencies": [],
       "equipment": [
@@ -18288,7 +18607,9 @@
         "rss-private-copy-rejected-full-gate-2026-10-12",
         "rss-whole-helper-outer-bound-failed-2026-10-12",
         "rss-independent-qualification-budget-2026-10-12",
-        "clipboard-native-probe-outcomes-2026-10-12"
+        "clipboard-native-probe-outcomes-2026-10-12",
+        "native-loader-milestones-2026-10-13",
+        "broker-launch-error-2026-10-14"
       ],
       "dependencies": [],
       "equipment": [
@@ -18723,7 +19044,8 @@
       "records": [
         "pending-K11",
         "sdk-distributions-2026-10-02",
-        "sdk-local-reproducibility-2026-10-11"
+        "sdk-local-reproducibility-2026-10-11",
+        "source-map-local-compatibility-2026-10-12"
       ],
       "dependencies": [],
       "equipment": [
@@ -18748,7 +19070,8 @@
         "unlicense-local-text-2026-10-12",
         "unlicense-omission-old-2026-10-12",
         "bundled-legal-local-text-2026-10-12",
-        "bundled-legal-omission-old-2026-10-12"
+        "bundled-legal-omission-old-2026-10-12",
+        "content-audit-python-compatibility-2026-10-13"
       ],
       "dependencies": [],
       "equipment": [

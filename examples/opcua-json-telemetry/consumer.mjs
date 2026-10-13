@@ -11,10 +11,11 @@ function selectedProfile() { return { id: 'example:opcua-temperature', revision:
 async function until(predicate, label) { const deadline = performance.now() + 1500;
   while (!predicate()) { assert.ok(performance.now() < deadline, label); await new Promise(resolve => setTimeout(resolve, 5)); } }
 function startProducer(endpoint) {
-  const child = fork(new URL('./producer.mjs', import.meta.url), [endpoint], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
+  const child = fork(new URL('./producer.mjs', import.meta.url), [endpoint], { execArgv: [], env: { NODE_ENV: 'production' }, stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
   let stderr = '', next = 0, exited = false;
   child.stderr.on('data', bytes => { stderr = (stderr + bytes.toString()).slice(-4096); });
   const exit = new Promise(resolve => child.once('exit', (code, signal) => { exited = true; resolve({ code, signal }); }));
+  const closed = new Promise(resolve => child.once('close', resolve));
   function response(id, send) { return new Promise((resolve, reject) => {
     const timer = setTimeout(() => finish(new Error(`producer timeout ${stderr}`)), 3000);
     const onExit = () => finish(new Error(`producer exit ${stderr}`));
@@ -25,11 +26,13 @@ function startProducer(endpoint) {
   const ready = response(0);
   return { child, ready, request(kind) { const id = ++next; return response(id, { kind, id }); },
     async close() {
-      if (!exited) { try { await response(++next, { kind: 'close', id: next }); } catch { /* Exit result remains the settlement check. */ }
-        const timer = setTimeout(() => { if (!exited) child.kill('SIGTERM'); }, 1000);
-        const outcome = await exit; clearTimeout(timer); assert.ok(outcome.code === 0 || outcome.signal === 'SIGTERM', stderr);
-      }
-      assert.equal(child.exitCode !== null || child.signalCode !== null, true, 'owned child settled');
+      try {
+        if (!exited) { try { await response(++next, { kind: 'close', id: next }); } catch { /* Exit result remains the settlement check. */ }
+          const timer = setTimeout(() => { if (!exited) child.kill('SIGTERM'); }, 1000);
+          const outcome = await exit; clearTimeout(timer); assert.ok(outcome.code === 0 || outcome.signal === 'SIGTERM', stderr);
+        }
+        assert.equal(child.exitCode !== null || child.signalCode !== null, true, 'owned child settled');
+      } finally { await closed; }
     } };
 }
 export async function runOpcUaJsonTelemetryConsumer(endpoint) {

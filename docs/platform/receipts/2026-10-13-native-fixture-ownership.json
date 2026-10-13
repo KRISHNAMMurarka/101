@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "Bounded real-process cleanup and fixed-producer launch regressions pass; exact final integration gates pending",
+  "tasks": [
+    "Q05"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "4993225b7884cc422a0598f0eed0f71c1095f4eb",
+  "sourceTree": "0f13229804ea644528e6208c02010e23cff1d218",
+  "sourceSha256": {
+    "examples/opcua-json-telemetry/consumer.mjs": "d4483a5fdaabc65371bf12af900ef3f7dd774c58255c2cdfc0b79fb1608e1a5e",
+    "examples/rosbridge-pose/consumer.mjs": "ea77f02e773d155800d1eedf6f420102e41b61abcce7bcb2b7d3cdc0417bfe3d",
+    "examples/zigbee2mqtt-bridge/consumer.mjs": "a20937ee1f003d666e03a387b2ae0635daaf9534df5c00d7526a133969909d13",
+    "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "fff335ac161bac5242f10c9e4bdd95c35fb735120a7f94418ccb990724985b06",
+    "tests/fixed-producer-arguments.test.ts": "0fdec50fb2505e8a8bd230c1e7440e4edb75362ef72d8e8cc060dcd0260391a4",
+    "tests/nec32-harness-cleanup.test.ts": "a506fde7190296576ccd0eb7646a40e313bb2d3410e0a0a36a99bdcfa618a884",
+    "tests/owned-mqtt-broker-cleanup.test.ts": "140a29eb7d4c02b7b6331fd6d2571e7dc8922efc97a0a4301262c6ea7ea14a4f",
+    "tools/qa-mqtt-connector.mjs": "08757634d6b9d9e838c69bf4eeaf692a58c72bff60d996d0e5221c4b04b54efc"
+  },
+  "repair": [
+    "NEC32 failed-body fixture waits for actual native close before returning",
+    "Fixed ROS, OPC UA and Zigbee software producers exclude caller execArgv and NODE_OPTIONS through explicit production launch options",
+    "OPC UA producer teardown joins actual native close",
+    "Owned MQTT broker startup failure and overlapping shutdowns join actual native close before removing the owned configuration directory; shutdown timer is cleared"
+  ],
+  "genuineOldRed": {
+    "nec32": "old-red-joined-observer.log: original failed fixture finished before held genuine close; observer itself joined the real child",
+    "ros": "ros-runtime-options-old-red.log: two actual native peers execute the caller-only throwing preload",
+    "related": "related-producers-admitted-old-red.log: four actual OPC UA/Zigbee argument vectors inherit preload and one actual OPC UA startup return precedes genuine close",
+    "brokerNormal": "broker-cleanup-old-red.log: both overlapping returns precede genuine close and directory is already absent",
+    "brokerStartup": "broker-startup-held-old-red.log: actual native dispatch and exit, original 4000ms readiness limit retained, real close forwarded once after5000ms; rejection precedes close and directory is absent"
+  },
+  "controlledObservation": "Held close events are genuine native events forwarded once, with observer cleanup joined even on original assertion failure. OPC UA/Zigbee argument controls deliberately kill the actual producer at dispatch and cover invocation/failed-start only; actual ROS reaches readiness. No fake producer output, substituted ready messages, deadline widening, retries or acceptance preloads.",
+  "selected": {
+    "nec32": {
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "tree": "a5c3bfe22742c245178375a2a5086afef80458e8"
+    },
+    "related": {
+      "tests": 71,
+      "pass": 71,
+      "fail": 0,
+      "scope": "ROS/OPC UA/Zigbee source and argument tests before shared broker cleanup edit; full final dependency closure pending"
+    },
+    "broker": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "scope": "Current shared-broker held-close tests and strict failed-help admission test"
+    }
+  },
+  "retainedNonAcceptance": [
+    "related-producers-old-red.log: OPC UA controls did not reach dispatch until actual owned broker was provided; those cases are invalid regression evidence",
+    "broker-cleanup-old-red.log startup case: no actual dispatch after strict help prerequisite missed; invalid startup regression evidence",
+    "broker-startup-old-red.log: original500ms observation hold passed old startup cleanup; replaced by5000ms close observation to exceed unchanged original readiness wait",
+    "nine-prerequisites.log: eight selected former predicates passed, NEC32 original500ms hello missed; focused command differs from original full unit command",
+    "Cross-host diagnostic observer run measures parent receipt elapsed including scheduling; no exact child execution or OS cause inference"
+  ],
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-fixture-focused",
+  "nativeLimitsChanged": false,
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "fullIntegrationAcceptance": "PENDING",
+  "scope": "PARTIAL Q05 fixture ownership and fixed software producer launch configuration. Nine prior readiness failures, full lifecycle matrix, native/physical/toolchain and support qualification remain open until separately verified.",
+  "supportRows": []
+}

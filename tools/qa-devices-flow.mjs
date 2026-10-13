@@ -104,12 +104,12 @@ async function enrollmentJourney() {
       return { page: producer, offer };
     }
     async function enroll(label, decline = false) {
-      await keyboardActivate(page, page.getByRole('button', { name: 'Enroll resource device', exact: true }));
-      const invitation = page.getByRole('textbox', { name: 'Receiver invitation', exact: true }); await invitation.waitFor();
+      await keyboardActivate(page, page.getByRole('button', { name: 'Pair a device', exact: true }));
+      const invitation = page.getByRole('textbox', { name: 'Pairing invitation', exact: true }); await invitation.waitFor();
       const created = await source(await invitation.inputValue(), label);
-      await page.getByRole('textbox', { name: 'Complete resource offer', exact: true }).fill(created.offer);
-      await keyboardActivate(page, page.getByRole('button', { name: 'Use resource offer', exact: true }));
-      const answer = page.getByRole('textbox', { name: 'Receiver answer', exact: true }); await answer.waitFor();
+      await page.getByRole('textbox', { name: 'Complete device reply', exact: true }).fill(created.offer);
+      await keyboardActivate(page, page.getByRole('button', { name: 'Use device reply', exact: true }));
+      const answer = page.getByRole('textbox', { name: 'Pairing answer', exact: true }); await answer.waitFor();
       await created.page.evaluate(answer => globalThis.__enrolledOwnedSource.accept(answer), await answer.inputValue());
       // <output> has implicit status semantics; use its fixed accessible name rather than SDK globals.
       await page.locator('.devices-enrollment-digest').waitFor();
@@ -125,7 +125,7 @@ async function enrollmentJourney() {
       }
       await keyboardActivate(created.page, created.page.getByRole('button', { name: 'Confirm owned source comparison', exact: true }));
       await keyboardActivate(page, page.getByRole('button', { name: 'The complete codes match', exact: true }));
-      await keyboardActivate(page, page.getByRole('button', { name: /^(Use enrolled resource device|Replace current resource device)$/ }));
+      await keyboardActivate(page, page.getByRole('button', { name: /^(Use this device|Replace current device)$/ }));
       await page.getByRole('heading', { name: `Inspect ${label}`, exact: true }).waitFor();
       await page.getByRole('heading', { name: 'software:counter', exact: true }).waitFor();
       assert.equal(await page.getByRole('checkbox', { name: 'Preview software:unavailable-action', exact: true }).count(), 0);
@@ -143,10 +143,10 @@ async function enrollmentJourney() {
     try {
       await page.goto(new URL(`/devices?session=ENROLLED-${engine.toUpperCase()}`, application).toString());
       await page.getByRole('heading', { name: 'What is connected', exact: true }).waitFor();
-      const add = page.getByRole('button', { name: 'Enroll resource device', exact: true });
+      const add = page.getByRole('button', { name: 'Pair a device', exact: true });
       assert.equal(await add.count(), 1, 'the original Devices page is missing the owned enrollment/resource/removal task');
       assert.equal(enrollmentRed, false, 'feature absence RED stops before any producer or enrollment effect');
-      assert.equal(await page.getByRole('textbox', { name: 'Receiver invitation', exact: true }).count(), 0);
+      assert.equal(await page.getByRole('textbox', { name: 'Pairing invitation', exact: true }).count(), 0);
       assert.equal(await page.locator('.devices-enrolled-value').count(), 0); checks.push('inert-arrival');
       phase = 'enrollment'; const first = await enroll('Owned software meter A'); checks.push('actual-native-rtc-bilateral-whole-digest-enrollment', 'declared-resources-not-authority', 'unsupported-command-recovery');
       phase = 'separate-preview'; await approvePreview();
@@ -154,31 +154,31 @@ async function enrollmentJourney() {
       await keyboardActivate(first, first.getByRole('button', { name: 'Toggle software contact', exact: true }));
       await page.waitForFunction(() => document.querySelector('[aria-label="Preview value software:contact"]')?.textContent === 'true');
       checks.push('separate-source-and-exact-two-resource-preview-approvals', 'actual-timer-and-native-button-software-values');
-      phase = 'candidate-cancel'; await keyboardActivate(page, add); await page.getByRole('textbox', { name: 'Receiver invitation', exact: true }).waitFor();
-      await keyboardActivate(page, page.getByRole('button', { name: 'Cancel enrollment', exact: true }));
+      phase = 'candidate-cancel'; await keyboardActivate(page, add); await page.getByRole('textbox', { name: 'Pairing invitation', exact: true }).waitFor();
+      await keyboardActivate(page, page.getByRole('button', { name: 'Cancel pairing', exact: true }));
       assert.equal(await page.getByRole('status', { name: 'Preview value software:contact', exact: true }).textContent(), 'true');
       assert.equal(await add.evaluate(element => element === document.activeElement), true); checks.push('candidate-cancel-retains-incumbent-and-focus');
       phase = 'enrolled-candidate-decline'; await enroll('Owned declined candidate', true);
       assert.equal(await page.getByRole('status', { name: 'Preview value software:contact', exact: true }).textContent(), 'true');
       assert.equal(await page.getByRole('heading', { name: 'Inspect Owned software meter A', exact: true }).count(), 1);
       checks.push('actual-native-candidate-comparison-decline-retains-incumbent');
-      phase = 'invalid-offer'; await keyboardActivate(page, add); await page.getByRole('textbox', { name: 'Receiver invitation', exact: true }).waitFor();
-      await page.getByRole('textbox', { name: 'Complete resource offer', exact: true }).fill('not a complete offer');
-      await keyboardActivate(page, page.getByRole('button', { name: 'Use resource offer', exact: true }));
+      phase = 'invalid-offer'; await keyboardActivate(page, add); await page.getByRole('textbox', { name: 'Pairing invitation', exact: true }).waitFor();
+      await page.getByRole('textbox', { name: 'Complete device reply', exact: true }).fill('not a complete offer');
+      await keyboardActivate(page, page.getByRole('button', { name: 'Use device reply', exact: true }));
       await page.waitForFunction(() => document.querySelector('[data-enrollment-outcome]')?.getAttribute('data-enrollment-outcome') === 'invalid-offer');
       assert.equal(await page.getByRole('status', { name: 'Preview value software:contact', exact: true }).textContent(), 'true'); checks.push('invalid-offer-retains-current-values');
-      phase = 'remove-cancel'; await keyboardActivate(page, page.getByRole('button', { name: 'Remove resource device', exact: true }));
-      await keyboardActivate(page, page.getByRole('button', { name: 'Keep resource device', exact: true }));
+      phase = 'remove-cancel'; await keyboardActivate(page, page.getByRole('button', { name: 'Remove device', exact: true }));
+      await keyboardActivate(page, page.getByRole('button', { name: 'Keep this device', exact: true }));
       assert.equal(await page.getByRole('status', { name: 'Preview value software:contact', exact: true }).textContent(), 'true');
-      assert.equal(await page.getByRole('button', { name: 'Remove resource device', exact: true }).evaluate(element => element === document.activeElement), true);
+      assert.equal(await page.getByRole('button', { name: 'Remove device', exact: true }).evaluate(element => element === document.activeElement), true);
       checks.push('cancel-removal-retains-connection-preview-and-focus');
       phase = 'preview-stop'; await keyboardActivate(page, page.getByRole('button', { name: 'Stop input preview', exact: true }));
       assert.equal(await page.locator('.devices-enrolled-value').count(), 0);
       assert.equal(await page.getByRole('button', { name: 'Approve selected input preview', exact: true }).count(), 0);
       await first.waitForFunction(() => globalThis.__enrolledOwnedSource.metrics().publisher.active === 0);
       checks.push('terminal-preview-stop-releases-held-values-and-source-slots');
-      phase = 'remove-confirm'; await keyboardActivate(page, page.getByRole('button', { name: 'Remove resource device', exact: true }));
-      await keyboardActivate(page, page.getByRole('button', { name: 'Confirm resource removal', exact: true }));
+      phase = 'remove-confirm'; await keyboardActivate(page, page.getByRole('button', { name: 'Remove device', exact: true }));
+      await keyboardActivate(page, page.getByRole('button', { name: 'Confirm device removal', exact: true }));
       await page.getByText('Device removed. Its connection and previews are closed here.', { exact: true }).waitFor();
       await first.waitForFunction(() => ['failed', 'disconnected'].includes(globalThis.__enrolledOwnedSource.metrics().state));
       assert.equal(await page.getByRole('heading', { name: 'Inspect Owned software meter A', exact: true }).count(), 0); checks.push('confirmed-removal-actual-peer-loss-and-no-retained-values');
@@ -189,14 +189,14 @@ async function enrollmentJourney() {
       checks.push('absolute-preview-expiry-without-new-approval-or-input-access');
       phase = 'source-loss'; await second.evaluate(() => globalThis.__enrolledOwnedSource.stop());
       await page.getByText('This device stopped responding. Check the other screen, then prepare a fresh invitation.', { exact: true }).waitFor();
-      assert.equal(await page.getByRole('button', { name: 'Confirm resource removal', exact: true }).count(), 0); checks.push('actual-source-loss-and-explicit-recovery');
+      assert.equal(await page.getByRole('button', { name: 'Confirm device removal', exact: true }).count(), 0); checks.push('actual-source-loss-and-explicit-recovery');
       phase = 'viewports'; for (const width of [320, 390, 1280]) { await page.setViewportSize({ width, height: 844 }); await noOverflow(page); }
       const targets = await page.locator('.devices-enrolled button:not([disabled]), .devices-enrolled a').evaluateAll(elements => elements.filter(element => element.getBoundingClientRect().height > 0).map(element => ({ height: element.getBoundingClientRect().height, width: element.getBoundingClientRect().width })));
       assert.ok(targets.every(value => value.height >= 44 && value.width >= 44), 'enrollment task has native44px action targets');
       const reduced = await add.evaluate(element => ({ transition: getComputedStyle(element).transitionDuration, animation: getComputedStyle(element).animationName }));
       assert.deepEqual(reduced, { transition: '0s', animation: 'none' }); checks.push('keyboard-focus-responsive-reduced-motion');
       phase = 'explicit-stop'; const third = await enroll('Owned software meter C'); await approvePreview();
-      await keyboardActivate(page, page.getByRole('button', { name: 'Stop resource connections', exact: true }));
+      await keyboardActivate(page, page.getByRole('button', { name: 'Stop device connections', exact: true }));
       await third.waitForFunction(() => ['failed', 'disconnected'].includes(globalThis.__enrolledOwnedSource.metrics().state));
       assert.equal(await page.locator('.devices-enrolled-value').count(), 0);
       await add.click({ trial: true });

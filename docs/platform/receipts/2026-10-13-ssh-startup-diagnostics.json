@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "pass-selected-diagnostics-and-single-cleanup; final-gates-bound-separately",
+  "tasks": [
+    "N15",
+    "Q10"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceSha256": {
+    "examples/terminal-resources/disposable-host.mjs": "f14370ef7b871fe6accc119825eda22e52f124f27a5b00769ab66984df1fe0ac",
+    "tests/ssh-startup-diagnostics.test.ts": "f3a13fda6ef2c6c3228635cca720fb6844d800c1b79922ce21139d4c3bbe54b7"
+  },
+  "firstFullGateFailure": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/failed-gates",
+    "candidateRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/candidate-failed-ssh",
+    "unit": {
+      "tests": 3330,
+      "pass": 3329,
+      "fail": 1
+    },
+    "failure": "Owned SSH startup unavailable before cancellation test body",
+    "cause": "UNKNOWN",
+    "clearing": "UNVERIFIED; later selected passes do not reconstruct or clear original cause",
+    "buildAndRendered": "UNRUN",
+    "separateScopedRepairReceipt": "2026-10-13-ssh-startup-diagnostics.json"
+  },
+  "repairs": [
+    "Safe fixed startup phase/native status/error-code/readiness outcome snapshot before requested teardown; no raw paths, credentials, output or account data",
+    "Failed listener startup calls and awaits the existing stop owner instead of racing a second removal/decrement path"
+  ],
+  "genuineRegressions": {
+    "diagnosticsOld": {
+      "tests": 1,
+      "fail": 1,
+      "failure": "Actual sshd rejects deliberately invalid owned configuration; original error lacks cause; root removed",
+      "log": "ssh-diagnostics-old-red.log"
+    },
+    "initialListenerControl": {
+      "pass": 1,
+      "scope": "Readiness notice held; root removal only. Does not prove one cleanup owner. No false old-red claim.",
+      "log": "listener-cleanup-first-control-green.log"
+    },
+    "duplicateCleanupOld": {
+      "tests": 1,
+      "fail": 1,
+      "actualOwnedRmCalls": 2,
+      "expected": 1,
+      "log": "listener-cleanup-old-red.log"
+    },
+    "finalChangedClosure": {
+      "tests": 57,
+      "pass": 57,
+      "fail": 0,
+      "skipped": 0,
+      "includes": "14mapcompatibility+14priorsecurity+2newSSHstartup+27existingterminal checks",
+      "log": "final-focused.log"
+    }
+  },
+  "producerControls": "Actual native sshd validates actual owned configuration; genuine daemon/readable data is drained while readiness delivery is withheld. Real filesystem rm calls execute and all observed returned promises join. No synthetic bytes/native events or forged closure.",
+  "nativeBoundsUnchanged": {
+    "versionAndKeygenAndConfigMs": 1000,
+    "listenerMs": 1000,
+    "hostLifetimeMs": 15000,
+    "commandMs": 2500,
+    "stdioAndAdmissions": "Unchanged SSH_HOST_LIMITS; no retries/prewarm/observer enabled"
+  },
+  "scope": "Selected macOS arm64 disposable OpenSSH10.2p1 software fixture diagnostics and owned startup cleanup only. No historical startup cause/clearing, general IPC, installed agent, physical/remote SSH, another OS or fullN15/Q10/support acceptance. Later fullgate nativefailures are separate and retained; this receipt does not claim their cause or clearing.",
+  "custody": {
+    "firstFailedRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/failed-gates",
+    "revisedFocusedRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/revised-focused",
+    "acceptanceRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/acceptance",
+    "gates": "gates/results.json",
+    "binding": "acceptance.json",
+    "review": "independent-review.json"
+  },
+  "tally": {
+    "total": 272,
+    "complete": 123,
+    "open": 149
+  },
+  "support": {
+    "rows": 69,
+    "accepted": 0
+  },
+  "fullObjectiveComplete": false,
+  "noPublication": true,
+  "noVm": true,
+  "revisedFullGateFailure": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/revised-failed-gates",
+    "candidateTree": "d8ca98a163cd5ab2a9037e26283402f2fe11eebe",
+    "unit": {
+      "tests": 3336,
+      "pass": 3320,
+      "fail": 16
+    },
+    "failures": "11discardedMQTTexecutable-discovery outcomes,1IRhello,2crosshost,2controlledhelp outcomes",
+    "cause": "UNKNOWN; sharedcause not established; admissionexit17 defect is separatelyreproduced",
+    "clearing": "UNVERIFIED; laterpassing checks do not reconstruct or clear original causes",
+    "buildAndRendered": "UNRUN"
+  }
+}

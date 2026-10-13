@@ -1,29 +1,22 @@
 import assert from 'node:assert/strict';
-import { spawn, spawnSync } from 'node:child_process';
+import { spawn } from 'node:child_process';
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { createServer, connect as tcpConnect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { runMqttConnectorExample } from '../examples/mqtt-connector/caller.mjs';
-
-function pickBinary() {
-  const candidates = [process.env.MOSQUITTO_BIN, '/opt/homebrew/opt/mosquitto/sbin/mosquitto', '/usr/sbin/mosquitto', '/usr/bin/mosquitto', 'mosquitto'].filter(Boolean);
-  for (const candidate of candidates) {
-    const result = spawnSync(candidate, ['-h'], { encoding: 'utf8', timeout: 2000 });
-    if (result.stdout?.includes('mosquitto version')) return { path: candidate, version: result.stdout.trim().split('\n')[0] };
-  }
-  throw new Error('A local Mosquitto executable is required; no service or image is started or downloaded.');
-}
+import { findMqttBrokerBinary as pickBinary } from './mqtt-broker-binary.mjs';
 async function unusedLoopbackPort() {
   const server = createServer();
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   const address = server.address(); assert.ok(address && typeof address === 'object');
   await new Promise(resolve => server.close(resolve)); return address.port;
 }
-async function waitReady(child, port, timeoutMs = 4000) {
+async function waitReady(child, port, startup, timeoutMs = 4000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
+    if (startup.error) throw startup.error;
     if (child.exitCode !== null) throw new Error('Owned Mosquitto process exited before readiness.');
     const ready = await new Promise(resolve => {
       const socket = tcpConnect(port, '127.0.0.1');
@@ -31,6 +24,7 @@ async function waitReady(child, port, timeoutMs = 4000) {
       socket.once('error', () => { socket.destroy(); resolve(false); });
       setTimeout(() => { socket.destroy(); resolve(false); }, 150).unref();
     });
+    if (startup.error) throw startup.error;
     if (ready) return;
     await new Promise(resolve => setTimeout(resolve, 40));
   }
@@ -47,19 +41,27 @@ export async function startOwnedMqttBroker() {
   const append = chunk => { log = (log + chunk.toString('utf8')).slice(-8192); };
   child.stdout.on('data', append); child.stderr.on('data', append);
   const exited = new Promise(resolve => child.once('exit', (code, signal) => resolve({ code, signal })));
-  try { await waitReady(child, port); }
-  catch (error) { child.kill('SIGTERM'); await exited; await rm(directory, { recursive: true, force: true });
+  const nativeClosed = new Promise(resolve => child.once('close', resolve));
+  const startup = { error: undefined };
+  child.once('error', error => { startup.error = error; });
+  try { await waitReady(child, port, startup); }
+  catch (error) { child.kill('SIGTERM'); await nativeClosed; await rm(directory, { recursive: true, force: true });
     throw new Error(`${error instanceof Error ? error.message : 'broker-start-failed'} ${log.slice(-2000)}`); }
-  let closed = false;
+  let closing;
   return Object.freeze({ endpoint: `mqtt://127.0.0.1:${port}`, version: binary.version, pid: child.pid,
     async close() {
-      if (closed) return; closed = true;
-      if (child.exitCode === null) {
-        child.kill('SIGTERM');
-        const outcome = await Promise.race([exited, new Promise(resolve => setTimeout(() => resolve(undefined), 1500))]);
-        if (!outcome && child.exitCode === null) { child.kill('SIGKILL'); await exited; }
-      }
-      await rm(directory, { recursive: true, force: true });
+      if (!closing) closing = (async () => {
+        let timer;
+        try {
+          if (child.exitCode === null && child.signalCode === null) {
+            child.kill('SIGTERM');
+            const outcome = await Promise.race([exited, new Promise(resolve => { timer = setTimeout(() => resolve(undefined), 1500); })]);
+            if (!outcome && child.exitCode === null && child.signalCode === null) { child.kill('SIGKILL'); await exited; }
+          }
+        } finally { if (timer) clearTimeout(timer); await nativeClosed; }
+        await rm(directory, { recursive: true, force: true });
+      })();
+      return closing;
     },
     logs: () => log,
   });

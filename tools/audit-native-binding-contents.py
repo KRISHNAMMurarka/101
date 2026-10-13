@@ -142,9 +142,9 @@ def workspace_variants(roots):
         logical = os.path.abspath(value)
         require(logical != os.path.sep, "invalid-arguments")
         try:
-            real = os.path.realpath(logical, strict=True)
+            real = str(Path(logical).resolve(strict=True))
             require(Path(real).is_dir(), "invalid-arguments")
-        except OSError:
+        except (OSError, RuntimeError):
             raise Refusal("invalid-arguments") from None
         variants.update((logical, real))
     require(len(variants) <= LIMITS["workspaceVariants"], "invalid-arguments")

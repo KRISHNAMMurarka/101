@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "Local sharing pad Enter activation and exposed pressed state pass44 actual Chromium/WebKit checks and24 selected task checks; final integration acceptance pending",
+  "tasks": [
+    "U09",
+    "U10",
+    "Q05"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "8eeeed010613d3d039bd4d75c229523903a028b7",
+  "sourceTree": "d491256851d246c0bf704a37b8ada97457a48c23",
+  "sourceSha256": {
+    "app/sharing/SharingView.tsx": "80093e7c0337f036e9256d129ea4f6025c0dedbbe3a58eb6b3b349973465acfb",
+    "tools/qa-sharing-flow.mjs": "401a388da3cb2021c4db2464d5695d4db2b3a9b5f46103f007804e9d570ecb59"
+  },
+  "runtimeBuildTree": "f7d4477e8e93546694dcd9dd0baf30d8361b49f7",
+  "buildLogSha256": "575205d039b0c5c51e207976b67f479a04f9bf2301ae954761cda1a352ad2951",
+  "repair": "Reuse the connected sharing pad native button activation pattern: Enter or non-pointer button activation toggles only an owned pad; aria-pressed reflects delivered state; plain Enter guidance added.",
+  "genuineOldRed": {
+    "builtTree": "d5c4d9a452b36e2b9bb78eb9d8ad02fa08e34dab",
+    "actualTrustedEnterClickDetail": 0,
+    "held": false,
+    "ariaPressed": null,
+    "proof": "old-red.json and old-red.log in custody ref"
+  },
+  "native": {
+    "engines": {
+      "chromium": "149.0.7827.55",
+      "webkit": "26.5"
+    },
+    "checks": 44,
+    "pass": 44,
+    "fail": 0,
+    "pageErrors": 0,
+    "foreignRequests": 0,
+    "sourceAndDependencyHashesMatched": true,
+    "scope": "Actual same-page native keyboard/pointer, public SDK local input ownership/runtime effects. Accelerated trusted clock and synthetic blur are explicitly controlled lifecycle fixtures. No remote identity, observer distribution, phones, OS cursor, hardware or named screen reader qualification.",
+    "cleanup": {
+      "serverForced": false,
+      "serverExitCode": -15,
+      "serverJoined": true,
+      "listenerAbsent": true
+    }
+  },
+  "selectedTaskTests": {
+    "tests": 24,
+    "pass": 24,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "preserved": [
+    "Pointer and Space press/release behavior",
+    "Consent and input ownership checks",
+    "Transfer, revoke, disabled-pad and teardown boundaries",
+    "Existing input admission rate and release heartbeat",
+    "Existing grant duration, clock and native deadline limits",
+    "No assistive technology detection or new persistence"
+  ],
+  "review": "No introduced Critical, Important or Minor findings after correcting the pointer-release observation; independent read-only review",
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/sharing-pad-browser",
+  "scope": "PARTIAL U09/U10/Q05 local sharing interaction repair. Named screen reader, remote/hardware journeys, whole state matrix and exact full integration remain open",
+  "supportRows": []
+}

@@ -117,7 +117,7 @@ export default function SharingView() {
       </section>
       <section aria-labelledby="sharing-controls-title">
         <h2 id="sharing-controls-title">Controls on this screen</h2>
-        <p>Use the arrow keys to move. Hold Space to press and release it to let go. You can also drag the pad or use the buttons.</p>
+        <p>Use the arrow keys to move. Hold Space to press and release it to let go. Press Enter to press or release. You can also drag the pad or use the buttons.</p>
         <label className={styles.duration}>Sharing duration <select aria-label="Sharing duration" value={duration} onChange={event => setDuration(Number(event.target.value) as 30 | 60)}><option value="30">30 seconds</option><option value="60">60 seconds</option></select></label>
         <div className={styles.controls}>
           {snapshot.recipients.map(recipient => {
@@ -131,7 +131,8 @@ export default function SharingView() {
               <button disabled={!recipient.available || !allowed[recipient.id] || snapshot.slots.some(slot => slot.id === selected && (slot.owner?.sourceId === recipient.id || !!slot.request)) || snapshot.remainingRequests === 0 || snapshot.remainingActivationAttempts === 0} onClick={() => {
                 run(task => { task.request(recipient.id, selected, duration, allowed[recipient.id]); }, `sharing-approve-${selected}`); setAllowed(old => ({ ...old, [recipient.id]: false }));
               }}>Request sharing for {recipient.label}</button>
-              <button type="button" className={styles.pad} disabled={!owned} aria-label={`${recipient.label} input pad`} aria-disabled={!owned}
+              <button type="button" className={styles.pad} disabled={!owned} aria-label={`${recipient.label} input pad`} aria-disabled={!owned} aria-pressed={held}
+                onClick={event => { if (event.detail === 0 && owned) task.current?.contact(recipient.id, !held); }}
                 onBlur={() => task.current?.releaseInput(recipient.id)}
                 onKeyDown={event => {
                   if (!owned) return;

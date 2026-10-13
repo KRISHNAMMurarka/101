@@ -1053,6 +1053,18 @@ test('SDK contents rejects more than4explicit workspace roots', () => {
     const result = f.run({ roots }); assert.equal(result.status, 1); assert.equal(JSON.parse(result.stdout).reason, 'invalid-arguments');
   } finally { f.close(); }
 });
+for (const shape of ['missing', 'symlink-loop'] as const) {
+  test(`SDK contents refuses a ${shape} workspace root without exposing it`, () => {
+    const f = fixture(), workspace = join(f.root, 'workspace');
+    try {
+      if (shape === 'symlink-loop') symlinkSync(workspace, workspace);
+      const result = f.run({ roots: [workspace] });
+      assert.equal(result.status, 1); assert.equal(result.signal, null); assert.equal(result.error, undefined);
+      assert.equal(JSON.parse(result.stdout).reason, 'invalid-arguments');
+      assert.ok(!result.stdout.includes(f.root)); assert.ok(!result.stderr.includes(f.root));
+    } finally { f.close(); }
+  });
+}
 test('SDK contents QA binds actual child verdict and keeps sentinel output untouched', () => {
   const f = fixture(), output = join(f.root, 'qa-owned');
   try {

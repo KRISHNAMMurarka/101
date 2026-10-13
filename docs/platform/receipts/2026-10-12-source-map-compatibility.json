@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-12",
+  "result": "pass-targeted-local-compatibility; final-candidate-gates-and-review-bound-separately",
+  "tasks": [
+    "S16",
+    "Q10",
+    "K11"
+  ],
+  "sourceBase": {
+    "head": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+    "tree": "c242026513405ed83399b59ee91220d55dfc3814"
+  },
+  "sourceSha256": {
+    "package.json": "74150afc29fdc26bb36e116f040d9542ee74f4f3dce62380276e2978ba89afe0",
+    "package-lock.json": "9cd5088b365c5f202b495f3a092499152ef1a8e6aa94281d13914c883c1410d1",
+    "eslint.config.mjs": "0f2a7e160b224d043b8368f087f9d86a1de53bce158c148ab055fa137064bb11",
+    "THIRD_PARTY_LICENSES.json": "e87d6c9a474e8f8b3515ffab9ad4e998d150005571bbf6ff99d89b6bc36fc20b",
+    "tests/source-map-compatibility.test.ts": "619efa53b95307c0243f09bc2fa59ea4d63c61d68ecfa161ae1822009db9dde3",
+    "tools/build-local-source-map.py": "f8baead3c498cd45499f14086975501f79ced5bae5f68302b9a4874334dd4202",
+    "vendor/README.md": "e423498fcc8c2afc7d0af232644f3a10716bee75003982aa4ff850f6862928b6",
+    "vendor/source-map-js-1.2.2+101.1.tgz": "84b89fa3277a1d5a1028887184c0df2d6c0c335d43a6a7df330829b45674291e",
+    "vendor/source-map-js/lib/source-map-generator.js": "c72caf67113aad3a72eaa2462a6c0ea0fde25fded25a65b3554c70185952f132",
+    "vendor/source-map-js/lib/source-map-consumer.js": "5de8017ec996f37691abc102db3c6759a89f12a0ad3bc5e1e30d5464a0ce9e61",
+    "vendor/source-map-js/package.json": "5671b2ab4cffec2f129103cbd99a40aa07b905313c0363b4c5b96b0243ee13f1",
+    "vendor/source-map-js/LICENSE": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd",
+    "vendor/source-map-js/NOTICE.101": "9a69fce61dac67859d6a79fa0b5ea5a1220459b4b6f7630614a4dc43a150cc1e"
+  },
+  "upstream": {
+    "version": "1.2.2",
+    "resolved": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.2.tgz",
+    "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==",
+    "license": "BSD-3-Clause",
+    "engines": {
+      "node": ">=0.10.0"
+    }
+  },
+  "localArtifact": {
+    "version": "1.2.2+101.1",
+    "archive": "vendor/source-map-js-1.2.2+101.1.tgz",
+    "sha256": "84b89fa3277a1d5a1028887184c0df2d6c0c335d43a6a7df330829b45674291e",
+    "integrity": "sha512-MUyuZsODlh6gPNA+fVLQuLZEH9jHm3kuFBDrTj5jB5qxcr7k8niGAFaIVGM/YudkwO1HEPZwGu4RmnsW1rzrXw==",
+    "payloadFiles": 19,
+    "privateLocalFork": true,
+    "notUpstreamRelease": true,
+    "ordinaryInstalledFiles": true,
+    "rootDirectFileDependencyAndReferencedOverride": true,
+    "freshPortableOfflineInstallMatched": true,
+    "rebuildByteIdentical": true,
+    "upstreamCopyrightAndBSDLicensePreserved": true,
+    "notice": "vendor/source-map-js/NOTICE.101",
+    "freshPortableActualPostcssVersion": "8.5.26",
+    "freshPortableActualControls": 4,
+    "sameUnreleasedVersionRevisedBeforeFirstIntegration": true
+  },
+  "repairs": [
+    "Absent sourceRoot is valid during indexed conversion",
+    "Zero-column and same-line section boundaries select the correct section",
+    "First local line receives its section column; later lines do not",
+    "Nested reverse lookup delegates through the public consumer and leaves absent positions null",
+    "First mapping name at index0 survives flattened iteration/conversion",
+    "Omitted original source content remains optional without altering the producer fixture",
+    "Generated-only pure/mixed/nested indexed mappings retain null sources and survive actual no-root PostCSS conversion"
+  ],
+  "regressions": {
+    "originalPublished": {
+      "tests": 9,
+      "pass": 2,
+      "fail": 7,
+      "log": "old-red.log"
+    },
+    "firstTargetedGreen": {
+      "tests": 23,
+      "pass": 23,
+      "log": "current-green.log",
+      "note": "Before additional named-map test"
+    },
+    "nameOriginal": {
+      "tests": 1,
+      "fail": 1,
+      "log": "name-old-red.log"
+    },
+    "optionalContentExposed": {
+      "tests": 24,
+      "pass": 23,
+      "fail": 1,
+      "log": "final-focused.log"
+    },
+    "finalTargeted": {
+      "tests": 24,
+      "pass": 24,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "log": "final-focused-corrected.log",
+      "includes": "10new mapping/build-consumer checks plus14existing dependency security checks; actual no-root/projectTailwind inline and ordinarylocal.map consumers"
+    },
+    "generatedOnlyOriginalLocal": {
+      "tests": 4,
+      "pass": 0,
+      "fail": 4,
+      "log": "generated-old-red.log",
+      "source": "Failed candidate26b6e0e private101.1 originalartifact c93db0bcaa08dc3dbf7fb802547d72eda24d8d2502ca8607f6206eebd51356e8"
+    },
+    "revisedTargeted": {
+      "tests": 57,
+      "pass": 57,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "log": "final-focused.log",
+      "includes": "14mapcompatibility+14priorsecurity+2newSSHstartup+27existingterminal checks"
+    }
+  },
+  "preservedImplementationFailures": [
+    "Relative override ENOENT from nested dependency directory; fixed with root file dependency/$spec reference after actual portable fixture",
+    "Intermediate lint sees retained old upstream scratch JS; preserve then remove before unfiltered final gate, no broad outputs ignore",
+    "Two guarded string edits abort before changing code; contextual fromSourceMap hunk resolves edit selection. One dependent unchanged-source rebuild/install ran after first guard error and supplies no repair evidence.",
+    "Portable actualPostCSS install lacks cached registrymetadata; exact current4entry rootlock subset allows ordinary offline npmci without metadata fetch"
+  ],
+  "securityBounds": "Original1.2.2 offset validation,10million line bound and accumulated nested offset rejection unchanged; authentic finite JSON malformed/excessive controls pass. No exhaustive time/memory bound or perfect-security claim.",
+  "dependencyPreservation": {
+    "onlySourceMapPackageChanged": true,
+    "otherPinnedManifestsByteIdentical": 1018,
+    "noneMissing": true,
+    "hubServerIntentionalXmldom0912Preserved": true
+  },
+  "legal": {
+    "complete": false,
+    "lockedPackages": 1084,
+    "missingPackages": 116,
+    "packagesWithoutText": 60,
+    "distinctTexts": 388,
+    "textBytes": 804426,
+    "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/acceptance",
+    "focusedRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/focused",
+    "rawLogsAndSources": "All first failures, package-manager outputs, original archive, partial artifacts and fixtures retained before owned scratch removal",
+    "revisedFocusedRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/revised-focused",
+    "nativeInvestigationRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-investigation"
+  },
+  "finalAcceptance": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/acceptance",
+    "gates": "gates/results.json",
+    "review": "independent-review.json",
+    "binding": "acceptance.json"
+  },
+  "scope": "Selected local installed build-tool indexed-map compatibility and reproducible ordinary dependency delivery only. No fresh seven-package SDK/Node22/browser/native/physical release/support acceptance; wider lower-trust producer provenance and security qualification remain open. Existing protocol/native prerequisites not repaired. Indexed allGeneratedPositionsFor and explicit sourceMapURL APIs are unexpanded.",
+  "tally": {
+    "total": 272,
+    "complete": 123,
+    "open": 149
+  },
+  "support": {
+    "rows": 69,
+    "accepted": 0
+  },
+  "noNewServiceOrPublication": true,
+  "noVmUsed": true,
+  "fullObjectiveComplete": false,
+  "revisedDate": "2026-10-13",
+  "firstFullGateFailure": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/failed-gates",
+    "candidateRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/candidate-failed-ssh",
+    "unit": {
+      "tests": 3330,
+      "pass": 3329,
+      "fail": 1
+    },
+    "failure": "Owned SSH startup unavailable before cancellation test body",
+    "cause": "UNKNOWN",
+    "clearing": "UNVERIFIED; later selected passes do not reconstruct or clear original cause",
+    "buildAndRendered": "UNRUN",
+    "separateScopedRepairReceipt": "2026-10-13-ssh-startup-diagnostics.json"
+  },
+  "revisedFullGateFailure": {
+    "ref": "refs/codex/evidence/2026-10-12-source-map-compatibility/revised-failed-gates",
+    "candidateTree": "d8ca98a163cd5ab2a9037e26283402f2fe11eebe",
+    "unit": {
+      "tests": 3336,
+      "pass": 3320,
+      "fail": 16
+    },
+    "failures": "11discardedMQTTexecutable-discovery outcomes,1IRhello,2crosshost,2controlledhelp outcomes",
+    "cause": "UNKNOWN; sharedcause not established; admissionexit17 defect is separatelyreproduced",
+    "clearing": "UNVERIFIED; laterpassing checks do not reconstruct or clear original causes",
+    "buildAndRendered": "UNRUN"
+  },
+  "nextNativeAdmissionRepair": "2026-10-13-mqtt-broker-admission.json"
+}

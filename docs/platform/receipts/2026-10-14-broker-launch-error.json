@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "result": "Two actual launch-error regressions and two existing broker cleanup controls pass; full candidate integration pending",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "935bcdd34cf7269c7d7a8f63b83a2f9a303b5a09",
+  "sourceTree": "f1e4178a8b58f2bc007b43894da35adc64d4f11c",
+  "sourceSha256": {
+    "tools/qa-mqtt-connector.mjs": "1ffe842e2140a98eab0d41733ff72a3a17ebd4d335027da04f0d45b3f37d4f2c",
+    "tests/owned-broker-launch-error.test.ts": "b2a29f570579066c216e6417e50b246d05bd3dc080407d531599a39acd3262a8",
+    "tests/cross-host-workload.test.ts": "e1aae28a67fceec8ad5721d55551e8da8d80c1c927ee87405cdf52e7dd957e3b",
+    "tests/mqtt-broker-binary.test.ts": "ba9986023181385ca6cecce838292aa0d61ef6fe6ae8d003e2cec2d474999af7"
+  },
+  "repair": "Owned broker startup records genuine child errors and checks them both before and after its awaited TCP probe inside the original readiness loop. Actual rejection joins native close before configuration removal; another listener cannot turn failed launch into readiness. Original loop start and4000ms readiness remain unchanged; no broker admission, termination, protocol or grant limits changed.",
+  "genuineOldRed": {
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "scope": "Actual copied local Mosquitto passes strict help admission, then its owned copy disappears at native launch. The OS emits ENOENT; old helper raises an unhandled error. Nested parent is joined; observer parent removes its recorded owned configuration."
+  },
+  "invalidFirstControl": "Normalized temporary executable path mismatch missed the intended dispatch control. It is retained separately and contributes no bug proof. Its nested parent, native process/listener inspection and config cleanup are retained.",
+  "selected": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "broaderFocused": {
+    "summary": {
+      "tests": 19,
+      "pass": 15,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "failures": [
+      "Cross-host actual state transfer current-effect deadline",
+      "Cross-host first-bind cancellation readiness deadline",
+      "Existing-loader rejection control readiness deadline",
+      "Failed broker help did not reach its intended status17 within2000ms"
+    ],
+    "scope": "Rejected await-spawn variant; unchanged cross-host/probe timing failures retained. Host diagnostic captured no child loader milestone before native SIGTERM, with cleanup counts zero and fixtures removed. Not exact new-clock candidate acceptance."
+  },
+  "newHelpDiagnosticSelected": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "diagnostics": "Existing loader and failed-help controls print authentic bounded startup/probe data before assertions; unchanged failure predicates remain strict.",
+  "osDiagnostic": {
+    "nonAcceptance": true,
+    "actualProcessPid": 53314,
+    "sampleExitCode": 0,
+    "testPassed": true,
+    "nativeHelpElapsedMs": 1484.275583,
+    "observedStacks": "45 samples at _dyld_start and one in dyld debugger-notification preparation",
+    "limits": "One passive external OS sample can perturb the process; a passing sample does not establish earlier failure causes. Owned test and sampler joined, group absent."
+  },
+  "priorRejectedFull": {
+    "candidateTree": "4cabb5647d8594cedeb6ae496fa470dc7b97af1f",
+    "tests": 3359,
+    "pass": 3358,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "priorNineObservedPass": 9,
+    "gatesGreen": 7,
+    "failure": "New loader rejection control readiness deadline before intended branch",
+    "scope": "All nine formerly failing cases passed in this exact full run; historical cause/clearing and broader final acceptance remain open."
+  },
+  "nativeLimitsChanged": false,
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "fullIntegrationAcceptance": "PENDING",
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/broker-launch-error-focused",
+  "priorFullCustodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/nec32-environment-rejected-gates",
+  "scope": "PARTIAL Q05/Q13 actual owned broker launch-error settlement and bounded failed-control diagnostics. Broader focused native checks remain red; historical causes, exact full integration, complete lifecycle and physical/support qualification remain open.",
+  "supportRows": [],
+  "supersededVariant": {
+    "sourceCommit": "d1f3138b892421cd540b67ff6d54f7d073d664e4",
+    "reason": "Awaiting spawn before waitReady moved its starting clock; rejected before full validation. Error-state listener instead preserves the existing readiness-loop start.",
+    "selected": {
+      "tests": 3,
+      "pass": 3,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "fullValidationRun": false,
+    "integrated": false
+  },
+  "portReboundOldRed": {
+    "summary": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "sourceCommit": "b73634de84cad577fb2cfbb147352b7287466949",
+    "scope": "Actual ENOENT, separate real listener binds released port, old helper falsely returns broker handle; native close and listener cleanup joined. New helper rechecks error after awaited native TCP probe."
+  },
+  "reviewCorrections": [
+    "Genuine launch-error/port-rebound race repaired and four real-process controls pass",
+    "Q05/Q13 reciprocal task.records references added"
+  ],
+  "additionalRejectedFull": {
+    "candidateCommit": "c36f021e04a0ed2ec0b0019716d31525e4622476",
+    "candidateTree": "c345a3cfea013d7e9f3eac501e71a275ed9a119f",
+    "tests": 3360,
+    "pass": 3358,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "priorNineObservedPass": 8,
+    "gatesGreen": 6,
+    "failures": [
+      "Cross-host success startup2500ms",
+      "Existing-loader rejection control startup2500ms",
+      "Platform audit missing Q05/Q13 reciprocal record links"
+    ],
+    "scope": "Rejected earlier original-clock candidate; two Important review findings were not repaired in that frozen run. All owned gate groups absent and raw results retained."
+  },
+  "additionalFullCustodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/broker-launch-error-clock-rejected-gates",
+  "interruptedFocused": "First post-race repair run interrupted by human turn; its partial output not accepted. All recovered owned temp state inspected and cleaned before fresh four-control run."
+}

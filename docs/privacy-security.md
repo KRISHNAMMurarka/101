@@ -50,6 +50,14 @@ Watch companions collect wrist movement and nothing else. The watchOS app never 
 
 The gate separates root packages from the "depends on a vulnerable package" entries that resolve with them. Every review in [`security/build-tooling-advisories.json`](../security/build-tooling-advisories.json) names its advisory identifiers, dependency path, input boundary, reachable code and expiry. A package name alone cannot accept an advisory. Missing, malformed or additional identifiers fail the gate, as do expired reviews and records whose packages are no longer reported. [The current individual assessments and bounded ONVIF software checks](platform/receipts/2026-10-12-advisory-scopes-onvif.json) retain original failures and scope limits; wider independent security validation remains open under S16.
 
+The [local indexed source-map compatibility build](platform/receipts/2026-10-12-source-map-compatibility.json)
+retains upstream 1.2.2's offset guards while repairing valid-map conversion,
+section coordinates, mapping names and generated-only segments. Its explicit private version is
+`1.2.2+101.1`, with upstream provenance and original license notices. Actual
+PostCSS JSON consumers and fresh ordinary offline dependency delivery are scoped
+software checks; they do not establish every lower-trust producer, a stable
+support window or full S16/Q10 acceptance.
+
 Only `surface: "build-tooling"` may be accepted. Anything reaching the web runtime or the shipped iOS/Android bundle must be fixed, not reviewed. The player-facing runtime dependencies — Phaser, Three.js, Rapier, Howler, React, MediaPipe tasks-vision and the QR encoder — currently carry no advisories.
 
 ## Local network security

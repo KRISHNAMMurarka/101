@@ -102,10 +102,42 @@ test('unexpected actual runtime-host startup failure retains bounded clock miles
       assert.equal(diagnostic.hosts.length, 1);
       const host = diagnostic.hosts[0]!;
       assert.ok(host.spawnEnteredAt <= host.spawnReturnedAt && host.spawnReturnedAt <= host.closeAt);
-      assert.equal(host.signalCode, 'SIGKILL'); assert.ok(host.milestones.length <= 3);
+      assert.equal(host.signalCode, 'SIGKILL'); assert.ok(host.milestones.length <= 4);
       assert.deepEqual(diagnostic.cleanup, { processes: 0, callbacks: 0, sockets: 0, timers: 0, fixturesRemoved: true });
       return true;
     });
     assert.equal(observed.size, 1); assert.equal(closed, true, 'Actual owned host has closed before diagnostic rejection');
   } finally { Object.defineProperty(ChildProcess.prototype, 'spawn', descriptor); }
+});
+
+test('existing loader failure retains its actual earlier milestone and native close', async t => {
+  const { runCrossHostWorkloadQualification } = await runner();
+  const previous = process.env.CROSS_HOST_RESOLUTIONS;
+  const invalid = '101-unqualified-resolution-path';
+  process.env.CROSS_HOST_RESOLUTIONS = invalid;
+  try {
+    await assert.rejects(runCrossHostWorkloadQualification({ signal: new AbortController().signal }), (error: unknown) => {
+      t.diagnostic(JSON.stringify({ message: error instanceof Error ? error.message : 'Non-Error rejection',
+        startup: error instanceof Error ? (error as Error & { startupDiagnostics?: unknown }).startupDiagnostics : undefined }));
+      assert.ok(error instanceof Error);
+      assert.match(error.message, /native runtime host unavailable/i);
+      const diagnostic = (error as Error & { startupDiagnostics?: {
+        hosts: readonly { exitCode: number | null; signalCode: string | null; closeAt: number;
+          milestones: readonly { event: string; childAt: number; receivedAt: number }[] }[];
+        cleanup: { processes: number; callbacks: number; sockets: number; timers: number; fixturesRemoved: boolean };
+      } }).startupDiagnostics;
+      assert.ok(diagnostic);
+      assert.equal(diagnostic.hosts.length, 1);
+      const host = diagnostic.hosts[0]!;
+      assert.equal(host.exitCode, 1, 'The actual existing loader must execute and reject its invalid resolution path');
+      assert.equal(host.signalCode, null, 'Readiness deadline termination cannot stand in for this controlled loader failure');
+      assert.deepEqual(host.milestones.map(value => value.event), ['loader-body-enter']);
+      assert.ok(host.milestones.every(value => Number.isFinite(value.childAt) && value.receivedAt <= host.closeAt));
+      assert.deepEqual(diagnostic.cleanup, { processes: 0, callbacks: 0, sockets: 0, timers: 0, fixturesRemoved: true });
+      assert.equal(JSON.stringify(diagnostic).includes(invalid), false, 'Raw loader paths must stay out of public diagnostics');
+      return true;
+    });
+  } finally {
+    if (previous === undefined) delete process.env.CROSS_HOST_RESOLUTIONS; else process.env.CROSS_HOST_RESOLUTIONS = previous;
+  }
 });

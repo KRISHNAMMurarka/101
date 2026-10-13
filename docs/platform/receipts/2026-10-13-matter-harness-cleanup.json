@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "47 selected Matter checks pass, including genuine failed-body cleanup regression; exact full integration gates remain pending",
+  "tasks": [
+    "Q05"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceSha256": {
+    "packages/hub-server/src/matter-ws-switch.test.ts": "84a4d1b6c16ddb3c248043e9ad6ef8082728e72baf9bcfab0cedfc439cf96dc3",
+    "tests/matter-harness-cleanup.test.ts": "642f059ac50a0519dcb451c212dd2a7116699c376f19584efc2c866722b8a296"
+  },
+  "repair": "Failure-safe teardown in pre-upgrade Matter socket ownership test; preserve every assertion and native deadline, forward held genuine close once, join connector/start/stop, destroy accepted peers and close owned server",
+  "genuineOldRed": {
+    "test": "tests/matter-harness-cleanup.test.ts",
+    "injectedRealBodyFailure": true,
+    "forcedTerminationNeeded": true,
+    "log": "matter-harness-cleanup-old-red.log"
+  },
+  "currentSelected": {
+    "tests": 47,
+    "pass": 47,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "review": "No Critical or Important introduced findings on9509d01e; read-only independent review",
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/resumed-native-diagnosis",
+  "nativeLimitsChanged": false,
+  "productionProtocolChanged": false,
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "scope": "One actual pre-upgrade test cleanup path and its genuine assertion-failure regression; no general native, full lifecycle, physical or support acceptance",
+  "supportRows": []
+}

@@ -20,6 +20,9 @@ const eslintConfig = defineConfig([
     "apps/controller-native/ios/**",
     "apps/watch-wear/**/build/**",
     "public/mediapipe/**",
+    // This pinned third-party source retains upstream style; behavioral changes
+    // are exercised through the actual installed archive and consumer tests.
+    "vendor/source-map-js/**",
     "apps/controller-native/metro.config.cjs",
     "apps/desktop-hub/dist/**",
     "apps/desktop-hub/src-tauri/target/**",

@@ -5,7 +5,7 @@ import { createZigbee2MqttBridge } from '../../packages/hub-server/src/zigbee2mq
 const profile=Object.freeze({id:'example:zigbee2mqtt-switch',revision:1,ieeeAddress:'0x0000000000000007',model:'WXKG01LM',baseTopic:'zigbee2mqtt'});
 const scope=Object.freeze({principalId:'owned-operator',applicationId:'zigbee-reported-switch-example',sessionId:'software-session'});
 function producer(endpoint){
-  const child=fork(new URL('./producer.mjs',import.meta.url),[endpoint],{stdio:['ignore','ignore','pipe','ipc']});let stderr='',next=0,closing;
+  const child=fork(new URL('./producer.mjs',import.meta.url),[endpoint],{execArgv:[],env:{NODE_ENV:'production'},stdio:['ignore','ignore','pipe','ipc']});let stderr='',next=0,closing;
   child.stderr.on('data',b=>{stderr=(stderr+b).slice(-4096);});
   const exit=new Promise((res,rej)=>{child.once('error',rej);child.once('exit',(code,signal)=>res({code,signal}));});
   const closed=new Promise(res=>child.once('close',res));void exit.catch(()=>{});

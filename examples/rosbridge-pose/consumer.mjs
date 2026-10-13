@@ -6,7 +6,7 @@ import { createDeviceRuntime, parseDeviceDescriptor } from '@101/connect';
 import { createRosbridgePoseConnector, ROSBRIDGE_POSE_PROFILE, ROSBRIDGE_POSE_VALUE_SCHEMA } from '../../packages/hub-server/src/rosbridge-pose-connector.ts';
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 export async function launchPeer(mode = 'normal') {
-    const child = fork(fileURLToPath(new URL('./peer.mjs', import.meta.url)), [mode], { stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
+    const child = fork(fileURLToPath(new URL('./peer.mjs', import.meta.url)), [mode], { execArgv: [], env: { NODE_ENV: 'production' }, stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
     // Install before readiness/callouts: exit does not settle owned stdio/IPC.
     const nativeClose = new Promise(resolve => child.once('close', resolve));
     let readyResolve, readyReject, closedResolve;

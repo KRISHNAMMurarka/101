@@ -29,6 +29,10 @@ function installHook(entries, observedRoot) {
 // Fixed child preload, independently checked public resolution table only. This
 // branch imports no compiler, creates no fixture and opens no native transport.
 if (new URL(import.meta.url).search === '?host-loader') {
+  // Observe the existing loader before its validation and host static imports.
+  // This timestamp excludes this loader's static builtin imports.
+  try { process.stderr.write(JSON.stringify({ kind: 'cross-host-startup', event: 'loader-body-enter', at: performance.now() }) + '\n'); }
+  catch { /* Advisory only; never change readiness or permission outcomes. */ }
   if (process.env.CROSS_HOST_RESOLUTIONS) {
     const path = process.env.CROSS_HOST_RESOLUTIONS;
     assert.ok(realpathSync(path) === path && /\/101-cross-host-exports-[A-Za-z0-9]+\/resolution\.json$/.test(path));

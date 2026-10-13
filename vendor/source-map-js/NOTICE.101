@@ -1,0 +1,12 @@
+101 local compatibility build: source-map-js 1.2.2+101.1
+
+Derived from the SHA512-pinned upstream source-map-js1.2.2 npm archive.
+Original Mozilla Foundation/contributor copyright and BSD-3-Clause conditions
+are retained in LICENSE and the unchanged source headers.
+
+Local changes preserve absent sourceRoot conversion, zero-column section
+selection, first-local-line column offsets, first mapping names and public
+nested reverse lookup. Optional original source content remains optional.
+Generated-only indexed mappings retain null sources during iteration/conversion.
+The upstream1.2.2 malformed and accumulated-offset checks are retained.
+This is a local101 build, not an upstream release or support promise.

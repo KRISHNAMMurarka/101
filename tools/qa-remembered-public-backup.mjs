@@ -95,7 +95,7 @@ async function arrive() {
   await page.waitForFunction(() => typeof globalThis.__VINEXT_RSC_ROOT__?.unmount === 'function'
     && typeof globalThis[Symbol.for('vinext.navigationRuntime')]?.functions?.notifyLinkNavigationStart === 'function'
     && globalThis.__VINEXT_RSC_PREFETCH_CACHE__ instanceof Map
-    && [...document.querySelectorAll('button')].some(button => button.textContent === 'Enroll resource device' && !button.disabled));
+    && [...document.querySelectorAll('button')].some(button => button.textContent === 'Pair a device' && !button.disabled));
   const arrival = await native(); report.nativeArrivals.push(arrival);
   // Framework URL digests are observed and joined, but supply no pairing key.
   for (const field of ['reads', 'writes', 'removes', 'clears', 'locks', 'identityCryptoCalls', 'peersCreated']) assert.equal(arrival[field], 0);
@@ -109,7 +109,7 @@ async function check(name) {
 }
 async function importReview(copy) {
   await press(page, 'Restore remembered names');
-  await page.getByRole('textbox', { name: 'Public metadata JSON', exact: true }).fill(copy);
+  await page.getByRole('textbox', { name: 'Copy of remembered names', exact: true }).fill(copy);
   await press(page, 'Review names to restore');
 }
 async function forget() {
@@ -236,20 +236,20 @@ try {
   page = await openPage(); report.phase = 'inert-arrival';
   await arrive();
   assert.equal(await raw(), null); await check('inert-arrival-no-remembered-read-write-lock-key-or-peer');
-  report.phase = 'actual-enrollment'; await press(page, 'Enroll resource device');
-  const invitation = page.getByRole('textbox', { name: 'Receiver invitation', exact: true }); await invitation.waitFor();
+  report.phase = 'actual-enrollment'; await press(page, 'Pair a device');
+  const invitation = page.getByRole('textbox', { name: 'Pairing invitation', exact: true }); await invitation.waitFor();
   source = await openPage(); await source.goto(fixturePage);
   const label = `Owned software past name ${engine}`;
   const offer = await source.evaluate(async ({ url, invitation, label }) => (await import(url)).startSource(invitation, label),
     { url: fixtureURL, invitation: await invitation.inputValue(), label });
-  await page.getByRole('textbox', { name: 'Complete resource offer', exact: true }).fill(offer); await press(page, 'Use resource offer');
-  const answer = page.getByRole('textbox', { name: 'Receiver answer', exact: true }); await answer.waitFor();
+  await page.getByRole('textbox', { name: 'Complete device reply', exact: true }).fill(offer); await press(page, 'Use device reply');
+  const answer = page.getByRole('textbox', { name: 'Pairing answer', exact: true }); await answer.waitFor();
   await source.evaluate(answer => globalThis.__rememberedSource.accept(answer), await answer.inputValue());
   const digest = page.locator('.devices-enrollment-digest'); await digest.waitFor();
   const compared = (await digest.textContent()).replace(/\s/g, ''); assert.match(compared, /^[a-f0-9]{64}$/);
   await source.waitForFunction(() => !!globalThis.__rememberedSource.comparison());
   assert.equal(await source.evaluate(() => globalThis.__rememberedSource.comparison()), compared);
-  await press(source, 'Confirm owned source comparison'); await press(page, 'The complete codes match'); await press(page, 'Use enrolled resource device');
+  await press(source, 'Confirm owned source comparison'); await press(page, 'The complete codes match'); await press(page, 'Use this device');
   await page.getByRole('heading', { name: `Inspect ${label}`, exact: true }).waitFor();
   await page.getByRole('heading', { name: 'software:counter', exact: true }).waitFor();
   await press(page, 'Remember this device in this browser'); assert.equal(await raw(), null);
@@ -261,26 +261,26 @@ try {
   const saved = await native(); assert.equal(saved.writes, 1); assert.equal(saved.locks, 1); assert.equal(saved.grants, 1);
   assert.equal((await source.evaluate(() => globalThis.__rememberedSource.metrics())).binds, 0);
   await check('actual-bilateral-native-p256-rtc-remember-only-closed-public-metadata');
-  report.phase = 'manual-export'; await press(page, 'Review public metadata export'); await outcome('reviewing');
-  assert.equal(await page.getByRole('textbox', { name: 'Reviewed public metadata JSON', exact: true }).count(), 0);
-  await press(page, 'Cancel metadata review'); assert.equal(await raw(), stored);
-  await press(page, 'Review public metadata export'); await press(page, 'Confirm public metadata copy'); await outcome('exported');
-  const copyBox = page.getByRole('textbox', { name: 'Reviewed public metadata JSON', exact: true });
+  report.phase = 'manual-export'; await press(page, 'Review copy of remembered names'); await outcome('reviewing');
+  assert.equal(await page.getByRole('textbox', { name: 'Reviewed copy of remembered names', exact: true }).count(), 0);
+  await press(page, 'Cancel name review'); assert.equal(await raw(), stored);
+  await press(page, 'Review copy of remembered names'); await press(page, 'Confirm copying remembered names'); await outcome('exported');
+  const copyBox = page.getByRole('textbox', { name: 'Reviewed copy of remembered names', exact: true });
   const copy = await copyBox.inputValue(); assert.equal(copy, stored);
   assert.equal(await copyBox.evaluate(element => element.readOnly && element === document.activeElement
     && element.selectionStart === 0 && element.selectionEnd === element.value.length), true);
-  await press(page, 'Close metadata copy'); assert.equal(await copyBox.count(), 0);
+  await press(page, 'Close copy'); assert.equal(await copyBox.count(), 0);
   await check('cancelled-export-inert-confirmed-copy-exact-public-fields-manual-selection-close');
   await importReview(copy); await outcome('not-empty'); assert.equal(await raw(), stored);
   assert.equal(await page.getByRole('button', { name: 'Confirm restore into empty list', exact: true }).count(), 0);
   await press(page, 'Cancel restore'); await check('nonempty-restore-refused-existing-bytes-preserved');
-  report.phase = 'connection-retirement'; await press(page, 'Stop resource connections');
+  report.phase = 'connection-retirement'; await press(page, 'Stop device connections');
   const stopped = await source.evaluate(() => globalThis.__rememberedSource.stop());
   assert.deepEqual(stopped, { rawPending: 0, timerArmed: false, state: 'disconnected', stopped: true, listeners: 0 });
   report.cleanup.sourceStopJoined = true; await page.waitForFunction(() => globalThis.__rememberedNative.snapshot().openPeers === 0);
   assert.equal(await page.locator('.devices-enrolled-value').count(), 0); await forget();
   report.phase = 'restore'; const beforeRestore = await native(), empty = await raw();
-  await importReview(copy); await press(page, 'Cancel metadata review'); assert.equal(await raw(), empty);
+  await importReview(copy); await press(page, 'Cancel name review'); assert.equal(await raw(), empty);
   await importReview(copy); const restoreStart = (await trace()).length;
   await press(page, 'Confirm restore into empty list'); await outcome('restored'); await expectWrite(restoreStart); assert.equal(await raw(), copy);
   assert.equal(await page.getByRole('heading', { name: `Inspect ${label}`, exact: true }).count(), 0);
@@ -295,9 +295,9 @@ try {
   assert.equal(await page.locator('.devices-enrolled-value').count(), 0);
   const reopened = await native(); assert.equal(reopened.identityCryptoCalls, 0); assert.equal(reopened.peersCreated, 0);
   await check('distinct-native-document-inert-then-explicit-stored-record-read-offline');
-  report.phase = 'changed-review'; await press(page, 'Review public metadata export'); await mutate(copy + ' ');
-  await press(page, 'Confirm public metadata copy'); await outcome('conflict'); assert.equal(await raw(), copy + ' ');
-  assert.equal(await page.getByRole('textbox', { name: 'Reviewed public metadata JSON', exact: true }).count(), 0);
+  report.phase = 'changed-review'; await press(page, 'Review copy of remembered names'); await mutate(copy + ' ');
+  await press(page, 'Confirm copying remembered names'); await outcome('conflict'); assert.equal(await raw(), copy + ' ');
+  assert.equal(await page.getByRole('textbox', { name: 'Reviewed copy of remembered names', exact: true }).count(), 0);
   await press(page, 'Show remembered devices'); await outcome('ready'); await forget();
   await importReview(copy); await mutate('{"schemaVersion":1,"devices":[]} ');
   await press(page, 'Confirm restore into empty list'); await outcome('conflict'); assert.equal(await raw(), '{"schemaVersion":1,"devices":[]} ');
@@ -330,7 +330,7 @@ try {
 } catch (cause) {
   retain(cause);
   try { if (page && !retired.has(page)) report.failurePageState = await page.evaluate(() => {
-    const button = [...document.querySelectorAll('button')].find(element => element.textContent === 'Enroll resource device');
+    const button = [...document.querySelectorAll('button')].find(element => element.textContent === 'Pair a device');
     const rect = button?.getBoundingClientRect(), style = button ? getComputedStyle(button) : undefined;
     const runtime = globalThis[Symbol.for('vinext.navigationRuntime')];
     return { url: location.pathname, readyState: document.readyState, hidden: document.hidden,

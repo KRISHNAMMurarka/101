@@ -42,6 +42,7 @@ for (const name of ['remote-clock-producer', 'remote-clock-caller']) copy(`examp
   .replaceAll("'../../packages/hub-server/src/mqtt-clock.ts'", "'./mqtt-clock.mjs'")
   .replaceAll("'../../packages/hub-server/src/mqtt-clocked-connector.ts'", "'./mqtt-clocked-connector.mjs'"));
 copy('tools/qa-mqtt-connector.mjs', 'qa-mqtt-connector.mjs', value => value.replace("'../examples/mqtt-connector/caller.mjs'", "'./caller.mjs'"));
+copy('tools/mqtt-broker-binary.mjs', 'mqtt-broker-binary.mjs');
 copy('tools/qa-mqtt-clocked-connector.mjs', 'qa-mqtt-clocked-connector.mjs', value => value
   .replaceAll("'../examples/mqtt-connector/remote-clock-caller.mjs'", "'./remote-clock-caller.mjs'")
   .replaceAll("'../examples/mqtt-connector/remote-clock-producer.mjs'", "'./remote-clock-producer.mjs'"));

@@ -202,31 +202,42 @@ finally {
     await p.close();
 } });
 test('pre-upgrade genuine TCP close remains owned independently', async (t) => {
-    const server = createServer(s => { s.on('error', () => { }); });
-    await new Promise<void>(r => server.listen(0, '127.0.0.1', r));
-    const address = server.address();
-    assert.ok(address && typeof address === 'object');
-    const x = connector('ws://127.0.0.1:' + address.port + '/ws');
+    const accepted = new Set<import('node:net').Socket>();
+    const server = createServer(s => { accepted.add(s); s.on('error', () => { }); s.once('close', () => accepted.delete(s)); });
+    let x: ReturnType<typeof connector> | undefined, finishing = false;
+    let starting: ReturnType<ReturnType<typeof connector>['start']> | undefined, stopping: Promise<void> | undefined;
     let release: () => void = () => { };
     const original = WebSocket.prototype.emit;
-    t.mock.method(WebSocket.prototype, 'emit', function (this: NativeWebSocket, name: string, ...args: unknown[]) { if (name === 'close') {
-        release = () => Reflect.apply(original, this, [name, ...args]);
-        return true;
-    } return Reflect.apply(original, this, [name, ...args]); });
-    const starting = x.start();
-    await until(() => x.c.status().rawSockets === 1);
-    const stopping = x.c.stop();
-    await until(() => x.c.status().rawTcpSockets === 0);
-    assert.equal(x.c.status().phase, 'retiring');
-    assert.equal(x.c.status().rawWsSockets, 1);
-    assert.equal((await x.start()).ok, false);
-    release();
-    await stopping;
-    await starting;
-    assert.equal(x.c.status().rawSockets, 0);
-    t.mock.restoreAll();
-    await x.c.close();
-    await new Promise<void>(r => server.close(() => r()));
+    try {
+        await new Promise<void>(r => server.listen(0, '127.0.0.1', r));
+        const address = server.address();
+        assert.ok(address && typeof address === 'object');
+        const selected = x = connector('ws://127.0.0.1:' + address.port + '/ws');
+        t.mock.method(WebSocket.prototype, 'emit', function (this: NativeWebSocket, name: string, ...args: unknown[]) { if (name === 'close') {
+            let delivered = false;
+            const deliver = () => { if (!delivered) { delivered = true; Reflect.apply(original, this, [name, ...args]); } };
+            if (finishing) deliver(); else release = deliver;
+            return true;
+        } return Reflect.apply(original, this, [name, ...args]); });
+        starting = selected.start();
+        await until(() => selected.c.status().rawSockets === 1);
+        stopping = selected.c.stop();
+        await until(() => selected.c.status().rawTcpSockets === 0);
+        assert.equal(selected.c.status().phase, 'retiring');
+        assert.equal(selected.c.status().rawWsSockets, 1);
+        assert.equal((await selected.start()).ok, false);
+        release();
+        await stopping;
+        await starting;
+        assert.equal(selected.c.status().rawSockets, 0);
+    } finally {
+        finishing = true; release();
+        const closing = x?.c.close();
+        for (const socket of accepted) socket.destroy();
+        await Promise.allSettled([starting, stopping, closing]);
+        t.mock.restoreAll();
+        if (server.listening) await new Promise<void>(r => server.close(() => r()));
+    }
 });
 test('private numeric tokens cannot be impersonated by native JSON objects', () => { assert.throws(() => decode(bytes(press.replace('"node_id":7', '"node_id":{"numeric":true,"lexeme":"7"}')))); });
 test('wrapped server-info cannot act as the initial unwrapped handshake', async () => { const p = await peer('wrapped'), x = connector(p.endpoint); try {

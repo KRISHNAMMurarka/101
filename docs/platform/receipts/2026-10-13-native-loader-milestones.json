@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-13",
+  "result": "Two actual native diagnostic regressions pass; prior full candidate remains rejected and new exact integration acceptance pending",
+  "tasks": [
+    "Q13"
+  ],
+  "sourceBase": "c6be6d519d7011f7aeb1d1232e39d1267ca5dede",
+  "sourceCommit": "a3baf71b74acfb4f0d95e62777d8d2d3405bc191",
+  "sourceTree": "7a4a4df8e6d25bc9a94fdd7048b9287fbf6b94d6",
+  "sourceSha256": {
+    "examples/cross-host-workload/cross-host-workload.ts": "945cc059862dadd97f79eff28d03f14a50d8b7b8122e1e2b193e2d541dd13763",
+    "tests/cross-host-workload.test.ts": "182970bf2b499f251a9ee7484554fdec39c57e5609627d83e6996cd0b12ed22a",
+    "tests/fixed-producer-arguments.test.ts": "dbda64152d51d4ed6edbf97001ceaa93c672d3de8ef5ea40519cb15bdcab34ce",
+    "tests/mqtt-broker-binary.test.ts": "d93110cf6e1c61728409b48890a38b1093676eef4ddc99729584dc4da11e203d",
+    "tools/mqtt-broker-binary.mjs": "a89520c5dc412d4423fb47a7e8bc9ebae521331c744da2b7795f22b65cb711be",
+    "tools/qa-cross-host-workload.mjs": "fdb837de9106e64f5bd5e4389bca0dae2879e542c6c3aab54e8da953111f2f72"
+  },
+  "repair": [
+    "Existing required cross-host loader emits one fixed loader-body-enter record before its resolution validation and host static imports",
+    "Parent retains at most four fixed unique numeric-clock records, with original4096 byte stderr bound and all readiness/operation limits preserved",
+    "Clock description separates child clock from parent receipt/delivery/scheduling and excludes loader builtin imports",
+    "Strict native broker help diagnostics retain the actual native probe PID; PID is not proof of ongoing liveness",
+    "Remove unused regression callback parameter reported by actual lint gate"
+  ],
+  "genuineOldRed": {
+    "loader": "loader-old-red.log: actual invalid resolution loader executed and naturally exited1 before host body, actual closure joined, but parent milestones empty",
+    "probePid": "probe-pid-old-red.log: actual native help producer exited17, real PID26179 observed, original diagnostics PID missing"
+  },
+  "selected": {
+    "command": "node --experimental-strip-types --test --test-concurrency=1 --test-name-pattern=existing loader failure|MQTT broker rejects tests/cross-host-workload.test.ts tests/mqtt-broker-binary.test.ts",
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "scope": "Controlled existing-loader rejection and strict failed-help diagnostic fidelity; no full native operation acceptance"
+  },
+  "retainedFailures": {
+    "priorFull": {
+      "tree": "95b451560487087249f76d84a400cd7a56372be0",
+      "unit": {
+        "tests": 3357,
+        "pass": 3343,
+        "fail": 14
+      },
+      "originalNine": {
+        "pass": 8,
+        "fail": 1
+      },
+      "failureFiles": [
+        "packages/hub-server/src/zigbee2mqtt-bridge.test.ts",
+        "tests/cross-host-workload.test.ts"
+      ]
+    },
+    "changedCrossHost": {
+      "tests": 6,
+      "pass": 3,
+      "fail": 3,
+      "log": "loader-selected-green.log",
+      "note": "Filename is not acceptance: two native operation starts and the loader control missed original2500ms prerequisite. Full failures retained. One actual first host reached all four milestones; subsequent host had no received loader marker before closure."
+    }
+  },
+  "timingScope": "Parent receipt includes transport and scheduling. Missing received marker does not identify exact child execution stage or underlying OS cause; loader-body-enter excludes its static builtin imports. No historical cause or clearing inference.",
+  "nonAcceptanceObservation": "Single Python/Popen existing native Mosquitto -h observation under current conditions returned0 with joined child; launcher differs from canonical Node spawnSync. No general timing, qualification or cause-clearing claim.",
+  "custodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-loader-focused",
+  "priorFullCustodyRef": "refs/codex/evidence/2026-10-12-source-map-compatibility/native-fixture-rejected-gates",
+  "nativeLimitsChanged": false,
+  "extraAcceptancePreloadAdded": false,
+  "prewarmRetryOrSkipAdded": false,
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "fullIntegrationAcceptance": "PENDING",
+  "scope": "PARTIAL Q13 bounded startup observability and lint repair. Prior full native failures, final exact candidate, physical/support and whole release qualification remain open.",
+  "supportRows": []
+}

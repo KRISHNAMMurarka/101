@@ -245,7 +245,7 @@ test('close removes only its exact owner abort listener', async () => {
 
 test('software child rejects a valid frame from a retired generation and token', async () => {
   const child = spawn(process.execPath, [new URL('../../../examples/ir-emitter/software-emitter.mjs', import.meta.url).pathname],
-    { stdio: ['pipe', 'pipe', 'pipe'] });
+    { env: { NODE_ENV: 'production' }, stdio: ['pipe', 'pipe', 'pipe'] });
   const lines = readline.createInterface({ input: child.stdout, crlfDelay: Infinity }); const messages: Record<string, unknown>[] = [];
   lines.on('line', line => messages.push(JSON.parse(line)));
   const wait = async (predicate: (value: Record<string, unknown>) => boolean) => {
@@ -263,5 +263,8 @@ test('software child rejects a valid frame from a retired generation and token',
       envelope: Buffer.from(compiled.envelope).toString('base64'), sha256: compiled.envelopeSha256 });
     assert.equal((await wait(value => value.operationId === 'stale-generation')).type, 'rejected'); send({ type: 'close' });
     await wait(value => value.type === 'closed'); await closed;
-  } finally { if (child.exitCode === null) child.kill('SIGKILL'); lines.close(); }
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) child.kill('SIGKILL');
+    await closed; lines.close();
+  }
 });
