@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { isSdkBrowserPublicFile } from './sdk-browser-inventory.mjs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
@@ -14,7 +15,7 @@ assert.ok(args.length === 1 && args[0] === '--source' || args.length === 4 && ar
 assert.equal(process.version, 'v24.14.0');
 const root = realpathSync(resolve(import.meta.dirname, '..')), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
-const owned = ['packages/device-web/src/browser-serial-switch.ts', 'packages/device-web/src/browser-serial-switch.test.ts', 'examples/browser-resources/serial-switch.ts', 'tools/qa-browser-serial-switch.mjs'];
+const owned = ['packages/device-web/src/browser-serial-switch.ts', 'packages/device-web/src/browser-serial-switch.test.ts', 'examples/browser-resources/serial-switch.ts', 'tools/qa-browser-serial-switch.mjs', 'tools/sdk-browser-inventory.mjs'];
 const fingerprints = Object.fromEntries(owned.map(path => [path, hash(readFileSync(join(root, path)))]));
 const installed = args[0] === '--installed';
 let consumer, scratch, dependencyPins, sourceTree, callerTree, immutableManifest, installedBytes, tarballPins, compilerDeclarationPins;
@@ -31,10 +32,10 @@ function bytes(path, limit = 4 * 1024 * 1024) {
   const value = readFileSync(path); assert.ok(value.byteLength <= limit); return value;
 }
 function json(path) { return JSON.parse(bytes(path)); }
-function gitBlobs(trees, paths) {
-  for (const path of paths) assert.ok(typeof path === 'string' && path.length <= 1024 &&
+function gitBlobs(inputs) {
+  for (const { paths } of inputs) for (const path of paths) assert.ok(typeof path === 'string' && path.length <= 1024 &&
     !/[\r\n\0]/.test(path) && !isAbsolute(path) && resolve(root, path).startsWith(root + sep));
-  const requests = [...new Set(trees)].flatMap(tree => [...new Set(paths)].map(path => tree + ':' + path));
+  const requests = [...new Set(inputs.flatMap(({ tree, paths }) => paths.map(path => tree + ':' + path)))];
   assert.ok(requests.length > 0 && requests.length <= 1024);
   const started = performance.now();
   const output = execFileSync('git', ['cat-file', '--batch'], { cwd: root, input: requests.join('\n') + '\n',
@@ -71,7 +72,7 @@ function checkInstalled(manifest) {
     assert.ok(Array.isArray(item.files) && item.files.length > 0 && item.files.length <= 1024);
     const paths = item.files.map(file => {
       assert.ok(typeof file.path === 'string' && file.path && !isAbsolute(file.path) && !file.path.split('/').includes('..'));
-      assert.ok(['LICENSE', 'README.md', 'package.json'].includes(file.path) || /^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path));
+      assert.ok(isSdkBrowserPublicFile(item.name, file.path));
       assert.match(file.sha256, /^[0-9a-f]{64}$/); assert.ok(Number.isSafeInteger(file.size) && file.size >= 0 && file.size <= 4 * 1024 * 1024); return file.path;
     });
     assert.equal(new Set(paths).size, paths.length);
@@ -99,7 +100,8 @@ try {
     sourceTree = manifest.source.tree; callerTree = args[3]; assert.match(sourceTree, /^[0-9a-f]{40}$/); assert.match(callerTree, /^[0-9a-f]{40}$/);
     assert.equal(packed.source.tree, sourceTree); assert.deepEqual(manifest.source.sha256, packed.source.sha256);
     dependencyPins = manifest.source.sha256; assert.ok(Object.keys(dependencyPins).length > 0 && Object.keys(dependencyPins).length <= 512);
-    const immutable = gitBlobs([sourceTree, callerTree], [...Object.keys(fingerprints), ...Object.keys(dependencyPins)]);
+    const immutable = gitBlobs([{ tree: sourceTree, paths: Object.keys(dependencyPins) },
+      { tree: callerTree, paths: [...Object.keys(fingerprints), ...Object.keys(dependencyPins)] }]);
     for (const [path, pin] of Object.entries(fingerprints)) assert.equal(hash(immutable.blobs.get(callerTree + ':' + path)), pin, 'Immutable caller mismatch: ' + path);
     assert.equal(dependencyPins[owned[0]], fingerprints[owned[0]], 'Manifest must include the actual new provider');
     for (const [path, pin] of Object.entries(dependencyPins)) {

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Installed input/output browser preflight repaired for actual current SDK inventory;24 scoped installed journeys and2 caller-integrity refusals pass.",
+  "tasks": [
+    "Q07",
+    "Q10",
+    "K12"
+  ],
+  "sourceBase": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+  "sourceCommit": "8e7da007d466704e845a62b723e719d60191b6bf",
+  "sourceTree": "b598ac57a31f43b7fa5e739819b25307716d3060",
+  "sourceSha256": {
+    "tools/sdk-browser-inventory.mjs": "c1abc7b1517eb4beb52f89fc5e6c8b462baa84d99c849fc0695c199fc672e6b7",
+    "tests/sdk-browser-inventory.test.ts": "70b1a0b57769073a07a1c8ddc25087a9369e8d83ff859dc207c600b66b6dd3db",
+    "tools/qa-browser-hid-switch.mjs": "7e087241e75a17f07d6e6aa3333cf3b4c3ca1a0818a8f97aecd7f36255608a07",
+    "tools/qa-browser-serial-switch.mjs": "987ac450a0be6865f2b28c667ac1e47e0c972f4fd225b7611267f05d9f50b422",
+    "tools/qa-browser-ble-switch.mjs": "8bc58c9e0edd9b9a2a7b45da2c333e86364c41a4b9f54c8e22d6ae0ab5cc3e5f",
+    "tools/qa-hid-switch-output.mjs": "849a1ad1cc121c4174dd8f82ea013089be58ac5ccb3971ed95d3881f744789e1",
+    "tools/qa-serial-switch-output.mjs": "24f820f8dc45d18dfd48d3def431be71b331a43428ca0bac300f68b5363bb018",
+    "tools/qa-ble-switch-output.mjs": "fd11c8fa8e7c2dc64cdbafd05ee41cc9ae29f95e0095eb1ac42e3b9d294b01fe"
+  },
+  "repairs": [
+    "Six existing HID/BLE/Serial input/output browser QA tools share a file-path classifier matching the canonical SDK auditor. Only the three approved connect mjs example paths are added; other packages and unknown example paths stay refused.",
+    "Immutable read frames pin caller tools/helper only against callerTree, while SDK dependencies are authenticated against producerTree and callerTree in one strict Git batch. Missing blobs, bounds, hashes, exact archive and installed inventories, compiler closure and containment checks remain."
+  ],
+  "oldFailures": {
+    "genuineInstalledPreflightFailures": 6,
+    "actualProducerCommit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "actualProducerTree": "81ea6d3e77e2b5a4aa6d6f2ba9445cffb4f88c1e",
+    "packages": 7,
+    "packedFiles": 411,
+    "rejectedActualPaths": [
+      "examples/onboarding/consumer.mjs",
+      "examples/onboarding/onboarding.mjs",
+      "examples/telemetry-owner.mjs"
+    ],
+    "unit": {
+      "tests": 6,
+      "pass": 3,
+      "fail": 3
+    },
+    "introducedHelperPinRegression": "Independent review found producer-tree lookup of a caller-only helper. A genuine mixed-tree rejection reproduced it before correction; strict caller-only pinning is now reviewed and checked with missing/altered-helper negative controls."
+  },
+  "unit": {
+    "tests": 6,
+    "pass": 6,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "qualification": {
+    "sdkProducerCommit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "sdkProducerTree": "81ea6d3e77e2b5a4aa6d6f2ba9445cffb4f88c1e",
+    "callerCommit": "8e7da007d466704e845a62b723e719d60191b6bf",
+    "callerTree": "b598ac57a31f43b7fa5e739819b25307716d3060",
+    "sdkPackages": 7,
+    "sdkSourceFiles": 186,
+    "packedFiles": 411,
+    "offlineNodeConsumerChecks": 7,
+    "sourceBrowserJourneys": 12,
+    "sourceBrowserCommit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "installedBrowserJourneys": 24,
+    "installedCases": [
+      [
+        "hid-input",
+        4
+      ],
+      [
+        "serial-input",
+        4
+      ],
+      [
+        "ble-input",
+        4
+      ],
+      [
+        "hid-output",
+        4
+      ],
+      [
+        "serial-output",
+        4
+      ],
+      [
+        "ble-output",
+        4
+      ]
+    ],
+    "expectedCallerRejections": 2,
+    "originalInstalledHarnessFailures": 6,
+    "unit": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0
+    },
+    "oldUnit": {
+      "tests": 6,
+      "pass": 3,
+      "fail": 3
+    },
+    "review": {
+      "reviewer": "sdk_browser_inventory_review",
+      "initialCandidate": "0125a7474c029aae9f125d2ff63143de7d4788af",
+      "initialFinding": "P2: caller-only helper incorrectly requested from old SDK producer tree. Real mixed-tree run reproduced strict missing-blob rejection.",
+      "correctedCandidate": "8e7da007d466704e845a62b723e719d60191b6bf",
+      "result": "Clear approval after producer SDK closure and caller fingerprints are requested with separate path sets in one strict Git batch. Missing-file parsing, bounds, hashes and exact @101/connect-only additions retained. No hardware/native-timing judgment."
+    },
+    "scope": "Software ports and real browser Workers/routes in Chromium/WebKit; native API/policy/activation negatives only. No hardware/OS permission/physical feedback positives, no broad SDK browser-suite claim.",
+    "allOwnedParentsJoined": true,
+    "releaseAccepted": false
+  },
+  "priorRecoveryIntegration": {
+    "commit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "tree": "81ea6d3e77e2b5a4aa6d6f2ba9445cffb4f88c1e",
+    "sourceFiles": 40,
+    "allEightGatesPassed": true,
+    "unit": {
+      "tests": 3406,
+      "pass": 3406,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "originalFourPass": 4,
+    "priorSixFailingPredicatesPass": 6,
+    "nativeLimitsChanged": false,
+    "nativeCause": "UNKNOWN",
+    "historicalTimingCleared": false,
+    "mainIntegrated": true,
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-hardware-opaque-recovery/combined-gates",
+      "commit": "8fd3a2e963c1ed50bbb561c1aaf359c6fea7a172",
+      "tree": "4a3aef25e2dcef44f7424acae36e3f5cc194f261",
+      "readBackFiles": 58,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    }
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-sdk-browser-inventory/focused",
+    "commit": "f33831db218a4a5d5c627c74f6086cf2bad703bd",
+    "tree": "374b007be64e52492d1dee1e55a4e6a7d908b5c4",
+    "readBackFiles": 97,
+    "allBytesMatched": true,
+    "ownedBatchFoldersRemoved": 3,
+    "ownedProofFoldersRemoved": 9,
+    "ownedSdkAndConsumerRemoved": true,
+    "preexistingReleaseEntriesPreserved": 179
+  },
+  "review": {
+    "reviewer": "sdk_browser_inventory_review",
+    "initialCandidate": "0125a7474c029aae9f125d2ff63143de7d4788af",
+    "initialFinding": "P2: caller-only helper incorrectly requested from old SDK producer tree. Real mixed-tree run reproduced strict missing-blob rejection.",
+    "correctedCandidate": "8e7da007d466704e845a62b723e719d60191b6bf",
+    "result": "Clear approval after producer SDK closure and caller fingerprints are requested with separate path sets in one strict Git batch. Missing-file parsing, bounds, hashes and exact @101/connect-only additions retained. No hardware/native-timing judgment."
+  },
+  "fullValidation": "Final exact source/receipt-tree gate results are bound separately at refs/codex/evidence/2026-10-15-sdk-browser-inventory/final-gates. Focused browser and consumer results retain their actual producer/caller trees and source fingerprints.",
+  "native": "Real Chromium/WebKit engines and Workers, genuine streams/events and public SDK routes through declared software ports. Native API/policy/activation negatives only; no chooser, hardware, physical feedback or wider permission-lifecycle acceptance. Full unrelated SDK browser suite remains deferred by the recorded --node-only consumer option.",
+  "supportRows": [],
+  "scope": "PARTIAL Q07/Q10/K12 selected browser/clean-consumer/inventory compatibility. All149 checklist rows, native timing reliability, physical/assistive/platform matrices and release/publication acceptance remain OPEN."
+}

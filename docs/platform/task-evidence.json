@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 247,
+  "revision": 248,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -15690,6 +15690,92 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "input-native-media-hardware-exact-local-gates-2026-10-15",
+      "revision": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "U10",
+        "Q05",
+        "N14",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-browser-inventory.json",
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json",
+        "docs/platform/receipts/2026-10-15-media-opaque-recovery.json",
+        "docs/platform/receipts/2026-10-15-hardware-opaque-recovery.json"
+      ],
+      "environment": "Local macOS26.5.2 arm64 Node24.14.0 under authorized current conditions; exact40-file integrated candidate and original native deadlines",
+      "reproduction": "All8 gates pass:3406/3406unit,37/37fresh rendered, records11, platform/production audits, types, lint and freshbuild. All6 prior failing native predicates actually pass with unchanged limits; no test deletion, skip, retry/prewarm acceptance or external observer.58 evidence blobs read back and owned gate folder removed before local commit6a58a1a4; dependencies,179release entries and12worktrees preserved.",
+      "scope": "Current exact-run qualification and local integration only. Original native startup causeUNKNOWN, historical timing reliabilityUNVERIFIED, broader lifecycle/platform/device/assistive/support/release acceptance and149whole rows remainOPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "sdk-browser-inventory-old-failures-2026-10-15",
+      "revision": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-browser-inventory.json"
+      ],
+      "environment": "Fresh immutable7-package SDK,411packed files and actual offline consumer; existing six installed input/output QA tools",
+      "reproduction": "Actual SDK builder/content audit and7offline Node consumer checks pass, then all6 installed-browser tools reject the same3approved connect example paths before native browser dispatch. Six unit cases against extracted unchanged old classifier produce3intended old-red true/false assertions and3passing controls.",
+      "scope": "Harness compatibility failure only; no native chooser/device/hardware failure or physical acceptance is inferred.",
+      "failure": "Stale duplicate browser QA file-path allowlists reject actual current SDK onboarding and telemetry mjs examples.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "sdk-browser-inventory-repair-2026-10-15",
+      "revision": "8e7da007d466704e845a62b723e719d60191b6bf",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-browser-inventory.json",
+        "tools/sdk-browser-inventory.mjs",
+        "tests/sdk-browser-inventory.test.ts",
+        "tools/qa-browser-hid-switch.mjs",
+        "tools/qa-browser-serial-switch.mjs",
+        "tools/qa-browser-ble-switch.mjs",
+        "tools/qa-hid-switch-output.mjs",
+        "tools/qa-serial-switch-output.mjs",
+        "tools/qa-ble-switch-output.mjs"
+      ],
+      "environment": "Actual Chromium/WebKit with declared software ports and owned Workers; unchanged fresh source81ea SDK plus newer immutable callerb598ac57",
+      "reproduction": "Shared auditor-aligned file policy and corrected tree/path batches pass6unit checks, selected lint, exact8-path independent review,24installed browser journeys and2real missing/altered caller-helper refusals. The fresh7-package/186source/411packed SDK and7offline consumer results retain exact producer inputs;12source browser journeys retain6a58a1a4 caller revision.97evidence blobs read back;3owned batches,9proof folders and owned SDK/consumer removed;179preexisting release entries preserved.",
+      "scope": "PARTIAL selected Q07/Q10/K12 software caller and inventory compatibility. No hardware/native permission/physical output/wider browser matrix or full release acceptance;149whole rows remainOPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -16718,7 +16804,8 @@
         "microphone-quota-old-failure-2026-10-11",
         "inventory-quota-safari-ui-2026-10-11",
         "media-opaque-recovery-2026-10-15",
-        "hardware-opaque-recovery-2026-10-15"
+        "hardware-opaque-recovery-2026-10-15",
+        "input-native-media-hardware-exact-local-gates-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -16921,7 +17008,8 @@
       "records": [
         "pending-N14",
         "n14-built-partial-2026-10-06",
-        "native-bootstrap-refusal-2026-10-15"
+        "native-bootstrap-refusal-2026-10-15",
+        "input-native-media-hardware-exact-local-gates-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -18617,7 +18705,8 @@
         "gamepad-recovery-2026-10-14",
         "gamepad-opaque-recovery-2026-10-14",
         "media-opaque-recovery-2026-10-15",
-        "hardware-opaque-recovery-2026-10-15"
+        "hardware-opaque-recovery-2026-10-15",
+        "input-native-media-hardware-exact-local-gates-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -18923,7 +19012,8 @@
         "gamepad-opaque-recovery-2026-10-14",
         "native-bootstrap-refusal-2026-10-15",
         "media-opaque-recovery-2026-10-15",
-        "hardware-opaque-recovery-2026-10-15"
+        "hardware-opaque-recovery-2026-10-15",
+        "input-native-media-hardware-exact-local-gates-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -18967,7 +19057,9 @@
         "inventory-active-safari-unqualified-2026-10-11",
         "inventory-navigation-wait-old-2026-10-11",
         "inventory-navigation-wait-repaired-2026-10-11",
-        "node-22-13-current-sdk-floor-2026-10-12"
+        "node-22-13-current-sdk-floor-2026-10-12",
+        "sdk-browser-inventory-old-failures-2026-10-15",
+        "sdk-browser-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19011,7 +19103,9 @@
         "postcss-indexed-map-controls-failed-2026-10-12",
         "source-map-local-compatibility-2026-10-12",
         "ssh-owned-startup-outcomes-2026-10-13",
-        "mqtt-broker-native-admission-2026-10-13"
+        "mqtt-broker-native-admission-2026-10-13",
+        "sdk-browser-inventory-old-failures-2026-10-15",
+        "sdk-browser-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19070,7 +19164,8 @@
         "native-bootstrap-refusal-2026-10-15",
         "native-bootstrap-full-rejected-2026-10-15",
         "native-bootstrap-media-full-rejected-2026-10-15",
-        "native-wait-observation-2026-10-15"
+        "native-wait-observation-2026-10-15",
+        "input-native-media-hardware-exact-local-gates-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19532,7 +19627,9 @@
         "unlicense-omission-old-2026-10-12",
         "bundled-legal-local-text-2026-10-12",
         "bundled-legal-omission-old-2026-10-12",
-        "content-audit-python-compatibility-2026-10-13"
+        "content-audit-python-compatibility-2026-10-13",
+        "sdk-browser-inventory-old-failures-2026-10-15",
+        "sdk-browser-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [

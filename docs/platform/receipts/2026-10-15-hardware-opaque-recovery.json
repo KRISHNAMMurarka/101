@@ -66,7 +66,40 @@
   },
   "native": "Declared software HID/GATT/Serial ports, real EventTarget/DataView/ReadableStream and actual public SDK route behavior only. No native chooser, permission, radio, UART or physical switch qualification.",
   "cleanup": "Held sink released and source retired. HID close and BLE stop/disconnect settle; Serial read and raw work drain, exact reader lock releases and port closes once. An errored Serial stream can reject cancel; cleanupFailed=false is explicitly not claimed.",
-  "fullValidation": "Pending one exact combined-candidate gate run; focused software success does not clear the existing native failures.",
+  "fullValidation": "Integrated exact40-file candidate at6a58a1a4/tree81ea6d3 after all8 local gates:3406unit and37rendered pass, zero failures/cancellations/skips. Historical native timing reliability remains open; receipt-specific136 checks retain their software-only scope.",
   "supportRows": [],
-  "scope": "PARTIAL N02/U10/Q05 software error/lifecycle recovery. Full native/browser/device/assistive matrix, support and release acceptance remain OPEN."
+  "scope": "PARTIAL N02/U10/Q05 software error/lifecycle recovery. Full native/browser/device/assistive matrix, support and release acceptance remain OPEN.",
+  "latestCombinedIntegration": {
+    "commit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "tree": "81ea6d3e77e2b5a4aa6d6f2ba9445cffb4f88c1e",
+    "sourceFiles": 40,
+    "allEightGatesPassed": true,
+    "unit": {
+      "tests": 3406,
+      "pass": 3406,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "originalFourPass": 4,
+    "priorSixFailingPredicatesPass": 6,
+    "nativeLimitsChanged": false,
+    "nativeCause": "UNKNOWN",
+    "historicalTimingCleared": false,
+    "mainIntegrated": true,
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-hardware-opaque-recovery/combined-gates",
+      "commit": "8fd3a2e963c1ed50bbb561c1aaf359c6fea7a172",
+      "tree": "4a3aef25e2dcef44f7424acae36e3f5cc194f261",
+      "readBackFiles": 58,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    }
+  }
 }

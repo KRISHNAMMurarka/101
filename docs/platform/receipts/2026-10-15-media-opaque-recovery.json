@@ -88,5 +88,38 @@
       "ownedBatchRemoved": true
     },
     "scope": "Six native unit checks reject the global33-file candidate.140 focused media checks remain software-scoped; no main integration or native/platform acceptance is claimed."
+  },
+  "latestCombinedIntegration": {
+    "commit": "6a58a1a42ccd828d6ac34aea0544f8dadc5e19b8",
+    "tree": "81ea6d3e77e2b5a4aa6d6f2ba9445cffb4f88c1e",
+    "sourceFiles": 40,
+    "allEightGatesPassed": true,
+    "unit": {
+      "tests": 3406,
+      "pass": 3406,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "originalFourPass": 4,
+    "priorSixFailingPredicatesPass": 6,
+    "nativeLimitsChanged": false,
+    "nativeCause": "UNKNOWN",
+    "historicalTimingCleared": false,
+    "mainIntegrated": true,
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-hardware-opaque-recovery/combined-gates",
+      "commit": "8fd3a2e963c1ed50bbb561c1aaf359c6fea7a172",
+      "tree": "4a3aef25e2dcef44f7424acae36e3f5cc194f261",
+      "readBackFiles": 58,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    }
   }
 }
