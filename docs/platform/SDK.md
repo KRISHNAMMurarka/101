@@ -4025,8 +4025,12 @@ sixty-four changes/route attempts/authorizations/audit events, 32 KiB snapshots 
 thirty-second approvals. A full audit rejects new changes rather than truncating.
 The actual `examples/workspace-administration` public caller verifies typed
 delivery, independent owner denials, delegated-role limits, removal and native
-timer expiry. Durable accounts/team storage, cross-process identity, unmanaged
-host enforcement, installed distribution and full S17 qualification remain open.
+timer expiry. The independently installed public caller also passes 26 recorded
+checks. [The 16 October semantic audit](receipts/2026-10-16-semantic-acceptance.json)
+accepts the S17 SDK mechanism against its membership, roles, policy, audit,
+revocation and owner-consent clauses. Durable accounts/team storage,
+cross-process identity, unmanaged host enforcement and wider release
+qualification are outside this profile and remain unclaimed.
 
 ### Reference device inspection
 

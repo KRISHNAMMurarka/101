@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "sourceRevision": "772e8ed31ceb5cc3483f38481cc2daf3aa0d7d24",
+  "summary": {
+    "observedSelectedTests": "5/5 pass in diagnostic run; nested bootstrap original selectors also pass",
+    "acceptance": false,
+    "nativeReliability": "UNVERIFIED",
+    "cause": "UNKNOWN",
+    "launchLogs": "No unified-log entries for exact observed owned native PIDs and run interval. This does not establish absence of OS launch policy delay.",
+    "historicalFailure": "Five original 2500ms native startup failures preserved in refs/codex/evidence/2026-10-15-pointer-copy-recovery/final-gates. No source fix, timeout change, retry, prewarm, OS/security/signature/quarantine change or foreign process intervention.",
+    "next": "Continue separately reproducible reconnect input recovery while startup cause remains unresolved; final integration requires exact green full candidate and must retain historical reliability limitation.",
+    "cleanup": {
+      "ownedGroupsAbsent": true,
+      "parentJoined": true,
+      "vmUsed": false
+    }
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-launch-log",
+    "commit": "b440b0fe93c12ffca47e38dbf2459c187d5b5ab9",
+    "tree": "e759e466c51bb7a75ec6132f754ab6a7ac586375",
+    "readBackBlobs": 9,
+    "scratchRemoved": true
+  },
+  "selectedResults": "Five selected former failures pass in one diagnostic run; bootstrap includes its original nested selectors. Actual child argv/environment/deadlines are unchanged. Parent observer means this is diagnostic, not canonical acceptance.",
+  "macOSLogQuery": "Exact observed native PIDs and run wall interval only; successful query returned zero entries.",
+  "cause": "UNKNOWN",
+  "nativeReliability": "UNVERIFIED",
+  "sourceFixMade": false,
+  "acceptance": false,
+  "historicalFailureCustody": "refs/codex/evidence/2026-10-15-pointer-copy-recovery/final-gates",
+  "noTimeoutRetryPrewarmOrOSChanges": true,
+  "cleanup": {
+    "parentJoined": true,
+    "ownedGroupAbsent": true,
+    "scratchRemovedAfterReadback": true,
+    "vmUsed": false
+  }
+}

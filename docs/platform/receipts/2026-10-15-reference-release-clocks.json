@@ -110,7 +110,7 @@
     "ownedBatchRemoved": true,
     "artifactRecoveryCommit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18"
   },
-  "fullValidation": "Exact containing candidates are preserved at refs/codex/evidence/2026-10-15-pointer-release-clock/final-gates, refs/codex/evidence/2026-10-15-loader-followup/final-gates and refs/codex/evidence/2026-10-15-collaborative-release-refusal/final-gates. Latest candidate49673259 is rejected:3409/3412unitpass with three native shell-probe timeouts; all eight former checks, seven other gates and37fresh rendered checks pass. Focused source/caller trees are retained separately; no main integration or timing-cause clearing. Direct-interpreter containing-tree gates are recorded separately at refs/codex/evidence/2026-10-15-broker-timeout-fix/final-gates; focused passes alone do not establish combined acceptance.",
+  "fullValidation": "Exact containing candidates are preserved at refs/codex/evidence/2026-10-15-pointer-release-clock/final-gates, refs/codex/evidence/2026-10-15-loader-followup/final-gates and refs/codex/evidence/2026-10-15-collaborative-release-refusal/final-gates. Latest candidate49673259 is rejected:3409/3412unitpass with three native shell-probe timeouts; all eight former checks, seven other gates and37fresh rendered checks pass. Focused source/caller trees are retained separately; no main integration or timing-cause clearing. Direct-interpreter containing-tree gates are recorded separately at refs/codex/evidence/2026-10-15-broker-timeout-fix/final-gates; focused passes alone do not establish combined acceptance. Subsequent exact direct-interpreter/input candidate843010bd passed all8gates,3412/3412unit,37/37fresh rendered and all11prior native checks, integrated locally as dfe5d0956129ffb85f10efab1bce0e84551e5c6e. Historical rejected snapshots above remain unchanged; native timing cause remainsUNKNOWN.",
   "native": {
     "previousFullRun": "All original emitter/ROS/handshake/loader checks and other prior six failures passed at integrated fd3e1936. Current full result is bound separately.",
     "historicalCause": "UNKNOWN",
@@ -565,5 +565,34 @@
       },
       "integrated": false
     }
+  },
+  "subsequentLocalIntegration": {
+    "commit": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "tree": "4819febf4af7b1a1be6516318026d86651858943",
+    "candidateCommit": "843010bd0fff81266301c5282b65a2a85c434c59",
+    "gateCustody": {
+      "ref": "refs/codex/evidence/2026-10-15-broker-timeout-fix/final-gates",
+      "commit": "ee48568b6d3aa9e32b58e747aa4c512d12dd14a9",
+      "tree": "10382bc702f6eb8c319c0176a8c36eadfd75b671",
+      "readBackFiles": 42,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "allGates": 8,
+    "unit": {
+      "tests": 3412,
+      "pass": 3412,
+      "fail": 0,
+      "skipped": 0
+    },
+    "rendered": {
+      "tests": 37,
+      "pass": 37
+    },
+    "priorNativeChecks": 11,
+    "allPriorNativeChecksPass": true,
+    "nativeCause": "UNKNOWN",
+    "historicalTimingCleared": false,
+    "scope": "Combined local integration only. Source-only focused snapshots and historical rejected containing runs retain original status.149whole tasks remain open."
   }
 }

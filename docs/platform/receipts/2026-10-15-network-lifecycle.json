@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "pass",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "base": "971bfd5a459972eb2df7ee94a955f2a5736aef90",
+    "commit": "bef520e844c79096391497e3f17c4ff91b12b996",
+    "tree": "1756834104ffc91a203592837074f86c446e351d",
+    "ref": "refs/codex/evidence/2026-10-15-network-lifecycle/source",
+    "changedFiles": [
+      "app/studio/network/NetworkLab.tsx",
+      "tools/qa-network-lifecycle.mjs"
+    ],
+    "sourceSha256": {
+      "app/studio/network/NetworkLab.tsx": "6c9daed47f77a6cfa4a3c29de3b2383c349c0e42ada9f1e7ddc4799562762f47",
+      "tools/qa-network-lifecycle.mjs": "b410226f14d532f950a40c32a582be0b208085a320d1a1b17379cdb42dc8fa6d"
+    }
+  },
+  "oldFailure": {
+    "revision": "971bfd5a459972eb2df7ee94a955f2a5736aef90",
+    "initialSelected": 8,
+    "initialFail": 6,
+    "expandedSelected": 10,
+    "expandedFail": 8,
+    "mechanism": "Actual native createOffer result held after delegation: retired work changes role-choice and replacement host to failed. Actual native getStats report held after delegation: retired result overwrites stopped readout; two controlled reporter callbacks issue two extra native reads. Separately labelled software null read failure escapes as pageerror. Both browsers; actual connected channels and delivered frames pass before fix.",
+    "raw": [
+      "controller/old.stdout.json",
+      "controller/old-expanded.stdout.json"
+    ]
+  },
+  "repair": "Connection generation advances before setup, role/reset and unmount. Async setup completions/errors, listeners, probes and stats publication require mounted/current generation and actual transport identity. Reset captures old transport and clears shared state only while current. A single stats reservation persists until actual settlement across role changes; local packet snapshots remain independent. Opaque current stats failure yields fixed readable recovery text. Copy logic unchanged.",
+  "qualification": {
+    "source": {
+      "base": "971bfd5a459972eb2df7ee94a955f2a5736aef90",
+      "commit": "bef520e844c79096391497e3f17c4ff91b12b996",
+      "tree": "1756834104ffc91a203592837074f86c446e351d",
+      "ref": "refs/codex/evidence/2026-10-15-network-lifecycle/source",
+      "changedFiles": [
+        "app/studio/network/NetworkLab.tsx",
+        "tools/qa-network-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/studio/network/NetworkLab.tsx": "6c9daed47f77a6cfa4a3c29de3b2383c349c0e42ada9f1e7ddc4799562762f47",
+        "tools/qa-network-lifecycle.mjs": "b410226f14d532f950a40c32a582be0b208085a320d1a1b17379cdb42dc8fa6d"
+      }
+    },
+    "old": {
+      "selected": 8,
+      "fail": 6,
+      "exitCode": 1
+    },
+    "expandedOld": {
+      "selected": 10,
+      "fail": 8,
+      "exitCode": 1
+    },
+    "current": {
+      "selected": 10,
+      "pass": 10,
+      "exitCode": 0
+    },
+    "dependentCopy": {
+      "selected": 18,
+      "pass": 18,
+      "exitCode": 0
+    },
+    "typesExitCode": 0,
+    "lintExitCode": 0,
+    "freshBuildExitCode": 0,
+    "freshBuildSha256": "fd6b9ed14c0d42d865a4e85beefd8b1167b51898e6a5c83ef7c5ba493b8575f8",
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "servers": 0
+    },
+    "mainIntegrated": false,
+    "fullValidation": "No unchanged blind full/native rerun. Five authentic native startup failures from previous exact full candidate5cc remain unresolved. No red ordinary commit.",
+    "scope": "Real built Network Lab, native local RTC offers/answers, connected data channels and delivered frames. Native promise results delegated before explicit software settlement barriers, two controlled reporter callback dispatches, and one separately labelled software null read failure. No native timing, remote/physical endpoint, clipboard or whole-task qualification."
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "result": "APPROVED",
+    "findings": [],
+    "source": {
+      "base": "971bfd5a459972eb2df7ee94a955f2a5736aef90",
+      "commit": "bef520e844c79096391497e3f17c4ff91b12b996",
+      "tree": "1756834104ffc91a203592837074f86c446e351d",
+      "ref": "refs/codex/evidence/2026-10-15-network-lifecycle/source",
+      "changedFiles": [
+        "app/studio/network/NetworkLab.tsx",
+        "tools/qa-network-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/studio/network/NetworkLab.tsx": "6c9daed47f77a6cfa4a3c29de3b2383c349c0e42ada9f1e7ddc4799562762f47",
+        "tools/qa-network-lifecycle.mjs": "b410226f14d532f950a40c32a582be0b208085a320d1a1b17379cdb42dc8fa6d"
+      }
+    },
+    "summary": "Connection revision advances before setup/reset/role/unmount. Reset captures old transport and only clears current ref after revision check. Setup completions/errors, listeners and probes require current owner. Native state subscription immediately emits initial state, correctly restarting state-bound probing. Stats admission reserves before actual read and releases only finally across role changes; stale fulfilled/rejected reports are inert, local packet snapshots stay independent, opaque current failure yields fixed recovery text. Prior copyCode/invalidateCopy/replaceLocalCode logic byte-identical to base. QA delegates actual native offer/getStats results before software settlement gates, observes connected real channels/frames and same-document unmount closure; extra reporter dispatch/null failure are software-labelled. All gates/jobs/contexts/browser/server joined.",
+    "scope": "Exact independent read-only review of two files and supplied hashes. No tests, builds, browsers, edits, new agents or external actions by reviewer. Native timing/hardware/general acceptance not inferred."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-network-lifecycle/focused",
+    "commit": "0a4d4122d95b16ccf094ffc176d4c46ece0945ad",
+    "tree": "a826d5219cb2048bc2ab240165a021a23ce009e8",
+    "readBackFiles": 26,
+    "allBytesMatched": true,
+    "ownedBrowsersContextsServersJoined": true,
+    "sdkConsumersVmsCreated": 0
+  },
+  "mainIntegrated": false,
+  "fullValidation": "Focused source verified, not integrated. Previous containing candidate5cc2d699 failed five native startup checks with3407/3412unit pass;7other gates/37rendered pass. All three integrated MQTT/Zigbee controls remain green. These later Network changes do not touch native process paths; no unchanged blind full/native rerun or ordinary red commit.",
+  "scope": "Actual built Chromium149.0.7827.55/WebKit26.5 developer Network Lab with real local native RTC offers/answers, connected channels, delivered frames, Stop and same-document unmount. Native work delegated before explicit software settlement gates. Two reporter dispatches and one null read failure are software controls.10lifecycle+18dependent copy+37rendered pass with clean types/lint/fresh build. No native timing, clipboard permission, physical endpoint, full accessibility/state matrix, whole task, support row or release acceptance.149whole tasks and69unaccepted support rows remain.",
+  "supportRows": []
+}

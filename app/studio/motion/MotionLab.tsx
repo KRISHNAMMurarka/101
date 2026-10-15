@@ -13,11 +13,13 @@ const EMPTY_SAMPLE: MotionSample = { timestamp: 0, orientation: [0, 0, 0, 1], ac
 export default function MotionLab() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const adapterRef = useRef<BrowserMotionAdapter | null>(null);
+  const mounted = useRef(false), generation = useRef(0), permissionReserved = useRef(false);
   const orientationRef = useRef<readonly [number, number, number, number]>([0, 0, 0, 1]);
   const simulatedRef = useRef({ beta: 0, gamma: 0 });
   const [labState, setLabState] = useState<LabState>("idle");
   const [sensitivity, setSensitivity] = useState(1);
   const [diagnostics, setDiagnostics] = useState<MotionDiagnostics | null>(null);
+  const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -93,33 +95,59 @@ export default function MotionLab() {
     return () => window.removeEventListener("keydown", onKey);
   }, [labState]);
 
-  useEffect(() => () => { void adapterRef.current?.stop(); }, []);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      // Retire permission work using the latest generation, not a captured DOM ref.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      generation.current++;
+      adapterRef.current?.stop();
+    };
+  }, []);
 
-  const createAdapter = () => {
-    void adapterRef.current?.stop();
+  const createAdapter = (sensors = false) => {
+    adapterRef.current?.stop();
     const adapter = new BrowserMotionAdapter({
       calibration: { sensitivity },
       onDiagnostics: (next) => {
+        if (!mounted.current || adapterRef.current !== adapter) return;
         orientationRef.current = next.filtered.orientation;
         setDiagnostics(next);
       },
     });
-    adapter.start(() => undefined);
     adapterRef.current = adapter;
+    if (sensors) adapter.start(() => undefined);
     return adapter;
   };
 
   const enableSensors = async () => {
-    const permission = await requestMotionPermission();
-    if (permission !== "granted") {
-      setLabState(permission);
-      return;
+    if (permissionReserved.current) return;
+    const revision = ++generation.current;
+    const current = () => mounted.current && generation.current === revision;
+    permissionReserved.current = true; setRequesting(true);
+    try {
+      const permission = await requestMotionPermission();
+      if (!current()) return;
+      if (permission !== "granted") {
+        adapterRef.current?.stop(); adapterRef.current = null;
+        setLabState(permission);
+        return;
+      }
+      createAdapter(true);
+      setLabState("active");
+    } catch {
+      if (!current()) return;
+      adapterRef.current?.stop(); adapterRef.current = null;
+      setLabState("denied");
+    } finally {
+      permissionReserved.current = false;
+      if (mounted.current) setRequesting(false);
     }
-    createAdapter();
-    setLabState("active");
   };
 
   const startSimulation = () => {
+    generation.current++;
     const adapter = createAdapter();
     setLabState("simulated");
     adapter.ingest({ ...EMPTY_SAMPLE, timestamp: performance.now() });
@@ -147,11 +175,12 @@ export default function MotionLab() {
         </div>
         <aside className="motion-controls">
           <span className="rail-title">CALIBRATION <i /></span>
-          <button className="primary-button" onClick={enableSensors}>Enable device motion</button>
+          <button className="primary-button" disabled={requesting} aria-describedby="motion-permission-status" onClick={enableSensors}>{requesting ? "Waiting for motion permission…" : "Enable device motion"}</button>
           <button className="outline-button" onClick={startSimulation}>Use keyboard simulation</button>
           <button className="motion-neutral" disabled={labState !== "active" && labState !== "simulated"} onClick={() => adapterRef.current?.calibrateNeutral()}>Set current pose as neutral</button>
           <div className="sensitivity-control"><span>SENSITIVITY</span><div>{[[0.65, "LOW"], [1, "MED"], [1.45, "HIGH"]].map(([value, label]) => <button className={sensitivity === value ? "active" : ""} key={label} onClick={() => updateSensitivity(value as number)}>{label}</button>)}</div></div>
           <p className="motion-permission-copy">Motion Sensors: use phone as steering wheel. Permission is requested only by the button above; samples stay in this browser unless you explicitly connect a game.</p>
+          <p id="motion-permission-status" role="status">{requesting ? "Waiting for motion permission. You can use keyboard simulation while you decide." : labState === "denied" ? "Motion access was blocked. Try again or use keyboard simulation." : labState === "unsupported" ? "Motion sensors are unavailable here. Use keyboard simulation." : labState === "simulated" ? "Keyboard simulation uses arrow keys. Device sensors are off." : labState === "active" ? "Device motion is active. Switch to keyboard simulation to turn sensors off." : "Choose device motion or keyboard simulation."}</p>
         </aside>
       </section>
       <section className="sensor-table">

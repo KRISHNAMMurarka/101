@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "pass",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "base": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "commit": "e7a7c2575610b9086267df7be563d2a13c290a1a",
+    "tree": "a6a43da99deebe6e2ca23fdc1d049579bc429bb0",
+    "ref": "refs/codex/evidence/2026-10-15-pointer-copy-recovery/source",
+    "changedFiles": [
+      "app/components/RemotePointerPanel.tsx",
+      "app/pointer-lab/PointerLab.tsx",
+      "tools/qa-pointer-copy.mjs"
+    ],
+    "sourceSha256": {
+      "app/components/RemotePointerPanel.tsx": "6468b6003f5bc0739775800fff9a79dd2b95466daa217a1de17da0f9a90c311c",
+      "app/pointer-lab/PointerLab.tsx": "d4afcc910f6684139ca309f7d150f6e5c9468309774e5a96bbc7b91dcfbcda9c",
+      "tools/qa-pointer-copy.mjs": "2d5e3888b5bdaae255fad80e165387e764f9396f17f418db958af3b223e11108"
+    }
+  },
+  "oldFailure": {
+    "source": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "selectedChecks": 30,
+    "fail": 18,
+    "mechanism": "Missing clipboard, throwing getter or synchronous method bypasses chained Promise catch. Repeated pending clicks issue two writes; late resolution replaces Stopped. Actual built Chromium and WebKit routes, isolated software clipboard only.",
+    "buildSha256": "9ba882a5afbef4553173be84dee5359470ca2ecb36ca4d8f68286f5bf5eb74d4",
+    "raw": "controller/old-full.stdout.json"
+  },
+  "repair": "Reuse existing copyInvitationLink helper at five callbacks. Reserve one actual write until settlement, provide pending/manual guidance, and fence success/failure status with mounted/current generation after await. Stop and existing teardown retain authority.",
+  "qualification": {
+    "browsers": [
+      "Chromium149.0.7827.55",
+      "WebKit26.5"
+    ],
+    "builtSurfaces": [
+      "/pointer-lab",
+      "/studio/input"
+    ],
+    "clipboardChecks": 30,
+    "clipboardPass": 30,
+    "pageErrors": 0,
+    "heldInvocationCountPerJourney": 1,
+    "stoppedRetained": true,
+    "freshExplicitRetryAfterSettlement": true,
+    "actualConnectionOwnershipJourneys": 4,
+    "connectionOwnershipPass": 4,
+    "focusedUnit": {
+      "tests": 11,
+      "pass": 11
+    },
+    "changedScopeLint": "pass",
+    "freshBuildSha256": "11185658d709af97952f7b1b7a9a9e356079b16d645e904892e0f460702ec7db",
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "servers": 0
+    }
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "base": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "candidate": "e7a7c2575610b9086267df7be563d2a13c290a1a",
+    "tree": "a6a43da99deebe6e2ca23fdc1d049579bc429bb0",
+    "result": "APPROVED",
+    "findings": [],
+    "sourceSha256": {
+      "app/components/RemotePointerPanel.tsx": "6468b6003f5bc0739775800fff9a79dd2b95466daa217a1de17da0f9a90c311c",
+      "app/pointer-lab/PointerLab.tsx": "d4afcc910f6684139ca309f7d150f6e5c9468309774e5a96bbc7b91dcfbcda9c",
+      "tools/qa-pointer-copy.mjs": "2d5e3888b5bdaae255fad80e165387e764f9396f17f418db958af3b223e11108"
+    },
+    "scope": "Exact three-file read-only review. Native write occurs synchronously in explicit click before first await. Reservation precedes native access and spans Stop/generation changes until settlement. Helper and caller both fence old completions by mounted/current generation; finally re-enables mounted UI. Connection/input authority and teardown unchanged. QA uses isolated software clipboard only; answer/offer callbacks share reviewed path without separate clipboard coverage. Reviewer launched no tests/builds/browsers and edited no files."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-pointer-copy-recovery/focused",
+    "commit": "4ef589a8fe386425c8637b31bcd4a24fe6e565a9",
+    "tree": "20db324b89f8ba37ea2325da0983df4065b6e827",
+    "readBackFiles": 23,
+    "allBytesMatched": true,
+    "ownedBrowsersContextsServersJoined": true,
+    "sdkConsumersVmsCreated": 0
+  },
+  "fullValidation": {
+    "ref": "refs/codex/evidence/2026-10-15-pointer-copy-recovery/final-gates",
+    "qualification": "Combined exact candidate verdict is read from the containing gate report; focused passes alone do not establish integration."
+  },
+  "scope": "Selected developer-surface copy recovery and actual local RTC ownership. Clipboard failures and completion use an explicit software seam; no native clipboard permissions/writes, remote endpoint, physical input, full accessibility or whole-task qualification. Invitation/link/held-copy cases exercised; answer/offer callbacks share reviewed helper but lack separate clipboard journeys.149whole tasks and69unaccepted support rows remain.",
+  "supportRows": [],
+  "mainIntegratedAtFocusedSnapshot": false,
+  "containingFullRun": {
+    "candidateCommit": "5cc2d6998c0c46c0953515c385452aae5dae8a8d",
+    "candidateTree": "84c7e081b86e69135c0e81da7eef5485b07f7c42",
+    "gatesGreen": 7,
+    "unit": {
+      "tests": 3412,
+      "pass": 3407,
+      "fail": 5,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "nativeChecks": [
+      {
+        "name": "software child rejects a valid frame from a retired generation and token",
+        "observations": [
+          "\u2714 software child rejects a valid frame from a retired generation and token (198.116375ms)"
+        ],
+        "pass": true
+      },
+      {
+        "name": "owner abort after an actual keeper sample is issued awaits both preparation and native child settlement",
+        "observations": [
+          "\u2716 owner abort after an actual keeper sample is issued awaits both preparation and native child settlement (4250.557792ms)",
+          "\u2716 owner abort after an actual keeper sample is issued awaits both preparation and native child settlement (4250.557792ms)"
+        ],
+        "pass": false
+      },
+      {
+        "name": "independently executing authenticated runtime hosts transfer native state and recover with fresh authority",
+        "observations": [
+          "\u2716 independently executing authenticated runtime hosts transfer native state and recover with fresh authority (3541.6225ms)",
+          "\u2716 independently executing authenticated runtime hosts transfer native state and recover with fresh authority (3541.6225ms)"
+        ],
+        "pass": false
+      },
+      {
+        "name": "cancellation at the first actual bind retains ownership until native host and gateway teardown",
+        "observations": [
+          "\u2716 cancellation at the first actual bind retains ownership until native host and gateway teardown (3436.409791ms)",
+          "\u2716 cancellation at the first actual bind retains ownership until native host and gateway teardown (3436.409791ms)"
+        ],
+        "pass": false
+      },
+      {
+        "name": "existing loader failure retains its actual earlier milestone and native close",
+        "observations": [
+          "\u2716 existing loader failure retains its actual earlier milestone and native close (3702.817791ms)",
+          "\u2716 existing loader failure retains its actual earlier milestone and native close (3702.817791ms)"
+        ],
+        "pass": false
+      },
+      {
+        "name": "fixed native launches derive platform bootstrap environment without caller preloads",
+        "observations": [
+          "\u2716 fixed native launches derive platform bootstrap environment without caller preloads (9438.501125ms)",
+          "\u2716 fixed native launches derive platform bootstrap environment without caller preloads (9438.501125ms)"
+        ],
+        "pass": false
+      },
+      {
+        "name": "failed peer startup also waits for native child close without orphan rejection",
+        "observations": [
+          "\u2714 failed peer startup also waits for native child close without orphan rejection (600.294792ms)"
+        ],
+        "pass": true
+      },
+      {
+        "name": "declared version mismatch is checked against the actual native handshake",
+        "observations": [
+          "\u2714 declared version mismatch is checked against the actual native handshake (616.720542ms)"
+        ],
+        "pass": true
+      },
+      {
+        "name": "MQTT broker rejects failed real version help before launching an owned broker",
+        "observations": [
+          "\u2714 MQTT broker rejects failed real version help before launching an owned broker (1113.89825ms)"
+        ],
+        "pass": true
+      },
+      {
+        "name": "broker discovery retains authentic bounded nonzero probe diagnostics",
+        "observations": [
+          "\u2714 broker discovery retains authentic bounded nonzero probe diagnostics (1076.159084ms)"
+        ],
+        "pass": true
+      },
+      {
+        "name": "broker discovery retains authentic bounded invalid-help probe diagnostics",
+        "observations": [
+          "\u2714 broker discovery retains authentic bounded invalid-help probe diagnostics (1235.094958ms)"
+        ],
+        "pass": true
+      }
+    ],
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-pointer-copy-recovery/final-gates",
+      "commit": "818865947bed67a1c3593f81bf4715d7c57c56fa",
+      "tree": "3c102e9c159cb6b5dcf42bbc47f56921c9996675",
+      "readBackFiles": 34,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "integrated": false,
+    "verdict": "Rejected for five authentic cross-host/native startup checks. All three repaired MQTT/Zigbee help probes pass again, original deadlines and no skips. Focused clipboard and RTC evidence retains only selected scope; no red commit."
+  },
+  "nativeThreadFollowup": {
+    "acceptance": false,
+    "selectedChecks": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0
+    },
+    "actualNativeHosts": 16,
+    "samples": 774,
+    "largestSampledZeroHandleIntervalMs": 1654.38,
+    "finding": "Actual zero cthread_self handles report TH_STATE_WAITING at sampled instants with unchanged cumulative thread CPU. No canonical deadline failure reproduced. No tracing or resource-suspension flags observed at sampled instants. Loader receipt includes delivery and parent scheduling; it is not first-JavaScript time.",
+    "review": {
+      "reviewer": "/root/native_startup_review",
+      "result": "APPROVED",
+      "scope": "Zero-handle queries report TH_STATE_WAITING at sampled instants, with unchanged cumulative thread CPU totals. This does not establish continuous waiting between samples or cause. Absent tracing/suspension flags apply only to sampled instants. Loader receipt times include delivery/parent scheduling, not first-JavaScript timestamps. Canonical deadline failure not reproduced; no acceptance or source fix; five full-gate failures remain unresolved.",
+      "reviewerEdits": 0,
+      "reviewerExecutions": 0
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-thread-followup/observation",
+      "commit": "4cb9d84c0eae86da09ebb73b1a77326bcd528e9f",
+      "tree": "d557742606123d29168871e2fd711fb28547a03f",
+      "readBackFiles": 16,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "ownedGroupAbsent": true,
+    "scope": "Parent-only diagnostic at unchanged child argv/environment/deadlines; no attach/suspend/prewarm. No wait mechanism, original cause, timing acceptance or source fix established; five canonical failures remain unresolved."
+  },
+  "nativeStackFollowup": {
+    "acceptance": false,
+    "intrusiveObservation": true,
+    "summary": {
+      "acceptance": false,
+      "intrusiveObservation": true,
+      "selectedChecks": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0
+      },
+      "rootExitCode": 0,
+      "sampleExitCode": 0,
+      "sampleSha256": "11e561ff0504bdd25641c81e0316cd5bde1102f5b7c411a3c0905c2e6661d178",
+      "identityReadback": {
+        "result": "matches",
+        "pid": 10463,
+        "parent": 10091,
+        "nativeStart": [
+          10463,
+          1792082932,
+          222782
+        ],
+        "sampleLaunchTime": "2026-10-15 22:18:52.223 +0530",
+        "launchDifferenceMicroseconds": 218,
+        "precision": "Sample launch formatted to nearest millisecond; actual native timeval microsecond precision retained. PID and parent match all64contemporaneous stable observations."
+      },
+      "reportedStack": "86samples report sole frame _dyld_start(in dyld)+0; binary images description unavailable, observed footprint112K. No full kernel wait stack or wait reason returned.",
+      "zeroHandleSamples": 62,
+      "zeroSampledSpanMs": 1956.899,
+      "firstLoaderParentReceiptMs": 2072.485,
+      "sampledStates": [
+        3
+      ],
+      "scope": "The attributed stack describes this single intrusive owned observation. It does not reproduce canonical >2500ms timeout, prove continuous state, establish kernel wait mechanism/original cause, or justify source/deadline/OS changes. No acceptance or native reliability clearing. Both root and sampler groups joined and absent.",
+      "interpretationReview": {
+        "reviewer": "/root/native_startup_review",
+        "result": "APPROVED",
+        "scope": "Identity attribution supported by matchingPID,parent,stableBSDstart;218microsecond difference fits millisecond precision. _dyld_start+0 only describes this intrusive observation and WAITING at queried instants. No kernel wait reason, continuous-state proof, canonical explanation, source fix or blind rerun justified. Preserve five unresolved canonical failures.",
+        "reviewerEdits": 0,
+        "reviewerExecutions": 0
+      }
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-stack-followup/observation",
+      "commit": "6a048c444563114af593e8aa4975ad4a77a45ca7",
+      "tree": "671a123dcaa05c30f0148196d585b37c7d93583b",
+      "readBackFiles": 19,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "nativeCause": "UNKNOWN",
+    "historicalTimingCleared": false,
+    "canonicalFailuresRemain": 5
+  }
+}

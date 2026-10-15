@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "sourceCommit": "61f09f2d60598cc4e352273297f76b33cf07b81d",
+    "sourceTree": "ec686db10579d281f4b6f4ef496c19aafeed8b39",
+    "ref": "refs/codex/evidence/2026-10-16-controller-reconnect/source",
+    "parent": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "focused": "10 actual signaled reconnect browser checks;20 dependent motion lifecycle checks; fresh build and narrow lint pass; independent review approved",
+    "integrated": false
+  },
+  "sourceSha256": {
+    "app/controller/Controller.tsx": "ed6212a4c415ea491d999906dac88aa1ffe526b70f06703f871b420ab8d130ab",
+    "packages/link-controller/src/index.ts": "c8b8862aa31ce3a4508921563d577c502d495fa491f5348e1daf7075824f0512",
+    "packages/session/src/index.ts": "9428e31a1e41c0b26ea053ffbc5d59b19da2ca17fab29e82fde5a6ec9c9c96f6",
+    "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+    "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+    "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+    "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+    "packages/adapter-motion/src/index.ts": "8a8b5b31fe62fd9456e51370d3666728503a1846cf3defddc1159536c713b771",
+    "games/orbitalcrew/src/roles.ts": "7acf2e78fbebb8efe773dca2c564b7e87f0ef61b1cce9c14dda4199275951580",
+    "tools/qa-controller-reconnect.mjs": "73681d8d908aead0cb590d51a6fbffab4205963f46e02440687b57c24d511b8e"
+  },
+  "buildSha256": "462a517c16a118b97b64c4d58da73ba5967531ba012529fe050515eb5661adfc",
+  "failure": {
+    "sourceRevision": "772e8ed31ceb5cc3483f38481cc2daf3aa0d7d24",
+    "sourceSha256": {
+      "app/controller/Controller.tsx": "3e439382e4f7c160ba197cfb5975f38341ca51044e1370308a4474a504bbf589",
+      "packages/link-controller/src/index.ts": "c8b8862aa31ce3a4508921563d577c502d495fa491f5348e1daf7075824f0512",
+      "packages/session/src/index.ts": "9428e31a1e41c0b26ea053ffbc5d59b19da2ca17fab29e82fde5a6ec9c9c96f6",
+      "packages/pairing/src/index.ts": "8d102036f07079cc7da0ae0f504ddb91c037d23103f0ce3fcc8f156434e2118a",
+      "packages/pairing/src/http-signaling.ts": "3727c7d78beefbcb1142c1461406adb91d962e7ce05280930335c896ad74d643",
+      "packages/protocol/src/index.ts": "3e55151921e469b09a82774aec506019ce9e045814d52af1561792a672863e69",
+      "packages/transport-webrtc/src/peer.ts": "960dc879dcf92390b9999dc4a40acb78dc2d91c386078f8dc6712df51f749e1e",
+      "packages/adapter-motion/src/index.ts": "8a8b5b31fe62fd9456e51370d3666728503a1846cf3defddc1159536c713b771",
+      "games/orbitalcrew/src/roles.ts": "7acf2e78fbebb8efe773dca2c564b7e87f0ef61b1cce9c14dda4199275951580",
+      "tools/qa-controller-reconnect.mjs": "d40fe8c7d2b8f0ba46574413a231384f3b8f7fdc9a6c558e84ebaf9251ed9109"
+    },
+    "buildSha256": "92d3f1fea42ccb65f4d43e20cbedb7ee8aa53ecd366615c72221bf4567eb49bb",
+    "result": "Both Chromium and WebKit actually reconnect with one held input frame when the original host resends the same role/configuration revision.",
+    "checks": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "checks": [
+          {
+            "name": "actual-native-channel-close-reconnects",
+            "pass": true,
+            "replacementPeers": 1
+          },
+          {
+            "name": "same-configuration-reconnect-clears-held-input",
+            "pass": false,
+            "heldFrames": 1,
+            "sameConfiguration": true,
+            "deliveredFrames": 1
+          },
+          {
+            "name": "zero-page-errors",
+            "pass": true,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "checks": [
+          {
+            "name": "actual-native-channel-close-reconnects",
+            "pass": true,
+            "replacementPeers": 1
+          },
+          {
+            "name": "same-configuration-reconnect-clears-held-input",
+            "pass": false,
+            "heldFrames": 1,
+            "sameConfiguration": true,
+            "deliveredFrames": 1
+          },
+          {
+            "name": "zero-page-errors",
+            "pass": true,
+            "errors": []
+          }
+        ]
+      }
+    ]
+  },
+  "repair": "Retire motion, release the input model, clear configuration identity, synchronize action/vector/axis UI values and clear assignment on signaled failed/disconnected and connect rejection. The existing watchdog shares the same release path. Reconfiguration therefore initializes current neutral input even at the same host revision.",
+  "validation": {
+    "browserChecks": 10,
+    "results": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "checks": [
+          {
+            "name": "actual-native-channel-close-reconnects",
+            "pass": true,
+            "replacementPeers": 1
+          },
+          {
+            "name": "same-configuration-reconnect-clears-held-input",
+            "pass": true,
+            "heldFrames": 0,
+            "sameConfiguration": true,
+            "deliveredFrames": 2
+          },
+          {
+            "name": "fresh-button-press-and-release-after-reconnect",
+            "pass": true
+          },
+          {
+            "name": "fresh-motion-permission-and-sample-after-reconnect",
+            "pass": true
+          },
+          {
+            "name": "zero-page-errors",
+            "pass": true,
+            "errors": []
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "checks": [
+          {
+            "name": "actual-native-channel-close-reconnects",
+            "pass": true,
+            "replacementPeers": 1
+          },
+          {
+            "name": "same-configuration-reconnect-clears-held-input",
+            "pass": true,
+            "heldFrames": 0,
+            "sameConfiguration": true,
+            "deliveredFrames": 2
+          },
+          {
+            "name": "fresh-button-press-and-release-after-reconnect",
+            "pass": true
+          },
+          {
+            "name": "fresh-motion-permission-and-sample-after-reconnect",
+            "pass": true
+          },
+          {
+            "name": "zero-page-errors",
+            "pass": true,
+            "errors": []
+          }
+        ]
+      }
+    ],
+    "dependentMotionBrowserChecks": 20,
+    "dependentMotionResult": "pass",
+    "freshBuild": true,
+    "narrowLint": "pass",
+    "review": "Independent exact-source approval; no actionable findings",
+    "fullCandidateGates": "Separate required integration phase; focused evidence alone does not integrate."
+  },
+  "scope": "Built browser Controller, actual SessionHost with existing pilot role, actual local HTTP signaling and native WebRTC close/reconnect. Chromium disposable context has local-network access pregranted; motion permission and samples are software controlled. No physical sensor, device, native permission prompt or remote-network acceptance.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-controller-reconnect/focused",
+    "commit": "8614b1cb2c96c52dc43a8d9eba64d677c9e64d51",
+    "tree": "2bbc555c60cb162368caa9bd519b7cf7c2797298",
+    "readBackBlobs": 14
+  },
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "servers": 0
+  },
+  "wholeTaskClosure": false,
+  "supportRowsAccepted": 0,
+  "limitations": [
+    "Native channel-close/disconnected path is executed; failed/connect-rejection call sites reviewed statically.",
+    "Software motion permission/samples and context local-network grant do not prove native permission prompts or physical sensors.",
+    "Five historical native startup failures remain unexplained and reliability unverified."
+  ]
+}

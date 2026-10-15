@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 255,
+  "revision": 262,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -16256,6 +16256,435 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64 under authorized current conditions; actual built Chromium149.0.7827.55 and WebKit26.5 with isolated software clipboard",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-pointer-copy-recovery.json"
+      ],
+      "id": "pointer-copy-old-failure-2026-10-15",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "reproduction": "New permanent owning regression against original built routes:18/30selected checks fail across both engines/surfaces before implementation change; real RTC/crypto/storage, explicit software clipboard only.",
+      "scope": "Authentic bounded old developer-surface clipboard recovery and stale-completion failure, preserved separately from native clipboard permissions.",
+      "failure": "Unavailable/getter/method throws escape Promise catch; two held writes admitted and late result overwrites Stopped."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64 under authorized current conditions; actual built Chromium149.0.7827.55 and WebKit26.5 with isolated software clipboard",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-pointer-copy-recovery.json"
+      ],
+      "id": "pointer-copy-recovery-2026-10-15",
+      "revision": "e7a7c2575610b9086267df7be563d2a13c290a1a",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "reproduction": "Fresh-build permanent clipboard30/30, actual RTC ownership4/4, focused unit11/11 and changed-scope lint pass; exact independent three-file review approved. Focused raw bytes read back from local evidence ref.",
+      "scope": "Selected developer-surface copy recovery and actual local RTC ownership. Clipboard failures and completion use an explicit software seam; no native clipboard permissions/writes, remote endpoint, physical input, full accessibility or whole-task qualification. Invitation/link/held-copy cases exercised; answer/offer callbacks share reviewed helper but lack separate clipboard journeys.149whole tasks and69unaccepted support rows remain.",
+      "failure": null
+    },
+    {
+      "id": "native-broker-input-local-integration-2026-10-15",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13",
+        "U10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64 under authorized current conditions; unobserved authentic native unit processes",
+      "reproduction": "Exact combined tree4819febf passes all8gates,3412/3412unit and37/37fresh rendered checks. All11previous native checks pass at unchanged limits. Gate bytes retained at ee48568b; exact validated tree integrated locally in dfe5d095.",
+      "scope": "Narrow direct POSIX fixture and input-release/PID diagnostic integration. Historical OS waiting cause UNKNOWN and general timing reliability unproven.149whole tasks,69unaccepted support rows unchanged.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "pointer-copy-containing-native-failure-2026-10-15",
+      "revision": "5cc2d6998c0c46c0953515c385452aae5dae8a8d",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-pointer-copy-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64 under current conditions; ordinary unobserved exact full candidate; original deadlines and no skips",
+      "reproduction": "Full exact seven-file candidate:3407/3412unit pass, five failures; seven other gates and37fresh rendered checks pass. All3repaired MQTT/Zigbee controls and actual2000ms timeout case pass. All gate parent/groups joined and34blobs read back before owned batch removed.",
+      "scope": "Full candidate rejected and not integrated. Focused clipboard evidence is separately scoped. No general native timing acceptance, deadline change or whole-task closure;149open and69unaccepted support rows remain.",
+      "failure": "Four actual cross-host startup children46401,47840,48367,49381 returned no loader milestone/stderr before2500ms SIGTERM; bootstrap wrapper also failed on native startup. Actual cleanup complete. Historical/native wait causeUNKNOWN.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5, actual local RTC offers/answers and explicit software clipboard/answer settlement seams",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-network-copy-recovery.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "network-copy-old-failure-2026-10-15",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Actual built original route:14selected checks,10fail across both engines before source change. Native real offers, isolated software clipboard. All contexts/browser/server joined.",
+      "scope": "Selected old developer-surface copy errors and late role completion only; no native clipboard permission claim.",
+      "failure": "Absent clipboard falsely says Copied; getter/method/denial pageerrors; two pending writes and late stale Copied."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5, actual local RTC offers/answers and explicit software clipboard/answer settlement seams",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-network-copy-recovery.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "network-answer-copy-review-old-2026-10-15",
+      "revision": "37ccfb15535fd4abd5ba1642985e9018438e89db",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Reviewer P2 reproduced before correction:18selected,16pass/2fail. Actual replacement offer/answer, original native createAnswer result delegated before holding its settlement. Both engines issue old displayed code and late write marks new code Copied.",
+      "scope": "Selected faithful old answer-replacement race with separately identified software settlement seam; not native timing.",
+      "failure": "Copy currentness lacks displayed-code replacement generation; old answer remains writable during generation."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5, actual local RTC offers/answers and explicit software clipboard/answer settlement seams",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-network-copy-recovery.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "network-copy-recovery-2026-10-15",
+      "revision": "56c33c911751fd7fa03e7fcba6cbf05ec717a7d5",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "reproduction": "Same18selected built browser checks allpass after narrow correction, zero pageerrors; types, clean narrow lint, fresh build and37rendered pass. Exact independent re-review approved;31focused blobs read back.",
+      "scope": "Selected developer Network Lab recovery with actual native local RTC offers/answers. Clipboard failures/settlement and delegated actual answer settlement are explicit software seams; no native clipboard permissions/writes, physical endpoint, whole accessibility/state lifecycle, full task/support or release acceptance.149whole tasks and69unaccepted support rows remain.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5, real local RTC offers/answers/channels/frames with explicitly labelled software settlement/reporter/failure controls",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-network-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "network-lifecycle-old-failure-2026-10-15",
+      "revision": "971bfd5a459972eb2df7ee94a955f2a5736aef90",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Fresh built actual old route: initial8selected/6fail, expanded10selected/8fail before source repair; actual frames2pass. All owned contexts/browsers/server joined.",
+      "scope": "Selected stale offer/stats and overlapping reporter failures. Actual producer results delegated before explicit software settlement gates; software null failure is separately labelled.",
+      "failure": "Retired offers corrupt replacement role state; retired stats overwrite Stop; pending stats allow extra native reads; opaque current failure escapes."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5, real local RTC offers/answers/channels/frames with explicitly labelled software settlement/reporter/failure controls",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-network-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "network-lifecycle-recovery-2026-10-15",
+      "revision": "bef520e844c79096391497e3f17c4ff91b12b996",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "reproduction": "Exact source:10lifecycle/18dependent copy/37fresh rendered allpass; clean types/narrow lint/fresh build. Exact independent read-only review approved;26focused blobs byte-readback. All native peers closed and owned contexts/browser/server joined.",
+      "scope": "Actual built Chromium149.0.7827.55/WebKit26.5 developer Network Lab with real local native RTC offers/answers, connected channels, delivered frames, Stop and same-document unmount. Native work delegated before explicit software settlement gates. Two reporter dispatches and one null read failure are software controls.10lifecycle+18dependent copy+37rendered pass with clean types/lint/fresh build. No native timing, clipboard permission, physical endpoint, full accessibility/state matrix, whole task, support row or release acceptance.149whole tasks and69unaccepted support rows remain.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5 Motion Lab and unchanged BrowserMotionAdapter; controlled software permission responses/samples, actual DOM adapter subscriptions/keyboard/same-document unmount",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-motion-permission-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "motion-permission-lifecycle-old-2026-10-15",
+      "revision": "dad542d102d61f1bc5478784e129fe6e581d4429",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Actual old built route:14selected/14fail before source fix, exact original QA retained. All contexts/browsers/server joined.",
+      "scope": "Selected Motion Lab permission ownership, simulation isolation and same-document unmount. Software permission/sample boundaries; actual adapter handlers and real keyboard processing.",
+      "failure": "Duplicate pending permissions, late grant/denial changes simulation, late unmounted grant starts handlers, simulation still consumes sensors."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5 Motion Lab and unchanged BrowserMotionAdapter; controlled software permission responses/samples, actual DOM adapter subscriptions/keyboard/same-document unmount",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-motion-permission-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "motion-permission-lifecycle-recovery-2026-10-15",
+      "revision": "382b1ba09ca4bba7abd1ce9dc3f3f7efc5ec114e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "reproduction": "14browser/11motion unit/37fresh rendered allpass; clean types/lint/fresh product build; exact production and QA-delta independent reviews approved. Initial12/14 sample-overwrite result and native environmental event diagnostic retained; final QA excludes only trusted environmental sensor samples, explicitly software scope.",
+      "scope": "Actual built Motion Lab and actual BrowserMotionAdapter/keyboard behavior, owned adapter DOM listener registration/removal and same-document unmount. Motion permission responses and motion samples are explicitly software controlled; environmental native sensor samples are excluded during the controlled sample journeys. No physical sensor accuracy, native permission dialog, mobile/assistive-technology or whole-task qualification. Exact14built browser checks,11direct motion unit checks and37fresh rendered checks pass; clean types/lint/fresh product build. Initial12/14 result and exact older QA are retained: Chromium actual trusted background motion sample replaced the controlled sample before render; QA-only capture filter now explicitly excludes those environmental events. No production bytes changed for that adjustment. Full accessibility/support/state matrix and release acceptance remain open.149whole tasks and69unaccepted support rows remain.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5 player Controller and ControllerLab SessionHost over native local BroadcastChannel; controlled software permission/orientation samples, actual delivered frames and unchanged real host-loss watchdog",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-controller-motion-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "controller-motion-lifecycle-old-2026-10-15",
+      "revision": "dbc47ef03828efa4e12407638f39657a2ba864d3",
+      "result": "fail",
+      "historical": true,
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Actual old built pages:20selected/4pass/16fail before source fix, zero pageerrors. Four actual adapter listeners after duplicate grant; two remain after role withdrawal. All contexts/browser/server joined.",
+      "scope": "Selected player controller motion request/role/visit and actual host-loss lifecycle. Software permission/sample controls, actual producer configuration and native local transport; no physical permission/sensor claim.",
+      "failure": "Duplicate grants leak an unreachable adapter; retired permission affects replacement roles/visits; actual watchdog fails to retire active sensor listeners."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64, actual built Chromium149.0.7827.55/WebKit26.5 player Controller and ControllerLab SessionHost over native local BroadcastChannel; controlled software permission/orientation samples, actual delivered frames and unchanged real host-loss watchdog",
+      "paths": [
+        "docs/platform/receipts/2026-10-15-controller-motion-lifecycle.json"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "id": "controller-motion-lifecycle-recovery-2026-10-15",
+      "revision": "411209b0fa6e2c49cadc3e35fb607d6a91c1b78d",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "reproduction": "Same20built browser checks allpass;40related unit and37fresh rendered allpass. Clean types/lint/fresh build; exact independent read-only review approved. Actual fresh motion frame reaches real SessionHost, and role/visit/watchdog edges leave no owned adapter handlers.",
+      "scope": "Actual built ControllerLab SessionHost and player Controller over native local BroadcastChannel, real producer role configuration, delivered motion frames and unchanged actual host-loss watchdog. Permission responses and orientation samples are software controlled; environmental native samples excluded. Counts cover owned adapter handlers, excluding fixture filters. No physical sensor, native permission dialog, authenticated remote/resource grant, mobile or whole-task acceptance.20browser/40related unit/37fresh rendered allpass; clean types/lint/fresh build and exact independent read-only review. Pending/grant/denial/role replacement and same-document route-visit retirement use real built player and developer host pages; active host loss uses original4800ms age/800ms interval without a software clock. No full accessibility/state matrix, signaled transport failure runtime journey, physical phone/sensor, resource authority, support row or release acceptance.149whole tasks and69unaccepted support rows remain.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "a01-semantic-acceptance-2026-10-16",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "A01"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-semantic-acceptance.json"
+      ],
+      "reproduction": "Review exact canonical clauses, named source/test/installed proof and retained historical gate custody; current full candidate gates are separate.",
+      "scope": "The row asks to define versioned reviewed manifests, not physically qualify a protocol device. The inert closed manifest explicitly includes identity filters, decoder ID/version/digest, framing, typed units/permissions, calibration, command safe-state and distinct feedback levels. Genuine packed Node RSS sample+command caller and independent review prove a first consumer. Physical protocol/equipment acceptance remains in A02-A16/Q08. Accepted only at the named definition/SDK/Node mechanism scope; no support row or wider release claim.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "d06-semantic-acceptance-2026-10-16",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "D06"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-semantic-acceptance.json"
+      ],
+      "reproduction": "Review exact canonical clauses, named source/test/installed proof and retained historical gate custody; current full candidate gates are separate.",
+      "scope": "Actual Node mTLS directory and installed SDK resource caller enforce enrolled owner/device/generation, explicitly projected metadata, recipient visibility independent from resource grants, expiry/reconnect/leave/update/unpublish. Source plus peer tests remain byte-identical to the later saved 8 October proof. Persistent accounts, physical resource probes, browser client certificates and published Hub are not requirements in this literal implementation row. Accepted only at the named definition/SDK/Node mechanism scope; no support row or wider release claim.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "s17-semantic-acceptance-2026-10-16",
+      "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "S17"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-semantic-acceptance.json"
+      ],
+      "reproduction": "Review exact canonical clauses, named source/test/installed proof and retained historical gate custody; current full candidate gates are separate.",
+      "scope": "Public workspace API creates/manages member/delegated roles/sharing with bounded complete audit, explicit trusted-host actor authentication contract, exact approvals, independent source/sink owner consent, actual managed-route retirement on removal/revoke/expiry and late-work reservation. The receipt records 26 installed public checks and independent review; all four S17 implementation/test/caller/tool files still match its hashes. Literal row does not require persistent accounts, a distributed team database or physical devices. Accepted only at the named definition/SDK/Node mechanism scope; no support row or wider release claim.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "controller-signaled-reconnect-old-2026-10-16",
+      "revision": "772e8ed31ceb5cc3483f38481cc2daf3aa0d7d24",
+      "result": "fail",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-controller-reconnect.json"
+      ],
+      "reproduction": "node tools/qa-controller-reconnect.mjs against retained original controller/build.",
+      "scope": "Actual native channel close, actual same-revision host configuration, and stale held input in both Chromium and WebKit. Software motion/context permission boundaries retained.",
+      "failure": "One held input frame replayed at actual same-configuration reconnect in each browser."
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "controller-signaled-reconnect-recovery-2026-10-16",
+      "revision": "61f09f2d60598cc4e352273297f76b33cf07b81d",
+      "result": "pass",
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-controller-reconnect.json"
+      ],
+      "reproduction": "node tools/qa-controller-reconnect.mjs; node tools/qa-controller-motion-lifecycle.mjs; fresh local build/narrow lint and independent exact-source review.",
+      "scope": "10real signaled reconnect checks and20dependent motion lifecycle checks pass. Same-revision reconnect starts neutral, fresh buttons and motion work. Full state/physical/native permission/release acceptance remains open; no whole-task closure.",
+      "failure": null
+    },
+    {
+      "equipment": [],
+      "supportRows": [],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source, recorded runtime/build and independent review boundaries in linked receipts",
+      "historical": false,
+      "id": "native-launch-log-diagnostic-2026-10-16",
+      "revision": "772e8ed31ceb5cc3483f38481cc2daf3aa0d7d24",
+      "result": "pass",
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-launch-diagnostic.json"
+      ],
+      "reproduction": "Result-delegating parent spawn observer plus bounded read-only macOS unified-log query for exact owned native PIDs and interval.",
+      "scope": "DIAGNOSTIC ONLY. Five selected former failures pass; zero launch-log entries do not explain earlier timeouts or establish reliability. Original2500ms bounds unchanged; cause UNKNOWN, native reliability UNVERIFIED, acceptance false. Historical failures retained; no source fix/OS change/retry/prewarm.",
+      "failure": null
     }
   ],
   "tasks": [
@@ -16906,7 +17335,8 @@
       "records": [
         "pending-D06",
         "directory-native-bindings-partial-2026-10-06",
-        "d06-local-software-partial-2026-10-08"
+        "d06-local-software-partial-2026-10-08",
+        "d06-semantic-acceptance-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -16915,7 +17345,7 @@
         "S05"
       ],
       "equipment": [
-        "Named discovery/chooser targets"
+        "Local source/contract harness and recorded named software runtime; physical/account qualification belongs to its explicit separate rows"
       ]
     },
     {
@@ -17225,7 +17655,8 @@
       "id": "S17",
       "records": [
         "pending-S17",
-        "s17-built-partial-2026-10-06"
+        "s17-built-partial-2026-10-06",
+        "s17-semantic-acceptance-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17233,7 +17664,7 @@
         "T01"
       ],
       "equipment": [
-        "Disposable local identity/coordinator harness; physical endpoints on two networks for S08"
+        "Local source/contract harness and recorded named software runtime; physical/account qualification belongs to its explicit separate rows"
       ]
     },
     {
@@ -17952,7 +18383,8 @@
       "id": "A01",
       "records": [
         "pending-A01",
-        "a01-profiles-data-catalog-2026-10-06"
+        "a01-profiles-data-catalog-2026-10-06",
+        "a01-semantic-acceptance-2026-10-16"
       ],
       "dependencies": [
         "M01",
@@ -17960,7 +18392,7 @@
         "S01"
       ],
       "equipment": [
-        "Selected physical protocol gateway and target firmware"
+        "Local source/contract harness and recorded named software runtime; physical/account qualification belongs to its explicit separate rows"
       ]
     },
     {
@@ -19205,7 +19637,21 @@
         "reference-collaborative-heartbeat-old-2026-10-15",
         "reference-input-delivery-clock-repair-2026-10-15",
         "reference-reliable-release-refusal-old-2026-10-15",
-        "reference-reliable-release-refusal-recovery-2026-10-15"
+        "reference-reliable-release-refusal-recovery-2026-10-15",
+        "pointer-copy-old-failure-2026-10-15",
+        "pointer-copy-recovery-2026-10-15",
+        "native-broker-input-local-integration-2026-10-15",
+        "network-copy-old-failure-2026-10-15",
+        "network-answer-copy-review-old-2026-10-15",
+        "network-copy-recovery-2026-10-15",
+        "network-lifecycle-old-failure-2026-10-15",
+        "network-lifecycle-recovery-2026-10-15",
+        "motion-permission-lifecycle-old-2026-10-15",
+        "motion-permission-lifecycle-recovery-2026-10-15",
+        "controller-motion-lifecycle-old-2026-10-15",
+        "controller-motion-lifecycle-recovery-2026-10-15",
+        "controller-signaled-reconnect-old-2026-10-16",
+        "controller-signaled-reconnect-recovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19524,7 +19970,23 @@
         "reference-reliable-release-refusal-recovery-2026-10-15",
         "release-refusal-candidate-native-shell-timeouts-2026-10-15",
         "native-shell-bounded-observation-2026-10-15",
-        "native-broker-direct-posix-fixture-2026-10-15"
+        "native-broker-direct-posix-fixture-2026-10-15",
+        "pointer-copy-old-failure-2026-10-15",
+        "pointer-copy-recovery-2026-10-15",
+        "native-broker-input-local-integration-2026-10-15",
+        "pointer-copy-containing-native-failure-2026-10-15",
+        "network-copy-old-failure-2026-10-15",
+        "network-answer-copy-review-old-2026-10-15",
+        "network-copy-recovery-2026-10-15",
+        "network-lifecycle-old-failure-2026-10-15",
+        "network-lifecycle-recovery-2026-10-15",
+        "motion-permission-lifecycle-old-2026-10-15",
+        "motion-permission-lifecycle-recovery-2026-10-15",
+        "controller-motion-lifecycle-old-2026-10-15",
+        "controller-motion-lifecycle-recovery-2026-10-15",
+        "controller-signaled-reconnect-old-2026-10-16",
+        "controller-signaled-reconnect-recovery-2026-10-16",
+        "native-launch-log-diagnostic-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -19692,7 +20154,10 @@
         "native-pid-candidate-four-startup-failures-2026-10-15",
         "release-refusal-candidate-native-shell-timeouts-2026-10-15",
         "native-shell-bounded-observation-2026-10-15",
-        "native-broker-direct-posix-fixture-2026-10-15"
+        "native-broker-direct-posix-fixture-2026-10-15",
+        "native-broker-input-local-integration-2026-10-15",
+        "pointer-copy-containing-native-failure-2026-10-15",
+        "native-launch-log-diagnostic-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [

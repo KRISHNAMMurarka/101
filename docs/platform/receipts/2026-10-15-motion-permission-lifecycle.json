@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "pass",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "base": "dad542d102d61f1bc5478784e129fe6e581d4429",
+    "commit": "382b1ba09ca4bba7abd1ce9dc3f3f7efc5ec114e",
+    "tree": "4289b9aae209b72088bf816ec09f70d3191e93dc",
+    "ref": "refs/codex/evidence/2026-10-15-motion-permission-lifecycle/source",
+    "changedFiles": [
+      "app/studio/motion/MotionLab.tsx",
+      "tools/qa-motion-lifecycle.mjs"
+    ],
+    "sourceSha256": {
+      "app/studio/motion/MotionLab.tsx": "059c32af7f69c9e11afbdf70b079625544d8ec99d38a117b93f66d27d8d8db1b",
+      "tools/qa-motion-lifecycle.mjs": "1851f62d76d38f3379b8e7127407db4db6cddd72bcc9ce4fbecc8da24a4bc9f8"
+    }
+  },
+  "oldFailure": {
+    "revision": "dad542d102d61f1bc5478784e129fe6e581d4429",
+    "selected": 14,
+    "fail": 14,
+    "oldQaSha256": "c4d5fc54790c67256b18d3322e4775634ba8d5962622331d0ad2b4accc7985c3",
+    "mechanism": "Actual old built Motion Lab admits two software permission requests; keyboard simulation attaches actual sensor listeners; late grant and denial both overwrite simulation. A late grant after same-document unmount starts two owned sensor handlers. Actual software samples then overwrite keyboard-only data. Both browsers, all contexts/browser/server joined.",
+    "raw": "controller/old.stdout.json",
+    "exactOldQa": "controller/old-qa.mjs.txt"
+  },
+  "repair": "One permission reservation retained until actual settlement across simulation changes; synchronous explicit gesture reaches existing permission helper. Mounted/generation guards retire permission grants/denials after simulation/unmount; actual adapter identity guards diagnostics. Only current granted device mode calls actual adapter.start; keyboard simulation uses unchanged real ingest/pipeline without sensor subscriptions. Current denial/error stops the owned adapter and offers retry/fallback. Unmount invalidates before stopping listeners.",
+  "qualification": {
+    "source": {
+      "base": "dad542d102d61f1bc5478784e129fe6e581d4429",
+      "commit": "382b1ba09ca4bba7abd1ce9dc3f3f7efc5ec114e",
+      "tree": "4289b9aae209b72088bf816ec09f70d3191e93dc",
+      "ref": "refs/codex/evidence/2026-10-15-motion-permission-lifecycle/source",
+      "changedFiles": [
+        "app/studio/motion/MotionLab.tsx",
+        "tools/qa-motion-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/studio/motion/MotionLab.tsx": "059c32af7f69c9e11afbdf70b079625544d8ec99d38a117b93f66d27d8d8db1b",
+        "tools/qa-motion-lifecycle.mjs": "1851f62d76d38f3379b8e7127407db4db6cddd72bcc9ce4fbecc8da24a4bc9f8"
+      }
+    },
+    "old": {
+      "selected": 14,
+      "fail": 14,
+      "exitCode": 1,
+      "qaSha256": "c4d5fc54790c67256b18d3322e4775634ba8d5962622331d0ad2b4accc7985c3",
+      "raw": "controller/old.stdout.json"
+    },
+    "firstCurrent": {
+      "selected": 14,
+      "pass": 12,
+      "fail": 2,
+      "reason": "Chromium actual trusted environmental sample overwrote controlled sample before render; diagnostic records both events. No further production change.",
+      "raw": "controller/first-current.stdout.json"
+    },
+    "current": {
+      "selected": 14,
+      "pass": 14,
+      "exitCode": 0,
+      "qaSha256": "1851f62d76d38f3379b8e7127407db4db6cddd72bcc9ce4fbecc8da24a4bc9f8"
+    },
+    "productionBytesUnchangedAfterFirstReview": true,
+    "typesExitCode": 0,
+    "changedScopeLintExitCode": 0,
+    "finalQaLintExitCode": 0,
+    "motionUnit": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0
+    },
+    "freshBuildExitCode": 0,
+    "buildSha256": "ec25d4a2f67645ffdc690c9908b498e7255a33fbb8efb6826e317fe9227c869d",
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "servers": 0
+    },
+    "mainIntegrated": false,
+    "fullValidation": "No blind full/native rerun. Five native startup failures remain from prior exact full candidate5cc2d699; no ordinary red commit.",
+    "scope": "Actual built Motion Lab and actual BrowserMotionAdapter/keyboard behavior, owned adapter DOM listener registration/removal and same-document unmount. Motion permission responses and motion samples are explicitly software controlled; environmental native sensor samples are excluded during the controlled sample journeys. No physical sensor accuracy, native permission dialog, mobile/assistive-technology or whole-task qualification."
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "result": "APPROVED",
+    "findings": [],
+    "source": {
+      "base": "dad542d102d61f1bc5478784e129fe6e581d4429",
+      "commit": "382b1ba09ca4bba7abd1ce9dc3f3f7efc5ec114e",
+      "tree": "4289b9aae209b72088bf816ec09f70d3191e93dc",
+      "ref": "refs/codex/evidence/2026-10-15-motion-permission-lifecycle/source",
+      "changedFiles": [
+        "app/studio/motion/MotionLab.tsx",
+        "tools/qa-motion-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/studio/motion/MotionLab.tsx": "059c32af7f69c9e11afbdf70b079625544d8ec99d38a117b93f66d27d8d8db1b",
+        "tools/qa-motion-lifecycle.mjs": "1851f62d76d38f3379b8e7127407db4db6cddd72bcc9ce4fbecc8da24a4bc9f8"
+      }
+    },
+    "initialSourceReview": {
+      "reviewer": "/root/sdk_remaining_caller_review",
+      "result": "APPROVED",
+      "findings": [],
+      "source": {
+        "base": "dad542d102d61f1bc5478784e129fe6e581d4429",
+        "commit": "f69f42adacd735ca91d5b08ac7ea9e89064e1ac0",
+        "tree": "129c0f2d7b6d71c8929fae6cf4256a60b425ba70",
+        "ref": "refs/codex/evidence/2026-10-15-motion-permission-lifecycle/source",
+        "changedFiles": [
+          "app/studio/motion/MotionLab.tsx",
+          "tools/qa-motion-lifecycle.mjs"
+        ],
+        "sourceSha256": {
+          "app/studio/motion/MotionLab.tsx": "059c32af7f69c9e11afbdf70b079625544d8ec99d38a117b93f66d27d8d8db1b",
+          "tools/qa-motion-lifecycle.mjs": "c4d5fc54790c67256b18d3322e4775634ba8d5962622331d0ad2b4accc7985c3"
+        }
+      },
+      "summary": "Permission method reached synchronously in explicit click. Ref reservation spans simulation until actual settlement; mounted/generation rejects late grant/denial and unmount start, finally releases for explicit retry. Only current granted mode starts native subscriptions; simulation uses actual ingest/pipeline without start; actual adapter identity guards diagnostics. Current denial/error stops/nulls adapter and offers retry/fallback. QA labels permission/sample software seams and actual handler/key/unmount behavior.",
+      "reviewerExecutions": 0,
+      "reviewerEdits": 0,
+      "subsequentQaAdjustment": "Chromium actual trusted environmental sample overwritten controlled sample; narrow QA-only exclusion of those events is being reviewed independently. Production bytes unchanged."
+    },
+    "qaDelta": "Only QA changed after first approval. Capture filter is installed through saved native add before app handlers and excludes trusted environmental motion/orientation events. Actual adapter registrations/removals, untrusted controlled samples and keyboard processing remain intact. Tracking explicitly excludes two fixture filters; assertions detect leaked/late adapter handlers and sensor listeners remaining in simulation. Filters disappear with owned context close. Scope accurately discloses exclusion and software seams.",
+    "reviewerExecutions": 0,
+    "reviewerEdits": 0
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-motion-permission-lifecycle/focused",
+    "commit": "4c2c0dc52b073d5bbb036f511db3a3059c90e6f7",
+    "tree": "87e852c6fe833fe7da51923158adf52e61549705",
+    "readBackFiles": 33,
+    "allBytesMatched": true,
+    "ownedBrowsersContextsServersJoined": true,
+    "sdkConsumersVmsCreated": 0
+  },
+  "mainIntegrated": false,
+  "fullValidation": "Five unrelated native startup failures from previous exact full candidate5cc2d699 still block broader integration. All three integrated MQTT/Zigbee controls passed that full run. Motion paths do not affect native process startup; no blind full/native rerun or ordinary red commit.",
+  "scope": "Actual built Motion Lab and actual BrowserMotionAdapter/keyboard behavior, owned adapter DOM listener registration/removal and same-document unmount. Motion permission responses and motion samples are explicitly software controlled; environmental native sensor samples are excluded during the controlled sample journeys. No physical sensor accuracy, native permission dialog, mobile/assistive-technology or whole-task qualification. Exact14built browser checks,11direct motion unit checks and37fresh rendered checks pass; clean types/lint/fresh product build. Initial12/14 result and exact older QA are retained: Chromium actual trusted background motion sample replaced the controlled sample before render; QA-only capture filter now explicitly excludes those environmental events. No production bytes changed for that adjustment. Full accessibility/support/state matrix and release acceptance remain open.149whole tasks and69unaccepted support rows remain.",
+  "supportRows": []
+}

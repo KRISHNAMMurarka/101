@@ -7,6 +7,7 @@ import type { PointerSourceDriver, Observation, ReceiverInvitation } from '@101/
 import { createRemotePointerSurface } from '@/examples/device-pipelines/remote-pointer';
 import { useEndpointIdentity } from '@/app/components/use-endpoint-identity';
 import { createConnectionOwnership } from '@/app/lib/connection-ownership';
+import { copyInvitationLink } from '@/app/lib/invitation-copy';
 import Link from 'next/link';
 import QRCode from 'qrcode';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -41,6 +42,23 @@ export default function PointerLab() {
   const [ownerSnapshot, setOwnerSnapshot] = useState<Snapshot>(EMPTY);
   const [hasCandidate, setHasCandidate] = useState(false);
   const generation = useRef(0);
+  const mounted = useRef(false), copyReserved = useRef(false);
+  const [copying, setCopying] = useState(false);
+  const copyCode = async (value: string, copied: string, manual: string) => {
+    if (copyReserved.current || !value) return;
+    const revision = generation.current;
+    copyReserved.current = true; setCopying(true);
+    setMessage('Waiting for permission to copy. You can select and copy the field yourself.');
+    try {
+      const current = () => mounted.current && generation.current === revision;
+      const phase = await copyInvitationLink({ url: value, isCurrent: current,
+        writeText: text => navigator.clipboard?.writeText(text) });
+      if (current() && phase !== 'stopped') setMessage(phase === 'copied' ? copied : manual);
+    } finally {
+      copyReserved.current = false;
+      if (mounted.current) setCopying(false);
+    }
+  };
   const padRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<HTMLSpanElement>(null);
   const receiverSize = useRef({ width: 1, height: 1 });
@@ -76,11 +94,12 @@ export default function PointerLab() {
     return () => { current = false; };
   }, [invitationLink]);
   useEffect(() => {
+    mounted.current = true;
     const blur = () => { ownership.current.current()?.provider?.driver()?.release(); };
     const visibility = () => { if (document.hidden) stop(); };
     const leave = () => stop(false);
     window.addEventListener('blur', blur); document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', leave);
-    return () => { window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', leave); stop(false); };
+    return () => { mounted.current = false; window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', leave); stop(false); };
   }, [stop]);
   useEffect(() => {
     const element = padRef.current; if (!element) return;
@@ -317,10 +336,10 @@ export default function PointerLab() {
         <button onClick={createInvitation} disabled={!identity.identity || busy}>Create invitation</button>
         {invitationCode ? <><label htmlFor='receiver-invitation-code'>Invitation to copy to source</label>
           <textarea id='receiver-invitation-code' value={invitationCode} readOnly spellCheck={false} rows={3} />
-          <button onClick={() => void navigator.clipboard.writeText(invitationCode).then(() => setMessage('Invitation copied.')).catch(() => setMessage('Select and copy the invitation from its field.'))}>Copy invitation</button>
+          <button disabled={copying} onClick={() => void copyCode(invitationCode, 'Invitation copied.', 'Select and copy the invitation from its field.')}>Copy invitation</button>
           {invitationLink ? <><label htmlFor='receiver-invitation-link'>Invitation link</label>
             <textarea id='receiver-invitation-link' value={invitationLink} readOnly spellCheck={false} rows={2} />
-            <button onClick={() => void navigator.clipboard.writeText(invitationLink).then(() => setMessage('Link copied.')).catch(() => setMessage('Select and copy the link from its field.'))}>Copy link</button>
+            <button disabled={copying} onClick={() => void copyCode(invitationLink, 'Link copied.', 'Select and copy the link from its field.')}>Copy link</button>
             {invitationQr ? <div className={styles.qr}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={invitationQr} alt='Scan this invitation link on the source device' />
@@ -338,7 +357,7 @@ export default function PointerLab() {
       <textarea id='remote-pointer-code' value={remoteCode} onChange={event => setRemoteCode(event.target.value)} spellCheck={false} maxLength={65536} />
       <button onClick={() => void (role === 'receiver' ? acceptOffer() : acceptAnswer())} disabled={!identity.identity || busy || !remoteCode}>{role === 'receiver' ? 'Use offer' : 'Use answer'}</button>
       {localCode ? <><label htmlFor='local-pointer-code'>{role === 'receiver' ? 'Answer to copy to source' : 'Offer to copy to receiver'}</label>
-        <textarea id='local-pointer-code' value={localCode} readOnly spellCheck={false} /><button onClick={() => void navigator.clipboard.writeText(localCode).then(() => setMessage('Code copied.')).catch(() => setMessage('Select and copy the code from the field.'))}>Copy code</button></> : null}
+        <textarea id='local-pointer-code' value={localCode} readOnly spellCheck={false} /><button disabled={copying} onClick={() => void copyCode(localCode, 'Code copied.', 'Select and copy the code from the field.')}>Copy code</button></> : null}
     </details>
   </main>;
 }

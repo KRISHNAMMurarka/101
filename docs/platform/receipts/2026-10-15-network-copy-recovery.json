@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "pass",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "base": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "commit": "56c33c911751fd7fa03e7fcba6cbf05ec717a7d5",
+    "tree": "f7e33445374ee71e765000908c41b1aa4478f59a",
+    "ref": "refs/codex/evidence/2026-10-15-network-copy-recovery/reviewed-source",
+    "changedFiles": [
+      "app/studio/network/NetworkLab.tsx",
+      "tools/qa-network-copy.mjs"
+    ],
+    "sourceSha256": {
+      "app/studio/network/NetworkLab.tsx": "9e41c755a7f22e27121f35ba12e7c74dbc77a161392c0dc6b1ad412fa475a510",
+      "tools/qa-network-copy.mjs": "594f9b96a3c41405dbdad98c484746c27e0a3a4687ef2866a7426a7dd6ddcb3d"
+    }
+  },
+  "oldFailure": {
+    "revision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+    "selectedChecks": 14,
+    "fail": 10,
+    "mechanism": "Missing clipboard falsely shows Copied; getter/method/denial rejects as pageerror. Two held writes admitted; old completion marks a fresh role Copied. Actual built routes and native RTC offers in both engines; software clipboard only.",
+    "buildSha256": "82f92509a9eb13ca0e55997e0afdf88597fd6d07c6d432253390147def714da8",
+    "raw": "controller/old.stdout.json"
+  },
+  "reviewFoundFailure": {
+    "revision": "37ccfb15535fd4abd5ba1642985e9018438e89db",
+    "selectedChecks": 18,
+    "fail": 2,
+    "mechanism": "Old answer remains copyable while actual fresh native answer settlement is held. Both engines write actual old code and later mark unwritten replacement Copied. Actual producer result delegated unchanged; separate software settlement seam.",
+    "buildSha256": "590bf616115b87ce2c6ee07fb7a6900aeb12c516e86a147d601531966cd99f25",
+    "raw": "controller/review-gap.stdout.json"
+  },
+  "repair": "Reuse existing copyInvitationLink. Native call stays synchronous in explicit click. One write reserved until actual settlement across reset/role/code changes. Every displayed code update invalidates completion generation and success timer/state; old answer clears before replacement starts. Late return requires mounted/current generation. Owned1200ms success timer clears on reset/unmount. Plain pending/manual feedback is linked to code field.",
+  "qualification": {
+    "browsers": [
+      "Chromium149.0.7827.55",
+      "WebKit26.5"
+    ],
+    "clipboardAndAnswerChecks": 18,
+    "pass": 18,
+    "pageErrors": 0,
+    "types": "pass",
+    "changedScopeLint": "pass",
+    "freshBuild": "pass",
+    "freshBuildSha256": "43b373677a3af46c60200b836911e915889aec77ee5c5996694337d2492ded8b",
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "servers": 0
+    }
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "result": "APPROVED",
+    "findings": [],
+    "source": {
+      "base": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+      "commit": "56c33c911751fd7fa03e7fcba6cbf05ec717a7d5",
+      "tree": "f7e33445374ee71e765000908c41b1aa4478f59a",
+      "ref": "refs/codex/evidence/2026-10-15-network-copy-recovery/reviewed-source",
+      "changedFiles": [
+        "app/studio/network/NetworkLab.tsx",
+        "tools/qa-network-copy.mjs"
+      ],
+      "sourceSha256": {
+        "app/studio/network/NetworkLab.tsx": "9e41c755a7f22e27121f35ba12e7c74dbc77a161392c0dc6b1ad412fa475a510",
+        "tools/qa-network-copy.mjs": "594f9b96a3c41405dbdad98c484746c27e0a3a4687ef2866a7426a7dd6ddcb3d"
+      }
+    },
+    "addressedFinding": "Reproduced P2 old-answer copy window in both engines before correction. Every displayed-code assignment now invalidates generation and success timer/state; createAnswer clears prior answer synchronously. Reservation held until actual copy settlement, gestures synchronous, mounted+current generation required after await; actual native transport calls/order unchanged except clearing stale displayed answer.",
+    "scope": "Exact two-file independent read-only review; no executions, edits, browsers or new agents. QA uses actual fresh RTC offers/answers and delegates real createAnswer before controlling its settlement; no native clipboard delegation.",
+    "reviewerExecutions": 0,
+    "reviewerEdits": 0
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-network-copy-recovery/focused",
+    "commit": "b202e30dfa16e43d5c90001c0147d1b5a05c1d62",
+    "tree": "9adc196e47654056c2a94eb2176e7ab2db82845b",
+    "readBackFiles": 31,
+    "allBytesMatched": true,
+    "ownedBrowsersContextsServersJoined": true,
+    "sdkConsumersVmsCreated": 0
+  },
+  "fullValidation": "Current exact containing full candidate5cc2d699 is rejected:3407/3412unit pass with5native startup failures;7other gates and37rendered pass. Network changes were made later and have focused types/lint/freshbuild/18native-browser/37rendered evidence only. No blind full/native rerun or red commit.",
+  "scope": "Selected developer Network Lab recovery with actual native local RTC offers/answers. Clipboard failures/settlement and delegated actual answer settlement are explicit software seams; no native clipboard permissions/writes, physical endpoint, whole accessibility/state lifecycle, full task/support or release acceptance.149whole tasks and69unaccepted support rows remain.",
+  "mainIntegrated": false,
+  "supportRows": []
+}

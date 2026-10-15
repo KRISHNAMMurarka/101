@@ -8,6 +8,7 @@ import { createGamePointerReceiver, INPUT_LAB_POINTER_MANIFEST } from '@/example
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useEndpointIdentity } from './use-endpoint-identity';
 import { createConnectionOwnership } from '@/app/lib/connection-ownership';
+import { copyInvitationLink } from '@/app/lib/invitation-copy';
 
 type Receiver = ReturnType<typeof createGamePointerReceiver>;
 type Connection = { peer: PeerDataTransport; auth: AuthenticatedResourcePeer; receiver: Receiver; invitation: ReceiverInvitation; confirmed: boolean; admitted: boolean; dispose: () => void };
@@ -30,6 +31,23 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
   const [hasCandidate, setHasCandidate] = useState(false);
   const [hasOwner, setHasOwner] = useState(false);
   const generation = useRef(0);
+  const mounted = useRef(false), copyReserved = useRef(false);
+  const [copying, setCopying] = useState(false);
+  const copyCode = async (value: string, copied: string, manual: string) => {
+    if (copyReserved.current || !value) return;
+    const revision = generation.current;
+    copyReserved.current = true; setCopying(true);
+    setMessage('Waiting for permission to copy. You can select and copy the field yourself.');
+    try {
+      const current = () => mounted.current && generation.current === revision;
+      const phase = await copyInvitationLink({ url: value, isCurrent: current,
+        writeText: text => navigator.clipboard?.writeText(text) });
+      if (current() && phase !== 'stopped') setMessage(phase === 'copied' ? copied : manual);
+    } finally {
+      copyReserved.current = false;
+      if (mounted.current) setCopying(false);
+    }
+  };
   const stop = useCallback((update = true) => {
     generation.current++;
     connection.current.clear(); setHasCandidate(false); setHasOwner(false);
@@ -37,11 +55,12 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
     if (update) { setBusy(false); setAnswer(''); setInvitationCode(''); setSnapshot({ ...EMPTY, stopped: true }); setMessage('Stopped. Aim is neutral and trigger is released. Create a fresh invitation to continue.'); }
   }, []);
   useEffect(() => {
+    mounted.current = true;
     const blur = () => { if (connection.current.current()?.receiver.bridge.state().approved) stop(); };
     const hidden = () => { if (document.hidden) stop(); };
     const leave = () => stop(false);
     window.addEventListener('blur', blur); document.addEventListener('visibilitychange', hidden); window.addEventListener('pagehide', leave);
-    return () => { window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', hidden); window.removeEventListener('pagehide', leave); stop(false); };
+    return () => { mounted.current = false; window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', hidden); window.removeEventListener('pagehide', leave); stop(false); };
   }, [stop, sessionId]);
 
   const createInvitation = () => {
@@ -159,7 +178,7 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
     {invitationCode ? <>
       <label htmlFor='input-lab-pointer-invitation'>Invitation to copy to source</label>
       <textarea id='input-lab-pointer-invitation' value={invitationCode} readOnly spellCheck={false} rows={3} style={{ width: '100%', minWidth: 0 }} />
-      <button className='outline-button' onClick={() => void navigator.clipboard.writeText(invitationCode).then(() => setMessage('Invitation copied.')).catch(() => setMessage('Select and copy the invitation from its field.'))}>Copy invitation</button>
+      <button className='outline-button' disabled={copying} onClick={() => void copyCode(invitationCode, 'Invitation copied.', 'Select and copy the invitation from its field.')}>Copy invitation</button>
     </> : null}
     <label htmlFor='input-lab-pointer-offer'>Offer from source</label>
     <textarea id='input-lab-pointer-offer' value={offer} onChange={event => setOffer(event.target.value)} maxLength={65536}
@@ -168,9 +187,8 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
     {answer ? <>
       <label htmlFor='input-lab-pointer-answer'>Answer to copy to source</label>
       <textarea id='input-lab-pointer-answer' value={answer} readOnly spellCheck={false} rows={3} style={{ width: '100%', minWidth: 0 }} />
-      <button className='outline-button' onClick={() => void navigator.clipboard.writeText(answer)
-        .then(() => setMessage('Answer copied. Paste it into the source.'))
-        .catch(() => setMessage('Select and copy the answer from its field.'))}>Copy answer</button>
+      <button className='outline-button' disabled={copying} onClick={() => void copyCode(answer,
+        'Answer copied. Paste it into the source.', 'Select and copy the answer from its field.')}>Copy answer</button>
     </> : null}
     {snapshot.comparison ? <>
       <label htmlFor='input-lab-pointer-comparison'>Verified connection code — compare every character on both screens</label>

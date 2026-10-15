@@ -134,11 +134,13 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   const [layoutRevision, setLayoutRevision] = useState(0);
   const [readout, setReadout] = useState<ControllerReadout>({ values: {}, tone: "normal" });
   const [motionState, setMotionState] = useState<"idle" | "active" | "denied" | "unsupported">("idle");
+  const [motionPending, setMotionPending] = useState(false);
   const [speakerAudio, setSpeakerAudio] = useState<"locked" | "ready">("locked");
   const [speakerEnableFailed, setSpeakerEnableFailed] = useState(false);
   const [lastSpeakerCue, setLastSpeakerCue] = useState<number>();
   const transportRef = useRef<LinkTransport | null>(null);
   const motionAdapterRef = useRef<BrowserMotionAdapter | null>(null);
+  const motionMounted = useRef(false), motionGeneration = useRef(0), motionReserved = useRef(false);
   const speakerRef = useRef<BrowserControllerSpeaker | null>(null);
   const speakerAudioRef = useRef<"locked" | "ready">("locked");
   const announceRef = useRef<() => void>(() => undefined);
@@ -149,6 +151,24 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   const configurationRef = useRef("");
   const lastHostMessageAt = useRef(0);
   const sequence = useRef(0);
+
+  useEffect(() => {
+    motionMounted.current = true;
+    return () => {
+      motionMounted.current = false;
+      // Retire the current permission generation, rather than a captured DOM ref.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      motionGeneration.current++;
+    };
+  }, []);
+
+  const retireMotion = useCallback(() => {
+    motionGeneration.current++;
+    const adapter = motionAdapterRef.current;
+    motionAdapterRef.current = null;
+    adapter?.stop();
+    if (motionMounted.current) setMotionState("idle");
+  }, []);
 
   useEffect(() => {
     if (!routeReady) return;
@@ -256,6 +276,16 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       return;
     }
     transportRef.current = transport;
+    const releaseConnectionInput = () => {
+      retireMotion();
+      configurationRef.current = "";
+      const released = inputRef.current!.releaseAll();
+      publishSnapshot(released);
+      setActionsState(released.actions);
+      setVectors(released.vectors);
+      setAxes(released.axes);
+      setAssigned(false);
+    };
     const removeListener = transport.onMessage((message) => {
       if (message.channel === "realtime") {
         const payload = message.payload;
@@ -289,9 +319,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         setAssignment({ gameId: payload.gameId, role: "standby", playerId: "unassigned" });
         setConnected(true);
         setAssigned(false);
-        if (motionAdapterRef.current) void motionAdapterRef.current.stop();
-        motionAdapterRef.current = null;
-        setMotionState("idle");
+        retireMotion();
         setReadout({ values: {}, tone: "normal", message: controllerConnectionCopy("waiting") });
       }
       if (payload.type === "controller.configure" && payload.deviceId === deviceId) {
@@ -304,6 +332,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
           return;
         }
         configurationRef.current = configuration;
+        retireMotion();
         const transition = inputRef.current!.transition(payload.layout);
         publishSnapshot(transition.release);
         publishSnapshot(transition.current);
@@ -313,11 +342,6 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         setVectors(transition.current.vectors);
         setAxes(transition.current.axes);
         setLayoutRevision(payload.revision);
-        if (!payload.layout.motion && motionAdapterRef.current) {
-          void motionAdapterRef.current.stop();
-          motionAdapterRef.current = null;
-          setMotionState("idle");
-        }
         setReadout({ values: {}, tone: "normal", message: controllerConnectionCopy("ready", payload.layout.title) });
       }
       if (payload.type === "controller.state" && payload.deviceId === deviceId) {
@@ -344,6 +368,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
     const removeState = isStateful(transport) ? transport.onStateChange((state) => {
       if (state === "connected") hello();
       if (state === "failed" || state === "disconnected") {
+        releaseConnectionInput();
         setConnected(false);
         setReadout({ values: {}, tone: "warning", message: controllerConnectionCopy("reconnecting") });
       }
@@ -360,6 +385,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         hello();
       } catch {
         if (connectCancelled) return;
+        releaseConnectionInput();
         setConnected(false);
         setReadout({ values: {}, tone: "critical", message: controllerConnectionCopy("unavailable") });
         const delay = Math.min(10_000, 600 * 2 ** Math.min(connectFailures, 4));
@@ -373,9 +399,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       if (!lastHostMessageAt.current || performance.now() - lastHostMessageAt.current <= 4_800) return;
       setConnected((wasConnected) => {
         if (!wasConnected) return false;
-        publishSnapshot(inputRef.current!.releaseAll());
-        configurationRef.current = "";
-        setAssigned(false);
+        releaseConnectionInput();
         setReadout({ values: {}, tone: "warning", message: controllerConnectionCopy("hostLost") });
         return false;
       });
@@ -389,12 +413,11 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       removeListener();
       removeState();
       void transport.disconnect();
-      void motionAdapterRef.current?.stop();
-      motionAdapterRef.current = null;
+      retireMotion();
       transportRef.current = null;
       announceRef.current = () => undefined;
     };
-  }, [approvedTicket, deviceId, invalidPair, pairCode, publishSnapshot, routeReady, selectedSession]);
+  }, [approvedTicket, deviceId, invalidPair, pairCode, publishSnapshot, retireMotion, routeReady, selectedSession]);
 
   const setActions = useCallback((values: Record<string, boolean | number>, owner?: string) => {
     const snapshot = inputRef.current!.setActions(values, owner);
@@ -455,17 +478,25 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   };
 
   const enableMotion = async () => {
+    const transport = transportRef.current, configuration = configurationRef.current;
+    if (motionReserved.current || !transport || !configuration || !layoutRef.current.motion) return;
+    const revision = ++motionGeneration.current;
+    const current = () => motionMounted.current && motionGeneration.current === revision &&
+      transportRef.current === transport && configurationRef.current === configuration && Boolean(layoutRef.current.motion);
+    motionReserved.current = true; setMotionPending(true);
     try {
       const permission = await requestMotionPermission();
+      if (!current()) return;
       if (permission !== "granted") {
         setMotionState(permission);
         return;
       }
-      await motionAdapterRef.current?.stop();
+      motionAdapterRef.current?.stop();
       let awaitingNeutralSample = true;
       const adapter = new BrowserMotionAdapter({ deviceId, playerId: playerIdRef.current });
       motionAdapterRef.current = adapter;
       adapter.start((frame) => {
+        if (!current() || motionAdapterRef.current !== adapter) return;
         if (awaitingNeutralSample) {
           adapter.calibrateNeutral();
           awaitingNeutralSample = false;
@@ -483,7 +514,12 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       });
       setMotionState("active");
     } catch {
+      if (!current()) return;
+      retireMotion();
       setMotionState("denied");
+    } finally {
+      motionReserved.current = false;
+      if (motionMounted.current) setMotionPending(false);
     }
   };
 
@@ -630,8 +666,8 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
 
       {surfaceState === "play" && layout.motion && (
         <section className="motion-permission">
-          <button onClick={motionState === "active" ? calibrate : enableMotion}>{motionCopy.buttonLabel}</button>
-          <p>{motionCopy.description}</p>
+          <button disabled={motionPending} aria-describedby="controller-motion-status" onClick={motionState === "active" ? calibrate : enableMotion}>{motionPending ? "Waiting for motion permission…" : motionCopy.buttonLabel}</button>
+          <p id="controller-motion-status" role="status">{motionPending ? "Waiting for motion permission. Touch controls remain available." : motionCopy.description}</p>
         </section>
       )}
 

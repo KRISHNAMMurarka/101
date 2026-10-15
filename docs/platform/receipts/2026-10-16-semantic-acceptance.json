@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "sourceRevision": "dfe5d0956129ffb85f10efab1bce0e84551e5c6e",
+  "method": "Independent semantic audit of all149previously open row contracts and saved evidence, followed by integration-controller clause/source-boundary review. Historical receipts remain unchanged.",
+  "decision": "Accept A01 manifest definition/review, D06 provisioned-session-directory/1 Node mechanism, and S17 local-workspace-administration/1 SDK mechanism against their existing canonical acceptance clauses. Persistent accounts/teams, hosted services, physical providers and broader qualification are independent deliverables and are not claimed.",
+  "before": {
+    "complete": 123,
+    "open": 149
+  },
+  "after": {
+    "complete": 126,
+    "open": 146
+  },
+  "closures": [
+    {
+      "id": "D06",
+      "line": 122,
+      "acceptance": "D06 \u2014 Implement private remote directories. Authorized users see only enrolled resources and allowed metadata; membership and resource access remain separate checks.",
+      "partition": "candidate_closure",
+      "recommendation": "candidate_scope_reconciliation",
+      "basis": "Actual Node mTLS directory and installed SDK resource caller enforce enrolled owner/device/generation, explicitly projected metadata, recipient visibility independent from resource grants, expiry/reconnect/leave/update/unpublish. Source plus peer tests remain byte-identical to the later saved 8 October proof. Persistent accounts, physical resource probes, browser client certificates and published Hub are not requirements in this literal implementation row.",
+      "missingAcceptance": "No literal private-directory mechanism gap found for the provisioned-session-directory/1 Node profile. Controller must decide whether that accepted bounded profile satisfies D06 or whether an already-authoritative release requirement demands an additional directory profile; cite that requirement if keeping it open. Do not silently import persistent-account or physical-network requirements. Current full candidate acceptance still belongs to integration.",
+      "evidence": [
+        "docs/platform/receipts/2026-10-06-directory-bindings-timing.json",
+        "docs/platform/receipts/2026-10-08-local-software.json",
+        "packages/hub-server/src/private-directory.ts",
+        "packages/hub-server/src/private-directory.test.ts",
+        "packages/hub-server/src/private-directory-peer.test.ts"
+      ],
+      "caveat": "Hub/client is a source-bound Node provider, separate from packed SDK packages. This is mechanism acceptance only; it adds no support-row, physical or published-Hub claim.",
+      "recordIds": [
+        "directory-native-bindings-partial-2026-10-06",
+        "d06-local-software-partial-2026-10-08"
+      ],
+      "linkedEvidencePaths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-directory-bindings-timing.json",
+        "docs/platform/receipts/2026-10-08-local-software.json"
+      ],
+      "clauseCoverage": [
+        {
+          "clause": "Authorized users",
+          "source": {
+            "path": "packages/hub-server/src/private-directory.ts",
+            "line": 20,
+            "sha256": "5bd140fca6151cacd1ccd1cb25cde8447a38e2b59286dc81bf3623aa028d311a"
+          },
+          "finding": "Only coordinator-constructed authority after native TLS/enrollment/principal/role/bearer checks; current identity/generation/expiry fences."
+        },
+        {
+          "clause": "Only enrolled resources",
+          "source": {
+            "path": "packages/hub-server/src/private-directory-peer.test.ts",
+            "line": 69,
+            "sha256": "f6a9627273950ebba9cce742172e5f03105099df10f55fae8a0e5efd1559e65d"
+          },
+          "finding": "Reject non-enrolled owner, wrong device, stale generation and retiring currentness callback."
+        },
+        {
+          "clause": "Allowed metadata only",
+          "source": {
+            "path": "packages/hub-server/src/private-directory.ts",
+            "line": 49,
+            "sha256": "5bd140fca6151cacd1ccd1cb25cde8447a38e2b59286dc81bf3623aa028d311a"
+          },
+          "finding": "Projects only resource ID/revision/label and selected capability id/semantic/kind/schema; no arbitrary private metadata or authority."
+        },
+        {
+          "clause": "Membership and access separate",
+          "source": {
+            "path": "packages/hub-server/src/private-directory.test.ts",
+            "line": 31,
+            "sha256": "db50d9620fb4d83490b9f075a0768d49a36216bcd208c93bd69edfcf5f041abb"
+          },
+          "finding": "Joining does not grant visibility; explicit host recipient allowlist remains separate from the installed runtime route grant."
+        },
+        {
+          "clause": "Real authenticated remote API path",
+          "source": {
+            "path": "packages/hub-server/src/private-directory-peer.test.ts",
+            "line": 127,
+            "sha256": "f6a9627273950ebba9cce742172e5f03105099df10f55fae8a0e5efd1559e65d"
+          },
+          "finding": "Actual independently enrolled clients deny copied bearer/cross-session/forged owner/wrong device; recipient metadata update, unpublish, generation/reconnect/expiry/loss retire visibility. 8 October saved proof has 47 focused and 11 installed checks."
+        }
+      ],
+      "controllerDisposition": "accepted_named_literal_scope_for_integration",
+      "remainingForController": "Reconcile canonical evidence/checkbox and current exact-candidate gates; preserve old partial receipts and do not promote support."
+    },
+    {
+      "id": "S17",
+      "line": 145,
+      "acceptance": "S17 \u2014 Implement workspace/team administration. Create/manage membership, roles and resource-sharing policy with auditable changes; removal/revocation and delegated administration never bypass device-owner consent.",
+      "partition": "candidate_closure",
+      "recommendation": "candidate_scope_reconciliation",
+      "basis": "Public workspace API creates/manages member/delegated roles/sharing with bounded complete audit, explicit trusted-host actor authentication contract, exact approvals, independent source/sink owner consent, actual managed-route retirement on removal/revoke/expiry and late-work reservation. The receipt records 26 installed public checks and independent review; all four S17 implementation/test/caller/tool files still match its hashes. Literal row does not require persistent accounts, a distributed team database or physical devices.",
+      "missingAcceptance": "No literal membership/roles/audit/consent/revocation gap found for local-workspace-administration/1. Controller must accept that SDK profile or point to an authoritative requirement for durable/cross-process team administration. A cooperative host must authenticate actors and route through this controller; accepting the SDK mechanism does not claim a hosted account product. Historical installed proof and exact green gate custody have now been located and hash-verified; final current candidate gate policy remains separate.",
+      "evidence": [
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json",
+        "packages/device-runtime/src/workspace-administration.ts",
+        "packages/device-runtime/src/workspace-administration.test.ts",
+        "examples/workspace-administration/consumer.mjs",
+        "tools/qa-workspace-administration.mjs"
+      ],
+      "caveat": "The stored receipt and SDK prose still explicitly label full S17 open. Treat this as an evidence-backed scope decision, never an automatic closure or a claim of durable/account administration.",
+      "recordIds": [
+        "s17-built-partial-2026-10-06"
+      ],
+      "linkedEvidencePaths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-sharing-administration-native-contract.json"
+      ],
+      "clauseCoverage": [
+        {
+          "clause": "Create/manage membership and roles",
+          "source": {
+            "path": "packages/device-runtime/src/workspace-administration.ts",
+            "line": 16,
+            "sha256": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b"
+          },
+          "finding": "Explicit create/add/set/remove member API; immutable provisioned owner; actor is authenticated by trusted host exact-current approval."
+        },
+        {
+          "clause": "Resource-sharing policy",
+          "source": {
+            "path": "packages/device-runtime/src/workspace-administration.ts",
+            "line": 11,
+            "sha256": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b"
+          },
+          "finding": "Exact principal/application/session/source/sink/operations/partition/rate/age/expiry envelope; observer output constrained."
+        },
+        {
+          "clause": "Auditable changes",
+          "source": {
+            "path": "packages/device-runtime/src/workspace-administration.test.ts",
+            "line": 66,
+            "sha256": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839"
+          },
+          "finding": "Membership/policy/audit revisions commit atomically; full bounded audit refuses new changes rather than silently truncating."
+        },
+        {
+          "clause": "Removal/revocation",
+          "source": {
+            "path": "packages/device-runtime/src/workspace-administration.test.ts",
+            "line": 170,
+            "sha256": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839"
+          },
+          "finding": "Actual managed connections retire on member/policy/owner/expiry loss; fresh approval required and unresolved provider quota retained until settlement."
+        },
+        {
+          "clause": "Delegation cannot bypass owner consent",
+          "source": {
+            "path": "packages/device-runtime/src/workspace-administration.test.ts",
+            "line": 120,
+            "sha256": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839"
+          },
+          "finding": "Independent source/sink owner approvals plus membership policy; copied approval/scope, self-promotion/owner removal/admin escalation rejected."
+        },
+        {
+          "clause": "Independent installed client",
+          "source": {
+            "path": "examples/workspace-administration/consumer.mjs",
+            "line": 82,
+            "sha256": "ebbd29695a4d0689d7d5d7a159bcc5fe4338d4f1ab3294b0b422a9be7deca16e"
+          },
+          "finding": "26 saved ordinary installed public SDK checks include genuine publisher/sink effect, both owner denials, revoke/removal/expiry/duplicate tuple and fresh recovery; not a network/account identity implementation."
+        }
+      ],
+      "controllerDisposition": "accepted_named_literal_scope_for_integration",
+      "remainingForController": "Reconcile canonical evidence/checkbox and current exact-candidate gates; preserve old partial receipts and do not promote support."
+    },
+    {
+      "id": "A01",
+      "line": 200,
+      "acceptance": "A01 \u2014 Define connector/device-profile manifests. Identity filters, framing/decoder, resources, units, permissions, calibration, commands, safe-state and feedback levels are versioned and reviewed.",
+      "partition": "candidate_closure",
+      "recommendation": "strong_candidate_close_literal_deliverable",
+      "basis": "The row asks to define versioned reviewed manifests, not physically qualify a protocol device. The inert closed manifest explicitly includes identity filters, decoder ID/version/digest, framing, typed units/permissions, calibration, command safe-state and distinct feedback levels. Genuine packed Node RSS sample+command caller and independent review prove a first consumer. Physical protocol/equipment acceptance remains in A02-A16/Q08.",
+      "missingAcceptance": "No intrinsic field or review gap found in the literal row. Controller must reconcile the receipt's stronger physical-gateway condition with the canonical row, link exact source/test/commit evidence, and apply its final candidate gate policy before marking accepted. This audit does not itself close the checkbox.",
+      "evidence": [
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json",
+        "packages/device-model/src/connector-profile.ts",
+        "packages/device-model/src/connector-profile.test.ts",
+        "examples/device-profiles/node-memory-profile.ts",
+        "examples/device-profiles/consumer.mjs"
+      ],
+      "caveat": "Current manifest/parser/example bytes equal the saved receipt. Downstream profile-connector implementation/test have changed; no claim is made that its entire old runtime qualification automatically covers current bytes.",
+      "recordIds": [
+        "a01-profiles-data-catalog-2026-10-06"
+      ],
+      "linkedEvidencePaths": [
+        "docs/platform/SDK.md",
+        "docs/platform/receipts/2026-10-06-profiles-data-catalog.json"
+      ],
+      "clauseCoverage": [
+        {
+          "clause": "Identity filters",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 75,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Closed field/equality declarations with duplicate/dangerous-name/nonfinite validation; not authentication."
+        },
+        {
+          "clause": "Framing / decoder",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 72,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Explicit decoder ID/version/SHA256 and bounded jsonl frame/chunk/count policies."
+        },
+        {
+          "clause": "Resources / units / permissions",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 97,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Bounded device descriptor capabilities retain value schema/units and per-direction permission restrictions."
+        },
+        {
+          "clause": "Calibration",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 104,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Explicit revision/unit/error budget, same declared measurement unit, finite nonnegative bound."
+        },
+        {
+          "clause": "Commands / safe-state / feedback",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 112,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Reliable exclusive invoke commands define deadlines, idempotency, safe-state and separate dispatched/target-acknowledged/observed/unverified feedback; observed state must match another declared resource."
+        },
+        {
+          "clause": "Versioned and reviewed",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.ts",
+            "line": 21,
+            "sha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd"
+          },
+          "finding": "Schema, manifest and decoder versions plus reviewed digest. Registry requires host trusted factory plus exact source digest, never manifest-controlled import."
+        },
+        {
+          "clause": "Acceptance tests / genuine first caller",
+          "source": {
+            "path": "packages/device-model/src/connector-profile.test.ts",
+            "line": 17,
+            "sha256": "efc16ebea4a4a8788c0ed8d85355104e376dfc3432dc8eff7910618aedb59b0a"
+          },
+          "finding": "Five parser tests cover exact fields, malformed/prototype/getter/limits/calibration/permissions/feedback; saved packed actual RSS caller verifies producer bytes and command/state feedback."
+        }
+      ],
+      "controllerDisposition": "accepted_named_literal_scope_for_integration",
+      "remainingForController": "Reconcile canonical evidence/checkbox and current exact-candidate gates; preserve old partial receipts and do not promote support."
+    }
+  ],
+  "sourceEquivalence": [
+    {
+      "task": "A01",
+      "path": "packages/device-model/src/connector-profile.ts",
+      "savedSha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "currentSha256": "b9875b918ba411a8a97bb028316e4b6e9cc86a921016af1a21d8585e7e85b3bd",
+      "identical": true
+    },
+    {
+      "task": "A01",
+      "path": "packages/device-model/src/connector-profile.test.ts",
+      "savedSha256": "efc16ebea4a4a8788c0ed8d85355104e376dfc3432dc8eff7910618aedb59b0a",
+      "currentSha256": "efc16ebea4a4a8788c0ed8d85355104e376dfc3432dc8eff7910618aedb59b0a",
+      "identical": true
+    },
+    {
+      "task": "A01",
+      "path": "packages/device-runtime/src/profile-connector.ts",
+      "savedSha256": "65cb6910a0aee310fe93bb92efc4137fbeb3968417de53f99da54d97fc1d1fc0",
+      "currentSha256": "a2e880987fa5133aa853558d5e5d727e9787734aea6ae427a80f994af2d0860e",
+      "identical": false
+    },
+    {
+      "task": "A01",
+      "path": "packages/device-runtime/src/profile-connector.test.ts",
+      "savedSha256": "7dd4137c4d12aefcd53775d014a20f7fb3351bb7fe4129dfe2405e99ae7293b9",
+      "currentSha256": "8b908a220a4b903d7ae543e9efb1c53508cfe759f2655f75c1264a9fdd066835",
+      "identical": false
+    },
+    {
+      "task": "A01",
+      "path": "examples/device-profiles/node-memory-profile.ts",
+      "savedSha256": "ff08423b6648b6f7d77443ecb853c5e9935381c939465ce42b0bd7ad1b18049d",
+      "currentSha256": "ff08423b6648b6f7d77443ecb853c5e9935381c939465ce42b0bd7ad1b18049d",
+      "identical": true
+    },
+    {
+      "task": "A01",
+      "path": "examples/device-profiles/node-memory-producer.mjs",
+      "savedSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "currentSha256": "7bb4137d774b85ad461413962e9f95cf1cb67679a49d4cf21bb7c8ea8f09c59b",
+      "identical": true
+    },
+    {
+      "task": "A01",
+      "path": "examples/device-profiles/consumer.mjs",
+      "savedSha256": "bd557067f63623f1ed04c86cb0ea4c54720db574243bf2ca26aaf762fd7e1fdf",
+      "currentSha256": "bd557067f63623f1ed04c86cb0ea4c54720db574243bf2ca26aaf762fd7e1fdf",
+      "identical": true
+    },
+    {
+      "task": "A01",
+      "path": "tools/qa-connector-profiles.mjs",
+      "savedSha256": "a68752ec28a77855e04ea63862f926afd41d13afcd57db6d56da26b4a5a3dbb2",
+      "currentSha256": "a68752ec28a77855e04ea63862f926afd41d13afcd57db6d56da26b4a5a3dbb2",
+      "identical": true
+    },
+    {
+      "task": "S17",
+      "path": "packages/device-runtime/src/workspace-administration.ts",
+      "savedSha256": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "currentSha256": "e461578f761c3d045c2333d4c310d9baf81110b662a7275c73cf80d30857d88b",
+      "identical": true
+    },
+    {
+      "task": "S17",
+      "path": "packages/device-runtime/src/workspace-administration.test.ts",
+      "savedSha256": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839",
+      "currentSha256": "c7f8afa6441b74e9e90b6782e283ed68608b96e863cd436911b19416a548a839",
+      "identical": true
+    },
+    {
+      "task": "S17",
+      "path": "examples/workspace-administration/consumer.mjs",
+      "savedSha256": "ebbd29695a4d0689d7d5d7a159bcc5fe4338d4f1ab3294b0b422a9be7deca16e",
+      "currentSha256": "ebbd29695a4d0689d7d5d7a159bcc5fe4338d4f1ab3294b0b422a9be7deca16e",
+      "identical": true
+    },
+    {
+      "task": "S17",
+      "path": "tools/qa-workspace-administration.mjs",
+      "savedSha256": "c02827e615ec08c5161a3288be5c63f8221bb14c40547dd2f58c955fd69098da",
+      "currentSha256": "c02827e615ec08c5161a3288be5c63f8221bb14c40547dd2f58c955fd69098da",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "packages/device-model/src/private-directory.ts",
+      "savedSha256": "fa876f71b8010858b55be90c173e9583ed55dc56b1e699b4938b12aea53627e1",
+      "currentSha256": "fa876f71b8010858b55be90c173e9583ed55dc56b1e699b4938b12aea53627e1",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "packages/device-model/src/private-directory.test.ts",
+      "savedSha256": "d3d26a20f89d8e1241c9859057a31cb5a880e9af0dec4c0af7b330a68018bdd6",
+      "currentSha256": "d3d26a20f89d8e1241c9859057a31cb5a880e9af0dec4c0af7b330a68018bdd6",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "packages/hub-server/src/private-directory.ts",
+      "savedSha256": "5bd140fca6151cacd1ccd1cb25cde8447a38e2b59286dc81bf3623aa028d311a",
+      "currentSha256": "5bd140fca6151cacd1ccd1cb25cde8447a38e2b59286dc81bf3623aa028d311a",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "packages/hub-server/src/private-directory-peer.test.ts",
+      "savedSha256": "f6a9627273950ebba9cce742172e5f03105099df10f55fae8a0e5efd1559e65d",
+      "currentSha256": "f6a9627273950ebba9cce742172e5f03105099df10f55fae8a0e5efd1559e65d",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "examples/coordinator/private-directory.ts",
+      "savedSha256": "bacd820cf13228f300d27e4a94f99e4d85d003c494b3b62a08360fc76717a7a3",
+      "currentSha256": "bacd820cf13228f300d27e4a94f99e4d85d003c494b3b62a08360fc76717a7a3",
+      "identical": true
+    },
+    {
+      "task": "D06",
+      "path": "tools/qa-directory-peer.mjs",
+      "savedSha256": "7aadd2ef5fb03830c655a4e6a1cac479e87f33f51e31117b42fd781cc54e7872",
+      "currentSha256": "7aadd2ef5fb03830c655a4e6a1cac479e87f33f51e31117b42fd781cc54e7872",
+      "identical": true
+    }
+  ],
+  "registryRegionEquivalence": {
+    "task": "A01",
+    "path": "packages/device-runtime/src/profile-connector.ts",
+    "region": "createTrustedConnectorProfileRegistry through immediately before Watermark",
+    "savedSourceTree": "2a61892867a8a33a2adef3df89a86782f2adb197",
+    "oldRegionSha256": "7869b7acda54a9e863cf5624ffe50fb637eef3386839f346f5e21e46f7eaf71a",
+    "currentRegionSha256": "7869b7acda54a9e863cf5624ffe50fb637eef3386839f346f5e21e46f7eaf71a",
+    "identical": true,
+    "entireFileUnchanged": false
+  },
+  "recoveredHistoricalEvidence": [
+    {
+      "originalPath": "/private/tmp/101-sharing-administration-final-gates.json",
+      "manifest": "outputs/scratch-cleanup/2026-10-09/retained-manifest.json",
+      "blob": "6d851cdd15f322b38196a88d2160078bf860f4de",
+      "sha256": "d3b2c15cac834c8d3bc267964fb0d67908f844b76f3505b2182f3d13decbb130",
+      "hashVerified": true,
+      "savedResult": "pass",
+      "candidateTree": "f7ef63fbdbfb85210097194d5d319d30faff4ef6",
+      "sourceTree": "2e3cd18499a45cc37bd31500764ccf8321662ceb",
+      "gates": {
+        "types": 0,
+        "lint": 0,
+        "unit": 0,
+        "build": 0,
+        "rendered": 0,
+        "audit": 0,
+        "browser": 0
+      },
+      "unit": {
+        "tests": 1616,
+        "fail": 0,
+        "skip": 0
+      },
+      "rendered": {
+        "tests": 34,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "originalPath": "/private/tmp/101-workspace-administration-installed-final.json",
+      "manifest": "outputs/scratch-cleanup/2026-10-09/retained-manifest.json",
+      "blob": "b0bea0d9c57e53791db6be196acf33add69dbdfd",
+      "sha256": "364c96392c47db1227662c7916b5f9edc0086077b2ae851127852524321effac",
+      "hashVerified": true,
+      "savedResult": "pass",
+      "profile": "local-workspace-administration/1",
+      "checkCount": 26,
+      "checks": [
+        "default denial before explicit creation",
+        "explicit create delegated membership and complete audit",
+        "delegated admin cannot appoint admin remove owner or self promote",
+        "observer output classification is trusted options only",
+        "closed inputs and actual registration identity",
+        "stale expected revision cannot commit",
+        "separate source owner denial",
+        "separate sink owner denial",
+        "copied resource approval scope cannot authorize",
+        "actual runtime prepare then fresh activation",
+        "genuine typed publisher observation and local sink effect",
+        "administration snapshot and audit exclude payload signals and credentials",
+        "membership removal retires actual connection releases held output",
+        "re-enrollment requires fresh resource approvals old handle stays closed",
+        "observer receives only separately approved observe-owned output",
+        "owner signal revocation aborts active native delivery context",
+        "logical retirement retains actual raw provider quota",
+        "actual raw settlement permits queued delivery",
+        "policy withdrawal retires idle managed handle",
+        "close retires all handles and requires fresh controller recovery",
+        "live duplicate authorization tuple denied while first is idle",
+        "unique tuple owner signal retires the actually active local output",
+        "actual first stop permits replacement with fresh owner approvals",
+        "provisional exact tuple blocks native host-route getter reentry",
+        "owned native expiry timer retires output without a runtime flush",
+        "fresh explicitly approved owner recovers without executable or persisted authority"
+      ],
+      "scope": "ephemeral cooperative host composition; all routes use the administration controller",
+      "excluded": [
+        "accounts",
+        "persistent team administration",
+        "unmanaged or malicious host routes",
+        "physical devices",
+        "transport authentication",
+        "cross-process administration"
+      ]
+    }
+  ],
+  "historicalGateEvidence": {
+    "A01": "Commit37664c51773e36cbfcb0a7412422461bfbae3f69 records exact44e2b6c3eb169248a2ce07002790f992499ca9f9 gates:1271unit/34rendered plus types/lint/freshbuild and genuine packed RSS caller. Current parser/example unchanged; downstream runtime changed.",
+    "D06": "Read refs/codex/evidence/2026-10-08-local-software/final-gates: pass, exact4841285d08c757ee07644498096c35f047f9714e candidate, all5gates and immutable SDK rehash. This is historical scope, not current candidate acceptance.",
+    "S17": "Recovered and hash-verified actual installed 26-check receipt and exact historical all-green 1616-unit/34-rendered plus types/lint/build gate record from existing preservation blobs. See candidateRecoveredEvidence for original paths, blob IDs, SHA256, tree and checks. This resolves the temporary-pointer custody lookup; it is not a fresh current-candidate gate."
+  },
+  "remainingByPrimaryNextAction": {
+    "locallyExecutable": 59,
+    "physicalOrTargetOS": 68,
+    "externalAuthority": 4,
+    "finalIntegration": 15
+  },
+  "supportRows": {
+    "total": 69,
+    "accepted": 0,
+    "promoted": 0
+  },
+  "scope": "Three implementation/definition task closures only. No support, physical, performance, accessibility, hosted-team/account product or release acceptance. Current full candidate gates remain separate.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-acceptance-audit",
+    "commit": "537e97c9af160df946b16a6499d0bb69ebd412a2",
+    "tree": "81f2d8082b8f0fd4bfc130130bf783157e9dc008",
+    "readBackBlobs": 5
+  },
+  "remainingList": "docs/platform/REMAINING-WORK-2026-10-16.md"
+}

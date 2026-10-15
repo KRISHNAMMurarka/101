@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "pass",
+  "tasks": [
+    "U10",
+    "Q05"
+  ],
+  "source": {
+    "base": "dbc47ef03828efa4e12407638f39657a2ba864d3",
+    "commit": "411209b0fa6e2c49cadc3e35fb607d6a91c1b78d",
+    "tree": "eb9c34babaaa11d39c234480e5938fcb380a8729",
+    "ref": "refs/codex/evidence/2026-10-15-controller-motion-lifecycle/source",
+    "changedFiles": [
+      "app/controller/Controller.tsx",
+      "tools/qa-controller-motion-lifecycle.mjs"
+    ],
+    "sourceSha256": {
+      "app/controller/Controller.tsx": "3e439382e4f7c160ba197cfb5975f38341ca51044e1370308a4474a504bbf589",
+      "tools/qa-controller-motion-lifecycle.mjs": "0d4302c651486ea9cba12c6a0aadeb2d33b835398e0421ac14d6cde6ee81e6e4"
+    }
+  },
+  "oldFailure": {
+    "revision": "dbc47ef03828efa4e12407638f39657a2ba864d3",
+    "selected": 20,
+    "pass": 4,
+    "fail": 16,
+    "mechanism": "Two simultaneous software permission grants pass the same await-stop boundary and attach four actual adapter handlers; an unreachable old adapter leaves two handlers through later real role withdrawal. Late permission grant/denial affects a fresh host-produced role; late grant after controller visit retirement starts two handlers; unchanged actual host-loss watchdog leaves active sensor subscriptions. Both engines; all contexts/browsers/server joined.",
+    "raw": "controller/old.stdout.json"
+  },
+  "repair": "Only the mounted current permission generation, actual transport and exact controller configuration may start or emit motion. One reservation spans role changes until actual permission settlement. Concrete synchronous adapter.stop removes an unnecessary suspension between ownership check and native start. Changed configurations (including motion-enabled replacements), player.wait, transport failure, failed connect, actual host-loss watchdog and transport cleanup retire owned motion. Repeated identical configuration remains a no-op. Actual adapter identity guards callbacks. Plain pending status keeps touch controls available; new roles require fresh explicit activation.",
+  "qualification": {
+    "source": {
+      "base": "dbc47ef03828efa4e12407638f39657a2ba864d3",
+      "commit": "411209b0fa6e2c49cadc3e35fb607d6a91c1b78d",
+      "tree": "eb9c34babaaa11d39c234480e5938fcb380a8729",
+      "ref": "refs/codex/evidence/2026-10-15-controller-motion-lifecycle/source",
+      "changedFiles": [
+        "app/controller/Controller.tsx",
+        "tools/qa-controller-motion-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/controller/Controller.tsx": "3e439382e4f7c160ba197cfb5975f38341ca51044e1370308a4474a504bbf589",
+        "tools/qa-controller-motion-lifecycle.mjs": "0d4302c651486ea9cba12c6a0aadeb2d33b835398e0421ac14d6cde6ee81e6e4"
+      }
+    },
+    "old": {
+      "selected": 20,
+      "pass": 4,
+      "fail": 16,
+      "exitCode": 1
+    },
+    "current": {
+      "selected": 20,
+      "pass": 20,
+      "exitCode": 0
+    },
+    "typesExitCode": 0,
+    "changedScopeLintExitCode": 0,
+    "controllerUnit": {
+      "tests": 40,
+      "pass": 40,
+      "fail": 0
+    },
+    "freshBuildExitCode": 0,
+    "buildSha256": "92d3f1fea42ccb65f4d43e20cbedb7ee8aa53ecd366615c72221bf4567eb49bb",
+    "rendered": {
+      "tests": 37,
+      "pass": 37,
+      "fail": 0
+    },
+    "cleanup": {
+      "browsers": 0,
+      "contexts": 0,
+      "servers": 0
+    },
+    "mainIntegrated": false,
+    "fullValidation": "No blind full/native rerun. Five unrelated native startup failures remain from prior exact full candidate5cc2d699; no ordinary red commit.",
+    "scope": "Actual built ControllerLab SessionHost and player Controller over native local BroadcastChannel, real producer role configuration, delivered motion frames and unchanged actual host-loss watchdog. Permission responses and orientation samples are software controlled; environmental native samples excluded. Counts cover owned adapter handlers, excluding fixture filters. No physical sensor, native permission dialog, authenticated remote/resource grant, mobile or whole-task acceptance."
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "result": "APPROVED",
+    "findings": [],
+    "source": {
+      "base": "dbc47ef03828efa4e12407638f39657a2ba864d3",
+      "commit": "411209b0fa6e2c49cadc3e35fb607d6a91c1b78d",
+      "tree": "eb9c34babaaa11d39c234480e5938fcb380a8729",
+      "ref": "refs/codex/evidence/2026-10-15-controller-motion-lifecycle/source",
+      "changedFiles": [
+        "app/controller/Controller.tsx",
+        "tools/qa-controller-motion-lifecycle.mjs"
+      ],
+      "sourceSha256": {
+        "app/controller/Controller.tsx": "3e439382e4f7c160ba197cfb5975f38341ca51044e1370308a4474a504bbf589",
+        "tools/qa-controller-motion-lifecycle.mjs": "0d4302c651486ea9cba12c6a0aadeb2d33b835398e0421ac14d6cde6ee81e6e4"
+      }
+    },
+    "scope": "Bounded permission and native adapter lifecycle slice only. Both supplied hashes match; exactly Controller.tsx and owning QA changed.",
+    "summary": "Concrete synchronous stop avoids old await race; one reservation survives role retirement through actual settlement. Mounted/generation, actual transport/configuration and adapter identity checks reject late grants/denials/callbacks. Actual role transitions, watchdog and cleanup use existing model release/transition and retire sensor handlers. QA uses actual SessionHost configs/native BroadcastChannel delivered frames and unchanged watchdog; software permission/sample controls and environmental event exclusions are explicit; owned resources joined.",
+    "remainingStaticLead": {
+      "acceptance": false,
+      "runtimeReproduced": false,
+      "predatesPatch": true,
+      "description": "Stateful signaled transport failure retains existing ControllerInputModel snapshot/configuration while stopping sensors; identical later configuration can re-publish saved values. Local BroadcastChannel proof does not exercise that state path. No held-input reconnect recovery approval; faithful actual signaled producer regression needed before change.",
+      "source": "app/controller/Controller.tsx",
+      "lines": [
+        320,
+        358
+      ]
+    },
+    "reviewerExecutions": 0,
+    "reviewerEdits": 0
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-controller-motion-lifecycle/focused",
+    "commit": "2bbfe2335a3e17fb155d658b0a6d8d23137cd710",
+    "tree": "88830696b8cd2f6d28fc955d8aba326bce2f9e65",
+    "readBackFiles": 26,
+    "allBytesMatched": true,
+    "ownedBrowsersContextsServersJoined": true,
+    "sdkConsumersVmsCreated": 0
+  },
+  "mainIntegrated": false,
+  "fullValidation": "Five unrelated native startup failures from previous exact full candidate5cc2d699 still block integration of newer changes. All three locally integrated MQTT/Zigbee controls passed that full run. These controller changes do not affect native process startup; no blind full/native rerun or ordinary red commit.",
+  "scope": "Actual built ControllerLab SessionHost and player Controller over native local BroadcastChannel, real producer role configuration, delivered motion frames and unchanged actual host-loss watchdog. Permission responses and orientation samples are software controlled; environmental native samples excluded. Counts cover owned adapter handlers, excluding fixture filters. No physical sensor, native permission dialog, authenticated remote/resource grant, mobile or whole-task acceptance.20browser/40related unit/37fresh rendered allpass; clean types/lint/fresh build and exact independent read-only review. Pending/grant/denial/role replacement and same-document route-visit retirement use real built player and developer host pages; active host loss uses original4800ms age/800ms interval without a software clock. No full accessibility/state matrix, signaled transport failure runtime journey, physical phone/sensor, resource authority, support row or release acceptance.149whole tasks and69unaccepted support rows remain.",
+  "supportRows": []
+}
