@@ -1,3 +1,4 @@
+import { isSdkBrowserPublicFile } from './sdk-browser-inventory.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -14,7 +15,7 @@ assert.ok(args.length === 1 && args[0] === '--source' || args.length === 4 && ar
 assert.equal(process.version, 'v24.14.0');
 const root = realpathSync(resolve(import.meta.dirname, '..')), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
-const owned = ['packages/device-web/src/browser-microphone.ts', 'packages/device-web/src/browser-microphone.test.ts', 'examples/browser-resources/microphone.ts', 'tools/qa-browser-microphone.mjs'];
+const owned = ['packages/device-web/src/browser-microphone.ts', 'packages/device-web/src/browser-microphone.test.ts', 'examples/browser-resources/microphone.ts', 'tools/qa-browser-microphone.mjs', 'tools/sdk-browser-inventory.mjs'];
 const fingerprints = Object.fromEntries(owned.map(path => [path, hash(readFileSync(join(root, path)))]));
 const installed = args[0] === '--installed';
 let consumer, scratch, dependencyPins, sourceTree, callerTree, immutableManifest, installedBytes, tarballPins, compilerDeclarationPins;
@@ -32,7 +33,7 @@ function bytes(path, limit = 4 * 1024 * 1024) {
 }
 function json(path) { return JSON.parse(bytes(path)); }
 function gitBlobs(queries) {
-  assert.ok(queries.length > 0 && queries.length <= 1028); const keys = [...new Set(queries)];
+  const keys = [...new Set(queries)]; assert.ok(keys.length > 0 && keys.length <= 1028);
   for (const key of keys) assert.match(key, /^[0-9a-f]{40}:[A-Za-z0-9_./-]+$/);
   const response = execFileSync('git', ['cat-file', '--batch'], { cwd: root, input: keys.join('\n') + '\n', timeout: 5000, maxBuffer: 32 * 1024 * 1024 });
   const values = new Map(); let cursor = 0;
@@ -64,7 +65,7 @@ function checkInstalled(manifest) {
     assert.ok(Array.isArray(item.files) && item.files.length > 0 && item.files.length <= 1024);
     const paths = item.files.map(file => {
       assert.ok(typeof file.path === 'string' && file.path && !isAbsolute(file.path) && !file.path.split('/').includes('..'));
-      assert.ok(['LICENSE', 'README.md', 'package.json'].includes(file.path) || /^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path));
+      assert.ok(isSdkBrowserPublicFile(item.name, file.path));
       assert.match(file.sha256, /^[0-9a-f]{64}$/); assert.ok(Number.isSafeInteger(file.size) && file.size >= 0 && file.size <= 4 * 1024 * 1024); return file.path;
     });
     assert.equal(new Set(paths).size, paths.length);

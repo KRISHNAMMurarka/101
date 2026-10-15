@@ -1,3 +1,4 @@
+import { isSdkBrowserPublicFile } from './sdk-browser-inventory.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -17,9 +18,9 @@ assert.equal(process.version, 'v24.14.0');
 const root = realpathSync(resolve(import.meta.dirname, '..'));
 const hash = value => createHash('sha256').update(value).digest('hex');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
-const owned = ['examples/media-control/media-control.ts', 'examples/media-control/application-target.mjs', 'tests/media-control.test.ts', 'tools/qa-media-control.mjs'];
+const owned = ['examples/media-control/media-control.ts', 'examples/media-control/application-target.mjs', 'tests/media-control.test.ts', 'tools/qa-media-control.mjs', 'tools/sdk-browser-inventory.mjs'];
 const fingerprints = Object.fromEntries(owned.map(path => [path, hash(bytes(join(root, path)))]));
-let consumer, scratch, sourceTree, callerTree, immutableManifest, dependencyPins, installedBytes, tarballPins, compilerDeclarationPins, receipt;
+let consumer, scratch, sourceTree, callerTree, immutableManifest, dependencyPins, installedBytes, tarballPins, compilerDeclarationPins, compilerStandardTypePins, receipt;
 
 function bytes(path, limit = 4 * 1024 * 1024) {
   const stat = lstatSync(path); assert.equal(stat.isSymbolicLink(), false); assert.equal(stat.isFile(), true); assert.ok(stat.size <= limit);
@@ -66,7 +67,7 @@ function checkInstalled(manifest) {
     assert.ok(Array.isArray(item.files) && item.files.length > 0 && item.files.length <= 1024);
     const paths = item.files.map(file => {
       assert.ok(typeof file.path === 'string' && file.path && !isAbsolute(file.path) && !file.path.split('/').includes('..'));
-      assert.ok(['LICENSE', 'README.md', 'package.json'].includes(file.path) || /^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path));
+      assert.ok(isSdkBrowserPublicFile(item.name, file.path));
       assert.match(file.sha256, /^[0-9a-f]{64}$/); assert.ok(Number.isSafeInteger(file.size) && file.size >= 0 && file.size <= 4 * 1024 * 1024); return file.path;
     });
     assert.equal(new Set(paths).size, paths.length);
@@ -126,11 +127,20 @@ try {
     scratch = realpathSync(mkdtempSync(join(consumer, 'media-control-caller-')));
     writeFileSync(join(scratch, 'package.json'), JSON.stringify({ type: 'module', private: true }));
     const caller = join(scratch, 'source/media-control.ts'); copy(join(root, owned[0]), caller);
+    // Isolate the real Node declarations from unrelated monorepo browser polyfills.
+    const standardTypes = join(scratch, 'standard-types/node_modules'); compilerStandardTypePins = {};
+    for (const name of ['@types/node', 'undici-types']) {
+      const source = realpathSync(join(root, 'node_modules', name));
+      for (const path of files(source).filter(path => path.endsWith('.d.ts') || relative(source, path) === 'package.json')) {
+        const target = join(standardTypes, name, relative(source, path)), pin = hash(bytes(path)); copy(path, target);
+        assert.equal(hash(bytes(target)), pin); compilerStandardTypePins[path] = pin; compilerStandardTypePins[target] = pin;
+      }
+    }
     const program = ts.createProgram([caller], { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
-      lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], types: ['node'], typeRoots: [join(root, 'node_modules/@types')],
+      lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'], types: ['node'], typeRoots: [join(standardTypes, '@types')],
       strict: true, noUncheckedIndexedAccess: true, skipLibCheck: false, noEmitOnError: true, rootDir: join(scratch, 'source'), outDir: join(scratch, 'compiled') });
     assert.deepEqual(program.getSourceFiles().filter(file => !file.isDeclarationFile).map(file => file.fileName), [caller], 'Compile only the ordinary external caller');
-    const declarationRoots = [join(consumer, 'node_modules'), ...['typescript/lib', '@types/node', 'undici-types'].map(path => realpathSync(join(root, 'node_modules', path)))];
+    const declarationRoots = [join(consumer, 'node_modules'), realpathSync(join(root, 'node_modules/typescript/lib')), standardTypes];
     const declarations = program.getSourceFiles().filter(file => file.isDeclarationFile); assert.ok(declarations.length > 0 && declarations.length <= 1024);
     for (const file of declarations) { const path = realpathSync(file.fileName); assert.ok(declarationRoots.some(prefix => path.startsWith(prefix + sep)), 'Declaration escaped installed SDK/compiler/standard Node declarations: ' + path); }
     compilerDeclarationPins = Object.fromEntries(declarations.map(file => [realpathSync(file.fileName), hash(bytes(realpathSync(file.fileName)))]));
@@ -182,9 +192,10 @@ catch(error){console.log(JSON.stringify({status:'failed',resolutions,results}));
   const native = await nativeRun(driver); assert.equal(native.status, 0, native.stderr + '\n' + native.stdout); assert.equal(native.signal, null); assert.equal(native.stderr, '');
   const proof = JSON.parse(native.stdout); assert.equal(proof.status, 'pass-selected-native-composition');
   for (const item of proof.resolutions) assert.equal(item.url, pathToFileURL(join(consumer, 'node_modules/@101', item.name, 'dist/index.js')).href);
+  for (const [path, pin] of Object.entries({ ...compilerDeclarationPins, ...compilerStandardTypePins })) assert.equal(hash(bytes(path)), pin, 'Compiler input drift: ' + path);
   receipt = { schemaVersion: 1, status: 'pass-selected-local-profile', sourceOnly: !installed,
     qualification: installed ? 'ordinary installed seven-package SDK; separately pinned caller/Worker' : 'compiled ordinary public source graph; no installed artifact claim',
-    sourceTree, callerTree, fingerprints, dependencyPins, immutableManifest, installedBytes, tarballPins, compilerDeclarationPins,
+    sourceTree, callerTree, fingerprints, dependencyPins, immutableManifest, installedBytes, tarballPins, compilerDeclarationPins, compilerStandardTypePins,
     node: process.version, platform: process.platform, architecture: process.arch, typescript: ts.version, proof,
     scope: 'Authored RGBA bytes and typed contact apply/release in two private Node Workers. Native emission and host source clocks remain distinct. No hardware, camera, codec, browser media, RTC/WSS, network transport or sandbox claim.' };
 } finally {

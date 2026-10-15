@@ -185,10 +185,12 @@ function mediaJob(context: JobContext): Job {
     while (media.status().pending) await new Promise(resolve => context.window.setTimeout(resolve, 10)); sourceCanvas.width = 1; sourceCanvas.height = 1; } };
 }
 function collaborativeJob(context: JobContext): Job {
+  const contactHz = 30; let deliveryTimer: number | undefined;
+  const stopDelivery = () => { if (deliveryTimer !== undefined) context.window.clearTimeout(deliveryTimer); deliveryTimer = undefined; };
   const { doc, panel } = context, handlers = subscriptions(context), values = new Map<string, { route: string; value: Observation['value'] }>(); let closed = false;
   const runtime = createDeviceRuntime({ now: context.now, clockDomain: 'reference-local-controls', maxPendingDeliveries: 2, authorize(request) {
-    if (closed || !context.current() || !controller?.isApproved(request)) return; return { expiresAt: context.expiresAt, maxAgeMs: 100, maxHz: 30 }; } });
-  context.own(() => { closed = true; runtime.close(); });
+    if (closed || !context.current() || !controller?.isApproved(request)) return; return { expiresAt: context.expiresAt, maxAgeMs: 100, maxHz: contactHz }; } });
+  context.own(() => { closed = true; stopDelivery(); runtime.close(); });
   const output = node(doc, 'output', 'No local partition owner'), canvas = node(doc, 'canvas'); canvas.width = 400; canvas.height = 160; panel.append(output, canvas); const paint = canvas.getContext('2d'); if (!paint) { runtime.close(); throw Error('Collaborative output unavailable'); }
   function draw() { paint!.clearRect(0, 0, 400, 160); for (const [index, id] of ['left', 'right'].entries()) { const position = values.get(id + ':position')?.value as { x: number; y: number } | undefined, held = values.get(id + ':contact')?.value === true;
     if (position) { paint!.fillStyle = '#111'; paint!.beginPath(); paint!.arc(index * 200 + position.x * 190 + 5, position.y * 150 + 5, held ? 12 : 6, 0, Math.PI * 2); paint!.fill(); } canvas.dataset[id + 'Held'] = String(held); } }
@@ -198,7 +200,7 @@ function collaborativeJob(context: JobContext): Job {
     const key = current.partition + ':' + cap.id; if (values.get(key)?.route === current.routeId) values.delete(key); draw(); } }); runtime.setReadiness(handle, 'available'); return { handle, device: sinkDevice, capability: cap.id }; });
   const sources = ['alpha', 'beta'].map((id, index) => {
     const device = parseDeviceDescriptor({ ...base, id: 'reference-' + id + '-controls' }), resources = device.capabilities.map(cap => { const handle = runtime.registerSource({ device, capability: cap.id }); runtime.setReadiness(handle, 'available'); return { handle, device, capability: cap.id }; }); let sequence = 0;
-    const driver = new PointerSourceDriver({ now: context.now, sampleHz: 30, publish(capability, value, metadata) { if (!context.current()) return false; const cap = device.capabilities.find(value => value.id === capability)!, source = resources.find(value => value.capability === capability)!;
+    const driver = new PointerSourceDriver({ now: context.now, sampleHz: contactHz, publish(capability, value, metadata) { if (!context.current()) return false; const cap = device.capabilities.find(value => value.id === capability)!, source = resources.find(value => value.capability === capability)!;
       return runtime.publish(source.handle, value, { timestamp: metadata.capturedAt, clockDomain: runtime.clockDomain, sequence: ++sequence, ...(cap.delivery.mode === 'reliable' ? { operationId: String(sequence), deadline: metadata.capturedAt + cap.delivery.maxAgeMs } : {}) }).ok; } });
     const box = node(doc, 'section'), title = node(doc, 'h2', 'Local control ' + (index + 1)), sliderLabel = node(doc, 'label', 'Horizontal position'), slider = node(doc, 'input'), hold = node(doc, 'button', 'Hold contact'), request = node(doc, 'button', 'Request ' + (index ? 'right' : 'left') + ' partition'); box.className = 'participant'; slider.type = 'range'; slider.min = '0'; slider.max = '1'; slider.step = '0.05'; slider.value = '0.5'; sliderLabel.append(slider); hold.type = request.type = 'button'; box.append(title, sliderLabel, hold, request); panel.append(box);
     let previous = 0.5, pointerId: number | undefined, keyboardContact = false;
@@ -226,7 +228,14 @@ function collaborativeJob(context: JobContext): Job {
   const unsubscribe = controller.subscribe(() => { if (!context.current()) return; const snapshot = controller!.snapshot(), currentOwners = new Set(snapshot.slots.flatMap(slot => slot.owner ? [slot.owner.sourceId] : []));
     for (const source of sources) if (previousOwners.has(source.id) !== currentOwners.has(source.id)) source.release(); previousOwners = currentOwners;
     output.value = snapshot.slots.map(slot => slot.id + ': ' + (slot.owner?.sourceId ?? 'unowned') + (slot.request ? ' (request pending)' : '')).join('; '); });
-  return { tick() { if (closed || !context.current()) return; controller!.tick(); sources.forEach(source => source.driver.tick()); runtime.flush(); }, state: () => ({ ownership: controller!.snapshot(), held: Object.fromEntries(['left', 'right'].map(id => [id, values.get(id + ':contact')?.value === true])), listeners: handlers.count() }), async close() { closed = true; handlers.close(); unsubscribe(); sources.forEach(source => { source.release(); source.driver.stop(); }); controller!.close(); runtime.close(); values.clear(); draw(); canvas.width = 1; canvas.height = 1; } };
+  // Input delivery must keep progressing through bounded fair queue turns even
+  // when presentation frames pause. The existing route grants still limit delivery.
+  function scheduleDelivery() { deliveryTimer = context.window.setTimeout(() => { deliveryTimer = undefined;
+    if (closed || !context.current()) { runtime.close(); return; }
+    controller.tick(); sources.forEach(source => source.driver.tick()); runtime.flush();
+    if (!closed && context.current()) scheduleDelivery(); else runtime.close();
+  }, Math.ceil(1000 / contactHz)); } scheduleDelivery();
+  return { tick() {}, state: () => ({ ownership: controller!.snapshot(), held: Object.fromEntries(['left', 'right'].map(id => [id, values.get(id + ':contact')?.value === true])), listeners: handlers.count(), deliveryTimerArmed: deliveryTimer !== undefined }), async close() { closed = true; stopDelivery(); handlers.close(); unsubscribe(); sources.forEach(source => { source.release(); source.driver.stop(); }); controller!.close(); runtime.close(); values.clear(); draw(); canvas.width = 1; canvas.height = 1; } };
 }
 
 /** Mount one standalone app. No execution, acquisition or grants occur until both

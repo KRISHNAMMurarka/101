@@ -14,7 +14,7 @@ const selectedApplication = options.get('--application');
 assert.ok(selectedApplication === undefined || REFERENCE_APP_IDS.includes(selectedApplication));
 assert.equal(process.version, 'v24.14.0');
 const root = realpathSync(resolve(import.meta.dirname, '..')), hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const owned = ['examples/reference-apps/applications.ts', 'tests/reference-apps.test.ts', 'tools/generate-sdk-reference-apps.mjs', 'tools/qa-sdk-reference-apps.mjs'];
+const owned = ['examples/reference-apps/applications.ts', 'tests/reference-apps.test.ts', 'tools/generate-sdk-reference-apps.mjs', 'tools/qa-sdk-reference-apps.mjs', 'tools/sdk-browser-inventory.mjs'];
 const callerPins = Object.fromEntries(owned.map(path => [path, hash(readFileSync(join(root, path)))]));
 const sdk = readReferenceSdk(args[1], args[2]), sourceTree = sdk.manifest.source.tree, dependencyPins = sdk.manifest.source.sha256, callerTree = options.get('--caller-tree');
 assert.ok(Object.keys(dependencyPins).length > 0 && Object.keys(dependencyPins).length <= 512);
@@ -139,6 +139,18 @@ try {
               try { await page.waitForFunction(() => globalThis.reference.state().job?.held.left === false, undefined, { timeout: 100 }); }
               catch { /* Assert actual fixed-schema state rather than a timeout alone. */ }
               assert.deepEqual(await page.evaluate(() => ({ active: globalThis.reference.state().active, held: globalThis.reference.state().job?.held })), { active: true, held: { left: false, right: false } }, 'An actual held button drag outside and release must clear its partition effect without focus loss');
+              await holds.nth(0).hover(); await page.mouse.down(); await page.waitForFunction(() => globalThis.reference.state().job?.held.left === true);
+              // A native release must reach its SDK sink even before the next UI frame.
+              try {
+                await page.evaluate(() => { const original = window.requestAnimationFrame, pending = [];
+                  globalThis.restoreReferenceFrames = () => { window.requestAnimationFrame = original; for (const callback of pending) original.call(window, callback); delete globalThis.restoreReferenceFrames; };
+                  window.requestAnimationFrame = callback => { pending.push(callback); return 0; };
+                  return new Promise(resolve => original.call(window, () => original.call(window, resolve))); });
+                await page.mouse.move(8, 8); await page.mouse.up();
+                try { await page.waitForFunction(() => globalThis.reference.state().job?.held.left === false, undefined, { timeout: 100 }); }
+                catch { /* Keep the same release bound and assert the actual sink. */ }
+                assert.deepEqual(await page.evaluate(() => ({ active: globalThis.reference.state().active, held: globalThis.reference.state().job?.held })), { active: true, held: { left: false, right: false } }, 'Actual release must reach the partition SDK sink without another UI animation frame');
+              } finally { await page.evaluate(() => globalThis.restoreReferenceFrames?.()); }
               await holds.nth(0).dispatchEvent('pointerdown', { pointerId: 1, isPrimary: true }); await holds.nth(1).dispatchEvent('pointerdown', { pointerId: 2, isPrimary: false });
               await page.waitForFunction(() => globalThis.reference.state().job?.held.left && globalThis.reference.state().job?.held.right);
               await page.getByRole('button', { name: 'Request control 2 for left partition', exact: true }).click(); const pending = await page.evaluate(() => globalThis.reference.state().job.ownership.slots); assert.equal(pending[0].owner.sourceId, 'alpha'); assert.equal(pending[0].request.sourceId, 'beta');
@@ -148,12 +160,12 @@ try {
             }
             if (!unsupportedMedia) await page.getByLabel('Approve this application destination').uncheck();
             await page.waitForFunction(() => !globalThis.reference.state().active && !globalThis.reference.state().retiring);
-            const revoked = await page.evaluate(() => globalThis.reference.state()); assert.equal(revoked.sourceApproved, false); assert.equal(revoked.sinkApproved, false); assert.equal(revoked.framePending, false); assert.equal(revoked.expiryArmed, false);
+            const revoked = await page.evaluate(() => globalThis.reference.state()); if (id === 'collaborative-controls') assert.equal(revoked.lastJob.deliveryTimerArmed, false, 'Retirement cancels the owned delivery clock'); assert.equal(revoked.sourceApproved, false); assert.equal(revoked.sinkApproved, false); assert.equal(revoked.framePending, false); assert.equal(revoked.expiryArmed, false);
             assert.equal(await page.getByLabel('Approve this selected source').evaluate(element => element === document.activeElement), true, 'Released authority returns focus to fresh approval');
             if (id !== 'media-sharing') { await approveAndStart(); assert.equal(await page.evaluate(() => globalThis.reference.state().active), true); await page.getByRole('button', { name: 'Stop', exact: true }).click(); await page.waitForFunction(() => !globalThis.reference.state().retiring); }
             const final = await page.evaluate(async () => { await globalThis.reference.close(); return { state: globalThis.reference.state(), tracksEnded: globalThis.nativeAudit.tracks.every(track => track.readyState === 'ended'), videosDetached: globalThis.nativeAudit.videos.every(video => video.srcObject === null && !video.isConnected), defaultOpens: globalThis.nativeAudit.defaultOpens, captureTracks: globalThis.nativeAudit.tracks.length }; });
             assert.equal(final.state.active, false); assert.equal(final.state.retiring, false); assert.equal(final.state.listeners, 0); assert.equal(final.state.framePending, false); assert.equal(final.state.expiryArmed, false); assert.equal(final.tracksEnded, true); assert.equal(final.videosDetached, true); assert.equal(final.defaultOpens, 0); assert.deepEqual(errors, []); assert.deepEqual(foreign, []);
-            results.push({ id, browser: engine.name(), version: browser.version(), supportedSelectedMedia: id === 'media-sharing' ? !unsupportedMedia : undefined, checks: ['inert-before-two-independent-approvals', 'decline-grants-none', 'actual-selected-interactive-job', ...(id === 'pointer' ? ['Space-Shift+Tab-other-control-release-clears-held-sink', 'keyboard-blur-preserves-native-captured-pointer'] : id === 'collaborative-controls' ? ['native-drag-outside-release-clears-partition'] : []), 'revoke-releases-current-effects', 'fresh-explicit-retry-or-honest-media-unsupported', 'native-keyboard-controls-visible-focus', 'closed-runtime-native-and-UI-lifetime'], final, physicalHardwareQualification: false, automatedControlEvents: id === 'collaborative-controls' ? 'Actual native mouse drag/outside-release plus explicit synthetic DOM control events for simultaneous local software partitions; no hardware evidence' : 'Owned native browser keyboard/control automation' });
+            results.push({ id, browser: engine.name(), version: browser.version(), supportedSelectedMedia: id === 'media-sharing' ? !unsupportedMedia : undefined, checks: ['inert-before-two-independent-approvals', 'decline-grants-none', 'actual-selected-interactive-job', ...(id === 'pointer' ? ['Space-Shift+Tab-other-control-release-clears-held-sink', 'keyboard-blur-preserves-native-captured-pointer'] : id === 'collaborative-controls' ? ['native-drag-outside-release-clears-partition', 'native-release-clears-SDK-sink-before-next-UI-frame'] : []), 'revoke-releases-current-effects', 'fresh-explicit-retry-or-honest-media-unsupported', 'native-keyboard-controls-visible-focus', 'closed-runtime-native-and-UI-lifetime'], final, physicalHardwareQualification: false, automatedControlEvents: id === 'collaborative-controls' ? 'Actual native mouse drag/outside-release plus explicit synthetic DOM control events for simultaneous local software partitions; no hardware evidence' : 'Owned native browser keyboard/control automation' });
           } catch (error) { console.error(JSON.stringify({ phase: 'owned-browser-journey', application: id, browser: engine.name(), version: browser.version() })); throw error; }
           finally { await context.close(); }
         } finally { await browser.close(); }

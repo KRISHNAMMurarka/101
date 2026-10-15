@@ -1,3 +1,4 @@
+import { isSdkBrowserPublicFile } from './sdk-browser-inventory.mjs';
 import assert from 'node:assert/strict';
 import { createHash, randomUUID } from 'node:crypto';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
@@ -29,7 +30,7 @@ export function readReferenceSdk(manifestPath, consumerPath) {
   for (const item of manifest.packages) {
     assert.ok(Array.isArray(item.files) && item.files.length > 0 && item.files.length <= 1024); const folder = join(consumer, 'node_modules', item.name); assert.equal(realpathSync(folder), folder);
     const allowed = item.files.map(file => { assert.ok(typeof file.path === 'string' && !file.path.split('/').includes('..') && !file.path.startsWith('/'));
-      assert.ok(['LICENSE', 'README.md', 'package.json'].includes(file.path) || /^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path)); return file.path; });
+      assert.ok(isSdkBrowserPublicFile(item.name, file.path)); return file.path; });
     assert.equal(new Set(allowed).size, allowed.length); assert.deepEqual(files(folder).map(path => relative(folder, path)).sort(), [...allowed].sort());
     for (const file of item.files) { const path = resolve(folder, file.path); assert.ok(path.startsWith(folder + sep)); assert.equal(realpathSync(path), path); const value = bytes(path); assert.match(file.sha256, /^[0-9a-f]{64}$/); assert.equal(value.byteLength, file.size); assert.equal(hash(value), file.sha256); total += value.byteLength; assert.ok(total <= 33554432); installedPins[item.name + '/' + file.path] = file.sha256; }
     const pkg = JSON.parse(bytes(join(folder, 'package.json'))); assert.equal(pkg.name, item.name); assert.match(pkg.version, /^\d+\.\d+\.\d+$/); packageVersions[item.name] = pkg.version;

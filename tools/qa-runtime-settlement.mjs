@@ -1,3 +1,4 @@
+import { isSdkBrowserPublicFile } from './sdk-browser-inventory.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -13,7 +14,7 @@ assert.equal(process.version, 'v24.14.0'); assert.equal(process.env.NODE_OPTIONS
 const root = realpathSync(resolve(import.meta.dirname, '..')), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const owned = ['packages/device-runtime/src/types.ts', 'packages/device-runtime/src/runtime.ts', 'packages/device-runtime/src/inspector.ts',
-  'packages/device-runtime/src/route-settlement.test.ts', 'examples/runtime-lifecycle/settlement.ts', 'tools/qa-runtime-settlement.mjs'];
+  'packages/device-runtime/src/route-settlement.test.ts', 'examples/runtime-lifecycle/settlement.ts', 'tools/qa-runtime-settlement.mjs', 'tools/sdk-browser-inventory.mjs'];
 const pins = Object.fromEntries(owned.map(path => [path, hash(readFileSync(join(root, path)))]));
 const environment = { ...process.env }; delete environment.NODE_OPTIONS; delete environment.NODE_PATH;
 const proofDirectory = realpathSync(mkdtempSync('/tmp/101-runtime-settlement-proof-'));
@@ -31,11 +32,11 @@ function files(directory, budget = { left: 1024 }) {
     assert.equal(info.isFile(), true); return [path];
   });
 }
-function gitBlobs(trees, paths) {
-  for (const tree of trees) assert.match(tree, /^[0-9a-f]{40}$/);
-  for (const path of paths) assert.ok(typeof path === 'string' && path.length > 0 && path.length <= 1024 && !isAbsolute(path) &&
+function gitBlobs(inputs) {
+  for (const { tree } of inputs) assert.match(tree, /^[0-9a-f]{40}$/);
+  for (const { paths } of inputs) for (const path of paths) assert.ok(typeof path === 'string' && path.length > 0 && path.length <= 1024 && !isAbsolute(path) &&
     ![...path].some(character => character.charCodeAt(0) < 32 || character.charCodeAt(0) === 127) && resolve(root, path).startsWith(root + sep));
-  const requests = [...new Set(trees)].flatMap(tree => [...new Set(paths)].map(path => tree + ':' + path));
+  const requests = [...new Set(inputs.flatMap(({ tree, paths }) => paths.map(path => tree + ':' + path)))];
   assert.ok(requests.length > 0 && requests.length <= 1024);
   const output = execFileSync('git', ['cat-file', '--batch'], { cwd: root, input: requests.join('\n') + '\n', timeout: 5000, maxBuffer: 16 * 1024 * 1024 });
   const blobs = new Map(); let offset = 0;
@@ -66,7 +67,7 @@ function checkInstalled(manifest) {
     tarballPins[item.tarball] = item.sha256; assert.ok(Array.isArray(item.files) && item.files.length > 0 && item.files.length <= 1024);
     const paths = item.files.map(file => {
       assert.ok(typeof file.path === 'string' && file.path && !isAbsolute(file.path) && !file.path.split('/').includes('..'));
-      assert.ok(['LICENSE', 'README.md', 'package.json'].includes(file.path) || /^(?:dist\/[^/]+\.(?:js|d\.ts)|schema\/device-descriptor\.json|examples\/[^/]+\.(?:js|ts|d\.ts))$/.test(file.path));
+      assert.ok(isSdkBrowserPublicFile(item.name, file.path));
       assert.match(file.sha256, /^[0-9a-f]{64}$/); assert.ok(Number.isSafeInteger(file.size) && file.size >= 0 && file.size <= 4 * 1024 * 1024); return file.path;
     });
     assert.equal(new Set(paths).size, paths.length);
@@ -93,7 +94,8 @@ try {
     assert.equal(manifest.schemaVersion, 1); sourceTree = manifest.source.tree; callerTree = args[3];
     assert.equal(receipt.source.tree, sourceTree); assert.deepEqual(receipt.source.sha256, manifest.source.sha256);
     dependencies = manifest.source.sha256; assert.ok(Object.keys(dependencies).length > 0 && Object.keys(dependencies).length <= 512);
-    const blobs = gitBlobs([sourceTree, callerTree], [...owned, ...Object.keys(dependencies)]);
+    const blobs = gitBlobs([{ tree: sourceTree, paths: Object.keys(dependencies) },
+      { tree: callerTree, paths: [...owned, ...Object.keys(dependencies)] }]);
     for (const [path, pin] of Object.entries(pins)) assert.equal(hash(blobs.get(callerTree + ':' + path)), pin);
     for (const path of owned.slice(0, 3)) assert.equal(dependencies[path], pins[path], 'Actual settlement implementation packaged');
     for (const [path, pin] of Object.entries(dependencies)) {

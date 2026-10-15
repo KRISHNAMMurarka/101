@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 248,
+  "revision": 249,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -15776,6 +15776,161 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "sdk-followup-inventory-old-2026-10-15",
+      "revision": "d6e90f39d44b68e39429940768c696d077f74cb5",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json"
+      ],
+      "environment": "Fresh authenticated7-package/411file SDK and offline Node consumer",
+      "reproduction": "Eleven actual direct tools plus reference verifier fail stale3path inventory assertion. After repair, actual media-control refuses unrelated buffer declaration. Seven actual old batch readers reject accepted duplicate-query boundary.",
+      "scope": "Exact failed source/inputs retained; no native hardware failure inferred.",
+      "failure": "Stale inventory predicates; undeclared monorepo compiler input; pre-dedup request cap.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "sdk-followup-inventory-repair-2026-10-15",
+      "revision": "a76e140117e61116aba6501c6aa08a969f2dfdd1",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json",
+        "tools/qa-browser-camera.mjs",
+        "tools/qa-media-control.mjs",
+        "tools/generate-sdk-reference-apps.mjs",
+        "tools/qa-camera-controls.mjs",
+        "tools/qa-browser-gamepad.mjs",
+        "tools/qa-recording-owner-data.mjs",
+        "tools/qa-browser-screen-preview.mjs",
+        "tools/qa-runtime-settlement.mjs",
+        "tools/qa-application-audio.mjs",
+        "tools/qa-media-recording.mjs",
+        "tools/qa-browser-microphone.mjs",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual installed public SDK in Chromium/WebKit and Node24.14.0",
+      "reproduction": "28installed software browser journeys,2Node composition profiles,7offline Node consumer checks,18focused unit checks,18actual helper-integrity refusals across source candidates,14query-bound controls and2strict mixed-tree readers pass. Exact per-caller fingerprints retained.",
+      "scope": "Selected software caller compatibility only;149whole rows remain open.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "reference-collaborative-release-old-2026-10-15",
+      "revision": "480ffd277aaf4635981530a596f0d8392f2855ae",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "E13",
+        "Q05",
+        "U10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json"
+      ],
+      "environment": "Actual native WebKit full reference-app journey and Chromium/WebKit controlled pointer/capture",
+      "reproduction": "Native outside release failed100ms actual SDK-sink assertion. Withheld-frame old controls retain lefttrue after trusted pointerup in both engines. Immediate and one-shot wake attempts fail real owning paths; actual installed public SDK reproduces frozen four-route/two-slot fairness.",
+      "scope": "Controlled scheduling diagnosis has no physical-device or exact historical queue-order claim.",
+      "failure": "Release progress depended on later UI/fair delivery turns.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "reference-collaborative-delivery-clock-2026-10-15",
+      "revision": "a76e140117e61116aba6501c6aa08a969f2dfdd1",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "E13",
+        "Q05",
+        "U10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Fresh strict-generated independent apps using authentic installed SDK; real Chromium149/WebKit26.5",
+      "reproduction": "Five apps/10native browser journeys pass, including both-partition release with UI frames withheld and owned delivery-clock cancellation after retirement.2controlled both-partition browser regressions and18focused unit checks pass; exact independent source review approved.",
+      "scope": "Software control sources only; WebKit media unsupported remains explicit. No physical/remote-person/named-AT/full-scope qualification.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "screen-sdk-native-resolution-failure-2026-10-15",
+      "revision": "480ffd277aaf4635981530a596f0d8392f2855ae",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json"
+      ],
+      "environment": "Actual owned Node resolver before browser dispatch",
+      "reproduction": "Screen installed preflight accepts repaired immutable inventory, then actual Node child misses original5000ms resolution deadline and closes on SIGTERM. Retained original failure before diagnostic changes.",
+      "scope": "Historical cause remainsUNKNOWN and timing clearingUNVERIFIED.",
+      "failure": "Actual native resolution deadline5000ms missed.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "screen-sdk-resolution-diagnostics-2026-10-15",
+      "revision": "a76e140117e61116aba6501c6aa08a969f2dfdd1",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-caller-recovery.json",
+        "tools/qa-browser-screen-preview.mjs"
+      ],
+      "environment": "Actual native Node normal-close and original5000ms timeout controls; subsequent actual installed screen journeys",
+      "reproduction": "Old real successful resolver lacks PID/close metadata and fails new assertion. New normal and actual5000ms timeout controls retain real PID/ordered events/output hashes and prove child absent after close.4actual installed screen browser journeys subsequently pass; this is not cause clearing.",
+      "scope": "Bounded diagnostics only; deadlines, authority, child arguments and cleanup contract unchanged.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -18451,7 +18606,9 @@
       "records": [
         "pending-E13",
         "e13-independent-reference-apps-2026-10-06",
-        "sdk-browser-gateway-reference-required-gates-pass-2026-10-06"
+        "sdk-browser-gateway-reference-required-gates-pass-2026-10-06",
+        "reference-collaborative-release-old-2026-10-15",
+        "reference-collaborative-delivery-clock-2026-10-15"
       ],
       "dependencies": [
         "M01",
@@ -18706,7 +18863,9 @@
         "gamepad-opaque-recovery-2026-10-14",
         "media-opaque-recovery-2026-10-15",
         "hardware-opaque-recovery-2026-10-15",
-        "input-native-media-hardware-exact-local-gates-2026-10-15"
+        "input-native-media-hardware-exact-local-gates-2026-10-15",
+        "reference-collaborative-release-old-2026-10-15",
+        "reference-collaborative-delivery-clock-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -19013,7 +19172,9 @@
         "native-bootstrap-refusal-2026-10-15",
         "media-opaque-recovery-2026-10-15",
         "hardware-opaque-recovery-2026-10-15",
-        "input-native-media-hardware-exact-local-gates-2026-10-15"
+        "input-native-media-hardware-exact-local-gates-2026-10-15",
+        "reference-collaborative-release-old-2026-10-15",
+        "reference-collaborative-delivery-clock-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19059,7 +19220,9 @@
         "inventory-navigation-wait-repaired-2026-10-11",
         "node-22-13-current-sdk-floor-2026-10-12",
         "sdk-browser-inventory-old-failures-2026-10-15",
-        "sdk-browser-inventory-repair-2026-10-15"
+        "sdk-browser-inventory-repair-2026-10-15",
+        "sdk-followup-inventory-old-2026-10-15",
+        "sdk-followup-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19105,7 +19268,9 @@
         "ssh-owned-startup-outcomes-2026-10-13",
         "mqtt-broker-native-admission-2026-10-13",
         "sdk-browser-inventory-old-failures-2026-10-15",
-        "sdk-browser-inventory-repair-2026-10-15"
+        "sdk-browser-inventory-repair-2026-10-15",
+        "sdk-followup-inventory-old-2026-10-15",
+        "sdk-followup-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19165,7 +19330,9 @@
         "native-bootstrap-full-rejected-2026-10-15",
         "native-bootstrap-media-full-rejected-2026-10-15",
         "native-wait-observation-2026-10-15",
-        "input-native-media-hardware-exact-local-gates-2026-10-15"
+        "input-native-media-hardware-exact-local-gates-2026-10-15",
+        "screen-sdk-native-resolution-failure-2026-10-15",
+        "screen-sdk-resolution-diagnostics-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19629,7 +19796,9 @@
         "bundled-legal-omission-old-2026-10-12",
         "content-audit-python-compatibility-2026-10-13",
         "sdk-browser-inventory-old-failures-2026-10-15",
-        "sdk-browser-inventory-repair-2026-10-15"
+        "sdk-browser-inventory-repair-2026-10-15",
+        "sdk-followup-inventory-old-2026-10-15",
+        "sdk-followup-inventory-repair-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [

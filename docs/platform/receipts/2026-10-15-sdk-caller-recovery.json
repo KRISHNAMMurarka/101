@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Eleven direct stale SDK callers and transitive reference-app verifier repaired; declaration isolation and collaborative release progression repaired with actual old-red/current-green evidence.",
+  "tasks": [
+    "Q07",
+    "Q10",
+    "K12",
+    "E13",
+    "Q05",
+    "U10",
+    "Q13"
+  ],
+  "sourceBase": "d6e90f39d44b68e39429940768c696d077f74cb5",
+  "sourceCommit": "a76e140117e61116aba6501c6aa08a969f2dfdd1",
+  "sourceTree": "4586c2b09c725650bbe9652fa005999fbe0bfd6d",
+  "sourceSha256": {
+    "tools/qa-browser-camera.mjs": "6e729e024c27bfb27aa4c7ad93d4d8fb7147480bc79a4fa20a5c2a3475a7affb",
+    "tools/qa-media-control.mjs": "346b42023ab22448cc78bd061fb5088bb33bf9f011d759700940de91dfc32ac3",
+    "tools/generate-sdk-reference-apps.mjs": "1634fec039905df2d17574c2e6291279ff15acb390501ff5dc2f6643e3aef1f8",
+    "tools/qa-camera-controls.mjs": "0b40ed9bfda25fdc26f07070d8319cb481a0946f80b2776886e07a4c1ea85ec6",
+    "tools/qa-browser-gamepad.mjs": "55188b9bb5cdacf00481c257a29e067597fc6dedbf13624118d843b2171e9a81",
+    "tools/qa-recording-owner-data.mjs": "77893af704e20caee1dcb5307ca7b76d50ed480743d77ea2903f084426505113",
+    "tools/qa-browser-screen-preview.mjs": "df7ddc595981f326c25bf31d2db3c2c9174c891c6ea5e8a9cdd5bcd2a162576c",
+    "tools/qa-runtime-settlement.mjs": "3133320fe755e0176abad9487ff3872cb138fbd1ee0b15d4a36e3ebec82ce24b",
+    "tools/qa-application-audio.mjs": "446bcb3b52832baa59180cba743ddbb75af0b7e5dc6bf3a1c61faf5286e062aa",
+    "tools/qa-media-recording.mjs": "cb132ed5ddd267330a3c8e1c459660e6d3437cc8cda130fa5520fb0e2b42fd22",
+    "tools/qa-browser-microphone.mjs": "bc69a28d484740d9b94f1eb393fdef2e40af1f57a5f65f0e53a92e2afc3379eb",
+    "tools/qa-sdk-reference-apps.mjs": "0e712e7305e8e60cb594b3159e60fab0cbb6aa8886b1a84e1f9999d6dbef28c5",
+    "examples/reference-apps/applications.ts": "d8952d8e9012c94993f484528f9c06e757494a11ec8f7d5886e1b83752d65f66"
+  },
+  "sharedHelperSha256": "c1abc7b1517eb4beb52f89fc5e6c8b462baa84d99c849fc0695c199fc672e6b7",
+  "repairs": [
+    "Eleven actual duplicate file predicates reuse the existing canonical connect-only three-mjs-path rule. Ten QA tools and reference-app parent authenticate helper bytes. Gamepad/settlement request SDK closure against both trees and caller-only bytes against caller tree in one strict batch. Seven browser tools retain1028 distinct-request cap after deduplication.",
+    "Media-control compiler copies the same installed Node/undici declarations into its owned standard-types directory, verifies originals/copies and rechecks all compiler inputs; unrelated monorepo browser buffer declarations are no longer resolved. Strict diagnostics, containment and public installed SDK resolution stay enforced.",
+    "Collaborative app uses one session-owned30Hz delivery clock independent of UI frames. Four typed routes still share two pending slots and their original30Hz/100ms grant and queue4 constraints. Initialization cleanup, stale-session handling and normal close stop the clock and release held SDK effects. Parent frame tick does not duplicate delivery.",
+    "Screen resolver retains bounded actual PID/spawn/exit/close/deadline/output diagnostics. Arguments, environment policy,5000ms limit, output65536 and genuine child close stay unchanged. This is diagnostics, not a proven native startup latency fix."
+  ],
+  "oldFailures": {
+    "directInventoryAssertions": 11,
+    "transitiveReferenceAssertion": 1,
+    "actualProducerCommit": "d6e90f39d44b68e39429940768c696d077f74cb5",
+    "actualProducerTree": "d5c1821f4b3e6e4a6b2860a07d3ffd5a5c2d5920",
+    "paths": [
+      "examples/onboarding/consumer.mjs",
+      "examples/onboarding/onboarding.mjs",
+      "examples/telemetry-owner.mjs"
+    ],
+    "compilerFailure": "Actual media-control preflight refused buffer/index.d.ts. Ordinary strict program had288 declarations/0diagnostics; isolated same installed Node/undici bytes had287/0, with only unrelated buffer declaration removed.",
+    "reviewBoundaryFailure": "Seven actual original Git functions reject1029 duplicate requests before deduplication; unchanged1028 distinct-key bound now passes7valid controls and7over-budget refusals.",
+    "referenceFailure": "Actual WebKit outside-release assertion failed at100ms. Controlled authentic pointerup/lost-capture reached BUTTON but SDK left contact remained true in both engines with next UI frame withheld. Immediate-flush and one-shot-wake candidates were rejected by actual tests before integration.",
+    "nativeResolutionFailure": "Actual screen-preview resolver missed original5000ms deadline before browser dispatch. Historical cause UNKNOWN; later diagnostic/source qualification does not clear timing reliability."
+  },
+  "qualification": {
+    "producerCommit": "d6e90f39d44b68e39429940768c696d077f74cb5",
+    "producerTree": "d5c1821f4b3e6e4a6b2860a07d3ffd5a5c2d5920",
+    "sdkPackages": 7,
+    "sdkSourceFiles": 186,
+    "packedFiles": 411,
+    "offlineNodeConsumerChecks": 7,
+    "sdkConsumerBrowserSuiteDeferred": true,
+    "genuineInitialInventoryRefusals": 12,
+    "installedBrowserJourneys": 28,
+    "referenceApplications": 5,
+    "referenceJourneys": 10,
+    "referenceCallerTree": "4586c2b09c725650bbe9652fa005999fbe0bfd6d",
+    "honestMediaUnsupported": [
+      {
+        "id": "media-sharing",
+        "browser": "webkit",
+        "supportedSelectedMedia": false
+      }
+    ],
+    "nodeCompositionProfiles": 2,
+    "nativeCompositionCases": 5,
+    "settlementChecks": 9,
+    "callerIntegrityRejections": 18,
+    "unit": {
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "queryBoundOldFailures": 7,
+    "queryBoundCurrentControls": 14,
+    "strictMixedTreeReaders": 2,
+    "normalAndOriginal5000msResolverDiagnosticControls": 2,
+    "withheldFrameOldFailures": 2,
+    "withheldFrameCurrentBothPartitionBrowserCases": 2,
+    "allRecordedOwnedParentsJoined": true,
+    "nativeCause": "UNKNOWN",
+    "timingReliabilityCleared": false,
+    "supportRows": [],
+    "releaseAccepted": false,
+    "wholeTasksOpen": 149,
+    "wholeTasksComplete": 123,
+    "wholeTaskCount": 272,
+    "scope": "Exact authenticated installed software callers, real owned browser/media/Node fixtures; no physical/OS capture or named assistive technology/full release acceptance."
+  },
+  "installedCases": [
+    {
+      "name": "corrected-qa-browser-camera",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-camera-controls",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-browser-gamepad",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-recording-owner-data",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 2,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-application-audio",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 2,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-media-recording",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "corrected-qa-browser-microphone",
+      "callerTree": "2a8dc5922cf3c87322ed81ce30e5cdcc7dc7f00e",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    },
+    {
+      "name": "final-screen-preview",
+      "callerTree": "dcc6480d4a1c239a87892e11d11dbb94eb11aa48",
+      "journeys": 4,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ]
+    }
+  ],
+  "callerInputReuse": "Each retained passing caller pin was rehashed against final source. The seven unchanged browser tools retain their actual480ffd caller tree, screen retains2489 caller tree, and reference apps retain finala76 caller tree; SDK186-source closure and actual installed411bytes are unchanged. No source/caller revision is rebound.",
+  "referenceFlow": "Ten actual five-app browser journeys pass. WebKit media-sharing follows the explicit honest unsupported path; this is not positive native media evidence. Both-partition native release runs while UI frame delivery is withheld, then restores callbacks and verifies clock cancellation on retirement.",
+  "fairnessProof": "Actual installed public SDK with explicit pure clock: contacts at100, positions86, false admitted101; wave135 consumes both slots on positions and retains false pending1; following owned turn169 delivers leftfalse while right remains true. This faithfully proves one-shot insufficiency, not the exact historical browser queue order.",
+  "native": {
+    "originalSixPreviousFailures": "Passed in both prior complete40-file and14-file suites, without altered deadlines/skips/prewarming. Current final gate is bound separately.",
+    "originalCause": "UNKNOWN",
+    "timingReliabilityCleared": false,
+    "resolverDiagnosticControls": 2,
+    "originalLimitsChanged": false,
+    "hardwarePositive": false
+  },
+  "review": {
+    "initialCandidate": "09dff645a780a06fdbf4c4c2e00916b09a63e072",
+    "finding": "P2: seven pre-dedup query caps reject permitted512-dependency boundary after fifth caller fingerprint. Reproduced seven actual old Git functions; keep1028 bound on distinct requests.",
+    "correctionCandidate": "480ffd277aaf4635981530a596f0d8392f2855ae",
+    "newMediaFailure": "Actual old installed declaration closure refuses unrelated monorepo browser buffer/index.d.ts. Same genuine installed Node/undici byte copies isolated in owned compiler scratch eliminate unintended declaration with0strict diagnostics; no broader allowed roots or aliases.",
+    "reviewPending": false,
+    "result": "Clear approval of corrected12-path source480ffd277aaf4635981530a596f0d8392f2855ae; previous P2 resolved, strict declaration isolation reviewed. Reviewer ran no tests/native checks.",
+    "finalCandidate": "a76e140117e61116aba6501c6aa08a969f2dfdd1",
+    "finalTree": "4586c2b09c725650bbe9652fa005999fbe0bfd6d",
+    "reviewer": "sdk_remaining_caller_review",
+    "finalResult": "Independent read-only approval;13 source/helper fingerprints match. Exact clock lifetime, rates, grants, strict inventory/compiler and provenance verified by source review. Root actual full five-app QA separately passes10 journeys, including honest WebKit media unsupported and both-partition withheld-frame release.",
+    "nativeCause": "UNKNOWN",
+    "intermediateSourceAcceptance": {
+      "ba2c18f99f6cf57b7fc5c67e0d78d28c81e56d16": "Rejected by actual Chromium withheld-frame test after static approval; immediate flush rate-blocked.",
+      "2489cd8b10f3d5d72af041ded60fd870e3dedfa1": "Rejected by actual both-partition full browser test after static approval; one eligible wave can spend both slots on positions."
+    },
+    "decision": "Replace per-source one-shot wake with one existing-session owned30Hz delivery clock; actual public-SDK pure-clock reproduction confirms four-route/two-slot fair-wave counterexample."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-sdk-inventory-followup/focused",
+    "commit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18",
+    "tree": "1a1c86f6d0fd3590ff1f85dc402fa3fc4f762d47",
+    "readBackFiles": 208,
+    "allBytesMatched": true,
+    "ownedBatchRemoved": true,
+    "ownedSdkRemoved": true,
+    "ownedConsumerRemoved": true,
+    "ownedProofDirectoriesRemoved": 4,
+    "preexistingReleaseEntriesRetained": 179
+  },
+  "fullValidation": "Exact containing source/receipt-tree eight-gate results are bound separately at refs/codex/evidence/2026-10-15-sdk-inventory-followup/final-gates. Focused receipts retain actual caller/producer trees.",
+  "supportRows": [],
+  "scope": "Partial Q07/Q10/K12/Q05/U10/Q13 software evidence and refreshed E13 examples.272total/123complete/149open;69support rows/0accepted. No physical capture/peripheral/OS chooser, named assistive technology, wider platform/runtime or full release acceptance."
+}
