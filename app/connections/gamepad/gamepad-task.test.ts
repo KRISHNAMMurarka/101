@@ -286,3 +286,23 @@ test('initial held state and subsequent release and press preserve actual button
     assert.ok(f.task.snapshot().buttons.every(button => button.observed && button.pressed && button.pressure === 0.5));
   } finally { f.close(); }
 });
+
+
+test('denied native read at approved Start retains denial and releases all local ownership', () => {
+  let denied = false;
+  const f: ReturnType<typeof fixture> = fixture({ read() {
+    if (denied) throw new DOMException('Gamepad access blocked by permissions policy', 'SecurityError');
+    return f.pads;
+  } });
+  try {
+    const handle = f.review();
+    for (const part of ['capture', 'source', 'display'] as const) assert.equal(f.task.approve(handle, part), true);
+    const before = f.calls(); denied = true;
+    assert.equal(f.task.start(handle), false); assert.ok(f.calls() > before);
+    assert.equal(f.task.snapshot().reason, 'denied');
+    assert.deepEqual(f.task.snapshot().owned, { providers: 0, runtimes: 0, routes: 0, sinks: 0, timers: 0 });
+    assert.equal(f.frames.size, 0); assert.equal(f.timers.size, 0); assert.equal(f.listeners.size, 0);
+    assert.equal(f.task.snapshot().cleanupUnconfirmed, false);
+    assert.equal(f.task.approve(handle, 'capture'), false); assert.equal(f.task.start(handle), false);
+  } finally { f.close(); }
+});

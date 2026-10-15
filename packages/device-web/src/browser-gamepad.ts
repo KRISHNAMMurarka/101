@@ -59,9 +59,11 @@ const identifier = (v: unknown): v is string => typeof v === 'string' && /^[A-Za
 const no = (reason: BrowserGamepadFailure): BrowserGamepadResult<never> => Object.freeze({ ok: false, reason });
 const yes = <T>(value: T): BrowserGamepadResult<T> => Object.freeze({ ok: true, value });
 function failure(error: unknown): BrowserGamepadFailure {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied';
-  const own = fields(error, ['ok', 'reason']);
-  return own?.ok === false && ['lost', 'invalid', 'unsupported'].includes(own.reason as string) ? own.reason as BrowserGamepadFailure : 'unavailable';
+  try {
+    if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied';
+    const own = fields(error, ['ok', 'reason']);
+    return own?.ok === false && ['lost', 'invalid', 'unsupported'].includes(own.reason as string) ? own.reason as BrowserGamepadFailure : 'unavailable';
+  } catch { return 'unavailable'; }
 }
 let instance = 0;
 function defaults(): BrowserGamepadEnvironment {
@@ -220,7 +222,10 @@ export function createBrowserGamepadProvider(input: BrowserGamepadOptions): Brow
         }
         reason = 'active'; armExpiry(a); schedule(a); if (!current(a)) { retire('cancelled'); return no('cancelled'); }
         return yes(Object.freeze({ device: selected.device, sources: Object.freeze({ ...a.sources }), connectionGeneration: selected.generation }));
-      } catch { retire('unavailable'); return no('unavailable'); } finally { busy = false; }
+      } catch (error) {
+        const why = failure(error) === 'denied' ? 'denied' : 'unavailable';
+        retire(why); return no(why);
+      } finally { busy = false; }
     },
     stop() { retire('stopped'); }, close() { closed = true; retire('closed'); },
     snapshot() { return Object.freeze({ phase: closed || isAborted(owner) ? 'closed' : active ? 'active' : choice ? 'selected' : 'idle', reason, attempts,

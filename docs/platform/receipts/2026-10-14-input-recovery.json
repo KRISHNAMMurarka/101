@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "result": "Two input repairs pass34 focused unit and67 selected native browser checks; first exact full candidate rejected by ten native timing failures, with subsequent revalidation bound separately.",
+  "tasks": [
+    "U09",
+    "U10",
+    "Q05"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceCommit": "cc30b1f4093d4bcb720319f9fe9646c171c4e3d9",
+  "sourceTree": "43eb6ab8fe71d034bc0f2b1ddd6d9c0694de1354",
+  "sourceSha256": {
+    "app/lib/local-capabilities.ts": "cacb633a0295ab7c54b9ccf0c28a58e76d1567763c5dfd2656e67abfdb110273",
+    "app/lib/camera-setup.test.ts": "1d0c14695526e709e702326581374ec6dc831b16eacb989a087d88f870fe7ba7",
+    "app/connections/ConnectionsView.tsx": "1136063ccb5f2b3fb18eafcdb27c27f34fc17666831ec185919e5f903d7557cd",
+    "tools/qa-connections-flow.mjs": "7fb424fe71e4dd9f28ed37ca40cf11d232b069c48dc5932620bb62761d737072",
+    "tools/qa-local-capabilities.mjs": "b3b48c477f5098839c1cf260c8418956b07946ac16a3d92fd2c896f9b34c882c"
+  },
+  "repairs": [
+    "Optional gamepad policy refusal no longer escapes the shared local-capability probe; other inputs survive and a later probe can recover.",
+    "Connections Input pad reuses native detail-zero activation for Enter and DOM button activation, reads current task-held state, exposes aria-pressed and gives plain Enter guidance."
+  ],
+  "genuineOldRed": {
+    "unit": {
+      "tests": 1,
+      "pass": 0,
+      "fail": 1,
+      "failure": "SecurityError escapes detectLocalCapabilities"
+    },
+    "connections": {
+      "engine": "chromium",
+      "failure": "After actual manual native WebRTC/P256 exchange and independent owner approvals, first native Enter does not deliver held input within unchanged6000ms"
+    }
+  },
+  "unit": {
+    "tests": 34,
+    "pass": 34,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "native": {
+    "connections": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "checks": 31,
+        "pageErrors": []
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "checks": 31,
+        "pageErrors": []
+      }
+    ],
+    "policy": {
+      "engine": "chromium",
+      "version": "149.0.7827.55",
+      "node": "v24.14.0",
+      "sourceSha256": {
+        "app/lib/local-capabilities.ts": "cacb633a0295ab7c54b9ccf0c28a58e76d1567763c5dfd2656e67abfdb110273",
+        "app/lib/camera-setup.test.ts": "1d0c14695526e709e702326581374ec6dc831b16eacb989a087d88f870fe7ba7",
+        "app/devices/DevicesView.tsx": "51836be044b7ad6d4a72206500633b66ca325d78477f2183e00bd3a3a6948e40",
+        "app/devices/device-inspection.ts": "42b357018c0f108f0923b3d74b07fe52eb0f0ee26cdede6db546d07c376a1552",
+        "tools/qa-local-capabilities.mjs": "b3b48c477f5098839c1cf260c8418956b07946ac16a3d92fd2c896f9b34c882c",
+        "package-lock.json": "9cd5088b365c5f202b495f3a092499152ef1a8e6aa94281d13914c883c1410d1"
+      },
+      "policyResult": "SecurityError",
+      "checks": [
+        "native-policy-denial",
+        "devices-survives",
+        "keyboard-and-mouse-retained",
+        "refresh-survives",
+        "fresh-policy-recovery"
+      ],
+      "scope": "Actual native Permissions-Policy refusal and fresh-page recovery; no physical gamepad, named assistive technology or full device qualification",
+      "pageErrors": [],
+      "foreign": []
+    },
+    "checks": 67,
+    "scope": "Local dev-served player UI with actual native Chromium149/WebKit26.5. Five Chromium Permissions-Policy checks use actual API refusal and fresh-document recovery;62 Connections checks use manual session-only native WebRTC/P256. Direct lifetime checks inject only the host clock. No physical gamepad, OS cursor, phone, named assistive technology or full tab-order claim.",
+    "cleanup": "Each owned browser/context closed in finally; all QA and server parents joined; recorded server groups empty; no forced server stop"
+  },
+  "incompleteDiagnostics": [
+    "First server used unrecognized --host option and never reached the requested loopback origin; no QA executed.",
+    "One port preflight rejected EADDRINUSE before any process launch; actual server already joined.",
+    "Early native policy UI attempts clicked before client readiness, so they are not old bug proof or acceptance. Diagnostic observation had finePointer=true and no pageerrors; final QA waits for the client-only local-input marker.",
+    "First WebKit run sampled effects after input release but before receiver retirement; normal retirement reset34 to0. Final assertion waits for the actual terminal lost state before baseline.",
+    "Second WebKit run passed input controls then its existing unspecified Shift+Tab focus recipe landed on BODY. The cause of that navigation remains unestablished. Final QA asserts visible native keyboard focus on specified pad and invitation controls; broader Tab navigation remains open."
+  ],
+  "nativeLimitsChanged": false,
+  "supportRows": [],
+  "custodyRef": "refs/codex/evidence/2026-10-14-input-recovery/focused",
+  "review": "Independent source and final QA assertion delta reviews found no introduced Critical/Important/Minor.",
+  "scope": "PARTIAL U09/U10/Q05 selected permission failure and connection button activation. Full state, lifecycle, tab-navigation, named assistive technology, responsive/device matrix and support qualification remain OPEN.",
+  "rejectedFullCandidate": {
+    "commit": "16853b5eb4b10bd0f73ec03c2e6d3ceab07310d3",
+    "tree": "a015b10d997baed919676676f30951cc38c0f39a",
+    "unit": {
+      "tests": 3362,
+      "pass": 3352,
+      "fail": 10,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 7,
+    "priorNinePassed": 7,
+    "failures": [
+      "\u2716 actual child exit cannot replace held native child close even on failure (4919.736084ms)",
+      "\u2716 native missing availability settles deadline and callback failure retires actual socket (2342.382292ms)",
+      "\u2716 owned broker timeout keeps authentic close ownership and directory until rejected settlement (3024.329667ms)",
+      "\u2716 owned producer timeout joins authentic close after successful public caller (4178.2365ms)",
+      "\u2716 owned producer timeout joins authentic close after failed startup (4729.8125ms)",
+      "\u2716 owned broker failed startup retains authentic child close and directory past timeout (8056.979042ms)",
+      "\u2716 owner abort after an actual keeper sample is issued awaits both preparation and native child settlement (3646.292042ms)",
+      "\u2716 independently executing authenticated runtime hosts transfer native state and recover with fresh authority (3457.003667ms)",
+      "\u2716 cancellation at the first actual bind retains ownership until native host and gateway teardown (3486.585833ms)",
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (2811.653541ms)"
+    ],
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/final-gates",
+      "commit": "a46c2e91622e74277a1af928f92a6581ec751bf1",
+      "tree": "f275e6ca0c7068d02d31bfbc72f051ad52c5f459",
+      "readBackFiles": 29,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "mainIntegrated": false,
+    "scope": "Exact nine-file candidate rejected by ten genuine native unit predicates under current conditions; no timing cause established. Seven other gates passed, including fresh build and37 rendered checks."
+  },
+  "rejectedDiagnosticCandidate": {
+    "commit": "2749ea618fb32552d059cd81085c08b374a31b3d",
+    "tree": "0efc8b73f9d7d970e63fa418421455d2541e2a33",
+    "unit": {
+      "tests": 3363,
+      "pass": 3362,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 7,
+    "priorNinePassed": 9,
+    "failures": [
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (2794.753625ms)"
+    ],
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/diagnostic-gates",
+      "commit": "b9a68e732179814d6b4293b81a899d68df63e93c",
+      "tree": "e628dd63fa284ae85aa4847f8d8a6e9545e551e0",
+      "readBackFiles": 35,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "mainIntegrated": false,
+    "scope": "Exact twelve-file candidate rejected by one loader milestone/control timing failure. All nine original failure predicates passed; this does not establish their causes or clearing. Fresh build and37 rendered passed."
+  },
+  "rejectedGamepadCandidate": {
+    "commit": "5e16a6e1557107749ecc7b771d20aaa720a9c140",
+    "tree": "e973d0b584b9646ba650431429d0f94417598d87",
+    "unit": {
+      "tests": 3365,
+      "pass": 3364,
+      "fail": 1,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 7,
+    "priorNinePassed": 9,
+    "failures": [
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (2769.728125ms)"
+    ],
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/gamepad-gates",
+      "commit": "b579b345af42c0e27ac36184701fb098d81bd295",
+      "tree": "ec1847ed16dde65c45685b5b1f583c0f6620d9e7",
+      "readBackFiles": 43,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "mainIntegrated": false,
+    "scope": "Exact seventeen-file candidate:3364/3365unitpass, one existing loader readiness miss at unchanged2500ms. All original nine cases passed; other seven gates, fresh build and37 rendered passed. This predates the opaque-read follow-up; no cause clearing or acceptance."
+  },
+  "rejectedOpaqueCandidate": {
+    "commit": "672453005bddc08c494bc53ca3ee2230d79a3652",
+    "tree": "d300155eec5f1a61e17bddcdebb8bdda8bd425d6",
+    "unit": {
+      "tests": 3367,
+      "pass": 3363,
+      "fail": 4,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 7,
+    "priorNinePassed": 8,
+    "priorNineFailed": [
+      "software child rejects a valid frame from a retired generation and token"
+    ],
+    "failures": [
+      "\u2716 software child rejects a valid frame from a retired generation and token (578.798667ms)",
+      "\u2716 failed peer startup also waits for native child close without orphan rejection (1504.664459ms)",
+      "\u2716 declared version mismatch is checked against the actual native handshake (2657.558875ms)",
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (2685.882584ms)"
+    ],
+    "failureSites": {
+      "emitter": "First actual hello missing after original100 five-millisecond waits; actual child then killed and close awaited.",
+      "rosPeer": "Original1500ms actual child-close checkpoint missed; finally restores forwarding and awaits startup settlement.",
+      "agentVersion": "Actual native start returns unavailable instead of expected version-mismatch. No inference of a successful handshake.",
+      "loader": "Original2500ms readiness ends in SIGTERM with zero stderr and no child milestones; full cleanup retained."
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/opaque-gates",
+      "commit": "a3b0eef51777ecec2c17152a241647490e2346d2",
+      "tree": "1a19c892e57005d0a2a1bf62db4fad5c3e19a5c3",
+      "readBackFiles": 47,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "mainIntegrated": false,
+    "nativeLimitsChanged": false,
+    "scope": "Exact eighteen-file source candidate rejected.3363/3367unitpass, four native control failures; all seven other gates including fresh build and37rendered pass. Eight original readiness cases pass; emitter hello recurs. Original causesUNKNOWN, clearingUNVERIFIED."
+  }
+}

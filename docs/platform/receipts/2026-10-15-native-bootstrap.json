@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Native launch consistency and ROS early refusal implemented; native timing remains unresolved. Final33-file candidate rejected with3379/3385unitpass and6failures.",
+  "tasks": [
+    "N14",
+    "Q05",
+    "Q13"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceCommit": "1f90ebe2eb2081a20d78f5d73c1c3008150b1579",
+  "sourceTree": "5ed354bcac045224f46d239269ae8b76babe5512",
+  "sourceSha256": {
+    "examples/rosbridge-pose/consumer.mjs": "b25de6489716e39d29a75be591c9a4b3aacdb0a9a101e1068fb8a1ec7e0220c4",
+    "examples/rosbridge-pose/peer.mjs": "fda545920eec71df3fd64e707a2fd857b951a19da74bb1e170611132b5d6dc84",
+    "examples/cross-host-workload/cross-host-workload.ts": "3a6d7fdfde6c9c50b58bd25ac7378bb45b60a58cb72a15d41192ff2d58029824",
+    "packages/hub-server/src/scoped-agent-ipc.ts": "4b0ea1a056d84d19d9a745eb9f9927986ba0784cb50468a31f2e3114578dec4b",
+    "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts": "57395d0047c5e75280a6c83c769b643a8a96dd325a7f87421b65445e498f0f2d",
+    "tests/native-process-bootstrap.test.ts": "c7c94d1e5191b74dff1492279fa2ff2b8088d6dcd6525bdecd6c2a678c7afb5d",
+    "tests/ros-peer-invalid-startup.test.ts": "939c96f4ec8bd78305ba1583212dc4f7325e2b0a5cefa845b4f6431d42f766ca"
+  },
+  "repairs": [
+    "Four fixed native launch sites derive the UID-bound Darwin CF text encoding; caller environment and preloads remain excluded. Native argv, protocols, deadlines and authority lifetimes are unchanged.",
+    "ROS peer validates fixture mode/IPC before loading ws, retaining the actual invalid-mode native failure."
+  ],
+  "genuineOldRed": [
+    "Bootstrap regression observed missing derived field at actual native dispatch.",
+    "Actual invalid ROS peer exited1 with owned-fixture error after loading ws; early-refusal regression failed."
+  ],
+  "focused": {
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "skipped": 0,
+    "scope": "Original four failure controls under actual dispatch audit, ROS early refusal and fixed-producer argument/close checks. Reviewed bootstrap cleanup rerun passes separately1/1; not an additional unique acceptance count."
+  },
+  "diagnosis": {
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-failures/ababs-probes",
+      "commit": "6f93f470731896f195fc80d0a743152549922a7b",
+      "tree": "31729bdba82fb9d40f8e190ea98c6b760d520f46",
+      "readBackFiles": 62,
+      "allBytesMatched": true,
+      "ownedBatchesRemoved": 5,
+      "cohorts": [
+        {
+          "batch": "2026-10-15-native-failures-owning-files",
+          "exitCode": 1,
+          "elapsedSeconds": 58.891,
+          "samples": 2
+        },
+        {
+          "batch": "2026-10-15-native-failures-owning-files-cf",
+          "exitCode": 0,
+          "elapsedSeconds": 29.413,
+          "samples": 0
+        },
+        {
+          "batch": "2026-10-15-native-failures-owning-files-cf-return-b2",
+          "exitCode": 0,
+          "elapsedSeconds": 18.091,
+          "samples": 0
+        },
+        {
+          "batch": "2026-10-15-native-failures-owning-files-control-a2",
+          "exitCode": 1,
+          "elapsedSeconds": 35.793,
+          "samples": 1
+        },
+        {
+          "batch": "2026-10-15-native-failures-probe",
+          "exitCode": 0,
+          "elapsedSeconds": 6.104,
+          "samples": 0
+        }
+      ]
+    },
+    "cfOnlyCandidate": "Failed emitter hello and ROS close in one selected audit run; a separate unobserved whole-file run passed69/69. Neither establishes a timing fix.",
+    "osSamples": "Actual failed baseline emitter and loader PIDs were sampled in dyld before JavaScript after original failure decisions; underlying OS cause UNKNOWN. Samples perturb execution and are not acceptance evidence.",
+    "nativeTimingCleared": false
+  },
+  "review": {
+    "reviewer": "native_startup_review",
+    "scope": [
+      "examples/rosbridge-pose/consumer.mjs",
+      "examples/rosbridge-pose/peer.mjs",
+      "examples/cross-host-workload/cross-host-workload.ts",
+      "packages/hub-server/src/scoped-agent-ipc.ts",
+      "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+      "tests/native-process-bootstrap.test.ts",
+      "tests/ros-peer-invalid-startup.test.ts"
+    ],
+    "findings": [
+      "No substantive defect in four closed environment edits; deterministic Darwin consistency has existing provider precedent but does not prove timing fix.",
+      "CLI audit preload exclusion gap corrected.",
+      "Watchdog now escalates owned group after supervisor close and confirms absence before scratch removal.",
+      "Actual invalid ROS fixture test retains native exit/error and detects dependency initialization before validation; moving only ws require preserves valid modes."
+    ],
+    "status": "Two test findings addressed; source review clear; no claim of all native causes resolved."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-native-failures/focused",
+    "commit": "148c15c57b67f49cd83f359e36d9ee4e3694a683",
+    "tree": "817900a7a508e6fdc0bbae9dd8522b7c8a7d0672",
+    "readBackFiles": 20,
+    "allBytesMatched": true
+  },
+  "fullValidation": "Recorded separately against the frozen final tree at refs/codex/evidence/2026-10-15-native-failures/final-gates; focused passes alone do not establish full integration.",
+  "nativeLimitsChanged": false,
+  "supportRows": [],
+  "scope": "PARTIAL N14/Q05/Q13 launch isolation, real invalid-mode refusal and diagnosis only. Native timing reliability, full lifecycle/platform/hardware qualification, support and release acceptance remain OPEN.",
+  "firstFullAttempt": {
+    "candidateCommit": "bb956e89669401a98d2f1f20c15231a3bf7da8b2",
+    "candidateTree": "b5479e494d9d88246ac46154abf3fd1dde1a9df6",
+    "unit": {
+      "tests": 3369,
+      "pass": 3366,
+      "fail": 3,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 6,
+    "originalFourPass": 3,
+    "failures": [
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (2908.437708ms)",
+      "\u2716 owned broker launch error joins actual native close and removes its configuration (2015.97975ms)",
+      "\u2716 owned broker launch error joins actual native close and removes its configuration when its port is rebound (7241.450167ms)"
+    ],
+    "lint": "Two errors retained: ignored diagnostic script empty catch and bootstrap test ownedPid declaration; subsequently corrected with no native deadline change.",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-failures/first-gates",
+      "commit": "a6b905eef320e3e0b137754bb178867a19d21eb1",
+      "tree": "3d72c419554c8895ba0847cea026a77700ffac5c",
+      "readBackFiles": 44,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "scope": "Rejected26-file candidate. Fresh build and37 rendered checks pass; loader and two actual broker prerequisites fail under current conditions. Native causesUNKNOWN and timing clearingUNVERIFIED."
+  },
+  "finalFullAttempt": {
+    "candidateCommit": "76c02348db22b4f4f548a7b2968be65a16043b49",
+    "candidateTree": "742745b1b407e22b40d5963d372d97af4457ccc3",
+    "unit": {
+      "tests": 3385,
+      "pass": 3379,
+      "fail": 6,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "gatesGreen": 7,
+    "originalFour": [
+      {
+        "name": "software child rejects a valid frame from a retired generation and token",
+        "pass": false,
+        "observations": [
+          "\u2716 software child rejects a valid frame from a retired generation and token (630.424458ms)",
+          "\u2716 software child rejects a valid frame from a retired generation and token (630.424458ms)"
+        ]
+      },
+      {
+        "name": "failed peer startup also waits for native child close without orphan rejection",
+        "pass": true,
+        "observations": [
+          "\u2714 failed peer startup also waits for native child close without orphan rejection (780.679667ms)"
+        ]
+      },
+      {
+        "name": "declared version mismatch is checked against the actual native handshake",
+        "pass": true,
+        "observations": [
+          "\u2714 declared version mismatch is checked against the actual native handshake (686.651375ms)"
+        ]
+      },
+      {
+        "name": "existing loader failure retains its actual earlier milestone and native close",
+        "pass": false,
+        "observations": [
+          "\u2716 existing loader failure retains its actual earlier milestone and native close (3601.132375ms)",
+          "\u2716 existing loader failure retains its actual earlier milestone and native close (3601.132375ms)"
+        ]
+      }
+    ],
+    "failures": [
+      "\u2716 software child rejects a valid frame from a retired generation and token (630.424458ms)",
+      "\u2716 owner abort after an actual keeper sample is issued awaits both preparation and native child settlement (4305.019792ms)",
+      "\u2716 independently executing authenticated runtime hosts transfer native state and recover with fresh authority (3561.649833ms)",
+      "\u2716 cancellation at the first actual bind retains ownership until native host and gateway teardown (3492.675583ms)",
+      "\u2716 existing loader failure retains its actual earlier milestone and native close (3601.132375ms)",
+      "\u2716 fixed native launches derive platform bootstrap environment without caller preloads (9927.859334ms)"
+    ],
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-failures/final-gates",
+      "commit": "795a73f23e9a3da5dcf8503d74c1d1901a13c8f6",
+      "tree": "06263da1e15903bbae2bb004760e25bb63d5aea7",
+      "readBackFiles": 52,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "scope": "Rejected33-file source candidate. Native emitter and loader fail; ROS close and actual agent version mismatch pass. Three additional cross-host controls and the launch-audit wrapper fail; the wrapper repeats its actual loader miss with canonical environment/no inherited preloads. Six unit failures do not establish six independent causes. Types, lint, fresh build and37rendered pass. No main integration, widened deadlines, prewarming, retry or skipped qualification."
+  },
+  "postRunRuntimeMetadata": {
+    "acceptance": false,
+    "observedAtUtc": "2026-10-15T10:32:13.016689+00:00",
+    "nodeSha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55",
+    "nodeBytes": 119133456,
+    "nativeArchitecture": "arm64",
+    "signatureStructureValid": true,
+    "quarantineAttributePresent": false,
+    "gatekeeperPolicyAssessed": false,
+    "scope": "Read-only post-gate signature structure, architecture and metadata checks. Executable unchanged. Does not establish the native delay root cause or clear historical failures."
+  },
+  "currentConditionsWaitObservation": {
+    "report": {
+      "acceptance": false,
+      "observations": [
+        {
+          "pid": 70445,
+          "label": "software-emitter.mjs",
+          "zeroUserAndFaultSamples": 11,
+          "observedZeroExecutionSpanMs": 260.026,
+          "firstObservedExecutionMsAfterDispatch": 286.11
+        },
+        {
+          "pid": 70926,
+          "label": "runtime-host.mjs",
+          "zeroUserAndFaultSamples": 34,
+          "observedZeroExecutionSpanMs": 855.017,
+          "firstObservedExecutionMsAfterDispatch": 881.04
+        }
+      ],
+      "sourceUnchanged": true,
+      "nativeLimitsUnchanged": true,
+      "originalChecks": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0,
+        "observerEnabled": true
+      },
+      "minimalNodeMs": 256.9642919115722,
+      "platformExecutableMs": 4.184749908745289,
+      "taskCounterUnits": "Native proc_taskinfo counters retained without CPU-time conversion",
+      "cause": "UNKNOWN",
+      "historicalClearing": "UNVERIFIED",
+      "safeLocalDisposition": "No evidence-backed repository change can yet clear the pre-JavaScript native delay. Keep original failures open and continue authorized bounded repairs. No security-policy changes, foreign workload changes, retry/prewarm acceptance or altered limits."
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-failures/native-wait-observation",
+      "commit": "dfdfe96990cb860d3915eb4e5aa00b579fbc209e",
+      "tree": "a143883bd0c0e1e4820943cf5a18182fa0697dda",
+      "readBackFiles": 12,
+      "allBytesMatched": true,
+      "originalObservedChecks": {
+        "pass": 2,
+        "fail": 0,
+        "acceptance": false
+      },
+      "minimalNodeMs": 256.9642919115722,
+      "platformExecutableMs": 4.184749908745289,
+      "cause": "UNKNOWN",
+      "noNativeSourceOrLimitsChanged": true,
+      "ownedBatchRemoved": true
+    },
+    "scope": "Nonacceptance observation only. Original emitter/loader controls pass with a dispatch-only observer; task snapshots show delayed execution before user-code/fault/syscall counters advance. This does not clear retained full-suite failures or identify the OS cause. Empty exact-owned-PID policy logs do not establish absence, and unprivileged lsof had no visibility. No conditions, runtimes, deadlines or security settings changed."
+  }
+}

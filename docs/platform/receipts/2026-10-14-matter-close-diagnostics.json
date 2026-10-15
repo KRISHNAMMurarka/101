@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "result": "Failure-only native child checkpoint diagnostics pass genuine old-red/new-green regression and unchanged-limit original selector; no timing cause fix established",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceCommit": "85de69ba3e3535cc859402859e412226ef9117f2",
+  "sourceTree": "d4a3a6532bc0ce9b67e0f865c99975a983f0c89e",
+  "sourceSha256": {
+    "packages/hub-server/src/matter-ws-switch.test.ts": "05f9d5f7b2fc8745286b8484d13b1431ad00b4af0d525c42f9ee3131021fde0b",
+    "tests/matter-child-diagnostics.test.ts": "26b6bcb8065353d7670295f813fe49344ec6d6612b165090e6c23a9c66418ff9",
+    "tools/qa-matter-ws-switch.mjs": "3b639f123579a4362bf315e188381cdb6ebf398d503aae06853b4c9cc07a2626"
+  },
+  "change": "The existing Matter held-close fixture retains actual target child PID and parent-clock native spawn/exit/close issuance when an assertion fails. Existing2500ms observation,12000ms helper close and1000ms escalation limits, producer bytes/arguments/environment, original release/restore/join and production code are unchanged.",
+  "genuineOldRed": {
+    "tests": 1,
+    "pass": 0,
+    "fail": 1,
+    "injection": "Only the outer assertion fails after authentic child close capture; actual producer succeeds, held close is released in finally and test runner naturally exits1. Old source retains no checkpoint diagnostics."
+  },
+  "selected": {
+    "diagnosticAndExistingCleanup": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    },
+    "originalHeldClose": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0
+    }
+  },
+  "regressionScope": "Nested producer is the real original Node fork with execArgv=[] and NODE_ENV=production. Parent-only assertion injection never reaches child. Requires original natural test failure, no watchdog termination, positive same child PID, actual spawn/exit/close events and joined child close before cleanup.",
+  "diagnosticCustody": {
+    "ref": "refs/codex/evidence/2026-10-14-input-recovery/matter-diagnostics",
+    "commit": "bf52e988866c522d939e6ca971e29ad2ce90f74c",
+    "tree": "2370e239f260e69295a64e118f25ff245d8bbc80",
+    "readBackFiles": 11,
+    "allBytesMatched": true,
+    "ownedBatchRemoved": true
+  },
+  "oneOsObservation": {
+    "acceptance": false,
+    "custodyRef": "refs/codex/evidence/2026-10-14-matter-native-phase/a68f052b38",
+    "custodyCommit": "ad1ff2b4044fe32d4d61e1a7e1dc216f5ec7da86",
+    "analysis": {
+      "schemaVersion": 1,
+      "scope": "One existing exact Matter held native-child-close selector with diagnostic adoption wrapper; no acceptance",
+      "candidateCommit": "16853b5eb4b10bd0f73ec03c2e6d3ceab07310d3",
+      "candidateTree": "a015b10d997baed919676676f30951cc38c0f39a",
+      "sourceSha256": {
+        "packages/hub-server/src/matter-ws-switch.test.ts": "84a4d1b6c16ddb3c248043e9ad6ef8082728e72baf9bcfab0cedfc439cf96dc3",
+        "packages/hub-server/src/matter-ws-switch.ts": "2dc07b4cf348e3ab51d5d4ef280236e3aa1bb3c0eadd2aa30d18c23746ea8d37",
+        "tools/qa-matter-ws-switch.mjs": "3b639f123579a4362bf315e188381cdb6ebf398d503aae06853b4c9cc07a2626",
+        "tools/run-unit-tests.mjs": "cc5cfec925038b2eb68c0a7274c36485e087a090db83693a6972a898bbd97756",
+        "package.json": "74150afc29fdc26bb36e116f040d9542ee74f4f3dce62380276e2978ba89afe0",
+        "package-lock.json": "9cd5088b365c5f202b495f3a092499152ef1a8e6aa94281d13914c883c1410d1"
+      },
+      "selectedResult": {
+        "selected": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "naturalExit": true,
+        "acceptance": false
+      },
+      "originalLimits": {
+        "untilMs": 2500,
+        "ownerCloseMs": 12000,
+        "ownerEscalationMs": 1000
+      },
+      "runtimeFidelity": {
+        "actualCanonicalSelectorImported": true,
+        "twoGenuineSuccessAndFailureChildrenObserved": true,
+        "actualNativeSpawnAdoption": true,
+        "actualProducerBytesPreserved": true,
+        "actualArgumentVectors": "Node executable plus generated success/failed.mjs only; no preload or added executable arguments",
+        "actualEnvKeys": "NODE_ENV plus Node fork internal NODE_CHANNEL_FD and NODE_CHANNEL_SERIALIZATION_MODE; canonical NODE_ENV=production options unchanged",
+        "ownEmitterForwardsCurrentCanonicalPrototypeMock": true,
+        "noCloseFabricatedHeldOrReleasedByObserver": true,
+        "canonicalHeldCloseAssertionsPassed": true,
+        "eachActualCloseIssuedAndCanonicalDeliveryObservedOnce": true,
+        "nativeSpawnPrototypeRestored": true,
+        "observerSourceMatchedPreparedPins": true,
+        "canonicalSourceAndLimitsUnchanged": true
+      },
+      "sameParentClock": "All native adoption/exit/close events are from worker70544 performance.now. External monotonic receipt ages and OS wall start times have no asserted cross-clock mapping.",
+      "sameParentClockDurationsMs": [
+        {
+          "label": "success",
+          "pid": 70660,
+          "nativeSpawnMs": 1.8752090000000408,
+          "spawnReturnedToExitIssuedMs": 768.337166,
+          "exitIssuedToCloseIssuedMs": 0.4659999999998945,
+          "closeIssuedToDeliveredMs": 0.16370899999992616,
+          "spawnReturnedToCloseDeliveredMs": 768.9668749999998,
+          "producerOwnedRootRemoved": true
+        },
+        {
+          "label": "failed",
+          "pid": 70796,
+          "nativeSpawnMs": 0.64975000000004,
+          "spawnReturnedToExitIssuedMs": 441.97566699999993,
+          "exitIssuedToCloseIssuedMs": 0.3288749999999254,
+          "closeIssuedToDeliveredMs": 2.6929580000000897,
+          "spawnReturnedToCloseDeliveredMs": 444.99749999999995,
+          "producerOwnedRootRemoved": true
+        }
+      ],
+      "sample": {
+        "invocations": 1,
+        "targetPid": 70660,
+        "parentPid": 70544,
+        "ownedPgid": 70463,
+        "durationSeconds": 1,
+        "intervalMs": 10,
+        "reportedMainThreadSamples": 23,
+        "reportedMainThreadPhases": {
+          "dyldEntry": 10,
+          "dyldLoadingFixups": 2,
+          "dyldDebuggerNotificationSynchronousMachMessage": 9,
+          "dyldAtlas": 1,
+          "nodeV8EnvironmentInitialization": 1
+        },
+        "binaryImagesAvailable": false,
+        "scope": "Observed native loading and bootstrap frames before natural child termination; no script-body instrumentation or continuous phase trace",
+        "samplerMayPerturbOrInduceObservedNotification": true
+      },
+      "pidStateSnapshots": {
+        "total": 8,
+        "present": 7,
+        "presentValues": "S,0.0%,0:00.00; OS snapshot/CPU quantization is not proof of zero CPU or one specific blocking cause"
+      },
+      "boundedInference": "This sampled success child was observed in dyld loading/debugger notification and Node environment initialization. In this run most same-parent elapsed time was before exit issuance; exit-to-close issuance and held close-to-delivery were short. The earlier2500ms failed checkpoint was not reproduced.",
+      "observerLimitations": "Diagnostic emitter recording uses bounded synchronous writes and external ps/sample work. Observation can alter scheduling; no unobserved comparison or causal intervention was run. Dyld debugger notification may itself be sampler induced.",
+      "historicalFailureCause": "UNKNOWN",
+      "historicalFailureClearing": "UNVERIFIED",
+      "noFullGateOrSupportPromotion": true,
+      "ownership": {
+        "testParentJoined": true,
+        "samplerJoined": true,
+        "childCloseAndCanonicalRunCallbacksJoined": true,
+        "remainingOwnedGroups": [],
+        "forcedStops": [],
+        "bothProducerOwnedRootsRemoved": true
+      },
+      "preparedRecordSemantics": "prepared.json retains the earlier unlaunched preparation state; observation.json and this analysis record the one explicitly released completed run.",
+      "remainingScope": "No reproduced prior Matter timeout, historical native causes, broader selector/suite, native acceptance, support matrix or release qualification.",
+      "sourcePinScope": "Before and immediately after the joined observation, six source hashes matched original16853b5e. Root subsequently changed the canonical test after receiving the joined/empty-group signal; this evidence does not qualify that later diagnostic edit.",
+      "postRunLivePinChange": {
+        "phase": "custody after completed diagnostic",
+        "liveDifferences": [
+          {
+            "path": "packages/hub-server/src/matter-ws-switch.test.ts",
+            "preparedSha256": "84a4d1b6c16ddb3c248043e9ad6ef8082728e72baf9bcfab0cedfc439cf96dc3",
+            "currentSha256": "05f9d5f7b2fc8745286b8484d13b1431ad00b4af0d525c42f9ee3131021fde0b"
+          }
+        ],
+        "observedIntervalPinsMatch": true,
+        "currentHead": "23f9c3bdb95e10cd68d19083e61f2a34e121815d"
+      },
+      "custodyBoundary": "First custody attempt rejected the later live test bytes before Git payload creation. Custody source snapshots are read from immutable16853b5e and must match the observed interval pins; no runtime rerun."
+    }
+  },
+  "review": "Independent read-only review found no introduced Critical/Important/Minor in both diagnostic files; source pins verified.",
+  "originalFailureCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "nativeLimitsChanged": false,
+  "supportRows": [],
+  "scope": "PARTIAL Q05/Q13 failure observability and genuine failed-body ownership. The isolated original predicate passed; prior full ten failures and wider native lifecycle, timing, release and support qualification remain OPEN."
+}

@@ -175,6 +175,21 @@ function replaceGlobal(context: TestContext, name: string, value: unknown) {
   context.after(() => { if (before) Object.defineProperty(globalThis, name, before); else Reflect.deleteProperty(globalThis, name); });
 }
 
+test("denied gamepad access preserves other local controls and a later probe can recover", (context) => {
+  let denied = true;
+  const navigator = { maxTouchPoints: 1, getGamepads() {
+    if (denied) throw new DOMException("Gamepad access is blocked by permissions policy", "SecurityError");
+    return [{ connected: true }];
+  } };
+  replaceGlobal(context, "window", { navigator, matchMedia: () => ({ matches: true }) });
+  const deniedCapabilities = detectLocalCapabilities();
+  assert.equal(deniedCapabilities.gamepad, false);
+  assert.deepEqual(localInputSources(deniedCapabilities), ["keyboard", "mouse", "touch"]);
+  denied = false;
+  assert.equal(detectLocalCapabilities().gamepad, true);
+  assert.deepEqual(localInputSources(), ["keyboard", "mouse", "touch", "gamepad"]);
+});
+
 test("an API-only browser claims a camera only after real device enumeration", async (context) => {
   let cameras: { kind: string; deviceId: string }[] = [];
   const navigator = { mediaDevices: { getUserMedia() {}, enumerateDevices: async () => cameras }, getGamepads: () => [] };

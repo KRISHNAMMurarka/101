@@ -16,7 +16,7 @@ const messages: Record<GamepadTaskReason, string> = {
   invalid: 'This choice is no longer valid. Stop and find gamepads again.',
   unsupported: 'This browser cannot read these gamepad inputs. You can return or try another browser.',
   unavailable: 'No usable gamepad was reported. Connect a gamepad, press one of its buttons while this page is in focus, then Stop and find again.',
-  denied: 'Gamepad access was blocked. Check browser permission or restrictions, then Stop and find again. You can also return to Connections.',
+  denied: 'Gamepad access was blocked. Check browser permission or restrictions, then choose Find gamepads again. You can also return to Connections.',
   busy: 'Earlier work is still finishing. Wait before finding another gamepad.',
   closed: 'Gamepad access is closed.',
   lost: 'The selected gamepad disconnected or changed. Find it again and review fresh permissions.',

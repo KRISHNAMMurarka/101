@@ -109,8 +109,10 @@ const integer = (value: unknown, max: number): value is number => Number.isSafeI
 const no = (reason: BrowserSerialSwitchFailure): BrowserSerialSwitchResult<never> => Object.freeze({ ok: false, reason });
 const yes = <T>(value: T): BrowserSerialSwitchResult<T> => Object.freeze({ ok: true, value });
 function failure(error: unknown): BrowserSerialSwitchFailure {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied';
-  const own = fields(error, ['ok', 'reason']); return own?.ok === false && ['invalid', 'unsupported', 'lost'].includes(own.reason as string) ? own.reason as BrowserSerialSwitchFailure : 'unavailable';
+  try {
+    if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied';
+    const own = fields(error, ['ok', 'reason']); return own?.ok === false && ['invalid', 'unsupported', 'lost'].includes(own.reason as string) ? own.reason as BrowserSerialSwitchFailure : 'unavailable';
+  } catch { return 'unavailable'; }
 }
 function defaults(): BrowserSerialSwitchEnvironment {
   const doc = typeof document === 'undefined' ? undefined : document;

@@ -26,6 +26,10 @@ let cameraProbe = 0;
 export function detectLocalCapabilities(): DeviceCapabilities {
   if (typeof window === "undefined") return {};
   const nav = window.navigator;
+  let gamepad = false;
+  try {
+    gamepad = typeof nav.getGamepads === "function" && nav.getGamepads().some((pad) => pad !== null);
+  } catch { /* A blocked optional input must not discard the other local controls. */ }
   return {
     touch: (nav.maxTouchPoints ?? 0) > 0,
     accelerometer: "DeviceMotionEvent" in window,
@@ -39,7 +43,7 @@ export function detectLocalCapabilities(): DeviceCapabilities {
     // the platform's own resolver said were not playable there. Browsers also withhold pads until
     // one is used, so this can be false at first paint and true later — which the store below
     // handles rather than pretending the answer is fixed.
-    gamepad: typeof nav.getGamepads === "function" && nav.getGamepads().some((pad) => pad !== null),
+    gamepad,
     speaker: "AudioContext" in window || "webkitAudioContext" in window,
   };
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 238,
+  "revision": 247,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -15261,6 +15261,435 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "input-recovery-2026-10-14",
+      "revision": "cc30b1f4093d4bcb720319f9fe9646c171c4e3d9",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U09",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-input-recovery.json",
+        "app/lib/local-capabilities.ts",
+        "app/lib/camera-setup.test.ts",
+        "app/connections/ConnectionsView.tsx",
+        "tools/qa-connections-flow.mjs",
+        "tools/qa-local-capabilities.mjs"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0; dev-served actual native Chromium149/WebKit26.5 under current user-authorized conditions",
+      "reproduction": "Old denied-gamepad unit throws SecurityError; old authenticated Connections flow fails native Enter held input at original6000ms. Narrow fixes pass34 selected unit and67 current browser checks. Incomplete early harness attempts and native WebKit BODY Tab observation retained without acceptance.",
+      "scope": "PARTIAL U09/U10/Q05 selected permission failure and connection button activation. Full state, lifecycle, tab-navigation, named assistive technology, responsive/device matrix and support qualification remain OPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-node-phase-2026-10-14",
+      "revision": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+      "result": "pending",
+      "historical": false,
+      "levels": [],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-native-node-phase.json"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0 with one external OS sample and bounded process identity observation",
+      "reproduction": "Existing rejected-loader test selected once on unchanged main. Exact owned Node host sampled92 main-thread frames at dyld entry before loader marker; natural rejection passed original2500ms. Raw logs/source/manifest read back from preserved ref; all owned processes joined and folder removed.",
+      "scope": "Nonacceptance OS observation only. Sample and identity polling can perturb timing; controlled natural rejection within unchanged2500ms does not clear any historical failure or qualify release/support.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "input-recovery-full-rejected-2026-10-14",
+      "revision": "16853b5eb4b10bd0f73ec03c2e6d3ceab07310d3",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-input-recovery.json"
+      ],
+      "environment": "Ordinary local macOS arm64 Node24.14.0, unchanged original native limits and user-authorized current conditions",
+      "reproduction": "One frozen9-file full eight-gate run:3352/3362unitpass,10nativefail;7/8green including fresh build and37 rendered. All gate parents/groups joined, source and dependency/release/worktree invariants verified; raw29blobs read back before run-folder removal.",
+      "scope": "Rejected exact candidate only. Ten native readiness/ownership predicates missed current conditions; causeUNKNOWN. No main integration, deadline widening, skipped test, retry, physical acceptance or historical clearing.",
+      "failure": "Matter native close checkpoint; five Zigbee broker/producer controls; keeper issued-sample checkpoint; three cross-host startup/current-effect predicates. Exact failures and diagnostics preserved in custody.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "matter-close-diagnostics-2026-10-14",
+      "revision": "85de69ba3e3535cc859402859e412226ef9117f2",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-matter-close-diagnostics.json",
+        "packages/hub-server/src/matter-ws-switch.test.ts",
+        "tests/matter-child-diagnostics.test.ts"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0 with actual owned child/process close controls; separate OS observation explicitly nonacceptance",
+      "reproduction": "Genuine checkpoint assertion failure exposes no native diagnostic on old code. Narrow recorder now retains same-child PID and parent-clock spawn/exit/close events;2 diagnostic/cleanup checks and1 unchanged2500ms held-close selector pass. One prior-source OS observation passes both natural branches but does not reproduce prior timing miss.",
+      "scope": "PARTIAL Q05/Q13 failure observability and genuine failed-body ownership. The isolated original predicate passed; prior full ten failures and wider native lifecycle, timing, release and support qualification remain OPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "input-recovery-diagnostic-full-rejected-2026-10-14",
+      "revision": "2749ea618fb32552d059cd81085c08b374a31b3d",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-input-recovery.json"
+      ],
+      "environment": "Ordinary local macOS arm64 Node24.14.0 under current user-authorized conditions and unchanged native limits",
+      "reproduction": "One exact12-file run:3362/3363unitpass, loader control reaches current-effect deadline before expected natural invalid-loader rejection; seven other gates including fresh build/37rendered pass. All nine original predicates pass, causes/clearing stayunknown. Parents/groups joined, invariants verified and35raw/source blobs read back before removal.",
+      "scope": "Rejected exact candidate only; no main integration or original timing cause clearing. No observers/preloads/prewarm/retries/skips or native deadline change in acceptance commands.",
+      "failure": "Existing-loader failure control missed original2500ms readiness and reported Cross-host current effect deadline rather than actual expected native rejection.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "gamepad-recovery-2026-10-14",
+      "revision": "a0cf51a62e7569d3215c8eebdbc242835ab49ccf",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U09",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-gamepad-recovery.json",
+        "packages/device-web/src/browser-gamepad.ts",
+        "packages/device-web/src/browser-gamepad.test.ts",
+        "app/connections/gamepad/GamepadView.tsx",
+        "app/connections/gamepad/gamepad-task.test.ts",
+        "tools/qa-local-capabilities.mjs"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0; actual local dev-served Chromium149/WebKit26.5 with controlled real Permissions-Policy header",
+      "reproduction": "Actual approved-start SecurityError fixture and real native denied Find prove old defects. Narrow denial-only mapping with opaque fallback and usable recovery copy pass60 source checks and70 affected native browser checks. Expanded mapping and unsafe classification regressions retained, corrected and independently re-reviewed.",
+      "scope": "PARTIAL U03/U09/U10/Q05 gamepad access-denial classification and actionable keyboard recovery. Hardware, native post-approval revocation, named assistive technology, full state/browser/platform matrix, SDK installed qualification and release/support acceptance remain OPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "input-recovery-gamepad-full-rejected-2026-10-14",
+      "revision": "5e16a6e1557107749ecc7b771d20aaa720a9c140",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-input-recovery.json"
+      ],
+      "environment": "Ordinary local macOS arm64 Node24.14.0 under user-authorized current conditions; unchanged native limits",
+      "reproduction": "One frozen17-file full run:3364/3365unitpass; loader control reaches original deadline before its expected natural rejection. All nine original cases pass. Seven other gates including fresh build and37rendered pass.43raw/source blobs read back before owned folder removal; parents/groups joined and invariants verified.",
+      "scope": "Rejected exact candidate only. No main integration, cause clearing, prewarming, acceptance observer/preload/retry/skip or widened deadline.",
+      "failure": "Existing-loader failure control missed original2500ms readiness; no child loader milestones or stderr before SIGTERM.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-post-deadline-phase-2026-10-14",
+      "revision": "5e16a6e1557107749ecc7b771d20aaa720a9c140",
+      "result": "pending",
+      "historical": false,
+      "levels": [],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-native-node-phase.json"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0; explicit advisory lifecycle observer, no sample before original readiness deadline",
+      "reproduction": "One unchanged existing-loader control under a diagnosis-driven post-deadline sampling method. Actual child82463 naturally exits1/null and control passes; no missed deadline or OS sample occurs. Parent spawn-return to close1288.12ms; child loader marker18.80ms belongs to a separate clock. All owned parents/groups joined; raw custody read back then folder removed.",
+      "scope": "Nonacceptance observation only; earlier full-suite miss not reproduced, native causeUNKNOWN and clearingUNVERIFIED. Lifecycle bookkeeping can perturb timing; no physical/release/support claim.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "gamepad-opaque-recovery-2026-10-14",
+      "revision": "bdace0f87ad4f0feefdfa3d548eafb7ea37b85b8",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "U03",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-gamepad-opaque-recovery.json",
+        "packages/device-web/src/browser-gamepad.ts",
+        "packages/device-web/src/browser-gamepad.test.ts"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0, declared synchronous host seam and actual SDK runtime routes; controlled software only",
+      "reproduction": "Two genuine old failures escape via classifier getPrototypeOf introspection. Total shared classification now refuses unreadable exceptions, retires active polling, releases held sink input and fences stale callbacks.62 task/provider checks pass and exact two-file independent review is clear.",
+      "scope": "PARTIAL U03/U10/Q05 opaque host failure recovery and actual software route release only. Physical gamepads, native permission revocation, assistive technology, full browser/device matrix and release/support acceptance remain OPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "input-recovery-opaque-full-rejected-2026-10-14",
+      "revision": "672453005bddc08c494bc53ca3ee2230d79a3652",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-input-recovery.json"
+      ],
+      "environment": "Ordinary local macOS arm64 Node24.14.0 under user-authorized current conditions; original native bounds unchanged",
+      "reproduction": "One frozen18-file full run:3363/3367unitpass; emitter first hello, ROS actual child close, actual agent version mismatch and loader readiness controls fail. Eight original readiness cases pass. Seven other gates including fresh build and37rendered pass.47raw/source blobs read back before owned folder removal; all parents/groups joined and source/dependency/release/worktree invariants verified.",
+      "scope": "Rejected exact source candidate only. No main integration, historical cause clearing, acceptance observer/preload/prewarming/retry/skip or widened native deadline.",
+      "failure": "Four actual native controls failed at their original predicates; exact names, stack sites and loader zero-milestone/SIGTERM diagnostics retained.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-owning-file-phase-2026-10-14",
+      "revision": "672453005bddc08c494bc53ca3ee2230d79a3652",
+      "result": "pending",
+      "historical": false,
+      "levels": [],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-14-native-node-phase.json"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0, explicit advisory lifecycle bookkeeping restricted to loader control in whole owning file",
+      "reproduction": "Owning-file context run passes6controls; actual controlled host58096 naturally exits1/null, parent observer spawn-return to close2274.8835ms and child loader marker17.99175ms belong to separate clocks. No post-deadline sample issued.17raw/source/controller blobs read back before folder removal; all owned parents/groups joined.",
+      "scope": "Nonacceptance diagnostic only. Both selected-control and owning-file methods failed to reproduce the full-suite loader deadline; causeUNKNOWN and clearingUNVERIFIED. No physical, release or support qualification.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-bootstrap-diagnosis-2026-10-15",
+      "revision": "911395c089aa23142cae14ceec0318b9c9c3b8a3",
+      "result": "pending",
+      "historical": false,
+      "levels": [],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json"
+      ],
+      "environment": "Local macOS26.5.2 arm64 Node24.14.0 under current user-authorized conditions; explicit advisory post-deadline sampling and environment cohorts",
+      "reproduction": "Selected4 baseline pass; whole-file A1 65/69, B1 69/69, A2 67/69, B2 69/69. B adds one UID-derived Darwin environment field at real spawn. Failed emitter and loader PIDs sampled in dyld before JavaScript.62 evidence blobs read back before five owned run folders removed.",
+      "scope": "Nonacceptance diagnosis only. CF hypothesis is insufficient: its first source candidate still fails emitter and ROS while agent and loader pass. Original OS causesUNKNOWN and clearingUNVERIFIED.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-bootstrap-refusal-2026-10-15",
+      "revision": "1f90ebe2eb2081a20d78f5d73c1c3008150b1579",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N14",
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json",
+        "examples/rosbridge-pose/consumer.mjs",
+        "examples/rosbridge-pose/peer.mjs",
+        "examples/cross-host-workload/cross-host-workload.ts",
+        "packages/hub-server/src/scoped-agent-ipc.ts",
+        "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts",
+        "tests/native-process-bootstrap.test.ts",
+        "tests/ros-peer-invalid-startup.test.ts"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0 under user-authorized current conditions; actual native children and declared observational test preloads",
+      "reproduction": "Missing launch field and unnecessary ws initialization each produce genuine old reds. Four launches now derive canonical Darwin bootstrap environment without caller preloads; ROS validates invalid mode before ws initialization.9 focused checks pass, followed by1 reviewed bootstrap cleanup check.",
+      "scope": "PARTIAL launch-environment consistency and actual early invalid-mode failure only. Original four predicates pass in focused controls; no historical timing cause or reliability claim. Full native/platform/lifecycle/support/release acceptance staysOPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-bootstrap-full-rejected-2026-10-15",
+      "revision": "bb956e89669401a98d2f1f20c15231a3bf7da8b2",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0 under current user-authorized conditions and unchanged native deadlines",
+      "reproduction": "Exact26-file full run:3366/3369unitpass; loader has no child marker before original2500ms termination, and two owned broker launch-error controls miss genuine native prerequisites. Six gates including types/freshbuild/37rendered pass; lint exposes two local errors later corrected.44 raw/source/controller blobs read back before owned gate folder removed; parents/groups and dependency/release/worktree invariants checked.",
+      "scope": "Rejected exact candidate only. Three of the original four predicates pass, loader remains failed. CF normalization and ROS early refusal do not establish historical timing reliability; no support/release acceptance.",
+      "failure": "Loader native rejection control and two broker prerequisite checks failed; lint failed on an ignored diagnostic empty catch and bootstrap ownedPid declaration.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "media-opaque-recovery-2026-10-15",
+      "revision": "8564bbc057e043e4666d4f451510c40e5197519d",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-media-opaque-recovery.json",
+        "packages/device-web/src/browser-camera.ts",
+        "packages/device-web/src/browser-camera.test.ts",
+        "packages/device-web/src/browser-microphone.ts",
+        "packages/device-web/src/browser-microphone.test.ts",
+        "packages/device-web/src/browser-screen-preview.ts",
+        "packages/device-web/src/browser-screen-preview.test.ts"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0; declared software media factories and actual SDK routes, without browser/hardware claims",
+      "reproduction": "Eight genuine old failures from revoked/throwing-name host errors are retained. Three narrow classifier guards pass140 owning-file checks, including8 opaque regressions,8 readable denial/ordinary Error controls, public API settlement, actual held-frame release and joined cleanup; selected lint and exact six-path independent review pass.",
+      "scope": "PARTIAL N02/U10/Q05 media error recovery only. Native permission lifecycle, physical capture, broader browser/device/assistive matrix, support and release acceptance remain OPEN.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-bootstrap-media-full-rejected-2026-10-15",
+      "revision": "76c02348db22b4f4f548a7b2968be65a16043b49",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0 under user-authorized current conditions; original native limits retained",
+      "reproduction": "One exact33-file final run:3379/3385unitpass,6failures,zero cancelled/skipped/todo. Emitter/loader recur; ROS close and actual agent version mismatch pass. Three other cross-host controls fail, and actual dispatch audit repeats the loader miss despite canonical environment and excluded caller preloads. Seven other gates including freshbuild/37rendered pass.52 raw/source/controller blobs read back before owned folder removal; all parents/groups and dependency/release/worktree invariants verified.",
+      "scope": "Rejected exact source candidate only.140 focused media checks prove declared software recovery, not global native reliability. Six failed unit checks may share causes; native causeUNKNOWN and clearingUNVERIFIED. Post-run executable signature/architecture checks pass without changing runtime or assessing Gatekeeper policy.",
+      "failure": "Emitter response, keeper-abort settlement, authenticated cross-host workload, first-bind cancellation, controlled invalid-loader rejection and launch-audit wrapper failed actual native predicates.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-wait-observation-2026-10-15",
+      "revision": "ac8b8649039e834fa883d4971c287b9e026ae187",
+      "result": "pending",
+      "historical": false,
+      "levels": [],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-native-bootstrap.json"
+      ],
+      "environment": "Local macOS26.5.2 arm64 Node24.14.0 under current authorized conditions; dispatch-only observer plus read-only proc_pidinfo polling of owned tasks",
+      "reproduction": "One original emitter/loader diagnostic run2/2pass; actual child task snapshots retain260ms/855ms spans with zero user time/faults/user syscalls before execution. One minimal same-Node launch257ms; platform executable4ms. Twelve evidence blobs read back and exact owned groups joined before folder removal.",
+      "scope": "Nonacceptance only. No native source, options, limits or conditions change. Original causeUNKNOWN and historical clearingUNVERIFIED; prior six failed native predicates remain unresolved.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "hardware-opaque-recovery-2026-10-15",
+      "revision": "5d9e9f07d696abe181f2915fbf6543150704c605",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N02",
+        "U10",
+        "Q05"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-hardware-opaque-recovery.json",
+        "packages/device-web/src/browser-hid-switch.ts",
+        "packages/device-web/src/browser-hid-switch.test.ts",
+        "packages/device-web/src/browser-ble-switch.ts",
+        "packages/device-web/src/browser-ble-switch.test.ts",
+        "packages/device-web/src/browser-serial-switch.ts",
+        "packages/device-web/src/browser-serial-switch.test.ts"
+      ],
+      "environment": "Local macOS arm64 Node24.14.0; declared software HID/GATT/Serial ports with genuine EventTarget/DataView/ReadableStream and actual SDK routes",
+      "reproduction": "Nine genuine old-red held-input failures and12 controls retained. Three narrow total-classifier guards pass136 owning-file checks, including denied/ordinary/structured controls, held-input release, source retirement and owned cleanup. Selected lint and exact six-path independent review pass.",
+      "scope": "PARTIAL software unknown-error recovery only; no native permission, physical switch/radio/UART or broader browser/device/assistive qualification. Full gates and existing native timing unresolved.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -16287,7 +16716,9 @@
         "inventory-quota-recovery-chromium-2026-10-11",
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
-        "inventory-quota-safari-ui-2026-10-11"
+        "inventory-quota-safari-ui-2026-10-11",
+        "media-opaque-recovery-2026-10-15",
+        "hardware-opaque-recovery-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -16489,7 +16920,8 @@
       "id": "N14",
       "records": [
         "pending-N14",
-        "n14-built-partial-2026-10-06"
+        "n14-built-partial-2026-10-06",
+        "native-bootstrap-refusal-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -18034,7 +18466,9 @@
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
         "inventory-quota-safari-ui-2026-10-11",
-        "player-route-reference-correction-2026-10-12"
+        "player-route-reference-correction-2026-10-12",
+        "gamepad-recovery-2026-10-14",
+        "gamepad-opaque-recovery-2026-10-14"
       ],
       "dependencies": [
         "C01",
@@ -18147,7 +18581,9 @@
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
         "inventory-quota-safari-ui-2026-10-11",
-        "sharing-pad-activation-2026-10-13"
+        "sharing-pad-activation-2026-10-13",
+        "input-recovery-2026-10-14",
+        "gamepad-recovery-2026-10-14"
       ],
       "dependencies": [
         "C01",
@@ -18176,7 +18612,12 @@
         "camera-quota-old-failure-2026-10-11",
         "microphone-quota-old-failure-2026-10-11",
         "inventory-quota-safari-ui-2026-10-11",
-        "sharing-pad-activation-2026-10-13"
+        "sharing-pad-activation-2026-10-13",
+        "input-recovery-2026-10-14",
+        "gamepad-recovery-2026-10-14",
+        "gamepad-opaque-recovery-2026-10-14",
+        "media-opaque-recovery-2026-10-15",
+        "hardware-opaque-recovery-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -18475,7 +18916,14 @@
         "sharing-pad-activation-2026-10-13",
         "native-fixture-ownership-2026-10-13",
         "nec32-launch-isolation-2026-10-13",
-        "broker-launch-error-2026-10-14"
+        "broker-launch-error-2026-10-14",
+        "input-recovery-2026-10-14",
+        "matter-close-diagnostics-2026-10-14",
+        "gamepad-recovery-2026-10-14",
+        "gamepad-opaque-recovery-2026-10-14",
+        "native-bootstrap-refusal-2026-10-15",
+        "media-opaque-recovery-2026-10-15",
+        "hardware-opaque-recovery-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -18609,7 +19057,20 @@
         "rss-independent-qualification-budget-2026-10-12",
         "clipboard-native-probe-outcomes-2026-10-12",
         "native-loader-milestones-2026-10-13",
-        "broker-launch-error-2026-10-14"
+        "broker-launch-error-2026-10-14",
+        "native-node-phase-2026-10-14",
+        "input-recovery-full-rejected-2026-10-14",
+        "matter-close-diagnostics-2026-10-14",
+        "input-recovery-diagnostic-full-rejected-2026-10-14",
+        "input-recovery-gamepad-full-rejected-2026-10-14",
+        "native-post-deadline-phase-2026-10-14",
+        "input-recovery-opaque-full-rejected-2026-10-14",
+        "native-owning-file-phase-2026-10-14",
+        "native-bootstrap-diagnosis-2026-10-15",
+        "native-bootstrap-refusal-2026-10-15",
+        "native-bootstrap-full-rejected-2026-10-15",
+        "native-bootstrap-media-full-rejected-2026-10-15",
+        "native-wait-observation-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [

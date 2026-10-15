@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Unreadable HID/BLE/Serial host errors now retire held software input;136 focused checks pass.",
+  "tasks": [
+    "N02",
+    "U10",
+    "Q05"
+  ],
+  "sourceBase": "ac8b8649039e834fa883d4971c287b9e026ae187",
+  "sourceCommit": "5d9e9f07d696abe181f2915fbf6543150704c605",
+  "sourceTree": "9d6f09fe88768cef4750d5096fe22110a4630aac",
+  "sourceSha256": {
+    "packages/device-web/src/browser-hid-switch.ts": "da9eee2c3f3b7f02036170e0ecb143fd677861dd93b8e3edcb32e979cc79efb6",
+    "packages/device-web/src/browser-hid-switch.test.ts": "7e4b171728043e023571bdf47b2e36c5e8dc7a35e91fa2a5855ae107919cf194",
+    "packages/device-web/src/browser-ble-switch.ts": "271a272ce81c4d4efdafc5d0505d064aa0e753d332dfd0e4a460089fc672e244",
+    "packages/device-web/src/browser-ble-switch.test.ts": "aa57c29f25c6511ba5d1a26a1a20d46af1b8875929b87c2703909fa8b81e536b",
+    "packages/device-web/src/browser-serial-switch.ts": "0e454d159b1945b07511031e75a01672f7f416071eafe86f41cce8c46923084c",
+    "packages/device-web/src/browser-serial-switch.test.ts": "4b23bfa3e7961e62826c04ea64def0bde524c2ba51e358b7d22ee97010f83555"
+  },
+  "repairs": [
+    "Guard all fallible exception identity, name and own-field classification in three existing failure() functions. Unreadable errors become unavailable before the existing retirement and cleanup path.",
+    "Preserve readable NotAllowedError/SecurityError DOMException denial, ordinary Error fallback and structured lost handling; no profiles, permissions, provider arguments, deadlines, raw reservations or public APIs change."
+  ],
+  "genuineOldRed": {
+    "sourceCommit": "04a73ec4ac83e210c40c994e604fe43c1cd64fae",
+    "sourceTree": "0722cd5a78d6d86391985da6f5afa09fb159ea54",
+    "tests": 21,
+    "pass": 12,
+    "fail": 9,
+    "cancelled": 0,
+    "scope": "Revoked Proxy, throwing DOMException.name and later getPrototypeOf throw each leave a real SDK sink held in all three providers. HID/BLE tests wrap the actual installed callback only to contain old escapes while retaining real Event.target branding; Serial errors its actual pending ReadableStream read."
+  },
+  "unit": {
+    "tests": 136,
+    "pass": 136,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "newChecks": {
+    "opaqueRegressions": 9,
+    "denialOrdinaryAndStructuredControls": 12
+  },
+  "review": {
+    "reviewer": "hardware_failure_review",
+    "candidateCommit": "5d9e9f07d696abe181f2915fbf6543150704c605",
+    "base": "ac8b8649039e834fa883d4971c287b9e026ae187",
+    "scope": [
+      "packages/device-web/src/browser-hid-switch.ts",
+      "packages/device-web/src/browser-hid-switch.test.ts",
+      "packages/device-web/src/browser-ble-switch.ts",
+      "packages/device-web/src/browser-ble-switch.test.ts",
+      "packages/device-web/src/browser-serial-switch.ts",
+      "packages/device-web/src/browser-serial-switch.test.ts"
+    ],
+    "result": "No actionable findings. Narrow catches make existing classifiers total; real EventTarget-branded callback and genuine pending ReadableStream regressions retain real SDK held-input release. Serial cleanup claims exclude cleanupFailed=false after errored-stream cancellation. Software scope only; native timing and broad integration declined."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-hardware-opaque-recovery/focused",
+    "commit": "888d1157a555508d32368d3d16bf5a03ad5677e0",
+    "tree": "8c1fec5184a9df1da4d50cb1c8dfd163b0072d1a",
+    "readBackFiles": 14,
+    "allBytesMatched": true
+  },
+  "native": "Declared software HID/GATT/Serial ports, real EventTarget/DataView/ReadableStream and actual public SDK route behavior only. No native chooser, permission, radio, UART or physical switch qualification.",
+  "cleanup": "Held sink released and source retired. HID close and BLE stop/disconnect settle; Serial read and raw work drain, exact reader lock releases and port closes once. An errored Serial stream can reject cancel; cleanupFailed=false is explicitly not claimed.",
+  "fullValidation": "Pending one exact combined-candidate gate run; focused software success does not clear the existing native failures.",
+  "supportRows": [],
+  "scope": "PARTIAL N02/U10/Q05 software error/lifecycle recovery. Full native/browser/device/assistive matrix, support and release acceptance remain OPEN."
+}

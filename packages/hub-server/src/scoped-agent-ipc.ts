@@ -190,8 +190,9 @@ export function createScopedAgentIpc(input: ScopedAgentIpcOptions): ScopedAgentI
       directory = await mkdtemp('/tmp/101-ai-'); await chmod(directory, 0o700);
       if (terminal || turn !== generation || isAborted(ownerSignal) || isAborted(registration.signal) || performance.now() >= registration.expiresAt) return failed('cancelled');
       const path = directory + '/s', capability = randomBytes(32).toString('hex'), born = performance.now();
+      const startupEnvironment = process.platform === 'darwin' ? { __CF_USER_TEXT_ENCODING: `0x${process.getuid!().toString(16).toUpperCase()}:0:0` } : {};
       const child = spawn(process.execPath, ['--max-old-space-size=32', '--input-type=module', '--eval', CHILD_SOURCE], {
-        stdio: ['ignore', 'ignore', 'ignore', 'ipc'], env: { PATH: '/usr/bin:/bin', NODE_ENV: 'production', NODE_OPTIONS: '', NODE_PATH: '' } });
+        stdio: ['ignore', 'ignore', 'ignore', 'ipc'], env: { PATH: '/usr/bin:/bin', NODE_ENV: 'production', NODE_OPTIONS: '', NODE_PATH: '', ...startupEnvironment } });
       starts++;
       let resolveClosed!: () => void, resolveReady!: (value: boolean) => void;
       const closed = new Promise<void>(resolve => { resolveClosed = resolve; }), ready = new Promise<boolean>(resolve => { resolveReady = resolve; });

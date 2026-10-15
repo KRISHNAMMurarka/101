@@ -162,3 +162,24 @@ test('actual denied-policy constraint rejection remains distinct from qualified 
     if (previousNavigator) Object.defineProperty(globalThis, 'navigator', previousNavigator); else Reflect.deleteProperty(globalThis, 'navigator');
   }
 });
+
+function opaqueHostFailure(shape: 'revoked' | 'throwing-name' | 'denied' | 'ordinary-name'): unknown {
+  if (shape === 'denied') return new DOMException('Capture blocked', 'NotAllowedError');
+  if (shape === 'ordinary-name') { const error = new Error('Opaque host failure'); error.name = 'NotAllowedError'; return error; }
+  const value = Proxy.revocable({}, {}); value.revoke();
+  if (shape === 'revoked') return value.proxy;
+  return Object.defineProperty(new DOMException('Unreadable host error', 'NotAllowedError'), 'name', { get() { throw value.proxy; } });
+}
+
+for (const shape of ['revoked', 'throwing-name', 'denied', 'ordinary-name'] as const) test(shape + ' microphone capture error settles and releases its reservation', async () => {
+  const f = fixture(), error = opaqueHostFailure(shape);
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const choice = await f.selection(); f.holdOpen(Promise.reject(error));
+    const result = await Promise.race([f.provider.start(choice, { purpose: 'capture-refusal' }), new Promise(resolve => { timeout = setTimeout(() => resolve('unsettled'), 250); })]);
+    assert.deepEqual(result, { ok: false, reason: shape === 'denied' ? 'denied' : 'unavailable' });
+    assert.equal(f.provider.snapshot().rawPending, 0); assert.equal(f.provider.snapshot().activeSources, 0);
+    assert.equal(f.provider.snapshot().listeners, 0); assert.equal(f.provider.snapshot().pollArmed, false);
+    assert.equal(f.context.reads, 0);
+  } finally { clearTimeout(timeout); await f.close(); }
+});

@@ -122,7 +122,7 @@ const identifier = (value: unknown): value is string => typeof value === 'string
 const no = (reason: BrowserCameraFailure): BrowserCameraResult<never> => Object.freeze({ ok: false, reason });
 const yes = <T>(value: T): BrowserCameraResult<T> => Object.freeze({ ok: true, value });
 function failure(error: unknown): BrowserCameraFailure {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['NotAllowedError', 'SecurityError'].includes(error.name)) return 'denied';
+  try { if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['NotAllowedError', 'SecurityError'].includes(error.name)) return 'denied'; } catch { return 'unavailable'; }
   const copied = fields(error, ['ok', 'reason']); return copied?.ok === false ? copied.reason as BrowserCameraFailure : 'unavailable';
 }
 function descriptor(id: string): DeviceDescriptor {

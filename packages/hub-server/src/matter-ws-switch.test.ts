@@ -352,7 +352,16 @@ test('actual child exit cannot replace held native child close even on failure',
         let release: (() => void) | undefined, settled = false;
         const runner = directory + '/' + (failure ? 'failed' : 'success') + '.mjs';
         await writeFile(runner, failure ? 'process.exitCode=1;' : 'console.log(JSON.stringify({native:true}));');
-        t.mock.method(ChildProcess.prototype, 'emit', function (this: import('node:child_process').ChildProcess, name: string, ...args: unknown[]) { if (name === 'close') {
+        const startedAt = performance.now();
+        let childPid: number | undefined;
+        const events: { event: string; childPid: number | undefined; elapsedMs: number; code?: unknown; signal?: unknown }[] = [];
+        t.mock.method(ChildProcess.prototype, 'emit', function (this: import('node:child_process').ChildProcess, name: string, ...args: unknown[]) {
+            if (this.spawnargs[1] === runner && ['spawn', 'exit', 'close'].includes(name)) {
+                childPid = this.pid;
+                events.push({ event: name, childPid, elapsedMs: performance.now() - startedAt,
+                    ...(name === 'spawn' ? {} : { code: args[0], signal: args[1] }) });
+            }
+            if (name === 'close') {
             release = () => Reflect.apply(original, this, [name, ...args]);
             return true;
         } return Reflect.apply(original, this, [name, ...args]); });
@@ -367,6 +376,10 @@ test('actual child exit cannot replace held native child close even on failure',
             else
                 assert.equal((await running).actualChildClose, true);
             assert.equal(settled, true);
+        } catch (error) {
+            t.diagnostic(JSON.stringify({ site: 'matter-child-close-checkpoint', failure, waitMs: 2500,
+                elapsedMs: performance.now() - startedAt, childPid, closeCaptured: !!release, settled, events }));
+            throw error;
         } finally {
             t.mock.restoreAll();
             release?.();

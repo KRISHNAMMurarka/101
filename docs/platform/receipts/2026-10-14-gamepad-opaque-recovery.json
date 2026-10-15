@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "result": "Opaque gamepad host exceptions now fail closed;62 focused task/provider checks pass. Full exact integration pending.",
+  "tasks": [
+    "U03",
+    "U10",
+    "Q05"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceCommit": "bdace0f87ad4f0feefdfa3d548eafb7ea37b85b8",
+  "sourceTree": "17ed512c333c6e14e08126fe75a3dc15d525cc9c",
+  "sourceSha256": {
+    "packages/device-web/src/browser-gamepad.ts": "6699cbed11ca95128e3f28cd79c11fdf3f8e736a1a824691bfa070735ff028f7",
+    "packages/device-web/src/browser-gamepad.test.ts": "bb54cb8fca229282d052d282ab1065900ffef9546a9779c0ce2b4b513dce7c0e"
+  },
+  "repairs": [
+    "Shared failure classification contains fallible exception introspection; inventory and selection return unavailable for unreadable thrown values.",
+    "Active polling failure retires sources, releases actual SDK held output, cancels scheduling and fences obsolete callbacks. Start retains its prior denied-only mapping."
+  ],
+  "genuineOldRed": {
+    "tests": 2,
+    "fail": 2,
+    "sourceCommit": "5e16a6e1557107749ecc7b771d20aaa720a9c140",
+    "scope": "A revoked Proxy thrown by the declared synchronous getGamepads host seam makes old inventory and animation callbacks escape with TypeError during error inspection. Existing native-shaped fixture and actual SDK routes are retained; no physical/native positive claim."
+  },
+  "unit": {
+    "tests": 62,
+    "pass": 62,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "native": "No new native browser qualification. Earlier70 browser checks remain pinned to the earlier gamepad source in2026-10-14-gamepad-recovery.json.",
+  "review": "Independent exact two-file review found no introduced Critical/Important/Minor; classifier callers and partial ownership cleanup checked.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-14-input-recovery/opaque-recovery",
+    "commit": "fa08a02854e98350986b731a09909d9c5a15ac87",
+    "tree": "e38d99f29341560e8117419e995f7f0907e861f3",
+    "readBackFiles": 16,
+    "allBytesMatched": true,
+    "ownedBatchesRemoved": true
+  },
+  "nativeLimitsChanged": false,
+  "supportRows": [],
+  "scope": "PARTIAL U03/U10/Q05 opaque host failure recovery and actual software route release only. Physical gamepads, native permission revocation, assistive technology, full browser/device matrix and release/support acceptance remain OPEN."
+}

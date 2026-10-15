@@ -357,3 +357,37 @@ for (const site of ['connectOutput', 'set'] as const) {
     } finally { failing = false; owner.abort(); await caller.close(); }
   });
 }
+
+function switchHostFailure(shape: string): unknown {
+  if (shape === 'denied') return new DOMException('Capture blocked', 'NotAllowedError');
+  if (shape === 'security-denied') return new DOMException('Capture blocked', 'SecurityError');
+  if (shape === 'ordinary-name') { const error = new Error('Host failure'); error.name = 'NotAllowedError'; return error; }
+  if (shape === 'structured-lost') return { ok: false, reason: 'lost' };
+  const opaque = Proxy.revocable({}, {}); opaque.revoke();
+  if (shape === 'revoked') return opaque.proxy;
+  if (shape === 'throwing-name') return Object.defineProperty(new DOMException('Unreadable error', 'NotAllowedError'), 'name', { get() { throw opaque.proxy; } });
+  let reads = 0;
+  return new Proxy({}, { getPrototypeOf() { if (reads++ === 0) return Object.prototype; throw opaque.proxy; } });
+}
+const switchFailureCases = [
+  ['revoked', 'unavailable'], ['throwing-name', 'unavailable'], ['later-prototype', 'unavailable'],
+  ['denied', 'denied'], ['security-denied', 'denied'], ['ordinary-name', 'unavailable'], ['structured-lost', 'lost'],
+] as const;
+
+for (const [shape, expected] of switchFailureCases) {
+  test(shape + ' Serial read failure releases held input and the stream lock', async () => {
+    const f = fixture(), error = switchHostFailure(shape);
+    try {
+      await f.start(); await f.bytes([1]); assert.equal(f.pressed(), true);
+      assert.equal(f.provider.snapshot().readPending, 1, 'The actual reader is waiting for its next chunk');
+      f.port.controller!.error(error); await turns();
+      assert.equal(f.pressed(), false, 'A rejected real stream read must release the actual sink');
+      assert.ok(f.releases() > 0); assert.equal(f.provider.snapshot().activeSources, 0);
+      assert.equal(f.provider.snapshot().reason, expected);
+      await f.provider.close();
+      assert.equal(f.provider.snapshot().readPending, 0); assert.equal(f.provider.snapshot().readerLocks, 0);
+      assert.equal(f.provider.snapshot().nativePending, 0); assert.equal(f.port.closes, 1);
+      assert.equal(f.port.readable, null);
+    } finally { await f.close(); }
+  });
+}

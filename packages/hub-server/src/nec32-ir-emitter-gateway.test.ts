@@ -244,8 +244,9 @@ test('close removes only its exact owner abort listener', async () => {
 });
 
 test('software child rejects a valid frame from a retired generation and token', async () => {
+  const startupEnvironment = process.platform === 'darwin' ? { __CF_USER_TEXT_ENCODING: `0x${process.getuid!().toString(16).toUpperCase()}:0:0` } : {};
   const child = spawn(process.execPath, [new URL('../../../examples/ir-emitter/software-emitter.mjs', import.meta.url).pathname],
-    { env: { NODE_ENV: 'production' }, stdio: ['pipe', 'pipe', 'pipe'] });
+    { env: { NODE_ENV: 'production', ...startupEnvironment }, stdio: ['pipe', 'pipe', 'pipe'] });
   const lines = readline.createInterface({ input: child.stdout, crlfDelay: Infinity }); const messages: Record<string, unknown>[] = [];
   lines.on('line', line => messages.push(JSON.parse(line)));
   const wait = async (predicate: (value: Record<string, unknown>) => boolean) => {

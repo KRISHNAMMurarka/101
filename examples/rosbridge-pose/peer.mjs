@@ -1,13 +1,13 @@
 import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-const { WebSocketServer } = createRequire(import.meta.url)('ws');
 export function poseWire(sec = 1) { return { op: 'publish', topic: '/101/robot/pose', msg: { header: { stamp: { sec, nanosec: 250000000 }, frame_id: 'map' }, pose: { position: { x: 1.25, y: -2, z: 0.5 }, orientation: { x: 0, y: 0, z: 0, w: 1 } } } }; }
 const QOS = { history: 'keep_last', depth: 1, reliability: 'best_effort', durability: 'volatile', deadline: 'infinite', lifespan: 'infinite' };
 async function main(mode) {
     const modes = ['normal', 'quiet-after-first', 'no-first-pose', 'slow-handshake', 'close-after-first', 'wrong-topic', 'wrong-frame', 'missing-field', 'duplicate-key', 'invalid-utf8', 'invalid-quaternion', 'oversized-message', 'total-byte-flood', 'binary-message', 'rosbridge-fragment', 'service-message', 'repeated-stamp', 'backward-stamp'];
     if (!modes.includes(mode) || !process.send)
         throw Error('owned fixture mode required');
+    const { WebSocketServer } = createRequire(import.meta.url)('ws');
     const server = createServer((_req, res) => { res.writeHead(404); res.end(); }), wss = new WebSocketServer({ noServer: true, maxPayload: 2048, perMessageDeflate: false });
     const sockets = new Set(), peers = new Set(), timers = new Set(), transcript = [];
     let connections = 0, publications = 0, receivedBytes = 0, sentBytes = 0, stopping = false, failure;

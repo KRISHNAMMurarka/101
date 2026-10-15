@@ -1,6 +1,7 @@
 import { createBrowserBleSwitchOutputCaller } from '../../../examples/browser-resources/ble-switch-output.ts';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { getEventListeners } from 'node:events';
 import { createDeviceRuntime, parseDeviceDescriptor } from '@101/connect';
 import type { Observation, Connection, DeliveryContext } from '@101/connect';
 import type { BrowserBleSwitchOptions, BrowserBleSwitchActivation, NativeBleSwitchDevice, NativeBleSwitchServer,
@@ -564,5 +565,50 @@ for (const site of ['connectOutput', 'set'] as const) {
       for (let turn = 0; turn < 256 && caller.state().output.records.at(-1)?.outcome !== 'api-returned'; turn++) await Promise.resolve();
       assert.equal(caller.state().output.records.at(-1)?.outcome, 'api-returned'); assert.equal(writes, 1);
     } finally { failing = false; owner.abort(); await caller.close(); }
+  });
+}
+
+function switchHostFailure(shape: string): unknown {
+  if (shape === 'denied') return new DOMException('Capture blocked', 'NotAllowedError');
+  if (shape === 'security-denied') return new DOMException('Capture blocked', 'SecurityError');
+  if (shape === 'ordinary-name') { const error = new Error('Host failure'); error.name = 'NotAllowedError'; return error; }
+  if (shape === 'structured-lost') return { ok: false, reason: 'lost' };
+  const opaque = Proxy.revocable({}, {}); opaque.revoke();
+  if (shape === 'revoked') return opaque.proxy;
+  if (shape === 'throwing-name') return Object.defineProperty(new DOMException('Unreadable error', 'NotAllowedError'), 'name', { get() { throw opaque.proxy; } });
+  let reads = 0;
+  return new Proxy({}, { getPrototypeOf() { if (reads++ === 0) return Object.prototype; throw opaque.proxy; } });
+}
+const switchFailureCases = [
+  ['revoked', 'unavailable'], ['throwing-name', 'unavailable'], ['later-prototype', 'unavailable'],
+  ['denied', 'denied'], ['security-denied', 'denied'], ['ordinary-name', 'unavailable'], ['structured-lost', 'lost'],
+] as const;
+
+for (const [shape, expected] of switchFailureCases) {
+  test(shape + ' BLE callback failure releases held input', async () => {
+    const f = fixture(), error = switchHostFailure(shape);
+    let guarded: EventListener | undefined, escaped = false;
+    try {
+      await f.start(); f.characteristic.emit([1]); f.flush(); assert.equal(f.held(), true); f.advance();
+      const callbacks = getEventListeners(f.characteristic, 'characteristicvaluechanged') as EventListener[];
+      assert.equal(callbacks.length, 1); const callback = callbacks[0]!;
+      // Keep real Event.target branding while containing an old callback escape.
+      // Only the software boundary is wrapped; the actual provider callback runs.
+      f.characteristic.removeEventListener('characteristicvaluechanged', callback);
+      guarded = event => { try { callback.call(f.characteristic, event); } catch { escaped = true; } };
+      f.characteristic.addEventListener('characteristicvaluechanged', guarded);
+      Object.defineProperty(f.characteristic, 'value', { configurable: true, get() { throw error; } });
+      f.characteristic.dispatchEvent(new Event('characteristicvaluechanged'));
+      assert.equal(f.held(), false, 'An unreadable host error must release the actual sink');
+      assert.ok(f.releases() > 0); assert.equal(f.provider.snapshot().activeSources, 0);
+      assert.equal(f.provider.snapshot().reason, expected); assert.equal(escaped, false);
+      const delivered = f.observations.length;
+      f.characteristic.dispatchEvent(new Event('characteristicvaluechanged')); f.flush();
+      assert.equal(f.held(), false); assert.equal(f.observations.length, delivered);
+    } finally {
+      if (guarded) f.characteristic.removeEventListener('characteristicvaluechanged', guarded);
+      delete f.characteristic.value; await f.close();
+    }
+    assert.equal(f.characteristic.stops, 1); assert.equal(f.server.disconnects, 1);
   });
 }

@@ -80,6 +80,7 @@ class HostPort {
   private milestones: { event: string; childAt: number; receivedAt: number }[] = [];
   constructor() {
     const environment: NodeJS.ProcessEnv = { NODE_ENV: 'production', PATH: process.env.PATH };
+    if (process.platform === 'darwin') environment.__CF_USER_TEXT_ENCODING = `0x${process.getuid!().toString(16).toUpperCase()}:0:0`;
     if (process.env.CROSS_HOST_RESOLUTIONS) environment.CROSS_HOST_RESOLUTIONS = process.env.CROSS_HOST_RESOLUTIONS;
     this.closed = new Promise(resolve => { this.done = resolve; });
     this.startup.spawnEnteredAt = now();

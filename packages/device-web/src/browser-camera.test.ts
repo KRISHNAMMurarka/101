@@ -550,3 +550,36 @@ test('invalid explicit camera route leases are refused before inventory or permi
     } finally { await f.close(); }
   }
 });
+
+function opaqueHostFailure(shape: 'revoked' | 'throwing-name' | 'denied' | 'ordinary-name'): unknown {
+  if (shape === 'denied') return new DOMException('Capture blocked', 'NotAllowedError');
+  if (shape === 'ordinary-name') { const error = new Error('Opaque host failure'); error.name = 'NotAllowedError'; return error; }
+  const value = Proxy.revocable({}, {}); value.revoke();
+  if (shape === 'revoked') return value.proxy;
+  return Object.defineProperty(new DOMException('Unreadable host error', 'NotAllowedError'), 'name', { get() { throw value.proxy; } });
+}
+
+for (const shape of ['revoked', 'throwing-name', 'denied', 'ordinary-name'] as const) {
+  test(shape + ' camera inventory error settles and releases its reservation', async () => {
+    const f = fixture(), error = opaqueHostFailure(shape);
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    Object.defineProperty(f.devices[0]!, 'kind', { get() { throw error; } });
+    try {
+      const result = await Promise.race([f.provider.inspect(), new Promise(resolve => { timeout = setTimeout(() => resolve('unsettled'), 250); })]);
+      assert.deepEqual(result, { ok: false, reason: shape === 'denied' ? 'denied' : 'unavailable' });
+      assert.equal(f.provider.snapshot().rawPending, 0); assert.equal(f.provider.snapshot().activeSources, 0);
+      assert.equal(f.provider.snapshot().listeners, 0); assert.equal(f.opens(), 0);
+    } finally { clearTimeout(timeout); await f.close(); }
+  });
+  test(shape + ' camera raster error retires the real route and held frame', async () => {
+    const f = fixture(), error = opaqueHostFailure(shape);
+    try {
+      const active = await f.start(); assert.ok(f.bind(active).start().ok); f.sample(); assert.ok(f.held());
+      f.canvas.onRead = () => { throw error; };
+      assert.doesNotThrow(() => f.sample());
+      assert.equal(f.held(), undefined); assert.ok(f.released() > 0);
+      assert.equal(f.provider.snapshot().reason, shape === 'denied' ? 'denied' : 'unavailable'); assert.equal(f.provider.snapshot().activeSources, 0);
+      assert.equal(f.video.pending.size, 0); assert.ok(f.stream.track.stops > 0);
+    } finally { await f.close(); }
+  });
+}

@@ -131,8 +131,9 @@ export default function ConnectionsView() {
         {!hasWork && <Link href="/devices">Skip and return to Devices</Link>}</div>
     </section>
     <section className={styles.panel} aria-labelledby="surface-heading"><h2 id="surface-heading">{role === 'source' ? 'Input pad' : 'Connection surface'}</h2>
-      {role === 'source' ? <><p>When connected, use the arrow keys to move. Hold Space to press, release it to let go. Escape also releases.</p>
-        <button type="button" ref={pad} className={styles.pad} disabled={!snapshot.active} onKeyDown={keyDown}
+      {role === 'source' ? <><p>When connected, use the arrow keys to move. Hold Space to press, release it to let go. Press Enter to press or release. Escape also releases.</p>
+        <button type="button" ref={pad} className={styles.pad} disabled={!snapshot.active} aria-pressed={snapshot.held} onKeyDown={keyDown}
+          onClick={event => { if (event.detail === 0) { const current = task.current; if (current) current.press(!current.snapshot().held); } }}
           onKeyUp={event => { if (event.code === 'Space') { event.preventDefault(); task.current?.press(false); } }} onBlur={() => task.current?.release()}
           onPointerDown={startPointer} onPointerMove={event => task.current?.movePointer(event.pointerId, ...geometry(event))}
           onPointerUp={endPointer} onPointerCancel={endPointer} onLostPointerCapture={() => task.current?.release()} aria-label="Input pad">{snapshot.active ? 'Move and press here' : 'Waiting for both owners'}</button>

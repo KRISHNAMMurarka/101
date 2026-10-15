@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-14",
+  "result": "One owned Node host sampled before its loader marker; no native wait cause established",
+  "tasks": [
+    "Q13"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceTree": "7145370e175e853d13ee12c30905ddc0a94e8f5f",
+  "diagnostic": {
+    "schemaVersion": 1,
+    "scope": "One actual existing rejected-loader test and one sample of its exact owned runtime-host Node PID; diagnostic only",
+    "canonicalHead": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+    "canonicalTree": "7145370e175e853d13ee12c30905ddc0a94e8f5f",
+    "actualRuntimeHost": {
+      "pid": 7829,
+      "ppid": 7271,
+      "pgid": 7091,
+      "lstart": "Wed Oct 14 02:24:40 2026",
+      "command": "/Users/km/.nvm/versions/node/v24.14.0/bin/node --import file:///Users/km/Dev/101/tools/qa-cross-host-workload.mjs?host-loader /Users/km/Dev/101/examples/cross-host-workload/runtime-host.mjs"
+    },
+    "nodeExecutable": {
+      "path": "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "sha256": "20a18709f0154d668f1bd6f6ea8c2a7ae001447b4b2c339732f22e57a8767a55"
+    },
+    "testResult": {
+      "selected": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "naturalExit": true,
+      "acceptance": false
+    },
+    "originalLimits": {
+      "hostWaitMs": 2500,
+      "stderrBytes": 4096,
+      "hostIpcWaitMs": 2500
+    },
+    "nativeSample": {
+      "invocations": 1,
+      "durationSeconds": 1,
+      "intervalMs": 10,
+      "reportedMainThreadSamples": 92,
+      "allReportedStacks": "_dyld_start + 0",
+      "binaryImagesAvailable": false,
+      "observedPhysicalFootprint": "112K",
+      "sampleTool": "/usr/bin/sample",
+      "mayPerturb": true
+    },
+    "parentDiagnostics": {
+      "parentClock": "parent-performance",
+      "childClock": "runtime-host-performance",
+      "clockScope": "Child loader-body-enter excludes its static builtin imports; module-body-enter excludes host static ESM imports. Child and parent times are separate clocks; parent receipt includes delivery and scheduling.",
+      "hosts": [
+        {
+          "spawnEnteredAt": 293.709292,
+          "spawnReturnedAt": 294.68475,
+          "spawnAt": 295.152125,
+          "closeAt": 2000.417458,
+          "exitCode": 1,
+          "signalCode": null,
+          "stderrBytes": 876,
+          "milestones": [
+            {
+              "event": "loader-body-enter",
+              "childAt": 16.952417,
+              "receivedAt": 1998.223542
+            }
+          ]
+        }
+      ],
+      "cleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    },
+    "sameParentClockDurationsMs": {
+      "spawnEnteredToReturned": 0.9754580000000033,
+      "spawnReturnedToLoaderReceipt": 1703.5387919999998,
+      "spawnReturnedToClose": 1705.732708,
+      "loaderReceiptToClose": 2.1939159999999447
+    },
+    "boundedInference": "The OS sample reports the owned Node image at native dyld entry before this controlled run emits its loader milestone. It does not identify why progress was delayed or establish that those frames consumed the whole parent interval.",
+    "clockLimitations": "Child performance and parent performance are separate domains. loader childAt excludes native/Node bootstrap and static builtin imports. External elapsed time and OS wall launch time are retained without an asserted cross-clock mapping.",
+    "observerLimitations": {
+      "groupRestrictedPsIdentityQueries": 113,
+      "pollIntervalMs": 20,
+      "claim": "Identity polling and sampling add observation work and may perturb timing. This is not an unobserved baseline or an acceptance result."
+    },
+    "historicalCause": "UNKNOWN",
+    "historicalClearing": "UNVERIFIED",
+    "remainingScope": "No historic cross-host failure reproduction, causal intervention, performance SLO, physical/OS matrix, broad suite or release/support acceptance.",
+    "ownership": {
+      "testParentJoined": true,
+      "samplerJoined": true,
+      "forcedStops": [],
+      "remainingOwnedTestGroup": [],
+      "remainingOwnedSamplerGroup": [],
+      "fixtureCleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    },
+    "canonicalTargetSourcesUnchanged": true,
+    "noRetryPrewarmDeadlineWideningOrAcceptancePreload": true
+  },
+  "custodyRef": "refs/codex/evidence/2026-10-14-native-node-phase/b37180ddbf",
+  "custodyCommit": "72a5ed97e9bf1e2867ea9973a023f392263c7bad",
+  "acceptance": false,
+  "historicalCause": "UNKNOWN",
+  "historicalClearing": "UNVERIFIED",
+  "scope": "Nonacceptance OS observation only. Sample and identity polling can perturb timing; controlled natural rejection within unchanged2500ms does not clear any historical failure or qualify release/support.",
+  "postDeadlineDiagnostic": {
+    "sourceCommit": "5e16a6e1557107749ecc7b771d20aaa720a9c140",
+    "sourceTree": "e973d0b584b9646ba650431429d0f94417598d87",
+    "acceptance": false,
+    "result": "Original controlled invalid-loader rejection completed naturally; prior deadline miss not reproduced.",
+    "nativeHostPid": 82463,
+    "observerWorkerPid": 82074,
+    "naturalExitCode": 1,
+    "naturalSignal": null,
+    "spawnReturnedToCloseMs": 1288.119459,
+    "loaderBodyChildMs": 18.799333,
+    "clockScope": "Child and parent clocks are separate; parent receipt includes delivery and scheduling.",
+    "originalWaitMs": 2500,
+    "controlPass": 1,
+    "postDeadlineSamples": 0,
+    "observerScope": "Advisory lifecycle bookkeeping. One OS sample would be issued only after original failed readiness termination decision, delaying physical kill and invalidating acceptance. No deadline failure occurred, so no OS sample was issued.",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/opaque-recovery",
+      "commit": "fa08a02854e98350986b731a09909d9c5a15ac87",
+      "tree": "e38d99f29341560e8117419e995f7f0907e861f3",
+      "readBackFiles": 16,
+      "allBytesMatched": true,
+      "ownedBatchesRemoved": true
+    },
+    "ownedParentsAndGroupsAbsent": true,
+    "historicalCause": "UNKNOWN",
+    "historicalClearing": "UNVERIFIED"
+  },
+  "owningFileDiagnostic": {
+    "sourceCommit": "672453005bddc08c494bc53ca3ee2230d79a3652",
+    "sourceTree": "d300155eec5f1a61e17bddcdebb8bdda8bd425d6",
+    "acceptance": false,
+    "selection": "Full owning cross-host-workload test file; advisory lifecycle observer targets only existing-loader failure after preceding cases.",
+    "unit": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "nativeHostPid": 58096,
+    "observerWorkerPid": 54279,
+    "naturalExitCode": 1,
+    "naturalSignal": null,
+    "parentObserverSpawnReturnedToCloseMs": 2274.8835,
+    "loaderBodyChildMs": 17.99175,
+    "clockScope": "Child and parent clocks remain separate; no subtraction across their origins.",
+    "originalWaitMs": 2500,
+    "postDeadlineSamples": 0,
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-14-input-recovery/deadline-context",
+      "commit": "dcc6b1c612962ad93a10cedebb54cd211cbe9b88",
+      "tree": "2fe618a3b7349249e02bbbc6b7532e601c94b654",
+      "readBackFiles": 17,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "ownedParentsAndGroupsAbsent": true,
+    "scope": "One diagnosis-driven owning-file observation, not a whole unchanged suite rerun. Target completed naturally, so post-failed-deadline OS sample was not triggered. Bookkeeping may perturb timing; full-suite cause remainsUNKNOWN and clearingUNVERIFIED."
+  }
+}

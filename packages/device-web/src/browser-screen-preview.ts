@@ -74,7 +74,7 @@ const captureOptions = Object.freeze({ video: true as const, audio: false as con
 const no = (reason: BrowserScreenPreviewFailure): BrowserScreenPreviewResult<never> => Object.freeze({ ok: false, reason });
 const yes = <T>(value: T): BrowserScreenPreviewResult<T> => Object.freeze({ ok: true, value });
 function failure(error: unknown): BrowserScreenPreviewFailure {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['NotAllowedError', 'SecurityError'].includes(error.name)) return 'denied';
+  try { if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['NotAllowedError', 'SecurityError'].includes(error.name)) return 'denied'; } catch { return 'unavailable'; }
   const copied = fields(error, ['ok', 'reason']); return copied?.ok === false ? copied.reason as BrowserScreenPreviewFailure : 'unavailable';
 }
 function descriptor(id: string): DeviceDescriptor {

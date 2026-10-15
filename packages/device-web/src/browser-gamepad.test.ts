@@ -11,6 +11,7 @@ test('browser Gamepad resource selection needs an explicit typed provider instea
 
 function fixture(change: Partial<BrowserGamepadOptions> = {}) {
   let at = 100, calls = 0, next = 0, focused = true, hidden = false;
+  let readFailure: { value: unknown } | undefined;
   const frames = new Map<number, FrameRequestCallback>(), target = new EventTarget(), document = new EventTarget(), owner = new AbortController(), capture = new AbortController();
   const pads: (ReturnType<typeof pad> | null)[] = [null, pad(1)];
   const events: Observation[] = [], held = new Set<string>(); let releases = 0, allowRoutes = true;
@@ -19,7 +20,7 @@ function fixture(change: Partial<BrowserGamepadOptions> = {}) {
     authorize(request) { if (allowRoutes && request.principalId === scope.principalId && request.applicationId === scope.applicationId && request.sessionId === scope.sessionId && request.sourceOperation === 'subscribe' && request.sinkOperation === 'write') return { expiresAt: at + 1000, maxAgeMs: 100, maxHz: 60 }; } });
   const provider = api!.createBrowserGamepadProvider({ runtime, ownerSignal: owner.signal, scope, now: () => at,
     authorizeCapture(request) { return { request, signal: capture.signal, expiresAt: at + 1000 }; },
-    environment: { getGamepads() { calls++; return pads; }, requestAnimationFrame(callback) { frames.set(++next, callback); return next; }, cancelAnimationFrame(id) { frames.delete(id); }, target, document, focused: () => focused, hidden: () => hidden }, ...change });
+    environment: { getGamepads() { calls++; if (readFailure) throw readFailure.value; return pads; }, requestAnimationFrame(callback) { frames.set(++next, callback); return next; }, cancelAnimationFrame(id) { frames.delete(id); }, target, document, focused: () => focused, hidden: () => hidden }, ...change });
   function bind(activation: BrowserGamepadActivation) {
     const sink = parseDeviceDescriptor({ ...activation.device, id: activation.device.id + ':consumer', capabilities: activation.device.capabilities.map(c => ({ ...c, permissions: ['write'], ownership: { mode: 'observe' } })) });
     for (const c of activation.device.capabilities) {
@@ -32,7 +33,7 @@ function fixture(change: Partial<BrowserGamepadOptions> = {}) {
   }
   function start() { const selected = provider.select(1); assert.ok(selected.ok); const active = provider.start(selected.value, { purpose: 'explicit-gamepad' }); assert.ok(active.ok); bind(active.value); return active.value; }
   return { provider, runtime, owner, capture, target, document, pads, events, held, frames, scope, start, bind,
-    calls: () => calls, releases: () => releases, setAt(value: number) { at = value; }, denyRoutes() { allowRoutes = false; },
+    calls: () => calls, releases: () => releases, setAt(value: number) { at = value; }, denyRoutes() { allowRoutes = false; }, throwRead(value: unknown) { readFailure = { value }; },
     frame() { at += 20; const callbacks = [...frames.values()]; frames.clear(); for (const callback of callbacks) callback(at); runtime.flush(); runtime.flush(); },
     blur() { focused = false; target.dispatchEvent(new Event('blur')); }, hide() { hidden = true; document.dispatchEvent(new Event('visibilitychange')); },
     close() { provider.close(); runtime.close(); } };
@@ -96,6 +97,45 @@ test('a throwing observation clock fails closed without an uncaught animation ca
   let fail = false; const f = fixture({ now() { if (fail) throw new Error('Private clock failure'); return 100; } });
   try { f.start(); fail = true; assert.doesNotThrow(() => f.frame()); assert.equal(f.provider.snapshot().activeSources, 0); assert.equal(f.events.length, 0); assert.equal(f.frames.size, 0); }
   finally { f.close(); }
+});
+
+test('an opaque scheduling exception cannot escape Start or retain partial capture ownership', () => {
+  const opaque = Proxy.revocable({}, {}); opaque.revoke();
+  const f = fixture({ environment: { getGamepads: () => [pad(0)], requestAnimationFrame() { throw opaque.proxy; },
+    cancelAnimationFrame() {}, target: new EventTarget(), document: new EventTarget(), hidden: () => false, focused: () => true } });
+  try {
+    const selected = f.provider.select(0); assert.ok(selected.ok);
+    assert.deepEqual(f.provider.start(selected.value, { purpose: 'opaque-host-failure' }), { ok: false, reason: 'unavailable' });
+    const state = f.provider.snapshot();
+    assert.equal(state.phase, 'idle'); assert.equal(state.activeSources, 0); assert.equal(state.listeners, 0);
+    assert.equal(state.timerArmed, false); assert.equal(state.rafArmed, false); assert.equal(f.events.length, 0);
+  } finally { f.close(); }
+});
+
+test('opaque native-read exceptions return recoverable inventory and selection refusals', () => {
+  const opaque = Proxy.revocable({}, {}); opaque.revoke();
+  const f = fixture();
+  try {
+    f.throwRead(opaque.proxy);
+    assert.deepEqual(f.provider.inspect(), { ok: false, reason: 'unavailable' });
+    assert.deepEqual(f.provider.select(1), { ok: false, reason: 'unavailable' });
+    assert.equal(f.provider.snapshot().activeSources, 0); assert.equal(f.frames.size, 0);
+  } finally { f.close(); }
+});
+
+test('an opaque poll exception releases held input and fences the retired animation callback', () => {
+  const opaque = Proxy.revocable({}, {}); opaque.revoke();
+  const f = fixture();
+  try {
+    f.start(); f.pads[1] = pad(1, [0, 0], true); f.frame(); assert.equal(f.held.size, 1);
+    const late = [...f.frames.values()][0]!; const delivered = f.events.length;
+    f.throwRead(opaque.proxy); assert.doesNotThrow(() => f.frame());
+    assert.equal(f.held.size, 0); assert.ok(f.releases() >= 1);
+    const state = f.provider.snapshot();
+    assert.equal(state.phase, 'idle'); assert.equal(state.reason, 'unavailable'); assert.equal(state.activeSources, 0);
+    assert.equal(state.listeners, 0); assert.equal(state.timerArmed, false); assert.equal(state.rafArmed, false);
+    assert.equal(f.frames.size, 0); late(200); assert.equal(f.events.length, delivered);
+  } finally { f.close(); }
 });
 
 test('stale animation callback and forged foreign handles cannot activate a new connection generation', () => {

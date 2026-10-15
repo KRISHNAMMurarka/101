@@ -64,7 +64,7 @@ const identifier = (value: unknown): value is string => typeof value === 'string
 const no = (reason: BrowserMicrophoneFailure): BrowserMicrophoneResult<never> => Object.freeze({ ok: false, reason });
 const yes = <T>(value: T): BrowserMicrophoneResult<T> => Object.freeze({ ok: true, value });
 function failure(error: unknown): BrowserMicrophoneFailure {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied';
+  try { if (typeof DOMException !== 'undefined' && error instanceof DOMException && ['SecurityError', 'NotAllowedError'].includes(error.name)) return 'denied'; } catch { return 'unavailable'; }
   const own = fields(error, ['ok', 'reason']); return own?.ok === false ? own.reason as BrowserMicrophoneFailure : 'unavailable';
 }
 function descriptor(id: string): DeviceDescriptor {

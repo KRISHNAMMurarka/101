@@ -164,3 +164,23 @@ test('final activation clock expiry prevents the actual chooser factory from bei
     await provider.close(); assert.equal(provider.snapshot().rawPending, 0); assert.equal(provider.snapshot().activeSources, 0);
   } finally { await provider.close(); await f.close(); }
 });
+
+function opaqueHostFailure(shape: 'revoked' | 'throwing-name' | 'denied' | 'ordinary-name'): unknown {
+  if (shape === 'denied') return new DOMException('Capture blocked', 'NotAllowedError');
+  if (shape === 'ordinary-name') { const error = new Error('Opaque host failure'); error.name = 'NotAllowedError'; return error; }
+  const value = Proxy.revocable({}, {}); value.revoke();
+  if (shape === 'revoked') return value.proxy;
+  return Object.defineProperty(new DOMException('Unreadable host error', 'NotAllowedError'), 'name', { get() { throw value.proxy; } });
+}
+
+for (const shape of ['revoked', 'throwing-name', 'denied', 'ordinary-name'] as const) test(shape + ' screen raster error retires the real route and held frame', async () => {
+  const f = fixture(), error = opaqueHostFailure(shape);
+  try {
+    const active = await f.start(); assert.ok(f.bind(active).start().ok); f.sample(); assert.ok(f.held());
+    f.canvas.onRead = () => { throw error; };
+    assert.doesNotThrow(() => f.sample());
+    assert.equal(f.held(), undefined); assert.ok(f.released() > 0);
+    assert.equal(f.provider.snapshot().reason, shape === 'denied' ? 'denied' : 'unavailable'); assert.equal(f.provider.snapshot().activeSources, 0);
+    assert.equal(f.video.pending.size, 0); assert.ok(f.stream.track.stops > 0);
+  } finally { await f.close(); }
+});

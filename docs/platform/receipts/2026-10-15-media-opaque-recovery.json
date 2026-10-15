@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Opaque media host errors now settle unavailable and retire held SDK frames;140 focused checks pass.",
+  "tasks": [
+    "N02",
+    "U10",
+    "Q05"
+  ],
+  "sourceBase": "23f9c3bdb95e10cd68d19083e61f2a34e121815d",
+  "sourceCommit": "8564bbc057e043e4666d4f451510c40e5197519d",
+  "sourceTree": "0cd94cb4f151facda7a6bedab25fe4d97a291980",
+  "sourceSha256": {
+    "packages/device-web/src/browser-camera.ts": "81d15eb47209d39d9173748e4a7f32fd80870cfdbe8a07b9ce5507c40c281971",
+    "packages/device-web/src/browser-camera.test.ts": "22d74999236b47291b253b8b8903b8d1e192208cd021f6ad0239dd95b70be4fd",
+    "packages/device-web/src/browser-microphone.ts": "bab0fcddeb03d1b6e439c20cfbc3b9a2321854cdab88aa37d702e9dfd7fa225b",
+    "packages/device-web/src/browser-microphone.test.ts": "cb3af0de80c9144af7986df4dee18528fdf2004f885b50a2c3c97688623999ca",
+    "packages/device-web/src/browser-screen-preview.ts": "8e9722133fb3faada614f8cf75d9d1b2dec292c883f42926a39441a39182542a",
+    "packages/device-web/src/browser-screen-preview.test.ts": "1980755eabc2298e6ad4dda34025b371b9503e6f5a6efeecd3da83718e5d1792"
+  },
+  "repairs": [
+    "Camera, microphone and screen-preview classifiers contain fallible DOMException identity/name inspection; unreadable errors return unavailable.",
+    "Existing readable DOMException denial mapping and ordinary Error fallback remain unchanged; no producer arguments, permissions, timers or public API changes."
+  ],
+  "genuineOldRed": {
+    "sourceCommit": "71c48f49d30aa942303be7ccf00ed686d651a87e",
+    "sourceTree": "17a92c3e93edd0a37886f6d4c78270114a176499",
+    "tests": 8,
+    "fail": 8,
+    "cancelled": 0,
+    "scope": "Revoked Proxy and throwing DOMException.name from declared camera inventory/raster, microphone capture and screen raster seams escape original callbacks or leave public operations unsettled. Actual software producer/SDK routes retained."
+  },
+  "unit": {
+    "tests": 140,
+    "pass": 140,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "newChecks": {
+    "opaqueRegressions": 8,
+    "readableDenialAndOrdinaryErrorControls": 8
+  },
+  "review": {
+    "reviewer": "media_failure_review",
+    "candidateCommit": "8564bbc057e043e4666d4f451510c40e5197519d",
+    "base": "bb956e89669401a98d2f1f20c15231a3bf7da8b2",
+    "scope": [
+      "packages/device-web/src/browser-camera.ts",
+      "packages/device-web/src/browser-camera.test.ts",
+      "packages/device-web/src/browser-microphone.ts",
+      "packages/device-web/src/browser-microphone.test.ts",
+      "packages/device-web/src/browser-screen-preview.ts",
+      "packages/device-web/src/browser-screen-preview.test.ts"
+    ],
+    "result": "Exact six-path diff matches reviewed draft; no blocking defects. Eight opaque-error regressions and eight native-shaped denial/ordinary Error controls use declared software host seams, actual SDK route release and joined cleanup. No native reliability or hardware claim."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-provider-opaque-recovery/focused",
+    "commit": "c60a9dbbbadfa596e34ee846fae904de1797c0d2",
+    "tree": "1122117f94cdf70787f61fad8eff455bd0639321",
+    "readBackFiles": 17,
+    "allBytesMatched": true
+  },
+  "native": "No new native browser or physical device qualification. Controlled software fixtures prove API settlement, real SDK held-frame release, source retirement and owned cleanup only.",
+  "fullValidation": "Bound separately to the exact final source/receipt tree at refs/codex/evidence/2026-10-15-native-failures/final-gates.",
+  "supportRows": [],
+  "scope": "PARTIAL N02/U10/Q05 opaque host-error recovery. Native permission revocation, physical capture, general browser/device/assistive-technology matrix, support and release acceptance remain OPEN.",
+  "finalSourceIntegration": {
+    "candidateCommit": "76c02348db22b4f4f548a7b2968be65a16043b49",
+    "candidateTree": "742745b1b407e22b40d5963d372d97af4457ccc3",
+    "allPassed": false,
+    "unit": {
+      "tests": 3385,
+      "pass": 3379,
+      "fail": 6,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-native-failures/final-gates",
+      "commit": "795a73f23e9a3da5dcf8503d74c1d1901a13c8f6",
+      "tree": "06263da1e15903bbae2bb004760e25bb63d5aea7",
+      "readBackFiles": 52,
+      "allBytesMatched": true,
+      "ownedBatchRemoved": true
+    },
+    "scope": "Six native unit checks reject the global33-file candidate.140 focused media checks remain software-scoped; no main integration or native/platform acceptance is claimed."
+  }
+}

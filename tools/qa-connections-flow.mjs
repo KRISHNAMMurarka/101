@@ -72,8 +72,22 @@ for (const [name, engine] of engines) {
     await condition(receiver, () => Number(document.querySelector('[data-effects]').dataset.effects) > 0);
     const pad = source.getByRole('button', { name: 'Input pad', exact: true }); await pad.focus(); await source.keyboard.press('ArrowRight');
     await condition(receiver, () => parseFloat(document.querySelector('[class*="marker"]')?.style.left ?? 'NaN') > 50); checks++;
+    assert.equal(await pad.evaluate(element => element.matches(':focus-visible') && getComputedStyle(element).outlineStyle === 'solid'), true); checks++;
     await source.keyboard.down('Space'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'true'); checks++;
     await source.keyboard.up('Space'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'false'); checks++;
+    await source.keyboard.press('Enter'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'true');
+    assert.equal(await pad.getAttribute('aria-pressed'), 'true'); checks++;
+    await source.keyboard.press('Enter'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'false');
+    assert.equal(await pad.getAttribute('aria-pressed'), 'false'); checks++;
+    await pad.evaluate(element => element.click()); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'true'); checks++;
+    await source.keyboard.press('Escape'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'false'); checks++;
+    const box = await pad.boundingBox(); assert.ok(box);
+    await source.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await source.mouse.down();
+    await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'true');
+    await source.mouse.up(); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'false');
+    await receiver.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.equal(await receiver.locator('[data-effects]').getAttribute('data-held'), 'false');
+    assert.equal(await pad.getAttribute('aria-pressed'), 'false'); checks++;
     // A new invitation leaves the incumbent effect route live; cancellation does not grant or replace it.
     await click(receiver, 'Replace connection'); await receiver.locator('#incoming-connection-code').fill('bad reply'); await click(receiver, 'Use reply');
     await receiver.getByText('That code cannot be used here.', { exact: false }).waitFor();
@@ -83,8 +97,11 @@ for (const [name, engine] of engines) {
     await pad.focus(); await source.keyboard.down('Space'); await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'true');
     await click(source, 'Stop connection'); await source.keyboard.up('Space');
     await condition(receiver, () => document.querySelector('[data-effects]').dataset.held === 'false' && !document.querySelector('[class*="marker"]'));
+    await receiver.getByText('The connection ended. Check that both screens are open, then start a fresh connection.', { exact: true }).waitFor({ timeout: 6000 });
     const stoppedEffects = Number(await receiver.locator('[data-effects]').getAttribute('data-effects'));
-    await source.keyboard.press('ArrowRight'); assert.equal(Number(await receiver.locator('[data-effects]').getAttribute('data-effects')), stoppedEffects); checks++;
+    await pad.evaluate(element => element.click()); await source.keyboard.press('Enter'); await source.keyboard.press('ArrowRight');
+    await receiver.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.equal(Number(await receiver.locator('[data-effects]').getAttribute('data-effects')), stoppedEffects); checks++;
     // An explicit retry requires a new exchange and both owners, with old codes rejected.
     await click(receiver, 'Create invitation'); const fresh = await receiver.locator('#outgoing-connection-code').inputValue(); assert.notEqual(fresh, codes.invitation);
     await receiver.locator('#incoming-connection-code').fill(codes.offer); await click(receiver, 'Use reply');
@@ -108,8 +125,9 @@ for (const [name, engine] of engines) {
     assert.equal(await receiver.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     const sizes = await receiver.locator('main button,main a').evaluateAll(elements => elements.map(element => { const r=element.getBoundingClientRect(); return {label:element.textContent,width:r.width,height:r.height}; }).filter(size => size.width > 0 && size.height > 0));
     assert.ok(sizes.length >= 3); assert.ok(sizes.every(size => size.width >= 44 && size.height >= 44), JSON.stringify(sizes));
-    await receiver.getByRole('button', { name: 'Create invitation', exact: true }).focus(); await receiver.keyboard.press('Shift+Tab');
-    const focus = await receiver.evaluate(() => ({tag:document.activeElement.tagName,text:document.activeElement.tagName === 'BODY' ? '' : document.activeElement.textContent?.slice(0,80),visible:document.activeElement.matches(':focus-visible'),outline:getComputedStyle(document.activeElement).outlineStyle})); assert.equal(focus.outline, 'solid', JSON.stringify(focus)); checks++;
+    await receiver.getByRole('button', { name: 'Create invitation', exact: true }).focus(); await receiver.keyboard.press('ArrowRight');
+    const focus = await receiver.evaluate(() => ({tag:document.activeElement.tagName,text:document.activeElement.tagName === 'BODY' ? '' : document.activeElement.textContent?.slice(0,80),visible:document.activeElement.matches(':focus-visible'),outline:getComputedStyle(document.activeElement).outlineStyle}));
+    assert.deepEqual(focus, {tag:'BUTTON',text:'Create invitation',visible:true,outline:'solid'}); checks++;
     await receiver.screenshot({ path: path.join(output, `${name}-recovery-mobile.png`), fullPage: true });
     const unsupported = await context.newPage(); await unsupported.addInitScript(() => { Object.defineProperty(globalThis, 'RTCPeerConnection', { value: undefined }); });
     unsupported.on('pageerror', error => errors.push(error.message)); await unsupported.goto(new URL('/connections', application).toString());
