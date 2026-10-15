@@ -7,6 +7,9 @@ import { join } from 'node:path';
 import test from 'node:test';
 import { startOwnedMqttBroker } from '../tools/qa-mqtt-connector.mjs';
 
+// Darwin's /bin/sh selects and re-execs another shell before this fixed producer.
+const probeShell = process.platform === 'darwin' ? '/bin/dash' : '/bin/sh';
+
 test('MQTT broker rejects failed real version help before launching an owned broker', async t => {
   const directory = mkdtempSync(join(tmpdir(), '101-mqtt-binary-'));
   const executable = join(directory, 'probe'), missing = join(directory, 'missing');
@@ -14,7 +17,7 @@ test('MQTT broker rejects failed real version help before launching an owned bro
   const nativeProbe = childProcess.spawnSync, nativeSpawn = childProcess.spawn;
   const closed: Promise<unknown>[] = [];
   let firstStatus: number | null | undefined, firstPid: number | undefined, launches = 0;
-  writeFileSync(executable, '#!/bin/sh\nprintf \'mosquitto version 2.1.2\\n\'\nexit 17\n');
+  writeFileSync(executable, `#!${probeShell}\nprintf 'mosquitto version 2.1.2\\n'\nexit 17\n`);
   chmodSync(executable, 0o700);
   t.mock.method(childProcess, 'spawnSync', (path: string, args: readonly string[], options: SpawnSyncOptionsWithStringEncoding) => {
     const result = nativeProbe(path === executable ? executable : missing, args, options);

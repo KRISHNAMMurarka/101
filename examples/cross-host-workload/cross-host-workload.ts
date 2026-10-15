@@ -75,7 +75,7 @@ class HostPort {
   private hello!: (value: void) => void; readonly ready = new Promise<void>(resolve => { this.hello = resolve; });
   readonly reports: Record<string, unknown>[] = []; private stderrBytes = 0;
   private stderrTail = '';
-  private startup: { spawnEnteredAt: number; spawnReturnedAt: number; spawnAt?: number; helloAt?: number;
+  private startup: { pid?: number; spawnEnteredAt: number; spawnReturnedAt: number; spawnAt?: number; helloAt?: number;
     closeAt?: number; exitCode?: number | null; signalCode?: string | null; errorCode?: string } = { spawnEnteredAt: 0, spawnReturnedAt: 0 };
   private milestones: { event: string; childAt: number; receivedAt: number }[] = [];
   constructor() {
@@ -87,6 +87,7 @@ class HostPort {
     this.child = spawn(process.execPath, ['--import', new URL('../../tools/qa-cross-host-workload.mjs?host-loader', import.meta.url).href,
       new URL('./runtime-host.mjs', import.meta.url).pathname], { env: environment, stdio: ['ignore', 'ignore', 'pipe', 'ipc'] });
     this.startup.spawnReturnedAt = now();
+    if (this.child.pid !== undefined) this.startup.pid = this.child.pid;
     this.child.once('spawn', () => { this.startup.spawnAt = now(); });
     this.child.on('error', error => { this.startup.errorCode = diagnosticCode((error as NodeJS.ErrnoException).code); this.child.kill('SIGTERM'); });
     this.child.stderr?.on('data', (value: Buffer) => {

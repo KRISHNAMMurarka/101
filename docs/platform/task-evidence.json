@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 249,
+  "revision": 255,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -15931,6 +15931,331 @@
       "failure": null,
       "equipment": [],
       "supportRows": []
+    },
+    {
+      "id": "reference-pointer-frame-old-2026-10-15",
+      "revision": "fd3e1936561760319323391e7820f1d923dd153e",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "I12",
+        "Q05",
+        "U10"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual installed7-package/411file SDK in independent browser projects, Node24.14.0, Chromium149.0.7827.55/WebKit26.5; explicit controlled software clock separated from native journeys",
+      "reproduction": "Actual Chromium/WebKit trusted native pointer release reaches pad but actual SDK/canvas remain held after original500ms with UI frame callbacks withheld.",
+      "scope": "Selected software release safety only. Original limits/grants/approval/cleanup preserved;149whole tasks remain open. Historical native startup causeUNKNOWN/timing clearingUNVERIFIED.",
+      "failure": "Pointer release queue progress depended on presentation frames.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "reference-collaborative-heartbeat-old-2026-10-15",
+      "revision": "6850288f9b923e40f888da3f080f43c4f139b2de",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "I12",
+        "Q05",
+        "U10",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual installed7-package/411file SDK in independent browser projects, Node24.14.0, Chromium149.0.7827.55/WebKit26.5; explicit controlled software clock separated from native journeys",
+      "reproduction": "Actual full QA Chromium100ms native release fails. Actual installed SDK pure-clock counterexample plus genuine independently generated app controlled-clock old-red in both engines reproduce held heartbeat ahead of expiring release.",
+      "scope": "Selected software release safety only. Original limits/grants/approval/cleanup preserved;149whole tasks remain open. Historical native startup causeUNKNOWN/timing clearingUNVERIFIED.",
+      "failure": "Four routes/two slots need more service turns; old reliable true heartbeat can precede false beyond100ms age.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "reference-input-delivery-clock-repair-2026-10-15",
+      "revision": "87035ba24b8eb21022659a30daf51505e195ff3c",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "I12",
+        "Q05",
+        "U10",
+        "E13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual installed7-package/411file SDK in independent browser projects, Node24.14.0, Chromium149.0.7827.55/WebKit26.5; explicit controlled software clock separated from native journeys",
+      "reproduction": "Ten actual native five-app journeys, two additional actual native pointer frame controls, two permanent independent controlled-clock queued-heartbeat cases and18 focused unit checks pass. Exact source reviewed independently. Source/sink effects and timers retire correctly.",
+      "scope": "Selected software release safety only. Original limits/grants/approval/cleanup preserved;149whole tasks remain open. Historical native startup causeUNKNOWN/timing clearingUNVERIFIED.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "reference-clock-final-native-loader-failure-2026-10-15",
+      "revision": "dcbe02cbe8f73795896a283e6550d5f568e974e8",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json"
+      ],
+      "environment": "Exact5-file candidate under user-authorized current conditions, Node24.14.0/macOS arm64",
+      "reproduction": "Seven gates pass,3411/3412unitpass and37/37fresh rendered. Sole loader control fails original2500ms before observed loader body, then actual SIGTERM/close; emitter/ROS/handshake and all other previous cases pass.",
+      "scope": "Rejected candidate; source input clocks retain focused green only. No commit or cause clearing.",
+      "failure": "Controlled loader failure was not reached before original readiness deadline.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-startup-pid-old-2026-10-15",
+      "revision": "75e3e693288ec379b3e8abdcc6ec6b36e29ecb9a",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "N14",
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "environment": "Actual killed native runtime-host child, original focused SIGKILL control",
+      "reproduction": "Real spawned child PID8435 exists, but existing startup diagnostics omit it before hello. Smallest added regression fails undefined versus actual observed ChildProcess.pid.",
+      "scope": "Only PID diagnostic contract; no timing inference.",
+      "failure": "Actual native identity missing from early startup diagnostics.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-startup-pid-retention-2026-10-15",
+      "revision": "e30a79f6ff25a3666586c37aaba128ed089e35d0",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "N14",
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/cross-host-workload/cross-host-workload.ts",
+        "tests/cross-host-workload.test.ts"
+      ],
+      "environment": "Actual unchanged native owning-file6checks under current conditions",
+      "reproduction": "Actual child PID cached immediately after spawn. Full6/6native file passes, including genuine loader marker/exit1 with PID20622 and real killed-child PID/close assertion. Independent source review approves bounded optional numeric field; authority/limits/argv/environment unchanged.",
+      "scope": "Selected process identification only. Historical native timing causeUNKNOWN/clearingUNVERIFIED.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "sdk-full-offline-three-browser-consumer-2026-10-15",
+      "revision": "fd3e1936561760319323391e7820f1d923dd153e",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q07",
+        "Q10",
+        "K12"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-sdk-full-consumer.json",
+        "tools/qa-sdk-consumer.mjs"
+      ],
+      "environment": "Fresh real offline seven-package/411file consumer, Node24.14.0, Chromium149/Firefox151/WebKit26.5",
+      "reproduction": "All10consumer checks pass: immutable source/tar inventory, exact closed install, two strict compiler profiles, generated independent device project, Node/public SDK, all three native browser engines, external processor. All owners join; exact receipts and source preserved before SDK/consumer/cache cleanup.",
+      "scope": "Selected installed software profile only; source D6producer, actual containing caller f534 retained. No physical/wider-platform/full-release acceptance;149whole tasks stayopen.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "id": "native-pid-candidate-four-startup-failures-2026-10-15",
+      "revision": "3da4ac4ed600e76f0f84f49e2189cce9264e361d",
+      "result": "fail",
+      "historical": false,
+      "levels": [
+        "runtime"
+      ],
+      "tasks": [
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json"
+      ],
+      "environment": "Exact8-file candidate, local macOS arm64 Node24.14.0 under explicitly authorized current conditions; no added acceptance preload, retries, skips, prewarm or changed limits",
+      "reproduction": "3408/3412unitpass, four native startup prerequisites fail;37/37fresh rendered and all seven other gates pass. Actual failed PIDs35725/36317/36728/37483 show no loader marker/stderr before original2500ms, then real SIGTERM/close and clean fixtures. Corrected PID diagnostic regression passes.",
+      "scope": "Candidate rejected and main remains fd3e1936. Emitter/ROS/handshake/bootstrap pass; failed keeper cancellation, authenticated transfer, bind cancellation and loader controls remain unqualified. CauseUNKNOWN/timing clearingUNVERIFIED.",
+      "failure": "Four original native prerequisites miss their unchanged limits before observed loader body; exact PID/system-log query yields no causal evidence.",
+      "equipment": [],
+      "supportRows": []
+    },
+    {
+      "historical": false,
+      "tasks": [
+        "I12",
+        "Q05",
+        "U10",
+        "E13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual independent app and authentic installed7-package/411file public SDK, Node24.14.0, Chromium149.0.7827.55/WebKit26.5; explicit software-clock/synthetic DOM cases separated from unchanged native journeys",
+      "scope": "Selected software queue-refusal and fresh-approval recovery only. Original queue/rate/age/capture/grant limits retained. Native startup causeUNKNOWN;149 whole tasks and69 support rows remain unaccepted.",
+      "equipment": [],
+      "supportRows": [],
+      "id": "reference-reliable-release-refusal-old-2026-10-15",
+      "revision": "5b661a826f1c387778ba95b303eb1ed1dea2f255",
+      "result": "fail",
+      "levels": [
+        "runtime"
+      ],
+      "reproduction": "Both real app engines reject actual false contact1306 with capacity; later unchanged-capture retries are stale after101ms callback gap, leaving SDK/canvas held. Delegated observer retains actual SDK results.",
+      "failure": "Actual reliable delivery refusal was not retired; a rejected release could leave a held control."
+    },
+    {
+      "historical": false,
+      "tasks": [
+        "I12",
+        "Q05",
+        "U10",
+        "E13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "examples/reference-apps/applications.ts",
+        "tools/qa-sdk-reference-apps.mjs"
+      ],
+      "environment": "Actual independent app and authentic installed7-package/411file public SDK, Node24.14.0, Chromium149.0.7827.55/WebKit26.5; explicit software-clock/synthetic DOM cases separated from unchanged native journeys",
+      "scope": "Selected software queue-refusal and fresh-approval recovery only. Original queue/rate/age/capture/grant limits retained. Native startup causeUNKNOWN;149 whole tasks and69 support rows remain unaccepted.",
+      "equipment": [],
+      "supportRows": [],
+      "id": "reference-reliable-release-refusal-recovery-2026-10-15",
+      "revision": "ad1b13084960b7a6753ff12de06d6bde57830204",
+      "result": "pass",
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "reproduction": "Current-stage guarded retirement on reliable capacity/partial refusal clears held effects, owners and timers; readable recovery requires two fresh approvals.10native journeys+4separate software-clock cases,18unit and changed-scope lint pass; exact two-file source independently approved.35evidence blobs read back before all owned fixtures removed.",
+      "failure": null
+    },
+    {
+      "revision": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "tests/mqtt-broker-binary.test.ts",
+        "tests/zigbee-broker-probes.test.ts"
+      ],
+      "equipment": [],
+      "supportRows": [],
+      "id": "release-refusal-candidate-native-shell-timeouts-2026-10-15",
+      "result": "fail",
+      "levels": [
+        "runtime"
+      ],
+      "environment": "Exact8-file candidate49673259/tree1f5c8840, Node24.14.0/macOS arm64, explicitly authorized current conditions; unchanged original limits and no acceptance observers",
+      "reproduction": "3409/3412unitpass; three native shell help controls miss original2000ms with actual PIDs14381/81778/82072, empty output, ETIMEDOUT/SIGTERM. All eight former native predicates,37fresh rendered and all seven other gates pass.38full-gate evidence blobs read back and owned batch removed.",
+      "scope": "Rejected candidate. Selected input recovery/PID repairs retain focused evidence; original native timing causeUNKNOWN and149whole open tasks remain. No main integration, retry/prewarm, widened limits or skipped acceptance.",
+      "failure": "Three actual expected shell producers were not observed executing within original help-probe bounds."
+    },
+    {
+      "revision": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "tests/mqtt-broker-binary.test.ts",
+        "tests/zigbee-broker-probes.test.ts"
+      ],
+      "equipment": [],
+      "supportRows": [],
+      "id": "native-shell-bounded-observation-2026-10-15",
+      "result": "pass",
+      "levels": [
+        "runtime"
+      ],
+      "environment": "One separate actual shell owning test with reviewed parent-only diagnostic wrapper and libproc reads; current conditions, inherited environment and actual original2000ms call unchanged",
+      "reproduction": "Actual shellPID25250 exits17 with expected real output; one owning test passes, failure not reproduced.26successful task queries match returned PID; exact counters unchanged over587.845ms before advancement. Parent and all owned children joined; fixture removed.16evidence blobs read back before owned batch deletion.",
+      "scope": "NONACCEPTANCE diagnostics only. Exact raw system/user/thread counters retained; no zero-execution inference or wait/cause identified. All three canonical failures stay unresolved; no repeated run, source fix, timing clearing, support acceptance or whole-task closure.",
+      "failure": null
+    },
+    {
+      "id": "native-broker-direct-posix-fixture-2026-10-15",
+      "revision": "b2c1762e670d943ec891878fa10ad04d2d682fa6",
+      "result": "pass",
+      "historical": false,
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-15-reference-release-clocks.json",
+        "tests/mqtt-broker-binary.test.ts",
+        "tests/zigbee-broker-probes.test.ts"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64 under current conditions; actual unobserved native spawnSync results and unchanged2000ms limit",
+      "reproduction": "The three old canonical probes fail authentically in49673259. Separate native state study observes sh then bash for the same actual PID; installed Apple manual confirms configurable re-exec. Direct fixed/bin/dash fixture on Darwin removes that unnecessary stage. Fresh ordinary owning4/4 passes, including actual exec-sleep timeout/SIGTERM.35assertions, producer bodies and helper bytes unchanged; exact source independently approved.24blobs read back before owned observation batch removed.",
+      "scope": "Concrete native help-output fixture optimization only. Other platforms retain/bin/sh; no OS/user-shell or foreign workload changes. Historical native delay causeUNKNOWN and timing reliabilityUNVERIFIED;149whole tasks remain open, no support/release acceptance or main integration from focused passes.",
+      "failure": null,
+      "equipment": [],
+      "supportRows": []
     }
   ],
   "tasks": [
@@ -17164,7 +17489,9 @@
         "pending-N14",
         "n14-built-partial-2026-10-06",
         "native-bootstrap-refusal-2026-10-15",
-        "input-native-media-hardware-exact-local-gates-2026-10-15"
+        "input-native-media-hardware-exact-local-gates-2026-10-15",
+        "native-startup-pid-old-2026-10-15",
+        "native-startup-pid-retention-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -17382,7 +17709,12 @@
         "pointer-ui-chromium-2026-10-02",
         "i08-haptic-retirement-software-partial-2026-10-07",
         "screen-ble-haptic-exact-local-gates-2026-10-07",
-        "phone-motion-lifecycle-2026-10-08"
+        "phone-motion-lifecycle-2026-10-08",
+        "reference-pointer-frame-old-2026-10-15",
+        "reference-collaborative-heartbeat-old-2026-10-15",
+        "reference-input-delivery-clock-repair-2026-10-15",
+        "reference-reliable-release-refusal-old-2026-10-15",
+        "reference-reliable-release-refusal-recovery-2026-10-15"
       ],
       "dependencies": [
         "M01",
@@ -18608,7 +18940,10 @@
         "e13-independent-reference-apps-2026-10-06",
         "sdk-browser-gateway-reference-required-gates-pass-2026-10-06",
         "reference-collaborative-release-old-2026-10-15",
-        "reference-collaborative-delivery-clock-2026-10-15"
+        "reference-collaborative-delivery-clock-2026-10-15",
+        "reference-input-delivery-clock-repair-2026-10-15",
+        "reference-reliable-release-refusal-old-2026-10-15",
+        "reference-reliable-release-refusal-recovery-2026-10-15"
       ],
       "dependencies": [
         "M01",
@@ -18865,7 +19200,12 @@
         "hardware-opaque-recovery-2026-10-15",
         "input-native-media-hardware-exact-local-gates-2026-10-15",
         "reference-collaborative-release-old-2026-10-15",
-        "reference-collaborative-delivery-clock-2026-10-15"
+        "reference-collaborative-delivery-clock-2026-10-15",
+        "reference-pointer-frame-old-2026-10-15",
+        "reference-collaborative-heartbeat-old-2026-10-15",
+        "reference-input-delivery-clock-repair-2026-10-15",
+        "reference-reliable-release-refusal-old-2026-10-15",
+        "reference-reliable-release-refusal-recovery-2026-10-15"
       ],
       "dependencies": [
         "C01",
@@ -19174,7 +19514,17 @@
         "hardware-opaque-recovery-2026-10-15",
         "input-native-media-hardware-exact-local-gates-2026-10-15",
         "reference-collaborative-release-old-2026-10-15",
-        "reference-collaborative-delivery-clock-2026-10-15"
+        "reference-collaborative-delivery-clock-2026-10-15",
+        "reference-pointer-frame-old-2026-10-15",
+        "reference-collaborative-heartbeat-old-2026-10-15",
+        "reference-input-delivery-clock-repair-2026-10-15",
+        "native-startup-pid-old-2026-10-15",
+        "native-startup-pid-retention-2026-10-15",
+        "reference-reliable-release-refusal-old-2026-10-15",
+        "reference-reliable-release-refusal-recovery-2026-10-15",
+        "release-refusal-candidate-native-shell-timeouts-2026-10-15",
+        "native-shell-bounded-observation-2026-10-15",
+        "native-broker-direct-posix-fixture-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19222,7 +19572,8 @@
         "sdk-browser-inventory-old-failures-2026-10-15",
         "sdk-browser-inventory-repair-2026-10-15",
         "sdk-followup-inventory-old-2026-10-15",
-        "sdk-followup-inventory-repair-2026-10-15"
+        "sdk-followup-inventory-repair-2026-10-15",
+        "sdk-full-offline-three-browser-consumer-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19270,7 +19621,8 @@
         "sdk-browser-inventory-old-failures-2026-10-15",
         "sdk-browser-inventory-repair-2026-10-15",
         "sdk-followup-inventory-old-2026-10-15",
-        "sdk-followup-inventory-repair-2026-10-15"
+        "sdk-followup-inventory-repair-2026-10-15",
+        "sdk-full-offline-three-browser-consumer-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19332,7 +19684,15 @@
         "native-wait-observation-2026-10-15",
         "input-native-media-hardware-exact-local-gates-2026-10-15",
         "screen-sdk-native-resolution-failure-2026-10-15",
-        "screen-sdk-resolution-diagnostics-2026-10-15"
+        "screen-sdk-resolution-diagnostics-2026-10-15",
+        "reference-collaborative-heartbeat-old-2026-10-15",
+        "reference-clock-final-native-loader-failure-2026-10-15",
+        "native-startup-pid-old-2026-10-15",
+        "native-startup-pid-retention-2026-10-15",
+        "native-pid-candidate-four-startup-failures-2026-10-15",
+        "release-refusal-candidate-native-shell-timeouts-2026-10-15",
+        "native-shell-bounded-observation-2026-10-15",
+        "native-broker-direct-posix-fixture-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [
@@ -19798,7 +20158,8 @@
         "sdk-browser-inventory-old-failures-2026-10-15",
         "sdk-browser-inventory-repair-2026-10-15",
         "sdk-followup-inventory-old-2026-10-15",
-        "sdk-followup-inventory-repair-2026-10-15"
+        "sdk-followup-inventory-repair-2026-10-15",
+        "sdk-full-offline-three-browser-consumer-2026-10-15"
       ],
       "dependencies": [],
       "equipment": [

@@ -94,13 +94,16 @@ test('unexpected actual runtime-host startup failure retains bounded clock miles
     await assert.rejects(runCrossHostWorkloadQualification({ signal: new AbortController().signal }), (error: unknown) => {
       assert.ok(error instanceof Error); assert.match(error.message, /native runtime host unavailable/i);
       const diagnostic = (error as Error & { startupDiagnostics?: {
-        hosts: readonly { spawnEnteredAt: number; spawnReturnedAt: number; closeAt: number; signalCode: string;
+        hosts: readonly { pid?: number; spawnEnteredAt: number; spawnReturnedAt: number; closeAt: number; signalCode: string;
           milestones: readonly { event: string; childAt: number; receivedAt: number }[] }[];
         cleanup: { processes: number; callbacks: number; sockets: number; timers: number; fixturesRemoved: boolean };
       } }).startupDiagnostics;
       assert.ok(diagnostic, 'Actual startup rejection must retain bounded non-sensitive diagnostics');
       assert.equal(diagnostic.hosts.length, 1);
       const host = diagnostic.hosts[0]!;
+      const observedPid = [...observed][0]!.pid;
+      assert.ok(Number.isSafeInteger(observedPid) && observedPid! > 0, 'The actual killed child must have a native PID');
+      assert.equal(host.pid, observedPid, 'Startup failure must retain the actual native PID even before hello');
       assert.ok(host.spawnEnteredAt <= host.spawnReturnedAt && host.spawnReturnedAt <= host.closeAt);
       assert.equal(host.signalCode, 'SIGKILL'); assert.ok(host.milestones.length <= 4);
       assert.deepEqual(diagnostic.cleanup, { processes: 0, callbacks: 0, sockets: 0, timers: 0, fixturesRemoved: true });

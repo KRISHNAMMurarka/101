@@ -7,6 +7,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { zigbeeBrokerBinary } from '../tools/qa-zigbee2mqtt-bridge.mjs';
 
+// Keep help-output controls independent of Darwin's configurable shell selector.
+const probeShell = process.platform === 'darwin' ? '/bin/dash' : '/bin/sh';
+
 // Catch discarded native outcomes: a missing executable, nonzero help result,
 // invalid help and a killed help probe must remain distinguishable in failure.
 for (const kind of ['nonzero', 'invalid-help', 'timeout'] as const) {
@@ -22,7 +25,7 @@ for (const kind of ['nonzero', 'invalid-help', 'timeout'] as const) {
     // These are native help-output controls, not Node startup tests. The fixed
     // POSIX producer preserves the same bytes, exit17 and real timeout signal.
     // exec keeps the sleeping timeout producer in the one owned child PID.
-    writeFileSync(executable, `#!/bin/sh\n${source}\n`);
+    writeFileSync(executable, `#!${probeShell}\n${source}\n`);
     chmodSync(executable, 0o700);
     // Only redirect installed fallback locations. Every outcome still comes
     // from the real synchronous native spawn, including timeout termination.

@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Full ordinary offline seven-package SDK consumer passes all ten checks, including three native browser engines.",
+  "tasks": [
+    "Q07",
+    "Q10",
+    "K12"
+  ],
+  "actualProducerCommit": "d6e90f39d44b68e39429940768c696d077f74cb5",
+  "actualProducerTree": "d5c1821f4b3e6e4a6b2860a07d3ffd5a5c2d5920",
+  "artifactMode": "Exact restored prior audited seven archives/411packed files and186immutable source pins; no fresh build or producer revision rebinding. Fresh actual offline consumer installs with scripts disabled and closed local registry.",
+  "qaToolSha256": "1cdf67bb6a128d9a73daf478debcf647522da6e1f260edaca524686a8a5827c1",
+  "qaTool": "tools/qa-sdk-consumer.mjs",
+  "command": [
+    "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+    "tools/qa-sdk-consumer.mjs",
+    "/Users/km/Dev/101/release/sdk-8ekLBW/manifest.json"
+  ],
+  "actualCurrentHead": "fd3e1936561760319323391e7820f1d923dd153e",
+  "actualContainingTree": "f534fd844b949af3e1a1d0bbeb807927e8939aea",
+  "containingNativeGateAccepted": false,
+  "checks": [
+    {
+      "name": "source-and-tarball-manifest",
+      "status": "pass"
+    },
+    {
+      "name": "offline-install-closed-graph-and-exact-bytes",
+      "status": "pass",
+      "packages": 7,
+      "files": 412,
+      "symlinks": 0,
+      "aliases": 0
+    },
+    {
+      "name": "strict-types:nodenext",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "strict-types:bundler",
+      "status": "pass",
+      "skipLibCheck": false,
+      "pathAliases": false,
+      "consumerCompilerInstalled": false
+    },
+    {
+      "name": "generated-device-project",
+      "status": "pass",
+      "source": [
+        {
+          "path": "packages/devkit/src/device-scaffold.ts",
+          "sha256": "8239681995c738ea0bdb7f6d8e2f1dd83b4b07ac61bf43a77c70dcc54c27138d"
+        },
+        {
+          "path": "tools/create-device-project.mjs",
+          "sha256": "6114f38a652ad87b4434f0941bc6841f9a8c5f33ef4fe32009a62a59c3cfa332"
+        }
+      ],
+      "project": "/tmp/101-sdk-consumer-ieuBQQ/generated-device-project",
+      "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d",
+      "typescriptTarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "guidance": {
+        "schema": "device-guidance.schema.json",
+        "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790",
+        "generatedAssets": [
+          {
+            "path": "device-guidance.json",
+            "sha256": "84e5f5a0da83b96ad5a86c79504a393a2b56e18929aaa5242db42cde722cb790"
+          },
+          {
+            "path": "device-guidance.schema.json",
+            "sha256": "af1c575b5f3375ab5b9f12462153126f3fcec9240ee1975b7de1bec2f4e4f794"
+          },
+          {
+            "path": "src/devices.json",
+            "sha256": "641fb48981d54f05b87a6a52f65ef3096f5dd9760878fa078021373d111033c9"
+          },
+          {
+            "path": "src/recipe.json",
+            "sha256": "0cca07e3485b78120899a99d5c2ac0b43dda9e40cd430857343437732765c1c5"
+          },
+          {
+            "path": "scripts/validate.mjs",
+            "sha256": "812058909c3a2b0d1336eb6a9f2636f7e55085b556a9a0cfa9e77852188e17db"
+          }
+        ],
+        "validation": {
+          "status": "pass",
+          "recipeId": "room-sensor:temperature-display",
+          "processorId": "room-sensor:threshold",
+          "processorPin": "c913df3d4ed2d4f97af3cfff172b4b113f76e04aee89ec3af0fac0791db9ed6d"
+        },
+        "rejectedAssets": [
+          "unknown-recipe-field",
+          "changed-processor-source",
+          "incompatible-selected-device"
+        ],
+        "tests": "processor pin; complete asset resolution; result and release; inert guidance in fresh processes; exact host identity, registration and operation checks"
+      },
+      "isolation": "SDK and compiler install from local tarballs in a standalone project; no monorepo aliases or dev server"
+    },
+    {
+      "name": "packed-node-javascript",
+      "status": "pass",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "issuedStoragePromiseReservation": true,
+      "actualNodeMemoryBatch": true,
+      "publicSchemas": true,
+      "privateSubpathsRejected": 18,
+      "packedRunEntry": true,
+      "ordinaryTelemetryOwnerExport": true
+    },
+    {
+      "name": "packed-browser:chromium",
+      "status": "pass",
+      "version": "149.0.7827.55",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouch": true,
+        "independentRelease": true,
+        "capturedOutsideBounds": true,
+        "resizeCancellation": true,
+        "orientationCancellation": true,
+        "disconnectCaptureRelease": true,
+        "unmountCaptureRelease": true
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised",
+        "trustedProtocolMultiTouchScroll": true,
+        "cancellation": true
+      }
+    },
+    {
+      "name": "packed-browser:firefox",
+      "status": "pass",
+      "version": "151.0",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "packed-browser:webkit",
+      "status": "pass",
+      "version": "26.5",
+      "embeddedPointer": true,
+      "embeddedSensorFeedback": true,
+      "threshold": true,
+      "structuredBatch": true,
+      "explicitBatchMigration": true,
+      "explicitUnitConversion": true,
+      "motionProcessors": true,
+      "visionProcessors": true,
+      "keyboardTextSource": true,
+      "touchContactSource": true,
+      "richInputEvents": true,
+      "resourceDocuments": true,
+      "mediaDescription": true,
+      "measurementQuality": true,
+      "observationTiming": true,
+      "deviceHealth": true,
+      "descriptorEvolution": true,
+      "discoveryEvidence": true,
+      "invitationLink": true,
+      "operationSemantics": true,
+      "moduleIdentity": true,
+      "webCryptoSignVerify": true,
+      "invitationExpiry": true,
+      "directTransportAcceptedByFacade": true,
+      "physicalWebRTC": "not-exercised",
+      "publicSchemas": true,
+      "privateSubpathsRejected": 2,
+      "indexedDBIdentityLifecycle": true,
+      "keyboardBrowser": {
+        "trustedKeyboardRepeatAndModifiers": true,
+        "focusRelease": true,
+        "syntheticCompositionProtocol": true,
+        "unmountRelease": true,
+        "nativeOSIME": "not-exercised"
+      },
+      "touchBrowser": {
+        "trustedSingleContact": true,
+        "stableContactId": true,
+        "nativePointerCapture": "not-observed-while-held",
+        "physicalFingers": "not-exercised"
+      },
+      "gestureBrowser": {
+        "trustedTapDragWheel": true,
+        "contactRelease": true,
+        "physicalFingers": "not-exercised"
+      }
+    },
+    {
+      "name": "external-processor-offline-consumer",
+      "status": "pass",
+      "package": "@example/temperature-band-processor",
+      "tarballSha256": "131e41a439261b963b921ca444bcd2eb01da8e730376ff0d05185aed3fd5387b",
+      "codeSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+      "operations": [
+        "subscribe",
+        "invoke"
+      ]
+    }
+  ],
+  "checkCount": 10,
+  "browserVersions": {
+    "chromium": "149.0.7827.55",
+    "firefox": "151.0",
+    "webkit": "26.5"
+  },
+  "strictTypes": [
+    "NodeNext",
+    "Bundler"
+  ],
+  "externalProcessor": "actual separate offline consumer passes",
+  "cleanup": {
+    "allToolParentsJoined": true,
+    "parentGroupAbsent": true,
+    "browserServerClosed": true,
+    "ownedConsumerRemoved": true,
+    "ownedSdkRemoved": true,
+    "ownedBatchRemoved": true
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-sdk-full-consumer/qualification",
+    "commit": "1f1eee8a91addcfbaa3f2f854b437c320987efa7",
+    "tree": "13561ac6817553e7143a4b22a744b10340fccda4",
+    "readBackFiles": 28,
+    "allBytesMatched": true,
+    "ownedSdkRemoved": true,
+    "ownedConsumerRemoved": true,
+    "ownedBatchRemoved": true,
+    "artifactRecoveryCommit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18"
+  },
+  "priorArtifactRecovery": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18",
+  "nativeCause": "UNKNOWN",
+  "historicalTimingCleared": false,
+  "supportRows": [],
+  "scope": "Selected seven-package local Mac/Node24 and Chromium/Firefox/WebKit installed-consumer software qualification. No physical devices, OS chooser, named assistive technology, other operating systems, upgrade/rollback matrix or release acceptance.272total/123complete/149open;69support rows/0accepted."
+}

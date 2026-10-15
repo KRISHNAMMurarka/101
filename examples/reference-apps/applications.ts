@@ -109,7 +109,7 @@ export function createReferenceSession(options: { profile: Profile; ownerSignal:
 
 const CSS = `*{box-sizing:border-box}body{margin:0;background:#fff;color:#111;font:16px/1.5 system-ui}main{max-width:920px;margin:auto;padding:24px}button,input,select{font:inherit;accent-color:#111}button,input[type=range],select{min-height:44px}button{padding:8px 16px;border:1px solid #111;background:#fff;color:#111;cursor:pointer}button:disabled{color:#666;border-style:dashed;cursor:default}button:hover:not(:disabled){background:#eee}:focus-visible{outline:3px solid #111;outline-offset:3px}label{display:flex;gap:12px;align-items:center;margin:12px 0}input[type=checkbox]{width:24px;height:24px}.row{display:flex;flex-wrap:wrap;gap:12px}.panel{border:1px solid #777;padding:16px;margin-top:16px;min-width:0}canvas{max-width:100%;border:1px solid #777}output{display:block;min-height:24px;overflow-wrap:anywhere}.pad{min-height:160px;border:2px solid #111;padding:16px;touch-action:none}.lamp{width:80px;height:80px;border:2px solid #111;border-radius:50%;background:#fff}.lamp[data-on=true]{background:#111}.participant{flex:1;min-width:220px}h1,h2{line-height:1.25}a{color:inherit}@media(max-width:520px){main{padding:16px}.row>*{flex:1}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`;
 function node<K extends keyof HTMLElementTagNameMap>(doc: Document, tag: K, text = ''): HTMLElementTagNameMap[K] { const value = doc.createElement(tag); value.textContent = text; return value; }
-interface JobContext { doc: Document; window: Window & typeof globalThis; panel: HTMLElement; signal: AbortSignal; now(): number; current(): boolean; expiresAt: number; own(cleanup: () => void | Promise<void>): void }
+interface JobContext { doc: Document; window: Window & typeof globalThis; panel: HTMLElement; signal: AbortSignal; now(): number; current(): boolean; unavailable(): void; expiresAt: number; own(cleanup: () => void | Promise<void>): void }
 interface Job { tick(): void; close(): Promise<void>; state(): unknown; ready?: Promise<boolean> }
 function subscriptions(context: JobContext) {
   const cleanups: (() => void)[] = [];
@@ -131,16 +131,24 @@ function pointerJob(context: JobContext): Job {
   const session = approvedSession(context, 'pointer', (id, observation, current) => { if (!context.current() || current.signal.aborted || !current.isCurrent()) return;
     if (id === 'position') position = observation.value as typeof position; else contact = observation.value === true; draw(); }, () => { contact = false; paint.clearRect(0, 0, 400, 200); canvas.dataset.contact = 'false'; });
   const driver = new PointerSourceDriver({ now: context.now, sampleHz: 30, publish(id, value) { return context.current() && session.publish(id, value).ok; } });
-  let pointerId: number | undefined, keyboardContact = false;
+  let pointerId: number | undefined, keyboardContact = false, deliveryTimer: number | undefined, closed = false;
+  const stopDelivery = () => { if (deliveryTimer !== undefined) context.window.clearTimeout(deliveryTimer); deliveryTimer = undefined; };
   const stopPointer = () => { const previous = pointerId; pointerId = undefined; keyboardContact = false; driver.stop(); if (previous !== undefined && pad.hasPointerCapture(previous)) pad.releasePointerCapture(previous); };
-  context.own(() => { stopPointer(); canvas.width = 1; canvas.height = 1; });
+  context.own(() => { closed = true; stopDelivery(); stopPointer(); canvas.width = 1; canvas.height = 1; });
   handlers.on(pad, 'pointerdown', event => { const e = event as PointerEvent, box = pad.getBoundingClientRect(); if (e.isPrimary && pointerId === undefined) { pointerId = e.pointerId; driver.begin(e.pointerId, e.clientX, e.clientY, box.width, box.height); pad.setPointerCapture(e.pointerId); } });
   handlers.on(pad, 'pointermove', event => { const e = event as PointerEvent, box = pad.getBoundingClientRect(); driver.move(e.pointerId, e.clientX, e.clientY, box.width, box.height); });
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) handlers.on(pad, type, event => { if ((event as PointerEvent).pointerId !== pointerId) return; pointerId = undefined; driver.end((event as PointerEvent).pointerId); if (keyboardContact) driver.setContact(true); });
   handlers.on(pad, 'keydown', event => { const e = event as KeyboardEvent, deltas: Record<string, [number, number]> = { ArrowLeft: [-0.05, 0], ArrowRight: [0.05, 0], ArrowUp: [0, -0.05], ArrowDown: [0, 0.05] }; if (deltas[e.key]) { e.preventDefault(); driver.nudge(...deltas[e.key]!); } else if (e.code === 'Space') { e.preventDefault(); keyboardContact = true; driver.setContact(true); } });
   const releaseKeyboard = () => { keyboardContact = false; driver.setContact(pointerId !== undefined); };
   handlers.on(pad, 'keyup', event => { if ((event as KeyboardEvent).code === 'Space') releaseKeyboard(); }); handlers.on(pad, 'blur', releaseKeyboard); draw();
-  return { tick() { driver.tick(); session.tick(); }, state: () => ({ ...session.snapshot(), contact, position, listeners: handlers.count() }), async close() { handlers.close(); stopPointer(); await session.close(); canvas.width = 1; canvas.height = 1; } };
+  // Reliable contact and pointer samples share the same bounded runtime even
+  // when drawing pauses; presentation frames must not be their only progress source.
+  function scheduleDelivery() { deliveryTimer = context.window.setTimeout(() => { deliveryTimer = undefined;
+    if (closed || !context.current()) { stopPointer(); void session.close(); return; }
+    driver.tick(); session.tick();
+    if (!closed && context.current()) scheduleDelivery(); else { stopPointer(); void session.close(); }
+  }, Math.ceil(1000 / 30)); } scheduleDelivery();
+  return { tick() {}, state: () => ({ ...session.snapshot(), contact, position, listeners: handlers.count(), deliveryTimerArmed: deliveryTimer !== undefined }), async close() { closed = true; stopDelivery(); handlers.close(); stopPointer(); await session.close(); canvas.width = 1; canvas.height = 1; } };
 }
 function sensorJob(context: JobContext): Job {
   const { doc, panel } = context, handlers = subscriptions(context), label = node(doc, 'label', 'Alert when lateness exceeds '), threshold = node(doc, 'input'), output = node(doc, 'output', 'Waiting for an actual timer observation'), canvas = node(doc, 'canvas');
@@ -201,7 +209,11 @@ function collaborativeJob(context: JobContext): Job {
   const sources = ['alpha', 'beta'].map((id, index) => {
     const device = parseDeviceDescriptor({ ...base, id: 'reference-' + id + '-controls' }), resources = device.capabilities.map(cap => { const handle = runtime.registerSource({ device, capability: cap.id }); runtime.setReadiness(handle, 'available'); return { handle, device, capability: cap.id }; }); let sequence = 0;
     const driver = new PointerSourceDriver({ now: context.now, sampleHz: contactHz, publish(capability, value, metadata) { if (!context.current()) return false; const cap = device.capabilities.find(value => value.id === capability)!, source = resources.find(value => value.capability === capability)!;
-      return runtime.publish(source.handle, value, { timestamp: metadata.capturedAt, clockDomain: runtime.clockDomain, sequence: ++sequence, ...(cap.delivery.mode === 'reliable' ? { operationId: String(sequence), deadline: metadata.capturedAt + cap.delivery.maxAgeMs } : {}) }).ok; } });
+      const result = runtime.publish(source.handle, value, { timestamp: metadata.capturedAt, clockDomain: runtime.clockDomain, sequence: ++sequence, ...(cap.delivery.mode === 'reliable' ? { operationId: String(sequence), deadline: metadata.capturedAt + cap.delivery.maxAgeMs } : {}) });
+      // A lost reliable edge cannot be recovered by replaying an expired capture.
+      // No-route before selection remains inert; active queue refusal retires the job.
+      if (cap.delivery.mode === 'reliable' && (result.ok ? result.value.rejected > 0 : result.reason === 'capacity')) context.unavailable();
+      return result.ok && context.current(); } });
     const box = node(doc, 'section'), title = node(doc, 'h2', 'Local control ' + (index + 1)), sliderLabel = node(doc, 'label', 'Horizontal position'), slider = node(doc, 'input'), hold = node(doc, 'button', 'Hold contact'), request = node(doc, 'button', 'Request ' + (index ? 'right' : 'left') + ' partition'); box.className = 'participant'; slider.type = 'range'; slider.min = '0'; slider.max = '1'; slider.step = '0.05'; slider.value = '0.5'; sliderLabel.append(slider); hold.type = request.type = 'button'; box.append(title, sliderLabel, hold, request); panel.append(box);
     let previous = 0.5, pointerId: number | undefined, keyboardContact = false;
     handlers.on(slider, 'input', () => { const next = slider.valueAsNumber; driver.nudge(next - previous, 0); previous = next; });
@@ -234,7 +246,9 @@ function collaborativeJob(context: JobContext): Job {
     if (closed || !context.current()) { runtime.close(); return; }
     controller.tick(); sources.forEach(source => source.driver.tick()); runtime.flush();
     if (!closed && context.current()) scheduleDelivery(); else runtime.close();
-  }, Math.ceil(1000 / contactHz)); } scheduleDelivery();
+  // Four routes share two pending slots. Service two queue turns per route
+  // period so an older heartbeat cannot consume a release's entire value age.
+  }, Math.ceil(1000 / (contactHz * 2))); } scheduleDelivery();
   return { tick() {}, state: () => ({ ownership: controller!.snapshot(), held: Object.fromEntries(['left', 'right'].map(id => [id, values.get(id + ':contact')?.value === true])), listeners: handlers.count(), deliveryTimerArmed: deliveryTimer !== undefined }), async close() { closed = true; stopDelivery(); handlers.close(); unsubscribe(); sources.forEach(source => { source.release(); source.driver.stop(); }); controller!.close(); runtime.close(); values.clear(); draw(); canvas.width = 1; canvas.height = 1; } };
 }
 
@@ -261,7 +275,8 @@ export function mountReferenceApplication(container: HTMLElement, id: ReferenceA
     if (closed || stage || retiring || !source.checked || !sink.checked || attempts >= 16 || doc.hidden || !doc.hasFocus()) return; attempts++; const turn = ++revision, signal = new AbortController(); owner = signal; const expiresAt = window!.performance.now() + 30000;
     let finish!: () => void; const ownedStage: Stage = { owner: signal, settled: new Promise(resolve => { finish = resolve; }), finish: () => finish(), cleanups: [] }; stage = ownedStage;
     const current = () => !closed && stage === ownedStage && revision === turn && owner === signal && !signal.signal.aborted && source.checked && sink.checked && !doc.hidden && window!.performance.now() < expiresAt;
-    panel.replaceChildren(); const context: JobContext = { doc, window: window!, panel, signal: signal.signal, now: () => window!.performance.now(), current, expiresAt, own(cleanup) { ownedStage.cleanups.push(cleanup); } };
+    panel.replaceChildren(); const context: JobContext = { doc, window: window!, panel, signal: signal.signal, now: () => window!.performance.now(), current, expiresAt,
+      unavailable() { if (current()) void retire('Input could not be delivered. Review both approvals to retry.'); }, own(cleanup) { ownedStage.cleanups.push(cleanup); } };
     try { const created = factories[id](context); ownedStage.job = created; if (!current()) { if (stage === ownedStage) void retire('Cancelled during preparation'); return; } job = created;
       state.value = 'Active for this selected local session. Stop releases authority.'; timer = window!.setTimeout(() => { if (revision === turn) void retire('Session expired. Approve both owners again to retry.'); }, 30000);
       if (created.ready) void created.ready.then(ready => { if (!current()) return; if (ready) state.value = 'Application media active.'; else void retire('This browser cannot currently provide this selected application media. Approve both owners again to retry.'); });

@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "result": "Pointer release no longer depends on presentation frames; collaborative queue services enough fair turns to deliver release behind a held heartbeat. Focused current checks pass.",
+  "tasks": [
+    "I12",
+    "Q05",
+    "U10",
+    "E13",
+    "Q13",
+    "N14"
+  ],
+  "sourceBase": "fd3e1936561760319323391e7820f1d923dd153e",
+  "sourceCommit": "87035ba24b8eb21022659a30daf51505e195ff3c",
+  "sourceTree": "116d6259a52aee95437ace891d8e83a34fc1fbfb",
+  "sourceSha256": {
+    "examples/reference-apps/applications.ts": "adc3714629bdb5bf1ac1f9e6582706fef6b6b6290a649f890099e96c3b9b5d73",
+    "tools/qa-sdk-reference-apps.mjs": "ee88d81168ca2b7a1523102e96f09fa52aae02ebcbf419ac2ec8152efaff6731"
+  },
+  "repairs": [
+    "Pointer owns one34ms delivery timer, cancelled at initialization retirement and normal close; closed/current gates fence delivery/rearm. Parent UI frame tick is empty. Original two approvals/epoch, queue1/pending1, reliable5Hz/latest30Hz,500ms age and30s authority stay unchanged.",
+    "Collaborative delivery timer services at17ms instead of34ms. Four routes retain global pending2, reliable queue4, driver30Hz, grant30Hz,100ms age and30s authority. The service clock does not raise route delivery limits. Independent pointer/keyboard/capture and partition ownership stay unchanged.",
+    "Permanent QA adds real native pointer release with UI presentation frames withheld at original500ms, plus independent controlled-clock contexts for the exact queued-heartbeat failure. Software clocks/control seams are explicitly separated from ten native journeys. Actual SDK and canvas effects and retirement timer cancellation are asserted."
+  ],
+  "oldFailures": {
+    "pointer": {
+      "source": "fd3e1936561760319323391e7820f1d923dd153e",
+      "browsers": 2,
+      "actualTrustedRelease": true,
+      "maxAgeMs": 500,
+      "observation": "Pointerup/lost capture reached DIV, but actual SDK contact and canvas dataset remained true with presentation frames withheld."
+    },
+    "initialCandidate": {
+      "commit": "6850288f9b923e40f888da3f080f43c4f139b2de",
+      "tree": "cd31934d90a6579dd7d97810a6a487ccd8362c60",
+      "accepted": false,
+      "failure": "Full five-app QA Chromium collaborative native drag/outside-release left held=true beyond original100ms. Source-only review approval and earlier focused pointer green did not qualify this failed flow."
+    },
+    "queueMechanism": {
+      "actualInstalledSdk": true,
+      "pureClockCounterexample": "At205 press,272 old true dispatch,273 release admitted; an older true heartbeat dispatches340, false expires373 before its next fair turn. Four routes/two slots and unchanged100ms age. This is controlled mechanism evidence, not historical browser queue attribution.",
+      "actualIndependentAppOldRedBrowsers": 2,
+      "softwareClock": true,
+      "pressOffsetMs": 223,
+      "firstHeldOffsetMs": 306,
+      "releaseOffsetMs": 307,
+      "assertionAfterReleaseMs": 99,
+      "fixtureDevelopment": "First software-clock fixture did not reach held at its assumed phase; corrected phase search found genuine old failure in both engines. Nonfailing/precondition-failing probes retained."
+    }
+  },
+  "qualification": {
+    "actualSdkProducerCommit": "d6e90f39d44b68e39429940768c696d077f74cb5",
+    "actualSdkProducerTree": "d5c1821f4b3e6e4a6b2860a07d3ffd5a5c2d5920",
+    "artifactMode": "Exact prior audited seven archives/411packed files restored and rehashed; not a fresh producer build.186 source pins unchanged. Fresh actual offline Node consumer ran7checks.",
+    "offlineNodeChecks": 7,
+    "broaderSdkBrowserSuiteDeferred": true,
+    "nativeReferenceJourneys": 10,
+    "explicitSoftwareClockCases": 2,
+    "additionalNativePointerWithheldFrameCases": 2,
+    "focusedUnit": {
+      "tests": 18,
+      "pass": 18,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "lint": "pass on two changed sources and all new controller .mjs inputs",
+    "earlierCallerHelperRefusals": {
+      "count": 2,
+      "actualCallerTree": "cd31934d90a6579dd7d97810a6a487ccd8362c60",
+      "scope": "Missing/altered helper rejected before generated apps; earlier pointer candidate, not rebound to finalcaller tree. The helper policy and fingerprint code are unchanged."
+    },
+    "nativeMediaUnsupported": [
+      {
+        "application": "media-sharing",
+        "browser": "webkit",
+        "positiveMediaEvidence": false
+      }
+    ],
+    "cleanup": {
+      "generatedProjects": 0,
+      "negativeConsumers": 0,
+      "launchers": 0,
+      "browsers": 0,
+      "contexts": 0,
+      "defaultUserMediaOpens": 0
+    },
+    "wholeTasks": 272,
+    "complete": 123,
+    "open": 149,
+    "supportRowsAccepted": 0
+  },
+  "review": {
+    "reviewer": "/root/sdk_remaining_caller_review",
+    "candidate": "87035ba24b8eb21022659a30daf51505e195ff3c",
+    "tree": "116d6259a52aee95437ace891d8e83a34fc1fbfb",
+    "result": "APPROVED",
+    "findings": [],
+    "scope": "Independent read-only source review; no tests, native/browser launches or edits. Exact candidate hashes match. Pointer lifetime/current/closed gates and cleanup retained. Collaborative owner clock17ms services four routes/two slots while driver30Hz/grant30Hz/age100ms/queue4 and partition authority stay unchanged. Additional controlled-clock contexts use real generated app/installed SDK, retain source/sink state and canvas assertion, and label software/non-native evidence separately from unchanged ten native journeys."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-15-pointer-release-clock/focused",
+    "commit": "50911455ffb81173fbae40932ad0692056dd4608",
+    "tree": "749852dff6dff7ee4fc8c2cb400ba30eb73d0df4",
+    "readBackFiles": 68,
+    "allBytesMatched": true,
+    "ownedSdkRemoved": true,
+    "ownedConsumerRemoved": true,
+    "ownedBatchRemoved": true,
+    "artifactRecoveryCommit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18"
+  },
+  "fullValidation": "Exact containing candidates are preserved at refs/codex/evidence/2026-10-15-pointer-release-clock/final-gates, refs/codex/evidence/2026-10-15-loader-followup/final-gates and refs/codex/evidence/2026-10-15-collaborative-release-refusal/final-gates. Latest candidate49673259 is rejected:3409/3412unitpass with three native shell-probe timeouts; all eight former checks, seven other gates and37fresh rendered checks pass. Focused source/caller trees are retained separately; no main integration or timing-cause clearing. Direct-interpreter containing-tree gates are recorded separately at refs/codex/evidence/2026-10-15-broker-timeout-fix/final-gates; focused passes alone do not establish combined acceptance.",
+  "native": {
+    "previousFullRun": "All original emitter/ROS/handshake/loader checks and other prior six failures passed at integrated fd3e1936. Current full result is bound separately.",
+    "historicalCause": "UNKNOWN",
+    "timingReliabilityCleared": false,
+    "originalNativeLimitsChanged": false,
+    "externalAcceptancePreload": false,
+    "rejectedContainingCandidate": {
+      "commit": "dcbe02cbe8f73795896a283e6550d5f568e974e8",
+      "tree": "f534fd844b949af3e1a1d0bbeb807927e8939aea",
+      "unit": {
+        "tests": 3412,
+        "pass": 3411,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "rendered": {
+        "tests": 37,
+        "pass": 37,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "gatesGreen": 7,
+      "soleFailure": "existing loader failure retains its actual earlier milestone and native close",
+      "startup": "No stderr or observed loader milestone before original2500ms deadline; actual SIGTERM/close with clean fixtures. Underlying causeUNKNOWN.",
+      "custody": "6015dfaf548073c08f3865d3289e30b3515d9ab9",
+      "integrated": false
+    },
+    "earlierCheckpointDiagnostic": {
+      "custody": "7de0d7e01304cfdbe3b62622586e8722f0c2345e",
+      "tests": 6,
+      "pass": 6,
+      "acceptance": false,
+      "failureReproduced": false,
+      "scope": "Fixed minimal earlier CommonJS diagnostic checkpoint at actual host launch, separate from acceptance. Controlled loader exits1 at1533.532ms, observed earlierJS1523.717ms and loader1530.99ms afterdispatch in this pass. Current failed-run location not determined; exact configured Node policy/kernel log query returns no entries."
+    },
+    "pidDiagnosticRepair": {
+      "sourceCommit": "e30a79f6ff25a3666586c37aaba128ed089e35d0",
+      "sourceTree": "12abd6272e501fc39193e30a7d251512d10026c2",
+      "sourceSha256": {
+        "examples/cross-host-workload/cross-host-workload.ts": "e68d850849287d8ae7fe557c21994183b637fda0c7ca726d9622cbc3e89207a4",
+        "tests/cross-host-workload.test.ts": "ca61a17025290bf38343a60f72fd30463b629e9ded02aac5d4104af1e6c90dbe"
+      },
+      "oldActualMissingPid": 8435,
+      "oldRegressionFail": true,
+      "currentOwningFileTests": 6,
+      "currentOwningFilePass": 6,
+      "currentActualLoaderPid": 20622,
+      "currentActualLoaderExitCode": 1,
+      "currentActualLoaderMilestone": true,
+      "repair": "Cache actual ChildProcess.pid immediately after spawn, optional on launch error, independent of hello/readiness authority. One numeric field enables exact future failure identification. Deadlines, argv, environment, grants, termination and cleanup unchanged. No startup latency fix is inferred.",
+      "review": {
+        "reviewer": "/root/native_startup_review",
+        "candidate": "e30a79f6ff25a3666586c37aaba128ed089e35d0",
+        "tree": "12abd6272e501fc39193e30a7d251512d10026c2",
+        "reviewedPaths": [
+          "examples/cross-host-workload/cross-host-workload.ts",
+          "tests/cross-host-workload.test.ts"
+        ],
+        "result": "APPROVED",
+        "findings": [],
+        "assessment": "Actual spawned child PID cached before hello; optional on spawn failure and separate from readiness authority. One bounded numeric field, no paths/credentials/raw stderr. Regression compares real killed ChildProcess.pid while retaining native close/cleanup assertions. No timing cause/clearing.",
+        "priorInputReview": {
+          "reviewer": "/root/sdk_remaining_caller_review",
+          "candidate": "87035ba24b8eb21022659a30daf51505e195ff3c",
+          "identicalPaths": [
+            "examples/reference-apps/applications.ts",
+            "tools/qa-sdk-reference-apps.mjs"
+          ]
+        },
+        "testsRunByReviewer": false
+      },
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-loader-followup/pid-retention",
+        "commit": "901dd51a36a88db26f73306b29cfc8935e512363",
+        "tree": "45f010d6ffc72260a111e910b9db2b32d7d248e0",
+        "readBackFiles": 25,
+        "allBytesMatched": true
+      }
+    },
+    "fullSdkFollowup": "docs/platform/receipts/2026-10-15-sdk-full-consumer.json",
+    "pidCandidateFullRun": {
+      "commit": "3da4ac4ed600e76f0f84f49e2189cce9264e361d",
+      "tree": "dc31b270da6ad4176152a7c071246db23a151777",
+      "unit": {
+        "tests": 3412,
+        "pass": 3408,
+        "fail": 4,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "rendered": {
+        "tests": 37,
+        "pass": 37,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "gatesGreen": 7,
+      "failures": [
+        "owner abort after an actual keeper sample is issued awaits both preparation and native child settlement",
+        "independently executing authenticated runtime hosts transfer native state and recover with fresh authority",
+        "cancellation at the first actual bind retains ownership until native host and gateway teardown",
+        "existing loader failure retains its actual earlier milestone and native close"
+      ],
+      "actualFailedHostPids": [
+        35725,
+        36317,
+        36728,
+        37483
+      ],
+      "startupObservation": "All four failed hosts retain zero stderr/no observed loader milestone before original2500ms deadline, actual SIGTERM/close and clean fixtures. New real-PID regression passes; emitter/ROS/agent handshake and bootstrap audit pass.",
+      "systemLog": "Bounded info/debug query for exact failed PIDs and matching kernel/policy messages returns no entries. No cause or reliability inference.",
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-loader-followup/final-gates",
+        "commit": "3ab1766715c01ec4dbdc9bdaa8af0250fd96d33c",
+        "tree": "149b6a9fc32cc443b0dd2cc69af9f12575c49d7f",
+        "readBackFiles": 45,
+        "allBytesMatched": true,
+        "ownedBatchRemoved": true
+      },
+      "integrated": false
+    },
+    "latestRejectedContainingCandidate": {
+      "commit": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "tree": "1f5c88401e910ba40ee2e32c4b232245e2bf5a29",
+      "unit": {
+        "tests": 3412,
+        "pass": 3409,
+        "fail": 3,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "rendered": {
+        "tests": 37,
+        "pass": 37,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "gatesGreen": 7,
+      "formerEightNativeChecksPass": true,
+      "failures": [
+        "MQTT broker rejects failed real version help before launching an owned broker",
+        "broker discovery retains authentic bounded nonzero probe diagnostics",
+        "broker discovery retains authentic bounded invalid-help probe diagnostics"
+      ],
+      "actualFailedProbePids": [
+        14381,
+        81778,
+        82072
+      ],
+      "observation": "All three actual shell probes return statusnull/SIGTERM/ETIMEDOUT and zero stdout/stderr at unchanged2000ms. Real rejection/close is retained; expected fixture producer execution is unverified. No owned broker launches for the failed MQTT help check.",
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-collaborative-release-refusal/final-gates",
+        "commit": "10ad603826dfee4168df1098928ff4d76cb04c9e",
+        "tree": "d441660ce665098a055a3bc16d70d42e37af4546",
+        "readBackFiles": 38,
+        "allBytesMatched": true,
+        "ownedBatchRemoved": true
+      },
+      "integrated": false
+    },
+    "shellStartupObservation": {
+      "acceptance": false,
+      "sourceCandidate": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "actualPid": 25250,
+      "actualExitCode": 17,
+      "expectedOutputObserved": true,
+      "owningTests": 1,
+      "owningPass": 1,
+      "failureReproduced": false,
+      "matchingSuccessfulQueries": 26,
+      "unchangedCounterSpanMs": 587.845,
+      "counterScope": "Exact successful task queries, user/system/thread CPU, faults, calls, scheduling and memory counters retained without time-unit conversion. Initial system time is nonzero; no zero-execution inference.",
+      "interpretation": "The actual shell control passes in this one observed run. Raw counters (including nonzero system time) are retained exactly; unchanged values over a sampled interval do not prove no execution or identify a wait/cause. The canonical three original-deadline failures remain unresolved. No repeat or acceptance claim.",
+      "review": {
+        "reviewer": "/root/native_startup_review",
+        "sourceSha256": "20b6a73032486a854d031a484755273ca0a4a562ce22dfde8128e10f29492f93",
+        "result": "APPROVED",
+        "scope": "Single bounded nonacceptance observation only. Real spawnSync result delegated unchanged; no PATH mutation, complete-line records, zero-byte/errno status validated, observed worker children retrospectively bound to actual returned PID, final owned group cleanup/escalation checked. No implementation fix or native cause identified.",
+        "reviewerRanTests": false,
+        "reviewerEditedFiles": false,
+        "interpretationReview": {
+          "result": "APPROVED",
+          "scope": "Unchanged sampled counters over587.845ms for the actual shell PID, followed by advancement and authentic exit17. Neither wait mechanism nor canonical timeout causes identified. No source correction established, no repeated run justified. Display-output minor correction now preserves actual newline."
+        }
+      },
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-shell-startup-followup/observation",
+        "commit": "f801c00ea1f1fe28b8c91dbcf34d26a55fd57e57",
+        "tree": "cb4322b029a6d70eaae105119ac4c72ee4827925",
+        "readBackFiles": 16,
+        "allBytesMatched": true,
+        "ownedBatchRemoved": true
+      },
+      "allOwnedChildrenJoined": true,
+      "ownedFixtureAndBatchRemoved": true,
+      "sourceChanges": false,
+      "limitsChanged": false,
+      "nativeCause": "UNKNOWN",
+      "nativeTimingCleared": false
+    },
+    "brokerProbeFixtureRepair": {
+      "source": {
+        "base": "319dd9fe1abc8fe097251c44ebb5901e5826dd0e",
+        "commit": "b2c1762e670d943ec891878fa10ad04d2d682fa6",
+        "tree": "c28bda4dfa078632d5ded0fd609f2bff86ef24b4",
+        "ref": "refs/codex/evidence/2026-10-15-broker-timeout-fix/source",
+        "changedFiles": [
+          "tests/mqtt-broker-binary.test.ts",
+          "tests/zigbee-broker-probes.test.ts"
+        ],
+        "sourceSha256": {
+          "tests/mqtt-broker-binary.test.ts": "93da3c55adee197fdd16683501c6e64addc543a56f10b8ad578ae3d6826b33fd",
+          "tests/zigbee-broker-probes.test.ts": "15fbb060dafd4959eacf271c7596423a66b26436888984cdcf04d396f0b0672b"
+        }
+      },
+      "oldActualRedCases": 3,
+      "oldRedCandidate": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "oldRedCustody": "10ad603826dfee4168df1098928ff4d76cb04c9e",
+      "finding": "Actual same native PID observed as sh then bash. Installed Apple sh manual documents configurable re-exec; host selection/bin/bash. Direct fixed/bin/dash on Darwin removes this unnecessary fixture stage; other platforms retain/bin/sh.",
+      "observationalStudy": {
+        "base": "319dd9fe1abc8fe097251c44ebb5901e5826dd0e",
+        "acceptance": false,
+        "owningCases": 4,
+        "unintendedFailuresReproduced": 0,
+        "stableIdentities": {
+          "34422:1": [
+            34533,
+            1792079138,
+            65134
+          ],
+          "34756:1": [
+            34820,
+            1792079139,
+            985536
+          ],
+          "34756:2": [
+            35009,
+            1792079141,
+            265273
+          ],
+          "34756:3": [
+            35169,
+            1792079142,
+            499382
+          ]
+        },
+        "noTraceOrActualResourceSuspensionObserved": true,
+        "threadObservations": "Initial thread list entries were zero/unavailable; do not infer a wait mechanism."
+      },
+      "focusedChecks": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "focusedCases": [
+        "\u2714 MQTT broker rejects failed real version help before launching an owned broker (841.827833ms)",
+        "\u2714 broker discovery retains authentic bounded nonzero probe diagnostics (628.744084ms)",
+        "\u2714 broker discovery retains authentic bounded invalid-help probe diagnostics (674.510166ms)",
+        "\u2714 broker discovery retains authentic bounded timeout probe diagnostics (2004.706ms)"
+      ],
+      "fixtureComparison": {
+        "base": "319dd9fe1abc8fe097251c44ebb5901e5826dd0e",
+        "checks": [
+          {
+            "path": "tests/mqtt-broker-binary.test.ts",
+            "allAssertionsByteIdentical": true,
+            "assertionCalls": 9,
+            "producerBodyUnchanged": true
+          },
+          {
+            "path": "tests/zigbee-broker-probes.test.ts",
+            "allAssertionsByteIdentical": true,
+            "assertionCalls": 26,
+            "producerBodyUnchanged": true
+          }
+        ],
+        "helperSha256": "a89520c5dc412d4423fb47a7e8bc9ebae521331c744da2b7795f22b65cb711be",
+        "helperByteIdentical": true,
+        "deadline": 2000
+      },
+      "review": {
+        "reviewer": "/root/native_startup_review",
+        "base": "319dd9fe1abc8fe097251c44ebb5901e5826dd0e",
+        "candidate": "b2c1762e670d943ec891878fa10ad04d2d682fa6",
+        "tree": "c28bda4dfa078632d5ded0fd609f2bff86ef24b4",
+        "sourceSha256": {
+          "tests/mqtt-broker-binary.test.ts": "93da3c55adee197fdd16683501c6e64addc543a56f10b8ad578ae3d6826b33fd",
+          "tests/zigbee-broker-probes.test.ts": "15fbb060dafd4959eacf271c7596423a66b26436888984cdcf04d396f0b0672b"
+        },
+        "result": "APPROVED",
+        "findings": [],
+        "scope": "Only fixed native fixture interpreter and comments change. Producer bodies,35assertions, helpers and2000ms deadline identical. Real four owning controls pass without observer; no source/bootstrap/timing cause clearing inferred. No edits or executions by reviewer."
+      },
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-broker-timeout-fix/focused",
+        "commit": "c10a8c833948b87c937195196eb365dc8a3de495",
+        "tree": "81ad16b100d65e4be9593a3bb833f865657cec75",
+        "readBackFiles": 24,
+        "allBytesMatched": true,
+        "ownedBatchRemoved": true
+      },
+      "scope": "Concrete help-output fixture optimization only. Historical native execution-delay causeUNKNOWN/timing reliabilityUNVERIFIED. No helper/deadline/criteria/producer output change, retry/prewarm/skip, foreign workload or OS shell-selection change.",
+      "mainIntegrated": false
+    }
+  },
+  "scope": "Selected owned software input/SDK/browser lifetime qualification. No physical hardware, OS capture/chooser, named assistive technology, remote identity or wider release acceptance;149whole tasks remain open.",
+  "supportRows": [],
+  "releaseRefusalRecovery": {
+    "sourceCandidate": {
+      "base": "5b661a826f1c387778ba95b303eb1ed1dea2f255",
+      "commit": "ad1b13084960b7a6753ff12de06d6bde57830204",
+      "tree": "5da2c31865433a6e53974badf001b6c86170179e",
+      "ref": "refs/codex/evidence/2026-10-15-collaborative-release-refusal/source",
+      "changedFiles": 2,
+      "sourceSha256": {
+        "examples/reference-apps/applications.ts": "f68969dd2e2f6271b0def564d0052fe0ea285ec0c3e30564ca64f072f7223fde",
+        "tools/qa-sdk-reference-apps.mjs": "b3afcc772a71a060d38301d2ea66a628ec7899c5e90578acc7a624fdc1dbc1e7"
+      }
+    },
+    "oldFailure": {
+      "source": "5b661a826f1c387778ba95b303eb1ed1dea2f255",
+      "engines": [
+        "Chromium149.0.7827.55",
+        "WebKit26.5"
+      ],
+      "actualSdkResult": {
+        "ok": false,
+        "reason": "capacity"
+      },
+      "captureAt": 1306,
+      "mechanism": "Actual reliable queue rejects false contact; retries preserve capture1306 and become stale after the explicit101ms callback gap. Both actual SDK and canvas remain held.",
+      "harness": "Actual independently generated app with real installed public SDK; delegated publish observer returns the exact result unchanged. Explicit controlled software clock and synthetic DOM burst; no native timing claim."
+    },
+    "repair": "Reliable capacity or partial refusal calls current-stage guarded existing parent retirement, clearing effects and authority without refreshing captures or extending limits; fixed recovery and two fresh approvals.",
+    "qualification": {
+      "nativeFiveAppJourneys": 10,
+      "separatelyLabelledSoftwareClockCases": 4,
+      "focusedUnit": {
+        "tests": 18,
+        "pass": 18,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "changedScopeLint": "pass",
+      "directActualQueueRefusalControls": 2,
+      "freshTwoApprovalRetry": "pass",
+      "honestMediaUnsupported": [
+        {
+          "id": "media-sharing",
+          "browser": "webkit"
+        }
+      ],
+      "cleanup": {
+        "ownedProjects": 0,
+        "negativeConsumers": 0,
+        "launchers": 0,
+        "browsers": 0,
+        "contexts": 0,
+        "defaultUserMediaOpens": 0
+      }
+    },
+    "sdk": {
+      "actualProducerCommit": "d6e90f39d44b68e39429940768c696d077f74cb5",
+      "actualProducerTree": "d5c1821f4b3e6e4a6b2860a07d3ffd5a5c2d5920",
+      "restoredAuthenticSdk": true,
+      "sourcePins": 186,
+      "packages": 7,
+      "packedFiles": 411,
+      "freshOfflineNodeFixtureChecks": 7,
+      "archiveRecoveryCommit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18",
+      "freshProducerBuild": false
+    },
+    "review": {
+      "reviewer": "/root/sdk_remaining_caller_review",
+      "base": "5b661a826f1c387778ba95b303eb1ed1dea2f255",
+      "candidate": "ad1b13084960b7a6753ff12de06d6bde57830204",
+      "tree": "5da2c31865433a6e53974badf001b6c86170179e",
+      "result": "APPROVED",
+      "findings": [],
+      "scope": "Independent read-only source review, no tests/launches/edits. Current-stage guarded unavailable callback uses existing retirement; state/owner/job invalidated before abort/focus, both approvals cleared, deferred close waits construction before cleanup. Capacity/partial-reliable refusal returns false after retire; no-route before selection remains inert. Pointer/collaborative clock+close blocks unchanged; actual capture/rate/age/queue/grant/partition/keyboard/capture-ID limits unchanged. Fixed plain recovery and fresh two-owner retry. Permanent regression uses real app/software-clock seam separately from unchanged native journeys. Diagnostic wrapper delegates and returns exact SDK publication result only."
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-15-collaborative-release-refusal/focused",
+      "commit": "93cc27184c5f7bceb7ab52bd79e560aed61ff834",
+      "tree": "ace67b632cd4344ae23b40bee7326643ec5b045c",
+      "readBackFiles": 35,
+      "allBytesMatched": true,
+      "ownedSdkRemoved": true,
+      "ownedConsumerRemoved": true,
+      "ownedBatchRemoved": true,
+      "artifactRecoveryCommit": "e4a0f67f0f213b98593cb85d1b444daf9db4fc18"
+    },
+    "limits": "Capture times, rates, queue capacities, age limits, approval and authority duration unchanged. Existing current-stage retirement clears held effects and both approvals; retry requires two fresh approvals.",
+    "mainIntegrated": false,
+    "nativeOriginalCause": "UNKNOWN",
+    "nativeTimingCleared": false,
+    "scope": "Selected software input refusal/recovery only. Four startup prerequisites from the previous exact full candidate remain unresolved;149 whole open tasks and69 unaccepted support rows unchanged.",
+    "containingFullRun": {
+      "commit": "4967325930864da1aba97ef69ae8c0b9bc02f4e6",
+      "tree": "1f5c88401e910ba40ee2e32c4b232245e2bf5a29",
+      "unit": {
+        "tests": 3412,
+        "pass": 3409,
+        "fail": 3,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "rendered": {
+        "tests": 37,
+        "pass": 37,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "gatesGreen": 7,
+      "formerEightNativeChecksPass": true,
+      "failures": [
+        "MQTT broker rejects failed real version help before launching an owned broker",
+        "broker discovery retains authentic bounded nonzero probe diagnostics",
+        "broker discovery retains authentic bounded invalid-help probe diagnostics"
+      ],
+      "actualFailedProbePids": [
+        14381,
+        81778,
+        82072
+      ],
+      "observation": "All three actual shell probes return statusnull/SIGTERM/ETIMEDOUT and zero stdout/stderr at unchanged2000ms. Real rejection/close is retained; expected fixture producer execution is unverified. No owned broker launches for the failed MQTT help check.",
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-15-collaborative-release-refusal/final-gates",
+        "commit": "10ad603826dfee4168df1098928ff4d76cb04c9e",
+        "tree": "d441660ce665098a055a3bc16d70d42e37af4546",
+        "readBackFiles": 38,
+        "allBytesMatched": true,
+        "ownedBatchRemoved": true
+      },
+      "integrated": false
+    }
+  }
+}

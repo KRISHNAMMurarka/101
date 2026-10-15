@@ -49,8 +49,70 @@ function server(project) {
   child.stderr.on('data', chunk => { stderr += chunk.toString(); if (Buffer.byteLength(stderr) > 65536) { failure = Error('Owned launcher stderr bound'); child.kill('SIGTERM'); } });
   return { ready: promise, async close() { if (!closed) child.kill('SIGTERM'); const outcome = await settlement; assert.equal(failure, undefined); assert.equal(outcome.status, 0, stderr); assert.equal(stderr, ''); const final = output.trim().split('\n').map(line => JSON.parse(line)).at(-1); assert.deepEqual(final, { kind: 'closed', sockets: 0 }); return outcome; } };
 }
+
+async function checkCollaborativeClock(browser, origin) {
+  const context = await browser.newContext();
+  try {
+    const page = await context.newPage(), errors = [];
+    page.on('pageerror', error => errors.push(error.message));
+    await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+    await page.clock.install({ time: 0 }); await page.goto(origin); await page.clock.pauseAt(1000);
+    await page.evaluate(() => {
+      for (const checkbox of document.querySelectorAll('input[type=checkbox]')) checkbox.click();
+      const click = name => { const button = [...document.querySelectorAll('button')].find(button => button.textContent === name); if (!button) throw Error(name); button.click(); };
+      click('Start'); for (const side of ['left', 'right']) { click('Request ' + side + ' partition'); click('Approve pending request'); }
+    });
+    const hold = page.getByRole('button', { name: 'Hold contact', exact: true }).nth(0);
+    // This explicit software clock reproduces a queued held heartbeat ahead of
+    // release. The separate native journey below retains its real browser clock.
+    await page.clock.runFor(223); await hold.dispatchEvent('pointerdown', { pointerId: 1 }); await page.clock.runFor(83);
+    assert.equal(await page.evaluate(() => globalThis.reference.state().job?.held.left), true);
+    await page.clock.runFor(1); await hold.dispatchEvent('pointerup', { pointerId: 1 }); await page.clock.runFor(99);
+    const released = await page.evaluate(() => ({ active: globalThis.reference.state().active, held: globalThis.reference.state().job?.held, canvasHeld: document.querySelector('canvas').dataset.leftHeld }));
+    assert.deepEqual(released, { active: true, held: { left: false, right: false }, canvasHeld: 'false' }, 'A queued held heartbeat must not expire release within the original100ms age');
+    const final = await page.evaluate(async () => { await globalThis.reference.close(); return globalThis.reference.state(); });
+    assert.equal(final.lastJob.deliveryTimerArmed, false); assert.equal(final.active, false); assert.equal(final.retiring, false); assert.equal(final.listeners, 0); assert.equal(final.framePending, false); assert.equal(final.expiryArmed, false); assert.deepEqual(errors, []);
+    return { browser: browser.browserType().name(), version: browser.version(), check: 'queued-heartbeat-before-release', clock: 'explicit-controlled-software-clock', controlEvents: 'explicit-synthetic-DOM-seam', maxAgeMs: 100, released, cleanup: { deliveryTimerArmed: false, listeners: 0, framePending: false, expiryArmed: false }, nativeTimingEvidence: false };
+  } finally { await context.close(); }
+}
+
+
+async function checkCollaborativeReleaseRefusal(browser, origin) {
+  const context = await browser.newContext();
+  try {
+    const page = await context.newPage(), errors = []; page.on('pageerror', error => errors.push(error.message));
+    await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
+    await page.clock.install({ time: 0 }); await page.goto(origin); await page.clock.pauseAt(1000);
+    const approve = async () => page.evaluate(() => {
+      for (const checkbox of document.querySelectorAll('input[type=checkbox]')) checkbox.click();
+      const start = [...document.querySelectorAll('button')].find(button => button.textContent === 'Start'); start.click();
+    });
+    await approve(); await page.evaluate(() => {
+      const click = name => [...document.querySelectorAll('button')].find(button => button.textContent === name).click();
+      for (const side of ['left', 'right']) { click('Request ' + side + ' partition'); click('Approve pending request'); }
+    });
+    await page.clock.runFor(223); await page.getByRole('button', { name: 'Hold contact', exact: true }).nth(0).dispatchEvent('pointerdown', { pointerId: 1 }); await page.clock.runFor(83);
+    assert.equal(await page.evaluate(() => globalThis.reference.state().job?.held.left), true);
+    // An explicit software burst fills the unchanged reliable queue4. A refused
+    // release must retire the job, rather than leave a stale captured edge retrying.
+    await page.evaluate(() => {
+      const hold = [...document.querySelectorAll('button')].find(button => button.textContent === 'Hold contact');
+      for (const [type, pointerId] of [['pointerup', 1], ['pointerdown', 2], ['pointerup', 2], ['pointerdown', 3], ['pointerup', 3]]) hold.dispatchEvent(new PointerEvent(type, { pointerId }));
+    });
+    await page.clock.fastForward(101); await page.clock.runFor(200);
+    const released = await page.evaluate(() => { const state = globalThis.reference.state(); return { active: state.active, retiring: state.retiring, sourceApproved: state.sourceApproved, sinkApproved: state.sinkApproved, held: state.lastJob?.held, listeners: state.lastJob?.listeners, deliveryTimerArmed: state.lastJob?.deliveryTimerArmed, framePending: state.framePending, expiryArmed: state.expiryArmed, canvasRemoved: document.querySelector('canvas') === null, focusOnApproval: document.activeElement === document.querySelector('input[type=checkbox]') }; });
+    assert.deepEqual(released, { active: false, retiring: false, sourceApproved: false, sinkApproved: false, held: { left: false, right: false }, listeners: 0, deliveryTimerArmed: false, framePending: false, expiryArmed: false, canvasRemoved: true, focusOnApproval: true }, 'Rejected reliable release must clear actual effects and retire authority, callbacks and input listeners');
+    assert.equal(await page.getByRole('button', { name: 'Start', exact: true }).isDisabled(), true);
+    assert.match(await page.getByRole('status').textContent(), /Input could not be delivered/);
+    await approve(); const fresh = await page.evaluate(() => globalThis.reference.state()); assert.equal(fresh.active, true); assert.equal(fresh.attempts, 2); assert.deepEqual(fresh.job.held, { left: false, right: false });
+    const final = await page.evaluate(async () => { await globalThis.reference.close(); return globalThis.reference.state(); });
+    assert.equal(final.active, false); assert.equal(final.retiring, false); assert.equal(final.listeners, 0); assert.equal(final.framePending, false); assert.equal(final.expiryArmed, false); assert.equal(final.lastJob.deliveryTimerArmed, false); assert.deepEqual(errors, []);
+    return { browser: browser.browserType().name(), version: browser.version(), check: 'reliable-release-capacity-refusal-retires-and-requires-fresh-approvals', clock: 'explicit-controlled-software-clock', controlEvents: 'explicit-synthetic-DOM-seam', queueCapacity: 4, maxAgeMs: 100, released, freshRetry: true, nativeTimingEvidence: false };
+  } finally { await context.close(); }
+}
+
 let generated, receipt, negative;
-const results = [], resolutions = [];
+const results = [], resolutions = [], schedulingResults = [];
 try {
   // Negative files are copied into one newly owned fixture; neither the qualified
   // installed consumer nor any user artifact is mutated.
@@ -114,6 +176,17 @@ try {
               await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(resolve)))));
               assert.equal(await page.evaluate(() => globalThis.reference.state().job?.contact), true, 'Pad keyboard blur preserves an independently active captured pointer');
               await page.mouse.move(8, 8); await page.mouse.up(); await page.waitForFunction(() => globalThis.reference.state().job?.contact === false);
+              await pad.hover(); await page.mouse.down(); await page.waitForFunction(() => globalThis.reference.state().job?.contact === true);
+              try {
+                await page.evaluate(() => { const original = window.requestAnimationFrame, pending = [];
+                  globalThis.restoreReferenceFrames = () => { window.requestAnimationFrame = original; for (const callback of pending) original.call(window, callback); delete globalThis.restoreReferenceFrames; };
+                  window.requestAnimationFrame = callback => { pending.push(callback); return 0; };
+                  return new Promise(resolve => original.call(window, () => original.call(window, resolve))); });
+                await page.mouse.move(8, 8); await page.mouse.up();
+                try { await page.waitForFunction(() => globalThis.reference.state().job?.contact === false, undefined, { timeout: 500 }); }
+                catch { /* Keep the original contact-age bound and inspect the real sink. */ }
+                assert.deepEqual(await page.evaluate(() => ({ active: globalThis.reference.state().active, contact: globalThis.reference.state().job?.contact, sinkContact: document.querySelector('canvas[aria-label="Application cursor output"]').dataset.contact })), { active: true, contact: false, sinkContact: 'false' }, 'Native pointer release must clear SDK/canvas contact within500ms with presentation frames withheld');
+              } finally { await page.evaluate(() => globalThis.restoreReferenceFrames?.()); }
             } else if (id === 'sensor-dashboard') {
               await page.waitForFunction(() => globalThis.reference.state().job?.samples >= 2); const state = await page.evaluate(() => globalThis.reference.state().job); assert.equal(state.producer, 'actual-browser-timer-lateness'); assert.ok(state.retainedRows <= 32); assert.equal(state.latest.lateness.provenance.physicalDevice, false); assert.equal(state.latest.lateness.clockDomain, 'reference-browser-sensor'); assert.ok(state.latest.lateness.value >= 0 && state.latest.lateness.value <= 10000);
               await page.getByLabel('Alert when lateness exceeds').focus(); await page.keyboard.press('Home');
@@ -160,14 +233,15 @@ try {
             }
             if (!unsupportedMedia) await page.getByLabel('Approve this application destination').uncheck();
             await page.waitForFunction(() => !globalThis.reference.state().active && !globalThis.reference.state().retiring);
-            const revoked = await page.evaluate(() => globalThis.reference.state()); if (id === 'collaborative-controls') assert.equal(revoked.lastJob.deliveryTimerArmed, false, 'Retirement cancels the owned delivery clock'); assert.equal(revoked.sourceApproved, false); assert.equal(revoked.sinkApproved, false); assert.equal(revoked.framePending, false); assert.equal(revoked.expiryArmed, false);
+            const revoked = await page.evaluate(() => globalThis.reference.state()); if (id === 'pointer' || id === 'collaborative-controls') assert.equal(revoked.lastJob.deliveryTimerArmed, false, 'Retirement cancels the owned delivery clock'); assert.equal(revoked.sourceApproved, false); assert.equal(revoked.sinkApproved, false); assert.equal(revoked.framePending, false); assert.equal(revoked.expiryArmed, false);
             assert.equal(await page.getByLabel('Approve this selected source').evaluate(element => element === document.activeElement), true, 'Released authority returns focus to fresh approval');
             if (id !== 'media-sharing') { await approveAndStart(); assert.equal(await page.evaluate(() => globalThis.reference.state().active), true); await page.getByRole('button', { name: 'Stop', exact: true }).click(); await page.waitForFunction(() => !globalThis.reference.state().retiring); }
             const final = await page.evaluate(async () => { await globalThis.reference.close(); return { state: globalThis.reference.state(), tracksEnded: globalThis.nativeAudit.tracks.every(track => track.readyState === 'ended'), videosDetached: globalThis.nativeAudit.videos.every(video => video.srcObject === null && !video.isConnected), defaultOpens: globalThis.nativeAudit.defaultOpens, captureTracks: globalThis.nativeAudit.tracks.length }; });
             assert.equal(final.state.active, false); assert.equal(final.state.retiring, false); assert.equal(final.state.listeners, 0); assert.equal(final.state.framePending, false); assert.equal(final.state.expiryArmed, false); assert.equal(final.tracksEnded, true); assert.equal(final.videosDetached, true); assert.equal(final.defaultOpens, 0); assert.deepEqual(errors, []); assert.deepEqual(foreign, []);
-            results.push({ id, browser: engine.name(), version: browser.version(), supportedSelectedMedia: id === 'media-sharing' ? !unsupportedMedia : undefined, checks: ['inert-before-two-independent-approvals', 'decline-grants-none', 'actual-selected-interactive-job', ...(id === 'pointer' ? ['Space-Shift+Tab-other-control-release-clears-held-sink', 'keyboard-blur-preserves-native-captured-pointer'] : id === 'collaborative-controls' ? ['native-drag-outside-release-clears-partition', 'native-release-clears-SDK-sink-before-next-UI-frame'] : []), 'revoke-releases-current-effects', 'fresh-explicit-retry-or-honest-media-unsupported', 'native-keyboard-controls-visible-focus', 'closed-runtime-native-and-UI-lifetime'], final, physicalHardwareQualification: false, automatedControlEvents: id === 'collaborative-controls' ? 'Actual native mouse drag/outside-release plus explicit synthetic DOM control events for simultaneous local software partitions; no hardware evidence' : 'Owned native browser keyboard/control automation' });
+            results.push({ id, browser: engine.name(), version: browser.version(), supportedSelectedMedia: id === 'media-sharing' ? !unsupportedMedia : undefined, checks: ['inert-before-two-independent-approvals', 'decline-grants-none', 'actual-selected-interactive-job', ...(id === 'pointer' ? ['Space-Shift+Tab-other-control-release-clears-held-sink', 'keyboard-blur-preserves-native-captured-pointer', 'native-pointer-release-clears-SDK-sink-before-next-UI-frame'] : id === 'collaborative-controls' ? ['native-drag-outside-release-clears-partition', 'native-release-clears-SDK-sink-before-next-UI-frame'] : []), 'revoke-releases-current-effects', 'fresh-explicit-retry-or-honest-media-unsupported', 'native-keyboard-controls-visible-focus', 'closed-runtime-native-and-UI-lifetime'], final, physicalHardwareQualification: false, automatedControlEvents: id === 'collaborative-controls' ? 'Actual native mouse drag/outside-release plus explicit synthetic DOM control events for simultaneous local software partitions; no hardware evidence' : 'Owned native browser keyboard/control automation' });
           } catch (error) { console.error(JSON.stringify({ phase: 'owned-browser-journey', application: id, browser: engine.name(), version: browser.version() })); throw error; }
           finally { await context.close(); }
+          if (id === 'collaborative-controls') { schedulingResults.push(await checkCollaborativeClock(browser, origin)); schedulingResults.push(await checkCollaborativeReleaseRefusal(browser, origin)); }
         } finally { await browser.close(); }
       }
     } finally { await launcher.close(); }
@@ -178,7 +252,7 @@ try {
   for (const [path, pin] of Object.entries(tarballPins)) assert.equal(hash(readFileSync(path)), pin);
   assert.equal(hash(readFileSync(sdk.manifestFile)), sdk.manifestSha256);
   receipt = { result: 'pass', mode: 'five-independent-ordinary-installed-sdk-projects', sourceTree, ...(callerTree ? { callerTree } : {}), immutableManifest: { path: sdk.manifestFile, sha256: sdk.manifestSha256 }, callerPins, dependencyPins, installedPins: sdk.installedPins, tarballPins,
-    generatedPins: generated.generatedPins, generatedProjects: REFERENCE_APP_IDS, ...(selectedApplication ? { selectedApplication } : {}), publicResolutions: resolutions, node: process.version, results, physicalHardwareQualification: false, remotePeopleAuthentication: false, softwareProducersExplicit: true, manualCaptureLossQualified: false, cleanup: { ownedProjects: 0, negativeConsumers: 0, launchers: 0, browsers: 0, contexts: 0, defaultUserMediaOpens: 0 } };
+    generatedPins: generated.generatedPins, generatedProjects: REFERENCE_APP_IDS, ...(selectedApplication ? { selectedApplication } : {}), publicResolutions: resolutions, node: process.version, results, schedulingResults, physicalHardwareQualification: false, remotePeopleAuthentication: false, softwareProducersExplicit: true, manualCaptureLossQualified: false, cleanup: { ownedProjects: 0, negativeConsumers: 0, launchers: 0, browsers: 0, contexts: 0, defaultUserMediaOpens: 0 } };
 } finally {
   generated?.cleanup(); if (negative) { assert.ok(negative.startsWith(join(realpathSync('/tmp'), '101-sdk-consumer-reference-negative-'))); rmSync(negative, { recursive: true, force: true }); }
 }
