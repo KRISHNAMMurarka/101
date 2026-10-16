@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "deterministic test-only actual watchdog lock schedule for safe Busy and unchanged stale-token semantics",
+  "sourceSha256": {
+    "apps/desktop-hub/src-tauri/src/native_input.rs": "2c82d9f4195b462826874a49dfbe3d2406203d95c7ef88b48077d01cea3a9ebe",
+    "apps/desktop-hub/src-tauri/src/native_input_controller.rs": "eb3b08acf9052f7cd870e1279732749635c8551ad82b139092f5cd4d458ed9c0",
+    "tests/native-input-controller-harness.rs": "ad327719953ca83ae69b2512b11c6b44c27530ef7fdbab261081f7f398c35c01",
+    "tools/qa-native-desktop-input.mjs": "d4ac03c1be1aa8193f585fd8708b3602ee141808c3aeb762d4bdcd707b4d6445",
+    "tests/native-desktop-input.test.ts": "40fb9c00921e439699c098b127266fdb6ece14b43b41201fc1a052c970adb6ff"
+  },
+  "appliedChecks": [
+    {
+      "name": "native-source",
+      "command": [
+        "node",
+        "--test",
+        "tests/native-desktop-input.test.ts"
+      ],
+      "pid": 8349,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 5.208
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npx",
+        "eslint",
+        "tests/native-desktop-input.test.ts",
+        "tools/qa-native-desktop-input.mjs"
+      ],
+      "pid": 9802,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 2.191
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "pid": 10397,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 4.176
+    }
+  ],
+  "nativeSourceChecks": {
+    "backend": 17,
+    "controller": 11,
+    "nodeWrapper": 1,
+    "skipped": 0
+  },
+  "isolatedReport": {
+    "schemaVersion": 1,
+    "disposition": "ISOLATED_CONTROLLED_SCHEDULE_AND_DETERMINISTIC_FIXTURE_PASS",
+    "canonicalChanges": false,
+    "rootFrozenCandidate": "0fb9f7f764eac4a50e6138e2afa3ab96c9add075",
+    "productionGuardChanges": false,
+    "historicalLockOwnerCauseProved": false,
+    "nativeProcessStartupFix": false,
+    "primaryPatch": {
+      "path": "proposed.patch.txt",
+      "sha256": "7f14696e5cd8f946c6eef67f54774bb94fbbd0d4d3d4ce7b2276b80e3b473f9e",
+      "files": 3
+    },
+    "requiredIntegrationCountsPatch": {
+      "path": "producer-consumer-counts.patch.txt",
+      "sha256": "57d8e6381090c5b591903ad5f59c90841d462aed4edac93485a06468e4f5979e",
+      "files": 2,
+      "meaning": "controller expected10\u219211 in actual QA producer and unit consumer; backend17 unchanged. Text only, not applied/executed here."
+    },
+    "results": {
+      "compiler": "rustc 1.94.1 (e408947bf 2026-03-25)\nbinary: rustc\ncommit-hash: e408947bfd200af42db322daf0fadfe7e26d3bd1\ncommit-date: 2026-03-25\nhost: aarch64-apple-darwin\nrelease: 1.94.1\nLLVM version: 21.1.8",
+      "oldControlled": {
+        "exitCode": 101,
+        "pass": 0,
+        "fail": 1,
+        "ignored": 0,
+        "filtered": 10,
+        "exactObservation": "Controlled actual worker lock reproduces original old-select unwrapNative(Busy); revised nonasserting Drop fallback joins actual worker and emits owned-watchdog-fallback-joined before original panic escapes."
+      },
+      "correctedSelected": {
+        "exitCode": 0,
+        "pass": 2,
+        "fail": 0,
+        "ignored": 0,
+        "filtered": 9,
+        "cases": [
+          "actual_watchdog_lock_returns_busy_before_any_selection_authority",
+          "search_is_bounded_and_old_token_cannot_command_replacement"
+        ],
+        "effects": "Held inner lock: exactNative(Busy),0inventory/confirmation/event/release,no target,selecting reset. Separate parked-outside fixture preserves32searches,distinct token,staleInvalidToken and0emitted assertions; both explicitfinish calls assert actual worker joins/shutdown."
+      },
+      "compileWarnings": "Both actual rustc compile stderr streams retain existing unused/dead-code diagnostics from compiling the scoped fixture. No compiler error; full streams preserved."
+    },
+    "sourceMechanism": "Only cfg(test) worker phase/stop/join seams added around unchanged actual loop; guard constructed before hook installation and initial wait. Drop is best-effort Result cleanup with fallible stdout write; successful paths assert via explicitfinish. Known controlled old panic fallback actual join witnessed. Production nonblocking lifecycle/UI/10ms cadence unchanged.",
+    "testFailureSensitivity": "Negative fails if lifecycle blocks/admits instead of returningBusy, or issues any inventory/confirmation/event under held worker. Positive fails if bounded search/token replacement fences regress; it does not rely on allowing Busy or repeating any selection.",
+    "execution": "execution-state.json",
+    "ownedScratch": [
+      "/Users/km/Dev/101/release/rust-worker-phase-obtjfs37",
+      "/Users/km/Dev/101/release/rust-worker-phase-k6ve7w77"
+    ],
+    "cleanup": "Both uniquely owned release directories removed after108exactblobreadbacks; allten supervised commands joined and groups absent; success and controlled panic worker joins witnessed. See cleanup.json. Canonical/index/ledger/dist unchanged by this worker.",
+    "limits": [
+      "A controlled allowed schedule is reproduced; no callsite or historical lock-owner telemetry is added to the failed full gate.",
+      "The actual UI Busy\u2192generic pairing-message issue remains unchanged and separate.",
+      "Only two selected cases executed;9 existing tests filtered, no skip/whole-suite proof. Backend17 source unchanged; broad exact candidate root gates remain root responsibility.",
+      "New test seam manipulates actual worker phase, not its data/guard/lifecycle return. It is fixture determinism, not production reliability remediation."
+    ],
+    "priorAttempt": {
+      "path": "attempts/initial",
+      "basis": "Initial controlled1fail/2pass retained exactly; independent source review requested cleanup correction for potential double panic/guard timing, not actual witnessed leaked worker. No initial result discarded."
+    },
+    "fileCustody": {
+      "ref": "refs/codex/evidence/2026-10-16-native-input/worker-phase",
+      "commit": "de9045326d6db1ce846750863ce86573c0c82c1a",
+      "manifest": "manifest.json",
+      "readBackFiles": 108,
+      "allBytesMatched": true,
+      "scope": "Full unique source/raw/executable custody; report files map is superseded by immutable manifest because source-pins.json was refreshed after report composition. No source, raw run or result changed."
+    }
+  },
+  "precedingCustody": {
+    "status": "complete",
+    "removedOnlyOwned": [
+      "/Users/km/Dev/101/release/rust-worker-phase-obtjfs37",
+      "/Users/km/Dev/101/release/rust-worker-phase-k6ve7w77"
+    ],
+    "allAbsent": true,
+    "immutableReadbackBeforeRemoval": {
+      "ref": "refs/codex/evidence/2026-10-16-native-input/worker-phase",
+      "commit": "de9045326d6db1ce846750863ce86573c0c82c1a",
+      "tree": "dc3b30d9d9c051c7361119ae3ba1cc65066d73ea",
+      "readBackFiles": 108,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "allTenSupervisedCommandsJoined": true,
+    "knownActualWorkerJoins": {
+      "initialOldPanic": 1,
+      "initialCorrected": 2,
+      "correctedOldPanicFallback": 1,
+      "correctedSuccessExplicit": 2
+    },
+    "canonicalIndexLedgerDistUnchangedByWorker": true
+  },
+  "independentFinalReviewSha256": "83eea08d825c266727500e4e8701ab0bdbd2a6687953e193f2359fca5a3137e0",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-review-wave/rust",
+    "commit": "0caae822ed558337cc3eedb56bbe8431add11036",
+    "tree": "f9e19742634d55e488a8ed19f2fdea861ef8af25",
+    "readBackFiles": 108,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "productionBehaviorChanged": false,
+  "nativeStartupFix": false,
+  "limits": [
+    "Only cfg(test) worker-phase callbacks/join and test fixture change. Production nonblocking lifecycle, actual lock/sweep/10ms schedule, approvals and native deadlines remain unchanged.",
+    "A controlled old selection returns Native(Busy) under an actual held watchdog lock, without inventory/confirmation/event/token. A separately parked real worker permits original32-search/distinct-token/staleInvalidToken/zeroeffect assertions.",
+    "All worker joins and owned Rust runner groups are retained. Initial teardown issues and corrected source/runtime attempts remain separate.",
+    "Historical failed lock owner is unobserved, including possible other Busy sites; this is test determinism and coverage, not cause attribution or actual OS/native startup proof."
+  ]
+}

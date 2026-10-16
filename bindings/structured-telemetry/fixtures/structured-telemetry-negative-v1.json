@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "profile": "structured-telemetry-json2/1",
+  "fixtureProfile": "structured-telemetry-native-negative/1",
+  "negative": [
+    {
+      "id": "duplicate-envelope-version-key",
+      "wireUtf8": "{\"protocol\":\"connect\",\"version\":2,\"version\":2,\"epoch\":\"0123456789abcdef0123456789abcdef\",\"slot\":1,\"sequence\":1,\"capturedAt\":0,\"value\":{\"step\":0,\"mode\":\"count-up\"},\"type\":\"sample\"}",
+      "accept": {
+        "swift": true,
+        "kotlin": true,
+        "c": false
+      },
+      "reason": "Foundation and Gson retain the duplicate-key input as an accepted selected sample; the C/Jansson artifact profile explicitly rejects duplicate keys."
+    }
+  ]
+}

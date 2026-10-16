@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "D04"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "implementation": "Explicit selected-interface macOS DNS-SD profile; existing LocalOnly remains default.",
+  "sourceSha256": {
+    "packages/device-runtime/src/native-discovery.ts": "2b8939b3812baecf067040b88d73ba8c62cf9ba522299c3648066c38470b65d8",
+    "packages/device-runtime/src/native-discovery.test.ts": "5f8d824817fcc5e1799010ea70a355bdb51ce586601a68f816216e0ca6a33f6a",
+    "examples/native-discovery/macos-provider.c": "0671eae23b4bdc85951e19742e1479e3de174d3c36414556f0965fd86c69f06b",
+    "examples/native-discovery/process-port.mjs": "628bf7aee6f1f0efb566b91d7a72f2328950cee0a61289dec0af11e532e34d1e",
+    "examples/native-discovery/consumer.mjs": "5adbe84d1831398f357e52a8876906ee507e037835c68f3f7b80583086921cf3",
+    "tools/qa-native-discovery.mjs": "09d61b20fe79d141a5f1169ac69be9e6e6fc98a6df1b0990f07bd4a6ccc76bf3",
+    "packages/device-runtime/src/index.ts": "500dbe645bfbd023c35f817a5974a336c64442a1bf4221e344d752e3ccca7a24",
+    "packages/device-model/src/discovery.ts": "f08e28f4b46706ba21f947a3ca827ca310ababe3c627b111838737c1fcb6274b",
+    "packages/device-model/src/index.ts": "f09c0d8b206a1df52f30fafbe5677521afa70c617eca4c6bc4f2e69f4b8c24f1"
+  },
+  "baselineOnlyHead": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+  "compiledSourcePins": 125,
+  "sourceProvenance": "All125 compiled source hashes match current source; comparison against08a200 and exact authored changed-source bytes are retained. sourceTree labels baseline HEAD only, not this uncommitted implementation.",
+  "originalRed": {
+    "path": "first/controller-red.stdout",
+    "exitCode": 1,
+    "tests": 14,
+    "pass": 13,
+    "fail": 1,
+    "scope": "Selected-profile scope refused by exact old controller; existing13tests pass. Feature absence only."
+  },
+  "focused": {
+    "controllerTests": 17,
+    "pass": 17,
+    "fail": 0,
+    "strictTypecheckExitCode": 0,
+    "syntaxChecksExitCode": 0,
+    "cFakeAdmissionCases": 10,
+    "fakeOrdinaryInterfaceIndex": 14,
+    "fakePrivateNameFixtureIndex": 17
+  },
+  "profiles": [
+    {
+      "profile": "macos-local-only-dns-sd/1",
+      "consumerPid": 12615,
+      "nativeOpened": 3,
+      "rawExited": 3,
+      "resolvedCallbacks": 4,
+      "removedCallbacks": 1,
+      "observedInterfaceIndexes": [
+        4294967295
+      ],
+      "observedTargets": [
+        "localhost."
+      ],
+      "ownedProcesses": [
+        {
+          "role": "registration",
+          "pid": 12683,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "register",
+            "_101l18cf65e6._tcp",
+            "101-owned-18cf65e6",
+            "61772",
+            "30000"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 12717,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l18cf65e6._tcp",
+            "30000"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 13461,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l18cf65e6._tcp",
+            "30000"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "registration",
+          "pid": 13510,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "register",
+            "_101l18cf65e6._tcp",
+            "101-owned-18cf65e6",
+            "61772",
+            "30000"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 13561,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l18cf65e6._tcp",
+            "30000"
+          ],
+          "exitCode": null,
+          "signal": "SIGKILL"
+        }
+      ],
+      "cleanup": {
+        "controllerClosed": true,
+        "noRawReservation": true,
+        "childrenJoined": true,
+        "ownedChildCount": 5,
+        "loopbackListenerClosed": true
+      },
+      "scope": "Native LocalOnly authoritative DNS-SD records only. No LAN multicast, other platform, authenticated identity, advertised capability, optical/phone or discovery-derived resource permission."
+    },
+    {
+      "profile": "macos-selected-interface-dns-sd/1",
+      "consumerPid": 13644,
+      "nativeOpened": 3,
+      "rawExited": 3,
+      "resolvedCallbacks": 4,
+      "removedCallbacks": 1,
+      "observedInterfaceIndexes": [
+        14
+      ],
+      "observedTargets": [
+        "Krishnams-MacBook-Pro.local."
+      ],
+      "ownedProcesses": [
+        {
+          "role": "registration",
+          "pid": 13722,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "register",
+            "_101l658ee521._tcp",
+            "101-owned-658ee521",
+            "61777",
+            "30000",
+            "14"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 14030,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l658ee521._tcp",
+            "30000",
+            "14"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 14824,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l658ee521._tcp",
+            "30000",
+            "14"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "registration",
+          "pid": 15350,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "register",
+            "_101l658ee521._tcp",
+            "101-owned-658ee521",
+            "61777",
+            "30000",
+            "14"
+          ],
+          "exitCode": 0,
+          "signal": null
+        },
+        {
+          "role": "browser",
+          "pid": 15658,
+          "argv": [
+            "/Users/km/Dev/101/release/d04-selected-interface-impl-20261016-b/consumer/native-discovery-caller/macos-provider",
+            "browse",
+            "_101l658ee521._tcp",
+            "30000",
+            "14"
+          ],
+          "exitCode": null,
+          "signal": "SIGKILL"
+        }
+      ],
+      "cleanup": {
+        "controllerClosed": true,
+        "noRawReservation": true,
+        "childrenJoined": true,
+        "ownedChildCount": 5,
+        "loopbackListenerClosed": true
+      },
+      "scope": "Native DNS-SD observation on the operator-selected interface index 14. Same-machine self-browse only; no remote reachability/on-wire multicast, other platform, authenticated identity, advertised capability or discovery-derived resource permission."
+    }
+  ],
+  "operatorSelection": {
+    "selection": "en0",
+    "interfaceIndex": 14,
+    "selectionSource": "Root operator explicitly selected en0 for one bounded owned self-advertiser/self-browser test; no fallback, interface enumeration or remote/on-wire claim."
+  },
+  "authority": "Observed-only metadata; no automatic request, peer authentication, capability inference or resource grant. Discovery target is never fetched.",
+  "constraints": "Exact positive nonreserved index/profile/service/local-domain/owner/app/session/observe grant. Native lookup rejects known awdl/llw/p2p name families; no interface enumeration, Any/P2P/AWDL fallback or topology classification. Original quotas, quiet expiry, revocation and actual-close reservations preserved.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-discovery/applied",
+    "commit": "410b7092df9099bcf8472e065eb6c35555430612",
+    "tree": "0ea1258134e2ad0a029cc75747c3f85ddaa64d8c",
+    "readBackFiles": 185,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true,
+    "allOwnedProcessesAndOpenFilesAbsent": true,
+    "excludedCompiledCopyFiles": 514
+  },
+  "review": {
+    "path": "controller/applied-review.json",
+    "sha256": "2aef5fa23abb202a168b57946546165d28c1004cbd78cd150d0d0b4c32958fa3"
+  },
+  "documentaryCorrections": "Original results preserved; corrected sibling-a evidence links and explicit baseline-only HEAD meaning. No product/source or runtime result changed.",
+  "firstRunBoundary": "a succeeded but lacked per-child PID fields; exact original retained separately from evidence-qualified b after instrumentation-only source change.",
+  "evidencePaths": {
+    "completeReceipt": "qualified/consumer/native-discovery-receipt.json",
+    "rawStreams": "qualified/consumer/native-discovery-caller/",
+    "controllerAndTypes": "first/",
+    "correctedResultDescription": "controller/implementation-results-corrected.md.txt"
+  },
+  "remaining": "Actual selected-index self-browse is same-machine only. No remote host, on-wire multicast, other OS, P2P/virtual-link topology guarantee, native duplicate/resolver-overload qualification or fullD04 acceptance.",
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeOriginal2500msReliability": "UNRESOLVED"
+}

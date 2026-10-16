@@ -24,6 +24,23 @@ private func actualPackets() throws -> [String: Data] {
     return packets
 }
 
+private func duplicateKeyNegative() throws -> (Data, Bool) {
+    let path = try #require(ProcessInfo.processInfo.environment["ONE01_STRUCTURED_NEGATIVE_FIXTURES"])
+    let bytes = try Data(contentsOf: URL(fileURLWithPath: path))
+    try #require(bytes.count <= 16384)
+    let document = try #require(try JSONSerialization.jsonObject(with: bytes) as? [String: Any])
+    #expect(document["profile"] as? String == "structured-telemetry-json2/1")
+    #expect(document["fixtureProfile"] as? String == "structured-telemetry-native-negative/1")
+    let entries = try #require(document["negative"] as? [[String: Any]])
+    try #require(entries.count == 1)
+    let entry = entries[0]
+    try #require(entry["id"] as? String == "duplicate-envelope-version-key")
+    let wire = try #require(entry["wireUtf8"] as? String)
+    let verdicts = try #require(entry["accept"] as? [String: Any])
+    let expected = try #require(verdicts["swift"] as? Bool)
+    return (Data(wire.utf8), expected)
+}
+
 private func packetObject(_ bytes: Data) throws -> [String: Any] {
     try #require(try JSONSerialization.jsonObject(with: bytes) as? [String: Any])
 }
@@ -98,6 +115,11 @@ private func sample(_ value: ReadingValue, epoch: String = fixtureEpoch, slot: U
     }
     var extra = base; extra["clockId"] = "invented-clock"
     #expect(StructuredTelemetryWire.decode(try packetData(extra), lane: .disposable) == nil)
+}
+
+@Test func sharedDuplicateKeyNegativePinsObservedArtifactVerdict() throws {
+    let (bytes, expectedAccept) = try duplicateKeyNegative()
+    #expect((StructuredTelemetryWire.decode(bytes, lane: .disposable) != nil) == expectedAccept)
 }
 
 @Test func selectedRecordAndArraySchemasRejectCoercionNullAndUnboundedRows() throws {

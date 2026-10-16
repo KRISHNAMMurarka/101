@@ -276,7 +276,7 @@ for (const engineName of engines) {
       }
       await start(owner, 'owner'); await start(first, 'observer'); await start(second, 'observer');
       phase = 'held-genuine-identity-stop-negative';
-      await second.evaluate(() => globalThis.__watchNative.holdNextIdentity()); await nativeActivate(second, 'Create owner invitation');
+      await second.evaluate(() => globalThis.__watchNative.holdNextIdentity()); await nativeActivate(second, 'Create observer invitation');
       await second.waitForFunction(() => globalThis.__watchNative.snapshot().pendingKeyReturns === 1);
       await main(second).getByRole('button', { name: 'Stop watch setup', exact: true }).click();
       assert.equal(await main(second).getByRole('button', { name: 'Start watch setup', exact: true }).isDisabled(), true);
@@ -286,12 +286,12 @@ for (const engineName of engines) {
       phase = 'bilateral-native-enrollment';
       for (const [index, observer] of [first, second].entries()) {
         const id = `observer-${index + 1}`, peer = main(owner).getByTestId(`watch-peer-${id}`), observerPeer = main(observer).getByTestId('watch-peer-owner');
-        await nativeActivate(observer, 'Create owner invitation');
-        const invitation = main(observer).getByRole('textbox', { name: 'owner outgoing code', exact: true }); await invitation.waitFor();
+        await nativeActivate(observer, 'Create observer invitation');
+        const invitation = main(observer).getByRole('textbox', { name: 'Owner Code for the other page', exact: true }); await invitation.waitFor();
         await main(owner).getByRole('textbox', { name: 'Observer invitation', exact: true }).fill(await invitation.inputValue());
         await nativeActivate(owner, 'Review observer invitation'); await nativeActivate(owner, 'Create connection offer', peer);
-        const offer = peer.getByRole('textbox', { name: `${id} outgoing code`, exact: true }); await offer.waitFor();
-        await observerPeer.getByRole('textbox', { name: 'owner incoming code', exact: true }).fill(await offer.inputValue());
+        const offer = peer.getByRole('textbox', { name: `Observer ${index + 1} Code for the other page`, exact: true }); await offer.waitFor();
+        await observerPeer.getByRole('textbox', { name: 'Owner Owner offer', exact: true }).fill(await offer.inputValue());
         await nativeActivate(observer, 'Accept owner offer', observerPeer);
         await observer.waitForFunction(() => {
           const code = document.querySelector('[data-testid="watch-peer-owner"] textarea[readonly]')?.value;
@@ -299,7 +299,7 @@ for (const engineName of engines) {
           try { const body = code.slice('101-sharing-1.'.length); return JSON.parse(atob(body.replaceAll('-', '+').replaceAll('_', '/')
             + '='.repeat((4 - body.length % 4) % 4))).kind === 'answer'; } catch { return false; }
         });
-        await peer.getByRole('textbox', { name: `${id} incoming code`, exact: true }).fill(await invitation.inputValue());
+        await peer.getByRole('textbox', { name: `Observer ${index + 1} Observer answer`, exact: true }).fill(await invitation.inputValue());
         await nativeActivate(owner, 'Accept observer answer', peer);
         const a = peer.getByTestId(`watch-comparison-${id}`), b = observerPeer.getByTestId('watch-comparison-owner');
         await a.waitFor(); await b.waitFor(); assert.equal(await a.innerText(), await b.innerText());

@@ -220,3 +220,68 @@ for (const cause of ['now', 'source-facts'] as const) test(`owner revocation dur
     assert.equal(f.contexts(), 0); assert.equal(f.original.stopped, 0);
   } finally { await f.close(); }
 });
+
+
+for (const role of ['source', 'output'] as const) test(`private audio rejects a previously accepted ${role} owner decision for a replacement output`, async t => {
+  type Request = Parameters<BrowserApplicationAudioOptions['authorizeSource']>[0];
+  type Decision = NonNullable<ReturnType<BrowserApplicationAudioOptions['authorizeSource']>>;
+  let mode: 'fresh' | 'replay' = 'fresh', cached: Decision | undefined;
+  const requests: Request[] = [];
+  const approve = (request: Request): Decision => {
+    const decision = { request, signal: new AbortController().signal, grant: { expiresAt: 1100, maxAgeMs: 250, maxHz: 20 } };
+    if (request.role !== role || request.outputId !== 'app:replayed') return decision;
+    requests.push(request);
+    if (mode === 'replay') { assert.ok(cached); return cached; }
+    cached = decision;
+    return decision;
+  };
+  const f = fixture({ authorizeSource: approve, authorizeOutput: approve });
+  try {
+    const source = f.source(), incumbent = f.bind(source, 'app:incumbent');
+    assert.equal(await incumbent.ready, true);
+    const first = f.bind(source, 'app:replayed');
+    assert.equal(await first.ready, true, 'The cached decision must first authorize an actual output');
+    assert.ok(first.output()); assert.ok(cached); assert.equal(cached.request, requests[0]);
+    const accepted = cached;
+    first.stop();
+    assert.equal(first.output(), undefined); assert.ok(incumbent.output());
+    assert.equal(f.bus.snapshot().activeOutputs, 1);
+    const gains = f.context.gains.length, outputs = f.context.outputs.length, edges = f.context.source.connections.size;
+    mode = 'replay';
+    const denied = f.bind(source, 'app:replayed');
+    assert.equal(await denied.ready, false);
+    assert.equal(denied.status().reason, 'denied'); assert.equal(denied.output(), undefined);
+    assert.equal(requests.length, 2); assert.equal(cached, accepted);
+    assert.notEqual(requests[1], accepted.request);
+    assert.notEqual(requests[1]!.sink.registrationId, accepted.request.sink.registrationId);
+    assert.deepEqual({ ...requests[1], sink: { ...requests[1]!.sink, registrationId: accepted.request.sink.registrationId } }, accepted.request,
+      'The same textual application/session/owner/resource/profile tuple still requires the newly issued request and registration');
+    assert.equal(f.context.gains.length, gains); assert.equal(f.context.outputs.length, outputs);
+    assert.equal(f.context.source.connections.size, edges, 'A replay cannot create a new private native graph edge');
+    assert.equal(f.contexts(), 1); assert.equal(f.bus.snapshot().activeOutputs, 1); assert.ok(incumbent.output());
+    mode = 'fresh';
+    const recovered = f.bind(source, 'app:replayed');
+    assert.equal(await recovered.ready, true); assert.ok(recovered.output()); assert.notEqual(cached, accepted);
+    assert.equal(requests.length, 3); assert.equal(cached!.request, requests[2]);
+    assert.equal(f.context.gains.length, gains + 1); assert.equal(f.context.outputs.length, outputs + 1);
+    assert.equal(f.context.source.connections.size, edges + 1); assert.equal(f.bus.snapshot().activeOutputs, 2);
+    assert.equal(recovered.setVolume(0.5), true);
+    assert.equal((f.context.gains.at(-1) as Node & { gain: { value: number } }).gain.value, 0.5);
+    assert.equal(f.context.source.connections.has(f.context.destination), false);
+    t.diagnostic(JSON.stringify({ role, cachedDecisionPreviouslyAccepted: true, replacementRequestDistinct: true,
+      replacementSinkRegistrationDistinct: true, replayReady: false, replayNewGains: 0, replayNewOutputs: 0,
+      replayNewEdges: 0, incumbentRetained: true, freshRecoveryReady: true, freshRecoveryGain: 0.5,
+      scope: 'actual public client and SDK runtime; cooperative software graph, no native audio qualification' }));
+  } finally {
+    await f.close();
+    const status = f.bus.snapshot();
+    assert.equal(status.closed, true); assert.equal(status.activeOutputs, 0); assert.equal(status.rawPending, 0);
+    assert.equal(status.cleanupPending, 0); assert.equal(status.listeners, 0); assert.equal(status.cleanupFailures, 0);
+    assert.equal(status.pollArmed, false); assert.equal(status.expiryArmed, false);
+    assert.equal(f.context.source.connections.size, 0); assert.equal(f.context.closes, 1);
+    assert.equal(f.original.stopped, 0); assert.equal(f.cloned.stopped, 1);
+    assert.ok(f.context.outputs.every(output => output.stream.tracks.every(track => track.stopped === 1)));
+    t.diagnostic(JSON.stringify({ role, closed: true, pending: 0, listeners: 0, timersArmed: false,
+      ownedEdges: 0, borrowedProducerTrackStopped: 0, ownedTracksStopped: true }));
+  }
+});

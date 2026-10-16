@@ -120,6 +120,20 @@ let nativeRTC = { issued: 0, closed: 0, open: 0 }, finalSharingReleased = false;
 let childCloseObserved = false, browserServerCloseObserved = false, timedOut = false, interrupted = false;
 let prefixComplete = false, localOutputReleased = false, localSetupStopped = false, requests = 0, missingActionObserved = false;
 let failure, closeJob;
+const transferObservations = [];
+async function observeTransfer(label) {
+  const pages = [page, ...additionalPages];
+  const observations = await Promise.all(pages.map(async (owned, index) => {
+    if (!owned || owned.isClosed()) return { index, closed: true };
+    return owned.evaluate(index => ({ index, clock: 'this-page-performance', at: performance.now(),
+      visibility: document.visibilityState, focused: document.hasFocus(),
+      status: document.querySelector('#connected-sharing-status')?.textContent?.slice(0, 160),
+      pressDisabled: [...document.querySelectorAll('button')].find(button => button.textContent === 'Press')?.disabled,
+      events: globalThis.__connectedSharingEvents?.slice(-6), native: globalThis.__connectedSharingNative?.(),
+    }), index);
+  }));
+  transferObservations.push({ label, observations });
+}
 function current() { assert.ok(!timedOut && !interrupted, 'Owned QA run expired or was cancelled'); }
 function check(name) { current(); assert.ok(checks.length < limits.checks); checks.push(name); }
 function closeServer() {
@@ -129,12 +143,20 @@ function closeServer() {
 async function nativeTracking(ownedContext) {
   await ownedContext.addInitScript(() => {
     const NativePeer = globalThis.RTCPeerConnection, peers = new Set(); let issued = 0;
+    // Read-only diagnostic listeners: no clock, visibility, authority or input substitutions.
+    const events = []; Object.defineProperty(globalThis, '__connectedSharingEvents', { value: events });
+    const observe = type => { if (events.length === 32) events.shift(); events.push([performance.now(), type, document.visibilityState]); };
+    observe('initial');
+    for (const type of ['focus', 'blur', 'pagehide']) window.addEventListener(type, () => observe(type), { passive: true });
+    document.addEventListener('visibilitychange', () => observe('visibilitychange'), { passive: true });
     Object.defineProperty(globalThis, '__connectedSharingNative', { value: () => ({ issued, closed: [...peers].filter(peer => peer.connectionState === 'closed').length,
-      open: [...peers].filter(peer => peer.connectionState !== 'closed').length }) });
+      open: [...peers].filter(peer => peer.connectionState !== 'closed').length,
+      states: [...peers].map(peer => [peer.connectionState, peer.iceConnectionState]) }) });
     if (typeof NativePeer !== 'function') return;
     globalThis.RTCPeerConnection = new Proxy(NativePeer, { construct(Target, args) {
       if (++issued > 4) throw Error('Owned native peer fixture quota');
-      const peer = Reflect.construct(Target, args, Target); peers.add(peer); return peer;
+      const peer = Reflect.construct(Target, args, Target); peers.add(peer);
+      peer.addEventListener('connectionstatechange', () => observe('peer:' + peer.connectionState), { passive: true }); return peer;
     } });
   });
 }
@@ -266,12 +288,12 @@ try {
       phase = `actual-native-enrollment-${index + 1}`;
       await page.getByRole('button', { name: 'Create participant invitation', exact: true }).click();
       const ownerPeer = page.getByTestId(`connected-peer-participant-${index + 1}`), sourcePeer = sourcePage.getByTestId('connected-peer-participant-1');
-      const invitation = ownerPeer.getByRole('textbox', { name: `participant-${index + 1} outgoing code`, exact: true }); await invitation.waitFor();
+      const invitation = ownerPeer.getByRole('textbox', { name: `Participant ${index + 1} Code for the participant`, exact: true }); await invitation.waitFor();
       await sourcePage.getByRole('textbox', { name: 'Owner invitation', exact: true }).fill(await invitation.inputValue());
       await sourcePage.getByRole('button', { name: 'Review invitation', exact: true }).click();
       await sourcePage.getByRole('button', { name: 'Create connection offer', exact: true }).click();
-      const offer = sourcePeer.getByRole('textbox', { name: 'participant-1 outgoing code', exact: true }); await offer.waitFor();
-      await ownerPeer.getByRole('textbox', { name: `participant-${index + 1} incoming code`, exact: true }).fill(await offer.inputValue());
+      const offer = sourcePeer.getByRole('textbox', { name: 'Connected owner page Code for the owner', exact: true }); await offer.waitFor();
+      await ownerPeer.getByRole('textbox', { name: `Participant ${index + 1} Participant offer`, exact: true }).fill(await offer.inputValue());
       await ownerPeer.getByRole('button', { name: 'Accept participant offer', exact: true }).click();
       await page.waitForFunction(id => {
         const code = document.querySelector(`[data-testid="connected-peer-${id}"] textarea[readonly]`)?.value;
@@ -279,7 +301,7 @@ try {
         try { const body = code.slice('101-sharing-1.'.length); return JSON.parse(atob(body.replaceAll('-', '+').replaceAll('_', '/') + '='.repeat((4 - body.length % 4) % 4))).kind === 'answer'; } catch { return false; }
       }, `participant-${index + 1}`); current();
       const answerCode = await invitation.inputValue();
-      await sourcePeer.getByRole('textbox', { name: 'participant-1 incoming code', exact: true }).fill(answerCode);
+      await sourcePeer.getByRole('textbox', { name: 'Connected owner page Owner answer', exact: true }).fill(answerCode);
       await sourcePeer.getByRole('button', { name: 'Accept owner answer', exact: true }).click();
       const ownerComparison = page.getByTestId(`connected-comparison-participant-${index + 1}`), sourceComparison = sourcePage.getByTestId('connected-comparison-participant-1');
       await ownerComparison.waitFor(); await sourceComparison.waitFor(); assert.equal(await ownerComparison.innerText(), await sourceComparison.innerText());
@@ -336,9 +358,11 @@ try {
     await page.getByTestId('connected-output-exclusive').waitFor(); assert.equal(await page.getByTestId('connected-owner-exclusive').innerText(), 'None');
     await ask(first, 'exclusive'); await approve('exclusive'); await active(first); await first.getByRole('button', { name: 'Press', exact: true }).click(); await effect('exclusive', true);
     await ask(second, 'exclusive'); await approve('exclusive'); await active(second);
+    await observeTransfer('second-active-before-incumbent-release-observation');
     await first.waitForFunction(() => [...document.querySelectorAll('button')].find(button => button.textContent === 'Press')?.disabled === true);
     assert.equal(await page.getByTestId('connected-owner-exclusive').innerText(), 'Participant 2'); await effect('exclusive', false); check('native-exclusive-transfer-releases-prior-held-input');
     phase = 'cancel-and-scoped-revoke';
+    await observeTransfer('incumbent-released-before-second-press');
     await second.getByRole('button', { name: 'Press', exact: true }).click(); await effect('exclusive', true);
     await ask(first, 'exclusive'); await page.getByTestId('connected-review-exclusive').waitFor();
     await first.getByRole('button', { name: 'Cancel my request', exact: true }).click();
@@ -353,7 +377,8 @@ try {
     await page.waitForFunction(() => document.querySelector('[data-testid="connected-owner-exclusive"]')?.textContent === 'None' && document.querySelector('[data-testid="connected-output-exclusive"]')?.getAttribute('data-held') === 'false', undefined, { timeout: limits.expiryMs }); current();
     assert.equal(await first.getByRole('button', { name: 'Press', exact: true }).isDisabled(), true); check('natural-fixed-consent-expiry-releases-held-output');
     phase = 'fresh-request-after-expiry-and-native-loss';
-    await ask(second, 'exclusive'); await approve('exclusive'); await active(second); await second.getByRole('button', { name: 'Press', exact: true }).click(); await effect('exclusive', true);
+    await ask(second, 'exclusive'); await approve('exclusive'); await active(second);
+    await observeTransfer('second-active-before-incumbent-release-observation'); await second.getByRole('button', { name: 'Press', exact: true }).click(); await effect('exclusive', true);
     await second.getByRole('button', { name: 'Stop connected setup', exact: true }).click();
     await effect('exclusive', false); assert.equal(await page.getByTestId('connected-owner-exclusive').innerText(), 'None'); check('fresh-consent-recovery-and-native-peer-close-release');
     phase = 'connected-layout-keyboard-storage-and-stop';
@@ -370,7 +395,10 @@ try {
     assert.equal(nativeRTC.issued, 4); assert.equal(nativeRTC.closed, 4); assert.equal(nativeRTC.open, 0); finalSharingReleased = true;
     assert.deepEqual(errors, []); assert.deepEqual(foreign, []); check('actual-native-peer-close-await-and-storage-inert-cleanup');
   }
-} catch (error) { failure = error; }
+} catch (error) {
+  failure = error;
+  if (!old) try { await observeTransfer('failure-before-cleanup'); } catch (observationError) { transferObservations.push({ label: 'observation-unavailable', message: observationError.message.slice(0, 128) }); }
+}
 finally {
   clearTimeout(watchdog); process.removeListener('SIGINT', cancel); process.removeListener('SIGTERM', cancel);
   if (!old) {
@@ -408,7 +436,7 @@ const receipt = { schemaVersion: 1, profile: old ? 'connected-sharing-old-action
   toolchain: { node: process.version, playwright, engine: engineName, browserVersion, executable: engine.executablePath() },
   nativeBrowserPid: child?.pid, pageErrors: errors.length, foreignRequests: foreign.length, requests, timedOut, interrupted, cleanup,
   clientReadiness: { entry: clientEntry, entryResponse, clientResponseCount, retainedClientResponses: clientResponseFacts },
-  nativeRTC: old ? undefined : nativeRTC, finalSharingReleased,
+  nativeRTC: old ? undefined : nativeRTC, finalSharingReleased, transferObservations,
   scope: [old ? 'Actual existing same-page public SDK local producer and runtime effects; new connected action is checked only after that prefix.' : 'Actual three isolated browser contexts, native RTC/cryptographic bilateral enrollment and separately approved source/owner page-control effects. Wrapper observes genuine native peer construction/state, never substitutes a data producer.',
     old ? 'No page peer/native RTC enrollment, connected participant authority, observer, phone, OS pointer, hardware or full accessibility qualification.' : 'Selected native software journey only. No account identity, observer distribution, phone, OS pointer, cross-network or hardware/full accessibility claim. SDK-internal native crypto quiescence is not independently observable from this app caller.',
     'Caller owns loopback app server and endpoint-to-build attachment. Literal preserved server/client inventories and successful exact build record are verified; this tool starts no app server.'], published: false };

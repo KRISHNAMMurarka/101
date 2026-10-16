@@ -1,7 +1,7 @@
 import { createDeviceRuntime, createInputOwnershipController, pointerSourceDescriptor, parseDeviceDescriptor,
   schemasCompatible, PointerResourceProvider, RemoteResourceReceiver, webEndpointCrypto } from '@101/connect';
 import type { AuthorizationRequest, DeviceDescriptor, EndpointHandle, EndpointIdentity, InputOwnershipController,
-  InputOwnershipRequest, InputOwnershipSnapshot, Observation, PeerConnectionPort, ResourceReference } from '@101/connect';
+  InputOwnershipRequest, InputOwnershipSnapshot, InputOwnershipSource, Observation, PeerConnectionPort, ResourceReference } from '@101/connect';
 import { SharingPeer, SHARING_APPLICATION } from './sharing-peer.ts';
 import type { SharingPeerSnapshot } from './sharing-peer.ts';
 
@@ -9,22 +9,23 @@ export const CONNECTED_SHARING_PROFILE = 'connected-page-sharing/1';
 export const CONNECTED_SHARING_LIMITS = Object.freeze({ participants: 2, attempts: 32, requests: 64, policyChanges: 8,
   transitions: 64, rawPending: 4, resources: 2, maxAgeMs: 100, maxHz: 60, requestMs: 30000 });
 export type ConnectedSharingPolicy = 'partitioned' | 'exclusive';
-type Notice = 'ready' | 'invalid' | 'unavailable' | 'busy' | 'limit' | 'consent-needed' | 'requested' | 'approving' | 'active' | 'declined' | 'cancelled' | 'revoked' | 'expired' | 'review-changed' | 'policy-changed' | 'stopped' | 'closed';
+type Notice = 'ready' | 'invalid' | 'unavailable' | 'busy' | 'limit' | 'consent-needed' | 'requested' | 'approving' | 'active' | 'declined' | 'cancelled' | 'revoked' | 'expired' | 'review-changed' | 'policy-changed' | 'stopped' | 'closed' | 'participant-removing' | 'participant-removed' | 'participant-replacing';
 type Resource = { handle: EndpointHandle; device: DeviceDescriptor; capability: string };
 type Permit = { request: number; slotId: string; duration: 30 | 60; expiresAt: number; phase: 'preparing' | 'active'; epoch?: number;
   refs: Map<string, ResourceReference>; samples: Map<string, Observation>; wireSlots: number[] };
 type Pending = { request: number; duration: 30 | 60; ownership: InputOwnershipRequest };
-type Participant = { id: string; label: string; peer: SharingPeer; receiver?: RemoteResourceReceiver; bridge: Resource[]; sinks: Resource[]; operations: Map<string, number>;
+type RetiredSource = { source: InputOwnershipSource; bridge: Resource[]; sinks: Resource[] };
+type Participant = { state: 'live' | 'retiring' | 'removed' | 'replacement'; version: number; previous?: RetiredSource; id: string; label: string; peer: SharingPeer; receiver?: RemoteResourceReceiver; bridge: Resource[]; sinks: Resource[]; operations: Map<string, number>;
   pending?: Pending; permit?: Permit; lastRequest: number; principalId?: string };
 export interface ConnectedSharingPreview {
-  readonly kind: 'revoke' | 'policy'; readonly revision: number; readonly policy?: ConnectedSharingPolicy;
+  readonly kind: 'revoke' | 'policy' | 'remove'; readonly participantId?: string; readonly revision: number; readonly policy?: ConnectedSharingPolicy;
   readonly recipients: readonly Readonly<{ slotId: string; sourceId: string; epoch: number }>[];
 }
 export interface ConnectedSharingSnapshot {
   readonly role: 'owner' | 'participant'; readonly closed: boolean; readonly notice: Notice; readonly rosterFinished: boolean;
   readonly policy: ConnectedSharingPolicy; readonly revision: number; readonly active: boolean; readonly rawPending: number;
   readonly remainingAttempts: number; readonly remainingRequests: number; readonly remainingPolicyChanges: number;
-  readonly peers: readonly Readonly<{ id: string; label: string; connection: SharingPeerSnapshot; ready: boolean; requestDuration?: 30 | 60; approving: boolean }>[];
+  readonly peers: readonly Readonly<{ id: string; label: string; membership: Participant['state']; connection: SharingPeerSnapshot; ready: boolean; requestDuration?: 30 | 60; approving: boolean }>[];
   readonly slots: readonly (InputOwnershipSnapshot['slots'][number] & { readonly held: boolean; readonly position?: Readonly<{ x: number; y: number }>; readonly duration?: 30 | 60 })[];
   readonly participant: Readonly<{ layoutReady: boolean; request?: number; slotId?: string; duration?: 30 | 60; active: boolean; held: boolean; ready: boolean }>;
   readonly preview?: ConnectedSharingPreview; readonly transitions: readonly Notice[];
@@ -84,6 +85,9 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
   let policy: ConnectedSharingPolicy = 'partitioned', notice: Notice = 'ready', sessionId: string | undefined, rosterFinished = false;
   let runtime: ReturnType<typeof createDeviceRuntime> | undefined, ownership: InputOwnershipController | undefined;
   let removeOwnership: (() => void) | undefined, outputs: Resource[] = [], preview: ConnectedSharingPreview | undefined, activating: Participant | undefined;
+  const retirements = new Set<Promise<boolean>>();
+  let entrySequence = 0;
+  let removalReview: { value: ConnectedSharingPreview; entry: Participant; peer: SharingPeer; version: number; principalId: string | undefined; permit: Permit | undefined; pending: Pending | undefined; scope: string; bridge: Resource[]; sinks: Resource[] } | undefined;
   const peers: Participant[] = [], values = new Map<string, { routeId: string; observation: Observation }>(), transitions: Notice[] = [];
   let local: { request: number; slotId: string; duration: 30 | 60; expiresAt: number; phase: 'requested' | 'preparing' | 'active'; ownerEpoch?: number } | undefined;
   let provider: PointerResourceProvider | undefined, layoutReady = false;
@@ -98,7 +102,7 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
   }
   const reserve = () => { if (rawPending >= 4) return; rawPending++; let released = false;
     return () => { if (!released) { released = true; rawPending--; notify(); } }; };
-  function owned(entry: Participant) { return !closed && peers.includes(entry) && !!entry.peer.current(); }
+  function owned(entry: Participant) { return !closed && entry.state === 'live' && peers.includes(entry) && !!entry.peer.current(); }
   function grantCurrent(entry: Participant, permit = entry.permit): permit is Permit {
     if (!permit || entry.permit !== permit || !owned(entry)) return false;
     const at = time(); return at !== undefined && !closed && entry.permit === permit && at < permit.expiresAt && !!entry.peer.current();
@@ -127,12 +131,12 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
     }
     notify();
   }
-  function createPeerEntry(): Participant {
-    const entry: Participant = { id: `participant-${peers.length + 1}`, label: `Participant ${peers.length + 1}`, bridge: [], sinks: [], operations: new Map(), lastRequest: 0, peer: undefined as unknown as SharingPeer };
+  function createPeerEntry(previous?: Participant): Participant {
+    const entry: Participant = { state: previous ? 'replacement' : 'live', version: ++entrySequence, previous: previous ? { source: { id: previous.id, label: previous.label, principalId: previous.principalId!, resources: previous.bridge }, bridge: previous.bridge, sinks: previous.sinks } : undefined, id: previous?.id ?? `participant-${peers.length + 1}`, label: previous?.label ?? `Participant ${peers.length + 1}`, bridge: [], sinks: [], operations: new Map(), lastRequest: 0, peer: undefined as unknown as SharingPeer };
     entry.peer = new SharingPeer({ role: options.role === 'owner' ? 'receiver' : 'source', sessionId, now: () => time() ?? NaN, wallNow: options.wallNow,
       reserve, createPeer: options.createPeer, createIdentity: options.createIdentity, onChange: notify,
-      onMessage: (peer, text) => receive(entry, peer, text), onLoss() { if (closed) return; revoke(entry, false); if (options.role === 'participant') { withdrawLocal(false); layoutReady = false; } record('unavailable'); } });
-    peers.push(entry); return entry;
+      onMessage: (peer, text) => receive(entry, peer, text), onLoss() { if (closed || !peers.includes(entry) || entry.state === 'retiring' || entry.state === 'removed') return; revoke(entry, false); if (options.role === 'participant') { withdrawLocal(false); layoutReady = false; } record('unavailable'); } });
+    if (previous) peers[peers.indexOf(previous)] = entry; else peers.push(entry); return entry;
   }
   function authorize(request: AuthorizationRequest) {
     if (closed || !runtime || !rosterFinished) return;
@@ -177,6 +181,36 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
     if (closed || generation !== ownGeneration) { created.close(); for (const resource of outputs) runtime.unregister(resource.handle); return; }
     ownership = created; removeOwnership = created.subscribe(reconcile);
   }
+  function buildEntry(entry: Participant, created: ReturnType<typeof createDeviceRuntime>) {
+    const ownGeneration = generation;
+    const scope = entry.peer.scope(); if (!scope || closed) throw Error('lost'); entry.principalId = scope.remoteKeyId;
+    const template = pointerSourceDescriptor('browser-application-bridge');
+    const device = { ...template, id: `connected-bridge-${entry.id}-${entry.version}`, label: entry.label };
+    entry.bridge = device.capabilities.map(capability => { const handle = created.registerSource({ device, capability: capability.id }); created.setReadiness(handle, 'unavailable'); return { handle, device, capability: capability.id }; });
+    const sinkDevice: DeviceDescriptor = { ...template, id: `connected-receive-${entry.id}-${entry.version}`, label: 'Selected page controls', capabilities: template.capabilities.map(capability => ({ ...capability, kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' } })) };
+    entry.sinks = sinkDevice.capabilities.map(capability => {
+      const handle = created.registerSink({ device: sinkDevice, capability: capability.id, apply(observation, context) {
+        const permit = entry.permit, ref = permit?.refs.get(capability.id);
+        if (!peers.includes(entry) || entry.state !== 'live' || !permit || !ref || !grantCurrent(entry, permit) || closed || ownGeneration !== generation || context.signal.aborted || !context.isCurrent() ||
+          observation.source.registrationId !== ref.registrationId || observation.source.deviceId !== ref.deviceId || observation.source.capabilityId !== ref.capabilityId) return;
+        const at = time(); if (at === undefined || closed || entry.permit !== permit || at >= permit.expiresAt || at - observation.timestamp > 100 ||
+          observation.clockDomain !== created.clockDomain || context.signal.aborted || !context.isCurrent()) return;
+        const resource = entry.bridge.find(resource => resource.capability === capability.id)!;
+        // The SDK has mapped this timestamp conservatively. Never recapture it.
+        permit.samples.set(capability.id, observation); created.setReadiness(resource.handle, 'available');
+        if (!grantCurrent(entry, permit) || context.signal.aborted || !context.isCurrent()) return;
+        const operation = (entry.operations.get(capability.id) ?? 0) + 1;
+        if (operation > 0xffffffff) { revoke(entry); return; }
+        if (capability.delivery.mode === 'reliable') entry.operations.set(capability.id, operation);
+        created.publish(resource.handle, observation.value, { timestamp: observation.timestamp, clockDomain: observation.clockDomain, provenance: observation.provenance,
+          ...(capability.delivery.mode === 'reliable' ? { operationId: String(operation), deadline: Math.min(permit.expiresAt, observation.timestamp + 100) } : {}) });
+      }, release() { const resource = entry.bridge.find(resource => resource.capability === capability.id); if (resource) created.setReadiness(resource.handle, 'unavailable'); entry.permit?.samples.delete(capability.id); } });
+      created.setReadiness(handle, 'available'); return { handle, device: sinkDevice, capability: capability.id };
+    });
+    const auth = entry.peer.current(); if (!auth) throw Error('lost');
+    entry.receiver = new RemoteResourceReceiver({ peer: auth, runtime: created, epoch: scope.epoch, clockId: created.clockDomain, now: () => time() ?? NaN,
+      principalId: scope.remoteKeyId, applicationId: SHARING_APPLICATION, sessionId: scope.sessionId });
+  }
   function finishRoster(): boolean {
     if (options.role !== 'owner' || closed || busy || rosterFinished || !peers.length || peers.some(entry => !entry.peer.scope())) return false;
     busy = true; const ownGeneration = generation;
@@ -185,35 +219,7 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
       const created = createDeviceRuntime({ clockDomain: 'connected-sharing-owner', now: () => time() ?? NaN, authorize,
         maxRegistrations: 16, maxRoutes: 8, maxPendingDeliveries: 16 });
       if (closed || generation !== ownGeneration) { created.close(); return false; } runtime = created;
-      for (const entry of peers) {
-        const scope = entry.peer.scope(); if (!scope || closed) throw Error('lost'); entry.principalId = scope.remoteKeyId;
-        const template = pointerSourceDescriptor('browser-application-bridge');
-        const device = { ...template, id: `connected-bridge-${entry.id}`, label: entry.label };
-        entry.bridge = device.capabilities.map(capability => { const handle = created.registerSource({ device, capability: capability.id }); created.setReadiness(handle, 'unavailable'); return { handle, device, capability: capability.id }; });
-        const sinkDevice: DeviceDescriptor = { ...template, id: `connected-receive-${entry.id}`, label: 'Selected page controls', capabilities: template.capabilities.map(capability => ({ ...capability, kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' } })) };
-        entry.sinks = sinkDevice.capabilities.map(capability => {
-          const handle = created.registerSink({ device: sinkDevice, capability: capability.id, apply(observation, context) {
-            const permit = entry.permit, ref = permit?.refs.get(capability.id);
-            if (!permit || !ref || !grantCurrent(entry, permit) || closed || ownGeneration !== generation || context.signal.aborted || !context.isCurrent() ||
-              observation.source.registrationId !== ref.registrationId || observation.source.deviceId !== ref.deviceId || observation.source.capabilityId !== ref.capabilityId) return;
-            const at = time(); if (at === undefined || closed || entry.permit !== permit || at >= permit.expiresAt || at - observation.timestamp > 100 ||
-              observation.clockDomain !== created.clockDomain || context.signal.aborted || !context.isCurrent()) return;
-            const resource = entry.bridge.find(resource => resource.capability === capability.id)!;
-            // The SDK has mapped this timestamp conservatively. Never recapture it.
-            permit.samples.set(capability.id, observation); created.setReadiness(resource.handle, 'available');
-            if (!grantCurrent(entry, permit) || context.signal.aborted || !context.isCurrent()) return;
-            const operation = (entry.operations.get(capability.id) ?? 0) + 1;
-            if (operation > 0xffffffff) { revoke(entry); return; }
-            if (capability.delivery.mode === 'reliable') entry.operations.set(capability.id, operation);
-            created.publish(resource.handle, observation.value, { timestamp: observation.timestamp, clockDomain: observation.clockDomain, provenance: observation.provenance,
-              ...(capability.delivery.mode === 'reliable' ? { operationId: String(operation), deadline: Math.min(permit.expiresAt, observation.timestamp + 100) } : {}) });
-          }, release() { const resource = entry.bridge.find(resource => resource.capability === capability.id); if (resource) created.setReadiness(resource.handle, 'unavailable'); entry.permit?.samples.delete(capability.id); } });
-          created.setReadiness(handle, 'available'); return { handle, device: sinkDevice, capability: capability.id };
-        });
-        const auth = entry.peer.current(); if (!auth) throw Error('lost');
-        entry.receiver = new RemoteResourceReceiver({ peer: auth, runtime: created, epoch: scope.epoch, clockId: created.clockDomain, now: () => time() ?? NaN,
-          principalId: scope.remoteKeyId, applicationId: SHARING_APPLICATION, sessionId: scope.sessionId });
-      }
+      for (const entry of peers) buildEntry(entry, created);
       rosterFinished = true; buildOutputs(); if (closed || generation !== ownGeneration || !ownership) throw Error('lost');
       for (const entry of peers) if (!entry.peer.send({ type: 'layout', revision, policy })) throw Error('lost'); record('ready'); return true;
     } catch { void close(); return false; } finally { busy = false; }
@@ -313,14 +319,91 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
     const result = ownership.decide(pending.ownership.id, pending.ownership.expectedOwnerEpoch, false); if (!result.ok) return false;
     entry.pending = undefined; entry.peer.send({ type: 'declined', revision, request: pending.request }); record('declined'); return true;
   }
+  function removalScope(entry: Participant): string {
+    const scope = entry.peer.scope(); return scope ? `${scope.remoteKeyId}:${scope.epoch}:${scope.sessionId}` : '';
+  }
+  function previewRemoveParticipant(id: string): boolean {
+    if (options.role !== 'owner' || closed || busy || !rosterFinished || !ownership) return false;
+    const entry = peers.find(value => value.id === id); if (!entry || entry.state !== 'live') return false;
+    const recipients = ownership.snapshot().slots.filter(slot => slot.owner?.sourceId === id).map(slot => ({ slotId: slot.id, sourceId: id, epoch: slot.epoch }));
+    const value: ConnectedSharingPreview = Object.freeze({ kind: 'remove', participantId: id, revision, recipients: Object.freeze(recipients.map(value => Object.freeze(value))) });
+    removalReview = { value, entry, peer: entry.peer, version: entry.version, principalId: entry.principalId, permit: entry.permit, pending: entry.pending,
+      scope: removalScope(entry), bridge: entry.bridge, sinks: entry.sinks };
+    preview = value; notify(); return !closed && preview === value && removalReview?.entry === entry;
+  }
+  function retireParticipant(entry: Participant): Promise<boolean> {
+    if (closed || !peers.includes(entry) || entry.state === 'retiring' || entry.state === 'removed') return Promise.resolve(false);
+    const release = reserve(); if (!release) return Promise.resolve(false);
+    let finish!: (value: boolean) => void;
+    const joined = new Promise<boolean>(resolve => { finish = resolve; }); retirements.add(joined);
+    entry.state = 'retiring'; preview = undefined; removalReview = undefined;
+    // Retirement owns the entry before release callbacks or native close can reenter.
+    revoke(entry); entry.receiver?.stop(); entry.receiver = undefined; entry.operations.clear();
+    for (const resource of entry.sinks) runtime?.setReadiness(resource.handle, 'unavailable');
+    record('participant-removing');
+    void (async () => {
+      let result = false;
+      try {
+        await entry.peer.close();
+        if (closed || !peers.includes(entry)) return;
+        if (entry.previous) {
+          for (const resource of [...entry.bridge, ...entry.sinks]) runtime?.unregister(resource.handle);
+          entry.bridge = entry.previous.bridge; entry.sinks = entry.previous.sinks; entry.principalId = entry.previous.source.principalId; entry.previous = undefined;
+        }
+        entry.state = 'removed'; result = true; record('participant-removed');
+      } finally { release(); retirements.delete(joined); finish(result); }
+    })();
+    return joined;
+  }
+  function confirmRemoval(value: ConnectedSharingPreview): Promise<boolean> {
+    const review = removalReview;
+    if (options.role !== 'owner' || closed || busy || !ownership || !runtime || preview !== value || value.kind !== 'remove' ||
+      !review || review.value !== value || value.revision !== revision) return Promise.resolve(false);
+    const entry = review.entry, reviewedOwnership = ownership, reviewedRuntime = runtime;
+    // Authenticated scope currentness invokes the configured clock. Finish that
+    // callout before checking the exact still-reviewed state and affected epochs.
+    const scope = removalScope(entry);
+    if (closed || busy || ownership !== reviewedOwnership || runtime !== reviewedRuntime || preview !== value || removalReview !== review || value.revision !== revision)
+      return Promise.resolve(false);
+    const recipients = reviewedOwnership.snapshot().slots.filter(slot => slot.owner?.sourceId === entry.id).map(slot => ({ slotId: slot.id, sourceId: entry.id, epoch: slot.epoch }));
+    if (!peers.includes(entry) || entry.state !== 'live' || entry.peer !== review.peer || entry.version !== review.version || entry.principalId !== review.principalId ||
+      entry.permit !== review.permit || entry.pending !== review.pending || entry.bridge !== review.bridge || entry.sinks !== review.sinks ||
+      scope !== review.scope || JSON.stringify(recipients) !== JSON.stringify(value.recipients)) { record('review-changed'); return Promise.resolve(false); }
+    return retireParticipant(entry);
+  }
+  async function inviteReplacement(id: string): Promise<boolean> {
+    if (options.role !== 'owner' || closed || busy || !rosterFinished || !ownership || !runtime || retirements.size || rawPending || attempts >= 32 || peers.some(value => value.state === 'replacement')) return false;
+    const previous = peers.find(value => value.id === id); if (!previous || previous.state !== 'removed') return false;
+    attempts++; const entry = createPeerEntry(previous); record('participant-replacing');
+    const result = await entry.peer.invite();
+    if (!result && !closed && peers.includes(entry)) await retireParticipant(entry);
+    return result && !closed && peers.includes(entry) && entry.state === 'replacement';
+  }
+  function installReplacement(entry: Participant): void {
+    if (!runtime || !ownership || closed || busy || entry.state !== 'replacement' || !entry.previous || !peers.includes(entry)) return;
+    if (!entry.peer.scope()) { if (entry.peer.snapshot().phase === 'stopped') void retireParticipant(entry); return; }
+    busy = true;
+    try {
+      const previous = entry.previous; buildEntry(entry, runtime);
+      if (closed || !peers.includes(entry) || entry.state !== 'replacement') throw Error('retired');
+      const next: InputOwnershipSource = { id: entry.id, label: entry.label, principalId: entry.principalId!, resources: entry.bridge };
+      if (!ownership.replaceSource(previous.source, next).ok) throw Error('unavailable');
+      entry.previous = undefined; entry.state = 'live';
+      for (const resource of [...previous.bridge, ...previous.sinks]) runtime.unregister(resource.handle);
+      if (closed || !owned(entry) || !entry.peer.send({ type: 'layout', revision, policy })) throw Error('lost');
+      record('ready');
+    } catch { if (!closed && peers.includes(entry)) void retireParticipant(entry); }
+    finally { busy = false; }
+  }
   function makePreview(kind: 'revoke' | 'policy', slotId?: string, nextPolicy?: ConnectedSharingPolicy): boolean {
-    if (!ownership || closed || busy) return false;
+    if (!ownership || closed || busy || kind === 'policy' && peers.some(entry => entry.state === 'retiring' || entry.state === 'replacement')) return false;
+    removalReview = undefined;
     const recipients = ownership.snapshot().slots.filter(slot => slot.owner && (kind === 'policy' || slot.id === slotId)).map(slot => ({ slotId: slot.id, sourceId: slot.owner!.sourceId, epoch: slot.epoch }));
     if (kind === 'revoke' && !recipients.length || kind === 'policy' && (nextPolicy === policy || policyChanges >= 8)) return false;
     preview = Object.freeze({ kind, revision, ...(nextPolicy ? { policy: nextPolicy } : {}), recipients: Object.freeze(recipients.map(recipient => Object.freeze(recipient))) }); notify(); return true;
   }
   function confirmPreview(value: ConnectedSharingPreview): boolean {
-    if (closed || busy || !ownership || !runtime || preview !== value || value.revision !== revision) return false;
+    if (closed || busy || !ownership || !runtime || preview !== value || value.revision !== revision || value.kind === 'remove') return false;
     const current = ownership.snapshot().slots.filter(slot => slot.owner && (value.kind === 'policy' || value.recipients.some(recipient => recipient.slotId === slot.id))).map(slot => ({ slotId: slot.id, sourceId: slot.owner!.sourceId, epoch: slot.epoch }));
     if (JSON.stringify(current) !== JSON.stringify(value.recipients)) { record('review-changed'); return false; }
     busy = true;
@@ -338,12 +421,14 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
   }
   function tick() {
     if (closed || busy) return; const at = time(); if (at === undefined || closed) return;
-    for (const entry of peers) entry.peer.tick(); if (closed) return;
+    for (const entry of peers) if (entry.state !== 'retiring' && entry.state !== 'removed') entry.peer.tick(); if (closed) return;
     if (options.role === 'participant') {
       if (local && at >= local.expiresAt) { withdrawLocal(); record('expired'); }
       provider?.tick(); if (provider?.status().stopped) { withdrawLocal(); record('unavailable'); }
     } else {
       for (const entry of peers) {
+        if (entry.state === 'replacement') installReplacement(entry);
+        if (entry.state !== 'live') continue;
         if (entry.pending && at >= entry.pending.ownership.expiresAt) { revoke(entry); record('expired'); }
         if (entry.permit && !grantCurrent(entry)) { revoke(entry); record('expired'); }
         entry.receiver?.tick();
@@ -374,14 +459,14 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
     if (!closed) { closed = true; generation++; preview = undefined; withdrawLocal(false);
       for (const entry of peers) { entry.permit = undefined; entry.pending = undefined; }
       removeOwnership?.(); ownership?.close(); for (const entry of peers) entry.receiver?.stop(); runtime?.close(); values.clear(); rosterFinished = false; layoutReady = false; record('closed'); }
-    await Promise.all(peers.map(entry => entry.peer.close()));
+    await Promise.all([...peers.map(entry => entry.peer.close()), ...retirements]);
   }
   function snapshot(): ConnectedSharingSnapshot {
     const current = ownership?.snapshot(), state = provider?.driver()?.state();
     return Object.freeze({ role: options.role, closed, notice, rosterFinished, policy, revision, rawPending,
       active: options.role === 'participant' ? local?.phase === 'active' : !!current?.slots.some(slot => slot.owner),
       remainingAttempts: 32 - attempts, remainingRequests: 64 - requests, remainingPolicyChanges: 8 - policyChanges,
-      peers: Object.freeze(peers.map(entry => Object.freeze({ id: entry.id, label: entry.label, connection: entry.peer.snapshot(), ready: !!entry.receiver?.description() && connectedPointerCompatible(entry.receiver.description()),
+      peers: Object.freeze(peers.map(entry => Object.freeze({ id: entry.id, label: entry.label, membership: entry.state, connection: entry.peer.snapshot(), ready: !!entry.receiver?.description() && connectedPointerCompatible(entry.receiver.description()),
         requestDuration: entry.pending?.duration, approving: entry.permit?.phase === 'preparing' }))),
       slots: Object.freeze((current?.slots ?? []).map(slot => {
         const position = values.get(`${slot.id}:position`)?.observation.value, permit = peers.find(entry => entry.id === slot.owner?.sourceId)?.permit;
@@ -390,11 +475,11 @@ export function createConnectedSharingTask(configuration: ConnectedSharingOption
       })), participant: Object.freeze({ layoutReady, request: local?.request, slotId: local?.slotId, duration: local?.duration, active: local?.phase === 'active', held: state?.contact ?? false, ready: provider?.status().ready ?? false }),
       preview, transitions: Object.freeze([...transitions]) });
   }
-  return Object.freeze({ snapshot, tick, close, interrupt, finishRoster, approve, decline, request, input, pointer,
+  return Object.freeze({ snapshot, tick, close, interrupt, finishRoster, approve, decline, request, input, pointer, previewRemoveParticipant, confirmRemoval, inviteReplacement,
     releaseInput() { provider?.driver()?.release(); }, cancelRequest() { if (options.role === 'participant') { withdrawLocal(); record('cancelled'); } },
     cancelReview(slotId: string) { const entry = peers.find(entry => entry.pending?.ownership.slotId === slotId); if (!entry || entry.permit?.phase === 'active') return false; revoke(entry); record('cancelled'); return true; },
     previewRevoke(slotId: string) { return makePreview('revoke', slotId); }, previewPolicy(next: ConnectedSharingPolicy) { return makePreview('policy', undefined, next); },
-    confirmPreview, cancelPreview() { preview = undefined; notify(); },
+    confirmPreview, cancelPreview() { preview = undefined; removalReview = undefined; notify(); },
     async invite() {
       if (options.role !== 'owner' || closed || busy || rosterFinished || peers.length >= 2 || attempts >= 32) return false;
       attempts++; if (!sessionId) { const bytes = webEndpointCrypto.randomBytes(16); sessionId = `sharing-${Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')}`; }

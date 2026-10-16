@@ -10,9 +10,9 @@ export const BEATFORGE_ROLES: readonly SessionRole[] = [
     layout: {
       title: "Beat Performer",
       accent: "#ff73c9",
-      motion: { action: "gesture", mode: "wand", label: "Swing direction" },
+      motion: { action: "gesture", mode: "wand", label: "Swing direction", gestures: { swing: "beat.swing" } },
       layout: [
-        { type: "touch-surface", action: "gesture", label: "SWING VECTOR" },
+        { type: "touch-surface", action: "gesture", pressAction: "beat.swing", label: "SWING DIRECTION" },
         { type: "button", action: "beat.left", label: "LEFT SLASH" },
         { type: "button", action: "beat.right", label: "RIGHT SLASH" },
         { type: "button", action: "beat.punch", label: "PUNCH", emphasis: "primary" },

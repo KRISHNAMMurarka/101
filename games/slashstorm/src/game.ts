@@ -37,6 +37,9 @@ export interface SlashstormState {
   elapsed: number;
   wave: number;
   gameOver: boolean;
+  paused: boolean;
+  pauseOneHeld: boolean;
+  pauseTwoHeld: boolean;
   lastHit: string;
 }
 
@@ -62,6 +65,9 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       elapsed: 0,
       wave: 1,
       gameOver: false,
+      paused: false,
+      pauseOneHeld: false,
+      pauseTwoHeld: false,
       lastHit: "",
     }),
     start(ctx) {
@@ -69,10 +75,18 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       ctx.input.bind("move");
       ctx.input.bind("slash");
       ctx.input.bind("trigger");
+      ctx.input.bind("pause");
     },
     update(ctx, delta) {
       const state = ctx.state;
       if (state.gameOver) return;
+      const pauseOne = Boolean(ctx.input.action("pause", "player-1"));
+      const pauseTwo = Boolean(ctx.input.action("pause", "player-2"));
+      const pressed = (pauseOne && !state.pauseOneHeld) || (pauseTwo && !state.pauseTwoHeld);
+      state.pauseOneHeld = pauseOne;
+      state.pauseTwoHeld = pauseTwo;
+      if (pressed) toggleSlashstormPause(state);
+      if (state.paused) return;
       state.elapsed += delta;
       state.wave = 1 + Math.floor(state.elapsed / 20);
 
@@ -157,6 +171,16 @@ export function createSlashstormGame(seed = "slashstorm-101") {
       if (state.lives <= 0) state.gameOver = true;
     },
   });
+}
+
+export function toggleSlashstormPause(state: SlashstormState) {
+  if (state.gameOver) return;
+  state.paused = !state.paused;
+  // A resumed gesture starts at its current position, never across paused movement.
+  state.bladeOneSlashing = false;
+  state.bladeTwoSlashing = false;
+  state.trail = [];
+  state.trailTwo = [];
 }
 
 function advanceBlade(input: GameInput, currentBlade: { x: number; y: number }, delta: number, playerId: string, wasSlashing: boolean) {

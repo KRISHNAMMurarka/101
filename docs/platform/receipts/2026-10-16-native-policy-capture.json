@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "sourceRevision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+  "acceptance": false,
+  "sourceFixMade": false,
+  "nativeReliability": "UNRESOLVED",
+  "historicalFailureCause": "UNPROVEN",
+  "capture": {
+    "sessionId": "84db62fd7e29ca30",
+    "targetPid": 71897,
+    "uid": 501,
+    "ownership": "Repeated independent UID, real UID, process-start, executable and launcher/runner/worker/target ancestry checks before target-only capture.",
+    "samplerExitCode": 0,
+    "samples": 101,
+    "sampleIntervalMs": 10,
+    "durationSeconds": 1,
+    "allRecordedKernelSamples": [
+      "AppleSystemPolicy::procNotifyExecComplete",
+      "AppleSystemPolicy::blockProcessBasedOnValidationCategory",
+      "handle_blocked_exec",
+      "turnstile wait for UNKNOWN[449] send port com.apple.security.AppleSystemPolicy.mig"
+    ],
+    "observedMechanism": "This owned launch waited in macOS execution validation before the first JavaScript milestone. The captured launch succeeded within the unchanged 2500ms bound; this does not establish the cause of historical zero-stderr timeouts.",
+    "parentObserverReceiptMs": {
+      "loaderBody": 1568.016,
+      "moduleBody": 1990.822,
+      "identityReady": 2006.844,
+      "helloSentStderr": 2009.828,
+      "closeCode0": 4362.93
+    },
+    "clockBoundary": "Parent receipt times relative to observed spawn. hello-sent is a stderr marker, not separately observed IPC receive. Sampled instants do not prove an exact continuously blocked duration.",
+    "limitations": [
+      "No identity, validation category, cache state or network cause is inferred for UNKNOWN[449].",
+      "Canonical zero-stderr startup timeout was not reproduced in the captured launch.",
+      "The four-test diagnostic is not a canonical reliability acceptance run."
+    ]
+  },
+  "testRun": {
+    "selected": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "nativeHosts": 16,
+    "nativeCloses": 16,
+    "observerErrors": 0
+  },
+  "diagnosticToolFailure": {
+    "overallHelperSucceeded": false,
+    "captureSucceeded": true,
+    "failure": "Post-capture final IPC exchange failed: RuntimeError: Missing or oversized launcher response.",
+    "boundary": "Normal-user report independently retains all tests, 507 observer events and cleanup; the completed kernel capture is preserved. A short final SocketIO write is only a hypothesis, not an established cause."
+  },
+  "readOnlyFollowup": {
+    "targetFilteredUnifiedLogs": "No entries in the exact narrowly filtered own-target interval.",
+    "nodeSignatureAndNotarization": "Strict verification passed. This is a diagnostic, not a prewarm repair or startup reliability evidence."
+  },
+  "remediationAssessment": "No repository JavaScript edit can execute during the sampled OS pre-userspace wait. No safe repository remediation is justified under fresh independent processes and the original deadline. Native qualification remains open; independent local work continues while this host boundary remains unresolved.",
+  "unchanged": {
+    "startupBoundMs": 2500,
+    "noRetriesOrPrewarm": true,
+    "noOSSecuritySignatureQuarantineChange": true,
+    "noForeignProcessIntervention": true
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-policy-capture",
+    "commit": "8eb50834466185a2f815675a8c640ea7f4744fcc",
+    "tree": "2e449bdb93627e3498f2495f705478e2b736baae",
+    "readBackFiles": 31,
+    "allBytesMatched": true,
+    "ownedCaptureScratchRemoved": true
+  },
+  "evidencePaths": {
+    "interpretationReview": "packet/capture-interpretation-review.json",
+    "normalUserSession": "packet/session-84db62fd7e29ca30.json",
+    "kernelStack": "raw/kernel-stack.txt",
+    "rootReport": "raw/report.json"
+  },
+  "cleanup": {
+    "samplerJoined": true,
+    "samplerGroupAbsent": true,
+    "runnerJoined": true,
+    "ownedTestGroupAbsent": true,
+    "threadsJoined": true,
+    "socketRemoved": true,
+    "ownedScratchRemovedAfterReadback": true,
+    "vmUsed": false
+  },
+  "wholeTasksClosed": [],
+  "precedingKernelQueueDiagnostic": {
+    "custodyRef": "refs/codex/evidence/2026-10-16-native-kernel-stack",
+    "custodyCommit": "993aa73dcc5eb679e8d5595b3be57015cbac19a9",
+    "startupDeadlineFailures": 2,
+    "distinctPostHelloAdmitFailure": 1,
+    "expectedControlledLoaderFailurePass": 1,
+    "canonicalZeroStderrSubtypeReproduced": false,
+    "boundary": "Paired own AF_UNIX queue observations ended at first marker; do not infer the later loader-to-module interval. These diagnostic failures remain preserved independently of the later passing capture run."
+  },
+  "subsequentReadOnlyReassessment": {
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-native-startup/reassessment",
+      "commit": "4c7d9ff40bddad7e74858778b248fc7898c47c7c",
+      "tree": "be06cce0632d514f53e20d75adf0f13f02ef545e",
+      "readBackFiles": 3,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "assessmentSha256": "4ddb02ab4dffe3dc321c637b1989162eac3dedefc337f78e12b29f6c0b5ddaef",
+    "exactInputs": 17,
+    "decision": "No repository startup fix or further administrator/OS action justified. Successful policy capture and current successful native selectors do not establish causes of historical failures. Native reliability remains unresolved.",
+    "newSubjectExecutions": 0
+  }
+}

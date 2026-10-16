@@ -3,7 +3,7 @@ import test from 'node:test';
 import { AuthenticatedResourcePeer, PeerDataTransport, RemoteResourcePublisher, createEphemeralWebIdentity,
   decodeManualPeerCode, decodeReceiverInvitation, encodeManualPeerCode, parseDeviceDescriptor, webEndpointCrypto } from '@101/connect';
 import type { PeerConnectionPort, PeerDataChannelPort } from '@101/connect';
-import { createEnrolledDeviceInspector, inspectEnrolledResources } from './enrolled-device.ts';
+import { createEnrolledDeviceInspector, formatEnrolledPrimitiveValue, inspectEnrolledResources } from './enrolled-device.ts';
 import { pageReadingDescriptor } from '../connections/readings/readings-schema.ts';
 
 const scope = { sessionId: 'owned-test-room', now: () => 1000, wallNow: () => 10000 };
@@ -41,6 +41,29 @@ test('inspection snapshots declared fields without invoking descriptor getters',
   assert.equal(calls, 0);
   const rows = inspectEnrolledResources(descriptor);
   assert.equal(Object.isFrozen(rows), true); assert.equal(Object.isFrozen(rows[0]), true);
+});
+
+test('primitive preview wording follows validated type, unit and vector component metadata', () => {
+  const resources = inspectEnrolledResources({ ...descriptor, capabilities: [
+    { id: 'switch', semantic: 'vendor:opaque-switch', schemaVersion: 1, kind: 'sample', permissions: ['subscribe'],
+      value: { type: 'boolean' }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 250 } },
+    { id: 'temperature', semantic: 'vendor:opaque-measurement', schemaVersion: 1, kind: 'sample', permissions: ['subscribe'],
+      value: { type: 'scalar', unit: 'Cel', min: -100, max: 100 }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 250 } },
+    { id: 'position', semantic: 'vendor:opaque-vector', schemaVersion: 1, kind: 'sample', permissions: ['subscribe'],
+      value: { type: 'vector', unit: 'm', frame: 'screen', components: ['x', 'y'], min: -10, max: 10 },
+      delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 250 } },
+    { id: 'ratio', semantic: 'vendor:opaque-ratio', schemaVersion: 1, kind: 'sample', permissions: ['subscribe'],
+      value: { type: 'scalar', unit: '1', min: 0, max: 1 }, delivery: { mode: 'latest', maxHz: 10, maxAgeMs: 250 } },
+  ] });
+  assert.deepEqual(resources.map(resource => resource.primitive?.type), ['boolean', 'scalar', 'vector', 'scalar']);
+  assert.equal(formatEnrolledPrimitiveValue(resources[0]!, false), 'Off');
+  assert.equal(formatEnrolledPrimitiveValue(resources[0]!, true), 'On');
+  assert.equal(formatEnrolledPrimitiveValue(resources[1]!, 21.5), '21.5 Cel');
+  assert.equal(formatEnrolledPrimitiveValue(resources[2]!, { x: 0.5, y: 0.25 }), 'x: 0.5 m, y: 0.25 m');
+  assert.equal(formatEnrolledPrimitiveValue(resources[3]!, 0.25), '0.25');
+  assert.equal(formatEnrolledPrimitiveValue(resources[0]!, 1), undefined);
+  assert.equal(formatEnrolledPrimitiveValue(resources[1]!, Infinity), undefined);
+  assert.equal(formatEnrolledPrimitiveValue(resources[2]!, { x: 0.5, z: 0.25 }), undefined);
 });
 
 test('cancelled identity setup remains reserved and close waits for its actual settlement', async () => {

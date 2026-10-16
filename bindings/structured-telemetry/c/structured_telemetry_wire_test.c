@@ -140,6 +140,37 @@ static void test_genuine_sdk_fixture_and_reciprocal(void) {
     }
     json_decref(root);
 }
+static void test_shared_duplicate_key_profile_verdict(void) {
+    const char *path = getenv("ONE01_STRUCTURED_NEGATIVE_FIXTURES");
+    unsigned char bytes[16385];
+    FILE *file;
+    size_t size;
+    json_error_t error;
+    json_t *root, *negative, *entry, *accept, *wire, *id, *expected;
+    One01TelemetrySample result;
+    CHECK(path != NULL && path[0] != '\0');
+    file = fopen(path, "rb"); CHECK(file != NULL);
+    size = fread(bytes, 1, sizeof(bytes), file);
+    CHECK(!ferror(file) && size < sizeof(bytes) && feof(file));
+    CHECK(fclose(file) == 0);
+    root = json_loadb((const char *)bytes, size, JSON_REJECT_DUPLICATES, &error);
+    CHECK(json_is_object(root));
+    CHECK(json_is_string(json_object_get(root, "profile")) &&
+          strcmp(json_string_value(json_object_get(root, "profile")), "structured-telemetry-json2/1") == 0);
+    CHECK(json_is_string(json_object_get(root, "fixtureProfile")) &&
+          strcmp(json_string_value(json_object_get(root, "fixtureProfile")), "structured-telemetry-native-negative/1") == 0);
+    negative = json_object_get(root, "negative"); CHECK(json_is_array(negative) && json_array_size(negative) == 1);
+    entry = json_array_get(negative, 0); CHECK(json_is_object(entry));
+    id = json_object_get(entry, "id"); CHECK(json_is_string(id));
+    CHECK(strcmp(json_string_value(id), "duplicate-envelope-version-key") == 0);
+    wire = json_object_get(entry, "wireUtf8"); CHECK(json_is_string(wire));
+    accept = json_object_get(entry, "accept"); CHECK(json_is_object(accept));
+    expected = json_object_get(accept, "c"); CHECK(json_is_boolean(expected));
+    CHECK(json_is_false(expected));
+    CHECK(!one01_telemetry_decode((const unsigned char *)json_string_value(wire), json_string_length(wire),
+                                  ONE01_TELEMETRY_DISPOSABLE, &result));
+    json_decref(root);
+}
 static void test_closed_envelope_and_number_types(void) {
     static const char *keys[] = {"protocol", "version", "epoch", "slot", "sequence", "capturedAt", "type", "value"};
     static const char *numeric[] = {"version", "slot", "sequence", "capturedAt"};
@@ -276,6 +307,7 @@ static void test_utf8_depth_controls_and_complete_parser(void) {
       memset(offset, 0xff, sizeof(offset)); memcpy(offset + 7, bytes.data, bytes.size);
       CHECK(one01_telemetry_decode(offset + 7, bytes.size, ONE01_TELEMETRY_DISPOSABLE, &result)); }
     json_decref(packet);
+    test_shared_duplicate_key_profile_verdict();
 }
 static void rejected_input(const One01TelemetrySample *sample) {
     unsigned char output[4096], before[4096]; size_t size = 99;

@@ -94,6 +94,7 @@ export class KeyboardAdapter implements InputAdapter {
         "beat.punch": this.has("ArrowUp", "KeyW", "Space"),
         "beat.raise": this.has("KeyE", "Enter"),
         "beat.duck": this.has("ArrowDown", "KeyS"),
+        "beat.swing": this.has("KeyG"),
         "spell.cast.shield": this.has("KeyQ"),
         "spell.cast.grab": this.has("KeyE"),
         "spell.cast.projectile": this.has("Space", "Enter"),

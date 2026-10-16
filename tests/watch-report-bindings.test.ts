@@ -27,16 +27,18 @@ function meaning(source: ReturnType<typeof fixture>, entry: ReturnType<typeof fi
 test('shared watch fixtures cover every existing applicable codec profile with explicit incompatibility', () => {
   const source = fixture();
   assert.equal(source.schemaVersion, 1); assert.equal(source.contract, 'watch-report-contracts/1');
-  assert.deepEqual(source.applicability, { javascript: 'watch-companion-report/1', swift: 'legacy-watch-payload/1', kotlin: 'legacy-watch-payload/1', c: 'unsupported' });
+  assert.deepEqual(source.applicability, { javascript: 'watch-companion-report/1', swift: 'legacy-watch-payload/1', kotlin: 'legacy-watch-payload/1', c: 'watch-report-c-strict/1' });
   assert.ok(source.golden.length >= 6 && source.golden.length <= 16);
   assert.ok(source.decode.length >= 20 && source.decode.length <= 64);
   for (const entry of source.golden) {
+    assert.equal(entry.accept.c, true, entry.id);
     const report = decodeWatchCompanionReport(materialize(source, entry));
     assert.deepEqual(report, { ...meaning(source, entry), physicalValidity: 'unspecified' }, entry.id);
   }
   let differences = 0;
   for (const entry of source.decode) {
     const bytes = materialize(source, entry);
+    assert.equal(entry.accept.c, entry.accept.javascript, entry.id);
     if (!entry.accept.javascript) assert.throws(() => decodeWatchCompanionReport(bytes), entry.id);
     else assert.deepEqual(decodeWatchCompanionReport(bytes), { ...meaning(source, entry), physicalValidity: 'unspecified' }, entry.id);
     assert.equal(entry.accept.swift, entry.accept.kotlin, entry.id);

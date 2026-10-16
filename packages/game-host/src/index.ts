@@ -212,15 +212,16 @@ export class GameHost101 {
   async disconnect() {
     this.stopGame();
     await this.connecting?.catch(() => undefined);
+    // Retire input ownership before joining arbitrary preload work. A stalled preload must not
+    // keep keyboard listeners, held actions or the remote session listener alive after leaving.
+    await Promise.all([this.inputBus.destroy(), this.connected ? this.session.stop() : undefined]);
+    this.connected = false;
     await Promise.all([...this.launches].map((launch) => launch.catch(() => undefined)));
     // `launch()` resumes before this waiter because both await the same connection promise. Stop a
     // game it may have installed while cleanup was waiting, then remove the SessionHost listener.
     // Waiting for launches also keeps an asynchronous preload inside the teardown boundary: its
     // stale frame is cancelled before this method resolves rather than springing to life afterward.
     this.stopGame();
-    if (this.connected) await this.session.stop();
-    await this.inputBus.destroy();
-    this.connected = false;
   }
 }
 

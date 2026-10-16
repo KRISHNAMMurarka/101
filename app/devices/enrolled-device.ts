@@ -13,9 +13,14 @@ export const ENROLLED_DEVICE_LIMITS = Object.freeze({ attempts: 16, setupMs: 500
   previewMs: 30000, previewResources: 4, previewHz: 20, previewAttempts: 16, tickMs: 20 });
 const applicationId = '101-device-inspection', principalId = 'this-browser-device-owner';
 export interface EnrolledDeviceHandle { readonly kind: 'enrolled-device' }
+export type EnrolledPrimitivePresentation =
+  | Readonly<{ type: 'boolean' }>
+  | Readonly<{ type: 'scalar'; unit: string }>
+  | Readonly<{ type: 'vector'; unit: string; components: readonly string[] }>;
 export interface EnrolledResource {
   readonly id: string; readonly semantic: string; readonly permissions: readonly string[];
   readonly previewable: boolean; readonly schemaVersion: number; readonly unit?: string;
+  readonly primitive?: EnrolledPrimitivePresentation;
   readonly reading?: ReadingChoice;
 }
 export interface EnrolledDeviceView {
@@ -66,6 +71,31 @@ function readingFor(capability: DeviceCapability): ReadingChoice | undefined {
   return choice?.supported ? choice : undefined;
 }
 function previewable(capability: DeviceCapability): boolean { return primitivePreviewable(capability) || readingFor(capability) !== undefined; }
+function primitivePresentation(capability: DeviceCapability): EnrolledPrimitivePresentation | undefined {
+  const schema = capability.value;
+  if (schema.type === 'boolean') return Object.freeze({ type: 'boolean' });
+  if (schema.type === 'scalar') return Object.freeze({ type: 'scalar', unit: schema.unit });
+  if (schema.type === 'vector') return Object.freeze({ type: 'vector', unit: schema.unit, components: Object.freeze([...schema.components]) });
+}
+/** Formats a delivered primitive using only its validated descriptor schema. */
+export function formatEnrolledPrimitiveValue(resource: EnrolledResource, value: SignalValue): string | undefined {
+  const unitText = (unit: string) => unit === '1' ? '' : ` ${unit}`;
+  const presentation = resource.primitive;
+  if (!presentation) return;
+  if (presentation.type === 'boolean') return typeof value === 'boolean' ? value ? 'On' : 'Off' : undefined;
+  if (presentation.type === 'scalar') return typeof value === 'number' && Number.isFinite(value) ? `${value}${unitText(presentation.unit)}` : undefined;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return;
+  const componentsByName = value as Readonly<Record<string, SignalValue>>;
+  const keys = Object.keys(componentsByName);
+  if (keys.length !== presentation.components.length || keys.some(key => !presentation.components.includes(key))) return;
+  const parts: string[] = [];
+  for (const component of presentation.components) {
+    const componentValue = componentsByName[component];
+    if (typeof componentValue !== 'number' || !Number.isFinite(componentValue)) return;
+    parts.push(`${component}: ${componentValue}${unitText(presentation.unit)}`);
+  }
+  return parts.join(', ');
+}
 /** Reported semantics only. This helper performs no authentication, observation or authorization. */
 export function inspectEnrolledResources(input: unknown): readonly EnrolledResource[] {
   const device = parseDeviceDescriptor(input), choices = device.capabilities.map(readingFor);
@@ -73,6 +103,7 @@ export function inspectEnrolledResources(input: unknown): readonly EnrolledResou
   for (const choice of choices) if (choice?.shape) totals.set(choice.shape, (totals.get(choice.shape) ?? 0) + 1);
   return Object.freeze(device.capabilities.map((capability, index) => {
     let reading = choices[index];
+    const primitive = primitivePresentation(capability);
     if (reading?.shape) {
       const ordinal = (counts.get(reading.shape) ?? 0) + 1; counts.set(reading.shape, ordinal);
       if ((totals.get(reading.shape) ?? 0) > 1) reading = Object.freeze({ ...reading, label: `${reading.label} ${ordinal}` });
@@ -80,6 +111,7 @@ export function inspectEnrolledResources(input: unknown): readonly EnrolledResou
     return Object.freeze({
       id: capability.id, semantic: capability.semantic, permissions: Object.freeze([...capability.permissions]),
       previewable: primitivePreviewable(capability) || reading !== undefined, schemaVersion: capability.schemaVersion,
+      ...(primitive ? { primitive } : {}),
       ...(reading ? { reading } : {}),
       ...('unit' in capability.value ? { unit: capability.value.unit } : {}),
     });

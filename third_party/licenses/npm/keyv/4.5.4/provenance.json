@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "name": "keyv",
+  "version": "4.5.4",
+  "installedPath": "node_modules/keyv",
+  "source": {
+    "repository": "https://github.com/jaredwray/keyv",
+    "commit": "78b247b5b7a8c9b12154fbfae4295d6fb29158cf",
+    "path": "LICENSE",
+    "gitBlobSha1": "a6bad1d22eee07f080af7cfd70e9958d556d9303"
+  },
+  "lockedArtifact": {
+    "resolved": "https://registry.npmjs.org/keyv/-/keyv-4.5.4.tgz",
+    "integrity": "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="
+  },
+  "publishedFiles": [
+    {
+      "path": "README.md",
+      "sha256": "c39e1b3f735bb9302eb3cbd84aeb48c4311db64381f9e0a1aa4a61ddf59ce890"
+    },
+    {
+      "path": "package.json",
+      "sha256": "e8afd30f2f2a40ef5023928b50fdaed3a3338aa7e1c4e86205413afb05e8a099"
+    },
+    {
+      "path": "src/index.d.ts",
+      "sha256": "42baf4ca38c38deaf411ea73f37bc39ff56c6e5c761a968b64ac1b25c92b5cd8"
+    },
+    {
+      "path": "src/index.js",
+      "sha256": "4987708b4b13159c654c09d239bd0c439533b0b792a6fd4e8769d8a509ad4da6"
+    }
+  ]
+}

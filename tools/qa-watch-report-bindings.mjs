@@ -9,6 +9,8 @@ import { fileHash, installedSdk, kotlinTools, ordinaryFiles } from './build-poin
 export const WATCH_REPORT_BINDING_PATHS = Object.freeze([
   'bindings/watch-report/fixtures/watch-report-v1.json', 'examples/language-bindings/watch-report.mjs',
   'examples/language-bindings/WatchReportConsumer.swift', 'examples/language-bindings/WatchReportConsumer.kt',
+  'bindings/watch-report/c/profile.json', 'bindings/watch-report/c/include/one01_watch_report.h',
+  'bindings/watch-report/c/src/one01_watch_report.c', 'examples/language-bindings/WatchReportConsumer.c',
   'tests/watch-report-bindings.test.ts', 'tools/qa-watch-report-bindings.mjs'
 ]);
 const producerPaths = ['apps/watch-ios/Sources/One01WatchCore/WatchPayload.swift',
@@ -94,26 +96,51 @@ export async function qualifyWatchReportBindings(manifestPath, consumerPath, cal
     }
     const fixturePath = join(callerDirectory, 'watch-report-v1.json'), callerPath = join(callerDirectory, 'watch-report.mjs');
     copyFileSync(join(root, WATCH_REPORT_BINDING_PATHS[0]), fixturePath); copyFileSync(join(root, WATCH_REPORT_BINDING_PATHS[1]), callerPath);
+    const cProfilePath = join(root, 'bindings/watch-report/c/profile.json');
+    const cProfile = JSON.parse(readFileSync(cProfilePath, 'utf8'));
+    assert.equal(cProfile.artifactProfile, 'watch-report-c-strict/1');
+    assert.deepEqual(cProfile.runtimeDependencies, []);
+    assert.deepEqual(cProfile.systemLibraries, ['libm']);
+    assert.deepEqual(cProfile.files.map(record => record.path).sort(),
+      ['include/one01_watch_report.h', 'src/one01_watch_report.c']);
+    const cPackageDirectory = join(callerDirectory, 'watch-report-c-package'); mkdirSync(cPackageDirectory);
+    for (const record of cProfile.files) {
+      assert.ok(record.path.startsWith('include/') || record.path.startsWith('src/'));
+      const sourcePath = join(root, 'bindings/watch-report/c', record.path);
+      assert.equal(fileHash(sourcePath), record.sha256, 'C package source hash');
+      const destination = join(cPackageDirectory, record.path); mkdirSync(dirname(destination), { recursive: true });
+      copyFileSync(sourcePath, destination); assert.equal(fileHash(destination), record.sha256);
+    }
+    const cProfileCopy = join(cPackageDirectory, 'profile.json'); copyFileSync(cProfilePath, cProfileCopy);
+    const expectedCPackageFiles = ['profile.json', ...cProfile.files.map(record => record.path)].sort();
+    assert.deepEqual(ordinaryFiles(cPackageDirectory).map(path => path.slice(cPackageDirectory.length + 1).replaceAll(sep, '/')).sort(),
+      expectedCPackageFiles, 'Exact standalone C package allowlist');
+    const cCallerPath = join(callerDirectory, 'WatchReportConsumer.c');
+    copyFileSync(join(root, 'examples/language-bindings/WatchReportConsumer.c'), cCallerPath);
     const resolverPath = join(callerDirectory, 'resolve.mjs'); writeFileSync(resolverPath, 'console.log(import.meta.resolve("@101/connect"));\n');
     const resolution = fileURLToPath((await run(process.execPath, [resolverPath], { deadline: 5000 })).trim());
     assert.ok(resolution.startsWith(join(sdk.directory, 'node_modules/@101/connect') + sep));
     const js = JSON.parse(await run(process.execPath, [callerPath, '--fixtures', fixturePath]));
     const source = JSON.parse(readFileSync(fixturePath, 'utf8'));
     assert.ok(source.golden.length * 2 + source.decode.length <= source.limits.commands);
-    const lines = [], expectations = [];
+    const lines = [], expectations = [], cExpectations = [];
     for (const entry of source.golden) {
       const meaning = expected(source, entry), hex = materialize(source, entry).toString('hex');
       lines.push(encodeLine({ ...source.baseMeaning, ...entry.changes }), decodeLine(materialize(source, entry)));
       expectations.push({ hex, ...meaning }, { hex, ...meaning });
+      cExpectations.push({ hex, ...meaning }, { hex, ...meaning });
     }
     for (const entry of source.decode) {
       const bytes = materialize(source, entry); lines.push(decodeLine(bytes));
       if (!entry.accept.swift) expectations.push(null);
       else { bytes[52] &= 1; expectations.push({ hex: bytes.toString('hex'), ...expected(source, entry) }); }
+      const cBytes = materialize(source, entry);
+      cExpectations.push(entry.accept.c ? { hex: cBytes.toString('hex'), ...expected(source, entry) } : null);
     }
     assert.ok(lines.every(line => Buffer.byteLength(line) <= source.limits.lineBytes));
     const input = lines.join('\n') + '\n', kotlin = kotlinTools();
     const swiftVersion = (await run('/usr/bin/xcrun', ['swiftc', '--version'])).trim(); assert.match(swiftVersion, /Swift version 6\.3\.3/);
+    const clangVersion = (await run('/usr/bin/xcrun', ['clang', '--version'])).trim(); assert.match(clangVersion, /clang version 21\./);
     const swift = join(temporary, 'swift-consumer');
     await run('/usr/bin/xcrun', ['swiftc', '-swift-version', '6', '-strict-concurrency=complete', '-warnings-as-errors', '-parse-as-library',
       join(root, producerPaths[0]), join(root, WATCH_REPORT_BINDING_PATHS[2]), '-o', swift]);
@@ -122,6 +149,12 @@ export async function qualifyWatchReportBindings(manifestPath, consumerPath, cal
       join(root, producerPaths[1]), join(root, WATCH_REPORT_BINDING_PATHS[3])]);
     const javaRelease = readFileSync(realpathSync(join(dirname(kotlin.java), '..', 'release')), 'utf8');
     assert.match(javaRelease, /JAVA_VERSION="21\.0\.12"/);
+    const cExecutable = join(temporary, 'c-watch-report-consumer');
+    await run('/usr/bin/xcrun', ['clang', '-std=c11', '-Wall', '-Wextra', '-Werror', '-pedantic',
+      '-I', join(cPackageDirectory, 'include'), join(cPackageDirectory, 'src/one01_watch_report.c'), cCallerPath,
+      '-lm', '-o', cExecutable], { deadline: source.limits.nativeDeadlineMs });
+    const cOutput = (await run(cExecutable, [], { input })).trim().split('\n').map(line => JSON.parse(line));
+    assert.deepEqual(cOutput, cExpectations, 'C strict profile: exact bytes and meaning for every shared vector');
     const nativeResults = [];
     for (const [language, executable, args] of [['swift', swift, []], ['kotlin', kotlin.java, ['-cp', jar + ':' + kotlin.stdlib, 'WatchReportConsumerKt']]]) {
       const output = (await run(executable, args, { input })).trim().split('\n').map(line => JSON.parse(line));
@@ -132,13 +165,18 @@ export async function qualifyWatchReportBindings(manifestPath, consumerPath, cal
       nativeResults.push({ language, commands: lines.length, golden: source.golden.length, decode: source.decode.length,
         reservedBitDifference: js.incompatibilities, executableSha256: fileHash(language === 'swift' ? swift : jar), host });
     }
+    const cResult = { language: 'c', profile: cProfile.artifactProfile, commands: lines.length,
+      packageFiles: expectedCPackageFiles.map(path => ({ path, sha256: fileHash(join(cPackageDirectory, path)) })),
+      consumerSourceSha256: fileHash(cCallerPath),
+      packageRuntimeDependencies: cProfile.runtimeDependencies, systemLibraries: cProfile.systemLibraries, compiler: clangVersion,
+      executableSha256: fileHash(cExecutable), reservedBitVerdict: 'rejects reserved bits; legacy Swift/Kotlin accept and mask' };
     for (const [path, pin] of Object.entries({ ...sourcePins, ...producerPins, 'tools/build-pointer-bindings.mjs': helperPin })) assert.equal(fileHash(join(root, path)), pin);
     return { status: 'pass', contract: source.contract, node: process.version, callerTree: callerTree ?? 'worker-source-files-sha256', sourceSha256: sourcePins,
       unchangedNativeProducerSha256: producerPins, helperSha256: helperPin, sdk: { sourceTree: sdk.manifest.source.tree, manifestSha256: sdk.manifestSha256,
         sourcePins: sdkPaths.length, installedFiles: sdk.manifest.packages.reduce((sum, item) => sum + item.files.length, 0), publicResolution: resolution },
-      javascript: js, native: nativeResults, toolchains: { swift: swiftVersion, kotlin: '2.1.21', kotlinCompilerSha256: kotlin.compilerSha256,
+      javascript: js, native: [...nativeResults, cResult], toolchains: { swift: swiftVersion, clang: clangVersion, kotlin: '2.1.21', kotlinCompilerSha256: kotlin.compilerSha256,
         jvmTarget: 17, qualifiedRuntime: 'JDK21.0.12' }, limits: source.limits,
-      exclusions: ['watch/C unsupported', 'new native codec/library/distribution', 'native OS delivery', 'physical readings', 'capture freshness/clock mapping',
+      exclusions: ['native OS delivery', 'physical readings', 'capture freshness/clock mapping',
         'watch identity/transport authentication', 'phones', 'general portable schema coverage', 'full Q02/E12 completion'],
       cleanup: { ownedChildren: 0, ownedTemporaryDirectories: 0, ownedCallerDirectories: 0 } };
   } finally { rmSync(callerDirectory, { recursive: true, force: true }); rmSync(temporary, { recursive: true, force: true }); }

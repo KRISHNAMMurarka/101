@@ -363,9 +363,14 @@ test('F1 rejects a seal after original authority expiry on the genuine read path
   const applyCheckLine = source.slice(0, source.indexOf('if (!c || !value || !captureCall')).split('\n').length;
   const sourceUrl = new URL('./nec32-ir-learning.ts', import.meta.url).href;
   const sdkClockUrl = new URL('./runtime.ts', import.meta.resolve('@101/device-runtime')).href;
+  const sdkClockSource = readFileSync(fileURLToPath(sdkClockUrl), 'utf8');
+  const sdkClockMarker = 'this.now = options.now ?? (() => performance.now());';
+  const sdkClockAt = sdkClockSource.indexOf(sdkClockMarker);
+  assert.ok(sdkClockAt >= 0 && sdkClockSource.indexOf(sdkClockMarker, sdkClockAt + 1) === -1, 'Exactly one runtime default-clock source is required');
+  const sdkClockLine = sdkClockSource.slice(0, sdkClockAt).split('\n').length;
   assert.deepEqual(armedTrace.slice(0, firstSeal).map(t => t.stage), [
     'at authorityCurrent (' + sourceUrl + ':' + authorityLine + ':99)', 'at authorityCurrent (' + sourceUrl + ':' + authorityLine + ':99)',
-    'at ' + sourceUrl + ':' + applyCheckLine + ':173', 'at EmbeddedRuntime.now (' + sdkClockUrl + ':77:50)',
+    'at ' + sourceUrl + ':' + applyCheckLine + ':173', 'at EmbeddedRuntime.now (' + sdkClockUrl + ':' + sdkClockLine + ':50)',
   ], 'Clock trace drift is setup failure, never semantic RED credit');
   assert.ok(armedTrace.slice(0, firstSeal).every(t => t.time === 1000)); assert.ok(trace.every((t, i) => i === 0 || t.time >= trace[i - 1].time));
   assert.equal(crossing, true); assert.equal(originalConnection!.whenSettled!(), connectionSettlement); assert.equal(connectionOutcome, 'fulfilled');

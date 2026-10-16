@@ -64,7 +64,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     },
   });
 
-  const { linked, readiness, controllerHost } = useGameHost<SpellcasterState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<SpellcasterState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -161,7 +161,7 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
         <div className="spell-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>THREATS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="spell-arena">
         <div className="spell-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CASTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{camera.state === "on" ? gesture : "Camera optional"}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Spellcaster arena. Aim with arrows, WASD, or a gamepad stick. Cast projectile with Space, shield with Q, grab with E, charge with C, blade with Shift or X, and vortex with R." />

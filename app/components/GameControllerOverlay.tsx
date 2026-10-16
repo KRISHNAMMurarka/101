@@ -2,14 +2,14 @@
 
 import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DynamicControllerDeck } from "../controller/Controller";
-import type { ControllerHostBinding } from "../lib/use-game-host";
+import type { ControllerHostBinding, GameLaunchState } from "../lib/use-game-host";
 import type { GameControllerRole } from "@101/sdk";
 import { GameControllerInput } from "./game-controller-input";
 import { Icon } from "./Icon";
 import styles from "./GameControllerOverlay.module.css";
 
 /** A reserved strip below the existing play field, included in that field's fullscreen wrapper. */
-export default function GameControllerOverlay({ binding, children, runComplete = false }: { binding: ControllerHostBinding | null; children: ReactNode; runComplete?: boolean }) {
+export default function GameControllerOverlay({ binding, children, launch, runComplete = false }: { binding: ControllerHostBinding | null; children: ReactNode; launch?: GameLaunchState; runComplete?: boolean }) {
   const [open, setOpen] = useState(false);
   const expanded = open && !runComplete;
   const [selected, setSelected] = useState("");
@@ -17,7 +17,9 @@ export default function GameControllerOverlay({ binding, children, runComplete =
   const frameRef = useRef<HTMLDivElement>(null);
   const dockRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const retryRef = useRef<HTMLButtonElement>(null);
   const role = binding?.roles.find((candidate) => candidate.id === selected) ?? binding?.roles[0];
+  useEffect(() => { if (launch?.status === "failed") retryRef.current?.focus({ preventScroll: true }); }, [launch?.status]);
 
   useEffect(() => {
     const frame = frameRef.current; const dock = dockRef.current;
@@ -31,6 +33,8 @@ export default function GameControllerOverlay({ binding, children, runComplete =
 
   return (
     <div className={styles.frame} data-game-frame data-controls-open={expanded ? "true" : "false"} ref={frameRef}>
+      {launch?.status === "loading" && <p role="status">Getting the game ready…</p>}
+      {launch?.status === "failed" && <div role="alert"><p>The game couldn’t start. Try again, or use Back to choose another game.</p><button ref={retryRef} type="button" className="outline-button" onClick={launch.retry}>Try again</button></div>}
       <div className={styles.playfield}>{children}</div>
       {/* Keep child control keys from also driving the game through its window keyboard listener. */}
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}

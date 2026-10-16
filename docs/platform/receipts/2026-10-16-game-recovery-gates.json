@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "candidateCommit": "0cbdaacfeac5d2f8839dd3ff2be086adb09debec",
+  "candidateTree": "afbab44f3fd6d10b426f749a01a2647dcba1e582",
+  "gateResults": [
+    {
+      "name": "records",
+      "command": [
+        "node",
+        "--test",
+        "tests/platform-records.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.371,
+      "childPid": 60073,
+      "childJoined": true,
+      "log": "records.log"
+    },
+    {
+      "name": "platform-audit",
+      "command": [
+        "node",
+        "tools/audit-platform-records.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.566,
+      "childPid": 60269,
+      "childJoined": true,
+      "log": "platform-audit.log"
+    },
+    {
+      "name": "production-audit",
+      "command": [
+        "node",
+        "tools/audit-production.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 7.725,
+      "childPid": 60350,
+      "childJoined": true,
+      "log": "production-audit.log"
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 13.173,
+      "childPid": 61408,
+      "childJoined": true,
+      "log": "types.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 63.241,
+      "childPid": 62888,
+      "childJoined": true,
+      "log": "lint.log"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "npm",
+        "run",
+        "test:unit"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 1131.241,
+      "childPid": 74348,
+      "childJoined": true,
+      "log": "unit.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 38.47,
+      "childPid": 89450,
+      "childJoined": true,
+      "log": "build.log"
+    },
+    {
+      "name": "rendered",
+      "command": [
+        "node",
+        "--test",
+        "tests/rendered-html.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 12.349,
+      "childPid": 97556,
+      "childJoined": true,
+      "log": "rendered.log"
+    }
+  ],
+  "unit": {
+    "tests": 3415,
+    "pass": 3413,
+    "fail": 2,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rendered": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "nativeReliability": "UNRESOLVED",
+  "failures": [
+    {
+      "test": "software child rejects a valid frame from a retired generation and token",
+      "source": "packages/hub-server/src/nec32-ir-emitter-gateway.test.ts:259",
+      "phase": "Initial hello; no command/open/token/stale-frame operations reached.",
+      "observability": "No retained child stderr/start/PID telemetry; do not infer zero-stderr or OS cause."
+    },
+    {
+      "test": "fixed native launches derive platform bootstrap environment without caller preloads",
+      "nestedFailure": "existing loader failure retains its actual earlier milestone and native close",
+      "phase": "Environment audits all correct; nested IR, rosbridge and version-mismatch checks pass. Controlled-loader child never reaches a JavaScript milestone before original 2500ms limit.",
+      "pid": 5150,
+      "stderrBytes": 0,
+      "milestones": [],
+      "signal": "SIGTERM",
+      "parentClockMs": {
+        "spawnEntered": 908.147792,
+        "spawnReturned": 912.132,
+        "spawnEvent": 913.521458,
+        "close": 3418.715375
+      },
+      "cleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    }
+  ],
+  "interpretation": "The original zero-stderr startup failure signature recurred. No contemporaneous kernel sample exists for PID5150; the earlier passing capture cannot establish its cause. Native source paths are unchanged from the previously integrated baseline. No retry, prewarming, bound relaxation or OS/security/signature change was made.",
+  "focusedBoundary": "The40 Pause and50 launch-recovery browser checks remain scoped evidence; they do not turn this failed exact-candidate unit gate green.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-game-recovery/failed-gates-v2",
+    "commit": "0414cbd1ca034f514a58d718bb7b2821cc5abd99",
+    "tree": "18c0bcccf72614f9c7f498867caf6311a30f55a9",
+    "readBackFiles": 50,
+    "allBytesMatched": true,
+    "ownedScratchRemoved": true
+  },
+  "evidencePaths": {
+    "rawUnit": "raw/unit.log",
+    "allGates": "raw/results.json",
+    "independentTriage": "controller/native-gate-triage.json"
+  },
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0
+}

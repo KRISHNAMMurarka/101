@@ -54,7 +54,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<OrbitalHud>(INITIAL_HUD);
 
-  const { session: liveSession, controllerHost } = useGameHost<OrbitalCrewState>({
+  const { session: liveSession, controllerHost, launch } = useGameHost<OrbitalCrewState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -148,7 +148,7 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
 
 
       <div className="orbital-layout">
-        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="orbital-stage">
           <div className="orbital-statusbar"><FullscreenButton /><b>{hud.activeThreats ? `${hud.activeThreats} ACTIVE THREAT${hud.activeThreats > 1 ? "S" : ""}` : "All clear"}</b></div>
           <canvas ref={canvasRef} tabIndex={0} aria-label="Orbital Crew ship view. Use WASD or arrows to pilot, Space to fire, Q and E to rotate shields, C to fortify, V to vent, and R for emergency recall." />
@@ -170,7 +170,8 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
             <div><h2>Stations</h2><button onClick={onConnect}>{session.assignments.length ? "Add another" : "CONNECT CREW"} ↗</button></div>
             {ORBITAL_CREW_ROLES.map((role) => {
               const assigned = assignments.get(role.id);
-              return <article key={role.id} className={assigned ? "is-assigned" : ""}><i /><div><strong>{role.label}</strong><span>{assigned ? assigned.deviceId : "Ready on this screen"}</span></div><b>{assigned ? "LINKED" : "OPEN"}</b></article>;
+              const controllerName = assigned ? session.devices.find((device) => device.id === assigned.deviceId)?.label ?? "Connected controller" : "Ready on this screen";
+              return <article key={role.id} className={assigned ? "is-assigned" : ""}><i /><div><strong>{role.label}</strong><span>{controllerName}</span></div><b>{assigned ? "LINKED" : "OPEN"}</b></article>;
             })}
           </section>
           <p className="orbital-local-note"><b>Play on this screen</b> One keyboard or gamepad can operate every station. Connected phones receive independent panels automatically.</p>

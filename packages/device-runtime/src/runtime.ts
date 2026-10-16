@@ -11,6 +11,13 @@ interface Registration {
   role: "source" | "sink"; readiness: Readiness; readinessExpiresAt?: number; sequence: number; operation: number;
   routes: Set<EmbeddedConnection>; propertySnapshot?: Observation; provider?: Pick<SinkProvider, "apply" | "release">;
 }
+/** Internal read-only witness; never exposes provider, readiness or route internals. */
+interface RuntimeEndpointSnapshot { readonly role: "source" | "sink"; readonly device: Readonly<DeviceDescriptor>;
+  readonly capability: string; readonly reference: ResourceReference }
+const endpointLookups = new WeakMap<DeviceRuntime, (handle: EndpointHandle) => Readonly<RuntimeEndpointSnapshot> | undefined>();
+export function inspectRuntimeEndpoint(runtime: DeviceRuntime, handle: EndpointHandle): Readonly<RuntimeEndpointSnapshot> | undefined {
+  return endpointLookups.get(runtime)?.(handle);
+}
 const READINESS: readonly string[] = ["available", "unavailable", "busy", "denied", "stale"];
 const OPTIONS = ["sequence", "timestamp", "clockDomain", "quality", "provenance", "operationId", "deadline"];
 
@@ -90,6 +97,12 @@ export class EmbeddedRuntime implements DeviceRuntime {
     this.maxPendingDeliveryBytes = bound(options.maxPendingDeliveryBytes, 4096 * this.maxPendingDeliveries, 16777216);
     this.maxPendingDeliveryBytesPerPrincipal = bound(options.maxPendingDeliveryBytesPerPrincipal,
       this.maxPendingDeliveryBytes, this.maxPendingDeliveryBytes);
+    const registry = this.registry;
+    endpointLookups.set(this, handle => {
+      if (this.closed) return;
+      const entry = registry.get(handle); if (!entry) return;
+      return Object.freeze({ role: entry.role, device: entry.descriptor, capability: entry.capability.id, reference: reference(entry) });
+    });
   }
 
   time(): number {

@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "scope": "Explicit exact installed author-supplied README legal sources and bundled component terms/attribution notices. Embedded bytes preserve complete authored files. Bundled notices do not establish complete parent-package terms; other absent texts/targets, native/model terms and redistribution review remain open.",
+  "schemaVersion": 2,
+  "scope": "Explicit exact installed legal sources and reviewed version-bound repository author texts. Origin and proof are retained; text presence does not establish legal or redistribution approval. Missing target/native/model terms remain open.",
   "packages": [
     {
       "name": "@react-native/debugger-frontend",
@@ -76,6 +76,22 @@
         {
           "path": "dist/standalone.js.LICENSE.txt",
           "sha256": "cad5b7b8ae8720d9fd5e621c3da10874ac88c303f93e95cf31e66828d512f3ce"
+        }
+      ]
+    },
+    {
+      "name": "keyv",
+      "version": "4.5.4",
+      "installedPath": "node_modules/keyv",
+      "licenseFiles": [
+        {
+          "origin": "repository-author-source",
+          "path": "third_party/licenses/npm/keyv/4.5.4/LICENSE",
+          "sha256": "1f7dca26d2d328c3dbb9b6fe3b15ec3cda08ffe2288e47b73d617454b256f959",
+          "provenance": {
+            "path": "third_party/licenses/npm/keyv/4.5.4/provenance.json",
+            "sha256": "f9caddaf0ec028005d003db066a4187046db81c9f96535fbc6662f8617c2e231"
+          }
         }
       ]
     }

@@ -15,7 +15,7 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { auditReleaseLicenseInventories } from "./license-inventory-validation.mjs";
-import { DECLARED_LICENSE_SOURCES_PATH } from "./generate-license-inventory.mjs";
+import { DECLARED_LICENSE_SOURCES_PATH, collectDeclaredLicenseRepositoryFiles, verifyCopiedLicenseRepositoryFiles } from "./generate-license-inventory.mjs";
 import { auditWebRuntimeAssets } from "./web-artifact-validation.mjs";
 import * as zlib from "node:zlib";
 
@@ -48,7 +48,7 @@ const TARGETS = [
     async build() {
       await auditReleaseLicenseInventories(ROOT);
       await npm("build");
-      return collect("dist", "web", WEB_METADATA);
+      return collect("dist", "web", WEB_METADATA, await collectDeclaredLicenseRepositoryFiles(ROOT));
     },
   },
   {
@@ -175,22 +175,24 @@ async function npm(script) {
   await run("npm", ["run", script], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
 }
 
-async function collect(source, destination, metadata = []) {
+async function collect(source, destination, metadata = [], authorFiles = []) {
+  const selectedMetadata = [...new Set([...metadata, ...authorFiles.map(file => file.path)])];
   const from = join(ROOT, source);
   const to = join(OUT, destination);
   try {
     await inspectArtifact(from);
     await mkdir(dirname(to), { recursive: true });
     await cp(from, to, { recursive: true, errorOnExist: true, force: false });
-    for (const path of metadata) {
+    for (const path of selectedMetadata) {
       if (!(await lstat(join(ROOT, path))).isFile()) throw new Error(`Required metadata is not a regular file: ${path}`);
       await mkdir(dirname(join(to, path)), { recursive: true });
       await cp(join(ROOT, path), join(to, path), { errorOnExist: true, force: false });
     }
+    await verifyCopiedLicenseRepositoryFiles(to, authorFiles);
     const fingerprint = await inspectArtifact(to, true);
     if (destination === "web") {
       for (const entry of fingerprint.contents) {
-        if (!WEB_METADATA.includes(entry.path) && !WEB_GENERATED_FILES.has(entry.path)
+        if (!selectedMetadata.includes(entry.path) && !WEB_GENERATED_FILES.has(entry.path)
           && !WEB_GENERATED_PATTERNS.some((pattern) => pattern.test(entry.path))) {
           throw new Error(`Unexpected web artifact file: ${entry.path}`);
         }
@@ -286,6 +288,7 @@ async function sourceProvenance() {
     paths = [...paths, ...listed.split("\0").filter(Boolean)];
     scope = "git-versioned-and-unignored-files-plus-declared-packaging-files";
   }
+  paths.push(...(await collectDeclaredLicenseRepositoryFiles(ROOT)).map(file => file.path));
   const files = [];
   for (const path of [...new Set(paths)].sort()) {
     try {

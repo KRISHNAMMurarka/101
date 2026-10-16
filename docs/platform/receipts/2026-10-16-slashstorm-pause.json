@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "source": {
+    "ref": "refs/codex/evidence/2026-10-16-game-recovery/source-v2",
+    "commit": "a29bef3b0aa8efc899b4a9007c5b4e9c07134065",
+    "tree": "e6fe8149d8348a45349eaf502fe89c8000d094a6",
+    "base": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+    "readBackFiles": 69,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ordinaryIntegration": false
+  },
+  "buildSha256": "fe26e49893137a526f34f3a07c9902a8e73dba72cfc6352efc2efcfb4cc3afdf",
+  "wholeTasksClosed": [],
+  "integration": "Focused validation only; exact-candidate broad gates and ordinary integration recorded separately.",
+  "supportRowsAccepted": [],
+  "nativeStartup": "UNRESOLVED; no reliability fix or historical failure clearance.",
+  "tasks": [
+    "G06"
+  ],
+  "summary": "Slashstorm now consumes its required Pause action, freezes simulation while paused, and resumes without cutting across paused blade movement. Keyboard Escape, visible Pause/Resume and both declared sword roles share the transition.",
+  "sourceSha256": {
+    "games/slashstorm/src/game.ts": "bdd2e1aca219ebb1968afaef39e05770f1a75b01eb5dac03893d51dff82fd4e1",
+    "games/slashstorm/src/roles.ts": "68c96dfea2f59ddc55b032b269c88cd54d95b5ad107661ad70c7b728c2c7775d",
+    "games/slashstorm/input.manifest.json": "75f6f1641491b7c301512751dc6b1469b458116bd4d304937aaee3c181381c69",
+    "app/components/SlashstormGame.tsx": "95426e9f08e2bf7064584e739a6ebc56898327d4a9d71d5f9733d0cd10a9a4e1",
+    "app/components/GameControllerOverlay.tsx": "233acedc2656b476adf802982aaead544283b2ecbf76601b7e7e9f83560a7ea2",
+    "app/components/game-controller-input.ts": "4897535666e29223af22be1dcedd8bf27c83b702bb7056d2ce8aa33e1138e333",
+    "packages/adapter-keyboard/src/index.ts": "b29d4df8292dfa524a61ff654fba7205405e018ff86a6eef1c55c9f23f8c87cc",
+    "tools/qa-slashstorm-pause.mjs": "f2391dc00ed9620c7d8664778e630b91c07e6f3dbf900dae80b9ee91688eb514"
+  },
+  "focused": {
+    "unit": "25/25 focused pause/input/simulation/director/overlay checks; later29/29 includes shared host regression",
+    "browser": 40,
+    "result": "pass",
+    "browsers": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "desktop-dark",
+        "checks": [
+          {
+            "name": "manifest-chooser-starts-focused-conventional-play",
+            "pass": true
+          },
+          {
+            "name": "keyboard-pause-freezes-native-canvas-without-repeat-toggle",
+            "pass": true
+          },
+          {
+            "name": "observed-first-resumed-pixel-change",
+            "pass": true,
+            "observationMs": 10.050792000000001
+          },
+          {
+            "name": "visible-resume-restores-playfield-focus-and-animation",
+            "pass": true
+          },
+          {
+            "name": "pause-button-uses-native-space-activation",
+            "pass": true
+          },
+          {
+            "name": "both-declared-sword-roles-pause-and-resume-through-local-deck",
+            "pass": true
+          },
+          {
+            "name": "natural-game-end-focuses-described-result-and-restart",
+            "pass": true
+          },
+          {
+            "name": "space-restart-creates-fresh-playable-pause-state",
+            "pass": true
+          },
+          {
+            "name": "no-page-errors-or-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-paused-game",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "narrow-light",
+        "checks": [
+          {
+            "name": "manifest-chooser-starts-focused-conventional-play",
+            "pass": true
+          },
+          {
+            "name": "keyboard-pause-freezes-native-canvas-without-repeat-toggle",
+            "pass": true
+          },
+          {
+            "name": "observed-first-resumed-pixel-change",
+            "pass": true,
+            "observationMs": 117.9583330000005
+          },
+          {
+            "name": "visible-resume-restores-playfield-focus-and-animation",
+            "pass": true
+          },
+          {
+            "name": "pause-button-uses-native-space-activation",
+            "pass": true
+          },
+          {
+            "name": "both-declared-sword-roles-pause-and-resume-through-local-deck",
+            "pass": true
+          },
+          {
+            "name": "natural-game-end-focuses-described-result-and-restart",
+            "pass": true
+          },
+          {
+            "name": "space-restart-creates-fresh-playable-pause-state",
+            "pass": true
+          },
+          {
+            "name": "no-page-errors-or-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-paused-game",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "desktop-dark",
+        "checks": [
+          {
+            "name": "manifest-chooser-starts-focused-conventional-play",
+            "pass": true
+          },
+          {
+            "name": "keyboard-pause-freezes-native-canvas-without-repeat-toggle",
+            "pass": true
+          },
+          {
+            "name": "observed-first-resumed-pixel-change",
+            "pass": true,
+            "observationMs": 41.07620799999859
+          },
+          {
+            "name": "visible-resume-restores-playfield-focus-and-animation",
+            "pass": true
+          },
+          {
+            "name": "pause-button-uses-native-space-activation",
+            "pass": true
+          },
+          {
+            "name": "both-declared-sword-roles-pause-and-resume-through-local-deck",
+            "pass": true
+          },
+          {
+            "name": "natural-game-end-focuses-described-result-and-restart",
+            "pass": true
+          },
+          {
+            "name": "space-restart-creates-fresh-playable-pause-state",
+            "pass": true
+          },
+          {
+            "name": "no-page-errors-or-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-paused-game",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "narrow-light",
+        "checks": [
+          {
+            "name": "manifest-chooser-starts-focused-conventional-play",
+            "pass": true
+          },
+          {
+            "name": "keyboard-pause-freezes-native-canvas-without-repeat-toggle",
+            "pass": true
+          },
+          {
+            "name": "observed-first-resumed-pixel-change",
+            "pass": true,
+            "observationMs": 116.37229200000002
+          },
+          {
+            "name": "visible-resume-restores-playfield-focus-and-animation",
+            "pass": true
+          },
+          {
+            "name": "pause-button-uses-native-space-activation",
+            "pass": true
+          },
+          {
+            "name": "both-declared-sword-roles-pause-and-resume-through-local-deck",
+            "pass": true
+          },
+          {
+            "name": "natural-game-end-focuses-described-result-and-restart",
+            "pass": true
+          },
+          {
+            "name": "space-restart-creates-fresh-playable-pause-state",
+            "pass": true
+          },
+          {
+            "name": "no-page-errors-or-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-paused-game",
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "originalFailure": {
+    "evidence": "outputs/controllers/2026-10-16-slashstorm-pause/original-red.log",
+    "witness": "Actual keyboard adapter and sword-one role regression fail because the old game advances elapsed time during Pause. The original role loop stops on sword-one; current unit/browser evidence covers both roles."
+  },
+  "review": "outputs/controllers/2026-10-16-slashstorm-pause/independent-review.json",
+  "dependentReview": "outputs/controllers/2026-10-16-gravity-recovery/independent-review.json",
+  "scope": "Actual fresh built Slashstorm, native Chromium/WebKit DOM keyboard/button/local-controller input, canvas pixels, natural game end and restart. Desktop and narrow viewport, both themes and reduced motion. Service workers disabled for fresh artifact proof. No physical phone/gamepad, remote controller, assistive technology, full G06 or native startup qualification.",
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "servers": 0
+  },
+  "evidencePath": "outputs/controllers/2026-10-16-slashstorm-pause/browser-v2.json",
+  "firstRejectedBroadAttempt": {
+    "candidateCommit": "d620700902c62700b5fc7a67869574cc41ef4c48",
+    "candidateTree": "3762c65e76bba89e6f8f99bedc2e5f208daf3050",
+    "unit": "3415/3415;0skipped",
+    "freshRendered": "37/37;0skipped",
+    "failedGate": "lint",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-game-recovery/first-gates",
+      "commit": "8af9e54d4e900f439dd1bf607cc805f8d4634501",
+      "tree": "8b12c227bf5e55daa6afdf29bf5274a5ed1e7b12",
+      "readBackFiles": 17,
+      "allBytesMatched": true,
+      "ownedScratchRemoved": true
+    },
+    "integrated": false
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S12",
+    "S09"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "native entrypoint implementation map and actual filesystem owner-decision replay coverage",
+  "map": {
+    "families": 15,
+    "sourceFiles": 132,
+    "reportSha256": "a251d4e2cee69ec488160af3b9d880ba625e5a0c10ed45a7d1dd91047c828f11",
+    "method": {
+      "mode": "read-only static source/declaration/direct-consumer/test-source inspection",
+      "subjectExecutions": 0,
+      "nativeNetworkOrRootProbes": 0,
+      "canonicalWrites": 0,
+      "indexWrites": 0,
+      "distWrites": 0,
+      "scope": "Implemented local native/OS bridge families and selected protocol receiver contracts. Not a full security scan, dependency audit, OS sandbox proof, complete recipe graph proof or current runtime test.",
+      "revisionBaseline": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "sourcePinMeaning": "Exact bytes read from current working tree at report creation, not whole-tree or baseline equivalence. No runtime coverage reuse is inferred solely from hashes."
+    }
+  },
+  "sourceSha256": {
+    "packages/device-runtime/src/filesystem-resources.test.ts": "89a0ce5e2d01b6df2e41b28c88eda9cd1e013b9ab1cf7a2d1294d5d7a5814f81"
+  },
+  "checks": [
+    {
+      "name": "filesystem",
+      "command": [
+        "node",
+        "--test",
+        "packages/device-runtime/src/filesystem-resources.test.ts"
+      ],
+      "pid": 59880,
+      "exitCode": 0,
+      "elapsedSeconds": 0.838,
+      "joined": true
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npx",
+        "eslint",
+        "packages/device-runtime/src/filesystem-resources.test.ts"
+      ],
+      "pid": 60139,
+      "exitCode": 0,
+      "elapsedSeconds": 2.671,
+      "joined": true
+    }
+  ],
+  "tests": {
+    "tests": 17,
+    "pass": 17,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rootReviewSha256": "c7e0baadc2842dcb0892cbfd5ea20f8e929cf914824fe9e330394475b2297366",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-entrypoints/filesystem-coverage",
+    "commit": "96249ab29c6b593968818333511ff1df042e7b8c",
+    "tree": "957c4578a66e1451fd7611c17ccd3d35991fa6b8",
+    "readBackFiles": 147,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "witnessed": "Actual separate owned roots, same operation/caller tuple. Cached A approval denied on B before observed native entry, no B mutation or A disruption. Fresh B approval writes fresh bytes; both actual owned roots removed and timers/raw pending zero.",
+  "productionGuardChanges": false,
+  "coverageOnly": true,
+  "limits": [
+    "The15-family map is static source/declaration inspection, not a full security scan or all-entrypoint execution.",
+    "Only the filesystem caller path gains new executed replay coverage; other native IPC caller and descriptor/recipe boundaries remain open.",
+    "No physical device, foreign Tauri window reachability, native sandbox or wholeS12/S09 acceptance."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

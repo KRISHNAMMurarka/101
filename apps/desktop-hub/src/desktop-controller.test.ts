@@ -3,6 +3,7 @@ import test from "node:test";
 import { DesktopController, desktopControlLayout } from "./desktop-controller.ts";
 import { MultiplexLinkTransport, PROTOCOL_VERSION } from "@101/protocol";
 import type { LinkMessage, LinkState } from "@101/protocol";
+import { createDesktopInputBridge } from "./desktop-input.ts";
 import type { DesktopInputBridge, DesktopInputCommand } from "./desktop-input.ts";
 
 test("desktop controller admits only an explicitly selected exact paired identity and a fresh mapped frame", () => {
@@ -76,4 +77,62 @@ test("pairing Stop failure still closes the session and retains retry ownership"
   await controller.stop();
   assert.equal(pairingStops, 2);
   assert.equal(sessionStops, 1);
+});
+
+// Native invocation is the cooperative seam; pairing admission, controller and
+// runtime bridge are actual implementations.
+test("native window refusal preserves its cause after joined Stop instead of reporting missing pairing", async () => {
+  const transport = new MultiplexLinkTransport(), peer = new Peer();
+  await transport.add("webrtc-one", peer, { wireDeviceId: "phone", routeDeviceId: "webrtc-one" });
+  const refused = new Error("Control is still stopping. Wait, then retry.");
+  let release!: () => void, entered!: () => void, selectCalls = 0;
+  const pendingStop = new Promise<void>(resolve => { release = resolve; });
+  const stopEntered = new Promise<void>(resolve => { entered = resolve; });
+  const bridge = createDesktopInputBridge({ principalId: "local", applicationId: "hub", sessionId: "native-refusal", now: () => 100,
+    async invoke(command) {
+      if (command === "native_input_select") { selectCalls++; throw refused; }
+      if (command === "native_input_stop") { entered(); await pendingStop; }
+      return undefined;
+    } });
+  const controller = new DesktopController({ transport, bridge, now: () => 100,
+    pairing: { start: async () => {}, stop: async () => {} } });
+  await controller.start();
+  try {
+    assert.equal(await controller.approveWindow(), false); assert.equal(selectCalls, 0);
+    peer.emit({ channel: "control", payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } } });
+    assert.equal(await controller.selectController("webrtc-one"), true);
+    const approval = controller.approveWindow(); let settled = false;
+    void approval.then(() => { settled = true; }, () => { settled = true; });
+    const rejection = assert.rejects(approval, error => error === refused);
+    await stopEntered;
+    assert.equal(settled, false); assert.equal(selectCalls, 1);
+    assert.equal(bridge.startRoutes(), false);
+    assert.equal(bridge.publish({ type: "key", key: "Left", down: true }, 200).ok, false);
+    release(); await rejection;
+    assert.equal(bridge.startRoutes(), false);
+  } finally { release(); await controller.stop(); await bridge.close(); }
+});
+
+test("native window refusal retains a simultaneous Stop failure for recovery", async () => {
+  const transport = new MultiplexLinkTransport(), peer = new Peer();
+  await transport.add("webrtc-one", peer, { wireDeviceId: "phone", routeDeviceId: "webrtc-one" });
+  const refused = new Error("Window confirmation was declined"), releaseFailure = new Error("Held input needs release retry");
+  let stops = 0;
+  const bridge = createDesktopInputBridge({ principalId: "local", applicationId: "hub", sessionId: "native-stop-refusal", now: () => 100,
+    async invoke(command) {
+      if (command === "native_input_select") throw refused;
+      if (command === "native_input_stop" && ++stops === 1) throw releaseFailure;
+      return undefined;
+    } });
+  const controller = new DesktopController({ transport, bridge, now: () => 100,
+    pairing: { start: async () => {}, stop: async () => {} } });
+  await controller.start();
+  try {
+    peer.emit({ channel: "control", payload: { type: "hello", version: PROTOCOL_VERSION, deviceId: "phone", device: "Phone", capabilities: { touch: true } } });
+    assert.equal(await controller.selectController("webrtc-one"), true);
+    await assert.rejects(controller.approveWindow(), error => error instanceof AggregateError &&
+      error.errors.length === 2 && error.errors[0] === refused && error.errors[1] === releaseFailure);
+    assert.equal(bridge.startRoutes(), false);
+    assert.equal(bridge.publish({ type: "key", key: "Left", down: true }, 200).ok, false);
+  } finally { await controller.stop(); await bridge.close(); }
 });

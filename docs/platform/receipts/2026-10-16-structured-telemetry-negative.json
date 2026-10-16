@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q02",
+    "Q03",
+    "E12"
+  ],
+  "integrated": false,
+  "summary": "A shared raw duplicate-envelope-key fixture records the actual selected Swift, Kotlin and C parser verdicts. All three immutable artifact builders copy and hash it, and their native tests consume the exact raw string. No decoder behavior changes.",
+  "source": {
+    "ref": "refs/codex/evidence/2026-10-16-codec-conformance/source",
+    "commit": "28a4273f5134d9470459f3431de39590a1302ada",
+    "tree": "690d47b967207cead5dc9814b7cf9dd0c62877e4",
+    "sha256": {
+      "bindings/structured-telemetry/fixtures/structured-telemetry-negative-v1.json": "981e7167a912b839b97052ca3b18f06f93fca72b6e03a842314fbd41f16341b2",
+      "bindings/structured-telemetry/swift/Tests/One01StructuredTelemetryWireTests/StructuredTelemetryWireTests.swift": "b51817b32773dd1b7b7a8be09f11ff24cdfa6b302be40622ad4b5f5d6e4a850b",
+      "bindings/structured-telemetry/kotlin/src/test/kotlin/one01/structuredtelemetry/StructuredTelemetryWireTests.kt": "ad5efeab4e2733676bd9ee55d83d8ec150abf0dac5c45e30f32030ca079920eb",
+      "bindings/structured-telemetry/c/structured_telemetry_wire_test.c": "779eaa48cbd29ebf4b761a4588302f83e24d909c860006c6b1a02cd5a7f0f819",
+      "tools/build-structured-telemetry-bindings.mjs": "9953fab8789b474af50cce112a31afe14febaa00c8d9a71fd842f841d49b5f24",
+      "tools/build-structured-telemetry-kotlin.mjs": "945fb915a870123b7a7c38d918b8a1f0b0f116b9d800abb0104faa0ba073a961",
+      "tools/build-structured-telemetry-c.mjs": "d3280fbb3f768be76988e373ecb22b87bf5df9d3898057008de6706da5532e8f"
+    },
+    "readBackMatched": true
+  },
+  "fixture": {
+    "path": "bindings/structured-telemetry/fixtures/structured-telemetry-negative-v1.json",
+    "profile": "structured-telemetry-native-negative/1",
+    "case": "duplicate-envelope-version-key",
+    "bytes": 179,
+    "observedAcceptance": {
+      "swift": true,
+      "kotlin": true,
+      "c": false
+    },
+    "boundary": "The raw packet retains two version members through string-to-UTF8 decoding. Per-artifact behavior is recorded without silently imposing the C duplicate-key rule on Foundation/Gson.",
+    "actualSdkPositiveFixtureUnchanged": true,
+    "actualSdkPositiveCount": 5,
+    "completeProducerDeepEqualityPreserved": true
+  },
+  "verification": {
+    "immutableArtifactBuilders": [
+      {
+        "language": "swift",
+        "profile": "structured-telemetry-json2/1",
+        "target": "swift-macos-arm64",
+        "exitCode": 0,
+        "nativeTests": {
+          "swiftTests": 8
+        },
+        "reciprocal": {
+          "result": "pass",
+          "reciprocalValues": 5,
+          "commands": 10,
+          "authority": "inert-codec-only",
+          "sourceTimePreserved": true,
+          "nativeByteIdentityClaimed": false
+        },
+        "manifest": "artifacts/structured-telemetry-whFxMW/manifest.json",
+        "manifestSha256": "e82f9486cef7b2bb363a91581c58d06f1587fdc4ecad4cd3a5f7edbbd9133c0a",
+        "tarballSha256": "eff0881e2e40807315263731e18320f4c751e0f62cd8ef306a68354f806dd7fc",
+        "packagedNegativeFixture": {
+          "path": "assets/structured-telemetry-negative-v1.json",
+          "bytes": 702,
+          "sha256": "981e7167a912b839b97052ca3b18f06f93fca72b6e03a842314fbd41f16341b2"
+        },
+        "commandsAndStreams": "controller/artifact-runs/index.json"
+      },
+      {
+        "language": "kotlin",
+        "profile": "structured-telemetry-kotlin-jvm/1",
+        "target": "kotlin-jvm-jdk21-macos-arm64",
+        "exitCode": 0,
+        "nativeTests": {
+          "assertions": 177
+        },
+        "reciprocal": {
+          "result": "pass",
+          "reciprocalValues": 5,
+          "commands": 10,
+          "authority": "inert-codec-only",
+          "sourceTimePreserved": true,
+          "nativeByteIdentityClaimed": false
+        },
+        "manifest": "artifacts/structured-kotlin-avbMGF/manifest.json",
+        "manifestSha256": "32b98bd5701dd431356bd72634568fb7ec28d3943ab50dc552cdbc102d384cc0",
+        "tarballSha256": "4e8a8cd558fa277614ceec4e8e9df4a9ae801186225b1b5dae3a4362010bff36",
+        "packagedNegativeFixture": {
+          "path": "assets/structured-telemetry-negative-v1.json",
+          "bytes": 702,
+          "sha256": "981e7167a912b839b97052ca3b18f06f93fca72b6e03a842314fbd41f16341b2"
+        },
+        "commandsAndStreams": "controller/artifact-runs/index.json"
+      },
+      {
+        "language": "c",
+        "profile": "structured-telemetry-c-jansson/1",
+        "target": "c11-clang21-macos-arm64",
+        "exitCode": 0,
+        "nativeTests": {
+          "nativeTestGroups": 8
+        },
+        "reciprocal": {
+          "result": "pass",
+          "reciprocalValues": 5,
+          "commands": 10,
+          "authority": "inert-codec-only",
+          "sourceTimePreserved": true,
+          "nativeByteIdentityClaimed": false
+        },
+        "manifest": "artifacts/structured-c-S1XWSF/manifest.json",
+        "manifestSha256": "d398c4d322cef62f68598ec0a9c2fa6bd962f2bb64869b120e7e08816b22bb72",
+        "tarballSha256": "4c00fb04b80483eb7ddff279969b8ef9ed5e8565a5cce07965d63f8539251881",
+        "packagedNegativeFixture": {
+          "path": "assets/structured-telemetry-negative-v1.json",
+          "bytes": 702,
+          "sha256": "981e7167a912b839b97052ca3b18f06f93fca72b6e03a842314fbd41f16341b2"
+        },
+        "commandsAndStreams": "controller/artifact-runs/index.json"
+      }
+    ],
+    "sourceReview": "controller/review.json",
+    "nodeDriverLint": "Root changed-scope ESLint batch passed all3driver sources.",
+    "scope": "Local immutable selected Swift/macOS-arm64, Kotlin/JDK21 and C/macOS-arm64 artifacts. Each native suite and actual installed-SDK reciprocal caller executes; not merely source test dispatch.",
+    "setupFailure": "A pre-builder output-redirection setup error is retained separately in the run index; no product or decoder failure inferred."
+  },
+  "sdk": {
+    "manifestSha256": "b635c0b4dfb52c9921bef313a14ed8bd09f70d91f05567c164b726fb6f266c52",
+    "selectedProducerPins": {
+      "packages/device-web/src/wire.ts": "55052229bc8593733a94f7eb662ddc708abb3a89c444de00b062a412c730f5b5",
+      "packages/device-model/src/sample.ts": "2eba7236adabf85cd0693693ca6aa9d83ef253e2e74ed110203e790630558d37",
+      "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408"
+    },
+    "inputManifestInCustody": "sdk-manifest.json",
+    "boundary": "Historical local immutable7package SDK pack; only three selected producer hashes matched current source. Not a full current SDK acceptance."
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-codec-conformance/artifacts",
+    "commit": "1ad0c05ee40856773360f4c200878ec1142889fe",
+    "tree": "5ac13125e8249f984213e2e5ac088c1a89821c66",
+    "readBackFiles": 133,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "sourceCommit": "28a4273f5134d9470459f3431de39590a1302ada",
+    "ownedCleanupAuthorizedAfterReadBack": [
+      "/Users/km/Dev/101/release/structured-c-S1XWSF",
+      "/Users/km/Dev/101/release/structured-kotlin-avbMGF",
+      "/Users/km/Dev/101/release/structured-telemetry-whFxMW",
+      "/Users/km/Dev/101/outputs/batches/2026-10-16-codec-artifact-390d69f15b7d"
+    ]
+  },
+  "priorDirectProbeCustodyLimitation": {
+    "path": "controller/report.json",
+    "oldVerdictLinesRetained": true,
+    "greenSummariesAndDigestsRetained": true,
+    "fullSuiteStdoutStderrRetained": false,
+    "exactProbeSourceRetained": false,
+    "exactProbeArgvRetained": false,
+    "interpretation": "Worker removed the original direct-probe scratch prematurely. Those originals are not reconstructed or counted as complete reproducible transcripts. The subsequent distinct immutable-artifact runs have complete commands and raw streams; they do not recover lost historical bytes."
+  },
+  "limits": [
+    "No decoder validation, native authority, profile scope, dependencies or support promise changed.",
+    "No C watch profile exists; it remains unsupported. Strict JS versus legacy native watch reserved-bit behavior remains explicit and untouched.",
+    "Only one common malformed selected telemetry case added; whole Q02/Q03/E12 and general cross-language/version/lifecycle matrices remain open.",
+    "No physical sensors, target watch/phone OS delivery, transport authority or native startup reliability qualification."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0
+}

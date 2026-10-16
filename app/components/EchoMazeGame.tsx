@@ -25,6 +25,7 @@ interface EchoHud {
   modifier: string;
   fragments: number;
   fragmentTotal: number;
+  marked: number;
   health: number;
   battery: number;
   flashlight: boolean;
@@ -33,7 +34,7 @@ interface EchoHud {
   gameOver: boolean;
 }
 
-const INITIAL_HUD: EchoHud = { score: 0, floor: 1, theme: "archive", modifier: "still", fragments: 0, fragmentTotal: 2, health: 100, battery: 100, flashlight: true, event: "THE SCANNER HEARS TWO FRAGMENTS", clue: { target: "fragment", bearing: 0, compass: "N", distance: 0, signal: 0, echoDistance: 99, exitLocked: true }, gameOver: false };
+const INITIAL_HUD: EchoHud = { score: 0, floor: 1, theme: "archive", modifier: "still", fragments: 0, fragmentTotal: 2, marked: 0, health: 100, battery: 100, flashlight: true, event: "THE SCANNER HEARS TWO FRAGMENTS", clue: { target: "fragment", bearing: 0, compass: "N", distance: 0, signal: 0, echoDistance: 99, exitLocked: true }, gameOver: false };
 
 export default function EchoMazeGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -44,7 +45,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, controllerHost } = useGameHost<EchoMazeState>({
+  const { linked, controllerHost, launch } = useGameHost<EchoMazeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -100,6 +101,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
           modifier: state.floor.modifier,
           fragments: state.collected.length,
           fragmentTotal: state.floor.fragments.length,
+          marked: state.marked.length,
           health: state.health,
           battery: state.battery,
           flashlight: state.flashlight,
@@ -115,7 +117,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
           ECHO: state.clue.echoDistance > 8 ? "DISTANT" : `${state.clue.echoDistance} CELLS`,
           BATTERY: `${Math.round(state.battery)}%`,
         }, {
-          message: state.clue.echoDistance <= 2 ? "ECHO PROXIMITY" : state.clue.exitLocked ? "RECOVER ALL FRAGMENTS" : "EXIT SIGNATURE OPEN",
+          message: `${state.clue.echoDistance <= 2 ? "ECHO PROXIMITY" : state.clue.exitLocked ? "RECOVER ALL FRAGMENTS" : "EXIT SIGNATURE OPEN"} · ${state.marked.length} ${state.marked.length === 1 ? "place" : "places"} marked`,
           tone: state.clue.echoDistance <= 2 ? "critical" : state.battery < 20 ? "warning" : "normal",
         });
       }, 110);
@@ -139,11 +141,11 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
       </header>
 
       <div className="echo-layout">
-        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="echo-stage">
           <div className="echo-statusbar"><FullscreenButton /><span>{hud.theme.toUpperCase()} · {hud.modifier.toUpperCase()}</span><b>{linked ? "Clue sent to your phone" : "Clue shown here"}</b></div>
-          <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan and F to toggle the flashlight." />
-          <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong></div>
+          <canvas ref={canvasRef} tabIndex={0} aria-label="Echo Maze top-down dark maze. Move with WASD, arrows, or gamepad. Press R or Space to scan, F to toggle the flashlight, and M to mark or unmark your place." />
+          <div className="echo-event"><span>FIELD LOG</span><strong>{hud.event}</strong><span role="status">{hud.marked} {hud.marked === 1 ? "place" : "places"} marked</span></div>
           {!linked && <CompanionClue clue={hud.clue} fallback />}
           <div className="echo-actions">{!audioEnabled && <button onClick={() => { setAudioEnabled(true); audioEnabledRef.current = true; }}>ENABLE AUDIO</button>}<button onClick={onConnect}>{linked ? "ADD SCANNER" : "CONNECT PRIVATE SCANNER"}</button></div>
           {hud.gameOver && <GameOverPanel title="Your echo remains" score={hud.score} detail="Final expedition score" onRestart={restart} />}
@@ -155,7 +157,7 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
           <section className="echo-objective"><span>CURRENT OBJECTIVE</span><strong>{hud.fragments < hud.fragmentTotal ? `RECOVER ${hud.fragmentTotal - hud.fragments} MEMORY FRAGMENT${hud.fragmentTotal - hud.fragments === 1 ? "" : "S"}` : "REACH THE OPEN EXIT"}</strong><small>Keep exploring to reach the next floor.</small></section>
         </aside>
       </div>
-      <div className="echo-instructions"><span><b>MOVE</b> WASD · arrows · left stick</span><span><b>SCAN</b> R/Space · gamepad A · phone ping</span><span><b>FLASHLIGHT</b> F · gamepad Y · Link</span><span><b>PRIVATE DISPLAY</b> phone receives clues, never required</span></div>
+      <div className="echo-instructions"><span><b>MOVE</b> WASD · arrows · left stick</span><span><b>SCAN</b> R/Space · gamepad A · phone ping</span><span><b>FLASHLIGHT</b> F · gamepad Y · Link</span><span><b>MARK / UNMARK</b> M · gamepad X · scanner Mark</span></div>
       <p className="echo-privacy"><strong>Your privacy:</strong> your phone receives game clues. No camera or microphone is needed.</p>
     </section>
   );
@@ -188,6 +190,8 @@ function createEchoView(canvas: HTMLCanvasElement) {
   const player = new THREE.Mesh(new THREE.CylinderGeometry(.22, .28, .7, 8), new THREE.MeshStandardMaterial({ color: 0xeff1e8, emissive: 0x80a8ff, emissiveIntensity: .7 })); view.scene.add(player);
   const scan = new THREE.Mesh(new THREE.RingGeometry(.2, .24, 48), new THREE.MeshBasicMaterial({ color: 0x80a8ff, transparent: true, opacity: 0, side: THREE.DoubleSide })); scan.rotation.x = -Math.PI / 2; view.scene.add(scan);
   const floorGroup = new THREE.Group(); view.scene.add(floorGroup);
+  const markGroup = new THREE.Group(); view.scene.add(markGroup);
+  let marked: readonly string[] | undefined;
   let floorNumber = -1;
   let scanSequence = 0;
   let scanStartedAt = -10;
@@ -231,6 +235,17 @@ function createEchoView(canvas: HTMLCanvasElement) {
 
   const sync = (state: EchoMazeState) => {
     if (floorNumber !== state.floorNumber) { floorNumber = state.floorNumber; rebuild(state); }
+    if (marked !== state.marked) {
+      marked = state.marked;
+      while (markGroup.children.length) disposeObject(markGroup.children[0]!);
+      for (const key of marked) {
+        const [mx, my] = key.split(",").map(Number);
+        const marker = new THREE.Mesh(new THREE.RingGeometry(.32, .4, 24), new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+        marker.rotation.x = -Math.PI / 2;
+        marker.position.set(mx! - state.floor.width / 2 + .5, .06, my! - state.floor.height / 2 + .5);
+        markGroup.add(marker);
+      }
+    }
     const x = state.player.x - state.floor.width / 2 + .5;
     const z = state.player.y - state.floor.height / 2 + .5;
     player.position.set(x, .36, z);
@@ -256,6 +271,7 @@ function createEchoView(canvas: HTMLCanvasElement) {
     dispose() {
       resize.disconnect();
       while (floorGroup.children.length) disposeObject(floorGroup.children[0]!);
+      while (markGroup.children.length) disposeObject(markGroup.children[0]!);
       player.geometry.dispose(); (player.material as THREE.Material).dispose();
       scan.geometry.dispose(); (scan.material as THREE.Material).dispose();
       view.dispose();

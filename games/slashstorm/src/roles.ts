@@ -5,6 +5,7 @@ const swordLayout = (title: string, accent: string) => ({
   accent,
   layout: [
     { type: "touch-surface" as const, action: "aim", pressAction: "trigger", label: "Swipe to slice", size: "large" as const },
+    { type: "button" as const, action: "pause", label: "Pause / resume" },
   ],
 });
 

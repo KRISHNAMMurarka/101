@@ -88,6 +88,13 @@ impl<P: NativePort + Send + 'static, G: SelectionGate> NativeInputController<P, 
             state: Mutex::new(State { active: None }) }
     }
     #[cfg(test)] pub fn test_gate(&self) -> &G { &self.gate }
+    #[cfg(test)] pub fn test_install_worker_hook(&self, hook: Arc<dyn Fn(crate::native_input::TestWorkerPhase) + Send + Sync>) {
+        self.input.test_install_worker_hook(hook);
+    }
+    #[cfg(test)] pub fn test_stop_worker(&self) { self.input.test_stop_worker(); }
+    #[cfg(test)] pub fn test_join_worker(&mut self) -> std::thread::Result<Option<String>> {
+        self.input.test_join_worker()
+    }
     fn check_revision(&self, expected: u64) -> Result<(), ControlError> {
         if self.revision.load(Ordering::SeqCst) != expected { Err(ControlError::Cancelled) } else { Ok(()) }
     }

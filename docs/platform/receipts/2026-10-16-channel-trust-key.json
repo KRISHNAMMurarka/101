@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S04"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "static11-family implemented topology map and actual public Node relay wrong-key boundary",
+  "sourceSha256": {
+    "packages/hub-server/src/loopback-relay.test.ts": "765cdec3536b5bba88dfc245b1909820ab7f3d60841bbf1b921b010b0b931b35"
+  },
+  "topologyMap": {
+    "families": 11,
+    "sources": 79,
+    "reportSha256": "6883cbd0e715a8a9c301131227c71eca79b499a26dce26ceffa7d60f9cde6686"
+  },
+  "selectedRuntime": {
+    "status": "PASS_ONCE_ISOLATED",
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "testMs": 333.025625,
+    "nodeDurationMs": 526.956333,
+    "supervisor": {
+      "argv": [
+        "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+        "--import",
+        "/Users/km/Dev/101/release/s04-key-pin-draft-r9ket11h/observer.mjs",
+        "--test",
+        "--test-name-pattern=^valid native mTLS cannot substitute for the pinned gateway endpoint key$",
+        "/Users/km/Dev/101/release/s04-key-pin-draft-r9ket11h/selected.test.mjs"
+      ],
+      "cwd": "/Users/km/Dev/101",
+      "environment": {
+        "PATH": "/Users/km/.nvm/versions/node/v24.14.0/bin:/opt/homebrew/opt/python@3.13/libexec/bin:/Users/km/.local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Applications/VMware Fusion.app/Contents/Public:/opt/homebrew/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/km/.cargo/bin:/Applications/ChatGPT.app/Contents/Resources/codex-cli/codex-path:/Users/km/.codex/tmp/arg0/codex-arg0doBtOU:/Users/km/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Users/km/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Applications/ChatGPT.app/Contents/Resources:/Applications/ChatGPT.app/Contents/Resources/codex-cli/CodexCLI.app/Contents/MacOS",
+        "NODE_OPTIONS": null,
+        "NODE_PATH": null,
+        "remaining": "Inherited unchanged; values not emitted"
+      },
+      "watchdogSeconds": 60,
+      "subject": "one new selected actual native TLS relay test only",
+      "processGroupOwned": true,
+      "pid": 41245,
+      "pgid": 41245,
+      "exitCode": 0,
+      "timedOut": false,
+      "elapsedSeconds": 0.721,
+      "parentJoined": true,
+      "ownedGroupAbsent": true
+    },
+    "actualDiagnostic": {
+      "kind": "S04-native-gateway-key-pin",
+      "stage": "complete",
+      "attemptedNativeSockets": 2,
+      "tls": [
+        {
+          "authorized": true,
+          "protocol": "TLSv1.3",
+          "certificateMatches": true
+        },
+        {
+          "authorized": true,
+          "protocol": "TLSv1.3",
+          "certificateMatches": true
+        }
+      ],
+      "exposedCandidatePeers": 0,
+      "ownedFixtureDirectory": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/101-coordinator-tls-BpkqjT",
+      "fixtureRemoved": true,
+      "final": {
+        "pairs": 0,
+        "nativeConnections": 0,
+        "pendingRaw": 0,
+        "queuedMessages": 0,
+        "timers": 0
+      }
+    },
+    "rawStdout": "outputs/controllers/2026-10-16-channel-trust-next/draft/selected.stdout.log",
+    "rawStderr": "outputs/controllers/2026-10-16-channel-trust-next/draft/selected.stderr.log",
+    "opensslChildren": 21,
+    "allOpenSSLJoined0": true,
+    "actualLoadedModules": 138,
+    "allLoadedBeforeAfterHashesMatch": true,
+    "allLoadedCurrentMatchAtReadback": true,
+    "transpileSyntaxDiagnostics": [],
+    "scopedLintOrTypeClaim": false,
+    "scopeLimit": "Exact mechanically adapted/type-erased draft against absolute actual public source and installed dependencies. Not canonical applied/full-suite/browser/native-phone run.",
+    "pathAdaptation": [
+      "relative loopback-relay.ts imports/types point to absolute actual source file URL",
+      "relative QA fixture import points to absolute actual source file URL",
+      "installed TypeScript.transpileModule erases types into owned release selected.test.mjs; no production source copy executed"
+    ]
+  },
+  "appliedChecks": [
+    {
+      "name": "focused",
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern",
+        "valid native mTLS cannot substitute|one-stage native observation|explicit mapping preserves|valid opaque handle|final mapping callback",
+        "packages/hub-server/src/loopback-relay.test.ts",
+        "tests/native-invitation-review.test.ts"
+      ],
+      "pid": 851,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 0.803
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npx",
+        "eslint",
+        "packages/hub-server/src/loopback-relay.test.ts",
+        "examples/native-discovery/invitation-review.mjs",
+        "tests/native-invitation-review.test.ts"
+      ],
+      "pid": 1249,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 3.714
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "pid": 2341,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 4.432
+    }
+  ],
+  "appliedSelectedCase": "The one wrong-gateway-key case passes within the actual5-test applied selector; existing rig/CA/hostname/certpin and bounds unchanged.",
+  "independentReviewSha256": "30c2531bb952001ca9fe1da2b427a3fc978c10147ad3e7bf364fb5a303b2b5a8",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-review-wave/trust",
+    "commit": "166838823cca7ae61d6f067a85fb534895a38a4b",
+    "tree": "add649f7203248f729ff9e29c59102ff4743117a",
+    "readBackFiles": 109,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "limits": [
+    "Both denied candidate TLS sockets authenticate TLS1.3 with exact certificate pin but neither public helper exposes a selected peer. Incumbent traffic and separately approved fresh correct-key delivery pass.",
+    "138 loaded source files and21 synchronous OpenSSL children are recorded; this is not complete binary/native/dependency-resolution closure.",
+    "Earlier Firefox raw-channel and WebKit strict-ICE failures remain preserved in the immutable lane; no browser/remote/physical/wholeS04 claim.",
+    "No production guard change; success socket closure uses joined fixture/final counters rather than individual socket tracing."
+  ]
+}

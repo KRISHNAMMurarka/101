@@ -8,6 +8,7 @@ import { command, fileHash, installedSdk, ordinaryFiles, sha256, withPublicCalle
 const base = 'bindings/structured-telemetry';
 export const STRUCTURED_BINDING_PATHS = Object.freeze([
   `${base}/profile.json`, `${base}/fixtures/page-readings-v1.json`, `${base}/fixtures/structured-telemetry-v1.json`,
+  `${base}/fixtures/structured-telemetry-negative-v1.json`,
   `${base}/swift/Package.swift`, `${base}/swift/Sources/One01StructuredTelemetryWire/StructuredTelemetryWire.swift`,
   `${base}/swift/Tests/One01StructuredTelemetryWireTests/StructuredTelemetryWireTests.swift`,
   'examples/language-bindings/StructuredTelemetryConsumer.swift', 'examples/language-bindings/structured-telemetry.mjs',
@@ -69,6 +70,7 @@ export function buildStructuredTelemetryBindings(reference, sdkRoot, sdkManifest
     for (const [from, to] of [['LICENSE', 'LICENSE'], [`${base}/profile.json`, 'assets/profile.json'],
       [`${base}/fixtures/page-readings-v1.json`, 'assets/page-readings-v1.json'],
       [`${base}/fixtures/structured-telemetry-v1.json`, 'assets/structured-telemetry-v1.json'],
+      [`${base}/fixtures/structured-telemetry-negative-v1.json`, 'assets/structured-telemetry-negative-v1.json'],
       ['examples/language-bindings/StructuredTelemetryConsumer.swift', 'examples/StructuredTelemetryConsumer.swift'],
       ['examples/language-bindings/structured-telemetry.mjs', 'examples/structured-telemetry.mjs']]) copy(join(snapshot, from), join(artifact, to));
     mkdirSync(join(artifact, 'lib'));
@@ -83,8 +85,9 @@ export function buildStructuredTelemetryBindings(reference, sdkRoot, sdkManifest
       '-o', join(artifact, 'lib/libOne01StructuredTelemetryWire.dylib')]);
     const tests = run('swift-tests', '/usr/bin/xcrun', ['swift', 'test', '--package-path', join(artifact, 'source'),
       '--scratch-path', join(work, 'swift-tests'), '--cache-path', join(work, 'swift-cache'), '--disable-sandbox', '--skip-update'],
-    { env: { ...process.env, ONE01_STRUCTURED_FIXTURES: fixturePath } });
-    assert.match(tests + readFileSync(join(work, 'swift-tests.stderr'), 'utf8'), /Test run with 7 tests.*passed/);
+    { env: { ...process.env, ONE01_STRUCTURED_FIXTURES: fixturePath,
+      ONE01_STRUCTURED_NEGATIVE_FIXTURES: join(snapshot, `${base}/fixtures/structured-telemetry-negative-v1.json`) } });
+    assert.match(tests + readFileSync(join(work, 'swift-tests.stderr'), 'utf8'), /Test run with 8 tests.*passed/);
     const consumer = join(work, 'consumer');
     run('ordinary-caller-compile', '/usr/bin/xcrun', ['swiftc', '-parse-as-library', '-swift-version', '6',
       '-strict-concurrency=complete', '-warnings-as-errors', '-I', join(artifact, 'lib'), '-L', join(artifact, 'lib'),
@@ -115,7 +118,7 @@ export function buildStructuredTelemetryBindings(reference, sdkRoot, sdkManifest
     const manifest = { schemaVersion: 1, result: 'pass', profile: profile.profile, source: { tree, sha256: sourceSha256 },
       sdk: { manifestSha256: sdk.manifestSha256, selectedProducerSha256: producerSha256 }, toolchain,
       target: 'swift-macos-arm64', authority: profile.authority, exclusions: profile.excluded,
-      swiftTests: 7, reciprocal, wrongLaneRejected: true, cliFramingChecks: 6, files,
+      swiftTests: 8, reciprocal, wrongLaneRejected: true, cliFramingChecks: 6, files,
       tarball: { path: tarball, sha256: fileHash(tarball) }, operations };
     const manifestPath = join(output, 'manifest.json'); json(manifestPath, manifest);
     return { manifest: manifestPath, ...manifest };

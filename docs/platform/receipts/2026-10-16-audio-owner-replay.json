@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S09"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "coverage-only; existing exact-request admission guard",
+  "test": "packages/device-web/src/application-audio.test.ts",
+  "testSha256": "4484509ed8c1970159b5fca5d144c6fbdc7ee96f41b7d2eff5bd222ada52129c",
+  "testCounts": {
+    "tests": 2,
+    "pass": 2,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "appliedExecution": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-name-pattern=^private audio rejects a previously accepted (source|output) owner decision for a replacement output$",
+      "packages/device-web/src/application-audio.test.ts"
+    ],
+    "cwd": "/Users/km/Dev/101",
+    "testSha256": "4484509ed8c1970159b5fca5d144c6fbdc7ee96f41b7d2eff5bd222ada52129c",
+    "scope": "Applied actual canonical test over public client/runtime with existing cooperative software graph; coverage only"
+  },
+  "appliedResult": {
+    "exitCode": 0,
+    "pid": 40952,
+    "joined": true,
+    "elapsedSeconds": 0.548466417
+  },
+  "coverage": {
+    "roles": [
+      "source",
+      "output"
+    ],
+    "firstValidAccepted": true,
+    "priorTargetRetired": true,
+    "sameTextualTupleExceptFreshSinkRegistration": true,
+    "replayedExactPreviouslyAcceptedObject": true,
+    "negative": {
+      "ready": false,
+      "reason": "denied",
+      "newGains": 0,
+      "newOutputs": 0,
+      "newEdges": 0,
+      "incumbentRetained": true
+    },
+    "positive": {
+      "freshRequestDecision": true,
+      "ready": true,
+      "newGain": 1,
+      "newOutput": 1,
+      "newEdge": 1,
+      "setVolumeConsumerEffect": 0.5
+    },
+    "cleanup": {
+      "controllerClosed": true,
+      "rawPending": 0,
+      "cleanupPending": 0,
+      "listeners": 0,
+      "timerArmed": false,
+      "ownedEdges": 0,
+      "ownedTracksStopped": true,
+      "borrowedProducerStopped": false
+    }
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-audio-owner-replay/coverage",
+    "commit": "0ae65ab9f74d00990b7085016372afffe6d06b3a",
+    "tree": "ddd99a2bd88056581924760a29f0944a88a9262d",
+    "readBackFiles": 31,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true,
+    "allOwnedProcessesAndOpenFilesAbsent": true
+  },
+  "review": {
+    "path": "controller/review.json",
+    "sha256": "df5b39605679e3197a80233c3c02c07d61639040d7e767915d888325da173208"
+  },
+  "scope": "Previously accepted real owner decision is replayed at each source/output callback into a same-textual-tuple replacement output with a fresh actual sink registration/request. Actual public client/runtime deny before new software graph allocation; incumbent remains active; fresh decision restores gain0.5. Cooperative WebAudio-shaped graph only, no native/browser/transport/physical audio evidence.",
+  "evidenceCorrection": "Original report is retained before a bounded source-equivalence correction. Its85 static run pins omitted object-valued package exports, so they are not complete loaded-closure or frozen-candidate proof. Post-run inspection is distinct. Applied direct canonical execution is separately retained; no full candidate gate is inferred.",
+  "productionGuardChanges": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

@@ -169,7 +169,8 @@ test('late result-context observer advancing its deadline cannot expose native m
       return request.phase === 'result' ? { request, expiresAt: 10, signal: new AbortController().signal } : approve(request);
     } });
   try {
-    const work = await connector.readMetadata(makeContext()); assert.equal(work.ok, true);
+    const work = await connector.readMetadata(makeContext());
+    assert.equal(work.ok, true, work.ok ? undefined : JSON.stringify({ phase: 'metadata-prerequisite', outcome: work, connector: connector.status(), host: host.status() }));
     const result = connector.readResult(work.handle, makeContext(new AbortController().signal, () => { if (++checks === 2) at = 11; return true; }));
     assert.equal(at, 11); assert.equal(result.ok, false); assert.equal('value' in result, false);
   } finally { await connector.close(); }
@@ -179,7 +180,8 @@ test('late result-context observer closing the owner prevents private value retu
   let checks = 0;
   const connector = createScopedLoopbackSshConnector(options(host));
   try {
-    const work = await connector.readMetadata(makeContext()); assert.equal(work.ok, true);
+    const work = await connector.readMetadata(makeContext());
+    assert.equal(work.ok, true, work.ok ? undefined : JSON.stringify({ phase: 'metadata-prerequisite', outcome: work, connector: connector.status(), host: host.status() }));
     assert.equal(connector.readResult(work.handle, makeContext(new AbortController().signal, () => { if (++checks === 2) connector.close(); return true; })).ok, false);
     assert.equal(connector.status().retainedResults, 0);
   } finally { await connector.close(); }
@@ -208,7 +210,8 @@ for (const revoked of ['command-owner', 'result-owner']) {
       return { request, expiresAt: request.expiresAt, signal: (request.phase === 'result' ? resultOwner : commandOwner).signal };
     } });
     try {
-      const work = await connector.readMetadata(makeContext()); assert.equal(work.ok, true);
+      const work = await connector.readMetadata(makeContext());
+      assert.equal(work.ok, true, work.ok ? undefined : JSON.stringify({ phase: 'metadata-prerequisite', outcome: work, connector: connector.status(), host: host.status() }));
       const result = connector.readResult(work.handle, makeContext(new AbortController().signal, () => {
         if (++checks === 2) (revoked === 'command-owner' ? commandOwner : resultOwner).abort();
         return true;

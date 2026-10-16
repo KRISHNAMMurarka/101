@@ -767,12 +767,18 @@ impl<P: NativePort + Send + 'static> Drop for NativeInput<P> {
     }
 }
 
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TestWorkerPhase { BeforeLock, Locked }
+
 /// Use this in the desktop host. Polling is best-effort: a blocked OS inventory
 /// or event call can delay the sweep. `shutdown` is explicit and fallible.
 pub struct GuardedInput<P: NativePort + Send + 'static> {
     inner: Arc<Mutex<NativeInput<P>>>,
     shutdown: Arc<AtomicBool>,
     worker: Option<std::thread::JoinHandle<()>>,
+    #[cfg(test)]
+    test_worker_hook: Arc<Mutex<Option<Arc<dyn Fn(TestWorkerPhase) + Send + Sync>>>>,
     #[cfg(test)]
     prelock_hook: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
 }
@@ -782,9 +788,19 @@ impl<P: NativePort + Send + 'static> GuardedInput<P> {
         let shutdown = Arc::new(AtomicBool::new(false));
         let input = Arc::clone(&inner);
         let stop = Arc::clone(&shutdown);
+        #[cfg(test)]
+        let test_worker_hook: Arc<Mutex<Option<Arc<dyn Fn(TestWorkerPhase) + Send + Sync>>>> = Arc::new(Mutex::new(None));
+        #[cfg(test)]
+        let worker_hook = Arc::clone(&test_worker_hook);
         let worker = std::thread::spawn(move || {
             while !stop.load(Ordering::SeqCst) {
+                #[cfg(test)]
+                let hook = worker_hook.lock().unwrap().clone();
+                #[cfg(test)]
+                if let Some(hook) = &hook { hook(TestWorkerPhase::BeforeLock); }
                 if let Ok(mut state) = input.lock() {
+                    #[cfg(test)]
+                    if let Some(hook) = &hook { hook(TestWorkerPhase::Locked); }
                     let _ = state.sweep();
                 }
                 std::thread::sleep(Duration::from_millis(10));
@@ -795,8 +811,25 @@ impl<P: NativePort + Send + 'static> GuardedInput<P> {
             shutdown,
             worker: Some(worker),
             #[cfg(test)]
+            test_worker_hook,
+            #[cfg(test)]
             prelock_hook: Mutex::new(None),
         }
+    }
+    #[cfg(test)]
+    pub(crate) fn test_install_worker_hook(&self, hook: Arc<dyn Fn(TestWorkerPhase) + Send + Sync>) {
+        *self.test_worker_hook.lock().unwrap() = Some(hook);
+    }
+    #[cfg(test)]
+    pub(crate) fn test_stop_worker(&self) { self.shutdown.store(true, Ordering::SeqCst); }
+    #[cfg(test)]
+    pub(crate) fn test_join_worker(&mut self) -> std::thread::Result<Option<String>> {
+        self.shutdown.store(true, Ordering::SeqCst);
+        if let Some(worker) = self.worker.take() {
+            let id = format!("{:?}", worker.thread().id());
+            worker.join()?;
+            Ok(Some(id))
+        } else { Ok(None) }
     }
     #[cfg(test)]
     pub(crate) fn test_install_prelock_hook(&self, hook: Arc<dyn Fn() + Send + Sync>) {

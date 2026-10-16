@@ -1,13 +1,15 @@
-/* Owned host adapter for Apple's installed DNS-SD API. All native operations
- * are LocalOnly; no address query, arbitrary URL, LAN/P2P/AWDL or fallback. */
+/* Owned host adapter for Apple's installed DNS-SD API. A selected interface is
+ * explicit; no address query, arbitrary URL, P2P/AWDL or fallback. */
 #include <dns_sd.h>
 #include <arpa/inet.h>
+#include <net/if.h>
 #include <errno.h>
 #include <signal.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/select.h>
 #include <time.h>
 #include <unistd.h>
@@ -16,6 +18,7 @@
 static volatile sig_atomic_t quitting;
 static DNSServiceRef primary;
 static const char *expected_type;
+static uint32_t selected_interface = kDNSServiceInterfaceIndexLocalOnly;
 static int failed;
 static size_t output_bytes;
 static uint64_t window_at;
@@ -47,7 +50,7 @@ static int same_type(const char *type) { char canonical[24]; int n = snprintf(ca
 static void resolved(DNSServiceRef ref, DNSServiceFlags flags, uint32_t index, DNSServiceErrorType error,
   const char *fullname, const char *target, uint16_t port, uint16_t txt_length, const unsigned char *txt, void *context) {
   (void)flags; (void)fullname; Resolver *slot = context; if (slot->ref != ref || slot->done) return; slot->done = 1;
-  if (error != kDNSServiceErr_NoError || index != kDNSServiceInterfaceIndexLocalOnly || txt_length > 512) { failed = 1; quitting = 1; return; }
+  if (error != kDNSServiceErr_NoError || index != selected_interface || txt_length > 512) { failed = 1; quitting = 1; return; }
   char qname[400], qtarget[800], qtype[100], hex[1025], line[1600];
   if (!quoted(slot->name, qname, sizeof qname) || !quoted(target, qtarget, sizeof qtarget) || !quoted(expected_type, qtype, sizeof qtype)) { failed = 1; quitting = 1; return; }
   for (unsigned i = 0; i < txt_length; i++) snprintf(hex + i * 2, 3, "%02x", txt[i]); hex[txt_length * 2] = 0;
@@ -58,7 +61,7 @@ static void browse(DNSServiceRef ref, DNSServiceFlags flags, uint32_t index, DNS
   const char *name, const char *type, const char *domain, void *context) {
   (void)ref; (void)context;
   if (error != kDNSServiceErr_NoError) { failed = 1; quitting = 1; return; }
-  if (index != kDNSServiceInterfaceIndexLocalOnly || !same_type(type) || strcmp(domain, "local.") != 0 || strnlen(name, 64) > 63) return;
+  if (index != selected_interface || !same_type(type) || strcmp(domain, "local.") != 0 || strnlen(name, 64) > 63) return;
   if (!(flags & kDNSServiceFlagsAdd)) {
     for (unsigned i = 0; i < MAX_RESOLVERS; i++) if (resolvers[i].ref && strcmp(resolvers[i].name, name) == 0) resolvers[i].done = 1;
     char qname[400], qtype[100], line[700]; if (!quoted(name, qname, sizeof qname) || !quoted(expected_type, qtype, sizeof qtype)) return;
@@ -68,8 +71,8 @@ static void browse(DNSServiceRef ref, DNSServiceFlags flags, uint32_t index, DNS
   for (unsigned i = 0; i < MAX_RESOLVERS; i++) { if (resolvers[i].ref && !resolvers[i].done && strcmp(resolvers[i].name, name) == 0) return; if (!resolvers[i].ref && !slot) slot = &resolvers[i]; }
   if (!slot) { emit("{\"version\":1,\"type\":\"quota\"}\n"); return; }
   memcpy(slot->name, name, strlen(name) + 1); slot->done = 0;
-  /* Independently force LocalOnly, even after checking the browse callback. */
-  DNSServiceErrorType result = DNSServiceResolve(&slot->ref, 0, kDNSServiceInterfaceIndexLocalOnly, name, expected_type, "local.", resolved, slot);
+  /* Resolve stays on the exact interface reported by this browse callback. */
+  DNSServiceErrorType result = DNSServiceResolve(&slot->ref, 0, index, name, expected_type, "local.", resolved, slot);
   if (result != kDNSServiceErr_NoError) { slot->ref = NULL; failed = 1; quitting = 1; }
 }
 static void registered(DNSServiceRef ref, DNSServiceFlags flags, DNSServiceErrorType error, const char *name, const char *type, const char *domain, void *context) {
@@ -81,18 +84,34 @@ static int number(const char *text, unsigned long max, unsigned long *value) {
   if (!text[0]) return 0; for (const char *p = text; *p; p++) if (*p < '0' || *p > '9') return 0;
   errno = 0; char *end; unsigned long result = strtoul(text, &end, 10); if (errno || *end || !result || result > max) return 0; *value = result; return 1;
 }
+/* A selected positive BSD interface is bounded by observed interface name.
+ * Excluding these known private-link families is not topology discovery and
+ * makes no claim about routes or similarly named virtual interfaces. */
+static int admit_selected_interface(uint32_t index) {
+  char name[IF_NAMESIZE];
+  if (index == 0 || index >= 0xfffffffbU || !if_indextoname(index, name)) return 0;
+  size_t length = strnlen(name, sizeof name);
+  if (length == 0 || length == sizeof name) return 0;
+  return strncasecmp(name, "awdl", 4) != 0 && strncasecmp(name, "llw", 3) != 0 && strncasecmp(name, "p2p", 3) != 0;
+}
 int main(int argc, char **argv) {
-  unsigned long duration, port = 0;
+  unsigned long duration, port = 0, requested_interface;
   if (argc < 4 || !valid_type(argv[2])) return 64; expected_type = argv[2];
   int registration = strcmp(argv[1], "register") == 0;
-  if (registration) { if (argc != 6 || !argv[3][0] || strnlen(argv[3], 64) > 63 || !number(argv[4], 65535, &port) || !number(argv[5], 30000, &duration)) return 64; }
-  else if (strcmp(argv[1], "browse") != 0 || argc != 4 || !number(argv[3], 30000, &duration)) return 64;
+  if (registration) { if ((argc != 6 && argc != 7) || !argv[3][0] || strnlen(argv[3], 64) > 63 || !number(argv[4], 65535, &port) || !number(argv[5], 30000, &duration)) return 64;
+    if (argc == 7) { if (!number(argv[6], 0xfffffffaUL, &requested_interface)) return 64; selected_interface = (uint32_t)requested_interface; } }
+  else if (strcmp(argv[1], "browse") != 0 || (argc != 4 && argc != 5) || !number(argv[3], 30000, &duration)) return 64;
+  else if (argc == 5) { if (!number(argv[4], 0xfffffffaUL, &requested_interface)) return 64; selected_interface = (uint32_t)requested_interface; }
+  if (selected_interface != kDNSServiceInterfaceIndexLocalOnly) {
+    if (!admit_selected_interface(selected_interface)) return 64;
+  }
   signal(SIGTERM, signal_stop); signal(SIGINT, signal_stop); signal(SIGPIPE, SIG_IGN);
   DNSServiceErrorType result;
   if (registration) { static const unsigned char txt[] = { 9, 'p','r','o','f','i','l','e','=','1' };
-    result = DNSServiceRegister(&primary, kDNSServiceFlagsNoAutoRename, kDNSServiceInterfaceIndexLocalOnly,
-      argv[3], expected_type, "local.", "localhost.", htons((uint16_t)port), sizeof txt, txt, registered, NULL);
-  } else { result = DNSServiceBrowse(&primary, 0, kDNSServiceInterfaceIndexLocalOnly, expected_type, "local.", browse, NULL); }
+    result = DNSServiceRegister(&primary, kDNSServiceFlagsNoAutoRename, selected_interface,
+      argv[3], expected_type, "local.", selected_interface == kDNSServiceInterfaceIndexLocalOnly ? "localhost." : NULL,
+      htons((uint16_t)port), sizeof txt, txt, registered, NULL);
+  } else { result = DNSServiceBrowse(&primary, 0, selected_interface, expected_type, "local.", browse, NULL); }
   if (result != kDNSServiceErr_NoError) return 2;
   if (!registration) emit("{\"version\":1,\"type\":\"ready\"}\n");
   uint64_t started = now_ms(), deadline = started + duration;

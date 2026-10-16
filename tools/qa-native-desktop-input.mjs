@@ -20,7 +20,7 @@ const run = (program, args) => execFileSync(program, args,
 const checks = [];
 try {
   const compiler = run('rustc', ['--version']).trim();
-  for (const [name, path, count] of [['backend', paths[3], 17], ['controller', paths[4], 10]]) {
+  for (const [name, path, count] of [['backend', paths[3], 17], ['controller', paths[4], 11]]) {
     const executable = join(scratch, name);
     run('rustc', ['--edition=2021', '--test', join(root, path), '-o', executable]);
     const output = run(executable, ['--test-threads=1']);

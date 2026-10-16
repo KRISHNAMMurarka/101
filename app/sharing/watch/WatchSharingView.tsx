@@ -120,13 +120,13 @@ export default function WatchSharingView() {
         {owner ? <>
           <label className={styles.duration}>Observer invitation<textarea maxLength={65536} value={codes.invitation ?? ''} onChange={event => setCodes({ ...codes, invitation: event.target.value })} /></label>
           <button disabled={settling || stopping || snapshot.peers.length >= 2 || snapshot.remainingAttempts === 0} onClick={() => run(owned => owned.review(codes.invitation ?? ''))}>Review observer invitation</button>
-        </> : !snapshot.peers.length ? <button disabled={settling || stopping || snapshot.remainingAttempts === 0} onClick={() => void work(owned => owned.invite())}>Create owner invitation</button> : null}
+        </> : !snapshot.peers.length ? <button disabled={settling || stopping || snapshot.remainingAttempts === 0} onClick={() => void work(owned => owned.invite())}>Create observer invitation</button> : null}
         {snapshot.peers.map(peer => <section className={styles.pending} key={peer.id} data-testid={`watch-peer-${peer.id}`} aria-labelledby={`watch-peer-title-${peer.id}`}>
           <h3 id={`watch-peer-title-${peer.id}`}>{peer.label}</h3><p role="status">{peerMessages[peer.connection.phase]}</p>
-          {peer.connection.code ? <label className={styles.duration}>Code for the other page<textarea readOnly aria-label={`${peer.id} outgoing code`} value={peer.connection.code} /></label> : null}
+          {peer.connection.code ? <label className={styles.duration}><span id={`watch-code-out-${peer.id}`}>Code for the other page</span><textarea readOnly aria-labelledby={`watch-peer-title-${peer.id} watch-code-out-${peer.id}`} value={peer.connection.code} /></label> : null}
           {owner && peer.connection.phase === 'review' ? <button disabled={settling || stopping} onClick={() => void work(owned => owned.offer(peer.id))}>Create connection offer</button> : null}
           {peer.connection.phase === 'exchange' ? <>
-            <label className={styles.duration}>{owner ? 'Observer answer' : 'Owner offer'}<textarea maxLength={65536} aria-label={`${peer.id} incoming code`} value={codes[peer.id] ?? ''} onChange={event => setCodes({ ...codes, [peer.id]: event.target.value })} /></label>
+            <label className={styles.duration}><span id={`watch-code-in-${peer.id}`}>{owner ? 'Observer answer' : 'Owner offer'}</span><textarea maxLength={65536} aria-labelledby={`watch-peer-title-${peer.id} watch-code-in-${peer.id}`} value={codes[peer.id] ?? ''} onChange={event => setCodes({ ...codes, [peer.id]: event.target.value })} /></label>
             <button disabled={settling || stopping || !codes[peer.id]} onClick={() => void work(owned => owned.accept(peer.id, codes[peer.id] ?? ''))}>{owner ? 'Accept observer answer' : 'Accept owner offer'}</button>
           </> : null}
           {peer.connection.comparison && !peer.connection.confirmed ? <>

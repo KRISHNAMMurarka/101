@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S03"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "coverage-only; existing direction enforcement",
+  "test": "packages/device-web/src/authenticated-peer.test.ts",
+  "testSha256": "6d7798113f45e2dfcd9da5b8f970bc520825a73558032a0416fadf4b0ce9dc2a",
+  "counts": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "actualExecution": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-name-pattern=^authenticated receiver refuses an invoke-only advertised resource before issuing a bind$",
+      "packages/device-web/src/authenticated-peer.test.ts"
+    ],
+    "cwd": "/Users/km/Dev/101",
+    "testSha256": "6d7798113f45e2dfcd9da5b8f970bc520825a73558032a0416fadf4b0ce9dc2a",
+    "scope": "Expected-green actual enrolled cryptographic publisher/receiver direction guard plus positive actual sink effect; coverage only"
+  },
+  "result": {
+    "exitCode": 0,
+    "pid": 67657,
+    "joined": true,
+    "elapsedSeconds": 0.549813666
+  },
+  "negative": {
+    "validActualPublisherDescription": "mixed Pointer plus unchanged canonical browser invoke-only haptic command",
+    "kind": "command",
+    "permissions": [
+      "invoke"
+    ],
+    "receiverBindDelta": 0,
+    "sourceRegistrationAttempts": 0,
+    "authorizationCalls": 0,
+    "hapticSinkApplies": 0
+  },
+  "positive": {
+    "sameEnrolledProducer": true,
+    "receiverBindDelta": 1,
+    "actualSourceRegistrations": 1,
+    "exactTupleAuthorizations": 1,
+    "positionSinkApplies": 1,
+    "value": {
+      "x": 0.25,
+      "y": 0.75
+    }
+  },
+  "cleanup": {
+    "queuedCallbacks": 0,
+    "sourceTransport": "closed",
+    "receiverTransport": "closed",
+    "childJoined": true
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-grant-tuple/applied",
+    "commit": "5b3a6125265c31a3d482c457d06d129be5766568",
+    "tree": "6eaed025324a9d9bf2342470b97cd8c912fe781d",
+    "readBackFiles": 25,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "draftCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-grant-tuple/draft",
+    "commit": "d59baeed99b3a56ab34d7c65d955ea52aad0afb2",
+    "tree": "418bf0d40c86ec94dc1a1badd169555192fef0b2",
+    "readBackFiles": 17,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedCleanupAuthorizedAfterReadBack": [
+      "/Users/km/Dev/101/release/s03-draft-run-_ndt13pk"
+    ]
+  },
+  "review": {
+    "path": "review.json",
+    "sha256": "d221af3a293031e5bac7a576d73e6ce29145e3bff5f39dceb156deb4c6a9d751"
+  },
+  "scope": "Actual P-256 signing, transcript verification and bilateral enrollment; actual publisher-produced valid mixed Pointer/haptic descriptor; invoke-only source refusal before bind/source registration/authorization; same enrolled producer separately approved real Position delivery. Faithful queued ports only; no browser DTLS/native API/physical haptics. One tuple does not close S03.",
+  "executionBoundary": "Direct applied-source focused execution occurred before the unrelated D04 index export addition. Exact imported runtime index is retained in this custody; no joined-current-tree or full gate success claimed.",
+  "productionGuardChanges": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

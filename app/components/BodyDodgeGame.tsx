@@ -46,7 +46,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
   const [hud, setHud] = useState<BodyHud>(INITIAL_HUD);
   const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run, maxPeople: BODYDODGE_MANIFEST.players.max, onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people; } });
 
-  const { linked, readiness, controllerHost } = useGameHost<BodyDodgeState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<BodyDodgeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -97,7 +97,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
         <div className="body-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave.toString().padStart(2, "0")}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div></div>
       </header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="body-arena">
         <div className="body-statusbar"><FullscreenButton /><span>{linked ? "101 LINK · MOVEMENT PANEL" : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b></b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="BodyDodge play field. Move with Left and Right, duck with Down, jump with Up or Space, and raise arms with E." />

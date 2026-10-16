@@ -57,6 +57,21 @@ object StructuredTelemetryWireTests {
         return packets
     }
 
+    private fun duplicateKeyNegative(): Pair<ByteArray, Boolean> {
+        val path = System.getenv("ONE01_STRUCTURED_NEGATIVE_FIXTURES") ?: error("missing shared negative fixtures")
+        val input = Files.newInputStream(Path.of(path)).use { it.readNBytes(16385) }
+        expect(input.size <= 16384, "negative fixture bytes bounded")
+        val document = objectValue(input)
+        expect(document["profile"].asString == "structured-telemetry-json2/1", "negative fixture profile")
+        expect(document["fixtureProfile"].asString == "structured-telemetry-native-negative/1", "negative fixture contract")
+        val entries = document["negative"].asJsonArray
+        expect(entries.size() == 1, "one shared raw negative")
+        val entry = entries[0].asJsonObject
+        expect(entry["id"].asString == "duplicate-envelope-version-key", "duplicate-key case identity")
+        val expected = entry["accept"].asJsonObject["kotlin"].asBoolean
+        return entry["wireUtf8"].asString.toByteArray(StandardCharsets.UTF_8) to expected
+    }
+
     private fun genuineSdkBytesPreserveSelectedFields(packets: Map<String, ByteArray>) {
         val expected = mapOf(
             "record-absent" to sample(ReadingValue.Record(row())),
@@ -260,6 +275,9 @@ object StructuredTelemetryWireTests {
         val base = objectValue(packets.getValue("record-absent"))
         closedHeadersRejectCoercion(base)
         selectedSchemasRejectMalformedValues(base)
+        val (duplicate, duplicateExpected) = duplicateKeyNegative()
+        expect((StructuredTelemetryWire.decode(duplicate, TelemetryLane.DISPOSABLE) != null) == duplicateExpected,
+            "shared duplicate-key verdict matches Kotlin artifact profile")
         rawUtf8DepthAndStrictGrammar(packets.getValue("record-absent"))
         typedEncodeRejectsInvalidSamples()
         capturesBoundedBorrowedRows(packets)

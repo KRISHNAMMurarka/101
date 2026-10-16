@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "candidateCommit": "08a200adc248d7ea50caeb0a1e2e0a9328a9ff76",
+  "candidateTree": "a2787291520a03ce0c5a60a7a959066e4bcc8709",
+  "gateResults": [
+    {
+      "name": "records",
+      "command": [
+        "node",
+        "--test",
+        "tests/platform-records.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.374,
+      "childPid": 88244,
+      "childJoined": true,
+      "log": "records.log"
+    },
+    {
+      "name": "platform-audit",
+      "command": [
+        "node",
+        "tools/audit-platform-records.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.255,
+      "childPid": 88378,
+      "childJoined": true,
+      "log": "platform-audit.log"
+    },
+    {
+      "name": "production-audit",
+      "command": [
+        "node",
+        "tools/audit-production.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 4.145,
+      "childPid": 88484,
+      "childJoined": true,
+      "log": "production-audit.log"
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 3.816,
+      "childPid": 89764,
+      "childJoined": true,
+      "log": "types.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 23.439,
+      "childPid": 91387,
+      "childJoined": true,
+      "log": "lint.log"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "npm",
+        "run",
+        "test:unit"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 583.141,
+      "childPid": 98517,
+      "childJoined": true,
+      "log": "unit.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.792,
+      "childPid": 86115,
+      "childJoined": true,
+      "log": "build.log"
+    },
+    {
+      "name": "rendered",
+      "command": [
+        "node",
+        "--test",
+        "tests/rendered-html.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.009,
+      "childPid": 90400,
+      "childJoined": true,
+      "log": "rendered.log"
+    }
+  ],
+  "initialLintFailure": {
+    "retained": true,
+    "cause": "Inactive historical executable copies were included by existing eslint . scanning."
+  },
+  "lintResolution": {
+    "name": "lint",
+    "command": [
+      "npm",
+      "run",
+      "lint"
+    ],
+    "candidateCommit": "08a200adc248d7ea50caeb0a1e2e0a9328a9ff76",
+    "candidateTree": "a2787291520a03ce0c5a60a7a959066e4bcc8709",
+    "exitCode": 0,
+    "sessionId": 87696,
+    "childJoined": true,
+    "log": "lint-storage-corrected.log",
+    "logSha256": "5a709f4f99b45ac8ad63517bdc5a74668584f7fe06d0cfe09fd65552dbf78a82",
+    "originalGateExitCode": 1,
+    "originalGateLog": "raw/lint.log",
+    "cause": "Saved historical executable source copies were included by existing eslint . scanning.",
+    "diagnosisDrivenCorrection": "Preserve exact original bytes in immutable refs and rename inactive original/generated copies to text. No authored candidate source/index or lint configuration changed.",
+    "correctionMap": "historical-source-storage-correction.json",
+    "existingWarnings": 1,
+    "newErrors": 0,
+    "noUnchangedGreenGateRepeated": true
+  },
+  "effectiveFailedGates": [
+    "unit"
+  ],
+  "unit": {
+    "tests": 3426,
+    "pass": 3422,
+    "fail": 4,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rendered": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "freshServerSha256": "ca495794fd612e18131cd4fafaedaf76f30bb182404c68622222f1dfda110e5c",
+  "nativeReliability": "UNRESOLVED",
+  "startupBoundMs": 2500,
+  "failures": [
+    {
+      "name": "late result-context observer advancing its deadline cannot expose native metadata",
+      "testDeclarationLine": 165,
+      "assertionLine": 172,
+      "assertionColumn": 70,
+      "durationMs": 2526.996833,
+      "logFirstOccurrenceLine": 1411,
+      "intendedAssertionNotReached": "readResult with context callback that advances fake clock to11; subsequent at/result/private-value assertions.",
+      "path": "packages/device-runtime/src/terminal-resources.test.ts",
+      "observedAssertion": "assert.equal(work.ok, true) after await connector.readMetadata(makeContext())",
+      "actual": false,
+      "expected": true,
+      "observedPhase": "native SSH metadata acquisition success prerequisite; before intended result-context boundary",
+      "sourceAndRuntimeCause": "Unproven; work.reason and operation diagnostics are not emitted by these assertions."
+    },
+    {
+      "name": "late result-context observer closing the owner prevents private value return",
+      "testDeclarationLine": 178,
+      "assertionLine": 182,
+      "assertionColumn": 70,
+      "durationMs": 2531.459958,
+      "logFirstOccurrenceLine": 1412,
+      "intendedAssertionNotReached": "readResult with callback closing connector on its second context check; retainedResults assertion.",
+      "path": "packages/device-runtime/src/terminal-resources.test.ts",
+      "observedAssertion": "assert.equal(work.ok, true) after await connector.readMetadata(makeContext())",
+      "actual": false,
+      "expected": true,
+      "observedPhase": "native SSH metadata acquisition success prerequisite; before intended result-context boundary",
+      "sourceAndRuntimeCause": "Unproven; work.reason and operation diagnostics are not emitted by these assertions."
+    },
+    {
+      "name": "final result-context observer aborting command-owner refuses actual private metadata",
+      "testDeclarationLine": 204,
+      "assertionLine": 211,
+      "assertionColumn": 72,
+      "durationMs": 2524.92725,
+      "logFirstOccurrenceLine": 1415,
+      "intendedAssertionNotReached": "readResult whose second context check aborts command owner, then checks==2/result/private-value assertions.",
+      "path": "packages/device-runtime/src/terminal-resources.test.ts",
+      "observedAssertion": "assert.equal(work.ok, true) after await connector.readMetadata(makeContext())",
+      "actual": false,
+      "expected": true,
+      "observedPhase": "native SSH metadata acquisition success prerequisite; before intended result-context boundary",
+      "sourceAndRuntimeCause": "Unproven; work.reason and operation diagnostics are not emitted by these assertions."
+    },
+    {
+      "name": "final result-context observer aborting result-owner refuses actual private metadata",
+      "testDeclarationLine": 204,
+      "assertionLine": 211,
+      "assertionColumn": 72,
+      "durationMs": 2527.79875,
+      "logFirstOccurrenceLine": 1416,
+      "intendedAssertionNotReached": "readResult whose second context check aborts result owner, then checks==2/result/private-value assertions.",
+      "path": "packages/device-runtime/src/terminal-resources.test.ts",
+      "observedAssertion": "assert.equal(work.ok, true) after await connector.readMetadata(makeContext())",
+      "actual": false,
+      "expected": true,
+      "observedPhase": "native SSH metadata acquisition success prerequisite; before intended result-context boundary",
+      "sourceAndRuntimeCause": "Unproven; work.reason and operation diagnostics are not emitted by these assertions."
+    }
+  ],
+  "interpretation": "All four native SSH metadata success prerequisites failed before result-context assertions. Durations are close to the unchanged2500ms budget; no retained outcome reason, PID, child exit, stderr/stdout or first-JavaScript telemetry identifies cause or startup phase. No native code changed in this candidate. No retry, prewarm, bound relaxation or host security change. Required unit gate remains red and no ordinary commit was made.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/failed-gates",
+    "commit": "e4ba09c1898a5e74efe476bc6b04964da9516d3e",
+    "tree": "922bb4d67ef6343ab1c8c684a2e6e26a9fe6c774",
+    "readBackFiles": 99,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true
+  },
+  "evidencePaths": {
+    "rawUnit": "raw/unit.log",
+    "allGates": "raw/results.json",
+    "triage": "controller/native-gate-triage.json",
+    "lintResolution": "controller/lint-followup.json",
+    "invariants": "controller/failed-gates-invariants.json"
+  },
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "subsequentDiagnosticPreparation": {
+    "source": "packages/device-runtime/src/terminal-resources.test.ts",
+    "sha256": "9588ee22c9a0ca73351ab0f0a86123c5b9246221e67148cf2bb95bc4a7fa3c01",
+    "change": "Three lazy assertion messages cover all four failing cases; only failure reads existing actual outcome/status, successful path unchanged.",
+    "independentReviewSha256": "6653baef7b719e0c61eb96da40ad5c5dffa81f411e68e0211e6d32c4a9d97c79",
+    "validation": "Source-reviewed only; next changed-candidate gates pending. No native reliability fix or retry."
+  }
+}

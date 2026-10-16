@@ -8,12 +8,16 @@ import { isAbsolute, resolve } from 'node:path';
  * This source-bound Node host adapter is not a browser/native-mobile backend. */
 export function createMacosDnsSdProvider(options) {
   if (process.platform !== 'darwin') return undefined;
-  if (!options || Object.keys(options).some(key => !['executable', 'sha256', 'onProcess'].includes(key)) || typeof options.executable !== 'string' ||
+  if (!options || Object.keys(options).some(key => !['executable', 'sha256', 'onProcess', 'profile'].includes(key)) || typeof options.executable !== 'string' ||
     !isAbsolute(options.executable) || typeof options.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(options.sha256)) throw new TypeError('Invalid provisioned native executable');
   if (options.onProcess !== undefined && typeof options.onProcess !== 'function') throw new TypeError('Invalid owned process observer');
+  const profile = options.profile ?? 'macos-local-only-dns-sd/1';
+  if (profile !== 'macos-local-only-dns-sd/1' && profile !== 'macos-selected-interface-dns-sd/1') throw new TypeError('Invalid native discovery profile');
   const executable = resolve(options.executable), sha256 = options.sha256, onProcess = options.onProcess;
-  return Object.freeze({ profile: 'macos-local-only-dns-sd/1', open(scope, callbacks, signal) {
-    if (signal.aborted || scope.interfaceIndex !== 0xffffffff || scope.domain !== 'local.' || scope.profile !== 'macos-local-only-dns-sd/1' ||
+  return Object.freeze({ profile, open(scope, callbacks, signal) {
+    const localOnly = profile === 'macos-local-only-dns-sd/1' && scope.profile === profile && scope.interfaceIndex === 0xffffffff;
+    const selected = profile === 'macos-selected-interface-dns-sd/1' && scope.profile === profile && Number.isSafeInteger(scope.interfaceIndex) && scope.interfaceIndex > 0 && scope.interfaceIndex < 0xfffffffb;
+    if (signal.aborted || !(localOnly || selected) || scope.domain !== 'local.' ||
       scope.operation !== 'observe' || !/^_[A-Za-z0-9-]{1,15}\._tcp$/.test(scope.serviceType)) throw new Error('Unavailable native scope');
     const file = openSync(executable, constants.O_RDONLY | constants.O_NOFOLLOW);
     try {
@@ -27,7 +31,9 @@ export function createMacosDnsSdProvider(options) {
       }
     } finally { closeSync(file); }
     if (signal.aborted) throw new Error('Native scope retired');
-    const child = spawn(executable, ['browse', scope.serviceType, '30000'], {
+    const args = ['browse', scope.serviceType, '30000'];
+    if (selected) args.push(String(scope.interfaceIndex));
+    const child = spawn(executable, args, {
       stdio: ['pipe', 'pipe', 'pipe'], env: { PATH: '/usr/bin:/bin', LC_ALL: 'C' }, timeout: 30000,
     });
     let stopped = false, ended = false, timer, bytes = 0, text = '';

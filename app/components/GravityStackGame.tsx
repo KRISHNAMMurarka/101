@@ -56,7 +56,7 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<StackHud>(() => initialHud(INITIAL_PREVIEW));
 
-  const { linked, session, readiness, controllerHost } = useGameHost<GravityStackState>({
+  const { linked, session, readiness, controllerHost, launch } = useGameHost<GravityStackState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -66,21 +66,17 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       game: createGravityStackGame(`gravitystack-${run}`),
     }),
     adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
-    onReady: ({ context, host }) => {
+    onReady: async ({ context, host, signal }) => {
       const stage = stageRef.current;
       if (!stage) return;
       stage.focus({ preventScroll: true });
-      let cancelled = false;
-      let view: { destroy: () => void } | undefined;
       let previousLost = 0;
 
       // Phaser touches browser globals while its module loads, so the facade is
       // resolved only after hydration. Game and physics code remain unchanged.
-      void (async () => {
-        const { Phaser, Renderer2D101 } = await import("@101/render-2d");
-        if (cancelled) return;
-        view = createStackView(stage, () => context.state, Phaser, Renderer2D101);
-      })();
+      const { Phaser, Renderer2D101 } = await import("@101/render-2d");
+      if (signal.aborted) return;
+      const view = createStackView(stage, () => context.state, Phaser, Renderer2D101);
 
       const hudTimer = window.setInterval(() => {
         const state = context.state;
@@ -117,9 +113,8 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       }, 100);
 
       return () => {
-        cancelled = true;
         window.clearInterval(hudTimer);
-        view?.destroy();
+        view.destroy();
       };
     },
   });
@@ -138,9 +133,9 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       </header>
 
       <div className="gravity-layout">
-        <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+        <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="gravity-stage-shell">
-          <div className="gravity-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK ROLE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "SIMULATION READY" : "Loading…"}</b></div>
+          <div className="gravity-statusbar"><FullscreenButton /><span>{linked ? `${linked} connected controller${linked > 1 ? "s" : ""}` : describeSources(readiness)}</span><b>{hud.ready ? "Ready to play" : "Loading…"}</b></div>
 
           {/* The play field takes the game's keys, like the canvas every other game focuses on start;
               Phaser owns the canvas inside, so the focus and the visible ring sit on this frame. */}
@@ -169,7 +164,8 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
             <div><span>Players</span><button onClick={onConnect}>{linked ? "Add another" : "Add a phone"} ↗</button></div>
             {GRAVITYSTACK_ROLES.map((role) => {
               const assignment = session?.assignments.find((item) => item.roleId === role.id);
-              return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? assignment.deviceId : "On this screen"}</span></p>;
+              const device = session?.devices.find((item) => item.id === assignment?.deviceId);
+              return <p key={role.id} className={assignment ? "linked" : ""}><i /> <strong>{role.label}</strong><span>{assignment ? device?.label || "Connected controller" : "On this screen"}</span></p>;
             })}
           </section>
           <p className="gravity-note">One phone can steer gravity while you place shapes here. Add another phone for the builder controls.</p>

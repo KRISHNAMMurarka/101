@@ -512,7 +512,8 @@ for (const mode of ['release', 'diagnostic']) {
       assert.equal(value.packagingComplete, false);
       assert.equal(value.buildInputVerification.stable, false);
       assert.equal(value.buildInputVerification.after, null);
-      assert.match(value.buildInputVerification.error, /not a regular file/);
+      // Either the general snapshot or the earlier legal-source preflight can refuse the same invalid lock input.
+      assert.match(value.buildInputVerification.error, /^(?:Build input is not a regular file: package-lock\.json|License inventory requires ordinary local files and directories)$/);
       assert.deepEqual(value.produced, []);
       assert.equal(existsSync(join(f.root, 'release', owned, 'web')), false);
       assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');

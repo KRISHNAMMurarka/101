@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "candidateCommit": "f6f3f3498529f48de432a7dfa84d2a04b842b814",
+  "candidateTree": "c9c2f85b3dd71ff8ec7ff2c4fc6296581227ee83",
+  "gateResults": [
+    {
+      "name": "records",
+      "command": [
+        "node",
+        "--test",
+        "tests/platform-records.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.335,
+      "childPid": 60355,
+      "childJoined": true,
+      "log": "records.log"
+    },
+    {
+      "name": "platform-audit",
+      "command": [
+        "node",
+        "tools/audit-platform-records.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.152,
+      "childPid": 60476,
+      "childJoined": true,
+      "log": "platform-audit.log"
+    },
+    {
+      "name": "production-audit",
+      "command": [
+        "node",
+        "tools/audit-production.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 6.529,
+      "childPid": 60548,
+      "childJoined": true,
+      "log": "production-audit.log"
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 7.083,
+      "childPid": 62758,
+      "childJoined": true,
+      "log": "types.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 20.361,
+      "childPid": 64864,
+      "childJoined": true,
+      "log": "lint.log"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "npm",
+        "run",
+        "test:unit"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 503.506,
+      "childPid": 70817,
+      "childJoined": true,
+      "log": "unit.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.032,
+      "childPid": 27860,
+      "childJoined": true,
+      "log": "build.log"
+    },
+    {
+      "name": "rendered",
+      "command": [
+        "node",
+        "--test",
+        "tests/rendered-html.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.974,
+      "childPid": 31999,
+      "childJoined": true,
+      "log": "rendered.log"
+    }
+  ],
+  "effectiveFailedGates": [
+    "lint"
+  ],
+  "unit": {
+    "tests": 3434,
+    "pass": 3434,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rendered": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "freshServerSha256": "77c9c5ed99ac90d04a34a7aa4e34b405fffddafbec7a095d16a7d9140748f13c",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-discovery/gates",
+    "commit": "65e7405649288714b0567dae842bdfd22ab0199e",
+    "tree": "8e7abff3556d6c4089a4a84f7fcef953dea8b636",
+    "readBackFiles": 98,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true
+  },
+  "failure": "One prefer-const error in the new workspace isolation test; no ordinary commit. All3434 unit cases and fresh37 rendered checks pass.",
+  "subsequentCorrection": {
+    "scope": {
+      "source": "packages/device-runtime/src/workspace-administration.test.ts",
+      "sha256": "3111d9442c45acf3c2adcd22ccfa8a6076b225ce8ef37b24e58240b5c5143831",
+      "entries": [
+        {
+          "name": "workspace-const-lint",
+          "argv": [
+            "node",
+            "node_modules/eslint/bin/eslint.js",
+            "packages/device-runtime/src/workspace-administration.test.ts"
+          ],
+          "pid": 55951,
+          "exitCode": 0,
+          "joined": true
+        },
+        {
+          "name": "workspace-const-regression",
+          "argv": [
+            "node",
+            "--experimental-strip-types",
+            "--test",
+            "--test-name-pattern=^removed participant recovery cannot reuse retired consent or disturb an independent participant$",
+            "packages/device-runtime/src/workspace-administration.test.ts"
+          ],
+          "pid": 56164,
+          "exitCode": 0,
+          "joined": true
+        }
+      ],
+      "scope": "let-to-const and unused type import only; old full gate lint failure preserved",
+      "nativeReliability": "UNRESOLVED"
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-workspace-const/focused",
+      "commit": "6450a066a5b6bb1c69388271951d390968713cd4",
+      "tree": "f4ed733c442480f78a6a38166ce9c88f596444ce",
+      "readBackFiles": 7,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "wholeCandidateGreenClaim": false
+  },
+  "nativeReliability": "UNRESOLVED",
+  "startupBoundMs": 2500,
+  "retriesOrPrewarmAdded": false,
+  "interpretation": "This changed-candidate run passed its actual native cases. It does not repair or erase historical intermittent startup failures or establish their cause.",
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0
+}

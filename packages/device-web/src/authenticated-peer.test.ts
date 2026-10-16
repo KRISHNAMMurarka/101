@@ -6,8 +6,12 @@ import type { PeerConnectionPort, PeerDataChannelPort } from '@101/transport-web
 import { AuthenticatedResourcePeer, authenticatedPeerScope } from './authenticated-peer.ts';
 import type { EndpointCrypto, EndpointIdentity } from './identity-types.ts';
 import { endpointKeyId } from './identity-format.ts';
-import { PointerResourceProvider } from './pointer-provider.ts';
+import { PointerResourceProvider, pointerSourceDescriptor } from './pointer-provider.ts';
 import { createRemotePointerSurface } from '../../../examples/device-pipelines/remote-pointer.ts';
+import { createDeviceRuntime } from '../../device-runtime/src/index.ts';
+import { parseDeviceDescriptor, getHapticOutputProfile } from '../../device-model/src/index.ts';
+import { RemoteResourcePublisher, RemoteResourceReceiver } from './binding.ts';
+import { decodePacket } from './wire.ts';
 
 const crypto: EndpointCrypto = {
   randomBytes(length) { return webcrypto.getRandomValues(new Uint8Array(length)); },
@@ -357,4 +361,90 @@ test('WSS cancellation during a cryptographic await cannot issue a late scope', 
   const f = await wssFixture({ identities, pinned: true }); await f.pump(() => entered); f.a.stop(); release();
   await new Promise<void>(resolve => setImmediate(resolve));
   assert.equal(authenticatedPeerScope(f.a), undefined); assert.equal(f.a.send('reliable', 'late proof'), false); f.stop();
+});
+
+test('authenticated receiver refuses an invoke-only advertised resource before issuing a bind', { timeout: 10000 }, async t => {
+  const f = await fixture();
+  const epoch = 'a'.repeat(32);
+  const grant = Object.freeze({ expiresAt: 10000, maxAgeMs: 100, maxHz: 10 });
+  const pointer = pointerSourceDescriptor('contract-fixture');
+  const haptic = getHapticOutputProfile('app:browser-haptic-presets/1').capability;
+  const device = parseDeviceDescriptor({ ...pointer, id: 'mixed-pointer-haptic', capabilities: [...pointer.capabilities, haptic] });
+  const position = device.capabilities.find(capability => capability.id === 'position')!;
+  const positionDevice = parseDeviceDescriptor({ ...device, id: 'owned-position-sink', capabilities: [
+    { ...position, kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' } },
+  ] });
+  const hapticDevice = parseDeviceDescriptor({ ...device, id: 'owned-haptic-sink', capabilities: [haptic] });
+  const received: unknown[] = [];
+  let hapticApplies = 0, authorizationCalls = 0, sourceRegistrations = 0, sourceRegistrationId = '', positionSinkId = '';
+  const runtime = createDeviceRuntime({ now: f.time, clockDomain: 'receiver-clock', authorize(request) {
+    authorizationCalls++;
+    if (request.principalId !== 'owner' || request.applicationId !== 'pointer-reference' || request.sessionId !== 'session-1' ||
+      request.source.registrationId !== sourceRegistrationId || request.source.deviceId !== device.id || request.source.capabilityId !== 'position' ||
+      request.source.descriptorRevision !== device.revision || request.source.schemaVersion !== position.schemaVersion ||
+      request.sink.registrationId !== positionSinkId || request.sink.deviceId !== positionDevice.id || request.sink.capabilityId !== 'position' ||
+      request.sink.descriptorRevision !== positionDevice.revision || request.sink.schemaVersion !== position.schemaVersion ||
+      request.sourceOperation !== 'subscribe' || request.sinkOperation !== 'write' || request.partition !== undefined) return;
+    return grant;
+  } });
+  // Observe the public boundary without replacing registration or authorization.
+  const registerSource = runtime.registerSource.bind(runtime);
+  runtime.registerSource = provider => {
+    sourceRegistrations++;
+    const handle = registerSource(provider); sourceRegistrationId = handle.id; return handle;
+  };
+  const hapticSink = runtime.registerSink({ device: hapticDevice, capability: 'preset',
+    apply() { hapticApplies++; }, release() {} });
+  const positionSink = runtime.registerSink({ device: positionDevice, capability: 'position',
+    apply(observation, context) { if (context.isCurrent()) received.push(observation.value); }, release() {} });
+  positionSinkId = positionSink.id;
+  runtime.setReadiness(hapticSink, 'available'); runtime.setReadiness(positionSink, 'available');
+  const receiver = new RemoteResourceReceiver({ peer: f.b, epoch, clockId: 'receiver-clock', now: f.time, runtime,
+    principalId: 'owner', applicationId: 'pointer-reference', sessionId: 'session-1' });
+  const publisher = new RemoteResourcePublisher({ peer: f.a, epoch, clockId: 'source-clock', now: f.time,
+    device, available: () => true });
+  const binds = () => [...f.bPort.channels.values()].flatMap(channel => channel.sent)
+    .filter(data => decodePacket(data, 'reliable')?.packet.type === 'bind').length;
+  try {
+    await f.pump(() => f.a.status().phase === 'awaiting-enrollment' && f.b.status().phase === 'awaiting-enrollment');
+    assert.equal(f.a.confirmEnrollment(f.a.status().comparisonDigest!), true);
+    assert.equal(f.b.confirmEnrollment(f.b.status().comparisonDigest!), true);
+    await f.pump(() => f.a.state === 'connected' && f.b.state === 'connected');
+    assert.ok(authenticatedPeerScope(f.a)); assert.ok(authenticatedPeerScope(f.b));
+    assert.equal(publisher.start(), true);
+    await f.pump(() => { publisher.tick(); receiver.tick(); return !!receiver.description() && receiver.status().clockReady; });
+    const advertised = receiver.description()!.capabilities.find(capability => capability.id === 'preset');
+    assert.ok(advertised); assert.equal(advertised.kind, 'command'); assert.deepEqual(advertised.permissions, ['invoke']);
+    const beforeBinds = binds();
+    assert.equal(receiver.approve({ capability: 'preset', sink: hapticSink, sinkDevice: hapticDevice,
+      sinkCapability: 'preset', codec: 'json/1', grant }), undefined);
+    assert.equal(binds(), beforeBinds);
+    assert.equal(sourceRegistrations, 0); assert.equal(authorizationCalls, 0);
+    assert.equal(receiver.status().pending, 0); assert.equal(receiver.status().active, 0);
+    assert.equal(publisher.isBound('preset'), false); assert.equal(hapticApplies, 0);
+
+    // A supported capability from the same enrolled producer must still work.
+    assert.equal(receiver.approve({ capability: 'position', sink: positionSink, sinkDevice: positionDevice,
+      sinkCapability: 'position', codec: 'json/1', grant }), 1);
+    await f.pump(() => { publisher.tick(); receiver.tick(); return publisher.isBound('position') && receiver.status().active === 1; });
+    assert.equal(sourceRegistrations, 1); assert.equal(authorizationCalls, 1); assert.equal(binds(), beforeBinds + 1);
+    f.setTime(120);
+    assert.equal(publisher.publish('position', { x: 0.25, y: 0.75 }), true);
+    await f.pump(() => { publisher.tick(); receiver.tick(); return received.length === 1; });
+    assert.deepEqual(received, [{ x: 0.25, y: 0.75 }]); assert.equal(hapticApplies, 0);
+    assert.equal(publisher.isBound('preset'), false);
+    t.diagnostic(JSON.stringify({ negative: { advertisedKind: advertised.kind, permissions: advertised.permissions,
+      bindDelta: 0, sourceRegistrations: 0, authorizationCalls: 0, hapticApplies },
+    positive: { bindDelta: binds() - beforeBinds, sourceRegistrations, authorizationCalls, positionApplies: received.length },
+    scope: 'Real crypto and faithful queued ports; no browser DTLS, native API, physical haptics or complete S03 qualification.' }));
+  } finally {
+    publisher.stop(); receiver.stop(); runtime.close(); f.stop();
+    await Promise.all([f.aRaw.disconnect(), f.bRaw.disconnect()]);
+    for (let turn = 0; f.queue.length && turn < 2000; turn++) f.queue.shift()!();
+    const cleaned = f.queue.length === 0 && f.a.status().phase === 'stopped' && f.b.status().phase === 'stopped' &&
+      f.aPort.connectionState === 'closed' && f.bPort.connectionState === 'closed';
+    t.diagnostic(JSON.stringify({ cleanup: { cleaned, queuedCallbacks: f.queue.length,
+      sourceTransport: f.aPort.connectionState, receiverTransport: f.bPort.connectionState } }));
+    assert.equal(cleaned, true);
+  }
 });

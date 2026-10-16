@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S06",
+    "U04",
+    "U10"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "implemented owner-reviewed single participant retirement and explicit fresh replacement; local actual runtime and browser qualification only",
+  "patchSha256": "53983ad04575fe8ae1283db552ba8b16cd00a0c131c91954383ca4a783211af0",
+  "sourceSha256": {
+    "app/sharing/ConnectedSharingView.tsx": "865fbfb5a6bac8a25945e8aa0324f537af955863a54dcb5e708e854782c46e3b",
+    "app/sharing/connected-sharing-task.test.ts": "557f54b2a504a5a5dfe8c62666b841c310e75a1f0da67780a1dc6195fcc63aa8",
+    "app/sharing/connected-sharing-task.ts": "8470cd7b71346f44856b70ab8feadbdb558269380b2a90bd174c0bd2df7e290f",
+    "packages/device-runtime/src/input-ownership.test.ts": "db079987b56149ef815a1ce598434b0f78d77acf05b33da23f4ab8e85e4b5ca1",
+    "packages/device-runtime/src/input-ownership.ts": "7e263bc6b14a7f23547248d9c96ec46193c907d82baee27e708442fc25e5b3a8",
+    "packages/device-runtime/src/runtime.ts": "b8807a77921c4a795264930e6b65b51c225c7f7af57d473dbec44d9d07b334af"
+  },
+  "appliedChecks": [
+    {
+      "name": "applied-lint",
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "app/sharing/ConnectedSharingView.tsx",
+        "app/sharing/connected-sharing-task.test.ts",
+        "app/sharing/connected-sharing-task.ts",
+        "packages/device-runtime/src/input-ownership.test.ts",
+        "packages/device-runtime/src/input-ownership.ts",
+        "packages/device-runtime/src/runtime.ts"
+      ],
+      "pid": 35653,
+      "joined": true,
+      "exitCode": 0
+    },
+    {
+      "name": "applied-regressions",
+      "argv": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        "app/sharing/connected-sharing-task.test.ts",
+        "packages/device-runtime/src/input-ownership.test.ts"
+      ],
+      "pid": 36028,
+      "joined": true,
+      "exitCode": 0
+    },
+    {
+      "name": "applied-types",
+      "argv": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "pid": 36363,
+      "joined": true,
+      "exitCode": 0
+    }
+  ],
+  "appliedTests": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-membership-recovery/applied",
+    "commit": "869c8ec45a2a4f9904a28b3798ca3aaf13abd8b5",
+    "tree": "b7df7d18f87d30ad1e06cbf8b7f598a272a612a5",
+    "readBackFiles": 22,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "originalDraftCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-membership-recovery/single-participant-draft",
+    "commit": "e8216f9a5cbb3d35eb915c706b8989b0a9c12e95"
+  },
+  "reviewCalloutCorrection": {
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-membership-recovery/review-callout-correction",
+      "commit": "edceae45504cde6c7c84d1b7756a84535903c980",
+      "tree": "592c1a5d1fc9b95b0a167bb77f681edf1ad62578",
+      "readBackFiles": 79,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "originalDraftRed": {
+      "invocation": "old-draft-red-invocation.json",
+      "stdout": "old-draft-red.stdout",
+      "stdoutSha256": "0950472384412e2defc7b5ad7cc791bfdaa9a0a37d9d7c26d17c25651647bc09",
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "exitCode": 1,
+      "observed": "actual unchanged-time owner clock callback executed once and cancelled review; confirmRemoval returned true, A removed/left released epoch2; B stayed live/held epoch1",
+      "boundary": "Real WebCrypto, authenticated scope path and actual connected-task/runtime over faithful queued ports. No fake currentScope/clock value/auth/transport substitution. One-shot host clock side effect is explicit adversarial host callback, not normal player action."
+    },
+    "correction": "Actual authenticated scope clock callout now precedes exact final review/state/affected-epoch checks; a callback-cancelled preview cannot remove the participant.",
+    "independentReviewSha256": "d84a811cfe4a2107958cce69801b758ac5b9433affcbc2cae6b4a0cc8d5d2295",
+    "rootReviewSha256": "bd252e424156c3b39c1ad4501e167600862a90b1b75981c64cada14ca6724cd3"
+  },
+  "nativeBrowser": {
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-membership-recovery/native-browser",
+      "commit": "0b659b6471d1edb8d69935d7832da857fb2c0da9",
+      "tree": "418ded59dc462dee6deb0f98480c307db0d929da",
+      "readBackFiles": 121,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "reportSha256": "f01677bd27eb252c9efcc6150723045f19fed99b75019c04188fe926e852ebc2",
+    "actualAttempts": [
+      {
+        "batch": "initial",
+        "engine": "chromium",
+        "result": "fail",
+        "phase": "keyboard-reviewed-removal",
+        "namedChecks": 3,
+        "elapsedSeconds": 10.179922500159591,
+        "exitCode": 1,
+        "receipt": "attempts/initial/chromium-receipt.json",
+        "receiptSha256": "f10e30b5657dd060f242ef7db1e875a77665463cf442fbd9dea534b75d52b35d",
+        "stdoutSha256": "2a6bda8b995cfcc3b74ea9572fb1775680e7e78ccd21d1febe110ab472e564bb",
+        "stderrSha256": "9570cb2427bfa70a539059807c8d07400c37934c796ee44f689a7f248d8733c1",
+        "toolSha256": "7a728a4b8c8a143428d1816e1253caa6d6a001f87f5fdd441abd1242782dbf76",
+        "continuitySamples": 9,
+        "continuityViolations": [],
+        "joined": true,
+        "qaGroupAbsent": true,
+        "browserChildCloseObserved": true,
+        "cleanupErrors": []
+      },
+      {
+        "batch": "initial",
+        "engine": "webkit",
+        "result": "fail",
+        "phase": "keyboard-reviewed-removal",
+        "namedChecks": 3,
+        "elapsedSeconds": 15.216495708096772,
+        "exitCode": 1,
+        "receipt": "attempts/initial/webkit-receipt.json",
+        "receiptSha256": "5f9a855b9b89d497b482f286be63c3efb2707956f2ca37a7f6de89c65244e3cd",
+        "stdoutSha256": "82a8688a33cfe2d4e22253609e38d7d75b721361a8b163105ac97be7abd91fb7",
+        "stderrSha256": "9570cb2427bfa70a539059807c8d07400c37934c796ee44f689a7f248d8733c1",
+        "toolSha256": "7a728a4b8c8a143428d1816e1253caa6d6a001f87f5fdd441abd1242782dbf76",
+        "continuitySamples": 9,
+        "continuityViolations": [],
+        "joined": true,
+        "qaGroupAbsent": true,
+        "browserChildCloseObserved": true,
+        "cleanupErrors": []
+      },
+      {
+        "batch": "corrected",
+        "engine": "chromium",
+        "result": "pass",
+        "phase": "plain-layout-and-joined-stop",
+        "namedChecks": 11,
+        "elapsedSeconds": 6.309155459050089,
+        "exitCode": 0,
+        "receipt": "chromium-receipt.json",
+        "receiptSha256": "fe3ca62b9ab42b93343fe8d903e2e516bf780583f9a821533a123433d4308c99",
+        "stdoutSha256": "4aeab4a84a55f3042217361d1567e73408eadf862ebb88de7cf28e9b2b0c4f1d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "toolSha256": "9a8adc640b4e9643c779670694fe66f52a79799ce93895e3adb75696db3341fd",
+        "continuitySamples": 30,
+        "continuityViolations": [],
+        "joined": true,
+        "qaGroupAbsent": true,
+        "browserChildCloseObserved": true,
+        "cleanupErrors": []
+      },
+      {
+        "batch": "corrected",
+        "engine": "webkit",
+        "result": "pass",
+        "phase": "plain-layout-and-joined-stop",
+        "namedChecks": 11,
+        "elapsedSeconds": 8.450887042097747,
+        "exitCode": 0,
+        "receipt": "webkit-receipt.json",
+        "receiptSha256": "2046219849abb9dcb688f45091e92ddd4a93fd9c439c79dd965cac9f981bdbd0",
+        "stdoutSha256": "2cd548e69930658da6677601cbaa855d0706efc1b28f9764324da2bc1dea12dd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "toolSha256": "9a8adc640b4e9643c779670694fe66f52a79799ce93895e3adb75696db3341fd",
+        "continuitySamples": 29,
+        "continuityViolations": [],
+        "joined": true,
+        "qaGroupAbsent": true,
+        "browserChildCloseObserved": true,
+        "cleanupErrors": []
+      }
+    ],
+    "witnessed": [
+      "Real A/B separately enrolled by native code offer/answer exchange and matching comparison confirmation on both pages; source consent plus explicit owner approvals create separate held left/right outputs.",
+      "Actual B input moves its held right output before removal, after retirement, after fresh authentication before consent, while freshA request waits, and after freshA input effects. Owner public labels stay Participant2 and right data-held stays true.",
+      "Keyboard focuses Remove Participant1 and Enter opens actual review; confirm receives focus, exactly one confirm exists, review identifies selected connection and warns no permission is restored. Enter confirms; left owner becomesNone/heldfalse, old source is unavailable and has no enabled control.",
+      "Replacement uses actual new invitation epoch in the same session and different actual comparison; both pages reconfirm. Only two owner participant headings remain. Fresh page cannot press before its new checkbox consent and request, then remains disabled/no owner effect until explicit new owner approval.",
+      "After fresh approval, real focused movement pad Space down/up produces native remote held/released output; equivalent Move right changes actual owner output; fresh Press then holds actual left while B remains held.",
+      "Owner/replacement/B render without horizontal document overflow at360px. Actual owner removal-review screenshot shows visible focused confirmation and plain monochrome copy; WebKit360px screenshot shows readable two-participant labels and controls.",
+      "Explicit Stop all releases both actual held outputs. All four pages retain initial storage. Stop connected setup reaches enabled fresh-start state before contexts close; browser child/server and owned app server joins are recorded."
+    ],
+    "build": {
+      "serverSha256": "e13bad3a4708c7d29ef4d020ae29b11a7c79bfc59a29d52138fb8b7b3f2dcfc9",
+      "rootFreshBuildRecord": "applied-build.json.txt",
+      "rootFreshBuildRecordSha256": "001a315ec25690ba65e4086aa38e3431c56d664c579248283569d933237b664b",
+      "serverFiles": 210,
+      "clientFiles": 392,
+      "all602DistPinsUnchangedBeforeAfterBothBatches": true,
+      "allSixAppliedSourcePinsUnchanged": true,
+      "sourceBoundary": "Root-attested six changed source/test paths; all selected Sharing/source dependency bytes hashed before/after actual runs and copied exactly to source-context. No immutable complete built Git tree was supplied or inferred. HEAD metadata remains metadata.",
+      "servedProof": "served-proof.json",
+      "servedProofSha256": "16b2ae06be738ef6988f3063067a1c5d88858e6339af5e5d1cd041ef6c6bacc0"
+    },
+    "limits": [
+      "B continuity is rendered public DOM observation: Chromium30 andWebKit29 samples, each0violations; actual source movement at5boundaries. Public DOM exposes no owner epoch/routeID, so no internal epoch continuity claim from browsers (separate canonical task tests cover that).",
+      "No independent native per-peer closure counts or SDK rawcrypto quiescence measurement; no RTC instrumentation was added. UI stop readiness and actual browser child/context closure are the observed browser cleanup boundary.",
+      "No AT/screen-reader/fullTab/a11y certification, physical devices, cross-network/LAN/TLS/account recovery, OS pointer, native startup reliability or wholeS06 closure.",
+      "The full QA child stdout/stderr and appserver stdout/stderr are retained. The supervising Python process printed its metadata to the tool session; that extra console stream was not separately duplicated, while its structured invocation/results and exact source are retained."
+    ],
+    "initialFailureClassification": "Both reached actual A removal/released output while B remained held; same failed harness predicate incorrectly demanded a disabled Press button, while real participant onLoss withdraws local input and sets layoutReadyfalse, removing controls entirely. This is a faithfully diagnosed harness false expectation, not a product failure. Exact first sources/streams/receipts/screenshot remain; correction only accepts absent OR disabled and additionally asserts unavailable status plus Aempty/Bheld.",
+    "olderWebKitFailureBoundary": "Original connected-webkit exclusive-transfer followup21-check disabled-Press failure and distinct11-check native-scroll/zero-peer observation failure under player-task-labels remain separate unresolved failed attempts. The new replacement selector does not retry that exclusive/cancel sequence or infer its root cause."
+  },
+  "scope": "Canonical tests prove opaque reviewed retirement, joined issued work before slot reuse, real runtime-issued source provenance and fresh principal/grants without changing B route/epoch. Chromium/WebKit complete22named checks of actual native RTC/UI replacement; browser B continuity is rendered observation only. No account/lost-identity/network/AT/wholeS06 qualification.",
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

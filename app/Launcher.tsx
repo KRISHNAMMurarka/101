@@ -13,7 +13,7 @@ import {
   useState,
 } from "react";
 import { type BrowserPairingInfo } from "./lib/browser-link";
-import type { InputSource } from "@101/input";
+import { catalogReadiness } from "./lib/catalog-readiness";
 
 import { GamePoster } from "./components/GamePoster";
 import { Icon } from "./components/Icon";
@@ -341,7 +341,7 @@ export default function Launcher({
                             card in the catalog — ROADMAP ones included, directly under a badge that
                             said otherwise. Now computed against what this browser can contribute. */}
                         {(() => {
-                          const readiness = readinessOn(game, localSources);
+                          const readiness = catalogReadiness(game, localSources);
                           return <p className={`card-readiness${readiness.ok ? "" : " needs-device"}`}>{readiness.text}</p>;
                         })()}
                       </div>
@@ -378,27 +378,6 @@ export default function Launcher({
   );
 }
 
-
-/**
- * Whether this browser can play a game right now, and what would improve it.
- *
- * A game's declared inputs are alternatives, not requirements — Slashstorm takes a keyboard or a
- * touchscreen or a gamepad — so covering any one of them means you can start. The rest are the
- * honest answer to "what would make this better", which is a different sentence from "you cannot
- * play this". The card used to print neither: it printed the literal string "Playable" on every
- * card in the catalog, including the ones whose own badge above said ROADMAP.
- */
-function readinessOn(game: LauncherCatalogEntry, local: readonly InputSource[]): { ok: boolean; text: string } {
-  if (game.status !== "playable") return { ok: false, text: "Coming soon" };
-
-  const have = game.inputs.filter((input) => local.includes(input));
-  const missing = game.inputs.filter((input) => !local.includes(input));
-  const name = (input: InputSource) => CATALOG_INPUT_LABELS[input] ?? input;
-
-  if (have.length === 0) return { ok: false, text: `Needs ${missing.slice(0, 2).map(name).join(" or ")}` };
-  if (missing.length === 0) return { ok: true, text: "Ready on this device" };
-  return { ok: true, text: `Ready now · ${missing.slice(0, 2).map(name).join(", ")} adds more` };
-}
 
 interface CatalogViewport {
   columns: number;

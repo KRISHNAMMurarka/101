@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createDeviceRuntime } from './index.ts';
 import type { DeliveryContext, Observation } from './types.ts';
+import { createWorkspaceAdministration } from './workspace-administration.ts';
+import type { WorkspaceAdministrationChange, WorkspaceResource, WorkspaceResourceApprovalRequest, WorkspaceSharingRule } from './workspace-administration.ts';
+import type { Connection, EndpointHandle, RouteRequest } from './types.ts';
 
 const modulePath = './workspace-administration.ts';
 
@@ -322,4 +325,96 @@ test('actual first stop permits unique fresh replacement with new owner signals 
     h.runtime.publish(h.source, true); h.runtime.flush(); assert.equal(h.effect(), true);
     h.ownerControllers[2]!.abort(); assert.equal(next.value.status().state, 'closed'); assert.equal(h.effect(), false); assert.equal(h.releases(), 2);
   } finally { h.close(); }
+});
+
+test('removed participant recovery cannot reuse retired consent or disturb an independent participant', { timeout: 5000 }, t => {
+  type Who = "a" | "b";
+  let at = 0, revision = 0;
+  const effects = { a: false, b: false }, releases = { a: 0, b: 0 };
+  const contexts: Record<Who, DeliveryContext[]> = { a: [], b: [] };
+  const calls: { side: "source" | "sink"; ownerId: string; principalId: string }[] = [];
+  const grants: { principalId: string; side: "source" | "sink"; owner: AbortController }[] = [];
+  const runtime = createDeviceRuntime({ now: () => at, clockDomain: 's06-software-clock',
+    authorize: request => controller.authorizeRoute(request) });
+  const resources: WorkspaceResource[] = [];
+  const handles = {} as Record<Who, { source: EndpointHandle; sink: EndpointHandle }>;
+  for (const who of ['a', 'b'] as const) {
+    const sourceDevice = device(`source-${who}`), sinkDevice = device(`sink-${who}`, true);
+    const source = runtime.registerSource({ device: sourceDevice, capability: 'state' });
+    const sink = runtime.registerSink({ device: sinkDevice, capability: 'state',
+      apply(observation, context) { if (context.isCurrent()) { effects[who] = observation.value as boolean; contexts[who].push(context); } },
+      release() { effects[who] = false; releases[who]++; } });
+    runtime.setReadiness(source, 'available'); runtime.setReadiness(sink, 'available');
+    handles[who] = { source, sink };
+    resources.push({ id: `source-${who}`, ownerId: `source-owner-${who}`, handle: source, device: sourceDevice, capability: 'state' },
+      { id: `sink-${who}`, ownerId: `sink-owner-${who}`, handle: sink, device: sinkDevice, capability: 'state' });
+  }
+  const approveResource = (request: WorkspaceResourceApprovalRequest) => {
+    const owner = new AbortController();
+    calls.push({ side: request.side, ownerId: request.ownerId, principalId: request.route.principalId });
+    grants.push({ principalId: request.route.principalId, side: request.side, owner });
+    return { request, expiresAt: 1000, maxHz: 30, maxAgeMs: 1000, signal: owner.signal };
+  };
+  const controller = createWorkspaceAdministration({ workspaceId: 's06-isolation', ownerPrincipalId: 'owner', resources, now: () => at,
+    authorizeAdministration: request => ({ request, expiresAt: 1000, signal: new AbortController().signal }),
+    authorizeSource: approveResource, authorizeSink: approveResource });
+  const mutate = (change: WorkspaceAdministrationChange) => { const result = controller.change('owner', revision, change); assert.equal(result.ok, true); revision++; };
+  const rule = (who: Who): WorkspaceSharingRule => ({ id: `rule-${who}`, principalId: `member-${who}`, applicationId: 'app', sessionId: 'session',
+    sourceId: `source-${who}`, sinkId: `sink-${who}`, sourceOperation: 'subscribe', sinkOperation: 'write',
+    expiresAt: 1000, maxHz: 30, maxAgeMs: 1000 });
+  const request = (who: Who, to = handles[who].sink): RouteRequest => ({ from: handles[who].source, to, principalId: `member-${who}`,
+    applicationId: 'app', sessionId: 'session', leaseMs: 1000, queueCapacity: 1 });
+  const publish = (who: Who, value: boolean) => { assert.equal(runtime.publish(handles[who].source, value).ok, true); runtime.flush(); };
+  let aFirst: Connection | undefined, aFresh: Connection | undefined, b: Connection | undefined;
+  try {
+    assert.equal(controller.create('owner').ok, true); revision = 1;
+    for (const who of ['a', 'b'] as const) mutate({ type: 'add-member', principalId: `member-${who}`, role: 'participant' });
+    for (const who of ['a', 'b'] as const) mutate({ type: 'set-sharing', rule: rule(who) });
+    const aResult = controller.route(runtime, request('a')), bResult = controller.route(runtime, request('b'));
+    assert.equal(aResult.ok, true); assert.equal(bResult.ok, true); aFirst = aResult.value; b = bResult.value;
+    assert.equal(aFirst.start().ok, true); assert.equal(b.start().ok, true);
+    assert.equal(calls.length, 4); publish('a', true); publish('b', true);
+    assert.deepEqual(effects, { a: true, b: true });
+    const retiredAContext = contexts.a[0]!, incumbentBContext = contexts.b[0]!;
+    const retiredAGrants = grants.filter(value => value.principalId === 'member-a');
+    assert.equal(retiredAGrants.length, 2);
+    mutate({ type: 'remove-member', principalId: 'member-a' });
+    assert.equal(aFirst.status().state, 'closed'); assert.equal(retiredAContext.isCurrent(), false);
+    assert.equal(effects.a, false); assert.equal(releases.a, 1);
+    assert.equal(b.status().state, 'active'); assert.equal(incumbentBContext.isCurrent(), true);
+    assert.equal(effects.b, true); assert.equal(releases.b, 0);
+    at = 40; publish('a', true); assert.equal(effects.a, false); assert.equal(contexts.a.length, 1);
+    assert.equal(controller.route(runtime, request('a')).ok, false); assert.equal(calls.length, 4);
+    mutate({ type: 'add-member', principalId: 'member-a', role: 'participant' });
+    assert.equal(controller.route(runtime, request('a')).ok, false, 're-add cannot restore removed sharing policy');
+    assert.equal(aFirst.start().ok, false, 'retired public handle cannot restart'); assert.equal(calls.length, 4);
+    assert.equal(controller.route(runtime, request('a', handles.b.sink)).ok, false, 'recovery cannot select participant B resource');
+    assert.equal(controller.route(runtime, request('b', handles.a.sink)).ok, false, 'B cannot acquire A resource');
+    assert.equal(calls.length, 4, 'denied cross-participant paths must not ask resource owners');
+    mutate({ type: 'set-sharing', rule: rule('a') });
+    const freshResult = controller.route(runtime, request('a')); assert.equal(freshResult.ok, true); aFresh = freshResult.value;
+    assert.notEqual(aFresh, aFirst); assert.equal(aFresh.start().ok, true); assert.equal(calls.length, 6);
+    for (const grant of retiredAGrants) grant.owner.abort();
+    assert.equal(aFresh.status().state, 'active'); assert.equal(b.status().state, 'active');
+    assert.equal(retiredAContext.isCurrent(), false); assert.equal(incumbentBContext.isCurrent(), true);
+    at = 80; publish('a', true); publish('b', false);
+    assert.deepEqual(effects, { a: true, b: false }); assert.equal(contexts.a.length, 2); assert.equal(contexts.b.length, 2);
+    const freshAGrants = grants.filter(value => value.principalId === 'member-a' && !retiredAGrants.includes(value));
+    assert.equal(freshAGrants.length, 2); freshAGrants[0]!.owner.abort();
+    assert.equal(aFresh.status().state, 'closed'); assert.equal(contexts.a[1]!.isCurrent(), false);
+    assert.equal(b.status().state, 'active'); assert.equal(contexts.b[1]!.isCurrent(), true);
+    assert.equal(releases.a, 2); assert.equal(releases.b, 0);
+    at = 120; publish('a', true); publish('b', true);
+    assert.deepEqual(effects, { a: false, b: true }); assert.equal(contexts.a.length, 2); assert.equal(contexts.b.length, 3);
+    t.diagnostic(JSON.stringify({ removedAReleased: releases.a, independentBReleasesBeforeCleanup: releases.b,
+      actualResourceOwnerApprovals: calls, freshOwnerGrants: freshAGrants.length,
+      retiredHandleRestartRefused: true, readdWithoutPolicyRefused: true, crossParticipantRoutesRefused: 2,
+      staleOwnerAbortLeavesFreshRoutesActive: true, actualFinalEffects: effects,
+      scope: 'Actual software runtime/member policy only; no invitation/TLS/account/device identity or physical/network acceptance.' }));
+  } finally {
+    controller.close(); runtime.close();
+    assert.equal(aFirst?.status().state, 'closed'); assert.equal(aFresh?.status().state, 'closed'); assert.equal(b?.status().state, 'closed');
+    assert.equal(controller.inspect('owner').ok, false); assert.deepEqual(effects, { a: false, b: false });
+    t.diagnostic(JSON.stringify({ cleanup: { allActualHandlesClosed: true, effectsReleased: true } }));
+  }
 });

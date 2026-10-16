@@ -14,6 +14,7 @@ export const KOTLIN_STRUCTURED_BINDING_PATHS = Object.freeze([
   'examples/language-bindings/StructuredTelemetryConsumer.kt', 'tools/build-structured-telemetry-kotlin.mjs',
 ]);
 const sharedPaths = [`${base}/fixtures/page-readings-v1.json`, `${base}/fixtures/structured-telemetry-v1.json`,
+  `${base}/fixtures/structured-telemetry-negative-v1.json`,
   'examples/language-bindings/structured-telemetry.mjs', 'tools/build-pointer-bindings.mjs', 'LICENSE'];
 const producerPaths = ['packages/device-web/src/wire.ts', 'packages/device-model/src/sample.ts', 'packages/device-model/src/descriptor.ts'];
 function copy(from, to) { mkdirSync(dirname(to), { recursive: true }); copyFileSync(from, to); }
@@ -89,13 +90,16 @@ export function buildStructuredTelemetryKotlin(reference, sdkRoot, sdkManifest) 
       assert.equal(sha256(Buffer.from(bytes)), metadata.sha256);
     }
     const schemaPath = join(snapshot, `${base}/fixtures/page-readings-v1.json`),
-      fixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-v1.json`), fixtures = JSON.parse(readFileSync(fixturePath));
+      fixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-v1.json`),
+      negativeFixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-negative-v1.json`),
+      fixtures = JSON.parse(readFileSync(fixturePath));
     const actual = withPublicCaller(sdk, join(snapshot, 'examples/language-bindings/structured-telemetry.mjs'), (_, caller) =>
       JSON.parse(run('actual-sdk-producer', process.execPath, [caller, '--schema', schemaPath])));
     assert.deepEqual(actual, fixtures); assert.equal(fixtures.positive.length, 5);
     for (const [from, to] of [['LICENSE', 'LICENSE'], [KOTLIN_STRUCTURED_BINDING_PATHS[0], 'assets/profile.json'],
       [`${base}/fixtures/page-readings-v1.json`, 'assets/page-readings-v1.json'],
       [`${base}/fixtures/structured-telemetry-v1.json`, 'assets/structured-telemetry-v1.json'],
+      [`${base}/fixtures/structured-telemetry-negative-v1.json`, 'assets/structured-telemetry-negative-v1.json'],
       [KOTLIN_STRUCTURED_BINDING_PATHS[1], 'source/StructuredTelemetryWire.kt'],
       [KOTLIN_STRUCTURED_BINDING_PATHS[2], 'source/StructuredTelemetryWireTests.kt'],
       ['examples/language-bindings/StructuredTelemetryConsumer.kt', 'examples/StructuredTelemetryConsumer.kt'],
@@ -109,7 +113,8 @@ export function buildStructuredTelemetryKotlin(reference, sdkRoot, sdkManifest) 
     compile('checks', ['-Werror', '-jvm-target', '17', '-classpath', [library, classpath].join(':'), '-d', checks,
       join(artifact, 'source/StructuredTelemetryWireTests.kt'), callerSource], kotlin);
     const tested = run('kotlin-checks', kotlin.java, ['-cp', [checks, library, kotlin.stdlib, gson].join(':'),
-      'one01.structuredtelemetry.StructuredTelemetryWireTests'], { env: { ...process.env, ONE01_STRUCTURED_FIXTURES: fixturePath } });
+      'one01.structuredtelemetry.StructuredTelemetryWireTests'], { env: { ...process.env,
+      ONE01_STRUCTURED_FIXTURES: fixturePath, ONE01_STRUCTURED_NEGATIVE_FIXTURES: negativeFixturePath } });
     const count = /^structured-telemetry Kotlin checks: (\d+)\n$/.exec(tested); assert.ok(count);
     const assertions = Number(count[1]); assert.ok(assertions >= 100 && assertions <= 256);
     const caller = join(work, 'caller.jar');
@@ -129,7 +134,7 @@ export function buildStructuredTelemetryKotlin(reference, sdkRoot, sdkManifest) 
     assert.equal(run('unterminated-line', kotlin.java, args, { input: lines[0], expectedExit: 2 }), '');
     assert.equal(run('total-input-overflow', kotlin.java, args, { input: ('x'.repeat(16384) + '\n').repeat(65), expectedExit: 2 }), 'null\n'.repeat(63));
     const files = ordinaryFiles(artifact).map(path => ({ path: path.slice(artifact.length + 1), bytes: readFileSync(path).length, sha256: fileHash(path) }));
-    assert.equal(files.length, 9, 'Thin module and declared source/assets only; external dependency jars are not packaged');
+    assert.equal(files.length, 10, 'Thin module and declared source/assets only; external dependency jars are not packaged');
     const tarball = join(output, 'one01-structured-telemetry-kotlin-1.0.0.tgz');
     run('local-package', 'tar', ['--format=ustar', '-czf', tarball, '-C', artifact, '.'], { env: { ...process.env, COPYFILE_DISABLE: '1' } });
     const manifest = { schemaVersion: 1, result: 'pass', profile: profile.profile, artifactProfile: profile.artifactProfile,

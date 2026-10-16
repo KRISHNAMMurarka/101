@@ -19,6 +19,23 @@ function fixture() {
   return { controller, scope, abort, now(value: number) { now = value; }, allow(value: boolean) { allowed = value; }, current(value: boolean) { current = value; },
     event(value = event()) { callbacks?.event(value); }, exited() { callbacks?.closed(); }, opened: () => opened, stopped: () => stopped };
 }
+const selectedProfile = 'macos-selected-interface-dns-sd/1' as const;
+function selectedFixture() {
+  assert.ok(api);
+  let now = 1000, current = true, opened = 0, stopped = 0, grantInterface = 14;
+  let callbacks: Parameters<import('./native-discovery.ts').NativeDiscoveryProvider['open']>[1] | undefined;
+  const scope = { ownerId: 'owner', applicationId: 'local-software', sessionId: 'selected-session', serviceType, domain: 'local.' as const,
+    interfaceIndex: 14, profile: selectedProfile, operation: 'observe' as const };
+  const provider: import('./native-discovery.ts').NativeDiscoveryProvider = { profile: selectedProfile, open(_scope, cb) {
+    opened++; callbacks = cb; return { stop() { stopped++; } };
+  } };
+  const controller = api.createNativeDiscoveryController({ scope, now: () => now, provider,
+    authorize(request) { return { scope: { ...request, interfaceIndex: grantInterface }, expiresAt: now + 10000, isCurrent: () => current }; } });
+  const selectedEvent = (overrides: Record<string, unknown> = {}): Record<string, unknown> => ({ version: 1, type: 'resolved', interfaceIndex: 14, name,
+    serviceType, domain: 'local.', target: 'host.example.', port, txtHex: '0970726f66696c653d31', ...overrides });
+  return { controller, scope, selectedEvent, now(value: number) { now = value; }, current(value: boolean) { current = value; }, grantInterface(value: number) { grantInterface = value; },
+    event(value = selectedEvent()) { callbacks?.event(value); }, exited() { callbacks?.closed(); }, opened: () => opened, stopped: () => stopped };
+}
 
 test('real producer-shaped tuples are inert before explicit grant and create issued observed-only receipts', () => {
   const f = fixture(); try {
@@ -145,4 +162,77 @@ for (const mode of ['clock', 'authorize'] as const) test(`stop during initial ${
       cancel = false; assert.ok(controller.start().ok); assert.equal(opened, 1);
     } finally { controller.close(); }
   original.controller.close();
+});
+
+test('explicit selected interface admits a matching grant and records only an observed host-metadata receipt', () => {
+  assert.ok(api);
+  const profile = 'macos-selected-interface-dns-sd/1' as const;
+  const scope = { ownerId: 'owner', applicationId: 'local-software', sessionId: 'selected-session', serviceType, domain: 'local.' as const,
+    interfaceIndex: 14, profile, operation: 'observe' as const };
+  let callbacks: Parameters<import('./native-discovery.ts').NativeDiscoveryProvider['open']>[1] | undefined;
+  let opened = 0;
+  const provider: import('./native-discovery.ts').NativeDiscoveryProvider = { profile, open(_scope, cb) { opened++; callbacks = cb; return { stop() {} }; } };
+  const controller = api.createNativeDiscoveryController({ scope, now: () => 1000, provider,
+    authorize(request) { return { scope: request, expiresAt: 10000, isCurrent: () => true }; } });
+  try {
+    assert.equal(opened, 0);
+    assert.deepEqual(controller.start(), { ok: true, attempt: 1 });
+    callbacks?.event({ version: 1, type: 'resolved', interfaceIndex: 14, name, serviceType, domain: 'local.', target: 'host.example.', port,
+      txtHex: '0970726f66696c653d31' });
+    const row = controller.snapshot().rows[0]; assert.ok(row);
+    assert.equal(row.service.interfaceIndex, 14); assert.equal(row.service.target, 'host.example.');
+    assert.equal(controller.assess(row.handle)?.state, 'observed');
+  } finally { controller.close(); }
+});
+
+test('selected interface enforces exact scope, target grammar and tuple deduplication without creating authority', () => {
+  const f = selectedFixture(); try {
+    assert.ok(f.controller.start().ok); f.event(); const first = f.controller.snapshot().rows[0]; assert.ok(first);
+    assert.equal(first.service.target, 'host.example.'); assert.equal(f.controller.assess(first.handle)?.state, 'observed');
+    f.event(f.selectedEvent({ port: port + 1 })); const refreshed = f.controller.snapshot().rows[0]; assert.ok(refreshed);
+    assert.strictEqual(refreshed.handle, first.handle); assert.equal(refreshed.service.port, port + 1);
+    for (const change of [{ interfaceIndex: 15 }, { target: 'https://host.example/' }, { target: 'host.example' },
+      { target: 'x'.repeat(255) + '.' }, { domain: 'example.' }, { serviceType: '_other._tcp' }]) {
+      f.event(f.selectedEvent(change)); const current = f.controller.snapshot().rows[0]; assert.ok(current);
+      assert.equal(current.service.target, 'host.example.'); assert.equal(current.service.port, port + 1);
+    }
+    f.event({ version: 1, type: 'removed', interfaceIndex: 15, name, serviceType, domain: 'local.' });
+    assert.equal(f.controller.snapshot().rows.length, 1);
+    f.event({ version: 1, type: 'removed', interfaceIndex: 14, name, serviceType, domain: 'local.' });
+    assert.equal(f.controller.snapshot().rows.length, 0); assert.equal(f.controller.assess(first.handle), undefined);
+  } finally { f.controller.close(); }
+});
+
+test('selected interface rejects DNS-SD special selectors and grants for another interface before provider open', () => {
+  assert.ok(api);
+  const selectedScope = { ownerId: 'owner', applicationId: 'local-software', sessionId: 'selected-session', serviceType, domain: 'local.' as const,
+    interfaceIndex: 14, profile: selectedProfile, operation: 'observe' as const };
+  for (const interfaceIndex of [0, 0xfffffffb, 0xfffffffc, 0xfffffffd, 0xfffffffe, 0xffffffff]) {
+    const invalidScope = { ...selectedScope, interfaceIndex };
+    assert.throws(() => api.createNativeDiscoveryController({ scope: invalidScope as unknown as import('./native-discovery.ts').NativeDiscoveryScope,
+      now: () => 1000, authorize: () => undefined }));
+  }
+  const f = selectedFixture(); try {
+    f.grantInterface(15); assert.deepEqual(f.controller.start(), { ok: false, reason: 'denied' });
+    assert.equal(f.opened(), 0); assert.equal(f.controller.snapshot().rawReservations, 0);
+  } finally { f.controller.close(); }
+});
+
+test('selected interface expiry and grant revocation clear observations but retain raw reservation until close', () => {
+  const expired = selectedFixture(); try {
+    assert.ok(expired.controller.start().ok); expired.event(); const row = expired.controller.snapshot().rows[0]; assert.ok(row);
+    expired.now(3000); expired.controller.sweep(); assert.equal(expired.controller.snapshot().rows.length, 0);
+    assert.equal(expired.controller.snapshot().rawReservations, 1); assert.equal(expired.controller.assess(row.handle), undefined);
+  } finally { expired.controller.close(); expired.exited(); }
+
+  const revoked = selectedFixture(); try {
+    assert.ok(revoked.controller.start().ok); revoked.event(); const row = revoked.controller.snapshot().rows[0]; assert.ok(row);
+    revoked.current(false); revoked.controller.sweep(); assert.equal(revoked.controller.snapshot().rows.length, 0);
+    assert.equal(revoked.controller.snapshot().rawReservations, 1); assert.equal(revoked.stopped(), 1);
+    revoked.event(); assert.equal(revoked.controller.snapshot().rows.length, 0);
+    assert.deepEqual(revoked.controller.start(), { ok: false, reason: 'busy' });
+    revoked.exited(); assert.equal(revoked.controller.snapshot().rawReservations, 0);
+    assert.deepEqual(revoked.controller.start(), { ok: false, reason: 'denied' }); assert.equal(revoked.opened(), 1);
+    assert.equal(revoked.controller.assess(row.handle), undefined);
+  } finally { revoked.controller.close(); }
 });

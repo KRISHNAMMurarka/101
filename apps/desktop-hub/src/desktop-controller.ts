@@ -109,7 +109,11 @@ export class DesktopController {
       await this.bridge.select();
       if (generation !== this.generation || !this.admitsIdentity(selected)) { await this.bridge.stop(); return false; }
       return this.bridge.startRoutes();
-    } catch { await this.bridge.stop().catch(() => {}); return false; }
+    } catch (error) {
+      try { await this.bridge.stop(); }
+      catch (stopError) { throw new AggregateError([error, stopError], "Window selection and control shutdown failed. Retry Stop control."); }
+      throw error;
+    }
   }
   private tick(): void {
     const id = this.selectedId;

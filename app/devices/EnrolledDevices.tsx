@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { createEnrolledDeviceInspector } from './enrolled-device';
+import { createEnrolledDeviceInspector, formatEnrolledPrimitiveValue } from './enrolled-device';
 import type { EnrolledDeviceHandle, EnrolledDeviceInspector, EnrolledDeviceSnapshot } from './enrolled-device';
 import { REMEMBERED_DEVICE_LIMITS } from './remembered-devices';
 
@@ -183,6 +183,8 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
       {!!current.resources.length && <ul className="devices-flow-resources">
         {current.resources.map(resource => {
           const table = Object.hasOwn(current.readings, resource.id) ? current.readings[resource.id] : undefined, label = resource.reading?.label ?? resource.semantic;
+          const rawValue = Object.hasOwn(current.values, resource.id) ? current.values[resource.id] : undefined;
+          const valueText = rawValue === undefined ? undefined : resource.primitive ? formatEnrolledPrimitiveValue(resource, rawValue) : JSON.stringify(rawValue);
           return <li key={resource.id}>
           <div className="devices-flow-resource-head"><h4>{label}</h4><span>{resource.previewable ? current.preview === 'receiving' && (Object.hasOwn(current.values, resource.id) || Object.hasOwn(current.readings, resource.id)) ? 'Input received' : 'Not approved or not receiving' : 'Unavailable for preview'}</span></div>
           <p>Reported actions: {resource.permissions.map(value => operations[value] ?? value).join(', ')}{resource.unit ? ` · Unit: ${resource.unit}` : ''}</p>
@@ -192,7 +194,7 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
             disabled={current.preview !== 'unapproved' || !chosen.includes(resource.id) && chosen.length >= 4}
             onChange={event => toggle(resource.id, event.currentTarget.checked)} />Preview {label}</label> :
             <p>This screen previews compatible live numbers, switches, vectors and bounded readings or reading tables. Read-only properties, actions, jobs, media and other formats need a supporting application.</p>}
-          {Object.hasOwn(current.values, resource.id) && <output aria-label={`Preview value ${label}`} className="devices-enrolled-value">{JSON.stringify(current.values[resource.id])}</output>}
+          {valueText !== undefined && <output aria-label={`Preview value ${label}`} className="devices-enrolled-value">{valueText}</output>}
           {table && <table aria-label={`Preview ${label}`} style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', overflowWrap: 'anywhere', textAlign: 'left', marginTop: 'var(--space-sm)' }}>
             <caption>Current {label.toLowerCase()}</caption>
             <thead><tr>{table.columns.map(column => <th key={column.key} scope="col" style={{ border: '1px solid var(--line)', padding: 'var(--space-xs)', verticalAlign: 'top' }}>

@@ -201,7 +201,12 @@ test("disconnect waits out an asynchronous preload and leaves no frame loop behi
   const preloadPending = new Promise<void>((resolve) => { releasePreload = resolve; });
   let signalPreloadStarted!: () => void;
   const preloadStarted = new Promise<void>((resolve) => { signalPreloadStarted = resolve; });
-  const host = new GameHost101({ transport: new MemoryTransport() });
+  const transport = new MemoryTransport();
+  const host = new GameHost101({ transport, adapters: [{
+    id: "held-keyboard", source: "keyboard",
+    start(accept) { accept({ deviceId: "held-keyboard", playerId: "player-1", sequence: 1, timestamp: 1, source: "keyboard", actions: { fire: true } }); },
+    stop() { events.push("adapter-stopped"); },
+  }] });
   const gamePackage = Game101.package({
     manifest: { id: "slow-preload", name: "Slow Preload", version: "1.0.0", engine: "^1", renderer: "2d", players: { min: 1, max: 1 }, inputs: ["touch"], offline: true, procedural: false, controllers: { basic: ["touch"] } },
     input: { game: "slow-preload", actions: { fire: { recommended: ["touch"] } } },
@@ -231,6 +236,10 @@ test("disconnect waits out an asynchronous preload and leaves no frame loop behi
     await new Promise<void>((resolve) => setImmediate(resolve));
     assert.equal(disconnected, false,
       "teardown cannot finish while preload can still resume and create a frame loop");
+    assert.equal(events.includes("adapter-stopped"), true,
+      "local input must retire before arbitrary preload code settles");
+    assert.equal(host.inputBus.action("fire"), false, "held input must clear while preload is still pending");
+    assert.equal(transport.listener, undefined, "remote input must retire while preload is still pending");
 
     releasePreload();
     await Promise.all([launch, disconnect]);

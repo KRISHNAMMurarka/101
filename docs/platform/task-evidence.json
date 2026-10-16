@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 262,
+  "revision": 285,
   "baseline": "e1d516b",
   "dependencyPolicy": "Workstream prerequisites are planning minima, not an exhaustive DAG; each bounded subsystem plan adds exact dependencies before implementation. Checkboxes are owned by MASTER-CHECKLIST.md.",
   "records": [
@@ -16685,6 +16685,955 @@
       "reproduction": "Result-delegating parent spawn observer plus bounded read-only macOS unified-log query for exact owned native PIDs and interval.",
       "scope": "DIAGNOSTIC ONLY. Five selected former failures pass; zero launch-log entries do not explain earlier timeouts or establish reliability. Original2500ms bounds unchanged; cause UNKNOWN, native reliability UNVERIFIED, acceptance false. Historical failures retained; no source fix/OS change/retry/prewarm.",
       "failure": null
+    },
+    {
+      "id": "slashstorm-pause-old-2026-10-16",
+      "revision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "G06"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-slashstorm-pause.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "Old keyboard and sword-one pause paths advance elapsed time; current two-role coverage is separate.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Required Pause is not consumed."
+    },
+    {
+      "id": "slashstorm-pause-recovery-2026-10-16",
+      "revision": "a29bef3b0aa8efc899b4a9007c5b4e9c07134065",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "G06"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-slashstorm-pause.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "40 native browser checks cover keyboard/UI/both roles, frozen native canvas, natural result and restart. Exact scoped evidence only.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "gravity-launch-old-2026-10-16",
+      "revision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "U05",
+        "U10",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-game-launch-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "Both built engines reproduce raw assigned ID, internal ready wording and actual WASM preload rejection without recovery.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Unhandled preload rejection, no Retry and player-facing internal ID."
+    },
+    {
+      "id": "game-preload-input-old-2026-10-16",
+      "revision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "U10",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-game-launch-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "Genuine old-host regression while arbitrary preload is held; unrelated earlier browser fixture setup failure remains separate.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Local input adapter remains attached until pending preload settles."
+    },
+    {
+      "id": "game-launch-recovery-2026-10-16",
+      "revision": "a29bef3b0aa8efc899b4a9007c5b4e9c07134065",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "U05",
+        "U10",
+        "Q05"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-game-launch-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "29 related units (unchanged engine/input test inputs) and50 native browser checks; real failure/Retry/drop, actual-source held preload/unmount, input/session retirement, fresh mount and A\u2192held-start B\u2192A identity. Shared recovery propagated to ten callers; full rows remain open.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-policy-capture-diagnostic-2026-10-16",
+      "revision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-policy-capture.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "DIAGNOSTIC ONLY. Verified own target-only sampler exits0 and records101 AppleSystemPolicy execution-validation stacks. Captured launch met original2500ms bound; historical cause unproven and no fix. Independent normal-user4test16host cleanup retained.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-policy-helper-final-response-2026-10-16",
+      "revision": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-policy-capture.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact built Chromium/WebKit and diagnostic boundaries in linked receipts",
+      "reproduction": "Use the exact source, QA commands and original/fixed raw evidence in the linked immutable custody ref; no timeout/retry/prewarm or OS/security changes.",
+      "scope": "Separate diagnostic helper post-capture IPC failure; completed kernel sample and independent normal-user raw test/cleanup evidence survive. No product failure causality inferred.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "RuntimeError: Missing or oversized launcher response after capture completed."
+    },
+    {
+      "id": "optional-transports-no-caller-decision-2026-10-16",
+      "revision": "5df4eead76f8b06d067f3afe8646da93b747a021",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "T13"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-optional-transports.json"
+      ],
+      "environment": "Read-only exact-source decision review; Node24.14.0/macOS26.5.2 repository; official W3C/Apple/Android capability references, not product runtime support.",
+      "reproduction": "Review pinned caller/security/measurement evidence and official references in immutable report; no tests or benchmarks run.",
+      "scope": "Scoped no-caller decision only: reject WebTransport for current release and defer native QUIC. Whole T13 remains open pending a justified caller and actual comparisons; no support promise, code or service added.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "game-recovery-replacement-gates-native-failure-2026-10-16",
+      "revision": "0cbdaacfeac5d2f8839dd3ff2be086adb09debec",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-game-recovery-gates.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; original native limits, no caller preloads; exact frozen candidate.",
+      "reproduction": "Run the eight recorded exact-candidate gates once; inspect retained raw/unit.log and independent phase classification in immutable custody.",
+      "scope": "3413/3415 unit checks pass;2 native failures;0 skipped/cancelled. Seven other gates pass including37 fresh rendered checks. Candidate remains unintegrated; native reliability unresolved.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Direct IR child first hello deadline; nested controlled-loader child2500ms zero-stderr/startup deadline despite correct bootstrap environment."
+    },
+    {
+      "id": "conventional-control-repairs-scoped-2026-10-16",
+      "revision": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "G06",
+        "U05",
+        "U07"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-conventional-control-repairs.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55/WebKit26.5; exact source/build/raw custody in linked receipt.",
+      "reproduction": "Use linked immutable source, harness and raw receipts with original runtime bounds, actual native browser input and no game/clock overrides.",
+      "scope": "Echo Mark, Beat swing and narrow Echo geometry repairs:29 focused units,14 styles,54 built-browser checks pass; six old semantic failures and actual old occlusion retained. No whole-task/physical acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "player-task-labels-device-preview-scoped-2026-10-16",
+      "revision": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "U02",
+        "U05",
+        "U07"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-task-labels.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55/WebKit26.5; exact source/build/raw custody in linked receipt.",
+      "reproduction": "Use linked immutable source, harness and raw receipts with original runtime bounds, actual native browser input and no game/clock overrides.",
+      "scope": "24 actual player-label checks and two separately authenticated primitive preview browser runs pass.20 Device units were observed but raw output was not separately retained. Old Device receipt byte-custody limitation explicit; no whole-surface acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "sharing-label-dependent-chromium-watch-2026-10-16",
+      "revision": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "U04",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-task-labels.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55/WebKit26.5; exact source/build/raw custody in linked receipt.",
+      "reproduction": "Use linked immutable source, harness and raw receipts with original runtime bounds, actual native browser input and no game/clock overrides.",
+      "scope": "26 Chromium connected-sharing checks and30 observer-sharing checks across both engines pass, including native bilateral enrollment, grant/transfer/revoke/cancel/expiry/cleanup. No general lifecycle acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "sharing-label-dependent-webkit-transfer-2026-10-16",
+      "revision": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "U04",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-task-labels.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55/WebKit26.5; exact source/build/raw custody in linked receipt.",
+      "reproduction": "Use linked immutable source, harness and raw receipts with original runtime bounds, actual native browser input and no game/clock overrides.",
+      "scope": "21 checks pass before original WebKit exclusive-transfer follow-up cannot press. All four native peers close; no native errors/foreign requests; cause unproven.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Participant 2 Press disabled after exclusive transfer in cancel-and-scoped-revoke phase."
+    },
+    {
+      "id": "sharing-webkit-observation-precondition-2026-10-16",
+      "revision": "e7e528329b458fcc91a0bba6186a5673bdfb8162",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "U04",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-task-labels.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55/WebKit26.5; exact source/build/raw custody in linked receipt.",
+      "reproduction": "Use linked immutable source, harness and raw receipts with original runtime bounds, actual native browser input and no game/clock overrides.",
+      "scope": "Read-only observation follow-up passes11 checks, then stops before enrollment with0 issued peers. This does not reproduce or explain the earlier transfer failure.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Connect participants native scroll-into-view did not complete inside original5000ms action bound."
+    },
+    {
+      "id": "catalog-required-input-readiness-scoped-2026-10-16",
+      "revision": "8eac20c1042e86f2707d73c9ac68b62acfaeebae",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "U05",
+        "U10"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-catalog-readiness.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact source hashes and actual prior production server render in immutable custody.",
+      "reproduction": "Original built server render and syntax-only old card-helper extraction fail; run node --test app/lib/catalog-readiness.test.ts app/lib/catalog.test.ts on the corrected source. Fresh fixed built rendering is a separate exact-candidate gate.",
+      "scope": "13 focused units pass including4newrequired-group/unmeasured regressions. Source review approves predicate/wiring; no fresh fixed-browser or physical source-profile acceptance in this scoped receipt.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "structured-telemetry-common-negative-artifacts-2026-10-16",
+      "revision": "28a4273f5134d9470459f3431de39590a1302ada",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "Q02",
+        "Q03",
+        "E12"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-structured-telemetry-negative.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; installed offline Swift6.3.3, Kotlin2.1.21/JDK21.0.12/Gson2.11.0, AppleClang21/Jansson2.15.1.",
+      "reproduction": "Use pinned source28a4273 and selected historical offline SDK pack; full3builder argv, operation stdout/stderr, manifests and tarballs read back in immutable custody. Prior direct-probe missing bytes are explicitly excluded.",
+      "scope": "Actual pinned immutable Swift8tests/Kotlin177assertions/C8groups and5reciprocalvalues each pass. Shared rawduplicate input records per-profile accept/accept/reject; positives and decoders unchanged. No whole-row acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "codec-direct-probe-custody-loss-2026-10-16",
+      "revision": "28a4273f5134d9470459f3431de39590a1302ada",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q13"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-structured-telemetry-negative.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; installed offline Swift6.3.3, Kotlin2.1.21/JDK21.0.12/Gson2.11.0, AppleClang21/Jansson2.15.1.",
+      "reproduction": "Use pinned source28a4273 and selected historical offline SDK pack; full3builder argv, operation stdout/stderr, manifests and tarballs read back in immutable custody. Prior direct-probe missing bytes are explicitly excluded.",
+      "scope": "Original direct-probe fullstreams, exactharnesssource andargv were deleted prematurely. Only verdictlines/summaries/digests survive; later distinct fullartifact transcripts are preserved and do not recover oldbytes.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Original direct-probe exact sources/argv/full raw logs unavailable after premature owned scratch deletion."
+    },
+    {
+      "id": "conventional-desktop-game-journeys-scoped-2026-10-16",
+      "revision": "00913d314295b7271cc7a5efd64de9a270123370",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "G06",
+        "U10"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-conventional-game-journeys.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55 and Playwright WebKit26.5 on built server64df7add.",
+      "reproduction": "Use exact initial canonical harness and distinct guided recipe retained with native reports, screenshots, bounds and source/build pins in immutable custody. No game/clock override or unchanged retry.",
+      "scope": "Twenty game/engine pairs each have a passing bounded lifecycle case across24distinct attempts/21passes. Nineteen pairs combine observed declared-input effect and lifecycle in one passing attempt. All controls and post-restart input remain incomplete.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "conventional-orbital-baseline-observation-limits-2026-10-16",
+      "revision": "00913d314295b7271cc7a5efd64de9a270123370",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "G06"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-conventional-game-journeys.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55 and Playwright WebKit26.5 on built server64df7add.",
+      "reproduction": "Use exact initial canonical harness and distinct guided recipe retained with native reports, screenshots, bounds and source/build pins in immutable custody. No game/clock override or unchanged retry.",
+      "scope": "Both original Orbital attempts are retained: still legitimately playing with hull32 at unchanged170s result observation bound. Distinct later guided input scenarios pass; no historical erasure or product-cause claim.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Original Chromium and WebKit Orbital result waits reach170s while the game remains active."
+    },
+    {
+      "id": "conventional-body-guided-inconclusive-focus-2026-10-16",
+      "revision": "00913d314295b7271cc7a5efd64de9a270123370",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "G06"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-conventional-game-journeys.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; production Chromium149.0.7827.55 and Playwright WebKit26.5 on built server64df7add.",
+      "reproduction": "Use exact initial canonical harness and distinct guided recipe retained with native reports, screenshots, bounds and source/build pins in immutable custody. No game/clock override or unchanged retry.",
+      "scope": "Chromium guided Body observes keyboard LEFT effect, then local Dpad judgment timeout and later result focus failure. Missing phase telemetry prevents attributing product failure; WebKit guided Body passes.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Local Dpad judgment timed out; later result focus snapshot shows canvas focus; cause unproven."
+    },
+    {
+      "id": "player-controls-record-backreference-rejection-2026-10-16",
+      "revision": "636a51a293a597dd5588425b8613c02a279faf9c",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q13"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-controls-candidate-rejection.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact candidate636a51a/tree6e9959; real records audit and independently reviewed ledger.",
+      "reproduction": "Run node tools/audit-platform-records.mjs on the retained rejected candidate: both Q05 and Q13 omit the existing native failure reference.",
+      "scope": "Canonical reference failure only. In-progress unit gate deliberately interrupted after confirmed audit failure; no full-unit or native qualification claimed. Exact partial transcript retained; all five owned children and coordinator joined/absent before scratch removal.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "The preserved native replacement-gate failure record was absent from the Q05 and Q13 per-task record arrays. Independent review and the actual records audit confirmed both missing backreferences."
+    },
+    {
+      "id": "player-controls-current-gates-native-metadata-failure-2026-10-16",
+      "revision": "08a200adc248d7ea50caeb0a1e2e0a9328a9ff76",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-player-controls-gates.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact62-path candidate08a200/treea278729.",
+      "reproduction": "Run the required exact candidate gates once; complete raw unit/build/rendered and initial lint failure plus diagnosis-driven lint pass retained in immutable custody.",
+      "scope": "3426tests3422pass4fail0skip/cancel; all four fail metadata acquisition prerequisite before intended result-context assertions. Seven effective gates pass; unit stays red. Original failures, no-source-change boundaries and independent triage retained.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Four native SSH metadata work.ok prerequisites fail around2525\u20132531ms; actual reason/startup phase/root cause unproven."
+    },
+    {
+      "id": "authenticated-receiver-unsupported-direction-2026-10-16",
+      "revision": "5b3a6125265c31a3d482c457d06d129be5766568",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S03"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-authenticated-direction.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; real WebCrypto P-256 and enrolled peers over faithful queued transport ports.",
+      "reproduction": "Apply the exact reviewed coverage-only test and run retained anchored one-test argv against actual source; exact raw streams and selected source pins retained.",
+      "scope": "Canonical invoke-only mixed descriptor is genuinely advertised and refused before bind/registration/authorization; same enrolled producer separately approved Position applies once. Existing production guard unchanged. No native/browser DTLS or whole grant-tuple acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "private-audio-owner-decision-replay-2026-10-16",
+      "revision": "0ae65ab9f74d00990b7085016372afffe6d06b3a",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S09"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-audio-owner-replay.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; public application-audio client + actual SDK runtime over existing cooperative software graph.",
+      "reproduction": "Apply exact reviewed appended source/output replay cases and run retained anchored2-test argv; raw isolated/applied streams and complete unique harness bytes retained in immutable custody.",
+      "scope": "Both previously valid source/output owner decisions fail into replacement request/registration while incumbent stays active, zero new graph allocations; fresh consent recovers actual volume consumer. Existing guard unchanged; no native audio or full S09 acceptance. Original closure-equivalence overclaim corrected with old report retained.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "workspace-member-recovery-isolation-2026-10-16",
+      "revision": "c0f5bf674bdfd2e5854df777122de53ee56d9026",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S06"
+      ],
+      "levels": [
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-workspace-member-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; actual public workspace administration/runtime over software boolean resources and intrinsic AbortSignals.",
+      "reproduction": "Apply exact reviewed typed append and run retained anchored1-test argv; isolated originalMJS execution and applied typed canonical execution are separately preserved.",
+      "scope": "Remove/re-add A, retired handles/context/consent, two denied cross-resource routes, fresh policy + two owner approvals, stale-owner abort and fresh-owner revoke all preserve actual B delivery. No missing connected-sharing replacement caller or whole S06 acceptance inferred.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-selected-interface-discovery-2026-10-16",
+      "revision": "410b7092df9099bcf8472e065eb6c35555430612",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "D04"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-selected-discovery.json"
+      ],
+      "environment": "Node24.14.0/TypeScript5.9.3/macOS26.5.2 arm64; installed Apple DNS-SD/Clang21; explicit operator-selected en0/index14.",
+      "reproduction": "Run retained source-mode QA with explicit index14 and exclusively owned output root; exact old-red14/controller-green17, strict types, syntax,10fake cases, both actual profile streams/native PID+argv+exit and source pins retained.",
+      "scope": "LocalOnly + selected-positive-interface profile with observed-only metadata, fresh exact scope grants, quiet expiry, withdrawal, cancel/rescan, revocation and crash cleanup; each5native children joined/3browser opens-closes. Same-machine only; no remote/on-wire/native overload/all-provider or wholeD04 acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-discovery-candidate-lint-failure-2026-10-16",
+      "revision": "f6f3f3498529f48de432a7dfa84d2a04b842b814",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-discovery-gates.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact78-path frozen candidate.",
+      "reproduction": "Run each eight-gate command once on frozen c9c2f85 tree; raw logs and source read back from immutable custody.",
+      "scope": "3434/3434 unit and37/37 fresh rendered pass, records/audits/types/build pass; lint one prefer-const error. Later narrow const/import correction has scoped lint+one regression pass, not same-tree full acceptance. Historical native reliability stays unresolved.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Required lint gate failed; ordinary integration prohibited until a new exact candidate passes."
+    },
+    {
+      "id": "bodydodge-distinct-observed-keyboard-restart-2026-10-16",
+      "revision": "fc9e6cb7d6be5c04f72226aad7278c63b99f9aec",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "G06",
+        "U10",
+        "Q05"
+      ],
+      "levels": [
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-body-phase.json"
+      ],
+      "environment": "Chromium native keyboard/DOM on pinned fresh f6 build; macOS26.5.2 arm64.",
+      "reproduction": "Run exact retained phase-diagnostic once with expected fresh server SHA; no game/clock/RTC overrides; passive bounded focus/key/HUD events.",
+      "scope": "Actual keyboard and on-page Left judgments, natural result focus, Space restart and new-run RIGHT judgment; all owned browser/context/server joins. Earlier inconclusive run retained; whole G06 remains open.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "c-watch-strict-copied-native-consumer-2026-10-16",
+      "revision": "d2699950ac72dd04e594c47b384c91f3107dd329",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "E12",
+        "Q02"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-c-watch-report.json"
+      ],
+      "environment": "AppleClang21.0.0/macOS26.5.2 arm64; C11Wall/Wextra/Werror/pedantic; copied standalone3-file package and std-only clean caller.",
+      "reproduction": "Apply exact reviewed8-path patch; run retained copied-package harness once with fixture-generated42commands, exactsource/packagehash checks and bounded joined native children.",
+      "scope": "8golden encode/decode pairs accepted with exact bytes/meanings,26negatives reject including3strictreserved-bit cases; allprior fixture semantics/verdicts preserved. No full modifieddriver, SDK rebuild, OS/physical/runtime lifecycle or whole E12/Q02 claim.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "connected-participant-recovery-2026-10-16",
+      "revision": "869c8ec45a2a4f9904a28b3798ca3aaf13abd8b5",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S06",
+        "U04",
+        "U10"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-connected-participant-recovery.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; real WebCrypto/runtime and native Chromium/WebKit RTC/code exchange.",
+      "reproduction": "Apply corrected six-file53983ad patch; actual26-case task/ownership suite + scopedlint/types; fresh build and retained browser harness with one diagnosed predicate correction.",
+      "scope": "Remove/review/retire onlyA, join work, fresh invitation/key/epoch/bilateral/source/output approvals, preserve B.22corrected browser checks;2original harness failures and actual old-draft callout race retained. WholeS06/account/lost-device/AT/cross-network remain open.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "versioned-keyv-author-text-2026-10-16",
+      "revision": "191ad59946f671254d6ffaec0ae7b6f8297db54f",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "K09",
+        "K10",
+        "K12"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-license-author-source.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; unchanged installed lock/Keyv4.5.4 distribution, ordinary reviewed repository body/proof, offline collector.",
+      "reproduction": "Apply corrected nine-file5f356f patch; actual65case suite/scopedlint, regenerate JS inventory once and audit actual JavaScript+unchangedRust inventories.",
+      "scope": "Keyv1new1108byte fulllicense, separate author origin/proof/source+artifact hashes and65pass negative/copyclosure cases. Old missing-origin/absent-target draft failures retained.1083otherpackage rows/388oldtexts unchanged;116absent59no-text remain. No legal or wholeK09 acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "sharing-codec-license-failed-gates-2026-10-16",
+      "revision": "e5d0c855117920eb8362312de231199160899abc",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-gate-compatibility.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; exact99f1ba46 candidate/tree cfaa3a30.",
+      "reproduction": "One frozen eight-gate run; complete commands, raw output, source bytes and cleanup retained in immutable evidence.",
+      "scope": "Seven gates pass;3488 unit tests/3484pass/4fail (one stale F1 runtime line, legacy collector scope mismatch, two known nonregular-input refusal message assertions). No native startup miss this run, historical reliability remains unresolved. No ordinary commit on red.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Four exact unit failures retained; corrected focused selectors do not substitute for pending exact full gates."
+    },
+    {
+      "id": "gate-compatibility-corrections-2026-10-16",
+      "revision": "d097ca071801aa4db132fc267de896f67b424be4",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13",
+        "K09",
+        "K10",
+        "K12"
+      ],
+      "levels": [
+        "implementation",
+        "contract"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-gate-compatibility.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; unchanged installed packages/lock.",
+      "reproduction": "Exact reviewed three-file delta;1F1+32packaging+2author/legacy tests,scopedlint/types and in-memory actual inventory byte comparison.",
+      "scope": "Restore exact legacy no-author metadata, accept only two complete known nonregular-input errors while keeping withdrawal assertions, derive unique runtime source line without changing clock/trace semantics. Actual inventory SHA remains fbe52182. Full candidate/native/whole task qualification pending.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-filesystem-root-replay-2026-10-16",
+      "revision": "96249ab29c6b593968818333511ff1df042e7b8c",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S12",
+        "S09"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-entrypoints.json"
+      ],
+      "environment": "Node24.14.0/macOS26.5.2 arm64; two actual private filesystem adapters and controlled existing host-clock contract.",
+      "reproduction": "Exact reviewed append to filesystem-resources.test.ts;17 actual tests and scopedlint pass; fulltypes pass in compatibility receipt.",
+      "scope": "Static15-family native map plus actual cached owner-decision replay refusal across fresh owned roots, zero denied native entry, fresh approval effect and joined removal. No production guard change, no whole native IPC or S12/S09 acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "persistent-browser-identity-store-2026-10-16",
+      "revision": "3f6145f418c687f7c4fc8c1c833c0e4c156d047e",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S02"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-browser-identity-store.json"
+      ],
+      "environment": "Real Chromium149.0.7827.55/WebKit26.5 on macOS26.5.2arm64; installed seven-package SDK source6c39ccec/tree1e1dfda, Node24.14.0.",
+      "reproduction": "Recover seven149162c SDK tarballs, offline install/verify411files; exact reviewed fixture/runner with retained commands. First43checks in each engine pass; genuine IndexedDB/WebCrypto and3native RTC caller pairs per engine.",
+      "scope": "Removal, external different-key rotation/private-reference loss/deletion, captured signer/scope/actual receiver effect release, explicit fresh key/invitation/bilateral/source+owner consent, corrupted copied-record refusal and independent-store positive. No full same-origin authority-clone detection, application UI, physical key/OS/account or wholeS02 proof.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-invitation-composition-2026-10-16",
+      "revision": "17bcc096da3c58120a38ca670249bbfa9dec68f2",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "D02",
+        "D09"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-invitation-composition.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Actual same-Mac selected-interface observation, explicitly saved mapping/key, inert manual/link/QR review, expected-keyWSS and separately granted RSS effect. Retained draft currentness race oldRED/corrected4/4 plus applied5selected; no wrong-key native-ingress or whole task proof.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-relay-key-negative-2026-10-16",
+      "revision": "166838823cca7ae61d6f067a85fb534895a38a4b",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "S04"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-channel-trust-key.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Actual valid mTLS/certificate pin cannot replace gateway endpoint key; both candidates refused/joined, incumbent traffic unaffected and fresh correct-key grant delivers. Static11family map and historical browser failures retained; no wholeS04.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "spell-six-actions-2026-10-16",
+      "revision": "08050bbc0fc79a8b1f7c72af18a2134304211cf5",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "G06"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-spell-actions.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Six actions through actual keyboard and declared local native-Space buttons in each engine;24effects on pinned copied build, original2navigation-prerequisite failures retained. No aim/vector/lifecycle/fullG06 qualification.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-selection-refusal-recovery-2026-10-16",
+      "revision": "43ed51f00b888d2a36a88380438417c9c95f2504",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "U10",
+        "N14",
+        "Q05"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-selection-error.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Two actual old missing-rejection regressions;15related tests+lint pass after minimal refusal/cleanup-cause propagation. Native invoke is cooperative; no actualIPC/OS/native startup or whole row proof.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "native-worker-phase-2026-10-16",
+      "revision": "0caae822ed558337cc3eedb56bbe8431add11036",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-native-worker-phase.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Actual worker locked-Busy and parked-outside token semantics; corrected28native source cases via1wrapper pass, cfg(test)-only hooks and preserved initial teardown findings. No historical lock owner/process startup proof.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
+    },
+    {
+      "id": "corrected-local-wave-failed-gates-2026-10-16",
+      "revision": "c2e803596bba85112c6c17eed96c980be92e8a9f",
+      "result": "fail",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-corrected-local-wave-gates.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Frozen114path full8reject:3489units/3486pass/3fail, sevenothergatespass. Exact native setup failures and limitations retained; no ordinary commit.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": "Two native broker setup/held-close prerequisites and first Rust native selection Busy failed; original causes/limits retained."
+    },
+    {
+      "id": "mqtt-startup-failure-diagnostic-2026-10-16",
+      "revision": "097ca1d708b96c1670a086cb58dd8f75cff901b9",
+      "result": "pass",
+      "historical": false,
+      "tasks": [
+        "Q05",
+        "Q13"
+      ],
+      "levels": [
+        "implementation",
+        "contract",
+        "runtime"
+      ],
+      "paths": [
+        "docs/platform/receipts/2026-10-16-corrected-local-wave-gates.json"
+      ],
+      "environment": "macOS26.5.2arm64/Node24.14.0; exact toolchain, source, native/browser and cooperative boundaries retained in scoped receipt.",
+      "reproduction": "Retained exact source/draft, argv, raw results, immutable custody and cleanup in linked receipt.",
+      "scope": "Diagnostic-only test delta preserves earliest rejection including undefined before held native child-close exists. Exact extracted old5s missing-cause failure and corrected controlled rejection propagation pass; no new native broker probe/guard acceptance.",
+      "equipment": [],
+      "supportRows": [],
+      "failure": null
     }
   ],
   "tasks": [
@@ -17227,7 +18176,8 @@
     {
       "id": "T13",
       "records": [
-        "pending-T13"
+        "pending-T13",
+        "optional-transports-no-caller-decision-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17271,7 +18221,8 @@
         "u10-invitation-copy-expiry-2026-10-06",
         "d02-s06-invitation-admission-partial-2026-10-08",
         "d02-local-software-partial-2026-10-08",
-        "successor-repairs-2026-10-08"
+        "successor-repairs-2026-10-08",
+        "native-invitation-composition-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17304,7 +18255,8 @@
       "id": "D04",
       "records": [
         "pending-D04",
-        "d04-native-local-only-partial-2026-10-06"
+        "d04-native-local-only-partial-2026-10-06",
+        "native-selected-interface-discovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17383,7 +18335,8 @@
       "records": [
         "pending-D09",
         "pairing-extension-local-2026-10-06",
-        "pairing-recovery-2026-10-06"
+        "pairing-recovery-2026-10-06",
+        "native-invitation-composition-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17413,7 +18366,8 @@
       "records": [
         "pending-S02",
         "endpoint-auth-core-2026-10-02",
-        "endpoint-enrollment-ui-2026-10-02"
+        "endpoint-enrollment-ui-2026-10-02",
+        "persistent-browser-identity-store-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17429,7 +18383,8 @@
       "records": [
         "pending-S03",
         "endpoint-auth-core-2026-10-02",
-        "endpoint-enrollment-ui-2026-10-02"
+        "endpoint-enrollment-ui-2026-10-02",
+        "authenticated-receiver-unsupported-direction-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17445,7 +18400,8 @@
       "records": [
         "pending-S04",
         "endpoint-auth-core-2026-10-02",
-        "endpoint-enrollment-ui-2026-10-02"
+        "endpoint-enrollment-ui-2026-10-02",
+        "native-relay-key-negative-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17475,7 +18431,9 @@
       "id": "S06",
       "records": [
         "pending-S06",
-        "d02-s06-invitation-admission-partial-2026-10-08"
+        "d02-s06-invitation-admission-partial-2026-10-08",
+        "workspace-member-recovery-isolation-2026-10-16",
+        "connected-participant-recovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17522,7 +18480,9 @@
       "records": [
         "pending-S09",
         "resource-binding-2026-10-02",
-        "s09-captured-wss-wire-replay-installed-2026-10-06"
+        "s09-captured-wss-wire-replay-installed-2026-10-06",
+        "private-audio-owner-decision-replay-2026-10-16",
+        "native-filesystem-root-replay-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17565,7 +18525,8 @@
     {
       "id": "S12",
       "records": [
-        "pending-S12"
+        "pending-S12",
+        "native-filesystem-root-replay-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -17922,7 +18883,8 @@
         "native-bootstrap-refusal-2026-10-15",
         "input-native-media-hardware-exact-local-gates-2026-10-15",
         "native-startup-pid-old-2026-10-15",
-        "native-startup-pid-retention-2026-10-15"
+        "native-startup-pid-retention-2026-10-15",
+        "native-selection-refusal-recovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19354,7 +20316,9 @@
         "structured-telemetry-c-built-partial-2026-10-07",
         "bindings-device-backup-required-gates-failed-2026-10-07",
         "e12-selected-connectors-native-runtime-2026-10-08",
-        "native-resource-languages-2026-10-08"
+        "native-resource-languages-2026-10-08",
+        "structured-telemetry-common-negative-artifacts-2026-10-16",
+        "c-watch-strict-copied-native-consumer-2026-10-16"
       ],
       "dependencies": [
         "M01",
@@ -19433,7 +20397,8 @@
         "local-player-combined-software-build-2026-10-07",
         "local-gamepad-player-built-source-partial-2026-10-08",
         "remembered-native-backup-2026-10-10",
-        "player-route-reference-correction-2026-10-12"
+        "player-route-reference-correction-2026-10-12",
+        "player-task-labels-device-preview-scoped-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19501,7 +20466,11 @@
         "settings-hid-sharing-serial-exact-local-gates-2026-10-07",
         "watch-sharing-built-source-partial-2026-10-07",
         "watch-sharing-native-2026-10-11",
-        "player-route-reference-correction-2026-10-12"
+        "player-route-reference-correction-2026-10-12",
+        "sharing-label-dependent-chromium-watch-2026-10-16",
+        "sharing-label-dependent-webkit-transfer-2026-10-16",
+        "sharing-webkit-observation-precondition-2026-10-16",
+        "connected-participant-recovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19521,7 +20490,12 @@
         "u05-controller-player-chrome-built-partial-2026-10-07",
         "recording-controller-source-commit-2026-10-07",
         "settings-scratch-batch-2026-10-10",
-        "device-player-copy-2026-10-13"
+        "device-player-copy-2026-10-13",
+        "gravity-launch-old-2026-10-16",
+        "game-launch-recovery-2026-10-16",
+        "conventional-control-repairs-scoped-2026-10-16",
+        "player-task-labels-device-preview-scoped-2026-10-16",
+        "catalog-required-input-readiness-scoped-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19551,7 +20525,9 @@
     {
       "id": "U07",
       "records": [
-        "pending-U07"
+        "pending-U07",
+        "conventional-control-repairs-scoped-2026-10-16",
+        "player-task-labels-device-preview-scoped-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19651,7 +20627,15 @@
         "controller-motion-lifecycle-old-2026-10-15",
         "controller-motion-lifecycle-recovery-2026-10-15",
         "controller-signaled-reconnect-old-2026-10-16",
-        "controller-signaled-reconnect-recovery-2026-10-16"
+        "controller-signaled-reconnect-recovery-2026-10-16",
+        "gravity-launch-old-2026-10-16",
+        "game-preload-input-old-2026-10-16",
+        "game-launch-recovery-2026-10-16",
+        "catalog-required-input-readiness-scoped-2026-10-16",
+        "conventional-desktop-game-journeys-scoped-2026-10-16",
+        "bodydodge-distinct-observed-keyboard-restart-2026-10-16",
+        "connected-participant-recovery-2026-10-16",
+        "native-selection-refusal-recovery-2026-10-16"
       ],
       "dependencies": [
         "C01",
@@ -19890,7 +20874,9 @@
       "id": "Q02",
       "records": [
         "pending-Q02",
-        "q02-shared-watch-software-contracts-2026-10-06"
+        "q02-shared-watch-software-contracts-2026-10-06",
+        "structured-telemetry-common-negative-artifacts-2026-10-16",
+        "c-watch-strict-copied-native-consumer-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -19903,7 +20889,8 @@
         "pending-Q03",
         "tmp102-hwmon-2026-10-09",
         "mcp3008-iio-ch0-2026-10-09",
-        "tmp102-cadence-2026-10-10"
+        "tmp102-cadence-2026-10-10",
+        "structured-telemetry-common-negative-artifacts-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -19986,7 +20973,25 @@
         "controller-motion-lifecycle-recovery-2026-10-15",
         "controller-signaled-reconnect-old-2026-10-16",
         "controller-signaled-reconnect-recovery-2026-10-16",
-        "native-launch-log-diagnostic-2026-10-16"
+        "native-launch-log-diagnostic-2026-10-16",
+        "gravity-launch-old-2026-10-16",
+        "game-preload-input-old-2026-10-16",
+        "game-launch-recovery-2026-10-16",
+        "native-policy-capture-diagnostic-2026-10-16",
+        "native-policy-helper-final-response-2026-10-16",
+        "sharing-label-dependent-chromium-watch-2026-10-16",
+        "sharing-label-dependent-webkit-transfer-2026-10-16",
+        "sharing-webkit-observation-precondition-2026-10-16",
+        "game-recovery-replacement-gates-native-failure-2026-10-16",
+        "player-controls-current-gates-native-metadata-failure-2026-10-16",
+        "native-discovery-candidate-lint-failure-2026-10-16",
+        "bodydodge-distinct-observed-keyboard-restart-2026-10-16",
+        "sharing-codec-license-failed-gates-2026-10-16",
+        "gate-compatibility-corrections-2026-10-16",
+        "native-selection-refusal-recovery-2026-10-16",
+        "native-worker-phase-2026-10-16",
+        "corrected-local-wave-failed-gates-2026-10-16",
+        "mqtt-startup-failure-diagnostic-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -20157,7 +21162,19 @@
         "native-broker-direct-posix-fixture-2026-10-15",
         "native-broker-input-local-integration-2026-10-15",
         "pointer-copy-containing-native-failure-2026-10-15",
-        "native-launch-log-diagnostic-2026-10-16"
+        "native-launch-log-diagnostic-2026-10-16",
+        "native-policy-capture-diagnostic-2026-10-16",
+        "native-policy-helper-final-response-2026-10-16",
+        "codec-direct-probe-custody-loss-2026-10-16",
+        "game-recovery-replacement-gates-native-failure-2026-10-16",
+        "player-controls-record-backreference-rejection-2026-10-16",
+        "player-controls-current-gates-native-metadata-failure-2026-10-16",
+        "native-discovery-candidate-lint-failure-2026-10-16",
+        "sharing-codec-license-failed-gates-2026-10-16",
+        "gate-compatibility-corrections-2026-10-16",
+        "native-worker-phase-2026-10-16",
+        "corrected-local-wave-failed-gates-2026-10-16",
+        "mqtt-startup-failure-diagnostic-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -20292,7 +21309,15 @@
     {
       "id": "G06",
       "records": [
-        "pending-G06"
+        "pending-G06",
+        "slashstorm-pause-old-2026-10-16",
+        "slashstorm-pause-recovery-2026-10-16",
+        "conventional-control-repairs-scoped-2026-10-16",
+        "conventional-desktop-game-journeys-scoped-2026-10-16",
+        "conventional-orbital-baseline-observation-limits-2026-10-16",
+        "conventional-body-guided-inconclusive-focus-2026-10-16",
+        "bodydodge-distinct-observed-keyboard-restart-2026-10-16",
+        "spell-six-actions-2026-10-16"
       ],
       "dependencies": [
         "T01"
@@ -20557,7 +21582,9 @@
         "unlicense-local-text-2026-10-12",
         "unlicense-omission-old-2026-10-12",
         "bundled-legal-local-text-2026-10-12",
-        "bundled-legal-omission-old-2026-10-12"
+        "bundled-legal-omission-old-2026-10-12",
+        "versioned-keyv-author-text-2026-10-16",
+        "gate-compatibility-corrections-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -20580,7 +21607,9 @@
         "unlicense-local-text-2026-10-12",
         "unlicense-omission-old-2026-10-12",
         "bundled-legal-local-text-2026-10-12",
-        "bundled-legal-omission-old-2026-10-12"
+        "bundled-legal-omission-old-2026-10-12",
+        "versioned-keyv-author-text-2026-10-16",
+        "gate-compatibility-corrections-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [
@@ -20624,7 +21653,9 @@
         "sdk-browser-inventory-repair-2026-10-15",
         "sdk-followup-inventory-old-2026-10-15",
         "sdk-followup-inventory-repair-2026-10-15",
-        "sdk-full-offline-three-browser-consumer-2026-10-15"
+        "sdk-full-offline-three-browser-consumer-2026-10-15",
+        "versioned-keyv-author-text-2026-10-16",
+        "gate-compatibility-corrections-2026-10-16"
       ],
       "dependencies": [],
       "equipment": [

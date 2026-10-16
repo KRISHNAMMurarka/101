@@ -95,6 +95,11 @@ test("server-renders the player library, and nothing built for developers", asyn
   assert.match(html, /Echo Maze 101/);
   assert.match(html, /Shadow Arena 101/);
   assert.match(html, /Swarm Commander 101/);
+  const readiness = [...html.matchAll(/<p class="card-readiness[^"]*">([\s\S]*?)<\/p>/g)]
+    .map((match) => match[1].replaceAll("<!-- -->", ""));
+  assert.ok(readiness.length > 0);
+  assert.ok(readiness.every((text) => text === "Checking…" || text === "Coming soon"),
+    "unmeasured catalog cards must not claim missing controls");
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|react-loading-skeleton/i);
 
   /*

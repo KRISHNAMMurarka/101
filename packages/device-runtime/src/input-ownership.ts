@@ -1,5 +1,6 @@
 import { parseDeviceDescriptor, schemasCompatible } from '@101/device-model';
 import type { DeviceDescriptor } from '@101/device-model';
+import { inspectRuntimeEndpoint } from './runtime.ts';
 import { createRouteGroupController } from './route-group-runtime.ts';
 import type { RouteGroupController } from './route-group-runtime.ts';
 import type { AuthorizationRequest, Connection, DeviceRuntime, EndpointHandle, ResourceReference } from './types.ts';
@@ -28,6 +29,8 @@ export interface InputOwnershipSnapshot {
 export type InputOwnershipFailure = 'closed' | 'busy' | 'capacity' | 'invalid-source' | 'invalid-slot' | 'already-owner' | 'stale' | 'activation-failed';
 export type InputOwnershipResult<T = undefined> = Readonly<{ ok: true; value: T }> | Readonly<{ ok: false; reason: InputOwnershipFailure }>;
 export interface InputOwnershipController {
+  /** Replace an unowned source after an exact reviewed retirement. Grants never transfer. */
+  replaceSource(previous: InputOwnershipSource, next: InputOwnershipSource): InputOwnershipResult;
   request(sourceId: string, slotId: string): InputOwnershipResult<InputOwnershipRequest>;
   decide(requestId: string, expectedOwnerEpoch: number, allow: boolean): InputOwnershipResult;
   cancel(requestId: string): InputOwnershipResult;
@@ -74,27 +77,38 @@ function sameReference(actual: ResourceReference, expected: ResourceReference): 
     actual.descriptorRevision === expected.descriptorRevision && actual.schemaVersion === expected.schemaVersion;
 }
 
+function validatedSource(input: InputOwnershipSource, sinks: readonly Resource[], others: readonly Source[]): Source {
+  const source: Source = { id: text(input.id), label: text(input.label), principalId: text(input.principalId), resources: resources(input.resources) };
+  const handles = new Set([...sinks, ...others.flatMap(value => value.resources)].map(value => value.handle));
+  const devices = new Map<string, Readonly<DeviceDescriptor>>();
+  for (const entry of [...sinks, ...others.flatMap(value => value.resources)]) {
+    const previous = devices.get(entry.device.id);
+    if (previous && JSON.stringify(previous) !== JSON.stringify(entry.device)) throw new TypeError('Conflicting ownership descriptor');
+    devices.set(entry.device.id, entry.device);
+  }
+  if (others.some(value => value.id === source.id || value.principalId === source.principalId) || source.resources.length !== sinks.length)
+    throw new TypeError('Duplicate or incompatible ownership source');
+  source.resources.forEach((entry, index) => {
+    const sink = sinks[index]!, from = entry.device.capabilities.find(value => value.id === entry.capability)!, to = sink.device.capabilities.find(value => value.id === sink.capability)!;
+    if (handles.has(entry.handle) || !from.permissions.includes('subscribe') || !schemasCompatible(from, to) || from.delivery.mode !== to.delivery.mode)
+      throw new TypeError('Incompatible ownership source');
+    handles.add(entry.handle);
+    const previous = devices.get(entry.device.id);
+    if (previous && JSON.stringify(previous) !== JSON.stringify(entry.device)) throw new TypeError('Conflicting ownership descriptor');
+    devices.set(entry.device.id, entry.device);
+  });
+  return source;
+}
+
 /** Host-owned local consent UI policy. Requests are inert, grants remain with the existing runtime. */
 export function createInputOwnershipController(options: InputOwnershipOptions): InputOwnershipController {
   const runtime = options.runtime, now = options.now, applicationId = text(options.applicationId), sessionId = text(options.sessionId);
   const destination = text(options.destination.label), sinks = resources(options.destination.resources);
   if (typeof now !== 'function' || !Array.isArray(options.sources) || !options.sources.length || options.sources.length > INPUT_OWNERSHIP_LIMITS.sources)
     throw new TypeError('Invalid ownership options');
-  const sources = new Map<string, Source>(), handles = new Set(sinks.map(value => value.handle)), devices = new Map<string, Readonly<DeviceDescriptor>>();
-  for (const sink of sinks) devices.set(sink.device.id, sink.device);
+  const sources = new Map<string, Source>();
   for (const input of options.sources) {
-    const source: Source = { id: text(input.id), label: text(input.label), principalId: text(input.principalId), resources: resources(input.resources) };
-    if (sources.has(source.id) || [...sources.values()].some(value => value.principalId === source.principalId) || source.resources.length !== sinks.length)
-      throw new TypeError('Duplicate or incompatible ownership source');
-    source.resources.forEach((entry, index) => {
-      const sink = sinks[index]!, from = entry.device.capabilities.find(value => value.id === entry.capability)!, to = sink.device.capabilities.find(value => value.id === sink.capability)!;
-      if (handles.has(entry.handle) || !from.permissions.includes('subscribe') || !schemasCompatible(from, to) || from.delivery.mode !== to.delivery.mode)
-        throw new TypeError('Incompatible ownership source');
-      handles.add(entry.handle);
-      const previous = devices.get(entry.device.id);
-      if (previous && JSON.stringify(previous) !== JSON.stringify(entry.device)) throw new TypeError('Conflicting ownership descriptor');
-      devices.set(entry.device.id, entry.device);
-    });
+    const source = validatedSource(input, sinks, [...sources.values()]);
     sources.set(source.id, source);
   }
   const declarations = sinks.map(entry => {
@@ -158,6 +172,34 @@ export function createInputOwnershipController(options: InputOwnershipOptions): 
         ...(slot.record?.group?.status().state === 'active' ? { owner: slot.record.owner } : {}), ...(slot.pending ? { request: slot.pending } : {}), outcome: slot.outcome }))) });
   }
   return Object.freeze({ isApproved, snapshot, close,
+    replaceSource(previous: InputOwnershipSource, next: InputOwnershipSource): InputOwnershipResult {
+      if (!enter()) return fail(closed ? 'closed' : 'busy');
+      const snapshot = new Map(sources);
+      const unchanged = () => !closed && sources.size === snapshot.size && [...snapshot].every(([id, source]) => sources.get(id) === source);
+      try {
+        const expected = validatedSource(previous, sinks, []), selected = snapshot.get(expected.id);
+        const unused = () => !!selected && !slots.some(slot => slot.record?.source === selected || slot.pending?.sourceId === selected.id);
+        if (!selected || selected.principalId !== expected.principalId || selected.resources.length !== expected.resources.length ||
+          selected.resources.some((entry, index) => entry.handle !== expected.resources[index]!.handle ||
+            !sameReference(entry.reference, expected.resources[index]!.reference) || JSON.stringify(entry.device) !== JSON.stringify(expected.resources[index]!.device))) return fail('stale');
+        if (!unused()) return fail('busy');
+        const replacement = validatedSource(next, sinks, [...snapshot.values()].filter(value => value !== selected));
+        if (replacement.id !== selected.id || replacement.principalId === selected.principalId ||
+          replacement.resources.some(entry => selected.resources.some(old => old.handle === entry.handle))) return fail('invalid-source');
+        const witnessed = (entry: Resource, role: 'source' | 'sink') => {
+          const witness = inspectRuntimeEndpoint(runtime, entry.handle);
+          return witness?.role === role && witness.capability === entry.capability && sameReference(witness.reference, entry.reference) &&
+            JSON.stringify(witness.device) === JSON.stringify(entry.device);
+        };
+        if (![...selected.resources, ...replacement.resources].every(entry => witnessed(entry, 'source')) || !sinks.every(entry => witnessed(entry, 'sink'))) return fail('invalid-source');
+        if (time() === undefined || !unchanged() || !unused()) return fail(closed ? 'closed' : 'stale');
+        // The last callout is the clock above. Witnesses and map checks below are internal reads only.
+        if (![...selected.resources, ...replacement.resources].every(entry => witnessed(entry, 'source')) || !sinks.every(entry => witnessed(entry, 'sink')) || !unchanged() || !unused()) return fail('stale');
+        sources.set(selected.id, replacement);
+        return ok();
+      } catch { return fail(closed ? 'closed' : 'invalid-source'); }
+      finally { busy = false; }
+    },
     request(sourceId: string, slotId: string): InputOwnershipResult<InputOwnershipRequest> {
       if (!enter()) return fail(closed ? 'closed' : 'busy');
       try {
@@ -183,6 +225,7 @@ export function createInputOwnershipController(options: InputOwnershipOptions): 
         attempts++;
         drop(slot, 'ownership-transferred', 'transferred'); notify(); if (closed) return fail('closed');
         const source = sources.get(pending.sourceId)!;
+        const devices = new Map([...sinks, ...[...sources.values()].flatMap(value => value.resources)].map(entry => [entry.device.id, entry.device]));
         const record: RecordOwner = { source, owner: Object.freeze({ sourceId: source.id, principalId: source.principalId, epoch: slot.epoch }),
           routes: [], remove: [], permitted: true }; slot.record = record;
         try {

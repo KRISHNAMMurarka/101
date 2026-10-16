@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "T13"
+  ],
+  "wholeTasksClosed": [],
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-optional-transports",
+    "commit": "5df4eead76f8b06d067f3afe8646da93b747a021",
+    "tree": "7fa05b0a0d92a758b86eba343fea69dd0cd2ac43",
+    "readBackFiles": 2,
+    "allBytesMatched": true
+  },
+  "reportPath": "outputs/controllers/2026-10-16-optional-transports/report.md",
+  "decision": {
+    "WebTransport": "Reject for current release: no justified browser/server caller requiring it; direct peer caller uses WebRTC and selected server caller has bounded WSS evidence.",
+    "nativeQUIC": "Defer as future research: no named caller or implemented common native integration. Platform API availability does not establish product support."
+  },
+  "preservedIncumbents": [
+    "Direct WebRTC pointer/controller transport",
+    "Bounded authenticated WSS server link"
+  ],
+  "noCandidateBenchmarkRun": true,
+  "noTransportImplementationAdded": true,
+  "limits": "This records the missing caller/retain/reject decision. No same-workload supported-runtime, security or end-to-end candidate comparison was executed; whole T13 remains open. No accepted support row added.",
+  "reconsider": "Name a workload and measurable requirement not met by incumbents before implementing or benchmarking an optional candidate.",
+  "references": [
+    "https://www.w3.org/TR/webtransport/",
+    "https://developer.apple.com/documentation/network/nwprotocolquic",
+    "https://developer.android.com/develop/connectivity/cronet"
+  ]
+}

@@ -57,7 +57,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, readiness, controllerHost } = useGameHost<BeatForgeState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<BeatForgeState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -169,10 +169,10 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         <div className="beat-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>BPM</span><strong>{hud.bpm}</strong></div><div><span>COMBO</span><strong>×{hud.combo}</strong></div><div><span>ACCURACY</span><strong>{hud.accuracy.toFixed(1)}%</strong></div></div>
       </header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="beat-arena">
         <div className="beat-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK PERFORMER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b></b></div>
-        <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera." />
+        <canvas ref={canvasRef} tabIndex={0} aria-label="BeatForge play field. Match left, right, punch, raise, and duck notes with arrow keys, WASD, gamepad, Link motion, or optional body camera. Hold a direction and press G or the gamepad right trigger to swing." />
         {/* Camera capture is muted, requests no audio, and remains on this device. */}
         <video className={camera.state === "on" ? "beat-camera-preview active" : "beat-camera-preview"} ref={videoRef} playsInline muted aria-hidden={camera.state !== "on"} aria-label="Mirrored camera preview of your body" />
         <div className="beat-next"><span>NEXT MOVE</span><strong>{hud.next ? beatActionLabel(hud.next.action) : "READY"}</strong><small>{hud.next ? `${hud.next.remaining.toFixed(2)} S` : "—"}</small></div>
@@ -189,7 +189,7 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
         {hud.gameOver && <GameOverPanel title="Forge cooled" score={hud.score} detail={`${hud.accuracy.toFixed(1)}% accuracy`} onRestart={restart} />}
       </div>
       </GameControllerOverlay>
-      <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span></div>
+      <div className="beat-instructions"><span><b>LEFT / RIGHT</b> A D or arrows</span><span><b>PUNCH</b> W / Up / Space</span><span><b>RAISE</b> E / gamepad Y</span><span><b>DUCK</b> S / Down</span><span><b>SWING</b> Hold direction + G · right trigger · direction pad</span></div>
       <p className="beat-privacy"><strong>Camera:</strong> hit the notes with your body if you want to. The picture is read on this device and never leaves it — nothing is uploaded, nothing is recorded. Keys and a gamepad work just as well.</p>
     </section>
   );

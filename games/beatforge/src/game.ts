@@ -64,7 +64,7 @@ export function createBeatForgeGame(seed = "beatforge-101") {
       return state;
     },
     start(ctx) {
-      ["beat.left", "beat.right", "beat.punch", "beat.raise", "beat.duck", "swing", "gesture"].forEach((control) => ctx.input.bind(control));
+      ["beat.left", "beat.right", "beat.punch", "beat.raise", "beat.duck", "beat.swing", "swing", "gesture"].forEach((control) => ctx.input.bind(control));
     },
     update(ctx, delta) {
       const state = ctx.state;
@@ -78,7 +78,8 @@ export function createBeatForgeGame(seed = "beatforge-101") {
         current[action] = readAction(ctx, action);
         if (current[action] && !state.previous[action]) triggered.push(action);
       }
-      current.swing = Boolean(ctx.input.action("swing", "role-performer") || ctx.input.action("swing", "player-1"));
+      current.swing = Boolean(ctx.input.action("beat.swing", "role-performer") || ctx.input.action("beat.swing", "player-1")
+        || ctx.input.action("swing", "role-performer") || ctx.input.action("swing", "player-1"));
       if (current.swing && !state.previous.swing) {
         const gesture = vectorWithFallback(ctx, "gesture", "role-performer");
         const outstanding = nearestPending(state);

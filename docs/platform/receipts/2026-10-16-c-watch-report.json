@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "E12",
+    "Q02"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "standalone C53-byte watch codec and copied native consumer; subsequent installed-SDK integration through instrumented existing driver passes",
+  "profile": "watch-report-c-strict/1",
+  "sourceSha256": {
+    "bindings/watch-report/fixtures/watch-report-v1.json": "a0f0aecdca903f3ff11e5272d37af70948ef77660aa6b07acf8fe58428ba4a7f",
+    "examples/language-bindings/watch-report.mjs": "af075493b7471767be1c537ab94af6d7fedc9999691c622a6114a261f9c66472",
+    "tests/watch-report-bindings.test.ts": "de86d4fbd7820afd3501fd1386b6fd37a1aaccd3b055b41d72607873875c2a04",
+    "tools/qa-watch-report-bindings.mjs": "5a5958aa9769151394fb5ccb070e07624f5f36ae45a07b9aa5268bd51c500490",
+    "bindings/watch-report/c/profile.json": "11ff78e0c7fab2f18a7a6685299faf41392dc094aab0947702a100f21858ed84",
+    "bindings/watch-report/c/include/one01_watch_report.h": "4aca3cffdfe65b1adf454289ca60b9bf72ba600b2942df8e5a1568938fbe3142",
+    "bindings/watch-report/c/src/one01_watch_report.c": "c34f553a284eb2adfd34b05cb35c5bd7cbbc622f767a7cd38a418e1dcae4f83b",
+    "examples/language-bindings/WatchReportConsumer.c": "ec6ca7fa53d06793a90044b3da960cad616ef8fca1ea2dd5e709ad62ac707f89"
+  },
+  "canonicalPatchSha256": "64ba940da16426ea296ca14ec9be272fec98d6f56cfb5d6354cefa138068f3f3",
+  "scope": "Standalone copied C package and clean consumer only; no SDK rebuild or full watch QA claim.",
+  "compile": {
+    "argv": [
+      "/usr/bin/xcrun",
+      "clang",
+      "-std=c11",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-pedantic",
+      "-I",
+      "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ/copied-c-package/include",
+      "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ/copied-c-package/src/one01_watch_report.c",
+      "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ/WatchReportConsumer.c",
+      "-lm",
+      "-o",
+      "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ/watch-report-consumer"
+    ],
+    "cwd": "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ",
+    "pid": 23654,
+    "exitCode": 0,
+    "callbackJoined": true,
+    "processGone": true,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "executableSha256": "ebfd41006431f732c035ee92033f6ed2a8490a822c83c42647993cdab6b91d14"
+  },
+  "consumer": {
+    "argv": [
+      "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ/watch-report-consumer"
+    ],
+    "cwd": "/Users/km/Dev/101/release/c-watch-42-command-20261016-bC51TQ",
+    "pid": 23751,
+    "exitCode": 0,
+    "callbackJoined": true,
+    "processGone": true,
+    "commands": 42,
+    "inputBytes": 4521,
+    "inputSha256": "f63469265ad9e4ea4dfe1e4f575766586a741df51c9cfe1554ef918ca6123cfe",
+    "outputBytes": 5918,
+    "stdoutSha256": "66193e2d127c6cf5f5963d5ddc97cc92a0e8bf6497e4a8442cdce323f644e6be",
+    "stderrBytes": 0,
+    "accepted": 16,
+    "rejected": 26,
+    "outputMatchesExpected": true
+  },
+  "fixture": {
+    "sha256": "a0f0aecdca903f3ff11e5272d37af70948ef77660aa6b07acf8fe58428ba4a7f",
+    "golden": 8,
+    "decode": 26,
+    "commands": 42,
+    "cStrictReservedBitCases": [
+      {
+        "id": "reserved-button-2",
+        "acceptC": false,
+        "acceptSwift": true,
+        "acceptKotlin": true
+      },
+      {
+        "id": "reserved-button-3",
+        "acceptC": false,
+        "acceptSwift": true,
+        "acceptKotlin": true
+      },
+      {
+        "id": "reserved-button-255",
+        "acceptC": false,
+        "acceptSwift": true,
+        "acceptKotlin": true
+      }
+    ]
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-c-watch/applied",
+    "commit": "d2699950ac72dd04e594c47b384c91f3107dd329",
+    "tree": "ef99644b60ea44b3a329199041893988c0c733dc",
+    "readBackFiles": 57,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true,
+    "allOwnedProcessesAndOpenFilesAbsent": true,
+    "fullWatchDriverExecuted": false
+  },
+  "priorDraftCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-c-watch/draft",
+    "commit": "bd2958bc248011779aeaf33feb8d8248e0fe5890",
+    "tree": "33c5546a1828b12872a374ba2901a66e09dddfbf",
+    "readBackFiles": 81,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true,
+    "allOwnedProcessesAndOpenFilesAbsent": true
+  },
+  "independentReviewSha256": "ffdc2bc042a0f53de0a10e525431e4f0af35e57e74f06ee8ad3db0c5b2127b29",
+  "oldRed": "Actual missing public C watch header/API compile fails against old tree; retained in prior draft custody.",
+  "limits": [
+    "C profile is strict for reserved bits; legacy Swift/Kotlin accept-and-mask unchanged.",
+    "No allocator/network/authentication or Jansson runtime dependency; static C11 binary32 requirements.",
+    "No phone/watchOS/Wear OS/physical sensor/capture freshness/native lifecycle or full E12/Q02 acceptance.",
+    "Installed integration uses the recorded instrumented executable and Node-only consumer; no full three-browser SDK consumer or watch OS/physical/full E12/Q02 acceptance."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "installedSdkIntegration": {
+    "sourceCommit": "6c39ccec4ae25bb1808a09174ddb5c5d5580b9ce",
+    "sourceTree": "1e1dfda794fb47100f8d61949e20b8461d570351",
+    "reportSha256": "1ab7af473b0c8cf50c8e2f5e20c0f195e2ae007848aa37c5917b8568bea3017e",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-c-watch/sdk-integration",
+      "commit": "149162c02fcef0a66ad0610af0b9a10e15b4b95d",
+      "allBytesMatched": true
+    },
+    "checks": "Seven-package immutable SDK build, fresh offline Node-only consumer and42commands each in Swift/Kotlin/C; existing Swift/Kotlin grant/lifecycle bridges pass.",
+    "initialEnvironmentFailure": "First build lacked npm on PATH; retained failure. One diagnosed Node24PATH correction passed.",
+    "instrumentationBoundary": "Executed source copy changes only helper import/root location and writes raw retained bounded streams at existing close. Original and actual copy both retained; no byte-identical executable claim.",
+    "nativeChildPids": "Not captured in15raw sidecars; actual closes awaited and final owned operation cleanup zero. Distinct standalone C proof has actual compile/consumer PIDs.",
+    "cleanup": {
+      "schemaVersion": 1,
+      "evidenceRef": "refs/codex/evidence/2026-10-16-c-watch/sdk-integration",
+      "evidenceCommit": "149162c02fcef0a66ad0610af0b9a10e15b4b95d",
+      "evidenceReadbackVerified": true,
+      "preDeleteOwnedPaths": [
+        {
+          "path": "/Users/km/Dev/101/release/sdk-4iA0xY",
+          "exists": true,
+          "files": 421,
+          "bytes": 4177899
+        },
+        {
+          "path": "/tmp/101-sdk-consumer-SLwx6m",
+          "exists": true,
+          "files": 1039,
+          "bytes": 40024530
+        },
+        {
+          "path": "/Users/km/Dev/101/outputs/controllers/2026-10-16-c-watch-next/sdk-integration/consumer-custody/consumer",
+          "exists": true,
+          "files": 1039,
+          "bytes": 40024530
+        }
+      ],
+      "outerInvocationPidsAbsent": [
+        93502,
+        96822,
+        1333,
+        12261
+      ],
+      "lsofNoOpenFiles": {
+        "release/sdk-4iA0xY": "lsof exit 1, no output",
+        "/tmp/101-sdk-consumer-SLwx6m": "lsof exit 1, no output",
+        "consumer-custody/consumer": "lsof exit 1, no output"
+      },
+      "nativeQaCleanupReceipt": {
+        "ownedChildren": 0,
+        "ownedTemporaryDirectories": 0,
+        "ownedCallerDirectories": 0
+      },
+      "nativeChildPidLimitation": "Child PIDs were not recorded in raw invocation sidecars; all calls were awaited to close by the harness and its final cleanup receipt is zero. No unchanged rerun was made.",
+      "deletedExactPaths": [
+        "/Users/km/Dev/101/release/sdk-4iA0xY",
+        "/tmp/101-sdk-consumer-SLwx6m",
+        "/Users/km/Dev/101/outputs/controllers/2026-10-16-c-watch-next/sdk-integration/consumer-custody/consumer"
+      ],
+      "postDeleteOwnedPaths": [
+        {
+          "path": "/Users/km/Dev/101/release/sdk-4iA0xY",
+          "exists": false,
+          "files": 0,
+          "bytes": 0
+        },
+        {
+          "path": "/tmp/101-sdk-consumer-SLwx6m",
+          "exists": false,
+          "files": 0,
+          "bytes": 0
+        },
+        {
+          "path": "/Users/km/Dev/101/outputs/controllers/2026-10-16-c-watch-next/sdk-integration/consumer-custody/consumer",
+          "exists": false,
+          "files": 0,
+          "bytes": 0
+        }
+      ]
+    }
+  }
+}

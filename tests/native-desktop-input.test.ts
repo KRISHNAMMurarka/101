@@ -9,5 +9,5 @@ test('native desktop implementation fences permission, target identity, release 
     const result = JSON.parse(output);
     assert.equal(result.status, 'pass');
     assert.deepEqual(result.checks.map((check: { name: string; count: number }) => [check.name, check.count]),
-      [['backend', 17], ['controller', 10]]);
+      [['backend', 17], ['controller', 11]]);
   });

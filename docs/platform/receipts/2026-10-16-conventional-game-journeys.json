@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "G06",
+    "U10"
+  ],
+  "integrated": false,
+  "result": "partial",
+  "summary": "Each of ten games has a passing natural-end, result-focus, Space restart and Back case on Chromium and WebKit. These cases are a union across24distinct attempts; all original limits and the failed diagnostic remain retained.",
+  "attempts": {
+    "baseline": {
+      "total": 20,
+      "passed": 18,
+      "failed": 2,
+      "raw": "controller/report.json",
+      "failures": "Both OrbitalCrew attempts remained playing at the unchanged170s result observation limit; no product cause inferred."
+    },
+    "distinctGuided": {
+      "total": 4,
+      "passed": 3,
+      "failed": 1,
+      "raw": "controller/guided-inputs/report.json",
+      "passes": "Both OrbitalCrew attempts use actual local Reactor Overdrive heat response then held keyboard controls and reach natural heat/hull loss within the original180s scenario bound. WebKit BodyDodge witnesses fresh keyboard and local Dpad LEFT gate effects.",
+      "failure": "Chromium BodyDodge records keyboard LEFT effect, then times out the local Dpad judgment and later observes canvas focus at the result. Cleanup focus may overlap the natural end; missing phase telemetry prevents a causal claim."
+    },
+    "total": 24,
+    "passed": 21,
+    "cleanTwentyOfTwentyRun": false
+  },
+  "pairCoverage": {
+    "lifecyclePairs": 20,
+    "pairsWithObservedDeclaredInputEffect": 20,
+    "samePassingAttemptWithObservedInputPairs": 19,
+    "combinedClaimLimit": "20/20 game-engine pairs have a passing natural-end/described-focus/Space-restart/Back lifecycle case and a real observed input effect.19/20 combine those in one passing attempt. Chromium Body input effect is retained from its inconclusive guided attempt; baseline lifecycle case had neutral CENTER admission only. Do not claim20 complete input-to-restart passes."
+  },
+  "remainingControlEvidence": {
+    "bodydodge": {
+      "chromium": [
+        "armsRaised",
+        "dodgeX",
+        "duck",
+        "jump",
+        "lean"
+      ],
+      "webkit": [
+        "armsRaised",
+        "dodgeX",
+        "duck",
+        "jump",
+        "lean"
+      ]
+    },
+    "tiltdrift": {
+      "chromium": [
+        "drift",
+        "steer"
+      ],
+      "webkit": [
+        "drift",
+        "steer"
+      ]
+    },
+    "orbitalcrew": {
+      "chromium": [
+        "fire",
+        "flight",
+        "fortify",
+        "power",
+        "shield",
+        "target",
+        "vent"
+      ],
+      "webkit": [
+        "fire",
+        "flight",
+        "fortify",
+        "power",
+        "shield",
+        "target",
+        "vent"
+      ]
+    },
+    "shadowarena": {
+      "chromium": [
+        "combat.block",
+        "combat.duck",
+        "combat.jump",
+        "combat.move",
+        "combat.special"
+      ],
+      "webkit": [
+        "combat.block",
+        "combat.duck",
+        "combat.jump",
+        "combat.move",
+        "combat.special"
+      ]
+    },
+    "spellcaster": {
+      "chromium": [
+        "spell.aim",
+        "spell.cast.blade",
+        "spell.cast.grab",
+        "spell.cast.projectile",
+        "spell.cast.shield",
+        "spell.cast.vortex"
+      ],
+      "webkit": [
+        "spell.aim",
+        "spell.cast.blade",
+        "spell.cast.grab",
+        "spell.cast.projectile",
+        "spell.cast.shield",
+        "spell.cast.vortex"
+      ]
+    },
+    "swarmcommander": {
+      "chromium": [
+        "swarm.ability.pulse",
+        "swarm.ability.recall",
+        "swarm.ability.shield",
+        "swarm.command",
+        "swarm.direction",
+        "swarm.formation.cluster",
+        "swarm.formation.grid",
+        "swarm.formation.ring",
+        "swarm.select"
+      ],
+      "webkit": [
+        "swarm.ability.pulse",
+        "swarm.ability.recall",
+        "swarm.ability.shield",
+        "swarm.command",
+        "swarm.direction",
+        "swarm.formation.cluster",
+        "swarm.formation.grid",
+        "swarm.formation.ring",
+        "swarm.select"
+      ]
+    },
+    "beatforge": {
+      "chromium": [
+        "beat.duck",
+        "beat.left",
+        "beat.raise",
+        "beat.right",
+        "beat.swing",
+        "gesture"
+      ],
+      "webkit": [
+        "beat.duck",
+        "beat.left",
+        "beat.raise",
+        "beat.right",
+        "beat.swing",
+        "gesture"
+      ]
+    },
+    "slashstorm": {
+      "chromium": [
+        "aim",
+        "move",
+        "slash",
+        "trigger"
+      ],
+      "webkit": [
+        "aim",
+        "move",
+        "slash",
+        "trigger"
+      ]
+    },
+    "gravitystack": {
+      "chromium": [],
+      "webkit": []
+    },
+    "echomaze": {
+      "chromium": [
+        "maze.scan",
+        "maze.scanDirection"
+      ],
+      "webkit": [
+        "maze.scan",
+        "maze.scanDirection"
+      ]
+    }
+  },
+  "canonicalHarness": {
+    "path": "tools/qa-conventional-game-journeys.mjs",
+    "sha256": "f5cf482b695f209c5e3731d02fef21c1b7bc7bc0fc40abd6eb041569eb76b49b",
+    "executedInitialSha256": "07a3ee2e8a434e23af333c10e1dffd2c1ee4171aca4a6b9eb5a05e8c76d4c05c",
+    "difference": "After baseline finished: module local binding renamed roleModule; explanatory comment added to formerly empty diagnostic catch. No runtime behavior change. Exact executed source retained.",
+    "scopedEslintExitCode": 0,
+    "furtherCanonicalEdits": false
+  },
+  "sourceScope": "Baseline receipt pins117 named source files; guided receipt pins118 (adds its recipe); both pin602 served build files. Source-pin invariance is for those sets, not the entire changing working tree. Later Launcher-only work was outside the source set and dist stayed unchanged during both runs. This is not a claim about a later rebuilt candidate.",
+  "buildSha256": "64df7addb96962b80e05c0c4e786957b25ec9e872eb9c16fbaed2ee2b90e667c",
+  "sourceAndBuildBoundary": "116 common declared product-source pins and602 non-map distribution files match both completed runs. The source fence is a selected subset, not an exhaustive dependency-closure inventory. Exact initial executed QA bytes and the two later mechanical lint changes are preserved.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-conventional-game-journeys/desktop",
+    "commit": "00913d314295b7271cc7a5efd64de9a270123370",
+    "tree": "ce6da2e945b9b9d3a9d29a192e387bcf654adef9",
+    "readBackFiles": 39,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "review": "controller/review.json",
+  "summaryPath": "controller/summary.json",
+  "cleanup": {
+    "contextsClosed": true,
+    "browsersClosed": true,
+    "serversClosed": true,
+    "all24AttemptContextsClosed": true
+  },
+  "limits": [
+    "The baseline BodyDodge CENTER clear is neutral traversal, not movement proof. Active keyboard evidence comes from distinct guided input.",
+    "Result focus and aria-describedby are observed DOM semantics, not an executed assistive-technology announcement.",
+    "Post-Space checks witness result detachment and canvas focus, not a fresh post-restart consumer effect.",
+    "Conventional controls remain partial; this does not qualify every required/optional role, gamepad, motion/camera or remote control.",
+    "No physical phone/controller, assistive-technology, target-OS/native startup or whole G06/U10 acceptance.",
+    "All original failed attempts remain current scoped failures; no timeout extension, unchanged retry, clock/game-state override or forced ending."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0
+}

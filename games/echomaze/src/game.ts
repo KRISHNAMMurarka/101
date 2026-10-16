@@ -20,6 +20,7 @@ export interface EchoMazeState {
   player: MazePoint;
   facing: MazeDirection;
   collected: string[];
+  marked: string[];
   clearedEchoes: string[];
   elapsed: number;
   floorStartedAt: number;
@@ -36,6 +37,7 @@ export interface EchoMazeState {
   lastEvent: string;
   previousScan: boolean;
   previousFlashlight: boolean;
+  previousMark: boolean;
   clue: EchoClue;
   gameOver: boolean;
 }
@@ -47,10 +49,10 @@ export function createEchoMazeGame(seed = "echomaze-101") {
       const director = new EchoMazeDirector(seed);
       const floor = director.next();
       const state: EchoMazeState = {
-        seed, director, floor, floorNumber: 1, player: { ...floor.start }, facing: "south", collected: [], clearedEchoes: [],
+        seed, director, floor, floorNumber: 1, player: { ...floor.start }, facing: "south", collected: [], marked: [], clearedEchoes: [],
         elapsed: 0, floorStartedAt: 0, nextMoveAt: 0, score: 0, steps: 0, health: 100, battery: 100, flashlight: true,
         scanDirection: { x: 0, y: -1 }, scanSequence: 0, floorSequence: 0, impactSequence: 0, lastEvent: "THE SCANNER HEARS TWO FRAGMENTS",
-        previousScan: false, previousFlashlight: false, clue: emptyClue(floor), gameOver: false,
+        previousScan: false, previousFlashlight: false, previousMark: false, clue: emptyClue(floor), gameOver: false,
       };
       refreshClue(state);
       return state;
@@ -83,6 +85,14 @@ export function createEchoMazeGame(seed = "echomaze-101") {
         state.lastEvent = state.flashlight ? "FLASHLIGHT OPEN" : "FLASHLIGHT SHUT";
       }
       state.previousFlashlight = flashlight;
+      const mark = readAction(ctx, "maze.mark");
+      if (mark && !state.previousMark) {
+        const key = pointKey(state.player);
+        const removing = state.marked.includes(key);
+        state.marked = removing ? state.marked.filter((value) => value !== key) : [...state.marked, key];
+        state.lastEvent = removing ? "MARK REMOVED" : "PLACE MARKED";
+      }
+      state.previousMark = mark;
     },
   });
 }
@@ -135,6 +145,7 @@ function advanceFloor(state: EchoMazeState) {
   state.player = { ...state.floor.start };
   state.facing = "south";
   state.collected = [];
+  state.marked = [];
   state.clearedEchoes = [];
   state.floorStartedAt = state.elapsed;
   state.battery = Math.min(100, state.battery + 32);

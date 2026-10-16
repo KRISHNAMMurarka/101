@@ -1903,6 +1903,17 @@ ResizeObserver measures the container and selects one to four columns without re
 
 `createInputOwnershipController({ runtime, applicationId, sessionId, sources, destination, now })` implements `application-input-ownership/1` over registered runtime resources. The host pins parsed descriptors, handles, source principals and destination scope. Compatible destination resources must declare the same exclusive policy or named partitions; labels supply no identity or permission. `request` returns a bounded review request and current owner epoch. Pending, declined, cancelled and expired requests leave the current route group active.
 
+After an explicitly reviewed retirement, `replaceSource(previous, next)` can replace
+one unowned source with the same logical id and a fresh principal and runtime
+registrations. It refuses active or pending ownership, stale or copied handles,
+foreign runtimes, conflicting descriptors and incompatible resources. The previous
+source and actual destination registrations must still match. The guarded commit
+grants no permission, changes no other slot epoch and invokes no subscriber;
+the calling host refreshes its view after installation. Fresh request and approval
+remain necessary. The connected sharing screen uses this after joining the removed
+peer's work, then exchanges a new invitation and compares both pages again while
+the independent participant keeps sharing.
+
 `decide(requestId, expectedOwnerEpoch, true)` is explicit consent to the exact source and partition. `isApproved` only checks that consent; the runtime's independent host callback must still issue current grants for every route leg. Transfer releases the previous group before starting the replacement. Denied or failed activation leaves the slot released with a visible request-again action. `release`, resource loss, grant expiry and `close` release the group and fence late delivery. Stale request IDs or owner epochs cannot transfer control.
 
 Limits are four pinned sources, two declared destination slots, two resources per group, one pending request per slot, thirty-second requests and eight observers. A controller admits at most sixty-four lifetime activation attempts, including failures, to bound retained runtime connection identities. At capacity the valid current owner stays active; explicitly close and recreate the controller to start a new lifetime. No ownership, requests, identities or grants are persisted or restored.
@@ -2654,14 +2665,24 @@ eight golden reports and 26 decode cases. The unchanged Swift and Kotlin
 `WatchPayload` codecs each execute 42 encode/decode commands; ordinary installed
 JavaScript checks the strict `watch-companion-report/1` decoder. Three reserved
 button-bit cases deliberately differ: the legacy native codecs mask the bits,
-while the strict JavaScript profile rejects them. C has no watch report codec.
+while JavaScript and the C11 `watch-report-c-strict/1` profile reject them.
+
+The standalone C package is `bindings/watch-report/c/profile.json` plus its
+hash-pinned public header and codec source. It has no third-party runtime
+dependency; callers link the system math library. The API decodes only the
+53-byte little-endian report and leaves the output unchanged on rejection.
+Encoding rejects non-finite values and reports zero output bytes on failure.
+The eight golden vectors and 26 negatives pass through a separately compiled
+clean C consumer copied with that exact three-file package. This is an inert
+codec; it grants no resource access and establishes no clock or physical validity.
 
 Run `node tools/qa-watch-report-bindings.mjs --installed <SDK-manifest>
 <clean-consumer> [--caller-tree <immutable-tree>]`. The caller verifies the exact
 installed package file allowlist, unchanged native producer bytes, shared
-fixtures and public ESM resolution. Each language's actual encoded bytes also
-pass 16 independent source/sink grant, epoch, sequence-wrap, revoke and expiry
-checks through explicitly supplied software bridge ports. Relay emission time
+fixtures and public ESM resolution. Swift and Kotlin encoded bytes also pass
+16 independent source/sink grant, epoch, sequence-wrap, revoke and expiry checks
+through explicitly supplied software bridge ports. The C path separately checks
+its copied package hashes and 42 codec commands. Relay emission time
 remains separate from host receipt time; neither proves capture freshness.
 
 Fixture limits are 32 KiB, 16 golden reports, 64 decode cases, 128 commands,
@@ -3219,6 +3240,25 @@ LocalOnly registration, resolve, withdrawal, quiet expiry, cancellation, owned
 process loss and a separately authorized loopback consumer. The selected Mac
 software provider works; LAN, other operating systems and physical discovery
 remain outside this evidence, so full D04 stays open.
+
+The separate `macos-selected-interface-dns-sd/1` profile requires an explicitly
+selected positive interface index and the same exact owner scope and lifecycle
+limits; LocalOnly remains the default. Actual registration and browsing on this
+Mac's selected `en0` interface are recorded as same-machine software evidence.
+They do not qualify remote multicast, LAN reachability or physical discovery.
+
+The local example `examples/native-discovery/invitation-review.mjs` composes a
+current issued observation with an explicit owner mapping to an independently
+provisioned endpoint and expected peer key. It preserves the observed evidence,
+bounds the added mapping evidence by all original expiries, and rechecks the
+opaque handle, exact candidate and saved mapping after currentness callbacks.
+It never derives a URL or key from the service name, target, port or TXT record.
+Manual, link and QR review remain inert; connection then uses the existing
+expected-key authentication, followed by separate source and receiver grants.
+The mapping is trusted host configuration: it does not prove the service
+announcer owns the saved endpoint key. The actual local DNS-SD-to-WSS/RSS proof
+and its retained draft race are bounded D02/D09 evidence, not full discovery
+identity or wrong-key-ingress qualification.
 
 ## Selected redacted operator health
 
@@ -3924,6 +3964,16 @@ ordinary installed JavaScript package files. It checks each name/version against
 the lockfile, preserves license/copyright/notice bytes as UTF-8 text with SHA-256
 hashes, deduplicates identical text and atomically replaces the existing JSON
 inventory after successful collection. Importing the collector has no effect.
+
+The existing selection manifest also accepts a version 2 repository author-source
+branch. Exact package/version/locked artifact, ordinary bounded license/proof
+paths, source commit/blob metadata, body hash and installed published-file hashes
+are verified without network access. Its `repository-author-texts` coverage retains
+the distinct origin and full hashed proof. A copied web artifact includes the
+manifest and referenced body/proof even for an absent optional target; that target
+remains `not-installed` with no collected package texts. Legacy version 1 remains
+package-relative. The source metadata is reviewed provenance data, not authenticated
+publisher proof or redistribution approval.
 
 The collector allows 2,048 locked packages, 64 legal files per package, 128 KiB per
 text, two nested legal-directory levels and 16 MiB of distinct text. Symlinks,

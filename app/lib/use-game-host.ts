@@ -17,6 +17,21 @@ export interface GameHostBinding<State> {
   /** Everything the game needs to draw: state, input, and the rest of the engine context. */
   context: GameContext<State>;
   host: GameHost101;
+  signal: AbortSignal;
+}
+
+export interface GameLaunchState {
+  status: "loading" | "ready" | "failed";
+  retry(): void;
+}
+
+interface GameHostSnapshot {
+  key: readonly unknown[];
+  linked: number;
+  controllerHost: ControllerHostBinding | null;
+  session?: SessionSnapshot;
+  readiness?: InputReadiness;
+  launchStatus: GameLaunchState["status"];
 }
 
 export interface UseGameHostOptions<State> {
@@ -32,7 +47,7 @@ export interface UseGameHostOptions<State> {
    * Runs once the engine is live. Attach views, draw loops and HUD timers here and return their
    * teardown; it is invoked even if the component unmounted while the launch was still in flight.
    */
-  onReady(binding: GameHostBinding<State>): (() => void) | void;
+  onReady(binding: GameHostBinding<State>): (() => void) | void | Promise<(() => void) | void>;
   /** Re-run everything when any of these change — the run counter, usually. */
   deps?: readonly unknown[];
 }
@@ -57,44 +72,70 @@ export function useGameHost<State>({
   onReady,
   deps = [],
 }: UseGameHostOptions<State>) {
-  const [linked, setLinked] = useState(0);
-  const [controllerHost, setControllerHost] = useState<ControllerHostBinding | null>(null);
-  const [session, setSession] = useState<SessionSnapshot>();
-  const [readiness, setReadiness] = useState<InputReadiness>();
+  const [attempt, setAttempt] = useState(0);
+  const key = [sessionId, attempt, ...deps];
+  const pending: GameHostSnapshot = { key, linked: 0, controllerHost: null, launchStatus: "loading" };
+  const [snapshot, setSnapshot] = useState<GameHostSnapshot>(pending);
+  // A new run renders its pending state immediately; old asynchronous reports belong to the
+  // previous key and cannot project a ready controller or an old failure into this run.
+  const sameRun = snapshot.key.length === key.length && snapshot.key.every((value, index) => Object.is(value, key[index]));
+  if (!sameRun) setSnapshot(pending);
+  const current = sameRun ? snapshot : pending;
 
   useEffect(() => {
     let disposed = false;
-    let teardown: (() => void) | void;
-
-    const host = new GameHost101({
-      transport: getBrowserHostTransport(sessionId),
-      session: new LocalSession(sessionId),
-      adapters: adapters?.() ?? [],
-      onSessionChange: (snapshot) => {
-        setSession(snapshot);
-        setLinked(snapshot.assignments.length);
-      },
-      onInputReadiness: setReadiness,
-    });
-
-    const gamePackage = build();
-    void host.launch(gamePackage).then((context) => {
-      // The effect can be torn down while the launch is still resolving — a fast unmount, or React
-      // running effects twice in development. Starting a draw loop then would leave it running
-      // against a stopped engine.
+    let latest = pending;
+    const publish = (next: Partial<GameHostSnapshot>) => {
       if (disposed) return;
-      teardown = onReady({ context, host });
-      setControllerHost({ host, roles: gamePackage.controllers });
-    });
+      latest = { ...latest, ...next };
+      setSnapshot(latest);
+    };
+    let teardown: (() => void) | void;
+    let host: GameHost101 | undefined;
+    let disconnect: Promise<void> | undefined;
+    const lifetime = new AbortController();
+    const reportCleanupError = (error: unknown) => console.error("Game cleanup failed", error);
+    const stop = async () => {
+      const current = teardown;
+      teardown = undefined;
+      try { current?.(); }
+      finally { await (disconnect ??= host?.disconnect() ?? Promise.resolve()); }
+    };
+
+    void (async () => {
+      try {
+        host = new GameHost101({
+          transport: getBrowserHostTransport(sessionId),
+          session: new LocalSession(sessionId),
+          adapters: adapters?.() ?? [],
+          onSessionChange: (snapshot) => {
+            if (disposed || lifetime.signal.aborted) return;
+            publish({ session: snapshot, linked: snapshot.assignments.length });
+          },
+          onInputReadiness: (next) => { if (!lifetime.signal.aborted) publish({ readiness: next }); },
+        });
+        const gamePackage = build();
+        const context = await host.launch(gamePackage);
+        if (disposed) return;
+        teardown = await onReady({ context, host, signal: lifetime.signal });
+        if (disposed) { await stop(); return; }
+        publish({ controllerHost: { host, roles: gamePackage.controllers }, launchStatus: "ready" });
+      } catch {
+        lifetime.abort();
+        await stop().catch(reportCleanupError);
+        if (disposed) return;
+        publish({ ...pending, session: undefined, readiness: undefined, launchStatus: "failed" });
+      }
+    })();
 
     return () => {
       disposed = true;
-      setControllerHost((current) => current?.host === host ? null : current);
-      teardown?.();
-      void host.disconnect();
+      lifetime.abort();
+      void stop().catch(reportCleanupError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, ...deps]);
+  }, [sessionId, attempt, ...deps]);
 
-  return { linked, session, readiness, controllerHost };
+  const launch: GameLaunchState = { status: current.launchStatus, retry: () => setAttempt((value) => value + 1) };
+  return { linked: current.linked, session: current.session, readiness: current.readiness, controllerHost: current.controllerHost, launch };
 }

@@ -353,3 +353,70 @@ test('owner cancellation during actual TLS socket issue retains raw ownership th
     for (const socket of nativeSockets) socket.destroy(); await Promise.all(closing); await setup.close();
   }
 });
+
+
+test('valid native mTLS cannot substitute for the pinned gateway endpoint key', async t => {
+  const fixture = await rig(), nativeClient = channel('net.client.socket'), nativeSockets = new Set<Socket>();
+  const tls: { authorized: boolean; protocol: string | null; certificateMatches: boolean }[] = [];
+  const freshOwners = [new AbortController(), new AbortController()];
+  const directory = fixture.fixture.directory;
+  let observing = false, exposed = 0, attempted = 0, stage = 'incumbent', detached = () => {};
+  let expectedCertificate = '';
+  const observeClient = (message: unknown) => {
+    if (!observing) return;
+    const socket = (message as { socket: TLSSocket }).socket; nativeSockets.add(socket); attempted++;
+    socket.once('secureConnect', () => tls.push({ authorized: socket.authorized, protocol: socket.getProtocol(),
+      certificateMatches: socket.getPeerCertificate().fingerprint256 === expectedCertificate }));
+    socket.once('close', () => nativeSockets.delete(socket));
+  };
+  nativeClient.subscribe(observeClient);
+  try {
+    const incumbent = await fixture.pair(); let incumbentValue = '';
+    detached = incumbent.receiverClient.peer.onData((_lane, data) => { if (typeof data === 'string') incumbentValue = data; });
+    assert.equal(incumbent.sourceClient.peer.send('reliable', 'incumbent-before-key-failure'), true);
+    await until(() => incumbentValue === 'incumbent-before-key-failure');
+    const failed = fixture.issue(2), wrongGatewayKey = fixture.identities[0]!.keyId;
+    assert.notEqual(wrongGatewayKey, failed.ticket.source.gatewayKeyId);
+    const wrong = { ...failed.ticket.source, gatewayKeyId: wrongGatewayKey };
+    const { gatewayKeyId: expected, ...expectedTlsAndScope } = failed.ticket.source;
+    const { gatewayKeyId: substituted, ...actualTlsAndScope } = wrong;
+    assert.notEqual(substituted, expected); assert.deepEqual(actualTlsAndScope, expectedTlsAndScope);
+    expectedCertificate = failed.ticket.source.gatewayCertificateFingerprint;
+    stage = 'wrong-gateway-key-after-valid-TLS'; observing = true;
+    const source = fixture.connect(wrong, 2).then(value => { exposed++; return value; });
+    const receiver = fixture.connect(failed.ticket.receiver, 3).then(value => { exposed++; return value; });
+    await Promise.all([assert.rejects(source), assert.rejects(receiver)]); observing = false;
+    assert.equal(exposed, 0, 'Neither candidate helper may expose a selected public peer');
+    assert.equal(attempted, 2); assert.equal(tls.length, 2);
+    for (const observed of tls) { assert.equal(observed.authorized, true); assert.equal(observed.protocol, 'TLSv1.3'); assert.equal(observed.certificateMatches, true); }
+    assert.equal(nativeSockets.size, 0, 'Rejected helpers join their actual TLS/TCP close before rejection');
+    await until(() => fixture.gateway.snapshot().pairs === 1);
+    assert.equal(incumbent.sourceClient.status().active, true); assert.equal(incumbent.receiverClient.status().active, true);
+    assert.equal(incumbent.sourceClient.peer.send('reliable', 'incumbent-after-key-failure'), true);
+    await until(() => incumbentValue === 'incumbent-after-key-failure');
+    stage = 'fresh-explicit-approval-correct-pin';
+    const fresh = fixture.gateway.issuePair({ ...fixture.request(2), sessionId: 'fresh-correct-key', epoch: '4'.repeat(32) },
+      request => ({ request, expiresAt: request.expiresAt, signal: freshOwners[request.role === 'source' ? 0 : 1]!.signal }));
+    assert.notEqual(fresh.pairId, failed.ticket.pairId); assert.notEqual(fresh.source.token, failed.ticket.source.token);
+    assert.notEqual(fresh.source.epoch, failed.ticket.source.epoch); assert.equal(fresh.source.gatewayKeyId, expected);
+    const [freshSource, freshReceiver] = await Promise.all([fixture.connect(fresh.source, 2), fixture.connect(fresh.receiver, 3)]);
+    let freshValue = ''; const detachFresh = freshReceiver.peer.onData((_lane, data) => { if (typeof data === 'string') freshValue = data; });
+    try {
+      assert.equal(freshSource.peer.send('reliable', 'fresh-correct-key-effect'), true);
+      await until(() => freshValue === 'fresh-correct-key-effect');
+      assert.ok(fixture.sdk.authenticatedPeerScope(freshSource.peer)); assert.ok(fixture.sdk.authenticatedPeerScope(freshReceiver.peer));
+      assert.equal(incumbentValue, 'incumbent-after-key-failure'); assert.equal(incumbent.sourceClient.status().active, true);
+    } finally { detachFresh(); }
+    stage = 'complete';
+  } finally {
+    observing = false; nativeClient.unsubscribe(observeClient); detached(); freshOwners.forEach(owner => owner.abort());
+    const closing = [...nativeSockets].map(socket => new Promise<void>(resolve => socket.once('close', () => resolve())));
+    for (const socket of nativeSockets) socket.destroy(); await Promise.all(closing); await fixture.close();
+    const final = fixture.gateway.snapshot();
+    t.diagnostic(JSON.stringify({ kind: 'S04-native-gateway-key-pin', stage, attemptedNativeSockets: attempted, tls, exposedCandidatePeers: exposed,
+      ownedFixtureDirectory: directory, fixtureRemoved: !existsSync(directory), final: { pairs: final.pairs, nativeConnections: final.nativeConnections,
+        pendingRaw: final.pendingRaw, queuedMessages: final.queuedMessages, timers: final.timers } }));
+    assert.equal(nativeSockets.size, 0); assert.equal(final.pairs, 0); assert.equal(final.nativeConnections, 0);
+    assert.equal(final.pendingRaw, 0); assert.equal(final.timers, 0); assert.equal(existsSync(directory), false);
+  }
+});

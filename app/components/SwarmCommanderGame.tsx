@@ -65,7 +65,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     },
   });
 
-  const { linked, readiness, controllerHost } = useGameHost<SwarmCommanderState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<SwarmCommanderState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -114,7 +114,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     <section className="swarm-page">
       <header className="swarm-heading"><div><button className="back-button" onClick={onExit}><Icon name="back" size={16} />Back</button><h1>Swarm Commander <span>101</span></h1></div><div className="swarm-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>WAVE</span><strong>{hud.wave}</strong></div><div><span>AGENTS</span><strong>{hud.agents}</strong></div><div><span>HOSTILES</span><strong>{hud.enemies}</strong></div></div></header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="swarm-arena">
         <div className="swarm-statusbar"><FullscreenButton /><span>{linked ? `${linked} SPECIALIST DEVICES` : camera.state === "on" ? cameraStatusLabel(camera.state, "hands") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Swarm Commander. Point with the mouse to command, click to select, move with WASD or arrows, choose formations with one through five, pulse with Q, shield with E, and recall with R." />

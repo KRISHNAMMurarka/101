@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "source": {
+    "ref": "refs/codex/evidence/2026-10-16-game-recovery/source-v2",
+    "commit": "a29bef3b0aa8efc899b4a9007c5b4e9c07134065",
+    "tree": "e6fe8149d8348a45349eaf502fe89c8000d094a6",
+    "base": "efdcb8bb8aa6071f2624a37f6587386ed043edc1",
+    "readBackFiles": 69,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ordinaryIntegration": false
+  },
+  "buildSha256": "fe26e49893137a526f34f3a07c9902a8e73dba72cfc6352efc2efcfb4cc3afdf",
+  "wholeTasksClosed": [],
+  "integration": "Focused validation only; exact-candidate broad gates and ordinary integration recorded separately.",
+  "supportRowsAccepted": [],
+  "nativeStartup": "UNRESOLVED; no reliability fix or historical failure clearance.",
+  "tasks": [
+    "U05",
+    "U10",
+    "Q05"
+  ],
+  "summary": "All ten shared game callers now show plain Try again/Back recovery for launch/build/view setup failure. Failed and departed runs retire input before joining pending preload; stale completion cannot restore the view. GravityStack shows the announced controller name and Ready to play.",
+  "sourceSha256": {
+    "app/components/GravityStackGame.tsx": "9a43a128f7258c04427f08b1ec916ad8d85d6bcb450af91fb6ec1212a6416d42",
+    "app/lib/use-game-host.ts": "a18cbdcd869593da79f33921af958fc7581cd348eaca876cfbcea90b73f97ae5",
+    "app/components/GameControllerOverlay.tsx": "233acedc2656b476adf802982aaead544283b2ecbf76601b7e7e9f83560a7ea2",
+    "games/gravitystack/src/game.ts": "87296fc3bb7e5e132b19ecc1022376961f25d436afd4b19f0000c5be91452b6e",
+    "packages/physics/src/index.ts": "fdd20db65e33474234cd8d411cfdd6d83506f5f48c323508521ba939eb903f70",
+    "packages/game-host/src/index.ts": "97360b8b79fe751aa98834196322c6847902e85626b1d8ce3d8ffa56039772ae",
+    "tools/qa-gravitystack-recovery.mjs": "d650f281a8c1b5cf5a53c3f05a0fee46a1733191bd192b6a1c99a01e6f5a40b3"
+  },
+  "focused": {
+    "unit": "29/29 related game-host/input/simulation/overlay checks",
+    "browser": 50,
+    "result": "pass",
+    "browsers": [
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "session-reuse",
+        "checks": [
+          {
+            "name": "session-A-to-pending-B-to-A-never-reuses-closed-binding",
+            "pass": true,
+            "pendingB": true,
+            "pendingA": true,
+            "held": true
+          },
+          {
+            "name": "abandoned-session-start-retires-without-overwriting-new-run",
+            "pass": true
+          },
+          {
+            "name": "reused-session-starts-a-fresh-playable-world",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "preload-left",
+        "checks": [
+          {
+            "name": "leave-during-preload-releases-keyboard",
+            "pass": true
+          },
+          {
+            "name": "late-native-preload-cannot-restore-view-or-session",
+            "pass": true
+          },
+          {
+            "name": "fresh-mount-after-late-preload-is-playable",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "copy",
+        "checks": [
+          {
+            "name": "ready-status-uses-player-language",
+            "pass": true,
+            "observed": "1 connected controller\nReady to play"
+          },
+          {
+            "name": "assigned-controller-shows-announced-name",
+            "pass": true,
+            "observed": "Players\nAdd another \u2197\n\nGravity Controller\nLiving room controller\n\nShape Builder\nOn this screen"
+          },
+          {
+            "name": "unassigned-role-stays-on-this-screen",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "chromium",
+        "version": "149.0.7827.55",
+        "scenario": "preload-refused",
+        "checks": [
+          {
+            "name": "actual-physics-preload-refusal-has-recovery",
+            "pass": true,
+            "wasmAttempts": 1,
+            "errors": []
+          },
+          {
+            "name": "recovery-focus-and-plain-message",
+            "pass": true
+          },
+          {
+            "name": "retry-creates-playable-physics-world",
+            "pass": true
+          },
+          {
+            "name": "retry-accepts-real-drop-input",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "session-reuse",
+        "checks": [
+          {
+            "name": "session-A-to-pending-B-to-A-never-reuses-closed-binding",
+            "pass": true,
+            "pendingB": true,
+            "pendingA": true,
+            "held": true
+          },
+          {
+            "name": "abandoned-session-start-retires-without-overwriting-new-run",
+            "pass": true
+          },
+          {
+            "name": "reused-session-starts-a-fresh-playable-world",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "preload-left",
+        "checks": [
+          {
+            "name": "leave-during-preload-releases-keyboard",
+            "pass": true
+          },
+          {
+            "name": "late-native-preload-cannot-restore-view-or-session",
+            "pass": true
+          },
+          {
+            "name": "fresh-mount-after-late-preload-is-playable",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "copy",
+        "checks": [
+          {
+            "name": "ready-status-uses-player-language",
+            "pass": true,
+            "observed": "1 connected controller\nReady to play"
+          },
+          {
+            "name": "assigned-controller-shows-announced-name",
+            "pass": true,
+            "observed": "Players\nAdd another \u2197\n\nGravity Controller\nLiving room controller\n\nShape Builder\nOn this screen"
+          },
+          {
+            "name": "unassigned-role-stays-on-this-screen",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      },
+      {
+        "browser": "webkit",
+        "version": "26.5",
+        "scenario": "preload-refused",
+        "checks": [
+          {
+            "name": "actual-physics-preload-refusal-has-recovery",
+            "pass": true,
+            "wasmAttempts": 1,
+            "errors": []
+          },
+          {
+            "name": "recovery-focus-and-plain-message",
+            "pass": true
+          },
+          {
+            "name": "retry-creates-playable-physics-world",
+            "pass": true
+          },
+          {
+            "name": "retry-accepts-real-drop-input",
+            "pass": true
+          },
+          {
+            "name": "no-unhandled-page-errors",
+            "pass": true,
+            "errors": []
+          },
+          {
+            "name": "no-horizontal-overflow",
+            "pass": true
+          },
+          {
+            "name": "back-exits-current-run",
+            "pass": true
+          }
+        ]
+      }
+    ]
+  },
+  "originalFailures": [
+    {
+      "evidence": "outputs/controllers/2026-10-16-gravity-recovery/original-red.json",
+      "witness": "Both built browser engines expose internal assigned device ID and simulation wording; actual Physics101/Rapier WASM compilation rejection is unhandled and has no Retry."
+    },
+    {
+      "evidence": "outputs/controllers/2026-10-16-gravity-recovery/preload-input-old-red.log",
+      "witness": "Old host fails local adapter retirement while arbitrary preload remains pending."
+    }
+  ],
+  "fixtureCorrections": [
+    "Earlier lifecycle fixture failed before mounting because its library bundle lacked an explicit production environment; that timeout is not a witnessed product failure.",
+    "A zero-duration synthetic Space pulse could arrive and release between WebKit simulation steps; final QA holds the real key until a real piece appears, then releases."
+  ],
+  "review": "outputs/controllers/2026-10-16-gravity-recovery/independent-review.json",
+  "scope": "Fresh built GravityStack on Chromium/WebKit; real Physics101/Rapier preload, same-browser native BroadcastChannel transport and actual SessionHost assignment/configuration. One software-controlled WebAssembly compilation refusal, then native compiler on retry. Separate actual-source React fixture holds first native WASM result across unmount, and separately holds actual keyboard adapter start return over A-to-B-to-A prop changes; native call receivers and GameHost connect/launch ownership are preserved. No physical controller, remote pairing, OS permission or native startup qualification.",
+  "cleanup": {
+    "browsers": 0,
+    "contexts": 0,
+    "servers": 0
+  },
+  "evidencePath": "outputs/controllers/2026-10-16-gravity-recovery/browser-v2.json",
+  "limits": [
+    "The full U05 player-surface copy/monochrome inventory and full U10 surface-by-state matrix remain open.",
+    "All ten callers propagate shared recovery; built refusal/Retry/physics and separate held-preload React fixture are directly exercised with GravityStack.",
+    "No physical phone, remote controller, assistive-technology, native OS permission or startup reliability acceptance."
+  ],
+  "firstRejectedBroadAttempt": {
+    "candidateCommit": "d620700902c62700b5fc7a67869574cc41ef4c48",
+    "candidateTree": "3762c65e76bba89e6f8f99bedc2e5f208daf3050",
+    "unit": "3415/3415;0skipped",
+    "freshRendered": "37/37;0skipped",
+    "failedGate": "lint",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-game-recovery/first-gates",
+      "commit": "8af9e54d4e900f439dd1bf607cc805f8d4634501",
+      "tree": "8b12c227bf5e55daa6afdf29bf5274a5ed1e7b12",
+      "readBackFiles": 17,
+      "allBytesMatched": true,
+      "ownedScratchRemoved": true
+    },
+    "integrated": false
+  },
+  "startupStateCorrection": "One keyed view snapshot renders and conditionally stores a fresh pending state on run/session/attempt changes. Failure explicitly clears session/readiness; stale reports are visit-owned. Actual A\u2192held-start B\u2192A native React regression passes in both engines."
+}

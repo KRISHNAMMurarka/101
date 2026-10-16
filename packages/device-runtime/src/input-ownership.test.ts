@@ -4,17 +4,17 @@ import { pointerSourceDescriptor } from '../../device-web/src/pointer-provider.t
 import { createDeviceRuntime } from './index.ts';
 import { createInputOwnershipController } from './input-ownership.ts';
 import type { InputOwnershipController } from './input-ownership.ts';
-import type { DeliveryContext } from './types.ts';
+import type { AuthorizationRequest, DeliveryContext } from './types.ts';
 import { createInputOwnershipExample } from '../../../examples/device-pipelines/input-ownership.ts';
 
 function harness(partitions = false) {
-  let time = 0, allowed = true, grants = 0;
+  let time = 0, allowed = true, grants = 0; let clockHook: (() => void) | undefined; const grantRequests: AuthorizationRequest[] = [];
   const values = new Map<string, { route: string; value: unknown }>(), releases: string[] = [];
   let holdPosition = false;
   const delayed: Array<{ context: DeliveryContext; finish: () => void }> = [];
   const runtime = createDeviceRuntime({ now: () => time, authorize(request) {
     if (!allowed || !controller?.isApproved(request)) return;
-    grants++; return { expiresAt: time + 60000, maxAgeMs: 1000, maxHz: 60 };
+    grantRequests.push(request); grants++; return { expiresAt: time + 60000, maxAgeMs: 1000, maxHz: 60 };
   } });
   const descriptors = ['first', 'second'].map(id => ({ ...pointerSourceDescriptor(), id }));
   const sources = descriptors.map((device, index) => ({ id: device.id, label: device.id, principalId: `local-${index}`,
@@ -37,7 +37,7 @@ function harness(partitions = false) {
     } }); runtime.setReadiness(handle, 'available'); return { handle, device, capability: capability.id };
   });
   const controller: InputOwnershipController = createInputOwnershipController({ runtime, applicationId: 'ownership-example', sessionId: 'local', sources,
-    destination: { label: 'Application pointer', resources }, now: () => time });
+    destination: { label: 'Application pointer', resources }, now: () => { const callback = clockHook; clockHook = undefined; callback?.(); return time; } });
   let operation = 0;
   const request = (source = 'first', slot = partitions ? 'left' : 'exclusive') => {
     const result = controller.request(source, slot); if (!result.ok) throw new Error(result.reason); assert.equal(result.ok, true); return result.value;
@@ -50,7 +50,7 @@ function harness(partitions = false) {
     runtime.publish(sources[source]!.resources[0]!.handle, { x: source ? 0.8 : 0.2, y: 0.4 }); runtime.flush();
   };
   return { controller, runtime, sources, resources, request, approve, publish, values, releases, grants: () => grants,
-    setNow: (value: number) => { time = value; }, setAllowed: (value: boolean) => { allowed = value; },
+    grantRequests, setClockHook: (value: () => void) => { clockHook = value; }, setNow: (value: number) => { time = value; }, setAllowed: (value: boolean) => { allowed = value; },
     setHoldPosition: (value: boolean) => { holdPosition = value; }, delayed };
 }
 
@@ -147,4 +147,74 @@ test('current grant expiry removes ownership and pending requests; renewal canno
   assert.equal(h.controller.snapshot().slots[0]!.owner, undefined); assert.equal(h.controller.snapshot().slots[0]!.request, undefined);
   assert.equal(h.values.size, 0); assert.equal(h.releases.length, 2);
   assert.equal(h.approve('second').ok, true); h.controller.close(); h.runtime.close();
+});
+
+
+function freshSource(h: ReturnType<typeof harness>, principalId = 'replacement-principal') {
+  const device = { ...pointerSourceDescriptor(), id: 'replacement-pointer' };
+  return { id: 'first', label: 'Replacement', principalId, resources: device.capabilities.map(capability => {
+    const handle = h.runtime.registerSource({ device, capability: capability.id }); h.runtime.setReadiness(handle, 'available');
+    return { handle, device, capability: capability.id };
+  }) };
+}
+
+test('source replacement refuses live or pending ownership, then preserves the independent held partition and needs fresh approval', () => {
+  const h = harness(true), next = freshSource(h);
+  try {
+    h.approve('first', 'left'); h.approve('second', 'right'); h.publish(); h.publish(1);
+    const independent = h.controller.snapshot().slots[1]!;
+    assert.deepEqual(h.controller.replaceSource(h.sources[0]!, next), { ok: false, reason: 'busy' });
+    const first = h.controller.snapshot().slots[0]!; assert.equal(h.controller.release('left', first.epoch).ok, true);
+    const pending = h.request('first', 'left');
+    assert.deepEqual(h.controller.replaceSource(h.sources[0]!, next), { ok: false, reason: 'busy' });
+    h.controller.cancel(pending.id);
+    const grants = h.grants(); assert.equal(h.controller.replaceSource(h.sources[0]!, next).ok, true);
+    assert.deepEqual(h.controller.snapshot().slots[1], independent); assert.equal(h.values.get('right:contact')?.value, true);
+    assert.equal(h.grants(), grants); assert.equal(h.values.has('left:contact'), false);
+    h.publish(); assert.equal(h.values.has('left:contact'), false, 'Retired issued handles retain no consent');
+    assert.deepEqual(h.controller.replaceSource(h.sources[0]!, next), { ok: false, reason: 'stale' });
+    const approvalStart = h.grantRequests.length; const request = h.request('first', 'left'); assert.equal(h.controller.decide(request.id, request.expectedOwnerEpoch, true).ok, true);
+    assert.equal(h.controller.snapshot().slots[0]!.owner?.principalId, next.principalId); assert.ok(h.grantRequests.length > approvalStart); assert.ok(h.grantRequests.slice(approvalStart).every(request => request.principalId === next.principalId));
+    h.setNow(100); assert.equal(h.runtime.publish(next.resources[1]!.handle, true, { operationId: '1', deadline: 200 }).ok, true); h.runtime.flush();
+    assert.equal(h.values.get('left:contact')?.value, true); assert.deepEqual(h.controller.snapshot().slots[1], independent);
+  } finally { h.controller.close(); h.runtime.close(); }
+});
+
+test('source replacement requires current runtime-issued directions and exact identities without touching an independent owner', () => {
+  const h = harness(true), next = freshSource(h), foreign = createDeviceRuntime({ authorize() { return undefined; } });
+  try {
+    h.approve('second', 'right'); h.publish(1); const independent = h.controller.snapshot().slots[1]!;
+    const refused = (candidate: typeof next) => { assert.equal(h.controller.replaceSource(h.sources[0]!, candidate).ok, false); assert.deepEqual(h.controller.snapshot().slots[1], independent); assert.equal(h.values.get('right:contact')?.value, true); };
+    refused({ ...next, principalId: h.sources[1]!.principalId });
+    refused({ ...next, principalId: h.sources[0]!.principalId });
+    refused({ ...next, resources: next.resources.map(value => ({ ...value, handle: { id: value.handle.id } })) });
+    refused({ ...next, resources: next.resources.map(value => ({ ...value, handle: foreign.registerSource({ device: value.device, capability: value.capability }) })) });
+    refused({ ...next, resources: next.resources.map(value => ({ ...value, handle: h.runtime.registerSink({ device: { ...value.device, capabilities: value.device.capabilities.map(capability => ({ ...capability, kind: 'property', permissions: ['write'] })) }, capability: value.capability, apply() {}, release() {} }) })) });
+    refused({ ...next, resources: next.resources.map(value => ({ ...value, device: { ...value.device, label: 'False descriptor' } })) });
+    h.runtime.unregister(next.resources[0]!.handle); refused(next);
+  } finally { h.controller.close(); h.runtime.close(); foreign.close(); }
+});
+
+test('source replacement snapshots input across accessor and clock reentry and refuses closed runtime provenance', () => {
+  const h = harness(true), next = freshSource(h);
+  try {
+    h.approve('second', 'right'); h.publish(1); const independent = h.controller.snapshot().slots[1]!; let reentry: unknown;
+    const candidate = { ...next, get label() { reentry = h.controller.request('first', 'left'); return next.label; } };
+    assert.equal(h.controller.replaceSource(h.sources[0]!, candidate).ok, true); assert.deepEqual(reentry, { ok: false, reason: 'busy' });
+    assert.deepEqual(h.controller.snapshot().slots[1], independent);
+    const newer = freshSource(h, 'another-principal'); h.setClockHook(() => h.runtime.unregister(newer.resources[0]!.handle));
+    assert.equal(h.controller.replaceSource(next, newer).ok, false); assert.deepEqual(h.controller.snapshot().slots[1], independent);
+  } finally { h.controller.close(); h.runtime.close(); }
+  const closed = harness(true), unused = freshSource(closed); closed.runtime.close();
+  assert.equal(closed.controller.replaceSource(closed.sources[0]!, unused).ok, false); closed.controller.close();
+});
+
+
+test('constructor compatibility remains available to a custom runtime while source replacement refuses absent issuance provenance', () => {
+  const h = harness(true);
+  const custom = new Proxy(h.runtime, { get(target, key) { const value = Reflect.get(target, key, target); return typeof value === 'function' ? value.bind(target) : value; } });
+  const controller = createInputOwnershipController({ runtime: custom, applicationId: 'custom-host', sessionId: 'test', sources: h.sources,
+    destination: { label: 'Application pointer', resources: h.resources }, now: () => 0 });
+  try { assert.equal(controller.snapshot().closed, false); assert.deepEqual(controller.replaceSource(h.sources[0]!, freshSource(h)), { ok: false, reason: 'invalid-source' }); }
+  finally { controller.close(); h.controller.close(); h.runtime.close(); }
 });

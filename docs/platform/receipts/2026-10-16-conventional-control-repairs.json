@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "sourceSnapshot": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/source-snapshot",
+    "commit": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+    "tree": "e309d8e2b3a52e31eb9b20fe969a9f88b1ad1be7",
+    "paths": 44,
+    "readBackMatched": true,
+    "realIndexUnchanged": true
+  },
+  "focusedCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/focused",
+    "commit": "355471e42c9daddfed9d3cfb51d50a69c14789d8",
+    "tree": "4634babea71122db5602cfaf6267c37174be6873",
+    "readBackFiles": 171,
+    "allBytesMatched": true
+  },
+  "nativeStartup": "UNRESOLVED; no startup repair or historical failure clearance.",
+  "tasks": [
+    "G06",
+    "U05",
+    "U07"
+  ],
+  "summary": "EchoMaze consumes real Mark input with visible floor-local markers; BeatForge accepts conventional semantic swing; the narrow Echo field log follows the canvas instead of covering the explorer.",
+  "sourceSha256": {
+    "games/echomaze/src/game.ts": "ee209fc1119db03e7a56bf3873c055d7f987d146545ecc20a7dc769d4af407b4",
+    "games/echomaze/src/roles.ts": "08d6fee6bd1ef8b1e4ab79ec71dfb5612949bacb40d015412588cecb0e4f5a64",
+    "games/beatforge/src/game.ts": "5a331fdd6c3c35deffac1d27654acb38e987a3d642bbc53de41c8d3be640b33b",
+    "games/beatforge/src/roles.ts": "d8067e514cc5679b69af4dcb9ef383e24aa4f94e332474728aa4d8739f19fea8",
+    "games/beatforge/input.manifest.json": "dc0587cfaebb381e56542c7ba7e935968e7cea5729f73922d28f06a8dc4fa648",
+    "app/components/EchoMazeGame.tsx": "6c6e892140787816740a7ed114546e5015f511e8f85bfe7239e43829f412bc3b",
+    "app/components/BeatForgeGame.tsx": "86dba57ce3357f70e4d02e3ca125c8b43efe2eb97e3b9fe7a63adf072b5bf119",
+    "packages/adapter-keyboard/src/index.ts": "86f5df979c9d665d33bec63713fb2e9dc643ffc8978dcb9074e10fd95211f5bb",
+    "packages/adapter-gamepad/src/index.ts": "fc2bb099b71edd4494bc941fd702b9c1830481eb599a5121581838ca9687d833",
+    "app/controller/Controller.tsx": "ed6212a4c415ea491d999906dac88aa1ffe526b70f06703f871b420ab8d130ab",
+    "app/components/game-controller-input.ts": "4897535666e29223af22be1dcedd8bf27c83b702bb7056d2ce8aa33e1138e333",
+    "app/components/GameControllerOverlay.tsx": "233acedc2656b476adf802982aaead544283b2ecbf76601b7e7e9f83560a7ea2",
+    "app/globals.css": "2c087fa5a146895a9fed2edd4760c82d6e115c6cebeeaec536a5ff26a5d08ab7",
+    "tools/qa-game-control-repairs.mjs": "d00267e4a49cf3a0a8a06dd147123a114e88d2538ed53a14a635dab980851684"
+  },
+  "buildSha256": "6de095aa4548dc377907594f0dce3017b2c211e2540ee6dff25ea01c43a27a9a",
+  "originalFailures": [
+    {
+      "path": "controller/2026-10-16-game-control-repair/original-red.log",
+      "result": "Six missing Mark/activation regression failures on the old implementation."
+    },
+    {
+      "path": "controller/2026-10-16-game-control-repair/floor-original-red.log",
+      "result": "Explicit missing Mark assertion replaces an incidental undefined-length test error."
+    },
+    {
+      "path": "controller/2026-10-16-game-control-repair/maze-narrow-marked.png",
+      "result": "Actual native browser screenshot shows the old field log covering the initial explorer/mark region."
+    }
+  ],
+  "oldOccludedCssCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/occluded-css",
+    "commit": "1e03f6a89c1a2e6e8b06e76486656ed97d657b08",
+    "tree": "cd7022a42f744dd108c0a4ba19aaad019766a0d4",
+    "sha256": "0d0fe9a3639930e01811b559d4fc710d7ddf82429961190df866a2ce525fc6fe",
+    "readBackMatched": true
+  },
+  "verification": {
+    "focusedUnit": {
+      "tests": 29,
+      "pass": 29,
+      "fail": 0,
+      "raw": "controller/2026-10-16-game-control-repair/focused.log"
+    },
+    "styles": {
+      "checks": 14,
+      "pass": 14,
+      "raw": "controller/2026-10-16-game-control-repair/styles.log"
+    },
+    "browser": {
+      "checks": 54,
+      "pass": true,
+      "engines": [
+        "chromium",
+        "webkit"
+      ],
+      "viewports": [
+        "desktop-dark 1440x1000",
+        "narrow-light 390x844"
+      ],
+      "raw": "controller/2026-10-16-game-control-repair/browser-final.json",
+      "observed": [
+        "Native keyboard and local role Mark consumers, held/release/new-place behavior and projected marker-region pixels",
+        "Real Beat target scoring from keyboard G and local role pointer/arrow controls, held nonrepeat, natural end, focused result and fresh restart",
+        "Narrow field-log geometry, Back, browser errors and overflow"
+      ],
+      "clockOrGameStateOverrides": false
+    },
+    "review": {
+      "decision": "approve",
+      "path": "controller/2026-10-16-game-control-repair/review.json",
+      "boundary": "Independent source review; browser proof was completed afterward by the integration owner."
+    }
+  },
+  "cleanup": {
+    "contextsClosed": true,
+    "browsersClosed": true,
+    "serverClosed": true
+  },
+  "limits": [
+    "Focused browser proof does not complete all ten games or whole G06. Full journeys are recorded separately.",
+    "Actual adapters/InputBus/game updates prove software keyboard, local roles and a faithful standard gamepad fixture; no physical controller, phone, camera/motion recognition or assistive-technology acceptance.",
+    "Echo floor progression is actual key-driven unit traversal; full browser expedition/end is outside this receipt.",
+    "Initial strip-import, selectors, pointer delivery, chart timing, draw observation and cleanup harness failures are retained separately, not promoted to product regressions.",
+    "Focused validation does not replace exact-candidate broad gates or ordinary integration."
+  ]
+}

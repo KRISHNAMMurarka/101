@@ -9,20 +9,25 @@ export function readWatchReportFixtures(path) {
   const bytes = readFileSync(path); assert.ok(bytes.byteLength <= 32768);
   const source = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
   assert.equal(source.schemaVersion, 1); assert.equal(source.contract, 'watch-report-contracts/1');
-  assert.deepEqual(source.applicability, { javascript: 'watch-companion-report/1', swift: 'legacy-watch-payload/1', kotlin: 'legacy-watch-payload/1', c: 'unsupported' });
+  assert.deepEqual(source.applicability, { javascript: 'watch-companion-report/1', swift: 'legacy-watch-payload/1', kotlin: 'legacy-watch-payload/1', c: 'watch-report-c-strict/1' });
   assert.deepEqual(source.limits, { fixtureBytes: 32768, golden: 16, decode: 64, commands: 128, lineBytes: 4096,
     rawInputBytes: 256, outputBytes: 131072, nativeDeadlineMs: 30000 });
   assert.match(source.baseHex, /^[0-9a-f]{106}$/);
   assert.ok(Array.isArray(source.golden) && source.golden.length >= 6 && source.golden.length <= 16);
   assert.ok(Array.isArray(source.decode) && source.decode.length >= 20 && source.decode.length <= 64);
   const identities = new Set();
+  for (const entry of source.golden) {
+    assert.deepEqual(Object.keys(entry.accept).sort(), ['c']);
+    assert.equal(entry.accept.c, true, entry.id);
+  }
   for (const entry of [...source.golden, ...source.decode]) {
     assert.match(entry.id, /^[a-z0-9-]{1,64}$/); assert.equal(identities.has(entry.id), false); identities.add(entry.id);
     materializeWatchReportFixture(source, entry); watchReportFixtureMeaning(source, entry);
   }
   for (const entry of source.decode) {
-    assert.deepEqual(Object.keys(entry.accept).sort(), ['javascript', 'kotlin', 'swift']);
+    assert.deepEqual(Object.keys(entry.accept).sort(), ['c', 'javascript', 'kotlin', 'swift']);
     assert.ok(Object.values(entry.accept).every(value => typeof value === 'boolean'));
+    assert.equal(entry.accept.c, entry.accept.javascript, entry.id);
     assert.equal(entry.accept.swift, entry.accept.kotlin);
     if (entry.accept.javascript !== entry.accept.swift) assert.equal(entry.difference, 'legacy-masks-reserved-buttons-strict-profile-rejects');
   }
@@ -66,7 +71,7 @@ export function verifyWatchJavaScriptFixtures(source) {
     else assert.throws(() => decodeWatchCompanionReport(bytes), entry.id);
   }
   return { golden: source.golden.length, decode: source.decode.length,
-    incompatibilities: source.decode.filter(entry => entry.accept.javascript !== entry.accept.swift).map(entry => entry.id), c: 'unsupported' };
+    incompatibilities: source.decode.filter(entry => entry.accept.javascript !== entry.accept.swift).map(entry => entry.id), c: source.applicability.c };
 }
 
 /** Native codec bytes feed current public SDK source/sink routes through explicitly software bridge ports.

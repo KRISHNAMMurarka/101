@@ -15,7 +15,7 @@ import { useGameHost } from "@/app/lib/use-game-host";
 import SLASHSTORM_INPUT from "@/games/slashstorm/input.manifest.json";
 import SLASHSTORM_MANIFEST from "@/games/slashstorm/manifest.json";
 import { useRef, useState } from "react";
-import { createSlashstormGame, SLASH_TRAIL_SECONDS, type SlashstormState, type SlashStrokeSegment } from "@/games/slashstorm/src/game";
+import { createSlashstormGame, toggleSlashstormPause, SLASH_TRAIL_SECONDS, type SlashstormState, type SlashStrokeSegment } from "@/games/slashstorm/src/game";
 import type { SlashTarget } from "@/games/slashstorm/src/director";
 import { SLASHSTORM_ROLES } from "@/games/slashstorm/src/roles";
 
@@ -25,17 +25,19 @@ interface SlashHud {
   lives: number;
   wave: number;
   gameOver: boolean;
+  paused: boolean;
   lastHit: string;
 }
 
-const INITIAL_HUD: SlashHud = { score: 0, combo: 0, lives: 3, wave: 1, gameOver: false, lastHit: "" };
+const INITIAL_HUD: SlashHud = { score: 0, combo: 0, lives: 3, wave: 1, gameOver: false, paused: false, lastHit: "" };
 
 export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessionId: string; onConnect: () => void; onExit: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stateRef = useRef<SlashstormState | null>(null);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<SlashHud>(INITIAL_HUD);
 
-  const { linked, readiness, controllerHost } = useGameHost<SlashstormState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<SlashstormState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -53,6 +55,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     onReady: ({ context }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      stateRef.current = context.state;
       let drawHandle = 0;
       let viewport = { width: 1, height: 1, ratio: 1 };
       const stopResize = observeCanvasViewport(canvas, (next) => { viewport = next; });
@@ -70,10 +73,11 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
 
       const hudTimer = window.setInterval(() => {
         const state = context.state;
-        setHud({ score: state.score, combo: state.combo, lives: state.lives, wave: state.wave, gameOver: state.gameOver, lastHit: state.lastHit });
+        setHud({ score: state.score, combo: state.combo, lives: state.lives, wave: state.wave, gameOver: state.gameOver, paused: state.paused, lastHit: state.lastHit });
       }, 100);
 
       return () => {
+        if (stateRef.current === context.state) stateRef.current = null;
         stopResize();
         window.clearInterval(hudTimer);
         cancelAnimationFrame(drawHandle);
@@ -86,6 +90,14 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
     setRun((current) => current + 1);
   };
 
+  const togglePause = () => {
+    const state = stateRef.current;
+    if (!state || state.gameOver) return;
+    toggleSlashstormPause(state);
+    setHud((current) => ({ ...current, paused: state.paused }));
+    if (!state.paused) canvasRef.current?.focus({ preventScroll: true });
+  };
+
   return (
     <section className="slash-page">
       <header className="slash-heading">
@@ -95,19 +107,20 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
 
       {/* Outside the arena: the arena hosts absolutely positioned overlays, so a notice placed
           inside it is drawn under the lives meter. */}
+      {hud.paused && <p role="status">Paused. Use Resume or press Escape in the play field to continue.</p>}
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="slash-arena">
         {/* The right-hand slot used to be the fixed string "POINTER · TOUCH · GAMEPAD · KEYBOARD",
             which claimed a gamepad whether or not one was plugged in. It now reports what the input
             manifest actually resolved against the hardware present. */}
-        <div className="slash-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
-        <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim and Space slashes." />
+        <div className="slash-statusbar"><FullscreenButton /><button type="button" className="outline-button" disabled={!controllerHost || hud.gameOver} aria-pressed={hud.paused} onClick={togglePause}>{hud.paused ? "Resume" : "Pause"}</button><span>{linked ? `${linked} LINK CONTROLLER` : describeSources(readiness)}</span></div>
+        <canvas ref={canvasRef} tabIndex={0} aria-label="Slashstorm play field. Drag or move the pointer while clicking to slice targets. Arrow keys aim, Space slashes, and Escape pauses or resumes." />
         <div className="slash-overlay-top"><div className="life-meter"><span>LIVES</span>{[0, 1, 2].map((life) => <i key={life} className={life < hud.lives ? "alive" : ""} />)}</div><div className="hit-callout">{hud.lastHit}</div><button onClick={onConnect}>{linked ? "ADD SWORD" : "CONNECT SWORD"} ↗</button></div>
         {hud.gameOver && <GameOverPanel title="Run complete" score={hud.score} detail="Final score" onRestart={restart} />}
       </div>
       </GameControllerOverlay>
-      <div className="slash-instructions"><span><b>POINTER / TOUCH</b> Hold and slice through targets</span><span><b>KEYBOARD</b> Arrows to aim · Space to slash</span><span><b>WARNING</b> Avoid orange overload bombs</span></div>
+      <div className="slash-instructions"><span><b>POINTER / TOUCH</b> Hold and slice through targets</span><span><b>KEYBOARD</b> Arrows to aim · Space to slash · Escape to pause</span><span><b>WARNING</b> Avoid orange overload bombs</span></div>
     </section>
   );
 }

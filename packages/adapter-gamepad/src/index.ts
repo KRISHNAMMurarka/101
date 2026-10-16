@@ -7,13 +7,14 @@ export class GamepadAdapter implements InputAdapter {
   private frameHandle?: number;
   private sequence = 0;
   private activeDeviceId?: string;
+  private readonly playerId: string;
 
   /** A registered gamepad adapter with nothing plugged in is not an available input source. */
   get available() {
     return this.activeDeviceId !== undefined;
   }
 
-  constructor(private readonly playerId = "player-1") {}
+  constructor(playerId = "player-1") { this.playerId = playerId; }
 
   start(emit: InputFrameListener) {
     this.emit = emit;
@@ -63,6 +64,7 @@ export class GamepadAdapter implements InputAdapter {
           "beat.punch": gamepad.buttons[0]?.pressed ?? false,
           "beat.raise": gamepad.buttons[3]?.pressed ?? false,
           "beat.duck": gamepad.buttons[1]?.pressed ?? false,
+          "beat.swing": gamepad.buttons[7]?.pressed ?? false,
           "spell.cast.shield": gamepad.buttons[4]?.pressed ?? false,
           "spell.cast.grab": gamepad.buttons[2]?.pressed ?? false,
           "spell.cast.projectile": gamepad.buttons[0]?.pressed ?? false,

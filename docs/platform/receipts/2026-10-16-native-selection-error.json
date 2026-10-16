@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "U10",
+    "N14",
+    "Q05"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "native window selection failure reaches existing notice handler after joined cleanup",
+  "sourceSha256": {
+    "apps/desktop-hub/src/desktop-controller.ts": "1b763551493d8e44e2c74748b9e0fd39458a09568b1726afb675aa72c8c13573",
+    "apps/desktop-hub/src/desktop-controller.test.ts": "b414c7f390aaa9711af8bbf68fa9705adc17cde02a007aa37149d090607b6707"
+  },
+  "checks": [
+    {
+      "name": "focused",
+      "command": [
+        "node",
+        "--test",
+        "apps/desktop-hub/src/desktop-controller.test.ts",
+        "apps/desktop-hub/src/desktop-input.test.ts"
+      ],
+      "pid": 66756,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 1.518
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npx",
+        "eslint",
+        "apps/desktop-hub/src/desktop-controller.ts",
+        "apps/desktop-hub/src/desktop-controller.test.ts"
+      ],
+      "pid": 67313,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 8.779
+    }
+  ],
+  "tests": {
+    "tests": 15,
+    "pass": 15,
+    "fail": 0,
+    "skipped": 0
+  },
+  "oldRed": "Two actual new regressions fail with missing expected rejection against original DesktopController before the minimal catch correction.",
+  "behavior": "Unpaired admission remains false without native call. With an admitted paired phone, refusal is rethrown only after Stop settles; no route or input effect is admitted. Simultaneous Stop failure retains both original causes and fixed Stop-retry guidance.",
+  "independentReviewSha256": "9765984ed79a94112c969294bf57929ddf962311cec84c99a151930316729f11",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-native-review-wave/selection",
+    "commit": "43ed51f00b888d2a36a88380438417c9c95f2504",
+    "tree": "7adb5cf5a704a593529c47203a77ce42fb1b2e35",
+    "readBackFiles": 15,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "limits": [
+    "Real DesktopController/SessionHost/DesktopInputBridge and cooperative native invoke seam; no actual Tauri IPC/dialog/window/event or OS permission acceptance.",
+    "Existing sole main caller already catches and notifies; actual Tauri Result-string propagation is source inspected, while executed refusal fixtures use Error objects.",
+    "This corrects recovery classification, not native process startup or wholeU10/N14/Q05."
+  ]
+}

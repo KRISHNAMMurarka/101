@@ -11,6 +11,7 @@ export const C_STRUCTURED_BINDING_PATHS = Object.freeze([
   `${base}/c/structured_telemetry_wire_test.c`, 'examples/language-bindings/structured-telemetry-consumer.c', 'tools/build-structured-telemetry-c.mjs',
 ]);
 const sharedPaths = [`${base}/fixtures/page-readings-v1.json`, `${base}/fixtures/structured-telemetry-v1.json`,
+  `${base}/fixtures/structured-telemetry-negative-v1.json`,
   'examples/language-bindings/structured-telemetry.mjs', 'tools/build-pointer-bindings.mjs', 'LICENSE'];
 const producerPaths = ['packages/device-web/src/wire.ts', 'packages/device-model/src/sample.ts', 'packages/device-model/src/descriptor.ts'];
 function encodingLine(packet) {
@@ -65,11 +66,15 @@ export function buildStructuredTelemetryC(reference, sdkRoot, sdkManifest) {
     assert.equal(profile.runtimeDependency.version, '2.15.1');
     for (const dependency of profile.runtimeDependency.files) assert.equal(fileHash(dependency.path), dependency.sha256);
     const clang = run('compiler-version', '/usr/bin/xcrun', ['clang', '--version']).trim(); assert.match(clang, /clang version 21\./);
-    const schemaPath = join(snapshot, `${base}/fixtures/page-readings-v1.json`), fixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-v1.json`), fixtures = JSON.parse(readFileSync(fixturePath));
+    const schemaPath = join(snapshot, `${base}/fixtures/page-readings-v1.json`),
+      fixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-v1.json`),
+      negativeFixturePath = join(snapshot, `${base}/fixtures/structured-telemetry-negative-v1.json`),
+      fixtures = JSON.parse(readFileSync(fixturePath));
     const actual = withPublicCaller(sdk, join(snapshot, 'examples/language-bindings/structured-telemetry.mjs'), (_, caller) => JSON.parse(run('actual-sdk-producer', process.execPath, [caller, '--schema', schemaPath])));
     assert.deepEqual(actual, fixtures); assert.equal(fixtures.positive.length, 5);
     for (const [from, to] of [['LICENSE', 'LICENSE'], [C_STRUCTURED_BINDING_PATHS[0], 'assets/profile.json'],
       [`${base}/fixtures/page-readings-v1.json`, 'assets/page-readings-v1.json'], [`${base}/fixtures/structured-telemetry-v1.json`, 'assets/structured-telemetry-v1.json'],
+      [`${base}/fixtures/structured-telemetry-negative-v1.json`, 'assets/structured-telemetry-negative-v1.json'],
       [C_STRUCTURED_BINDING_PATHS[1], 'include/one01_structured_telemetry_wire.h'], [C_STRUCTURED_BINDING_PATHS[2], 'source/one01_structured_telemetry_wire.c'],
       [C_STRUCTURED_BINDING_PATHS[3], 'source/structured_telemetry_wire_test.c'], [C_STRUCTURED_BINDING_PATHS[4], 'examples/structured-telemetry-consumer.c'],
       ['examples/language-bindings/structured-telemetry.mjs', 'examples/structured-telemetry.mjs']]) copy(from, to);
@@ -80,7 +85,8 @@ export function buildStructuredTelemetryC(reference, sdkRoot, sdkManifest) {
     run('library-archive', '/usr/bin/xcrun', ['ar', 'rcs', library, object]);
     const checks = join(work, 'checks'), caller = join(work, 'consumer');
     run('checks-compile', '/usr/bin/xcrun', [...flags, join(artifact, 'source/structured_telemetry_wire_test.c'), library, ...link, '-o', checks]);
-    assert.equal(run('native-checks', checks, [], {env: {...process.env, ONE01_STRUCTURED_FIXTURES: fixturePath}}), 'selected-c-groups:8\n');
+    assert.equal(run('native-checks', checks, [], {env: {...process.env,
+      ONE01_STRUCTURED_FIXTURES: fixturePath, ONE01_STRUCTURED_NEGATIVE_FIXTURES: negativeFixturePath}}), 'selected-c-groups:8\n');
     run('ordinary-caller-compile', '/usr/bin/xcrun', [...flags, join(artifact, 'examples/structured-telemetry-consumer.c'), library, ...link, '-o', caller]);
     const lines = fixtures.positive.flatMap(entry => [`D disposable ${entry.hex}`, encodingLine(entry.meaning)]), input = lines.join('\n') + '\n';
     writeFileSync(join(work, 'input.txt'), input); run('reciprocal-native', caller, [], {input});
@@ -102,7 +108,7 @@ export function buildStructuredTelemetryC(reference, sdkRoot, sdkManifest) {
     const closedPipe = 'import subprocess,sys; p=subprocess.Popen([sys.argv[1]],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE); p.stdout.close(); p.stdout=None; out,err=p.communicate(input=b"invalid\\n",timeout=5); assert p.returncode==2 and not err; print("closed-output-exit:2")';
     assert.equal(run('closed-output', '/usr/bin/python3', ['-c', closedPipe, caller]), 'closed-output-exit:2\n');
     const files = ordinaryFiles(artifact).map(path => ({path: path.slice(artifact.length + 1), bytes: readFileSync(path).length, sha256: fileHash(path)}));
-    assert.equal(files.length, 10, 'Own thin module/source/assets only; external Jansson is not packaged');
+    assert.equal(files.length, 11, 'Own thin module/source/assets only; external Jansson is not packaged');
     const tarball = join(output, 'one01-structured-telemetry-c-1.0.0.tgz');
     run('local-package', 'tar', ['--format=ustar', '-czf', tarball, '-C', artifact, '.'], {env: {...process.env, COPYFILE_DISABLE: '1'}});
     const manifest = {schemaVersion: 1, result: 'pass', profile: profile.profile, artifactProfile: profile.artifactProfile,

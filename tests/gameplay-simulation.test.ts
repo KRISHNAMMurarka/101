@@ -73,6 +73,28 @@ test("Slashstorm draws only dragged stroke segments, never a line from the old b
   assert.deepEqual(state.trail.at(-1)?.to, { x: -.8, y: .8 }, "the opposite diagonal follows the new drag, not an anchor");
 });
 
+test("Slashstorm resume starts a held blade at its new position without cutting across paused movement", () => {
+  const game = createSlashstormGame("pause-stroke");
+  const input = new ScriptedInput(), state = game.initialState();
+  const context: GameContext<typeof state> = { input, state, assets: { load: async () => {} } };
+  game.start?.(context);
+  const target = { id: 1, kind: "core" as const, x: .45, y: .45, vx: 0, vy: 0, radius: .075, health: 1, rotation: 0, spin: 0 };
+  state.targets.push(target);
+  input.vector("aim", -.9, .45); input.action("trigger", true); game.update(context, STEP);
+  input.vector("aim", -.6, .45); game.update(context, STEP);
+  assert.equal(state.bladeOneSlashing, true);
+  assert.equal(state.trail.length, 1, "a real blade stroke is active before pause");
+  input.action("pause", true); game.update(context, STEP);
+  input.vector("aim", .9, .45); game.update(context, STEP);
+  assert.equal(state.paused, true); assert.equal(state.trail.length, 0);
+  input.action("pause", false); game.update(context, STEP);
+  input.action("pause", true); game.update(context, STEP);
+  assert.equal(state.paused, false);
+  assert.equal(target.health, 1, "resume must not cut across movement made while paused");
+  input.vector("aim", -.9, .45); game.update(context, STEP);
+  assert.equal(target.health, 0, "fresh movement after resume still cuts the actual target");
+});
+
 simulate("TiltDrift advances an infinite road under normalized steering", () => createTiltDriftGame("sim-drift"), (input, _state, frame) => {
   input.axis("steer", Math.sin(frame * .018) * .32);
   input.action("drift", frame % 180 > 105);

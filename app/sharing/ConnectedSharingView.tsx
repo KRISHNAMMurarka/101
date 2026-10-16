@@ -6,7 +6,7 @@ import type { ConnectedSharingSnapshot, ConnectedSharingTask } from './connected
 import styles from './sharing.module.css';
 
 const area = (id: string) => id === 'exclusive' ? 'Whole play area' : id === 'left' ? 'Left side' : 'Right side';
-const messages = { ready: 'Nothing is shared. Complete setup, then review a request.', invalid: 'Use a complete code from the matching setup. Stop this setup to try again.',
+const messages = { 'participant-removing': 'Removing the selected connection. Other approved sharing continues.', 'participant-removed': 'Participant removed. Create a replacement invitation when you are ready.', 'participant-replacing': 'Connect the replacement page and compare its codes. Controls need fresh approval.', ready: 'Nothing is shared. Complete setup, then review a request.', invalid: 'Use a complete code from the matching setup. Stop this setup to try again.',
   unavailable: 'Sharing could not continue. Stop this setup and connect again.', busy: 'Wait for the current step to finish.', limit: 'This setup reached its limit. Stop it and start again.',
   'consent-needed': 'Allow your page controls before making a request.', requested: 'A request is waiting. Current sharing continues until a transfer is approved.',
   approving: 'Checking the selected controls. Input stays off until sharing is ready.', active: 'Sharing is active for the approved play area.', declined: 'The request was declined. Current sharing was kept.',
@@ -102,11 +102,13 @@ export default function ConnectedSharingView({ onBack }: { onBack: () => void })
         </> : null}
         {snapshot.peers.map(peer => <section className={styles.pending} key={peer.id} data-testid={`connected-peer-${peer.id}`} aria-labelledby={`connected-peer-title-${peer.id}`}>
           <h3 id={`connected-peer-title-${peer.id}`}>{owner ? peer.label : 'Connected owner page'}</h3>
-          <p role="status">{peerMessages[peer.connection.phase]}</p>
-          {peer.connection.code ? <label className={styles.duration}>{owner && peer.connection.phase === 'exchange' ? 'Code for the participant' : 'Code for the owner'}<textarea readOnly value={peer.connection.code} aria-label={`${peer.id} outgoing code`} /></label> : null}
+          <p role="status">{peer.membership === 'retiring' ? 'Removing this connection. Wait for it to close.' : peer.membership === 'removed' ? 'This participant is removed. Its controls are off.' : peerMessages[peer.connection.phase]}</p>
+          {owner && snapshot.rosterFinished && peer.membership === 'live' ? <button disabled={settling || stopping} onClick={() => run(owned => owned.previewRemoveParticipant(peer.id), 'connected-sharing-confirm')}>Remove {peer.label}</button> : null}
+          {owner && peer.membership === 'removed' ? <button disabled={settling || stopping || snapshot.rawPending > 0 || snapshot.remainingAttempts === 0} onClick={() => { setCodes(previous => ({ ...previous, [peer.id]: '' })); void work(owned => owned.inviteReplacement(peer.id)); }}>Create replacement invitation for {peer.label}</button> : null}
+          {peer.connection.code ? <label className={styles.duration}><span id={`connected-code-out-${peer.id}`}>{owner ? 'Code for the participant' : 'Code for the owner'}</span><textarea readOnly value={peer.connection.code} aria-labelledby={`connected-peer-title-${peer.id} connected-code-out-${peer.id}`} /></label> : null}
           {!owner && peer.connection.phase === 'review' ? <button disabled={settling} onClick={() => void work(owned => owned.offer())}>Create connection offer</button> : null}
           {peer.connection.phase === 'exchange' ? <>
-            <label className={styles.duration}>{owner ? 'Participant offer' : 'Owner answer'}<textarea maxLength={65536} aria-label={`${peer.id} incoming code`} value={codes[peer.id] ?? ''} onChange={event => setCodes({ ...codes, [peer.id]: event.target.value })} /></label>
+            <label className={styles.duration}><span id={`connected-code-in-${peer.id}`}>{owner ? 'Participant offer' : 'Owner answer'}</span><textarea maxLength={65536} aria-labelledby={`connected-peer-title-${peer.id} connected-code-in-${peer.id}`} value={codes[peer.id] ?? ''} onChange={event => setCodes({ ...codes, [peer.id]: event.target.value })} /></label>
             <button disabled={settling || !(codes[peer.id]?.length)} onClick={() => void work(owned => owned.accept(peer.id, codes[peer.id] ?? ''))}>{owner ? 'Accept participant offer' : 'Accept owner answer'}</button>
           </> : null}
           {peer.connection.comparison ? <>
@@ -138,7 +140,13 @@ export default function ConnectedSharingView({ onBack }: { onBack: () => void })
           })}
           {!snapshot.slots.some(value => value.request) ? <p>No requests are waiting.</p> : null}
         </section>
-        {snapshot.preview ? <section className={styles.review} aria-labelledby="connected-preview-title">
+        {snapshot.preview?.kind === 'remove' ? <section className={styles.review} aria-labelledby="connected-remove-title">
+          <h2 id="connected-remove-title">Remove {label(snapshot.preview.participantId!)}?</h2>
+          <p>This closes this participant’s connection and releases its held controls. Other participants keep their approved sharing.</p>
+          <p>A replacement page needs a new invitation, matching codes and fresh approval from both pages. No permission is restored.</p>
+          <div className={styles.actions}>{snapshot.notice === 'review-changed' ? <button id="connected-sharing-confirm" disabled={settling || stopping} onClick={() => run(owned => owned.previewRemoveParticipant(snapshot.preview!.participantId!), 'connected-sharing-confirm')}>Review participant again</button> : <button id="connected-sharing-confirm" disabled={settling || stopping} onClick={() => void work(owned => owned.confirmRemoval(snapshot.preview!))}>Confirm participant removal</button>}
+            <button disabled={settling || stopping} onClick={() => run(owned => owned.cancelPreview())}>Keep participant</button></div>
+        </section> : snapshot.preview ? <section className={styles.review} aria-labelledby="connected-preview-title">
           <h2 id="connected-preview-title">Review what will stop</h2>
           <p>Moving and pressing will stop for {snapshot.preview.recipients.length ? snapshot.preview.recipients.map(recipient => `${label(recipient.sourceId)} on ${area(recipient.slotId).toLowerCase()}`).join(' and ') : 'all participants; nothing is shared yet'}. Held presses will be released.</p>
           {snapshot.preview.kind === 'policy' ? <p>The new layout is {snapshot.preview.policy === 'exclusive' ? 'one whole play area' : 'separate left and right sides'}. Pending requests are cancelled. Everyone needs new consent and approval.</p> : <p>Other approved areas keep sharing.</p>}

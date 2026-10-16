@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
-import { LICENSE_INVENTORY_LIMITS as limits, readLocalLicenseBytes, readDeclaredLicenseSources } from './generate-license-inventory.mjs';
+import { LICENSE_INVENTORY_LIMITS as limits, readLocalLicenseBytes, readDeclaredLicenseSources, readRepositoryAuthorLicenseSource, collectDeclaredLicenseRepositoryFiles, installedLicensePackagePresent } from './generate-license-inventory.mjs';
 
 const digest = value => createHash('sha256').update(value).digest('hex');
 const hash = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
@@ -27,7 +27,7 @@ function cargoIdentity(text) {
   return value;
 }
 
-function validateTexts(inventory) {
+function validateTexts(inventory, allowRepositoryAuthors = false) {
   if (!Array.isArray(inventory.licenseTexts) || inventory.licenseTexts.length > limits.packages * limits.filesPerPackage)
     throw new Error('Invalid bounded embedded license texts');
   const texts = new Set(), referenced = new Set(); let textBytes = 0, missingPackages = 0, packagesWithoutText = 0;
@@ -51,7 +51,7 @@ function validateTexts(inventory) {
         throw new Error('Invalid or unresolved package license text reference');
       paths.add(file.path); referenced.add(file.sha256);
     }
-    if (pkg.coverage === 'local-texts') {
+    if (pkg.coverage === 'local-texts' || allowRepositoryAuthors && pkg.coverage === 'repository-author-texts') {
       if (!pkg.licenseFiles.length) throw new Error('Package coverage does not match license text references');
     } else if (pkg.coverage === 'not-installed' || pkg.coverage === 'no-local-text') {
       if (pkg.licenseFiles.length) throw new Error('Package coverage does not match license text references');
@@ -95,18 +95,28 @@ async function auditJavaScript(root) {
     || inventory.declaredSources.path !== declared.manifest.path || inventory.declaredSources.sha256 !== declared.manifest.sha256
     : inventory.declaredSources !== undefined && inventory.declaredSources !== null)
     throw new Error('License inventory declared source provenance does not match');
+  await collectDeclaredLicenseRepositoryFiles(root);
   for (const pkg of inventory.packages) {
     const expected = locked.get(pkg.installedPath);
     if (!localPath(pkg.installedPath) || !expected || pkg.name !== (expected.name ?? pkg.installedPath.split('node_modules/').at(-1))
       || pkg.version !== expected.version || pkg.license !== (expected.license ?? 'UNKNOWN'))
       throw new Error('License inventory does not match package-lock.json');
-    if (pkg.coverage !== 'not-installed') for (const required of declared.packages.get(pkg.installedPath)?.licenseFiles ?? []) {
-      if (!pkg.licenseFiles?.some(file => file.path === required.path && file.sha256 === required.sha256))
-        throw new Error('License inventory omits or changes a declared legal source');
+    const selected = declared.packages.get(pkg.installedPath)?.licenseFiles ?? [];
+    if (pkg.coverage === 'not-installed' && selected.some(file => file.origin === 'repository-author-source') && await installedLicensePackagePresent(root, pkg.installedPath))
+      throw new Error('Repository author inventory misstates an installed package as missing');
+    if (pkg.coverage !== 'not-installed') for (const required of selected) {
+      const expectedFile = required.origin === 'repository-author-source'
+        ? (await readRepositoryAuthorLicenseSource(root, pkg, required, expected)).file : required;
+      if (!pkg.licenseFiles?.some(file => file.path === required.path && file.sha256 === required.sha256
+        && (required.origin === undefined ? file.origin === undefined && file.provenance === undefined : JSON.stringify(file) === JSON.stringify(expectedFile))))
+        throw new Error('License inventory omits or changes a declared legal source origin/provenance');
     }
+    const authors = (pkg.licenseFiles ?? []).filter(file => file.origin !== undefined || file.provenance !== undefined);
+    if (authors.some(file => file.origin !== 'repository-author-source' || !selected.some(required => required.origin === file.origin && required.path === file.path))
+      || (pkg.coverage === 'repository-author-texts') !== (authors.length > 0)) throw new Error('Invalid declared author source inventory origin');
     locked.delete(pkg.installedPath);
   }
-  validateTexts(inventory);
+  validateTexts(inventory, true);
 }
 
 async function auditRust(root) {

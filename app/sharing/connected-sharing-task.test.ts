@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createEphemeralWebIdentity, pointerSourceDescriptor } from '@101/connect';
-import type { PeerConnectionPort, PeerDataChannelPort } from '@101/connect';
+import { createEphemeralWebIdentity, decodeReceiverInvitation, pointerSourceDescriptor } from '@101/connect';
+import type { EndpointIdentity, PeerConnectionPort, PeerDataChannelPort } from '@101/connect';
 
 // The native journey lives in qa-connected-sharing. These are actual public
 // SDK contracts with explicit host ports; they do not qualify browser DTLS.
@@ -109,11 +109,11 @@ class Port implements PeerConnectionPort {
   async getStats() { return new Map() as unknown as RTCStatsReport; }
   close() { this.closes++; this.connectionState = 'closed'; }
 }
-async function connectedFixture(count = 2) {
-  assert.ok(api); let now = 1000;
-  const queue: (() => void)[] = [], ports = Array.from({ length: count }, (_, index) => [new Port(queue, index ? '33' : '11'), new Port(queue, index ? '44' : '22')] as const);
+async function connectedFixture(count = 2, spare = 0, createIdentity?: () => Promise<EndpointIdentity>) {
+  assert.ok(api); let now = 1000, ownerClockHook: (() => void) | undefined;
+  const queue: (() => void)[] = [], ports = Array.from({ length: count + spare }, (_, index) => [new Port(queue, index ? '33' : '11'), new Port(queue, index ? '44' : '22')] as const);
   let ownerPort = 0;
-  const owner = api.createConnectedSharingTask({ role: 'owner', now: () => now, wallNow: () => 1000, createPeer: () => ports[ownerPort++]![1] });
+  const owner = api.createConnectedSharingTask({ role: 'owner', now: () => { const callback = ownerClockHook; ownerClockHook = undefined; callback?.(); return now; }, wallNow: () => 1000, ...(createIdentity ? { createIdentity } : {}), createPeer: () => ports[ownerPort++]![1] });
   const sources = ports.map(pair => api.createConnectedSharingTask({ role: 'participant', now: () => now, wallNow: () => 1000, createPeer: () => pair[0] }));
   const pump = async (condition: () => boolean) => {
     for (let turn = 0; turn < 2000 && !condition(); turn++) {
@@ -141,8 +141,8 @@ async function connectedFixture(count = 2) {
     assert.equal(owner.confirm(`participant-${index + 1}`), true); assert.equal(source.confirm('participant-1'), true);
     await pump(() => owner.snapshot().peers[index]?.connection.phase === 'connected' && source.snapshot().peers[0]?.connection.phase === 'connected');
   }
-  assert.equal(owner.finishRoster(), true); await pump(() => sources.every(source => source.snapshot().participant.layoutReady));
-  return { owner, sources, ports, pump, time: () => now, advance(ms: number) { now += ms; },
+  assert.equal(owner.finishRoster(), true); await pump(() => sources.slice(0, count).every(source => source.snapshot().participant.layoutReady));
+  return { owner, sources, ports, queue, pump, onOwnerClock(callback: () => void) { ownerClockHook = callback; }, time: () => now, advance(ms: number) { now += ms; },
     async close() { await Promise.all([owner.close(), ...sources.map(source => source.close())]); assert.equal(owner.snapshot().rawPending, 0); for (const source of sources) assert.equal(source.snapshot().rawPending, 0); } };
 }
 
@@ -194,4 +194,144 @@ test('real ownership preserves a held incumbent on decline, then releases before
     assert.equal(new Set(binds.map(value => value.slot)).size, binds.length, 'one receiver preserves its wire slot watermark');
     f.advance(30001); f.owner.tick(); second.tick(); assert.equal(f.owner.snapshot().active, false); assert.equal(second.snapshot().participant.active, false);
   } finally { await f.close(); }
+});
+
+test('owner can retire one invited participant after roster finish while the independent participant keeps sharing', { timeout: 10000 }, async t => {
+  const f = await connectedFixture();
+  try {
+    assert.equal(f.sources[0]!.request('left', 30, true), true);
+    assert.equal(f.sources[1]!.request('right', 30, true), true);
+    await f.pump(() => f.owner.snapshot().peers.every(peer => peer.ready) && f.owner.snapshot().slots.every(slot => slot.request));
+    assert.equal(f.owner.approve('left'), true); assert.equal(f.owner.approve('right'), true);
+    await f.pump(() => f.sources.every(source => source.snapshot().participant.active));
+    assert.equal(f.sources[0]!.input('press'), true); assert.equal(f.sources[1]!.input('press'), true);
+    await f.pump(() => f.owner.snapshot().slots.every(slot => slot.held));
+    const before = f.owner.snapshot();
+    t.diagnostic(JSON.stringify({ actualPrecondition: { rosterFinished: before.rosterFinished,
+      participants: before.peers.map(peer => ({ id: peer.id, phase: peer.connection.phase })),
+      slots: before.slots.map(slot => ({ id: slot.id, epoch: slot.epoch, held: slot.held, owner: slot.owner?.sourceId })) },
+      scope: 'Real WebCrypto/auth/task/ownership/runtime over faithful queued ports; not browserDTLS/physical/network qualification.' }));
+    assert.equal(typeof f.owner.previewRemoveParticipant, 'function', 'Missing owner-reviewed single-participant removal after live roster setup');
+    assert.equal(f.owner.previewRemoveParticipant('participant-1'), true);
+    const review = f.owner.snapshot().preview!;
+    assert.equal(review.kind, 'remove');
+    await f.owner.confirmRemoval(review);
+    const after = f.owner.snapshot();
+    assert.equal(after.slots[0]!.held, false); assert.equal(after.slots[0]!.owner, undefined);
+    assert.deepEqual(after.slots[1]!.owner, before.slots[1]!.owner);
+    assert.equal(after.slots[1]!.epoch, before.slots[1]!.epoch); assert.equal(after.slots[1]!.held, true);
+    assert.equal(f.sources[1]!.input('right'), true);
+    await f.pump(() => (f.owner.snapshot().slots[1]!.position?.x ?? 0) > .5);
+  } finally { await f.close(); t.diagnostic(JSON.stringify({ cleanup: { joined: true, rawPending: f.owner.snapshot().rawPending } })); }
+});
+
+
+function actualInvitation(code: string) {
+  assert.ok(code.startsWith('101-sharing-1.'));
+  const packet = JSON.parse(Buffer.from(code.slice('101-sharing-1.'.length), 'base64url').toString('utf8')) as { invitation: unknown };
+  return decodeReceiverInvitation(JSON.stringify(packet.invitation), 1000);
+}
+
+async function connectReplacement(f: Awaited<ReturnType<typeof connectedFixture>>, index = 2) {
+  const source = f.sources[index]!, pair = f.ports[index]!;
+  assert.equal(source.review(f.owner.snapshot().peers[0]!.connection.code), true);
+  assert.equal(await source.offer(), true); assert.equal(await f.owner.accept('participant-1', source.snapshot().peers[0]!.connection.code), true);
+  assert.equal(await source.accept('participant-1', f.owner.snapshot().peers[0]!.connection.code), true);
+  for (const [label, channel] of pair[0].channels) {
+    const remote = new Channel(label, { ordered: channel.ordered, maxRetransmits: channel.maxRetransmits ?? undefined }, f.queue);
+    remote.target = channel; channel.target = remote; pair[1].channels.set(label, remote); pair[1].ondatachannel?.({ channel: remote });
+  }
+  for (const port of pair) { port.connectionState = 'connected'; port.onconnectionstatechange?.({}); }
+  await f.pump(() => !!f.owner.snapshot().peers[0]?.connection.comparison && !!source.snapshot().peers[0]?.connection.comparison);
+  assert.equal(f.owner.snapshot().peers[0]!.connection.comparison, source.snapshot().peers[0]!.connection.comparison);
+  assert.equal(f.owner.confirm('participant-1'), true); assert.equal(source.confirm('participant-1'), true);
+  await f.pump(() => f.owner.snapshot().peers[0]?.membership === 'live' && source.snapshot().participant.layoutReady);
+}
+
+test('retired participant replacement uses a fresh authenticated invitation and fresh bilateral approvals while the other participant remains held', { timeout: 10000 }, async () => {
+  const f = await connectedFixture(2, 1);
+  try {
+    const first = f.sources[0]!, second = f.sources[1]!, replacement = f.sources[2]!;
+    first.request('left', 30, true); second.request('right', 30, true);
+    await f.pump(() => f.owner.snapshot().slots.every(slot => slot.request) && f.owner.snapshot().peers.every(peer => peer.ready));
+    f.owner.approve('left'); f.owner.approve('right'); await f.pump(() => first.snapshot().participant.active && second.snapshot().participant.active);
+    first.input('press'); second.input('press'); await f.pump(() => f.owner.snapshot().slots.every(slot => slot.held));
+    const original = f.owner.snapshot(), independent = original.slots[1]!, oldComparison = original.peers[0]!.connection.comparison, oldInvitation = actualInvitation(original.peers[0]!.connection.code);
+    const oldSamples = f.ports[0]![0].channels.get('connect-samples-1')!, oldDeliver = oldSamples.target?.onmessage; assert.ok(oldDeliver);
+    const captured = oldSamples.sent.filter((value): value is ArrayBuffer => value instanceof ArrayBuffer).at(-1)!; assert.ok(captured);
+    assert.equal(f.owner.previewRemoveParticipant('participant-1'), true); const preview = f.owner.snapshot().preview!;
+    assert.equal(await f.owner.confirmRemoval({ ...preview }), false, 'A copied review is not a reviewed operation');
+    const removing = f.owner.confirmRemoval(preview);
+    assert.equal(f.owner.snapshot().peers[0]!.membership, 'retiring'); assert.equal(f.owner.snapshot().slots[0]!.held, false);
+    assert.equal(await f.owner.inviteReplacement('participant-1'), false, 'Retirement must join before slot reuse');
+    assert.equal(await removing, true); assert.equal(f.ports[0]![1].closes, 1); assert.equal(f.owner.snapshot().rawPending, 0);
+    assert.equal(await f.owner.confirmRemoval(preview), false, 'Review cannot replay');
+    assert.deepEqual(f.owner.snapshot().slots[1], independent); assert.equal(second.input('right'), true);
+    await f.pump(() => (f.owner.snapshot().slots[1]!.position?.x ?? 0) > .5);
+    assert.equal(await f.owner.inviteReplacement('participant-1'), true); assert.equal(f.owner.snapshot().peers.length, 2);
+    const freshInvitation = actualInvitation(f.owner.snapshot().peers[0]!.connection.code); assert.notEqual(freshInvitation.epoch, oldInvitation.epoch); assert.equal(freshInvitation.sessionId, oldInvitation.sessionId);
+    assert.equal(replacement.input('press'), false); await connectReplacement(f);
+    assert.notEqual(f.owner.snapshot().peers[0]!.connection.comparison, oldComparison);
+    assert.equal(replacement.snapshot().participant.active, false); assert.equal(replacement.input('press'), false);
+    assert.equal(replacement.request('left', 30, false), false); assert.equal(replacement.request('left', 30, true), true);
+    await f.pump(() => !!f.owner.snapshot().slots[0]?.request && f.owner.snapshot().peers[0]!.ready);
+    assert.equal(f.owner.snapshot().slots[0]!.owner, undefined); assert.equal(f.owner.snapshot().slots[0]!.held, false);
+    assert.equal(f.owner.approve('left'), true); await f.pump(() => replacement.snapshot().participant.active);
+    oldDeliver({ data: captured.slice(0) }); f.owner.tick(); assert.equal(f.owner.snapshot().slots[0]!.held, false);
+    assert.equal(replacement.input('press'), true); await f.pump(() => f.owner.snapshot().slots[0]!.held);
+    assert.deepEqual(f.owner.snapshot().slots[1]!.owner, independent.owner); assert.equal(f.owner.snapshot().slots[1]!.epoch, independent.epoch);
+    assert.equal(f.owner.snapshot().slots[1]!.held, true);
+    assert.equal(f.owner.previewRemoveParticipant('participant-1'), true); const stale = f.owner.snapshot().preview!;
+    replacement.cancelRequest(); await f.pump(() => !f.owner.snapshot().slots[0]!.owner);
+    assert.equal(await f.owner.confirmRemoval(stale), false, 'Changed permit/owner generation invalidates review');
+    assert.equal(f.owner.snapshot().peers[0]!.membership, 'live'); assert.equal(f.owner.snapshot().slots[1]!.held, true);
+  } finally { await f.close(); }
+});
+
+
+test('failed replacement identity setup settles into an empty bounded recoverable slot without changing the other participant', { timeout: 10000 }, async () => {
+  let hold = false, rejectIdentity: ((reason: Error) => void) | undefined;
+  const f = await connectedFixture(2, 0, () => hold ? new Promise<EndpointIdentity>((_resolve, reject) => { rejectIdentity = reject; }) : createEphemeralWebIdentity());
+  try {
+    const second = f.sources[1]!; second.request('right', 30, true);
+    await f.pump(() => !!f.owner.snapshot().slots[1]?.request && f.owner.snapshot().peers[1]!.ready);
+    f.owner.approve('right'); await f.pump(() => second.snapshot().participant.active);
+    second.input('press'); await f.pump(() => f.owner.snapshot().slots[1]!.held);
+    const independent = f.owner.snapshot().slots[1]!;
+    assert.equal(f.owner.previewRemoveParticipant('participant-1'), true); assert.equal(await f.owner.confirmRemoval(f.owner.snapshot().preview!), true);
+    hold = true; const pending = f.owner.inviteReplacement('participant-1'); assert.ok(rejectIdentity);
+    assert.equal(f.owner.snapshot().peers[0]!.membership, 'replacement'); assert.equal(f.owner.snapshot().rawPending, 1);
+    assert.equal(await f.owner.inviteReplacement('participant-1'), false); assert.equal(second.input('right'), true);
+    await f.pump(() => (f.owner.snapshot().slots[1]!.position?.x ?? 0) > .5);
+    rejectIdentity(Error('Owned fixture identity setup refused')); assert.equal(await pending, false); hold = false;
+    assert.equal(f.owner.snapshot().peers[0]!.membership, 'removed'); assert.equal(f.owner.snapshot().rawPending, 0); assert.equal(f.owner.snapshot().peers.length, 2);
+    assert.equal(f.owner.snapshot().slots[0]!.owner, undefined); assert.equal(f.owner.snapshot().slots[0]!.held, false);
+    assert.deepEqual(f.owner.snapshot().slots[1]!.owner, independent.owner); assert.equal(f.owner.snapshot().slots[1]!.epoch, independent.epoch); assert.equal(f.owner.snapshot().slots[1]!.held, true);
+    assert.equal(await f.owner.inviteReplacement('participant-1'), true); assert.equal(f.owner.snapshot().peers.length, 2);
+  } finally { rejectIdentity?.(Error('Owned fixture final cleanup')); await f.close(); }
+});
+
+
+test('cancelled reviewed removal during actual scope clock callout cannot retire a participant', { timeout: 10000 }, async t => {
+  const f = await connectedFixture();
+  try {
+    f.sources[0]!.request('left', 30, true); f.sources[1]!.request('right', 30, true);
+    await f.pump(() => f.owner.snapshot().peers.every(peer => peer.ready) && f.owner.snapshot().slots.every(slot => slot.request));
+    assert.equal(f.owner.approve('left'), true); assert.equal(f.owner.approve('right'), true);
+    await f.pump(() => f.sources.every(source => source.snapshot().participant.active));
+    f.sources[0]!.input('press'); f.sources[1]!.input('press'); await f.pump(() => f.owner.snapshot().slots.every(slot => slot.held));
+    const before = f.owner.snapshot(); assert.equal(f.owner.previewRemoveParticipant('participant-1'), true);
+    const preview = f.owner.snapshot().preview!; let callbacks = 0;
+    f.onOwnerClock(() => { callbacks++; f.owner.cancelPreview(); });
+    const removed = await f.owner.confirmRemoval(preview), after = f.owner.snapshot();
+    t.diagnostic(JSON.stringify({ scope: 'Actual auth peer scope invokes the configured unchanged-time clock. No scope/auth/transport bypass.', callbacks, removed,
+      membership: after.peers.map(peer => peer.membership), previewPresent: !!after.preview,
+      slots: after.slots.map(slot => ({ id: slot.id, epoch: slot.epoch, held: slot.held, owner: slot.owner?.sourceId })) }));
+    assert.equal(callbacks, 1, 'The armed callback must actually execute in scope currentness validation');
+    assert.equal(removed, false, 'A review cancelled during a scope clock callout must not authorize retirement');
+    assert.equal(after.preview, undefined); assert.equal(after.peers[0]!.membership, 'live');
+    assert.deepEqual(after.slots[0], before.slots[0]); assert.deepEqual(after.slots[1], before.slots[1]);
+    assert.equal(f.ports[0]![1].closes, 0); assert.equal(f.sources[0]!.input('right'), true); assert.equal(f.sources[1]!.input('right'), true);
+    await f.pump(() => f.owner.snapshot().slots.every(slot => (slot.position?.x ?? 0) > .5));
+  } finally { await f.close(); assert.equal(f.owner.snapshot().rawPending, 0); }
 });

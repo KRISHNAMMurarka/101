@@ -6,13 +6,20 @@ import * as sdk from '@101/connect';
 import * as runtime from '@101/device-runtime';
 import { createMacosDnsSdProvider } from './process-port.mjs';
 
-export async function runNativeDiscoveryExample({ executable, sha256, featureRed = false }) {
+export async function runNativeDiscoveryExample({ executable, sha256, featureRed = false, selectedInterfaceIndex }) {
   assert.equal(process.platform, 'darwin', 'This proof requires installed macOS DNS-SD, never a simulated backend');
+  const selected = selectedInterfaceIndex !== undefined;
+  if (selected && (!Number.isSafeInteger(selectedInterfaceIndex) || selectedInterfaceIndex <= 0 || selectedInterfaceIndex >= 0xfffffffb)) {
+    throw new TypeError('A caller-selected ordinary interface index is required');
+  }
+  const profile = selected ? 'macos-selected-interface-dns-sd/1' : 'macos-local-only-dns-sd/1';
   const tag = randomBytes(4).toString('hex'), serviceType = `_101l${tag}._tcp`, name = `101-owned-${tag}`;
   const scope = Object.freeze({ ownerId: 'owned-operator', applicationId: 'native-discovery-caller', sessionId: `owned-${tag}`,
-    serviceType, domain: 'local.', interfaceIndex: 0xffffffff, profile: 'macos-local-only-dns-sd/1', operation: 'observe' });
-  const processes = new Set(), transcripts = [], checks = [], controllerRows = [];
+    serviceType, domain: 'local.', interfaceIndex: selected ? selectedInterfaceIndex : 0xffffffff, profile, operation: 'observe' });
+  assert.equal(runtime.NATIVE_DISCOVERY_SELECTED_INTERFACE_PROFILE, 'macos-selected-interface-dns-sd/1');
+  const processes = new Set(), ownedProcesses = [], transcripts = [], checks = [], controllerRows = [];
   let registration, controller, allowed = false, nativeOpened = 0, rawExited = 0, ownerRequests = 0, ownedChild, grantAbort = new AbortController();
+  const cleanupProof = { controllerClosed: false, noRawReservation: false, childrenJoined: false, ownedChildCount: 0, loopbackListenerClosed: false };
   const server = createServer((request, response) => { if (request.url !== '/owned-software') { response.writeHead(404).end(); return; }
     response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ profile: 'owned-software/1', tag })); });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve)); const port = server.address().port;
@@ -22,16 +29,24 @@ export async function runNativeDiscoveryExample({ executable, sha256, featureRed
     throw new Error(`Owned native check failed: ${message}`);
   }
   async function register() {
-    let text = '', ready = false; const child = spawn(executable, ['register', serviceType, name, String(port), '30000'],
+    let text = '', ready = false; const args = ['register', serviceType, name, String(port), '30000'];
+    if (selected) args.push(String(selectedInterfaceIndex));
+    const child = spawn(executable, args,
       { stdio: ['pipe', 'pipe', 'pipe'], env: { PATH: '/usr/bin:/bin', LC_ALL: 'C' }, timeout: 30000 });
+    const processRecord = { role: 'registration', pid: child.pid, argv: [executable, ...args], exitCode: null, signal: null };
+    ownedProcesses.push(processRecord);
     processes.add(child); child.stdin.on('error', () => {}); child.on('error', () => {});
-    const done = new Promise(resolve => child.once('close', (code, signal) => { processes.delete(child); resolve({ code, signal }); }));
+    const done = new Promise(resolve => child.once('close', (code, signal) => { processes.delete(child); processRecord.exitCode = code; processRecord.signal = signal; resolve({ code, signal }); }));
     child.stdout.on('data', chunk => { text += String(chunk); assert.ok(text.length <= 512); if (text.includes('"ready"')) ready = true; });
     child.stderr.on('data', () => { ready = false; });
     await until(() => ready, 'actual LocalOnly registration');
     return { child, done, async stop() { child.stdin.end('stop\n'); return done; } };
   }
-  const provider = createMacosDnsSdProvider({ executable, sha256, onProcess(child) { ownedChild = child; processes.add(child); child.once('close', () => processes.delete(child)); } });
+  const provider = createMacosDnsSdProvider({ executable, sha256, profile, onProcess(child) {
+    ownedChild = child; processes.add(child);
+    const processRecord = { role: 'browser', pid: child.pid, argv: child.spawnargs, exitCode: null, signal: null }; ownedProcesses.push(processRecord);
+    child.once('close', (code, signal) => { processes.delete(child); processRecord.exitCode = code; processRecord.signal = signal; });
+  } });
   assert.ok(provider);
   const tracedProvider = Object.freeze({ profile: provider.profile, open(request, callbacks, signal) {
     nativeOpened++; return provider.open(request, { event(event) { assert.ok(transcripts.length < 128); transcripts.push(event); callbacks.event(event); },
@@ -44,7 +59,7 @@ export async function runNativeDiscoveryExample({ executable, sha256, featureRed
     if (featureRed) {
       const abort = new AbortController(); const operation = tracedProvider.open(scope, { event() {}, closed() {} }, abort.signal);
       try {
-        await until(() => transcripts.some(event => event.type === 'resolved' && event.name === name && event.port === port && event.interfaceIndex === 0xffffffff), 'real native producer before absent old SDK API');
+        await until(() => transcripts.some(event => event.type === 'resolved' && event.name === name && event.port === port && event.interfaceIndex === scope.interfaceIndex), 'real native producer before absent old SDK API');
         console.error(JSON.stringify({ featureRed: true, actualNativeProducer: transcripts.find(event => event.type === 'resolved'), oldSdkControllerType: typeof sdk.createNativeDiscoveryController }));
         assert.equal(typeof sdk.createNativeDiscoveryController, 'function', 'Real LocalOnly native callback has no owner-scoped SDK provider in the old public closure');
       } finally { abort.abort(); operation.stop(); await until(() => rawExited > 0, 'red native process exit'); }
@@ -56,10 +71,12 @@ export async function runNativeDiscoveryExample({ executable, sha256, featureRed
     } });
     assert.equal(nativeOpened, 0); assert.equal(controller.start().ok, false); assert.equal(nativeOpened, 0); snapshot('Denied fresh host grant');
     allowed = true; assert.ok(controller.start().ok); await until(() => controller.snapshot().rows.some(row => row.service.name === name), 'real resolved SDK row');
-    let row = controller.snapshot().rows.find(row => row.service.name === name); assert.equal(row.service.interfaceIndex, 0xffffffff);
-    assert.equal(row.service.target, 'localhost.'); assert.equal(row.service.port, port); assert.equal(row.service.txtHex, '0970726f66696c653d31');
+    let row = controller.snapshot().rows.find(row => row.service.name === name); assert.equal(row.service.interfaceIndex, scope.interfaceIndex);
+    if (selected) { assert.notEqual(row.service.target, 'localhost.'); assert.ok(row.service.target.endsWith('.') && row.service.target.length <= 254); }
+    else assert.equal(row.service.target, 'localhost.');
+    assert.equal(row.service.port, port); assert.equal(row.service.txtHex, '0970726f66696c653d31');
     assert.equal(row.candidate.evidence.length, 1); assert.equal(controller.assess(row.handle).state, 'observed'); assert.equal(controller.assess({ ...row.handle }), undefined);
-    snapshot('Actual native callback observed'); checks.push('inert constructor and denied start; native LocalOnly callback/port/TXT reaches public SDK');
+    snapshot('Actual native callback observed'); checks.push(`inert constructor and denied start; native ${selected ? 'selected-interface' : 'LocalOnly'} callback/port/TXT reaches public SDK`);
     // This endpoint is provisioned by the owner who created the fixture. No URL
     // is built from discovery metadata and discovery supplies no request grant.
     let requestAllowed = false; assert.equal(requestAllowed, false); requestAllowed = true;
@@ -96,14 +113,19 @@ export async function runNativeDiscoveryExample({ executable, sha256, featureRed
     const unsupported = sdk.createNativeDiscoveryController({ scope, now: Date.now, authorize: () => undefined });
     assert.deepEqual(unsupported.start(), { ok: false, reason: 'unsupported' }); unsupported.close(); checks.push('wrong owner exact grant denied; missing native host backend truthfully unsupported');
     controller.close(); assert.equal(controller.snapshot().phase, 'closed');
-    return { kind: 'actual-macos-local-only-dns-sd', profile: sdk.NATIVE_DISCOVERY_PROFILE, ownerRequests, nativeOpened, rawExited, nativeFrames: transcripts,
+    return { kind: selected ? 'actual-macos-selected-interface-dns-sd' : 'actual-macos-local-only-dns-sd', profile, ownerRequests,
+      consumerPid: process.pid, ownedProcesses, nativeOpened, rawExited, nativeFrames: transcripts,
       originalResolvedSha256: createHash('sha256').update(JSON.stringify(transcripts.find(event => event.type === 'resolved'))).digest('hex'),
-      steps: controllerRows, actualOwnedReply: reply, checks, cleanup: { controllerClosed: true, noRawReservation: controller.snapshot().rawReservations === 0 },
-      scope: 'Native LocalOnly authoritative DNS-SD records only. No LAN multicast, other platform, authenticated identity, advertised capability, optical/phone or discovery-derived resource permission.' };
+      steps: controllerRows, actualOwnedReply: reply, checks, cleanup: cleanupProof,
+      scope: selected ? `Native DNS-SD observation on the operator-selected interface index ${selectedInterfaceIndex}. Same-machine self-browse only; no remote reachability/on-wire multicast, other platform, authenticated identity, advertised capability or discovery-derived resource permission.` :
+        'Native LocalOnly authoritative DNS-SD records only. No LAN multicast, other platform, authenticated identity, advertised capability, optical/phone or discovery-derived resource permission.' };
   } finally {
     controller?.close(); if (registration) await registration.stop();
     for (const child of processes) { try { child.stdin.end('stop\n'); } catch { /* A stopped child may already have closed stdin. */ } if (child.exitCode === null) child.kill('SIGTERM'); }
     await until(() => processes.size === 0, 'every owned native child/listener exits'); await new Promise(resolve => server.close(resolve));
+    cleanupProof.controllerClosed = controller?.snapshot().phase === 'closed';
+    cleanupProof.noRawReservation = controller?.snapshot().rawReservations === 0;
+    cleanupProof.childrenJoined = processes.size === 0; cleanupProof.ownedChildCount = ownedProcesses.length; cleanupProof.loopbackListenerClosed = true;
   }
 }
 if (process.argv[1]?.endsWith('/consumer.mjs')) {

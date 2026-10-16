@@ -200,3 +200,68 @@ test('atomic replacement counts staging bytes against the genuine native root qu
     assert.deepEqual(await readFile(join(root, 'four.txt')), Buffer.from(replacement)); assert.ok(peak <= api!.OWNED_FILESYSTEM_LIMITS.rootBytes);
   } finally { assert.equal((await port.close()).removed, true); }
 });
+
+
+test('cached filesystem approval cannot cross a fresh owned root with the same caller and operation tuple', async () => {
+  assert.equal(typeof api?.createOwnedFilesystemAdapter, 'function');
+  type Approval = { request: Record<string, unknown>; expiresAt: number; isCurrent: () => boolean; signal: AbortSignal };
+  const approvals: Approval[] = [], requestsB: Record<string, unknown>[] = [], roots: string[] = [], nativeB: string[] = [];
+  const ports: { close(): Promise<{ removed: boolean }>; status(): { rawPending: number; timerArmed: boolean } }[] = [];
+  const owner = new AbortController(), delivery = new AbortController();
+  const options = { scope: { principalId: 'owner', applicationId: 'filesystem-test', sessionId: 'same-session' },
+    destinations: [{ id: 'note', leaf: 'note.txt' }], now: () => 1000, deadlineMs: 500,
+    onRoot(path: string) { roots.push(path); } };
+  const context = { signal: delivery.signal, routeId: 'same-route', generation: 1, operationId: 'same-operation', isCurrent: () => true };
+  const originalBytes = new Uint8Array([65, 66, 67]), freshBytes = new Uint8Array([88, 89, 90]);
+  let allowFreshB = false;
+  const originalStat = fsPromises.lstat;
+  try {
+    const a = await api!.createOwnedFilesystemAdapter({ ...options, authorize(request: Record<string, unknown>) {
+      const grant = { request, expiresAt: 1500, isCurrent: () => true, signal: owner.signal }; approvals.push(grant); return grant;
+    } }); ports.push(a);
+    const b = await api!.createOwnedFilesystemAdapter({ ...options, authorize(request: Record<string, unknown>) {
+      requestsB.push(request);
+      return allowFreshB ? { request, expiresAt: 1500, isCurrent: () => true, signal: owner.signal } : approvals[0];
+    }, onNative(event: { stage: string }) { nativeB.push(event.stage); } }); ports.push(b);
+    assert.equal(roots.length, 2); assert.notEqual(roots[0], roots[1]); assert.notEqual(a.rootId, b.rootId);
+    assert.deepEqual(await readdir(roots[0]!), []); assert.deepEqual(await readdir(roots[1]!), []);
+    const admitted = await a.execute('note-write', { bytes: originalBytes, expectedSha256: 'absent' }, context);
+    assert.equal(admitted.ok, true); assert.equal(admitted.issuedMutation, true);
+    assert.deepEqual(await readFile(join(roots[0]!, 'note.txt')), Buffer.from([65, 66, 67]));
+    assert.equal(approvals.length, 1); const cached = approvals[0]!;
+    assert.equal(Object.isFrozen(cached.request), true); assert.equal(cached.request.rootId, a.rootId);
+    assert.equal(cached.signal.aborted, false); assert.equal(cached.expiresAt, 1500);
+    const aStatus = a.status(), bStatus = b.status();
+    let deniedRootStats = 0;
+    // Observe the adapter's first native filesystem entry without replacing its behavior.
+    fsPromises.lstat = ((...args: Parameters<typeof originalStat>) => {
+      if (args[0] === roots[1]) deniedRootStats++;
+      return originalStat(...args);
+    }) as typeof originalStat; syncBuiltinESMExports();
+    let replay;
+    try { replay = await b.execute('note-write', { bytes: originalBytes, expectedSha256: 'absent' }, context); }
+    finally { fsPromises.lstat = originalStat; syncBuiltinESMExports(); }
+    assert.deepEqual(replay, { ok: false, reason: 'denied', issuedMutation: false });
+    assert.equal(requestsB.length, 1); const requestB = requestsB[0]!;
+    assert.notEqual(requestB, cached.request); assert.equal(requestB.rootId, b.rootId);
+    const { rootId: rootA, ...tupleA } = cached.request, { rootId: rootB, ...tupleB } = requestB;
+    assert.notEqual(rootA, rootB); assert.deepEqual(tupleB, tupleA, 'Only the freshly issued owned-root identity differs');
+    assert.equal(deniedRootStats, 0); assert.deepEqual(nativeB, []);
+    assert.equal(b.status().issuedMutations, bStatus.issuedMutations); assert.equal(b.status().nativeReadBytes, bStatus.nativeReadBytes);
+    assert.deepEqual(await readdir(roots[1]!), []); assert.deepEqual(a.status(), aStatus);
+    assert.deepEqual(await readFile(join(roots[0]!, 'note.txt')), Buffer.from([65, 66, 67]));
+    allowFreshB = true;
+    const fresh = await b.execute('note-write', { bytes: freshBytes, expectedSha256: 'absent' }, context);
+    assert.equal(fresh.ok, true); assert.equal(fresh.issuedMutation, true); assert.equal(requestsB.length, 2);
+    assert.notEqual(requestsB[1], cached.request); assert.notEqual(requestsB[1], requestB);
+    assert.deepEqual(await readFile(join(roots[1]!, 'note.txt')), Buffer.from([88, 89, 90]));
+    assert.deepEqual(await readFile(join(roots[0]!, 'note.txt')), Buffer.from([65, 66, 67]));
+    assert.deepEqual(a.status(), aStatus); assert.equal(b.status().issuedMutations, 1);
+  } finally {
+    fsPromises.lstat = originalStat; syncBuiltinESMExports(); owner.abort(); delivery.abort();
+    const closed = await Promise.allSettled(ports.map(port => port.close()));
+    for (const result of closed) { assert.equal(result.status, 'fulfilled'); if (result.status === 'fulfilled') assert.equal(result.value.removed, true); }
+    for (const port of ports) { assert.equal(port.status().rawPending, 0); assert.equal(port.status().timerArmed, false); }
+    for (const path of roots) await assert.rejects(lstat(path), { code: 'ENOENT' });
+  }
+});

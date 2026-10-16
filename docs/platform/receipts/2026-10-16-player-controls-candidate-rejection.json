@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q13"
+  ],
+  "candidateCommit": "636a51a293a597dd5588425b8613c02a279faf9c",
+  "candidateTree": "6e9959cd682b9e55abea268238b82325228c982a",
+  "result": "rejected",
+  "integrated": false,
+  "failure": "The preserved native replacement-gate failure record was absent from the Q05 and Q13 per-task record arrays. Independent review and the actual records audit confirmed both missing backreferences.",
+  "correction": "Add both per-task links to the existing failure record; its result, scope and raw evidence remain unchanged.",
+  "partialRun": {
+    "unitExitCode": -2,
+    "unitElapsedSeconds": 255.011,
+    "unitQualification": "Deliberately interrupted after the known records failure; no completed unit pass/fail total or native reliability conclusion. Cancellation diagnostics are retained as interrupted output.",
+    "allRemainingRunnerGatesNotRun": true,
+    "separateRecordsAuditExitCode": 1,
+    "nativeLimitsChanged": false,
+    "unchangedRetry": false
+  },
+  "shutdown": {
+    "ownedGroupsSignaled": [
+      56276
+    ],
+    "ownedChildCount": 5,
+    "coordinatorJoined": true,
+    "allOwnedProcessesAndGroupsAbsent": true,
+    "ownedBrokerScratchRemovedAfterReadBack": true,
+    "ownedGateScratchRemovedAfterReadBack": true,
+    "foreignProcessesStopped": false
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/aborted-records-candidate",
+    "commit": "b6a38814c551d5449dc9c296947bd0ca9e41ab91",
+    "tree": "bf48642fb8af3c7b906d4d73302a62749ac3bd2b",
+    "readBackFiles": 12,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedBrokerScratchRemoved": true,
+    "ownedGateScratchRemoved": true,
+    "allOwnedProcessesAndGroupsAbsent": true
+  },
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0
+}

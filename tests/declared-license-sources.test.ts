@@ -87,7 +87,7 @@ test('declared paths cannot escape, alias platform paths, or follow a symlink to
 test('malformed, excessive and nonordinary declaration files fail without an inventory write', async () => {
   const f = await fixture(); try {
     await writeFile(f.path, '{'); await assert.rejects(f.collect);
-    for (const manifest of [{ schemaVersion: 2, packages: [] }, { schemaVersion: 1, packages: {} }, { schemaVersion: 1, packages: [{ ...f.source, licenseFiles: [] }] }, { schemaVersion: 1, packages: Array(2049).fill(null) }]) {
+    for (const manifest of [{ schemaVersion: 3, packages: [] }, { schemaVersion: 1, packages: {} }, { schemaVersion: 1, packages: [{ ...f.source, licenseFiles: [] }] }, { schemaVersion: 1, packages: Array(2049).fill(null) }]) {
       await f.declare(manifest); await assert.rejects(f.collect, /declared/i);
     }
     await writeFile(f.path, Buffer.alloc(131073, 65)); await assert.rejects(f.collect, /bound/i);

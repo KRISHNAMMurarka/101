@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "K09",
+    "K10",
+    "K12"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "one exact reviewed version-bound repository author-text source with explicit origin and copied web-artifact closure",
+  "patchSha256": "5f356fcc4b9f4b988d36bf50a8549a592c92a2c44be40a138849c83edce9ee4a",
+  "sourceSha256": {
+    "THIRD_PARTY_LICENSE_SOURCES.json": "3e3c013ba42c71cb67cb6dcced5fedd6ffaff255e6b315f7878a931ef2857704",
+    "tools/package-release.mjs": "70371e9eed04556f21638acc170136676d625d0cfd8d0a13c713e8a6fb919d17",
+    "tools/generate-license-inventory.mjs": "2e6243b6037f2f73d1d583747c24042731415e936beb48513ae19fc14152ee82",
+    "tools/license-inventory-validation.mjs": "b2af8a101328f232d9fe13b09d82e354ecf51c32edca86b85038ad7e5d584e83",
+    "tests/repository-license-sources.test.ts": "501505f8f995bb2e536d21ab7049c1d7e8507e3f7edb5466781f662bab649e5f",
+    "tests/declared-license-sources.test.ts": "aa9e5e2c81dc5aba86aa0c954cfbddd32468974140b1b3bb3bfc4f4ad6be16b3",
+    "third_party/licenses/npm/keyv/4.5.4/provenance.json": "f9caddaf0ec028005d003db066a4187046db81c9f96535fbc6662f8617c2e231",
+    "third_party/licenses/npm/keyv/4.5.4/LICENSE": "1f7dca26d2d328c3dbb9b6fe3b15ec3cda08ffe2288e47b73d617454b256f959",
+    "tests/fixtures/license-author-source/keyv-4.5.4.tgz.base64.txt": "eb46cba397c45fcd3f3198333db6af6c52eb29a4d7edf77166a2ecac266e43f3"
+  },
+  "appliedChecks": [
+    {
+      "name": "applied-tests",
+      "argv": [
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "tests/repository-license-sources.test.ts",
+        "tests/declared-license-sources.test.ts",
+        "tests/license-texts.test.ts"
+      ],
+      "childPid": 66742,
+      "joined": true,
+      "exitCode": 0
+    },
+    {
+      "name": "applied-lint",
+      "argv": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "tools/package-release.mjs",
+        "tools/generate-license-inventory.mjs",
+        "tools/license-inventory-validation.mjs",
+        "tests/repository-license-sources.test.ts",
+        "tests/declared-license-sources.test.ts"
+      ],
+      "childPid": 67651,
+      "joined": true,
+      "exitCode": 0
+    },
+    {
+      "name": "actual-inventory",
+      "argv": [
+        "node",
+        "tools/generate-license-inventory.mjs"
+      ],
+      "childPid": 67989,
+      "joined": true,
+      "exitCode": 0
+    }
+  ],
+  "appliedTests": {
+    "tests": 65,
+    "pass": 65,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "actualInventory": {
+    "inventoryBeforeSha256": "e87d6c9a474e8f8b3515ffab9ad4e998d150005571bbf6ff99d89b6bc36fc20b",
+    "inventoryAfterSha256": "fbe521825594f06f8b48343b12dce7e65a090e6f896690ba2d7eb3c1e14e0e53",
+    "exactChangedPackages": [
+      "node_modules/keyv"
+    ],
+    "unchangedOtherPackageRows": 1083,
+    "unchangedPriorTexts": 388,
+    "addedTextSha256": [
+      "1f7dca26d2d328c3dbb9b6fe3b15ec3cda08ffe2288e47b73d617454b256f959"
+    ],
+    "coverageBefore": {
+      "complete": false,
+      "lockedPackages": 1084,
+      "missingPackages": 116,
+      "packagesWithoutText": 60,
+      "distinctTexts": 388,
+      "textBytes": 804426,
+      "scope": "Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "coverageAfter": {
+      "complete": false,
+      "lockedPackages": 1084,
+      "missingPackages": 116,
+      "packagesWithoutText": 59,
+      "distinctTexts": 389,
+      "textBytes": 805534,
+      "scope": "Exact ordinary installed legal files and explicitly reviewed version-bound repository author texts, with distinct origin; missing optional targets, native/model terms and legal review remain separate."
+    },
+    "newOrigin": "repository-author-source",
+    "noInstalledBytesChangedByCollector": true,
+    "legalOrDistributionApproval": false
+  },
+  "actualAudit": {
+    "argv": [
+      "node",
+      "--input-type=module",
+      "-e",
+      "import { auditReleaseLicenseInventories } from './tools/license-inventory-validation.mjs'; await auditReleaseLicenseInventories(process.cwd()); console.log('Actual JavaScript and retained Rust inventory validation passed');"
+    ],
+    "childPid": 81971,
+    "joined": true,
+    "exitCode": 0,
+    "rustInventoryRegenerated": false
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-license-supplement/applied",
+    "commit": "191ad59946f671254d6ffaec0ae7b6f8297db54f",
+    "tree": "2c3746e0bc5eb4137f11b5ed78fe10cf095a14cf",
+    "readBackFiles": 27,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "originalDraftCustody": {
+    "schemaVersion": 1,
+    "sealedOriginal": {
+      "ref": "refs/codex/evidence/2026-10-16-license-supplement/draft",
+      "commit": "0e212e45d8ac83585c7000b544be2b813e6d8bf5",
+      "tree": "e0625a4070ba9d32fcdf60bdc0ea6a2e897625ed",
+      "readBackFiles": 161,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true,
+      "originalPaths": 2041,
+      "uniqueContentBlobs": 159,
+      "uniqueBlobBytes": 2951430,
+      "totalFileBytes": 13294888,
+      "ownedScratch": "/Users/km/Dev/101/release/k09-supplement-draft-z7geso14",
+      "symlinkEntries": 15
+    },
+    "ownedDirectory": "/Users/km/Dev/101/release/k09-supplement-draft-z7geso14",
+    "ownerVerified": {
+      "task": "/root/native_launch_root_cause",
+      "uid": 501,
+      "path": "/Users/km/Dev/101/release/k09-supplement-draft-z7geso14",
+      "purpose": "isolated K09 declared author-license supplement draft"
+    },
+    "retainedScratchEntriesCheckedAgainstReadback": 1958,
+    "ownedLastGroup": 39910,
+    "ownedGroupAbsent": true,
+    "allEarlierSupervisorsJoinedAtRecordedCompletion": true,
+    "lsof": {
+      "argv": [
+        "/usr/sbin/lsof",
+        "-nP",
+        "-t",
+        "+D",
+        "/Users/km/Dev/101/release/k09-supplement-draft-z7geso14"
+      ],
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    },
+    "removedOnlyOwnedDirectory": true,
+    "allOtherReleaseEntryIdentitiesPreservedAtCleanup": true,
+    "remainingReleaseEntries": 179,
+    "canonicalSourceIndexChanges": false
+  },
+  "correctedDraftCustody": {
+    "schemaVersion": 1,
+    "sealed": {
+      "ref": "refs/codex/evidence/2026-10-16-license-supplement/absent-target-v2",
+      "commit": "de351611f33929df1e074ba32162f7224c35a7f0",
+      "tree": "dfe3aeb312024c282c6384c00fa62c30f4fd24a1",
+      "readBackFiles": 103,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true,
+      "originalPaths": 798,
+      "uniqueContentBlobs": 101,
+      "uniqueBytes": 603072,
+      "ownedScratch": "/Users/km/Dev/101/release/k09-author-closure-8vtqtz2u",
+      "symlinkEntries": 3
+    },
+    "ownedScratchOnly": "/Users/km/Dev/101/release/k09-author-closure-8vtqtz2u",
+    "ownerIdentityVerified": true,
+    "scratchEntriesReadbackChecked": 762,
+    "ownedGroup": 15706,
+    "ownedGroupAbsent": true,
+    "allNestedFixtureExecFileCallbacksJoined": true,
+    "lsof": {
+      "argv": [
+        "/usr/sbin/lsof",
+        "-nP",
+        "-t",
+        "+D",
+        "/Users/km/Dev/101/release/k09-author-closure-8vtqtz2u"
+      ],
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    },
+    "removedOnlyOwnedScratch": true,
+    "otherReleaseEntriesPreserved": 185,
+    "canonicalSourceIndexWrites": false
+  },
+  "reviewCorrection": "Old draft successfully packaged an absent optional target but omitted manifest-referenced author bytes. Retained actual old-draft failure; corrected copied closure retains body/proof while inventory remains not-installed/no text. Public installed witness still requires actual package files.",
+  "reviewSha256": "089b9f243602db1a2f40ce4686474bce7d36975dd63d90bf9a57e8fa830fcffc",
+  "keyv": {
+    "version": "4.5.4",
+    "licenseSha256": "1f7dca26d2d328c3dbb9b6fe3b15ec3cda08ffe2288e47b73d617454b256f959",
+    "proofSha256": "f9caddaf0ec028005d003db066a4187046db81c9f96535fbc6662f8617c2e231",
+    "sourceCommit": "78b247b5b7a8c9b12154fbfae4295d6fb29158cf"
+  },
+  "limits": [
+    "Only Keyv4.5.4 gains one explicitly reviewed body; other candidate sibling licenses remain unassigned.",
+    "Repository/commit/blob metadata and exact acquired body are retained, not authenticated publisher or legal/distribution approval.",
+    "Actual web packaging tests use inert owned build fixtures; not a final web/native release artifact qualification.",
+    "116optional/target packages absent and59installed packages without selected full texts remain; native/model and redistribution review stay open.",
+    "Rust inventory was validated unchanged, not regenerated."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

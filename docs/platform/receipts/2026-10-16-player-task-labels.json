@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "sourceSnapshot": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/source-snapshot",
+    "commit": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+    "tree": "e309d8e2b3a52e31eb9b20fe969a9f88b1ad1be7",
+    "paths": 44,
+    "readBackMatched": true,
+    "realIndexUnchanged": true
+  },
+  "focusedCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-player-controls/focused",
+    "commit": "355471e42c9daddfed9d3cfb51d50a69c14789d8",
+    "tree": "4634babea71122db5602cfaf6267c37174be6873",
+    "readBackFiles": 171,
+    "allBytesMatched": true
+  },
+  "nativeStartup": "UNRESOLVED; no startup repair or historical failure clearance.",
+  "tasks": [
+    "U02",
+    "U04",
+    "U05",
+    "U07",
+    "Q05"
+  ],
+  "summary": "Player surfaces use announced controller names, correct observer invitation wording, visible task labels in code-field accessible names, and descriptor-based primitive preview values.",
+  "audit": {
+    "indexedFiles": 137,
+    "tsxFiles": 87,
+    "cssFiles": 7,
+    "routeWrappers": 37,
+    "concreteFindings": 4,
+    "path": "report.json",
+    "boundary": "Source inventory and targeted semantic inspection, not execution of every surface/state. Echo/Beat internals reviewed in the separate control repair.",
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-player-controls/language-audit",
+      "commit": "3726ad97366515563a4affc39942afa747df7c5f",
+      "tree": "e784fd3aa2e7208fafb186f32eb753fb47a15e89",
+      "sha256": "2078565fb67a6a1f9d5bb13ddaa508cb01dc537a8fa19ce17240361be1d65482",
+      "readBackMatched": true
+    }
+  },
+  "labelVerification": {
+    "originalChecks": 20,
+    "originalFailures": 16,
+    "fixedChecks": 24,
+    "fixedPass": true,
+    "sourceSha256": {
+      "app/components/OrbitalCrewGame.tsx": "1c7b88105e3e17205f2778ada9aaefafc3cd03950750f9827405dc09b45051b3",
+      "app/sharing/ConnectedSharingView.tsx": "c66b252e75cd7cdbfda602d15f8e575e546a57adf81f8006a0073d789ee25d13",
+      "app/sharing/watch/WatchSharingView.tsx": "6a86e9ef7ee2c8216949e71d6273dd9afaee94ae4651d1f4e7ea305a8804bc42",
+      "tools/qa-player-task-labels.mjs": "262c6abfefa3ad3d36c64238fc75ce71a724a91eeb26b38544741b801d0e1faa"
+    },
+    "buildSha256": "6de095aa4548dc377907594f0dce3017b2c211e2540ee6dff25ea01c43a27a9a",
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "viewport": "390x844",
+    "raw": "controller/2026-10-16-player-task-labels/browser-final.json",
+    "observed": [
+      "Actual SessionHost-announced Living room controller replaces internal assigned ID",
+      "Owner/participant and owner/observer textareas use unique visible peer heading plus task labels",
+      "Observer invitation action names its role; narrow geometry and browser errors checked"
+    ],
+    "review": "controller/2026-10-16-player-task-labels/review.json"
+  },
+  "deviceVerification": {
+    "behavior": "Validated descriptor metadata formats boolean On/Off, finite scalar values with declared unit, and named vector components with unit; dimensionless unit 1 omitted. Validation and separate preview consent remain in force.",
+    "sourceSha256": {
+      "app/devices/enrolled-device.ts": "08d06a16fb855b9f96120e8e5ccbd454b0a2a0ecd2aaccc95b28e9402a4e6386",
+      "app/devices/EnrolledDevices.tsx": "1e2bf3c9c97dfc1103724b6d2ac14d5419152f13e99264ce951d5491c51fa314",
+      "app/devices/enrolled-device.test.ts": "2629c562d7b71896ea3eb4e9c6274205a38b5dd2f69d58cbe3d8d57b57b66035",
+      "tools/qa-device-preview-language.mjs": "d41a52c9e632e5ab399ecaa6738ea70379bb85e92789953111e20dc3294a8d2f"
+    },
+    "focusedUnit": {
+      "tests": 20,
+      "pass": 20,
+      "evidenceBoundary": "Worker tool output observed; no separately retained raw unit log and no reconstructed raw output."
+    },
+    "buildSha256": "64df7addb96962b80e05c0c4e786957b25ec9e872eb9c16fbaed2ee2b90e667c",
+    "browserRuns": [
+      {
+        "engine": "chromium",
+        "path": "controller/2026-10-16-device-preview-language/built-chromium-20261016-a1-pass.json",
+        "sha256": "93842f999e443a43c02cb9924bbfc0e9eed8211b510297ef5443833e32244978",
+        "result": "pass",
+        "sourceAndBuildFencesStable": true
+      },
+      {
+        "engine": "webkit",
+        "path": "controller/2026-10-16-device-preview-language/built-webkit-20261016-a1-pass.json",
+        "sha256": "acca8b400eaa880a1c78a209483691c396254acb1ba170623e7526b780a157e7",
+        "result": "pass",
+        "sourceAndBuildFencesStable": true
+      }
+    ],
+    "actualPath": "Bundled public SDK publisher, native WebRTC, P-256 endpoint proof, whole-digest confirmation, validated descriptor, source approval and separate receiver preview approval; actual samples, preview Stop, then source Stop and peer shutdown.",
+    "oldMeasurements": {
+      "boolean": "true",
+      "scalar": "21.5",
+      "vector": "{\"x\":0.5,\"y\":0.25}",
+      "source": "controller/2026-10-16-device-preview-language/old-red.json"
+    },
+    "oldReceiptCustodyLimitation": "Original old-red JSON was overwritten after the first signal to annotate cleanup. Its first exact byte stream is unavailable; reconstruction is not byte-identical. Actual measurement/source/build pins persist. Initial source Stop was attempted but its return was not captured; only browser/page close was witnessed. Corrected fresh green runs have explicit successful Stop results.",
+    "review": "controller/2026-10-16-device-preview-language/device-review.json"
+  },
+  "sharingRegression": {
+    "sourceBuildSha256": "64df7addb96962b80e05c0c4e786957b25ec9e872eb9c16fbaed2ee2b90e667c",
+    "sourceCommit": "14cbeb8a03ababc005e37167bb8199123fe2af2a",
+    "chromium": {
+      "checks": 26,
+      "pass": true,
+      "raw": "native/connected-chromium/receipt.json",
+      "nativePeersIssued": 4,
+      "nativePeersClosed": 4
+    },
+    "watch": {
+      "checks": 30,
+      "pass": true,
+      "engines": [
+        "chromium",
+        "webkit"
+      ],
+      "raw": "native/watch/receipt.json",
+      "nativePeersIssuedPerEngine": 4,
+      "nativePeersClosedPerEngine": 4
+    },
+    "webkit": {
+      "checksBeforeFailure": 21,
+      "pass": false,
+      "phase": "cancel-and-scoped-revoke",
+      "failure": "Participant 2 Press disabled after exclusive transfer; cause unproven.",
+      "raw": "native/connected-webkit/receipt.json",
+      "nativePeersIssued": 4,
+      "nativePeersClosed": 4
+    },
+    "observationFollowup": {
+      "custody": {
+        "ref": "refs/codex/evidence/2026-10-16-player-controls/webkit-observation",
+        "commit": "e7e528329b458fcc91a0bba6186a5673bdfb8162",
+        "tree": "9002d351e1ebe8078164fa7597ec8b3c2fbbcc82",
+        "readBackFiles": 9,
+        "allBytesMatched": true,
+        "ownedScratchRemoved": true,
+        "rootServerJoined": true,
+        "rootServerAbsent": true
+      },
+      "checksBeforeFailure": 11,
+      "phase": "connected-inert-arrival",
+      "failure": "Visible enabled stable Connect participants button did not complete native scroll-into-view within the unchanged 5000ms action bound. Original transfer phase not reached.",
+      "nativePeersIssued": 0,
+      "nativePeersClosed": 0,
+      "interpretation": "Read-only focus/visibility/peer observations do not establish the original disabled Press cause. No further unchanged rerun or permission/lease/time-bound change."
+    }
+  },
+  "cleanup": {
+    "focusedBrowserContextsClosed": true,
+    "focusedBrowsersClosed": true,
+    "sharingContextsAndBrowsersClosed": true,
+    "rootServerJoinedAndAbsent": true,
+    "ownedQaScratchRemovedAfterExactReadBack": true
+  },
+  "limits": [
+    "No full U02/U04/U05/U07/Q05 acceptance or support row is claimed.",
+    "No physical device, assistive-technology execution, remote identity service, packet-network qualification or general state inventory acceptance.",
+    "Label and device checks cover the actual listed task paths. The audit is a bounded source inventory; all required game-input groups readiness remains a conditional unproven follow-up.",
+    "Unresolved WebKit observations and native gate failures remain current. Focused passes do not replace broad gates."
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S06"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "coverage-only; existing workspace member/policy boundaries",
+  "test": "packages/device-runtime/src/workspace-administration.test.ts",
+  "testSha256": "09d127d6b478094f0e465c7a15f614143d2f4993cf5971cfe018d1adf9f6c36c",
+  "testCounts": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "actualExecution": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-name-pattern=^removed participant recovery cannot reuse retired consent or disturb an independent participant$",
+      "packages/device-runtime/src/workspace-administration.test.ts"
+    ],
+    "cwd": "/Users/km/Dev/101",
+    "testSha256": "09d127d6b478094f0e465c7a15f614143d2f4993cf5971cfe018d1adf9f6c36c",
+    "scope": "Applied actual canonical test over workspace administration/runtime; software ownership scope only"
+  },
+  "result": {
+    "exitCode": 0,
+    "pid": 10683,
+    "joined": true,
+    "elapsedSeconds": 0.480761
+  },
+  "observed": [
+    "Two active independent participants and actual held sink effects.",
+    "RemoveA closes onlyA and retires its delivery context; Bactive/current/held with0releases.",
+    "Re-addA alone cannot restore removed sharing or retired handle; denied A/B crossresource requests make0additional owner calls.",
+    "Explicit policy restoration needs2fresh Aresource-owner approvals. Aborting oldA grants leaves freshA andBactive.",
+    "Aborting freshA grant retires onlyfreshA, sourceA later cannotdeliver, andBgenuinelydelivers three total samples.",
+    "Finally actual handles closed, effectsreleased; owned node child joined/group absent."
+  ],
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-workspace-member-recovery/applied",
+    "commit": "c0f5bf674bdfd2e5854df777122de53ee56d9026",
+    "tree": "569c2f455f2f7a55c2fcc925f96afe8dcd83bd23",
+    "readBackFiles": 24,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "isolatedCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-membership-recovery/workspace-coverage",
+    "commit": "02e0f5f69cd8a13e3a0b89fde674e0dae3bd184b",
+    "tree": "1a52cf2d95dab486caa30dbe98795e6dfd811918",
+    "readBackFiles": 31,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "review": {
+    "path": "controller/workspace-coverage-review.json",
+    "sha256": "2298adff84e7dee42249181d1cfea80aadb659f8fb47a4fbc19bafee7531d7a6"
+  },
+  "scope": "Actual WorkspaceAdministration and DeviceRuntime routes with real AbortSignals, software boolean resources and controlled clock. Removal/re-add does not restore policy or consent, cross-member routes are denied before owner calls, and stale grant aborts cannot retire fresh A or independent B. No invitation/TLS/account/lost-device identity or network proof.",
+  "typedConversion": "Original successful MJS remains separate from reviewed typed canonical append; direct applied typed-source selector passes. Full TypeScript gate pending.",
+  "remaining": "ConnectedSharingTask currently has no per-participant roster replacement after setup. Owner-reviewed removal/replacement with actual close, fresh enrollment and preserved B is a separate implementation lane.",
+  "productionGuardChanges": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

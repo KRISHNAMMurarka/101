@@ -51,7 +51,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
 
-  const { linked, readiness, controllerHost } = useGameHost<ShadowArenaState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<ShadowArenaState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -111,7 +111,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
         <div className="shadow-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(7, "0")}</strong></div><div><span>ROUND</span><strong>{hud.round}</strong></div><div><span>CHAIN</span><strong>×{hud.combo}</strong></div><div><span>SHADOWS</span><strong>{hud.enemies}</strong></div></div>
       </header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="shadow-arena">
         <div className="shadow-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK FIGHTER` : camera.state === "on" ? cameraStatusLabel(camera.state, "body") : describeSources(readiness)}</span><b>{hud.modifier.toUpperCase()}</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="Shadow Arena. Move with A/D or arrows, punch with J and K, block with L, jump with W or Space, duck with S, and use Shadow Burst with I." />

@@ -36,7 +36,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<DriftHud>(INITIAL_HUD);
 
-  const { linked, readiness, controllerHost } = useGameHost<TiltDriftState>({
+  const { linked, readiness, controllerHost, launch } = useGameHost<TiltDriftState>({
     sessionId,
     deps: [run],
     build: () => defineGamePackage({
@@ -83,7 +83,7 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
         <div className="drift-stats"><div><span>RUN</span><strong>{run}</strong></div><div><span>SPEED</span><strong>{Math.round(hud.speed * 3.6)}</strong><small>KM/H</small></div><div><span>SCORE</span><strong>{hud.score.toString().padStart(6, "0")}</strong></div><div><span>CHAIN</span><strong>×{(1 + hud.combo * .08).toFixed(1)}</strong></div></div>
       </header>
 
-      <GameControllerOverlay binding={controllerHost} runComplete={hud.gameOver}>
+      <GameControllerOverlay launch={launch} binding={controllerHost} runComplete={hud.gameOver}>
         <div className="drift-arena">
         <div className="drift-statusbar"><FullscreenButton /><span>{linked ? `${linked} LINK DEVICE${linked > 1 ? "S" : ""}` : describeSources(readiness)}</span><b>{hud.environment.toUpperCase()} SECTOR</b></div>
         <canvas ref={canvasRef} tabIndex={0} aria-label="TiltDrift play field. Steer with left and right arrows, boost with Space, brake with Down, and drift with Shift." />

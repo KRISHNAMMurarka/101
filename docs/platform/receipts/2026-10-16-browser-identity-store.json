@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S02"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "classification": "actual persistent browser identity-store and caller recovery/isolation coverage",
+  "source": {
+    "sdkEvidenceRef": "refs/codex/evidence/2026-10-16-c-watch/sdk-integration",
+    "sdkEvidenceCommit": "149162c02fcef0a66ad0610af0b9a10e15b4b95d",
+    "sdkManifestSha256": "8f6660563cfc058904e0ae31c440613648cb5d5595c4abb62091a42232bb4eaf",
+    "sdkSourceRevision": "6c39ccec4ae25bb1808a09174ddb5c5d5580b9ce",
+    "sdkSourceTree": "1e1dfda794fb47100f8d61949e20b8461d570351",
+    "selectedSourceContext": "source-context-map.json",
+    "packages": "source-pins.json",
+    "installedRecovery": "installed-recovery-map.json",
+    "installedFilesVerified": 411,
+    "tarballsVerified": 7,
+    "sdkRebuilt": false,
+    "currentWholeTreeIdentityClaim": false
+  },
+  "harness": [
+    {
+      "path": "browser-fixture.mjs.txt",
+      "sha256": "e4dc82f37f0b652e24e8aaac45afd73137276f0b94e5abd149d03899262e4ae1"
+    },
+    {
+      "path": "qa-identity-store.mjs.txt",
+      "sha256": "33e420472a7484f79ea132b948d79f8fc82fba8366b5722617da00b9297fc5df"
+    }
+  ],
+  "results": [
+    {
+      "engine": "chromium",
+      "browserVersion": "149.0.7827.55",
+      "checks": 43,
+      "attempts": 1,
+      "status": "pass",
+      "receipt": "chromium-receipt.json",
+      "receiptSha256": "1471b951ca8f863b4c3433e570f1fcc2752e6b103037f2aa75dc7b40b6a30210",
+      "mutations": [
+        {
+          "kind": "external-new-key-and-instance-record-replacement",
+          "at": 781.4000000953674,
+          "sameOriginOwnedDatabaseOnly": true
+        },
+        {
+          "kind": "external-missing-private-key-reference",
+          "at": 1931.2000002861023,
+          "sameOriginOwnedDatabaseOnly": true
+        }
+      ],
+      "actualCurrencyEffectChecks": [
+        {
+          "label": "External rotation retires captured caller and releases actual receiver route",
+          "at": 1719.7000002861023
+        },
+        {
+          "label": "Missing private key reference retires captured scope and receiver effect",
+          "at": 2885
+        }
+      ],
+      "cleanup": {
+        "browser": {
+          "pageClosed": true,
+          "contextPages": 0,
+          "browserConnected": false,
+          "browserChildCloseObserved": true,
+          "browserServerCloseObserved": true,
+          "browserChildExitCode": 0,
+          "browserChildSignalCode": null,
+          "loopbackServerClosed": true,
+          "qaTimers": 0,
+          "qaSignalListeners": 0,
+          "errors": []
+        },
+        "fixture": {
+          "databases": [
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.primary",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.isolated",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.deleted",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.copied-public",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.copied-json",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.98c389096ade45bc9cbc59b12c648430.mismatched",
+              "deleted": true
+            }
+          ],
+          "errors": [],
+          "ownedNativePairs": 3,
+          "closedPairs": 3,
+          "ownedDatabaseCount": 6,
+          "openDirectDatabaseConnections": 0
+        }
+      }
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.5",
+      "checks": 43,
+      "attempts": 1,
+      "status": "pass",
+      "receipt": "webkit-receipt.json",
+      "receiptSha256": "29096b2909b936c1d91b644cd34c957d5230e45c3e90cd0fd0580f248d0711df",
+      "mutations": [
+        {
+          "kind": "external-new-key-and-instance-record-replacement",
+          "at": 676,
+          "sameOriginOwnedDatabaseOnly": true
+        },
+        {
+          "kind": "external-missing-private-key-reference",
+          "at": 1844,
+          "sameOriginOwnedDatabaseOnly": true
+        }
+      ],
+      "actualCurrencyEffectChecks": [
+        {
+          "label": "External rotation retires captured caller and releases actual receiver route",
+          "at": 1613
+        },
+        {
+          "label": "Missing private key reference retires captured scope and receiver effect",
+          "at": 2797
+        }
+      ],
+      "cleanup": {
+        "browser": {
+          "pageClosed": true,
+          "contextPages": 0,
+          "browserConnected": false,
+          "browserChildCloseObserved": true,
+          "browserServerCloseObserved": true,
+          "browserChildExitCode": 0,
+          "browserChildSignalCode": null,
+          "loopbackServerClosed": true,
+          "qaTimers": 0,
+          "qaSignalListeners": 0,
+          "errors": []
+        },
+        "fixture": {
+          "databases": [
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.primary",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.isolated",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.deleted",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.copied-public",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.copied-json",
+              "deleted": true
+            },
+            {
+              "name": "101.s02.owned.21088b68be4f4c769c4afa282a79ff65.mismatched",
+              "deleted": true
+            }
+          ],
+          "errors": [],
+          "ownedNativePairs": 3,
+          "closedPairs": 3,
+          "ownedDatabaseCount": 6,
+          "openDirectDatabaseConnections": 0
+        }
+      }
+    }
+  ],
+  "checks": 86,
+  "coverage": [
+    "Real uniquely owned IndexedDB persistence; genuine nonextractable P-256 WebCrypto signing and actual rejected extraction.",
+    "Own-store removal synchronously retires captured authenticated scope and actual local receiver effect; separately loaded captured identity cannot sign.",
+    "Explicit recreation uses fresh key and invitation epoch; bilateral comparison, source consent and independent fixed-lifetime host grant are required again before actual routed position effect.",
+    "External replacement by a different actual key/instance and missing privateKey reference are detected by natural AuthenticatedResourcePeer currentness checks; actual receiver effect releases.",
+    "External record deletion invalidates captured handles without auto recreation. Public-only, JSON-incomplete CryptoKey, and mismatched private/public records cannot load or create identities.",
+    "Independent uniquely owned store remains current and signs through the other store mutations."
+  ],
+  "limits": [
+    "No rotate API: external replacement tests a different actual owned key/instance record. Complete authentic same-origin record/key structured clone is equivalent authority and is not claimed detectable.",
+    "Removing a stored privateKey reference is storage-record loss, not physical hardware loss, key erasure or OS custody proof.",
+    "External changes are detected through currency checks/signing, not synchronous cross-tab push; two timing samples per engine are observations, not a reliability bound.",
+    "Fresh explicit fixture approvals prove SDK consent isolation; no actual player/developer enrollment UI or focus/AT journey was run.",
+    "Persisted application callers are developer lab endpoint identity surfaces; player sharing/enrolled-device credentials remain ephemeral.",
+    "No account identity, physical device, OS keychain/TPM/Secure Enclave, hostile-origin, TLS/WSS, native SSH startup or whole S02 qualification.",
+    "Three native fixture pairs per engine were awaited through public disconnect; raw SDK cryptographic task quiescence is not independently observable."
+  ],
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-identity-store/browser-currentness",
+    "commit": "3f6145f418c687f7c4fc8c1c833c0e4c156d047e",
+    "tree": "dbe8527c5bbaff04d9979eee82da557202c34cf0",
+    "readBackFiles": 65,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "reportSha256": "ef8b8fe8209e15a65118df6719a9482258ea74ce2aeed42ac1f65901876be44b",
+    "sdkDependencyCustody": "149162c02fcef0a66ad0610af0b9a10e15b4b95d",
+    "installedFileReadbacks": 411,
+    "tarballReadbacks": 7,
+    "scratchDeletionAfterReadback": true
+  },
+  "reportSha256": "ef8b8fe8209e15a65118df6719a9482258ea74ce2aeed42ac1f65901876be44b",
+  "cleanup": {
+    "status": "complete",
+    "removed": "/Users/km/Dev/101/release/s02-identity-kehu92f_",
+    "ownedScratchAbsent": true,
+    "immutableReadbackBeforeRemoval": {
+      "ref": "refs/codex/evidence/2026-10-16-identity-store/browser-currentness",
+      "commit": "3f6145f418c687f7c4fc8c1c833c0e4c156d047e",
+      "tree": "dbe8527c5bbaff04d9979eee82da557202c34cf0",
+      "readBackFiles": 65,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    },
+    "derivedDependenciesAndCacheRemoved": true,
+    "uniqueExecutableSourceRetained": true,
+    "sdkDependencyRecoveryRef": "refs/codex/evidence/2026-10-16-c-watch/sdk-integration",
+    "allFiveSupervisedCommandsJoined": true,
+    "bothBrowserChildClosesObserved": true,
+    "allTwelveOwnedDatabasesDeleted": true,
+    "allSixFixtureNativePairsDisconnected": true,
+    "timestamp": 1792111785.1789188
+  },
+  "productChanges": [],
+  "oldProductFailureObserved": false,
+  "retryOrHarnessCorrections": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED"
+}

@@ -49,4 +49,13 @@ required embedded source references. An undeclared README or a link-only license
 statement does not become collected legal text automatically. This selected
 source coverage does not establish redistribution approval.
 
+Version 2 of that manifest also selects reviewed repository author text with a
+separate `repository-author-source` origin. The Keyv 4.5.4 selection retains the
+complete license, source commit/blob metadata, exact locked npm artifact identity,
+and hashes of its four published files. Collection verifies those installed bytes
+and preserves the origin and proof in the inventory. Web artifacts copy the
+manifest, license and proof even when a declared optional target is absent;
+absence still supplies no installed-package text coverage. These checks preserve
+reviewed provenance data and do not authenticate a publisher or grant legal approval.
+
 The committed MediaPipe models and WebAssembly files remain under their Apache-2.0 terms; a full copy is included at `third_party/APACHE-2.0.txt`. Their exact integrity hashes and limitations are recorded in `docs/vision.md`. No third-party game artwork, characters, music, sound effects, trademarks, or example assets are included.

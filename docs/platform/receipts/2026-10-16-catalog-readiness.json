@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "U05",
+    "U10"
+  ],
+  "integrated": false,
+  "summary": "The catalog waits for measured sources before claiming missing controls and uses the same required-input groups as the catalog filter and play chooser. Optional sources alone cannot make a game ready.",
+  "sourceSha256": {
+    "app/Launcher.tsx": "fdcfa92e2b189c6d36fa884495e26962d635d0041565c9fed97441716cab8e0f",
+    "app/lib/catalog-readiness.ts": "28b861151a5ea24b4ae4ce0df545fa49b89a9903e0c0a7e11c425319fb297940",
+    "app/lib/catalog-readiness.test.ts": "bff6d1e4dd0b264b2543dfe1e413f352f69e08f1aef3a1c061900d7368d817d5",
+    "tests/rendered-html.test.mjs": "3d63dbfb219b3feafe0d355d3aa0f4679d77baaab07de7838d06910c531042f7"
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-catalog-readiness/focused-corrected",
+    "commit": "8eac20c1042e86f2707d73c9ac68b62acfaeebae",
+    "tree": "db4f596c11c2851e22f155bdcb386bce80618961",
+    "readBackFiles": 17,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "originalRegression": {
+    "actualBuiltServerRender": "controller/original.html",
+    "observations": "controller/original.json",
+    "red": "controller/original-red.log",
+    "observed": "All10 initially rendered playable cards claim Needs before the server has measured any local input.",
+    "unitExtraction": "controller/original-helper.ts.txt",
+    "unitRed": "controller/original-unit-red.log",
+    "boundary": "Unit RED uses a syntax-only extraction of the original private card algorithm into the new plain module; all4cases fail. The actual old built render is independent evidence of the initial-status defect.",
+    "oldBuiltServerSha256": "64df7addb96962b80e05c0c4e786957b25ec9e872eb9c16fbaed2ee2b90e667c"
+  },
+  "verification": {
+    "focusedUnit": {
+      "tests": 13,
+      "pass": 13,
+      "fail": 0,
+      "skipped": 0,
+      "newRegressions": 4,
+      "raw": "controller/focused-corrected-fixture.log"
+    },
+    "scopedLint": "Six other changed files passed the initial batch. An escaped quote in the rendered test was corrected and that affected selector passed. Both raw logs are retained.",
+    "review": "controller/review.json",
+    "fixedBuiltServer": "Fresh fixed server rendering belongs to the separate exact-candidate gates; no fixed built HTML result is asserted in this scoped receipt.",
+    "fixtureCorrection": "The first unit fixture used an unsupported roadmap status string; corrected to the declared planned enum and reran all13focused checks. Original observations, logs and prior review remain historical, and no product algorithm changed in this correction."
+  },
+  "semantics": "Reuse existing playableWithSources for all required groups. Missing labels name only unsatisfied groups; alternatives retain or, multiple required groups retain and. Empty-source Checking matches the existing chooser convention. No capability detector, permission path, game-ID special case or source override added.",
+  "limits": [
+    "Software source-set fixtures prove the card predicate; no claim that a particular physical phone/controller profile was measured.",
+    "No full U05 surface inventory, U10 state inventory or whole-task closure.",
+    "Native startup and sharing WebKit failures remain unresolved."
+  ],
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "priorCustody": {
+    "ref": "refs/codex/evidence/2026-10-16-catalog-readiness/focused",
+    "commit": "735582443cff4b923b885e7db26579ed0c9e25fa",
+    "tree": "4b93e11e816bf2ffd172fb97f90dd8b07b7cad03",
+    "readBackFiles": 15,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  }
+}

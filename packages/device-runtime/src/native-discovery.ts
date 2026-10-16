@@ -2,23 +2,24 @@ import { assessDiscoveryCandidate, parseDiscoveryCandidate } from '@101/device-m
 import type { DiscoveryAssessment, DiscoveryCandidate } from '@101/device-model';
 
 export const NATIVE_DISCOVERY_PROFILE = 'macos-local-only-dns-sd/1';
+export const NATIVE_DISCOVERY_SELECTED_INTERFACE_PROFILE = 'macos-selected-interface-dns-sd/1';
 export const NATIVE_DISCOVERY_LIMITS = Object.freeze({ candidates: 16, resolvers: 8, txtBytes: 512, stdoutBytes: 16384,
   eventsPerSecond: 64, startupMs: 5000, grantMs: 30000, observationMs: 2000, attempts: 32, transitions: 64, tickMs: 20 });
 export interface NativeDiscoveryScope {
   readonly ownerId: string; readonly applicationId: string; readonly sessionId: string; readonly serviceType: string;
-  readonly domain: 'local.'; readonly interfaceIndex: 4294967295; readonly profile: typeof NATIVE_DISCOVERY_PROFILE; readonly operation: 'observe';
+  readonly domain: 'local.'; readonly interfaceIndex: number; readonly profile: typeof NATIVE_DISCOVERY_PROFILE | typeof NATIVE_DISCOVERY_SELECTED_INTERFACE_PROFILE; readonly operation: 'observe';
 }
 export interface NativeDiscoveryGrant { readonly scope: NativeDiscoveryScope; readonly expiresAt: number; readonly isCurrent: () => boolean; readonly signal?: AbortSignal }
 export interface NativeDiscoveryService {
-  readonly interfaceIndex: 4294967295; readonly name: string; readonly serviceType: string; readonly domain: 'local.';
-  readonly target: 'localhost.'; readonly port: number; readonly txtHex: string;
+  readonly interfaceIndex: number; readonly name: string; readonly serviceType: string; readonly domain: 'local.';
+  readonly target: string; readonly port: number; readonly txtHex: string;
 }
 export type NativeDiscoveryEvent = Readonly<{ version: 1; type: 'ready' | 'quota' }> |
   Readonly<{ version: 1; type: 'resolved'; } & NativeDiscoveryService> |
-  Readonly<{ version: 1; type: 'removed'; interfaceIndex: 4294967295; name: string; serviceType: string; domain: 'local.' }>;
+  Readonly<{ version: 1; type: 'removed'; interfaceIndex: number; name: string; serviceType: string; domain: 'local.' }>;
 export interface NativeDiscoveryOperation { stop(): void }
 export interface NativeDiscoveryProvider {
-  readonly profile: typeof NATIVE_DISCOVERY_PROFILE;
+  readonly profile: typeof NATIVE_DISCOVERY_PROFILE | typeof NATIVE_DISCOVERY_SELECTED_INTERFACE_PROFILE;
   /** Trusted host port. Throwing means no raw operation was allocated. closed must report actual native process exit. */
   open(scope: Readonly<NativeDiscoveryScope>, callbacks: { event(event: unknown): void; closed(): void }, signal: AbortSignal): NativeDiscoveryOperation;
 }
@@ -58,12 +59,18 @@ function data(input: unknown, required: readonly string[], optional: readonly st
 const identifier = (value: unknown): value is string => typeof value === 'string' && /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/.test(value);
 const serviceType = (value: unknown): value is string => typeof value === 'string' && /^_[A-Za-z0-9-]{1,15}\._tcp$/.test(value);
 const integer = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+const selectedInterface = (value: unknown): value is number => integer(value) && value > 0 && value < 0xfffffffb;
 function name(value: unknown): value is string { return typeof value === 'string' && value.length > 0 && value.trim() === value &&
   new TextEncoder().encode(value).byteLength <= 63 && ![...value].some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127); }
 function txt(value: unknown): value is string {
   // Closed producer-specific public TXT: one length-prefixed profile=1 string.
   // Unknown keys, identifiers, URLs and credentials are never exported.
   return value === '0970726f66696c653d31';
+}
+function dnsTarget(value: unknown): value is string {
+  if (typeof value !== 'string' || value.length < 4 || value.length > 254 || !value.endsWith('.')) return false;
+  const labels = value.slice(0, -1).split('.');
+  return labels.length >= 2 && labels.every(label => label.length <= 63 && /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/.test(label));
 }
 const failed = (reason: Extract<NativeDiscoveryResult, { ok: false }>['reason']): NativeDiscoveryResult => Object.freeze({ ok: false, reason });
 
@@ -73,12 +80,14 @@ const failed = (reason: Extract<NativeDiscoveryResult, { ok: false }>['reason'])
 export function createNativeDiscoveryController(input: NativeDiscoveryOptions): NativeDiscoveryController {
   const options = data(input, ['scope', 'now', 'authorize'], ['provider']);
   const fields = data(options.scope, ['ownerId', 'applicationId', 'sessionId', 'serviceType', 'domain', 'interfaceIndex', 'profile', 'operation']);
+  const localOnly = fields.profile === NATIVE_DISCOVERY_PROFILE && fields.interfaceIndex === 0xffffffff;
+  const selected = fields.profile === NATIVE_DISCOVERY_SELECTED_INTERFACE_PROFILE && selectedInterface(fields.interfaceIndex);
   if (![fields.ownerId, fields.applicationId, fields.sessionId].every(identifier) || !serviceType(fields.serviceType) || fields.domain !== 'local.' ||
-    fields.interfaceIndex !== 0xffffffff || fields.profile !== NATIVE_DISCOVERY_PROFILE || fields.operation !== 'observe' || typeof options.now !== 'function' || typeof options.authorize !== 'function') throw new TypeError('Invalid native discovery scope');
+    !(localOnly || selected) || fields.operation !== 'observe' || typeof options.now !== 'function' || typeof options.authorize !== 'function') throw new TypeError('Invalid native discovery scope');
   const scope = Object.freeze(fields) as unknown as NativeDiscoveryScope, now = options.now as () => number, authorize = options.authorize as NativeDiscoveryOptions['authorize'];
   let provider: NativeDiscoveryProvider | undefined;
   if (options.provider !== undefined) { const value = data(options.provider, ['profile', 'open']);
-    if (value.profile !== NATIVE_DISCOVERY_PROFILE || typeof value.open !== 'function') throw new TypeError('Invalid native provider');
+    if (value.profile !== fields.profile || typeof value.open !== 'function') throw new TypeError('Invalid native provider');
     provider = Object.freeze(value) as unknown as NativeDiscoveryProvider; }
   const instance = ++nextController, issued = new WeakMap<NativeDiscoveryHandle, Row>();
   let closed = false, busy = false, reading = false, last = -1, attempts = 0, raw = 0, sequence = 0, generation = 0, active: Attempt | undefined;
@@ -132,12 +141,14 @@ export function createNativeDiscoveryController(input: NativeDiscoveryOptions): 
       if (!['resolved', 'removed'].includes(value.type as string) || value.interfaceIndex !== scope.interfaceIndex || value.serviceType !== scope.serviceType || value.domain !== scope.domain || !name(value.name)) return;
       const key = JSON.stringify([value.interfaceIndex, value.name, value.serviceType, value.domain]);
       if (value.type === 'removed') { if (record.rows.delete(key)) report('withdrawn'); return; }
-      if (value.target !== 'localhost.' || !integer(value.port) || value.port < 1 || value.port > 65535 || !txt(value.txtHex)) return;
+      const target = value.target;
+      const validTarget = scope.profile === NATIVE_DISCOVERY_PROFILE ? target === 'localhost.' : dnsTarget(target);
+      if (!validTarget || !integer(value.port) || value.port < 1 || value.port > 65535 || !txt(value.txtHex)) return;
       let row = record.rows.get(key);
       if (!row && record.rows.size >= NATIVE_DISCOVERY_LIMITS.candidates) { report('candidate-capacity'); return; }
       const handle = row?.handle ?? Object.freeze({ kind: 'native-observation' as const }), id = row?.id ?? `native-${instance}-${record.id}-${++record.nextRow}`;
       const service = Object.freeze({ interfaceIndex: scope.interfaceIndex, name: value.name, serviceType: scope.serviceType, domain: scope.domain,
-        target: 'localhost.' as const, port: value.port, txtHex: value.txtHex });
+        target: target as string, port: value.port, txtHex: value.txtHex });
       const expiresAt = Math.min(record.grant.expiresAt, at + NATIVE_DISCOVERY_LIMITS.observationMs);
       const candidate = parseDiscoveryCandidate({ schemaVersion: 1, id, scope: { kind: 'session', id: scope.sessionId }, expiresAt,
         recovery: { action: 'rescan', hint: 'Review this local software again.' }, evidence: [{ stage: 'observed', kind: 'observation', candidateId: id,
