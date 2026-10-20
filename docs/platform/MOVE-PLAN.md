@@ -35,9 +35,9 @@ game/device coupling changes. Evidence and recovery live under
   reliability remains an open release gate under the owner's exception.
 - [x] Only after custody and linked behavior pass, delete explicitly named moved
   paths from 101. Record paired cutover commits and recovery instructions.
-- [ ] Push Connect and 101 to their existing authorized GitHub destinations;
+- [x] Push Connect and 101 to their existing authorized GitHub destinations;
   update PROJECT-LOCATIONS after the actual cutover.
-- [ ] Report what moved, verified checks and regressions before further work.
+- [x] Report what moved, verified checks and regressions before further work.
 
 ## Post-move sequence
 

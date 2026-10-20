@@ -60,8 +60,11 @@ pointer consent, effects, revocation and recovery also pass. Camera coverage use
 synthetic inference through the actual public SDK into real game simulations.
 
 See `receipts/2026-10-20-cutover-gates.json` and
-`receipts/2026-10-20-linked-journeys.json`. Paired publication is the final step;
-GitHub outcomes will be recorded after the authorized pushes succeed.
+`receipts/2026-10-20-linked-journeys.json`. Both source cutover commits were pushed and remote main refs verified:
+Connect `65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134`,
+Games `c58d20ffb284016ca96a8ae5d726ff332ad95dcc`.
+See `receipts/2026-10-20-publication.json`. This publishes source only; it is
+not a deployment or release acceptance.
 
 Defects found during the cutover include inconsistent standalone game room IDs,
 missing visible pointer-release confirmation, public low-level source/peer

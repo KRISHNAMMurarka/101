@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-20T12:41:47.727336+00:00",
+  "result": "both source cutover commits pushed and remote main refs verified",
+  "connect": {
+    "repository": "https://github.com/edilec-global/uynis-connect",
+    "sourceCutoverCommit": "65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134"
+  },
+  "games": {
+    "repository": "https://github.com/KRISHNAMMurarka/101",
+    "sourceCutoverCommit": "c58d20ffb284016ca96a8ae5d726ff332ad95dcc"
+  },
+  "localDependency": "file:../uynis-connect/sdk/connect",
+  "sdkCiRevision": "65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134",
+  "historyImport": "6a61fa4e257851ceac36a4e3cd5a508dab9e9b91",
+  "recovery": "See recovery-manifest.json in Connect docs/migration/2026-10-20; verified original bundles remain under 101/outputs/migration/2026-10-20/recovery",
+  "locationsFile": "/Users/km/Desktop/PROJECT-LOCATIONS.md",
+  "locationsSha256": "f5cdd394a1a4998bde528836f44b59575322893aab8a9a3e686d305dff09c285",
+  "limits": "Source publication only. No deployment, package/store release, physical/target-OS qualification, external-account integration, or release acceptance."
+}
